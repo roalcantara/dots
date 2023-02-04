@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash disable=SC2155,SC2181
+
+#? setup 0.1.0
+#? License RIT (Robot Institute of Technology)
+#? This is free software: you are free to change and redistribute it.
+#? There is NO WARRANTY, to the extent permitted by law.
+
+##? Dotfiles installation
+##?
+##? Usage:
+##?      setup [ options ]
+##?
+##? Options:
+##?     xcode_cli_tools       Install Command Line Tools for Xcode - if macOS
+##?
+##? Examples:
+##?     setup                                                                                               [LOCAL] Install the stable version
+##?     setup xcode_cli_tools                                                                               [LOCAL] Install Command Line Tools for Xcode - if macOS
+##?     curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash               [REMOTE] Install the stable version
+##?     BRANCH=next curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash   [REMOTE] Install the `next` version
+
+declare USER=${USER:-'roalcantara'}
+declare HOME=${HOME:-"/home/$USER"}
+declare GROUP=${GROUP:-'wheel'}
+declare BRANCH=${BRANCH:-'main'}
+declare PROJECT=${PROJECT:-'dots'}
+declare REMOTE=${REMOTE:-"https://github.com/${USER}/${PROJECT}"}
+declare TARGET=${TARGET:-"$HOME/.dots"}
+
+is_exec() {
+  type "$1" > /dev/null 2>&1
+}
+
+is_darwin() {
+  [[ "${OSTYPE}" == *darwin* ]]
+}
+
+p() {
+  printf "%80s\n" ' ' | tr ' ' -
+  printf "%s\n" "$1"
+}
+
+e() {
+  p "🚫 [ERROR] $1" >&2
+}
+
+err() {
+  e "$1"
+  exit 1
+}
+
+d() {
+  /usr/bin/git --git-dir="$TARGET" --work-tree="$HOME" "$@"
+}
+
+c() {
+  case "$1" in
+    err) err "⌘ [Command Line Tools for Xcode]: $2" ;;
+    *) p "⌘ [Command Line Tools for Xcode]: $1" ;;
+  esac
+}
+
+function setup() {
+  case "$1" in
+    xcode_cli_tools)
+      if is_darwin; then
+        # Only run if the tools are not installed
+        # https://developer.apple.com/forums/thread/698954
+        c "Checking if it is already installed…"
+        # To check that try to print the SDK path
+        xcode-select -p &> /dev/null
+        if [ $? -ne 0 ]; then
+          c "Not found! Installing from softwareupdate…"
+          # This temporary file prompts the 'softwareupdate' utility to list the Command Line Tools
+          touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
+          PROD=$(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
+          softwareupdate -ia "$PROD" --verbose;
+        else
+          c "Installed ✔"
+        fi
+      else
+        c "OSTYPE ('$OSTYPE') != '*darwin*'. Skipping.."
+      fi ;;
+    *)
+      if ! is_exec "git"; then
+        err "No git, curl or wget available. Aborting…"
+      fi
+
+      if ! setup xcode_cli_tools; then
+        c err "Installation Failed! Have you tried? => sudo softwareupdate -ia && xcode-select -p"
+      fi
+
+      p "Installing dotfiles at $TARGET…"
+      git clone --bare "$REMOTE" "$TARGET"
+
+      p "Checking out branch $BRANCH…";
+      d checkout "$BRANCH"
+
+      if [ $? -ne 0 ]; then
+        p "Backing up pre-existing dot files…";
+        mkdir -p "$HOME"/.config.bak
+        d checkout 2>&1 | grep -E '\s+\.' | awk '{ print $1 }' | xargs -I{} mv {} "$HOME"/.config.bak/{}
+
+        p "Checking out branch $BRANCH…";
+        d checkout "$BRANCH"
+      fi;
+
+      d config status.showUntrackedFiles no
+      chown -R "$USER:$GROUP" "$TARGET"
+      p "Done ✔✔"
+    ;;
+  esac
+}
+
+setup "$@"
