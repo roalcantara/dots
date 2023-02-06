@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.description="Dots: System configuration files"
 LABEL org.opencontainers.image.licenses=MIT
 
 ARG USER=dev
-ARG GROUP=dev
+ARG GROUP=sudo
 ARG BRANCH=main
 ARG SHELL=/bin/bash
 ARG TZ=America/Sao_Paulo
@@ -26,10 +26,10 @@ RUN apt-get update && apt-get install --no-install-recommends -y ca-certificates
   && update-ca-certificates \
   && echo "%$GROUP ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers \
   && echo "$USER" > /etc/hostname \
-  && useradd --user-group --system --create-home --shell /bin/bash --no-log-init "$USER"
+  && useradd -l -u 33333 -G sudo -md /home/"$USER" -s /bin/bash -p "$USER" "$USER"
 
 WORKDIR "$HOME"
 USER "$USER"
-RUN export BRANCH="$BRANCH" && curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash -s
+RUN export USER="$USER" BRANCH="$BRANCH" && curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash -s
 
 ENTRYPOINT [ "/bin/bash", "-l" ]
