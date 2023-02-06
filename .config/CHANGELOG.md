@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/roalcantara/dots/compare/v1.0.1...v1.0.2) (2023-02-06)
+
+
+### Bug Fixes
+
+* **ci:** Set GITHUB_TOKEN to ghcr.io auth ([5dd95f8](https://github.com/roalcantara/dots/commit/5dd95f8fbb5569554951b1b2e44bd0ad4c65768e))
+
 ## [1.0.1](https://github.com/roalcantara/dots/compare/v1.0.0...v1.0.1) (2023-02-06)
 
 
