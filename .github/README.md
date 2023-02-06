@@ -1,5 +1,7 @@
 # dots
 
+[![Build](https://github.com/roalcantara/dots/actions/workflows/build.yml/badge.svg)](https://github.com/roalcantara/dots/actions/workflows/build.yml) [![Release](https://github.com/roalcantara/dots/actions/workflows/release.yml/badge.svg)](https://github.com/roalcantara/dots/actions/workflows/release.yml) [![Publish](https://github.com/roalcantara/dots/actions/workflows/publish.yml/badge.svg)](https://github.com/roalcantara/dots/actions/workflows/publish.yml)
+
 Configuration files
 
 [![MIT license](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
