@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/roalcantara/dots/compare/v1.0.0...v1.0.1) (2023-02-06)
+
+
+### Bug Fixes
+
+* **ci:** Set GH_TOKEN secret ([17b76ef](https://github.com/roalcantara/dots/commit/17b76ef49bfdc6e86a68badc69406b44f5fe755c)), closes [semantic-release/semantic-release#1906](https://github.com/semantic-release/semantic-release/issues/1906)
+
 # 1.0.0 (2023-02-06)
 
 
