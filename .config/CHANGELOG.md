@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/roalcantara/dots/compare/v1.1.0...v1.2.0) (2023-02-06)
+
+
+### Features
+
+* **env:** Add gitpod config file ([3d4243b](https://github.com/roalcantara/dots/commit/3d4243b0bbf76b293470147c1fbf0fe0e5b9f200))
+
 # [1.1.0](https://github.com/roalcantara/dots/compare/v1.0.1...v1.1.0) (2023-02-06)
 
 
