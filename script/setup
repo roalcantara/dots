@@ -21,8 +21,8 @@
 ##?     BRANCH=next curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash   [REMOTE] Install the `next` version
 
 declare USER=${USER:-'roalcantara'}
+declare GROUP=${GROUP:-$USER}
 declare HOME=${HOME:-"/home/$USER"}
-declare GROUP=${GROUP:-'wheel'}
 declare BRANCH=${BRANCH:-'main'}
 declare PROJECT=${PROJECT:-'dots'}
 declare REMOTE=${REMOTE:-"https://github.com/${USER}/${PROJECT}"}
