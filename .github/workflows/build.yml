@@ -54,15 +54,15 @@ jobs:
         load: true
         context: .config
         file: .config/Dockerfile
-        build-args: |
-          USER=${{ github.actor }}
-          GROUP=${{ github.actor }}
-          BRANCH=${{ github.head_ref }}
-          TZ=${{ env.TZ }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          USER=${{ github.actor }}
+          GROUP=${{ github.actor }}
+          BRANCH=${{ env.BRANCH }}
+          TZ=${{ env.TZ }}
     - name: Scan your Docker container image for vulnerabilities
       uses: aquasecurity/trivy-action@master
       continue-on-error: true
