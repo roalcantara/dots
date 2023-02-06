@@ -21,11 +21,8 @@
 ##?     BRANCH=next curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash   [REMOTE] Install the `next` version
 
 declare USER=${USER:-'roalcantara'}
-declare GROUP=${GROUP:-$USER}
-declare HOME=${HOME:-"/home/$USER"}
+declare GROUP=${GROUP:-'sudo'}
 declare BRANCH=${BRANCH:-'main'}
-declare PROJECT=${PROJECT:-'dots'}
-declare REMOTE=${REMOTE:-"https://github.com/${USER}/${PROJECT}"}
 declare TARGET=${TARGET:-"$HOME/.dots"}
 
 is_exec() {
@@ -92,7 +89,7 @@ function setup() {
       fi
 
       p "Installing dotfiles at $TARGET…"
-      git clone --bare "$REMOTE" "$TARGET"
+      git clone --bare https://github.com/roalcantara/dots "$TARGET"
 
       p "Checking out branch $BRANCH…";
       d checkout "$BRANCH"
@@ -107,7 +104,6 @@ function setup() {
       fi;
 
       d config status.showUntrackedFiles no
-      chown -R "$USER:$GROUP" "$TARGET"
       p "Done ✔✔"
     ;;
   esac

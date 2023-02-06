@@ -16,7 +16,6 @@
 */bin
 */obj
 docker-compose*
-Dockerfile*
 LICENSE
 Makefile
 node_modules
