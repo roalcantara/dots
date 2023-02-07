@@ -61,6 +61,7 @@ jobs:
 
   ghcr:
     runs-on: ubuntu-latest
+    environment: prod
     permissions:
       contents: read
       checks: write
