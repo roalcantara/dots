@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/roalcantara/dots/compare/v1.7.0...v1.7.1) (2023-02-08)
+
+
+### Bug Fixes
+
+* **gitpod:** Set Workspace Image ([61e98d4](https://github.com/roalcantara/dots/commit/61e98d40ec0d167aa2d3e5738b53bcbe59c5facd))
+
 # [1.7.0](https://github.com/roalcantara/dots/compare/v1.6.0...v1.7.0) (2023-02-08)
 
 
