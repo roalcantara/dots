@@ -21,7 +21,7 @@
 ##?     BRANCH=next curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash   [REMOTE] Install the `next` version
 
 declare BRANCH=${BRANCH:-'main'}
-declare TARGET=${TARGET:-"$HOME/.dots"}
+declare TARGET=${TARGET:-"$HOME/.git"}
 
 is_exec() {
   type "$1" > /dev/null 2>&1

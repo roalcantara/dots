@@ -45,11 +45,6 @@ fileExistenceTests:
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
-  - name: ~/.dots
-    path: '$HOME/.dots'
-    shouldExist: true
-    permissions: dgrwxr-xr-x
-    gid: 10
   - name: ~/.github
     path: '$HOME/.github'
     shouldExist: true

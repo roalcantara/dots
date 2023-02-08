@@ -1,4 +1,4 @@
-# shellcheck shell=bash disable=SC1090
+# shellcheck shell=bash disable=SC1090,SC1091
 # https://gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Bash-Startup-Files
 
 # ~/.bashrc: executed by bash(1) for non-login shells.
