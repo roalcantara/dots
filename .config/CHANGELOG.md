@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/roalcantara/dots/compare/v1.5.0...v1.6.0) (2023-02-08)
+
+
+### Features
+
+* **gitpod:** Set Full Workspace Image ([445c404](https://github.com/roalcantara/dots/commit/445c404aff68f60ea278df0299f24344e2e87788))
+
 # [1.5.0](https://github.com/roalcantara/dots/compare/v1.4.0...v1.5.0) (2023-02-08)
 
 
