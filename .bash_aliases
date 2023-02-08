@@ -24,4 +24,4 @@ alias count='find . -type f | wc -l'
 
 # dotfiles
 # https://atlassian.com/git/tutorials/dotfiles
-alias d='/usr/bin/git --git-dir=$HOME/.dots/ --work-tree=$HOME'
+alias d='/usr/bin/git --git-dir=$HOME/.git/ --work-tree=$HOME'

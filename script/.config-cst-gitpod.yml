@@ -21,11 +21,6 @@ fileExistenceTests:
     shouldExist: true
     permissions: dgrwxr-xr-x
     gid: 10
-  - name: ~/script/setup
-    path: '$HOME/script/setup'
-    shouldExist: true
-    permissions: -rwxr-xr-x
-    gid: 10
   - name: ~/script/bootstrap
     path: '$HOME/script/bootstrap'
     shouldExist: true
