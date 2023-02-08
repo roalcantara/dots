@@ -1,2 +1,1 @@
-image:
-  file: .config/gitpod.Dockerfile
+image: roalcantara/dots:gitpod

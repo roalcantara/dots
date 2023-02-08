@@ -62,12 +62,12 @@ Configuration files
 ### Docker Images
 
   ```sh
-  # ~/.config/docker-compose.yml
+  # ~/script/docker-compose.yml
   docker compose build --no-cache
   docker compose run --rm -v $PWD:/app dots
   docker compose run --rm -v $PWD:/app gitpod
 
-  # ~/.config/Dockerfile
+  # ~/script/Dockerfile
   docker build -t roalcantara/dots --target dots .
   docker run -it --rm -v $PWD:/app roalcantara/dots
 
