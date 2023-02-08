@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/roalcantara/dots/compare/v1.2.1...v1.2.2) (2023-02-08)
+
+
+### Bug Fixes
+
+* **ci:** Specify an environment for a job. ([599c950](https://github.com/roalcantara/dots/commit/599c95033588bdf051aebea7811fc7de3d7bccb6))
+
 ## [1.2.1](https://github.com/roalcantara/dots/compare/v1.2.0...v1.2.1) (2023-02-08)
 
 
