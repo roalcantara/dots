@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/roalcantara/dots/compare/v1.2.3...v1.3.0) (2023-02-08)
+
+
+### Features
+
+* **docker:** Add Gitpod's Docker Image ([53f9670](https://github.com/roalcantara/dots/commit/53f96707ebddde9c347c99758a63c9e8e81a3bf1))
+
 ## [1.2.3](https://github.com/roalcantara/dots/compare/v1.2.2...v1.2.3) (2023-02-08)
 
 
