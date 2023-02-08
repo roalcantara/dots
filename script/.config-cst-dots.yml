@@ -5,6 +5,10 @@ commandTests:
     command: which
     args: [bash]
     expectedOutput: [/bin/bash]
+  - name: ZSH is present
+    command: which
+    args: [zsh]
+    expectedOutput: [/bin/zsh]
   - name: Git is present
     command: which
     args: [git]
@@ -31,72 +35,92 @@ metadataTest:
 
 fileExistenceTests:
   - name: ~/.bashrc
-    path: '$HOME/.bashrc'
+    path: $HOME/.bashrc
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
   - name: ~/.bash_aliases
-    path: '$HOME/.bash_aliases'
+    path: $HOME/.bash_aliases
+    shouldExist: true
+    permissions: -rw-r--r--
+    gid: 10
+  - name: ~/.zshenv
+    path: $HOME/.zshenv
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
   - name: ~/.profile
-    path: '$HOME/.profile'
+    path: $HOME/.profile
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
   - name: ~/.github
-    path: '$HOME/.github'
+    path: $HOME/.github
     shouldExist: true
     permissions: dgrwxr-xr-x
     gid: 10
   - name: ~/script
-    path: '$HOME/script'
+    path: $HOME/script
     shouldExist: true
     permissions: dgrwxr-xr-x
     gid: 10
   - name: ~/script/setup
-    path: '$HOME/script/setup'
+    path: $HOME/script/setup
     shouldExist: true
     permissions: -rwxr-xr-x
     gid: 10
   - name: ~/script/bootstrap
-    path: '$HOME/script/bootstrap'
+    path: $HOME/script/bootstrap
     shouldExist: true
     permissions: -rwxr-xr-x
     gid: 10
   - name: ~/script/.dockerignore
-    path: '$HOME/script/.dockerignore'
+    path: $HOME/script/.dockerignore
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
   - name: ~/script/Dockerfile
-    path: '$HOME/script/Dockerfile'
+    path: $HOME/script/Dockerfile
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
   - name: ~/script/docker-compose.yml
-    path: '$HOME/script/docker-compose.yml'
+    path: $HOME/script/docker-compose.yml
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
   - name: ~/.config
-    path: '$HOME/.config'
+    path: $HOME/.config
     shouldExist: true
     permissions: dgrwxr-xr-x
     gid: 10
   - name: ~/.config/.editorconfig
-    path: '$HOME/.config/.editorconfig'
+    path: $HOME/.config/.editorconfig
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
   - name: ~/.config/.hadolint.yml
-    path: '$HOME/.config/.hadolint.yml'
+    path: $HOME/.config/.hadolint.yml
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
   - name: ~/.config/.releaserc.yml
-    path: '$HOME/.config/.releaserc.yml'
+    path: $HOME/.config/.releaserc.yml
+    shouldExist: true
+    permissions: -rw-r--r--
+    gid: 10
+  - name: ~/.config/zsh
+    path: $HOME/.config/zsh
+    shouldExist: true
+    permissions: dgrwxr-xr-x
+    gid: 10
+  - name: ~/.config/zsh/.zprofile
+    path: $HOME/.config/zsh/.zprofile
+    shouldExist: true
+    permissions: -rw-r--r--
+    gid: 10
+  - name: ~/.config/zsh/.zshrc
+    path: $HOME/.config/zsh/.zshrc
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
