@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/roalcantara/dots/compare/v1.6.0...v1.7.0) (2023-02-08)
+
+
+### Features
+
+* **gitpod:** Remove unused logs ([662749e](https://github.com/roalcantara/dots/commit/662749ea9695bd60e85e9e2c4564154222a6c8f5))
+
 # [1.6.0](https://github.com/roalcantara/dots/compare/v1.5.0...v1.6.0) (2023-02-08)
 
 
