@@ -1,1 +1,188 @@
+### .gitpod.yml @ project's root
+# https://gitpod.io/docs/references/gitpod-yml
+# Tells Gitpod how to prebuild, build & start projects
+
+### Workspace Image
+# https://gitpod.io/docs/configure/workspaces/workspace-image
+#
+# By default, Gitpod uses the image gitpod/workspace-full pre-installed with
+#     Docker, Nix, Go, Java, Node.js, C/C++, Python, Ruby, Rust, Clojure as well as tools such as Homebrew, Tailscale, Nginx and several more
+# Official Docker images:
+#     https://hub.docker.com/u/gitpod/
+#     WARNING: Only Debian/Ubuntu based Docker images are supported
 image: roalcantara/dots:gitpod
+
+### Define a workspace’s git configuration as key-value pairs
+# https://gitpod.io/docs/references/gitpod-yml#gitconfig
+gitConfig:
+  # hide ~/.{config,.github,script}
+  core.excludesfile: ~/script/.gitignore
+
+### Configure the VS Code editor
+# https://gitpod.io/docs/references/gitpod-yml#vscode
+# vscode:
+  # Extensions (latest available version) to be installed for this workspace
+  # The identifier of an extension is always ${publisher}.${name}
+  # extensions:
+  #   - vscodevim.vim
+  #   - svelte.svelte-vscode
+  #   - bradlc.vscode-tailwindcss@0.6.11
+  #   - https://example.com/abc/releases/extension-0.26.0.vsix
+
+# Tasks
+# https://gitpod.io/docs/configure/workspaces/tasks
+# Define how Gitpod prepares & builds your project and how it can start the project’s development server(s)
+# Each array element opens in its own terminal
+tasks:
+  # - before: sh ./scripts/setup.sh
+  #   init: npm install
+  #   command: npm run dev
+  #
+  # - name: Database
+  #   init: sh ./scripts/seed-database.sh
+  #   command: npm start-db
+  #   env:
+  #     DB_HOST: localhost:3306
+  #     DB_USER: readOnlyUser
+
+    # tasks[n].name
+    # A name for the task, also shown on the terminal tab
+  - name: setup
+
+    # tasks[n].before
+    # Run before `init` and `command` tasks
+    # Usage
+    #     Customize terminal or install global project dependencies
+    before: echo 'before script'
+
+    # tasks[n].init
+    # Run between `before` and the main `command` tasks
+    # Usage
+    #     Executed only once!
+    #     Is expected to terminate!
+    #     Used to heavy-lifting tasks, e.g. npm install, compile source, run tests etc
+    # When it fails
+    #     the command property will not be executed
+    # When workspace does't have prebuild
+    #     it is executed at workspace start
+    # When workspace HAS prebuild
+    #     it is executed as part of the prebuild and NOT at workspace start
+    # Prebuild's Environment Variables
+    #     Sometimes there are build time requirements that mean certain tokens need setting or files need creating
+    #     Environment variables defined within your Gitpod Variables preferences are not imported by default,
+    #     but they can be accessed with the following command within a `before` or `init` block:
+    #
+    #     - init: |
+    #         eval $(command gp env -e)
+    #         echo "Hello ${MY_VAR}"
+    #
+    #     After that, the they will be installed into the rest of the shell script and can be accessed normally
+    init: echo 'init script'
+
+    # tasks[n].env
+    # Define environment variables that will be available in the workspace. i.e.:
+    # env:
+    #   DB_HOST: localhost:3306
+    #   DB_USER: readOnlyUser
+
+    # tasks[n].command
+    # Run after `before` and `init` tasks (doesn’t have to terminate)
+    # Usage
+    #     Main shell command
+    #     Used to start database or development server, e.g. npm run dev
+    #     Is commented out when using prebuild to prevent infinity loops. e.g. if you start a dev server, Gitpod does not execute the command task during prebuilds.
+    # command: echo 'start script'
+
+    # tasks[n].openMode
+    # Configure how the terminal should be opened
+    # Usage
+    #     null (default), tab-after, tab-before, split-right, split-left
+    openMode: tab-after
+
+### App’s ports
+# https://gitpod.io/docs/introduction/getting-started#configure-your-apps-ports
+# ports:
+#   # To get started, update the port according to what your application listens on, e.g. 3000.
+#   - port: 3000
+#     # automatically opens the app in a preview
+#     onOpen: open-preview
+
+### Prebuilds: Speed up new workspaces
+# https://gitpod.io/docs/configure/projects/prebuilds
+#
+# Install dependencies and run builds for new workspaces with Prebuilds!
+#
+#   - Executed as the user who enabled them!
+#     Private repository requires access
+#
+#   - Triggered for each new commit!
+#     New workspaces opened on that branch are prebuilt
+#     Ideal for working together on branches for testing or code reviews
+#
+#   - It saves only the workspace!
+#     Other dirs (like $HOME) are not saved by prebuilds
+#     To use global installs (like ‘npm install -g’) use the `before` task or custom Dockerfile
+#
+#   - It has 1 hour timeout!
+#     It fails if `before` and `init` tasks combined exceed 1h
+#
+#   - It can be incremental! (found under the Gitpod dashboard's project settings)
+#     Use an successful prebuild as base to reduce prebuilds' duration
+#
+#   - It requires a Project to run automatically!
+#     1. In the Organizations' Projects page click on New Project
+#     2. If necessary, install and configure the Gitpod GitHub app
+#     3. Select the project's repository
+#
+#   - Scenario: take advantage of prebuilds!
+#     https://gitpod.io/docs/introduction/getting-started#an-intro-to-prebuilds
+#     1. Nina opens a pull request where she developed a feature that requires a new dependency
+#     2. Gitpod notices the new code and kicks off a prebuild by cloning the source code and executing the init task. The result is saved as a prebuilt workspace
+#     3. Some time later, Paul opens the pull request to start his code review
+#     4. He opens a Gitpod workspace for that given pull request
+#     5. Gitpod recognizes it already ran the init task and loads the prebuilt workspace
+#     6. By the time the workspace starts, Paul sees the development server starting up and the application’s preview is ready for review
+#     7. For each new commit to the project, Gitpod continuously creates prebuilt workspaces so that the project is always ready-to-code.
+#        For open source projects, anyone gets to enjoy the efficiency of prebuilds
+
+### Prebuild: GitHub-specific configuration
+# https://gitpod.io/docs/configure/projects/prebuilds#github-specific-configuration
+github:
+
+  # Configures when prebuilds are run
+  # By default, prebuilds are run on push to the default branch and for each PR coming from the same repository
+  prebuilds:
+
+    # enable for the default branch (default: true)
+    master: true
+
+    # enable for all branches in this repo (default: false)
+    branches: false
+
+    # enable for PRs coming from this repo (default: true)
+    pullRequests: true
+
+    # enable for PRs coming from forks (default: false)
+    pullRequestsFromForks: false
+
+    # add a check to PRs (default: true)
+    addCheck: prevent-merge-on-error # checks fail when the prebuild failed
+
+    # add a "Review in Gitpod" button as a comment to PRs (default: false)
+    addComment: false
+
+    # add a "Review in Gitpod" button to the PR's description (default: false)
+    # This approach produces fewer GitHub notifications, but can also create a concurrent editing conflict when
+    # the bot and a user try to edit the description of a pull request at the same time
+    addBadge: true
+
+### Defines the repository with the main .gitpod.yml file and
+# makes it possible to open the same workspace from any issue, branch
+# or other context URL from any repository defined in a multi repository configuration.
+# https://gitpod.io/docs/references/gitpod-yml#mainconfiguration
+# mainConfiguration: https://github.com/gitpod-io/demo-multi-repo-frontend
+
+### Define which path Gitpod considers the project’s workspace directory, relative to /workspace
+# Usually, not needed
+# https://gitpod.io/docs/references/gitpod-yml#workspacelocation
+# workspaceLocation: "."

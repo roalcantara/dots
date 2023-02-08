@@ -30,6 +30,21 @@ metadataTest:
       value: 100
 
 fileExistenceTests:
+  - name: ~/.bashrc
+    path: '$HOME/.bashrc'
+    shouldExist: true
+    permissions: -rw-r--r--
+    gid: 10
+  - name: ~/.bash_aliases
+    path: '$HOME/.bash_aliases'
+    shouldExist: true
+    permissions: -rw-r--r--
+    gid: 10
+  - name: ~/.profile
+    path: '$HOME/.profile'
+    shouldExist: true
+    permissions: -rw-r--r--
+    gid: 10
   - name: ~/.dots
     path: '$HOME/.dots'
     shouldExist: true
@@ -55,18 +70,18 @@ fileExistenceTests:
     shouldExist: true
     permissions: -rwxr-xr-x
     gid: 10
-  - name: ~/.profile
-    path: '$HOME/.profile'
+  - name: ~/script/.dockerignore
+    path: '$HOME/script/.dockerignore'
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
-  - name: ~/.bashrc
-    path: '$HOME/.bashrc'
+  - name: ~/script/Dockerfile
+    path: '$HOME/script/Dockerfile'
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
-  - name: ~/.bash_aliases
-    path: '$HOME/.bash_aliases'
+  - name: ~/script/docker-compose.yml
+    path: '$HOME/script/docker-compose.yml'
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
@@ -74,11 +89,6 @@ fileExistenceTests:
     path: '$HOME/.config'
     shouldExist: true
     permissions: dgrwxr-xr-x
-    gid: 10
-  - name: ~/.config/.dockerignore
-    path: '$HOME/.config/.dockerignore'
-    shouldExist: true
-    permissions: -rw-r--r--
     gid: 10
   - name: ~/.config/.editorconfig
     path: '$HOME/.config/.editorconfig'
@@ -92,11 +102,6 @@ fileExistenceTests:
     gid: 10
   - name: ~/.config/.releaserc.yml
     path: '$HOME/.config/.releaserc.yml'
-    shouldExist: true
-    permissions: -rw-r--r--
-    gid: 10
-  - name: ~/.config/Dockerfile
-    path: '$HOME/.config/Dockerfile'
     shouldExist: true
     permissions: -rw-r--r--
     gid: 10
