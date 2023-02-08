@@ -28,9 +28,11 @@ RUN export BRANCH="$BRANCH" && curl -Lks https://raw.githubusercontent.com/roalc
 ENTRYPOINT [ "/bin/bash", "-l" ]
 
 # hadolint ignore=DL3007
-FROM gitpod/workspace-base:latest as gitpod
+FROM gitpod/workspace-base:latest as gitpod-base
 USER gitpod
 COPY --from=dots --chmod=gitpod:sudo /home/dev /home/gitpod
 
-# hadolint ignore=DL3002
-USER root
+# hadolint ignore=DL3007
+FROM gitpod/workspace-full:latest as gitpod
+USER gitpod
+COPY --from=dots --chmod=gitpod:sudo /home/dev /home/gitpod

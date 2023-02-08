@@ -12,6 +12,15 @@ services:
     # configure service container to run with a TTY (docker run -t)
     tty: true
 
+  gitpod-base: # docker compose run --rm -v $PWD:/app gitpod-base
+    build:
+      context: .
+      target: gitpod-base
+    # configures service containers to run with an allocated stdin (docker run -i)
+    stdin_open: true
+    # configure service container to run with a TTY (docker run -t)
+    tty: true
+
   gitpod: # docker compose run --rm -v $PWD:/app gitpod
     build:
       context: .
