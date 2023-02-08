@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [dots, gitpod]
+        target: [dots, gitpod-base]
     permissions:
       contents: read
       checks: write
@@ -41,6 +41,7 @@ jobs:
       with:
         config: .config/.hadolint.yml
         dockerfile: script/Dockerfile
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
     - name: Extract metadata (tags, labels) from Git reference and GitHub events for Docker
@@ -50,8 +51,8 @@ jobs:
         images: ${{ github.repository }}
         github-token: ${{ secrets.GITHUB_TOKEN }}
         flavor: latest=${{ matrix.target == 'dots' }}
-        tags: ${{ matrix.target == 'dots' && 'type=ref,event=pr' || 'gitpod' }}
-    - name: Build to CST validation
+        tags: ${{ matrix.target == 'dots' && 'type=ref,event=pr' || 'gitpod-base' }}
+    - name: Build Docker Image
       uses: docker/build-push-action@v4
       with:
         push: false
@@ -62,11 +63,23 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: BRANCH=${{ github.head_ref }}
-    - name: Scan your Docker container image for vulnerabilities
+    - name: Run Container Structure Test
+      uses: docker://gcr.io/gcp-runtimes/container-structure-test:latest
+      with:
+        args: test --output junit --test-report cst_junit_report-${{ matrix.target }}.xml --config script/.config-cst-${{ matrix.target }}.yml --image ${{ github.actor }}/dots:${{ matrix.target == 'dots' && 'latest' || 'gitpod-base' }}
+    - name: Display CST Report
+      uses: mikepenz/action-junit-report@v3
+      if: always()
+      with:
+        report_paths: cst_junit_report-${{ matrix.target }}.xml
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Scan Docker container image for vulnerabilities
       uses: aquasecurity/trivy-action@master
+      if: ${{ matrix.target == 'dots' }}
       continue-on-error: true
       with:
-        image-ref: ${{ github.actor }}/dots:${{ matrix.target == 'dots' && 'latest' || 'gitpod' }}
+        image-ref: ${{ github.actor }}/dots:latest
         format: sarif
         exit-code: 1
         ignore-unfixed: true
@@ -74,16 +87,7 @@ jobs:
         severity: 'MEDIUM,HIGH,CRITICAL'
         output: trivy-results.sarif
     - name: Upload Trivy scan results to GitHub Security tab
+      if: ${{ matrix.target == 'dots' }}
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: trivy-results.sarif
-    - name: Run Container Structure Test
-      uses: docker://gcr.io/gcp-runtimes/container-structure-test:latest
-      with:
-        args: test --output junit --test-report cst_junit_report-${{ matrix.target }}.xml --config script/.config-cst-${{ matrix.target }}.yml --image ${{ github.actor }}/dots:${{ matrix.target == 'dots' && 'latest' || 'gitpod' }}
-    - name: Display CST Report
-      uses: mikepenz/action-junit-report@v3
-      if: always()
-      with:
-        report_paths: cst_junit_report-${{ matrix.target }}.xml
-        github_token: ${{ secrets.GITHUB_TOKEN }}
