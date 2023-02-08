@@ -24,7 +24,7 @@ RUN apk -U --no-cache add sudo tzdata git curl bash zsh\
   && echo "%$GROUP ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 WORKDIR "$HOME"
 USER "$USER"
-RUN export BRANCH="$BRANCH" && curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash -s
+RUN export BRANCH="$BRANCH" && curl -Lks --compressed https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash -s
 ENTRYPOINT [ "/bin/zsh", "-l" ]
 
 # hadolint ignore=DL3007
