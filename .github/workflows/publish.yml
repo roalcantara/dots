@@ -21,10 +21,10 @@ defaults:
 
 jobs:
   docker:
-    runs-on: ubuntu-latest
     environment:
       name: prod
       url: https://hub.docker.com/repository/docker/${{ github.repository }}:latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: docker/setup-buildx-action@v2
@@ -32,7 +32,7 @@ jobs:
         uses: docker/metadata-action@v4
         id: meta
         with:
-          images: ${{ github.repository }}
+          images: ${{ github.actor }}/dots
           github-token: ${{ secrets.GITHUB_TOKEN }}
           flavor: latest=true
           tags: |
@@ -50,8 +50,6 @@ jobs:
           push: true
           context: .config
           file: .config/Dockerfile
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
@@ -60,12 +58,8 @@ jobs:
             TZ=${{ env.TZ }}
 
   ghcr:
-    runs-on: ubuntu-latest
     environment: prod
-    permissions:
-      contents: read
-      checks: write
-      id-token: write
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - uses: docker/setup-buildx-action@v2
@@ -73,12 +67,15 @@ jobs:
       uses: docker/metadata-action@v4
       id: meta
       with:
-        images: ghcr.io/${{ github.repository }}
+        images: ghcr.io/${{ github.actor }}/dots
         github-token: ${{ secrets.GITHUB_TOKEN }}
         flavor: latest=true
-        tags: type=semver,pattern={{version}}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
     - name: Login at ghcr
-      uses: docker/login-action@v2
+      uses: docker/login-action@v2.1.0
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
@@ -89,8 +86,6 @@ jobs:
         push: true
         context: .config
         file: .config/Dockerfile
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
