@@ -10,13 +10,13 @@ env:
   FORCE_COLOR: true
   SEMANTIC_VERSION: 19
 
-defaults:
-  run:
-    shell: bash
-
 concurrency:
   cancel-in-progress: true
   group: ${{ github.workflow }}-${{ github.ref }}
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   release:

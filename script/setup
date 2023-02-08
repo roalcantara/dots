@@ -20,8 +20,6 @@
 ##?     curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash               [REMOTE] Install the stable version
 ##?     BRANCH=next curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash   [REMOTE] Install the `next` version
 
-declare USER=${USER:-'roalcantara'}
-declare GROUP=${GROUP:-'sudo'}
 declare BRANCH=${BRANCH:-'main'}
 declare TARGET=${TARGET:-"$HOME/.dots"}
 

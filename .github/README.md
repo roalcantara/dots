@@ -59,12 +59,29 @@ Configuration files
     d push
     ```
 
+### Docker Images
+
+  ```sh
+  # ~/.config/docker-compose.yml
+  docker compose build --no-cache
+  docker compose run --rm -v $PWD:/app dots
+  docker compose run --rm -v $PWD:/app gitpod
+
+  # ~/.config/Dockerfile
+  docker build -t roalcantara/dots --target dots .
+  docker run -it --rm -v $PWD:/app roalcantara/dots
+
+  docker build -t roalcantara/dots:gitpod --target gitpod .
+  docker run -it --rm -v $PWD:/app roalcantara/dots:gitpod
+  ```
+
 ## Acknowledgements
 
 - [Standard Readme][5]
 - [Conventional Commits][3]
 - [Unofficial guide to dotfiles on GitHub][7]
 - [Dotfiles: Best Way to Store in a Bare Git Repository][8]
+- [Gitpod: Dotfiles][11]
 
 ## Contributing
 
@@ -87,3 +104,4 @@ The project is available as open source under the terms of the [MIT][1] [License
 [8]: https://atlassian.com/git/tutorials/dotfiles "Dotfiles: Best Way to Store in a Bare Git Repository"
 [9]: https://mac.install.guide/commandlinetools/4.html "Install Xcode Command Line Tools"
 [10]: https://developer.apple.com/forums/thread/698954 "Automate the Install of Xcode Command Line Tools"
+[11]: https://www.gitpod.io/docs/configure/user-settings/dotfiles "Gitpod: Dotfiles"
