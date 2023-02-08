@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/roalcantara/dots/compare/v1.2.2...v1.2.3) (2023-02-08)
+
+
+### Bug Fixes
+
+* **ci:** Remove ghcr job ([a9727d5](https://github.com/roalcantara/dots/commit/a9727d5903e9eab43c68ac42e02a9ee888aaea18))
+
 ## [1.2.2](https://github.com/roalcantara/dots/compare/v1.2.1...v1.2.2) (2023-02-08)
 
 
