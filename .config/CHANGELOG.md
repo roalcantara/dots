@@ -1,3 +1,10 @@
+## [1.7.2](https://github.com/roalcantara/dots/compare/v1.7.1...v1.7.2) (2023-02-08)
+
+
+### Bug Fixes
+
+* **script/bootstrap:** Add packages per ostype ([4c724ac](https://github.com/roalcantara/dots/commit/4c724acb46387bbf44915320e98c3e5fe0047201))
+
 ## [1.7.1](https://github.com/roalcantara/dots/compare/v1.7.0...v1.7.1) (2023-02-08)
 
 
