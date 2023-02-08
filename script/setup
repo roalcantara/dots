@@ -31,7 +31,11 @@ is_exec() {
 }
 
 is_darwin() {
-  [[ "${OSTYPE}" == *darwin* ]]
+  [[ "$OSTYPE" == *darwin* ]]
+}
+
+is_alpine() {
+  [[ "$OSTYPE" == *linux-musl* ]]
 }
 
 p() {
@@ -59,8 +63,16 @@ c() {
   esac
 }
 
+t() {
+  if is_alpine; then
+    /bin/touch "$1"
+  else
+    /usr/bin/touch "$1"
+  fi
+}
+
 mkfile() {
-  /bin/mkdir -p "$(dirname "$1")/" && /usr/bin/touch "$1"
+  /bin/mkdir -p "$(dirname "$1")/" && t "$1"
 }
 
 function setup() {
