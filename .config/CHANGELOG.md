@@ -1,3 +1,15 @@
+# [1.8.0](https://github.com/roalcantara/dots/compare/v1.7.2...v1.8.0) (2023-02-08)
+
+
+### Bug Fixes
+
+* **script/setup:** Prevent server-side caching ([b676d7a](https://github.com/roalcantara/dots/commit/b676d7a2bfa25aa6d75ceff8649d9c1c371265bf))
+
+
+### Features
+
+* **shell:** Add ZSH ([dfca271](https://github.com/roalcantara/dots/commit/dfca271a9d139354b37330086fb36a4ce526dbb0))
+
 ## [1.7.2](https://github.com/roalcantara/dots/compare/v1.7.1...v1.7.2) (2023-02-08)
 
 
