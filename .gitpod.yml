@@ -21,83 +21,82 @@ gitConfig:
 ### Configure the VS Code editor
 # https://gitpod.io/docs/references/gitpod-yml#vscode
 # vscode:
-  # Extensions (latest available version) to be installed for this workspace
-  # The identifier of an extension is always ${publisher}.${name}
-  # extensions:
-  #   - vscodevim.vim
-  #   - svelte.svelte-vscode
-  #   - bradlc.vscode-tailwindcss@0.6.11
-  #   - https://example.com/abc/releases/extension-0.26.0.vsix
+#   # Extensions (latest available version) to be installed for this workspace
+#   # The identifier of an extension is always ${publisher}.${name}
+#   extensions:
+#     - vscodevim.vim
+#     - svelte.svelte-vscode
+#     - bradlc.vscode-tailwindcss@0.6.11
+#     - https://example.com/abc/releases/extension-0.26.0.vsix
 
-# Tasks
+### Tasks
 # https://gitpod.io/docs/configure/workspaces/tasks
 # Define how Gitpod prepares & builds your project and how it can start the project’s development server(s)
 # Each array element opens in its own terminal
-tasks:
-  # - before: sh ./scripts/setup.sh
-  #   init: npm install
-  #   command: npm run dev
-  #
-  # - name: Database
-  #   init: sh ./scripts/seed-database.sh
-  #   command: npm start-db
-  #   env:
-  #     DB_HOST: localhost:3306
-  #     DB_USER: readOnlyUser
-
-    # tasks[n].name
-    # A name for the task, also shown on the terminal tab
-  - name: setup
-
-    # tasks[n].before
-    # Run before `init` and `command` tasks
-    # Usage
-    #     Customize terminal or install global project dependencies
-    before: echo 'before script'
-
-    # tasks[n].init
-    # Run between `before` and the main `command` tasks
-    # Usage
-    #     Executed only once!
-    #     Is expected to terminate!
-    #     Used to heavy-lifting tasks, e.g. npm install, compile source, run tests etc
-    # When it fails
-    #     the command property will not be executed
-    # When workspace does't have prebuild
-    #     it is executed at workspace start
-    # When workspace HAS prebuild
-    #     it is executed as part of the prebuild and NOT at workspace start
-    # Prebuild's Environment Variables
-    #     Sometimes there are build time requirements that mean certain tokens need setting or files need creating
-    #     Environment variables defined within your Gitpod Variables preferences are not imported by default,
-    #     but they can be accessed with the following command within a `before` or `init` block:
-    #
-    #     - init: |
-    #         eval $(command gp env -e)
-    #         echo "Hello ${MY_VAR}"
-    #
-    #     After that, the they will be installed into the rest of the shell script and can be accessed normally
-    init: echo 'init script'
-
-    # tasks[n].env
-    # Define environment variables that will be available in the workspace. i.e.:
-    # env:
-    #   DB_HOST: localhost:3306
-    #   DB_USER: readOnlyUser
-
-    # tasks[n].command
-    # Run after `before` and `init` tasks (doesn’t have to terminate)
-    # Usage
-    #     Main shell command
-    #     Used to start database or development server, e.g. npm run dev
-    #     Is commented out when using prebuild to prevent infinity loops. e.g. if you start a dev server, Gitpod does not execute the command task during prebuilds.
-    # command: echo 'start script'
-
-    # tasks[n].openMode
-    # Configure how the terminal should be opened
-    # Usage
-    #     null (default), tab-after, tab-before, split-right, split-left
-    openMode: tab-after
+# tasks:
+#   - before: sh ./scripts/setup.sh
+#     init: npm install
+#     command: npm run dev
+#
+#   - name: Database
+#     init: sh ./scripts/seed-database.sh
+#     command: npm start-db
+#     env:
+#       DB_HOST: localhost:3306
+#       DB_USER: readOnlyUser
+#
+#   # tasks[n].name
+#   # A name for the task, also shown on the terminal tab
+#   - name: setup
+#   # tasks[n].before
+#   # Run before `init` and `command` tasks
+#   # Usage
+#   #     Customize terminal or install global project dependencies
+#   before: echo 'before script'
+#
+#   # tasks[n].init
+#   # Run between `before` and the main `command` tasks
+#   # Usage
+#   #     Executed only once!
+#   #     Is expected to terminate!
+#   #     Used to heavy-lifting tasks, e.g. npm install, compile source, run tests etc
+#   # When it fails
+#   #     the command property will not be executed
+#   # When workspace does't have prebuild
+#   #     it is executed at workspace start
+#   # When workspace HAS prebuild
+#   #     it is executed as part of the prebuild and NOT at workspace start
+#   # Prebuild's Environment Variables
+#   #     Sometimes there are build time requirements that mean certain tokens need setting or files need creating
+#   #     Environment variables defined within your Gitpod Variables preferences are not imported by default,
+#   #     but they can be accessed with the following command within a `before` or `init` block:
+#   #
+#   #     - init: |
+#   #         eval $(command gp env -e)
+#   #         echo "Hello ${MY_VAR}"
+#   #
+#   #     After that, the they will be installed into the rest of the shell script and can be accessed normally
+#   init: echo 'init script'
+#
+#   # tasks[n].env
+#   # Define environment variables that will be available in the workspace. i.e.:
+#   # env:
+#   #   DB_HOST: localhost:3306
+#   #   DB_USER: readOnlyUser
+#
+#   # tasks[n].command
+#   # Run after `before` and `init` tasks (doesn’t have to terminate)
+#   # Usage
+#   #     Main shell command
+#   #     Used to start database or development server, e.g. npm run dev
+#   #     Is commented out when using prebuild to prevent infinity loops. e.g. if you start a dev server, Gitpod does not execute the command task during prebuilds.
+#   # command: echo 'start script'
+#
+#   # tasks[n].openMode
+#   # Configure how the terminal should be opened
+#   # Usage
+#   #     null (default), tab-after, tab-before, split-right, split-left
+#   # openMode: tab-after
 
 ### App’s ports
 # https://gitpod.io/docs/introduction/getting-started#configure-your-apps-ports
