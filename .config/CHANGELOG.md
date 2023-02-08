@@ -1,3 +1,15 @@
+# [1.4.0](https://github.com/roalcantara/dots/compare/v1.3.0...v1.4.0) (2023-02-08)
+
+
+### Bug Fixes
+
+* **script:** Centralize script files ([de0ede3](https://github.com/roalcantara/dots/commit/de0ede3669a0a04abefe18edb23137756f398528))
+
+
+### Features
+
+* **gitpod:** Set Gitpod's Workspace Image ([a59245d](https://github.com/roalcantara/dots/commit/a59245d8e6841ce8e3af4abd5edfbfa87daaefb3))
+
 # [1.3.0](https://github.com/roalcantara/dots/compare/v1.2.3...v1.3.0) (2023-02-08)
 
 
