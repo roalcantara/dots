@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/roalcantara/dots/compare/v1.4.0...v1.5.0) (2023-02-08)
+
+
+### Features
+
+* **gitpod:** Enable prebuild ([63afc2f](https://github.com/roalcantara/dots/commit/63afc2ff4f415bae0a881220f72442d48a3de201))
+
 # [1.4.0](https://github.com/roalcantara/dots/compare/v1.3.0...v1.4.0) (2023-02-08)
 
 
