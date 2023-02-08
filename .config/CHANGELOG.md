@@ -1,3 +1,10 @@
+## [1.8.2](https://github.com/roalcantara/dots/compare/v1.8.1...v1.8.2) (2023-02-08)
+
+
+### Bug Fixes
+
+* **script/setup:** Fix file bootstrapping ([e9f23c7](https://github.com/roalcantara/dots/commit/e9f23c74ed607c7492e0b89c660f544e60c2854f))
+
 ## [1.8.1](https://github.com/roalcantara/dots/compare/v1.8.0...v1.8.1) (2023-02-08)
 
 
