@@ -15,12 +15,19 @@ alias lc='ls -lcrt'
 alias lu='ls -lur'
 alias sl='l'
 
+# utilities
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
+alias egrep='egrep --color=auto --exclude-dir={.git}'
 alias count='find . -type f | wc -l'
+alias cp='nocorrect cp -R'
+alias ip='ip --color=auto'
+alias jj='java -jar'
+alias mcp='mvn clean package'
+alias mkdir='nocorrect mkdir -p'
+alias mv='nocorrect mv'
 
 # dotfiles
 # https://atlassian.com/git/tutorials/dotfiles
