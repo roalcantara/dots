@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/roalcantara/dots/compare/v1.8.0...v1.8.1) (2023-02-08)
+
+
+### Bug Fixes
+
+* **script/setup:** Bootstrap default files ([d6a0b7b](https://github.com/roalcantara/dots/commit/d6a0b7b8ee543cb8f7a15f19851a241262939793))
+
 # [1.8.0](https://github.com/roalcantara/dots/compare/v1.7.2...v1.8.0) (2023-02-08)
 
 
