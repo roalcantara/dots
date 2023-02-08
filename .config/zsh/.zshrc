@@ -34,6 +34,6 @@ alias -g Trim='sed -e '\''s/^[[:space:]]*//'\'' -e '\''s/ *$//g'\'''
 alias -g UUID='$(uuidgen | tr -d \n)'
 
 # Named Directory Hashes
+hash -d work="$HOME/Work"
 hash -d docs="$HOME/Documents"
 hash -d downloads="$HOME/Downloads"
-hash -d work="$HOME/Work"
