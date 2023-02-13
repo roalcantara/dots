@@ -1,0 +1,101 @@
+# Editor configuration, see http://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab
+indent_size = 4
+
+# see https://github.com/CppCXY/EmmyLuaCodeStyle
+[*.lua]
+indent_style = space                          # space|tab [optional]
+indent_size = 2                               # if indent_style is space, this is valid
+tab_width = 2                                 # if indent_style is tab, this is valid
+quote_style = single                          # none|single|double
+continuation_indent_size = 2                  # only support number
+end_of_line = auto                            # crlf|lf|cr|auto [optional] - if it is 'auto', in windows it is crlf other platforms are lf
+detect_end_of_line = false
+max_line_length = 120                         # this option decides when to chopdown the code (utf8 length) [optional]
+insert_final_newline = true                   # this will check text end with new line
+
+############# [function]
+# function call expression's args will align to first arg
+align_call_args = false                                   # true|false|only_after_more_indention_statement|only_not_exist_cross_row_expression [optional]
+align_function_define_params = true                       # if true, all function define params will align to first param
+call_arg_parentheses = remove                             # keep|remove|remove_table_only|remove_string_only|unambiguous_remove_string_only
+remove_expression_list_finish_comma = true
+
+############## [table]
+table_separator_style = none                              # none|comma|semicolon [optional]
+trailing_table_separator = keep                           # keep|never|always|smart [optional]
+continuous_assign_table_field_align_to_equal_sign = true  # see document for detail
+keep_one_space_between_table_and_bracket = false          # if true, format like this "local t = { 1, 2, 3 }"
+align_table_field_to_first_field = true                   # if indent_style is tab, this option is invalid
+
+############## [statement]
+align_chained_expression_statement = false
+max_continuous_line_distance = 1                          # continous line distance
+continuous_assign_statement_align_to_equal_sign = true    # see document for detail
+if_condition_align_with_each_other = false                # if statement will align like switch case
+statement_inline_comment_space = 1                        # inline comment space
+
+# if true, continuation_indent_size for local or assign statement is invalid
+# however, if the expression list has cross row expression, it will not be aligned to the first expression
+local_assign_continuation_align_to_first_expression = false
+
+############### [indentation]
+label_no_indent = false                                   # if true, the label loses its current indentation
+do_statement_no_indent = false                            # if true, there will be no indentation in the do statement
+if_condition_no_continuation_indent = false               # if true, the conditional expression of the if statement will not be a continuation line indent
+if_branch_comments_after_block_no_indent = false
+
+############### [space]
+table_append_expression_no_space = true                     # if true, t[#t+1] will not space wrapper '+'
+long_chain_expression_allow_one_space_after_colon = true
+remove_empty_header_and_footer_lines_in_function = true
+space_before_function_open_parenthesis = false
+space_inside_function_call_parentheses = false
+space_inside_function_param_list_parentheses = false
+space_before_open_square_bracket = false
+space_inside_square_brackets = false
+keep_one_space_between_namedef_and_attribute = true         # if true, ormat like this "local t <const> = 1"
+
+############### [row_layout]
+keep_line_after_if_statement = minLine:0                    # minLine:${n} | keepLine | keepLine:${n} | maxLine:${n}
+keep_line_after_do_statement = minLine:0                    # minLine:${n} | keepLine | keepLine:${n} | maxLine:${n}
+keep_line_after_while_statement = minLine:0                 # minLine:${n} | keepLine | keepLine:${n} | maxLine:${n}
+keep_line_after_repeat_statement = minLine:0                # minLine:${n} | keepLine | keepLine:${n} | maxLine:${n}
+keep_line_after_for_statement = minLine:0                   # minLine:${n} | keepLine | keepLine:${n} | maxLine:${n}
+keep_line_after_local_or_assign_statement = keepLine        # minLine:${n} | keepLine | keepLine:${n} | maxLine:${n}
+keep_line_after_function_define_statement = keepLine:1      # minLine:${n} | keepLine | keepLine:${n} | maxLine:${n}
+keep_line_after_expression_statement = keepLine             # minLine:${n} | keepLine | keepLine:${n} | maxLine:${n}
+
+############### [diagnostic]
+enable_check_codestyle = true                               # the following is code diagnostic options
+enable_name_style_check = true                              # if true, check name style [diagnostic.name_style]
+# the following is name style check rule 
+# base option off/camel_case/snake_case/upper_snake_case/pascal_case/same(filename/first_param/'<const string>', snake_case/pascal_case/camel_case)
+# all option can use '|' represent or 
+# for example:
+# snake_case | upper_snake_case
+# same(first_param, snake_case)
+# same('m')
+local_name_define_style = snake_case |  same('<const string>', upper_snake_case)
+function_param_name_style = snake_case
+function_name_define_style = snake_case
+local_function_name_define_style = snake_case
+table_field_name_define_style = snake_case
+global_variable_name_define_style = camel_case
+module_name_define_style = same('m')|same(filename, snake_case)
+require_module_name_style = same(first_param, snake_case)
+class_name_define_style = same(filename, snake_case)

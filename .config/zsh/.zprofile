@@ -5,11 +5,6 @@
 # Contains commands that should be executed only in login shells
 # http://zsh.sourceforge.net/Intro/intro_3.html
 
-# system-wide initialization
-if [[ -f ~/.profile ]]; then
-  . ~/.profile
-fi
-
 export ZSH_VERSION="$(zsh --version | cut -d ' ' -f2)"
 export ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
 export ZSH_DATA_DIR="$XDG_DATA_HOME/zsh"

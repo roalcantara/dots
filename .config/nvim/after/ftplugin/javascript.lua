@@ -1,0 +1,5 @@
+-- https://neovim.io/doc/user/api.html#nvim_create_autocmd()
+vim.api.nvim_create_autocmd('BufNewFile,BufRead', { pattern = '*.js', command = 'set filetype=javascript' })
+vim.api.nvim_create_autocmd('BufNewFile,BufRead', { pattern = '*.jsx', command = 'set filetype=javascript.jsx' })
+vim.api.nvim_create_autocmd('QuickFixCmdPost', { pattern = '[^l]*', command = 'nested cwindow' })
+vim.api.nvim_create_autocmd('QuickFixCmdPost', { pattern = 'l*', command = 'nested lwindow' })

@@ -1,0 +1,5 @@
+-- https://neovim.io/doc/user/api.html#nvim_create_autocmd()
+vim.api.nvim_create_autocmd('BufNewFile,BufRead', { pattern = '*.ts', command = 'set filetype=typescript' })
+vim.api.nvim_create_autocmd('BufNewFile,BufRead', { pattern = '*.tsx', command = 'set filetype=typescript.tsx' })
+vim.api.nvim_create_autocmd('QuickFixCmdPost', { pattern = '[^l]*', command = 'nested cwindow' })
+vim.api.nvim_create_autocmd('QuickFixCmdPost', { pattern = 'l*', command = 'nested lwindow' })
