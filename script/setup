@@ -21,6 +21,7 @@
 ##?     BRANCH=next curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash   [REMOTE] Install the `next` version
 
 declare BRANCH=${BRANCH:-'main'}
+declare TARGET=${TARGET:-"$HOME/.git"}
 declare -a FILES=(
   ~/.local/share/zsh/.zsh_history
   ~/.local/share/nvim/spell/en.utf-8.add
@@ -53,7 +54,7 @@ err() {
 }
 
 d() {
-  /usr/bin/git --git-dir="$HOME/.git" --work-tree="$HOME" "$@"
+  /usr/bin/git --git-dir="$TARGET" --work-tree="$HOME" "$@"
 }
 
 c() {
@@ -105,8 +106,8 @@ function setup() {
         c err "Installation Failed! Have you tried? => sudo softwareupdate -ia && xcode-select -p"
       fi
 
-      p "Installing dotfiles…"
-      git clone --bare https://github.com/roalcantara/dots
+      p "Installing dotfiles into $TARGET…"
+      git clone --bare https://github.com/roalcantara/dots "$TARGET"
 
       p "Checking out branch $BRANCH…";
       d checkout "$BRANCH"
