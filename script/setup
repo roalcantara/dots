@@ -136,13 +136,12 @@ function setup() {
       fi
 
       if [ -f ~/.config/nvim/plugin/packer_compiled.lua ]; then
-        rm /home/dev/.config/nvim/plugin/packer_compiled.lua
+        rm ~/.config/nvim/plugin/packer_compiled.lua
       fi
 
-      nvim --headless -c 'autocmd User PackerCompileDone quitall' -c 'PackerCompile'
-      nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
-      nvim --headless -c 'TSInstall all' -c 'TSUpdateSync' -c 'qall!'
-
+      nvim --headless -c 'autocmd User PackerCompileDone quitall' +PackerCompile
+      nvim --headless -c 'autocmd User PackerComplete sleep 100m | qall' +PackerSync
+      nvim --headless -c 'TSInstallSync! all sleep 100m | qall'
       p "Done ✔✔"
     ;;
   esac
