@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/roalcantara/dots/compare/v1.9.0...v1.9.1) (2023-02-13)
+
+
+### Bug Fixes
+
+* **script/setup:** Set dotfiles git target ([6537b50](https://github.com/roalcantara/dots/commit/6537b50c196be941a4bf74e6862815df77aec725))
+
 # [1.9.0](https://github.com/roalcantara/dots/compare/v1.8.2...v1.9.0) (2023-02-13)
 
 
