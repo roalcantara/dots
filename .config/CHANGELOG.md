@@ -1,3 +1,10 @@
+## [1.9.4](https://github.com/roalcantara/dots/compare/v1.9.3...v1.9.4) (2023-02-13)
+
+
+### Bug Fixes
+
+* **neovim:** Fix installed LSPs ([c672664](https://github.com/roalcantara/dots/commit/c6726641dd42b7686cb92e2d7aaa31b7a94f641f))
+
 ## [1.9.3](https://github.com/roalcantara/dots/compare/v1.9.2...v1.9.3) (2023-02-13)
 
 
