@@ -10,7 +10,6 @@ local lsp_enabled = {
   'kotlin_language_server',
   'lemminx',
   'rnix',
-  'lua_ls',
   'tsserver',
   'taplo',
   'vimls',

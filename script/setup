@@ -141,7 +141,9 @@ function setup() {
 
       nvim --headless -c 'autocmd User PackerCompileDone quitall' +PackerCompile
       nvim --headless -c 'autocmd User PackerComplete sleep 100m | qall' +PackerSync
+      nvim --headless -c 'TSUpdate sleep 100m | qall'
       nvim --headless -c 'TSInstallSync! all sleep 100m | qall'
+      nvim --headless -c "LspInstall --sync angularls bashls cssls dockerls efm gopls gradle_ls graphql html jsonls kotlin_language_server lemminx lua_ls rnix rust_analyzer sumneko_lua taplo tsserver vimls yamlls zk" +qall
       p "Done ✔✔"
     ;;
   esac
