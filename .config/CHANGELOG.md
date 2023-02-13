@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/roalcantara/dots/compare/v1.8.2...v1.9.0) (2023-02-13)
+
+
+### Features
+
+* **neovim:** Add nvim ([bf360c6](https://github.com/roalcantara/dots/commit/bf360c656d883e7d41647179bd3a9de595535db3))
+
 ## [1.8.2](https://github.com/roalcantara/dots/compare/v1.8.1...v1.8.2) (2023-02-08)
 
 
