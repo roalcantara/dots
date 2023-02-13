@@ -128,6 +128,21 @@ function setup() {
           mkfile "$f"
         fi
       done
+
+      if [ -d ~/.local/share/nvim/site/pack/packer/start/packer.nvim ]; then
+        p "Packer already installed"
+      else
+        git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+      fi
+
+      if [ -f ~/.config/nvim/plugin/packer_compiled.lua ]; then
+        rm /home/dev/.config/nvim/plugin/packer_compiled.lua
+      fi
+
+      nvim --headless -c 'autocmd User PackerCompileDone quitall' -c 'PackerCompile'
+      nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+      nvim --headless -c 'TSInstall all' -c 'TSUpdateSync' -c 'qall!'
+
       p "Done ✔✔"
     ;;
   esac

@@ -226,7 +226,6 @@ return require('neo/etc/pkg')({
   'editorconfig/editorconfig-vim',
   'norcalli/nvim-colorizer.lua',
   'vijaymarupudi/nvim-fzf',
-  'wakatime/vim-wakatime',
   'zimbatm/direnv.vim',
   'fladson/vim-kitty',
   'lnl7/vim-nix',
