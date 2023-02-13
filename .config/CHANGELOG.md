@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/roalcantara/dots/compare/v1.9.1...v1.9.2) (2023-02-13)
+
+
+### Bug Fixes
+
+* **neovim:** Add zig dependency ([ff8a88d](https://github.com/roalcantara/dots/commit/ff8a88d2ee7126db546ce36e113bad49d7d9740d))
+
 ## [1.9.1](https://github.com/roalcantara/dots/compare/v1.9.0...v1.9.1) (2023-02-13)
 
 
