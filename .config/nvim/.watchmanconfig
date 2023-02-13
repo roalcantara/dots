@@ -1,0 +1,7 @@
+{
+  "root_files": [".watchmanconfig"],
+  "ignore_vcs": [".git", ".hg", ".svn"],
+  "ignore_dirs": ["lua"],
+  "fsevents_try_resync": true,
+  "prefer_split_fsevents_watcher": true
+}

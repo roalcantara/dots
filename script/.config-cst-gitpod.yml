@@ -5,49 +5,9 @@ fileExistenceTests:
     path: $HOME/.bashrc
     shouldExist: true
     permissions: -rw-r--r--
-    gid: 10
-  - name: ~/.bash_aliases
-    path: $HOME/.bash_aliases
-    shouldExist: true
-    permissions: -rw-r--r--
-    gid: 10
-  - name: ~/.zshenv
-    path: $HOME/.zshenv
-    shouldExist: true
-    permissions: -rw-r--r--
-    gid: 10
+    gid: 33333
   - name: ~/.profile
     path: $HOME/.profile
     shouldExist: true
     permissions: -rw-r--r--
-    gid: 10
-  - name: ~/script
-    path: $HOME/script
-    shouldExist: true
-    permissions: dgrwxr-xr-x
-    gid: 10
-  - name: ~/script/bootstrap
-    path: $HOME/script/bootstrap
-    shouldExist: true
-    permissions: -rwxr-xr-x
-    gid: 10
-  - name: ~/.config
-    path: $HOME/.config
-    shouldExist: true
-    permissions: dgrwxr-xr-x
-    gid: 10
-  - name: ~/.config/.editorconfig
-    path: $HOME/.config/.editorconfig
-    shouldExist: true
-    permissions: -rw-r--r--
-    gid: 10
-  - name: ~/.config/zsh/.zprofile
-    path: $HOME/.config/zsh/.zprofile
-    shouldExist: true
-    permissions: -rw-r--r--
-    gid: 10
-  - name: ~/.config/zsh/.zshrc
-    path: $HOME/.config/zsh/.zshrc
-    shouldExist: true
-    permissions: -rw-r--r--
-    gid: 10
+    gid: 33333

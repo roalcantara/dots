@@ -1,0 +1,26 @@
+#! /usr/bin/lua
+return {
+  _all = {
+    coverage = false,
+    STATEMENT = true,
+    helper = './specs/tools/spec_helper',
+    output = 'utfTerminal',
+    lpath = table.concat(
+      {
+        '/Users/roalcantara/.local/share/luarocks/lib/luarocks/rocks-5.1/./lua/?.lua',
+        '/Users/roalcantara/.local/share/luarocks/lib/luarocks/rocks-5.1/./?/init.lua',
+        './lua/?.lua',
+        './?.lua',
+        './?/init.lua',
+        'specs/?.lua',
+        'specs/?/init.lua',
+        'lua/?.lua',
+        'lua/?/init.lua',
+        package.path
+      }, ';')
+  },
+  default = {
+    verbose = true,
+    ROOT = { 'specs/unit' },
+  }
+}
