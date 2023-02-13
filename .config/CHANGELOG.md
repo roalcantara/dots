@@ -1,3 +1,10 @@
+## [1.9.3](https://github.com/roalcantara/dots/compare/v1.9.2...v1.9.3) (2023-02-13)
+
+
+### Bug Fixes
+
+* **neovim:** Fix lsp enabled ([a764a4b](https://github.com/roalcantara/dots/commit/a764a4b478c96c99fb5deaaeb91e140d9d01509d))
+
 ## [1.9.2](https://github.com/roalcantara/dots/compare/v1.9.1...v1.9.2) (2023-02-13)
 
 
