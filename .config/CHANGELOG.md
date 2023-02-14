@@ -1,3 +1,10 @@
+## [1.9.5](https://github.com/roalcantara/dots/compare/v1.9.4...v1.9.5) (2023-02-14)
+
+
+### Bug Fixes
+
+* **script/setup:** Fix neovim install ([4176936](https://github.com/roalcantara/dots/commit/4176936c8209863a970477400f9d5d68c2ad2f29))
+
 ## [1.9.4](https://github.com/roalcantara/dots/compare/v1.9.3...v1.9.4) (2023-02-13)
 
 
