@@ -1,20 +1,8 @@
 lsp_enabled = {
-  'angularls',
-  'bashls',
-  'cssls',
-  'dockerls',
   'gradle_ls',
   'graphql',
-  'html',
-  'jsonls',
-  'kotlin_language_server',
-  'lemminx',
-  'rnix',
-  'tsserver',
   'taplo',
-  'vimls',
-  'yamlls',
-  'zk'
+  'vimls'
 }
 
 -- A file explorer tree for neovim written in lua

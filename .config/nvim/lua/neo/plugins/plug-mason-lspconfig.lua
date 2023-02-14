@@ -1,20 +1,8 @@
 local lsp_enabled = {
-  'angularls',
-  'bashls',
-  'cssls',
-  'dockerls',
   'gradle_ls',
   'graphql',
-  'html',
-  'jsonls',
-  'kotlin_language_server',
-  'lemminx',
-  'rnix',
-  'tsserver',
   'taplo',
-  'vimls',
-  'yamlls',
-  'zk'
+  'vimls'
 }
 return require('neo/lib/functions/imports')('mason-lspconfig', function(plugin)
   return plugin.setup({
