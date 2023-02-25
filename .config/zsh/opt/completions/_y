@@ -1,0 +1,2 @@
+#compdef y
+compdef y=yarn
