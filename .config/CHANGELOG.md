@@ -1,3 +1,10 @@
+## [1.10.2](https://github.com/roalcantara/dots/compare/v1.10.1...v1.10.2) (2023-02-25)
+
+
+### Bug Fixes
+
+* **ci:** Fix Dockerfile ([5dc8b1f](https://github.com/roalcantara/dots/commit/5dc8b1f188175ddf6c1c8e620aa4ac5363d50558))
+
 ## [1.10.1](https://github.com/roalcantara/dots/compare/v1.10.0...v1.10.1) (2023-02-25)
 
 
