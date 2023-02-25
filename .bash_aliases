@@ -28,6 +28,7 @@ alias jj='java -jar'
 alias mcp='mvn clean package'
 alias mkdir='nocorrect mkdir -p'
 alias mv='nocorrect mv'
+alias envs='env | sort | uniq | bat -l log'
 
 # dotfiles
 # https://atlassian.com/git/tutorials/dotfiles

@@ -13,7 +13,7 @@ Configuration files
 - Download to `~/.dots`
 
   ```sh
-  curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/script/setup | bash
+  curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/.config/bin/setup | bash
   ```
 
   >💡 **NOTE:** If **macOS**, the script updates the system and installs [Xcode Command Line Tools][9] - which includes `git` and `make`. Roughly something like [this][10]..
@@ -37,7 +37,7 @@ Configuration files
 - Create alias `d` to interact with the repository - instead of the regular `git`
 
     ```sh
-    alias d='/usr/bin/git --git-dir=$HOME/.dots/ --work-tree=$HOME'
+    alias d='/usr/bin/git --git-dir=$HOME/.git/ --work-tree=$HOME'
     ```
 
 - Checkout the actual content from the bare repository to `$HOME`

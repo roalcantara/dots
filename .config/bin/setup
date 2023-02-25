@@ -1,0 +1,207 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash disable=SC2155,SC2181
+
+#? setup 0.1.0
+#? License RIT (Robot Institute of Technology)
+#? This is free software: you are free to change and redistribute it.
+#? There is NO WARRANTY, to the extent permitted by law.
+
+declare BRANCH=${BRANCH:-'main'}
+declare TARGET=${TARGET:-"$HOME/.git"}
+declare MAKEFILE=${MAKEFILE:-"$HOME/.config/Makefile"}
+
+##? Returns 0 if a given value is executable, 1 otherwise
+##?
+##? Usage:
+##?      is_executable <NAME>
+##?
+##? Options:
+##?     NAME            Executable name
+##?
+##? Examples:
+##?     if is_executable "git"; then
+##?       echo 'Dattebayo!'
+##?     else
+##?       echo 'ops!'
+##?     fi
+is_executable() {
+  type "$1" > /dev/null 2>&1
+}
+
+##? Returns 0 if OSTYPE is darwin, 1 otherwise
+##?
+##? Usage:
+##?      is_darwin
+##?
+##? Examples:
+##?     if is_darwin; then
+##?       echo 'Dattebayo!'
+##?     else
+##?       echo 'ops!'
+##?     fi
+is_darwin() {
+  [[ "$OSTYPE" == *darwin* ]]
+}
+
+##? Returns 0 if OSTYPE is alpine (linux-musl), 1 otherwise
+##?
+##? Usage:
+##?      is_alpine
+##?
+##? Examples:
+##?     if is_alpine; then
+##?       echo 'Dattebayo!'
+##?     else
+##?       echo 'ops!'
+##?     fi
+is_alpine() {
+  [[ "$OSTYPE" == *linux-musl* ]]
+}
+
+##? Formats and prints a messsge
+##?
+##? Usage:
+##?      puts <MESSAGE>
+##?
+##? Options:
+##?     <MESSAGE>             Message to be printed out
+##?
+##? Examples:
+##?     puts 'Dattebayo!'
+puts() {
+  printf "%80s\n" ' ' | tr ' ' -
+  printf "%s\n" "$1"
+}
+
+##? Formats and prints info messsge
+##?
+##? Usage:
+##?      info <SCOPE> <MESSAGE>
+##?
+##? Options:
+##?     <SCOPE>               Message scope
+##?     <MESSAGE>             Message to be printed out
+##?
+##? Examples:
+##?     info 'Ninja' 'Naruto'
+##?     info 'Ninja' 'Sasuke'
+info() {
+  puts "[SETUP $1] $2…"
+}
+
+##? Formats and prints error messsge and exits
+##?
+##? Usage:
+##?      err <SCOPE> <MESSAGE>
+##?
+##? Options:
+##?     <SCOPE>               Message scope
+##?     <MESSAGE>             Message to be printed out
+##?
+##? Examples:
+##?     err 'Ninja' 'Naruto'
+##?     err 'Ninja' 'Sasuke'
+err() {
+  puts "🚫 ERROR [SETUP $1]: $2" >&2
+  exit 1
+}
+
+##? Use Bare Git Repository instead of the regular git command
+##? https://www.atlassian.com/git/tutorials/dotfiles
+##?
+##? Usage:
+##?      dots [git options]
+##?
+##? Examples:
+##?     dots status
+##?     dots pull
+dots() {
+  /usr/bin/git --git-dir="$TARGET" --work-tree="$HOME" "$@"
+}
+
+##? Ensure all dependencies for the rest of the build and install process are available
+##?
+##? Usage:
+##?      configure
+configure() {
+  if is_darwin; then
+    # https://developer.apple.com/forums/thread/698954
+    info "CONFIGURE > Command Line Tools for Xcode" "Checking installation"
+    xcode-select -p &> /dev/null
+    if [ $? -ne 0 ]; then
+      info "CONFIGURE > Command Line Tools for Xcode" "Not found! Installing from softwareupdate"
+      # This temporary file prompts the 'softwareupdate' utility to list the Command Line Tools
+      touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
+      PROD=$(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
+      softwareupdate -ia "$PROD" --verbose;
+    fi
+  elif is_alpine; then
+    info "CONFIGURE > Alpine" "Installing dependencies"
+    apk -U --no-cache add sudo curl make bash git
+  else
+    info "CONFIGURE > Debian" "Installing dependencies"
+    sudo apt-get update \
+      && sudo apt-get install --no-install-recommends -y sudo ca-certificates build-essential curl make bash git \
+      && sudo update-ca-certificates
+  fi
+}
+
+##? Checks out dotfiles
+##?
+##? Usage:
+##?      checkout
+checkout() {
+  if ! is_executable "git"; then
+    err "CONFIGURE > Dots" "Git could not be found!"
+  elif ! [ -d "$TARGET" ]; then
+    info "CONFIGURE > Dots" "Installing dotfiles into '$TARGET'"
+    git clone --bare https://github.com/roalcantara/dots "$TARGET"
+
+    info "CONFIGURE > Dots" "Checking out branch $BRANCH";
+    dots checkout "$BRANCH"
+
+    if [ $? -ne 0 ]; then
+      info "CONFIGURE > Dots" "Backing up pre-existing dotfiles into '~/.config.bak'";
+      mkdir -p ~/.config.bak
+      dots checkout 2>&1 | grep -E '\s+\.' | awk '{ print $1 }' | xargs -I{} mv {} ~/.config.bak/{}
+
+      info "CONFIGURE > Dots" "Checking out branch '$BRANCH'";
+      dots checkout "$BRANCH"
+    fi;
+    dots config status.showUntrackedFiles no
+  fi
+}
+
+##? Install dotfiles, libraries, docs and etc.
+##?
+##? Usage:
+##?      install
+install() {
+  if ! is_executable "make"; then
+    err "INSTALL" "Make could not be found!"
+  fi
+
+  if ! [ -f "$MAKEFILE" ]; then
+    err "INSTALL" "'$MAKEFILE' could not be found!"
+  fi
+
+  info "INSTALL" "Running 'make install -f $MAKEFILE'"
+  make install -f "$MAKEFILE"
+}
+
+##? Setup Dotfiles
+##?
+##? Usage:
+##?      setup [ options ]
+##?
+##? Examples:
+##?     ./setup                                                                                               [LOCAL] Install the stable version
+##?     curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/.config/bin/setup | bash                [REMOTE] Install the stable version
+##?     BRANCH=next curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/.config/bin/setup | bash    [REMOTE] Install the `next` version
+function setup() {
+  configure
+  checkout
+  install
+}
+
+setup "$@"
