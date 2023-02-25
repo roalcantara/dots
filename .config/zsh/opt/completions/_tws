@@ -1,0 +1,2 @@
+#compdef tws
+compdef tws=task

@@ -10,8 +10,14 @@ if [[ -f ~/.profile ]]; then
   . ~/.profile
 fi
 
-# ZSH https://wiki.archlinux.org/index.php/XDG_Base_Directory {
-  export ZDOTDIR=~/.config/zsh
+# ZSH {
+  export ZDOTDIR=$XDG_CONFIG_HOME/zsh
+  export ZSH_DATA_DIR=$XDG_DATA_HOME/zsh
+  export ZSH_CACHE_DIR=$XDG_CACHE_HOME/zsh
+  export ZSH_COMPCACHE=$ZSH_CACHE_DIR/compcache
+  export ZSH_COMPDUMP=$ZSH_COMPCACHE/.zcompdump
+  export HISTFILE=$ZSH_DATA_DIR/.zsh_history
+  export SHELL=/usr/local/bin/zsh
 # }
 
 # Only source this once
@@ -22,7 +28,7 @@ fi
 
 # on interactive login shell
 if [[ "$SHLVL" -eq 1 && ! -o LOGIN ]]; then
-  if [ -f ~/.config/zsh/.zprofile ]; then
-    . ~/.config/zsh/.zprofile
+  if [ -f $ZDOTDIR/.zprofile ]; then
+    . $ZDOTDIR/.zprofile
   fi
 fi

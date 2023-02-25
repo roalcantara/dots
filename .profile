@@ -1,4 +1,4 @@
-# shellcheck shell=bash disable=SC1090
+# shellcheck shell=bash disable=SC1090,SC2155
 # https://gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Bash-Startup-Files
 
 # ~/.profile: executed by the command interpreter for login shells.
@@ -14,8 +14,9 @@
 export HISTSIZE=1000
 export HISTFILESIZE=2000
 
-# XDG USER DIRECTORIES https://wiki.archlinux.org/index.php/XDG_Base_Directory {
+# XDG USER DIRECTORIES {
   # Where user-specific configurations should be written
+  # https://wiki.archlinux.org/index.php/XDG_Base_Directory
   export XDG_CONFIG_HOME=~/.config # (analogous to /etc)
   # Where user-specific non-essential (cached) data should be written
   export XDG_CACHE_HOME=~/.cache # (analogous to /var/cache)
@@ -25,17 +26,46 @@ export HISTFILESIZE=2000
   export XDG_STATE_HOME=~/.local/state # (analogous to /var/lib).
 # }
 
-# TASKWARRIOR {
-  # Highly flexible command-line tool to manage TODO lists
-  # https://taskwarrior.org/
-  export TASK_WARRIOR_HOME=$XDG_CONFIG_HOME/tasks
-  export TASKOPENRC=$TASK_WARRIOR_HOME/taskopenrc
-  export TASKRC=$TASK_WARRIOR_HOME/taskrc
-  export TASKDATA=$XDG_DATA_HOME/tasks/data
+# WAKATIME {
+  # WakaTime command line interface
+  # https://github.com/wakatime/wakatime#wakatime  
+  export WAKATIME_HOME=$XDG_CONFIG_HOME/wakatime
 # }
 
-# WAKATIME {
-  export WAKATIME_HOME=$XDG_CONFIG_HOME/wakatime
+# NVIM {
+  # +BundleInstall +qall, Install all vim bundles
+  # https://superuser.com/a/874924/389767
+  if command -v nvim >/dev/null; then
+    export EDITOR=$(which nvim)
+    export VIM_PATH=$XDG_CONFIG_HOME/nvim
+    export MYVIMRC=$VIM_PATH/init.lua
+    export NVIM_LOG_FILE=$XDG_CACHE_HOME/nvim/.nvimlog
+  else
+    export EDITOR=$(command -v vim || command -v vi)
+  fi
+  alias vi='$EDITOR'
+  alias vim='$EDITOR'
+# }
+
+# TERMINAL {
+  if command -v kitty >/dev/null; then
+    export KITTY_CONFIG_DIRECTORY=$XDG_CONFIG_HOME/kitty
+    if [ -f /Applications/kitty.app/Contents/MacOS/kitty ]; then
+      export TERMINAL=/Applications/kitty.app/Contents/MacOS/kitty
+    elif [ -f /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal ]; then
+      export TERMINAL=/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
+    fi
+  fi
+# }
+
+# GNUPG {
+  # The GNU Privacy Guard
+  # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration.html
+  if command -v gpg >/dev/null; then
+    # needed for git PGP-signed commits
+    # also needed for sops
+    export GPG_TTY=$(tty)
+  fi
 # }
 
 # if running bash
@@ -70,19 +100,31 @@ if [ -f ~/.bash_aliases ]; then
   . ~/.bash_aliases
 fi
 
-# set PATH so it includes user's private bin if it exists
-if [ -d ~/.bin ]; then
-  export PATH=~/.bin:$PATH
-fi
+# PATH {
+  export -a path=(
+    # set PATH so it includes user's private bin if it exists
+    "${XDG_CONFIG_HOME}"/bin
+    /usr/local/{bin,sbin}
+    "${path[@]}"
+  )
+# }
 
-# set PATH so it includes user's private bin if it exists
-if [ -d ~/.local/bin ] ; then
-  export PATH=~/.local/bin:$PATH
-fi
+# FPATH {
+  export -a fpath=(
+    "${fpath[@]}"
+  )
+# }
 
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-  if [ -r ~/.dircolors ]; then
-    eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-  fi
-fi
+# CDPATH {
+  export -a cdpath=(
+    "${HOME}"
+    "${XDG_CONFIG_HOME}"
+    "${cdpath[@]}"
+  )
+# }
+
+# MANPATH {
+  export -a manpath=(
+    "${manpath[@]}"
+  )
+# }

@@ -10,30 +10,22 @@
 # Use viins keymap as the default.
 bindkey -v
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-if [ -f ~/.bash_aliases ]; then
-  . ~/.bash_aliases
+# ZSH profilling and tracing
+[ -n "$z_prof" ] && zmodload zsh/zprof;
+if [[ -n "$z_trace" || -n "$z_xtrace" ]]; then
+  if [ -n "$z_xtrace" ]; then
+    zmodload zsh/datetime
+    setopt PROMPT_SUBST
+    PS4='$EPOCHREALTIME#%N:%i => '
+  fi
+  setopt XTRACE
 fi
 
-# ZSH global aliases
-# which are substituted anywhere on a line.
-# It can be used to abbreviate frequently-typed usernames, hostnames, etc.
-alias -g Chop='sed '\''s/.$//'\'''
-alias -g G='| grep'
-alias -g H='| head'
-alias -g Inline='tr '\''\n'\'' '\'' '\'''
-alias -g L='| less'
-alias -g LTrim='sed -e '\''s/^[[:space:]]*//'\'''
-alias -g M='| more'
-alias -g RTrim='sed -e '\''s/ *$//g'\'''
-alias -g T='| tail'
-alias -g Trim='sed -e '\''s/^[[:space:]]*//'\'' -e '\''s/ *$//g'\'''
-alias -g UUID='$(uuidgen | tr -d \n)'
+for f in ${XDG_CONFIG_HOME:-$HOME/.config}/{.login,zsh/etc/**/*.zsh(N)}; do
+    source $f;
+done
 
-# Named Directory Hashes
-hash -d work="$HOME/Work"
-hash -d docs="$HOME/Documents"
-hash -d downloads="$HOME/Downloads"
+[ -n "$z_prof" ] && zprof;
+if [[ -n "$z_trace" || -n "$z_xtrace" ]]; then
+  unsetopt XTRACE
+fi

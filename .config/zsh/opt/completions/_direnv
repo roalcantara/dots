@@ -1,0 +1,31 @@
+#compdef _direnv direnv
+# shellcheck shell=bash
+
+# setopt -eu
+
+function _direnv {
+# https://gist.github.com/h14i/9183369
+local direnv
+local -a comp_list
+
+# shellcheck disable=SC2034
+direnv="\
+allow[Grants direnv to load the given .envrc]
+deny[Revokes the authorization of a given .envrc]
+edit[Opens PATH_TO_RC or the current .envrc into an \$EDITOR and allow the file to be loaded afterwards.]
+exec[Executes a command after loading the first .envrc found in DIR]
+fetchurl[Fetches a given URL into direnvs CAS]
+help[shows this help]
+hook[Used to setup the shell hook]
+prune[removes old allowed files]
+reload[triggers an env reload]
+status[prints some debug status information]
+stdlib[Displays the stdlib available in the .envrc execution context]
+version[prints the version (2.31.0) or checks that direnv is older than VERSION_AT_LEAST]"
+
+# shellcheck disable=SC2206
+comp_list=( ${(f)direnv} )
+_values 'direnv subcmds' "${comp_list[@]}"
+}
+
+_direnv "$@"
