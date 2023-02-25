@@ -86,7 +86,7 @@ puts() {
 ##?     info 'Ninja' 'Naruto'
 ##?     info 'Ninja' 'Sasuke'
 info() {
-  puts "[SETUP $1] $2…"
+  puts "$OSTYPE [SETUP $1] $2…"
 }
 
 ##? Formats and prints error messsge and exits
@@ -102,7 +102,7 @@ info() {
 ##?     err 'Ninja' 'Naruto'
 ##?     err 'Ninja' 'Sasuke'
 err() {
-  puts "🚫 ERROR [SETUP $1]: $2" >&2
+  puts "🚫 ERROR $OSTYPE [SETUP $1]: $2" >&2
   exit 1
 }
 
@@ -185,8 +185,9 @@ install() {
     err "INSTALL" "'$MAKEFILE' could not be found!"
   fi
 
-  info "INSTALL" "Running 'make install -f $MAKEFILE'"
-  make install -f "$MAKEFILE"
+
+  info "INSTALL" "Running 'make install BRANCH=$BRANCH OS_NAME=$OSTYPE -f $MAKEFILE'"
+  make install BRANCH="$BRANCH" OS_NAME="$OSTYPE" -f "$MAKEFILE"
 }
 
 ##? Setup Dotfiles

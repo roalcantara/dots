@@ -5,16 +5,16 @@ override DOTS_REPO 			:= https://github.com/roalcantara/dots
 override DOTS_TARGET 		:= $(HOME)/.git
 override XDG_CONFIG_HOME 	:= $(HOME)/.config
 override XDG_CONFIG_BAK 	:= $(HOME)/.config.bak
+override OS_NAME            := $(shell uname -s | tr '[:upper:]' '[:lower:]')
 
 SHELL 						= /bin/bash
 DOTS 	 					= $(/usr/bin/git --git-dir="$(DOTS_TARGET)" --work-tree="$(HOME)")
 BACKUP 						= $(mkdir -p $(XDG_CONFIG_BAK) && $(DOTS) checkout 2>&1 | grep -E '\s+\.' | awk '{ print $1 }' | xargs -I{} mv {} $(XDG_CONFIG_BAK)/{})
 SOFTWARE_UPDATE 			= $(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
 
-is_darwin 					:= $(filter $(OSTYPE),darwin)
-is_debian 					:= $(filter $(OSTYPE),linux-gnu)
-is_alpine 					:= $(filter $(OSTYPE),linux-musl)
-OS   						:= $(if $(is_darwin), darwin, $(if $(is_debian), debian, alpine))
+is_darwin 					:= $(filter $(OS_NAME),darwin)
+is_debian 					:= $(filter $(OS_NAME),linux)
+OS   						:= $(if $(is_darwin),darwin,$(if $(is_debian),debian,alpine))
 
 .PHONY: default
 default:
@@ -28,9 +28,17 @@ all: ## List all available tasks
 help: ## (Fuzzy) Display available tasks
 	@make -s all | fzf --cycle | cut -d ' ' -f1 | xargs -r make
 
+.PHONY: puts
+puts: ## Echo environment variables
+	$(info "OSTYPE => '$(OSTYPE)' ✔")
+	$(info "OS_NAME => '$(OS_NAME)' ✔")
+	$(info "is_darwin => '$(is_darwin)' ✔")
+	$(info "is_debian => '$(is_debian)' ✔")
+	@echo "OS => '$(OS)' ✔"
+
 .PHONY: install
-install: configure/$(OS) $(XDG_CONFIG_HOME) ## Install Dotfiles
-	$(info "[install] ✔✔")
+install: puts configure/$(OS) $(XDG_CONFIG_HOME) ## Install Dotfiles
+	$(info "[$(OS)][install] ✔✔")
 
 .PHONY: docker/build
 docker/build: ## Buld Dockerfile
@@ -46,7 +54,7 @@ docker/serve: ## Run Docker Container roalcantara/dots (mounting $(HOME)/.config
 
 .PHONY: configure/debian
 configure/debian: ## Ensure required dependencies
-	$(info "[configure/debian] Ensuring required dependencies..")
+	$(info "[$(OS)][configure/debian] Ensuring required dependencies..")
 	sudo apt-get update
 	sudo apt-get install --no-install-recommends -y sudo ca-certificates build-essential curl make bash git
 	sudo update-ca-certificates
@@ -58,7 +66,7 @@ configure/alpine: ## Ensure required dependencies
 
 .PHONY: configure/darwin
 configure/darwin: configure/darwin/xcode_tools ## Configure darwin defaults
-	$(info "[configure/darwin] Configuring darwin..")
+	$(info "[$(OS)][configure/darwin] Configuring darwin..")
 	defaults write -g ApplePressAndHoldEnabled -bool false
 	defaults write -g InitialKeyRepeat -int 10
 	defaults write -g KeyRepeat -int 1
@@ -73,17 +81,17 @@ configure/darwin: configure/darwin/xcode_tools ## Configure darwin defaults
 .PHONY: configure/darwin/xcode_tools
 configure/darwin/xcode_tools: ## Ensure Command Line Tools for Xcode is installed (https://developer.apple.com/forums/thread/698954)
 ifeq ($(shell command -v xcode-select),)
-	$(info "[configure/darwin/xcode_tools] Command Line Tools for Xcode Not found! Installing from softwareupdate..")
+	$(info "[$(OS)][configure/darwin/xcode_tools] Command Line Tools for Xcode Not found! Installing from softwareupdate..")
 	# This temporary file prompts the 'softwareupdate' utility to list the Command Line Tools
 	touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
 	softwareupdate -ia "$(SOFTWARE_UPDATE)" --verbose;
 endif
 
 $(DOTS_TARGET):
-	$(info "[Dots] Cloning '$(DOTS_REPO)'..")
+	$(info "[$(OS)][Dots] Cloning '$(DOTS_REPO)'..")
 	git clone --bare $(DOTS_REPO) $@
 
 $(XDG_CONFIG_HOME): | $(DOTS_TARGET)
-	$(info "[Dots] Checking out branch '$(BRANCH)'..")
+	$(info "[$(OS)][Dots] Checking out branch '$(BRANCH)'..")
 	$(if $(DOTS) checkout "$(BRANCH)" && test $? -ne 0 ) $(and $(BACKUP) && $(DOTS) checkout "$(BRANCH)")
 	$(DOTS) config status.showUntrackedFiles no
