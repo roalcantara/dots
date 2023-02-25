@@ -1,3 +1,15 @@
+# [1.10.0](https://github.com/roalcantara/dots/compare/v1.9.5...v1.10.0) (2023-02-25)
+
+
+### Bug Fixes
+
+* **docker:** Fix setup ([7f93a1d](https://github.com/roalcantara/dots/commit/7f93a1dd8a03ad17a2453646889fb5c9855f6a55))
+
+
+### Features
+
+* **zsh:** Add aliases and completions ([b74145e](https://github.com/roalcantara/dots/commit/b74145e97435d270460f589c88828d86cdd81ff9))
+
 ## [1.9.5](https://github.com/roalcantara/dots/compare/v1.9.4...v1.9.5) (2023-02-14)
 
 
