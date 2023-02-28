@@ -6,7 +6,7 @@
 # http://zsh.sourceforge.net/Intro/intro_3.html
 
 # system-wide initialization
-if [[ -f ~/.profile ]]; then
+if [[ -e ~/.profile ]]; then
   . ~/.profile
 fi
 
