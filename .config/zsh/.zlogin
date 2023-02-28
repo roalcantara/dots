@@ -13,5 +13,5 @@ function extract_completions_and_compile() {
 
 if [ -z "$z_prof" ]; then
   # run in the background to not affect the current session
-  extract_completions_and_compile &>/dev/null 2>&1
+  extract_completions_and_compile &> /dev/null 2>&1
 fi

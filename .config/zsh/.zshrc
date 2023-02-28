@@ -10,7 +10,12 @@
 # Use viins keymap as the default.
 bindkey -v
 
-# ZSH profilling and tracing
+# profilling:
+#   z_prof=1 "$SHELL" -ilc exit
+#   z_prof=1; for _ in $(seq 1 10); do /usr/bin/time "${SHELL}" -ilc exit; done
+# tracing
+#   z_prof=1 z_trace=1 "$SHELL" -ilc exit
+#   z_prof=1 z_trace=1 z_bug=1 "$SHELL" -ilc exit
 [ -n "$z_prof" ] && zmodload zsh/zprof;
 if [[ -n "$z_trace" || -n "$z_xtrace" ]]; then
   if [ -n "$z_xtrace" ]; then
@@ -21,8 +26,8 @@ if [[ -n "$z_trace" || -n "$z_xtrace" ]]; then
   setopt XTRACE
 fi
 
-for f in ${XDG_CONFIG_HOME:-$HOME/.config}/{.login,zsh/etc/**/*.zsh(N)}; do
-    source $f;
+for f in ${XDG_CONFIG_HOME:-$HOME/.config}/{zsh/opt/include/*.zsh(N),.login}; do
+  source $f;
 done
 
 [ -n "$z_prof" ] && zprof;

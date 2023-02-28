@@ -1,6 +1,6 @@
 # # ZSH OPTIONS
   # CHANGING DIRECTORIES OPTIONS {
-    # http://zsh.sourceforge.net/Doc/Release/Options.html#Changing-Directories
+    # http://zsh.sourceforge.io/Doc/Release/Options.html#Changing-Directories
     setopt AUTO_CD           # If a command is issued that can’t be executed as a normal command, and the command is the name of a directory, perform the cd command to that directory. This option is only applicable if the option SHIN_STDIN is set, i.e. if commands are being read from standard input. The option is designed for interactive use; it is recommended that cd be used explicitly in scripts to avoid ambiguity.
     setopt AUTO_PUSHD        # Make cd push the old directory onto the directory stack.
     setopt CHASE_LINKS       # Resolve symbolic links to their true values when changing directory. This also has the effect of CHASE_DOTS, i.e. a ‘..’ path segment will be treated as referring to the physical parent, even if the preceding path segment is a symbolic link.
@@ -12,14 +12,14 @@
     # https://www.notion.so/zrcsh-de5aadec10644fe88cb5a6d51b9bf202
     # https://github.com/zsh-users/zsh/blob/master/Functions/Chpwd/cdr
     zstyle ':chpwd:' recent-dirs-default true
-    zstyle ':chpwd:' recent-dirs-file "${ZDOT[recent_dirs_file]}"
-    zstyle ':chpwd:' recent-dirs-max "${ZDOT[recent_dirs_max]}"
+    zstyle ':chpwd:' recent-dirs-file $ZSH_CACHE_DIR/chpwd-recent-dirs
+    zstyle ':chpwd:' recent-dirs-max 100
     zstyle ':chpwd:*' recent-dirs-pushd true
     zstyle ':completion:*' recent-dirs-insert both
   # }
 
   # EXPANSION-AND-GLOBBING {
-    # http://zsh.sourceforge.net/Doc/Release/Options.html#Expansion-and-Globbing
+    # http://zsh.sourceforge.io/Doc/Release/Options.html#Expansion-and-Globbing
     setopt    BAD_PATTERN                                           # If a pattern for filename generation is badly formed, print an error message. (If this option is unset, the pattern will be left unchanged.)
     setopt    NOMATCH                                               # If a pattern for filename generation has no matches, print an error, instead of leaving it unchanged in the argument list. This also applies to file expansion of an initial ‘~’ or ‘=’.
     setopt    GLOB_DOTS                                             # DO NOT require a leading ‘.’ in a filename to be matched explicitly.
@@ -31,7 +31,7 @@
   # }
 
   # HISTORY {
-    # http://zsh.sourceforge.net/Doc/Release/Options.html#History
+    # http://zsh.sourceforge.io/Doc/Release/Options.html#History
     setopt    APPEND_HISTORY                          # If this is set, zsh sessions will append their history list to the history file, rather than replace it. Thus, multiple parallel zsh sessions will all have the new entries from their history lists added to the history file, in the order that they exit. The file will still be periodically re-written to trim it when the number of lines grows 20% beyond the value specified by $SAVEHIST (see also the HIST_SAVE_BY_COPY option).
     setopt    EXTENDED_HISTORY                        # Save each command’s beginning timestamp (in seconds since the epoch) and the duration (in seconds) to the history file.
     setopt    HIST_EXPIRE_DUPS_FIRST                  # Expire A Duplicate Event First When Trimming History.
@@ -47,7 +47,7 @@
   # }
 
   # INPUT OUTPUT {
-    # http://zsh.sourceforge.net/Doc/Release/Options.html#Input_002fOutput
+    # http://zsh.sourceforge.io/Doc/Release/Options.html#Input_002fOutput
     setopt    ALIASES                                 # Expand aliases.
     setopt    CLOBBER                                 # Allows ‘>’ redirection to truncate existing files. Otherwise ‘>!’ or ‘>|’ must be used to truncate a file.
     setopt    HASH_CMDS                               # Note the location of each command the first time it is executed. Subsequent invocations of the same command will use the saved location, avoiding a path search. If this option is unset, no path hashing is done at all. However, when CORRECT is set, commands whose names DO NOT appear in the functions or aliases hash tables are hashed in order to avoid reporting them as spelling errors.
@@ -59,13 +59,13 @@
   # }
 
   # PROMPTING {
-    # http://zsh.sourceforge.net/Doc/Release/Options.html#Prompting
+    # http://zsh.sourceforge.io/Doc/Release/Options.html#Prompting
     setopt    TRANSIENT_RPROMPT                       # DO NOT show command modes on previously accepted lines. Remove any right prompt from display when accepting a command line. This may be useful with terminals with other cut/paste methods.
     setopt    PROMPT_SUBST                            # If set, parameter expansion, command substitution and arithmetic expansion are performed in prompts. Substitutions within prompts DO NOT affect the command status.
   # }
 
   # SCRIPTS AND FUNCTIONS {
-    # http://zsh.sourceforge.net/Doc/Release/Options.html#Scripts-and-Functions
+    # http://zsh.sourceforge.io/Doc/Release/Options.html#Scripts-and-Functions
     setopt    MULTIOS                                 # Perform implicit tees or cats when multiple redirections are attempted
     setopt    ALIAS_FUNC_DEF                          # By default, zsh does not allow the definition of functions using the ‘name ()’ syntax if name was expanded as an alias: this causes an error. This is usually the desired behaviour, as otherwise the combination of an alias and a function based on the same definition can easily cause problems.
     setopt    SH_FILE_EXPANSION                       # Perform filename expansion (e.g., ~ expansion) before parameter expansion, command substitution, arithmetic expansion and brace expansion. If this option is unset, it is performed after brace expansion, so things like ‘~$USERNAME’ and ‘~{pfalstad,rc}’ will work.
@@ -73,13 +73,13 @@
   # }
 
   # ZLE {
-    # http://zsh.sourceforge.net/Doc/Release/Options.html#Zle
+    # http://zsh.sourceforge.io/Doc/Release/Options.html#Zle
     setopt    NO_BEEP                                 # DO NOT beep on error in ZLE
     setopt    COMBINING_CHARS                         # Assume that the terminal displays combining characters correctly. Specifically, if a base alphanumeric character is followed by one or more zero-width punctuation characters, assume that the zero-width characters will be displayed as modifications to the base character within the same width. Not all terminals handle this. If this option is not set, zero-width characters are displayed separately with special mark-up. If this option is set, the pattern test [[:WORD:]] matches a zero-width punctuation character on the assumption that it will be used as part of a word in combination with a word character. Otherwise the base shell does not handle combining characters specially.
   # }
 
   # COMPLETIONS {
-    # http://zsh.sourceforge.net/Doc/Release/Options.html#Completion-4
+    # http://zsh.sourceforge.io/Doc/Release/Options.html#Completion-4
     setopt COMPLETE_IN_WORD     # Complete from both ends of a word.
     setopt ALWAYS_TO_END        # Move cursor to the end of a completed word.
     setopt PATH_DIRS            # Perform path search even on command names with slashes.
@@ -116,7 +116,7 @@
 
     # Cache {
       zstyle ':completion:*' use-cache yes
-      zstyle ':completion:*' cache-path ${ZDOT[zcompcache]}
+      zstyle ':completion:*' cache-path $ZSH_COMPCACHE
     # }
 
     # Group matches and describe {
@@ -203,6 +203,12 @@
       zstyle ':completion:*:*:docker-*:*' option-stacking yes
     # }
   # }
+
+  # JOB CONTROL {
+    # https://zsh.sourceforge.io/Doc/Release/Options.html#Job-Control
+    # setopt    NO_HUP                            # DO NOT Send the HUP signal to running jobs when the shell exits
+    # setopt    NO_CHECK_JOBS                     # DO NOT Report the status of background and suspended jobs before exiting a shell with job control; a second attempt to exit the shell will succeed
+  # }
 # }
 
 # ZSH_PARAMETERS {
@@ -212,14 +218,14 @@
 
   # REPORTING {
     # General ZSH's reporting parameters
-    # http://zsh.sourceforge.net/Doc/Release/Parameters.html
+    # http://zsh.sourceforge.io/Doc/Release/Parameters.html
     export REPORTTIME=10                                # Commands whose combined user and system execution times (measured in seconds) are greater than this value have timing statistics printed for them. Output is suppressed for commands executed within the line editor, including completion; commands explicitly marked with the time keyword still cause the summary to be printed in this case.
     export KEYTIMEOUT=1                                 # Get into vim command mode faster when hitting ESC - Set ESC after-press delay to 0.1s: The time the shell waits, in hundredths of seconds, for another key to be pressed when reading bound multi-character sequences.
   # }
 
   # PROMPTING {
     # General ZSH's parameters related to prompt
-    # http://zsh.sourceforge.net/Doc/Release/Parameters.html
+    # http://zsh.sourceforge.io/Doc/Release/Parameters.html
     export PROMPT='❯ '   # default prompt
     export RPROMPT=''    # prompt for right side of screen
     export ZLE_RPROMPT_INDENT=0                       # If set, used to give the indentation between the right hand side of the right prompt in the line editor as given by RPS1 or RPROMPT and the right hand side of the screen. If not set, the value 1 is used. See https://superuser.com/a/726509/389767
@@ -239,7 +245,7 @@
     # An array of directories to search for commands.
     # When this parameter is set, each directory is scanned and all files found are put in a hash table.
     # typeset -U PATH prevents duplicates of PATH variables.
-    # http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-path
+    # http://zsh.sourceforge.io/Doc/Release/Parameters.html#index-path
     # https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x
     # https://towardsdatascience.com/my-path-variable-is-a-mess-e52f22bfa520
     # https://koenwoortman.com/zsh-add-directory-to-path/
@@ -252,9 +258,9 @@
     # An array of directories specifying the search path for function definitions.
     # This path is searched when a function with the -u attribute is referenced. If an executable file is found, then it is read and executed in the current environment.
     # typeset -U PATH prevents duplicates of PATH variables.
-    # http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-fpath
+    # http://zsh.sourceforge.io/Doc/Release/Parameters.html#index-fpath
     fpath=(
-      ${XDG_CONFIG_HOME:-$HOME/.config}/bin
+      ~/.bin
       ${XDG_CONFIG_HOME:-$HOME/.config}/zsh/opt/completions
       ${fpath[@]}
     )
@@ -263,10 +269,9 @@
   # CDPATH {
     # An array of directories specifying the search path for the cd command.
     # typeset -U PATH prevents duplicates of PATH variables.
-    # http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-cdpath
+    # http://zsh.sourceforge.io/Doc/Release/Parameters.html#index-cdpath
     cdpath=(
       ${XDG_CONFIG_HOME:-$HOME/.config}/zsh
-      ${VIM_PATH}
       ${cdpath[@]}
     )
   # }
@@ -282,7 +287,7 @@
   # AUTOLOADED {{
     # A function can be marked as undefined using the autoload builtin (or ‘functions -u’ or ‘typeset -fu’).
     # Such a function has no body. When the function is first executed, the shell searches for its definition using the elements of the fpath variable.
-    # http://zsh.sourceforge.net/Doc/Release/Functions.html#Autoloading-Functions
+    # http://zsh.sourceforge.io/Doc/Release/Functions.html#Autoloading-Functions
     autoload -Uz "${XDG_CONFIG_HOME:-$HOME/.config}/bin"/^(.*|*.zwc*)(.:t)
   # }}
 # }

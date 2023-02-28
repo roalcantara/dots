@@ -16,6 +16,10 @@ is_darwin 					:= $(filter $(OS_NAME),darwin)
 is_debian 					:= $(filter $(OS_NAME),linux)
 OS   						:= $(if $(is_darwin),darwin,$(if $(is_debian),debian,alpine))
 
+HOMEBREW_PREFIX 			:= $(if $(is_darwin),/usr/local,/home/linuxbrew/.linuxbrew)
+HOMEBREW_HOM 	 			:= $(if $(is_darwin),$(HOMEBREW_PREFIX),$(HOMEBREW_PREFIX)/.linuxbrew)
+BREW_BIN 					:= $(HOMEBREW_HOME)/bin/brew
+
 .PHONY: default
 default:
 	@make -s all
@@ -37,7 +41,7 @@ puts: ## Echo environment variables
 	@echo "OS => '$(OS)' ✔"
 
 .PHONY: install
-install: puts configure/$(OS) $(XDG_CONFIG_HOME) ## Install Dotfiles
+install: puts configure/$(OS) $(XDG_CONFIG_HOME) setup/homebrew ## Install Dotfiles
 	$(info "[$(OS)][install] ✔✔")
 
 .PHONY: docker/build
@@ -56,13 +60,13 @@ docker/serve: ## Run Docker Container roalcantara/dots (mounting $(HOME)/.config
 configure/debian: ## Ensure required dependencies
 	$(info "[$(OS)][configure/debian] Ensuring required dependencies..")
 	sudo apt-get update
-	sudo apt-get install --no-install-recommends -y sudo ca-certificates build-essential curl make bash git
+	sudo apt-get install --no-install-recommends -y sudo ca-certificates build-essential curl make bash git procps
 	sudo update-ca-certificates
 
 .PHONY: configure/alpine
 configure/alpine: ## Ensure required dependencies
 	$(info "[configure/alpine] Ensuring required dependencies..")
-	apk -U --no-cache add sudo curl make bash git
+	apk -U --no-cache add sudo curl make bash git procps
 
 .PHONY: configure/darwin
 configure/darwin: configure/darwin/xcode_tools ## Configure darwin defaults
@@ -77,7 +81,6 @@ configure/darwin: configure/darwin/xcode_tools ## Configure darwin defaults
 	sudo chown -R $(whoami) /usr/local/share/man/man8
 	chmod u+w /usr/local/share/man/man8
 
-
 .PHONY: configure/darwin/xcode_tools
 configure/darwin/xcode_tools: ## Ensure Command Line Tools for Xcode is installed (https://developer.apple.com/forums/thread/698954)
 ifeq ($(shell command -v xcode-select),)
@@ -85,6 +88,13 @@ ifeq ($(shell command -v xcode-select),)
 	# This temporary file prompts the 'softwareupdate' utility to list the Command Line Tools
 	touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
 	softwareupdate -ia "$(SOFTWARE_UPDATE)" --verbose;
+endif
+
+.PHONY: setup/homebrew
+setup/homebrew: ## Setup Homebrew
+ifeq ($(shell command -v brew),)
+	$(info "[$(OS)][Homebrew] Setting up..")
+	yes | curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash -s
 endif
 
 $(DOTS_TARGET):
