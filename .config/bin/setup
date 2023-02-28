@@ -185,7 +185,6 @@ install() {
     err "INSTALL" "'$MAKEFILE' could not be found!"
   fi
 
-
   info "INSTALL" "Running 'make install BRANCH=$BRANCH OS_NAME=$OSTYPE -f $MAKEFILE'"
   make install BRANCH="$BRANCH" OS_NAME="$OSTYPE" -f "$MAKEFILE"
 }
