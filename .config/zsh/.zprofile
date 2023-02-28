@@ -8,10 +8,3 @@
 # ZSH {
   export ZSH_VERSION="$(zsh --version | cut -d ' ' -f2)"
 # }
-
-# HOMEBREW {
-  if type brew >/dev/null 2>&1; then
-    eval "$(brew shellenv)"
-    export HOMEBREW_NO_ENV_HINTS=1
-  fi
-# }

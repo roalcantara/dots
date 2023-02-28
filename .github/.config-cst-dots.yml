@@ -33,22 +33,22 @@ fileExistenceTests:
   - name: ~/.bashrc
     path: $HOME/.bashrc
     shouldExist: true
-    permissions: -rw-r--r--
+    permissions: Lrwxrwxrwx
     gid: 999
   - name: ~/.bash_aliases
     path: $HOME/.bash_aliases
     shouldExist: true
-    permissions: -rw-r--r--
+    permissions: Lrwxrwxrwx
     gid: 999
   - name: ~/.zshenv
     path: $HOME/.zshenv
     shouldExist: true
-    permissions: -rw-r--r--
+    permissions: Lrwxrwxrwx
     gid: 999
   - name: ~/.profile
     path: $HOME/.profile
     shouldExist: true
-    permissions: -rw-r--r--
+    permissions: Lrwxrwxrwx
     gid: 999
   - name: ~/.github
     path: $HOME/.github
