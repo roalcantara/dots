@@ -1,3 +1,12 @@
+## [1.10.4](https://github.com/roalcantara/dots/compare/v1.10.3...v1.10.4) (2023-02-28)
+
+
+### Bug Fixes
+
+* **ci:** Convert symlink to folder ([4fcc543](https://github.com/roalcantara/dots/commit/4fcc54318657831e7599e0d6d5436728b69d35c2))
+* **zsh:** Fix startup files ([129ff36](https://github.com/roalcantara/dots/commit/129ff367954213ac27c3f4bf007539335bb54b8c))
+* **zsh:** Relocate files ([d28d7fa](https://github.com/roalcantara/dots/commit/d28d7fada7f0d48979a832f4980e639f8d070628))
+
 ## [1.10.3](https://github.com/roalcantara/dots/compare/v1.10.2...v1.10.3) (2023-02-28)
 
 
