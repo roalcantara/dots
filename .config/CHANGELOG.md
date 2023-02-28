@@ -1,3 +1,10 @@
+## [1.10.3](https://github.com/roalcantara/dots/compare/v1.10.2...v1.10.3) (2023-02-28)
+
+
+### Bug Fixes
+
+* **zsh:** Relocate files ([c09ac76](https://github.com/roalcantara/dots/commit/c09ac769e63b92a9317cca099dbe9aff4c1e7513))
+
 ## [1.10.2](https://github.com/roalcantara/dots/compare/v1.10.1...v1.10.2) (2023-02-25)
 
 
