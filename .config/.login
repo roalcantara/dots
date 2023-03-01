@@ -304,29 +304,6 @@ fi
   fi
 # }
 
-# HOMEBREW {
-  # The Missing Package Manager for macOS (or Linux)
-  # https://brew.sh
-  if type brew >/dev/null; then
-    export HOMEBREW_NO_ENV_HINTS=1
-    export HOMEBREW_NO_ANALYTICS=1;
-    export HOMEBREW_AUTO_UPDATE_SECS=604800
-    eval "$(brew shellenv)"
-
-    # Brewfile manages packages installed by Homebrew
-    # https://homebrew-file.readthedocs.io/en/latest/usage.html#brewfile
-    if [ -f "$XDG_CONFIG_HOME/brewfile/Brewfile" ];then
-      export HOMEBREW_BUNDLE_FILE="$XDG_CONFIG_HOME/brewfile/Brewfile"
-
-      # automatically update Brewfile after brew install/uninstall, or mas install/uninstall
-      # https://homebrew-file.readthedocs.io/en/latest/brew-wrap.html
-      if [ -f $(brew --prefix)/etc/brew-wrap ];then
-        source $(brew --prefix)/etc/brew-wrap
-      fi
-    fi
-  fi
-# }
-
 # SHELDON {
   # https://sheldon.cli.rs
   # Sheldon is a fast, configurable, command-line tool to manage your shell plugins.

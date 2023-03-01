@@ -98,7 +98,7 @@ endif
 
 .PHONY: brew/bundle
 brew/bundle: ## Bundle Homebrew
-	$(BREW_BIN) bundle --verbose --file $(XDG_CONFIG_HOME)/brewfile/Brewfile
+	HOMEBREW_NO_INSTALL_CLEANUP=TRUE HOMEBREW_NO_ENV_HINTS=TRUE $(BREW_BIN) bundle --verbose --file $(XDG_CONFIG_HOME)/brewfile/Brewfile
 
 .PHONY: brew/configure
 brew/configure: brew/setup brew/bundle ## Setup and bundle Homebrew

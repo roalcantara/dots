@@ -6,9 +6,7 @@
 
 # taps
 tap 'homebrew/bundle'
-tap 'rcmdnk/homebrew-file'
 tap 'knqyf263/pet'
-brew 'brew-file'
 
 # languages
 brew 'python'

@@ -1,4 +1,4 @@
-# shellcheck shell=bash disable=SC1090,SC2155
+# shellcheck shell=bash disable=SC1090,SC2155,SC1091
 # https://gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Bash-Startup-Files
 
 # ~/.profile: executed by the command interpreter for login shells.
@@ -99,6 +99,24 @@ fi
 if [ -f ~/.bash_aliases ]; then
   . ~/.bash_aliases
 fi
+
+# HOMEBREW {
+  # The Missing Package Manager for macOS (or Linux)
+  # https://brew.sh
+  if [[ "$OSTYPE" == *darwin* ]]; then
+    export HOMEBREW_PREFIX=/usr/local
+  else
+    export HOMEBREW_PREFIX=~/.linuxbrew
+  fi
+
+  if test -e $HOMEBREW_PREFIX/bin/brew; then
+    export HOMEBREW_NO_ENV_HINTS=1                                  # Hide hints
+    export HOMEBREW_NO_ANALYTICS=1                                  # Disabled analytics
+    export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/bin:$PATH"   # Add to PATH
+    export HOMEBREW_BUNDLE_FILE=$XDG_CONFIG_HOME/brewfile/Brewfile  # https://homebrew-file.readthedocs.io/en/latest/usage.html
+    eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+  fi
+# }
 
 # PATH {
   export -a path=(
