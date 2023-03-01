@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/roalcantara/dots/compare/v1.11.0...v1.11.1) (2023-03-01)
+
+
+### Bug Fixes
+
+* **brew:** Set brew env vars ([74a16aa](https://github.com/roalcantara/dots/commit/74a16aa528073b1c25bfabef963969ea1e1ed9e7))
+
 # [1.11.0](https://github.com/roalcantara/dots/compare/v1.10.4...v1.11.0) (2023-03-01)
 
 
