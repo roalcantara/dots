@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/roalcantara/dots/compare/v1.10.4...v1.11.0) (2023-03-01)
+
+
+### Features
+
+* **brew:** Install dependencies ([045249f](https://github.com/roalcantara/dots/commit/045249f64274e163bf77a6cac0dfd98c198945d6))
+
 ## [1.10.4](https://github.com/roalcantara/dots/compare/v1.10.3...v1.10.4) (2023-02-28)
 
 
