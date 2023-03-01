@@ -22,12 +22,6 @@ metadataTest:
       value: truecolor
     - key: TERM
       value: xterm-256color
-    - key: SAVEHIST
-      value: 1000000000
-    - key: HISTSIZE
-      value: 1000000000
-    - key: DIRSTACKSIZE
-      value: 100
 
 fileExistenceTests:
   - name: ~/.bashrc

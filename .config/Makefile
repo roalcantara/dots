@@ -45,7 +45,7 @@ install: puts configure/$(OS) $(XDG_CONFIG_HOME) brew/configure ## Install Dotfi
 
 .PHONY: docker/build
 docker/build: ## Buld Dockerfile
-	docker build --target dots -t roalcantara/dots $(XDG_CONFIG_HOME)
+	docker buildx build --target dots -t roalcantara/dots $(XDG_CONFIG_HOME)
 
 .PHONY: docker/run
 docker/run: ## Run Docker Container roalcantara/dots (docker run -it --rm --hostname dots roalcantara/dots)
