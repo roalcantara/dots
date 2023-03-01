@@ -1,3 +1,10 @@
+## [1.11.2](https://github.com/roalcantara/dots/compare/v1.11.1...v1.11.2) (2023-03-01)
+
+
+### Bug Fixes
+
+* **brew:** Remove packages ([17b5e17](https://github.com/roalcantara/dots/commit/17b5e17988feb325d1fcbba5ba63a50b3ee286ed))
+
 ## [1.11.1](https://github.com/roalcantara/dots/compare/v1.11.0...v1.11.1) (2023-03-01)
 
 
