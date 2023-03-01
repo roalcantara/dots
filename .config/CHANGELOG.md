@@ -1,3 +1,10 @@
+## [1.11.3](https://github.com/roalcantara/dots/compare/v1.11.2...v1.11.3) (2023-03-01)
+
+
+### Bug Fixes
+
+* **docker/build:** Run buildx ([cc6944c](https://github.com/roalcantara/dots/commit/cc6944c1844f03c52016b3470b8f3226df1cde05))
+
 ## [1.11.2](https://github.com/roalcantara/dots/compare/v1.11.1...v1.11.2) (2023-03-01)
 
 
