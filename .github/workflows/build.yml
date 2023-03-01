@@ -84,7 +84,7 @@ jobs:
       continue-on-error: true
       with:
         image-ref: ${{ github.actor }}/dots:latest
-        skip-dirs: /home/linuxbrew/.linuxbrew/Homebrew
+        skip-dirs: /home/linuxbrew/.linuxbrew
         format: sarif
         exit-code: 1
         ignore-unfixed: true
