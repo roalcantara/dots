@@ -6,33 +6,6 @@
 
 # taps
 tap 'homebrew/bundle'
-tap 'knqyf263/pet'
-
-# languages
-brew 'python'
-brew 'node'
-
-# shells
-brew 'zsh'
-
-# git
-brew 'gh'
-brew 'git'
-brew 'git-delta'
-
-# utilities
-brew 'asdf'
-brew 'bat'
-brew 'exa'
-brew 'fd'
-brew 'fzf'
-brew 'nnn'
-brew 'navi'
-brew 'neovim'
-brew 'ripgrep'
-brew 'sheldon'
-brew 'starship'
-brew 'knqyf263/pet/pet'
 
 if `hostname`.strip == 'NCC1701'
   # languages
