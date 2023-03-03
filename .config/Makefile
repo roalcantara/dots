@@ -16,9 +16,6 @@ is_darwin 					:= $(filter $(OS_NAME),darwin)
 is_linux 					:= $(filter $(OS_NAME),linux)
 OS   						:= $(if $(is_darwin),darwin,$(if $(is_linux),debian,alpine))
 
-HOMEBREW_PREFIX 			:= $(if $(is_linux),~/.linuxbrew,/usr/local)
-BREW_BIN 					:= $(if $(is_darwin),$(HOMEBREW_PREFIX)/bin/brew,eval "$(HOMEBREW_PREFIX)/bin/brew shellenv" && $(HOMEBREW_PREFIX)/bin/brew)
-
 .PHONY: default
 default:
 	@make -s all
@@ -40,7 +37,7 @@ puts: ## Echo environment variables
 	@echo "OS => '$(OS)' ✔"
 
 .PHONY: install
-install: puts configure/$(OS) $(XDG_CONFIG_HOME) brew/configure ## Install Dotfiles
+install: puts configure/$(OS) $(XDG_CONFIG_HOME) ## Install Dotfiles
 	$(info "[$(OS)][install] ✔✔")
 
 .PHONY: docker/build
@@ -88,20 +85,6 @@ ifeq ($(shell command -v xcode-select),)
 	touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
 	softwareupdate -ia "$(SOFTWARE_UPDATE)" --verbose;
 endif
-
-.PHONY: brew/setup
-brew/setup: ## Setup Homebrew
-ifeq ($(shell command -v brew),)
-	$(info "[$(OS)][Homebrew] Setting up..")
-	yes | curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash -s
-endif
-
-.PHONY: brew/bundle
-brew/bundle: ## Bundle Homebrew
-	HOMEBREW_NO_INSTALL_CLEANUP=TRUE HOMEBREW_NO_ENV_HINTS=TRUE $(BREW_BIN) bundle --verbose --file $(XDG_CONFIG_HOME)/brewfile/Brewfile
-
-.PHONY: brew/configure
-brew/configure: brew/setup brew/bundle ## Setup and bundle Homebrew
 
 $(DOTS_TARGET):
 	$(info "[$(OS)][Dots] Cloning '$(DOTS_REPO)'..")
