@@ -1,3 +1,10 @@
+## [1.11.5](https://github.com/roalcantara/dots/compare/v1.11.4...v1.11.5) (2023-03-03)
+
+
+### Bug Fixes
+
+* **docker:** Remove apt cache ([5c18bb2](https://github.com/roalcantara/dots/commit/5c18bb2afb2583f3b59fd47c2969d074ecdce1cf))
+
 ## [1.11.4](https://github.com/roalcantara/dots/compare/v1.11.3...v1.11.4) (2023-03-03)
 
 
