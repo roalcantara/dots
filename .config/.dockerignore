@@ -17,7 +17,6 @@
 */obj
 docker-compose*
 LICENSE
-Makefile
 node_modules
 npm-debug.log
 vendor/

@@ -141,10 +141,9 @@ configure() {
   else
     info "CONFIGURE > Debian" "Installing dependencies"
     sudo apt-get update \
-      && sudo apt-get install --no-install-recommends -y sudo ca-certificates build-essential curl make bash git \
-      && sudo update-ca-certificates \
+      && sudo apt-get install --no-install-recommends -y sudo make git \
       && sudo apt-get autoremove && sudo apt-get clean \
-      && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+      && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/*
   fi
 }
 
@@ -201,9 +200,15 @@ install() {
 ##?     curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/.config/bin/setup | bash                [REMOTE] Install the stable version
 ##?     BRANCH=next curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/.config/bin/setup | bash    [REMOTE] Install the `next` version
 function setup() {
-  configure
-  checkout
-  install
+  case "$1" in
+    configure) configure ;;
+    checkout) checkout ;;
+    install) install ;;
+    *)
+      configure
+      checkout
+      install;;
+  esac
 }
 
 setup "$@"

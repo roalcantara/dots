@@ -55,14 +55,10 @@ docker/serve: ## Run Docker Container roalcantara/dots mounting ~/.config (docke
 .PHONY: configure/debian
 configure/debian: ## Ensure required dependencies
 	$(info "[$(OS)][configure/debian] Ensuring required dependencies..")
-	sudo apt-get update
-	sudo apt-get install --no-install-recommends -y sudo ca-certificates build-essential curl make bash git procps
-	sudo update-ca-certificates
 
 .PHONY: configure/alpine
 configure/alpine: ## Ensure required dependencies
 	$(info "[configure/alpine] Ensuring required dependencies..")
-	apk -U --no-cache add sudo curl make bash git procps
 
 .PHONY: configure/darwin
 configure/darwin: configure/darwin/xcode_tools ## Configure darwin defaults
