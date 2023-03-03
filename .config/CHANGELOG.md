@@ -1,3 +1,10 @@
+## [1.11.4](https://github.com/roalcantara/dots/compare/v1.11.3...v1.11.4) (2023-03-03)
+
+
+### Bug Fixes
+
+* **docker:** Decrease image size ([d9628c8](https://github.com/roalcantara/dots/commit/d9628c8669176192abfd7abf0230802f667798b7))
+
 ## [1.11.3](https://github.com/roalcantara/dots/compare/v1.11.2...v1.11.3) (2023-03-01)
 
 
