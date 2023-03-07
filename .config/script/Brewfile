@@ -5,35 +5,15 @@
 #############################################################
 
 # taps
-tap 'homebrew/core'
-tap 'homebrew/bundle'
-tap 'homebrew/services'
-
-brew 'asdf'
-brew 'bat'
-brew 'bat-extras'
-brew 'exa'
-brew 'fd'
-brew 'fzf'
-brew 'gh'
-brew 'git'
-brew 'git-delta'
-brew 'navi'
-brew 'neovim'
-brew 'nnn'
-brew 'node'
-brew 'openjdk'
-brew 'pnpm'
-brew 'python'
-brew 'ripgrep'
-brew 'sheldon'
-brew 'starship'
-brew 'yarn'
-brew 'zsh'
-brew 'knqyf263/pet/pet'
+tap 'rcmdnk/file'
 brew 'rcmdnk/file/brew-file'
 
 if `hostname`.strip == 'NCC1701'
+  # taps
+  tap 'homebrew/core'
+  tap 'homebrew/services'
+  tap 'knqyf263/pet'
+
   # languages
   brew 'go'
 
@@ -58,6 +38,29 @@ if `hostname`.strip == 'NCC1701'
   brew 'less'
   brew 'lesspipe'
   brew 'shellcheck'
+
+  # packages
+  brew 'asdf'
+  brew 'bat'
+  brew 'exa'
+  brew 'fd'
+  brew 'fzf'
+  brew 'gh'
+  brew 'git'
+  brew 'git-delta'
+  brew 'navi'
+  brew 'neovim'
+  brew 'nnn'
+  brew 'node'
+  brew 'openjdk'
+  brew 'pnpm'
+  brew 'python'
+  brew 'ripgrep'
+  brew 'sheldon'
+  brew 'starship'
+  brew 'yarn'
+  brew 'zsh'
+  brew 'knqyf263/pet/pet'
 end
 
 if OS.mac?
