@@ -137,13 +137,10 @@ configure() {
     fi
   elif is_alpine; then
     info "CONFIGURE > Alpine" "Installing dependencies"
-    sudo apk -U --no-cache add sudo curl make bash git && sudo rm -f /tmp/* /etc/apk/cache/*
+    sudo apk -U --no-cache add sudo curl make bash git
   else
     info "CONFIGURE > Debian" "Installing dependencies"
-    sudo apt-get update \
-      && sudo apt-get install --no-install-recommends -y sudo make git \
-      && sudo apt-get autoremove && sudo apt-get clean \
-      && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+    sudo apt-get update && sudo apt-get install --no-install-recommends -y make git ca-certificates && sudo update-ca-certificates
   fi
 }
 
@@ -200,15 +197,9 @@ install() {
 ##?     curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/.config/bin/setup | bash                [REMOTE] Install the stable version
 ##?     BRANCH=next curl -Lks https://raw.githubusercontent.com/roalcantara/dots/main/.config/bin/setup | bash    [REMOTE] Install the `next` version
 function setup() {
-  case "$1" in
-    configure) configure ;;
-    checkout) checkout ;;
-    install) install ;;
-    *)
-      configure
-      checkout
-      install;;
-  esac
+  configure
+  checkout
+  install
 }
 
 setup "$@"

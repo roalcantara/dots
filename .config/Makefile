@@ -14,8 +14,10 @@ SOFTWARE_UPDATE 			= $(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 |
 
 is_darwin 					:= $(filter $(OS_NAME),darwin)
 is_alpine 					:= $(filter $(OS_NAME),linux-musl)
-is_linux 					:= $(filter $(OS_NAME),linux)
+is_debian 					:= $(filter $(OS_NAME),linux)
 OS   						:= $(if $(is_darwin),darwin,$(if $(is_alpine),alpine,debian))
+HOMEBREW_PREFIX 			:= $(if $(is_darwin),/usr/local,$(HOME)/.linuxbrew)
+BREW_BIN					:= HOMEBREW_NO_ANALYTICS=1 HOMEBREW_NO_INSTALL_CLEANUP=1 HOMEBREW_NO_ENV_HINTS=1 $(HOMEBREW_PREFIX)/bin/brew
 
 .PHONY: default
 default:
@@ -34,13 +36,11 @@ puts: ## Echo environment variables
 	@echo "OS => '$(OS)' ✔"
 	$(info "OSTYPE => '$(OSTYPE)' ✔")
 	$(info "OS_NAME => '$(OS_NAME)' ✔")
-	$(info "is_linux => '$(is_linux)' ✔")
+	$(info "is_debian => '$(is_debian)' ✔")
 	$(info "is_darwin => '$(is_darwin)' ✔")
 	$(info "is_alpine => '$(is_alpine)' ✔")
-
-.PHONY: install
-install: puts configure/$(OS) $(XDG_CONFIG_HOME) ## Install Dotfiles
-	$(info "[$(OS)][install] ✔✔")
+	$(info "HOMEBREW_PREFIX => '$(HOMEBREW_PREFIX)' ✔")
+	$(info "BREW_BIN => '$(BREW_BIN)' ✔")
 
 .PHONY: docker/build
 docker/build: ## Buld Dockerfile
@@ -54,21 +54,41 @@ docker/run: ## Run Docker Container roalcantara/dots (docker run -it --rm --host
 docker/serve: ## Run Docker Container roalcantara/dots mounting ~/.config (docker run -it --rm --hostname dots -v ~/.config:/home/linuxbrew/.config roalcantara/dots)
 	docker compose run -v $(XDG_CONFIG_HOME):/home/linuxbrew/.config --rm dots
 
-.PHONY: configure/debian
-configure/debian: ## Ensure required dependencies
-	$(info "[$(OS)][configure/debian] Ensuring required dependencies..")
-	sudo apt update && sudo apt install -y --no-install-recommends sudo curl make bash git
-	sudo apt autoremove && sudo apt clean && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+.PHONY: brew/setup
+brew/setup: ## Setup Homebrew
+ifeq ($(shell command -v brew),)
+	$(info "[$(OS)][brew/setup] Setting up..")
+	yes | curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash -s
+endif
+	$(BREW_BIN) config
 
-.PHONY: configure/alpine
-configure/alpine: ## Ensure required dependencies
-	$(info "[$(OS)[configure/alpine] Ensuring required dependencies..")
-	sudo apk -U --no-cache add sudo curl make bash git
-	sudo rm -f /tmp/* /etc/apk/cache/*
+.PHONY: brew/bundle
+brew/bundle: brew/setup ## Bundle Homebrew
+	$(BREW_BIN) bundle --verbose --file $(XDG_CONFIG_HOME)/script/Brewfile
 
-.PHONY: configure/darwin
-configure/darwin: configure/darwin/xcode_tools ## Configure darwin defaults
-	$(info "[$(OS)][configure/darwin] Configuring darwin..")
+.PHONY: brew/configure
+brew/configure: brew/bundle ## Setup and bundle Homebrew
+
+.PHONY: prepare/debian
+prepare/debian: ## Ensure required dependencies
+	$(info "[prepare/$(OS)] Ensuring required dependencies..")
+	sudo apt-get update && sudo apt-get install --no-install-recommends -qqy sudo curl make bash git apt-utils ca-certificates build-essential && sudo update-ca-certificates && sudo apt-get autoremove && sudo apt-get clean && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+
+.PHONY: prepare/alpine
+prepare/alpine: ## Ensure required dependencies
+	$(info "[prepare/$(OS)] Ensuring required dependencies..")
+	sudo apk -U --no-cache add sudo curl make bash git build-base gcc file coreutils gzip libc6-compat ncurses ruby ruby-bigdecimal ruby-etc ruby-irb ruby-json && sudo rm -f /tmp/* /etc/apk/cache/*
+	sudo ln -s /bin/touch /usr/bin/touch
+
+.PHONY: prepare/darwin
+prepare/darwin: ## Ensure Command Line Tools for Xcode is installed (https://developer.apple.com/forums/thread/698954)
+ifeq ($(shell command -v xcode-select),)
+	$(info "[prepare/$(OS)] Ensuring required dependencies..")
+	# This temporary file prompts the 'softwareupdate' utility to list the Command Line Tools
+	touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
+	softwareupdate -ia "$(SOFTWARE_UPDATE)" --verbose;
+endif
+	$(info "[prepare/$(OS)] Setting defaults..")
 	defaults write -g ApplePressAndHoldEnabled -bool false
 	defaults write -g InitialKeyRepeat -int 10
 	defaults write -g KeyRepeat -int 1
@@ -79,14 +99,12 @@ configure/darwin: configure/darwin/xcode_tools ## Configure darwin defaults
 	sudo chown -R $(whoami) /usr/local/share/man/man8
 	chmod u+w /usr/local/share/man/man8
 
-.PHONY: configure/darwin/xcode_tools
-configure/darwin/xcode_tools: ## Ensure Command Line Tools for Xcode is installed (https://developer.apple.com/forums/thread/698954)
-ifeq ($(shell command -v xcode-select),)
-	$(info "[$(OS)][configure/darwin/xcode_tools] Command Line Tools for Xcode Not found! Installing from softwareupdate..")
-	# This temporary file prompts the 'softwareupdate' utility to list the Command Line Tools
-	touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
-	softwareupdate -ia "$(SOFTWARE_UPDATE)" --verbose;
-endif
+.PHONY: configure/$(OS)
+configure/$(OS): prepare/$(OS) brew/configure ## Configure darwin defaults
+
+.PHONY: install
+install: puts configure/$(OS) $(XDG_CONFIG_HOME) ## Install Dotfiles
+	$(info "[$(OS)][install] ✔✔")
 
 $(DOTS_TARGET):
 	$(info "[$(OS)][Dots] Cloning '$(DOTS_REPO)'..")
