@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/roalcantara/dots/compare/v1.12.0...v1.13.0) (2023-03-07)
+
+
+### Features
+
+* **setup:** Add requirements.txt ([8f2d597](https://github.com/roalcantara/dots/commit/8f2d5972d9d468aabce6d336b68bbd3fe1131173))
+
 # [1.12.0](https://github.com/roalcantara/dots/compare/v1.11.7...v1.12.0) (2023-03-07)
 
 
