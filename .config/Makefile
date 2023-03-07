@@ -5,7 +5,7 @@ override DOTS_REPO 			:= https://github.com/roalcantara/dots
 override DOTS_TARGET 		:= ~/.git
 override XDG_CONFIG_HOME 	:= ~/.config
 override XDG_CONFIG_BAK 	:= ~/.config.bak
-override OS_NAME            := $(shell uname -s | tr '[:upper:]' '[:lower:]')
+override OS_NAME            ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 
 SHELL 						= /bin/bash
 DOTS 	 					= $(/usr/bin/git --git-dir="$(DOTS_TARGET)" --work-tree="$(HOME)")
@@ -13,8 +13,9 @@ BACKUP 						= $(mkdir -p $(XDG_CONFIG_BAK) && $(DOTS) checkout 2>&1 | grep -E '
 SOFTWARE_UPDATE 			= $(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
 
 is_darwin 					:= $(filter $(OS_NAME),darwin)
+is_alpine 					:= $(filter $(OS_NAME),linux-musl)
 is_linux 					:= $(filter $(OS_NAME),linux)
-OS   						:= $(if $(is_darwin),darwin,$(if $(is_linux),debian,alpine))
+OS   						:= $(if $(is_darwin),darwin,$(if $(is_alpine),alpine,debian))
 
 .PHONY: default
 default:
@@ -30,11 +31,12 @@ help: ## (Fuzzy) Display available tasks
 
 .PHONY: puts
 puts: ## Echo environment variables
+	@echo "OS => '$(OS)' ✔"
 	$(info "OSTYPE => '$(OSTYPE)' ✔")
 	$(info "OS_NAME => '$(OS_NAME)' ✔")
 	$(info "is_linux => '$(is_linux)' ✔")
 	$(info "is_darwin => '$(is_darwin)' ✔")
-	@echo "OS => '$(OS)' ✔"
+	$(info "is_alpine => '$(is_alpine)' ✔")
 
 .PHONY: install
 install: puts configure/$(OS) $(XDG_CONFIG_HOME) ## Install Dotfiles
@@ -42,7 +44,7 @@ install: puts configure/$(OS) $(XDG_CONFIG_HOME) ## Install Dotfiles
 
 .PHONY: docker/build
 docker/build: ## Buld Dockerfile
-	docker buildx build --target dots -t roalcantara/dots $(XDG_CONFIG_HOME)
+	docker buildx build --target dots -t roalcantara/dots $(XDG_CONFIG_HOME)/script
 
 .PHONY: docker/run
 docker/run: ## Run Docker Container roalcantara/dots (docker run -it --rm --hostname dots roalcantara/dots)
@@ -55,10 +57,14 @@ docker/serve: ## Run Docker Container roalcantara/dots mounting ~/.config (docke
 .PHONY: configure/debian
 configure/debian: ## Ensure required dependencies
 	$(info "[$(OS)][configure/debian] Ensuring required dependencies..")
+	sudo apt update && sudo apt install -y --no-install-recommends sudo curl make bash git
+	sudo apt autoremove && sudo apt clean && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/*
 
 .PHONY: configure/alpine
 configure/alpine: ## Ensure required dependencies
-	$(info "[configure/alpine] Ensuring required dependencies..")
+	$(info "[$(OS)[configure/alpine] Ensuring required dependencies..")
+	sudo apk -U --no-cache add sudo curl make bash git
+	sudo rm -f /tmp/* /etc/apk/cache/*
 
 .PHONY: configure/darwin
 configure/darwin: configure/darwin/xcode_tools ## Configure darwin defaults

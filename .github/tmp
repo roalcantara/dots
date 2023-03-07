@@ -1,0 +1,18 @@
+
+HOMEBREW_PREFIX 			:= $(if $(is_linux),~/.linuxbrew,/usr/local)
+BREW_BIN 					:= $(if $(is_darwin),$(HOMEBREW_PREFIX)/bin/brew,eval "$(HOMEBREW_PREFIX)/bin/brew shellenv" && $(HOMEBREW_PREFIX)/bin/brew)
+
+
+.PHONY: brew/setup
+brew/setup: ## Setup Homebrew
+ifeq ($(shell command -v brew),)
+	$(info "[$(OS)][Homebrew] Setting up..")
+	yes | curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash -s
+endif
+
+.PHONY: brew/bundle
+brew/bundle: ## Bundle Homebrew
+	HOMEBREW_NO_INSTALL_CLEANUP=TRUE HOMEBREW_NO_ENV_HINTS=TRUE $(BREW_BIN) bundle --verbose --file $(XDG_CONFIG_HOME)/brewfile/Brewfile
+
+.PHONY: brew/configure
+brew/configure: brew/setup brew/bundle ## Setup and bundle Homebrew

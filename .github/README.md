@@ -65,11 +65,11 @@ Configuration files
   docker compose run --rm -v $PWD:/app dots
   
   # ~/script/Dockerfile
-  docker build -t roalcantara/dots --target dots .
+  docker build -t roalcantara/dots --target dots ~/.config/script
   docker run -it --rm -v $PWD:/app roalcantara/dots
 
   # gitpod's image `ready to code` - without default tooling installed
-  docker build -t roalcantara/dots:gitpod --target gitpod .
+  docker build -t roalcantara/dots:gitpod --target gitpod ~/.config/script
   docker run -it --rm -v $PWD:/app roalcantara/dots:gitpod
   docker compose run --rm -v $PWD:/app gitpod
   ```

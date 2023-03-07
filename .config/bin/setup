@@ -137,7 +137,7 @@ configure() {
     fi
   elif is_alpine; then
     info "CONFIGURE > Alpine" "Installing dependencies"
-    apk -U --no-cache add sudo curl make bash git
+    sudo apk -U --no-cache add sudo curl make bash git && sudo rm -f /tmp/* /etc/apk/cache/*
   else
     info "CONFIGURE > Debian" "Installing dependencies"
     sudo apt-get update \

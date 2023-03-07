@@ -1,0 +1,16 @@
+setup:
+  - cmd:
+    pacman: sudo pacman -S flatpak
+    apt: sudo apt install flatpak
+    apk: sudo apk add flatpak
+    yum: sudo yum install flatpak
+  - flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  - flatpak update --assumeyes --noninteractive
+
+apps:
+  app_name: $(echo $app | rev | cut -d "." -f1 | rev)
+  contains:
+    flatpak: $(echo $(flatpak list --columns=ref | grep $app))
+    pacman: $(echo $(pacman -Qk $(echo $app_name | tr 'A-Z' 'a-z') 2> /dev/null ))
+    apt: $(echo $(dpkg -s $(echo $app_name | tr 'A-Z' 'a-z') 2> /dev/null ))
+  add: flatpak install -y --noninteractive $flatpak_origin $app

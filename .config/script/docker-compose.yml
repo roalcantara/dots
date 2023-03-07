@@ -6,7 +6,7 @@ services:
   dots: # docker compose run --rm -v $PWD:/app dots
     hostname: linuxbrew
     build:
-      context: .
+      context: ~/.config/script
       target: dots
     # configures service containers to run with an allocated stdin (docker run -i)
     stdin_open: true
@@ -16,7 +16,7 @@ services:
   gitpod: # docker compose run --rm -v $PWD:/app gitpod
     hostname: cockpit
     build:
-      context: .
+      context: ~/.config/script
       target: gitpod
     # configures service containers to run with an allocated stdin (docker run -i)
     stdin_open: true
