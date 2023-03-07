@@ -140,7 +140,7 @@ configure() {
     sudo apk -U --no-cache add sudo curl make bash git
   else
     info "CONFIGURE > Debian" "Installing dependencies"
-    sudo apt-get update && sudo apt-get install --no-install-recommends -y make git ca-certificates && sudo update-ca-certificates
+    sudo apt-get update && sudo apt-get install --no-install-recommends -y make git ca-certificates apt-utils ca-certificates build-essential && sudo update-ca-certificates
   fi
 }
 

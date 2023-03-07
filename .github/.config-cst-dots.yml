@@ -28,89 +28,90 @@ fileExistenceTests:
     path: $HOME/.bashrc
     shouldExist: true
     permissions: Lrwxrwxrwx
-    gid: 999
+    gid: 10
   - name: ~/.bash_aliases
     path: $HOME/.bash_aliases
     shouldExist: true
     permissions: Lrwxrwxrwx
-    gid: 999
+    gid: 10
   - name: ~/.zshenv
     path: $HOME/.zshenv
     shouldExist: true
     permissions: Lrwxrwxrwx
-    gid: 999
+    gid: 10
   - name: ~/.profile
     path: $HOME/.profile
     shouldExist: true
     permissions: Lrwxrwxrwx
-    gid: 999
+    gid: 10
   - name: ~/.github
     path: $HOME/.github
     shouldExist: true
-    permissions: drwxr-xr-x
-    gid: 999
+    permissions: dgrwxr-xr-x
+    gid: 10
   - name: ~/.config
     path: $HOME/.config
     shouldExist: true
-    permissions: drwxr-xr-x
-    gid: 999
+    permissions: dgrwxr-xr-x
+    gid: 10
   - name: ~/.config/.login
     path: $HOME/.config/.login
     shouldExist: true
     permissions: -rwxr-xr-x
-    gid: 999        
+    gid: 10        
   - name: ~/.config/script
     path: $HOME/.config/script
     shouldExist: true
-    permissions: drwxr-xr-x
-    gid: 999
+    permissions: dgrwxr-xr-x
+    gid: 10
   - name: ~/.config/script/.dockerignore
     path: $HOME/.config/script/.dockerignore
     shouldExist: true
     permissions: -rw-r--r--
-    gid: 999
+    gid: 10
   - name: ~/.config/script/Dockerfile
     path: $HOME/.config/script/Dockerfile
     shouldExist: true
     permissions: -rw-r--r--
-    gid: 999
+    gid: 10
   - name: ~/.config/script/docker-compose.yml
     path: $HOME/.config/script/docker-compose.yml
     shouldExist: true
     permissions: -rw-r--r--
-    gid: 999
+    gid: 10
   - name: ~/.config/script/.hadolint.yml
     path: $HOME/.config/script/.hadolint.yml
     shouldExist: true
     permissions: -rw-r--r--
-    gid: 999    
+    gid: 10    
   - name: ~/.config/bin/setup
     path: $HOME/.config/bin/setup
     shouldExist: true
     permissions: -rwxr-xr-x
-    gid: 999    
+    gid: 10    
   - name: ~/.config/.editorconfig
     path: $HOME/.config/.editorconfig
     shouldExist: true
     permissions: -rw-r--r--
-    gid: 999
+    gid: 10
   - name: ~/.config/.releaserc.yml
     path: $HOME/.config/.releaserc.yml
     shouldExist: true
     permissions: -rw-r--r--
-    gid: 999
+    gid: 10
   - name: ~/.config/zsh
     path: $HOME/.config/zsh
     shouldExist: true
-    permissions: drwxr-xr-x
-    gid: 999
+    permissions: dgrwxr-xr-x
+
+    gid: 10
   - name: ~/.config/zsh/.zprofile
     path: $HOME/.config/zsh/.zprofile
     shouldExist: true
     permissions: -rw-r--r--
-    gid: 999
+    gid: 10
   - name: ~/.config/zsh/.zshrc
     path: $HOME/.config/zsh/.zshrc
     shouldExist: true
     permissions: -rw-r--r--
-    gid: 999
+    gid: 10

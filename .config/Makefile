@@ -6,6 +6,9 @@ override DOTS_TARGET 		:= ~/.git
 override XDG_CONFIG_HOME 	:= ~/.config
 override XDG_CONFIG_BAK 	:= ~/.config.bak
 override OS_NAME            ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
+override BREWFILE  			?= $(XDG_CONFIG_HOME)/script/Brewfile
+override REQUIREMENTS  		?= $(XDG_CONFIG_HOME)/script/requirements.txt
+override PACKAGES  			?= $(shell sed 's/#.*//' $(REQUIREMENTS))
 
 SHELL 						= /bin/bash
 DOTS 	 					= $(/usr/bin/git --git-dir="$(DOTS_TARGET)" --work-tree="$(HOME)")
@@ -41,6 +44,7 @@ puts: ## Echo environment variables
 	$(info "is_alpine => '$(is_alpine)' ✔")
 	$(info "HOMEBREW_PREFIX => '$(HOMEBREW_PREFIX)' ✔")
 	$(info "BREW_BIN => '$(BREW_BIN)' ✔")
+	$(info "PACKAGES => '$(PACKAGES)' ✔")
 
 .PHONY: docker/build
 docker/build: ## Buld Dockerfile
@@ -54,41 +58,18 @@ docker/run: ## Run Docker Container roalcantara/dots (docker run -it --rm --host
 docker/serve: ## Run Docker Container roalcantara/dots mounting ~/.config (docker run -it --rm --hostname dots -v ~/.config:/home/linuxbrew/.config roalcantara/dots)
 	docker compose run -v $(XDG_CONFIG_HOME):/home/linuxbrew/.config --rm dots
 
-.PHONY: brew/setup
-brew/setup: ## Setup Homebrew
-ifeq ($(shell command -v brew),)
-	$(info "[$(OS)][brew/setup] Setting up..")
-	yes | curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash -s
-endif
-	$(BREW_BIN) config
-
-.PHONY: brew/bundle
-brew/bundle: brew/setup ## Bundle Homebrew
-	$(BREW_BIN) bundle --verbose --file $(XDG_CONFIG_HOME)/script/Brewfile
-
-.PHONY: brew/configure
-brew/configure: brew/bundle ## Setup and bundle Homebrew
-
-.PHONY: prepare/debian
-prepare/debian: ## Ensure required dependencies
-	$(info "[prepare/$(OS)] Ensuring required dependencies..")
-	sudo apt-get update && sudo apt-get install --no-install-recommends -qqy sudo curl make bash git apt-utils ca-certificates build-essential && sudo update-ca-certificates && sudo apt-get autoremove && sudo apt-get clean && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/*
-
-.PHONY: prepare/alpine
-prepare/alpine: ## Ensure required dependencies
-	$(info "[prepare/$(OS)] Ensuring required dependencies..")
-	sudo apk -U --no-cache add sudo curl make bash git build-base gcc file coreutils gzip libc6-compat ncurses ruby ruby-bigdecimal ruby-etc ruby-irb ruby-json && sudo rm -f /tmp/* /etc/apk/cache/*
-	sudo ln -s /bin/touch /usr/bin/touch
-
-.PHONY: prepare/darwin
-prepare/darwin: ## Ensure Command Line Tools for Xcode is installed (https://developer.apple.com/forums/thread/698954)
+.PHONY: configure/xcode-cli-tools
+configure/xcode-cli-tools: ## Ensure Command Line Tools for Xcode is installed (https://developer.apple.com/forums/thread/698954)
 ifeq ($(shell command -v xcode-select),)
-	$(info "[prepare/$(OS)] Ensuring required dependencies..")
+	$(info "[configure/xcode-cli-tools] Ensuring required dependencies..")
 	# This temporary file prompts the 'softwareupdate' utility to list the Command Line Tools
 	touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
 	softwareupdate -ia "$(SOFTWARE_UPDATE)" --verbose;
 endif
-	$(info "[prepare/$(OS)] Setting defaults..")
+
+.PHONY: configure/macos
+configure/macos: ## Ensure Command Line Tools for Xcode is installed (https://developer.apple.com/forums/thread/698954)
+	$(info "[configure/macos] Setting defaults..")
 	defaults write -g ApplePressAndHoldEnabled -bool false
 	defaults write -g InitialKeyRepeat -int 10
 	defaults write -g KeyRepeat -int 1
@@ -99,8 +80,33 @@ endif
 	sudo chown -R $(whoami) /usr/local/share/man/man8
 	chmod u+w /usr/local/share/man/man8
 
+.PHONY: brew/setup
+brew/setup: ## Setup Homebrew
+ifeq ($(shell command -v brew),)
+	$(info "[$(OS)][brew/setup] Setting up..")
+	yes | curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash -s
+	$(BREW_BIN) config
+endif
+
+.PHONY: brew/configure
+brew/configure: brew/setup ## Setup and bundle Homebrew
+
+.PHONY: install/debian
+install/debian: ## Ensure required dependencies
+	$(info "[install/$(OS)] Ensuring required dependencies..")
+	sudo apt-get update && sudo apt-get install --no-install-recommends -qqy $(PACKAGES) && sudo apt-get autoremove && sudo apt-get clean && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+
+.PHONY: install/alpine
+install/alpine: ## Ensure required dependencies
+	$(info "[install/$(OS)] Ensuring required dependencies..")
+	sudo apk -U --no-cache add $(PACKAGES) && sudo rm -f /tmp/* /etc/apk/cache/*
+
+.PHONY: install/darwin
+install/darwin: configure/xcode-cli-tools configure/macos brew/configure ## Ensure Command Line Tools for Xcode is installed (https://developer.apple.com/forums/thread/698954)
+	$(BREW_BIN) bundle --verbose --file $(BREWFILE)
+
 .PHONY: configure/$(OS)
-configure/$(OS): prepare/$(OS) brew/configure ## Configure darwin defaults
+configure/$(OS): install/$(OS) ## Configure darwin defaults
 
 .PHONY: install
 install: puts configure/$(OS) $(XDG_CONFIG_HOME) ## Install Dotfiles
