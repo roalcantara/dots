@@ -35,7 +35,7 @@ export HISTFILESIZE=2000
 # NVIM {
   # +BundleInstall +qall, Install all vim bundles
   # https://superuser.com/a/874924/389767
-  if command -v nvim >/dev/null; then
+  if type nvim >/dev/null; then
     export EDITOR=$(which nvim)
     export VIM_PATH=$XDG_CONFIG_HOME/nvim
     export MYVIMRC=$VIM_PATH/init.lua
@@ -48,7 +48,7 @@ export HISTFILESIZE=2000
 # }
 
 # TERMINAL {
-  if command -v kitty >/dev/null; then
+  if type kitty >/dev/null; then
     export KITTY_CONFIG_DIRECTORY=$XDG_CONFIG_HOME/kitty
     if [ -f /Applications/kitty.app/Contents/MacOS/kitty ]; then
       export TERMINAL=/Applications/kitty.app/Contents/MacOS/kitty
@@ -61,7 +61,7 @@ export HISTFILESIZE=2000
 # GNUPG {
   # The GNU Privacy Guard
   # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration.html
-  if command -v gpg >/dev/null; then
+  if type gpg >/dev/null; then
     # needed for git PGP-signed commits
     # also needed for sops
     export GPG_TTY=$(tty)
@@ -107,14 +107,13 @@ fi
     export HOMEBREW_PREFIX=/usr/local
   else
     export HOMEBREW_PREFIX=~/.linuxbrew
+    eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
   fi
 
   if test -e $HOMEBREW_PREFIX/bin/brew; then
     export HOMEBREW_NO_ENV_HINTS=1                                  # Hide hints
     export HOMEBREW_NO_ANALYTICS=1                                  # Disabled analytics
-    export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/bin:$PATH"   # Add to PATH
-    export HOMEBREW_BUNDLE_FILE=$XDG_CONFIG_HOME/brewfile/Brewfile  # https://homebrew-file.readthedocs.io/en/latest/usage.html
-    eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+    export HOMEBREW_BUNDLE_FILE=$XDG_CONFIG_HOME/script/Brewfile    # https://homebrew-file.readthedocs.io/en/latest/usage.html
   fi
 # }
 
@@ -123,6 +122,7 @@ fi
     # set PATH so it includes user's private bin if it exists
     "${XDG_CONFIG_HOME}"/bin
     /usr/local/{bin,sbin}
+    "${HOMEBREW_PREFIX}"/{bin,sbin}
     "${path[@]}"
   )
 # }
@@ -137,6 +137,7 @@ fi
   export -a cdpath=(
     "${HOME}"
     "${XDG_CONFIG_HOME}"
+    "${VIM_PATH}"
     "${cdpath[@]}"
   )
 # }

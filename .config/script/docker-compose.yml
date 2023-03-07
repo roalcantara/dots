@@ -1,0 +1,24 @@
+version: '3.8'
+
+# docker compose build --no-cache
+services:
+
+  dots: # docker compose run --rm -v $PWD:/app dots
+    hostname: linuxbrew
+    build:
+      context: ~/.config/script
+      target: dots
+    # configures service containers to run with an allocated stdin (docker run -i)
+    stdin_open: true
+    # configure service container to run with a TTY (docker run -t)
+    tty: true
+
+  gitpod: # docker compose run --rm -v $PWD:/app gitpod
+    hostname: cockpit
+    build:
+      context: ~/.config/script
+      target: gitpod
+    # configures service containers to run with an allocated stdin (docker run -i)
+    stdin_open: true
+    # configure service container to run with a TTY (docker run -t)
+    tty: true
