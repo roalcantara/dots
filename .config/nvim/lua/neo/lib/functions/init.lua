@@ -1,7 +1,0 @@
-require('neo/lib/functions/equals')
-require('neo/lib/functions/extract')
-require('neo/lib/functions/get')
-require('neo/lib/functions/has')
-require('neo/lib/functions/imports')
-require('neo/lib/functions/set')
-return require('neo/lib/functions/try-catch')

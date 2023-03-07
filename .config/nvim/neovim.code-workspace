@@ -2,12 +2,6 @@
   "folders": [
     {
       "path": "."
-    },
-    {
-      "path": "../pet"
-    },
-    {
-      "path": "../../../../Volumes/etc 1/Work/Docker/cockpit"
     }
   ],
   "extensions": {

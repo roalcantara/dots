@@ -4,6 +4,6 @@
 -- ██║╚██╗██║╚██╗ ██╔╝██║██║╚██╔╝██║
 -- ██║ ╚████║ ╚████╔╝ ██║██║ ╚═╝ ██║██╗
 -- ╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝
-require('core/options')
-require('core/plugins')
-require('core/theme')
+require('options')
+require('plugins')
+require('theme')
