@@ -46,8 +46,8 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         push: true
-        context: .config
-        file: .config/Dockerfile
+        context: .config/script
+        file: .config/script/Dockerfile
         target: ${{ matrix.target }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
