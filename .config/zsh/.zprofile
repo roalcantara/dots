@@ -8,3 +8,8 @@
 # ZSH {
   export ZSH_VERSION="$(zsh --version | cut -d ' ' -f2)"
 # }
+
+# ~/.profile
+if [ -f ~/.profile ]; then
+  . ~/.profile
+fi

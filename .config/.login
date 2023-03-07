@@ -6,45 +6,6 @@
 #
 # Contains login specific initialization
 
-# PATH {
-  # An array of directories to search for commands.
-  # When this parameter is set, each directory is scanned and all files found are put in a hash table.
-  # typeset -U PATH prevents duplicates of PATH variables.
-  # http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-path
-  # https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x
-  # https://towardsdatascience.com/my-path-variable-is-a-mess-e52f22bfa520
-  # https://koenwoortman.com/zsh-add-directory-to-path/
-  export -a path=(
-    ${path[@]}
-  )
-# }
-
-# FPATH {
-  # An array of directories specifying the search path for function definitions.
-  # This path is searched when a function with the -u attribute is referenced. If an executable file is found, then it is read and executed in the current environment.
-  # typeset -U PATH prevents duplicates of PATH variables.
-  # http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-fpath
-  export -a fpath=(
-    ${fpath[@]}
-  )
-# }
-
-# CDPATH {
-  # An array of directories specifying the search path for the cd command.
-  # typeset -U PATH prevents duplicates of PATH variables.
-  # http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-cdpath
-  export -a cdpath=(
-    ${VIM_PATH}
-    ${cdpath[@]}
-  )
-# }
-
-# MANPATH {
-  export -a manpath=(
-    ${manpath[@]}
-  )
-# }
-
 # COLORS {
 export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
@@ -116,7 +77,6 @@ if type asdf >/dev/null; then
   export ASDF_CONFIG_FILE=$ASDF_CONFIG_HOME/asdfrc
   export ASDF_DATA_DIR=$XDG_DATA_HOME/asdf
   export ASDF_DIRENV_VERSION='2.32.2'
-  export ASDF_DIRENV_BIN=$(asdf which direnv)
 
   # ASDF-RUBY {{
   # Ruby plugin for asdf version manager

@@ -7,9 +7,6 @@
 # https://zsh.sourceforge.io/Contrib/startup/std/zshrc
 # Contains commands that loads shell options, aliases, functions, key bindings and plugins
 
-# Use viins keymap as the default.
-bindkey -v
-
 # profilling:
 #   z_prof=1 "$SHELL" -ilc exit
 #   z_prof=1; for _ in $(seq 1 10); do /usr/bin/time "${SHELL}" -ilc exit; done
@@ -26,9 +23,10 @@ if [[ -n "$z_trace" || -n "$z_xtrace" ]]; then
   setopt XTRACE
 fi
 
-for f in ${XDG_CONFIG_HOME:-$HOME/.config}/{zsh/opt/include/*.zsh(N),.login}; do
-  source $f;
-done
+bindkey -v
+source ~/.config/zsh/opt/include/autoload.zsh;
+source ~/.config/.login;
+source ~/.config/zsh/opt/include/compile.zsh;
 
 [ -n "$z_prof" ] && zprof;
 if [[ -n "$z_trace" || -n "$z_xtrace" ]]; then

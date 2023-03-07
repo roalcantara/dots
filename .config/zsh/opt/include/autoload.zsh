@@ -12,7 +12,7 @@
     # https://www.notion.so/zrcsh-de5aadec10644fe88cb5a6d51b9bf202
     # https://github.com/zsh-users/zsh/blob/master/Functions/Chpwd/cdr
     zstyle ':chpwd:' recent-dirs-default true
-    zstyle ':chpwd:' recent-dirs-file $ZSH_CACHE_DIR/chpwd-recent-dirs
+    zstyle ':chpwd:' recent-dirs-file ~/.cache/zsh/chpwd-recent-dirs
     zstyle ':chpwd:' recent-dirs-max 100
     zstyle ':chpwd:*' recent-dirs-pushd true
     zstyle ':completion:*' recent-dirs-insert both
@@ -38,7 +38,6 @@
     setopt    BANG_HIST                               # Treat The '!' Character Specially During Expansion.
     setopt    SHARE_HISTORY                           # Share History Between All Sessions. This option both imports new commands from the history file, and also causes your typed commands to be appended to the history file (the latter is like specifying INC_APPEND_HISTORY, which should be turned off if this option is in effect). The history lines are also output with timestamps ala EXTENDED_HISTORY (which makes it easier to find the spot where we left off reading the file after it gets re-written).
     setopt    HIST_IGNORE_DUPS                        # DO NOT Record An Event That Was Just Recorded Again.
-    # setopt    HIST_FIND_NO_DUPS                       # DO NOT Display A Previously Found Event.
     setopt    HIST_IGNORE_SPACE                       # DO NOT Record An Event Starting With A Space.
     setopt    HIST_REDUCE_BLANKS                      # Remove superfluous blanks from each command line being added to the history list.
     setopt    HIST_VERIFY                             # DO NOT Execute Immediately Upon History Expansion.
@@ -116,7 +115,7 @@
 
     # Cache {
       zstyle ':completion:*' use-cache yes
-      zstyle ':completion:*' cache-path $ZSH_COMPCACHE
+      zstyle ':completion:*' cache-path ~/.cache/zsh/compcache
     # }
 
     # Group matches and describe {
@@ -124,7 +123,6 @@
       zstyle ':completion:*:matches'      group 'yes'
       zstyle ':completion:*:options'      description 'yes'
       zstyle ':completion:*:options'      auto-description '%d'
-      zstyle ':completion:*:functions'    ignored-patterns '(_*|pre(cmd|exec))'
       zstyle ':completion:*:messages'     format '%B%F{purple} -- %d --%f%b'
       zstyle ':completion:*:warnings'     format '%B%F{red}no matches found...%f%b'
       zstyle ':completion:*:corrections'  format '%B%F{green} -- %d --%f%F{magenta}(errors: %e)%f%b'
@@ -137,10 +135,6 @@
 
     # Increase the number of errors based on the length of the typed word. But make sure to cap (at 7) the max-errors to avoid hanging {
       zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
-    # }
-
-    # Don't complete unavailable commands {
-      zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
     # }
 
     # Array completion element sorting {
@@ -193,7 +187,6 @@
       zstyle ':completion:*:(ssh|scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
       zstyle ':completion:*:(scp|rsync):*' group-order users files all-files hosts-domain hosts-host hosts-ipaddr
       zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hosts-ipaddr
-      zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
       zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
       zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
     # }
@@ -202,18 +195,29 @@
       zstyle ':completion:*:*:docker:*' option-stacking yes
       zstyle ':completion:*:*:docker-*:*' option-stacking yes
     # }
-  # }
 
-  # JOB CONTROL {
-    # https://zsh.sourceforge.io/Doc/Release/Options.html#Job-Control
-    # setopt    NO_HUP                            # DO NOT Send the HUP signal to running jobs when the shell exits
-    # setopt    NO_CHECK_JOBS                     # DO NOT Report the status of background and suspended jobs before exiting a shell with job control; a second attempt to exit the shell will succeed
+    # Don't complete uninteresting stuff unless we really want to {
+      zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec)|TRAP*)'
+      zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
+      zstyle ':completion:*:*:*:users' ignored-patterns \
+          adm amanda apache at avahi avahi-autoipd beaglidx bin cacti canna \
+          clamav daemon dbus distcache dnsmasq dovecot fax ftp games gdm \
+          gkrellmd gopher hacluster haldaemon halt hsqldb ident junkbust kdm \
+          ldap lp mail mailman mailnull man messagebus mldonkey mysql nagios \
+          named netdump news nfsnobody nobody nscd ntp nut nx obsrun openvpn \
+          operator pcap polkitd postfix postgres privoxy pulse pvm quagga radvd \
+          rpc rpcuser rpm rtkit scard shutdown squid sshd statd svn sync tftp \
+          usbmux uucp vcsa wwwrun xfs cron mongodb nullmail portage redis \
+          shoutcast tcpdump '_*'
+      zstyle ':completion:*' single-ignored show
+    # }
   # }
 # }
 
 # ZSH_PARAMETERS {
   # HISTORY {
     export DIRSTACKSIZE=100
+    export HISTFILE=~/.local/share/zsh/.zsh_history
   # }
 
   # REPORTING {
@@ -261,7 +265,7 @@
     # http://zsh.sourceforge.io/Doc/Release/Parameters.html#index-fpath
     fpath=(
       ~/.bin
-      ${XDG_CONFIG_HOME:-$HOME/.config}/zsh/opt/completions
+      ~/.config/zsh/opt/completions
       ${fpath[@]}
     )
   # }
@@ -271,7 +275,7 @@
     # typeset -U PATH prevents duplicates of PATH variables.
     # http://zsh.sourceforge.io/Doc/Release/Parameters.html#index-cdpath
     cdpath=(
-      ${XDG_CONFIG_HOME:-$HOME/.config}/zsh
+      ~/.config/zsh
       ${cdpath[@]}
     )
   # }
@@ -288,6 +292,6 @@
     # A function can be marked as undefined using the autoload builtin (or ‘functions -u’ or ‘typeset -fu’).
     # Such a function has no body. When the function is first executed, the shell searches for its definition using the elements of the fpath variable.
     # http://zsh.sourceforge.io/Doc/Release/Functions.html#Autoloading-Functions
-    autoload -Uz "${XDG_CONFIG_HOME:-$HOME/.config}/bin"/^(.*|*.zwc*)(.:t)
+    autoload -Uz ~/.config/bin/^(.*|*.zwc*)(.:t)
   # }}
 # }
