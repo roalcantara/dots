@@ -1,3 +1,10 @@
+## [1.11.7](https://github.com/roalcantara/dots/compare/v1.11.6...v1.11.7) (2023-03-07)
+
+
+### Bug Fixes
+
+* **ci:** Fix publish docker context ([d2772b2](https://github.com/roalcantara/dots/commit/d2772b2b55d69de2aeb63ee6f0c997b389cfe283))
+
 ## [1.11.6](https://github.com/roalcantara/dots/compare/v1.11.5...v1.11.6) (2023-03-07)
 
 
