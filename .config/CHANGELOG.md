@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/roalcantara/dots/compare/v1.11.7...v1.12.0) (2023-03-07)
+
+
+### Features
+
+* **setup:** Configure Homebrew ([7569431](https://github.com/roalcantara/dots/commit/75694319144ea3e8a6c7eb15648ea50d7736be38))
+
 ## [1.11.7](https://github.com/roalcantara/dots/compare/v1.11.6...v1.11.7) (2023-03-07)
 
 
