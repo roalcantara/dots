@@ -1,3 +1,12 @@
+## [1.11.6](https://github.com/roalcantara/dots/compare/v1.11.5...v1.11.6) (2023-03-07)
+
+
+### Bug Fixes
+
+* **docker:** Use alpine3 as base ([bc55d0b](https://github.com/roalcantara/dots/commit/bc55d0beb3258659ba5e9ec0c8c867e45b775c73))
+* **nvim:** Arrange files ([0e61996](https://github.com/roalcantara/dots/commit/0e61996445d51829aa7997154db6249eca327b14))
+* **zsh:** Arrange files ([5ff5eb7](https://github.com/roalcantara/dots/commit/5ff5eb77645ddcbdd7aa51c7ba1b1d74f07a0db6))
+
 ## [1.11.5](https://github.com/roalcantara/dots/compare/v1.11.4...v1.11.5) (2023-03-03)
 
 
