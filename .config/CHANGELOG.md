@@ -1,3 +1,11 @@
+# [1.14.0](https://github.com/roalcantara/dots/compare/v1.13.0...v1.14.0) (2023-03-08)
+
+
+### Features
+
+* **fig:** Add fig ([0610bdf](https://github.com/roalcantara/dots/commit/0610bdf294a5ffb081839c9a30c4edb7e7f5d410))
+* **zsh:** Add sheldon and packages ([74b94f2](https://github.com/roalcantara/dots/commit/74b94f201f90bbac83ecf4ef2c5fdef6430847be))
+
 # [1.13.0](https://github.com/roalcantara/dots/compare/v1.12.0...v1.13.0) (2023-03-07)
 
 
