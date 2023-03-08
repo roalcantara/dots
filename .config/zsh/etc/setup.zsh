@@ -24,3 +24,10 @@ fi
 # Provides a menu list from where we can highlight and select completion results.
 # Should be loaded before compinit (https://htr3n.github.io/2018/07/faster-zsh)
 zmodload -i zsh/complist
+
+[ -n "$z_prof" ] && zprof;
+if [[ -n "$z_trace" || -n "$z_xtrace" ]]; then
+  unsetopt XTRACE
+fi
+
+type source_file >/dev/null && unset -f source_file

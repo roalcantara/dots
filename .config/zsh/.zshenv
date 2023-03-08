@@ -5,6 +5,22 @@
 # Contains commands and set variables that should be available to other programs
 # http://zsh.sourceforge.net/Intro/intro_3.html
 
+# profilling:
+#   z_prof=1 "$SHELL" -ilc exit
+#   z_prof=1; for _ in $(seq 1 10); do /usr/bin/time "${SHELL}" -ilc exit; done
+# tracing
+#   z_prof=1 z_trace=1 "$SHELL" -ilc exit
+#   z_prof=1 z_trace=1 z_bug=1 "$SHELL" -ilc exit
+[ -n "$z_prof" ] && zmodload zsh/zprof;
+if [[ -n "$z_trace" || -n "$z_xtrace" ]]; then
+  if [ -n "$z_xtrace" ]; then
+    zmodload zsh/datetime
+    setopt PROMPT_SUBST
+    PS4='$EPOCHREALTIME#%N:%i => '
+  fi
+  setopt XTRACE
+fi
+
 # Only source this once
 if [[ -z "$__HM_ZSH_SESS_VARS_SOURCED" ]]; then
   export __HM_ZSH_SESS_VARS_SOURCED=1

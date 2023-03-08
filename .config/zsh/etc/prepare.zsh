@@ -1,3 +1,7 @@
+source_file() {
+  test -f "$1" && source "$1"
+}
+
 # # ZSH OPTIONS
   # CHANGING DIRECTORIES OPTIONS {
     # http://zsh.sourceforge.io/Doc/Release/Options.html#Changing-Directories
