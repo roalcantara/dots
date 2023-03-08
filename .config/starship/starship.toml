@@ -1,0 +1,214 @@
+# Style Strings
+# Style strings are a list of words, separated by whitespace.
+# The words are not case sensitive (i.e. bold and BoLd are considered the same string).
+# Each word can be one of the following: bold, italic, underline, dimmed, inverted, blink, hidden, strikethrough, bg:<color>, fg:<color>, <color>, none
+# where <color> is a color specifier.
+#       fg:<color> and <color> currently do the same thing, though this may change in the future.
+#       inverted swaps the background and foreground colors.
+# The order of words in the string does not matter.
+
+# A color specifier can be one of the following:
+
+# The none token overrides all other tokens in a string if it is not part of a bg: specifier, so that e.g. fg:red none fg:blue will still create a string with no styling.
+# bg:none sets the background to the default color so fg:red bg:none is equivalent to red or fg:red and bg:green fg:red bg:none is also equivalent to fg:red or red.
+# It may become an error to use none in conjunction with other tokens in the future.
+
+# A color specifier can be one of the following:
+#   - One of the standard terminal colors:
+#     black, red, green, blue, yellow, purple, cyan, white
+#     bright-black, bright-red, bright-green, bright-blue, bright-yellow, bright-purple, bright-cyan, bright-white
+#   - A # followed by a six-digit hexadecimal number.
+#     This specifies an RGB color hex code (opens new window).
+#   - A number between 0-255.
+#     This specifies an 8-bit ANSI Color Code (opens new window).
+
+# Disable the newline at the start of the prompt
+add_newline    =false
+command_timeout=500
+scan_timeout   =10
+
+# Warning: This config does not include keys that have an unset value
+# https://starship.rs/config/#default-prompt-format
+format="""
+$directory\
+$docker_context\
+$package\
+$golang\
+$java\
+$kotlin\
+$nodejs\
+$python\
+$ruby\
+$lua\
+$pulumi\
+$gcloud\
+$azure\
+$nix_shell\
+$git_status\
+$git_branch\
+$git_state\
+$fill\
+$env_var\
+$status\
+$cmd_duration\
+$jobs\
+$time\
+$battery\
+$line_break\
+$shell\
+$character\
+"""
+
+[package]
+  symbol=' '
+
+[fill]
+  symbol=' '
+
+[git_status]
+  ahead   ='⇡${count}'
+  behind  ='⇣${count}'
+  diverged='⇕⇡${ahead_count}⇣${behind_count}'
+
+[git_branch]
+  format='[$symbol $branch(:$remote_branch)]($style) '
+  symbol=''
+  style ='bright-cyan bold'
+
+[character]
+  disabled      =false
+  error_symbol  ='[󱗗 ](bold red)'
+  format        ='[$symbol]($style)'
+  success_symbol='[󰈸 ](bold green)'
+
+[nix_shell]
+  disabled  =true
+  format    ='[☃️ $state( \($name\))](blue) '
+  impure_msg='[impure shell](red)'
+  pure_msg  =' [pure shell](green)'
+
+[gcloud]
+  disabled=false
+  format  ='[$symbol$project]($style) '
+  symbol  =' '
+
+[line_break]
+  disabled=false
+
+[kotlin]
+  disabled=false
+  symbol  ='🅺 '
+
+[shell]
+  disabled=false
+  format  ='($style) '
+
+[status]
+  disabled             =false
+  format               ='[$symbol$common_meaning$signal_name$maybe_int]($style) '                   # The format of the module '[$symbol$status]($style) '
+  symbol               =' '                                                                        # The symbol displayed on program error
+  success_symbol       =''                                                                          # The symbol displayed on program success
+  not_executable_symbol='󰅝 '                                                                        # The symbol displayed when file isn't executable
+  not_found_symbol     ='󰜺 '                                                                        # The symbol displayed when the command can't be found
+  sigint_symbol        ='󰯈 '                                                                        # The symbol displayed on SIGINT (Ctrl + c)
+  signal_symbol        =''                                                                          # The symbol displayed on any signal
+  style                ='bold red'                                                                  # The style for the module.
+  recognize_signal_code=true                                                                        # Enable signal mapping from exit code
+  map_symbol           =true                                                                        # Enable symbols mapping from exit code
+  pipestatus           =false                                                                       # Enable pipestatus reporting
+  pipestatus_separator ='|'                                                                         # The symbol used to separate pipestatus segments (supports formatting)
+  pipestatus_format    ='\[$pipestatus\] => [$symbol$common_meaning$signal_name$maybe_int]($style)' # The format of the module when the command is a pipeline
+  # pipestatus_segment_format =		# When specified, replaces format when formatting pipestatus segments
+
+[battery]
+  disabled=false
+  format  ='[$symbol]($style)'
+
+[[battery.display]]
+  charging_symbol   ='󰂆'
+  discharging_symbol=''
+  style             ='red'
+  threshold         =20    # %
+
+[[battery.display]]
+  charging_symbol   ='󰢝'
+  discharging_symbol=''
+  style             ='bright-yellow'
+  threshold         =50              # %
+
+[[battery.display]]
+  charging_symbol   ='󰢞'
+  discharging_symbol=''
+  style             ='yellow'
+  threshold         =70       # %
+
+[[battery.display]]
+  charging_symbol   ='󰂋'
+  discharging_symbol=''
+  style             ='green'
+  threshold         =90      # %
+
+[[battery.display]]
+  charging_symbol   ='󰂅'
+  discharging_symbol=''
+  style             ='green'
+  threshold         =100     # %
+
+[directory]
+  disabled                 =false
+  fish_style_pwd_dir_length=1
+  format                   ='[$path]($style)[$read_only]($read_only_style) '
+  home_symbol              ='~'
+  read_only                =''
+  read_only_style          ='bold blue dimmed'
+  style                    ='bold blue'
+  truncate_to_repo         =true
+  truncation_length        =1
+  truncation_symbol        =''
+  use_logical_path         =true
+  use_os_path_sep          =true                                             # '/' for Linux/MacOS or other UNIX based systems; '\' for Windows
+
+  # [directory.substitutions]
+  # '.config'  ='󱜚'
+  # 'Documents'=''
+  # 'Downloads'=''
+  # 'Music'    =''
+  # 'Pictures' =''
+  # '~'        =''
+  # '/etc' =
+  # '/tmp' =
+  # '/var' =
+  # '/root' =
+  # '/mnt' =
+  # '/usr' =
+  # '/home' =
+  # '/bin' =
+  # '/boot' =
+  # '/dev' =
+  # '/init' =
+  # '/lib' =
+  # '/lib64' =
+  # '/lost+found' =
+  # '/media' =
+  # '/opt' =
+  # '/proc' =
+  # '/run' =
+  # '/sbin' =
+  # '/srv' =
+  # '/sys' =
+
+[time]
+  disabled       =false
+  format         ='[$time ]($style)'
+  style          ='bright-black dimmed'
+  time_format    ='%H:%M:%S'
+  use_12hr       =false
+  utc_time_offset='local'
+
+[jobs]
+  disabled        =false
+  symbol          =' 󱫡 '
+  number_threshold=2
+  symbol_threshold=1
+  style           ='bold bright-yellow dimmed blink'
+  format          ='[$number$symbol]($style) '

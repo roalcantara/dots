@@ -1,0 +1,23 @@
+[General]
+  backend    ="gist"                                                                                                                                                                                            # specify backend service to sync snippets (gist or gitlab, default: gist)
+  column     =40                                                                                                                                                                                                # column size for list command
+  editor     ="nvim"                                                                                                                                                                                            # your favorite text editor
+  selectcmd  ="fzf --ansi --exact --exit-0 --delimiter ']:' --cycle --header=' Snippets' --height=40 --preview-window=down,3 --preview 'echo {2} | bat --color=always --style=numbers,changes --language zsh'" # selector command for edit command (fzf or peco)
+  snippetfile="/Users/roalcantara/.config/pet/snippet.toml"
+  sortby     ="recency"                                                                                                                                                                                         # specify how snippets get sorted (recency (default), -recency, description, -description, command, -command, output, -output)
+
+  # [Gist]
+  #   access_token=""
+  #   auto_sync   =false
+  #   file_name   ="pet-snippet.toml"
+  #   gist_id     =""
+  #   public      =false
+
+  # [GitLab]
+  #   access_token=""
+  #   auto_sync   =false
+  #   file_name   ="pet-snippet.toml"
+  #   id          =""
+  #   skip_ssl    =false
+  #   url         =""
+  #   visibility  ="private"

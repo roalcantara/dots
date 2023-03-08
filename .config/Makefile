@@ -5,6 +5,7 @@ override DOTS_REPO 			:= https://github.com/roalcantara/dots
 override DOTS_TARGET 		:= ~/.git
 override XDG_CONFIG_HOME 	:= ~/.config
 override XDG_CONFIG_BAK 	:= ~/.config.bak
+override SHELDON_DATA_DIR 	:= ~/.local/share/sheldon
 override OS_NAME            ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 override BREWFILE  			?= $(XDG_CONFIG_HOME)/script/Brewfile
 override REQUIREMENTS  		?= $(XDG_CONFIG_HOME)/script/requirements.txt
@@ -91,26 +92,36 @@ endif
 .PHONY: brew/configure
 brew/configure: brew/setup ## Setup and bundle Homebrew
 
-.PHONY: install/debian
-install/debian: ## Ensure required dependencies
-	$(info "[install/$(OS)] Ensuring required dependencies..")
-	sudo apt-get update && sudo apt-get install --no-install-recommends -qqy $(PACKAGES) && sudo apt-get autoremove && sudo apt-get clean && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+.PHONY: zsh/sheldon/setup
+zsh/sheldon/setup: $(SHELDON_DATA_DIR) ## Setup ZSH
+	$(info "[$(OS)][zsh/setup] Ensuring required dependencies..")
 
-.PHONY: install/alpine
-install/alpine: ## Ensure required dependencies
-	$(info "[install/$(OS)] Ensuring required dependencies..")
-	sudo apk -U --no-cache add $(PACKAGES) && sudo rm -f /tmp/* /etc/apk/cache/*
+.PHONY: configure/debian
+configure/debian: zsh/sheldon/setup ## Ensure required dependencies
+	$(info "[configure/$(OS)] Ensuring required dependencies..")
+	sudo apt-get update && sudo apt-get install --no-install-recommends -qqy $(PACKAGES)
+	sudo apt-get autoremove && sudo apt-get clean && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/*
 
-.PHONY: install/darwin
-install/darwin: configure/xcode-cli-tools configure/macos brew/configure ## Ensure Command Line Tools for Xcode is installed (https://developer.apple.com/forums/thread/698954)
+.PHONY: configure/alpine
+configure/alpine: zsh/sheldon/setup ## Ensure required dependencies
+	$(info "[configure/$(OS)] Ensuring required dependencies..")
+	sudo apk -U --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing add $(PACKAGES)
+	sudo rm -f /tmp/* /etc/apk/cache/*
+
+.PHONY: configure/darwin
+configure/darwin: configure/xcode-cli-tools configure/macos brew/configure zsh/sheldon/setup ## Ensure Command Line Tools for Xcode is installed (https://developer.apple.com/forums/thread/698954)
+	$(info "[configure/$(OS)] Ensuring required dependencies..")
 	$(BREW_BIN) bundle --verbose --file $(BREWFILE)
-
-.PHONY: configure/$(OS)
-configure/$(OS): install/$(OS) ## Configure darwin defaults
 
 .PHONY: install
 install: puts configure/$(OS) $(XDG_CONFIG_HOME) ## Install Dotfiles
 	$(info "[$(OS)][install] ✔✔")
+
+$(SHELDON_DATA_DIR):
+ifneq ($(shell command -v sheldon),)
+	$(info "[$(OS)][zsh/sheldon] Locking '$(SHELDON_DATA_DIR)'..")
+	sheldon lock
+endif
 
 $(DOTS_TARGET):
 	$(info "[$(OS)][Dots] Cloning '$(DOTS_REPO)'..")
