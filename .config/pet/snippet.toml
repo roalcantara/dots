@@ -1,0 +1,5956 @@
+[[snippets]]
+  command    ="find <PATH=.> -type file"
+  description="Find files"
+  tag        =["find", "files"]
+
+[[snippets]]
+  command    ="find <PATH=.> -daystart -mtime -7 -delete"
+  description="Find and DELETES files modified in the last 7 days"
+  tag        =["find", "files"]
+
+[[snippets]]
+  command    ="find <PATH=.> -type f -empty -delete"
+  description="Find and DELETES empty - 0 byte - files"
+  tag        =["find", "files"]
+
+[[snippets]]
+  command    ="find <PATH=.> -type d"
+  description="Find dirs"
+  tag        =["find", "dirs"]
+
+[[snippets]]
+  command    ="find <PATH=.> -name'/**/*.<EXT>'"
+  description="Find files with extension"
+  tag        =["find", "extension"]
+
+[[snippets]]
+  command    ="find <PATH=.> -name'*.<EXT>' -not -path'*/<TARGET>/*'"
+  description="Find files with extension excluding paths"
+  tag        =["find", "extension"]
+
+[[snippets]]
+  command    ="find <PATH=.> -t file -maxdepth <MAX>"
+  description="Find files - W/ MAX RECURSIVE DEPTH"
+  tag        =["find", "files"]
+
+[[snippets]]
+  command    ="find <PATH=.> -name'/**/*<TERM>*'"
+  description="Find files matching TERM - CASE-SENSITIVE"
+  tag        =["find", "files"]
+
+[[snippets]]
+  command    ="find <PATH=.> -iname'/**/*<TERM>*'"
+  description="Find files matching TERM - CASE-INSENSITIVE"
+  tag        =["find", "files"]
+
+[[snippets]]
+  command    ="find <PATH=.> -path'/**/*.<EXT>' -or -name'*<TERM>*'"
+  description="Find files matching extension or name name"
+  tag        =["find", "files"]
+
+[[snippets]]
+  command    ="find <PATH=.> -maxdepth <MAX> -size +500k -size -10M"
+  description="Find files which size ranges from +500k to 10M - RECURSIVE DEPTH: MAX"
+  tag        =["find", "files"]
+
+[[snippets]]
+  command    ="find <PATH=.> -type d -name'*<TERM>*'"
+  description="Find dirs matching *TERM* - CASE-SENSITIVE"
+  tag        =["find", "dirs"]
+
+[[snippets]]
+  command    ="find <PATH=.> -type d -iname'*<TERM>*'"
+  description="Find dirs matching *TERM* - CASE-INSENSITIVE"
+  tag        =["find", "dirs"]
+
+[[snippets]]
+  command    ="find <PATH=.> -mmin -<N> -type f"
+  description="Find files modified in the last N mins"
+  tag        =["find", "files"]
+
+[[snippets]]
+  command    ="find <PATH=.> -mmin -5 -type f"
+  description="Find files modified in the last 5 minutes"
+  tag        =["find", "files"]
+
+[[snippets]]
+  command    ="find <PATH=.> -name'<NAME>' -type d -prune"
+  description="Find dirs at current dir"
+  tag        =["find", "dirs"]
+
+[[snippets]]
+  command    ="find <PATH=.> -name'<DIR>' -type d -prune -exec rm -rf'{}' +;"
+  description="Find and delete all matching dirs"
+  tag        =["find", "dirs", "rm"]
+
+[[snippets]]
+  command    ="find <PATH=.> -name \"*.<NAME>\" -exec rename's/\\.<NAME>$/.<EXT>/''{}' +;"
+  description="Find files and change extensions"
+  tag        =["find", "files", "rename"]
+
+[[snippets]]
+  command    ="find <PATH=.> -name'*<TERM>*' -exec <CMD=wc -l> {} \\;"
+  description="Find files and execute CMD"
+  tag        =["find", "files", "exec"]
+
+[[snippets]]
+  command    ="find <PATH=.> -name'*.<EXT>' -exec <CMD=wc -l> {} \\;"
+  description="Execute a command for each file by extension"
+  tag        =["find", "extension", "exec"]
+
+[[snippets]]
+  command    ="find -L <PATH=/> -type l -exec rm -- {} +;"
+  description="Find and DELETES broken symlinks links"
+  tag        =["find", "symlinks", "rm"]
+
+[[snippets]]
+  command    ="find <PATH=/> -prune -o -depth +<LEVELS=6> -print"
+  description="Find all that are at least X levels deep"
+  tag        =["find", "level"]
+
+[[snippets]]
+  command    ="find <PATH=/> -user <USER=$USER> -print"
+  description="Find files owned by USER"
+  tag        =["find", "owned"]
+
+[[snippets]]
+  command    ="find <PATH=/> (-user <USER=$USER>) -print"
+  description="Find all NOT owned by USER"
+  tag        =["find", "notowner"]
+
+[[snippets]]
+  command    ="fd"
+  description="List all in current dir - RECURSIVELY"
+  tag        =["fd"]
+
+[[snippets]]
+  command    ="fd . <PATH>"
+  description="List all"
+  tag        =["fd", "inpath"]
+
+[[snippets]]
+  command    ="fd <PATTERN> <PATH>"
+  description="Find matching PATTERN"
+  tag        =["fd", "inpath"]
+
+[[snippets]]
+  command    ="fd --glob <PATTERN> <PATH>"
+  description="Find by term - w/ --glob"
+  tag        =["fd", "glob", "inpath"]
+
+[[snippets]]
+  command    ="fd . -type d"
+  description="Find directories"
+  tag        =["fd", "dirs"]
+
+[[snippets]]
+  command    ="fd . -name'*.<TERM>'"
+  description="List all whose name matches term"
+  tag        =["fd", "files"]
+
+[[snippets]]
+  command    ="fd'^<TERM>'"
+  description="List all whose name starts with term"
+  tag        =["fd", "files"]
+
+[[snippets]]
+  command    ="fd'^*.<TERM>$'"
+  description="List all whose name ends with term"
+  tag        =["fd", "files"]
+
+[[snippets]]
+  command    ="fd -H <NAME>"
+  description="Find files or directories - including hiddens"
+  tag        =["fd", "hidden"]
+
+[[snippets]]
+  command    ="fd --extension <EXT>"
+  description="Find files by extension"
+  tag        =["fd", "extension"]
+
+[[snippets]]
+  command    ="fd --hidden --no-ignore <PATTERN>"
+  description="Find files excluding .gitignore and hidden files"
+  tag        =["fd", "with_ignore", "no_hidden"]
+
+[[snippets]]
+  command    ="fd . -t directory {'<PATH1>','<PATH2>'}"
+  description="Find directories in multiple paths"
+  tag        =["fd", "dirs"]
+
+[[snippets]]
+  command    ="fd … -X ls -lhd --color=always"
+  description="Find and show details like file permissions, owners, file sizes"
+  tag        =["fd", "show"]
+
+[[snippets]]
+  command    ="fd -e <EXT=moon> -x mv {} <DIR=yue>/{.}"
+  description="Find and move all files by extension"
+  tag        =["fd", "mv"]
+
+[[snippets]]
+  command    ="fd -e <EXT=moon> -x mv {} {.}.<DIR=yue> -j1"
+  description="Find and rename files by extension - SINGULAR THREAD"
+  tag        =["fd", "files", "change"]
+
+[[snippets]]
+  command    ="fd -g'<TERM=test_*.py>' -X <CMD=vi>"
+  description="Find all matching terms and exec command for each one"
+  tag        =["fd", "exec"]
+
+[[snippets]]
+  command    ="fd -e zip -x unzip"
+  description="Find all zip archives and unpack them"
+  tag        =["fd", "unzip"]
+
+[[snippets]]
+  command    ="fd -g'<TERM=test_*.py>' -X vi"
+  description="Find all matching TERM and open them in vi"
+  tag        =["fd", "open"]
+
+[[snippets]]
+  command    ="fd -pHIg'*<TERM>*'"
+  description="Find all whose name contains TERM"
+  tag        =["fd", "files", "all"]
+
+[[snippets]]
+  command    ="zip -r <FILE> <DIR>"
+  description="Compress files into dir"
+  tag        =["zip"]
+
+[[snippets]]
+  command    ="unzip <FILE>"
+  description="Unpack file w/ unzip"
+  tag        =["zip", "extract"]
+
+[[snippets]]
+  command    ="tree -AC <DIR>"
+  description="Run tree - w/ ANSI, COLORED by LS_COLORS or TREE_COLORS"
+  tag        =["tree"]
+
+[[snippets]]
+  command    ="tree -L <DIR>"
+  description="Run tree - LONG FORMAT"
+  tag        =["tree", "long"]
+
+[[snippets]]
+  command    ="tree -i <DIR>"
+  description="Run tree  - NO IDENT"
+  tag        =["tree", "no_ident"]
+
+[[snippets]]
+  command    ="tree -f <DIR>"
+  description="Run tree - ONLY FILES"
+  tag        =["tree", "files"]
+
+[[snippets]]
+  command    ="tree -i -J <DIR>"
+  description="Run tree without WHITESPACES"
+  tag        =["tree", "no_withspaces"]
+
+[[snippets]]
+  command    ="tree -S <DIR>"
+  description="Run tree w/ GRAPHIC LINES"
+  tag        =["tree", "graph"]
+
+[[snippets]]
+  command    ="tree -n <DIR>"
+  description="Run tree for dir"
+  tag        =["tree", "no_color"]
+
+[[snippets]]
+  command    ="tar -czvf <FILE>.tar.gz folder"
+  description="Compress dir into .tar.gz - w/ progress"
+  tag        =["osx", "zip", "archive"]
+
+[[snippets]]
+  command    ="tar -xvf <NAME>.tar.gz"
+  description="Decompress .tar.gz"
+  tag        =["osx", "zip", "extract"]
+
+[[snippets]]
+  command    ="gzip <FILE>"
+  description="Compress single file w/ gzip"
+  tag        =["zip", "archive"]
+
+[[snippets]]
+  command    ="gunzip <FILE>"
+  description="Decompress file w/ gunzip"
+  tag        =["zip", "extract"]
+
+[[snippets]]
+  command    ="gzip *.<EXT>"
+  description="Compress files by extension w/ gzip"
+  tag        =["zip", "by_extension"]
+
+[[snippets]]
+  command    ="tar -xvzf <FILE>.tar.gz"
+  description="Decompress tar.gz - like unzip"
+  tag        =["zip", "extract"]
+
+[[snippets]]
+  command    ="tar -tzf <FILE>.tar.gz"
+  description="List contents of tar.gz"
+  tag        =["zip", "list"]
+
+[[snippets]]
+  command    ="tar -xvzf <FILE>.tar.gz -C <TARGET>"
+  description="Extract files from tar.gz"
+  tag        =["zip", "extract"]
+
+[[snippets]]
+  command    ="tar -xvf <FILE>.tar"
+  description="Extract files from tar"
+  tag        =["zip", "extract"]
+
+[[snippets]]
+  command    ="tar -cvzf <FILE>.tar.gz <PATH>"
+  description="Compress files into tar.gz"
+  tag        =["zip", "archive"]
+
+[[snippets]]
+  command    ="tar -cvf <FILE>.tar <PATH>"
+  description="Compress files into tar.gz"
+  tag        =["zip", "archive"]
+
+[[snippets]]
+  command    ="echo | openssl s_client <domain>:<port=433> 2> /dev/null | openssl x509 -dates -noout"
+  description="Show expiration date of SSL certificate"
+  tag        =["ssl", "expired"]
+
+[[snippets]]
+  command    ="mkdir -p /<PATH>/{<dir1>,<dir2>}"
+  description="Create two directories at once"
+  tag        =["dir"]
+
+[[snippets]]
+  command    ="leave +0330"
+  description="Remind to leave in 3 hours and 30 minutes"
+  tag        =["leave"]
+
+[[snippets]]
+  command    ="ls -al"
+  description="List files with permissions and dates"
+  tag        =["ls"]
+
+[[snippets]]
+  command    ="echo '<CONTENT>' > <FILE>"
+  description="Create file with contents"
+  tag        =["echo", "touch"]
+
+[[snippets]]
+  command    ="echo '<CONTENT>' >> <FILE>"
+  description="Appends to file"
+  tag        =["echo", "append"]
+
+[[snippets]]
+  command    ="locate <TERM>"
+  description="Quick locate files by term"
+  tag        =["locate"]
+
+[[snippets]]
+  command    ="grep <REGEX> <FILE>"
+  description="Grep term in file"
+  tag        =["grep"]
+
+[[snippets]]
+  command    ="grep -Iris <REGEX> <DIR>"
+  description="Grep term - RECURSIVELY"
+  tag        =["grep", "recursive"]
+
+[[snippets]]
+  command    ="sed's/<REGEX>/<TERM>/g' <FILE>"
+  description="Replace lines matching term from file and write to stdout"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed -i's/<REGEX>/<TERM>/g' <FILE>"
+  description="Replace lines matching term from file - GLOBAL"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="echo 'It is <FROM>time' | sed's/<REGEX>/<TERM>/g'"
+  description="Replace term on STDIN - GLOBAL"
+  tag        =["sed", "stdin"]
+
+[[snippets]]
+  command    ="sed'/<REGEX>/d' <FILE>"
+  description="Delete lines matching term from file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed'<FROM>,<TO>d' <FILE>"
+  description="Delete lines from file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed'<N>,$d' <FILE>"
+  description="Delete from nth to last line from file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed'<N>d' <FILE>"
+  description="Delete lines from file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed'$d' <FILE>"
+  description="Delete last line from file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed'<FROM>,<TO> s/<REGEX>/<TERM>/' <FILE>"
+  description="Replace term from a range in file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed's/<REGEX>/<TERM>/3,/g' <FILE>"
+  description="Replace 3rd, 4th, 5th occurrence a term in file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed's/<REGEX>/<TERM>/2' <FILE>"
+  description="Replace 2nd occurrence of term in file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed's/<REGEX>/<TERM>/g' <FILE>"
+  description="Replace term in line at file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed's/<REGEX>/<TERM>/' <FILE>"
+  description="Replace term in file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed's/<REGEX>/<TERM>/1' <FILE>"
+  description="Replace 1st occurrence of term in file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed -E's/(<w1>|<w2>|<w3>)/,/g'"
+  description="Replace multiple words at once"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed -E's/(<w1>|<w2>|<w3>)/,/gI'"
+  description="Replace multiple words at once (CASE INSENSITIVE)"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed':a;N;$!ba;s/\n//g' <FILE>"
+  description="Replace newlines in multiple lines from file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed's/<REGEX>.*/<TO>/g'"
+  description="Replace the whole line after matching term"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="sed'/^$/d' <FILE>"
+  description="Remove empty lines and print results to stdout from file"
+  tag        =["sed"]
+
+[[snippets]]
+  command    ="cut -d'<SEPARATOR=''> -f<n=1> <FILE>"
+  description="Cut nth separated by SEPARATOR from file"
+  tag        =["cut"]
+
+[[snippets]]
+  command    ="curlie <URL>"
+  description="Get content from URL"
+  tag        =["curlie"]
+
+[[snippets]]
+  command    ="curlie -f POST <URL> <ARGS>"
+  description="Submit to url - like FORM"
+  tag        =["curlie"]
+
+[[snippets]]
+  command    ="http -v <URL>"
+  description="Show a request being sent to url"
+  tag        =["http"]
+
+[[snippets]]
+  command    ="curlie <URL> < <FILE>"
+  description="Upload file to url - OFFLINE MODE"
+  tag        =["curlie"]
+
+[[snippets]]
+  command="curlie <URL> > <FILE>"
+  tag    =["curlie"]
+
+[[snippets]]
+  command    ="curlie --download <URL>"
+  description="Download file from url - wget style"
+  tag        =["curlie"]
+
+[[snippets]]
+  command    ="curlie -d <URL> | tar zxf -"
+  description="Download file from url and extracs with 'tar zxf'"
+  tag        =["curlie"]
+
+[[snippets]]
+  command    ="curlie <URL> | pup'<FIELD> text{}' --color --plain"
+  description="Extract fields from url"
+  tag        =["curlie"]
+
+[[snippets]]
+  command    ="gem list"
+  description="List all gems"
+  tag        =["ruby", "gems"]
+
+[[snippets]]
+  command    ="gem install <GEM>"
+  description="Install gem"
+  tag        =["ruby", "gems"]
+[[snippets]]
+  command    ="gem install rails"
+  description="Install rails"
+  tag        =["gem", "rails"]
+
+[[snippets]]
+  command    ="gem install bundler"
+  description="Install bundler"
+  tag        =["gem", "bundler"]
+
+[[snippets]]
+  command    ="gem install bundler rails"
+  description="Install bundler and rails"
+  tag        =["gem", "rails", "bundler"]
+
+[[snippets]]
+  command    ="rails new <APP>"
+  description="Create Rails app /w SQLite3"
+  tag        =["rails"]
+
+[[snippets]]
+  command    ="rails new <APP> && cd <APP> && bundle install"
+  description="Create Rails app /w SQLite3 with all deps"
+  tag        =["rails"]
+
+[[snippets]]
+  command    ="rails new <APP> --database=postgresql"
+  description="Create Rails app /w Postgres"
+  tag        =["rails"]
+
+[[snippets]]
+  command    ="rails new <APP> --database=postgresql && cd <APP> && bundle install"
+  description="Create Rails app /w Postgres with all deps"
+  tag        =["rails"]
+
+[[snippets]]
+  command    ="rails new <APP> --database=mysql"
+  description="Create Rails app w/ MySQL"
+  tag        =["rails"]
+
+[[snippets]]
+  command    ="rails new <APP> --database=mysql && cd <APP> && bundle install"
+  description="Create Rails app /w MySQL with all deps"
+  tag        =["rails"]
+
+[[snippets]]
+  command    ="bundle install"
+  description="Install bundle dependencies"
+  tag        =["rails", "bundle", "bundle_install"]
+
+[[snippets]]
+  command    ="bundle exec rails server"
+  description="Run Rails server"
+  tag        =["rails", "bundle", "run"]
+
+[[snippets]]
+  command    ="bundle exec rspec"
+  description="Run Rails Rspec"
+  tag        =["rails", "bundle", "rspec"]
+
+[[snippets]]
+  command    ="bundle exec rails generate scaffold <MODEL=Post> <ATTR1=title:string> <ATTR2=body:text>"
+  description="Scaffold Rails model with attributes"
+  tag        =["rails", "bundle", "scaffold"]
+
+[[snippets]]
+  command    ="bundle exec rails generate controller <CONTROLLER=Post> index --skip-routes"
+  description="Generate Rails Controller (skipping routes)"
+  tag        =["rails", "bundle", "controller"]
+
+[[snippets]]
+  command    ="bundle exec rails generate model <MODEL=Post> <ATTR1=title:string> <ATTR2=body:text>"
+  description="Genereate Rails model with attributes"
+  tag        =["rails", "bundle", "model"]
+
+[[snippets]]
+  command    ="bundle exec rails generate model <MODEL=Post> <ATTR1=title:string> <ATTR2=body:text> <REF=author>:references"
+  description="Generate Rails model with attributes and reference"
+  tag        =["rails", "bundle", "model"]
+
+[[snippets]]
+  command    ="bundle exec rails generate model <MODEL=Post> <ATTR1=title:string> <ATTR2=body:text> <REF=author>:references{polymorphic}"
+  description="Generate Rails model with attributes and reference by foreign key"
+  tag        =["rails", "bundle", "model"]
+
+[[snippets]]
+  command    ="grails list-profiles"
+  description="List grails-app profiles are available"
+  tag        =["grails", "profile_list"]
+
+[[snippets]]
+  command    ="grails profile-info plugin"
+  description="Get detailed information about a profile plugin use the profile-info command"
+  tag        =["grails", "profile_info"]
+
+[[snippets]]
+  command    ="grails create-app <PACK.AND.APP>"
+  description="Create grails io.dev.demo"
+  tag        =["grails", "create"]
+
+[[snippets]]
+  command    ="grails create-app helloworld --profile rest-api && cd helloworld && grails run-app -port=9500"
+  description="Create grails an example with rest-api plugin named helloworld and starts it on port 9500"
+  tag        =["grails", "create"]
+
+[[snippets]]
+  command    ="grails create-app <PACK.AND.APP> -profile org.grails.profiles:react:1.0.2"
+  description="Create grails io.dev.demo with react profile"
+  tag        =["grails", "create_react"]
+
+[[snippets]]
+  command    ="./grailsw create-domain-class <PACK.AND.CLASS>"
+  description="Generate a Domain class - io.dev.demo.model"
+  tag        =["grails", "create_domain"]
+
+[[snippets]]
+  command    ="grails run-app"
+  description="Run Grails App @ http://localhost:8080"
+  tag        =["grails", "run"]
+
+[[snippets]]
+  command    ="./gradlew bootRun"
+  description="Run Grails App @ http://localhost:<PORT=8080> - via gradle"
+  tag        =["grails", "run", "gradle"]
+
+[[snippets]]
+  command    ="./grailsw test-app -unit"
+  description="Run Grails unit tests - via gradle"
+  tag        =["grails", "run", "unit_tests"]
+
+[[snippets]]
+  command    ="./grailsw test-app -integration"
+  description="Run Grails integration tests - via gradle"
+  tag        =["grails", "run", "integration_tests"]
+
+[[snippets]]
+  command    ="./grailsw test-app"
+  description="Run Grails unit and integration tests - via gradle"
+  tag        =["grails", "run"]
+
+[[snippets]]
+  command    ="./grailsw war"
+  description="Build the finished project into a deployable WAR package - PROD"
+  tag        =["grails", "build"]
+
+[[snippets]]
+  command    ="./grailsw war -Dgrails.env=development"
+  description="Build the finished project into a deployable WAR package - DEV"
+  tag        =["grails", "build"]
+
+[[snippets]]
+  command    ="./grailsw console"
+  description="Launch the Grails Console"
+  tag        =["grails", "console"]
+
+[[snippets]]
+  command    ="sudo diskutil apfs addVolume <DISK=disk1> APFS <NAME> -nomount"
+  description="Create an unencrypted APFS volume on disk"
+  tag        =["osx", "diskutils"]
+
+[[snippets]]
+  command    ="sudo diskutil info <DISK=disk1>"
+  description="Verify a mounted volume"
+  tag        =["osx", "diskutils"]
+
+[[snippets]]
+  command    ='security find-generic-password -wa "<WI-FI>"'
+  description="Reveal a password of a used Wi-fi"
+  tag        =["osx", "password"]
+
+[[snippets]]
+  command    ="passwd"
+  description="Change the password for the current logged account"
+  tag        =["osx", "password"]
+
+[[snippets]]
+  command    ="security set-keychain-password"
+  description="Update the login keychain password - usually after using the passwd cmd"
+  tag        =["osx", "password"]
+
+[[snippets]]
+  command    ="sudo diskutil mount <DISK=disk1>"
+  description="Mount a volume"
+  tag        =["osx", "diskutils"]
+
+[[snippets]]
+  command    ="sudo diskutil unmount <DISK=disk1>"
+  description="Unmount a volume"
+  tag        =["osx", "diskutils"]
+
+[[snippets]]
+  command    ="diskutil list"
+  description="List mounted volumes"
+  tag        =["osx", "diskutils"]
+
+[[snippets]]
+  command    ="diskutil apfs list"
+  description="List apfs mounted volumes"
+  tag        =["osx", "diskutils"]
+
+[[snippets]]
+  command    ="uname --all"
+  description="Print all information, in the following order except omit -p and -i if unknown"
+  tag        =["uname"]
+
+[[snippets]]
+  command    ="uname --kernel-name"
+  description="Print the kernel name"
+  tag        =["uname"]
+
+[[snippets]]
+  command    ="uname --nodename"
+  description="Print the network node hostname"
+  tag        =["uname"]
+
+[[snippets]]
+  command    ="uname --kernel-release"
+  description="Print the kernel release"
+  tag        =["uname"]
+
+[[snippets]]
+  command    ="uname --kernel-version"
+  description="Print the kernel version"
+  tag        =["uname"]
+
+[[snippets]]
+  command    ="uname --machine"
+  description="Print the machine hardware name"
+  tag        =["uname"]
+
+[[snippets]]
+  command    ="uname --processor"
+  description="Print the processor type - non-portable"
+  tag        =["uname"]
+
+[[snippets]]
+  command    ="uname --hardware-platform"
+  description="Print the hardware platform - non-portable"
+  tag        =["uname"]
+
+[[snippets]]
+  command    ="uname --operating-system"
+  description="Print the operating system"
+  tag        =["uname"]
+
+[[snippets]]
+  command    ="sysctl hw.cpu64bit_capable"
+  description="Print system information"
+  tag        =["osx", "sys", "arch"]
+
+[[snippets]]
+  command    ="arch"
+  description="Print the architecture of the current machine"
+  tag        =["osx", "sys", "arch"]
+
+[[snippets]]
+  command    ='echo "You are on a "$(getconf LONG_BIT)"-bit architecture"'
+  description="Print configuration values"
+  tag        =["osx", "sys", "getconf"]
+
+[[snippets]]
+  command    ="sudo chown -R $USER"
+  description="Change the ownership of files recursively to $USER"
+  tag        =["osx", "own"]
+
+[[snippets]]
+  command    ="sudo chgrp -hR admin"
+  description="Change the group of files recursively to admin"
+  tag        =["osx", "groups"]
+
+[[snippets]]
+  command    ="sudo chgrp -hR <group>"
+  description="Change the group of files recursively to <group>"
+  tag        =["osx", "groups"]
+
+[[snippets]]
+  command    ="ch rebuild --tldr --cheat --dash"
+  description="Rebuild cheatsheets"
+  tag        =["cheats"]
+
+[[snippets]]
+  command    ="cat /etc/shells"
+  description="Show list of included shells at /etc/shells"
+  tag        =["sheels"]
+
+[[snippets]]
+  command    ="sudo vi /etc/shells"
+  description="Edit a list of included shells in /etc/shells"
+  tag        =["sheels", "edit"]
+
+[[snippets]]
+  command    ="chsh -s /usr/local/bin/bash"
+  description="Change the default shell to /usr/local/bin/bash @ /etc/shells"
+  tag        =["sheels", "set"]
+
+[[snippets]]
+  command    ="echo '/usr/local/bin/zsh' | sudo tee -a /etc/shells && chsh -s /usr/local/bin/zsh"
+  description="Add /usr/local/bin/zsh' /etc/shells and change it!"
+  tag        =["sheels", "setup"]
+
+[[snippets]]
+  command    ="chsh -s /usr/local/bin/zsh"
+  description="Change the default shell to /usr/local/bin/zsh @ /etc/shells"
+  tag        =["sheels", "set"]
+
+[[snippets]]
+  command    ="chsh -s /bin/zsh"
+  description="Change the default shell to /bin/zsh @ /etc/shells"
+  tag        =["sheels", "set"]
+
+[[snippets]]
+  command    ="col<N> “<SEP>” <FILE>"
+  description="Show nth column from file"
+  tag        =["col"]
+
+[[snippets]]
+  command    ="col2 “<SEP>” <FILE>"
+  description="Show 2nd col from file separated by SEP"
+  tag        =["col2"]
+
+[[snippets]]
+  command    ="less <FILE>"
+  description="Paginate a file"
+  tag        =["less"]
+
+[[snippets]]
+  command    ="head -n <N> <FILE>"
+  description="Display 1st nth lines from file"
+  tag        =["head"]
+
+[[snippets]]
+  command    ="tail -f <FILE>"
+  description="Follow contents as it increases from file"
+  tag        =["tail"]
+
+[[snippets]]
+  command    ="tail -n <N> <FILE>"
+  description="Display last nth lines from file"
+  tag        =["tail", "lasts"]
+
+[[snippets]]
+  command    ="uname -r"
+  description="Display kernel version"
+  tag        =["uname"]
+
+[[snippets]]
+  command    ="df -h"
+  description="Get disk usage"
+  tag        =["df", "list"]
+
+[[snippets]]
+  command    ="cat /proc/meminfo"
+  description="Get memory usage"
+  tag        =["cat", "memory"]
+
+[[snippets]]
+  command    ="timedatectl status"
+  description="Get system time"
+  tag        =["timedatectl", "get"]
+
+[[snippets]]
+  command    ="timedatectl list-timezones"
+  description="List system timezone"
+  tag        =["timedatectl", "list"]
+
+[[snippets]]
+  command    ="sudo timedatectl set-timezone <ZONE>"
+  description="Set system timezone to ZONE"
+  tag        =["timedatectl", "set"]
+
+[[snippets]]
+  command    ="systemctl --state running"
+  description="Get running services"
+  tag        =["systemctl"]
+
+[[snippets]]
+  command    ="service <SERVICE> start"
+  description="Start service SERVICE"
+  tag        =["service"]
+
+[[snippets]]
+  command    ="service <SERVICE> stop"
+  description="Stop service SERVICE"
+  tag        =["service"]
+
+[[snippets]]
+  command    ="journalctl -u <SERVICE> --since now -f"
+  description="Monitor new logs for a service"
+  tag        =["journalctl"]
+
+[[snippets]]
+  command    ="echo '${<VAR>/<REGEX>/<TERM>}'"
+  description="Replace lines 1st occurrence of term in ENV VAR"
+  tag        =["echo", "replace", "1st"]
+
+[[snippets]]
+  command    ="echo '${<VAR>//<REGEX>/<TERM>}'"
+  description="Replace lines matching term with term in ENV VAR"
+  tag        =["echo", "replace"]
+
+[[snippets]]
+  command    ="chsh -s /bin/bash"
+  description="Change the default shell to /bin/bash"
+  tag        =["bash", "set"]
+
+[[snippets]]
+  command    ="for i in $(seq 1 10); do /usr/bin/time zsh -i -c exit; done"
+  description="Run time 10x and prints the result"
+  tag        =["zsh", "perf"]
+
+[[snippets]]
+  command    ="for i in $(seq 1 10); do time zsh -i -c exit; done"
+  description="Run time 10x and prints the result"
+  tag        =["zsh", "perf"]
+
+[[snippets]]
+  command    ="dots stats --pretty"
+  description="Run time 10x and prints - pretty"
+  tag        =["zsh", "perf"]
+
+[[snippets]]
+  command    ="autoload -U compinit && compinit"
+  description="Load ZSH's completion script"
+  tag        =["zsh", "completions"]
+
+[[snippets]]
+  command    ="dots prof"
+  description="Run dots' zsh prof"
+  tag        =["zsh", "debug", "prof"]
+
+[[snippets]]
+  command    ="dots prof --once"
+  description="Run dots' zsh prof zsh prof 10 times"
+  tag        =["zsh", "debug", "prof"]
+
+[[snippets]]
+  command    ="dots prof --avg"
+  description="Run dots' zsh prof 10 times (average)"
+  tag        =["zsh", "debug", "prof"]
+
+[[snippets]]
+  command    ="dots trace --once"
+  description="Run dots' zsh trace"
+  tag        =["zsh", "debug", "trace"]
+
+[[snippets]]
+  command    ="shtab --shell=zsh shtab.main.get_main_parser --error-unimportable >> ~/.config/zsh/opt/completions/_shtab"
+  description="Generate ZSH's completions using shtab"
+  tag        =["zsh", "completions"]
+
+[[snippets]]
+  command    ="bindkey -a"
+  description="Print keybindings"
+  tag        =["zsh", "keybindings"]
+
+[[snippets]]
+  command    ="bindkey -r <key-sequence>"
+  description="Remove key binding"
+  tag        =["zsh", "keybindings"]
+
+[[snippets]]
+  command    ="bindkey -l"
+  description="Print existing keymap names"
+  tag        =["zsh", "bindkey"]
+
+[[snippets]]
+  command    ="bindkey -M <KEYMAP>"
+  description="Print bindings for keymap KEYMAP"
+  tag        =["zsh", "bindings"]
+
+[[snippets]]
+  command    ="zle -al"
+  description="List existing user-defined widgets"
+  tag        =["zsh", "zle"]
+
+[[snippets]]
+  command    ="zle -L"
+  description="List widgets"
+  tag        =["zsh", "zle"]
+
+[[snippets]]
+  command    ="zstyle"
+  description="List style definitions"
+  tag        =["zsh", "zstyle"]
+
+[[snippets]]
+  command    ="zstyle -L':completion:\\*'"
+  description="List style definition matching':completion:'"
+  tag        =["zsh", "zstyle"]
+
+[[snippets]]
+  command    ="dots prof --avg"
+  description="Run dots ZSH prof 10x and returns the average"
+  tag        =["zsh", "debug"]
+
+[[snippets]]
+  command    ="dots prof --once"
+  description="Run dots' ZSH prof 10x and returns once"
+  tag        =["zsh", "debug"]
+
+[[snippets]]
+  command    ="zsh --sourcetrace"
+  description="Show full path of sourced files"
+  tag        =["zsh", "debug"]
+
+[[snippets]]
+  command    ="sudo netstat -tulpn"
+  description="List open ports and associated processes"
+  tag        =["ubuntu", "security"]
+
+[[snippets]]
+  command    ="sudo apt install fail2ban"
+  description="Automatically detect and ban abusive ip addresses"
+  tag        =["ubuntu", "security"]
+
+[[snippets]]
+  command    ="sudo fail2ban-client status"
+  description="Show banned ip addresses"
+  tag        =["ubuntu", "security"]
+
+[[snippets]]
+  command    ="sudo fail2ban-client status <JAIL>"
+  description="Show banned ip addresses by status JAIL"
+  tag        =["ubuntu", "security"]
+
+[[snippets]]
+  command    ="ubuntu-support-status"
+  description="Get the support status for installed packages"
+  tag        =["ubuntu", "security"]
+
+[[snippets]]
+  command    ="sudo snap install canonical-livepatch"
+  description="Enable kernel live patching"
+  tag        =["ubuntu", "livepatch"]
+
+[[snippets]]
+  command    ="sudo canonical-livepatch enable <TOKEN>"
+  description="Enable kernel live patching by TOKEN"
+  tag        =["ubuntu", "livepatch"]
+
+[[snippets]]
+  command    ="npm config edit"
+  description="Opens the config file in an editor"
+  tag        =["npm", "config", "edit"]
+
+[[snippets]]
+  command    ="npm config edit --global"
+  description="Opens the global config file in an editor"
+  tag        =["npm", "config", "edit"]
+
+[[snippets]]
+  command    ="npm config ls -l"
+  description="List set of configuration parameters that are internal to npm, and are defaults if nothing else is specified"
+  tag        =["npm", "config", "list"]
+
+[[snippets]]
+  command    ="npm ls --parseable --long --loglevel info"
+  description="List all parseable dependencies [INFO]"
+  tag        =["npm", "config", "list"]
+
+[[snippets]]
+  command    ="npm ls --global --parseable --long --loglevel info"
+  description="List all global parseable dependencies [INFO]"
+  tag        =["npm", "config", "list"]
+
+[[snippets]]
+  command    ="npm config list --json"
+  description="List all config settings [JSON]"
+  tag        =["npm", "config", "list"]
+
+[[snippets]]
+  command    ="npm prefix -g"
+  description="Print the local prefix to standard output"
+  tag        =["npm", "config", "prefix"]
+
+[[snippets]]
+  command    ="npm config get prefix"
+  description="Get npm prefix"
+  tag        =["npm", "config", "prefix"]
+
+[[snippets]]
+  command    ="npm config set prefix <PATH=/usr/local>"
+  description="Set npm prefix"
+  tag        =["npm", "config", "prefix"]
+
+[[snippets]]
+  command    ="npm prefix"
+  description="Print the local prefix to standard output. This is the closest parent directory to contain a package.json file or node_modules directory"
+  tag        =["npm", "config", "prefix"]
+
+[[snippets]]
+  command    ="npm --global list --long --loglevel info"
+  description="List all global dependencies [INFO]"
+  tag        =["npm", "packages", "list", "global"]
+
+[[snippets]]
+  command    ="npm list --long --loglevel info"
+  description="List all local dependencies. This is the closest parent directory to contain a package.json file or node_modules directory [INFO]"
+  tag        =["npm", "packages", "list"]
+
+[[snippets]]
+  command    ="npm i -D @types/jest eslint-plugin-jest eslint-plugin-jest-formatting jest ts-jest && npx ts-jest config:init"
+  description="Add jest"
+  tag        =["npm", "packages", "jest"]
+
+[[snippets]]
+  command    ="npm i cheerio htmlparser2 && npm i @types/cheerio @types/htmlparser2 -D"
+  description="Add cheerio"
+  tag        =["npm", "packages", "cheerio"]
+
+[[snippets]]
+  command    ="docker run --rm -i -v <PWD=$PWD>:/lint/input:ro ghcr.io/zemanlx/remark-lint <PATH=.>"
+  description="Run remark lint docker container"
+  tag        =["docker", "container", "remark", "lint"]
+
+[[snippets]]
+  command    ="npm i typescript tslib ts-node ts-node-dev tsconfig-paths @types/node @tsconfig/recommended -D && npx tsc --init"
+  description="Add and initialize TS"
+  tag        =["npm", "packages", "TS"]
+
+[[snippets]]
+  command    ="npx tsc --init"
+  description="Initialize TS"
+  tag        =["npm", "packages", "TS"]
+
+[[snippets]]
+  command    ="npm init -y && npm install --save-dev webpack webpack-cli copy-webpack-plugin typescript ts-loader @types/chrome && npx tsc --init"
+  description="Initialize Chrome extension project"
+  tag        =["npm", "packages", "chrome", "TS"]
+
+[[snippets]]
+  command    ="npm i -D @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-config-airbnb-typescript eslint-config-prettier eslint-plugin-eslint-comments eslint-plugin-html eslint-plugin-import eslint-plugin-no-loops eslint-plugin-node eslint-plugin-prettier eslint-plugin-promise"
+  description="Add eslint deps"
+  tag        =["npm", "packages", "eslint"]
+
+[[snippets]]
+  command    ="npm install -g remark-reference-links remark-cli"
+  description="Install remark cli"
+  tag        =["npm", "npx", "remark", "markdown"]
+
+[[snippets]]
+  command    ="npx remark <PATH> --use remark-reference-links --output"
+  description="Transform all the inline links in <PATH> to numerically-ascending reference-style links"
+  tag        =["npm", "npx", "remark", "markdown"]
+
+[[snippets]]
+  command    ="docker run --rm -i -v $PWD:/app roalcantara/remark-cli <PATH> --use remark-reference-links --output"
+  description="Transform all the inline links in <PATH> to numerically-ascending reference-style links"
+  tag        =["npm", "npx", "remark", "markdown", "docker"]
+
+[[snippets]]
+  command    ="echo 'use asdf' > .envrc"
+  description="Add .envrc to the current dir"
+  tag        =["asdf", "envrc"]
+
+[[snippets]]
+  command    ="asdf local kotlin 1.6.21"
+  description="Add kotlin 1.6.21 to .tool-versions"
+  tag        =["asdf", "kotlin"]
+
+[[snippets]]
+  command    ="asdf local kotlin 1.6.21"
+  description="Add kotlin 1.6.21 to .tool-versions"
+  tag        =["asdf", "kotlin"]
+
+[[snippets]]
+  command    ="asdf local kotlin 1.7.0"
+  description="Add kotlin 1.7.0 to .tool-versions"
+  tag        =["asdf", "kotlin"]
+
+[[snippets]]
+  command    ="asdf local kotlin 1.7.10"
+  description="Add kotlin 1.7.10 to .tool-versions"
+  tag        =["asdf", "kotlin"]
+
+[[snippets]]
+  command    ="asdf local kotlin 1.7.20"
+  description="Add kotlin 1.7.20 to .tool-versions"
+  tag        =["asdf", "kotlin"]
+
+[[snippets]]
+  command    ="asdf local nodejs 16.16.0"
+  description="Add nodejs 16.16.0 to .tool-versions"
+  tag        =["asdf", "node"]
+
+[[snippets]]
+  command    ="asdf local nodejs 16.18.0"
+  description="Add nodejs 16.18.0 to .tool-versions"
+  tag        =["asdf", "node"]
+
+[[snippets]]
+  command    ="asdf local gradle 7.5"
+  description="Add gradle 7.5 to .tool-versions"
+  tag        =["asdf", "gradle"]
+
+[[snippets]]
+  command    ="asdf local gradle 7.4.2"
+  description="Add gradle 7.4.2 to .tool-versions"
+  tag        =["asdf", "gradle"]
+
+[[snippets]]
+  command    ="asdf local java temurin-18.0.1+10"
+  description="Add temurin-18.0.1+10 to .tool-versions"
+  tag        =["asdf", "java"]
+
+[[snippets]]
+  command    ="echo 'use java 18.0.1' > .envrc"
+  description="Add 'use java 18.0.1' to .envrc"
+  tag        =["asdf", "java"]
+
+[[snippets]]
+  command    ="asdf local golang 1.18.2"
+  description="Add go 1.18.2 to .tool-versions"
+  tag        =["asdf", "go"]
+
+[[snippets]]
+  command    ="asdf local ktlint 0.46.1"
+  description="Add ktlint 0.46.1 to .tool-versions"
+  tag        =["asdf", "ktlint"]
+
+[[snippets]]
+  command    ="asdf local ruby 3.1.2"
+  description="Add ruby 3.1.2 to .tool-versions"
+  tag        =["asdf", "ruby"]
+
+[[snippets]]
+  command    ="ktlint --android applyToIDEAProject -y"
+  description="Enforces Android Code Style (from root)"
+  tag        =["ktlint", "apply_android"]
+
+[[snippets]]
+  command    ="npx create-react-app <NAME> --template typescript"
+  description="Create React App <NAME> with TS"
+  tag        =["npm", "react"]
+
+[[snippets]]
+  command    ="npx create-react-app <NAME> --template cra-template-pwa-typescript"
+  description="Create React PWA <NAME> with TS"
+  tag        =["npm", "react"]
+
+[[snippets]]
+  command    ="npx create-react-app <NAME> --template @chakra-ui/typescript"
+  description="Create React App w/ TS and Chakra-ui"
+  tag        =["npm", "react", "TS", "chakra-ui"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template vanilla"
+  description="Create app 'vanillala'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "vanilla", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template vanilla-ts"
+  description="Create app 'vanilla-ts'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "vanilla-ts", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template vue"
+  description="Create app 'vue'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "vue", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template vue-ts"
+  description="Create app 'vue-ts'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "vue-ts", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template react"
+  description="Create app 'react'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "react", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template react-ts"
+  description="Create app 'react-ts'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "react-ts", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template react-swc"
+  description="Create app 'react-swc'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "react-swc", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template react-swc-ts"
+  description="Create app 'react-swc-ts'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "react-swc-ts", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template preact"
+  description="Create app 'preact'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "preact", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template preact-ts"
+  description="Create app 'preact-ts'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "preact-ts", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template lit"
+  description="Create app 'lit'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "lit", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template lit-ts"
+  description="Create app 'lit-ts'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "lit-ts", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template svelte"
+  description="Create app 'svelte'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "svelte", "yarn"]
+
+[[snippets]]
+  command    ="yarn create vite <app> --template svelte-ts"
+  description="Create app 'svelte-ts'"
+  output     ="next: `cd <app> && yarn && yarn dev`"
+  tag        =["vite", "", "yarn"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template vanilla"
+  description="Create app 'vanillala'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vanilla", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template vanilla-ts"
+  description="Create app 'vanilla-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vanilla-ts", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template vue"
+  description="Create app 'vue'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template vue-ts"
+  description="Create app 'vue-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue-ts", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template react"
+  description="Create app 'react'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template react-ts"
+  description="Create app 'react-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react-ts", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template react-swc"
+  description="Create app 'react-swc'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react-swc", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template react-swc-ts"
+  description="Create app 'react-swc-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react-swc-ts", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template preact"
+  description="Create app 'preact'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "preact", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template preact-ts"
+  description="Create app 'preact-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "preact-ts", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template lit"
+  description="Create app 'lit'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "lit", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template lit-ts"
+  description="Create app 'lit-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "lit-ts", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template svelte"
+  description="Create app 'svelte'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "svelte", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> -- --template svelte-ts"
+  description="Create app 'svelte-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "", "npm7+"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template vanilla"
+  description="Create app 'vanillala'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vanilla", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template vanilla-ts"
+  description="Create app 'vanilla-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vanilla-ts", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template vue"
+  description="Create app 'vue'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template vue-ts"
+  description="Create app 'vue-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue-ts", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template react"
+  description="Create app 'react'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template react-ts"
+  description="Create app 'react-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react-ts", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template react-swc"
+  description="Create app 'react-swc'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react-swc", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template react-swc-ts"
+  description="Create app 'react-swc-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react-swc-ts", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template preact"
+  description="Create app 'preact'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "preact", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template preact-ts"
+  description="Create app 'preact-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "preact-ts", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template lit"
+  description="Create app 'lit'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "lit", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template lit-ts"
+  description="Create app 'lit-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "lit-ts", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template svelte"
+  description="Create app 'svelte'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "svelte", "npm6"]
+
+[[snippets]]
+  command    ="npm create vite@latest <app> --template svelte-ts"
+  description="Create app 'svelte-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "svelte-ts", "npm6"]
+
+[[snippets]]
+  command    ="npx degit huibizhang/template-vite-vanilla-tailwind-v3 <app>"
+  description="Create app 'template-vite-vanilla-tailwind-v3'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vanilla", "tailwind-css", "prettier"]
+
+[[snippets]]
+  command="npx degit kbysiec/vite-vanilla-ts-lib-starter <app>"
+  description="Create app 'vite-vanilla-ts-lib-starter' (lib CJS, ESM, IIFE)"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vanilla",
+    "ts",
+    "eslint",
+    "style-lint",
+    "prettier",
+    "jest",
+    "husky",
+    "lint-staged",
+  ]
+
+[[snippets]]
+  command    ="npx degit kometolabs/vite-tailwind-nojs-starter <app>"
+  description="Create app 'vite-tailwind-nojs-starter'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vanilla", "tailwind-css", "no-jS"]
+
+[[snippets]]
+  command    ="npx degit jeremyfrank/vite-tailwind-stimulus-starter <app>"
+  description="Create app 'vite-tailwind-stimulus-starter'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vanilla", "tailwind-css", "stimulus"]
+
+[[snippets]]
+  command    ="npx degit sadman-shami/vite-tailwind-boilerplate <app>"
+  description="Create app 'vite-tailwind-boilerplate'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vanilla", "tailwind-css"]
+
+[[snippets]]
+  command    ="npx degit dendrofen/docker-vitejs-tailwind-handlebars <app>"
+  description="Create app 'docker-vitejs-tailwind-handlebars'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vanilla", "tailwind-css", "handlebars", "docker-compose"]
+
+[[snippets]]
+  command    ="npx degit antfu/vitesse <app>"
+  description="Create app 'vitesse'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3"]
+
+[[snippets]]
+  command    ="npx degit Uninen/vite-ts-tailwind-starter <app>"
+  description="Create app 'vite-ts-tailwind-starter'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "tailwind-css", "cypress", "ci"]
+
+[[snippets]]
+  command    ="npx degit anncwb/vue-vben-admin <app>"
+  description="Create app 'vue-vben-admin'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ant-design-vue", "ts"]
+
+[[snippets]]
+  command    ="npx degit xiaoxian521/vue-pure-admin <app>"
+  description="Create app 'vue-pure-admin'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "tailwind-css", "element-plus"]
+
+[[snippets]]
+  command    ="npx degit fast-crud/fast-crud <app>"
+  description="Create app 'fast-crud'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "crud-framework"]
+
+[[snippets]]
+  command    ="npx degit logustra/vivu <app>"
+  description="Create app 'vivu'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "opinionated", "scalable"]
+
+[[snippets]]
+  command    ="npx degit yooneskh/vite-tauri-template <app>"
+  description="Create app 'vite-tauri-template'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "tauri", "vuetify3"]
+
+[[snippets]]
+  command    ="npx degit LZHD/vue-vite-h5 <app>"
+  description="Create app 'vue-vite-h5'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "vant", "mobile"]
+
+[[snippets]]
+  command    ="npx degit alvarosaburido/vitesome <app>"
+  description="Create app 'vitesome'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "windi_css", "vue_router4", "i18n", "iconify"]
+
+[[snippets]]
+  command    ="npx degit antfu/vitesse-lite <app>"
+  description="Create app 'vitesse-lite'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "Lightweight", "vitesse"]
+
+[[snippets]]
+  command    ="npx degit antfu/vitesse-webext <app>"
+  description="Create app 'vitesse-webext'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "web_extension"]
+
+[[snippets]]
+  command    ="npx degit nabaonan/todos-action/tree/master/vue-vite-ts-setup <app>"
+  description="Create app 'vue-vite-ts-setup'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "vue-router4", "pinia2"]
+
+[[snippets]]
+  command    ="npx degit Innei/naive-ui-dashboard-template <app>"
+  description="Create app 'naive-ui-dashboard-template'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "tsx, tailwind-css2jit, post_css, naive ui"]
+
+[[snippets]]
+  command    ="npx degit zynth17/vitailse <app>"
+  description="Create app 'vitailse'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "like vitesse, tailwind-css"]
+
+[[snippets]]
+  command    ="npx degit ctholho/vitespa <app>"
+  description="Create app 'vitespa'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "vitesse spa without ssg'"]
+
+[[snippets]]
+  command    ="npx degit fyeeme/vite-quasar <app>"
+  description="Create app 'vite-quasar'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "vite2, vue3, quasar2"]
+
+[[snippets]]
+  command="npx degit parajs/vue3-mobile-template <app>"
+  description="Create app 'vue3-mobile-template'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "ts",
+    "vue-router4",
+    "vuex4",
+    "vant",
+    "vue-use",
+    "vue-i18n",
+    "mobile",
+  ]
+
+[[snippets]]
+  command="npx degit lecoueyl/vue3-template <app>"
+  description="Create app 'vue3-template'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "tailwind-css",
+    "vue-router",
+    "pnpm",
+    "eslint_airbnb",
+    "netlify",
+  ]
+
+[[snippets]]
+  command    ="npx degit byoungd/modern-vue-template <app>"
+  description="Create app 'modern-vue-template'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "modern vue3"]
+
+[[snippets]]
+  command="npx degit nekobc1998923/vitecamp <app>"
+  description="Create app 'vitecamp'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "element_plus",
+    "axios",
+    "vue_router",
+    "pinia",
+    "windi_css",
+    "eslint_airbnb",
+  ]
+
+[[snippets]]
+  command    ="npx degit skysign/vite-vue3-typescript-webcomponent <app>"
+  description="Create app 'vite-vue3-typescript-webcomponent'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "web-components"]
+
+[[snippets]]
+  command    ="npx degit Miguel-Bento-Github/vite-vue-ts-storybook <app>"
+  description="Create app 'vite-vue-ts-storybook'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "i18n", "ts", "storybook", "eslint", "prettier"]
+
+[[snippets]]
+  command    ="npx degit huibizhang/template-vite-vue-tailwind-v3 <app>"
+  description="Create app 'template-vite-vue-tailwind-v3'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "tailwind-css", "prettier"]
+
+[[snippets]]
+  command    ="npx degit huibizhang/template-vite-vue-ts-tailwind-v3 <app>"
+  description="Create app 'template-vite-vue-ts-tailwind-v3'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "tailwind-css", "prettier", "ts"]
+
+[[snippets]]
+  command    ="npx degit hefengxian/vue3-ts-vite-vitest-todo <app>"
+  description="Create app 'vue3-ts-vite-vitest-todo'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "vitest", "composition-api", "pure_ts/tsx"]
+
+[[snippets]]
+  command    ="npx degit feitian124/vue3-tailwind3-website-starter.git <app>"
+  description="Create app 'vue3-tailwind3-website-starter'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "tailwind-css"]
+
+[[snippets]]
+  command    ="npx degit kirklin/vite-boot <app>"
+  description="Create app 'vite-boot'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "vue-router4", "pinia", "tailwindcss", "vueuse"]
+
+[[snippets]]
+  command    ="npx degit zclzone/vue-naive-admin <app>"
+  description="Create app 'vue-naive-admin'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "pinia", "naiveui"]
+
+[[snippets]]
+  command    ="npx degit cmdparkour/vue-admin-box <app>"
+  description="Create app 'vue-admin-box'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ElementPlus"]
+
+[[snippets]]
+  command    ="npx degit logustra/vivu-npm <app>"
+  description="Create app 'vivu-npm'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "component-lib"]
+
+[[snippets]]
+  command="npx degit parajs/vue3-pc-template <app>"
+  description="Create app 'vue3-pc-template'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "elementplus",
+    "vue3",
+    "ts",
+    "vue-router4",
+    "vuex4",
+    "vueuse",
+    "vuei18n",
+  ]
+
+[[snippets]]
+  command    ="npx degit NicolaSpadari/vitauri <app>"
+  description="Create app 'vitauri'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "tauri", "vue3", "ts", "vue-router4", "autoimports"]
+
+[[snippets]]
+  command="npx degit developer-plus/vue-hbs-admin <app>"
+  description="Create app 'vue-hbs-admin'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "ts",
+    "vue-router4",
+    "pinia",
+    "unocss",
+    "antdesignvue",
+    "autoimports",
+  ]
+
+[[snippets]]
+  command="npx degit xyhxx/vite-vue-proste <app>"
+  description="Create app 'vite-vue-proste'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "eslint",
+    "pinia",
+    "prettier",
+    "sass",
+    "style-lint",
+    "ts",
+    "vitest",
+    "vue-router4",
+    "vuequery",
+    "vuetestutils",
+  ]
+
+[[snippets]]
+  command="npx degit EverSeenTOTOTO/browser-app-boilerplate/tree/vue-vite-ssr <app>"
+  description="Create app 'vue-vite-ssr'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "commit-lint",
+    "ts",
+    "eslint",
+    "style-lint",
+    "husky",
+    "lint-staged",
+  ]
+
+[[snippets]]
+  command    ="npx degit CharleeWa/vue3-vant-mobile <app>"
+  description="Create app 'vue3-vant-mobile'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "mobile", "vant4", "pinia", "vue-router4", "ts"]
+
+[[snippets]]
+  command    ="npx degit UIC-Group/vue3-powerbuild <app>"
+  description="Create app 'vue3-powerbuild'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "tailwindcss", "storybook", "eslint", "prettier"]
+
+[[snippets]]
+  command    ="npx degit yugasun/vue-ts-starter <app>"
+  description="Create app 'vue-ts-starter'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "pinia"]
+
+[[snippets]]
+  command    ="npx degit cstuncsik/vitequality <app>"
+  description="Create app 'vitequality'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "vue-router", "pinia", "eslint", "jest", "cypress"]
+
+[[snippets]]
+  command    ="npx degit ChronosMasterOfAllTime/vue-vite-tw-ts <app>"
+  description="Create app 'vue-vite-tw-ts'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "vitest", "cypress", "naiveui", "pinia", "vue-router"]
+
+[[snippets]]
+  command="npx degit NelsonYong/vite-vue-box <app>"
+  description="Create app 'vite-vue-box'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "ts",
+    "tailwindcss",
+    "vuehook",
+    "pinia",
+    "axios",
+    "eslint",
+    "style-lint",
+  ]
+
+[[snippets]]
+  command="npx degit ElanYoung/vite-vue-js-starter-template <app>"
+  description="Create app 'vite-vue-js-starter-template'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "js",
+    "vue-router",
+    "pinia",
+    "tdesign",
+    "eslint",
+    "style-lint",
+    "prettier",
+  ]
+
+[[snippets]]
+  command    ="npx degit marcoarruda/vite-vue3-bootstrap-ts-vitest-starter <app>"
+  description="Create app 'vite-vue3-bootstrap-ts-vitest-starter'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "bootstrap-vue3", "vitest"]
+
+[[snippets]]
+  command    ="npx degit jsxiaosi/vue-xs-admin <app>"
+  description="Create app 'vue-xs-admin'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "vite3-element+", "ts", "pinia", "vue-router"]
+
+[[snippets]]
+  command    ="npx degit houtaroy/vue-component-template <app>"
+  description="Create app 'vue-component-template'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "tsx", "eslint", "prettier"]
+
+[[snippets]]
+  command    ="npx degit reslear/ionic-vue-vite <app>"
+  description="Create app 'ionic-vue-vite'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ionic", "vue-router"]
+
+[[snippets]]
+  command    ="npx degit reslear/ionic-vue-pnpm-monorepo <app>"
+  description="Create app 'ionic-vue-pnpm-monorepo'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ionic", "vue-router", "pnpm-monorepo"]
+
+[[snippets]]
+  command    ="npx degit reslear/ionic-vue-pnpm-express-monorepo <app>"
+  description="Create app 'ionic-vue-pnpm-express-monorepo'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ionic", "vue-router", "express", "pnp-mmonorepo"]
+
+[[snippets]]
+  command    ="npx degit reslear/ionic-vue-capacitor <app>"
+  description="Create app 'ionic-vue-capacitor'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "vue-router", "capacitor", "pnpm-monorep"]
+
+[[snippets]]
+  command="npx degit alireza0sfr/vue3-vite-ts-base <app>"
+  description="Create app 'vue3-vite-ts-base'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "ts",
+    "less",
+    "i18n",
+    "vitest",
+    "vitepress",
+    "lodash",
+    "axios",
+    "pinia",
+  ]
+
+[[snippets]]
+  command    ="npx degit l-x-f/vite-vue-h5-app <app>"
+  description="Create app 'x-f/vite-vue-h5-app'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "vant", "mobile"]
+
+[[snippets]]
+  command="npx degit pengzhanbo/vulcan <app>"
+  description="Create app 'vulcan'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue3",
+    "ts",
+    "sass",
+    "i18n",
+    "vitest",
+    "cypress",
+    "pinia",
+    "apis",
+    "eslint",
+    "prettier",
+    "auto-import",
+  ]
+
+[[snippets]]
+  command    ="npx degit alivadjid/vite-plugin-ssr-i18n-vue3 <app>"
+  description="Create app 'vite-plugin-ssr-i18n-vue3'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue3", "ts", "compositionapi", "i18n", "fetchdata"]
+
+[[snippets]]
+  command="npx degit lstoeferle/vite-vue2-windicss-starter <app>"
+  description="Create app 'vite-vue2-windicss-starter' - Vue2 ,"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue2",
+    "vue-router",
+    "compositionapi",
+    "vueuse",
+    "windicss",
+    "ts",
+  ]
+
+[[snippets]]
+  command    ="npx degit nabaonan/todos-action/tree/master/vue2-vite-ts <app>"
+  description="Create app 'vue2-vite-ts' - Vue2 ,"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue2", "ts", "vue-router3", "pinia1", "compositionapi"]
+
+[[snippets]]
+  command    ="npx degit logue/vite-vue2-ts-starter <app>"
+  description="Create app 'vite-vue2-ts-starter'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue2", "ts", "propertydecorator", "vue-router", "vuex"]
+
+[[snippets]]
+  command    ="npx degit logue/vite-vue2-vuetify-ts-starter <app>"
+  description="Create app 'vite-vue2-vuetify-ts-starter' (OPTIMIZED)"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue2", "vuetify"]
+
+[[snippets]]
+  command    ="npx degit Luncode/vite-vue2-ts-template-starter <app>"
+  description="Create app 'vite-vue2-ts-template-starter'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue2", "ts", "vuex", "vue-router", "axios", "sass"]
+
+[[snippets]]
+  command    ="npx degit kingyue737/vitify-admin <app>"
+  description="Create app 'vitify-admin' - Vuetify ,"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "vue2", "ts", "intellisense", "vuetify-components"]
+
+[[snippets]]
+  command="npx degit ElanYoung/vite-vue2-js-starter-template <app>"
+  description="Create app 'vite-vue2-js-starter-template'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "vue2",
+    "js",
+    "vue-router",
+    "vuex",
+    "axios",
+    "less",
+    "eslint",
+    "style-lint",
+    "prettier",
+  ]
+
+[[snippets]]
+  command    ="npx degit wtchnm/Vitamin <app>"
+  description="Create app 'Vitamin'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "ts", "tailwindcss", "spa", "pwa", "cypress", "ci"]
+
+[[snippets]]
+  command    ="npx degit TheSwordBreaker/vite-reactts-eslint-prettier <app>"
+  description="Create app 'vite-reactts-eslint-prettier'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "ts", "eslint", "prettier", "pre-commits"]
+
+[[snippets]]
+  command    ="npx degit ychengcloud/react-vite-admin <app>"
+  description="Create app 'react-vite-admin'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "recoil", "react-query", "reacthooks", "ts", "axios"]
+
+[[snippets]]
+  command    ="npx degit SafdarJamal/vite-template-react <app>"
+  description="Create app 'vite-template-react' (ReactApp-like)"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react"]
+
+[[snippets]]
+  command    ="npx degit jihchi/vitejs-template-react-rescript <app>"
+  description="Create app 'vitejs-template-react-rescript'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "rescript"]
+
+[[snippets]]
+  command    ="npx degit lzm0x219/template-vite-react <app>"
+  description="Create app 'template-vite-react' (MINIMAL)"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "Vite"]
+
+[[snippets]]
+  command="npx degit joaopaulomoraes/reactjs-vite-tailwindcss-boilerplate <app>"
+  description="Create app 'reactjs-vite-tailwindcss-boilerplate'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "react18",
+    "ts",
+    "jest",
+    "testing-library",
+    "tailwindcss3",
+    "eslint",
+    "prettier",
+  ]
+
+[[snippets]]
+  command="npx degit joaopaulomoraes/reactjs-vite-tailwindcss-boilerplate <app>"
+  description="Create app 'reactjs-vite-tailwindcss-boilerplate'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react18",
+    "ts",
+    "jest",
+    "testing-library",
+    "tailwindcss3",
+    "eslint",
+    "prettier",
+  ]
+
+[[snippets]]
+  command="npx degit bensmithett/tropical <app>"
+  description="Create app 'tropical'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "storybook",
+    "mdx",
+    "fela",
+    "ssrperendering",
+    "islandsarch",
+  ]
+
+[[snippets]]
+  command="npx degit The24thDS/vite-reactts18-chakra-jest-husky <app>"
+  description="Create app 'vite-reactts18-chakra-jest-husky'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react18",
+    "ts",
+    "chakraui",
+    "jest",
+    "eslint",
+    "prettier",
+    "husky",
+  ]
+
+[[snippets]]
+  command="npx degit fabien-ml/react-ts-vite-template <app>"
+  description="Create app 'ml/react-ts-vite-template'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "jest",
+    "testing-library",
+    "cypress",
+    "eslint",
+    "prettier",
+    "husky",
+  ]
+
+[[snippets]]
+  command    ="npx degit IsaiaPhiliph/vite-reactts-tailwind-rtk-eslint <app>"
+  description="Create app 'vite-reactts-tailwind-rtk-eslint'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "ts", "tailwindcss", "redux", "toolkit", "eslint"]
+
+[[snippets]]
+  command="npx degit Innei/vite-react-tailwind-template <app>"
+  description="Create app 'vite-react-tailwind-template' - React17 m"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "jest",
+    "eslint",
+    "prettier",
+    "husky",
+    "tailwindcss",
+    "postcss",
+    "pnp",
+  ]
+
+[[snippets]]
+  command    ="npx degit rizkimcitra/stravital <app>"
+  description="Create app 'stravital' - TypeScript S"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "git-hooks", "commitizen", "lint-staged", "tailwindcs"]
+
+[[snippets]]
+  command="npx degit TeXmeijin/vite-react-ts-tailwind-firebase-starter <app>"
+  description="Create app 'vite-react-ts-tailwind-firebase-starter'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "react",
+    "ts",
+    "tailwindcss",
+    "firebase",
+    "prettier",
+    "eslint",
+  ]
+
+[[snippets]]
+  command="npx degit uchihamalolan/vite-react-ts <app>"
+  description="Create app 'vite-react-ts'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "jest",
+    "eslint",
+    "prettier",
+    "tailwindcss",
+    "husky",
+    "conventional-commits",
+  ]
+
+[[snippets]]
+  command="npx degit jvidalv/vital <app>"
+  description="Create app 'vital'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "tailwind",
+    "cssmodules",
+    "jest",
+    "atomicdesign",
+    "prettier",
+    "husky",
+    "commitlint",
+  ]
+
+[[snippets]]
+  command="npx degit pchmn/vite-react-ts-ghactions-template <app>"
+  description="Create app 'vite-react-ts-ghactions-template'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "vitest",
+    "testing-library",
+    "github-actions",
+    "github-pages",
+    "eslint",
+    "prettier",
+    "husky",
+    "commitlint",
+  ]
+
+[[snippets]]
+  command    ="npx degit huibizhang/template-vite-react-tailwind-v3 <app>"
+  description="Create app 'template-vite-react-tailwind-v3'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "tailwindcss", "prettier", "tailwindcs"]
+
+[[snippets]]
+  command    ="npx degit huibizhang/template-vite-react-ts-tailwind-v3 <app>"
+  description="Create app 'template-vite-react-ts-tailwind-v3'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "ts", "tailwindcss", "prettier", "tailwindcs"]
+
+[[snippets]]
+  command="npx degit laststance/vite-react-ts-extended <app>"
+  description="Create app 'vite-react-ts-extended'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "tailwindcss",
+    "msw",
+    "axios",
+    "jest",
+    "testing-library",
+    "eslint",
+    "prettier",
+    "github-actions",
+  ]
+
+[[snippets]]
+  command="npx degit fabgrel10/vite-react-starter <app>"
+  description="Create app 'vite-react-starter'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "eslint",
+    "prettier",
+    "sass",
+    "emotion",
+    "tailwindcss",
+    "jest",
+    "testing-library",
+  ]
+
+[[snippets]]
+  command    ="npx degit Jonghakseo/chrome-extension-boilerplate-react-vite <app>"
+  description="Create app 'chrome-extension-boilerplate-react-vite'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "ts", "sass", "prettier", "eslint", "github-actions"]
+
+[[snippets]]
+  command    ="npx degit 1247748612/vite-ant-design-pro <app>"
+  description="Create app 'vite-ant-design-pro'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "procomponents", "react-query", "react-router6"]
+
+[[snippets]]
+  command="npx degit laststance/vite-rtk-query <app>"
+  description="Create app 'vite-rtk-query'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "reduxtoolkit",
+    "rtkquery",
+    "tailwindcss",
+    "msw",
+    "jest",
+    "testing-library",
+    "eslint",
+    "prettier",
+  ]
+
+[[snippets]]
+  command="npx degit xyhxx/vite-react-proste <app>"
+  description="Create app 'vite-react-proste'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "router-dom",
+    "recoil",
+    "sass",
+    "testing-library",
+    "react-query",
+    "eslint",
+    "style-lint",
+    "prettier",
+  ]
+
+[[snippets]]
+  command="npx degit suren-atoyan/react-pwa <app>"
+  description="Create app 'atoyan/react-pwa'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react18",
+    "ts",
+    "react-router6",
+    "mui5",
+    "recoil",
+    "pwa",
+    "eslint",
+    "prettier",
+    "husky",
+    "lint-staged",
+  ]
+
+[[snippets]]
+  command    ="npx degit alessandropisu/vite-react-ts-minimal-template <app>"
+  description="Create app 'vite-react-ts-minimal-template'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "ts", "airbnbeslint", "prettier", "husky"]
+
+[[snippets]]
+  command="npx degit EverSeenTOTOTO/browser-app-boilerplate/tree/react-vite-ssr <app>"
+  description="Create app 'react-vite-ssr'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "eslint",
+    "style-lint",
+    "husky",
+    "lint-staged",
+    "commitlint",
+  ]
+
+[[snippets]]
+  command    ="npx degit MR-Mostafa/Viact <app>"
+  description="Create app 'Viact'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "ts", "eslint", "prettier", "supportrtl", "storybook"]
+
+[[snippets]]
+  command="npx degit erdoganbulut/viterts <app>"
+  description="Create app 'viterts'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "redux",
+    "react-router",
+    "jest",
+    "eslint",
+    "airbnb",
+    "prettier",
+    "sass",
+  ]
+
+[[snippets]]
+  command="npx degit potreco/viterc <app>"
+  description="Create app 'viterc'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react18",
+    "ts",
+    "eslint-airbnb",
+    "prettier",
+    "husky",
+    "jest",
+    "commit-lint",
+  ]
+
+[[snippets]]
+  command="npx degit Drumpy/vrttv-boilerplate <app>"
+  description="Create app 'vrttv-boilerplate'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "tailwindcss",
+    "eslint",
+    "prettier",
+    "husky",
+    "conventional-commits",
+    "github-actions",
+    "verceldeploy",
+  ]
+
+[[snippets]]
+  command="npx degit kriasoft/react-starter-kit <app>"
+  description="Create app 'react-starter-kit'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "material-ui",
+    "firebase-auth",
+    "ts",
+    "eslint",
+    "prettier",
+    "jest",
+    "github-actions",
+  ]
+
+[[snippets]]
+  command="npx degit apicgg/vite-mern-template <app>"
+  description="Create app 'vite-mern-template'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react18",
+    "ts",
+    "eslint",
+    "router-dom",
+    "axios",
+    "express",
+    "mongoose",
+  ]
+
+[[snippets]]
+  command="npx degit maifeeulasad/react-pipeline <app>"
+  description="Create app 'react-pipeline'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react18",
+    "ts",
+    "antd",
+    "githubpages",
+    "tailwind",
+    "sass",
+    "router-dom",
+    "eslint",
+  ]
+
+[[snippets]]
+  command="npx degit altmshfkgudtjr/varsarr <app>"
+  description="Create app 'varsarr'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "styled-components",
+    "recoil",
+    "react-query",
+    "axios",
+    "absolute-imports",
+  ]
+
+[[snippets]]
+  command="npx degit emre-cil/viterjs-template <app>"
+  description="Create app 'viterjs-template'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "js",
+    "redux",
+    "material-ui",
+    "axios",
+    "eslint",
+    "prettier",
+  ]
+
+[[snippets]]
+  command    ="npx degit choisohyun/react-vite-ts-boilerplate <app>"
+  description="Create app 'react-vite-ts-boilerplate'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react18", "ts", "scss", "eslint", "prettier", "vitest"]
+
+[[snippets]]
+  command="npx degit laoer536/vite3.0-react18-TypeScript-router-dom6-mobx6-Eslint-prettier-template <app>"
+  description="Create app 'vite3.0-react18-TypeScript-router-dom6-mobx6-Eslint-prettier'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react18",
+    "ts",
+    "router-dom",
+    "mobx",
+    "eslint",
+    "prettier",
+    "husky",
+    "apis",
+    "autoimporting",
+  ]
+
+[[snippets]]
+  command    ="npx degit dserranoc/vite-reactts18-eslint-tailwindcss <app>"
+  description="Create app 'vite-reactts18-eslint-tailwindcss'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react18", "ts", "eslint", "tailwindcss"]
+
+[[snippets]]
+  command    ="npx degit KAROTT7/vite-plugin-react-views <app>"
+  description="Create app 'vite-plugin-react-views' (FileSystem based Routes)"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react"]
+
+[[snippets]]
+  command    ="npx degit 985563349/react-vite-template <app>"
+  description="Create app 'react-vite-template'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "Vite"]
+
+[[snippets]]
+  command="npx degit jsxiaosi/react-xs-admin <app>"
+  description="Create app 'react-xs-admin'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react18",
+    "reactroutev6",
+    "reactintl",
+    "react-redux",
+    "emulation",
+  ]
+
+[[snippets]]
+  command="npx degit emre-cil/vite-mui-ts <app>"
+  description="Create app 'vite-mui-ts'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "react",
+    "ts",
+    "redux",
+    "material-ui",
+    "rrd",
+    "eslint",
+    "prettier",
+  ]
+
+[[snippets]]
+  command    ="npx degit Leo-Henrique/leo-react-app <app>"
+  description="Create app 'leo-react-app'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "react", "SASS"]
+
+[[snippets]]
+  command    ="npx degit sveltejs/kit <app>"
+  description="Create app 'sveltejs/kit'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "svelte"]
+
+[[snippets]]
+  command    ="npx degit srmullen/sttv <app>"
+  description="Create app 'srmullen/sttv'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "svelte", "tailwindcss", "ts"]
+
+[[snippets]]
+  command    ="npx degit jiangfengming/svelte-vite-ssr <app>"
+  description="Create app 'svelte-vite-ssr'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "svelte", "ssr"]
+
+[[snippets]]
+  command    ="npx degit andreecy/vite-solid <app>"
+  description="Create app 'vite-solid'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "solid", "solid"]
+
+[[snippets]]
+  command    ="npx degit xbmlz/vitesse-solid <app>"
+  description="Create app 'vitesse-solid'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "solidj-s", "ts", "eslint", "prettier", "unocss", "hopeui"]
+
+[[snippets]]
+  command    ="npx degit electron-vite/electron-vite-vue <app>"
+  description="Create app 'electron-vite-vue'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "vue"]
+
+[[snippets]]
+  command    ="npx degit electron-vite/electron-vite-react <app>"
+  description="Create app 'electron-vite-react'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "react"]
+
+[[snippets]]
+  command    ="npx degit electron-vite/electron-vite-boilerplate <app>"
+  description="Create app 'electron-vite-boilerplate'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "sqlite3", "node"]
+
+[[snippets]]
+  command    ="npx degit yingpengsha/electron-vite-quick-start <app>"
+  description="Create app 'electron-vite-quick-start'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "Electron"]
+
+[[snippets]]
+  command    ="npx degit umbrella22/electron-vite-template <app>"
+  description="Create app 'electron-vite-template'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "vue3", "ts"]
+
+[[snippets]]
+  command    ="npx degit ArcherGu/fast-vite-electron <app>"
+  description="Create app 'fast-vite-electron'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "electron", "esbuild"]
+
+[[snippets]]
+  command    ="npx degit ArcherGu/fast-vite-nestjs-electron <app>"
+  description="Create app 'fast-vite-nestjs-electron'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "electron", "nestjs", "esbuild"]
+
+[[snippets]]
+  command    ="npx degit electron-vite/vite-plugin-electron-quick-start <app>"
+  description="Create app 'vite-plugin-electron-quick-start'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron"]
+
+[[snippets]]
+  command    ="npx degit cawa-93/vite-electron-builder <app>"
+  description="Create app 'vite-electron-builder'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "auto-releases"]
+
+[[snippets]]
+  command    ="npx degit maxstue/vite-reactts-electron-starter <app>"
+  description="Create app 'vite-reactts-electron-starter'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "tailwindcss", "ts", "electron"]
+
+[[snippets]]
+  command    ="npx degit hyroge/vitectron <app>"
+  description="Create app 'vitectron'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "ts", "vue3", "vite2", "pinia2", "vue-router4"]
+
+[[snippets]]
+  command    ="npx degit electron-vite/vite-plugin-electron-renderer <app>"
+  description="Create app 'vite-plugin-electron-renderer'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "renderer"]
+
+[[snippets]]
+  command    ="npx degit Deluze/electron-vue-template <app>"
+  description="Create app 'electron-vue-template'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron"]
+
+[[snippets]]
+  command    ="npx degit tada5hi/vitron <app>"
+  description="Create app 'vitron'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "desktop-apps"]
+
+[[snippets]]
+  command    ="npx degit jooy2/vutron <app>"
+  description="Create app 'vutron'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "pinia", "ts"]
+
+[[snippets]]
+  command    ="npx degit electron-vite/vite-electron-plugin <app>"
+  description="Create app 'vite-electron-plugin'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "electron", "high-perf", "esbuild-based"]
+
+[[snippets]]
+  command    ="npx degit lindsaykwardell/vite-elm-template <app>"
+  description="Create app 'vite-elm-template'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "elm"]
+
+[[snippets]]
+  command    ="npx degit gacallea/elm_vite_tailwind_template <app>"
+  description="Create app 'elm_vite_tailwind_template'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "elm", "elm", "tailwind-css", "daisy_ui"]
+
+[[snippets]]
+  command    ="npx degit lindsaykwardell/vite-elm-spa <app>"
+  description="Create app 'vite-elm-spa'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "elm", "spa"]
+
+[[snippets]]
+  command    ="npx degit misitebao/vite-petite-vue-starter <app>"
+  description="Create app 'vite-petite-vue-starter'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "petite-Vue"]
+
+[[snippets]]
+  command    ="npx degit makinteract/p5js-vite <app>"
+  description="Create app 'p5js-vite'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "p5.js", "sketches"]
+
+[[snippets]]
+  command    ="npx degit stefanfrede/11st-starter-kit <app>"
+  description="Create app '11st-starter-kit'"
+  output     ="next: `cd <app> && npm install && npm run dev`"
+  tag        =["vite", "11ty", "tailwind-css", "alpine.js"]
+
+[[snippets]]
+  command="npx degit fell-lucas/chrome-ext-template-preact-windi-vite <app>"
+  description="Create app 'chrome-ext-template-preact-windi-vite'"
+  output="next: `cd <app> && npm install && npm run dev`"
+  tag=[
+    "vite",
+    "preact",
+    "windi-css",
+    "ts",
+    "prettier",
+    "eslint",
+    "github-actions",
+    "chrome-manifestv3",
+  ]
+
+[[snippets]]
+  command    ="npx degit MillerRen/vite-singlefile-gzip.git <app>"
+  description="Create app 'embedded'"
+  tag        =["vite", "others"]
+
+[[snippets]]
+  command    ="npx -p @storybook/cli sb init"
+  description="Add Storybook to project's root"
+  tag        =["npm", "storybook", "init"]
+
+[[snippets]]
+  command    ="npx nx report"
+  description="Report useful version numbers"
+  tag        =["nx", "report"]
+
+[[snippets]]
+  command    ="npx nx migrate latest"
+  description="Update Nx and run migrations"
+  tag        =["nx", "upgrate"]
+
+[[snippets]]
+  command    ="npx nx migrate --run-migrations"
+  description="Run migrations"
+  tag        =["nx", "migrate"]
+
+[[snippets]]
+  command    ="npx nx graph"
+  description="Display project graph on browser"
+  tag        =["nx", "graph"]
+
+[[snippets]]
+  command    ="npx nx list"
+  description="List plugins"
+  tag        =["nx", "plugins"]
+
+[[snippets]]
+  command    ="npx nx list <PLUGIN>"
+  description="List capabilities for plugins"
+  tag        =["nx", "plugins"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest"
+  description="Add workspace"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest --preset=empty"
+  description="Add workspace set up for building applications"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest --preset=ts"
+  description="Add workspace w/ TS"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest --preset=react"
+  description="Add workspace w/ React"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest --preset=next"
+  description="Add workspace w/ Next"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest --preset=angular"
+  description="Add workspace w/ Angular"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest --preset=angular-nest"
+  description="Add workspace w/ Angular & Nest"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest --preset=nest"
+  description="Add workspace w/ Nest"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest --preset=express"
+  description="Add workspace w/ Express"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest --preset=web"
+  description="Add workspace for web"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx create-nx-workspace@latest --preset=core"
+  description="Add workspace"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx add-nx-to-monorepo@latest"
+  description="Add Nx to Lerna/Yarn/PNPM/NPM Workspace"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx nx generate App <NAME>"
+  description="Generate App"
+  tag        =["nx", "generate"]
+
+[[snippets]]
+  command    ="npx nx generate lib <NAME>"
+  description="Generate lib"
+  tag        =["nx", "generate"]
+
+[[snippets]]
+  command    ="npx nx generate component <NAME>"
+  description="Generate component"
+  tag        =["nx", "generate"]
+
+[[snippets]]
+  command    ="npx nx generate move <FROM> <TARGET>"
+  description="Move project in workspace"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx nx generate remove <PROJECT>"
+  description="Remove PROJECT from workspace"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx nx generate setup-tailwind <PROJECT>"
+  description="Setup TailwindCSS"
+  tag        =["nx", "tailwind"]
+
+[[snippets]]
+  command    ="npx nx generate storybook-configuration <NAME>"
+  description="Configure Storybook"
+  tag        =["nx", "storybook"]
+
+[[snippets]]
+  command    ="npx nx generate web-worker <NAME> --project <PROJECT>"
+  description="Add lib"
+  tag        =["nx", "webworker"]
+
+[[snippets]]
+  command    ="npm i @nrwl/node -D && npx nx generate @nrwl/node:app <NAME>"
+  description="Add TS Node App <NAME>"
+  tag        =["nx", "node"]
+
+[[snippets]]
+  command    ="npm i @nrwl/node -D && npx nx generate @nrwl/node:application <NAME>"
+  description="Add a node App"
+  tag        =["nx", "node"]
+
+[[snippets]]
+  command    ="npm i @nrwl/node -D && npx nx generate @nrwl/node:application <NAME> --frontendProject<FRONTEND>"
+  description="Add node App proxying to front"
+  tag        =["nx", "node", "front"]
+
+[[snippets]]
+  command    ="npm i @nrwl/web -D && npx nx generate @nrwl/web:app <NAME>"
+  description="Add TS web App"
+  tag        =["nx", "web"]
+
+[[snippets]]
+  command    ="npm i @nrwl/nest -D && npx nx g @nrwl/nest:application <NAME>"
+  description="Add Nestjs App"
+  tag        =["nx", "nest"]
+
+[[snippets]]
+  command    ="npm i @nrwl/express -D && npx nx generate @nrwl/express:application <NAME>"
+  description="Add Express App"
+  tag        =["nx", "express"]
+
+[[snippets]]
+  command    ="npm i @nrwl/express -D && npx nx generate @nrwl/express:application <NAME> --frontendProject<FRONTEND>"
+  description="Add Express App proxying to front"
+  tag        =["nx", "express", "front"]
+
+[[snippets]]
+  command    ="npm i @nrwl/react -D && npx nx generate @nrwl/react:application <NAME> --style scss"
+  description="Add React App with scss style"
+  tag        =["nx", "react"]
+
+[[snippets]]
+  command    ="npm i @nrwl/react -D && npx nx generate @nrwl/react:application <NAME> --style scss --routing"
+  description="Add React App with scss style and routes"
+  tag        =["nx", "react", "routing"]
+
+[[snippets]]
+  command    ="npx generate @nrwl/react:storybook-configuration <NAME>"
+  description="Add Storybook"
+  tag        =["nx", "react", "storybook"]
+
+[[snippets]]
+  command    ="npm i @nrwl/angular -D && npx nx generate @nrwl/angular:application <NAME>"
+  description="Add Angular App"
+  tag        =["nx", "angular"]
+
+[[snippets]]
+  command    ="npm i @nrwl/angular -D && npx nx generate @nrwl/angular:application <NAME> --addTailwind"
+  description="Add Angular App with Tailwind"
+  tag        =["nx", "angular", "tailwind"]
+
+[[snippets]]
+  command    ="npx nx g @nrwl/angular:component <NAME>"
+  description="Add component"
+  tag        =["nx", "angular", "component"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/angular:library <NAME>"
+  description="Add lib"
+  tag        =["nx", "angular", "lib"]
+
+[[snippets]]
+  command    ="npx nx @nrwl/angular:setup-tailwind <PROJECT>"
+  description="Configure tailwind"
+  tag        =["nx", "angular", "tailwind"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/angular:library <NAME> --addTailwind"
+  description="Add lib with Tailwind"
+  tag        =["nx", "angular", "tailwind"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/angular:library <NAME> --buildable"
+  description="Add buildable lib"
+  tag        =["nx", "angular", "buildable"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/angular:library <NAME> --buildable --addTailwind"
+  description="Add lib with Tailwind"
+  tag        =["nx", "angular", "tailwind"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/angular:storybook-configuration <NAME> --buildable --addTailwind"
+  description="Add storybook with Tailwind buildable"
+  tag        =["nx", "angular", "storybook", "tailwind"]
+
+[[snippets]]
+  command    ="npx nx generate npm-package <NAME>"
+  description="Create npm pkgs to packages folder"
+  tag        =["nx", "npm_package"]
+
+[[snippets]]
+  command    ="npm install -D @nrwl/web"
+  description="Add web plugin"
+  tag        =["nx", "plugins"]
+
+[[snippets]]
+  command    ="npm install -D @nrwl/js"
+  description="Add @nrwl/js plugin - useful for JS/TS projects"
+  tag        =["nx", "plugins"]
+
+[[snippets]]
+  command    ="npx cra-to-nx"
+  description="Migrate CRA to Nx (from projectss root)"
+  tag        =["nx", "react"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/workspace:convert-to-nx-project --project <PROJECT>"
+  description="Use project.json instead of workspace.json"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/workspace:convert-to-nx-project --all"
+  description="Split workspace.json into project.jsons"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/workspace:library <NAME>"
+  description="Add library to workspace"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/workspace:library <NAME> --buildable"
+  description="Add buildable library to workspace"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx nx g @nrwl/workspace:move --project <FROM> <TARGET>"
+  description="Move project in workspace"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/js:library <NAME>"
+  description="Add js library"
+  tag        =["nx", "js", "lib"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/js:library <NAME> --buildable"
+  description="Add js buildable library"
+  tag        =["nx", "js"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/react:library <NAME>"
+  description="Add react library"
+  tag        =["nx", "react"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/react:library <NAME> --buildable"
+  description="Add react buildable library"
+  tag        =["nx", "react"]
+
+[[snippets]]
+  command    ="npx nx generate @nrwl/workspace:run-commands <TARGET> --project <NAME> --command'<cmd>'"
+  description="Add commands to project"
+  tag        =["nx", "workspace"]
+
+[[snippets]]
+  command    ="npx http-server dist/apps/<NAME>"
+  description="Run app <NAME> locally from the dist folder (via http-server)"
+  tag        =["nx", "runs", "from", "dist"]
+
+[[snippets]]
+  command    ="npm i -D p5 @types/p5 p5-server"
+  description="Add p5 packages"
+  tag        =["p5", "deps"]
+
+[[snippets]]
+  command    ="npm i firebase-admin firebase-functions firebase-tools -D"
+  description="Add firebase dev deps"
+  tag        =["fb", "deps", "dev"]
+
+[[snippets]]
+  command    ="npm i firebase"
+  description="Add firebase web deps"
+  tag        =["fb", "deps"]
+
+[[snippets]]
+  command    ="npm install -g firebase-tools"
+  description="Install the Firebase CLI globally"
+  tag        =["fb", "tools"]
+
+[[snippets]]
+  command    ="npx firebase login"
+  description="Log into Firebase - current Google account"
+  tag        =["fb", "login"]
+
+[[snippets]]
+  command    ="npx firebase login:ci"
+  description="Store token CI system as env var FIREBASE_TOKEN"
+  tag        =["fb", "login", "ci"]
+
+[[snippets]]
+  command    ="npx firebase projects:list"
+  description="List Firebase projects - current Google account"
+  tag        =["fb", "proj", "list"]
+
+[[snippets]]
+  command    ="npx firebase init"
+  description="Initialize a Firebase project"
+  tag        =["fb", "proj", "init"]
+
+[[snippets]]
+  command    ="npx firebase use --add <ALIAS>"
+  description="Add project ALIAS to .firebaserc"
+  tag        =["fb", "alias", "add"]
+
+[[snippets]]
+  command    ="npx firebase use"
+  description="List aliases for current project"
+  tag        =["fb", "alias", "list"]
+
+[[snippets]]
+  command    ="npx firebase use <ALIAS>"
+  description="Setup Firebase to use a project"
+  tag        =["fb", "alias", "use"]
+
+[[snippets]]
+  command    ="npx firebase use --clear"
+  description="Clear active project"
+  tag        =["fb", "alias", "clear"]
+
+[[snippets]]
+  command    ="npx firebase init hosting"
+  description="Setup Firebase Hosting"
+  tag        =["fb", "hosting", "init"]
+
+[[snippets]]
+  command    ="npx firebase init hosting:github"
+  description="Setup GH Actions to deploy to Firebase Hosting"
+  tag        =["fb", "hosting", "github"]
+
+[[snippets]]
+  command    ="npx firebase init functions"
+  description="Create Cloud Functions project"
+  tag        =["fb", "init", "proj"]
+
+[[snippets]]
+  command    ="npx firebase init emulators"
+  description="Setup the Emulator Suite"
+  tag        =["fb", "emulator"]
+
+[[snippets]]
+  command    ="npx firebase emulators:start"
+  description="Start Emulator Suite"
+  tag        =["fb", "emulator"]
+
+[[snippets]]
+  command    ="npx firebase emulators:start --only functions"
+  description="Start Emulator Suite (ONLY FUNCTIONS)"
+  tag        =["fb", "emulate", "func"]
+
+[[snippets]]
+  command    ="npx firebase emulators:start --only hosting"
+  description="Start Emulator Suite (ONLY HOSTING)"
+  tag        =["fb", "emulate", "hosting"]
+
+[[snippets]]
+  command    ="npx firebase deploy --only functions"
+  description="Deploy firebase functions"
+  tag        =["fb", "deploy", "func"]
+
+[[snippets]]
+  command    ="npx firebase deploy --only hosting"
+  description="Deploy firebase hostings"
+  tag        =["fb", "deploy", "hosting"]
+
+[[snippets]]
+  command    ="npx firebase deploy"
+  description="Deploy to firebase"
+  tag        =["fb", "deploy"]
+
+[[snippets]]
+  command    ="npx firebase hosting:channel:list"
+  description="List channels - including 'live' - from default Hosting"
+  tag        =["fb", "channel", "list"]
+
+[[snippets]]
+  command    ="npx firebase hosting:channel:create <ID>"
+  description="Create prev channel ID"
+  tag        =["fb", "channel", "create"]
+
+[[snippets]]
+  command    ="npx firebase hosting:channel:open <ID>"
+  description="Open or returns channel ID URL"
+  tag        =["fb", "channel", "open"]
+
+[[snippets]]
+  command    ="npx firebase hosting:channel:deploy <ID>"
+  description="Deploy prev channel to HOST - expires in 7d"
+  tag        =["fb", "channel", "deploy"]
+
+[[snippets]]
+  command    ="npx firebase hosting:channel:delete <ID>"
+  description="Delete prev channel"
+  tag        =["fb", "channel", "delete"]
+
+[[snippets]]
+  command    ="speedtest-cli"
+  description="Run bandwidth tests - https://speedtest.net"
+  tag        =["speedtest", "run"]
+
+[[snippets]]
+  command    ="glances"
+  description="Alternative to top/htop"
+  tag        =["top"]
+
+[[snippets]]
+  command    ="top"
+  description="Improved top - interactive process viewer"
+  tag        =["top"]
+
+[[snippets]]
+  command    ="gopass insert <KEY>"
+  description="Insert secret"
+  tag        =["pass", "insert"]
+
+[[snippets]]
+  command    ="gopass audit"
+  description="Scans for weak/leaked passwords"
+  tag        =["pass", "audit"]
+
+[[snippets]]
+  command    ="gopass cat"
+  description="Print secret, or insert from stdin"
+  tag        =["pass", "cat"]
+
+[[snippets]]
+  command    ="gopass clone"
+  description="Clone a password store"
+  tag        =["pass", "clone"]
+
+[[snippets]]
+  command    ="gopass completion zsh > <PATH>"
+  description="Generate completions to <PATH>"
+  tag        =["pass", "completion"]
+
+[[snippets]]
+  command    ="gopass config"
+  description="Display and edit the config file"
+  tag        =["pass", "config"]
+
+[[snippets]]
+  command    ="gopass cp"
+  description="Copy secrets to another location"
+  tag        =["pass", "cp"]
+
+[[snippets]]
+  command    ="gopass new"
+  description="Create new secrets"
+  tag        =["pass", "new"]
+
+[[snippets]]
+  command    ="gopass rm $(gopass ls --flat | fzf --multi --ansi --preview'gopass show {}')"
+  description="Remove selected secrets"
+  tag        =["pass", "rm"]
+
+[[snippets]]
+  command    ="gopass edit $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {})"
+  description="Create/Edit secrets"
+  tag        =["pass", "edit"]
+
+[[snippets]]
+  command    ="gopass find"
+  description="Search for secrets"
+  tag        =["pass", "find"]
+
+[[snippets]]
+  command    ="gopass fsck"
+  description="Check store integrity"
+  tag        =["pass", "fsck"]
+
+[[snippets]]
+  command    ="gopass generate"
+  description="Add password"
+  tag        =["pass", "generate"]
+
+[[snippets]]
+  command    ="gopass grep"
+  description="Search secrets with search-string when decrypted"
+  tag        =["pass", "grep"]
+
+[[snippets]]
+  command    ="gopass history"
+  description="Show password history"
+  tag        =["pass", "history"]
+
+[[snippets]]
+  command    ="gopass init"
+  description="Initialize new password store"
+  tag        =["pass", "init"]
+
+[[snippets]]
+  command    ="gopass ls"
+  description="List existing secrets"
+  tag        =["pass", "ls"]
+
+[[snippets]]
+  command    ="gopass merge"
+  description="Merge multiple secrets into one"
+  tag        =["pass", "merge"]
+
+[[snippets]]
+  command    ="gopass mounts"
+  description="Edit mounted stores"
+  tag        =["pass", "mounts"]
+
+[[snippets]]
+  command    ="gopass mv"
+  description="Move secrets to another location"
+  tag        =["pass", "mv"]
+
+[[snippets]]
+  command    ="gopass otp"
+  description="Generate time- or hmac-based tokens"
+  tag        =["pass", "otp"]
+
+[[snippets]]
+  command    ="gopass totp"
+  description="Generate time- or hmac-based tokens"
+  tag        =["pass", "totp"]
+
+[[snippets]]
+  command    ="gopass hotp"
+  description="Generate time- or hmac-based tokens"
+  tag        =["pass", "hotp"]
+
+[[snippets]]
+  command    ="gopass pwgen"
+  description="Generate passwords"
+  tag        =["pass", "pwgen"]
+
+[[snippets]]
+  command    ="gopass recipients"
+  description="Edit recipient permissions"
+  tag        =["pass", "recipients"]
+
+[[snippets]]
+  command    ="gopass setup"
+  description="Initialize a new password store"
+  tag        =["pass", "setup"]
+
+[[snippets]]
+  command    ="gopass show $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {})"
+  description="Pick and display a secret"
+  tag        =["pass", "show"]
+
+[[snippets]]
+  command    ="gopass show --password $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {})"
+  description="Pick and display a secrets password"
+  tag        =["pass", "show"]
+
+[[snippets]]
+  command    ="gopass show --clip $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {})"
+  description="Pick and copy a secrets password to clipboard"
+  tag        =["pass", "show"]
+
+[[snippets]]
+  command    ="gopass sum"
+  description="Compute the SHA256 checksum"
+  tag        =["pass", "sum"]
+
+[[snippets]]
+  command    ="gopass sha"
+  description="Compute the SHA256 checksum"
+  tag        =["pass", "sha"]
+
+[[snippets]]
+  command    ="gopass sha256"
+  description="Compute the SHA256 checksum"
+  tag        =["pass", "sha256"]
+
+[[snippets]]
+  command    ="gopass sync"
+  description="Sync local stores with their remotes"
+  tag        =["pass", "sync"]
+
+[[snippets]]
+  command    ="gopass templates"
+  description="Edit templates"
+  tag        =["pass", "templates"]
+
+[[snippets]]
+  command    ="gopass --version"
+  description="Display version"
+  tag        =["pass", "ver"]
+
+[[snippets]]
+  command    ="gopass --help"
+  description="Show help"
+  tag        =["pass", "help"]
+
+[[snippets]]
+  command    ="npm outdated"
+  description="List outdated packages"
+  tag        =["npm", "outdated"]
+
+[[snippets]]
+  command    ="npm update"
+  description="Bump (or install) packages from package.json"
+  tag        =["npm", "update"]
+
+[[snippets]]
+  command    ="npm install -g npm-check-updates && ncu -u"
+  description="Update packages to a new major version"
+  tag        =["npm", "install"]
+
+[[snippets]]
+  command    ="sheldon completions --shell zsh > <PATH=$ZDOTDIR/opt/completions/_sheldon>"
+  description="Generate completion to <PATH>"
+  tag        =["sheldon", "completions"]
+
+[[snippets]]
+  command    ="sheldon lock"
+  description="Check plugins consistency and regenerate a lock file"
+  tag        =["sheldon", "lock"]
+
+[[snippets]]
+  command    ="sheldon lock --update"
+  description="Update plugin sources"
+  tag        =["sheldon", "lock", "update"]
+
+[[snippets]]
+  command    ="sheldon lock --reinstall"
+  description="Force reinstall all plugin sources"
+  tag        =["sheldon", "lock", "reinstall"]
+
+[[snippets]]
+  command    ="pre-commit install --hook-type commit-msg"
+  description="Install the pre-commit hook"
+  tag        =["pre-commit", "install"]
+
+[[snippets]]
+  command    ="find . -name <.DS_Store> -print0 | xargs -0 git rm -f --ignore-unmatch"
+  description="Remove files from a Git repository"
+  tag        =["git", "remove"]
+
+[[snippets]]
+  command    ="git add . && git commit -am 'chore(bootstrap): A new hope...'"
+  description="Add initial commit"
+  tag        =["git", "commit", "a_new_hope"]
+
+[[snippets]]
+  command    ="echo '# tmp' >> README.md && git init && git commit -m 'chore(bootstrap): a new hope..'"
+  description="Initilize a git repo w/ README & 1st commit"
+  tag        =["git", "init", "readme"]
+
+[[snippets]]
+  command    ="git branch -M <main> && git push -u origin <main>"
+  description="Add and push to branch <main>"
+  tag        =["git", "add_remote", "push"]
+
+[[snippets]]
+  command    ="git remote add origin <origin> && git branch -M <main> && git push -u origin <main>"
+  description="Add remote <origin> and push to branch <main>"
+  tag        =["git", "add_remote", "push"]
+
+[[snippets]]
+  command    ="lazygit"
+  description="Run lazygit"
+  tag        =["git", "lazygit"]
+
+[[snippets]]
+  command    ="git submodule add <URL> <PATH>"
+  description="Add a submodule"
+  tag        =["git", "submodule"]
+
+[[snippets]]
+  command    ="git submodule status"
+  description="List submodules"
+  tag        =["git", "submodule"]
+
+[[snippets]]
+  command    ="git submodule foreach -q git config remote.origin.url"
+  description="List submodules origin urls"
+  tag        =["git", "submodule"]
+
+[[snippets]]
+  command    ="git submodule deinit -- <SUBMODULE> && rm -rf .git/modules/<SUBMODULE> && git rm --cached <SUBMODULE>"
+  description="Remove SUBMODULE"
+  tag        =["git", "submodule"]
+
+[[snippets]]
+  command    ="git submodule deinit -f -- <SUBMODULE> && rm -rf .git/modules/<SUBMODULE> && git rm -f --cached <SUBMODULE>"
+  description="Remove SUBMODULE - FORCED"
+  tag        =["git", "submodule"]
+
+[[snippets]]
+  command    ="sqlite3 <DATABASE>"
+  description="Create database and launch interactive shell"
+  tag        =["sqlite", "db", "create"]
+
+[[snippets]]
+  command    ="sqlite3 <DATABASE>'create table <TABLE>(id INTEGER PRIMARY KEY AUTOINCREMENT, <FIELD>);'"
+  description="Create a TABLE with FIELD and Primary key"
+  tag        =["sqlite", "tables"]
+
+[[snippets]]
+  command    ="sqlite3 <DATABASE>'INSERT into TABLE values(<VALUE>);'"
+  description="Insert data into a table"
+  tag        =["sqlite", "tables"]
+
+[[snippets]]
+  command    ="sqlite3 <DATABASE>'.tables'"
+  description="List tables @ database"
+  tag        =["sqlite", "tables"]
+
+[[snippets]]
+  command    ="sqlite3 <DATABASE>'.schema TABLE'"
+  description="Describe a table"
+  tag        =["sqlite", "tables"]
+
+[[snippets]]
+  command    ="sqlite3 <DATABASE>'select * from'<TABLE>''"
+  description="View records from <TABLE> @ <DATABASE>"
+  tag        =["sqlite", "tables"]
+
+[[snippets]]
+  command    ="select * from TABLE where <FIELD>=VALUE;"
+  description="View records from a table conditionally"
+  tag        =["sqlite", "tables"]
+
+[[snippets]]
+  command    ="sqlite3 <DATABASE>'select * from TABLE where <FIELD>= like VALUE>%;'"
+  description="Select from table"
+  tag        =["sqlite", "tables"]
+
+[[snippets]]
+  command    ="yarn add <NAME> -DW"
+  description="Add dependency globlay to yarn workspace"
+  tag        =["yarn", "workspace"]
+
+[[snippets]]
+  command    ="gradle init"
+  description="Initialize a GRADLE project"
+  tag        =["gradle", "init"]
+
+[[snippets]]
+  command    ="./gradlew wrapper --gradle-version=7.4.2"
+  description="Upgrade gradle to 7.4.2"
+  tag        =["gradle", "upgrade"]
+
+[[snippets]]
+  command    ="./gradlew wrapper --gradle-version=7.5"
+  description="Upgrade gradle to 7.5"
+  tag        =["gradle", "upgrade"]
+
+[[snippets]]
+  command    ="bundle gem <NAME>"
+  description="Create Ruby gem project <NAME>"
+  tag        =["gem", "create_proj"]
+
+[[snippets]]
+  command    ="bundle gem <NAME> --ci=github"
+  description="Create Ruby gem project <NAME> (with github CI)"
+  tag        =["gem", "create_proj_ci"]
+
+[[snippets]]
+  command    ="gen pre-commit"
+  description="Setup pre-commit to the current dir"
+  tag        =["pre-commit", "setup"]
+
+[[snippets]]
+  command    ="gen gitlint --precommit"
+  description="Add gitlint, pre-commit hook to the current dir and commit"
+  tag        =["gitlint", "pre_commit"]
+
+[[snippets]]
+  command    ="rname --append-size --remove-original"
+  description="Rename files in current dir. e.g.: image.png -> image_1920x1080.png"
+  tag        =["img", "rename", "append_size"]
+
+[[snippets]]
+  command    ="converts images/logo512.png -background white ( -clone 0 -resize 16x16 -extent 16x16 ) ( -clone 0 -resize 32x32 -extent 32x32 ) ( -clone 0 -resize 48x48 -extent 48x48 ) ( -clone 0 -resize 64x64 -extent 64x64 ) -delete 0 -alpha off -colors 256 favicon.ico"
+  description="Create a favicon"
+  tag        =["img", "favicon"]
+
+[[snippets]]
+  command    ="cwebp -q 50 <FROM> -o <TO>.webp"
+  description="Convert image .webp"
+  tag        =["img", "webp"]
+
+[[snippets]]
+  command    ="for file in images/*; do cwebp -q 50'$file' -o'${file%.*}.webp'; done"
+  description="Convert each images in current folder to to WebP"
+  tag        =["img", "webp_all"]
+
+[[snippets]]
+  command    ="npm i @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/git @semantic-release/github @semantic-release/release-notes-generator semantic-release -D"
+  description="Install semantic release dependencies"
+  tag        =["npm", "semantic_release"]
+
+[[snippets]]
+  command    ="npm install express cors body-parser && npm install --save-dev @types/node @types/body-parser @types/cookie-parser @types/cors @types/express"
+  description="Add Express dependencies"
+  tag        =["npm", "express"]
+
+[[snippets]]
+  command    ="task list"
+  description="List opened tasks"
+  tag        =["tw", "list"]
+
+[[snippets]]
+  command    ="task list project:<PROJECT>"
+  description="List opened tasks by project"
+  tag        =["tw", "list", "by_project"]
+
+[[snippets]]
+  command    ="task add <description>"
+  description="Add task"
+  tag        =["tw", "add"]
+
+[[snippets]]
+  command    ="task add <description> +<tag>"
+  description="Add task w/ tag"
+  tag        =["tw", "add", "with_tag"]
+
+[[snippets]]
+  command    ="task context list"
+  description="List contexts"
+  tag        =["tw", "ctx", "list"]
+
+[[snippets]]
+  command    ="task context home"
+  description="Activate context home"
+  tag        =["tw", "ctx", "home"]
+
+[[snippets]]
+  command    ="task context isolutions"
+  description="Activate context isolutions"
+  tag        =["tw", "ctx", "isolutions"]
+
+[[snippets]]
+  command    ="task context none"
+  description="Deactivate the current context"
+  tag        =["tw", "ctx", "unset"]
+
+[[snippets]]
+  command    ="task project: list"
+  description="List tasks with no project"
+  tag        =["tw", "proj", "list"]
+
+[[snippets]]
+  command    ="task reports"
+  description="List available reports"
+  tag        =["tw", "reports", "list"]
+
+[[snippets]]
+  command    ="task +<tag> count"
+  description="Count tasks by tag"
+  tag        =["tw", "count", "tag"]
+
+[[snippets]]
+  command    ="task project:<PROJECT> count"
+  description="Count tasks by project"
+  tag        =["tw", "count"]
+
+[[snippets]]
+  command    ="task project:<OLD> modify project:<NEW>"
+  description="Rename project"
+  tag        =["tw", "proj", "rename"]
+
+[[snippets]]
+  command    ="task projects"
+  description="List projects"
+  tag        =["tw", "proj", "list"]
+
+[[snippets]]
+  command    ="task project:<PROJECT> completed"
+  description="Show tasks completed by project"
+  tag        =["tw", "completed"]
+
+[[snippets]]
+  command    ="task +<tag> completed"
+  description="Show tasks completed by tag"
+  tag        =["tw", "completed", "tags"]
+
+[[snippets]]
+  command    ="task end.after:today-1wk completed"
+  description="Show tasks completed in the last week"
+  tag        =["tw", "completed", "last_week"]
+
+[[snippets]]
+  command    ="task entry:yesterday list"
+  description="Show tasks added yesterday"
+  tag        =["tw", "added", "yesterday"]
+
+[[snippets]]
+  command    ="task entry.after:now-1hour list"
+  description="Show tasks added in the last hour"
+  tag        =["tw", "added", "last_hour"]
+
+[[snippets]]
+  command    ="task add <description> project:<NAME>"
+  description="Add task with project"
+  tag        =["tw", "add", "project"]
+
+[[snippets]]
+  command    ="task $(task uuids all +CHILD +COMPLETED) delete"
+  description="Delete all tasks +CHILD +COMPLETED"
+  tag        =["tw", "delete"]
+
+[[snippets]]
+  command    ="task $(task uuids due.before:now) delete"
+  description="Delete tasks due before now"
+  tag        =["tw", "delete"]
+
+[[snippets]]
+  command    ="task $(task uuids due.before:now +CHILD +COMPLETED) delete"
+  description="Delete tasks due before now +CHILD +COMPLETED"
+  tag        =["tw", "delete"]
+
+[[snippets]]
+  command    ="task $(task uuids all +CHILD +COMPLETED) purge"
+  description="Purge all tasks +CHILD +COMPLETED"
+  tag        =["tw", "purge"]
+
+[[snippets]]
+  command    ="task $(task uuids due.before:now) purge"
+  description="Purge tasks due before now"
+  tag        =["tw", "purge"]
+
+[[snippets]]
+  command    ="task $(task uuids due.before:now +CHILD +COMPLETED) purge"
+  description="Purge tasks due before now +CHILD +COMPLETED"
+  tag        =["tw", "purge"]
+
+[[snippets]]
+  command    ="task news"
+  description="Release major highlights"
+  tag        =["tw", "news"]
+
+[[snippets]]
+  command    ="task burndown.daily"
+  description="Burndown chart, by day"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task burndown.monthly"
+  description="Burndown chart, by month"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task burndown.weekly"
+  description="Burndown chart, by week"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task calendar"
+  description="Calendar and holidays"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task colors"
+  description="Demonstrates all supported colors"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task columns"
+  description="List of report columns and supported formats"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task commands"
+  description="List of commands, with their behaviors"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task diagnostics"
+  description="Show diagnostics, for troubleshooting"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task ghistory.annual"
+  description="History graph, by year"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task ghistory.monthly"
+  description="History graph, by month"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task ghistory.weekly"
+  description="History graph, by week"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task ghistory.daily"
+  description="History graph, by day"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task history.annual"
+  description="History report, by year"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task history.monthly"
+  description="History report, by month"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task history.weekly"
+  description="History report, by week"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task history.daily"
+  description="History report, by day"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task ids"
+  description="Filtered list of task IDs"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task information"
+  description="All attributes shown"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task projects"
+  description="Filtered list of projects, with task counts"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task reports"
+  description="List of available reports"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task show"
+  description="Filtered list of configuration settings"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task show report.minimal"
+  description="Show definitions of report: minimal"
+  tag        =["tw", "report", "definitions"]
+
+[[snippets]]
+  command    ="task show context.home"
+  description="Show definitions of context: home"
+  tag        =["tw", "report", "definitions"]
+
+[[snippets]]
+  command    ="task show context.xp"
+  description="Show definitions of context: xp"
+  tag        =["tw", "report", "definitions"]
+
+[[snippets]]
+  command    ="task show context.job"
+  description="Show definitions of context: job"
+  tag        =["tw", "report", "definitions"]
+
+[[snippets]]
+  command    ="task show context.work"
+  description="Show definitions of context: work"
+  tag        =["tw", "report", "definitions"]
+
+[[snippets]]
+  command    ="task stats"
+  description="Filtered statistics"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task summary"
+  description="Filtered project summary"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task tags"
+  description="Filtered list of tags"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task timesheet"
+  description="Weekly timesheet report"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task udas"
+  description="Details of all defined UDAs"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task uuids"
+  description="Filtered list of UUIDs"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list active"
+  description="Started tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list all"
+  description="Pending, completed and deleted tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list blocked"
+  description="Tasks that are blocked by other tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list blocking"
+  description="Tasks that block other tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list completed"
+  description="Tasks that have been completed"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list list"
+  description="Pending tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list long"
+  description="Pending tasks, long form"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list ls"
+  description="Pending tasks, short form"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list minimal"
+  description="Pending tasks, minimal form"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list newest"
+  description="Most recent pending tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list next"
+  description="Most urgent tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list oldest"
+  description="Oldest pending tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list overdue"
+  description="Overdue tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list ready"
+  description="Pending, unblocked, scheduled tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list recurring"
+  description="Pending recurring tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list unblocked"
+  description="Tasks that are not blocked"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="task list waiting"
+  description="Hidden, waiting tasks"
+  tag        =["tw", "report"]
+
+[[snippets]]
+  command    ="touch .editorconfig"
+  description="Generate .editorconfig"
+  tag        =["editorconfig", "generate"]
+
+[[snippets]]
+  command    ='curl -sL https://rb.gy/jl5vwa | grep name | cut -d \" -f4 | cut -c2-'
+  description="Get latest LuaRocks version by default"
+  tag        =["luarocks", "setup"]
+
+[[snippets]]
+  command    ="npx firebase deploy"
+  description="Deploy to Firebase"
+  tag        =["fb", "deploy"]
+
+[[snippets]]
+  command    ="shasum -a 256 <FILE>"
+  description="Generate SHA-256 of file"
+  tag        =["SHA", "generate", "SHA_256"]
+
+[[snippets]]
+  command    ="shasum -a 256 <FILE> | cut -d'' -f1"
+  description="Generate SHA-256 of file"
+  tag        =["SHA", "generate", "SHA-256"]
+
+[[snippets]]
+  command    ="shasum -a 512 <FILE>"
+  description="Generate SHA-512 of file"
+  tag        =["SHA", "generate", "SHA-512"]
+
+[[snippets]]
+  command    ="shasum -a 512 <FILE> | cut -d'' -f1"
+  description="Generate SHA-512 of file"
+  tag        =["SHA", "generate", "SHA-512"]
+
+[[snippets]]
+  command    ="chgrp -hR <group> <DIR>"
+  description="Change the group of dir recursively"
+  tag        =["osx", "groups", "change"]
+
+[[snippets]]
+  command    ="/usr/libexec/java_home"
+  description="Print default JDK path"
+  tag        =["osx", "jdk", "current"]
+
+[[snippets]]
+  command    ="/usr/libexec/java_home -V"
+  description="List available JDKs"
+  tag        =["osx", "jdk", "list"]
+
+[[snippets]]
+  command    ="/usr/libexec/java_home -<JDK>"
+  description="Run a specified jdk"
+  tag        =["osx", "jdk", "setup"]
+
+[[snippets]]
+  command    ='export JAVA_HOME="$(/usr/libexec/java_home)"'
+  description="Export JAVA_HOME"
+  tag        =["osx", "JAVA_HOME", "setup"]
+
+[[snippets]]
+  command    ='launchctl setenv <KEY> "<VALUE>"'
+  description="Set a launchd env var"
+  tag        =["launchd", "set"]
+
+[[snippets]]
+  command    ="launchctl getenv <KEY>"
+  description="Get launchd env var KEY's value"
+  tag        =["launchd", "get"]
+
+[[snippets]]
+  command    ="launchctl unsetenv <KEY>"
+  description="Unset the specified env vars for all services within the domain"
+  tag        =["launchd", "unset"]
+
+[[snippets]]
+  command    ="launchctl list"
+  description="List information about services"
+  tag        =["launchd", "list"]
+
+[[snippets]]
+  command    ="launchctl runstats gui/$UID/<SERVICE>"
+  description="Print performance statistics for a service"
+  tag        =["launchd", "stats"]
+
+[[snippets]]
+  command    ="launchctl bootstrap gui/$UID/ /Library/LaunchAgents/<plist>"
+  description="Bootstrap a domain/service into /Library/LaunchAgents/"
+  tag        =["launchd", "bootstrap"]
+
+[[snippets]]
+  command    ="launchctl bootout gui/$UID /Library/LaunchAgents/<plist>"
+  description="Tear down a domain or removes a service from /Library/LaunchAgents/"
+  tag        =["launchd", "bootout"]
+
+[[snippets]]
+  command    ="launchctl enable gui/$UID/<NAME>"
+  description="Enable an existing service"
+  tag        =["launchd", "enable"]
+
+[[snippets]]
+  command    ="launchctl disable gui/$UID/<NAME>"
+  description="Disable an existing service"
+  tag        =["launchd", "disable"]
+
+[[snippets]]
+  command    ="launchctl start gui/$UID/<NAME>"
+  description="Start specified service"
+  tag        =["launchd", "start"]
+
+[[snippets]]
+  command    ="launchctl stop gui/$UID/<NAME>"
+  description="Stop the specified service"
+  tag        =["launchd", "stop"]
+
+[[snippets]]
+  command    ="sudo launchctl bootstrap gui/$UID /Library/LaunchAgents/dev.dotfiles.setup.plist"
+  description="Bootstrap the dev.dotfiles.setup service"
+  tag        =["launchd", "dotfiles", "bootstrap"]
+
+[[snippets]]
+  command    ="sudo launchctl bootout gui/$UID /Library/LaunchAgents/dev.dotfiles.setup.plist"
+  description="Tear down dev.dotfiles.setup service"
+  tag        =["launchd", "dotfiles", "bootout"]
+
+[[snippets]]
+  command    ="sudo launchctl enable gui/$UID/dev.dotfiles.setup"
+  description="Enable dev.dotfiles.setup service"
+  tag        =["launchd", "dotfiles", "enable"]
+
+[[snippets]]
+  command    ="sudo launchctl disable gui/$UID/dev.dotfiles.setup"
+  description="Disable dev.dotfiles.setup service"
+  tag        =["launchd", "dotfiles", "disable"]
+
+[[snippets]]
+  command    ="sudo launchctl start gui/$UID/dev.dotfiles.setup"
+  description="Start dev.dotfiles.setup service"
+  tag        =["launchd", "dotfiles", "start"]
+
+[[snippets]]
+  command    ="sudo launchctl stop gui/$UID/dev.dotfiles.setup"
+  description="Stop dev.dotfiles.setup service"
+  tag        =["launchd", "dotfiles", "stop"]
+
+[[snippets]]
+  command    ="sudo systemsetup -listtimezones"
+  description="List Timezones"
+  tag        =["osx", "timezones"]
+
+[[snippets]]
+  command    ="adb shell am kill <PACKAGE>"
+  description="Kill a running App by PACKAGE"
+  tag        =["android", "adb"]
+
+[[snippets]]
+  command    ="yes | sdkmanager --licenses && yes | sdkmanager --licenses"
+  description="Accept all - and not previously accepted - licenses"
+  tag        =["android", "sdkmanager", "licenses"]
+
+[[snippets]]
+  command    ="nix show-derivation nixpkgs#<derivation>"
+  description="Show contents of a store derivation"
+  tag        =["nix", "derivations"]
+
+[[snippets]]
+  command    ="nix show-derivation --recursive /run/current-system"
+  description="Show derivation graph - if available - that produced your NixOS system"
+  tag        =["nix", "derivations"]
+
+[[snippets]]
+  description="Print dependency graph of all files fetched by package"
+  tag        =["nix", "derivations"]
+
+[[snippets]]
+  command    ="nix path-info --derivation nixpkgs#<PACKAGE>"
+  description="Print the path of the store derivation produced by package"
+  tag        =["nix", "derivations"]
+
+[[snippets]]
+  command    ="nix realisation info nixpkgs#<PACKAGE> --json"
+  description="Show some information about the realisation of package"
+  tag        =["nix", "packages"]
+
+[[snippets]]
+  command    ="nix path-info nixpkgs#<PACKAGE>"
+  description="Print the store path produced by package"
+  tag        =["nix", "packages"]
+
+[[snippets]]
+  command    ="nix path-info -rsSh nixpkgs#<PACKAGE>"
+  description="Show readable package size and all deps"
+  tag        =["nix", "packages"]
+
+[[snippets]]
+  command    ="nix path-info -r $(nix-store -qR $(which <PACKAGE>)) --store https://cache.nixos.org/"
+  description="Check the existence of a path in a bin cache for package"
+  tag        =["nix", "packages"]
+
+[[snippets]]
+  command    ="nix search nixpkgs"
+  description="Show packages in the nixpkgs flake"
+  tag        =["nix", "flakes"]
+
+[[snippets]]
+  command    ="nix search nixpkgs <TERM>"
+  description="Show packages in the nixpkgs flake containing term in its name or description"
+  tag        =["nix", "flakes"]
+
+[[snippets]]
+  command    ="nix search nixpkgs#<TERM> <PACKAGE>"
+  description="Search for package underneath term's attribute"
+  tag        =["nix", "flakes"]
+
+[[snippets]]
+  command    ="nix search"
+  description="Show packages in the flake in the current dir"
+  tag        =["nix", "flakes"]
+
+[[snippets]]
+  command    ="nix search nixpkgs'<PACKAGE>|<library>'"
+  description="Search for package or library"
+  tag        =["nix", "flakes"]
+
+[[snippets]]
+  command    ="nix search nixpkgs <PACKAGE>'<keyword1>|<keyword2>'"
+  description="Search for package including excluding keywords"
+  tag        =["nix", "flakes"]
+
+[[snippets]]
+  command    ="nix search nixpkgs <PACKAGE> -e'<keyword1>|<keyword2>'"
+  description="Search for package except excluding keywords"
+  tag        =["nix", "flakes"]
+
+[[snippets]]
+  command    ="nix search nixpkgs <PACKAGE> -e'<keyword1>' -e'<keyword2>'"
+  description="Search for package except excluding keywords (ALT)"
+  tag        =["nix", "flakes"]
+
+[[snippets]]
+  command    ="nix path-info --json --all | jq -r'sort_by(.registrationTime)[-11:-1][].path'"
+  description="Print the 10 most recently added paths"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix path-info --json --all | jq'map(.narSize) | add'"
+  description="Show size of the entire Nix store"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix path-info --json --all -S | jq'map(select(.closureSize > 1e9)) | sort_by(.closureSize) | map([.path, .closureSize])'"
+  description="Show every path whose closure is bigger than 1 GB, sorted by closure sizes"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-collect-garbage -d && nix-store --gc"
+  description="Clean nix store"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store -q --graph ~/.nix-profile | dot -Tps > graph.ps && gv graph.ps"
+  description="Make a picture of the dep graph of the current environment"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store --gc"
+  description="Delete unreachable paths"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store --gc --max-freed $((100 * 1024 * 1024))"
+  description="Delete at least 100 MiBs of unreachable paths"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store --print-env $(nix-instantiate'<nixpkgs>' -package)"
+  description="Print out the environment of a derivation in a format that can be evaluated by a shell"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store --verify-path $(nix-store -qR $(which <PACKAGE>))"
+  description="Check the integrity of package and all its deps"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store --query --requisites /run/current-system | cut -d- -f2- | sort | uniq"
+  description="Print installed packages"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store -qR $(nix-store -qd $(which <PACKAGE>))"
+  description="Print the build-time deps of a package"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store -q --tree $(nix-store -qd $(which <PACKAGE>))"
+  description="Show build-time deps as a tree"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store -q --referrers $(nix-store -q --binding <lib> $(nix-store -qd $(which <PACKAGE>)))"
+  description="Show paths that depend on the same lib as package"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store -q --referrers-closure $(ldd $(which <PACKAGE>) | grep /libc.so | awk'{print $3}')"
+  description="Show paths that directly or indirectly depend on the Glibc - C library - used by package"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store -q --roots $(which <PACKAGE>)"
+  description="Show every gc root pointing to a store path depending on package"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store --verify-path $(nix-store -qR $(which <PACKAGE>))"
+  description="Check integrity of package and its deps"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store --repair-path $(nix-store -qR $(which <PACKAGE>))"
+  description="Try to repair package and its dependencies"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix-store -qR $(which <PACKAGE>)"
+  description="Print the closure (runtime deps) of package program in the current user environment"
+  tag        =["nix", "store"]
+
+[[snippets]]
+  command    ="nix show-config"
+  description="Show Nix configuration"
+  tag        =["nix", "config"]
+
+[[snippets]]
+  command    ="go vet *.go"
+  description="Report likely mistakes on all go files"
+  tag        =["go", "vet"]
+
+[[snippets]]
+  command    ="go vet"
+  description="Report likely mistakes on files in current dir"
+  tag        =["go", "vet"]
+
+[[snippets]]
+  command    ="go vet ./.."
+  description="Report likely mistakes on files in current dir recursively"
+  tag        =["go", "vet"]
+
+[[snippets]]
+  command    ="go vet -printf=true ./.."
+  description="Report likely mistakes only the 'printf' check"
+  tag        =["go", "vet"]
+
+[[snippets]]
+  command    ="go vet -printf=false ./.."
+  description="Report likely mistakes except 'printf'"
+  tag        =["go", "vet"]
+
+[[snippets]]
+  command    ="go tool vet help"
+  description="List available checks"
+  tag        =["go", "vet"]
+
+[[snippets]]
+  command    ="go list"
+  description="List packages or modules"
+  tag        =["go", "pkgs"]
+
+[[snippets]]
+  command    ="go list github.com/<PACKAGE>"
+  description="Find information about package"
+  tag        =["go", "pkgs"]
+
+[[snippets]]
+  command    ="go list -f'{{ .Name }}' <PACKAGE>"
+  description="List packages or modules using the '-f' flag"
+  tag        =["go", "pkgs"]
+
+[[snippets]]
+  command    ="go list -f'{{ .Imports }}' <PACKAGE>"
+  description="Print package's deps"
+  tag        =["go", "pkgs"]
+
+[[snippets]]
+  command    ="go list -f'{{ .Deps  }}' <PACKAGE>"
+  description="List package's transitive deps"
+  tag        =["go", "pkgs"]
+
+[[snippets]]
+  command    ="go list -m -u all"
+  description="Check for updates to deps and subdeps"
+  tag        =["go", "pkgs"]
+
+[[snippets]]
+  command    ="go list -m -u <PACKAGE>"
+  description="Check for updates to a specific dep of package"
+  tag        =["go", "pkgs"]
+
+[[snippets]]
+  command    ="go get github.com/<PACKAGE>"
+  description="Download a package"
+  tag        =["go", "pkgs"]
+
+[[snippets]]
+  command    ="go get github.com/<PACKAGE>@<VERSION>"
+  description="Download package from a specific version"
+  tag        =["go", "pkgs"]
+
+[[snippets]]
+  command    ="go get github.com/<PACKAGE>@<COMMIT>"
+  description="Download package from a specific commit"
+  tag        =["go", "pkgs"]
+
+[[snippets]]
+  command    ="go get -u github.com/spf13/cobra@latest && go install github.com/spf13/cobra-cli@latest"
+  description="Get cobra"
+  tag        =["go", "pkgs", "cobra"]
+
+[[snippets]]
+  command    ="go mod init github.com/roalcantara/<NAME>"
+  description="Initialize new go module in current director"
+  tag        =["go", "init"]
+
+[[snippets]]
+  command    ="go mod tidy"
+  description="Clean up unused deps or adds missing ones"
+  tag        =["go", "tidy"]
+
+[[snippets]]
+  command    ="go install"
+  description="Produce a bin in GOPATH/bin"
+  tag        =["go", "install"]
+
+[[snippets]]
+  command    ="ls $GOPATH/pkg/mod"
+  description="List cached deps"
+  tag        =["go", "cache"]
+
+[[snippets]]
+  command    ="go clean -modcache"
+  description="Clear the module cache for all projects"
+  tag        =["go", "cache"]
+
+[[snippets]]
+  command    ="go mod download"
+  description="Download modules to the local cache"
+  tag        =["go", "mod"]
+
+[[snippets]]
+  command    ="go mod vendor"
+  description="Copy 3rd-party deps to a vendor folder in your project root"
+  tag        =["go", "mod"]
+
+[[snippets]]
+  command    ="go mod graph"
+  description="Print module requirement graph"
+  tag        =["go", "mod"]
+
+[[snippets]]
+  command    ="go mod verify"
+  description="Check deps have expected content"
+  tag        =["go", "mod"]
+
+[[snippets]]
+  command    ="go mod why"
+  description="Explain why packages or modules are neede"
+  tag        =["go", "mod"]
+
+[[snippets]]
+  command    ="go mod edit"
+  description="Replace a dependency in your 'go.mod' file with a local or forked version"
+  tag        =["go", "mod"]
+
+[[snippets]]
+  command    ="go run <FILE=main>.go"
+  description="Run go program"
+  tag        =["go", "run"]
+
+[[snippets]]
+  command    ="go run <FILE1>.go <FILE2.go> <FILE3.go>"
+  description="Run many files at once"
+  tag        =["go", "run"]
+
+[[snippets]]
+  command    ="go run *.go"
+  description="Run all go files in current directory"
+  tag        =["go", "run"]
+
+[[snippets]]
+  command    ="go run ./<DIR>"
+  description="Run package in dir"
+  tag        =["go", "run"]
+
+[[snippets]]
+  command    ="go build"
+  description="Produce bin to current arch in dir"
+  tag        =["go", "bins"]
+
+[[snippets]]
+  command    ="ls $GOPATH/bin"
+  description="List executable bins from GOPATH/bin"
+  tag        =["go", "bins"]
+
+[[snippets]]
+  command="gofmt *.go"
+  tag    =["go", "fmt"]
+
+[[snippets]]
+  command    ="gofmt *.go -w"
+  description="Format and overwrite source files recursively"
+  tag        =["go", "fmt"]
+
+[[snippets]]
+  command    ="goimports *.go"
+  description="Fix imports and formats the code of all go files"
+  tag        =["go", "fmt"]
+
+[[snippets]]
+  command    ="docker exec <CONTAINER-NAME=app> <CMD=tail> <ARG=/var/log/date.log>"
+  description="To Run a Non-interactive Command in a Docker Container"
+  tag        =["docker", "exec", "command"]
+
+[[snippets]]
+  command    ="docker exec --workdir <DIR=/tmp> <CONTAINER-NAME=app> <CMD=pwd>"
+  description="To run a command in a certain directory of your container use the --workdir flag"
+  tag        =["docker", "exec", "command"]
+
+[[snippets]]
+  command    ="docker exec --user <USER=guest> <CONTAINER-NAME=app> <CMD=whoami>"
+  description="To run a command as a different user inside your container use the --user flag"
+  tag        =["docker", "exec", "command"]
+
+[[snippets]]
+  command    ="docker exec -e <VAR1>=<VAL1> <CONTAINER-NAME=app> <CMD=env>"
+  description="To pass environment variables into a container along with the command use -e flag"
+  tag        =["docker", "exec", "command"]
+
+[[snippets]]
+  command    ="docker exec -e <VAR1>=<VAL1> -e <VAR2><VAL2> <CONTAINER-NAME=app> <CMD=env>"
+  description="To set multiple variables, repeat the -e flag"
+  tag        =["docker", "exec", "command"]
+
+[[snippets]]
+  command    ="docker exec --env-file <ENV_FILE=.env> <CONTAINER-NAME=app> <CMD=env>"
+  description="To pass in a file full of environment variables use the --env-file flag"
+  tag        =["docker", "exec", "command"]
+
+[[snippets]]
+  command    ="docker run --rm -it --name <app> -v $(PWD):/opt/app ruby:3.1.2 rails new <app> --force --database=<postgresql> --remove-orphans"
+  description="Generate a rails app with database"
+  tag        =["docker", "rails"]
+
+[[snippets]]
+  command    ="docker run --rm -it --name ubuntu -v ~/Public:/public ubuntu:latest bash"
+  description="Run Docker Container ubuntu Docker container - AUTOREMOVABLE"
+  tag        =["docker", "run"]
+
+[[snippets]]
+  command    ="docker run --rm -it --name zipkin -v ~/Public:/public -p 9411:9411 openzipkin/zipkin"
+  description="Run Docker Container 'zipkin' @ 'http://localhost:9411' - AUTOREMOVABLE"
+  tag        =["docker", "run", "zipkin"]
+
+[[snippets]]
+  command    ="docker run --rm -it --name nixos -v ~/Public:/public nixos/nix:latest"
+  description="Run Docker Container 'nixos' Docker container - AUTOREMOVABLE"
+  tag        =["docker", "run", "nixos"]
+
+[[snippets]]
+  command    ="docker run -it --rm --name mongo -p 27017:27017 -v /Volumes/etc/Data/mongo/db:/data/db -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD='P@$$w@rD!' mongo:latest"
+  description="Run Docker Container 'mongo'[/Volumes/etc/Data/mongo/db] @ 'mongodb://root@P@$$w@rD!@localhost:27017' - AUTOREMOVABLE"
+  tag        =["docker", "run", "mongo"]
+
+[[snippets]]
+  command    ="docker run --name mongod -p 27017:27017 -v /Volumes/etc/Data/mongo/db:/data/db -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD='P@$$w@rD!' -d mongo:latest"
+  description="Run Docker Container 'mongod'[/Volumes/etc/Data/mongo/db] @ 'mongodb://root@P@$$w@rD!@localhost:27017' - DEAMONIZED"
+  tag        =["docker", "run", "mongod"]
+
+[[snippets]]
+  command    ="docker run --name sqlserver -p 1433:1433 -v /Volumes/etc/Data/sql-server/sql:/var/opt/mssql/data -e ACCEPT_EULA=Y -e SA_PASSWORD='P@$$w@rD!' -d liaisonintl/mssql-server-linux:latest"
+  description="Run SQLServer Docker container 'sa@PA$$w@rD!'::'localhost:1433' - DEAMONIZED"
+  tag        =["docker", "run", "sqlserver"]
+
+[[snippets]]
+  command    ="docker run --name postgresql -e POSTGRES_USER='sa' -e POSTGRES_PASSWORD='P@$$w0rD!' -p 5432:5432 -v /tmp/postgresqldb:/var/lib/postgresql/data -d postgres:latest"
+  description="Run PostgreSql Docker container 'sa@P@$$w0rD!'::'localhost:5432' - DEAMONIZED"
+  tag        =["docker", "run", "postgres"]
+
+[[snippets]]
+  command    ="docker run --rm -it --name alpine -v ~/Public:/public alpine:latest sh --user root --login"
+  description="Run alpine container with an interactive login shell sh as root"
+  tag        =["docker", "run", "alpine"]
+
+[[snippets]]
+  command    ="docker run --rm -it --name node-latest -v ~/Public:/public node:latest sh"
+  description="Run node:latest container with an interactive login shell"
+  tag        =["docker", "run", "node"]
+
+[[snippets]]
+  command    ="docker run -it --rm roalcantara/cockpit:ncc-1701"
+  description="Run cockpit:latest container with an interactive login shell"
+  tag        =["docker", "run", "cockpit"]
+
+[[snippets]]
+  command    ="docker run -it --rm -v $(pwd):/app roalcantara/cockpit:ncc-1701"
+  description="Run cockpit:latest container with an interactive login shell"
+  tag        =["docker", "run", "cockpit", "pwd"]
+
+[[snippets]]
+  command    ="docker run --name alpine -v ~/Public:/public -d alpine:latest sh --user root --login"
+  description="Run alpine container with an interactive login shell sh as root - DEAMONIZED"
+  tag        =["docker", "run", "alpined"]
+
+[[snippets]]
+  command    ="docker exec --rm -it --name <NAME> $(docker ps -qa) <SHELL=bash>"
+  description="Pick and Runs an image with an interactive login shell"
+  tag        =["docker", "exec"]
+
+[[snippets]]
+  command    ="docker inspect $(docker container ls -a -q)"
+  description="Inspect a running container"
+  tag        =["docker", "inspect"]
+
+[[snippets]]
+  command    ="docker inspect --format {{.State.Pid}} $(docker container ls -a -q)"
+  description="Get process ID for a container"
+  tag        =["docker", "inspect"]
+
+[[snippets]]
+  command    ="docker inspect --format='{{json .Volumes}}' $(docker container ls -a -q) python -mjson.tool"
+  description="List mounted volumes from container"
+  tag        =["docker", "volumes"]
+
+[[snippets]]
+  command    ="docker cp <FILE> <CONTAINER>:<TARGET>"
+  description="Copy a file from host to container to host"
+  tag        =["docker", "cp"]
+
+[[snippets]]
+  command    ="docker ps -a"
+  description="List docker containers"
+  tag        =["docker", "containers"]
+
+[[snippets]]
+  command    ="docker container ls -a -q | xargs docker container stop -f"
+  description="Stop docker containers"
+  tag        =["docker", "containers"]
+
+[[snippets]]
+  command    ="docker container rm $(docker ps -qa)"
+  description="Remove stopped docker containers"
+  tag        =["docker", "containers"]
+
+[[snippets]]
+  command    ="docker rm -vf $(docker ps -aq)"
+  description="Remove docker containers including its volumes (force)"
+  tag        =["docker", "containers"]
+
+[[snippets]]
+  command    ="docker container rm -vf $(docker container ls -aq)"
+  description="Remove docker containers including its volumes (force)"
+  tag        =["docker", "containers"]
+
+[[snippets]]
+  command    ="docker rmi -f $(docker images -aq)"
+  description="Remove docker images"
+  tag        =["docker", "images"]
+
+[[snippets]]
+  command    ="docker image rm -f $(docker image ls -aq)"
+  description="Remove docker images including its volumes (force)"
+  tag        =["docker", "images"]
+
+[[snippets]]
+  command    ="docker images -qf dangling=true | xargs docker rmi"
+  description="Remove dangling Docker images"
+  tag        =["docker", "images"]
+
+[[snippets]]
+  command    ="docker image prune --all --force"
+  description="Prune unused docker images, not just dangling ones"
+  tag        =["docker", "prune"]
+
+[[snippets]]
+  command    ="docker system prune -a --volumes"
+  description="Prune unused docker containers, volumes, networks and images"
+  tag        =["docker", "volumes"]
+
+[[snippets]]
+  command    ="docker images -a"
+  description="List docker images"
+  tag        =["docker", "images"]
+
+[[snippets]]
+  command    ="docker stats $(docker ps --format='{{.Names}}"
+  description="Produce console stats for all running docker containers - like'top'"
+  tag        =["docker", "stats"]
+
+[[snippets]]
+  command    ="docker compose build"
+  description="Build DOCKER COMPOSE or rebuild services"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build --build-arg <ARG_NAME>=<ARG_VALUE> ."
+  description="Build DOCKER COMPOSE services setting the build-time arguments for services"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="DOCKER_BUILDKIT=1 docker build --no-cache --build-arg BUILDKIT_INLINE_CACHE=1 -t <TAG> ."
+  description="Build DOCKER COMPOSE using BUILDKIT and INLINE CACHE"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build --no-cache"
+  description="Build DOCKER COMPOSE services not using the cache"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build --progress"
+  description="Build DOCKER COMPOSE services setting the type of progress output default `auto`"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build --progress auto"
+  description="Build DOCKER COMPOSE services setting the type of progress output `auto`"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build --progress tty"
+  description="Build DOCKER COMPOSE services setting the type of progress output `tty`"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build --progress plain"
+  description="Build DOCKER COMPOSE services setting the type of progress output to `plain`"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build --progress quiet"
+  description="Build DOCKER COMPOSE services setting the type of progress output to `quiet`"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build --pull"
+  description="Build DOCKER COMPOSE services always pulling a newer image's version"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build -q"
+  description="Build DOCKER COMPOSE services and don't print anything to STDOU"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build --ssh default"
+  description="Build DOCKER COMPOSE services and set SSH authentications using the default SSH Agent"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose build --ssh <NAME>"
+  description="Build DOCKER COMPOSE services and set SSH authentications"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose convert"
+  description="Convert the DOCKER COMPOSE file to platform's canonical format"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose cp"
+  description="Copy files/folders between a DOCKER COMPOSE service container and the local filesystem"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose create"
+  description="Create DOCKER COMPOSE service's containers"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose down"
+  description="Stop DOCKER COMPOSE containers"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose events"
+  description="Receive DOCKER COMPOSE containers' real time events"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose exec"
+  description="Execute a command in a DOCKER COMPOSE running container"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose images"
+  description="List created images by the DOCKER COMPOSE container"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose kill"
+  description="Force stop DOCKER COMPOSE service containers"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose logs"
+  description="View output from DOCKER COMPOSE containers"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose ls"
+  description="List running DOCKER COMPOSE projects"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose pause"
+  description="Pause DOCKER COMPOSE services"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose port"
+  description="Print the public port for a DOCKER COMPOSE port binding"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose ps"
+  description="List DOCKER COMPOSE containers"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose pull"
+  description="Pull DOCKER COMPOSE service images"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose push"
+  description="Push DOCKER COMPOSE service images"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose restart"
+  description="Restart DOCKER COMPOSE service containers"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose run"
+  description="Run a one-off command on a DOCKER COMPOSE service"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose start"
+  description="Start services"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose top"
+  description="Display the running DOCKER COMPOSE processes"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose unpause"
+  description="Unpause DOCKER COMPOSE services"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose up"
+  description="Create and start DOCKER COMPOSE containers"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose up -d"
+  description="Create and start DOCKER COMPOSE containers deamonized"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose rm"
+  description="Removes stopped DOCKER COMPOSE service containers"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose stop"
+  description="Stop DOCKER COMPOSE services"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose stop --remove-orphans"
+  description="Stop and remove DOCKER COMPOSE containers for services not defined in the Compose file"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose stop --rmi all"
+  description="Stop and remove DOCKER COMPOSE images used by services"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose stop --rmi local"
+  description="Stop and remove only images used by DOCKER COMPOSE services that don't have a custom tag"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose stop -t"
+  description="Stop DOCKER COMPOSE and specify a shutdown timeout in 10 seconds"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose stop -t <20>"
+  description="Stop DOCKER COMPOSE and specify a shutdown timeout in <20> seconds"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose stop -v <VOLUME_NAME>"
+  description="Stop DOCKER COMPOSE and remove named declared volumes and anonymous volumes attached to containers"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose --profile <PROFILE> up"
+  description="Start DOCKER COMPOSE services with a profile and services without specified profiles"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose --profile <PROFILE_1> --profile <PROFILE_2> up"
+  description="Enable MULTIPLE profiles for DOCKER COMPOSE"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose --env-file <PATH_TO_ENV> up"
+  description="Set Environment variables file to DOCKER COMPOSE"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose down --volumes"
+  description="Remove DOCKER COMPOSE containers entirely and also data volume"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose down --remove-orphans --rmi --volumes"
+  description="Stop and remove DOCKER COMPOSE containers, networks, images and volumes from the image"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose run --abort-on-container-exit <SERVICE_NAME>"
+  description="Run a DOCKER COMPOSE autoremovable container"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker compose run --abort-on-container-exit -e <ENV_NAME>=<ENV_VALUE> <SERVICE_NAME>"
+  description="Run a DOCKER COMPOSE autoremovable container overriding the values set durying the build"
+  tag        =["docker", "compose"]
+
+[[snippets]]
+  command    ="docker run -d --name sql-server-sgs -p 1433:1433 -v /Volumes/etc/Data/sql-server/sgs:/var/opt/mssql/data -e'ACCEPT_EULA=Y' -e'SA_PASSWORD=q1!w2@e3#' liaisonintl/mssql-server-linux:latest"
+  description="Runs Docker container 'sql-server-sgs' :: '/Volumes/etc/Data/mongo/db'::'root@1433'::'localhost:27017' - DEAMONIZED"
+  tag        =["sgs", "sqlserver"]
+
+[[snippets]]
+  command    ="docker run -d -rm --name sql-server-sgs -p 1433:1433 -v /Volumes/etc/Data/sql-server/sgs:/var/opt/mssql/data -e'ACCEPT_EULA=Y' -e'SA_PASSWORD=q1!w2@e3#' liaisonintl/mssql-server-linux:latest"
+  description="Runs liaisonintl/mssql-server-linux:latest Docker container 'sql-server-sgs' @ localhost:1433 - DEAMONIZED/AUTO REMOVABLE"
+  tag        =["sgs", "sqlserver"]
+
+[[snippets]]
+  command    ="cd $HOME/Work/isolutions/sgsnow/sgsnow-api && grails -DfileRepositoryPath=$HOME/Work/isolutions/sgs-now/sgsnow-api/repositoryFiles -DJDBC_CONNECTION_STRING='jdbc:jtds:sqlserver://localhost:1433;user=sa;password=q1!w2@e3#;dabasename=sgsnow_builder' -DapiAddress='http://localhost:8080' -DsendEmailActive=true -DMEMCACHE_SERVER_URL=localhost:11230 -DMIGRATION_RUN=true -DrunBootRoutines=true -DfileServer=true run-app"
+  description="Runs the SGS API @localhost:8080 targetting a SQL Server instance running on localhost:11230 and a memcached instance running on localhost:11230"
+  tag        =["sgs", "api"]
+
+[[snippets]]
+  command    ="npm config set init-author-name'Rogério R. Alcântara' && npm config set init-author-email'rogerio.alcantara@gmail.com' && npm config set init-author-url'http://github.com/roalcantara' && npm config set init-license'MIT'"
+  description="Sets Default npm init Properties"
+  tag        =["node", "npm", "config"]
+
+[[snippets]]
+  command    ="npx npkill --sort size"
+  description="Find, sorts and removes old node_modules folders"
+  tag        =["node", "npm", "npkill"]
+
+[[snippets]]
+  command    ="npx npkill -D"
+  description="Removes old node_modules folders"
+  tag        =["node", "npm", "npkill"]
+
+[[snippets]]
+  command    ="docker -it --rm run quay.io/nushell/nu:latest"
+  description="NUSHELL in a Docker container"
+  tag        =["nu", "docker"]
+
+[[snippets]]
+  command    ="env"
+  description="List your environment variables (detailed)"
+  tag        =["nu", "env"]
+
+[[snippets]]
+  command    ="$env"
+  description="List your environment variables"
+  tag        =["nu", "env"]
+
+[[snippets]]
+  command    ="env | where name== <ENV_VAR>"
+  description="Get a single <ENV_VAR>'s value"
+  tag        =["nu", "env"]
+
+[[snippets]]
+  command    ="help commands | where is_custom== false | first 10 | drop column"
+  description="See all supported commands"
+  tag        =["nu", "help"]
+
+[[snippets]]
+  command    ="help <COMMAND>"
+  description="Find more specific information on a <COMMAND>"
+  tag        =["nu", "help"]
+
+[[snippets]]
+  command    ="help <COMMAND> <SUBCOMMAND>"
+  description="Specific information on a <COMMAND> <SUBCOMMAND>"
+  tag        =["nu", "help"]
+
+[[snippets]]
+  command    ="ls | where type== file"
+  description="View all files in the current directory"
+  tag        =["nu", "system"]
+
+[[snippets]]
+  command    ="ls | where type== dir"
+  description="View all directories in the current directory"
+  tag        =["nu", "system"]
+
+[[snippets]]
+  command    ="ps | where cpu > 0 | sort-by cpu | reverse"
+  description="Find processes sorted by greatest cpu utilization"
+  tag        =["nu", "system"]
+
+[[snippets]]
+  command    ="ps | where name== Notepad2.exe"
+  description="Use 'ps' to fairly easy find the pid of a process"
+  tag        =["nu", "system"]
+
+[[snippets]]
+  command    ="ps | where name== Notepad2.exe | get pid.0 | kill -9 $in"
+  description="This process can be sent the kill signal in a one-liner"
+  tag        =["nu", "system"]
+
+[[snippets]]
+  command    ="cargo search shells --limit 10 | lines | parse\"{crate_name}= {version} #{description}\" | str trim"
+  description="Parse an arbitrary pattern from a string of text into a multi-column table"
+  tag        =["nu", "parsing"]
+
+[[snippets]]
+  command    ="sys | get mem | to json | pbcopy"
+  description="Add the output of a pipeline to your clipboard - This currently needs to be string output"
+  tag        =["nu", "strings", "osx"]
+
+[[snippets]]
+  command    ="open Cargo.toml | get package.version"
+  description="Read the file's initial contents"
+  tag        =["nu", "editing"]
+
+[[snippets]]
+  command    ="open Cargo.toml | inc version patch | save Cargo.toml"
+  description="Editing a file and then saving the changes (a Cargo.toml, increasing the patch version of the crate using inc and then save it back to the file)"
+  tag        =["nu", "editing"]
+
+[[snippets]]
+  command    ="open Cargo.toml | upsert package.version { |p| $p | get package.version | inc --patch } | save Cargo.toml"
+  description="Edit the version number and save it"
+  tag        =["nu", "editing"]
+
+[[snippets]]
+  command    ='open bands.txt | lines | split column":" Band Album Year | skip 1 | sort-by Year'
+  description="Parsing a file in a non-standard format"
+  tag        =["nu", "parsing"]
+
+[[snippets]]
+  command    ='open bands.txt | lines | parse"{Band}:{Album}:{Year}" | skip 1 | sort-by Year'
+  description="Parsing a file in a non-standard format using parse"
+  tag        =["nu", "parsing"]
+
+[[snippets]]
+  command    ='open bands.txt | lines | split column":" | headers | sort-by year'
+  description="Parsing a file in a non-standard format using the first row as a header row"
+  tag        =["nu", "parsing"]
+
+[[snippets]]
+  command    ='rg -c Value | lines | split column":" file line_count | into int line_count | sort-by line_count | reverse'
+  description="Count word occurrences with Ripgrep"
+  tag        =["nu", "parsing"]
+
+[[snippets]]
+  command    ='git branch --merged | lines | where ($it !="* master" && $it !="* main") | each {|br| git branch -D ($br | str trim) } | str trim'
+  description="Hard delete the merged branches from your machine"
+  tag        =["nu", "git"]
+
+[[snippets]]
+  command    ='git log --pretty=%h»¦«%aN»¦«%s»¦«%aD | lines | split column"»¦«" sha1 committer desc merged_at | histogram committer merger | sort-by merger | reverse'
+  description="View git comitter activity as a histogram (histogram is not yet ported to the latest version)"
+  tag        =["nu", "git"]
+
+[[snippets]]
+  command    ='git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD -n 25 | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | where ($it.date > ((date now) - 365day))'
+  description="Parse git log showing only the records that are less than a year old."
+  tag        =["nu", "git"]
+
+[[snippets]]
+  command    ='git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | where ($it.date > ((date now) - 365day)) | group-by name | transpose'
+  description="Parse git log counting commits by author in the last year"
+  tag        =["nu", "git"]
+
+[[snippets]]
+  command    ='git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | do -i { split column"»¦«" commit subject name email date } | upsert date {|d| $d.date | into datetime} | where ($it.date > ((date now) - 365day)) | group-by name | transpose'
+  description="Parse git log counting commits by author in the last year (ignoring errors)"
+  tag        =["nu", "git"]
+
+[[snippets]]
+  command    ='git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | group-by name | transpose | upsert column1 {|c| $c.column1 | length} | sort-by column1 | rename name commits | reverse | first 10'
+  description="Parse git log counting (top 10) commits by author in the last year sorting by commits"
+  tag        =["nu", "git"]
+
+[[snippets]]
+  command    ='git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | group-by name | transpose | upsert column1 {|c| $c.column1 | length} | sort-by column1 | rename name commits | reverse | first 10 | table -n 1'
+  description="Parse git log counting (top 10) commits by author in the last year sorting by commits (starting by 1)"
+  tag        =["nu", "git"]
+
+[[snippets]]
+  command    ="fetch <URL>"
+  description="Fetch content from <URL>"
+  tag        =["nu", "fetch"]
+
+[[snippets]]
+  command    ="fetch <URL> | first 5"
+  description="Fetch first 5 contents from <URL> (JSON)"
+  tag        =["nu", "fetch"]
+
+[[snippets]]
+  command    ="fetch <URL> | first 5 | to json"
+  description="Fetch first 5 contents from <URL> as json"
+  tag        =["nu", "fetch"]
+
+[[snippets]]
+  command    ="fetch -u <USR> -p <PWD> <URL>"
+  description="Fetch content from <URL>, with <USR> and <PWD>"
+  tag        =["nu", "fetch"]
+
+[[snippets]]
+  command    ="fetch -H[<HEADER_KEY> <HEADER_VALUE>] <URL>"
+  description="Fetch content from <URL>, with custom header"
+  tag        =["nu", "fetch"]
+
+[[snippets]]
+  command    ='ssh-agent -c | lines | first 2 | parse "setenv {name} {value};" | transpose -i -r -d | load-env'
+  description="Manage SSH passphrases"
+  tag        =["nu", "ssh"]
+
+[[snippets]]
+  command    ="nix-env -iA nixpkgs.dive"
+  description="Install dive"
+  tag        =["dive", "nix"]
+
+[[snippets]]
+  command    ="brew install dive"
+  description="Install dive"
+  tag        =["dive", "brew"]
+
+[[snippets]]
+  command    ="dive <IMAGE-TAG>"
+  description="Analyze a Docker image simply run dive with an image tag/id/digest"
+  tag        =["dive", "docker"]
+
+[[snippets]]
+  command    ="dive build -t <IMAGE-TAG> ."
+  description="Build your image then jump straight into analyzing it"
+  tag        =["dive", "docker"]
+
+[[snippets]]
+  command    ="docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):$(pwd) -w $(pwd) -v $HOME/.dive.yaml:$HOME/.dive.yaml wagoodman/dive:latest build -t <IMAGE-TAG> ."
+  description="Building on Macbook (supporting only the Docker container engine)"
+  tag        =["dive", "docker"]
+
+[[snippets]]
+  command    ="brew --cache"
+  description="Brew cache"
+  tag        =["brew"]
+
+[[snippets]]
+  command    ="brew --repository"
+  description="Brew repository"
+  tag        =["brew"]
+
+[[snippets]]
+  command    ="brew config"
+  description="Brew config"
+  tag        =["brew"]
+
+[[snippets]]
+  command    ="brew bundle --file ~/.config/brewfile/Brewfile"
+  description="Brew bundle ~/.config/brewfile/Brewfile"
+  tag        =["brew"]
+
+[[snippets]]
+  command    ="brew autoremove && brew update && brew upgrade && brew upgrade --cask && brew cleanup && brew doctor"
+  description="Brew update, upgrade, clean & doctor"
+  tag        =["brew"]
+
+[[snippets]]
+  command    ="brew update-reset"
+  description="Brew update reset"
+  tag        =["brew"]
+
+[[snippets]]
+  command    ="brew bundle dump"
+  description="Write all installed casks/formulae/images/taps into a Brewfile in the current directory"
+  tag        =["brew"]
+
+[[snipets]]
+  command    ="brew bundle cleanup"
+  description="Uninstall all dependencies not listed from the Brewfile"
+  tag        =["brew", "bundle"]
+
+[[snipets]]
+  command    ="brew bundle check"
+  description="Check if all dependencies are installed from the Brewfile (useful for scripting)"
+  tag        =["brew", "bundle"]
+
+[[snipets]]
+  command    ="brew bundle list"
+  description="List all dependencies present in the Brewfile (only Homebrew By default)"
+  tag        =["brew", "bundle"]
+
+[[snipets]]
+  command    ="brew bundle exec command"
+  description="Run an external command in an isolated build environment based on the Brewfile dependencies. "
+  tag        =["brew", "bundle"]
+
+[[snippets]]
+  command    ="gcloud compute regions list"
+  description="View available regions"
+  tag        =["gcloud"]
+
+[[snippets]]
+  command    ="gcloud compute zones list"
+  description="View available zones"
+  tag        =["gcloud"]
+
+[[snippets]]
+  command    ="gcloud config get-value compute/region"
+  description="View default region"
+  tag        =["gcloud"]
+
+[[snippets]]
+  command    ="gcloud config get-value compute/zone"
+  description="View default zone"
+  tag        =["gcloud"]
+
+[[snippets]]
+  command    ="gcloud compute project-info add-metadata --metadata google-compute-default-region=<southamerica-east1>,google-compute-default-zone=<southamerica-east1-a>"
+  description="Set the default region and zone"
+  tag        =["gcloud"]
+
+[[snippets]]
+  command    ="gcloud info"
+  description="Display information about the current gcloud environment including the Google Cloud account, project and directory paths for logs"
+  tag        =["gcloud"]
+
+[[snippets]]
+  command    ="gcloud info --show-log"
+  description="Print the contents of the most recent log file"
+  tag        =["gcloud"]
+
+[[snippets]]
+  command    ="gcloud info --run-diagnostics"
+  description="Check network connectivity and hidden properties"
+  tag        =["gcloud"]
+
+[[snippets]]
+  command    ="gcloud builds submit --tag gcr.io/<PROJECT_ID>/<image> ."
+  description="Build Docker Image and push it to Container Registry"
+  tag        =["gcloud"]
+
+[[snippets]]
+  command    ="gcloud beta run deploy <app> --image gcr.io/<PROJECT_ID>/<image> --region <southamerica-east1> --platform managed --allow-unauthenticated --quiet"
+  description="Deploy Docker Image from Cloud Shell to Cloud Run"
+  tag        =["gcloud"]
+
+[[snippets]]
+  command    ="kubectl config view"
+  description="Show Merged kubeconfig settings"
+  tag        =["kube", "config"]
+
+[[snippets]]
+  command    ="kubectl config view -o jsonpath='{.users[?(@.name == \"<USER>\")].user.password}'"
+  description="Get the password for the <USER> user"
+  tag        =["kube", "users"]
+
+[[snippets]]
+  command    ="kubectl config view -o jsonpath='{.users[].name}'"
+  description="Display the first user"
+  tag        =["kube", "users"]
+
+[[snippets]]
+  command    ="kubectl config view -o jsonpath='{.users[*].name}'"
+  description="Get a list of users"
+  tag        =["kube", "users", "list"]
+
+[[snippets]]
+  command    ="kubectl config get-contexts"
+  description="Display list of contexts"
+  tag        =["kube", "contexts", "list"]
+
+[[snippets]]
+  command    ="kubectl config current-context"
+  description="Display the current-context"
+  tag        =["kube", "contexts", "display"]
+
+[[snippets]]
+  command    ="kubectl config use-context <CLUSTER_NAME>"
+  description="Set the default context to <CLUSTER_NAME>"
+  tag        =["kube", "contexts"]
+
+[[snippets]]
+  command    ="kubectl config set-cluster <CLUSTER_NAME>"
+  description="Set a cluster entry in the kubeconfig"
+  tag        =["kube", "contexts"]
+
+[[snippets]]
+  command    ="kubectl config set-cluster <CLUSTER_NAME> --proxy-url=<PROXY_URL>"
+  description="Configure the URL to a proxy server to use for requests made by this client in the kubeconfig"
+  tag        =["kube", "contexts", "cluster", "proxy"]
+
+[[snippets]]
+  command    ="kubectl config set-context --current --namespace=<NAMESPACE>"
+  description="Permanently save the namespace for all subsequent kubectl commands in that context"
+  tag        =["kube", "contexts", "current"]
+
+[[snippets]]
+  command    ="kubectl config set-context gce --user=<USER> --namespace=<NAMESPACE> kubectl config use-context gce"
+  description="Set a context utilizing a specific <USER> and <NAMESPACE>"
+  tag        =["kube", "contexts", "users", "namespace"]
+
+[[snippets]]
+  command    ="kubectl config unset users.<USER>"
+  description="Delete user <USER>"
+  tag        =["kube", "config", "users", "delete"]
+
+[[snippets]]
+  command    ="kubectl apply"
+  description="The recommended way of managing Kubernetes applications on production"
+  tag        =["kube", "resources"]
+
+[[snippets]]
+  command    ="kubectl apply -f <path/to/manifest.yaml>"
+  description="Create resource(s)"
+  tag        =["kube", "resources", "create"]
+
+[[snippets]]
+  command    ="kubectl apply -f <path/to/my1.yaml> -f <path/to/my2.yaml>"
+  description="Create from multiple files"
+  tag        =["kube", "resources", "create"]
+
+[[snippets]]
+  command    ="kubectl apply -f <path/to/dir>"
+  description="Create resource(s) in all manifest files in dir"
+  tag        =["kube", "resources", "create"]
+
+[[snippets]]
+  command    ="kubectl apply -f <https://git.io/vPieo>"
+  description="Create resource(s) from url"
+  tag        =["kube", "resources", "create"]
+
+[[snippets]]
+  command    ="kubectl create deployment nginx --image=nginx"
+  description="Start a single instance of nginx"
+  tag        =["kube", "deploy", "nginx"]
+
+[[snippets]]
+  command    ="kubectl create job hello --image=busybox:1.28 -- echo 'Hello World'"
+  description="Create a Job which prints \"Hello World\""
+  tag        =["kube", "job", "create"]
+
+[[snippets]]
+  command    ="kubectl create cronjob hello --image=busybox:1.28 --schedule=\"*/1 * * * *\" -- echo 'Hello World'"
+  description="Create a CronJob that prints \"Hello World\" every minute"
+  tag        =["kube", "cronjob", "create"]
+
+[[snippets]]
+  command    ="kubectl explain pods"
+  description="Get the documentation for pod manifests"
+  tag        =["kube", "pods", "explain"]
+
+[[snippets]]
+  command    ="kubectl get services"
+  description="List all services in the namespace"
+  tag        =["kube", "services", "list"]
+
+[[snippets]]
+  command    ="kubectl get pods"
+  description="List all pods in the namespace"
+  tag        =["kube", "pods", "list"]
+
+[[snippets]]
+  command    ="kubectl get pods --all-namespaces"
+  description="List all pods in all namespaces"
+  tag        =["kube", "pods", "list"]
+
+[[snippets]]
+  command    ="kubectl get pods -o wide"
+  description="List all pods in the current namespace, with more details"
+  tag        =["kube", "pods", "list:all"]
+
+[[snippets]]
+  command    ="kubectl get pod <POD> -o yaml"
+  description="Get a pod's YAML"
+  tag        =["kube", "pods", "get"]
+
+[[snippets]]
+  command    ="kubectl get deployment <DEPLOYMENT>"
+  description="List a particular <DEPLOYMENT>"
+  tag        =["kube", "deploy", "list"]
+
+[[snippets]]
+  command    ="kubectl describe nodes <NODE>"
+  description="Describe commands with verbose output"
+  tag        =["kube", "nodes", "describe"]
+
+[[snippets]]
+  command    ="kubectl get services --sort-by=.metadata.name"
+  description="List Services Sorted by Name"
+  tag        =["kube", "services", "list"]
+
+[[snippets]]
+  command    ="kubectl get pods --sort-by='.status.containerStatuses[0].restartCount'"
+  description="List pods Sorted by Restart Count"
+  tag        =["kube", "pods", "by:restart:count"]
+
+[[snippets]]
+  command    ="kubectl get pv --sort-by=.spec.capacity.storage"
+  description="List PersistentVolumes sorted by capacity"
+  tag        =["kube", "pv", "by:capacity"]
+
+[[snippets]]
+  command    ="kubectl get pods --selector=<app=cassandra> -o jsonpath='{.items[*].metadata.labels.version}'"
+  description="Get the version label of all pods with label <app=cassandra>"
+  tag        =["kube", "pods", "get"]
+
+[[snippets]]
+  command    ="kubectl get secret <SECRET> --template='{{index .data \"<KEY-NAME-WITH-DASHES>\"}}'"
+  description="Retrieve a base64 encoded value with dashes instead of underscores."
+  tag        =["kube", "secret", "get"]
+
+[[snippets]]
+  command    ="kubectl get node --selector='!<NODE-ROLE.KUBERNETES.IO/CONTROL-PLANE>'"
+  description="Get all worker nodes (use a selector to exclude results that have a label named '<NODE-ROLE.KUBERNETES.IO/CONTROL-PLANE>')"
+  tag        =["kube", "nodes", "get"]
+
+[[snippets]]
+  command    ="kubectl get pods --field-selector=status.phase=<Running>"
+  description="Get all <Running> pods in the namespace"
+  tag        =["kube", "pods", "get"]
+
+[[snippets]]
+  command    ="kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type==\"<ExternalIP>\")].address}'"
+  description="Get <ExternalIPs> of all nodes"
+  tag        =["kube", "nodes", "get"]
+
+[[snippets]]
+  command    ="kubectl get pods --show-labels"
+  description="Show labels for all pods (or any other Kubernetes object that supports labelling)"
+  tag        =["kube", "pods", "get"]
+
+[[snippets]]
+  command    ="JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}' && kubectl get nodes -o jsonpath=\"$JSONPATH\" | grep 'Ready=True'"
+  description="Check which nodes are ready"
+  tag        =["kube", "nodes", "get"]
+
+[[snippets]]
+  command    ="kubectl get events --sort-by=.metadata.creationTimestamp"
+  description="List Events sorted by timestamp"
+  tag        =["kube", "events", "get"]
+
+[[snippets]]
+  command    ="kubectl diff -f <path/to/manifest.yaml>"
+  description="Compares the current state of the cluster against the state that the cluster would be in if the manifest was applied"
+  tag        =["kube", "diff"]
+
+[[snippets]]
+  command    ="kubectl get nodes -o json"
+  description="Produce a period-delimited tree of all keys returned for nodes"
+  tag        =["kube", "nodes", "get"]
+
+[[snippets]]
+  command    ="kubectl get pods -o json"
+  description="Produce a period-delimited tree of all keys returned for pods, etc"
+  tag        =["kube", "pods", "get"]
+
+[[snippets]]
+  command    ="kubectl get deployment <DEPLOYMENT> --subresource=status"
+  description="Get a deployment's status subresource"
+  tag        =["kube", "deploy", "status"]
+
+[[snippets]]
+  command    ="kubectl set image <DEPLOYMENT/FRONTEND> <www>=image:v2"
+  description="Rolling update <www> containers of <DEPLOYMENT/FRONTEND>, updating the image"
+  tag        =["kube", "image", "set"]
+
+[[snippets]]
+  command    ="kubectl rollout history <DEPLOYMENT/FRONTEND>"
+  description="Check the history of deployments including the revision"
+  tag        =["kube", "deploy", "rollout", "history"]
+
+[[snippets]]
+  command    ="kubectl rollout undo <DEPLOYMENT/FRONTEND>"
+  description="Rollback to the previous deployment"
+  tag        =["kube", "deploy", "rollout", "undo"]
+
+[[snippets]]
+  command    ="kubectl rollout undo <DEPLOYMENT/FRONTEND> --to-revision=<2>"
+  description="Rollback to a specific revision"
+  tag        =["kube", "deploy", "rollout", "undo"]
+
+[[snippets]]
+  command    ="kubectl rollout status -w <DEPLOYMENT/FRONTEND>"
+  description="Watch rolling update status of <DEPLOYMENT/FRONTEND> until completion"
+  tag        =["kube", "deploy", "rollout", "status"]
+
+[[snippets]]
+  command    ="kubectl rollout restart <DEPLOYMENT/FRONTEND>"
+  description="Rolling restart of the <DEPLOYMENT/FRONTEND>"
+  tag        =["kube", "deploy", "rollout", "restart"]
+
+[[snippets]]
+  command    ="cat <PATH/TO/pod.json> | kubectl replace -f -"
+  description="Replace a pod based on the JSON passed into stdin"
+  tag        =["kube", "pods", "replace"]
+
+[[snippets]]
+  command    ="kubectl replace --force -f <PATH/TO/pod.json>"
+  description="Force replace, delete and then re-create the resource. Will cause a service outage."
+  tag        =["kube", "pods", "replace"]
+
+[[snippets]]
+  command    ="kubectl expose rc <NGINX> --port=<80> --target-port=<8000>"
+  description="Create a service for a replicated <NGINX>, which serves on port <80> and connects to the containers on port <8000>"
+  tag        =["kube", "service", "expose"]
+
+[[snippets]]
+  command    ="kubectl get pod <PODNAME> -o yaml | sed 's/\\(image: <IMAGE_NAME>\\):.*$/\\1:<v4>/' | kubectl replace -f -"
+  description="Update a single-container pod's image version (tag) to <v4>"
+  tag        =["kube", "pods", "update", "version"]
+
+[[snippets]]
+  command    ="kubectl label pods <PODNAME> new-label=<LABEL>"
+  description="Add a Label `new-label=<LABEL>`"
+  tag        =["kube", "pods", "labels"]
+
+[[snippets]]
+  command    ="kubectl annotate pods <PODNAME> <icon-url>=<http://goo.gl/XXBTWq>"
+  description="Add an annotation `<icon-url>=<http://goo.gl/XXBTWq>`"
+  tag        =["kube", "pods", "annotate"]
+
+[[snippets]]
+  command    ="kubectl autoscale deployment <foo> --min=<2> --max=<10>"
+  description="Auto scale a deployment `<foo>`"
+  tag        =["kube", "deploy", "autoscale"]
+
+[[snippets]]
+  command    ="kubectl edit svc/<DOCKER-REGISTRY>"
+  description="Edit the service named <DOCKER-REGISTRY>"
+  tag        =["kube", "service", "edit"]
+
+[[snippets]]
+  command    ="kubectl scale --replicas=<3> rs/<FOO>"
+  description="Scale a replicaset named <FOO> to <3>"
+  tag        =["kube", "resources", "scaling"]
+
+[[snippets]]
+  command    ="kubectl scale --replicas=<3> -f <PATH/TO/FOO.YAML>"
+  description="Scale a resource specified in <PATH/TO/FOO.YAML> to <3>"
+  tag        =["kube", "resources", "scaling"]
+
+[[snippets]]
+  command    ="kubectl scale --current-replicas=<2> --replicas=<3> <deployment/mysql>"
+  description="If the <deployment/mysql>'s current size is <2>, scale it to <3>"
+  tag        =["kube", "resources", "scaling"]
+
+[[snippets]]
+  command    ="kubectl scale --replicas=<5> <rc/FOO> <rc/BAR> <rc/BAZ>"
+  description="Scale multiple replication controllers"
+  tag        =["kube", "resources", "scaling"]
+
+[[snippets]]
+  command    ="kubectl delete -f <PATH/TO/POD.JSON>"
+  description="Delete a pod using the type and name specified in <PATH/TO/pod.json>"
+  tag        =["kube", "resources", "deleting"]
+
+[[snippets]]
+  command    ="kubectl delete pod unwanted --now"
+  description="Delete a pod with no grace period"
+  tag        =["kube", "pods", "delete", "unwanted"]
+
+[[snippets]]
+  command    ="kubectl delete pod,service <BAZ> <FOO>"
+  description="Delete pods and services with same names <BAZ> and <FOO>"
+  tag        =["kube", "pods", "services", "delete"]
+
+[[snippets]]
+  command    ="kubectl delete pods,services -l <name>=<LABEL>"
+  description="Delete pods and services with label <name>=<LABEL>"
+  tag        =["kube", "pods", "services", "delete"]
+
+[[snippets]]
+  command    ="kubectl -n <NAMESPACE> delete pod,svc --all"
+  description="Delete all pods and services in namespace <NAMESPACE>"
+  tag        =["kube", "pods", "services", "delete"]
+
+[[snippets]]
+  command    ="kubectl get pods -n <NAMESPACE> --no-headers=true | awk '/<PATTERN1>|<PATTERN2>/{print $1}' | xargs  kubectl delete -n <NAMESPACE> pod"
+  description="Delete all pods matching the awk <PATTERN1> or <PATTERN2>"
+  tag        =["kube", "pods", "services", "delete"]
+
+[[snippets]]
+  command    ="kubectl logs <PODNAME>"
+  description="Dump pod logs (stdout)"
+  tag        =["kube", "pods", "logs"]
+
+[[snippets]]
+  command    ="kubectl logs -l name=<LABEL>"
+  description="Dump pod logs, with label name=<LABEL> (stdout)"
+  tag        =["kube", "pods", "logs", "label"]
+
+[[snippets]]
+  command    ="kubectl logs <PODNAME> --previous"
+  description="Dump pod logs (stdout) for a previous instantiation of a container"
+  tag        =["kube", "pods", "logs"]
+
+[[snippets]]
+  command    ="kubectl logs <PODNAME> -c <CONTAINER>"
+  description="Dump pod container logs (stdout, multi-container case)"
+  tag        =["kube", "pods", "logs"]
+
+[[snippets]]
+  command    ="kubectl logs -f <PODNAME>"
+  description="Stream pod logs (stdout)"
+  tag        =["kube", "pod", "logs"]
+
+[[snippets]]
+  command    ="kubectl logs -f <PODNAME> -c <CONTAINER>"
+  description="Stream pod container logs (stdout, multi-container case)"
+  tag        =["kube", "pod", "logs"]
+
+[[snippets]]
+  command    ="kubectl logs -f -l name=<LABEL> --all-containers"
+  description="Stream all pods logs with label `name=<LABEL>` (stdout)"
+  tag        =["kube", "pod", "logs"]
+
+[[snippets]]
+  command    ="kubectl run -i --tty busybox --image=busybox:1.28 -- sh"
+  description="Run pod as interactive shell"
+  tag        =["kube", "pod", "run", "shell"]
+
+[[snippets]]
+  command    ="kubectl run <NGINX> --image=<NGINX> -n <NAMESPACE>"
+  description="Start a single instance of <NGINX> pod in the namespace of <NAMESPACE>"
+  tag        =["kube", "pod", "run"]
+
+[[snippets]]
+  command    ="kubectl run <NGINX> --image=<NGINX> --dry-run=client -o yaml > <PATH/TO/POD.YAML>"
+  description="Generate spec for running pod <NGINX> and write it into file `<PATH/TO/POD.YAML>`"
+  tag        =["kube", "pod", "run"]
+
+[[snippets]]
+  command    ="kubectl attach <PODNAME> -i"
+  description="Attach to Running Container"
+  tag        =["kube", "pod", "attach"]
+
+[[snippets]]
+  command    ="kubectl port-forward <PODNAME> <5000>:<6000>"
+  description="Listen on port `<5000>` on the local machine and forward to port `<6000>` on `<PODNAME>`"
+  tag        =["kube", "port-forward"]
+
+[[snippets]]
+  command    ="kubectl exec <PODNAME> -- ls /"
+  description="Run cmd in existing pod (1 container case)"
+  tag        =["kube", "exec", "command"]
+
+[[snippets]]
+  command    ="kubectl exec --stdin --tty <PODNAME> -- /bin/sh"
+  description="Interactive shell access to a running pod (1 container case)"
+  tag        =["kube", "exec", "shell"]
+
+[[snippets]]
+  command    ="kubectl exec <PODNAME> -c <CONTAINER> -- ls /"
+  description="Run cmd in existing pod (multi-container case)"
+  tag        =["kube", "exec", "command"]
+
+[[snippets]]
+  command    ="kubectl top pod <PODNAME> --containers"
+  description="Show metrics of pod and its containers"
+  tag        =["kube", "pod", "top"]
+
+[[snippets]]
+  command    ="kubectl top pod <PODNAME> --sort-by=<CPU>"
+  description="Show metrics of pod and sort it by <CPU>"
+  tag        =["kube", "pod", "top"]
+
+[[snippets]]
+  command    ="kubectl top pod <PODNAME> --sort-by=<MEMORY>"
+  description="Show metrics of pod and sort it by <MEMORY>"
+  tag        =["kube", "pod", "top"]
+
+[[snippets]]
+  command    ="kubectl cp </TMP/FOO_DIR> <PODNAME>:</TMP/BAR_DIR>"
+  description="Copy `</TMP/FOO_DIR>` local directory to `</TMP/BAR_DIR>` in a remote pod in the current namespace"
+  tag        =["kube", "containers", "copy"]
+
+[[snippets]]
+  command    ="kubectl cp </TMP/FOO> <PODNAME>:</TMP/BAR> -c <CONTAINER>"
+  description="Copy `</TMP/FOO>` local file to </TMP/BAR> in a remote pod in a specific container"
+  tag        =["kube", "containers", "copy"]
+
+[[snippets]]
+  command    ="kubectl cp </TMP/FOO> <NAMESPACE>/<PODNAME>:</TMP/BAR>"
+  description="Copy `</TMP/FOO>` local file to </TMP/BAR> in a remote pod in namespace <NAMESPACE>"
+  tag        =["kube", "containers", "copy"]
+
+[[snippets]]
+  command    ="kubectl cp <NAMESPACE>/<PODNAME>:</TMP/FOO> </TMP/BAR>"
+  description="Copy </TMP/FOO> from a remote pod to </TMP/BAR> locally"
+  tag        =["kube", "containers", "copy"]
+
+[[snippets]]
+  command    ="tar cf - </TMP/FOO> | kubectl exec -i -n <NAMESPACE> <PODNAME> -- tar xf - -C </TMP/BAR>"
+  description="Copy `</TMP/FOO>` local file to </TMP/BAR> in a remote pod in namespace `<NAMESPACE>`"
+  tag        =["kube", "containers", "copy"]
+
+[[snippets]]
+  command    ="kubectl exec -n <NAMESPACE> <PODNAME> -- tar cf - </TMP/FOO> | tar xf - -C </TMP/BAR>"
+  description="Copy `</TMP/FOO>` from a remote pod to </TMP/BAR> locally"
+  tag        =["kube", "containers", "copy"]
+
+[[snippets]]
+  command    ="kubectl logs deploy/<DEPLOYMENT>"
+  description="Dump Pod logs for a Deployment (single-container case)"
+  tag        =["kube", "deploy", "logs"]
+
+[[snippets]]
+  command    ="kubectl logs deploy/<DEPLOYMENT> -c <CONTAINER>"
+  description="Dump Pod logs for a Deployment (multi-container case)"
+  tag        =["kube", "deploy", "logs"]
+
+[[snippets]]
+  command    ="kubectl port-forward svc/<SERVICE> <5000>"
+  description="Listen on local port <5000> and forward to port <5000> on Service backend"
+  tag        =["kube", "port-forward"]
+
+[[snippets]]
+  command    ="kubectl port-forward svc/<SERVICE> <5000>:<SERVICE-PORT>"
+  description="Listen on local port <5000> and forward to Service target port with name <SERVICE-PORT>"
+  tag        =["kube", "port-forward"]
+
+[[snippets]]
+  command    ="kubectl port-forward deploy/<DEPLOYMENT> <5000>:<6000>"
+  description="Listen on local port <5000> and forward to port <6000> on a Pod created by <DEPLOYMENT>"
+  tag        =["kube", "deploy", "port-forward"]
+
+[[snippets]]
+  command    ="kubectl exec deploy/<DEPLOYMENT> -- ls"
+  description="Run cmd in first Pod and first container in Deployment (single- Or multi-container cases)"
+  tag        =["kube", "deploy", "port-forward"]
+
+[[snippets]]
+  command    ="kubectl cordon <NODE_NAME>"
+  description="Mark <NODE_NAME> as unschedulable"
+  tag        =["kube", "nodes", "cordon", "unschedulable"]
+
+[[snippets]]
+  command    ="kubectl drain <NODE_NAME>"
+  description="Drain <NODE_NAME> in preparation for maintenance"
+  tag        =["kube", "nodes", "drain", "maintenance"]
+
+[[snippets]]
+  command    ="kubectl uncordon <NODE_NAME>"
+  description="Mark <NODE_NAME> as schedulable"
+  tag        =["kube", "nodes", "uncordon", "schedulable"]
+
+[[snippets]]
+  command    ="kubectl top node <NODE_NAME>"
+  description="Show metrics of node"
+  tag        =["kube", "nodes", "top"]
+
+[[snippets]]
+  command    ="kubectl cluster-info"
+  description="Display addresses of the master and services"
+  tag        =["kube", "cluster-info"]
+
+[[snippets]]
+  command    ="kubectl cluster-info dump"
+  description="Dump current cluster state to stdout"
+  tag        =["kube", "cluster-info", "dump"]
+
+[[snippets]]
+  command    ="kubectl cluster-info dump --output-directory=</PATH/TO/CLUSTER-STATE>"
+  description="Dump current cluster state to </PATH/TO/CLUSTER-STATE>"
+  tag        =["kube", "cluster-info", "dump"]
+
+[[snippets]]
+  command    ="kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect'"
+  description="View existing taints on which exist on current nodes"
+  tag        =["kube", "nodes", "get"]
+
+[[snippets]]
+  command    ="kubectl taint nodes foo dedicated=special-user:NoSchedule"
+  description="If a taint with that key and effect already exists, its value is replaced as specified"
+  tag        =["kube", "nodes", "replace", "taint"]
+
+[[snippets]]
+  command    ="kubectl api-resources"
+  description="List all supported resource types along with their shortnames, API group, whether they are namespaced, and Kind"
+  tag        =["kube", "resources", "list:all"]
+
+[[snippets]]
+  command    ="kubectl api-resources --namespaced=true"
+  description="All namespaced resources"
+  tag        =["kube", "resources", "list"]
+
+[[snippets]]
+  command    ="kubectl api-resources --namespaced=false"
+  description="All non-namespaced resources"
+  tag        =["kube", "resources", "list", "non-namespaced"]
+
+[[snippets]]
+  command    ="kubectl api-resources -o <name>"
+  description="All resources with simple output (only the resource <name>)"
+  tag        =["kube", "resources", "list", "simple"]
+
+[[snippets]]
+  command    ="kubectl api-resources -o <wide>"
+  description="All resources with expanded (aka <wide>) output"
+  tag        =["kube", "resources", "output", "wide"]
+
+[[snippets]]
+  command    ="kubectl api-resources --verbs=list,get"
+  description="All resources that support the 'list' and 'get' request verbs"
+  tag        =["kube", "resources", "list,get"]
+
+[[snippets]]
+  command    ="kubectl api-resources --api-group=<EXTENSIONS>"
+  description="All resources in the <EXTENSIONS> API group"
+  tag        =["kube", "resources", "list"]
+
+[[snippets]]
+  command    ="kubectl -o=custom-columns=<spec>"
+  description="Print a table using a comma separated list of custom columns"
+  tag        =["kube", "api-resources", "list"]
+
+[[snippets]]
+  command    ="kubectl get pods -A -o=custom-columns='DATA:spec.containers[*].image'"
+  description="All images running in a cluster"
+  tag        =["kube", "images", "running", "list"]
+
+[[snippets]]
+  command    ="kubectl get pods --namespace default --output=custom-columns=\"NAME:.metadata.name,IMAGE:.spec.containers[*].image\""
+  description="All images running in namespace: 'default', grouped by 'Pod'"
+  tag        =["kube", "resources", "list"]
+
+[[snippets]]
+  command    ="kubectl get pods -A -o=custom-columns='DATA:spec.containers[?(@.image!=\"registry.k8s.io/coredns:1.6.2\")].image'"
+  description="All images excluding 'registry.k8s.io/coredns:1.6.2'"
+  tag        =["kube", "resources", "list"]
+
+[[snippets]]
+  command    ="kubectl get pods -A -o=custom-columns='DATA:metadata.*'"
+  description="All fields under 'metadata' regardless of name"
+  tag        =["kube", "resources", "list"]
+
+[[snippets]]
+  command    ="kubectl -o=custom-columns=<SPEC>"
+  description="Print a table using a comma separated list of custom columns"
+  tag        =["kube", "output", "format"]
+
+[[snippets]]
+  command    ="kubectl -o=custom-columns-file=<FILENAME>"
+  description="Print a table using the custom columns template in the <FILENAME> file"
+  tag        =["kube", "output", "format"]
+
+[[snippets]]
+  command    ="kubectl -o=json"
+  description="Output a JSON formatted API object"
+  tag        =["kube", "output", "format"]
+
+[[snippets]]
+  command    ="kubectl -o=jsonpath=<TEMPLATE>"
+  description="Print the fields defined in a jsonpath expression"
+  tag        =["kube", "output", "format"]
+
+[[snippets]]
+  command    ="kubectl -o=jsonpath-file=<FILENAME>"
+  description="Print the fields defined by the jsonpath expression in the <FILENAME> file"
+  tag        =["kube", "output", "format"]
+
+[[snippets]]
+  command    ="kubectl -o=name"
+  description="Print only the resource name and nothing else"
+  tag        =["kube", "output", "format"]
+
+[[snippets]]
+  command    ="kubectl -o=wide"
+  description="Output in the plain-text format with any additional information, and for pods, the node name is included"
+  tag        =["kube", "output", "format"]
+
+[[snippets]]
+  command    ="kubectl -o=yaml"
+  description="Output a YAML formatted API object"
+  tag        =["kube", "output", "format"]
+
+[[snippets]]
+  command    ="kubectl get pods -A --v=0"
+  description="Generally useful for this to *always* be visible to a cluster operator use '--v=0'"
+  tag        =["kube", "pods", "verbose", "debug"]
+
+[[snippets]]
+  command    ="kubectl get pods -A --v=1"
+  description="A reasonable default log level if you don't want verbosity use '--v=1'"
+  tag        =["kube", "pods", "verbose", "debug"]
+
+[[snippets]]
+  command    ="kubectl get pods -A --v=2"
+  description="Useful steady state information about the service and important log messages that may correlate to significant changes in the system use '--v=2'. This is the recommended default log level for most systems"
+  tag        =["kube", "pods", "verbose", "debug"]
+
+[[snippets]]
+  command    ="kubectl get pods -A --v=3"
+  description="Extended information about changes use '--v=3'"
+  tag        =["kube", "pods", "verbose", "debug"]
+
+[[snippets]]
+  command    ="kubectl get pods -A --v=4"
+  description="Debug level verbosity use '--v=4'"
+  tag        =["kube", "pods", "verbose", "debug"]
+
+[[snippets]]
+  command    ="kubectl get pods -A --v=5"
+  description="Trace level verbosity use '--v=5'"
+  tag        =["kube", "pods", "verbose", "debug"]
+
+[[snippets]]
+  command    ="kubectl get pods -A --v=6"
+  description="Display requested resources use '--v=6'"
+  tag        =["kube", "pods", "verbose", "debug"]
+
+[[snippets]]
+  command    ="kubectl get pods -A --v=7"
+  description="Display HTTP request headers use '--v=7'"
+  tag        =["kube", "pods", "verbose", "debug"]
+
+[[snippets]]
+  command    ="kubectl get pods -A --v=8"
+  description="Display HTTP request contents use '--v=8'"
+  tag        =["kube", "pods", "verbose", "debug"]
+
+[[snippets]]
+  command    ="kubectl get pods -A --v=9"
+  description="Display HTTP request contents without truncation of contents use '--v=9'"
+  tag        =["kube", "pods", "verbose", "debug"]
+
+[[snippets]]
+  command    ='hyperfine --warmup 3 --runs 100 "$(asdf which direnv) stdlib" "asdf exec direnv stdlib"'
+  description='Run hyperfine benchmark to check which asdf-direnv loads faster'
+  tag        =["hyperfine", "benchmark", "asdf", "direnv"]
+
+[[snippets]]
+  command    ='hyperfine --warmup 3 "zsh -ic exit"'
+  description='Run hyperfine benchmark to check how fast is "zsh -ic exit"'
+  tag        =["hyperfine", "benchmark", "zsh"]

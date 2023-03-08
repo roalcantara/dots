@@ -1,18 +1,75 @@
 schemaVersion: 2.0.0
 
 commandTests:
-  - name: Bash is present
+  - name: bash is present
     command: which
     args: [bash]
     expectedOutput: [/bin/bash]
-  - name: Git is present
+  - name: zsh is present
     command: which
-    args: [git]
-    expectedOutput: [/usr/bin/git]
-  - name: Curl is present
+    args: [zsh]
+    expectedOutput: [/bin/zsh]
+
+  - name: bat is present
+    command: which
+    args: [bat]
+    expectedOutput: [/usr/bin/bat]
+  - name: curl is present
     command: which
     args: [curl]
     expectedOutput: [/usr/bin/curl]
+  - name: delta is present
+    command: which
+    args: [delta]
+    expectedOutput: [/usr/bin/delta]
+  - name: exa is present
+    command: which
+    args: [exa]
+    expectedOutput: [/usr/bin/exa]
+  - name: fd is present
+    command: which
+    args: [fd]
+    expectedOutput: [/usr/bin/fd]
+  - name: fzf is present
+    command: which
+    args: [fzf]
+    expectedOutput: [/usr/bin/fzf]
+  - name: gh is present
+    command: which
+    args: [gh]
+    expectedOutput: [/usr/bin/gh]
+  - name: git is present
+    command: which
+    args: [git]
+    expectedOutput: [/usr/bin/git]
+  - name: jq is present
+    command: which
+    args: [jq]
+    expectedOutput: [/usr/bin/jq]
+  - name: make is present
+    command: which
+    args: [make]
+    expectedOutput: [/usr/bin/make]
+  - name: navi is present
+    command: which
+    args: [navi]
+    expectedOutput: [/usr/bin/navi]
+  - name: nnn is present
+    command: which
+    args: [nnn]
+    expectedOutput: [/usr/bin/nnn]
+  - name: ripgrep is present
+    command: which
+    args: [rg]
+    expectedOutput: [/usr/bin/rg]
+  - name: sheldon is present
+    command: which
+    args: [sheldon]
+    expectedOutput: [/usr/bin/sheldon]
+  - name: starship is present
+    command: which
+    args: [starship]
+    expectedOutput: [/usr/bin/starship]
 
 metadataTest:
   envVars:

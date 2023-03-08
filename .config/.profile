@@ -120,7 +120,7 @@ fi
 # PATH {
   export -a path=(
     # set PATH so it includes user's private bin if it exists
-    "${XDG_CONFIG_HOME}"/bin
+    {~/.local,"${XDG_CONFIG_HOME}"}/bin
     /usr/local/{bin,sbin}
     "${HOMEBREW_PREFIX}"/{bin,sbin}
     "${path[@]}"
