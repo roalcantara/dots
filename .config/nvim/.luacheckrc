@@ -1,1 +1,0 @@
-/Users/roalcantara/.config/luacheck/.luacheckrc

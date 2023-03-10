@@ -1,5 +1,0 @@
-require 'etc/fn'
-require 'etc/lang'
-require 'etc/map'
-require 'etc/strings'
-require 'etc/tables'

@@ -5954,3 +5954,8 @@
   command    ='hyperfine --warmup 3 "zsh -ic exit"'
   description='Run hyperfine benchmark to check how fast is "zsh -ic exit"'
   tag        =["hyperfine", "benchmark", "zsh"]
+
+[[snippets]]
+  command    ='cat <input.txt> | sed -e "s|\b[^ ]*\.[^ ]*\b||g" | grep -o -E "[a-zA-Z]{3,}" | tr -d "[:punct:]" | tr "[:upper:]" "[:lower:]" | tr -d "\r" | tr -sc "A-Za-z" "\12" | sort | uniq | egrep -wv $(tr -d "[:punct:]" < stop_words_en.txt | tr "\n" "|" | sed "s/.$//")'
+  description='Tokenize string'
+  tag        =["tokekine", "bash", "sed"]

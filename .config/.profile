@@ -61,11 +61,14 @@ export HISTFILESIZE=2000
 # GNUPG {
   # The GNU Privacy Guard
   # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration.html
-  if type gpg >/dev/null; then
-    # needed for git PGP-signed commits
-    # also needed for sops
-    export GPG_TTY=$(tty)
-  fi
+  # needed for git PGP-signed commits also needed for sops
+  export GPG_TTY=$(tty)
+# }
+
+# GLOW {
+  # Create and view interactive cheatsheets on the command-line
+  # https://github.com/cheat/cheat#autocompletion
+  export GLOW_CONFIG_PATH=${XDG_CONFIG_HOME}/glow/conf.yml
 # }
 
 # if running bash
@@ -120,9 +123,8 @@ fi
 # PATH {
   export -a path=(
     # set PATH so it includes user's private bin if it exists
-    {~/.local,"${XDG_CONFIG_HOME}"}/bin
-    /usr/local/{bin,sbin}
-    "${HOMEBREW_PREFIX}"/{bin,sbin}
+    {~/Library/Python/current,~/.local,~/go,"${XDG_CONFIG_HOME}"}/bin
+    /usr/local/{opt/ruby/bin,lib/ruby/gems/current/bin,bin,sbin}
     "${path[@]}"
   )
 # }

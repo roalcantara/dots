@@ -31,80 +31,93 @@
 # Additional completion definitions for ZSH
 # https://github.com/zsh-users/zsh-completions
 [plugins.zsh-completions]
-  apply =['defer']
-  github='zsh-users/zsh-completions'
+  profiles=['zsh']
+  apply   =['defer']
+  github  ='zsh-users/zsh-completions'
 
 # Nx workspace completion plugin for ZSH
 # https://github.com/jscutlery/nx-completion
 [plugins.nx-completions]
-  apply =['defer']
-  github='jscutlery/nx-completion'
+  profiles=['zsh']
+  apply   =['defer']
+  github  ='jscutlery/nx-completion'
 
 # Gradle tab completion for bash and ZSH
 # https://github.com/gradle/gradle-completion
 [plugins.gradle-completion]
-  apply =['defer']
-  github='gradle/gradle-completion'
+  profiles=['zsh']
+  apply   =['defer']
+  github  ='gradle/gradle-completion'
 
 # ZSH smart input
 # https://github.com/momo-lab/zsh-smartinput
 [plugins.zsh-smartinput]
-  apply =['defer']
-  github='momo-lab/zsh-smartinput'
+  profiles=['zsh']
+  apply   =['defer']
+  github  ='momo-lab/zsh-smartinput'
 
 # Better completion for npm
 # https://github.com/lukechilds/zsh-better-npm-completion
 [plugins.better-npm-completion]
-  apply =['defer']
-  github='lukechilds/zsh-better-npm-completion'
+  profiles=['zsh']
+  apply   =['defer']
+  github  ='lukechilds/zsh-better-npm-completion'
 
 # ZSH completion plugin for yarn
 # https://github.com/BuonOmo/yarn-extra-completion
 [plugins.better-yarn-completion]
-  apply =['defer']
-  github='BuonOmo/yarn-extra-completion'
+  profiles=['zsh']
+  apply   =['defer']
+  github  ='BuonOmo/yarn-extra-completion'
 
 # ZSH Plugin to load the completions for docker and docker-compose from the Docker for Mac app.
 # https://github.com/chr-fritz/docker-completion.zshplugin
 [plugins.docker-completion]
-  apply =['defer']
-  github='chr-fritz/docker-completion.zshplugin'
+  profiles=['zsh']
+  apply   =['defer']
+  github  ='chr-fritz/docker-completion.zshplugin'
 
 # Fish-like autosuggestions for ZSH
 # https://github.com/zsh-users/zsh-autosuggestions
 [plugins.zsh-autosuggestions]
-  apply =['defer']
-  github='zsh-users/zsh-autosuggestions'
+  profiles=['zsh', 'fig']
+  apply   =['defer']
+  github  ='zsh-users/zsh-autosuggestions'
 
 # Fish shell like syntax highlighting for ZSH
 # https://github.com/zsh-users/zsh-syntax-highlighting
 [plugins.zsh-syntax-highlighting]
-  apply =['defer']
-  github='zsh-users/zsh-syntax-highlighting'
+  profiles=['zsh', 'fig']
+  apply   =['defer']
+  github  ='zsh-users/zsh-syntax-highlighting'
 
 # ZSH port of Fish shell history search
 # https://github.com/zsh-users/zsh-history-substring-search
 [plugins.zsh-history-substring-search]
-  apply =['defer']
-  github='zsh-users/zsh-history-substring-search'
+  profiles=['zsh', 'fig']
+  apply   =['defer']
+  github  ='zsh-users/zsh-history-substring-search'
 
 # Replace ZSH's default completion selection menu with fzf
 # https://github.com/Aloxaf/fzf-tab
 [plugins.fzf-tab]
-  apply =['defer']
-  github='Aloxaf/fzf-tab'
+  profiles=['zsh', 'fig']
+  apply   =['defer']
+  github  ='Aloxaf/fzf-tab'
 
 # Shell interpreter for docopt, the command-line interface description language
 # https://github.com/docopt/docopts
 [plugins.docopts]
-  apply =['defer', 'get_docopts']
-  github='docopt/docopts'
-  use   =['docopts.sh']
+  profiles=['zsh', 'fig']
+  apply   =['defer', 'get_docopts']
+  github  ='docopt/docopts'
+  use     =['docopts.sh']
 
 # Provides for easier use of 256 colors and effects.
 # http://lucentbeing.com/writing/archives/a-guide-to-256-color-codes
 # https://github.com/sorin-ionescu/prezto/tree/master/modules/spectrum
 [plugins.spectrum]
-  apply =['defer']
-  dir   ='modules/spectrum'
-  github='sorin-ionescu/prezto'
+  profiles=['zsh', 'fig']
+  apply   =['defer']
+  dir     ='modules/spectrum'
+  github  ='sorin-ionescu/prezto'
