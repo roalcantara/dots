@@ -1,0 +1,103 @@
+local io = require 'fn/io'
+local Log = require 'neo/log'
+
+local M = {}
+local user_config_dir = get_config_dir()
+local user_config_file = io.join_paths(user_config_dir, 'config/lua')
+
+---Get the full path to the user configuration file
+---@return string
+function M:get_user_config_path()
+  return user_config_file
+end
+
+--- Initialize lvim default configuration and variables
+function M:init()
+  lvim = vim.deepcopy(require 'lvim.config.defaults')
+
+  require('lvim.keymappings').load_defaults()
+
+  local builtins = require 'neo/builtins'
+  builtins.config { user_config_file = user_config_file }
+
+  local settings = require 'settings'
+  settings.load_defaults()
+
+  local autocmds = require 'fn/autocmds'
+  autocmds.load_defaults()
+
+  local lvim_lsp_config = require 'neo/lsp/config'
+  lvim.lsp = vim.deepcopy(lvim_lsp_config)
+
+  lvim.builtin.luasnip = {
+    sources = {
+      friendly_snippets = true,
+    },
+  }
+
+  lvim.builtin.bigfile = {
+    active = true,
+    config = {},
+  }
+end
+
+--- Override the configuration with a user provided one
+-- @param config_path The path to the configuration overrides
+function M:load(config_path)
+  local autocmds = reload 'fn/autocmds'
+  config_path = config_path or self:get_user_config_path()
+  local ok, err = pcall(dofile, config_path)
+  if not ok then
+    if utils.is_file(user_config_file) then
+      vim.schedule(function()
+        Log:warn('Invalid configuration: ' .. err)
+      end)
+    else
+      vim.schedule(function()
+        vim.notify_once(string.format('User-configuration not found. Creating an example configuration in %s', config_path))
+      end)
+      local example_config = join_paths(get_lvim_base_dir(), 'assets', config_name .. 'config.example.lua')
+      vim.fn.mkdir(user_config_dir, 'p')
+      vim.loop.fs_copyfile(example_config, config_path)
+    end
+  end
+
+  Log:set_level(lvim.log.level)
+
+  require('lvim.config._deprecated').post_load()
+
+  autocmds.define_autocmds(lvim.autocommands)
+
+  vim.g.mapleader = (lvim.leader == 'space' and ' ') or lvim.leader
+
+  reload('lvim.keymappings').load(lvim.keys)
+
+  if lvim.transparent_window then
+    autocmds.enable_transparent_mode()
+  end
+
+  if lvim.reload_config_on_save then
+    autocmds.enable_reload_config_on_save()
+  end
+end
+
+--- Override the configuration with a user provided one
+-- @param config_path The path to the configuration overrides
+function M:reload()
+  vim.schedule(function()
+    reload('lvim.utils.hooks').run_pre_reload()
+
+    M:load()
+
+    reload('fn/autocmds').configure_format_on_save()
+
+    local plugins = reload 'lvim.plugins'
+    local plugin_loader = reload 'lvim.plugin-loader'
+
+    plugin_loader.reload { plugins, lvim.plugins }
+    reload('lvim.core.theme').setup()
+    reload('lvim.utils.hooks').run_post_reload()
+  end)
+end
+
+return M
