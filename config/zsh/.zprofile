@@ -11,6 +11,16 @@ export PAGER='less -FREXi'
 export BROWSER='open'
 export MANROFFOPT='-c'
 
+# MISE {
+if [[ -e $XDG_DATA_HOME/mise/config.toml ]]; then
+  export MISE_GLOBAL_CONFIG_FILE=$XDG_DATA_HOME/mise/config.toml
+fi
+
+if (($ + commands[mise])); then
+  eval "$(mise activate zsh --yes --quiet --shims)"
+fi
+# }
+
 # HOMEBREW {
 # https://brew.sh
 # Determine Homebrew prefix based on OS and architecture
@@ -25,15 +35,5 @@ if [[ -d /opt/homebrew || -d /home/linuxbrew/.linuxbrew || -d /usr/local/Homebre
   export HOMEBREW_BUNDLE_DUMP_NO_VSCODE=1                        # Don't dump vscode extensions
   export HOMEBREW_BUNDLE_FILE=$XDG_CONFIG_HOME/homebrew/Brewfile # https://docs.brew.sh/Manpage#bundle-subcommand
   eval "$("$HOMEBREW_BIN"/brew shellenv)"
-fi
-# }
-
-# MISE {
-if [[ -e $XDG_DATA_HOME/mise/config.toml ]]; then
-  export MISE_GLOBAL_CONFIG_FILE=$XDG_DATA_HOME/mise/config.toml
-fi
-
-if (( $+commands[mise] )); then
-  eval "$(mise activate zsh --yes --quiet --shims)"
 fi
 # }

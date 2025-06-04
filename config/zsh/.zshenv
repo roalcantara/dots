@@ -23,6 +23,7 @@ fi
 
 # Ensure compinit is NOT loaded before Zinit loads in ~/zshrc.
 skip_global_compinit=1
+NO_GLOBAL_RCS=1
 
 # ==============================================================================
 # PATH Setup
@@ -35,18 +36,15 @@ typeset -U path
 # screws around with PATH, so we want to avoid it, and instead manually load the
 # files we care about.
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  # Disable loading startup files from /etc
-  unsetopt GLOBAL_RCS
-
   # Setup default PATH just like /etc/zprofile does
   if [ -x "/usr/libexec/path_helper" ]; then
     eval $(/usr/libexec/path_helper -s)
   fi
 
-  # Load /etc/zshenv if it exists
-  if [ -f "/etc/zshenv" ]; then
-    source "/etc/zshenv"
-  fi
+  # # Load /etc/zshenv if it exists
+  # if [ -f "/etc/zshenv" ]; then
+  #   source "/etc/zshenv"
+  # fi
 fi
 
 ## INTERNATIONALISATION VARIABLES
@@ -224,9 +222,21 @@ xdg setup
 # ZSH DEFAULTS
 export ZSH_VERSION="5.9" # zsh --version | cut -d ' ' -f2
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
-export ZIM_HOME="$XDG_STATE_HOME/zim"
+export ZSH_DATA_DIR="$XDG_DATA_HOME/zsh"
 export ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
+export ZSH_COMPCACHE="$ZSH_CACHE_DIR/compcache"
+# ZSH state files
+export ZSH_COMPDUMP="$ZSH_COMPCACHE/.zcompdump"
+export HISTFILE="$ZSH_DATA_DIR/.zsh_history"
+# ZSH custom directories
+export ZDOTDIR_OPT="$ZDOTDIR/opt"
+export ZDOTDIR_ETC="$ZDOTDIR/etc"
+# ZIM variables
+# Set where the directory used by Zim will be located (https://zimfw.sh/docs/install)
+export ZIM_HOME="$XDG_DATA_HOME/zim"
 export SHELL="$(which zsh)"
+# Create directories if they don't exist
+mkdir -p "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZIM_HOME"
 
 # Only source this once
 if [[ -z "$__HM_ZSH_SESS_VARS_SOURCED" ]]; then
