@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash disable=SC2154,SC2155,SC2034
+
+set -euo pipefail
+
+#? keyring 0.1.0
+#? License RIT (Robot Institute of Technology)
+#? This is free software: you are free to change and redistribute it.
+#? There is NO WARRANTY, to the extent permitted by law.
+#? http://docopt.org · Command-line interface description language
+#? https://gopass.pw · Password manager
+
+##? Agnostic way to access the system keyring service on MacOS (security) and Linux (libsecret-tools)
+##?
+##? Usage:
+##?      keyring <COMMAND> [KEY] [VALUE] [ options ]
+##?
+##? Commands:
+##?     get <KEY>               Get the value of the specified key.
+##?     set <KEY> <VALUE>       Set the value of the specified key.
+##?     rm <KEY>                Delete the specified key.
+##?     list                    List all keys stored in the keyring.
+##?
+##? Arguments:
+##?     [KEY]                 The key to operate on.
+##?     [VALUE]               The value to set (for 'set' command).
+##?
+##? Options:
+##?     -h, --help            Show help message
+##?
+##? Examples:
+##?     keyring                                         -- Show help message
+##?     keyring get tools/bitly.com/token               -- Get the value of the key 'tools/bitly.com/token'
+##?     keyring set tools/bitly.com/token <VALUE>       -- Set the value of the key 'tools/bitly.com/token'
+##?     keyring rm tools/bitly.com/token                -- Remove the key 'tools/bitly.com/token'
+##?     keyring list                                    -- List all keys stored in the keyring, if possible
+
+keyring() {
+  local KEYRING_SERVICE="dots-keyring"
+  _keyring_show_usage() {
+    echo "Usage: keyring <command> [arguments]"
+    echo ""
+    echo "Commands:"
+    echo "  get <key>         Get the value of a key"
+    echo "  set <key> <value> Set the value of a key"
+    echo "  rm <key>          Remove a key"
+    echo "  list              List all keys, if possible"
+    echo ""
+    echo "Examples:"
+    echo "  keyring get tools/bitly.com/token"
+    echo "  keyring set tools/bitly.com/token <value>"
+    echo "  keyring rm tools/bitly.com/token"
+    echo "  keyring list"
+  }
+  _has_command() {
+    local cmd="$1"
+    command -v "$cmd" &>/dev/null
+  }
+  _keyring_show_error() {
+    local message="$1"
+    echo "Error: $message" >&2
+    _keyring_show_usage
+    return 1
+  }
+
+  local command="$1"
+  local key="$2"
+  local value="$3"
+
+  case "$command" in
+  get)
+    if [[ $# -ne 1 ]]; then
+      _keyring_show_error "'get' command requires exactly one argument (key)"
+    fi
+    if _has_command security; then
+      # macOS Keychain
+      security find-generic-password -s "$KEYRING_SERVICE" -a "$key" -w 2>/dev/null || {
+        echo "Error: Key '$key' not found" >&2
+        return 1
+      }
+    elif _has_command secret-tool; then
+      # Linux Secret Service
+      secret-tool lookup service "$KEYRING_SERVICE" account "$key" 2>/dev/null || {
+        echo "Error: Key '$key' not found" >&2
+        return 1
+      }
+    else
+      echo "Error: No keyring backend available" >&2
+      return 1
+    fi
+    ;;
+  set)
+    if [[ $# -ne 2 ]]; then
+      _keyring_show_error "'set' command requires exactly two arguments (key and value)"
+    fi
+    if _has_command security; then
+      # macOS Keychain - delete existing entry first, then add new one
+      security delete-generic-password -s "$KEYRING_SERVICE" -a "$key" 2>/dev/null || true
+      security add-generic-password -s "$KEYRING_SERVICE" -a "$key" -w "$value"
+      echo "Key '$key' set successfully"
+    elif _has_command secret-tool; then
+      # Linux Secret Service
+      echo "$value" | secret-tool store --label="$key" service "$KEYRING_SERVICE" account "$key"
+      echo "Key '$key' set successfully"
+    else
+      echo "Error: No keyring backend available" >&2
+      return 1
+    fi
+    ;;
+  rm)
+    if [[ $# -ne 1 ]]; then
+      _keyring_show_error "'rm' command requires exactly one argument (key)"
+    fi
+    if _has_command security; then
+      # macOS Keychain
+      security delete-generic-password -s "$KEYRING_SERVICE" -a "$key" 2>/dev/null || {
+        echo "Error: Key '$key' not found" >&2
+        return 1
+      }
+      echo "Key '$key' removed successfully"
+    elif _has_command secret-tool; then
+      # Linux Secret Service
+      secret-tool clear service "$KEYRING_SERVICE" account "$key" 2>/dev/null || {
+        echo "Error: Key '$key' not found" >&2
+        return 1
+      }
+      echo "Key '$key' removed successfully"
+    else
+      echo "Error: No keyring backend available" >&2
+      return 1
+    fi
+    ;;
+  list)
+    if [[ $# -ne 0 ]]; then
+      _keyring_show_error "'list' command takes no arguments"
+    fi
+    if _has_command security; then
+      # macOS Keychain - list all accounts for our service
+      security dump-keychain | grep -A 1 "svce.*$KEYRING_SERVICE" | grep "acct" | sed 's/.*"acct"<blob>="\(.*\)".*/\1/' | sort
+    elif _has_command secret-tool; then
+      # Linux Secret Service - this is trickier, we'll use a workaround
+      echo "Warning: Listing keys on Linux requires iteration through possible keys" >&2
+      # This is a limitation of secret-tool - it doesn't have a native list function
+      # You might want to maintain a separate index file for this
+      return 1
+    else
+      echo "Error: No keyring backend available" >&2
+      return 1
+    fi
+    ;;
+  -h | --help | help)
+    _keyring_show_usage
+    ;;
+  *)
+    _keyring_show_error "Unknown command '$command'. Available commands are: get, set, rm, list."
+    ;;
+  esac
+}
+
+keyring "$@"
+
+# vi: set ft=sh:

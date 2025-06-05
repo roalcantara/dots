@@ -31,12 +31,12 @@ psc() {
     zparseopts -D -F -E -A opts \
         h=help -help=help
 
-  # Example usage of parsed options
-  if (( ${+opts[-h]} )) || (( ${+opts[--help]} )); then
-    autoload -Uz show_usage
-    show_usage
-    return 0
-  fi
+    # Example usage of parsed options
+    if (( ${+opts[-h]} )) || (( ${+opts[--help]} )); then
+      autoload -Uz show_usage
+      show_usage
+      return 0
+    fi
 
   if [[ -z "$1" ]]; then
     local it="$(gopass ls --flat | gum filter --limit=1)"

@@ -6,6 +6,10 @@
 # http://zsh.sourceforge.net/Intro/intro_3.html
 # https://github.com/jimeh/dotfiles/blob/main/zshenv
 
+# Ensure compinit is NOT loaded before Zinit loads in ~/zshrc.
+skip_global_compinit=1
+NO_GLOBAL_RCS=1
+
 # profilling:
 #   z_prof=1 "$SHELL" -ilc exit
 #   z_prof=1; for _ in $(seq 1 10); do /usr/bin/time "${SHELL}" -ilc exit; done
@@ -21,43 +25,15 @@ if [[ -n "$z_trace" ]]; then
   setopt xtrace prompt_subst
 fi
 
-# Ensure compinit is NOT loaded before Zinit loads in ~/zshrc.
-skip_global_compinit=1
-NO_GLOBAL_RCS=1
-
-# ==============================================================================
-# PATH Setup
-# ==============================================================================
-
-# Ensure values in path variable are unique
-typeset -U path
-
-# Prevent loading ZSH startup from files /etc on macOS. The /etc/zprofile file
-# screws around with PATH, so we want to avoid it, and instead manually load the
-# files we care about.
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  # Setup default PATH just like /etc/zprofile does
-  if [ -x "/usr/libexec/path_helper" ]; then
-    eval $(/usr/libexec/path_helper -s)
-  fi
-
-  # # Load /etc/zshenv if it exists
-  # if [ -f "/etc/zshenv" ]; then
-  #   source "/etc/zshenv"
-  # fi
-fi
-
-## INTERNATIONALISATION VARIABLES
-# The values that the environment variables may be assigned are not restricted;
-# Except that they are considered to end with a null byte and the total space used to store the environment and the arguments to the process is limited to {ARG_MAX} bytes.
-# It is unwise to conflict with certain variables that are frequently exported by widely used command interpreters and applications.
-# https://pubs.opengroup.org/onlinepubs/7908799/xbd/envvar.html
-
-# LANG, LC_ALL, LC_CTYPE & LC_COLLATE
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_COLLATE=C
+## INTERNATIONALISATION VARIABLES {
+  # The values that the environment variables may be assigned are not restricted;
+  # Except that they are considered to end with a null byte and the total space used to store the environment and the arguments to the process is limited to {ARG_MAX} bytes.
+  # It is unwise to conflict with certain variables that are frequently exported by widely used command interpreters and applications.
+  # https://pubs.opengroup.org/onlinepubs/7908799/xbd/envvar.html
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US.UTF-8
+  export LC_CTYPE=en_US.UTF-8
+  export LC_COLLATE=C
 # }
 
 # Load system utilities helper
@@ -224,19 +200,23 @@ export ZSH_VERSION="5.9" # zsh --version | cut -d ' ' -f2
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export ZSH_DATA_DIR="$XDG_DATA_HOME/zsh"
 export ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
+export ZSH_TMP_DIR="$ZDOTDIR/tmp"
 export ZSH_COMPCACHE="$ZSH_CACHE_DIR/compcache"
+
 # ZSH state files
 export ZSH_COMPDUMP="$ZSH_COMPCACHE/.zcompdump"
 export HISTFILE="$ZSH_DATA_DIR/.zsh_history"
+
 # ZSH custom directories
 export ZDOTDIR_OPT="$ZDOTDIR/opt"
 export ZDOTDIR_ETC="$ZDOTDIR/etc"
+
 # ZIM variables
 # Set where the directory used by Zim will be located (https://zimfw.sh/docs/install)
 export ZIM_HOME="$XDG_DATA_HOME/zim"
-export SHELL="$(which zsh)"
+
 # Create directories if they don't exist
-mkdir -p "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZIM_HOME"
+mkdir -p "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZIM_HOME" "$ZSH_TMP_DIR"
 
 # Only source this once
 if [[ -z "$__HM_ZSH_SESS_VARS_SOURCED" ]]; then
@@ -244,5 +224,7 @@ if [[ -z "$__HM_ZSH_SESS_VARS_SOURCED" ]]; then
   export MAILCHECK="30"
 fi
 
-# Load .zprofile for zsh-specific login settings
-[ -f "$ZDOTDIR/.zprofile" ] && source "$ZDOTDIR/.zprofile"
+if [[ ! "$OSTYPE" == "darwin"* ]]; then
+  # Load .zprofile for zsh-specific login settings
+  [ -f "$ZDOTDIR/.zprofile" ] && source "$ZDOTDIR/.zprofile"
+fi
