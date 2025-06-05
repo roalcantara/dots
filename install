@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# ============================================================================
-# Smart dotfiles installation script for devcontainers
-# Save this as ~/dotfiles/install.sh
-# ============================================================================
-
 set -euo pipefail
 
 root="$(pwd)"
@@ -22,271 +17,229 @@ w() {
   puts "WARN" "$1"
 }
 
-# GitHub Token Setup for API Access
-setup_github_token() {
-  # Check for mounted token file (devcontainer)
-  if [ -f /run/secrets/github_token ]; then
-    export GITHUB_TOKEN=$(cat /run/secrets/github_token)
-    echo "✓ GitHub token loaded from mounted secret"
-    return 0
-  fi
-
-  # Check for environment variable
-  if [ -n "$GITHUB_TOKEN" ]; then
-    echo "✓ GitHub token found in environment"
-    return 0
-  fi
-
-  # Check for token file in various locations
-  local token_locations=(
-    "${HOME}/.github_token"
-    "${HOME}/.secrets/github_token"
-    "/tmp/github_env"
-  )
-
-  for location in "${token_locations[@]}"; do
-    if [ -f "$location" ]; then
-      export GITHUB_TOKEN=$(cat "$location")
-      echo "✓ GitHub token loaded from $location"
-      return 0
-    fi
-  done
-
-  echo "⚠ No GitHub token found - API rate limits may apply"
-  return 1
-}
-
-cleanup_github_token() {
-  # Check if the GITHUB_TOKEN variable is set
-  if [ -n "$GITHUB_TOKEN" ]; then
-    # Unset the GITHUB_TOKEN variable
-    unset GITHUB_TOKEN
-    echo "✓ GitHub token removed from environment"
-  else
-    echo "⚠ No GitHub token found in environment"
-  fi
-}
-
-cleanup() {
-  for e in "${HOME:?}" /root; do
-    for f in "$e/.bashrc" "$e/.bash_logout" "$e/.oh-my-zsh" "$e/.profile"; do
-      w "Checking for '$f' exist!!"
-      if [[ -f "$f" ]]; then
-        rm -rf "$f"
-        w "'$f' removed ✔︎"
-      fi
-    done
-  done
-}
-
-# Setup config files
-setup_config() {
-  # If the ~/.config directory exists
-  if [[ -d "${HOME:?}/.config" ]]; then
-    # Create a symlink for each directory in the config directory in the current ~/.config
-    rm -rf "${HOME:?}/.config"
-    i "${HOME:?}/.config removed ✔︎"
-  fi
-  # Create a symlink to the config directory
-  ln -sf "${root:?}/config" "${HOME:?}/.config"
-  i "${HOME:?}/.config symlinked to ${root:?}/config ✔︎"
-}
-
-# ============================================================================
-# APPROACH 1: System-wide installation (Recommended)
-# ============================================================================
+# Install mise system-wide if not already installed
 mise_install() {
-  # Check if mise is installed
   if ! command -v "mise" &>/dev/null; then
-    echo "mise is not installed! Installing..."
-
-    # Install mise system-wide
     if curl https://mise.run | sudo MISE_INSTALL_PATH=/usr/local/bin/mise sh; then
-      echo "mise installed system-wide ✔︎"
-
       # Make sure it's executable
       sudo chmod +x /usr/local/bin/mise
+      echo "mise installed system-wide ✔︎"
     else
       echo "mise installation failed!"
       return 1
     fi
   fi
-
-  # Set up user config (no sudo needed for user files)
-  export MISE_GLOBAL_CONFIG_FILE="${HOME}/.local/share/mise/config.toml"
-  # Create config directory if it doesn't exist
-  sudo mkdir -p "$(dirname "$MISE_GLOBAL_CONFIG_FILE")"
-  sudo mkdir -p "${HOME:?}/.local/state/mise"
-  sudo chown -R vscode:vscode "${HOME}/.local/share/mise" "${HOME:?}/.local/state/mise"
-  i "MISE_GLOBAL_CONFIG_FILE set to ${HOME:?}/.local/share/mise/config.toml ✔︎"
-
-  mise settings set activate_aggressive true
-  mise settings set auto_install true
-  mise settings set global_config_file "${HOME}/.local/share/mise/config.toml"
-  mise settings add trusted_config_paths "${HOME}/.local/share/dots/config"
 }
 
-mise_install_packages() {
-  w "Installing mise packages..."
-  if command -v mise &>/dev/null; then
-    mise install --yes cosign slsa-verifier ruby node python age bat delta eza fd fzf gh neovim sops starship usage watchexec zoxide gum
-    i "mise packages installed ✔︎"
-  else
-    w "mise is not installed, skipping mise package installation."
-    return 1
-  fi
-}
-
+# Set installed mise packages globally
 mise_use_global() {
-  w "Setting mise to use global packages..."
+  i "Setting mise packages to be used globally..."
   if command -v mise &>/dev/null; then
-    mise use --yes --global ruby node python age bat delta eza fd fzf gh neovim sops starship usage watchexec zoxide gum
-    i "mise global set ✔︎"
+    mise use --yes --global --pin ripgrep age bat delta eza fd fzf gh neovim sops starship usage watchexec zoxide gum node python ruby
+    i "Mise packages being used globally ✔︎"
   else
-    w "mise is not installed, skipping mise package installation."
+    w "Mise is not installed, skipping mise global set.."
     return 1
   fi
 }
 
-mise_setup_activation() {
-  w "Setting up mise activation..."
-  if command -v mise &>/dev/null; then
-    MISE_CMD="$(command -v mise)"
-    for SHELL in bash zsh; do
-      # Generate activation command for the shell
-      MISE_ACTIVATION=$(eval "$MISE_CMD activate $SHELL --yes --quiet --shims")
-      for USER_DIR in "${HOME:?}" /root; do
-        echo "$MISE_ACTIVATION" | sudo tee -a "$USER_DIR/.${SHELL}rc" >/dev/null
+if_step() {
+  if [[ -z "${*}" || "${*}" =~ $1 ]]; then
+    return 0
+  fi
+  return 1
+}
+
+# ========================================================================
+# Installation script
+# USAGE: install [--cleanup] [--rm-omz] [--prepare] [--dotfiles] [--zsh] [--mise] [--mise-activation] [--nvim]
+#
+# ARGUMENTS:
+#   --cleanup                 : Removes configuration files (.bashrc, .bash_logout, .oh-my-zsh, and .profile) from user and root home directories if exist
+#   --rm-omz                  : Remove oh-my-zsh from ~/.zshrc and ~/.bashrc if it exists
+#   --prepare                 : Install required OS dependencies
+#   --dotfiles                : Symlink ~/.config removing preexisting directory if it exists
+#   --zsh                     : Set up ZSH configuration, directories and symlinks
+#   --mise                    : Set up mise and install packages globally
+#   --mise-activate           : Set up mise activation for bash and zsh (.bashrc,.zshrc) for root and user
+#   --mise-global             : Set up mise system-wide (GLOBAL) configuration
+#   --nvim                    : Set up nvim, directories and plugins
+#
+# EXAMPLES:
+#  install                    : Runs all steps
+#  install --cleanup          : Runs only the step cleanup
+#  install --rm-omz           : Runs only the step remove oh-my-zsh
+#  install --prepare          : Runs only the step prepare
+#  install --dotfiles         : Runs only the step dotfiles
+#  install --zsh              : Runs only the step zsh
+#  install --mise             : Runs only the step mise
+#  install --mise-activate    : Runs only the step mise activation
+#  install --mise-global      : Runs only the step mise global
+#  install --nvim             : Runs only the step nvim
+# ========================================================================
+main() {
+  cd "$HOME/.local/share/dots"
+  root="$(pwd)"
+  i "Starting setup script..."
+
+  # Removes configuration files (.bashrc, .bash_logout, .oh-my-zsh, and .profile) from user and root home directories if exist
+  if if_step "--cleanup"; then
+    i "Cleaning up..."
+    for e in "$HOME" /root; do
+      for f in "$e/.bashrc" "$e/.bash_logout" "$e/.oh-my-zsh" "$e/.profile"; do
+        w "Checking for '$f' exist!!"
+        if [[ -f "$f" ]]; then
+          rm -rf "$f"
+          w "'$f' removed ✔︎"
+        fi
       done
     done
-    sudo chmod 644 "${HOME:?}"/.bashrc "${HOME:?}"/.zshrc
-  else
-    w "mise is not installed, skipping mise package installation."
-    return 1
-  fi
-}
-
-setup_mise() {
-  # Check if mise is installed
-  if ! command -v "mise" &>/dev/null; then
-    w "mise is not installed, installing..."
-    mise_install || return 1
+    w "oh-my-zsh removed ✔︎"
   fi
 
-  # load GitHub token
-  setup_github_token
+  # Install required OS dependencies
+  if if_step "--prepare"; then
+    i "Setting up dependencies..."
+    # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
+    sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev cowsay fortune fortunes fortunes-min && sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/* && sudo ln -sf /usr/games/cowsay /usr/local/bin/cowsay && sudo ln -sf /usr/games/fortune /usr/local/bin/fortune
+  fi
 
-  # Install mise packages
-  mise_install_packages || return 1
+  # Set up mise and install packages globally
+  if if_step "--mise"; then
+    i "Setting up mise..."
+    # Check if mise is installed
+    if ! command -v "mise" &>/dev/null; then
+      w "mise is not installed, installing..."
+      mise_install || return 1
+    fi
 
-  # Set mise to use global packages
-  mise_use_global || return 1
+    i "Setting up mise global configuration..."
+    sudo mkdir -p "$HOME/.local/share/mise" "$HOME/.local/state/mise"
+    sudo chown -R "$USER:$USER" "$HOME/.local/share/mise" "$HOME/.local/state/mise"
+    w "'$HOME/.local/(share|state)/mise' created and owned by '$USER' ✔︎"
 
-  # Setup mise activation
-  mise_setup_activation || return 1
+    export MISE_GLOBAL_CONFIG_DIR="$HOME/.local/share/mise"
+    export MISE_GLOBAL_CONFIG_FILE="$HOME/.local/share/mise/config.toml"
+    i "MISE_GLOBAL_CONFIG_FILE set to $HOME/.local/share/mise/config.toml (owned by '$USER') ✔︎"
 
-  # cleanup GitHub token
-  cleanup_github_token
+    mise settings set global_config_file "$HOME/.local/share/mise/config.toml"
+    mise settings add trusted_config_paths "$HOME/.local/share/dots"
+    mise settings add trusted_config_paths "$HOME/.local/share/mise"
+    mise settings set activate_aggressive true
+    mise settings set auto_install true
+    i "mise global configuration set ✔︎"
 
-  w "mise setup complete ✔︎"
-}
+    # Check for token file in various locations
+    local token_locations=(
+      /run/secrets/github_token
+      "$HOME/.github_token"
+      "$HOME/.secrets/github_token"
+      "/tmp/github_env"
+    )
 
-remove_oh_my_zsh() {
-  w "Removing oh-my-zsh..."
-  sudo rm -rf /root/.oh-my-zsh /home/vscode/.oh-my-zsh
-
-  for e in "${HOME:?}" /root; do
-    for f in "$e/.zshrc" "$e/.bashrc"; do
-      if [[ -f "$f" ]]; then
-        sudo sed -i -e '/oh-my-zsh/d' -e '/ZSH_THEME/d' -e '/plugins=/d' -e '/:omz:/d' "$f"
+    for location in "${token_locations[@]}"; do
+      if [ -f "$location" ]; then
+        export GITHUB_TOKEN=$(cat "$location")
+        echo "✓ GitHub token loaded from $location"
       fi
     done
-  done
 
-  w "oh-my-zsh removed ✔︎"
-}
-
-setup_dependencies() {
-  # Install dependencies
-  sudo apt-get update && sudo apt-get install -y cowsay fortune fortunes fortunes-min build-essential rustc libssl-dev libyaml-dev zlib1g-dev libgmp-dev autoconf automake pkg-config libncurses5-dev libncursesw5-dev &&
-    sudo apt-get clean &&
-    sudo rm -rf /var/lib/apt/lists/* &&
-    sudo ln -sf /usr/games/cowsay /usr/local/bin/cowsay &&
-    sudo ln -sf /usr/games/fortune /usr/local/bin/fortune
-}
-
-setup_nvim() {
-  w "Setting up nvim..."
-  sudo mkdir -p "${HOME:?}/.local/state/npm" "${HOME}/.local/state/nvim" "${HOME:?}/.local/share/nvim"
-  w "'${HOME:?}/.local/state/npm' & '${HOME:?}/.local/(state|share)/nvim' CREATED ✔︎"
-  sudo chown -R vscode:vscode "${HOME}/.local/state/npm" "${HOME}/.local/state/nvim" "${HOME:?}/.local/share/nvim"
-  w "'${HOME:?}/.local/state/npm' & '${HOME:?}/.local/(state|share)/nvim' owned by vscode ✔︎"
-  export npm_config_cache="${HOME:?}/.local/state/npm"
-  w "npm_config_cache exported to '${npm_config_cache}' ✔︎"
-
-  # Check if nvim is installed
-  if ! command -v "${HOME:?}/.local/share/mise/shims/nvim" &>/dev/null; then
-    w "nvim is not installed, skipping nvim setup."
-    return
-  fi
-
-  if [[ -d "${HOME:?}/.config/nvim" ]]; then
-    cd "${HOME:?}/.config/nvim" &&
-      "${HOME:?}/.local/share/mise/shims/nvim" --headless +verbose \
-        +'Lazy! sync' \
-        +'Lazy! clean' \
-        +'Lazy! clear' \
-        +'TSUpdateSync' \
-        -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' \
-        -c 'MasonInstall ast-grep bash-language-server css-lsp diagnostic-languageserver docker-compose-language-service dockerfile-language-server eslint-lsp html-lsp json-lsp lua-language-server marksman neocmakelsp prettier pyright ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server' +qa
-  else
-    w "nvim is not installed, skipping nvim setup."
-  fi
-}
-
-# Setup ZSH
-setup_zsh() {
-  # Create the ~/.cache/zsh/compcache directory if it doesn't exist
-  if [[ ! -d "${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-${HOME:?}/.cache}/zsh}/compcache" ]]; then
-    mkdir -p "${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-${HOME:?}/.cache}/zsh}/compcache"
-    i "${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-${HOME:?}/.cache}/zsh}/compcache created ✔︎"
-  fi
-
-  # Create symlinks for the ZSH config files
-  for file in .zshenv .zprofile .zshrc; do
-    if [[ -f "${HOME:?}/.config/zsh/$file" ]]; then
-      ln -sf "${HOME:?}/.config/zsh/$file" "${HOME:?}/$file"
-      i "${HOME:?}/.config/zsh/$file symlinked to ${HOME:?}/$file ✔︎"
+    if [ -z "$GITHUB_TOKEN" ]; then
+      echo "⚠ No GitHub token found - API rate limits may apply"
     fi
-  done
 
-  if [[ ! -d "$HOME"/.local/state/zim ]]; then
-    sudo mkdir -p "$HOME"/.local/state/zim
-    sudo chown -R vscode:vscode "$HOME"/.local/state/zim
-    i "$HOME/.local/state/zim created and owned by vscode ✔︎"
+    # Set mise to use global packages
+    mise_use_global || return 1
+
+    # cleanup GitHub token
+    if [ -n "$GITHUB_TOKEN" ]; then
+      unset GITHUB_TOKEN
+      echo "✓ GitHub token removed from environment"
+    fi
+
+    w "mise setup complete ✔︎"
   fi
 
-  export ZDOTDIR="${HOME:?}/.config/zsh"
+  # Symlink ~/.config removing preexisting directory if it exists
+  if if_step "--dotfiles"; then
+    i "Symlinking dotfiles..."
+    # If the config directory already exists, remove it
+    if [[ -d "$HOME/.config" ]]; then
+      rm -rf "$HOME/.config"
+      i "$HOME/.config removed ✔︎"
+    fi
+
+    # If the config directory is not a symlink, create a symlink
+    if [[ ! -L "$HOME/.config" ]]; then
+      # Create a symlink to the config directory
+      ln -sf "$root/config" "$HOME/.config"
+      sudo chown -R "$USER:$USER" "$HOME/.config"
+      i "$HOME/.config symlinked to $root/config owned by '$USER' ✔︎"
+    fi
+  fi
+
+  # Set up ZSH configuration, directories and symlinks
+  if if_step "--zsh"; then
+    i "Setting up ZSH..."
+    # Create the ~/.cache/zsh/compcache directory if it doesn't exist
+    if [[ ! -d "${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh}/compcache" ]]; then
+      mkdir -p "${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh}/compcache"
+      sudo chown -R "$USER:$USER" "${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh}/compcache"
+      i "${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh}/compcache created and owned by '$USER' ✔︎"
+    fi
+
+    # Create symlinks for the ZSH config files
+    for file in .zshenv .zprofile .zshrc; do
+      if [[ -f "$HOME/.config/zsh/$file" && ! -L "$HOME/$file" ]]; then
+        ln -sf "$HOME/.config/zsh/$file" "$HOME/$file"
+        sudo chown -R "$USER:$USER" "$HOME/$file"
+        i "$HOME/.config/zsh/$file symlinked to $HOME/$file owned by '$USER' ✔︎"
+      fi
+    done
+
+    if [[ ! -d "$HOME/.local/state/zim" ]]; then
+      sudo mkdir -p "$HOME/.local/state/zim"
+      sudo chown -R "$USER:$USER" "$HOME/.local/state/zim"
+      i "$HOME/.local/state/zim created and owned by '$USER' ✔︎"
+    fi
+
+    export ZDOTDIR="$HOME/.config/zsh"
+  fi
+
+  # Set up nvim, directories and plugins
+  if if_step "--nvim"; then
+    w "Setting up nvim..."
+    sudo mkdir -p "$HOME/.local/state/npm" "$HOME/.local/state/nvim" "$HOME/.local/share/nvim"
+    w "'$HOME/.local/state/npm' & '$HOME/.local/(state|share)/nvim' CREATED ✔︎"
+    sudo chown -R "$USER:$USER" "$HOME/.local/state/npm" "$HOME/.local/state/nvim" "$HOME/.local/share/nvim"
+    w "'$HOME/.local/state/npm' & '$HOME/.local/(state|share)/nvim' owned by '$USER' ✔︎"
+    export npm_config_cache="$HOME/.local/state/npm"
+    w "npm_config_cache exported to '$npm_config_cache' (owned by '$USER') ✔︎"
+
+    # Check if nvim is installed
+    if ! command -v "$HOME/.local/share/mise/shims/nvim" &>/dev/null; then
+      w "nvim is not installed, skipping nvim setup."
+      return
+    fi
+
+    if [[ -d "$HOME/.config/nvim" ]]; then
+      cd "$HOME/.config/nvim" &&
+        "$HOME/.local/share/mise/shims/nvim" --headless +verbose \
+          +'Lazy! sync' \
+          +'Lazy! clean' \
+          +'Lazy! clear' \
+          +'TSUpdateSync' \
+          -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' \
+          -c 'MasonInstall ast-grep bash-language-server css-lsp diagnostic-languageserver docker-compose-language-service dockerfile-language-server eslint-lsp html-lsp json-lsp lua-language-server marksman neocmakelsp prettier pyright ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server' +qa
+    fi
+  fi
+
+  sudo chown -R "$USER:$USER" "$HOME/.cache"
+  sudo chown "$USER:$USER" "$HOME/.local" "$HOME/.local/share" "$HOME/.local/state"
+  i "Cache and local directories owned by '$USER' ✔︎"
+
+  cd "$HOME"
+  i "Done! ✔︎✔︎"
 }
 
-# Main function
-main() {
-  w "Cleaning up..."
-  cleanup
-  w "Removing oh-my-zsh..."
-  remove_oh_my_zsh
-  w "Setting up dependencies..."
-  setup_dependencies
-  w "Setting up config..."
-  setup_config
-  w "Setting up ZSH..."
-  setup_zsh
-  w "Setting up mise..."
-  setup_mise
-  w "Setting up nvim..."
-  setup_nvim
-  w "Done! ✔︎✔︎"
-}
-
-# Run the main function
 main "$@"
