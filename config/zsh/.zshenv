@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-# shellcheck shell=bash disable=SC1094,SC2139,SC2046,SC1090,SC2154,SC2155,SC2206,SC2012,SC1083,SC1091
+# shellcheck shell=bash disable=SC1094,SC2139,SC2046,SC1090,SC2154,SC2155,SC2206,SC2012,SC1083,SC1091,SC2086,SC2034
 
 # ~/.zshenv
 # Sourced on all invocations of the shell - unless the -f option is set
@@ -70,49 +70,24 @@ setup_xdg_and_zsh() {
     [ZSH_COMPDUMP]="${ZSH_DIRS[ZSH_COMPCACHE]}/.zcompdump"
   )
   _ensure_permissions() {
-    # echo "Checking XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) directory permissions.."
-    if [[ ! -d $XDG_RUNTIME_DIR ]]; then
-      mkdir -p $XDG_RUNTIME_DIR || {
-        echo "Failed to create directory '$XDG_RUNTIME_DIR'"
-        return 1
-      }
-    fi
-
     local perms=$(stat -f "%Lp" $XDG_RUNTIME_DIR)
     if [[ $perms != "700" ]]; then
-      # echo "Fixing '$XDG_RUNTIME_DIR' permissions: must be '700' instead of '$perms'.."
-      chmod 700 $XDG_RUNTIME_DIR || {
-        echo "Failed to set permissions '700' to '$XDG_RUNTIME_DIR'.."
+      sudo chmod 700 $XDG_RUNTIME_DIR || {
+        echo "Failed to set permissions '700' to XDG_RUNTIME_DIR: '$XDG_RUNTIME_DIR' for '$USER' (UID: $UID).."
         return 1
       }
     fi
 
     local owner=$(stat -f "%u" $XDG_RUNTIME_DIR)
-    if [[ $owner != $UID ]]; then
-      # echo "Fixing '$XDG_RUNTIME_DIR' ownership: must be '$UID' instead of '$owner'.."
+    if [[ $owner != "$UID" ]]; then
       sudo chown $USER $XDG_RUNTIME_DIR || {
-        echo "Failed to change ownership of '$XDG_RUNTIME_DIR'.."
+        echo "Failed to change ownership of XDG_RUNTIME_DIR: '$XDG_RUNTIME_DIR' for '$USER' (UID: $UID).."
         return 1
       }
     fi
-
-    if [[ -d $XDG_RUNTIME_DIR ]] &&
-      [[ $(stat -f "%Lp" $XDG_RUNTIME_DIR) == "700" ]] &&
-      [[ $(stat -f "%u" $XDG_RUNTIME_DIR) == $UID ]]; then
-      # echo "[XDG] XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) permissions have been set up! ✔"
-      return 0
-    else
-      echo "Failed to properly configure XDG_RUNTIME_DIR"
-      return 1
-    fi
   }
   _setup_xdg() {
-    # # if user-dirs.dirs exists and source it
-    # if [ -r "$HOME/.login" ]; then
-    #   source "$HOME/.login"
-    # fi
-    # echo "[XDG] Set default values for XDG variables if not set.. "
-     # Fallback to default XDG paths
+    # Fallback to default XDG paths
     export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
     export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
     export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -130,11 +105,9 @@ setup_xdg_and_zsh() {
     export XDG_WORKSPACE_DIR="${XDG_WORKSPACE_DIR:-$HOME/Work}"
 
     # Create directories if they don't exist
-    mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR"
-    # echo "[XDG] Directories created successfully: '$XDG_CONFIG_HOME, $XDG_CACHE_HOME, $XDG_DATA_HOME, $XDG_STATE_HOME, $XDG_DESKTOP_DIR, $XDG_DOWNLOAD_DIR, $XDG_DOCUMENTS_DIR, $XDG_MUSIC_DIR, $XDG_PICTURES_DIR, $XDG_VIDEOS_DIR, $XDG_PROJECTS_DIR, $XDG_WORKSPACE_DIR' ✔"
+    mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR" "$XDG_RUNTIME_DIR"
   }
   _setup_zsh() {
-    # echo "[ZSH] Set default values for ZSH variables if not set.. "
     # ZSH directories
     export ZDOTDIR="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}"
     export ZSH_DATA_DIR="${ZSH_DATA_DIR:-$XDG_DATA_HOME/zsh}"
@@ -151,7 +124,6 @@ setup_xdg_and_zsh() {
 
     # Create directories if they don't exist
     mkdir -p "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE"
-    # echo "[ZSH] Directories created successfully: '$ZDOTDIR, $ZSH_DATA_DIR, $ZSH_CACHE_DIR, $ZSH_COMPCACHE' ✔"
   }
   _setup_xdg
   _ensure_permissions
@@ -169,6 +141,5 @@ fi
 
 # if not macOS and profile exists, source it
 if [[ "$OSTYPE" != "darwin"* && -r "$ZDOTDIR/.zprofile" ]]; then
-  # shellcheck source=~/.zprofile
   source "$ZDOTDIR/.zprofile"
 fi
