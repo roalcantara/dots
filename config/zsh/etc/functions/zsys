@@ -1,6 +1,341 @@
 #!/usr/bin/env zsh
 # shellcheck shell=bash disable=SC2154,SC1073,SC1058,SC1072,SC1009,SC1036,SC2155,SC2034,SC2120,SC2296,SC2179,SC2066,SC2015,SC1008,SC2296,SC1087
 
+# #!/usr/bin/env zsh
+# # shellcheck shell=bash disable=SC2154,SC1073,SC1058,SC1072,SC1009,SC1036,SC2155,SC2034,SC2120,SC2296,SC2179,SC2066,SC2015,SC1008,SC2296,SC1087
+
+# zsys() {
+#   local cmd="$1"
+#   local subcmd="$2"
+#   local args="$3"
+
+#   echo "cmd: '$cmd'"
+#   echo "subcmd: '$subcmd'"
+#   echo "args: '$args'"
+
+#   if [[ -z "$cmd" ]]; then
+#     echo "Usage: zsys <command> [<subcommand>] [<args>]"
+#     return 1
+#   elif [[ "$cmd" == 'xdg' && "$subcmd" == 'setup' ]]; then
+#     echo "[ZSYS/XDG] Loaded! ✔✔"
+#     return 0
+#   elif [[ "$cmd" == 'zsh' && "$subcmd" == 'setup' ]]; then
+#     echo "[ZSYS/ZSH] Loaded! ✔✔"
+#     return 0
+#   elif [[ "$cmd" == 'zsh' && "$subcmd" == 'symlinks' ]]; then
+#     echo "[ZSYS/SYMLINKS] Setting up symlinks for ZSH functions..."
+#     local FROM="$HOME/.config/zsh/etc/functions"
+#     local TARGET="$HOME/.local/bin"
+#     for var in $(/bin/ls "$FROM" | tr '\n' ' '); do
+#       if [ ! -L "$TARGET/$var" ]; then
+#         ln -sf "$FROM/$var" "$TARGET/$var"
+#         echo "[ZSYS/SYMLINKS] '$FROM/$var' linked to '$TARGET/$var' ✔"
+#       fi
+#     done
+#     echo "[ZSYS/SYMLINKS] Functions linked to '$TARGET' ✔✔"
+#     return 0
+#   fi
+# }
+
+# zsys "${@}"
+
+# # vi: set ft=sh:
+
+#   case "$1" in
+#     fstats)
+#       local dir="$2"
+#       if command -v stat >/dev/null 2>&1; then
+#         if stat --version >/dev/null 2>&1; then
+#           # GNU stat (Linux)
+#           printf "%s %s" "$(stat -c "%a" "$dir")" "$(stat -c "%u" "$dir")"
+#         else
+#           # BSD stat (macOS)
+#           printf "%s %s" "$(stat -f "%Lp" "$dir")" "$(stat -f "%u" "$dir")"
+#         fi
+#       else
+#         echo "[FSTATS]: stat command not available" >&2
+#         return 1
+#       fi
+#       ;;
+#     zsource)
+#       local bin_path=$2
+#       local bin_name="${bin_path##*/}"
+
+#       if [[ -z "$bin" || ! -r "$bin_path" || ! -x "$bin_path" ]]; then
+#         echo "Error: zsys zsource requires a valid executable script path"
+#         echo "Example: zsys zsource /path/to/script.sh"
+#         return 1
+#       fi
+
+#       if (( ! $+commands["$bin_name"] )); then
+#         if [[ ! -r "$bin_path" || ! -x "$bin_path" ]]; then
+#           echo "[ZSOURCE] Failed to find executable script '$bin_path'!" >&2
+#           return 1
+#         fi
+#       fi
+
+#       source "$bin_path" ;;
+#     cmd)
+#  ;;
+#     file)
+#       case "$2" in
+#         source)
+#           [[ -z "$3" ]] && { echo "zsys: file source requires a file path" >&2; return 1; }
+#           [[ -f "$3" ]] && source "$3"
+#           ;;
+#         mtime)
+#           [[ -z "$3" ]] && { echo "zsys: file mtime requires a file path" >&2; return 1; }
+#           if [[ -f "$3" ]]; then
+#             case "$(uname)" in
+#               Darwin) stat -f "%m" "$3" ;;
+#               Linux)  stat -c "%Y" "$3" ;;
+#             esac
+#           fi
+#           ;;
+#         *)
+#           echo "zsys: unknown file command '$2'" >&2
+#           echo "Usage: zsys file {source|mtime} <file>" >&2
+#           echo "Arguments:"
+#           echo "  source : Source a file"
+#           echo "  mtime  : Get the last modification time of a file"
+#           echo "Examples:"
+#           echo "  zsys file source /path/to/file"
+#           echo "  zsys file mtime /path/to/file"
+#           return 1
+#           ;;
+#       esac ;;
+#     xdg)
+#       # XDG Base Directory Definitions
+#       # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+#       case "$2" in
+#         ensure_permissions)
+#           # Load fstats function to get directory stats
+#           if (( ! $+commands[fstats] )); then
+#             local bin_path="$HOME/.local/bin/fstats"
+#             if [[ ! -r "$bin_path" || ! -x "$bin_path" ]]; then
+#               echo "[XDG] Failed to find executable script '$bin_path'!" >&2
+#               return 1
+#             fi
+#             source "$bin_path"
+#           fi
+
+#           # Get current permissions and ownership
+#           local stats=$(fstats "$XDG_RUNTIME_DIR")
+#           if ! $stats; then
+#             echo "[XDG] Failed to get stats for '$XDG_RUNTIME_DIR'!" >&2
+#             return 1
+#           fi
+
+#           local current_perms="${stats%% *}"
+#           local current_owner="${stats##* }"
+
+#           # Fix permissions if needed
+#           if [[ "$current_perms" != "700" ]]; then
+#             echo "[XDG] Setting permission '700' to '$XDG_RUNTIME_DIR' (previously: '$current_perms').."
+#             if ! chmod 700 "$XDG_RUNTIME_DIR"; then
+#               echo "[XDG] Failed to set permissions on '$XDG_RUNTIME_DIR'!" >&2
+#               return 1
+#             fi
+#           fi
+
+#           # Fix ownership if needed
+#           if [[ "$current_owner" != "$UID" ]]; then
+#             echo "[XDG] Setting ownership '$current_owner' to '$XDG_RUNTIME_DIR' (previously: '$current_owner').."
+#             if ! chown "$USER" "$XDG_RUNTIME_DIR" 2>/dev/null; then
+#               # Try with sudo if regular chown fails
+#               if ! sudo chown "$USER" "$XDG_RUNTIME_DIR"; then
+#                 echo "[XDG] Failed to change ownership of '$XDG_RUNTIME_DIR'!" >&2
+#                 return 1
+#               fi
+#             fi
+#           fi
+
+#           echo "[XDG] XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) permissions have been set up! ✔"
+#           return 0
+#           ;;
+#         exports)
+#           # if user-dirs.dirs exists and source it
+#           if [ -r "$HOME/.login" ]; then
+#             source "$HOME/.login"
+#           fi
+
+#           echo "[XDG] Set default values for XDG variables if not set.. "
+#           if [ -z "$XDG_CONFIG_HOME" ]; then
+#             for var in "${!XDG_DIRS[@]}"; do
+#               if [ -z "${!var}" ]; then
+#                 export "$var"="${XDG_DIRS[$var]}"
+#               fi
+#             done
+#           fi
+#           echo "[XDG] Environment Variables exported successfully ✔"
+#           ;;
+#         create)
+#           echo "[XDG] Create directories if they don't exist.. "
+#           mkdir -p "${!XDG_DIRS[@]}"
+#           echo "[XDG] Directories created successfully ✔" ;;
+#         list)
+#           echo "[XDG] Listing XDG variables.. "
+#           for var in "${!XDG_DIRS[@]}"; do
+#             echo "$var=${XDG_DIRS[$var]}"
+#           done
+#           ;;
+#         setup)
+#           # Export XDG variables
+#           xdg exports || return 1
+
+#           # Create necessary directories
+#           xdg create || return 1
+
+#           # Ensure XDG_RUNTIME_DIR has proper permissions and ownership in background
+#           xdg ensure_permissions && wait $! || return 1
+#           ;;
+#         *)
+#           echo "xdg: unknown xdg command '$2'" >&2
+#           echo "Usage: xdg {set|ensure-runtime|setup} [args...]" >&2
+#           echo "Arguments:"
+#           echo "  set                 : Set an XDG variable"
+#           echo "  ensure_permissions  : Ensure XDG_RUNTIME_DIR is set up correctly"
+#           echo "  setup               : Set up XDG variables and directories"
+#           echo "Examples:"
+#           echo "  xdg set XDG_CONFIG_HOME /path/to/config"
+#           echo "  xdg ensure_permissions"
+#           echo "  xdg setup"
+#           return 1
+#           ;;
+#       esac ;;
+#     zsh)
+#       case "$2" in
+#         exports)
+#           echo "[ZSH] Set default values for ZSH variables if not set.. "
+#           if [ -z "$ZDOTDIR" ]; then
+#             for var in "${!ZSH_DIRS[@]} "; do
+#               if [ -z "${!var}" ]; then
+#                 export "$var"="${ZSH_DIRS[$var]}"
+#               fi
+#             done
+#             for var in "${!ZSH_OPTS[@]}"; do
+#               if [ -z "${!var}" ]; then
+#                 export "$var"="${ZSH_OPTS[$var]}"
+#               fi
+#             done
+#           fi
+#           echo "[ZSH] Environment Variables exported successfully ✔" ;;
+#         create)
+#           echo "[ZSH] Create directories if they don't exist.. "
+#           mkdir -p "${!ZSH_DIRS[@]}"
+#           echo "[ZSH] Directories created successfully ✔" ;;
+#         setup)
+#           # Export ZSH variables
+#           zsh exports || return 1
+
+#           # Create necessary directories
+#           zsh create || return 1 ;;
+#         *)
+#           echo "zsys: unknown zsh command '$2'" >&2
+#           echo "Usage: zsys zsh {source|version} [args...]" >&2
+#           echo "Arguments:"
+#           echo "  source : Source a zsh script"
+#           echo "  version: Show the current Zsh version"
+#           return 1
+#           ;;
+#       esac ;;
+#     symlinks)
+#       local FROM="$HOME/.config/zsh/etc/functions"
+#       local TARGET="$HOME/.local/bin"
+#       for var in "$(/bin/ls "$FROM" | tr '\n' ' ')"; do
+#         if [ ! -L "${!var}" ]; then
+#           ln -sf "$FROM/$var" "$TARGET/$var"
+#           echo "[SYMLINKS] '$FROM/$var' linked to '$TARGET/$var' ✔"
+#         fi
+#       done
+#       echo "[SYMLINKS] Functions linked to '$TARGET' ✔✔" ;;
+#     *)
+#       echo "zsys: unknown command '$1'" >&2
+#       echo "Usage: zsys {path|cmd|file|xdg} <subcommand> [args...]" >&2
+#       echo "  path: list, remove, append, prepend, clean"
+#       echo "  cmd:  exists, path"
+#       echo "  file: source, mtime"
+#       echo "  xdg: ensure-runtime, setup"
+#       return 1
+#       ;;
+#   esac
+
+  # local -A XDG_DIRS=(
+  #   # Custom XDG Directories
+  #   [XDG_BIN_HOME]="$HOME/.local/bin"
+  #   [XDG_PROJECTS_DIR]="$HOME/Projects"
+  #   [XDG_WORKSPACE_DIR]="$HOME/Work"
+
+  #   # Set XDG Base Directories
+  #   [XDG_CONFIG_HOME]="$HOME/.config"
+  #   [XDG_CACHE_HOME]="$HOME/.cache"
+  #   [XDG_DATA_HOME]="$HOME/.local/share"
+  #   [XDG_STATE_HOME]="$HOME/.local/state"
+  #   [XDG_RUNTIME_DIR]="/tmp/runtime-$USER"
+
+  #   # Set XDG User Directories
+  #   [XDG_DESKTOP_DIR]="$HOME/Desktop"
+  #   [XDG_DOWNLOAD_DIR]="$HOME/Downloads"
+  #   [XDG_DOCUMENTS_DIR]="$HOME/Documents"
+  #   [XDG_MUSIC_DIR]="$HOME/Music"
+  #   [XDG_PICTURES_DIR]="$HOME/Pictures"
+  #   [XDG_VIDEOS_DIR]="$HOME/Movies"
+  # )
+  # local -A ZSH_DIRS=(
+  #   # ZSH/ZIM DEFAULT, CUSTOM DIRECTORIES
+  #   [ZDOTDIR]="$XDG_CONFIG_HOME/zsh"
+  #   [ZSH_DATA_DIR]="${!XDG_DIRS[XDG_DATA_HOME]}/zsh"
+  #   [ZSH_CACHE_DIR]="${!XDG_DIRS[XDG_CACHE_HOME]}/zsh"
+  #   [ZSH_COMPCACHE]="${!XDG_DIRS[XDG_CACHE_HOME]}/zsh/compcache"
+  #   [ZSH_TMP_DIR]="$XDG_CONFIG_HOME/zsh/tmp"
+  #   [ZIM_HOME]="${!XDG_DIRS[XDG_DATA_HOME]}/zim"
+  # )
+  # local -A ZSH_OPTS=(
+  #   [ZSH_VERSION]="5.9" # zsh --version | cut -d ' ' -f2
+  #   [ZDOTDIR_OPT]="$XDG_CONFIG_HOME/zsh/opt"
+  #   [ZDOTDIR_ETC]="$XDG_CONFIG_HOME/zsh/etc"
+  #   [HISTFILE]="${!ZSH_DIRS[ZSH_DATA_DIR]}/.zsh_history"
+  #   [ZSH_COMPDUMP]="${!ZSH_DIRS[ZSH_COMPCACHE]}/.zcompdump"
+  # )
+  # _throw_if_empty() {
+  #   local cmd="$1"
+  #   local var_name="$2"
+  #   local message="$3"
+  #   if [[ -z "${!var_name}" ]]; then
+  #     echo "[ZSYS/$cmd] Error: $message!" >&2
+  #     return 1
+  #   fi
+  # }
+
+  # if [[ -z "$1" ]]; then
+  #   echo "Usage: zsys <command> [args...]"
+  #   echo "Available commands: path, cmd, file, xdg, zsh, symlinks"
+  #   return 1
+  # fi
+
+  # local cmd="$1"
+  # local subcmd="$2"
+  # local arg="$3"
+
+  # if [ "$cmd" == 'cmd' ]; then
+  #   if [ "$subcmd" == 'exists' ]; then
+  #     _throw_if_empty 'cmd' "$arg" "command name is required!"
+  #     if (( ${+commands["$arg"]} )); then
+  #       return 0
+  #     else
+  #       return 1
+  #     fi
+  #   elif [ "$subcmd" == 'path' ]; then
+  #     _throw_if_empty 'cmd' "$arg" "command name is required!"
+  #     if (( ! ${+commands["$arg"]} )); then
+  #       echo "[ZSYS]: command '$arg' does not exist"
+  #       return 1
+  #     fi
+  #     echo "${commands[$arg]}"
+  #     return 0
+  #   fi
+  # fi
+
 zsys() {
   case "$1" in
     path)

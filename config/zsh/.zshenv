@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+# shellcheck shell=bash disable=SC1094,SC2139,SC2046,SC1090,SC2154,SC2155,SC2206,SC2012,SC1083,SC1091
 
 # ~/.zshenv
 # Sourced on all invocations of the shell - unless the -f option is set
@@ -26,197 +27,139 @@ if [[ -n "$z_trace" ]]; then
 fi
 
 ## INTERNATIONALISATION VARIABLES {
-  # The values that the environment variables may be assigned are not restricted;
-  # Except that they are considered to end with a null byte and the total space used to store the environment and the arguments to the process is limited to {ARG_MAX} bytes.
-  # It is unwise to conflict with certain variables that are frequently exported by widely used command interpreters and applications.
-  # https://pubs.opengroup.org/onlinepubs/7908799/xbd/envvar.html
-  export LC_ALL=en_US.UTF-8
-  export LANG=en_US.UTF-8
-  export LC_CTYPE=en_US.UTF-8
-  export LC_COLLATE=C
+# The values that the environment variables may be assigned are not restricted;
+# Except that they are considered to end with a null byte and the total space used to store the environment and the arguments to the process is limited to {ARG_MAX} bytes.
+# It is unwise to conflict with certain variables that are frequently exported by widely used command interpreters and applications.
+# https://pubs.opengroup.org/onlinepubs/7908799/xbd/envvar.html
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export LC_COLLATE=C
 # }
 
-# Load system utilities helper
-xdg() {
-  case "$1" in
-  set)
-    local var_name="$2"
-    local default_value="$3"
-    local create_dir="${4:-true}"
-
-    [[ -z "$var_name" ]] && { echo "xdg: xdg set requires variable name" >&2; return 1; }
-    [[ -z "$default_value" ]] && { echo "xdg: xdg set requires default value" >&2; return 1; }
-
-    if [[ -z "${(P)var_name}" ]]; then
-      export "$var_name"="$default_value"
-    fi
-
-    # Create directory if requested and it doesn't exist
-    if [[ "$create_dir" == "true" && ! -d "${(P)var_name}" ]]; then
-      if ! mkdir -p "${(P)var_name}"; then
-        echo "xdg: Failed to create directory '${(P)var_name}' for $var_name" >&2
+setup_xdg_and_zsh() {
+  local -A XDG_DIRS=(
+    [XDG_BIN_HOME]="$HOME/.local/bin"
+    [XDG_PROJECTS_DIR]="$HOME/Projects"
+    [XDG_WORKSPACE_DIR]="$HOME/Work"
+    [XDG_CONFIG_HOME]="$HOME/.config"
+    [XDG_CACHE_HOME]="$HOME/.cache"
+    [XDG_DATA_HOME]="$HOME/.local/share"
+    [XDG_STATE_HOME]="$HOME/.local/state"
+    [XDG_RUNTIME_DIR]="/tmp/runtime-$USER"
+    [XDG_DESKTOP_DIR]="$HOME/Desktop"
+    [XDG_DOWNLOAD_DIR]="$HOME/Downloads"
+    [XDG_DOCUMENTS_DIR]="$HOME/Documents"
+    [XDG_MUSIC_DIR]="$HOME/Music"
+    [XDG_PICTURES_DIR]="$HOME/Pictures"
+    [XDG_VIDEOS_DIR]="$HOME/Movies"
+  )
+  local -A ZSH_DIRS=(
+    [ZDOTDIR]="$XDG_CONFIG_HOME/zsh"
+    [ZSH_DATA_DIR]="${XDG_DIRS[XDG_DATA_HOME]}/zsh"
+    [ZSH_CACHE_DIR]="${XDG_DIRS[XDG_CACHE_HOME]}/zsh"
+    [ZSH_COMPCACHE]="${XDG_DIRS[XDG_CACHE_HOME]}/zsh/compcache"
+    [ZSH_TMP_DIR]="$XDG_CONFIG_HOME/zsh/tmp"
+    [ZIM_HOME]="${XDG_DIRS[XDG_DATA_HOME]}/zim"
+  )
+  local -A ZSH_OPTS=(
+    [ZSH_VERSION]="5.9" # zsh --version | cut -d ' ' -f2
+    [ZDOTDIR_OPT]="$XDG_CONFIG_HOME/zsh/opt"
+    [ZDOTDIR_ETC]="$XDG_CONFIG_HOME/zsh/etc"
+    [HISTFILE]="${ZSH_DIRS[ZSH_DATA_DIR]}/.zsh_history"
+    [ZSH_COMPDUMP]="${ZSH_DIRS[ZSH_COMPCACHE]}/.zcompdump"
+  )
+  _ensure_permissions() {
+    # echo "Checking XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) directory permissions.."
+    if [[ ! -d $XDG_RUNTIME_DIR ]]; then
+      mkdir -p $XDG_RUNTIME_DIR || {
+        echo "Failed to create directory '$XDG_RUNTIME_DIR'"
         return 1
-      fi
-    fi
-    ;;
-  ensure-runtime)
-    # Validate XDG_RUNTIME_DIR
-    if [[ -z "$XDG_RUNTIME_DIR" || "$XDG_RUNTIME_DIR" =~ ^[[:space:]]*$ ]]; then
-      export XDG_RUNTIME_DIR="/tmp/runtime-$USER"
+      }
     fi
 
-    # Create directory if needed
-    if [[ ! -d "$XDG_RUNTIME_DIR" ]]; then
-      if ! mkdir -p "$XDG_RUNTIME_DIR"; then
-        echo "xdg: Failed to create directory '$XDG_RUNTIME_DIR'" >&2
+    local perms=$(stat -f "%Lp" $XDG_RUNTIME_DIR)
+    if [[ $perms != "700" ]]; then
+      # echo "Fixing '$XDG_RUNTIME_DIR' permissions: must be '700' instead of '$perms'.."
+      chmod 700 $XDG_RUNTIME_DIR || {
+        echo "Failed to set permissions '700' to '$XDG_RUNTIME_DIR'.."
         return 1
-      fi
+      }
     fi
 
-    # Helper function to get file stats
-    _get_file_stats() {
-      local dir="$1"
-      if command -v stat >/dev/null 2>&1; then
-        if stat --version >/dev/null 2>&1; then
-          # GNU stat (Linux)
-          printf "%s %s" "$(stat -c "%a" "$dir")" "$(stat -c "%u" "$dir")"
-        else
-          # BSD stat (macOS)
-          printf "%s %s" "$(stat -f "%Lp" "$dir")" "$(stat -f "%u" "$dir")"
-        fi
-      else
-        echo "xdg: stat command not available" >&2
+    local owner=$(stat -f "%u" $XDG_RUNTIME_DIR)
+    if [[ $owner != $UID ]]; then
+      # echo "Fixing '$XDG_RUNTIME_DIR' ownership: must be '$UID' instead of '$owner'.."
+      sudo chown $USER $XDG_RUNTIME_DIR || {
+        echo "Failed to change ownership of '$XDG_RUNTIME_DIR'.."
         return 1
-      fi
-    }
+      }
+    fi
 
-    # Get current permissions and ownership
-    local stats
-    if ! stats=$(_get_file_stats "$XDG_RUNTIME_DIR"); then
+    if [[ -d $XDG_RUNTIME_DIR ]] &&
+      [[ $(stat -f "%Lp" $XDG_RUNTIME_DIR) == "700" ]] &&
+      [[ $(stat -f "%u" $XDG_RUNTIME_DIR) == $UID ]]; then
+      # echo "[XDG] XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) permissions have been set up! ✔"
+      return 0
+    else
+      echo "Failed to properly configure XDG_RUNTIME_DIR"
       return 1
     fi
+  }
+  _setup_xdg() {
+    # # if user-dirs.dirs exists and source it
+    # if [ -r "$HOME/.login" ]; then
+    #   source "$HOME/.login"
+    # fi
+    # echo "[XDG] Set default values for XDG variables if not set.. "
+     # Fallback to default XDG paths
+    export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+    export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+    export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+    export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+    export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp/runtime-$USER}"
 
-    local current_perms="${stats%% *}"
-    local current_owner="${stats##* }"
+    # XDG User directories
+    export XDG_DESKTOP_DIR="${XDG_DESKTOP_DIR:-$HOME/Desktop}"
+    export XDG_DOWNLOAD_DIR="${XDG_DOWNLOAD_DIR:-$HOME/Downloads}"
+    export XDG_DOCUMENTS_DIR="${XDG_DOCUMENTS_DIR:-$HOME/Documents}"
+    export XDG_MUSIC_DIR="${XDG_MUSIC_DIR:-$HOME/Music}"
+    export XDG_PICTURES_DIR="${XDG_PICTURES_DIR:-$HOME/Pictures}"
+    export XDG_VIDEOS_DIR="${XDG_VIDEOS_DIR:-$HOME/Movies}"
+    export XDG_PROJECTS_DIR="${XDG_PROJECTS_DIR:-$HOME/Projects}"
+    export XDG_WORKSPACE_DIR="${XDG_WORKSPACE_DIR:-$HOME/Work}"
 
-    # Fix permissions if needed
-    if [[ "$current_perms" != "700" ]]; then
-      echo "xdg: Fixing permissions '$current_perms' → '700' for '$XDG_RUNTIME_DIR'"
-      if ! chmod 700 "$XDG_RUNTIME_DIR"; then
-        echo "xdg: Failed to set permissions on '$XDG_RUNTIME_DIR'" >&2
-        return 1
-      fi
-    fi
+    # Create directories if they don't exist
+    mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR"
+    # echo "[XDG] Directories created successfully: '$XDG_CONFIG_HOME, $XDG_CACHE_HOME, $XDG_DATA_HOME, $XDG_STATE_HOME, $XDG_DESKTOP_DIR, $XDG_DOWNLOAD_DIR, $XDG_DOCUMENTS_DIR, $XDG_MUSIC_DIR, $XDG_PICTURES_DIR, $XDG_VIDEOS_DIR, $XDG_PROJECTS_DIR, $XDG_WORKSPACE_DIR' ✔"
+  }
+  _setup_zsh() {
+    # echo "[ZSH] Set default values for ZSH variables if not set.. "
+    # ZSH directories
+    export ZDOTDIR="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}"
+    export ZSH_DATA_DIR="${ZSH_DATA_DIR:-$XDG_DATA_HOME/zsh}"
+    export ZSH_CACHE_DIR="${ZSH_CACHE_DIR:-$XDG_CACHE_HOME/zsh}"
+    export ZSH_COMPCACHE="${ZSH_COMPCACHE:-$ZSH_CACHE_DIR/compcache}"
 
-    # Fix ownership if needed
-    if [[ "$current_owner" != "$UID" ]]; then
-      echo "xdg: Fixing ownership '$current_owner' → '$UID' for '$XDG_RUNTIME_DIR'"
-      if ! chown "$USER" "$XDG_RUNTIME_DIR" 2>/dev/null; then
-        # Try with sudo if regular chown fails
-        if ! sudo chown "$USER" "$XDG_RUNTIME_DIR"; then
-          echo "xdg: Failed to change ownership of '$XDG_RUNTIME_DIR'" >&2
-          return 1
-        fi
-      fi
-    fi
+    # ZSH custom directories
+    export ZDOTDIR_OPT="${ZDOTDIR_OPT:-$ZDOTDIR/opt}"
+    export ZDOTDIR_ETC="${ZDOTDIR_ETC:-$ZDOTDIR/etc}"
 
-    # Final verification
-    if ! stats=$(_get_file_stats "$XDG_RUNTIME_DIR"); then
-      return 1
-    fi
+    # ZSH state files
+    export ZSH_COMPDUMP="${ZSH_COMPDUMP:-$ZSH_COMPCACHE/.zcompdump}"
+    export HISTFILE="${HISTFILE:-$ZSH_DATA_DIR/.zsh_history}"
 
-    local final_perms="${stats%% *}"
-    local final_owner="${stats##* }"
-
-    if [[ "$final_perms" != "700" || "$final_owner" != "$UID" ]]; then
-      echo "xdg: Verification failed - perms: $final_perms, owner: $final_owner" >&2
-      return 1
-    fi
-
-    return 0
-    ;;
-  setup)
-    # Check if user-dirs.dirs exists and source it
-    local user_dirs_file="$HOME/.config/user-dirs.dirs"
-    if [[ -f "$user_dirs_file" ]]; then
-      # Safely source the file
-      if ! source "$user_dirs_file"; then
-        echo "xdg: Warning - failed to source '$user_dirs_file'" >&2
-      fi
-    fi
-
-    # Set XDG Base Directory variables
-    xdg set "XDG_CONFIG_HOME" "$HOME/.config" || return 1
-    xdg set "XDG_CACHE_HOME" "$HOME/.cache" || return 1
-    xdg set "XDG_DATA_HOME" "$HOME/.local/share" || return 1
-    xdg set "XDG_STATE_HOME" "$HOME/.local/state" || return 1
-
-    # Handle XDG_BIN_HOME (non-standard but commonly used)
-    xdg set "XDG_BIN_HOME" "$HOME/.local/bin" || return 1
-
-    # Handle XDG_RUNTIME_DIR specially (validation logic)
-    if [[ -z "$XDG_RUNTIME_DIR" || "$XDG_RUNTIME_DIR" =~ ^[[:space:]]*$ ]]; then
-      export XDG_RUNTIME_DIR="/tmp/runtime-$USER"
-    fi
-
-    # Set XDG User Directory variables (only set defaults, don't create)
-    xdg set "XDG_DESKTOP_DIR" "$HOME/Desktop" "false"
-    xdg set "XDG_DOWNLOAD_DIR" "$HOME/Downloads" "false"
-    xdg set "XDG_DOCUMENTS_DIR" "$HOME/Documents" "false"
-    xdg set "XDG_MUSIC_DIR" "$HOME/Music" "false"
-    xdg set "XDG_PICTURES_DIR" "$HOME/Pictures" "false"
-    xdg set "XDG_VIDEOS_DIR" "$HOME/Movies" "false"
-
-    # Custom directories (create these)
-    xdg set "XDG_PROJECTS_DIR" "$HOME/Projects" || return 1
-    xdg set "XDG_WORKSPACE_DIR" "$HOME/Work" || return 1
-
-    # Ensure XDG_RUNTIME_DIR has proper permissions and ownership
-    xdg ensure-runtime || return 1
-
-    return 0
-    ;;
-  *)
-    echo "xdg: unknown xdg command '$2'" >&2
-    echo "Usage: xdg {set|ensure-runtime|setup} [args...]" >&2
-    echo "Arguments:"
-    echo "  set             : Set an XDG variable"
-    echo "  ensure-runtime  : Ensure XDG_RUNTIME_DIR is set up correctly"
-    echo "  setup           : Set up XDG variables and directories"
-    echo "Examples:"
-    echo "  xdg set XDG_CONFIG_HOME /path/to/config"
-    echo "  xdg ensure-runtime"
-    echo "  xdg setup"
-    return 1
-    ;;
-  esac
+    # Create directories if they don't exist
+    mkdir -p "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE"
+    # echo "[ZSH] Directories created successfully: '$ZDOTDIR, $ZSH_DATA_DIR, $ZSH_CACHE_DIR, $ZSH_COMPCACHE' ✔"
+  }
+  _setup_xdg
+  _ensure_permissions
+  _setup_zsh
 }
 
-# Setup XDG variables, directories and permissions
-xdg setup
-
-# ZSH DEFAULTS
-export ZSH_VERSION="5.9" # zsh --version | cut -d ' ' -f2
-export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
-export ZSH_DATA_DIR="$XDG_DATA_HOME/zsh"
-export ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
-export ZSH_TMP_DIR="$ZDOTDIR/tmp"
-export ZSH_COMPCACHE="$ZSH_CACHE_DIR/compcache"
-
-# ZSH state files
-export ZSH_COMPDUMP="$ZSH_COMPCACHE/.zcompdump"
-export HISTFILE="$ZSH_DATA_DIR/.zsh_history"
-
-# ZSH custom directories
-export ZDOTDIR_OPT="$ZDOTDIR/opt"
-export ZDOTDIR_ETC="$ZDOTDIR/etc"
-
-# ZIM variables
-# Set where the directory used by Zim will be located (https://zimfw.sh/docs/install)
-export ZIM_HOME="$XDG_DATA_HOME/zim"
-
-# Create directories if they don't exist
-mkdir -p "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZIM_HOME" "$ZSH_TMP_DIR"
+# Setup XDG and ZSH environment variables
+setup_xdg_and_zsh
 
 # Only source this once
 if [[ -z "$__HM_ZSH_SESS_VARS_SOURCED" ]]; then
@@ -224,7 +167,8 @@ if [[ -z "$__HM_ZSH_SESS_VARS_SOURCED" ]]; then
   export MAILCHECK="30"
 fi
 
-if [[ ! "$OSTYPE" == "darwin"* ]]; then
-  # Load .zprofile for zsh-specific login settings
-  [ -f "$ZDOTDIR/.zprofile" ] && source "$ZDOTDIR/.zprofile"
+# if not macOS and profile exists, source it
+if [[ "$OSTYPE" != "darwin"* && -r "$ZDOTDIR/.zprofile" ]]; then
+  # shellcheck source=~/.zprofile
+  source "$ZDOTDIR/.zprofile"
 fi

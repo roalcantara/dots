@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-# shellcheck shell=bash disable=SC2154,SC2155
+#!/usr/bin/env zsh
+# shellcheck shell=bash disable=SC2154,SC2155,SC2034
 
 #? pss 0.1.0
 #? License RIT (Robot Institute of Technology)
@@ -25,17 +25,17 @@
 ##?     pss --export /path/to/secrets
 
 pss() {
-    local -A opts
+  local -A opts
 
-    # Parse options into opts associative array
-    # -D: remove parsed flags from $@
-    # -F: fail on unknown flags
-    # -E: stop at first non-option
-    # -A: store results in associative array
-    zparseopts -D -F -E -A opts \
-        h=help -help=help  \
-        c=cp -cp=cp  \
-        e=export -export=export
+  # Parse options into opts associative array
+  # -D: remove parsed flags from $@
+  # -F: fail on unknown flags
+  # -E: stop at first non-option
+  # -A: store results in associative array
+  zparseopts -D -F -E -A opts \
+      h=help -help=help  \
+      c=cp -cp=cp  \
+      e=export -export=export
 
   # Example usage of parsed options
   if (( ${+opts[-h]} )) || (( ${+opts[--help]} )); then
@@ -53,20 +53,43 @@ pss() {
     return 0;
   fi
 
-  if [[ "$cp" == 'true' ]]; then
-    gopass show -c "$1";
-    return 0;
-  fi
+  # Helper function to execute command via ZLE or fallback
+  _pss_execute_cmd() {
+    local cmd="$1"
 
-  if [[ -z "$1" ]]; then
-    local it="$(gopass ls --flat | gum filter --limit=1)"
-    if [[ -n "$it" ]]; then
-      pss "$it"
+    # Check if ZLE is active
+    if [[ -n "$ZLE_STATE" ]]; then
+      # ZLE is active - use ZLE widget approach
+      BUFFER="$cmd"
+      zle accept-line
+    else
+      # ZLE not active - fallback to history + eval
+      echo -e "\033[1;32m ❯ $cmd\033[0m"
+      print -s "$cmd"     # Add to history
+      eval "$cmd"         # Execute immediately
     fi
+  }
+
+  if [[ "$cp" == 'true' ]]; then
+    # It places the command string into the zsh command line buffer (the editing buffer)
+    # The command appears at the prompt as if you had typed it
+    # It's immediately executed (as if you pressed Enter)
+    _pss_execute_cmd "gopass show -c $1"
     return 0;
   fi
 
-  gopass show -n --password "$1";
+  if [[ -n "$1" ]]; then
+    # It places the command string into the zsh command line buffer (the editing buffer)
+    # The command appears at the prompt as if you had typed it
+    # It's immediately executed (as if you pressed Enter)
+    _pss_execute_cmd "gopass show -n --password $1"
+    return 0;
+  fi
+
+  local it="$(gopass ls --flat | gum filter --limit=1)"
+  if [[ -n "$it" ]]; then
+    _pss_execute_cmd "gopass show -n --password $it"
+  fi
 }
 
 pss "$@"

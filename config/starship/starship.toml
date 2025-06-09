@@ -35,6 +35,7 @@ $git_branch\
 $git_status\
 $git_state\
 $docker_context\
+$container\
 $package\
 $golang\
 $java\
@@ -96,9 +97,19 @@ style = 'bright-purple bold'
 
 [character]
 disabled = false
-error_symbol = '[❯ ](bold red)'
 format = '[$symbol]($style)'
+# The format string used before the text input if the previous command succeeded.
 success_symbol = '[❯ ](bold green)'
+# The format string used before the text input if the previous command failed.
+error_symbol = '[❯ ](bold red)'
+# The format string used before the text input if the shell is in vim normal mode.
+vimcmd_symbol = '[❮ ](bold bright-green)'
+# The format string used before the text input if the shell is in vim replace_one mode.
+vimcmd_replace_one_symbol = '[❮ ](bold purple)'
+# The format string used before the text input if the shell is in vim replace mode.
+vimcmd_replace_symbol = '[❮ ](bold bright-purple)'
+# The format string used before the text input if the shell is in vim visual mode.
+vimcmd_visual_symbol = '[❮ ](bold bright-blue)'
 
 [gcloud]
 disabled = false
