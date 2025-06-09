@@ -246,6 +246,29 @@ main() {
   if if_step "--mise"; then
     section "Setting up mise..."
 
+    # Check for token file in various locations
+    local token_locations=(
+      /run/secrets/github_token
+      "$HOME/.github_token"
+      "$HOME/.secrets/github_token"
+      "/tmp/github_env"
+    )
+
+    # Initialize GITHUB_TOKEN as empty
+    GITHUB_TOKEN=""
+
+    for location in "${token_locations[@]}"; do
+      if [ -f "$location" ]; then
+        export GITHUB_TOKEN="$(cat "$location")"
+        w "✓ GitHub token loaded from $location"
+        break
+      fi
+    done
+
+    if [ -z "$GITHUB_TOKEN" ]; then
+      w "⚠ No GitHub token found - API rate limits may apply"
+    fi
+
     # Check if mise is installed
     if ! has_command "mise"; then
       w "mise is not installed, installing..."
@@ -281,29 +304,6 @@ main() {
     exec_cmd mise settings set activate_aggressive true
     exec_cmd mise settings set auto_install true
     i "mise global configuration set ✔︎"
-
-    # Check for token file in various locations
-    local token_locations=(
-      /run/secrets/github_token
-      "$HOME/.github_token"
-      "$HOME/.secrets/github_token"
-      "/tmp/github_env"
-    )
-
-    # Initialize GITHUB_TOKEN as empty
-    GITHUB_TOKEN=""
-
-    for location in "${token_locations[@]}"; do
-      if [ -f "$location" ]; then
-        export GITHUB_TOKEN="$(cat "$location")"
-        w "✓ GitHub token loaded from $location"
-        break
-      fi
-    done
-
-    if [ -z "$GITHUB_TOKEN" ]; then
-      w "⚠ No GitHub token found - API rate limits may apply"
-    fi
 
     # Set mise to use global packages
     i "Setting mise packages to be used globally..."
