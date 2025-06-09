@@ -1,0 +1,99 @@
+#!/usr/bin/env zsh
+# shellcheck shell=bash disable=SC2154,SC1073,SC1058,SC1072,SC1009,SC1036,SC2155,SC2034,SC2120,SC2296,SC2179,SC2066,SC2015,SC1008,SC2296,SC1087
+
+# Handle both Bash and Zsh compatibility
+if [[ -n "${BASH_VERSION:-}" ]]; then
+  # Bash-specific settings
+  set -euo pipefail
+  shopt -s nullglob
+elif [[ -n "${ZSH_VERSION:-}" ]]; then
+  # Zsh-specific settings
+  setopt NULL_GLOB
+  setopt PIPE_FAIL
+fi
+
+_zsetup_xdg() {
+  USERNAME="$1"
+  GROUPNAME="$2"
+
+  # Export XDG variables with fallbacks
+  export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+  export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+  export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+  export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+  export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp/runtime-$USERNAME}"
+
+  # User directories
+  export XDG_DESKTOP_DIR="${XDG_DESKTOP_DIR:-$HOME/Desktop}"
+  export XDG_DOWNLOAD_DIR="${XDG_DOWNLOAD_DIR:-$HOME/Downloads}"
+  export XDG_DOCUMENTS_DIR="${XDG_DOCUMENTS_DIR:-$HOME/Documents}"
+  export XDG_MUSIC_DIR="${XDG_MUSIC_DIR:-$HOME/Music}"
+  export XDG_PICTURES_DIR="${XDG_PICTURES_DIR:-$HOME/Pictures}"
+  export XDG_VIDEOS_DIR="${XDG_VIDEOS_DIR:-$HOME/Movies}"
+  export XDG_PROJECTS_DIR="${XDG_PROJECTS_DIR:-$HOME/Projects}"
+  export XDG_WORKSPACE_DIR="${XDG_WORKSPACE_DIR:-$HOME/Work}"
+
+  # Create directories
+  mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR" "$XDG_RUNTIME_DIR"
+  chown "$USERNAME:$GROUPNAME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR" "$XDG_RUNTIME_DIR"
+
+  declare perms owner
+  case "$(uname)" in
+  Darwin)
+    perms=$(stat -f "%Lp" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "000")
+    owner=$(stat -f "%u" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "0")
+    ;;
+  Linux)
+    perms=$(stat -c "%a" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "000")
+    owner=$(stat -c "%u" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "0")
+    ;;
+  esac
+
+  if [[ "$perms" != "700" ]]; then
+    chmod 700 "$XDG_RUNTIME_DIR" || {
+      echo "⚠ Failed to set permissions on $runtime_dir" >&2
+      return 1
+    }
+  fi
+
+  if [[ "$owner" != "$UID" ]]; then
+    chown "$USERNAME" "$XDG_RUNTIME_DIR" || {
+      echo "⚠ Failed to change ownership of $runtime_dir" >&2
+      return 1
+    }
+  fi
+}
+_zsetup_zsh() {
+  USERNAME="$1"
+  GROUPNAME="$2"
+
+  # ZSH directories
+  export ZDOTDIR="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}"
+  export ZSH_DATA_DIR="${ZSH_DATA_DIR:-$XDG_DATA_HOME/zsh}"
+  export ZSH_CACHE_DIR="${ZSH_CACHE_DIR:-$XDG_CACHE_HOME/zsh}"
+  export ZSH_COMPCACHE="${ZSH_COMPCACHE:-$ZSH_CACHE_DIR/compcache}"
+  export ZDOTDIR_OPT="${ZDOTDIR_OPT:-$ZDOTDIR/opt}"
+  export ZDOTDIR_ETC="${ZDOTDIR_ETC:-$ZDOTDIR/etc}"
+
+  # ZSH state files
+  export ZSH_COMPDUMP="${ZSH_COMPDUMP:-$ZSH_COMPCACHE/.zcompdump}"
+  export HISTFILE="${HISTFILE:-$ZSH_DATA_DIR/.zsh_history}"
+  export ZIM_HOME="${ZIM_HOME:-$XDG_DATA_HOME/zim}"
+
+  # Create directories
+  mkdir -p "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZDOTDIR_OPT" "$ZDOTDIR_ETC" "$ZIM_HOME"
+  chown "$USERNAME:$GROUPNAME" "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZDOTDIR_OPT" "$ZDOTDIR_ETC" "$ZIM_HOME"
+}
+zsetup() {
+  USERNAME="${1:-$(id -un)}"
+  GROUPNAME="${2:-$(id -gn)}"
+
+  if [[ -n "$USERNAME" && -n "$GROUPNAME" ]]; then
+    _zsetup_xdg "$USERNAME" "$GROUPNAME" || return 1
+    _zsetup_zsh "$USERNAME" "$GROUPNAME" || return 1
+  fi
+}
+
+zsetup "${@}"
+
+# vi: set ft=sh:

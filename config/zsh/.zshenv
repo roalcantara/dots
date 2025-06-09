@@ -37,101 +37,11 @@ export LC_CTYPE=en_US.UTF-8
 export LC_COLLATE=C
 # }
 
-setup_xdg_and_zsh() {
-  local -A XDG_DIRS=(
-    [XDG_BIN_HOME]="$HOME/.local/bin"
-    [XDG_PROJECTS_DIR]="$HOME/Projects"
-    [XDG_WORKSPACE_DIR]="$HOME/Work"
-    [XDG_CONFIG_HOME]="$HOME/.config"
-    [XDG_CACHE_HOME]="$HOME/.cache"
-    [XDG_DATA_HOME]="$HOME/.local/share"
-    [XDG_STATE_HOME]="$HOME/.local/state"
-    [XDG_RUNTIME_DIR]="/tmp/runtime-$USER"
-    [XDG_DESKTOP_DIR]="$HOME/Desktop"
-    [XDG_DOWNLOAD_DIR]="$HOME/Downloads"
-    [XDG_DOCUMENTS_DIR]="$HOME/Documents"
-    [XDG_MUSIC_DIR]="$HOME/Music"
-    [XDG_PICTURES_DIR]="$HOME/Pictures"
-    [XDG_VIDEOS_DIR]="$HOME/Movies"
-  )
-  local -A ZSH_DIRS=(
-    [ZDOTDIR]="$XDG_CONFIG_HOME/zsh"
-    [ZSH_DATA_DIR]="${XDG_DIRS[XDG_DATA_HOME]}/zsh"
-    [ZSH_CACHE_DIR]="${XDG_DIRS[XDG_CACHE_HOME]}/zsh"
-    [ZSH_COMPCACHE]="${XDG_DIRS[XDG_CACHE_HOME]}/zsh/compcache"
-    [ZSH_TMP_DIR]="$XDG_CONFIG_HOME/zsh/tmp"
-    [ZIM_HOME]="${XDG_DIRS[XDG_DATA_HOME]}/zim"
-  )
-  local -A ZSH_OPTS=(
-    [ZSH_VERSION]="5.9" # zsh --version | cut -d ' ' -f2
-    [ZDOTDIR_OPT]="$XDG_CONFIG_HOME/zsh/opt"
-    [ZDOTDIR_ETC]="$XDG_CONFIG_HOME/zsh/etc"
-    [HISTFILE]="${ZSH_DIRS[ZSH_DATA_DIR]}/.zsh_history"
-    [ZSH_COMPDUMP]="${ZSH_DIRS[ZSH_COMPCACHE]}/.zcompdump"
-  )
-  _ensure_permissions() {
-    local perms=$(stat -f "%Lp" $XDG_RUNTIME_DIR)
-    if [[ $perms != "700" ]]; then
-      sudo chmod 700 $XDG_RUNTIME_DIR || {
-        echo "Failed to set permissions '700' to XDG_RUNTIME_DIR: '$XDG_RUNTIME_DIR' for '$USER' (UID: $UID).."
-        return 1
-      }
-    fi
-
-    local owner=$(stat -f "%u" $XDG_RUNTIME_DIR)
-    if [[ $owner != "$UID" ]]; then
-      sudo chown $USER $XDG_RUNTIME_DIR || {
-        echo "Failed to change ownership of XDG_RUNTIME_DIR: '$XDG_RUNTIME_DIR' for '$USER' (UID: $UID).."
-        return 1
-      }
-    fi
-  }
-  _setup_xdg() {
-    # Fallback to default XDG paths
-    export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-    export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-    export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-    export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-    export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp/runtime-$USER}"
-
-    # XDG User directories
-    export XDG_DESKTOP_DIR="${XDG_DESKTOP_DIR:-$HOME/Desktop}"
-    export XDG_DOWNLOAD_DIR="${XDG_DOWNLOAD_DIR:-$HOME/Downloads}"
-    export XDG_DOCUMENTS_DIR="${XDG_DOCUMENTS_DIR:-$HOME/Documents}"
-    export XDG_MUSIC_DIR="${XDG_MUSIC_DIR:-$HOME/Music}"
-    export XDG_PICTURES_DIR="${XDG_PICTURES_DIR:-$HOME/Pictures}"
-    export XDG_VIDEOS_DIR="${XDG_VIDEOS_DIR:-$HOME/Movies}"
-    export XDG_PROJECTS_DIR="${XDG_PROJECTS_DIR:-$HOME/Projects}"
-    export XDG_WORKSPACE_DIR="${XDG_WORKSPACE_DIR:-$HOME/Work}"
-
-    # Create directories if they don't exist
-    mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR" "$XDG_RUNTIME_DIR"
-  }
-  _setup_zsh() {
-    # ZSH directories
-    export ZDOTDIR="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}"
-    export ZSH_DATA_DIR="${ZSH_DATA_DIR:-$XDG_DATA_HOME/zsh}"
-    export ZSH_CACHE_DIR="${ZSH_CACHE_DIR:-$XDG_CACHE_HOME/zsh}"
-    export ZSH_COMPCACHE="${ZSH_COMPCACHE:-$ZSH_CACHE_DIR/compcache}"
-
-    # ZSH custom directories
-    export ZDOTDIR_OPT="${ZDOTDIR_OPT:-$ZDOTDIR/opt}"
-    export ZDOTDIR_ETC="${ZDOTDIR_ETC:-$ZDOTDIR/etc}"
-
-    # ZSH state files
-    export ZSH_COMPDUMP="${ZSH_COMPDUMP:-$ZSH_COMPCACHE/.zcompdump}"
-    export HISTFILE="${HISTFILE:-$ZSH_DATA_DIR/.zsh_history}"
-
-    # Create directories if they don't exist
-    mkdir -p "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE"
-  }
-  _setup_xdg
-  _ensure_permissions
-  _setup_zsh
-}
-
 # Setup XDG and ZSH environment variables
-setup_xdg_and_zsh
+if [ -x ~/.config/zsh/etc/functions/zsetup ]; then
+  # Execute the script directly with arguments instead of sourcing
+  source ~/.config/zsh/etc/functions/zsetup
+fi
 
 # Only source this once
 if [[ -z "$__HM_ZSH_SESS_VARS_SOURCED" ]]; then
