@@ -1,95 +1,185 @@
 #!/bin/bash
+# shellcheck shell=bash disable=SC2155
 
 set -euo pipefail
 
-root="$(pwd)"
+# CONSTANTS
+REPO_URL="https://github.com/roalcantara/dots"
+DOTS_DIR=".local/share/dots"
+DOTS_HOME="$HOME/$DOTS_DIR"
+BACKUP_DIR_ROOT="$HOME/.backup"
 
-puts() {
-  echo "[SETUP] [$1] $2"
-}
-i() {
-  puts "INFO" "$1"
-}
-e() {
-  puts "ERROR" "$1"
-}
-w() {
-  puts "WARN" "$1"
-}
+# CONFIGURATION
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_LOCAL_DIR="${XDG_LOCAL_DIR:-$HOME/.local}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$XDG_LOCAL_DIR/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$XDG_LOCAL_DIR/state}"
+XDG_DIRS=("$XDG_CACHE_HOME" "$XDG_LOCAL_DIR" "$XDG_DATA_HOME" "$XDG_STATE_HOME")
+BACKUP_RESOURCES=".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .ssh/config .ssh/id_rsa .ssh/id_rsa.pub"
+BACKUP_DIR=""
+CONTEXT=""
 
-# Install mise system-wide if not already installed
-mise_install() {
-  if ! command -v "mise" &>/dev/null; then
-    if curl https://mise.run | sudo MISE_INSTALL_PATH=/usr/local/bin/mise sh; then
-      # Make sure it's executable
-      sudo chmod +x /usr/local/bin/mise
-      echo "mise installed system-wide ✔︎"
+# This script sets up a development environment by installing necessary dependencies,
+# configuring dotfiles, and setting up ZSH and Neovim.
+
+# USAGE | A specification for CLIs
+# https://usage.jdx.dev/cli/scripts#usage-scripts
+
+#USAGE name "install"
+#USAGE bin "install"
+#USAGE version "1.0.1"
+#USAGE author "@roalcantara"
+#USAGE license "MIT"
+#USAGE flag "--prepare" help="Install required OS dependencies"
+#USAGE flag "--backup" help="Backup existing home resources before installing"
+#USAGE flag "--cleanup" help="Remove oh-my-zsh from ~/.zshrc and ~/.bashrc if it exists"
+#USAGE flag "--dotfiles" help="Symlink ~/.config removing preexisting directory if it exists"
+#USAGE flag "--mise" help="Set up mise and install packages globally"
+#USAGE flag "--zsh" help="Set up ZSH configuration, directories and symlinks"
+#USAGE flag "--nvim" help="Set up nvim, directories and plugins"
+#USAGE flag "--chown" help="Ensure ownership of cache and local directories"
+main() {
+  # Check if running in a container
+  is_container() {
+    # Check environment variables, container-specific files, and cgroups
+    if [ -n "${DOCKER_CONTAINER:-}" ] || [ -n "${container:-}" ] ||
+      [ -f "/.dockerenv" ] || [ -f "/var/run/docker.sock" ] || [ -f "/run/.containerenv" ] ||
+      ([ -f "/proc/1/cgroup" ] && (grep -q "docker" "/proc/1/cgroup" || grep -q '^0::/$' /proc/1/cgroup)); then
+      echo "Running in container environment"
+      return 0
     else
-      echo "mise installation failed!"
+      echo "Not running in container environment"
+      return 1
+    fi
+  }
+  # Detect OS and architecture
+  detect_platform() {
+    OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+    ARCH="$(uname -m)"
+
+    # Translate architecture names
+    if [ "$ARCH" = "x86_64" ]; then
+      ARCH="amd64"
+    elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
+      ARCH="arm64"
+    fi
+
+    # Set environment type based on container detection
+    if is_container; then
+      ENV="container"
+    else
+      ENV="host"
+    fi
+
+    CONTEXT="$OS/$ARCH/$ENV"
+    echo "Detected platform: '$CONTEXT' ✔︎"
+  }
+  # Logging functions
+  puts() {
+    local LEVEL="$1"
+    local MESSAGE="$2"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ($CONTEXT) [$LEVEL] $MESSAGE"
+  }
+  i() {
+    puts "INFO" "$1"
+  }
+  e() {
+    puts "ERROR" "$1"
+  }
+  w() {
+    puts "WARN" "$1"
+  }
+  d() {
+    puts "DEBUG" "$1"
+  }
+  # Print a section header
+  section() {
+    echo "===================================================="
+    echo "$1"
+    echo "===================================================="
+  }
+  # Execute a command
+  exec_cmd() {
+    w "Executing: $*"
+    "$@"
+    return $?
+  }
+  # Evaluates if a step should be executed
+  if_step() {
+    if [[ -z "${*}" || "${*}" =~ $1 ]]; then
+      return 0
+    fi
+    return 1
+  }
+  # Check if a command exists
+  has_command() {
+    command -v "$1" >/dev/null 2>&1
+  }
+  # Detect the platform and architecture
+  section "Starting setup script! Detecting platform and architecture..."
+  detect_platform
+
+  # Install required OS dependencies
+  if if_step "--prepare"; then
+    section "Setting up essential dependencies..."
+
+    # Detect platform and setup accordingly
+    if has_command apt; then
+      # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
+      exec_cmd sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev cowsay fortune fortunes fortunes-min && sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/* && sudo ln -sf /usr/games/cowsay /usr/local/bin/cowsay && sudo ln -sf /usr/games/fortune /usr/local/bin/fortune
+      w "(UBUNTU/DEBIAN) Essential Dependencies installed using apt ✔︎"
+    else
+      e "Unsupported platform!"
       return 1
     fi
   fi
-}
 
-# Set installed mise packages globally
-mise_use_global() {
-  i "Setting mise packages to be used globally..."
-  if command -v mise &>/dev/null; then
-    mise use --yes --global --pin ripgrep age bat delta eza fd fzf gh neovim sops starship usage watchexec zoxide gum node python ruby
-    i "Mise packages being used globally ✔︎"
-  else
-    w "Mise is not installed, skipping mise global set.."
-    return 1
+  # Backup home resources
+  if if_step "--backup"; then
+    section "Backing up existing home resources"
+
+    # Create backup directory with current timestamp
+    BACKUP_DIR="$BACKUP_DIR_ROOT/$(date +%Y-%m-%d_%H-%M-%S)"
+    exec_cmd sudo mkdir -p "$BACKUP_DIR"
+    exec_cmd sudo chown -R "$USER:$USER" "$BACKUP_DIR_ROOT"
+
+    # Backup existing files
+    for resource in $BACKUP_RESOURCES; do
+      resource_path="$HOME/$resource"
+      if [ -e "$resource_path" ]; then
+        if [ -L "$resource_path" ]; then
+          d "Backing up symlink: $resource_path"
+        elif [ -d "$resource_path" ]; then
+          d "Backing up directory: $resource_path"
+        else
+          d "Backing up file: $resource_path"
+        fi
+
+        exec_cmd sudo mv "$resource_path" "$BACKUP_DIR/"
+        i "Backed up: $resource_path ✔"
+
+        # If it was an XDG directory, recreate it with proper ownership
+        if [[ -d "$resource_path" && " ${XDG_DIRS[*]} " =~ $resource_path ]]; then
+          exec_cmd sudo install -d -o "$USER" -g "$USER" "$resource_path"
+          i "Recreated directory: $resource_path owned by $USER:$USER ✔"
+        fi
+      else
+        d "Resource does not exist, skipping: $resource_path"
+      fi
+    done
+
+    i "Home resources backed up to $BACKUP_DIR ✔✔"
   fi
-}
 
-if_step() {
-  if [[ -z "${*}" || "${*}" =~ $1 ]]; then
-    return 0
-  fi
-  return 1
-}
-
-# ========================================================================
-# Installation script
-# USAGE: install [--cleanup] [--rm-omz] [--prepare] [--dotfiles] [--zsh] [--mise] [--mise-activation] [--nvim]
-#
-# ARGUMENTS:
-#   --cleanup                 : Removes configuration files (.bashrc, .bash_logout, .oh-my-zsh, and .profile) from user and root home directories if exist
-#   --rm-omz                  : Remove oh-my-zsh from ~/.zshrc and ~/.bashrc if it exists
-#   --prepare                 : Install required OS dependencies
-#   --dotfiles                : Symlink ~/.config removing preexisting directory if it exists
-#   --zsh                     : Set up ZSH configuration, directories and symlinks
-#   --mise                    : Set up mise and install packages globally
-#   --mise-activate           : Set up mise activation for bash and zsh (.bashrc,.zshrc) for root and user
-#   --mise-global             : Set up mise system-wide (GLOBAL) configuration
-#   --nvim                    : Set up nvim, directories and plugins
-#
-# EXAMPLES:
-#  install                    : Runs all steps
-#  install --cleanup          : Runs only the step cleanup
-#  install --rm-omz           : Runs only the step remove oh-my-zsh
-#  install --prepare          : Runs only the step prepare
-#  install --dotfiles         : Runs only the step dotfiles
-#  install --zsh              : Runs only the step zsh
-#  install --mise             : Runs only the step mise
-#  install --mise-activate    : Runs only the step mise activation
-#  install --mise-global      : Runs only the step mise global
-#  install --nvim             : Runs only the step nvim
-# ========================================================================
-main() {
-  cd "$HOME/.local/share/dots"
-  root="$(pwd)"
-  i "Starting setup script..."
-
-  # Removes configuration files (.bashrc, .bash_logout, .oh-my-zsh, and .profile) from user and root home directories if exist
+  # Remove .oh-my-zsh files (.bashrc, .bash_logout, .oh-my-zsh, and .profile) if exist
   if if_step "--cleanup"; then
-    i "Cleaning up..."
+    section "Cleaning up..."
     for e in "$HOME" /root; do
       for f in "$e/.bashrc" "$e/.bash_logout" "$e/.oh-my-zsh" "$e/.profile"; do
         w "Checking for '$f' exist!!"
         if [[ -f "$f" ]]; then
-          rm -rf "$f"
+          exec_cmd rm -rf "$f"
           w "'$f' removed ✔︎"
         fi
       done
@@ -97,36 +187,99 @@ main() {
     w "oh-my-zsh removed ✔︎"
   fi
 
-  # Install required OS dependencies
-  if if_step "--prepare"; then
-    i "Setting up dependencies..."
-    # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
-    sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev cowsay fortune fortunes fortunes-min && sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/* && sudo ln -sf /usr/games/cowsay /usr/local/bin/cowsay && sudo ln -sf /usr/games/fortune /usr/local/bin/fortune
+  # Download and symlink dotfiles to ~/.config
+  if if_step "--dotfiles"; then
+    section "Setting up dotfiles.."
+
+    # Ensure parent directory exists
+    local dots_parent_dir="$(dirname "$DOTS_HOME")"
+    if [ ! -d "$dots_parent_dir" ]; then
+      exec_cmd sudo mkdir -p "$dots_parent_dir"
+      d "Created parent directory: $dots_parent_dir"
+    fi
+    exec_cmd sudo chown "$USER:$USER" "$dots_parent_dir"
+
+    # Clone or update repository
+    if [ -d "$DOTS_HOME/.git" ]; then
+      i "Git repository already exists, pulling latest changes..."
+      if ! exec_cmd git -C "$DOTS_HOME" pull origin main; then
+        e "Failed to update repository"
+      fi
+    else
+      i "Cloning from $REPO_URL"
+      if ! exec_cmd sudo git clone --depth 1 "$REPO_URL" "$DOTS_HOME"; then
+        e "Failed to clone repository"
+      fi
+      exec_cmd sudo chown -R "$USER:$USER" "$dots_parent_dir"
+      i "Dotfiles downloaded to $DOTS_DIR ✔"
+    fi
+
+    # Handle .config symlink
+    local config_symlink="$HOME/.config"
+    if [ -e "$config_symlink" ]; then
+      if [ -L "$config_symlink" ]; then
+        local current_target="$(readlink "$config_symlink")"
+        if [ "$current_target" != "$DOTS_DIR/config" ]; then
+          d "Backing up existing .config symlink.."
+          exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
+        fi
+      else
+        d "Backing up existing .config directory.."
+        exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
+      fi
+    fi
+
+    if [[ ! -L "$config_symlink" && -d $DOTS_HOME/config ]]; then
+      i "Symlinking $DOTS_DIR/config to ~/.config.."
+      exec_cmd sudo ln -sf "$DOTS_DIR/config" "$config_symlink"
+      d "Symlink created: $config_symlink -> $DOTS_DIR/config ✔"
+    fi
+
+    i "Ensuring correct permissions for '$HOME/.config' symlink.."
+    exec_cmd sudo chown -R "$USER:$USER" "$config_symlink"
+    i "'$HOME/.config' permissions set ✔"
+
+    i "Setting up dotfiles done ✔✔"
   fi
 
-  # Set up mise and install packages globally
+  # Install mise system-wide if not already installed
   if if_step "--mise"; then
-    i "Setting up mise..."
+    section "Setting up mise..."
+
     # Check if mise is installed
-    if ! command -v "mise" &>/dev/null; then
+    if ! has_command "mise"; then
       w "mise is not installed, installing..."
-      mise_install || return 1
+      if has_command "curl"; then
+        curl https://mise.run | sudo MISE_INSTALL_PATH=/usr/local/bin/mise sh
+      elif has_command "wget"; then
+        wget -qO- https://mise.run | sudo MISE_INSTALL_PATH=/usr/local/bin/mise sh
+      else
+        e "Neither curl nor wget is installed. Please install one of them to proceed."
+        return 1
+      fi
+      i "mise installed successfully ✔︎"
+
+      # Make sure it's executable
+      sudo chmod +x /usr/local/bin/mise
+      echo "mise installed system-wide ✔︎"
     fi
 
     i "Setting up mise global configuration..."
-    sudo mkdir -p "$HOME/.local/share/mise" "$HOME/.local/state/mise"
-    sudo chown -R "$USER:$USER" "$HOME/.local/share/mise" "$HOME/.local/state/mise"
-    w "'$HOME/.local/(share|state)/mise' created and owned by '$USER' ✔︎"
+    exec_cmd sudo mkdir -p "$HOME/.local/share/mise" "$HOME/.local/state/mise"
+    exec_cmd sudo chown -R "$USER:$USER" "$HOME/.local/share/mise" "$HOME/.local/state/mise"
+    i "'$HOME/.local/(share|state)/mise' created and owned by '$USER' ✔︎"
 
-    export MISE_GLOBAL_CONFIG_DIR="$HOME/.local/share/mise"
-    export MISE_GLOBAL_CONFIG_FILE="$HOME/.local/share/mise/config.toml"
+    # Set global configuration paths
+    exec_cmd export MISE_GLOBAL_CONFIG_DIR="$HOME/.local/share/mise"
+    exec_cmd export MISE_GLOBAL_CONFIG_FILE="$HOME/.local/share/mise/config.toml"
     i "MISE_GLOBAL_CONFIG_FILE set to $HOME/.local/share/mise/config.toml (owned by '$USER') ✔︎"
 
-    mise settings set global_config_file "$HOME/.local/share/mise/config.toml"
-    mise settings add trusted_config_paths "$HOME/.local/share/dots"
-    mise settings add trusted_config_paths "$HOME/.local/share/mise"
-    mise settings set activate_aggressive true
-    mise settings set auto_install true
+    # Create mise config directory if it doesn't exist
+    exec_cmd mise settings set global_config_file "$HOME/.local/share/mise/config.toml"
+    exec_cmd mise settings add trusted_config_paths "$HOME/.local/share/dots"
+    exec_cmd mise settings add trusted_config_paths "$HOME/.local/share/mise"
+    exec_cmd mise settings set activate_aggressive true
+    exec_cmd mise settings set auto_install true
     i "mise global configuration set ✔︎"
 
     # Check for token file in various locations
@@ -137,50 +290,39 @@ main() {
       "/tmp/github_env"
     )
 
+    # Initialize GITHUB_TOKEN as empty
+    GITHUB_TOKEN=""
+
     for location in "${token_locations[@]}"; do
       if [ -f "$location" ]; then
-        export GITHUB_TOKEN=$(cat "$location")
-        echo "✓ GitHub token loaded from $location"
+        export GITHUB_TOKEN="$(cat "$location")"
+        w "✓ GitHub token loaded from $location"
+        break
       fi
     done
 
     if [ -z "$GITHUB_TOKEN" ]; then
-      echo "⚠ No GitHub token found - API rate limits may apply"
+      w "⚠ No GitHub token found - API rate limits may apply"
     fi
 
     # Set mise to use global packages
-    mise_use_global || return 1
+    i "Setting mise packages to be used globally..."
+    exec_cmd mise use --cd "$DOTS_HOME" --yes --global --pin ripgrep age bat delta eza fd fzf gh neovim sops starship usage watchexec zoxide gum node python ruby
+    i "Mise packages being used globally ✔︎"
 
     # cleanup GitHub token
-    if [ -n "$GITHUB_TOKEN" ]; then
-      unset GITHUB_TOKEN
-      echo "✓ GitHub token removed from environment"
+    if [ -n "${GITHUB_TOKEN:-}" ]; then
+      exec_cmd unset GITHUB_TOKEN
+      w "✓ GitHub token removed from environment"
     fi
 
-    w "mise setup complete ✔︎"
-  fi
-
-  # Symlink ~/.config removing preexisting directory if it exists
-  if if_step "--dotfiles"; then
-    i "Symlinking dotfiles..."
-    # If the config directory already exists, remove it
-    if [[ -d "$HOME/.config" ]]; then
-      rm -rf "$HOME/.config"
-      i "$HOME/.config removed ✔︎"
-    fi
-
-    # If the config directory is not a symlink, create a symlink
-    if [[ ! -L "$HOME/.config" ]]; then
-      # Create a symlink to the config directory
-      ln -sf "$root/config" "$HOME/.config"
-      sudo chown -R "$USER:$USER" "$HOME/.config"
-      i "$HOME/.config symlinked to $root/config owned by '$USER' ✔︎"
-    fi
+    i "mise setup complete ✔︎"
   fi
 
   # Set up ZSH configuration, directories and symlinks
   if if_step "--zsh"; then
-    i "Setting up ZSH..."
+    section "Setting up ZSH..."
+
     # Create the ~/.cache/zsh/compcache directory if it doesn't exist
     if [[ ! -d "${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh}/compcache" ]]; then
       mkdir -p "${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh}/compcache"
@@ -208,13 +350,15 @@ main() {
 
   # Set up nvim, directories and plugins
   if if_step "--nvim"; then
-    w "Setting up nvim..."
-    sudo mkdir -p "$HOME/.local/state/npm" "$HOME/.local/state/nvim" "$HOME/.local/share/nvim"
-    w "'$HOME/.local/state/npm' & '$HOME/.local/(state|share)/nvim' CREATED ✔︎"
-    sudo chown -R "$USER:$USER" "$HOME/.local/state/npm" "$HOME/.local/state/nvim" "$HOME/.local/share/nvim"
-    w "'$HOME/.local/state/npm' & '$HOME/.local/(state|share)/nvim' owned by '$USER' ✔︎"
+    section "Setting up nvim..."
+
+    # Create necessary directories for nvim and npm
+    sudo mkdir -p "$HOME/.local/state/nvim" "$HOME/.local/share/nvim" "$HOME/.local/state/npm"
+    sudo chown -R "$USER:$USER" "$HOME/.local/state/nvim" "$HOME/.local/share/nvim" "$HOME/.local/state/npm"
+    i "'$HOME/.local/state/npm' & '$HOME/.local/(state|share)/nvim' created and owned by '$USER' ✔︎"
+
     export npm_config_cache="$HOME/.local/state/npm"
-    w "npm_config_cache exported to '$npm_config_cache' (owned by '$USER') ✔︎"
+    i "npm_config_cache exported to '$npm_config_cache' (owned by '$USER') ✔︎"
 
     # Check if nvim is installed
     if ! command -v "$HOME/.local/share/mise/shims/nvim" &>/dev/null; then
@@ -234,11 +378,14 @@ main() {
     fi
   fi
 
-  sudo chown -R "$USER:$USER" "$HOME/.cache"
-  sudo chown "$USER:$USER" "$HOME/.local" "$HOME/.local/share" "$HOME/.local/state"
-  i "Cache and local directories owned by '$USER' ✔︎"
+  # Set ownership of cache and local directories
+  if if_step "--chown"; then
+    section "Ensuring ownership of cache and local directories..."
+    sudo chown -R "$USER:$USER" "$HOME/.cache"
+    sudo chown "$USER:$USER" "$HOME/.local" "$HOME/.local/share" "$HOME/.local/state"
+    i "Cache and local directories owned by '$USER' ✔︎"
+  fi
 
-  cd "$HOME"
   i "Done! ✔︎✔︎"
 }
 
