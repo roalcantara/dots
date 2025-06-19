@@ -1,9 +1,10 @@
 -- Options are automatically loaded before lazy.nvim startup
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
--- Add any additional options here
-local paths = require('core/etc/paths')
 
--- Set options and variables
+-- set script encoding
+vim.scriptencoding = 'utf-8'
+
+-- Add any additional options here
 --- **SEE:** https://neovim.io/doc/user/options.html
 local options = {
   --- Set Buffer-scoped variables (`vim.b:`) for the current buffer. Invalid or unset key returns nil.
@@ -54,10 +55,12 @@ if #vim.api.nvim_list_uis() == 0 then
   }
 else
   options.g = {
+    have_nerd_fonts = true,                    -- [go] Whether the system has Nerd Fonts installed
     deprecation_warnings = true,               -- enable deprecation warnings
     loaded_perl_provider = 0,                  -- disable perl provider
     cmdwinheight = 7,                          -- [go] Number of lines to use for the command-line window
     suffixes = '.bak,~,.o,.h,.info,.swp,.obj', -- [go] List of file suffixes to add to the 'wildignore' list
+    python3_host_prog = 'v:lua.require("core/etc/paths").bin_for_python3_venv()',
   }
   options.o = {
     -- Search and Completion
@@ -67,32 +70,26 @@ else
     incsearch = true,   -- [go] Highlight match while typing search pattern
 
     -- Folds
-    foldcolumn = '1', -- '0' is not bad
-    foldlevel = 99, -- Using ufo provider need a large value, feel free to decrease the value
+    foldcolumn = '1',    -- '0' is not bad
     foldlevelstart = 99, -- Start unfolded
-    foldenable = true, -- Enable folds by default
-    fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]], -- Custom fill characters
+    foldenable = true,   -- Enable folds by default
 
     -- Editor UI
     background = 'dark',       -- [bo] Set background
     guifont = 'JetBrainsMonoNL Nerd Font:h16',
-    laststatus = 0,            -- global statusline
     showtabline = 0,           -- [go] Tells when the tab pages line is displayed => 0: never, 2: always, 1: only if there are at least two tab pages
     cmdheight = 0,             -- [go, t] Number of screen lines to use for the command-line. Helps avoiding hit-enter prompts.
     showcmdloc = 'statusline', -- Show cmd in the statusline (https://github.com/nvim-lualine/lualine.nvim/issues/949)
 
     -- Line Display
-    number = true,      -- [bo] set numbered lines
     numberwidth = 3,    -- [wo] minimal number of columns to use for the line number {default 4}
     colorcolumn = '+1', -- [wo] colour the 81st (or 73rd) column so that we don`t type over our limit
-    scrolloff = 8,      -- [go, wo] Minimum nr. of lines above and below cursor
 
     -- Text Editing
     autoindent = true,     -- [bo] Copy indent from current line when starting a new line
     smarttab = true,       -- [go] Use 'shiftwidth' when inserting <Tab>
     softtabstop = 2,       -- [bo] uses 'shiftwidth' counts for while performing editing operations
     textwidth = 72,        -- [bo] Maximum width of text that is being inserted
-    expandtab = true,      -- [bo] Use spaces instead of tabs
     preserveindent = true, -- [bo] Preserve the indent structure of the file
 
     -- Menus
@@ -110,53 +107,56 @@ else
 
     -- Mouse | https://neovim.io/doc/user/options.html#'mousem'
     mousemodel = 'extend', -- Enables all mouse features including: 1. Right click opens a menu, 2. Shift + left click extends selection, 3. Right drag extends selection
+
+    -- https://neovim.io/doc/user/options.html#'winborder'
+    winborder = 'rounded', -- [go] Border style for floating windows and popup menus
   }
   options.opt = {
     wildignore = { -- [go] Allow specified keys to cross line boundaries
-      '*.hg',
-      '*.svn',
+      '._*',
+      '.lock',
+      '.sass-cache',
+      '*.*~',
       '*.aux',
-      '*.out',
-      '*.toc',
+      '*.avi',
+      '*.class',
+      '*.dll',
+      '*.doc',
+      '*.DS_Stoe',
+      '*.eot',
+      '*.gem',
+      '*.gif',
+      '*.hg',
+      '*.ico',
+      '*.jar',
+      '*.jpeg',
+      '*.jpg',
       '*.o',
       '*.obj',
-      '*.dll',
-      '*.jar',
-      '*.pyc',
-      '*.rbc',
-      '*.class',
-      '*.gif',
-      '*.ico',
-      '*.jpg',
-      '*.jpeg',
+      '*.otf',
+      '*.out',
+      '*.pdf',
       '*.png',
-      '*.avi',
+      '*.pyc',
+      '*.rar',
+      '*.rbc',
+      '*.svn',
+      '*.swp',
+      '*.tar.bz2',
+      '*.tar.gz',
+      '*.tar.xz',
+      '*.toc',
+      '*.ttf',
       '*.wav',
       '*.webm',
-      '*.eot',
-      '*.otf',
-      '*.ttf',
       '*.woff',
-      '*.doc',
-      '*.pdf',
-      '*.tar.gz',
-      '*.tar.bz2',
-      '*.rar',
-      '*.tar.xz',
-      '.sass-cache',
-      '*/vendor/gems/*',
-      '*/vendor/cache/*',
-      '*/.bundle/*',
-      '*.gem',
-      '*.*~',
-      '*~ ',
-      '*.swp',
-      '.lock',
-      '*.DS_Stoe',
-      '._*',
-      'tags.lock',
-      '**/node_modules/**',
       '**/bower_modules/**',
+      '**/node_modules/**',
+      '*/.bundle/*',
+      '*/vendor/cache/*',
+      '*/vendor/gems/*',
+      '*~ ',
+      'tags.lock',
     },
     -- save/restore just these (with `:{mk,load}view`)
     viewoptions = {
@@ -176,13 +176,30 @@ else
       -- 'stop'                     -- once at the start of insert
       -- 'nostop'                   -- like start, except CTRL-W and CTRL-U do not stop at the start of insert
     },
-    -- termguicolors
-    -- https://neovim.io/doc/user/options.html#'termguicolors'
-    termguicolors = true,
+    pumheight = 25, -- [bo] Maximum number of entries in a popup
+    -- scrolloff = 8, -- [go, wo] Minimum nr. of lines above and below cursor
 
-    -- AVANTE.NVIM: Views can only be fully collapsed with the global statusline
-    -- https://github.com/yetone/avante.nvim?tab=readme-ov-file#installation
-    -- laststatus = 3, -- global statusline
+    vim.schedule(function() vim.opt.clipboard = 'unnamedplus' end), -- [go] Use the system clipboard for all yank, delete, change and put operations
+
+    ignorecase = true, -- [go] Ignore case in search patterns
+    smartcase  = true, -- [go] Override 'ignorecase' if the search pattern contains upper case characters
+    signcolumn = 'yes', -- [wo] Always show the sign column, even if there are no signs
+    updatetime = 250, -- [go] Time in milliseconds to wait before triggering the 'updatetime' event
+    timeoutlen = 300, -- [go] Time in milliseconds to wait for a mapped sequence to complete
+    splitright = true, -- [go] Force all vertical splits to be to the right of the current windows
+    splitbelow = true, -- [go] Force all horizontal splits to be below the current windows
+    list       = false, -- [go] Show whitespace characters in the buffering
+    listchars  = { -- [go] Characters used to show whitespace characters in the buffer
+      tab = '▸ ', -- Tab character
+      trail = '·', -- Trailing spaces
+      extends = '›', -- Character used to indicate that there is more text to the right
+      precedes = '‹', -- Character used to indicate that there is more text to the left
+      nbsp = '␣', -- Non-breaking space character
+    },
+    inccommand = 'split', -- [go] When using the command line, split the screen only when necessary
+    cursorline = true, -- [wo] Highlight the line under the cursor
+    scrolloff  = 10, -- [wo] Highlight the column under the cursor
+    winborder  = 'rounded', -- [go] Border style for floating windows and popup menus
   }
   options.go = {
     emoji = true,                  -- [go] When on all Unicode emoji characters are considered to be full width
@@ -204,14 +221,6 @@ for ctx, values in pairs(options) do
       end
     end
   end
-end
-
-vim.scriptencoding = 'utf-8' -- set script encoding
-
--- Add custom runtime path (usually ~/.config/nvim) if it's not already there
-local config_path = paths.to_config()
-if not vim.tbl_contains(vim.opt.runtimepath:get(), config_path) then
-  vim.opt.runtimepath:append(config_path)
 end
 
 -- vim: ts=2 sts=2 sw=2 et

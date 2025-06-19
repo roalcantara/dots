@@ -356,7 +356,6 @@ M.helpers = {
     syms_in_wks = snk.pick.lsp_workspace_symbols,
     syms = snk.pick.lsp_symbols,
     hover_docs = helpers.cmd(vim.lsp.buf.hover),
-    signature_help = helpers.cmd(vim.lsp.buf.signature_help),
     code_actions = helpers.cmd(vim.lsp.buf.code_action),
     rename = helpers.cmd('call feedkeys(" cr")<CR>'),
   },
@@ -377,7 +376,12 @@ M.helpers = {
 ---@param desc string Keymap description
 ---@param opts table|nil Keymap option
 function M.map(mode, lhs, rhs, desc, opts)
-  helpers.set_keymap(mode, lhs, rhs, desc, opts)
+  if not opts then opts = {} end
+
+  local success_keymap = pcall(helpers.set_keymap, mode, lhs, helpers.cmd(opts.name), desc, opts)
+  if not success_keymap then
+    vim.notify("Failed to set keymap: " .. lhs .. " for command: " .. opts.name, vim.log.levels.ERROR)
+  end
 end
 
 --- Set a keymap
@@ -386,7 +390,11 @@ end
 ---@param desc string User command description
 ---@param opts table|nil User command options
 function M.user_cmd(name, cmd, desc, opts)
-  helpers.add_user_cmd(name, cmd, desc, opts)
+  local success_cmd = pcall(helpers.add_user_cmd, name, cmd, desc, opts)
+  if not success_cmd then
+    vim.notify("Failed to create user command: " .. name, vim.log.levels.ERROR)
+    return
+  end
 end
 
 --- Add user command and keymap at once
