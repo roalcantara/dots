@@ -172,6 +172,13 @@ if _has_command gitlint; then
   export GITLINT_CONFIG=$XDG_CONFIG_HOME/gitlint/gitlint.cfg
 fi
 
+if _has_command cargo; then
+  # CARGO | Rust package manager that downloads dependencies, compiles and distributes packages.
+  # https://doc.rust-lang.org/cargo/guide/cargo-home.html
+  export CARGO_HOME=$XDG_DATA_HOME/cargo
+  export RUSTUP_HOME=$XDG_DATA_HOME/rustup
+fi
+
 if _has_command luajit; then
   # LUA | Lua is a powerful, efficient, lightweight, embeddable scripting language
   # https://lua.org/manual/5.1/manual.html#5.4

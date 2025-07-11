@@ -7,18 +7,20 @@
 # https://zsh.sourceforge.io/Contrib/startup/std/zshrc
 
 # ZSH/ZIM ESSENTIAL VARIABLES
-export ZDOTDIR=${ZDOTDIR:="$HOME/.config/zsh"}
-export ZIM_HOME=${ZIM_HOME:="$HOME/.local/state/zim"}
-export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:="$HOME/.cache/zsh"}
+export ZDOTDIR=${ZDOTDIR:=$HOME/.config/zsh}
+export ZIM_HOME=${ZIM_HOME:=$HOME/.local/state/zim}
+export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:=$HOME/.cache/zsh}
 export ZSH_COMPCACHE=$ZSH_CACHE_DIR/compcache
 export zdumpfile=${ZSH_COMPDUMP:=$ZSH_COMPCACHE/.zcompdump}
-export HISTFILE=${ZSH_DATA_DIR:="$HOME/.local/share/zsh"}/.zsh_history
+export HISTFILE=${ZSH_DATA_DIR:=$HOME/.local/share/zsh}/.zsh_history
 
 # ZSH ENVIRONMENT VARIABLES and PARAMETERS (PATH, FPATH, etc.) {
   # PATH {
   # set PATH so it includes user's private bin if it exists
   declare -gaU path=(
     $XDG_BIN_HOME
+    $HOMEBREW_PREFIX/opt/{ruby,gems}/bin
+    $CARGO_HOME/bin
     $path
   )
   # }
@@ -33,8 +35,8 @@ export HISTFILE=${ZSH_DATA_DIR:="$HOME/.local/share/zsh"}/.zsh_history
   # CDPATH {
   # Directories that the shell searches to find the current directory when the user changes directories using the cd command
   declare -gaU cdpath=(
-    "$HOME"
-    "$ZDOTDIR"
+    $HOME
+    $ZDOTDIR
     $cdpath
   )
   # }
