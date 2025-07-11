@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Coding workflow guidelines
+
+- Focus on the areas of code relevant to the task
+- Do not touch code that is unrelated to the task
+- Always think about what other methods and areas of code might be affected by code changes
+- Avoid making major changes to the patterns and archilecture of how a feature works, after it has shown to work well, unless explicitly structed
+- Write thorough tests for all major functionality
+- Suggest a git commit for the change

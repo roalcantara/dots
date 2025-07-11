@@ -1,0 +1,33 @@
+---
+base: lua51
+lua_versions:
+  - luajit
+
+globals:
+  jit:
+    any: true
+  vim:
+    any: true
+  LazyVim:
+    any: true
+  Snacks:
+    any: true
+  assert:
+    args:
+      - type: bool
+      - type: string
+        required: false
+  after_each:
+    args:
+      - type: function
+  before_each:
+    args:
+      - type: function
+  describe:
+    args:
+      - type: string
+      - type: function
+  it:
+    args:
+      - type: string
+      - type: function

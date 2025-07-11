@@ -1,0 +1,558 @@
+local user_command = require("core/vi/maps/user_command")
+local is_git_repo = require("core/vi/git").is_git_repo
+local snacks_filetypes = require("core/vi/ui/snacks/pickers/filetypes")
+local snacks_scratch = require("core/vi/ui/snacks/scratch")
+local snacks_lua_path_items = require("core/vi/ui/snacks/pickers/lua_path_items")
+local snacks_runtimepath_items = require("core/vi/ui/snacks/pickers/runtimepath_items")
+local snacks_options = require("core/vi/ui/snacks/pickers/options")
+local snacks_move_buffer_split = require("core/vi/ui/snacks/pickers/move_buffer_split")
+local get_valid_buffers = require("core/vi/fn/get_valid_buffers")
+
+--- Create a command that can be used in keymaps
+--- @param command string|function Command to execute
+--- @param opts table|nil Options for the command
+--- @return function cmd A function to execute the command
+local function cmd(command, opts)
+  if type(command) == "function" then
+    if opts then
+      return function()
+        return command(opts)
+      end
+    end
+    return command
+  end
+
+  if type(command) == "string" then
+    return function()
+      return vim.cmd(command)
+    end
+  end
+
+  return command
+end
+
+--- Set a keymap
+--- @param mode string|table Keymap mode(s)
+--- @param lhs string Keymap left hand side
+--- @param rhs string|function Keymap right hand side
+--- @param desc string Keymap description
+--- @param opts table|nil Keymap option
+local function set_keymap(mode, lhs, rhs, desc, opts)
+  local defaults_opts = {
+    desc = desc,    -- Mapping Description
+    noremap = true, -- Non-recursive mapping
+    silent = false, -- Silent mapping
+  }
+  vim.keymap.set(mode, lhs, rhs, vim.list_extend(defaults_opts, opts or {}))
+end
+
+--- Set a keymap
+--- @param mode string|table Keymap mode(s)
+--- @param lhs string Keymap left hand side
+--- @param rhs string|function Keymap right hand side
+--- @param desc string Keymap description
+--- @param opts table|nil Keymap option
+local function keymap(mode, lhs, rhs, desc, opts)
+  if not opts then
+    opts = {}
+  end
+
+  local success_keymap = pcall(set_keymap, mode, lhs, rhs, desc, opts)
+  if not success_keymap then
+    vim.notify("Failed to set keymap: " .. lhs .. " for command: " .. tostring(rhs), vim.log.levels.ERROR)
+  end
+end
+
+--- Convert key combination to readable format with symbols
+--- @param key string The key combination string
+--- @return string The formatted key combination with symbols
+local function format_key_combination(key)
+  local result = key
+  result = result:gsub("<D%-M%-", "⌘ ⌥ ") -- Command + Alt
+  result = result:gsub("<D%-C%-", "⌘ ⌃ ") -- Command + Control
+  result = result:gsub("<D%-S%-", "⌘ ⇧ ") -- Command + Shift
+  result = result:gsub("<A%-S%-", "⌥ ⇧ ") -- Alt + Shift
+  result = result:gsub("<C%-S%-", "⌃ ⇧ ") -- Control + Shift
+  result = result:gsub("<M%-S%-", "⌥ ⇧ ") -- Meta + Shift
+  result = result:gsub("<D%-", "⌘ ") -- Command
+  result = result:gsub("<A%-", "⌥ ") -- Alt
+  result = result:gsub("<C%-", "⌃ ") -- Control
+  result = result:gsub("<S%-", "⇧ ") -- Shift
+  result = result:gsub("<M%-", "⌥ ") -- Meta (Alt)
+  result = result:gsub("Up>", "↑") -- Up arrow
+  result = result:gsub("Down>", "↓") -- Down arrow
+  result = result:gsub("Left>", "←") -- Left arrow
+  result = result:gsub("Right>", "→") -- Right arrow
+  result = result:gsub("Space>", "␣") -- Space
+  result = result:gsub("CR>", "↵") -- Enter/Return
+  result = result:gsub("Tab>", "⇥") -- Tab
+  result = result:gsub("Enter>", "↵") -- Enter
+  result = result:gsub("Return>", "↵") -- Return
+  result = result:gsub("Esc>", "⎋") -- Escape
+  result = result:gsub(">", "") -- Remove remaining >
+  result = result:gsub("%-", " ") -- Replace - with space
+  return result
+end
+
+--- Parses the mappings table and creates keymaps
+--- @param maps table Keymap table
+--- @return nil Keymaps are created
+local function mappings(maps)
+  for key, value in pairs(maps) do
+    local action = value[1]
+    local desc = value[2] or ""
+    local opts = value[3] or {}
+
+    -- Convert key combination to readable format
+    local readable_key = format_key_combination(key)
+
+    if type(action) == "table" then
+      -- Handle mode-specific mappings
+      for mode, command in pairs(action) do
+        local mode_prefix = mode:upper()
+        local full_desc = string.format("[%s] [%s] %s", mode_prefix, readable_key, desc)
+        local options = opts.expr and { expr = true } or {}
+        keymap(mode, key, command, full_desc, options)
+        if opts and opts.cmd then
+          -- If opts.cmd is provided, create a user command
+          local success, err = pcall(user_command, opts.cmd, command, full_desc)
+          if not success then
+            vim.notify(
+              "Failed to create user cmd='" .. opts.cmd .. "', command='" .. tostring(command) .. "': " .. tostring(err),
+              vim.log.levels.ERROR
+            )
+          end
+        end
+      end
+    else
+      -- Handle single mapping (defaults to normal mode)
+      local full_desc = string.format("[%s] %s", readable_key, desc)
+      keymap("n", key, action, full_desc)
+      if opts and opts.cmd then
+        -- If opts.cmd is provided, create a user command
+        user_command(opts.cmd, action, full_desc)
+      end
+    end
+  end
+end
+
+--- Completion handling and modern Neovim features on TAB
+--- @example vim.keymap.set("i", "<Tab>", clever_tab, { expr = true, desc = "Smart tab completion" })
+local function clever_tab()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local before_cursor = line:sub(1, col)
+
+  -- Only whitespace before cursor
+  if before_cursor:match("^%s*$") then
+    return "<Tab>"
+  end
+
+  -- Completion menu is visible
+  if vim.fn.pumvisible() == 1 then
+    return "<C-n>"
+  end
+
+  -- Check if LSP is available and can provide completion
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
+  local has_lsp_completion = false
+
+  for _, client in ipairs(clients) do
+    if client.server_capabilities.completionProvider then
+      has_lsp_completion = true
+      break
+    end
+  end
+
+  -- Trigger completion if after word character
+  if before_cursor:match("%w$") then
+    if has_lsp_completion then
+      -- Trigger LSP completion
+      vim.lsp.completion.get()
+      return ""
+    elseif vim.bo.omnifunc ~= "" then
+      return "<C-x><C-o>"
+    else
+      return "<C-n>"
+    end
+  end
+
+  return "<Tab>"
+end
+
+--- Completion handling and modern Neovim features on SHIFT+TAB
+--- @example vim.keymap.set("i", "<S-Tab>", clever_shift_tab, { expr = true, desc = "Smart shift-tab completion" })
+local function clever_shift_tab()
+  -- If completion menu is visible, go to previous item
+  if vim.fn.pumvisible() == 1 then
+    return "<C-p>"
+  end
+
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local before_cursor = line:sub(1, col)
+
+  -- Smart unindenting
+  if before_cursor:match("^%s+$") then
+    return "<C-d>"
+  end
+
+  return "<S-Tab>"
+end
+
+local function autoclose_on_last_buffer()
+  local real_bufs = get_valid_buffers({
+    "snacks_picker",
+    "snacks_picker_list",
+    "lazy",
+    "mason",
+    "help",
+    "qf"
+  })
+  if #real_bufs == 0 then
+    vim.cmd("quit")
+  end
+end
+
+local function smart_buffer_close(opts)
+  Snacks.bufdelete.delete(opts)
+  vim.schedule(autoclose_on_last_buffer)
+end
+
+-- Terminal state management
+local terminal_state = {
+  buf = nil,
+  win = nil,
+  is_open = false
+}
+
+local actions = {
+  --- @alias actions.edit { cut: function, copy: function, paste: function, undo: function, save: function, close: function, redo: function, new: function, select_all: function, replace_all: function, rename_file: function }
+  edit = {
+    cut = cmd("normal x"),
+    copy = cmd("normal y"),
+    paste = cmd("normal P"),
+    undo = cmd("normal U"),
+    save = cmd("normal w"),
+    close = cmd("normal q"),
+    redo = cmd("normal <C-r>"),
+    new = cmd("ene | startinsert"),
+    select_all = cmd("normal ggVG"),
+    replace_all = cmd("normal %s///g"),
+    rename_file = cmd(Snacks.rename.rename_file),
+  },
+  --- @alias actions.buf { close: function, close_all: function, close_others: function, pick: function, next: function, prev: function, last: function }
+  buf = {
+    --- Delete buffers without disrupting window layout
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/bufdelete.md#snacksbufdeletedelete
+    close = cmd(smart_buffer_close, { wipe = true }),
+
+    --- Delete all buffers
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/bufdelete.md#snacksbufdeleteall
+    close_all = cmd(Snacks.bufdelete.all, { wipe = true }),
+
+    --- Delete all buffers except the current one
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/bufdelete.md#snacksbufdeleteother
+    close_others = cmd(Snacks.bufdelete.other, { wipe = true }),
+
+    --- Search and pick for Neovim buffers
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#buffers
+    pick = cmd(Snacks.picker.buffers),
+
+    --- Go to next buffer
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbufnext
+    next = cmd("BufferLineCycleNext"),
+
+    --- Go to previous buffer
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbufprevious
+    prev = cmd("BufferLineCyclePrev"),
+
+    --- Go to last buffer
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbuflast
+    last = cmd("buffer #"),
+  },
+  --- @alias actions.pick { highlights: function, keymaps: function, commands: function, smart: function, files: function, grep: function, find: function, explorer: function, help: function, diagnostics: function, diagnostics_buffer: function, filetypes: function, options: function, lua_path_items: function, runtimepath_items: function, buffers: function, autocmds: function, command_history: function, colorschemes: function, icons: function, lazy: function, notifications: function, recent: function, jumps: function, move_buffer_split: function, execute: function }
+  pick = {
+    --- Search for highlights
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#highlights
+    highlights = cmd(Snacks.picker.highlights),
+
+    --- Search and pick for keymaps
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#keymaps
+    keymaps = cmd(Snacks.picker.keymaps),
+
+    --- Search and pick for Neovim commands
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#commands
+    commands = cmd(Snacks.picker.commands),
+
+    --- Search smart for files, buffers, lines, etc
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#smart
+    smart = cmd(Snacks.picker.smart),
+
+    --- Returns files on the current buffer path or git_files if a git repo
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#files
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#git_files
+    files = function()
+      if is_git_repo() then
+        return Snacks.picker.git_files({
+          show_empty = true,
+          untracked = true,
+          submodules = false,
+        })
+      end
+
+      return Snacks.picker.files({
+        show_empty = true,
+        hidden = true,
+        ignored = false,
+        follow = false,
+        supports_live = true,
+      })
+    end,
+
+    --- Search and pick for in grep or git_giles
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lines
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#git_grep
+    grep = function()
+      if is_git_repo() then
+        return Snacks.picker.git_grep({
+          finder = "git_grep",
+          format = "file",
+          untracked = true,
+          need_search = true,
+          submodules = false,
+          show_empty = true,
+          supports_live = true,
+          live = true,
+        })
+      end
+
+      return Snacks.picker.grep({
+        finder = "grep",
+        regex = true,
+        format = "file",
+        show_empty = true,
+        live = true, -- live grep by default
+        supports_live = true,
+      })
+    end,
+
+    --- Search lines in the current buffer
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lines
+    find = cmd(Snacks.picker.lines),
+
+    --- A file explorer for snacks
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/explorer.md
+    explorer = cmd(Snacks.picker.explorer),
+
+    --- Search and pick for Neovim help tags
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#help
+    help = cmd(Snacks.picker.help),
+
+    --- Search and pick for Neovim diagnostics
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#diagnostics
+    diagnostics = cmd(Snacks.picker.diagnostics, { focus = true, layout = { preset = "ivy" } }),
+
+    --- Search and pick for Neovim buffer diagnostics
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#diagnostics_buffer
+    diagnostics_buffer = cmd(Snacks.picker.diagnostics_buffer, { focus = true, layout = { preset = "ivy" } }),
+
+    --- Search and pick for Neovim buffers
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#buffers
+    buffers = cmd(Snacks.picker.buffers),
+
+    --- Search and pick autocmds
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#autocmds
+    autocmds = cmd(Snacks.picker.autocmds),
+
+    --- Search and pick for Neovim command history
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#command_history
+    command_history = cmd(Snacks.picker.command_history),
+
+    --- Search and pick for Neovim colorschemes with live preview
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#colorschemes
+    colorschemes = cmd(Snacks.picker.colorschemes),
+
+    --- Search and pick for icons
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#icons
+    icons = cmd(Snacks.picker.icons),
+
+    --- Search and pick for a lazy.nvim plugin spec
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lazy
+    lazy = cmd(Snacks.picker.lazy),
+
+    --- Search and pick for notifications
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#notifications
+    notifications = cmd(Snacks.picker.notifications),
+
+    --- Search and pick for recent
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#recent
+    recent = cmd(Snacks.picker.recent),
+
+    --- Search and pick for jumps
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#jumps
+    jumps = cmd(Snacks.picker.jumps),
+
+    --- Search and pick for Neovim filetypes
+    filetypes = snacks_filetypes,
+
+    --- Search and pick for Neovim options
+    options = snacks_options,
+
+    --- Search and pick for Neovim lua_path_items
+    lua_path_items = snacks_lua_path_items,
+
+    --- Search and pick for Neovim runtimepath_items
+    runtimepath_items = snacks_runtimepath_items,
+
+    --- Move current buffer to split to the left, right, top, or bottom
+    move_buffer_split = snacks_move_buffer_split,
+
+    --- Search and execute Neovim command
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#commands
+    execute = cmd(Snacks.picker.pick, { source = "execute" }),
+  },
+  --- @alias actions.toggle { new_scratch: function, select_scratch: function, menus: table<string, string>, news: function, zen: function, term: function }
+  toggle = {
+    --- Open new scratch buffer
+    --- @see source https://github.com/folke/snacks.nvim/discussions/765#discussion-7880347
+    new_scratch = snacks_scratch,
+
+    --- Search and pick for FzfLua menus
+    --- @see docs https://github.com/ibhagwan/fzf-lua?tab=readme-ov-file#misc
+    menus = { n = "<CMD>FzfLua menus<CR>", i = "<ESC><CMD>FzfLua menus<CR>", v = "<ESC><CMD>FzfLua menus<CR>" },
+
+    --- Toggle Neovim news
+    --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/win.md#-usage
+    news = function()
+      return Snacks.win({
+        file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
+        width = 0.6,
+        height = 0.6,
+        wo = {
+          spell = false,
+          wrap = false,
+          signcolumn = "yes",
+          statuscolumn = " ",
+          conceallevel = 3,
+        },
+      })
+    end,
+
+    --- Toggle Zen Mode
+    --- @see docs https://github.com/folke/zen.nvim
+    zen = function()
+      return Snacks.zen()
+    end,
+
+    --- Toggle terminal
+    term = function()
+      if terminal_state.is_open and terminal_state.win and vim.api.nvim_win_is_valid(terminal_state.win) then
+        -- Terminal is open, close it
+        vim.api.nvim_win_hide(terminal_state.win)
+        terminal_state.is_open = false
+      else
+        -- Terminal is closed or doesn't exist, open it
+        if terminal_state.buf and vim.api.nvim_buf_is_valid(terminal_state.buf) then
+          -- Reuse existing terminal buffer
+          vim.cmd('botright split')
+          vim.api.nvim_win_set_buf(0, terminal_state.buf)
+          terminal_state.win = vim.api.nvim_get_current_win()
+        else
+          -- Create new terminal
+          vim.cmd('botright split')
+          vim.cmd.term()
+          terminal_state.buf = vim.api.nvim_get_current_buf()
+          terminal_state.win = vim.api.nvim_get_current_win()
+        end
+        -- Set terminal height
+        vim.api.nvim_win_set_height(0, 10)
+        -- Enter insert mode and focus the terminal
+        vim.cmd.startinsert()
+        terminal_state.is_open = true
+      end
+    end
+  },
+  --- @alias actions.ev { src_vimrc: string, src_file: string, src_vimrc_file: function, file: table<string, string>, line: table<string, string>, selection: table<string, string> }
+  ev = {
+    src_vimrc = "<CMD>source $MYVIMRC<CR>",
+    src_file = "<CMD>source %<CR>",
+    src_vimrc_file = function()
+      vim.cmd("source $MYVIMRC")
+      vim.cmd("source %")
+    end,
+    file = { n = "<CMD>source %<CR>", i = "<ESC><CMD>source %<CR>", v = "<ESC><CMD>source %<CR>" },
+    line = { n = "<CMD>.:lua<CR>", i = "<ESC><CMD>.:lua<CR>", v = "<ESC><CMD>.:lua<CR>" },
+    selection = { n = "<CMD>:lua<CR>", i = "<ESC><CMD>:lua<CR>", v = "<ESC><CMD>:lua<CR>" },
+  },
+  --- @alias actions.lsp { config: function, declarations: function, definitions: function, implementations: function, references: function, symbols: function, workspace_symbols: function, type_definitions: function, signature_help: function }
+  lsp = {
+    --- Search and pick for
+    --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_config
+    config = cmd(Snacks.picker.lsp_config),
+
+    --- Search and pick for lsp_declarations
+    --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_declarations
+    declarations = cmd(Snacks.picker.lsp_declarations),
+
+    --- Search and pick for lsp_definitions
+    --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_definitions
+    definitions = cmd(Snacks.picker.lsp_definitions),
+
+    --- Search and pick for
+    --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#l
+    implementations = cmd(Snacks.picker.lsp_implementations),
+
+    --- Search and pick for lsp_references
+    --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_references
+    references = cmd(Snacks.picker.lsp_references),
+
+    --- Search and pick for lsp_symbols
+    --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_symbols
+    symbols = cmd(Snacks.picker.lsp_symbols, { layout = "dropdown", enter = true, focus = "list" }),
+
+    --- Search and pick for lsp_workspace_symbols
+    --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_workspace_symbols
+    workspace_symbols = cmd(Snacks.picker.lsp_workspace_symbols, { layout = "dropdown", enter = true, focus = "list" }),
+
+    --- Search and pick for lsp_type_definitions
+    --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_type_definitions
+    type_definitions = cmd(Snacks.picker.lsp_type_definitions),
+
+    --- Show signature help
+    --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_signature_help
+    signature_help = function()
+      return vim.lsp.buf.signature_help({
+        focusable = false,
+        focus = false,
+        close_events = { "CursorMoved", "InsertLeave", "BufHide", "BufLeave", "WinLeave", "FocusLost", "InsertCharPre" }
+      })
+    end,
+  },
+  --- @alias actions.on { tab: function, shift_tab: function }
+  on = {
+    tab = clever_tab,
+    shift_tab = clever_shift_tab,
+  }
+}
+
+--- Parses the mappings table and creates keymaps
+--- @alias kmaps.Opts { edit: actions.edit, buf: actions.buf, pick: actions.pick, toggle: actions.toggle, lsp: actions.lsp, ev: actions.ev, on: actions.on }
+--- @param fn fun(opts: kmaps.Opts): table A function that returns a table of keymaps
+--- @return nil Keymaps are created
+local function maps(fn)
+  local keymappings = fn({
+    edit = actions.edit,
+    buf = actions.buf,
+    pick = actions.pick,
+    toggle = actions.toggle,
+    lsp = actions.lsp,
+    ev = actions.ev,
+    on = actions.on
+  })
+  return mappings(keymappings)
+end
+
+return {
+  maps = maps,
+}

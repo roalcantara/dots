@@ -1,0 +1,10 @@
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./lua:/app/src
+      - ./spec:/app/spec
+      - ./busted.lua:/app/busted.lua
+    working_dir: /app
