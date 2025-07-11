@@ -1,14 +1,38 @@
 # dots
 
-An opiopnated [DotFiles][10]. Ready to Engage!
+An opinionated [DotFiles][10]. Ready to Engage!
 
 [![MIT license](https://img.shields.io/badge/License-MIT-brightgreen.svg?style=flat-square)](LICENSE) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg?style=flat-square)][2] [![Editor Config](https://img.shields.io/badge/Editor%20Config-1.0.1-crimson.svg?style=flat-square)][3] [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)][4] [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?logo=conventional-commits&style=flat-square)][9]
 
 ## INSTALL
 
-  ```sh
-  git clone https://github.com/roalcantara/dots
-  ```
+### One-liner Installation (Recommended)
+
+```sh
+curl -fsSL "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash
+```
+
+### Using Go CLI
+
+```sh
+go install github.com/roalcantara/dots/cmd/dots@latest
+dots
+```
+
+The Go CLI supports various flags to customize the installation:
+
+```sh
+dots --help  # Show all available options
+
+# Example: Install without Neovim and ownership changes
+dots --nvim=false --chown=false
+```
+
+### Manual Installation
+
+```sh
+git clone https://github.com/roalcantara/dots
+```
 
 ### DEPENDENCIES
 
@@ -20,23 +44,81 @@ An opiopnated [DotFiles][10]. Ready to Engage!
 
 ## USAGE
 
-- List all available tasks
+### BUILDING
 
-  ```sh
-  mise run
-  ```
+#### OVEREVIEW
 
-- Start a container with the current directory mounted and the GitHub token secret available
+- **Features**
 
-  ```sh
-  mise run up
-  ```
+  - 🔍 **Validation:** Checks for Dockerfile existence and valid platforms
+  - 🚀 **Post-actions**: Push, run, and inspect in one command
+  - 🎯 **Flexibility:** Supports different repos, branches, and install args
+  - 🔐 **Security:** Better token handling with multiple sources
+  - 📊 **Insights:** Detailed image information and build summary
+  - 🐛 **Debugging:** Enhanced logging and error messages
+  - 💫 **UX:** Color-coded output with progress indicators
 
-- Build the container image tagged as dev without cache
+- **What it DOES do?**
 
-  ```sh
+  - ✅ Provides clean base environment _(devcontainer base)_
+  - ✅ Sets minimal essential environment variables
+  - ✅ Passes GitHub token securely if provided
+  - ✅ Executes install script exactly as documented
+  - ✅ Shows what the install script actually created
+  - ✅ Uses whatever shell the install script configured
+
+#### BUILDING USAGE
+
+- Basic Usage
+
+ ```sh
+  # Basic build
+  mise run build
+
+  # Build the container image tagged as dev without cache
   mise run build -t dev --nocache
-  ```
+
+  # Test different scenarios
+  mise run build --distro ubuntu --platform amd64 --tag dev
+  mise run build --branch develop --args "--verbose --debug --username=foo --groupname=bar"
+  mise run build --repo "youruser/dotfiles" --branch main
+
+  # Build and immediately test
+  mise run build --run
+
+  # Build and inspect results
+  mise run build --inspect
+
+  # Build without cache and push
+  mise run build --nocache --push
+
+  # Build with custom install script arguments
+  mise run build --args "--minimal --no-zsh" --tag minimal
+
+  # Debug build issues
+  mise run build --logs --nocache
+
+  # Test on different platforms
+  mise run build --platform arm64 --distro alpine --run
+```
+
+- Advanced Usage
+
+ ```sh
+    # Test private repository
+    export GITHUB_TOKEN="your_token"
+    mise run build --repo "private/repo" --branch private-branch
+
+    # Test different base images
+    mise run build --distro ubuntu-minimal --tag lightweight
+
+    # Build and push to registry
+    export DOCKER_REGISTRY="ghcr.io/username"
+    mise run build --push --tag latest
+
+    # Test install script with specific arguments
+    mise run build --args "--skip-zsh --minimal-vim" --tag custom
+ ```
 
 ### TESTING
 

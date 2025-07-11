@@ -9,6 +9,7 @@ local M = {
   filereadable = vim.fn.filereadable,
   stdpath = vim.fn.stdpath,
   homebrew_prefix = vim.env.HOMEBREW_PREFIX or '/opt/homebrew',
+  is_executable = vim.fn.executable,
 }
 
 --- Get standard Neovim paths

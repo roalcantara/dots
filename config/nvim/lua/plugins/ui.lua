@@ -2,6 +2,7 @@
 -- You can structure your lua/plugins folder with a file per plugin, or a separate file containing all the plugin specs for some functionality.
 -- You can create as many files there as you want. In order to disable a plugin, add a spec with enabled=false
 -- https://lazyvim.org/configuration/plugins
+local paths = require('core/vi/fn/paths')
 local execute_on_esc = require('core/vi/maps/execute_on_esc')
 local snacks_default_exclusions = require('core/vi/ui/snacks/defaults').default_exclusions
 local header = require('core/vi/ui/snacks/dashboard').header
@@ -132,22 +133,6 @@ return {
           sections = {
             { section = 'header' },
             { section = 'keys', gap = 1, padding = 1 },
-            { pane = 2, icon = ' ', title = 'Recent Files', section = 'recent_files', indent = 2, padding = 1 },
-            { pane = 2, icon = ' ', title = 'Projects', section = 'projects', indent = 2, padding = 1 },
-            {
-              pane = 2,
-              icon = ' ',
-              title = 'Git Status',
-              section = 'terminal',
-              enabled = function()
-                return Snacks.git.get_root() ~= nil
-              end,
-              cmd = 'hub status --short --branch --renames',
-              height = 5,
-              padding = 1,
-              ttl = 5 * 60,
-              indent = 3,
-            },
             { section = 'startup' },
           },
         },
@@ -662,7 +647,7 @@ return {
       {
         'bezhermoso/tree-sitter-ghostty',
         build = 'make nvim_install',
-        -- cond = paths.is_executable('ghostty'),
+        cond = paths.is_executable('ghostty'),
       },
     },
     config = function()
@@ -681,7 +666,7 @@ return {
   {
     'isak102/ghostty.nvim',
     event = 'VeryLazy',
-    -- cond = paths.is_executable('ghostty'),
+    cond = paths.is_executable('ghostty'),
     opts = {
       -- The autocmd pattern matched against the filename of the buffer. If this pattern
       -- matches, ghostty.nvim will run on save in that buffer. This pattern is passed to
