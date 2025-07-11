@@ -1059,5 +1059,55 @@
       "}"
     ],
     "description": "[ZSH] zparseopts is used to parse command line options in Zsh scripts as ASSOCIATIVE ARRAY"
+  },
+  "USAGE | Build a Rust CLI using some of the usage`s features": {
+    "prefix": [
+      "usage:rust"
+    ],
+    "body": [
+      "#!/usr/bin/env bash",
+      "set -e",
+      "",
+      "# USAGE | A specification for CLIs",
+      "# https://usage.jdx.dev/cli/scripts",
+      "",
+      "#USAGE flag \"-c --clean\" help=\"Clean the build directory before building\"",
+      "#USAGE flag \"-p --profile <profile>\" help=\"Build with the specified profile\" {",
+      "#USAGE   choices \"debug\" \"release\"",
+      "#USAGE }",
+      "#USAGE flag \"-u --user <user>\" help=\"The user to build for\"",
+      "#USAGE complete \"user\" run=\"mycli users\"",
+      "#USAGE arg \"<target>\" help=\"The target to build\"",
+      "",
+      "if [ \"$usage_clean\" = \"true\" ]; then",
+      "  cargo clean",
+      "fi",
+      "",
+      "cargo build --profile \"${usage_profile:-debug}\" --target \"$usage_target\""
+    ],
+    "description": "example of a file task that builds a Rust CLI using some of the features of USAGE specification"
+  },
+  "USAGE | Displaying Help and parsing args": {
+    "prefix": "usage:help",
+    "body": [
+      "#!/usr/bin/env -S usage bash",
+      "",
+      "# USAGE | A specification for CLIs",
+      "# https://usage.jdx.dev/cli/scripts",
+      "",
+      "#USAGE flag \"-f --force\" help=\"Overwrite existing <file>\"",
+      "#USAGE flag \"-u --user <user>\" help=\"User to run as\"",
+      "#USAGE arg \"<file>\" help=\"The file to write\" default=\"file.txt\"",
+      "",
+      "if [ \"$usage_force\" = \"true\" ]; then",
+      "  rm -f \"$usage_file\"",
+      "fi",
+      "if [ -n \"$usage_user\" ]; then",
+      "  echo \"Hello, $usage_user\" >> \"$usage_file\"",
+      "else",
+      "  echo \"Hello, world\" >> \"$usage_file\"",
+      "fi"
+    ],
+    "description": "Scripts can be used with the Usage CLI to display help and parse arguments",
   }
 }
