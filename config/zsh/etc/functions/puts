@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash disable=SC2154
 
+# Redirects stdout (file descriptor 1) to /dev/null
+# Then redirects stderr (file descriptor 2) to wherever stdout is going (which is now /dev/null)
+# Works in all POSIX-compliant shells (sh, dash, bash, zsh, etc.)
+_has_command() {
+  command -v "$1" >/dev/null 2>&1
+}
+
 #? puts 0.1.0
 #? Copyright (C) 200X Thomas Light
 #? License RIT (Robot Institute of Technology)
@@ -11,22 +18,35 @@
 ##? Formats and prints a messsge
 ##?
 ##? Usage:
-##?    puts [-g|--green] [-r|--red] [-y|--yellow] [-b|--blue] <message>
+##?    puts [-g|--green] [-r|--red] [-y|--yellow] [-b|--blue] [-d|--debug] [-e|--error] [-f|--fatal] [-i|--info] [-w|--warn] [-p|--prefix] <message>
 ##?
 ##? Arguments:
 ##?    message       The text message to print
 ##?
 ##? Options:
+##?    -p, --prefix  Print message with prefix
 ##?    -g, --green   Print message in green
 ##?    -r, --red     Print message in red
 ##?    -y, --yellow  Print message in yellow
 ##?    -b, --blue    Print message in blue
+##?    -d, --debug   Print log message in debug
+##?    -e, --error   Print log message in error
+##?    -f, --fatal   Print log message in fatal
+##?    -i, --info    Print log message in info
+##?    -w, --warn    Print log message in warn
 ##?
 ##? Examples:
 ##?    puts --green 'Success!'
 ##?    puts --red 'Error!'
 ##?    puts --yellow 'Warning!'
 ##?    puts --blue 'Info!'
+##?    puts --debug 'Debug!'
+##?    puts --error 'Error!'
+##?    puts --fatal 'Fatal!'
+##?    puts --info 'Info!'
+##?    puts --warn 'Warn!'
+##?    puts --prefix 'SETUP' 'Message!'
+##?    puts --prefix 'SETUP' --warn 'Message!'
 
 # BG provides background colors.
 # FG provides foreground colors.
@@ -36,17 +56,26 @@
 function puts() {
   local message
   local color=""
+  local level=""
+  local prefix=""
+  local zsh_color=""
 
   # Parse options using zparseopts
   # -D: remove parsed flags from $@
   # -E: stop at first non-option (the message)
   # -F: fail if an invalid option is found
   zparseopts -D -E -F \
-      g=green -green=green \
-      r=red -red=red \
-      y=yellow -yellow=yellow \
-      b=blue -blue=blue \
-      || return 1
+    p:=prefix -prefix:=prefix \
+    g=green -green=green \
+    r=red -red=red \
+    y=yellow -yellow=yellow \
+    b=blue -blue=blue \
+    d=debug -debug=debug \
+    e=error -error=error \
+    f=fatal -fatal=fatal \
+    i=info -info=info \
+    w=warn -warn=warn ||
+    return 1
 
   # Get the remaining argument as the message
   message="$1"
@@ -58,22 +87,77 @@ function puts() {
     return 1
   fi
 
-  # Map flags to spectrum colors
-  if (( $#green )); then
-    color="%F{green}"
-  elif (( $#red )); then
-    color="%F{red}"
-  elif (( $#yellow )); then
-    color="%F{yellow}"
-  elif (( $#blue )); then
-    color="%F{blue}"
+  # Extract prefix value from the array
+  local prefix_value=""
+  if (($#prefix)); then
+    # The value is in the second element of the array
+    prefix_value="${prefix[2]}"
+  fi
+
+  # Determine level and color based on flags
+  if (($#debug)); then
+    level="debug"
+  elif (($#error)); then
+    level="error"
+  elif (($#fatal)); then
+    level="fatal"
+  elif (($#info)); then
+    level="info"
+  elif (($#warn)); then
+    level="warn"
+  fi
+
+  # Map color flags to spectrum colors
+  if (($#green || $#debug)); then
+    color="#04B575"
+    zsh_color="%F{green}"
+  elif (($#red || $#error || $#fatal)); then
+    color="#F44336"
+    zsh_color="%F{red}"
+  elif (($#yellow || $#warn)); then
+    color="#F4AC45"
+    zsh_color="%F{yellow}"
+  elif (($#blue || $#info)); then
+    color="#2196F3"
+    zsh_color="%F{blue}"
+  fi
+
+  # If gum is installed, use it to print the message
+  if _has_command gum; then
+    if [[ -n "$level" ]]; then
+      if (($#prefix)); then
+        gum log --time DateTime --level "$level" --prefix="$prefix_value" "$message"
+      else
+        gum log --time DateTime --level "$level" "$message"
+      fi
+    else
+      if (($#prefix)); then
+        gum style --foreground "$color" --prefix "$prefix_value" "$message"
+      else
+        gum style --foreground "$color" "$message"
+      fi
+    fi
+    return 0
   fi
 
   # Print the colored message
-  if [[ -n "$color" ]]; then
-    print -P "${color}${message}%f"
+  if [[ -n "$level" ]]; then
+    # Format similar to gum log: timestamp level [prefix]: message
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local level_upper=$(echo "$level" | tr '[:lower:]' '[:upper:]')
+
+    if (($#prefix)); then
+      print -P "%F{white}${timestamp}%f ${zsh_color}${level_upper}%f %F{gray}${prefix_value}:%f ${message}"
+    else
+      print -P "%F{white}${timestamp}%f ${zsh_color}${level_upper}%f ${message}"
+    fi
   else
-    print "$message"
+    # Simple colored message for non-level output
+    if [[ -n "$zsh_color" ]]; then
+      print -P "${zsh_color}${message}%f"
+    else
+      print "$message"
+    fi
   fi
 }
 

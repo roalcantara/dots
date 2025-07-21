@@ -5,9 +5,10 @@
 
 # Custom XDG Directories
 export XDG_LOCAL_DIR=${XDG_LOCAL_DIR:=$HOME/.local}
-export XDG_BIN_HOME=${XDG_BIN_HOME:=$XDG_LOCAL_DIR/bin}
 export XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:=$HOME/Projects}
 export XDG_WORKSPACE_DIR=${XDG_WORKSPACE_DIR:=$HOME/Work}
+# https://freedesktop.org/software/systemd/man/latest/file-hierarchy.html#~/.local/bin/
+export XDG_LOCAL_BIN_DIR=${XDG_LOCAL_BIN_DIR:=$XDG_LOCAL_DIR/bin}
 
 # Set XDG Base Directories
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}

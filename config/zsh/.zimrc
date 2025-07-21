@@ -1,6 +1,11 @@
 #!/usr/bin/env zsh
 
 # Zim | The Zsh configuration framework with blazing speed and modular extensions (https://zimfw.sh)
+# zimfw clean && zimfw install -v
+# zimfw clean && zimfw update -v
+# zimfw clean && zimfw install -v && zimfw update -v
+# zimfw list -v
+
 # Start configuration added by Zim install {{{
 
 # Essential Environment Variables
@@ -13,8 +18,8 @@ export zdumpfile=${ZSH_COMPDUMP:=$ZSH_COMPCACHE/.zcompdump}
 # Essential settings first
 # zstyle ':zim' 'disable-version-check' 'true'                                # [UNECESSARY] Disable zimfw version check
 # zstyle ':zim:input' double-dot-expand yes                                   # [BUGS the zim into reporting] Append `../` to your input for each `.` you type after an initial `..` | https://github.com/zimfw/input?tab=readme-ov-file#settings
-zstyle ':zim:zmodule' use 'degit'                                             # Use degit to clone modules - better when git history is not needed, quick module installation is priority, disk space is limited
-zstyle ':zim:completion' dumpfile "$zdumpfile"                                # Enables and configures smart and extensive tab completion.
+zstyle ':zim:zmodule' use 'degit'              # Use degit to clone modules - better when git history is not needed, quick module installation is priority, disk space is limited
+zstyle ':zim:completion' dumpfile "$zdumpfile" # Enables and configures smart and extensive tab completion.
 
 #
 # Modules
