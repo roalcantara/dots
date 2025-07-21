@@ -1,43 +1,43 @@
-local maps                                               = require("core/vi/maps")
-local augroup                                            = maps.augroup
-local autocmd                                            = maps.autocmd
-local should_show_hover                                  = require("core/vi/ui/lsp/hover_filter").should_show_hover
+local maps = require('core/vi/maps')
+local augroup = maps.augroup
+local autocmd = maps.autocmd
+local should_show_hover = require('core/vi/ui/lsp/hover_filter').should_show_hover
 
-local M                                                  = {
+local M = {
   enabled_capabilities = {},
   disabled_capabilities = {},
 }
-M.enabled_capabilities["textDocument/documentHighlight"] = {
+M.enabled_capabilities['textDocument/documentHighlight'] = {
   --- Highlight symbol under cursor on cursor hold and clear on cursor move
   --- @param opts table { buffer = number }
   --- @see https://vonheikemen.github.io/devlog/tools/neovim-lsp-client-guide/
   highlight_symbol_under_cursor = function(opts)
     local buffer = opts.buffer
-    local group = augroup("highlight_symbol_under_cursor", { clear = false })
+    local group = augroup('highlight_symbol_under_cursor', { clear = false })
 
     -- Clear the autocmds for the buffer
     vim.api.nvim_clear_autocmds({ buffer = buffer, group = group })
 
     -- Highlight symbols under the cursor after the time set at vim.opt.updatetime
     -- https://neovim.io/doc/user/lsp.html#vim.lsp.buf.document_highlight()
-    autocmd({ "CursorHold", "CursorHoldI" }, {
+    autocmd({ 'CursorHold', 'CursorHoldI' }, {
       group = group,
       buffer = buffer,
       callback = vim.lsp.buf.document_highlight,
-      desc = "Highlight symbol under cursor on cursor hold",
+      desc = 'Highlight symbol under cursor on cursor hold',
     })
 
     -- Clear the highlight when the cursor moves
     -- https://neovim.io/doc/user/lsp.html#vim.lsp.buf.clear_references()
-    autocmd({ "CursorMoved", "CursorMovedI" }, {
+    autocmd({ 'CursorMoved', 'CursorMovedI' }, {
       group = group,
       buffer = buffer,
       callback = vim.lsp.buf.clear_references,
-      desc = "Clear symbol under cursor highlights on cursor moves",
+      desc = 'Clear symbol under cursor highlights on cursor moves',
     })
   end,
 }
-M.enabled_capabilities["textDocument/hover"]             = {
+M.enabled_capabilities['textDocument/hover'] = {
   --- Shows hover documentation only for meaningful code elements
   --- Excluding simple strings, brackets, punctuation, and other basic elements
   --- @param opts table { buffer = number }
@@ -48,7 +48,7 @@ M.enabled_capabilities["textDocument/hover"]             = {
     end
 
     local buffer = opts.buffer
-    local group = augroup("on_cursor_hold_show_hover_documentation", { clear = false })
+    local group = augroup('on_cursor_hold_show_hover_documentation', { clear = false })
     local mouse_hover_timer = nil
     local mouse_hover_delay = vim.g.lsp_hover_mouse_delay or 500 -- Configurable delay for mouse hover
 
@@ -60,7 +60,7 @@ M.enabled_capabilities["textDocument/hover"]             = {
       return vim.lsp.buf.hover({
         focusable = false,
         focus = false,
-        close_events = { "CursorMoved", "CursorMovedI", "InsertCharPre", "FocusLost", "FocusGained" },
+        close_events = { 'CursorMoved', 'CursorMovedI', 'InsertCharPre', 'FocusLost', 'FocusGained' },
       })
     end
 
@@ -88,74 +88,53 @@ M.enabled_capabilities["textDocument/hover"]             = {
       end
     end
 
-    -- -- Show hover documentation on cursor hold and close on cursor move
-    -- autocmd({ "CursorHold", "CursorHoldI" }, {
-    --   group = group,
-    --   buffer = buffer,
-    --   callback = function()
-    --     return show_hover()
-    --   end,
-    --   desc = "Show hover documentation on cursor hold",
-    -- })
-
     -- Mouse hover events with delay (using CursorMoved to detect mouse movement)
-    autocmd({ "CursorMoved", "CursorMovedI" }, {
+    autocmd({ 'CursorMoved', 'CursorMovedI' }, {
       group = group,
       buffer = buffer,
       callback = start_mouse_hover_timer, -- Start timer for mouse hover delay,
-      desc = "Show hover documentation on cursor hold for a while",
+      desc = 'Show hover documentation on cursor hold for a while',
     })
 
     -- Clear mouse hover timer when leaving the buffer
-    autocmd({ "BufLeave" }, {
+    autocmd({ 'BufLeave' }, {
       group = group,
       buffer = buffer,
       callback = clear_mouse_hover_timer,
-      desc = "Clear mouse hover timer when leaving buffer",
+      desc = 'Clear mouse hover timer when leaving buffer',
     })
 
     -- Clear mouse hover on <Esc>
     vim.schedule(function()
       vim.keymap.set('n', '<Esc>', function()
-          local win = vim.api.nvim_get_current_win()
-          if Snacks.util.is_float(win) then
-            if vim.api.nvim_win_is_valid(win) then
+        -- Find and close all floating windows (LSP hover windows are typically floating)
+        local wins = vim.api.nvim_list_wins()
+        for _, win in ipairs(wins) do
+          if vim.api.nvim_win_is_valid(win) then
+            local config = vim.api.nvim_win_get_config(win)
+            -- Check if this is a floating window (LSP hover windows are floating)
+            if config.relative ~= "" then
               vim.api.nvim_win_close(win, true)
-            elseif vim.api.nvim_buf_is_loaded(buffer) then
-              vim.api.nvim_buf_delete(buffer, { force = true })
             end
           end
-        end,
-        { buffer = buffer, nowait = true, noremap = true, desc = "Clear mouse hover on <Esc>" })
+        end
+      end, { buffer = buffer, nowait = true, noremap = true, desc = 'Clear LSP hover on <Esc>' })
     end)
-
-    -- Clear mouse hover on ESC
-    autocmd({ "BufLeave" }, {
-      group = group,
-      buffer = buffer,
-      callback = function()
-        local win = vim.api.nvim_get_current_win()
-        vim.keymap.set("n", "<ESC>", function()
-          vim.api.nvim_win_close(win, true)
-        end, { buffer = buffer, nowait = true })
-      end,
-      desc = "Clear mouse hover on ESC",
-    })
   end,
 }
 -- https://gpanders.com/blog/whats-new-in-neovim-0-11/#builtin-auto-completion
-M.disabled_capabilities["textDocument/completion"]       = {
+M.disabled_capabilities['textDocument/completion'] = {
   enable_completion = function(opts)
     vim.lsp.completion.enable(true, opts.client_id, opts.buffer, { auto_trigger = true })
-  end
+  end,
 }
-M.disabled_capabilities["textDocument/formatting"]       = {
+M.disabled_capabilities['textDocument/formatting'] = {
   --- Format the buffer on save
   --- @param opts table { buffer = number }
   --- @see https://vonheikemen.github.io/devlog/tools/neovim-lsp-client-guide
   on_save_formats_buffer = function(opts)
     local buffer = opts.buffer
-    local group = augroup("format_on_save", { clear = false })
+    local group = augroup('format_on_save', { clear = false })
 
     -- Clear the autocmds for the buffer
     vim.api.nvim_clear_autocmds({ buffer = buffer, group = group })
@@ -169,22 +148,22 @@ M.disabled_capabilities["textDocument/formatting"]       = {
     end
 
     -- On save, format the buffer
-    autocmd("BufWritePre", {
+    autocmd('BufWritePre', {
       buffer = buffer,
       group = group,
-      desc = "Format current buffer",
+      desc = 'Format current buffer',
       callback = buf_format,
     })
   end,
 }
-M.disabled_capabilities["textDocument/completion"]       = {
+M.disabled_capabilities['textDocument/completion'] = {
   --- Show next and previous completion items on insert
   --- @param opts table { buffer = number }
   --- @see https://vonheikemen.github.io/devlog/tools/neovim-lsp-client-guide
   on_insert_shows_completion_menu = function(opts)
     -- Prepares the completion options
-    vim.opt.completeopt = { "menu", "menuone", "noselect", "noinsert" }
-    vim.opt.shortmess:append("c")
+    vim.opt.completeopt = { 'menu', 'menuone', 'noselect', 'noinsert' }
+    vim.opt.shortmess:append('c')
 
     -- Gets the buffer number
     local buffer = opts.buffer
@@ -194,27 +173,27 @@ M.disabled_capabilities["textDocument/completion"]       = {
       -- When the completion menu is visible
       if vim.fn.pumvisible() == 1 then
         -- Then, navigate to next item in the completion menu
-        return "<Down>"
+        return '<Down>'
       end
 
       -- When the completion menu is not visible
-      local c = vim.fn.col(".") - 1
-      local is_whitespace = c == 0 or vim.fn.getline("."):sub(c, c):match("%s")
+      local c = vim.fn.col('.') - 1
+      local is_whitespace = c == 0 or vim.fn.getline('.'):sub(c, c):match('%s')
       -- When the cursor is in a whitespace character
       if is_whitespace then
         -- Then, insert a tab character
-        return "<Tab>"
+        return '<Tab>'
       end
 
       -- When the LSP can provide code completion
-      local lsp_completion = vim.bo.omnifunc == "v:lua.vim.lsp.omnifunc"
+      local lsp_completion = vim.bo.omnifunc == 'v:lua.vim.lsp.omnifunc'
       if lsp_completion then
         -- Then, trigger LSP completion
-        return "<C-x><C-o>"
+        return '<C-x><C-o>'
       end
 
       -- Otherwise, uses words found in the current buffer in the completion menu
-      return "<C-x><C-n>"
+      return '<C-x><C-n>'
     end
 
     -- Handles the previous item in the completion menu
@@ -222,25 +201,25 @@ M.disabled_capabilities["textDocument/completion"]       = {
       -- When the completion menu is visible
       if vim.fn.pumvisible() == 1 then
         -- Then, navigate to previous item in the completion menu
-        return "<Up>"
+        return '<Up>'
       end
 
       -- Otherwise, insert a tab character
-      return "<Tab>"
+      return '<Tab>'
     end
 
     -- Set the keymaps to show completion menu on insert
     vim.keymap.set(
-      "i",
-      "<Tab>",
+      'i',
+      '<Tab>',
       tab_next,
-      { expr = true, buffer = buffer, desc = "Show next completion item on insert" }
+      { expr = true, buffer = buffer, desc = 'Show next completion item on insert' }
     )
     vim.keymap.set(
-      "i",
-      "<S-Tab>",
+      'i',
+      '<S-Tab>',
       tab_prev,
-      { expr = true, buffer = buffer, desc = "Show previous completion item on insert" }
+      { expr = true, buffer = buffer, desc = 'Show previous completion item on insert' }
     )
   end,
 }
@@ -249,7 +228,7 @@ M.disabled_capabilities["textDocument/completion"]       = {
 --- @param server string LSP name
 --- @param lspconfig_opts table LSP config options
 --- @see https://vonheikemen.github.io/devlog/tools/neovim-lsp-client-guide
-local setup_capabilities_features                        = function(server, lspconfig_opts)
+local setup_capabilities_features = function(server, lspconfig_opts)
   -- For each LSP capability method
   for method, features in pairs(M.enabled_capabilities) do
     -- When the capability method is supported by the LSP

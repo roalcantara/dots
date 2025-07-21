@@ -7,6 +7,7 @@
 return {
   {
     "williamboman/mason.nvim",
+    event = 'VeryLazy',
     opts = {
       ensure_installed = {
         "beautysh",
@@ -30,6 +31,7 @@ return {
   -- add tsserver and setup with typescript.nvim instead of lspconfig
   {
     "neovim/nvim-lspconfig",
+    event = 'VeryLazy',
     opts = {
       --     -- you can do any additional lsp server setup here
       --     -- return true if you don't want this server to be setup with lspconfig

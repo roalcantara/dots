@@ -7,15 +7,23 @@ vim.schedule_wrap(function()
   -- # selene: DISABLE_LINTERS
   -- stylua: ignore
   require("core/vi/maps/keymap").maps(function(opts)
-    local edit, buf, pick, toggle, lsp, ev, on = opts.edit, opts.buf, opts.pick, opts.toggle, opts.lsp, opts.ev,
-      opts.on
+    local edit, buf, pick, toggle, lsp, ev, on, setup = opts.edit, opts.buf, opts.pick, opts.toggle, opts.lsp, opts.ev,
+      opts.on, opts.setup
+
+    -- =============================================================================
+    -- NATIVE COMMENTS (https://neovim.io/doc/user/various.html#commenting)
+    -- nvim 0.10.0 has builtin support for commenting (:h commenting)
+    -- But doesn't work when remapping with `vim.keymap.set` so we call directly...
+    -- gc<motion> must to be used manually
+    -- =============================================================================
+    setup.toggle_comments_mappings("<D-/>")
 
     return {
       -- ===========================================================================
       -- EDITOR
       -- ===========================================================================
       ["<D-a>"] = { edit.select_all, "Select All" },
-      ["<D-C-g>"] = { edit.replace_all, "Replace All" },
+      ["<D-C-g>"] = { { n = '<Plug>(VM-Find-Under)', x = '<Plug>(VM-Find-Subword-Under)' }, "Select All Occurrences" },
       ["<D-C-h>"] = { { v = 'y:%s#<C-R>=@"<CR>#' }, "Replace the selected text" },
       ["<D-c>"] = { edit.copy, "Copy" },
       ["<D-n>"] = { { n = edit.new, i = edit.new }, "New File" },
@@ -63,6 +71,7 @@ vim.schedule_wrap(function()
       ["<M-S-Left>"] = { { n = "vb", v = "b", i = "<C-O>vb" }, "Select to BoW" },
       ["<M-S-Down>"] = { { n = "v}", v = "}", i = "<C-O>v}" }, "Select to Next Paragraph" },
       ["<M-S-Up>"] = { { n = "v{", v = "{", i = "<C-O>v{" }, "Select to Previous Paragraph" },
+      ["<D-M-Down>"] = { '<Plug>(VM-Add-Cursor-Down)', "Add cursor below" },
       -- ===========================================================================
       -- FOLDING
       -- ===========================================================================

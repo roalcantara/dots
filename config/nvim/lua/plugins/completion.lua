@@ -1,8 +1,7 @@
-local get_default_sources = require('core/vi/ui/lsp/sources_by_filetype')
-
 return {
   {
     "saghen/blink.cmp",
+    event = 'VeryLazy',
     dependencies = {
       -- LAZYDEV - Configure Lua LSP Neovim config for runtime, plugins, completions, annotations, signatures and apis
       -- https://github.com/folke/lazydev.nvim

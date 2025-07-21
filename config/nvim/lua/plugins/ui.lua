@@ -2,12 +2,65 @@
 -- You can structure your lua/plugins folder with a file per plugin, or a separate file containing all the plugin specs for some functionality.
 -- You can create as many files there as you want. In order to disable a plugin, add a spec with enabled=false
 -- https://lazyvim.org/configuration/plugins
-local paths = require('core/vi/fn/paths')
-local execute_on_esc = require('core/vi/maps/execute_on_esc')
-local snacks_default_exclusions = require('core/vi/ui/snacks/defaults').default_exclusions
-local header = require('core/vi/ui/snacks/dashboard').header
-
 return {
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin-macchiato",
+    },
+  },
+
+  -- -- Catppuccin | Soothing pastel theme for (Neo)vim
+  -- -- https://github.com/catppuccin/nvim?tab=readme-ov-file
+  -- {
+  --   'catppuccin/nvim',
+  --   name = "catppuccin",
+  --   priority = 1000,
+  --   opts = function(_, opts)
+  --     return vim.tbl_deep_extend('force', opts or {}, {
+  --       flavour = 'macchiato',
+  --       show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
+  --       term_colors = true,        -- sets terminal colors (e.g. `g:terminal_color_0`)
+  --       dim_inactive = {
+  --         enabled = true,          -- dims the background color of inactive window
+  --         shade = "dark",
+  --         percentage = 0.15,       -- percentage of the shade to apply to the inactive window
+  --       },
+  --       default_integrations = true,
+  --       integrations = {
+  --         blink_cmp = {
+  --           style = 'bordered',
+  --         },
+  --         native_lsp = {
+  --           enabled = true,
+  --           virtual_text = {
+  --             errors = { "italic" },
+  --             hints = { "italic" },
+  --             warnings = { "italic" },
+  --             information = { "italic" },
+  --             ok = { "italic" },
+  --           },
+  --           underlines = {
+  --             errors = { "underline" },
+  --             hints = { "underline" },
+  --             warnings = { "underline" },
+  --             information = { "underline" },
+  --             ok = { "underline" },
+  --           },
+  --           inlay_hints = {
+  --             background = true,
+  --           },
+  --         },
+  --       },
+  --       custom_highlights = function(colors)
+  --         return {
+  --           TerminalNormal = { bg = colors.crust },
+  --         }
+  --       end
+  --     })
+  --   end,
+  -- },
+
   -- Treesitter is a new parser generator tool to power faster and more accurate syntax highlighting
   -- https://lazyvim.org/configuration/examples
   -- https://lazyvim.org/plugins/treesitter#nvim-treesitter
@@ -50,66 +103,15 @@ return {
     end,
   },
 
-  -- Catppuccin | Soothing pastel theme for (Neo)vim
-  -- https://github.com/catppuccin/nvim?tab=readme-ov-file
-  {
-    'catppuccin/nvim',
-    name = "catppuccin",
-    priority = 1000,
-    opts = function(_, opts)
-      return vim.tbl_deep_extend('force', opts or {}, {
-        flavour = 'macchiato',
-        show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
-        term_colors = true,        -- sets terminal colors (e.g. `g:terminal_color_0`)
-        dim_inactive = {
-          enabled = true,          -- dims the background color of inactive window
-          shade = "dark",
-          percentage = 0.15,       -- percentage of the shade to apply to the inactive window
-        },
-        default_integrations = true,
-        integrations = {
-          blink_cmp = {
-            style = 'bordered',
-          },
-          native_lsp = {
-            enabled = true,
-            virtual_text = {
-              errors = { "italic" },
-              hints = { "italic" },
-              warnings = { "italic" },
-              information = { "italic" },
-              ok = { "italic" },
-            },
-            underlines = {
-              errors = { "underline" },
-              hints = { "underline" },
-              warnings = { "underline" },
-              information = { "underline" },
-              ok = { "underline" },
-            },
-            inlay_hints = {
-              background = true,
-            },
-          },
-        },
-        custom_highlights = function(colors)
-          return {
-            TerminalNormal = { bg = colors.crust },
-          }
-        end
-      })
-    end,
-  },
-
   -- SNACKS | A modern UI library for Neovim | https://github.com/folke/snacks.nvim
   -- https://lazyvim.org/extras/editor/snacks_picker#snacksnvim-1
   {
     'folke/snacks.nvim',
     dependencies = {
-      'folke/flash.nvim',
-      'folke/trouble.nvim',
+      'folke/flash.nvim'
     },
     opts = function(_, opts)
+      local snacks_default_exclusions = require('core/vi/ui/snacks/defaults').default_exclusions
       return vim.tbl_deep_extend('force', opts or {}, {
         dashboard = {
           enabled = true,
@@ -118,7 +120,7 @@ return {
             pick = function(cmd, opt)
               return LazyVim.pick(cmd, opt)()
             end,
-            header = header(),
+            header = require('core/vi/ui/snacks/dashboard').header(),
             keys = {
               { icon = '󰀶 ', key = 's', desc = 'Smart Find Files', action = ':lua Snacks.picker.smart({})' },
               { icon = ' ', key = 'f', desc = 'Find File', action = ':lua Snacks.picker.files()' },
@@ -132,7 +134,7 @@ return {
           },
           sections = {
             { section = 'header' },
-            { section = 'keys', gap = 1, padding = 1 },
+            { section = 'keys',   gap = 1, padding = 1 },
             { section = 'startup' },
           },
         },
@@ -238,7 +240,7 @@ return {
           win = {
             style = 'zen',
           },
-          on_open = execute_on_esc({
+          on_open = require('core/vi/maps/execute_on_esc')({
             on_esc = function(_)
               return Snacks.zen()
             end,
@@ -263,10 +265,6 @@ return {
             file = { filename_first = true },
           },
           actions = {
-            trouble_open = function(...)
-              return require('trouble.sources.snacks').actions.trouble_open.action(...)
-            end,
-
             flash = function(picker)
               require('flash').jump({
                 pattern = '',
@@ -511,8 +509,7 @@ return {
             input = {
               keys = {
                 s = 'flash',
-                ['<A-s>'] = { 'flash', mode = { 'n', 'i' } },
-                ['<c-t>'] = { 'trouble_open', mode = { 'n', 'i' } },
+                ['<A-s>'] = { 'flash', mode = { 'n', 'i' } }
               },
             },
           },
@@ -552,6 +549,7 @@ return {
   -- +-------------------------------------------------+
   {
     'nvim-lualine/lualine.nvim',
+    event = 'VeryLazy',
     opts = function(_, opts)
       local function refresh(scope, ...)
         local places = { ... }
@@ -647,7 +645,7 @@ return {
       {
         'bezhermoso/tree-sitter-ghostty',
         build = 'make nvim_install',
-        cond = paths.is_executable('ghostty'),
+        cond = require('core/vi/fn/paths').is_executable('ghostty'),
       },
     },
     config = function()
@@ -665,8 +663,8 @@ return {
   -- https://github.com/isak102/ghostty.nvim
   {
     'isak102/ghostty.nvim',
-    event = 'VeryLazy',
-    cond = paths.is_executable('ghostty'),
+    lazy = true,
+    cond = require('core/vi/fn/paths').is_executable('ghostty'),
     opts = {
       -- The autocmd pattern matched against the filename of the buffer. If this pattern
       -- matches, ghostty.nvim will run on save in that buffer. This pattern is passed to
@@ -685,8 +683,8 @@ return {
   -- https://youtu.be/E4qXZv34NQQ?si=612rj4bmIUpgnsDw&t=203
   {
     'nvzone/showkeys',
+    lazy = true,
     cmd = 'ShowkeysToggle',
-    event = 'VeryLazy',
     -- Called during startup, plugins' configurations typically is set in an init function
     init = function()
       vim.cmd('ShowkeysToggle')

@@ -1,19 +1,19 @@
-local user_command = require("core/vi/maps/user_command")
-local is_git_repo = require("core/vi/git").is_git_repo
-local snacks_filetypes = require("core/vi/ui/snacks/pickers/filetypes")
-local snacks_scratch = require("core/vi/ui/snacks/scratch")
-local snacks_lua_path_items = require("core/vi/ui/snacks/pickers/lua_path_items")
-local snacks_runtimepath_items = require("core/vi/ui/snacks/pickers/runtimepath_items")
-local snacks_options = require("core/vi/ui/snacks/pickers/options")
-local snacks_move_buffer_split = require("core/vi/ui/snacks/pickers/move_buffer_split")
-local get_valid_buffers = require("core/vi/fn/get_valid_buffers")
+local user_command = require('core/vi/maps/user_command')
+local is_git_repo = require('core/vi/git').is_git_repo
+local snacks_filetypes = require('core/vi/ui/snacks/pickers/filetypes')
+local snacks_scratch = require('core/vi/ui/snacks/scratch')
+local snacks_lua_path_items = require('core/vi/ui/snacks/pickers/lua_path_items')
+local snacks_runtimepath_items = require('core/vi/ui/snacks/pickers/runtimepath_items')
+local snacks_options = require('core/vi/ui/snacks/pickers/options')
+local snacks_move_buffer_split = require('core/vi/ui/snacks/pickers/move_buffer_split')
+local get_valid_buffers = require('core/vi/fn/get_valid_buffers')
 
 --- Create a command that can be used in keymaps
 --- @param command string|function Command to execute
 --- @param opts table|nil Options for the command
 --- @return function cmd A function to execute the command
 local function cmd(command, opts)
-  if type(command) == "function" then
+  if type(command) == 'function' then
     if opts then
       return function()
         return command(opts)
@@ -22,7 +22,7 @@ local function cmd(command, opts)
     return command
   end
 
-  if type(command) == "string" then
+  if type(command) == 'string' then
     return function()
       return vim.cmd(command)
     end
@@ -59,7 +59,7 @@ local function keymap(mode, lhs, rhs, desc, opts)
 
   local success_keymap = pcall(set_keymap, mode, lhs, rhs, desc, opts)
   if not success_keymap then
-    vim.notify("Failed to set keymap: " .. lhs .. " for command: " .. tostring(rhs), vim.log.levels.ERROR)
+    vim.notify('Failed to set keymap: ' .. lhs .. ' for command: ' .. tostring(rhs), vim.log.levels.ERROR)
   end
 end
 
@@ -68,29 +68,29 @@ end
 --- @return string The formatted key combination with symbols
 local function format_key_combination(key)
   local result = key
-  result = result:gsub("<D%-M%-", "⌘ ⌥ ") -- Command + Alt
-  result = result:gsub("<D%-C%-", "⌘ ⌃ ") -- Command + Control
-  result = result:gsub("<D%-S%-", "⌘ ⇧ ") -- Command + Shift
-  result = result:gsub("<A%-S%-", "⌥ ⇧ ") -- Alt + Shift
-  result = result:gsub("<C%-S%-", "⌃ ⇧ ") -- Control + Shift
-  result = result:gsub("<M%-S%-", "⌥ ⇧ ") -- Meta + Shift
-  result = result:gsub("<D%-", "⌘ ") -- Command
-  result = result:gsub("<A%-", "⌥ ") -- Alt
-  result = result:gsub("<C%-", "⌃ ") -- Control
-  result = result:gsub("<S%-", "⇧ ") -- Shift
-  result = result:gsub("<M%-", "⌥ ") -- Meta (Alt)
-  result = result:gsub("Up>", "↑") -- Up arrow
-  result = result:gsub("Down>", "↓") -- Down arrow
-  result = result:gsub("Left>", "←") -- Left arrow
-  result = result:gsub("Right>", "→") -- Right arrow
-  result = result:gsub("Space>", "␣") -- Space
-  result = result:gsub("CR>", "↵") -- Enter/Return
-  result = result:gsub("Tab>", "⇥") -- Tab
-  result = result:gsub("Enter>", "↵") -- Enter
-  result = result:gsub("Return>", "↵") -- Return
-  result = result:gsub("Esc>", "⎋") -- Escape
-  result = result:gsub(">", "") -- Remove remaining >
-  result = result:gsub("%-", " ") -- Replace - with space
+  result = result:gsub('<D%-M%-', '⌘ ⌥ ') -- Command + Alt
+  result = result:gsub('<D%-C%-', '⌘ ⌃ ') -- Command + Control
+  result = result:gsub('<D%-S%-', '⌘ ⇧ ') -- Command + Shift
+  result = result:gsub('<A%-S%-', '⌥ ⇧ ') -- Alt + Shift
+  result = result:gsub('<C%-S%-', '⌃ ⇧ ') -- Control + Shift
+  result = result:gsub('<M%-S%-', '⌥ ⇧ ') -- Meta + Shift
+  result = result:gsub('<D%-', '⌘ ') -- Command
+  result = result:gsub('<A%-', '⌥ ') -- Alt
+  result = result:gsub('<C%-', '⌃ ') -- Control
+  result = result:gsub('<S%-', '⇧ ') -- Shift
+  result = result:gsub('<M%-', '⌥ ') -- Meta (Alt)
+  result = result:gsub('Up>', '↑') -- Up arrow
+  result = result:gsub('Down>', '↓') -- Down arrow
+  result = result:gsub('Left>', '←') -- Left arrow
+  result = result:gsub('Right>', '→') -- Right arrow
+  result = result:gsub('Space>', '␣') -- Space
+  result = result:gsub('CR>', '↵') -- Enter/Return
+  result = result:gsub('Tab>', '⇥') -- Tab
+  result = result:gsub('Enter>', '↵') -- Enter
+  result = result:gsub('Return>', '↵') -- Return
+  result = result:gsub('Esc>', '⎋') -- Escape
+  result = result:gsub('>', '') -- Remove remaining >
+  result = result:gsub('%-', ' ') -- Replace - with space
   return result
 end
 
@@ -100,17 +100,17 @@ end
 local function mappings(maps)
   for key, value in pairs(maps) do
     local action = value[1]
-    local desc = value[2] or ""
+    local desc = value[2] or ''
     local opts = value[3] or {}
 
     -- Convert key combination to readable format
     local readable_key = format_key_combination(key)
 
-    if type(action) == "table" then
+    if type(action) == 'table' then
       -- Handle mode-specific mappings
       for mode, command in pairs(action) do
         local mode_prefix = mode:upper()
-        local full_desc = string.format("[%s] [%s] %s", mode_prefix, readable_key, desc)
+        local full_desc = string.format('[%s] [%s] %s', mode_prefix, readable_key, desc)
         local options = opts.expr and { expr = true } or {}
         keymap(mode, key, command, full_desc, options)
         if opts and opts.cmd then
@@ -126,8 +126,8 @@ local function mappings(maps)
       end
     else
       -- Handle single mapping (defaults to normal mode)
-      local full_desc = string.format("[%s] %s", readable_key, desc)
-      keymap("n", key, action, full_desc)
+      local full_desc = string.format('[%s] %s', readable_key, desc)
+      keymap('n', key, action, full_desc)
       if opts and opts.cmd then
         -- If opts.cmd is provided, create a user command
         user_command(opts.cmd, action, full_desc)
@@ -144,13 +144,13 @@ local function clever_tab()
   local before_cursor = line:sub(1, col)
 
   -- Only whitespace before cursor
-  if before_cursor:match("^%s*$") then
-    return "<Tab>"
+  if before_cursor:match('^%s*$') then
+    return '<Tab>'
   end
 
   -- Completion menu is visible
   if vim.fn.pumvisible() == 1 then
-    return "<C-n>"
+    return '<C-n>'
   end
 
   -- Check if LSP is available and can provide completion
@@ -165,19 +165,19 @@ local function clever_tab()
   end
 
   -- Trigger completion if after word character
-  if before_cursor:match("%w$") then
+  if before_cursor:match('%w$') then
     if has_lsp_completion then
       -- Trigger LSP completion
       vim.lsp.completion.get()
-      return ""
-    elseif vim.bo.omnifunc ~= "" then
-      return "<C-x><C-o>"
+      return ''
+    elseif vim.bo.omnifunc ~= '' then
+      return '<C-x><C-o>'
     else
-      return "<C-n>"
+      return '<C-n>'
     end
   end
 
-  return "<Tab>"
+  return '<Tab>'
 end
 
 --- Completion handling and modern Neovim features on SHIFT+TAB
@@ -185,7 +185,7 @@ end
 local function clever_shift_tab()
   -- If completion menu is visible, go to previous item
   if vim.fn.pumvisible() == 1 then
-    return "<C-p>"
+    return '<C-p>'
   end
 
   local line = vim.api.nvim_get_current_line()
@@ -193,24 +193,24 @@ local function clever_shift_tab()
   local before_cursor = line:sub(1, col)
 
   -- Smart unindenting
-  if before_cursor:match("^%s+$") then
-    return "<C-d>"
+  if before_cursor:match('^%s+$') then
+    return '<C-d>'
   end
 
-  return "<S-Tab>"
+  return '<S-Tab>'
 end
 
 local function autoclose_on_last_buffer()
   local real_bufs = get_valid_buffers({
-    "snacks_picker",
-    "snacks_picker_list",
-    "lazy",
-    "mason",
-    "help",
-    "qf"
+    'snacks_picker',
+    'snacks_picker_list',
+    'lazy',
+    'mason',
+    'help',
+    'qf',
   })
   if #real_bufs == 0 then
-    vim.cmd("quit")
+    vim.cmd('quit')
   end
 end
 
@@ -219,26 +219,46 @@ local function smart_buffer_close(opts)
   vim.schedule(autoclose_on_last_buffer)
 end
 
+local function clear_all()
+  vim.cmd('mapclear')        -- Clear all keymaps
+  vim.cmd('mapclear!')       -- Clear all keymaps including those set by plugins
+  vim.cmd('nmapclear')       -- Clear normal mode keymaps
+  vim.cmd('vmapclear')       -- Clear visual mode keymaps
+  vim.cmd('xmapclear')       -- Clear visual block mode keymaps
+  vim.cmd('smapclear')       -- Clear select mode keymaps
+  vim.cmd('omapclear')       -- Clear operator-pending mode keymaps
+  vim.cmd('imapclear')       -- Clear insert mode keymaps
+  vim.cmd('lmapclear')       -- Clear language map keymaps
+  vim.cmd('cmapclear')       -- Clear command mode keymaps
+  vim.cmd('tmapclear')       -- Clear terminal mode keymaps
+  vim.cmd('autocmd!')        -- Clear all autocommands
+  vim.cmd('comclear')        -- Clear all user commands
+  vim.cmd('highlight clear') -- Clear all highlights
+  vim.cmd('set all&')        -- Reset all options to their default values
+  vim.cmd('filetype off')    -- Disable filetype detection
+  vim.cmd('syntax off')      -- Disable syntax highlighting
+end
+
 -- Terminal state management
 local terminal_state = {
   buf = nil,
   win = nil,
-  is_open = false
+  is_open = false,
 }
 
 local actions = {
   --- @alias actions.edit { cut: function, copy: function, paste: function, undo: function, save: function, close: function, redo: function, new: function, select_all: function, replace_all: function, rename_file: function }
   edit = {
-    cut = cmd("normal x"),
-    copy = cmd("normal y"),
-    paste = cmd("normal P"),
-    undo = cmd("normal U"),
-    save = cmd("normal w"),
-    close = cmd("normal q"),
-    redo = cmd("normal <C-r>"),
-    new = cmd("ene | startinsert"),
-    select_all = cmd("normal ggVG"),
-    replace_all = cmd("normal %s///g"),
+    cut = cmd('normal x'),
+    copy = cmd('normal y'),
+    paste = cmd('normal P'),
+    undo = cmd('normal U'),
+    save = cmd('normal w'),
+    close = cmd('normal q'),
+    redo = cmd('normal <C-r>'),
+    new = cmd('ene | startinsert'),
+    select_all = cmd('normal ggVG'),
+    replace_all = cmd('normal %s///g'),
     rename_file = cmd(Snacks.rename.rename_file),
   },
   --- @alias actions.buf { close: function, close_all: function, close_others: function, pick: function, next: function, prev: function, last: function }
@@ -261,15 +281,15 @@ local actions = {
 
     --- Go to next buffer
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbufnext
-    next = cmd("BufferLineCycleNext"),
+    next = cmd('BufferLineCycleNext'),
 
     --- Go to previous buffer
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbufprevious
-    prev = cmd("BufferLineCyclePrev"),
+    prev = cmd('BufferLineCyclePrev'),
 
     --- Go to last buffer
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbuflast
-    last = cmd("buffer #"),
+    last = cmd('buffer #'),
   },
   --- @alias actions.pick { highlights: function, keymaps: function, commands: function, smart: function, files: function, grep: function, find: function, explorer: function, help: function, diagnostics: function, diagnostics_buffer: function, filetypes: function, options: function, lua_path_items: function, runtimepath_items: function, buffers: function, autocmds: function, command_history: function, colorschemes: function, icons: function, lazy: function, notifications: function, recent: function, jumps: function, move_buffer_split: function, execute: function }
   pick = {
@@ -316,8 +336,8 @@ local actions = {
     grep = function()
       if is_git_repo() then
         return Snacks.picker.git_grep({
-          finder = "git_grep",
-          format = "file",
+          finder = 'git_grep',
+          format = 'file',
           untracked = true,
           need_search = true,
           submodules = false,
@@ -328,9 +348,9 @@ local actions = {
       end
 
       return Snacks.picker.grep({
-        finder = "grep",
+        finder = 'grep',
         regex = true,
-        format = "file",
+        format = 'file',
         show_empty = true,
         live = true, -- live grep by default
         supports_live = true,
@@ -351,11 +371,11 @@ local actions = {
 
     --- Search and pick for Neovim diagnostics
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#diagnostics
-    diagnostics = cmd(Snacks.picker.diagnostics, { focus = true, layout = { preset = "ivy" } }),
+    diagnostics = cmd(Snacks.picker.diagnostics, { focus = true, layout = { preset = 'ivy' } }),
 
     --- Search and pick for Neovim buffer diagnostics
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#diagnostics_buffer
-    diagnostics_buffer = cmd(Snacks.picker.diagnostics_buffer, { focus = true, layout = { preset = "ivy" } }),
+    diagnostics_buffer = cmd(Snacks.picker.diagnostics_buffer, { focus = true, layout = { preset = 'ivy' } }),
 
     --- Search and pick for Neovim buffers
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#buffers
@@ -410,9 +430,9 @@ local actions = {
 
     --- Search and execute Neovim command
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#commands
-    execute = cmd(Snacks.picker.pick, { source = "execute" }),
+    execute = cmd(Snacks.picker.pick, { source = 'execute' }),
   },
-  --- @alias actions.toggle { new_scratch: function, select_scratch: function, menus: table<string, string>, news: function, zen: function, term: function }
+  --- @alias actions.toggle { new_scratch: function, select_scratch: function, menus: table<string, string>, news: function, zen: function, term: function, comments: table<string, function> } }
   toggle = {
     --- Open new scratch buffer
     --- @see source https://github.com/folke/snacks.nvim/discussions/765#discussion-7880347
@@ -420,20 +440,20 @@ local actions = {
 
     --- Search and pick for FzfLua menus
     --- @see docs https://github.com/ibhagwan/fzf-lua?tab=readme-ov-file#misc
-    menus = { n = "<CMD>FzfLua menus<CR>", i = "<ESC><CMD>FzfLua menus<CR>", v = "<ESC><CMD>FzfLua menus<CR>" },
+    menus = { n = '<CMD>FzfLua menus<CR>', i = '<ESC><CMD>FzfLua menus<CR>', v = '<ESC><CMD>FzfLua menus<CR>' },
 
     --- Toggle Neovim news
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/win.md#-usage
     news = function()
       return Snacks.win({
-        file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
+        file = vim.api.nvim_get_runtime_file('doc/news.txt', false)[1],
         width = 0.6,
         height = 0.6,
         wo = {
           spell = false,
           wrap = false,
-          signcolumn = "yes",
-          statuscolumn = " ",
+          signcolumn = 'yes',
+          statuscolumn = ' ',
           conceallevel = 3,
         },
       })
@@ -471,19 +491,46 @@ local actions = {
         vim.cmd.startinsert()
         terminal_state.is_open = true
       end
-    end
-  },
-  --- @alias actions.ev { src_vimrc: string, src_file: string, src_vimrc_file: function, file: table<string, string>, line: table<string, string>, selection: table<string, string> }
-  ev = {
-    src_vimrc = "<CMD>source $MYVIMRC<CR>",
-    src_file = "<CMD>source %<CR>",
-    src_vimrc_file = function()
-      vim.cmd("source $MYVIMRC")
-      vim.cmd("source %")
     end,
-    file = { n = "<CMD>source %<CR>", i = "<ESC><CMD>source %<CR>", v = "<ESC><CMD>source %<CR>" },
-    line = { n = "<CMD>.:lua<CR>", i = "<ESC><CMD>.:lua<CR>", v = "<ESC><CMD>.:lua<CR>" },
-    selection = { n = "<CMD>:lua<CR>", i = "<ESC><CMD>:lua<CR>", v = "<ESC><CMD>:lua<CR>" },
+
+    comments = {
+      -- n = function() return vim.cmd('nmap <D-/> gcc') end,
+      n = function()
+        local line = vim.fn.line('.')
+        return require('mini.comment').toggle_lines(line, line)
+      end,
+      -- i = function() return vim.cmd('imap <D-/> <C-O>gcc') end,
+      i = function()
+        local line = vim.fn.line('.')
+        return require('mini.comment').toggle_lines(line, line)
+      end,
+      -- v = function() return vim.cmd('nmap <D-/> gc') end,
+      v = function()
+        local start_line = vim.fn.line('v')
+        local end_line = vim.fn.line('.')
+        return require('mini.comment').toggle_lines(start_line, end_line)
+      end,
+      o = function()
+        return require('mini.comment').textobject()
+      end
+    },
+  },
+  --- @alias actions.ev { src_vimrc: string, src_file: string, src_vimrc_file: function, file: table<string, string>, line: table<string, string>, selection: table<string, string>, add_cursor_below: function }
+  ev = {
+    src_vimrc = '<CMD>source $MYVIMRC<CR>',
+    src_file = '<CMD>source %<CR>',
+    src_vimrc_file = function()
+      vim.cmd('source $MYVIMRC')
+      vim.cmd('source %')
+    end,
+    file = { n = '<CMD>source %<CR>', i = '<ESC><CMD>source %<CR>', v = '<ESC><CMD>source %<CR>' },
+    line = { n = '<CMD>.:lua<CR>', i = '<ESC><CMD>.:lua<CR>', v = '<ESC><CMD>.:lua<CR>' },
+    selection = { n = '<CMD>:lua<CR>', i = '<ESC><CMD>:lua<CR>', v = '<ESC><CMD>:lua<CR>' },
+    add_cursor_below = function()
+      local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+      vim.cmd('normal! \x16')
+      vim.cmd('normal! j')
+    end,
   },
   --- @alias actions.lsp { config: function, declarations: function, definitions: function, implementations: function, references: function, symbols: function, workspace_symbols: function, type_definitions: function, signature_help: function }
   lsp = {
@@ -509,11 +556,11 @@ local actions = {
 
     --- Search and pick for lsp_symbols
     --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_symbols
-    symbols = cmd(Snacks.picker.lsp_symbols, { layout = "dropdown", enter = true, focus = "list" }),
+    symbols = cmd(Snacks.picker.lsp_symbols, { layout = 'dropdown', enter = true, focus = 'list' }),
 
     --- Search and pick for lsp_workspace_symbols
     --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_workspace_symbols
-    workspace_symbols = cmd(Snacks.picker.lsp_workspace_symbols, { layout = "dropdown", enter = true, focus = "list" }),
+    workspace_symbols = cmd(Snacks.picker.lsp_workspace_symbols, { layout = 'dropdown', enter = true, focus = 'list' }),
 
     --- Search and pick for lsp_type_definitions
     --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_type_definitions
@@ -525,7 +572,7 @@ local actions = {
       return vim.lsp.buf.signature_help({
         focusable = false,
         focus = false,
-        close_events = { "CursorMoved", "InsertLeave", "BufHide", "BufLeave", "WinLeave", "FocusLost", "InsertCharPre" }
+        close_events = { 'CursorMoved', 'InsertLeave', 'BufHide', 'BufLeave', 'WinLeave', 'FocusLost', 'InsertCharPre' },
       })
     end,
   },
@@ -533,11 +580,25 @@ local actions = {
   on = {
     tab = clever_tab,
     shift_tab = clever_shift_tab,
+  },
+  --- @alias actions.setup { clear_all: function, toggle_comments_mappings: function }
+  setup = {
+    -- Clear all keymaps, autocommands, commands, highlights, and options
+    clear_all = clear_all,
+
+    -- nvim 0.10.0 has builtin support for commenting (:h commenting)
+    -- NATIVE COMMENTS (https://neovim.io/doc/user/various.html#commenting)
+    -- But doesn't work when remapping with `vim.keymap.set` so we call directly...
+    -- gc<motion> must to be used manually
+    toggle_comments_mappings = function(key)
+      vim.cmd('nmap ' .. key .. ' gcc')
+      vim.cmd('imap ' .. key .. ' <C-O>gcc')
+    end,
   }
 }
 
 --- Parses the mappings table and creates keymaps
---- @alias kmaps.Opts { edit: actions.edit, buf: actions.buf, pick: actions.pick, toggle: actions.toggle, lsp: actions.lsp, ev: actions.ev, on: actions.on }
+--- @alias kmaps.Opts { edit: actions.edit, buf: actions.buf, pick: actions.pick, toggle: actions.toggle, lsp: actions.lsp, ev: actions.ev, on: actions.on, setup: actions.setup }
 --- @param fn fun(opts: kmaps.Opts): table A function that returns a table of keymaps
 --- @return nil Keymaps are created
 local function maps(fn)
@@ -548,7 +609,8 @@ local function maps(fn)
     toggle = actions.toggle,
     lsp = actions.lsp,
     ev = actions.ev,
-    on = actions.on
+    on = actions.on,
+    setup = actions.setup,
   })
   return mappings(keymappings)
 end

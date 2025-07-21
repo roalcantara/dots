@@ -202,6 +202,7 @@ end
 
 --- Comprehensive keymap disabling with feedback
 --- @param verbose boolean|nil Whether to print feedback
+--- @return number Number of keymaps disabled
 local function disable_all_lazyvim_keymaps_comprehensive(verbose)
   verbose = verbose or false
 
