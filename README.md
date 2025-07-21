@@ -137,7 +137,7 @@ git clone https://github.com/roalcantara/dots
 - Run the Container Structure Tests
 
   ```sh
-  container-structure-test test --image cockpit:ubuntu-arm64 --config distros/ubuntu/container-structure-test.yml
+  container-structure-test test --image dots:ubuntu-arm64-dev --config distros/ubuntu/container-structure-test.yml
   ```
 
 ## ACKNOWLEDGEMENTS

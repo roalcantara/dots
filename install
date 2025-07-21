@@ -240,9 +240,8 @@ step_prepare() {
   if has_command apt; then
     # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
     exec_cmd apt-get update &&
-      apt-get install -y --no-install-recommends sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev cowsay fortune fortunes fortunes-min &&
-      sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/* &&
-      sudo ln -sf /usr/games/cowsay $USR_LOCAL_BIN/cowsay && sudo ln -sf /usr/games/fortune $USR_LOCAL_BIN/fortune
+      apt-get install -y --no-install-recommends sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev &&
+      sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 
     if [ -n "$TIMEZONE" ]; then
       ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime && echo "$TIMEZONE" >/etc/timezone
@@ -321,6 +320,9 @@ step_dotfiles() {
     if ! exec_cmd git -C "$DOTS_DIR" pull origin main; then
       e "[DOTS] Failed to update repository"
     fi
+  elif [ -d "$DOTS_DIR" ]; then
+    i "[DOTS] Dots directory exists at '$DOTS_DIR' but is not a git repository. Skipping clone/update."
+    i "[DOTS] Assuming dots are already installed or will be handled separately."
   else
     i "[DOTS] Cloning from $REPO_URL into '$DOTS_DIR'..."
     if ! exec_cmd sudo git clone --depth 1 "$REPO_URL" "$DOTS_DIR"; then
@@ -428,7 +430,7 @@ step_mise() {
 
   # Set mise to use global packages
   i "[MISE] Setting mise packages to be used globally..."
-  exec_cmd mise use --cd "$DOTS_DIR" --yes --global --pin ripgrep age bat delta eza fd fzf gh neovim sops starship usage watchexec zoxide gum node python ruby
+  exec_cmd mise use --cd "$DOTS_DIR" --yes --global --pin ripgrep age bat delta eza fd fzf gh neovim sops starship usage watchexec zoxide gum node python ruby go
   w "[MISE] Mise packages being used globally ✔︎"
 
   # Cleanup GitHub token
@@ -441,23 +443,23 @@ step_zsh() {
 
   # Create the ~/.cache/zsh/compcache directory if it doesn't exist
   if [ ! -d "$ZSH_COMPCACHE" ]; then
-    mkdir -p "$ZSH_COMPCACHE"
-    sudo chown -R "$USERNAME:$GROUPNAME" "$ZSH_COMPCACHE"
+    exec_cmd mkdir -p "$ZSH_COMPCACHE"
+    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$ZSH_COMPCACHE"
     i "[ZSH] $ZSH_COMPCACHE created and owned by '$USERNAME' ✔︎"
   fi
 
   # Create symlinks for the ZSH config files
   for file in .zshenv .zprofile .zshrc; do
     if [ -f "$ZDOTDIR/$file" ] && [ ! -L "$HOME/$file" ]; then
-      ln -sf "$ZDOTDIR/$file" "$HOME/$file"
-      sudo chown -R "$USERNAME:$GROUPNAME" "$HOME/$file"
+      exec_cmd ln -sf "$ZDOTDIR/$file" "$HOME/$file"
+      exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$HOME/$file"
       i "[ZSH] $ZDOTDIR/$file symlinked to $HOME/$file owned by '$USERNAME' ✔︎"
     fi
   done
 
   if [ ! -d "$XDG_STATE_HOME/zim" ]; then
-    sudo mkdir -p "$XDG_STATE_HOME/zim"
-    sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/zim"
+    exec_cmd sudo mkdir -p "$XDG_STATE_HOME/zim"
+    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/zim"
     i "[ZSH] $XDG_STATE_HOME/zim created and owned by '$USERNAME' ✔︎"
   fi
 
@@ -467,8 +469,8 @@ step_nvim() {
   section "[NVIM] Setup started..."
 
   # Create necessary directories for nvim and npm
-  sudo mkdir -p "$XDG_STATE_HOME/nvim" "$XDG_DATA_HOME/nvim" "$XDG_STATE_HOME/npm"
-  sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/nvim" "$XDG_DATA_HOME/nvim" "$XDG_STATE_HOME/npm"
+  exec_cmd sudo mkdir -p "$XDG_STATE_HOME/nvim" "$XDG_DATA_HOME/nvim" "$XDG_STATE_HOME/npm"
+  exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/nvim" "$XDG_DATA_HOME/nvim" "$XDG_STATE_HOME/npm"
   i "[NVIM] '$XDG_STATE_HOME/npm' & '$XDG_LOCAL_DIR/(state|share)/nvim' created and owned by '$USERNAME' ✔︎"
 
   export npm_config_cache="$XDG_STATE_HOME/npm"
@@ -481,8 +483,8 @@ step_nvim() {
   fi
 
   if [ -d "$HOME/.config/nvim" ]; then
-    cd "$HOME/.config/nvim" &&
-      "$MISE_DATA_HOME/shims/nvim" --headless +verbose \
+    exec_cmd cd "$HOME/.config/nvim" &&
+      exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless +verbose \
         +'Lazy! sync' \
         +'Lazy! clean' \
         +'Lazy! clear' \
@@ -497,7 +499,7 @@ step_chown() {
   section "[CHOWN] Ensuring ownership of essential directories started..."
 
   if [ -d "$XDG_LOCAL_DIR" ]; then
-    sudo chown "$USERNAME:$GROUPNAME" "$XDG_LOCAL_DIR"
+    exec_cmd sudo chown "$USERNAME:$GROUPNAME" "$XDG_LOCAL_DIR"
     i "[CHOWN] '$XDG_LOCAL_DIR' are owned by '$USERNAME:$GROUPNAME' ✔︎"
   else
     w "[CHOWN] '$XDG_LOCAL_DIR' does not exist. Skipping.. ✔︎"
@@ -505,7 +507,7 @@ step_chown() {
 
   for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" "$XDG_DATA_HOME"; do
     if [ -d "$dir" ]; then
-      sudo chown -R "$USERNAME:$GROUPNAME" "$dir"
+      exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$dir"
       i "[CHOWN] '$dir' are owned (recursively) by '$USERNAME:$GROUPNAME' ✔︎"
     else
       w "[CHOWN] '$dir' does not exist. Skipping.. ✔︎"
