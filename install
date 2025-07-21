@@ -465,22 +465,85 @@ step_zsh() {
 
   s "[ZSH] Setup completed ✔︎"
 }
+
+# https://neovim.io/doc/user/provider.html#provider-nodejs
+step_nvim_setup_provider_npm() {
+  section "[NVIM/NPM] Setting up NPM provider..."
+  if ! command -v npm >/dev/null 2>&1; then
+    w "[NVIM/NPM] npm is not installed! skipping..."
+    return
+  fi
+
+  if [ ! -d "$XDG_STATE_HOME/npm" ]; then
+    exec_cmd sudo mkdir -p "$XDG_STATE_HOME/npm"
+    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/npm"
+    i "[NVIM/NPM] '$XDG_STATE_HOME/npm' created and owned by '$USERNAME' ✔︎"
+  fi
+
+  export npm_config_cache="${npm_config_cache:-$XDG_STATE_HOME/npm}"
+  exec_cmd npm -g install neovim @mermaid-js/mermaid-cli
+  i "[NVIM/NPM] Required NPM packages installed at '$npm_config_cache' (owned by '$USERNAME') ✔︎"
+}
+
+# https://neovim.io/doc/user/provider.html#provider-python
+step_nvim_setup_provider_python() {
+  section "[NVIM/PYTHON] Setting up Python provider..."
+  if ! command -v python3 >/dev/null 2>&1; then
+    w "[NVIM/PYTHON] python3 is not installed! skipping..."
+    return
+  fi
+
+  if [ ! -d "$HOME/.config/nvim/env" ]; then
+    exec_cmd python3 -m venv "$HOME/.config/nvim/env"
+    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$HOME/.config/nvim/env"
+    i "[NVIM/PYTHON] '$HOME/.config/nvim/env' created and owned by '$USERNAME' ✔︎"
+  fi
+
+  exec_cmd source "$HOME/.config/nvim/env/bin/activate" && pip install pynvim
+  i "[NVIM/PYTHON] Required PIP packages installed at '$HOME/.config/nvim/env' (owned by '$USERNAME') ✔︎"
+}
+
+# https://neovim.io/doc/user/provider.html#provider-ruby
+step_nvim_setup_provider_ruby() {
+  section "[NVIM/RUBY] Setting up Ruby provider..."
+  if ! command -v gem >/dev/null 2>&1; then
+    w "[NVIM/RUBY] gem is not installed! skipping..."
+    return
+  fi
+
+  if [ ! -d "$GEM_HOME" ]; then
+    exec_cmd sudo mkdir -p "$GEM_HOME"
+    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$GEM_HOME"
+    i "[NVIM/RUBY] '$GEM_HOME' created and owned by '$USERNAME' ✔︎"
+  fi
+
+  exec_cmd gem update --system --no-document
+  exec_cmd gem install neovim rubocop
+  i "[NVIM/RUBY] Required GEM packages installed at '$GEM_HOME' (owned by '$USERNAME') ✔︎"
+}
+
 step_nvim() {
   section "[NVIM] Setup started..."
-
-  # Create necessary directories for nvim and npm
-  exec_cmd sudo mkdir -p "$XDG_STATE_HOME/nvim" "$XDG_DATA_HOME/nvim" "$XDG_STATE_HOME/npm"
-  exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/nvim" "$XDG_DATA_HOME/nvim" "$XDG_STATE_HOME/npm"
-  i "[NVIM] '$XDG_STATE_HOME/npm' & '$XDG_LOCAL_DIR/(state|share)/nvim' created and owned by '$USERNAME' ✔︎"
-
-  export npm_config_cache="$XDG_STATE_HOME/npm"
-  i "[NVIM] npm_config_cache exported to '$npm_config_cache' (owned by '$USERNAME') ✔︎"
 
   # Check if nvim is installed
   if [ ! -x "$MISE_DATA_HOME/shims/nvim" ]; then
     w "[NVIM] nvim is not installed at '$MISE_DATA_HOME/shims/nvim'! skipping..."
     return
   fi
+
+  if [ ! -d "$HOME/.config/nvim" ]; then
+    w "[NVIM] nvim is not installed at '$HOME/.config/nvim'! skipping..."
+    return
+  fi
+
+  # Create necessary directories for nvim
+  exec_cmd sudo mkdir -p "$XDG_STATE_HOME/nvim" "$XDG_DATA_HOME/nvim"
+  exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/nvim" "$XDG_DATA_HOME/nvim"
+  i "[NVIM] '$XDG_STATE_HOME/nvim' & '$XDG_DATA_HOME/nvim' created and owned by '$USERNAME' ✔︎"
+
+  step_nvim_setup_provider_npm
+  step_nvim_setup_provider_python
+  step_nvim_setup_provider_ruby
 
   if [ -d "$HOME/.config/nvim" ]; then
     exec_cmd cd "$HOME/.config/nvim" &&

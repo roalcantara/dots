@@ -188,6 +188,13 @@ if _has_command luajit; then
   export LUA_CPATH="./?.so;/usr/local/lib/lua/5.1/?.so;/opt/homebrew/lib/lua/5.1/?.so;/usr/local/lib/lua/5.1/loadall.so"
 fi
 
+if _has_command gem; then
+  # RubyGems | package manager for the Ruby programming language
+  # https://guides.rubygems.org/command-reference/#gem-environment
+  # 💡 gem env gempath
+  export GEM_HOME=$HOMEBREW_PREFIX/opt/gems
+fi
+
 if _has_command glow; then
   # GLOW | A terminal-based markdown reader, renderer, and formatter
   # https://charm.sh/docs/glow
