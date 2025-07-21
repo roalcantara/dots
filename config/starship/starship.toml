@@ -1,3 +1,6 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
 # Style Strings
 # Style strings are a list of words, separated by whitespace.
 # The words are not case sensitive (i.e. bold and BoLd are considered the same string).
@@ -253,3 +256,8 @@ number_threshold = 2
 symbol_threshold = 1
 style = 'bold bright-yellow dimmed blink'
 format = '[$number$symbol]($style) '
+
+# Disables the custom module
+# https://docs.warp.dev/terminal/appearance/prompt#starship-settings
+[custom]
+disabled = false
