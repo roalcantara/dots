@@ -1,0 +1,177 @@
+# The config file for mise
+# https://mise.jdx.dev/configuration.html
+
+# Dev Tools
+# Manages dev tools like node, python, cmake, terraform, and hundreds more
+# https://mise.jdx.dev/dev-tools
+# [tools]
+#   age       ="1.2.1"
+#   sops      ="3.10.2"
+
+# Tasks
+# Like make, it manages tasks used to build and test projects
+# https://mise.jdx.dev/tasks
+
+# mise_bin: String - Points to the path to the current mise executable
+# https://mise.jdx.dev/templates.html#variables
+# https://mise.jdx.dev/cli/install.html#mise-install
+
+# Tasks
+# Like make, it manages tasks used to build and test projects
+# https://mise.jdx.dev/tasks
+[tasks] # mise run
+  [tasks.'container'] # mise run container
+  description = "Start a container"
+  run = '''
+  #!/usr/bin/env bash
+
+  # Set defaults and parse options
+  USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
+  USAGE_DISTRO="{{option(name="distro", default="ubuntu")}}"
+  USAGE_IMAGE="{{option(name="image", default="base")}}"
+  USAGE_TAG="{{option(name="tag", default="dev")}}"
+
+  # Distro mapping
+  case "$USAGE_IMAGE" in
+    base)                           DOCKER_IMAGE="mcr.microsoft.com/devcontainers/base:$USAGE_DISTRO" ;;
+    "$USAGE_DISTRO:$USAGE_TAG")     DOCKER_IMAGE="dots:$USAGE_DISTRO-$USAGE_PLATFORM-$USAGE_TAG" ;;
+    *)                              DOCKER_IMAGE="mcr.microsoft.com/devcontainers/base:$USAGE_DISTRO" ;;
+  esac
+
+  # --volume "$(pwd)/.secrets/github_token.secret:/run/secrets/github_token:ro" --volume "$(pwd):/app/dots"
+  docker run -it --tty --rm --env HOME=/home/vscode --workdir /workspaces/dots $DOCKER_IMAGE
+  '''
+
+  # mise run build --nocache
+  # mise run build --nocache --runtime
+  # mise run build --nocache --platform amd64 --tag latest
+  # mise run build --nocache --runtime --distro ubuntu --platform amd64 --tag latest --build-arg USERNAME=roalcantara --build-arg GROUPNAME=staff
+  [tasks.build]
+  description = "Build a Docker image for dotfiles"
+  run = '''
+  #!/usr/bin/env bash
+
+  # Set defaults and parse options
+  USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
+  USAGE_SECRET_PATH="{{option(name="secret", default="./.secrets/github_token.secret")}}"
+  USAGE_DISTRO="{{option(name="distro", default="ubuntu")}}"
+  USAGE_TAG="{{option(name="tag", default="dev")}}"
+  USAGE_BRANCH="{{option(name="branch", default="main")}}"
+  USAGE_REPO="{{option(name="repo", default="roalcantara/dots")}}"
+  USAGE_BUILD_ARGS="{{option(name="build-arg", var=true)}}"
+
+  # Platform mapping
+  case "$USAGE_PLATFORM" in
+    amd64)    PLATFORM_VALUE="linux/amd64" ;;
+    arm64)    PLATFORM_VALUE="linux/arm64" ;;
+    amd64v2)  PLATFORM_VALUE="linux/amd64/v2" ;;
+    riscv64)  PLATFORM_VALUE="linux/riscv64" ;;
+    ppc64le)  PLATFORM_VALUE="linux/ppc64le" ;;
+    s390x)    PLATFORM_VALUE="linux/s390x" ;;
+    386)      PLATFORM_VALUE="linux/386" ;;
+    *)        PLATFORM_VALUE="linux/arm64" ;;
+  esac
+
+  # Compose docker build command
+  DOCKER_CMD=(
+    DOCKER_BUILDKIT=1 docker build
+    --build-arg=BUILDKIT_INLINE_CACHE=1
+    --build-arg=BRANCH="$USAGE_BRANCH"
+    --build-arg=GITHUB_REPO="$USAGE_REPO"
+    --platform="$PLATFORM_VALUE"
+  )
+
+  # Add extra build-args if any
+  for arg in $USAGE_BUILD_ARGS; do
+    DOCKER_CMD+=(--build-arg="$arg")
+  done
+
+  # Add --no-cache if requested
+  if [ "{{flag(name="nocache")}}" = "true" ]; then
+    DOCKER_CMD+=(--no-cache)
+  fi
+
+  # Add secret if available
+  if [[ -z $GITHUB_TOKEN && -f $USAGE_SECRET_PATH ]]; then
+    DOCKER_CMD+=(--secret="id=github_token,src=$USAGE_SECRET_PATH")
+  fi
+
+  # Compose tag
+  TAG_VALUE="dots:$USAGE_DISTRO-$USAGE_PLATFORM"
+  [ -n "$USAGE_TAG" ] && TAG_VALUE="$TAG_VALUE-$USAGE_TAG"
+  DOCKER_CMD+=(--tag="$TAG_VALUE")
+
+  # Select Dockerfile
+  if [ '{{flag(name="runtime")}}' = 'true' ]; then
+    DOCKERFILE_VALUE="Dockerfile.runtime"
+  else
+    DOCKERFILE_VALUE="Dockerfile"
+  fi
+  DOCKER_CMD+=(--file="distros/$USAGE_DISTRO/$DOCKERFILE_VALUE" .)
+
+  echo "  ==> ${DOCKER_CMD[*]}"
+  eval "${DOCKER_CMD[*]}"
+  '''
+
+  # mise run test
+  # mise run test --image dots:ubuntu-arm64-dev --config distros/ubuntu/container-structure-test.yml
+  # mise run test --image dots:ubuntu-amd64-latest --config distros/ubuntu/container-structure-test.yml
+  [tasks.test]
+  description = "Run the Container Structure Tests for the Docker image"
+  run = '''
+  #!/usr/bin/env bash
+
+  # Set defaults and parse options
+  USAGE_IMAGE="{{option(name="image", default="dots:ubuntu-arm64-dev")}}"
+  USAGE_CONFIG="{{option(name="config", default="distros/ubuntu/container-structure-test.yml")}}"
+
+  # Run container-structure-test
+  container-structure-test test --image "$USAGE_IMAGE" --config "$USAGE_CONFIG"
+  '''
+
+# Settings
+# https://mise.jdx.dev/configuration/settings.html#settings
+[settings]
+  # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
+  # https://mise.jdx.dev/configuration/settings.html#activate_aggressive
+  activate_aggressive=true
+
+  # Automatically install missing tools when running mise x, mise run, or as part of the 'not found' handler.
+  # https://mise.jdx.dev/configuration/settings.html#auto_install
+  auto_install=true
+
+  # set to true to enable experimental features
+  # https://mise.jdx.dev/configuration/settings.html#experimental
+  experimental=true
+
+  # Config files with these prefixes will be trusted by default
+  # https://mise.jdx.dev/configuration/settings.html#global_config_file
+  global_config_file="~/.local/share/mise/config.toml"
+
+  # Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
+  # https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
+  idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
+
+  # Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
+  # https://mise.jdx.dev/configuration/settings.html#lockfile
+  lockfile=true
+
+  # Change output style when executing tasks. This controls the output of mise run.
+  # https://mise.jdx.dev/configuration/settings.html#task_output
+  task_output="interleave"
+
+  # Automatically install tools that are not installed when running tasks
+  # https://mise.jdx.dev/configuration/settings.html#task_run_auto_install
+  task_run_auto_install=true
+
+  # Config files with these prefixes will be trusted by default
+  # https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
+  trusted_config_paths=["~/.local/share/dots", "~/.local/share/mise"]
+
+  # set to true to automatically answer yes to all prompts
+  # https://mise.jdx.dev/configuration/settings.html#yes
+  yes=true
+
+  # set to true to see full installation output, see `MISE_VERBOSE`
+  # https://mise.jdx.dev/configuration/settings.html#verbose
+  # verbose=true

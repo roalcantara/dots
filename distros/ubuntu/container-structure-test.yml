@@ -1,0 +1,94 @@
+schemaVersion: 2.0.0
+
+globalEnvVars:
+  - key: USER
+    value: vscode
+  - key: HOME
+    value: /home/vscode
+
+commandTests:
+  - name: Test zsh is installed
+    command: which
+    args: [zsh]
+    expectedOutput: [/usr/bin/zsh]
+  - name: Test jq is installed
+    command: which
+    args: [jq]
+    expectedOutput: [/usr/bin/jq]
+  - name: Test mise is installed
+    command: which
+    args: [mise]
+    expectedOutput: [/usr/local/bin/mise]
+
+fileExistenceTests:
+  - name: Test starship is installed
+    path: '/home/vscode/.local/share/mise/installs/starship'
+    shouldExist: true
+  - name: Test age is installed
+    path: '/home/vscode/.local/share/mise/installs/age'
+    shouldExist: true
+  - name: Test bat is installed
+    path: '/home/vscode/.local/share/mise/installs/bat'
+    shouldExist: true
+  - name: Test delta is installed
+    path: '/home/vscode/.local/share/mise/installs/delta'
+    shouldExist: true
+  - name: Test eza is installed
+    path: '/home/vscode/.local/share/mise/installs/eza'
+    shouldExist: true
+  - name: Test fd is installed
+    path: '/home/vscode/.local/share/mise/installs/fd'
+    shouldExist: true
+  - name: Test fzf is installed
+    path: '/home/vscode/.local/share/mise/installs/fzf'
+    shouldExist: true
+  - name: Test gh is installed
+    path: '/home/vscode/.local/share/mise/installs/gh'
+    shouldExist: true
+  - name: Test neovim is installed
+    path: '/home/vscode/.local/share/mise/installs/neovim'
+    shouldExist: true
+  - name: Test sops is installed
+    path: '/home/vscode/.local/share/mise/installs/sops'
+    shouldExist: true
+  - name: Test usage is installed
+    path: '/home/vscode/.local/share/mise/installs/usage'
+    shouldExist: true
+  - name: Test watchexec is installed
+    path: '/home/vscode/.local/share/mise/installs/watchexec'
+    shouldExist: true
+  - name: Test zoxide is installed
+    path: '/home/vscode/.local/share/mise/installs/zoxide'
+    shouldExist: true
+  - name: Mise installation directory
+    path: /home/vscode/.local/share/mise/installs
+    shouldExist: true
+  - name: Test gum is installed
+    path: /home/vscode/.local/share/mise/installs/gum
+    shouldExist: true
+  - name: Zsh shell
+    path: /usr/bin/zsh
+    shouldExist: true
+  - name: Bash activation in .bashrc
+    path: /home/vscode/.bashrc
+    shouldExist: false
+  - name: Zsh activation in .zshenv
+    path: /home/vscode/.zshenv
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: Oh-my-zsh directory
+    path: /home/vscode/.oh-my-zsh
+    shouldExist: false
+  - name: ~/.config directory
+    path: /home/vscode/.config
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: ~/.local directory
+    path: /home/vscode/.local
+    shouldExist: true
+    permissions: drwxr-xr-x
+
+fileContentTests:
+  - name: Mise activation in .zshrc
+    path: /home/vscode/.config/zsh/.zprofile
+    expectedContents: ['.*eval \"\$\(mise activate zsh --yes --quiet --shims\)\".*']

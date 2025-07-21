@@ -1,0 +1,257 @@
+name: Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+
+concurrency:
+  cancel-in-progress: true
+  group: 'dots-${{ github.ref }}'
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CI: true
+  FORCE_COLOR: true
+  DOCKER_BUILDKIT: 1
+  BUILDKIT_INLINE_CACHE: 1
+  IMG_NAME: ${{ github.repository }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    strategy:
+      matrix:
+        distro: [ubuntu]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v2.1.0
+        with:
+          dockerfile: distros/${{ matrix.distro }}/Dockerfile
+          config: ./.hadolint.yaml
+  test:
+    runs-on: ${{ matrix.image }}
+    needs: lint
+    if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      checks: write
+      pull-requests: write
+    strategy:
+      matrix:
+        distro: [ubuntu]
+        include:
+          - distro: ubuntu
+            image: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: latest
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: ${{ runner.temp }}/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build and test image for ${{ matrix.distro }}
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64
+          context: .
+          file: distros/${{ matrix.distro }}/Dockerfile
+          push: false
+          load: true
+          tags: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-amd64
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          cache-to: type=local,dest=${{ runner.temp }}/.buildx-cache-new,mode=max
+          outputs: type=docker
+
+      - # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+        name: Move cache
+        run: |
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
+
+      - name: Inspect image
+        run: docker inspect ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-amd64
+
+      - name: Container Structure Test GitHub Action
+        uses: amardeep2006/container-structure-test-github-action@v1.2
+        with:
+          dockerimage: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-amd64
+          args: -v debug --force --output junit --test-report cst_junit_report.xml --config distros/${{ matrix.distro }}/container-structure-test.yml
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: cst_junit_report.xml
+      - uses: mikepenz/action-junit-report@v5
+        if: always()
+        with:
+          report_paths: cst_junit_report.xml
+  build-and-push:
+    runs-on: ${{ matrix.image }}
+    needs: test
+    if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    environment:
+      name: preview
+      url: https://hub.docker.com/r/roalcantara/cockpit/tags?name=pr-${{ github.event.pull_request.number }}
+    strategy:
+      matrix:
+        distro: [ubuntu]
+        include:
+          - distro: ubuntu
+            image: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Short SHA
+        id: get_short_sha
+        run: echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            roalcantara/cockpit
+          tags: |
+            type=raw,value=${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+            type=raw,value=${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ steps.get_short_sha.outputs.SHORT_SHA }}
+            type=sha
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: latest
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: ${{ runner.temp }}/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: distros/${{ matrix.distro }}/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          cache-to: type=local,dest=${{ runner.temp }}/.buildx-cache-new,mode=max
+          provenance: true
+          sbom: true
+          push: true
+
+      - # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+        name: Move cache
+        run: |
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
+
+      - name: Update deployment status
+        run: |
+          echo "## Docker Image Published" >> $GITHUB_STEP_SUMMARY
+          echo "| distro | Image | Tag |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| ${{ matrix.distro }} | ${{ env.IMG_NAME }} | ${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ steps.get_short_sha.outputs.SHORT_SHA }} |" >> $GITHUB_STEP_SUMMARY
+          echo "Pull with: \`docker pull ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ steps.get_short_sha.outputs.SHORT_SHA }}\`" >> $GITHUB_STEP_SUMMARY
+  summary:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: success()
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Get Short SHA
+        id: get_short_sha
+        run: echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+      - name: Create summary
+        run: |
+          echo "# PR Image Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "## PR #${{ github.event.pull_request.number }} Preview Images" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All distro variant images are now available for testing." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| distro | Docker Pull Command |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Ubuntu | \`docker pull ${{ env.IMG_NAME }}:ubuntu-pr-${{ github.event.pull_request.number }}-${{ steps.get_short_sha.outputs.SHORT_SHA }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View all PR images on [DockerHub](https://hub.docker.com/r/roalcantara/cockpit/tags?name=pr-${{ github.event.pull_request.number }})" >> $GITHUB_STEP_SUMMARY
+      - if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            const sha = '${{ steps.get_short_sha.outputs.SHORT_SHA }}';
+            const prNumber = '${{ github.event.pull_request.number }}';
+            const body = `## 🐳 Preview Docker Images Available
+
+            Preview images for this PR have been built and pushed to DockerHub:
+
+            | distro | Image |
+            | --- | --- |
+            | Ubuntu | \`docker pull ${{ env.IMG_NAME }}:ubuntu-pr-${prNumber}-${sha}\` |
+
+            [View all PR images on DockerHub](https://hub.docker.com/r/roalcantara/cockpit/tags?name=pr-${prNumber})
+
+            ### Testing instructions
+
+            1. Pull the relevant image: \`docker pull ${{ env.IMG_NAME }}:ubuntu-pr-${prNumber}-${sha}\`
+            2. Run the container: \`docker run -it ${{ env.IMG_NAME }}:ubuntu-pr-${prNumber}-${sha}\`
+
+            These preview images contain all changes from this PR.`;
+
+            github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              body: body,
+              event: 'COMMENT'
+            });
