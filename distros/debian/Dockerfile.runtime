@@ -41,10 +41,5 @@ RUN --mount=type=secret,id=github_token,target=/tmp/github_token,required=false 
 # Switch to vscode user
 USER $USERNAME
 WORKDIR $HOME
-
-# Set up the container for interactive use
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD zsh -c 'echo "Container health check passed"' || exit 1
-
 SHELL ["/usr/bin/zsh", "-c"]
 ENTRYPOINT ["/usr/bin/zsh", "-il"]

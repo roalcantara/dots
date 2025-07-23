@@ -25,7 +25,7 @@ BACKUP_DIR_ROOT=${BACKUP_DIR_ROOT:-~/.backup}
 DOTS_DIR=${DOTS_DIR:-$XDG_DATA_HOME/dots}
 XDG_ZSH_SETUP_SCRIPT=${XDG_ZSH_SETUP_SCRIPT:-$ZDOTDIR/etc/functions/zsetup}
 BACKUP_RESOURCES=${BACKUP_RESOURCES:-".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .ssh/config .ssh/id_rsa .ssh/id_rsa.pub"}
-MISE_PACKAGES=${MISE_PACKAGES:-"ripgrep age bat delta eza fd fzf gh neovim sops starship usage watchexec zoxide gum node python go"}
+MISE_PACKAGES=${MISE_PACKAGES:-"ripgrep age bat delta eza fd fzf gh neovim sops starship usage watchexec zoxide gum node python uv go"}
 USERNAME='roalcantara'
 GROUPNAME=''
 CONTEXT=''
@@ -442,6 +442,34 @@ step_mise() {
 step_zsh() {
   section "[ZSH] Setup started..."
 
+  # Determine the current shell for the user in a cross-platform way
+  if command -v getent >/dev/null 2>&1; then
+    CURRENT_SHELL=$(getent passwd "$USERNAME" | cut -d: -f7)
+  else
+    # macOS and some BSDs: use dscl or fallback to /etc/passwd
+    if command -v dscl >/dev/null 2>&1; then
+      CURRENT_SHELL=$(dscl . -read /Users/"$USERNAME" UserShell | awk '{print $2}')
+    else
+      CURRENT_SHELL=$(awk -F: -v user="$USERNAME" '$1 == user {print $7}' /etc/passwd)
+    fi
+  fi
+
+  ZSH_PATH="$(command -v zsh)"
+
+  if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
+    if command -v chsh >/dev/null 2>&1; then
+      exec_cmd chsh -s "$ZSH_PATH" "$USERNAME"
+      i "[ZSH] '$USERNAME' shell set to '$ZSH_PATH' ✔︎"
+    elif [ "$(uname)" = "Darwin" ] && command -v dscl >/dev/null 2>&1; then
+      exec_cmd sudo dscl . -change /Users/"$USERNAME" UserShell "$CURRENT_SHELL" "$ZSH_PATH"
+      i "[ZSH] '$USERNAME' shell set to '$ZSH_PATH' (via dscl) ✔︎"
+    else
+      w "[ZSH] Could not change shell automatically. Please set '$ZSH_PATH' as the shell for '$USERNAME' manually."
+    fi
+  else
+    i "[ZSH] '$USERNAME' shell is already set to '$ZSH_PATH' ✔︎"
+  fi
+
   # Create the ~/.cache/zsh/compcache directory if it doesn't exist
   if [ ! -d "$ZSH_COMPCACHE" ]; then
     exec_cmd mkdir -p "$ZSH_COMPCACHE"
@@ -477,8 +505,13 @@ step_nvim_setup_provider_npm() {
 
   if [ ! -d "$XDG_STATE_HOME/npm" ]; then
     exec_cmd sudo mkdir -p "$XDG_STATE_HOME/npm"
+    i "[NVIM/NPM] '$XDG_STATE_HOME/npm' created ✔︎"
+  fi
+
+  # Only chown if not already owned by $USERNAME:$GROUPNAME
+  if [ "$(stat -c '%U:%G' "$XDG_STATE_HOME/npm" 2>/dev/null)" != "$USERNAME:$GROUPNAME" ]; then
     exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/npm"
-    i "[NVIM/NPM] '$XDG_STATE_HOME/npm' created and owned by '$USERNAME' ✔︎"
+    i "[NVIM/NPM] '$XDG_STATE_HOME/npm' owned by '$USERNAME' ✔︎"
   fi
 
   export npm_config_cache="${npm_config_cache:-$XDG_STATE_HOME/npm}"
@@ -494,14 +527,24 @@ step_nvim_setup_provider_python() {
     return
   fi
 
-  if [ ! -d "$HOME/.config/nvim/env" ]; then
-    exec_cmd python3 -m venv "$HOME/.config/nvim/env"
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$HOME/.config/nvim/env"
-    i "[NVIM/PYTHON] '$HOME/.config/nvim/env' created and owned by '$USERNAME' ✔︎"
+  # Check if uv is available via mise
+  if ! command -v uv >/dev/null 2>&1; then
+    w "[NVIM/PYTHON] uv is not installed! skipping..."
+    return
   fi
 
-  exec_cmd source "$HOME/.config/nvim/env/bin/activate" && pip install pynvim
-  i "[NVIM/PYTHON] Required PIP packages installed at '$HOME/.config/nvim/env' (owned by '$USERNAME') ✔︎"
+  # Create nvim Python environment directory
+  nvim_python_dir="$HOME/.config/nvim/python"
+  if [ ! -d "$nvim_python_dir" ]; then
+    exec_cmd mkdir -p "$nvim_python_dir"
+    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$nvim_python_dir"
+    i "[NVIM/PYTHON] '$nvim_python_dir' created and owned by '$USERNAME' ✔︎"
+  fi
+
+  # Use uv to create a virtual environment and install pynvim
+  exec_cmd cd "$nvim_python_dir" && uv venv
+  exec_cmd cd "$nvim_python_dir" && uv pip install pynvim
+  i "[NVIM/PYTHON] Required Python packages installed at '$nvim_python_dir' (owned by '$USERNAME') ✔︎"
 }
 
 # https://neovim.io/doc/user/provider.html#provider-ruby

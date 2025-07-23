@@ -26,6 +26,15 @@ if [[ -n "$z_trace" ]]; then
   setopt xtrace prompt_subst
 fi
 
+# z_debug=1 "$SHELL" -ilc exit
+# Check if compinit is being called at the right time
+# https://github.com/zimfw/zimfw/wiki/Troubleshooting#completion-is-not-working
+if [[ -n "$z_debug" ]]; then
+  autoload -Uz +X compinit
+  functions[compinit]=$'print -u2 \'compinit being called at \'${funcfiletrace[1]}
+  '${functions[compinit]}
+fi
+
 ## INTERNATIONALISATION VARIABLES {
 # The values that the environment variables may be assigned are not restricted;
 # Except that they are considered to end with a null byte and the total space used to store the environment and the arguments to the process is limited to {ARG_MAX} bytes.
