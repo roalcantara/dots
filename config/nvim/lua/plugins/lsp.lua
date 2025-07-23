@@ -5,6 +5,8 @@
 -- This can vary by config, but in general for nvim-lspconfig:
 
 return {
+  -- Mason.nvim is a package manager for Neovim that allows you to easily install and manage LSP servers, linters, and formatters.
+  -- https://github.com/williamboman/mason.nvim
   {
     "williamboman/mason.nvim",
     event = 'VeryLazy',
@@ -28,7 +30,8 @@ return {
       },
     },
   },
-  -- add tsserver and setup with typescript.nvim instead of lspconfig
+  -- nvim-lspconfig is a plugin that integrates various LSP servers with Neovim.
+  -- https://github.com/neovim/nvim-lspconfig
   {
     "neovim/nvim-lspconfig",
     event = 'VeryLazy',
@@ -58,5 +61,30 @@ return {
         end,
       },
     },
+  },
+  -- Otter.nvim provides LSP features and a code completion source for code embedded in other documents
+  -- https://github.com/jmbuhr/otter.nvim
+  {
+    'jmbuhr/otter.nvim',
+    event = 'VeryLazy',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      -- TREE-SITTER-GHOSTTY - A tree-sitter parser for ghostty
+      -- https://github.com/bezhermoso/tree-sitter-ghostty | https://mise.jdx.dev/mise-cookbook/neovim.html#enable-lsp-for-embedded-lang-in-run-commands
+      {
+        'bezhermoso/tree-sitter-ghostty',
+        build = 'make nvim_install',
+        cond = require('core/vi/fn/paths').is_executable('ghostty'),
+      },
+    },
+    config = function()
+      vim.api.nvim_create_autocmd({ 'FileType' }, {
+        group = vim.api.nvim_create_augroup('EmbedToml', {}),
+        pattern = { 'toml' },
+        callback = function()
+          require('otter').activate()
+        end,
+      })
+    end,
   },
 }

@@ -113,7 +113,7 @@ M.enabled_capabilities['textDocument/hover'] = {
           if vim.api.nvim_win_is_valid(win) then
             local config = vim.api.nvim_win_get_config(win)
             -- Check if this is a floating window (LSP hover windows are floating)
-            if config.relative ~= "" then
+            if config.relative ~= '' then
               vim.api.nvim_win_close(win, true)
             end
           end
@@ -245,7 +245,7 @@ local setup_capabilities_features = function(server, lspconfig_opts)
             buffer = buffer,
           })
           -- Logs that the feature has been added to the LSP client and buffer
-          Snacks.debug.log(string.format("[%s] (%s) Setup feature '%s' ✔", server, method, name))
+          -- Snacks.debug.log(string.format("[%s] (%s) Setup feature '%s' ✔", server, method, name))
         end
       end
     end)

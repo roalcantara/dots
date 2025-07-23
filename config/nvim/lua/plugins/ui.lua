@@ -3,69 +3,21 @@
 -- You can create as many files there as you want. In order to disable a plugin, add a spec with enabled=false
 -- https://lazyvim.org/configuration/plugins
 return {
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin-macchiato",
-    },
-  },
-
-  -- -- Catppuccin | Soothing pastel theme for (Neo)vim
-  -- -- https://github.com/catppuccin/nvim?tab=readme-ov-file
-  -- {
-  --   'catppuccin/nvim',
-  --   name = "catppuccin",
-  --   priority = 1000,
-  --   opts = function(_, opts)
-  --     return vim.tbl_deep_extend('force', opts or {}, {
-  --       flavour = 'macchiato',
-  --       show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
-  --       term_colors = true,        -- sets terminal colors (e.g. `g:terminal_color_0`)
-  --       dim_inactive = {
-  --         enabled = true,          -- dims the background color of inactive window
-  --         shade = "dark",
-  --         percentage = 0.15,       -- percentage of the shade to apply to the inactive window
-  --       },
-  --       default_integrations = true,
-  --       integrations = {
-  --         blink_cmp = {
-  --           style = 'bordered',
-  --         },
-  --         native_lsp = {
-  --           enabled = true,
-  --           virtual_text = {
-  --             errors = { "italic" },
-  --             hints = { "italic" },
-  --             warnings = { "italic" },
-  --             information = { "italic" },
-  --             ok = { "italic" },
-  --           },
-  --           underlines = {
-  --             errors = { "underline" },
-  --             hints = { "underline" },
-  --             warnings = { "underline" },
-  --             information = { "underline" },
-  --             ok = { "underline" },
-  --           },
-  --           inlay_hints = {
-  --             background = true,
-  --           },
-  --         },
-  --       },
-  --       custom_highlights = function(colors)
-  --         return {
-  --           TerminalNormal = { bg = colors.crust },
-  --         }
-  --       end
-  --     })
-  --   end,
-  -- },
-
   -- Treesitter is a new parser generator tool to power faster and more accurate syntax highlighting
   -- https://lazyvim.org/configuration/examples
   -- https://lazyvim.org/plugins/treesitter#nvim-treesitter
   {
     'nvim-treesitter/nvim-treesitter',
+    init = function()
+      -- Mise + Neovim Cookbook | Code highlight for run commands
+      -- Ensure to only apply the highlighting on mise files instead of all toml files
+      -- https://mise.jdx.dev/mise-cookbook/neovim.html#code-highlight-for-run-commands
+      require("vim.treesitter.query").add_predicate("is-mise?", function(_, _, bufnr, _)
+        local filepath = vim.api.nvim_buf_get_name(tonumber(bufnr) or 0)
+        local filename = vim.fn.fnamemodify(filepath, ":t")
+        return string.match(filename, ".*mise.*%.toml$") ~= nil
+      end, { force = true, all = false })
+    end,
     opts = function(_, opts)
       opts = opts or {}
       opts.auto_install = true
@@ -154,9 +106,9 @@ return {
         -- Better vim.ui.input
         -- https://github.com/folke/snacks.nvim/blob/main/docs/input.md
         input = { enabled = true },
-        -- Pretty vim.notify
+        -- Pretty vim.notify (disabled in favor of noice.nvim)
         -- https://github.com/folke/snacks.nvim/blob/main/docs/notifier.md | https://github.com/folke/snacks.nvim/blob/main/docs/notify.md
-        notifier = { enabled = true },
+        notifier = { enabled = false },
         -- When doing nvim somefile.txt, it will render the file as quickly as possible, before loading your plugins
         -- https://github.com/folke/snacks.nvim/blob/main/docs/quickfile.md
         quickfile = { enabled = true },
@@ -518,17 +470,23 @@ return {
     end,
   },
 
-  -- Noice |
+  -- Noice | Highly experimental plugin that completely replaces the UI for messages, cmdline and the popupmenu
   -- https://github.com/folke/noice.nvim
-  -- Extends the noice options
   {
     'folke/noice.nvim',
     opts = function(_, opts)
+      -- https://github.com/folke/noice.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
       return vim.tbl_deep_extend('force', opts or {}, {
+        -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#presets
         presets = vim.tbl_deep_extend('force', opts.presets or {}, {
           lsp_doc_border = true,
         }),
-        routes = {
+        -- Snacks.nvim's notifier is used instead
+        -- notify = { enabled = false },
+        -- Hide written messages
+        -- https://github.com/folke/noice.nvim?tab=readme-ov-file#-routes
+        -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#hide-written-messages-1
+        routes = vim.tbl_deep_extend('force', opts.routes or {}, {
           {
             filter = {
               event = 'notify',
@@ -536,21 +494,21 @@ return {
             },
             opts = { skip = true },
           },
-        },
+        }),
       })
     end,
   },
 
-  -- Lualine |
+  -- Lualine | Blazing fast and easy to configure statusline written in pure lua
   -- https://github.com/nvim-lualine/lualine.nvim
-  -- Lualine has the following sections. Each section has components.
-  -- +-------------------------------------------------+
-  -- | A | B | C                             X | Y | Z |
-  -- +-------------------------------------------------+
   {
     'nvim-lualine/lualine.nvim',
     event = 'VeryLazy',
     opts = function(_, opts)
+      -- Lualine has the following sections. Each section has components.
+      -- +-------------------------------------------------+
+      -- | A | B | C                             X | Y | Z |
+      -- +-------------------------------------------------+
       local function refresh(scope, ...)
         local places = { ... }
         if #places == 0 then
@@ -615,51 +573,7 @@ return {
     end,
   },
 
-  -- Disable LazyVim's mini.ai plugin keymaps
-  {
-    'echasnovski/mini.ai',
-    event = 'VeryLazy',
-    opts = function(_, opts)
-      opts = opts or {}
-      opts.custom_textobjects = {
-        -- Disable mini.ai text objects
-        ['a'] = { enabled = false },
-        ['i'] = { enabled = false },
-        ['al'] = { enabled = false },
-        ['an'] = { enabled = false },
-        ['il'] = { enabled = false },
-        ['in'] = { enabled = false },
-      }
-      return opts
-    end,
-  },
-
-  -- Mise + Neovim Cookbook | Enable LSP features and code completion for code embedded in mise files
-  -- https://mise.jdx.dev/mise-cookbook/neovim.html#enable-lsp-for-embedded-lang-in-run-commands
-  {
-    'jmbuhr/otter.nvim',
-    event = 'VeryLazy',
-    dependencies = {
-      -- TREE-SITTER-GHOSTTY - A tree-sitter parser for ghostty
-      -- https://github.com/bezhermoso/tree-sitter-ghostty
-      {
-        'bezhermoso/tree-sitter-ghostty',
-        build = 'make nvim_install',
-        cond = require('core/vi/fn/paths').is_executable('ghostty'),
-      },
-    },
-    config = function()
-      vim.api.nvim_create_autocmd({ 'FileType' }, {
-        group = vim.api.nvim_create_augroup('EmbedToml', {}),
-        pattern = { 'toml' },
-        callback = function()
-          require('otter').activate()
-        end,
-      })
-    end,
-  },
-
-  -- GHOSTTY - A ghostty plugin for Neovim
+  -- Automatically validate your Ghostty configuration on save
   -- https://github.com/isak102/ghostty.nvim
   {
     'isak102/ghostty.nvim',
@@ -679,8 +593,8 @@ return {
     },
   },
 
-  -- SHOWKEYS - Minimal Eye-candy keys screencaster for Neovim 200 ~ LOC | https://github.com/nvzone/showkeys
-  -- https://youtu.be/E4qXZv34NQQ?si=612rj4bmIUpgnsDw&t=203
+  -- SHOWKEYS - Minimal Eye-candy keys screencaster
+  -- https://github.com/nvzone/showkeys | https://youtu.be/E4qXZv34NQQ
   {
     'nvzone/showkeys',
     lazy = true,

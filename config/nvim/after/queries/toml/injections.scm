@@ -1,5 +1,8 @@
 ; extends
 
+; Mise + Neovim Cookbook | Enable LSP features and code completion for code embedded in mise files
+; https://mise.jdx.dev/mise-cookbook/neovim.html#enable-lsp-for-embedded-lang-in-run-commands
+
 (pair
   (bare_key) @key (#eq? @key "run")
   (string) @injection.content @injection.language
