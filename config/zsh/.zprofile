@@ -38,9 +38,12 @@ export MANROFFOPT=${MANROFFOPT:-"-c"}
 # MISE | https://mise.jdx.dev {
   # A polyglot tool version manager. It replaces tools like asdf, nvm, pyenv, rbenv, etc.
 
+  # Set the global configuration directory path
+  export MISE_GLOBAL_CONFIG_DIR=${MISE_GLOBAL_CONFIG_DIR:-$XDG_DATA_HOME/mise}
+
   # Set the global configuration file path
-  if [[ -e $XDG_DATA_HOME/mise/config.toml ]]; then
-    export MISE_GLOBAL_CONFIG_FILE=${MISE_GLOBAL_CONFIG_FILE:-$XDG_DATA_HOME/mise/config.toml}
+  if [[ -e $MISE_GLOBAL_CONFIG_DIR/config.toml ]]; then
+    export MISE_GLOBAL_CONFIG_FILE=${MISE_GLOBAL_CONFIG_FILE:-$MISE_GLOBAL_CONFIG_DIR/config.toml}
   fi
 
   # Set the cache directory path
@@ -125,17 +128,17 @@ export MANROFFOPT=${MANROFFOPT:-"-c"}
   # `npm config list` => List all main npm settings
   # `npm config ls -l` => List all npm settings
 
+  # Path to the personal npm configuration file
+  # npm will read configuration from this file instead of the default location ($HOME/.npmrc)
+  # https://docs.npmjs.com/cli/v7/using-npm/config#userconfig
+  export NPM_CONFIG_USERCONFIG=${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/.npmrc}
+
   # Set where global packages are installed when running `npm install -g [package]`.
   # Global binaries go to ${prefix}/bin and global packages to ${prefix}/lib/node_modules
   export NPM_CONFIG_PREFIX=${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}
 
-  # Path to the personal npm configuration file
-  # npm will read configuration from this file instead of the default location ($HOME/.npmrc)
-  # https://docs.npmjs.com/cli/v7/configuring-npm/npmrc
-  export NPM_CONFIG_USERCONFIG=${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/npmrc}
-
   # Path to npm's cache directory, which includes logs ($HOME/.npm)
-  export NPM_CONFIG_CACHE=${NPM_CONFIG_CACHE:-$XDG_STATE_HOME/npm}
+  export NPM_CONFIG_CACHE=${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}
 
   # Opt out of update notifications https://npmjs.com/package/update-notifier#user-settings
   export NO_UPDATE_NOTIFIER=${NO_UPDATE_NOTIFIER:-1}

@@ -20,33 +20,6 @@
 # Like make, it manages tasks used to build and test projects
 # https://mise.jdx.dev/tasks
 [tasks] # mise run
-  [tasks.'container'] # mise run container
-  description = "Start a container"
-  run = '''
-  #!/usr/bin/env bash
-
-  # Set defaults and parse options
-  USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
-  USAGE_DISTRO="{{option(name="distro", default="debian")}}"
-  USAGE_IMAGE="{{option(name="image", default="base")}}"
-  USAGE_TAG="{{option(name="tag", default="dev")}}"
-
-  # Distro mapping
-  case "$USAGE_DISTRO" in
-    debian)   DISTRO_VALUE="bookworm" ;;
-    *)        DISTRO_VALUE="bookworm" ;;
-  esac
-
-  # Distro mapping
-  case "$USAGE_IMAGE" in
-    base)                           DOCKER_IMAGE="mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_VALUE" ;;
-    "$USAGE_DISTRO:$USAGE_TAG")     DOCKER_IMAGE="dots:$USAGE_DISTRO-$USAGE_PLATFORM-$USAGE_TAG" ;;
-    *)                              DOCKER_IMAGE="mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_VALUE" ;;
-  esac
-
-  # --volume "$(pwd)/.secrets/github_token.secret:/run/secrets/github_token:ro" --volume "$(pwd):/app/dots"
-  docker run -it --tty --rm --env HOME=/home/vscode --workdir /workspaces/dots $DOCKER_IMAGE
-  '''
 
   # mise run build --nocache
   # mise run build --nocache --runtime
@@ -124,6 +97,60 @@
   echo "  ==> ${DOCKER_CMD[*]}"
   eval "${DOCKER_CMD[*]}"
   '''
+
+  # mise run start
+  # mise run start --base
+  # mise run start --base --platform amd64
+  # mise run start --tag local
+  # mise run start --tag local --user root --workdir /workspaces/bar
+  # mise run start --tag local --user vscode --workdir /workspaces/dots
+  [tasks.start]
+  description = "Start a container"
+  run = '''
+  #!/usr/bin/env bash
+
+  # Set defaults and parse options
+  USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
+  USAGE_DISTRO="{{option(name="distro", default="debian")}}"
+  USAGE_TAG="{{option(name="tag", default="dev")}}"
+  USAGE_USER="{{option(name="user", default="vscode")}}"
+  USAGE_WORKDIR="{{option(name="workdir", default="/workspaces/dots")}}"
+
+  # Platform mapping
+  case "$USAGE_PLATFORM" in
+    amd64)    PLATFORM_VALUE="linux/amd64" ;;
+    arm64)    PLATFORM_VALUE="linux/arm64" ;;
+    amd64v2)  PLATFORM_VALUE="linux/amd64/v2" ;;
+    riscv64)  PLATFORM_VALUE="linux/riscv64" ;;
+    ppc64le)  PLATFORM_VALUE="linux/ppc64le" ;;
+    s390x)    PLATFORM_VALUE="linux/s390x" ;;
+    386)      PLATFORM_VALUE="linux/386" ;;
+    *)        PLATFORM_VALUE="linux/arm64" ;;
+  esac
+
+  # Distro mapping
+  case "$USAGE_DISTRO" in
+    debian)   DISTRO_VALUE="bookworm" ;;
+    *)        DISTRO_VALUE="bookworm" ;;
+  esac
+
+  DOCKER_CMD=(
+    docker run -it --tty --rm
+    --user="$USAGE_USER"
+    --workdir="$USAGE_WORKDIR"
+  )
+
+  if [ "{{flag(name="base")}}" = "true" ]; then
+    DOCKER_CMD+=(mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_VALUE)
+  else
+    DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_PLATFORM-$USAGE_TAG)
+  fi
+
+  echo "  ==> ${DOCKER_CMD[*]}"
+  eval "${DOCKER_CMD[*]}"
+  '''
+
+
 
   # mise run test
   # mise run test --image dots:debian-arm64-dev

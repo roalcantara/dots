@@ -7,24 +7,21 @@
 # https://zsh.sourceforge.io/Contrib/startup/std/zshrc
 
 # ZSH/ZIM ESSENTIAL VARIABLES
-export ZDOTDIR=${ZDOTDIR:=$HOME/.config/zsh}
-export ZIM_HOME=${ZIM_HOME:=$HOME/.local/state/zim}
-export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:=$HOME/.cache/zsh}
+export ZDOTDIR=${ZDOTDIR:=$XDG_CONFIG_HOME/zsh}
+export ZIM_HOME=${ZIM_HOME:=$XDG_STATE_HOME/zim}
+export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:=$XDG_CACHE_HOME/zsh}
 export ZSH_COMPCACHE=$ZSH_CACHE_DIR/compcache
 export zdumpfile=${ZSH_COMPDUMP:=$ZSH_COMPCACHE/.zcompdump}
-export HISTFILE=${ZSH_DATA_DIR:=$HOME/.local/share/zsh}/.zsh_history
+export HISTFILE=${ZSH_DATA_DIR:=$XDG_DATA_HOME/zsh}/.zsh_history
 export HOMEBREW_PREFIX=${HOMEBREW_PREFIX:-$(if [[ -x /opt/homebrew/bin/brew ]]; then echo "/opt/homebrew"; elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then echo "/home/linuxbrew/.linuxbrew"; elif [[ -x /usr/local/bin/brew ]]; then echo "/usr/local"; else echo "/usr/local"; fi)}
 
 # ZSH ENVIRONMENT VARIABLES and PARAMETERS (PATH, FPATH, etc.) {
 # PATH {
 # set PATH so it includes user's private bin if it exists
 declare -gaU path=(
-  $HOMEBREW_PREFIX/opt/{ruby,gems,curl,rustup}/bin
+  {$HOMEBREW_PREFIX/opt/{ruby,gems,curl,rustup},${XDG_LOCAL_BIN_DIR:=$HOME/.local},${CARGO_HOME:=$XDG_DATA_HOME/cargo},${NPM_CONFIG_PREFIX:=$XDG_DATA_HOME/npm},${PNPM_HOME:=$XDG_DATA_HOME/pnpm}}/bin
   $HOMEBREW_PREFIX/opt/gawk/libexec/gnubin
   $HOMEBREW_PREFIX/{bin,sbin}
-  {${CARGO_HOME:=$HOME/.local/share/cargo},${NPM_CONFIG_CACHE:=$HOME/.local/state/npm}}/bin
-  ${PNPM_HOME:=$HOME/.local/share/pnpm}
-  ${XDG_LOCAL_BIN_DIR:=$HOME/.local/bin}
   $path
 )
 # }

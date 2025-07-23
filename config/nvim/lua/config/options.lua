@@ -56,7 +56,7 @@ else
     loaded_perl_provider = 0,                  -- disable perl provider
     cmdwinheight = 7,                          -- [go] Number of lines to use for the command-line window
     suffixes = ".bak,~,.o,.h,.info,.swp,.obj", -- [go] List of file suffixes to add to the 'wildignore' list
-    python3_host_prog = 'v:lua.require("core/etc/paths").bin_for_python3_venv()',
+    python3_host_prog = require('core/vi/fn/paths').bin_for_python3_venv(),
     lazyvim_picker = "snacks",                 -- [go] Picker for LazyVim (https://lazyvim.org/extras/editor/snacks_picker)
 
     -- Set to `false` to prevent "non-lsp snippets"" from appearing inside completion windows

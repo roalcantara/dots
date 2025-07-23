@@ -161,4 +161,8 @@ function M.get_runtimepath_path_items()
   return items
 end
 
+function M.bin_for_python3_venv()
+  return os.getenv("VIRTUAL_ENV") or os.getenv("NEOVIM_PYTHON3_VENV_PATH") or M.join(M.stdpath('config'), '.venv', 'bin', 'python3')
+end
+
 return M

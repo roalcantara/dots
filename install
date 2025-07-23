@@ -25,7 +25,9 @@ BACKUP_DIR_ROOT=${BACKUP_DIR_ROOT:-$XDG_DATA_HOME/backup}
 DOTS_DIR=${DOTS_DIR:-$XDG_DATA_HOME/dots}
 XDG_ZSH_SETUP_SCRIPT=${XDG_ZSH_SETUP_SCRIPT:-$ZDOTDIR/etc/functions/zsetup}
 BACKUP_RESOURCES=${BACKUP_RESOURCES:-".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .ssh/config .ssh/id_rsa .ssh/id_rsa.pub"}
-MISE_PACKAGES=${MISE_PACKAGES:-"ripgrep age bat delta eza fd fzf gh neovim sops starship usage watchexec zoxide gum node python uv go"}
+MISE_PACKAGES=${MISE_PACKAGES:-"ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node python go"}
+NPM_CONFIG_PREFIX=${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}
+NPM_CONFIG_CACHE=${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}
 USERNAME='roalcantara'
 GROUPNAME=''
 CONTEXT=''
@@ -97,12 +99,11 @@ has_command() {
   command -v "$1" >/dev/null 2>&1
 }
 # Setup environment variable and directory with proper ownership
-# Usage: setup_env_and_dir <env_var_name> <default_path> <section_name> [create_parent]
+# Usage: setup_env_and_dir <env_var_name> <default_path> <section_name>
 setup_env_and_dir() {
   local env_var_name="$1"
   local default_path="$2"
   local section_name="$3"
-  local create_parent="${4:-false}"
 
   # Set environment variable if not already set
   if [ -z "${!env_var_name:-}" ]; then
@@ -112,21 +113,13 @@ setup_env_and_dir() {
 
   # Create directory if it doesn't exist
   if [ ! -d "${!env_var_name}" ]; then
-    if [ "$create_parent" = "true" ]; then
-      exec_cmd mkdir -p "${!env_var_name}"
-    else
-      exec_cmd sudo mkdir -p "${!env_var_name}"
-    fi
+    exec_cmd sudo mkdir -p "${!env_var_name}"
     i "[$section_name] '${!env_var_name}' created ✔︎"
   fi
 
   # Set ownership if not already correct
   if [ "$(stat -c '%U:%G' "${!env_var_name}" 2>/dev/null)" != "$USERNAME:$GROUPNAME" ]; then
-    if [ "$create_parent" = "true" ]; then
-      exec_cmd chown -R "$USERNAME:$GROUPNAME" "${!env_var_name}"
-    else
-      exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "${!env_var_name}"
-    fi
+    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "${!env_var_name}"
     i "[$section_name] '${!env_var_name}' owned by '$USERNAME' ✔︎"
   fi
 }
@@ -304,7 +297,7 @@ step_prepare() {
   if has_command apt; then
     # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
     exec_cmd apt-get update &&
-      apt-get install -y --no-install-recommends sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev &&
+      apt-get install -y --no-install-recommends sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel &&
       sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 
     if [ -n "$TIMEZONE" ]; then
@@ -473,24 +466,24 @@ step_mise() {
     w "[MISE] Now '$MISE_INSTALL_PATH' is executable! ✔︎"
   fi
 
-  # mkwon -R "$USERNAME:$GROUPNAME" "$MISE_DATA_HOME" "$XDG_STATE_HOME/mise"
   i "[MISE] Setting up global configuration..."
-  exec_cmd sudo mkdir -p "$MISE_DATA_HOME" "$XDG_STATE_HOME/mise"
-  exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$MISE_DATA_HOME" "$XDG_STATE_HOME/mise"
-  i "[MISE] '$HOME/.local/(share|state)/mise' created and owned by '$USERNAME' ✔︎"
+  MISE_STATE_HOME="$XDG_STATE_HOME/mise"
+  MISE_GLOBAL_CONFIG_DIR="$MISE_DATA_HOME"
+  MISE_GLOBAL_CONFIG_FILE="$MISE_GLOBAL_CONFIG_DIR/config.toml"
 
-  # Set global configuration paths
-  exec_cmd export MISE_GLOBAL_CONFIG_DIR="$MISE_DATA_HOME"
-  exec_cmd export MISE_GLOBAL_CONFIG_FILE="$MISE_DATA_HOME/config.toml"
-  i "[MISE] MISE_GLOBAL_CONFIG_FILE set to $MISE_DATA_HOME/config.toml (owned by '$USERNAME') ✔︎"
+  # Set global paths and variables
+  setup_dir "$MISE_STATE_HOME" "MISE"
+  setup_env_and_dir "MISE_GLOBAL_CONFIG_DIR" "$MISE_GLOBAL_CONFIG_DIR" "MISE"
+  exec_cmd export MISE_GLOBAL_CONFIG_FILE="$MISE_GLOBAL_CONFIG_FILE"
+  i "[MISE] MISE_GLOBAL_CONFIG_FILE set to $MISE_GLOBAL_CONFIG_FILE (owned by '$USERNAME') ✔︎"
 
   # Create mise config directory if it doesn't exist
-  exec_cmd mise settings set global_config_file "$MISE_DATA_HOME/config.toml"
-  exec_cmd mise settings add trusted_config_paths "$MISE_DATA_HOME"
+  exec_cmd mise settings set global_config_file "$MISE_GLOBAL_CONFIG_FILE"
+  exec_cmd mise settings add trusted_config_paths "$MISE_GLOBAL_CONFIG_DIR"
   exec_cmd mise settings add trusted_config_paths "$XDG_DATA_HOME/dots"
   exec_cmd mise settings set activate_aggressive true
   exec_cmd mise settings set auto_install true
-  i "[MISE] mise global configuration set to '$MISE_DATA_HOME/config.toml' ✔︎"
+  i "[MISE] mise global configuration set to '$MISE_GLOBAL_CONFIG_FILE' ✔︎"
 
   # Set mise to use global packages
   i "[MISE] Setting mise global packages: '$MISE_PACKAGES' ..."
@@ -499,6 +492,9 @@ step_mise() {
 
   # Cleanup GitHub token
   cleanup_github_token "MISE"
+
+  # Activate mise for the current session
+  exec_cmd eval "$(mise activate zsh --yes --quiet --shims)"
 
   s "[MISE] Setup completed ✔︎"
 }
@@ -575,13 +571,14 @@ step_nvim_setup_provider_npm() {
 
   # Configure the NPM environment variables
   # https://docs.npmjs.com/cli/v7/configuring-npm
-  setup_env_and_dir "NPM_CONFIG_PREFIX" "${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}" "NVIM/NPM"
-  setup_env_and_dir "NPM_CONFIG_CACHE" "${NPM_CONFIG_CACHE:-$XDG_STATE_HOME/npm}" "NVIM/NPM"
-  setup_env_and_dir "NPM_CONFIG_USERCONFIG" "${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/npmrc}" "NVIM/NPM"
+  setup_dir "$NPM_CONFIG_PREFIX" "NVIM/NPM"
+  setup_dir "$NPM_CONFIG_CACHE" "NVIM/NPM"
+  exec_cmd export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/.npmrc}"
+  i "[NVIM/NPM] NPM_CONFIG_USERCONFIG set to '$NPM_CONFIG_USERCONFIG' (owned by '$USERNAME') ✔︎"
 
   # Install neovim's required NPM packages
-  exec_cmd npm -g install neovim @mermaid-js/mermaid-cli
-  i "[NVIM/NPM] Required NPM packages installed at '$NPM_CONFIG_USERCONFIG' (owned by '$USERNAME') ✔︎"
+  exec_cmd npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim @mermaid-js/mermaid-cli
+  i "[NVIM/NPM] Required NPM packages installed at '$NPM_CONFIG_PREFIX/lib/node_modules' (owned by '$USERNAME') ✔︎"
 }
 step_nvim_setup_provider_python() {
   section "[NVIM/PYTHON] Setting up Python provider..."
@@ -592,22 +589,13 @@ step_nvim_setup_provider_python() {
     return
   fi
 
-  # Check if uv is available via mise
-  if ! command -v uv >/dev/null 2>&1; then
-    w "[NVIM/PYTHON] uv is not installed! skipping..."
-    return
+  if [ ! -d "$XDG_CONFIG_HOME/nvim/.venv" ]; then
+    exec_cmd cd "$XDG_CONFIG_HOME/nvim" && python3 -m venv "$XDG_CONFIG_HOME/nvim/.venv"
   fi
 
-  # Create nvim's Python environment directory
-  NVIM_PYTHON_DIR="$XDG_CONFIG_HOME/nvim/python"
-  setup_dir "$NVIM_PYTHON_DIR" "NVIM/PYTHON"
-
   # Use uv to create a virtual environment
-  exec_cmd cd "$NVIM_PYTHON_DIR" && uv venv
-
-  # Install neovim's required Python packages
-  exec_cmd cd "$NVIM_PYTHON_DIR" && uv pip install pynvim
-  i "[NVIM/PYTHON] Required Python packages installed at '$NVIM_PYTHON_DIR' (owned by '$USERNAME') ✔︎"
+  exec_cmd cd "$XDG_CONFIG_HOME/nvim" && source "$XDG_CONFIG_HOME/nvim/.venv/bin/activate" && pip install greenlet pynvim neovim --force-reinstall
+  i "[NVIM/PYTHON] Required Python packages installed at '$XDG_CONFIG_HOME/nvim/.venv' (owned by '$USERNAME') ✔︎"
 }
 step_nvim_setup_provider_ruby() {
   section "[NVIM/RUBY] Setting up Ruby provider..."

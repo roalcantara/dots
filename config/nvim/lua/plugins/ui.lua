@@ -108,7 +108,7 @@ return {
         input = { enabled = true },
         -- Pretty vim.notify (disabled in favor of noice.nvim)
         -- https://github.com/folke/snacks.nvim/blob/main/docs/notifier.md | https://github.com/folke/snacks.nvim/blob/main/docs/notify.md
-        notifier = { enabled = false },
+        notifier = { enabled = true },
         -- When doing nvim somefile.txt, it will render the file as quickly as possible, before loading your plugins
         -- https://github.com/folke/snacks.nvim/blob/main/docs/quickfile.md
         quickfile = { enabled = true },
@@ -481,8 +481,6 @@ return {
         presets = vim.tbl_deep_extend('force', opts.presets or {}, {
           lsp_doc_border = true,
         }),
-        -- Snacks.nvim's notifier is used instead
-        -- notify = { enabled = false },
         -- Hide written messages
         -- https://github.com/folke/noice.nvim?tab=readme-ov-file#-routes
         -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#hide-written-messages-1

@@ -35,7 +35,7 @@ RUN --mount=type=secret,id=github_token,target=/tmp/github_token,required=false 
     chmod +x "/home/$USERNAME/.local/share/dots/install" && \
     chown "$USERNAME:$GROUPNAME" "/home/$USERNAME/.local/share/dots/install" && \
     # Remove .git directory to prevent the install script from trying to pull from GitHub
-    rm -rf "/home/$USERNAME/.local/share/dots/.git" && \
+    rm -rf "/home/$USERNAME/.local/share/dots/.git" "/home/$USERNAME/.local/share/dots/config/nvim/.venv" && \
     # Execute the install script during build
     "/home/$USERNAME/.local/share/dots/install" -u "${USERNAME}" -g "${GROUPNAME}" -t "${TZ}"
 
