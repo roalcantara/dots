@@ -77,7 +77,7 @@ if [[ -z "$__HM_ZSH_SESS_VARS_SOURCED" ]]; then
   export MAILCHECK="30"
 fi
 
-# if not macOS and profile exists, source it
+# if .zprofile exists, source it
 if [[ -r "$ZDOTDIR/.zprofile" ]]; then
   source "$ZDOTDIR/.zprofile"
 fi

@@ -238,3 +238,8 @@ export MANROFFOPT=${MANROFFOPT:-"-c"}
   # Set the wakatime config path
   export WAKATIME_HOME=${WAKATIME_HOME:-$XDG_CONFIG_HOME/wakatime}
 # }
+
+# if .zshrc exists, source it
+if [[ -r "$ZDOTDIR/.zshrc" ]]; then
+  source "$ZDOTDIR/.zshrc"
+fi
