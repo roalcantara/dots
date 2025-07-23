@@ -27,15 +27,21 @@
 
   # Set defaults and parse options
   USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
-  USAGE_DISTRO="{{option(name="distro", default="ubuntu")}}"
+  USAGE_DISTRO="{{option(name="distro", default="debian")}}"
   USAGE_IMAGE="{{option(name="image", default="base")}}"
   USAGE_TAG="{{option(name="tag", default="dev")}}"
 
   # Distro mapping
+  case "$USAGE_DISTRO" in
+    debian)   DISTRO_VALUE="bookworm" ;;
+    *)        DISTRO_VALUE="bookworm" ;;
+  esac
+
+  # Distro mapping
   case "$USAGE_IMAGE" in
-    base)                           DOCKER_IMAGE="mcr.microsoft.com/devcontainers/base:$USAGE_DISTRO" ;;
+    base)                           DOCKER_IMAGE="mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_VALUE" ;;
     "$USAGE_DISTRO:$USAGE_TAG")     DOCKER_IMAGE="dots:$USAGE_DISTRO-$USAGE_PLATFORM-$USAGE_TAG" ;;
-    *)                              DOCKER_IMAGE="mcr.microsoft.com/devcontainers/base:$USAGE_DISTRO" ;;
+    *)                              DOCKER_IMAGE="mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_VALUE" ;;
   esac
 
   # --volume "$(pwd)/.secrets/github_token.secret:/run/secrets/github_token:ro" --volume "$(pwd):/app/dots"
@@ -45,7 +51,7 @@
   # mise run build --nocache
   # mise run build --nocache --runtime
   # mise run build --nocache --platform amd64 --tag latest
-  # mise run build --nocache --runtime --distro ubuntu --platform amd64 --tag latest --build-arg USERNAME=roalcantara --build-arg GROUPNAME=staff
+  # mise run build --nocache --runtime --distro debian --platform amd64 --tag latest --build-arg USERNAME=roalcantara --build-arg GROUPNAME=staff
   [tasks.build]
   description = "Build a Docker image for dotfiles"
   run = '''
@@ -54,7 +60,7 @@
   # Set defaults and parse options
   USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
   USAGE_SECRET_PATH="{{option(name="secret", default="./.secrets/github_token.secret")}}"
-  USAGE_DISTRO="{{option(name="distro", default="ubuntu")}}"
+  USAGE_DISTRO="{{option(name="distro", default="debian")}}"
   USAGE_TAG="{{option(name="tag", default="dev")}}"
   USAGE_BRANCH="{{option(name="branch", default="main")}}"
   USAGE_REPO="{{option(name="repo", default="roalcantara/dots")}}"
@@ -70,6 +76,12 @@
     s390x)    PLATFORM_VALUE="linux/s390x" ;;
     386)      PLATFORM_VALUE="linux/386" ;;
     *)        PLATFORM_VALUE="linux/arm64" ;;
+  esac
+
+  # Distro mapping
+  case "$USAGE_DISTRO" in
+    debian)   DISTRO_VALUE="bookworm" ;;
+    *)        DISTRO_VALUE="bookworm" ;;
   esac
 
   # Compose docker build command
@@ -114,16 +126,16 @@
   '''
 
   # mise run test
-  # mise run test --image dots:ubuntu-arm64-dev --config distros/ubuntu/container-structure-test.yml
-  # mise run test --image dots:ubuntu-amd64-latest --config distros/ubuntu/container-structure-test.yml
+  # mise run test --image dots:debian-arm64-dev
+  # mise run test --image dots:debian-amd64-latest --config distros/debian/container-structure-test.yml
   [tasks.test]
   description = "Run the Container Structure Tests for the Docker image"
   run = '''
   #!/usr/bin/env bash
 
   # Set defaults and parse options
-  USAGE_IMAGE="{{option(name="image", default="dots:ubuntu-arm64-dev")}}"
-  USAGE_CONFIG="{{option(name="config", default="distros/ubuntu/container-structure-test.yml")}}"
+  USAGE_IMAGE="{{option(name="image", default="dots:debian-arm64-dev")}}"
+  USAGE_CONFIG="{{option(name="config", default="distros/debian/container-structure-test.yml")}}"
 
   # Run container-structure-test
   container-structure-test test --image "$USAGE_IMAGE" --config "$USAGE_CONFIG"

@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
-FROM mcr.microsoft.com/devcontainers/base:ubuntu
+# https://mcr.microsoft.com/en-us/artifact/mar/devcontainers/ruby/tags
+FROM mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
 
 # Set build arguments and environment variables
 ARG TZ=America/Sao_Paulo
