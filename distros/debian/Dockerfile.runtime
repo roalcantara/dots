@@ -19,7 +19,8 @@ ENV CLICOLOR=1 \
     DEBIAN_FRONTEND=noninteractive \
     USER="$USERNAME" \
     GROUP="$GROUPNAME" \
-    HOME="/home/$USERNAME"
+    HOME="/home/$USERNAME" \
+    GOPATH="/home/$USERNAME/.local/share/go"
 
 # Copy configuration files
 WORKDIR "/home/$USERNAME/.local/share/dots"

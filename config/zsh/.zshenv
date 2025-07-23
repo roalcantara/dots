@@ -7,9 +7,28 @@
 # http://zsh.sourceforge.net/Intro/intro_3.html
 # https://github.com/jimeh/dotfiles/blob/main/zshenv
 
-# Ensure compinit is NOT loaded before Zinit loads in ~/zshrc.
-skip_global_compinit=1
-NO_GLOBAL_RCS=1
+# CRITICAL: Set these variables BEFORE any system files are sourced
+# to prevent compinit from being called before ZIM can initialize it
+export skip_global_compinit=1
+export NO_GLOBAL_RCS=1
+
+# Set ZDOTDIR based on the actual user's home directory
+# This ensures it works correctly in containers where $HOME might be different
+export ZDOTDIR=${ZDOTDIR:=$HOME/.config/zsh}
+
+# Additional variables to prevent compinit from being called by other sources
+export DEBIAN_PREVENT_KEYBOARD_CHANGES=1
+export NVM_LAZY_LOAD=1
+export NVM_COMPLETION=true
+
+# Note: compinit override removed since we're using NO_RCS to prevent system-wide files from loading
+
+# Set ZIM-specific environment variables to prevent premature compinit calls
+export ZIM_DISABLE_AUTOLOAD=1
+
+# Prevent system-wide RCS files from being sourced
+# This ensures only our user configuration is loaded, preventing compinit conflicts
+setopt NO_RCS
 
 # profilling:
 #   z_prof=1 "$SHELL" -ilc exit
@@ -59,6 +78,6 @@ if [[ -z "$__HM_ZSH_SESS_VARS_SOURCED" ]]; then
 fi
 
 # if not macOS and profile exists, source it
-if [[ "$OSTYPE" != "darwin"* && -r "$ZDOTDIR/.zprofile" ]]; then
+if [[ -r "$ZDOTDIR/.zprofile" ]]; then
   source "$ZDOTDIR/.zprofile"
 fi

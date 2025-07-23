@@ -21,7 +21,7 @@ ZSH_CACHE_DIR=${ZSH_CACHE_DIR:-$XDG_CACHE_HOME/zsh}
 ZSH_COMPCACHE=${ZSH_COMPCACHE:-$ZSH_CACHE_DIR/compcache}
 ZSH_COMPDUMP=${ZSH_COMPDUMP:-$ZSH_COMPCACHE/.zcompdump}
 MISE_DATA_HOME=${MISE_DATA_HOME:-$XDG_DATA_HOME/mise}
-BACKUP_DIR_ROOT=${BACKUP_DIR_ROOT:-~/.backup}
+BACKUP_DIR_ROOT=${BACKUP_DIR_ROOT:-$XDG_DATA_HOME/backup}
 DOTS_DIR=${DOTS_DIR:-$XDG_DATA_HOME/dots}
 XDG_ZSH_SETUP_SCRIPT=${XDG_ZSH_SETUP_SCRIPT:-$ZDOTDIR/etc/functions/zsetup}
 BACKUP_RESOURCES=${BACKUP_RESOURCES:-".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .ssh/config .ssh/id_rsa .ssh/id_rsa.pub"}
@@ -55,11 +55,15 @@ w() { puts "${YELLOW}[WARN!]${NC}" "$*"; }
 d() { puts "${PURPLE}[DEBUG]${NC}" "$*"; }
 s() { puts "${GREEN}[DONE!]${NC}" "$*"; }
 
+# Print a section header
+# Usage: section <title>
 section() {
   echo "===================================================="
   echo "$1"
   echo "===================================================="
 }
+# Check if the script is running in a container
+# Usage: is_container
 is_container() {
   # Check environment variables, container-specific files, and cgroups
   if [ -n "${DOCKER_CONTAINER:-}" ] || [ -n "${container:-}" ] ||
@@ -72,20 +76,79 @@ is_container() {
     return 1
   fi
 }
+# Remove the GitHub token from the environment
+# Usage: cleanup_github_token <section_name>
 cleanup_github_token() {
   if [ -n "${GITHUB_TOKEN:-}" ]; then
     exec_cmd unset GITHUB_TOKEN
     w "[$1] GitHub token removed from environment"
   fi
 }
+# Execute a command and return the exit status
+# Usage: exec_cmd <command>
 exec_cmd() {
   w "Executing: $*"
   "$@"
   return $?
 }
+# Check if a command is available
+# Usage: has_command <command>
 has_command() {
   command -v "$1" >/dev/null 2>&1
 }
+# Setup environment variable and directory with proper ownership
+# Usage: setup_env_and_dir <env_var_name> <default_path> <section_name> [create_parent]
+setup_env_and_dir() {
+  local env_var_name="$1"
+  local default_path="$2"
+  local section_name="$3"
+  local create_parent="${4:-false}"
+
+  # Set environment variable if not already set
+  if [ -z "${!env_var_name:-}" ]; then
+    eval "export $env_var_name=\"$default_path\""
+    i "[$section_name] $env_var_name set to '${!env_var_name}' ✔︎"
+  fi
+
+  # Create directory if it doesn't exist
+  if [ ! -d "${!env_var_name}" ]; then
+    if [ "$create_parent" = "true" ]; then
+      exec_cmd mkdir -p "${!env_var_name}"
+    else
+      exec_cmd sudo mkdir -p "${!env_var_name}"
+    fi
+    i "[$section_name] '${!env_var_name}' created ✔︎"
+  fi
+
+  # Set ownership if not already correct
+  if [ "$(stat -c '%U:%G' "${!env_var_name}" 2>/dev/null)" != "$USERNAME:$GROUPNAME" ]; then
+    if [ "$create_parent" = "true" ]; then
+      exec_cmd chown -R "$USERNAME:$GROUPNAME" "${!env_var_name}"
+    else
+      exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "${!env_var_name}"
+    fi
+    i "[$section_name] '${!env_var_name}' owned by '$USERNAME' ✔︎"
+  fi
+}
+# Setup directory with proper ownership (without environment variable) as sudo
+# Usage: setup_dir <path> <section_name>
+setup_dir() {
+  local path="$1"
+  local section_name="$2"
+
+  # Create directory if it doesn't exist
+  if [ ! -d "$path" ]; then
+    exec_cmd sudo mkdir -p "$path"
+    i "[$section_name] '$path' created ✔︎"
+  fi
+
+  # Set ownership if not already correct
+  if [ "$(stat -c '%U:%G' "$path" 2>/dev/null)" != "$USERNAME:$GROUPNAME" ]; then
+    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$path"
+    i "[$section_name] '$path' owned by '$USERNAME' ✔︎"
+  fi
+}
+
 step_extract_arguments() {
   section "[ARGS] Extracting arguments..."
   while [[ $# -gt 0 ]]; do
@@ -471,11 +534,7 @@ step_zsh() {
   fi
 
   # Create the ~/.cache/zsh/compcache directory if it doesn't exist
-  if [ ! -d "$ZSH_COMPCACHE" ]; then
-    exec_cmd mkdir -p "$ZSH_COMPCACHE"
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$ZSH_COMPCACHE"
-    i "[ZSH] $ZSH_COMPCACHE created and owned by '$USERNAME' ✔︎"
-  fi
+  setup_dir "$ZSH_COMPCACHE" "ZSH"
 
   # Create symlinks for the ZSH config files
   for file in .zshenv .zprofile .zshrc; do
@@ -486,42 +545,48 @@ step_zsh() {
     fi
   done
 
-  if [ ! -d "$XDG_STATE_HOME/zim" ]; then
-    exec_cmd sudo mkdir -p "$XDG_STATE_HOME/zim"
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/zim"
-    i "[ZSH] $XDG_STATE_HOME/zim created and owned by '$USERNAME' ✔︎"
-  fi
+  # Create ZIM's state directory if it doesn't exist
+  setup_dir "$XDG_STATE_HOME/zim" "ZSH"
 
   s "[ZSH] Setup completed ✔︎"
 }
+step_go() {
+  section "[GO] Setup started..."
 
-# https://neovim.io/doc/user/provider.html#provider-nodejs
+  if ! command -v go >/dev/null 2>&1; then
+    w "[GO] go is not installed! skipping..."
+    return
+  fi
+
+  # Configure the Go environment variables
+  # https://go.dev/doc/gopath_code
+  setup_env_and_dir "GOPATH" "${GOPATH:-$XDG_DATA_HOME/go}" "GO"
+
+  s "[GO] Setup completed ✔︎"
+}
 step_nvim_setup_provider_npm() {
   section "[NVIM/NPM] Setting up NPM provider..."
+  # https://neovim.io/doc/user/provider.html#provider-nodejs
+
   if ! command -v npm >/dev/null 2>&1; then
     w "[NVIM/NPM] npm is not installed! skipping..."
     return
   fi
 
-  if [ ! -d "$XDG_STATE_HOME/npm" ]; then
-    exec_cmd sudo mkdir -p "$XDG_STATE_HOME/npm"
-    i "[NVIM/NPM] '$XDG_STATE_HOME/npm' created ✔︎"
-  fi
+  # Configure the NPM environment variables
+  # https://docs.npmjs.com/cli/v7/configuring-npm
+  setup_env_and_dir "NPM_CONFIG_PREFIX" "${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}" "NVIM/NPM"
+  setup_env_and_dir "NPM_CONFIG_CACHE" "${NPM_CONFIG_CACHE:-$XDG_STATE_HOME/npm}" "NVIM/NPM"
+  setup_env_and_dir "NPM_CONFIG_USERCONFIG" "${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/npmrc}" "NVIM/NPM"
 
-  # Only chown if not already owned by $USERNAME:$GROUPNAME
-  if [ "$(stat -c '%U:%G' "$XDG_STATE_HOME/npm" 2>/dev/null)" != "$USERNAME:$GROUPNAME" ]; then
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/npm"
-    i "[NVIM/NPM] '$XDG_STATE_HOME/npm' owned by '$USERNAME' ✔︎"
-  fi
-
-  export npm_config_cache="${npm_config_cache:-$XDG_STATE_HOME/npm}"
+  # Install neovim's required NPM packages
   exec_cmd npm -g install neovim @mermaid-js/mermaid-cli
-  i "[NVIM/NPM] Required NPM packages installed at '$npm_config_cache' (owned by '$USERNAME') ✔︎"
+  i "[NVIM/NPM] Required NPM packages installed at '$NPM_CONFIG_USERCONFIG' (owned by '$USERNAME') ✔︎"
 }
-
-# https://neovim.io/doc/user/provider.html#provider-python
 step_nvim_setup_provider_python() {
   section "[NVIM/PYTHON] Setting up Python provider..."
+  # https://neovim.io/doc/user/provider.html#provider-python
+
   if ! command -v python3 >/dev/null 2>&1; then
     w "[NVIM/PYTHON] python3 is not installed! skipping..."
     return
@@ -533,39 +598,37 @@ step_nvim_setup_provider_python() {
     return
   fi
 
-  # Create nvim Python environment directory
-  nvim_python_dir="$HOME/.config/nvim/python"
-  if [ ! -d "$nvim_python_dir" ]; then
-    exec_cmd mkdir -p "$nvim_python_dir"
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$nvim_python_dir"
-    i "[NVIM/PYTHON] '$nvim_python_dir' created and owned by '$USERNAME' ✔︎"
-  fi
+  # Create nvim's Python environment directory
+  NVIM_PYTHON_DIR="$XDG_CONFIG_HOME/nvim/python"
+  setup_dir "$NVIM_PYTHON_DIR" "NVIM/PYTHON"
 
-  # Use uv to create a virtual environment and install pynvim
-  exec_cmd cd "$nvim_python_dir" && uv venv
-  exec_cmd cd "$nvim_python_dir" && uv pip install pynvim
-  i "[NVIM/PYTHON] Required Python packages installed at '$nvim_python_dir' (owned by '$USERNAME') ✔︎"
+  # Use uv to create a virtual environment
+  exec_cmd cd "$NVIM_PYTHON_DIR" && uv venv
+
+  # Install neovim's required Python packages
+  exec_cmd cd "$NVIM_PYTHON_DIR" && uv pip install pynvim
+  i "[NVIM/PYTHON] Required Python packages installed at '$NVIM_PYTHON_DIR' (owned by '$USERNAME') ✔︎"
 }
-
-# https://neovim.io/doc/user/provider.html#provider-ruby
 step_nvim_setup_provider_ruby() {
   section "[NVIM/RUBY] Setting up Ruby provider..."
+  # https://neovim.io/doc/user/provider.html#provider-ruby
+
   if ! command -v gem >/dev/null 2>&1; then
     w "[NVIM/RUBY] gem is not installed! skipping..."
     return
   fi
 
-  if [ ! -d "$GEM_HOME" ]; then
-    exec_cmd sudo mkdir -p "$GEM_HOME"
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$GEM_HOME"
-    i "[NVIM/RUBY] '$GEM_HOME' created and owned by '$USERNAME' ✔︎"
-  fi
+  # Configure the gem home directory
+  # https://guides.rubygems.org/command-reference/#gem-environment
+  setup_env_and_dir "GEM_HOME" "${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems}" "NVIM/RUBY"
 
+  # Update the RubyGems system
   exec_cmd gem update --system --no-document
+
+  # Install neovim's required Ruby packages
   exec_cmd gem install neovim rubocop
   i "[NVIM/RUBY] Required GEM packages installed at '$GEM_HOME' (owned by '$USERNAME') ✔︎"
 }
-
 step_nvim() {
   section "[NVIM] Setup started..."
 
@@ -575,30 +638,29 @@ step_nvim() {
     return
   fi
 
-  if [ ! -d "$HOME/.config/nvim" ]; then
-    w "[NVIM] nvim is not installed at '$HOME/.config/nvim'! skipping..."
+  if [ ! -d "$XDG_CONFIG_HOME/nvim" ]; then
+    w "[NVIM] nvim is not installed at '$XDG_CONFIG_HOME/nvim'! skipping..."
     return
   fi
 
-  # Create necessary directories for nvim
-  exec_cmd sudo mkdir -p "$XDG_STATE_HOME/nvim" "$XDG_DATA_HOME/nvim"
-  exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$XDG_STATE_HOME/nvim" "$XDG_DATA_HOME/nvim"
-  i "[NVIM] '$XDG_STATE_HOME/nvim' & '$XDG_DATA_HOME/nvim' created and owned by '$USERNAME' ✔︎"
+  # Create nvim's required directories
+  setup_dir "$XDG_STATE_HOME/nvim" "NVIM"
+  setup_dir "$XDG_DATA_HOME/nvim" "NVIM"
 
+  # Setup nvim providers
   step_nvim_setup_provider_npm
   step_nvim_setup_provider_python
   step_nvim_setup_provider_ruby
 
-  if [ -d "$HOME/.config/nvim" ]; then
-    exec_cmd cd "$HOME/.config/nvim" &&
-      exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless +verbose \
-        +'Lazy! sync' \
-        +'Lazy! clean' \
-        +'Lazy! clear' \
-        +'TSUpdateSync' \
-        -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' \
-        -c 'MasonInstall ast-grep bash-language-server css-lsp diagnostic-languageserver docker-compose-language-service dockerfile-language-server eslint-lsp html-lsp json-lsp lua-language-server marksman neocmakelsp prettier pyright ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server' +qa
-  fi
+  # Install nvim plugins
+  exec_cmd cd "$XDG_CONFIG_HOME/nvim" &&
+    exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless +verbose \
+      +'Lazy! sync' \
+      +'Lazy! clean' \
+      +'Lazy! clear' \
+      +'TSUpdateSync' \
+      -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' \
+      -c 'MasonInstall ast-grep bash-language-server css-lsp diagnostic-languageserver docker-compose-language-service dockerfile-language-server eslint-lsp html-lsp json-lsp lua-language-server marksman neocmakelsp prettier pyright ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server' +qa
 
   s "[NVIM] Setup completed ✔︎"
 }
@@ -636,6 +698,7 @@ main() {
   step_xdg
   step_mise
   step_zsh
+  step_go
   step_nvim
   step_chown
   s "[INSTALL] ($CONTEXT) DONE ✅"

@@ -22,7 +22,7 @@ declare -gaU path=(
   $HOMEBREW_PREFIX/opt/{ruby,gems,curl,rustup}/bin
   $HOMEBREW_PREFIX/opt/gawk/libexec/gnubin
   $HOMEBREW_PREFIX/{bin,sbin}
-  {${CARGO_HOME:=$HOME/.local/share/cargo},${npm_config_cache:=$HOME/.local/state/npm}}/bin
+  {${CARGO_HOME:=$HOME/.local/share/cargo},${NPM_CONFIG_CACHE:=$HOME/.local/state/npm}}/bin
   ${PNPM_HOME:=$HOME/.local/share/pnpm}
   ${XDG_LOCAL_BIN_DIR:=$HOME/.local/bin}
   $path
