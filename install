@@ -533,7 +533,8 @@ step_zsh() {
   setup_dir "$ZSH_COMPCACHE" "ZSH"
 
   # Create symlinks for the ZSH config files
-  for file in .zshenv .zprofile .zshrc; do
+  ZSH_CONFIG_FILES=".zshenv"
+  for file in $ZSH_CONFIG_FILES; do
     if [ -f "$ZDOTDIR/$file" ] && [ ! -L "$HOME/$file" ]; then
       exec_cmd ln -sf "$ZDOTDIR/$file" "$HOME/$file"
       exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$HOME/$file"
