@@ -558,7 +558,9 @@
         "imapclear",
         "mapclear",
         "lmapclear",
-        "comclear"
+        "comclear",
+        "pbcopy",
+        "pbpaste"
   ],
   "addonManager.enable": true,
   "codeLens.enable": true,

@@ -1,0 +1,552 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Neovim Startup Benchmark Script
+#
+# Usage: benchmark [options]
+#
+# Options
+#   -c, --config-dir DIR    Neovim config directory (default: ~/.config/nvim)
+#   -r, --runs NUM          Number of runs to average (default: 10)
+#   --no-table              Disable table output (for scripts/automation)
+#   -q, --quiet             Same as --no-table
+#   -h, --help              Show this help message
+#
+#
+# Outputs
+#   - It adds the startup log to ~/.config/nvim/etc/logs/benchmarks/
+#   - It adds the results summary to ~/.config/nvim/etc/logs/startup.csv
+#
+# Examples
+#   chmod +x benchmark                  # Make it executable first
+#   benchmark                           # Run the benchmark targeting ~/.config/nvim
+#   benchmark -r 20                     # More runs for better accuracy
+#   benchmark -c ~/.config/nvim-custom  # Custom config directory
+
+# COLORS
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+readonly PURPLE='\033[0;35m'
+readonly NC='\033[0m'
+
+# Prints formatted messages
+puts() {
+  if [ -n "$CONTEXT" ]; then
+    echo -e "$1 [$(date '+%Y-%m-%d %H:%M:%S')] ($CONTEXT) $2"
+  else
+    echo -e "$1 [$(date '+%Y-%m-%d %H:%M:%S')] $2"
+  fi
+}
+i() { puts "${BLUE}[INFO!]${NC}" "$*"; }
+e() { puts "${RED}[ERROR]${NC}" "$*" >&2; }
+w() { puts "${YELLOW}[WARN!]${NC}" "$*"; }
+d() { puts "${PURPLE}[DEBUG]${NC}" "$*"; }
+s() { puts "${GREEN}[DONE!]${NC}" "$*"; }
+
+# Default configuration
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
+RUNS=10
+NVIM_CMD="nvim"
+SHOW_TABLE=true
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+  -c | --config-dir)
+    CONFIG_DIR="$2"
+    shift 2
+    ;;
+  -r | --runs)
+    RUNS="$2"
+    shift 2
+    ;;
+  --no-table)
+    SHOW_TABLE=false
+    shift
+    ;;
+  -q | --quiet)
+    SHOW_TABLE=false
+    shift
+    ;;
+  -h | --help)
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  -c, --config-dir DIR    Neovim config directory (default: ~/.config/nvim)"
+    echo "  -r, --runs NUM          Number of runs to average (default: 10)"
+    echo "  --no-table             Disable table output (for scripts/automation)"
+    echo "  -q, --quiet            Same as --no-table"
+    echo "  -h, --help             Show this help message"
+    exit 0
+    ;;
+  *)
+    e "Unknown option: $1"
+    exit 1
+    ;;
+  esac
+done
+
+# Directories
+LOGS_DIR="$CONFIG_DIR/etc/logs"
+BENCHMARKS_DIR="$LOGS_DIR/benchmarks"
+CSV_FILE="$LOGS_DIR/startup.csv"
+
+# Create directories if they don't exist
+mkdir -p "$BENCHMARKS_DIR"
+
+# Generate timestamp
+TIMESTAMP=$(date '+%Y-%m-%d_%H:%M:%S')
+LOG_FILE="$BENCHMARKS_DIR/${TIMESTAMP}_startup.log"
+
+# Gets machine info
+get_machine_info() {
+  local os_info=""
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    os_info="macOS-$(sw_vers -productVersion)-$(uname -m)"
+  elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if command -v lsb_release >/dev/null 2>&1; then
+      os_info="$(lsb_release -si)-$(lsb_release -sr)-$(uname -m)"
+    else
+      os_info="Linux-$(uname -r)-$(uname -m)"
+    fi
+  else
+    os_info="$(uname -s)-$(uname -r)-$(uname -m)"
+  fi
+  echo "$os_info"
+}
+
+# Gets config hash
+get_config_hash() {
+  local hash=""
+  if command -v shasum >/dev/null 2>&1; then
+    hash=$(find "$CONFIG_DIR" -name "*.lua" -type f -exec shasum {} \; 2>/dev/null | shasum | cut -d' ' -f1 | head -c 8)
+  elif command -v sha256sum >/dev/null 2>&1; then
+    hash=$(find "$CONFIG_DIR" -name "*.lua" -type f -exec sha256sum {} \; 2>/dev/null | sha256sum | cut -d' ' -f1 | head -c 8)
+  else
+    hash="unknown"
+  fi
+  echo "$hash"
+}
+
+# Gets git commit
+get_git_commit() {
+  if git -C "$CONFIG_DIR" rev-parse --short HEAD 2>/dev/null; then
+    return 0
+  else
+    echo "unknown"
+  fi
+}
+
+# Counts plugins
+count_plugins() {
+  local count=0
+  # Check for lazy.nvim
+  if [[ -d "$CONFIG_DIR/lua/plugins" ]]; then
+    count=$(find "$CONFIG_DIR/lua/plugins" -name "*.lua" -exec grep -l "return\|=" {} \; 2>/dev/null | wc -l)
+  fi
+
+  # Check for packer/other plugin managers
+  if [[ $count -eq 0 && -f "$CONFIG_DIR/lua/plugins.lua" ]]; then
+    count=$(grep -c "use\|Plug\|require" "$CONFIG_DIR/lua/plugins.lua" 2>/dev/null || echo 0)
+  fi
+
+  # Fallback: count from startuptime log
+  if [[ $count -eq 0 && -f "$LOG_FILE" ]]; then
+    count=$(grep -c "sourcing.*plugin" "$LOG_FILE" 2>/dev/null || echo 0)
+  fi
+
+  echo "$count"
+}
+
+# Counts lua files
+count_lua_files() {
+  find "$CONFIG_DIR" -name "*.lua" -type f 2>/dev/null | wc -l
+}
+
+# Parses startuptime log
+parse_startuptime_log() {
+  local log_file="$1"
+
+  if [[ ! -f "$log_file" ]]; then
+    e "Log file not found: $log_file"
+    return 1
+  fi
+
+  # Use awk to parse the log file
+  awk -v log_file="$log_file" '
+    BEGIN {
+        plugins_ms = 0
+        ftplugins_ms = 0 
+        autoload_ms = 0
+        syntax_ms = 0
+        other_ms = 0
+        total_ms = 0
+        slowest_count = 0
+    }
+    
+    # Skip header lines and empty lines
+    /^---|^$/ { next }
+    
+    # Process timing lines (start with number)
+    /^[0-9]/ {
+        time = $1
+        total_ms = time  # Last line should have total time
+        description = ""
+        for(i=2; i<=NF; i++) description = description " " $i
+        
+        # Categorize based on description
+        if (match(description, /plugin/)) {
+            plugins_ms += time
+        } else if (match(description, /ftplugin/)) {
+            ftplugins_ms += time
+        } else if (match(description, /autoload/)) {
+            autoload_ms += time
+        } else if (match(description, /syntax/)) {
+            syntax_ms += time
+        } else {
+            other_ms += time
+        }
+        
+        # Store for slowest operations (top 10)
+        if (slowest_count < 10) {
+            slowest_times[slowest_count] = time
+            slowest_desc[slowest_count] = description
+            slowest_count++
+        } else {
+            # Find minimum in current top 10
+            min_idx = 0
+            for (i = 1; i < 10; i++) {
+                if (slowest_times[i] < slowest_times[min_idx]) {
+                    min_idx = i
+                }
+            }
+            # Replace if current time is larger
+            if (time > slowest_times[min_idx]) {
+                slowest_times[min_idx] = time
+                slowest_desc[min_idx] = description
+            }
+        }
+    }
+    
+    END {
+        # Sort slowest operations
+        for (i = 0; i < slowest_count - 1; i++) {
+            for (j = i + 1; j < slowest_count; j++) {
+                if (slowest_times[i] < slowest_times[j]) {
+                    # Swap times
+                    temp_time = slowest_times[i]
+                    slowest_times[i] = slowest_times[j]
+                    slowest_times[j] = temp_time
+                    # Swap descriptions
+                    temp_desc = slowest_desc[i]
+                    slowest_desc[i] = slowest_desc[j]
+                    slowest_desc[j] = temp_desc
+                }
+            }
+        }
+        
+        # Build slowest operations string
+        slowest_str = ""
+        for (i = 0; i < slowest_count && i < 10; i++) {
+            if (i > 0) slowest_str = slowest_str "; "
+            slowest_str = slowest_str slowest_desc[i] " " slowest_times[i] "ms"
+        }
+        
+        printf "%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%s,%s\n", 
+               plugins_ms, ftplugins_ms, autoload_ms, syntax_ms, other_ms, total_ms, slowest_str, log_file
+    }
+    ' "$log_file"
+}
+
+# Runs benchmark
+run_benchmark() {
+  local use_gum=false
+  if command -v gum >/dev/null 2>&1 && [[ "$SHOW_TABLE" == "true" ]]; then
+    use_gum=true
+  fi
+
+  if [[ "$use_gum" == "true" ]]; then
+    gum log --time DateTime --level info "Starting Neovim benchmark with $RUNS runs"
+    echo ""
+  else
+    echo "Running Neovim startup benchmark..."
+    echo "Config directory: $CONFIG_DIR"
+    echo "Number of runs: $RUNS"
+    echo "Log file: $LOG_FILE"
+  fi
+
+  # Run benchmark multiple times and take average
+  local total_duration=0
+  local temp_logs=()
+
+  for ((i = 1; i <= RUNS; i++)); do
+    if [[ "$use_gum" == "true" ]]; then
+      gum spin --spinner dot --title "Run $i/$RUNS - Measuring startup time..." -- bash -c "
+                temp_log=\"$BENCHMARKS_DIR/temp_${TIMESTAMP}_${i}.log\"
+                start_time=\$(date +%s%3N)
+                $NVIM_CMD --startuptime \"\$temp_log\" +q
+                end_time=\$(date +%s%3N)
+                echo \$((end_time - start_time)) > \"$BENCHMARKS_DIR/duration_${i}.tmp\"
+            "
+      local duration=$(cat "$BENCHMARKS_DIR/duration_${i}.tmp")
+      rm -f "$BENCHMARKS_DIR/duration_${i}.tmp"
+    else
+      echo "Run $i/$RUNS..."
+      local temp_log="$BENCHMARKS_DIR/temp_${TIMESTAMP}_${i}.log"
+      local start_time=$(date +%s%3N)
+      $NVIM_CMD --startuptime "$temp_log" +q
+      local end_time=$(date +%s%3N)
+      local duration=$((end_time - start_time))
+    fi
+
+    temp_logs+=("$temp_log")
+    total_duration=$((total_duration + duration))
+  done
+
+  # Calculate average duration
+  local avg_duration=$((total_duration / RUNS))
+
+  # Use the middle run's log for detailed analysis
+  local middle_run=$(((RUNS + 1) / 2))
+  local analysis_log="${temp_logs[$((middle_run - 1))]}"
+  cp "$analysis_log" "$LOG_FILE"
+
+  # Clean up temporary logs
+  for temp_log in "${temp_logs[@]}"; do
+    rm -f "$temp_log"
+  done
+
+  if [[ "$use_gum" == "true" ]]; then
+    gum log --level info "Benchmark completed in $(echo "scale=2; $total_duration/1000" | bc -l)s total"
+  fi
+
+  echo "$avg_duration"
+}
+
+# Initializes CSV file
+init_csv() {
+  if [[ ! -f "$CSV_FILE" ]]; then
+    echo "TIMESTAMP,DURATION_MS,COMMAND,NEOVIM_VERSION,COMMIT,PLUGINS_TOTAL,LUA_FILES_TOTAL,PLUGINS_MS,FTPLUGINS_MS,AUTOLOAD_MS,SYNTAX_MS,OTHER_MS,TOTAL_MS,SLOWEST_OPERATIONS,SOURCE,MACHINE_INFO,CONFIG_HASH" >"$CSV_FILE"
+    echo "Created CSV file: $CSV_FILE"
+  fi
+}
+
+# Displays results table
+display_results_table() {
+  local duration="$1"
+  local plugins_total="$2"
+  local lua_files_total="$3"
+  local analysis_result="$4"
+  local nvim_version="$5"
+  local git_commit="$6"
+  local machine_info="$7"
+  local config_hash="$8"
+
+  # Parse analysis result (plugins_ms,ftplugins_ms,autoload_ms,syntax_ms,other_ms,total_ms,slowest_str,log_file)
+  IFS=',' read -r plugins_ms ftplugins_ms autoload_ms syntax_ms other_ms total_ms slowest_operations log_file <<<"$analysis_result"
+
+  # Clean up slowest operations for display (limit length)
+  local slowest_display
+  slowest_display=$(echo "$slowest_operations" | cut -c1-60)
+  if [[ ${#slowest_operations} -gt 60 ]]; then
+    slowest_display="${slowest_display}..."
+  fi
+
+  # Check if gum is available
+  if command -v gum >/dev/null 2>&1; then
+    echo ""
+    echo "🚀 Benchmark Results"
+    echo ""
+
+    # System Information Table
+    gum table --widths 20,50 --height 8 <<EOF
+Property,Value
+Timestamp,$TIMESTAMP
+Neovim Version,$nvim_version
+Git Commit,$git_commit
+Machine,$machine_info
+Config Hash,$config_hash
+Plugins,$plugins_total
+Lua Files,$lua_files_total
+EOF
+
+    echo ""
+
+    # Performance Metrics Table
+    gum table --widths 25,15,15 --height 9 <<EOF
+Metric,Time (ms),Percentage
+Average Duration,${duration}ms,100.0%
+Plugin Loading,${plugins_ms}ms,$(awk "BEGIN {printf \"%.1f\", ($plugins_ms/$total_ms)*100}")%
+Ftplugin Loading,${ftplugins_ms}ms,$(awk "BEGIN {printf \"%.1f\", ($ftplugins_ms/$total_ms)*100}")%
+Autoload Functions,${autoload_ms}ms,$(awk "BEGIN {printf \"%.1f\", ($autoload_ms/$total_ms)*100}")%
+Syntax Loading,${syntax_ms}ms,$(awk "BEGIN {printf \"%.1f\", ($syntax_ms/$total_ms)*100}")%
+Other Operations,${other_ms}ms,$(awk "BEGIN {printf \"%.1f\", ($other_ms/$total_ms)*100}")%
+Total Startup Time,${total_ms}ms,100.0%
+EOF
+
+    echo ""
+
+    # Top Slowest Operations
+    if [[ -n "$slowest_operations" && "$slowest_operations" != "unknown" ]]; then
+      echo "🐌 Slowest Operations"
+      echo ""
+      echo "$slowest_operations" | tr ';' '\n' | head -5 | nl -w2 -s'. ' |
+        gum table --widths 5,70 --height 7 --header "Rank,Operation"
+    fi
+
+  else
+    # Fallback to plain text if gum is not available
+    echo ""
+    echo "=== 🚀 Benchmark Results ==="
+    printf "%-20s %s\n" "Timestamp:" "$TIMESTAMP"
+    printf "%-20s %s\n" "Neovim Version:" "$nvim_version"
+    printf "%-20s %s\n" "Git Commit:" "$git_commit"
+    printf "%-20s %s\n" "Machine:" "$machine_info"
+    printf "%-20s %s\n" "Config Hash:" "$config_hash"
+    printf "%-20s %s\n" "Plugins:" "$plugins_total"
+    printf "%-20s %s\n" "Lua Files:" "$lua_files_total"
+
+    echo ""
+    echo "=== ⚡ Performance Metrics ==="
+    printf "%-25s %10s %10s\n" "Metric" "Time (ms)" "Percentage"
+    printf "%-25s %10s %10s\n" "─────────────────────────" "─────────" "──────────"
+    printf "%-25s %9sms %9.1f%%\n" "Average Duration" "$duration" "100.0"
+    printf "%-25s %9sms %9.1f%%\n" "Plugin Loading" "$plugins_ms" "$(awk "BEGIN {print ($plugins_ms/$total_ms)*100}")"
+    printf "%-25s %9sms %9.1f%%\n" "Ftplugin Loading" "$ftplugins_ms" "$(awk "BEGIN {print ($ftplugins_ms/$total_ms)*100}")"
+    printf "%-25s %9sms %9.1f%%\n" "Autoload Functions" "$autoload_ms" "$(awk "BEGIN {print ($autoload_ms/$total_ms)*100}")"
+    printf "%-25s %9sms %9.1f%%\n" "Syntax Loading" "$syntax_ms" "$(awk "BEGIN {print ($syntax_ms/$total_ms)*100}")"
+    printf "%-25s %9sms %9.1f%%\n" "Other Operations" "$other_ms" "$(awk "BEGIN {print ($other_ms/$total_ms)*100}")"
+    printf "%-25s %9sms %9.1f%%\n" "Total Startup Time" "$total_ms" "100.0"
+
+    if [[ -n "$slowest_operations" && "$slowest_operations" != "unknown" ]]; then
+      echo ""
+      echo "=== 🐌 Top 5 Slowest Operations ==="
+      echo "$slowest_operations" | tr ';' '\n' | head -5 | nl -w2 -s'. '
+    fi
+  fi
+
+  echo ""
+  echo "📁 Files:"
+  echo "   Log: $LOG_FILE"
+  echo "   CSV: $CSV_FILE"
+}
+
+# Main execution
+main() {
+  local use_gum=false
+  if command -v gum >/dev/null 2>&1 && [[ "$SHOW_TABLE" == "true" ]]; then
+    use_gum=true
+    gum format "# 🚀 Neovim Startup Benchmark"
+    echo ""
+    gum format "**Timestamp:** \`$TIMESTAMP\`"
+  else
+    echo "=== Neovim Startup Benchmark ==="
+    echo "Timestamp: $TIMESTAMP"
+  fi
+
+  # Get system information
+  local nvim_version
+  nvim_version=$($NVIM_CMD --version | head -n1 | cut -d' ' -f2-)
+
+  local git_commit
+  git_commit=$(get_git_commit)
+
+  local machine_info
+  machine_info=$(get_machine_info)
+
+  local config_hash
+  config_hash=$(get_config_hash)
+
+  if [[ "$use_gum" == "true" ]]; then
+    gum log --level info "Neovim version: $nvim_version"
+    gum log --level info "Git commit: $git_commit"
+    gum log --level info "Machine: $machine_info"
+    gum log --level info "Config hash: $config_hash"
+  else
+    echo "Neovim version: $nvim_version"
+    echo "Git commit: $git_commit"
+    echo "Machine: $machine_info"
+    echo "Config hash: $config_hash"
+  fi
+
+  # Run benchmark
+  local duration
+  duration=$(run_benchmark)
+
+  # Count plugins and lua files
+  local plugins_total
+  local lua_files_total
+
+  if [[ "$use_gum" == "true" ]]; then
+    plugins_total=$(gum spin --spinner dot --title "Counting plugins..." -- bash -c "$(declare -f count_plugins); count_plugins")
+    lua_files_total=$(gum spin --spinner dot --title "Counting Lua files..." -- bash -c "$(declare -f count_lua_files); count_lua_files")
+  else
+    plugins_total=$(count_plugins)
+    lua_files_total=$(count_lua_files)
+    echo "Plugins found: $plugins_total"
+    echo "Lua files: $lua_files_total"
+    echo "Average duration: ${duration}ms"
+  fi
+
+  # Parse the log file
+  if [[ "$use_gum" == "true" ]]; then
+    gum log --level info "Plugins found: $plugins_total"
+    gum log --level info "Lua files: $lua_files_total"
+    gum log --level info "Average duration: ${duration}ms"
+    local analysis_result
+    analysis_result=$(gum spin --spinner dot --title "Analyzing startup log..." -- bash -c "$(declare -f parse_startuptime_log); parse_startuptime_log '$LOG_FILE'")
+  else
+    echo "Analyzing startup log..."
+    local analysis_result
+    analysis_result=$(parse_startuptime_log "$LOG_FILE")
+  fi
+
+  if [[ -z "$analysis_result" ]]; then
+    if [[ "$use_gum" == "true" ]]; then
+      gum log --level error "Failed to parse log file"
+    else
+      echo "Error: Failed to parse log file" >&2
+    fi
+    exit 1
+  fi
+
+  # Initialize CSV if needed
+  init_csv
+
+  # Prepare command string (escape quotes for CSV)
+  local command_str="nvim --startuptime $LOG_FILE +q"
+
+  # Append to CSV
+  local csv_line="$TIMESTAMP,$duration,\"$command_str\",\"$nvim_version\",$git_commit,$plugins_total,$lua_files_total,$analysis_result,\"$machine_info\",$config_hash"
+  echo "$csv_line" >>"$CSV_FILE"
+
+  # Display beautiful results table or simple output
+  if [[ "$SHOW_TABLE" == "true" ]]; then
+    display_results_table "$duration" "$plugins_total" "$lua_files_total" "$analysis_result" "$nvim_version" "$git_commit" "$machine_info" "$config_hash"
+
+    if [[ "$use_gum" == "true" ]]; then
+      echo ""
+      gum format "✅ **Benchmark completed successfully!**"
+
+      # Offer to run analyzer
+      echo ""
+      if gum confirm "🔍 Would you like to analyze the results interactively?"; then
+        if [[ -f "$CONFIG_DIR/etc/tools/analyzer" ]]; then
+          "$CONFIG_DIR/etc/tools/analyzer"
+        else
+          gum log --level warn "analyzer not found in $CONFIG_DIR/etc/tools/"
+        fi
+      fi
+    fi
+  else
+    echo "=== Results ==="
+    echo "Duration: ${duration}ms"
+    echo "Log saved to: $LOG_FILE"
+    echo "Results appended to: $CSV_FILE"
+  fi
+}
+
+# Run main function
+main "$@"

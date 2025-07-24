@@ -250,14 +250,11 @@ indent_size = 2
 indent_style = space
 
 # Shell
-# https://google.github.io/styleguide/shell.xml#Indentation
+# shfmt | https://github.com/mvdan/sh
+# Shell Style Guide | https://google.github.io/styleguide/shell.xml#Indentation
 [*.{bash,sh,zsh}]
 indent_size = 2
 indent_style = space
-
-# shfmt
-# https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd#readme
-# https://pantsbuild.org/docs/reference-shfmt
 shell_variant             = auto       # --language-dialect
 switch_case_indent        = true       # --case-indent
 function_next_line        = true       # function opening braces are placed on a separate line

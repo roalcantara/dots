@@ -83,64 +83,64 @@ else
     lsp_hover_mouse_delay = 1000, -- [go] Mouse hover delay in milliseconds for LSP hover documentation
   }
   options.o = {
-  --   -- Performance optimizations
-  --   lazyredraw = false, -- Don't redraw while executing macros
-  --   ttyfast = true,     -- Faster terminal connection
-  --   updatetime = 100,   -- Faster response for CursorHold events
-  --   timeoutlen = 300,   -- Faster key sequence timeout
-  --   ttimeoutlen = 10,   -- Faster key code timeout
+    --   -- Performance optimizations
+    --   lazyredraw = false, -- Don't redraw while executing macros
+    --   ttyfast = true,     -- Faster terminal connection
+    --   updatetime = 100,   -- Faster response for CursorHold events
+    --   timeoutlen = 300,   -- Faster key sequence timeout
+    --   ttimeoutlen = 10,   -- Faster key code timeout
 
-  --   -- Search and Completion
-  --   hlsearch = true,    -- When there is a previous search pattern, highlight all its matches
-  --   breakindent = true, -- [wo] Every wrapped line will continue visually indented
-  --   timeout = true,     -- [go] This option and 'timeoutlen' determine the behavior when part of a mapped key sequence has been received
-  --   incsearch = true,   -- [go] Highlight match while typing search pattern
+    --   -- Search and Completion
+    --   hlsearch = true,    -- When there is a previous search pattern, highlight all its matches
+    --   breakindent = true, -- [wo] Every wrapped line will continue visually indented
+    --   timeout = true,     -- [go] This option and 'timeoutlen' determine the behavior when part of a mapped key sequence has been received
+    --   incsearch = true,   -- [go] Highlight match while typing search pattern
 
-  --   -- Folds
-  --   foldcolumn = "1",    -- '0' is not bad
-  --   foldlevelstart = 99, -- Start unfolded
-  --   foldenable = true,   -- Enable folds by default
+    --   -- Folds
+    --   foldcolumn = "1",    -- '0' is not bad
+    --   foldlevelstart = 99, -- Start unfolded
+    --   foldenable = true,   -- Enable folds by default
 
-  --   -- Editor UI
-  --   background = "dark",       -- [bo] Set background
-  --   guifont = "JetBrainsMonoNL Nerd Font:h16",
-  --   showtabline = 0,           -- [go] Tells when the tab pages line is displayed => 0: never, 2: always, 1: only if there are at least two tab pages
-  --   cmdheight = 0,             -- [go, t] Number of screen lines to use for the command-line. Helps avoiding hit-enter prompts.
-  --   showcmdloc = "statusline", -- Show cmd in the statusline (https://github.com/nvim-lualine/lualine.nvim/issues/949)
+    --   -- Editor UI
+    --   background = "dark",       -- [bo] Set background
+    --   guifont = "JetBrainsMonoNL Nerd Font:h16",
+    --   showtabline = 0,           -- [go] Tells when the tab pages line is displayed => 0: never, 2: always, 1: only if there are at least two tab pages
+    --   cmdheight = 0,             -- [go, t] Number of screen lines to use for the command-line. Helps avoiding hit-enter prompts.
+    --   showcmdloc = "statusline", -- Show cmd in the statusline (https://github.com/nvim-lualine/lualine.nvim/issues/949)
 
-  --   -- Line Display
-  --   numberwidth = 3,    -- [wo] minimal number of columns to use for the line number {default 4}
-  --   colorcolumn = "+1", -- [wo] colour the 81st (or 73rd) column so that we don`t type over our limit
+    --   -- Line Display
+    --   numberwidth = 3,    -- [wo] minimal number of columns to use for the line number {default 4}
+    --   colorcolumn = "+1", -- [wo] colour the 81st (or 73rd) column so that we don`t type over our limit
 
-  --   -- Text Editing
-  --   autoindent = true,     -- [bo] Copy indent from current line when starting a new line
-  --   smarttab = true,       -- [go] Use 'shiftwidth' when inserting <Tab>
-  --   softtabstop = 2,       -- [bo] uses 'shiftwidth' counts for while performing editing operations
-  --   textwidth = 72,        -- [bo] Maximum width of text that is being inserted
-  --   preserveindent = true, -- [bo] Preserve the indent structure of the file
+    --   -- Text Editing
+    --   autoindent = true,     -- [bo] Copy indent from current line when starting a new line
+    --   smarttab = true,       -- [go] Use 'shiftwidth' when inserting <Tab>
+    --   softtabstop = 2,       -- [bo] uses 'shiftwidth' counts for while performing editing operations
+    --   textwidth = 72,        -- [bo] Maximum width of text that is being inserted
+    --   preserveindent = true, -- [bo] Preserve the indent structure of the file
 
-  --   -- Menus
-  --   pumheight = 25,        -- [bo] Maximum number of entries in a popup
-  --   wildignorecase = true, -- [go] ignored when completing file names and directories
-  --   wildmenu = true,       -- command-line completion operates in an enhanced modes
+    --   -- Menus
+    --   pumheight = 25,        -- [bo] Maximum number of entries in a popup
+    --   wildignorecase = true, -- [go] ignored when completing file names and directories
+    --   wildmenu = true,       -- command-line completion operates in an enhanced modes
 
-  --   -- File Handling
-  --   encoding = "utf-8",  -- [bo] The encoding used inside the buffer
-  --   swapfile = false,    -- [bo] Use a swapfile for the buffer.
-  --   modeline = true,     -- [go] Enable modeline
-  --   writebackup = false, -- [bo] If a file is being edited by another program (or was written to a file) while you are editing it, it is still being saved and will be updated when you are done
-  --   autoread = true,     -- [bo] If a file is changed outside of Neovim and you haven't changed it, automatically read it again.
+    --   -- File Handling
+    --   encoding = "utf-8",  -- [bo] The encoding used inside the buffer
+    --   swapfile = false,    -- [bo] Use a swapfile for the buffer.
+    --   modeline = true,     -- [go] Enable modeline
+    --   writebackup = false, -- [bo] If a file is being edited by another program (or was written to a file) while you are editing it, it is still being saved and will be updated when you are done
+    --   autoread = true,     -- [bo] If a file is changed outside of Neovim and you haven't changed it, automatically read it again.
 
     -- Mouse | https://neovim.io/doc/user/options.html#'mousem'
     -- mousemodel = "extend", -- Enables all mouse features including: 1. Right click opens a menu, 2. Shift + left click extends selection, 3. Right drag extends selection
 
-  --   -- https://neovim.io/doc/user/options.html#'winborder'
-  --   winborder = "rounded", -- [go] Border style for floating windows and popup menus
+    --   -- https://neovim.io/doc/user/options.html#'winborder'
+    --   winborder = "rounded", -- [go] Border style for floating windows and popup menus
   }
   options.opt = {
-    pumheight = 25, -- [bo] Maximum number of entries in a popup
+    pumheight = 25,        -- [bo] Maximum number of entries in a popup
     winborder = "rounded", -- [go] Border style for floating windows and popup menus
-    wildignore = { -- [go] Allow specified keys to cross line boundaries
+    wildignore = {         -- [go] Allow specified keys to cross line boundaries
       "._*",
       ".lock",
       ".sass-cache",
@@ -221,10 +221,9 @@ else
     wrapscan = true,               -- [go] Searches wrap around the end of the file
   }
 
-
   local function setup_clipboard()
     local clipboard_tools = {
-      pbcopy        = "unnamedplus",-- "pbcopy, pbpaste (macOS)",
+      pbcopy = "pbcopy, pbpaste (macOS)",
       -- ["wl-copy"]   = "unnamedplus",-- "wl-copy, wl-paste (if $WAYLAND_DISPLAY is set)",
       -- wayclip       = "unnamedplus",-- "waycopy, waypaste (if $WAYLAND_DISPLAY is set)",
       -- xsel          = "unnamedplus",-- "xsel (if $DISPLAY is set)",
@@ -240,27 +239,20 @@ else
     }
 
     local has_clipboard_tool = function()
-      for tool, value in pairs(clipboard_tools) do
+      for tool, _ in pairs(clipboard_tools) do
         if vim.fn.executable(tool) == 1 then
-          return tool, value
+          return tool
         end
       end
       return nil
     end
 
-    local clipboard_tool, value = has_clipboard_tool()
-    if clipboard_tool then
-      vim.opt.clipboard = value
-      vim.schedule(function()
-        Snacks.notify.info("Setting **vim.opt.clipboard** = `" .. value .. "`", {
-          title = "Clipboard tool '" .. clipboard_tool .. "' found!",
-          style = "fancy",
-          icon = "✅",
-          keep = false,
-          timeout = 1000,
-        })
-      end)
-    else
+    local function is_remote_env()
+      return vim.env.SSH_CLIENT or vim.env.SSH_TTY or vim.env.CONTAINER or vim.env.REMOTE_CONTAINERS
+    end
+
+    local clipboard_tool = has_clipboard_tool()
+    if is_remote_env() or type(clipboard_tool) == "nil" then
       vim.g.clipboard = 'osc52'
       vim.schedule(function()
         Snacks.notify.warn("Setting `vim.g.clipboard = 'osc52'`", {
@@ -269,6 +261,17 @@ else
           icon = "❌",
           keep = false,
           timeout = 4000,
+        })
+      end)
+    else
+      vim.opt.clipboard = "unnamedplus"
+      vim.schedule(function()
+        Snacks.notify.info("Setting **vim.opt.clipboard** = `unnamedplus`", {
+          title = "Clipboard tool '" .. clipboard_tool .. "' found!",
+          style = "fancy",
+          icon = "✅",
+          keep = false,
+          timeout = 1000,
         })
       end)
     end
