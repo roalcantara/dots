@@ -57,8 +57,50 @@ dots() {
   # Print the ANSI color palette
   palette)
     local lorem="Arma virumque cano Troiae qui primus ab oris"
-    for i in {0..256}; do
-      print -P -- "ANSI[${i}] ${FX[fg]:?}${i}m${lorem}${FX[none]}"
+
+    # Function to convert ANSI color code to HEX
+    ansi_to_hex() {
+      local code=$1
+
+      # Standard colors (0-15)
+      if ((code <= 15)); then
+        local colors=(
+          "#000000" "#800000" "#008000" "#808000" "#000080" "#800080" "#008080" "#c0c0c0"
+          "#808080" "#ff0000" "#00ff00" "#ffff00" "#0000ff" "#ff00ff" "#00ffff" "#ffffff"
+        )
+        echo "${colors[$code]}"
+        return
+      fi
+
+      # 216 colors (16-231): 6x6x6 color cube
+      if ((code <= 231)); then
+        local adjusted=$((code - 16))
+        local r=$((adjusted / 36))
+        local g=$(((adjusted % 36) / 6))
+        local b=$((adjusted % 6))
+
+        # Convert to 0-255 range
+        r=$((r == 0 ? 0 : r * 40 + 55))
+        g=$((g == 0 ? 0 : g * 40 + 55))
+        b=$((b == 0 ? 0 : b * 40 + 55))
+
+        printf "#%02x%02x%02x" $r $g $b
+        return
+      fi
+
+      # Grayscale colors (232-255)
+      if ((code <= 255)); then
+        local gray=$((8 + (code - 232) * 10))
+        printf "#%02x%02x%02x" $gray $gray $gray
+        return
+      fi
+
+      echo "#000000" # fallback
+    }
+
+    for i in {0..255}; do
+      local hex=$(ansi_to_hex $i)
+      print -P -- "ANSI[${i}] \033[38;5;${i}m${lorem}\033[0m ${hex}"
     done
     ;;
   # ZSH subcommands
