@@ -16,6 +16,7 @@ XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
 XDG_LOCAL_DIR=${XDG_LOCAL_DIR:-~/.local}
 XDG_DATA_HOME=${XDG_DATA_HOME:-$XDG_LOCAL_DIR/share}
 XDG_STATE_HOME=${XDG_STATE_HOME:-$XDG_LOCAL_DIR/state}
+XDG_COMMON_DIRS=${XDG_COMMON_DIRS:-".config .cache .local .local/share .local/state .local/bin"}
 ZDOTDIR=${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}
 ZSH_CACHE_DIR=${ZSH_CACHE_DIR:-$XDG_CACHE_HOME/zsh}
 ZSH_COMPCACHE=${ZSH_COMPCACHE:-$ZSH_CACHE_DIR/compcache}
@@ -24,7 +25,7 @@ MISE_DATA_HOME=${MISE_DATA_HOME:-$XDG_DATA_HOME/mise}
 BACKUP_DIR_ROOT=${BACKUP_DIR_ROOT:-$XDG_DATA_HOME/backup}
 DOTS_DIR=${DOTS_DIR:-$XDG_DATA_HOME/dots}
 XDG_ZSH_SETUP_SCRIPT=${XDG_ZSH_SETUP_SCRIPT:-$ZDOTDIR/etc/functions/zsetup}
-BACKUP_RESOURCES=${BACKUP_RESOURCES:-".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .ssh/config .ssh/id_rsa .ssh/id_rsa.pub"}
+BACKUP_RESOURCES=${BACKUP_RESOURCES:-".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .config"}
 MISE_PACKAGES=${MISE_PACKAGES:-"ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node python go"}
 NPM_CONFIG_PREFIX=${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}
 NPM_CONFIG_CACHE=${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}
@@ -350,8 +351,10 @@ step_backup() {
       i "Backed up: $resource_path ✔"
 
       # If it was an XDG directory, recreate it with proper ownership
-      exec_cmd sudo install -d -o "$USERNAME" -g "$USERNAME" "$resource_path"
-      i "Recreated directory: $resource_path owned by $USERNAME:$GROUPNAME ✔"
+      if [[ "$XDG_COMMON_DIRS" == *"$resource"* ]]; then
+        exec_cmd sudo install -d -o "$USERNAME" -g "$USERNAME" "$resource_path"
+        i "Recreated directory: $resource_path owned by $USERNAME:$USERNAME ✔"
+      fi
     else
       d "Resource does not exist, skipping: $resource_path"
     fi
