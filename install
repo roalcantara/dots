@@ -14,10 +14,11 @@ readonly PURPLE='\033[0;35m'
 readonly NC='\033[0m'
 
 # GLOBAL variables
-declare -g OS="darwin"
+declare -g OS="debian"
+declare -g DISTRO="debian"
 declare -g USERNAME="roalcantara"
-declare -g GROUPNAME="staff"
-declare -g USERHOME="/Users/$USERNAME"
+declare -g GROUPNAME="wheel"
+declare -g USERHOME="/home/$USERNAME"
 declare -g TIMEZONE="America/Sao_Paulo"
 declare -g REPO_URL="https://github.com/roalcantara/dots"
 declare -g LOCALGROUP=$(id -gn 2>/dev/null)
@@ -25,10 +26,14 @@ declare -g LOCALUSER=$(id -un 2>/dev/null)
 declare -g USR_LOCAL_BIN="/usr/local/bin"
 declare -g XDG_COMMON_DIRS=".config .cache .local .local/share .local/state .local/bin"
 declare -g BACKUP_RESOURCES=".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .config"
-declare -g MISE_PACKAGES="ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node python go"
 declare -g CONTEXT
 declare -g ARCH
 declare -g ENV
+declare -g -A PACKAGES=(
+  # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
+  [debian]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint"
+  [mise]="ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node python pre-commit go"
+)
 
 puts() {
   if [ -n "$CONTEXT" ]; then
@@ -123,9 +128,32 @@ setup_env_and_dir() {
   # Set environment variable if not already set
   export_env_var "$env_var_name" "$default_path" "$section_name" "${@:4}"
 }
+# Setup environment variable and directory with proper ownership
+# Usage: setup_env_and_dir <env_var_name> <default_path> <section_name>
+export_env_and_make_dir() {
+  local env_var_name="$1"
+  local default_path="$2"
+  local section_name="$3"
+
+  # Create directory if it doesn't exist
+  setup_dir "$default_path" "$section_name/$env_var_name"
+
+  # Set environment variable if not already set
+  export_env_var "$env_var_name" "$default_path" "$section_name" "${@:4}"
+}
 setup_platform() {
   section "[ENV/DETECT] Detecting platform..."
   OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [ -f "/etc/os-release" ]; then
+    DISTRO=$(. /etc/os-release && echo "$ID" | head -1 | tr '[:upper:]' '[:lower:]')
+  elif [ -f "/etc/arch-release" ]; then
+    DISTRO="arch"
+  elif [ "$(uname -s)" = "Darwin" ]; then
+    DISTRO="darwin"
+  else
+    DISTRO="unknown"
+  fi
+  echo "DISTRO: '$DISTRO'"
   UNAMED_ARCH="$(uname -m)"
   if [ "$UNAMED_ARCH" = "aarch64" ] || [ "$UNAMED_ARCH" = "arm64" ]; then
     ARCH="arm64"
@@ -225,7 +253,7 @@ setup_arguments() {
 }
 setup_environment_variables() {
   section "[ENV/SETUP] ($HOME) ($GROUP) Setting up environment variables..."
-  [[ ! "$OS" =~ "darwin" ]] && USERHOME="/home/$USERNAME" && GROUPNAME=${GROUPNAME:-"wheel"}
+  [[ "$OS" =~ "darwin" ]] && USERHOME="/Users/$USERNAME" && GROUPNAME=${GROUPNAME:-"staff"}
   [[ -z "$HOME" || $HOME != "$USERHOME" ]] && exec_cmd export HOME="$USERHOME"
   [[ -z "$GROUP" || $GROUP != "$GROUPNAME" ]] && exec_cmd export GROUP="$GROUPNAME"
 
@@ -278,20 +306,24 @@ step_setup_environment() {
   i "DOTS_DIR = \"$DOTS_DIR\""
 }
 step_prepare() {
-  section "[PREP] Setting up essential dependencies..."
+  section "[PREP/$DISTRO] Setting up essential dependencies"
+
+  w "[$DISTRO] All packages: '${PACKAGES[*]}'"
+  w "[$DISTRO] Mise packages: '${PACKAGES[mise]}'"
+  w "[$DISTRO] Debian packages: '${PACKAGES[debian]}'"
+  w "[$DISTRO] Installing essential packages: '${PACKAGES[$DISTRO]}'"
 
   # Detect platform and setup accordingly
   if has_command apt; then
-    # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
-    exec_cmd apt-get update &&
-      apt-get install -y --no-install-recommends sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel &&
+    exec_cmd apt-get update && apt-get install -y --no-install-recommends ${PACKAGES[$DISTRO]} &&
       sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 
+    i "[PREP/$DISTRO] Essential packages installed: '${PACKAGES[$DISTRO]}' ✔︎"
+
     if [ -n "$TIMEZONE" ]; then
-      ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime && echo "$TIMEZONE" >/etc/timezone
-      i "[PREP] Timezone '$TIMEZONE' symlinked to /etc/localtime and added to /etc/timezone ✔︎"
+      exec_cmd ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime && exec_cmd echo "$TIMEZONE" >/etc/timezone
+      i "[PREP/timezone] Timezone '$TIMEZONE' symlinked to /etc/localtime and added to /etc/timezone ✔︎"
     fi
-    w "[PREP] (UBUNTU/DEBIAN) Using apt ✔︎"
   else
     e "Unsupported platform!"
     return 1
@@ -430,7 +462,7 @@ step_xdg() {
   step_chown
 }
 step_mise() {
-  section "[MISE] Setup started..."
+  section "[MISE] Setting up..."
 
   if [ -z "${GITHUB_TOKEN:-}" ]; then
     w "[MISE] GITHUB_TOKEN not set, looking up for token..."
@@ -461,38 +493,29 @@ step_mise() {
       e "[MISE] Neither curl nor wget is installed. Please install one of them to proceed."
       return 1
     fi
-    i "[MISE] mise installed successfully system-wide at '$MISE_INSTALL_PATH' ✔︎"
 
-    # Make sure it's executable
-    sudo chmod +x $MISE_INSTALL_PATH
-    w "[MISE] Now '$MISE_INSTALL_PATH' is executable! ✔︎"
+    exec_cmd sudo chmod +x "$MISE_INSTALL_PATH"
+    i "[MISE] mise installed successfully system-wide at '$MISE_INSTALL_PATH' ✔︎"
   fi
 
   i "[MISE] Setting up global configuration..."
-  MISE_STATE_HOME="$XDG_STATE_HOME/mise"
-  MISE_GLOBAL_CONFIG_DIR="$MISE_DATA_HOME"
-  MISE_GLOBAL_CONFIG_FILE="$MISE_GLOBAL_CONFIG_DIR/config.toml"
+  export_env_and_make_dir "MISE_STATE_HOME" "$XDG_STATE_HOME/mise" "MISE"
+  export_env_and_make_dir "MISE_GLOBAL_CONFIG_DIR" "$XDG_DATA_HOME/mise" "MISE"
 
-  # Set global paths and variables
-  setup_dir "$MISE_STATE_HOME" "MISE"
-  setup_env_and_dir "MISE_GLOBAL_CONFIG_DIR" "$MISE_GLOBAL_CONFIG_DIR" "MISE"
-  exec_cmd export MISE_GLOBAL_CONFIG_FILE="$MISE_GLOBAL_CONFIG_FILE"
-  i "[MISE] MISE_GLOBAL_CONFIG_FILE set to $MISE_GLOBAL_CONFIG_FILE (owned by '$USERNAME') ✔︎"
-
-  # Create mise config directory if it doesn't exist
-  exec_cmd mise settings set global_config_file "$MISE_GLOBAL_CONFIG_FILE"
+  # Setup global config file, attributes and trusted paths
+  exec_cmd export MISE_GLOBAL_CONFIG_FILE="$XDG_DATA_HOME/mise/config.toml"
+  exec_cmd mise settings set global_config_file "$XDG_DATA_HOME/mise/config.toml"
   exec_cmd mise settings add trusted_config_paths "$MISE_GLOBAL_CONFIG_DIR"
   exec_cmd mise settings add trusted_config_paths "$XDG_DATA_HOME/dots"
   exec_cmd mise settings set activate_aggressive true
   exec_cmd mise settings set auto_install true
-  i "[MISE] mise global configuration set to '$MISE_GLOBAL_CONFIG_FILE' ✔︎"
+  i "[MISE] Global configuration set to '$XDG_DATA_HOME/mise/config.toml' (owned by '$USERNAME') ���������������������������������������︎"
 
-  # Set mise to use global packages
-  i "[MISE] Setting mise global packages: '$MISE_PACKAGES' ..."
-  exec_cmd mise use --cd "$DOTS_DIR" --yes --global --pin $MISE_PACKAGES
-  w "[MISE] Mise global packages: '$MISE_PACKAGES' ✔�������������"
+  # Install global packages
+  exec_cmd mise use --cd "$DOTS_DIR" --yes --global --pin ${PACKAGES[mise]}
+  i "[MISE] Global packages installed: '${PACKAGES[mise]}' ✔︎"
 
-  # Cleanup GitHub token
+  # Cleanup GitHub token if it exists
   cleanup_github_token "MISE"
 
   # Activate mise for the current session
@@ -559,7 +582,7 @@ step_go() {
 
   # Configure the Go environment variables
   # https://go.dev/doc/gopath_code
-  setup_env_and_dir "GOPATH" "${GOPATH:-$XDG_DATA_HOME/go}" "GO"
+  export_env_and_make_dir "GOPATH" "${GOPATH:-$XDG_DATA_HOME/go}" "GO"
 
   s "[GO] Setup completed ✔︎"
 }
@@ -574,8 +597,8 @@ step_nvim_setup_provider_npm() {
 
   # Configure the NPM environment variables
   # https://docs.npmjs.com/cli/v7/configuring-npm
-  setup_env_and_dir "NPM_CONFIG_PREFIX" "$NPM_CONFIG_PREFIX" "NVIM/NPM" --force
-  setup_env_and_dir "NPM_CONFIG_CACHE" "$NPM_CONFIG_CACHE" "NVIM/NPM" --force
+  export_env_and_make_dir "NPM_CONFIG_PREFIX" "$NPM_CONFIG_PREFIX" "NVIM/NPM" --force
+  export_env_and_make_dir "NPM_CONFIG_CACHE" "$NPM_CONFIG_CACHE" "NVIM/NPM" --force
   exec_cmd export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/.npmrc}"
   i "[NVIM/NPM] NPM_CONFIG_USERCONFIG set to '$NPM_CONFIG_USERCONFIG' (owned by '$USERNAME') ✔︎"
 
@@ -611,7 +634,7 @@ step_nvim_setup_provider_ruby() {
 
   # Configure the gem home directory
   # https://guides.rubygems.org/command-reference/#gem-environment
-  setup_env_and_dir "GEM_HOME" "${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems}" "NVIM/RUBY"
+  export_env_and_make_dir "GEM_HOME" "${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems}" "NVIM/RUBY"
 
   # Update the RubyGems system
   exec_cmd gem update --system --no-document

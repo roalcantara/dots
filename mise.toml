@@ -53,8 +53,8 @@
 
   # Distro mapping
   case "$USAGE_DISTRO" in
-    debian)   DISTRO_VALUE="bookworm" ;;
-    *)        DISTRO_VALUE="bookworm" ;;
+    debian)   DISTRO_NAME="bookworm" ;;
+    *)        DISTRO_NAME="bookworm" ;;
   esac
 
   # Compose docker build command
@@ -100,12 +100,50 @@
 
   # mise run start
   # mise run start --base
-  # mise run start --base --platform amd64
   # mise run start --tag local
-  # mise run start --tag local --user root --workdir /workspaces/bar
-  # mise run start --tag local --user vscode --workdir /workspaces/dots
+  # mise run start --tag local --platform amd64
+  # mise run start --tag local --user root --workdir /workspaces/foo
   [tasks.start]
   description = "Start a container"
+  run = '''
+  #!/usr/bin/env bash
+
+  # Set defaults and parse options
+  USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
+  USAGE_DISTRO="{{option(name="distro", default="debian")}}"
+  USAGE_TAG="{{option(name="tag")}}"
+  USAGE_USER="{{option(name="user", default="vscode")}}"
+  USAGE_WORKDIR="{{option(name="workdir", default="/workspaces/dots")}}"
+
+  # Distro mapping
+  case "$USAGE_DISTRO" in
+    debian)   DISTRO_NAME="bookworm" ;;
+    *)        DISTRO_NAME="bookworm" ;;
+  esac
+
+  DOCKER_CMD=(
+    docker run -it --tty --rm
+    --user="$USAGE_USER"
+    --workdir="$USAGE_WORKDIR"
+  )
+
+  if [ -z "$USAGE_TAG" ]; then
+    DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_NAME)
+  else
+    DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_PLATFORM-$USAGE_TAG)
+  fi
+
+  echo "  ==> ${DOCKER_CMD[*]}"
+  eval "${DOCKER_CMD[*]}"
+  '''
+
+
+
+  # mise run test
+  # mise run test --image dots:debian-arm64-dev
+  # mise run test --image dots:debian-amd64-latest --config distros/debian/container-structure-test.yml
+  [tasks.test]
+  description = "Run the Container Structure Tests for the Docker image"
   run = '''
   #!/usr/bin/env bash
 
@@ -130,8 +168,8 @@
 
   # Distro mapping
   case "$USAGE_DISTRO" in
-    debian)   DISTRO_VALUE="bookworm" ;;
-    *)        DISTRO_VALUE="bookworm" ;;
+    debian)   DISTRO_NAME="bookworm" ;;
+    *)        DISTRO_NAME="bookworm" ;;
   esac
 
   DOCKER_CMD=(
@@ -141,24 +179,13 @@
   )
 
   if [ "{{flag(name="base")}}" = "true" ]; then
-    DOCKER_CMD+=(mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_VALUE)
+    DOCKER_CMD+=(mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_NAME)
   else
     DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_PLATFORM-$USAGE_TAG)
   fi
 
   echo "  ==> ${DOCKER_CMD[*]}"
   eval "${DOCKER_CMD[*]}"
-  '''
-
-
-
-  # mise run test
-  # mise run test --image dots:debian-arm64-dev
-  # mise run test --image dots:debian-amd64-latest --config distros/debian/container-structure-test.yml
-  [tasks.test]
-  description = "Run the Container Structure Tests for the Docker image"
-  run = '''
-  #!/usr/bin/env bash
 
   # Set defaults and parse options
   USAGE_IMAGE="{{option(name="image", default="dots:debian-arm64-dev")}}"

@@ -6,33 +6,52 @@ An opinionated [DotFiles][10]. Ready to Engage!
 
 ## INSTALL
 
-### One-liner Installation (Recommended)
+At the moment, the `install` script is only handles `debian` distros.
 
-```sh
-curl -fsSL "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash
-```
+- One-liner Installation script
 
-### Using Go CLI
+    ```sh
+    # user:roalcantara, group:wheel
+    curl -fsSL "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash
 
-```sh
-go install github.com/roalcantara/dots/cmd/dots@latest
-dots
-```
+    # customizing user and group
+    curl -fsSL "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash -s -- -u "vscode" -g "vscode"
+    ```
 
-The Go CLI supports various flags to customize the installation:
+- Regular Installation
 
-```sh
-dots --help  # Show all available options
+    ```sh
+    # Clone the repository and run the install script (roalcantara:wheel)
+    git clone https://github.com/roalcantara/dots ~/.local/share/dots && ~/.local/share/dots/install
 
-# Example: Install without Neovim and ownership changes
-dots --nvim=false --chown=false
-```
+    # Clone the repository and run the install script with customization (vscode:vscode)
+    git clone https://github.com/roalcantara/dots ~/.local/share/dots && ~/.local/share/dots/install -u "vscode" -g "vscode"
+    ```
 
-### Manual Installation
+### OVEREVIEW
 
-```sh
-git clone https://github.com/roalcantara/dots
-```
+- **Features**
+
+  - ✅ Installation script to setup a development environment
+  - ✅ Ready to be used in DevContainers
+  - ✅ Uses whatever shell the install script configured
+
+- **DevContainer**
+
+  - ✅ Provides essential environment and tools to start developing
+  - ✅ Installs essential tools and dependencies via [Mise][6]
+
+- **Tooling**
+
+  - ✅ [Mise][6] to manage tools and dependencies
+  - ✅ [ZSH][15] as default shell
+  - ✅ [Starship][16] as prompt
+  - ✅ [Git][5] as version control system
+  - ✅ [Gitlint][8] to manage git commit messages
+  - ✅ [Pre-Commit][7] to manage pre-commit hooks
+  - ✅ [Docker][11] to manage container images
+  - ✅ [CST (Container Structure Tests)][12] to validate the structure of your container images
+  - ✅ [OCI Best Practices Image Annotations][13] to validate the structure of your container images
 
 ### DEPENDENCIES
 
@@ -46,99 +65,63 @@ git clone https://github.com/roalcantara/dots
 
 ### BUILDING
 
-#### OVEREVIEW
-
-- **Features**
-
-  - 🔍 **Validation:** Checks for Dockerfile existence and valid platforms
-  - 🚀 **Post-actions**: Push, run, and inspect in one command
-  - 🎯 **Flexibility:** Supports different repos, branches, and install args
-  - 🔐 **Security:** Better token handling with multiple sources
-  - 📊 **Insights:** Detailed image information and build summary
-  - 🐛 **Debugging:** Enhanced logging and error messages
-  - 💫 **UX:** Color-coded output with progress indicators
-
-- **What it DOES do?**
-
-  - ✅ Provides clean base environment _(devcontainer base)_
-  - ✅ Sets minimal essential environment variables
-  - ✅ Passes GitHub token securely if provided
-  - ✅ Executes install script exactly as documented
-  - ✅ Shows what the install script actually created
-  - ✅ Uses whatever shell the install script configured
-
-#### BUILDING USAGE
-
-- Basic Usage
+At the moment, the `build` task is only available for the `debian` distro.
 
  ```sh
-  # Basic build
   mise run build
+  # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=BRANCH=main --build-arg=GITHUB_REPO=roalcantara/dots --platform=linux/arm64 --secret=id=github_token,src=./.secrets/github_token.secret --tag=dots:debian-arm64-dev --file=distros/debian/Dockerfile .
 
-  # Build the container image tagged as dev without cache
-  mise run build -t dev --nocache
+  mise run build --tag local
+  mise run build --tag testing --nocache
+  mise run build --tag latest --platform amd64
+  mise run build --tag runtime --nocache --runtime
+  # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=BRANCH=main --build-arg=GITHUB_REPO=roalcantara/dots --platform=linux/arm64 --no-cache --secret=id=github_token,src=./.secrets/github_token.secret --tag=dots:debian-arm64-runtime --file=distros/debian/Dockerfile.runtime .
 
-  # Test different scenarios
-  mise run build --distro ubuntu --platform amd64 --tag dev
-  mise run build --branch develop --args "--verbose --debug --username=foo --groupname=bar"
-  mise run build --repo "youruser/dotfiles" --branch main
-
-  # Build and immediately test
-  mise run build --run
-
-  # Build and inspect results
-  mise run build --inspect
-
-  # Build without cache and push
-  mise run build --nocache --push
-
-  # Build with custom install script arguments
-  mise run build --args "--minimal --no-zsh" --tag minimal
-
-  # Debug build issues
-  mise run build --logs --nocache
-
-  # Test on different platforms
-  mise run build --platform arm64 --distro alpine --run
+  mise run build --tag runtime --nocache --runtime --platform amd64
+  # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=BRANCH=main --build-arg=GITHUB_REPO=roalcantara/dots --platform=linux/amd64 --no-cache --secret=id=github_token,src=./.secrets/github_token.secret --tag=dots:debian-amd64-runtime --file=distros/debian/Dockerfile.runtime .
 ```
 
-- Advanced Usage
+#### RUNNING
+
+At the moment, the `start` task is only available for the `debian` distro.
 
  ```sh
-    # Test private repository
-    export GITHUB_TOKEN="your_token"
-    mise run build --repo "private/repo" --branch private-branch
+  mise run start --tag dev
+  # => docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-arm64-dev
 
-    # Test different base images
-    mise run build --distro ubuntu-minimal --tag lightweight
+  mise run start --tag local --platform amd64
+  # => docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-amd64-local
 
-    # Build and push to registry
-    export DOCKER_REGISTRY="ghcr.io/username"
-    mise run build --push --tag latest
+  mise run start
+  # => docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
 
-    # Test install script with specific arguments
-    mise run build --args "--skip-zsh --minimal-vim" --tag custom
- ```
+  mise run start --user root --workdir /workspaces/foo
+  # => docker run -it --tty --rm --user=root --workdir=/workspaces/foo --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
+```
 
 ### TESTING
 
-- Install [CST (Container Structure Tests)][12]
+1. Install [CST (Container Structure Tests)][12]
 
-  ```sh
-  brew install container-structure-test
-  ```
+    ```sh
+    brew install container-structure-test
+    ```
 
-- Build the image for testing
+2. Build the image for testing
 
-  ```sh
-  mise run build --distro ubuntu --platform arm64 -t testing --nocache
-  ```
+    ```sh
+    mise run build --nocache --platform amd64 --tag testing
+    ```
 
-- Run the Container Structure Tests
+3. Run the Container Structure Tests
 
-  ```sh
-  container-structure-test test --image dots:ubuntu-arm64-dev --config distros/ubuntu/container-structure-test.yml
-  ```
+    ```sh
+    # via mise
+    mise run test --platform amd64 --tag testing
+
+    # via container-structure-test
+    container-structure-test test --image dots:debian-amd64-testing --config distros/debian/container-structure-test.yml
+    ```
 
 ## ACKNOWLEDGEMENTS
 
