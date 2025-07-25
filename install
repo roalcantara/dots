@@ -681,7 +681,6 @@ step_nvim() {
   exec_cmd cd "$XDG_CONFIG_HOME/nvim" &&
     exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless \
       +Lazy! sync \
-      +Lazy! clean \
       +Lazy! clear \
       +TSUpdateSync \
       -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' \
