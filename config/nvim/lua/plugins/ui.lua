@@ -519,7 +519,6 @@ return {
           place = places,
         })
       end
-      local icons = LazyVim.config.icons
       if opts.sections.lualine_c[2] then
         opts.sections.lualine_c[2] = vim.tbl_deep_extend('force', opts.sections.lualine_c[2] or {}, {
           on_click = function()
@@ -551,6 +550,27 @@ return {
           end,
         })
       end
+
+      table.insert(opts.sections.lualine_x, {
+        function()
+          return '🔄'
+        end,
+        cond = function()
+          return vim.fn.exists('g:lazy_version')
+        end,
+      })
+
+      table.insert(opts.sections.lualine_x, {
+        function()
+          return '󱉶'
+        end,
+        fmt = function()
+          return table.concat(require("lint").get_running(), ", ")
+        end,
+        cond = function()
+          return #require("lint").get_running() > 0
+        end,
+      })
 
       return vim.tbl_deep_extend('force', opts or {}, {
         options = {

@@ -277,5 +277,13 @@ on_init_create_autocmd_async({
         },
       },
     },
+    on_lsp_attach = {
+      event = 'LspAttach',
+      opts = {
+        callback = function(ev)
+          require("core/vi/ui/lsp").setup_capabilities(ev.data.client_id, ev.data.client_info)
+        end,
+      },
+    },
   },
 })

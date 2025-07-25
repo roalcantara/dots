@@ -122,8 +122,10 @@ M.enabled_capabilities['textDocument/hover'] = {
     end)
   end,
 }
--- https://gpanders.com/blog/whats-new-in-neovim-0-11/#builtin-auto-completion
-M.disabled_capabilities['textDocument/completion'] = {
+
+M.enabled_capabilities['textDocument/completion'] = {
+  -- Enable LSP auto-completion
+  -- https://gpanders.com/blog/whats-new-in-neovim-0-11/#builtin-auto-completion
   enable_completion = function(opts)
     vim.lsp.completion.enable(true, opts.client_id, opts.buffer, { auto_trigger = true })
   end,

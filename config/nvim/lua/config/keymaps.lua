@@ -129,7 +129,7 @@ vim.schedule_wrap(function()
       ["<D-.>"] = { { n = vim.lsp.buf.code_action, i = vim.lsp.buf.code_action }, "Code Actions", { cmd = "LspCodeActions" } },
       ["<D-M-k>"] = { { n = vim.lsp.buf.hover, i = vim.lsp.buf.hover }, "Hover information on symbol under the cursor", { cmd = "LspHover" } },
       ["<D-M-f>"] = { { n = vim.lsp.buf.format, i = vim.lsp.buf.format }, "Format Document", { cmd = "LspFormat" } },
-      ["<D-S-M-f>"] = { { n = "<CMD>LazyFormat<CR>", i = "<ESC><CMD>LazyFormat<CR>" }, "Format Current Selection or buffer" },
+      ["<D-S-M-f>"] = { { n = buf.format, i = buf.format }, "Format Current Selection or buffer", { cmd = "LspFormatRange", range = true } },
       ["<D-M-CR>"] = { { n = vim.lsp.buf.rename, i = vim.lsp.buf.rename }, "Rename Symbol", { cmd = "LspRename" } },
       ["<C-Space>"] = { { n = vim.lsp.completion.get, i = vim.lsp.completion.get }, "Trigger Suggestion", { cmd = "LspSuggestions" } },
       ["<D-M-Space>"] = { { n = lsp.signature_help, i = lsp.signature_help }, "Signature Hints", { cmd = "LspSignatureHelp" } },

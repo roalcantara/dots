@@ -94,6 +94,69 @@ local function format_key_combination(key)
   return result
 end
 
+-- vim.api.nvim_create_user_command("Format", function(args)
+--   local range = nil
+--   if args.count ~= -1 then
+--     local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+--     range = {
+--       start = { args.line1, 0 },
+--       ["end"] = { args.line2, end_line:len() },
+--     }
+--   end
+--   require("conform").format({ async = true, lsp_format = "fallback", range = range })
+-- end, { range = true })
+
+--- Define a command to run async formatting
+--- @see https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md#format-command
+local function format(args)
+  local range = nil
+  if args.count ~= -1 then
+    local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+    range = {
+      start = { args.line1, 0 },
+      ["end"] = { args.line2, end_line:len() },
+    }
+  end
+  require("conform").format({ async = true, lsp_format = "fallback", range = range })
+end
+
+--- Run a formatter
+--- @param run_fmt_cmd table The formatter command (e.g. { "formatter_command", "arg1", "arg2" })
+--- @param run_fmt_cwd string The formatter cwd (e.g. "/path/to/cwd")
+--- @param run_fmt_buffer_text? string|nil The formatter buffer text (only used for stdin formatters)
+--- @return nil Result is printed to the console
+--- @see docs https://github.com/stevearc/conform.nvim/blob/master/doc/debugging.md#testing-vimsystem
+local function run_formatter(run_fmt_cmd, run_fmt_cwd, run_fmt_buffer_text)
+  local function runner(fmt_cmd, cwd, buffer_text)
+    local proc = vim.system(fmt_cmd, {
+      cwd = cwd,
+      stdin = buffer_text,
+      text = true,
+    })
+    local ret = proc:wait()
+    if ret.code == 0 then
+      print("Success\n--------")
+    else
+      print("Failure\n--------")
+    end
+    print(ret.stdout)
+    print(ret.stderr)
+  end
+  local function read_file(path)
+    local file = assert(io.open(path, "r"))
+    local content = file:read("*a")
+    file:close()
+    return content
+  end
+
+  if run_fmt_buffer_text then -- Test a stdin formatter
+    return runner(run_fmt_cmd, run_fmt_cwd, read_file(run_fmt_buffer_text))
+  else
+    -- Tst a non-stdin formatter
+    return runner(run_fmt_cmd, run_fmt_cwd)
+  end
+end
+
 --- Parses the mappings table and creates keymaps
 --- @param maps table Keymap table
 --- @return nil Keymaps are created
@@ -106,12 +169,26 @@ local function mappings(maps)
     -- Convert key combination to readable format
     local readable_key = format_key_combination(key)
 
+    --- Extract options from a table
+    --- @param values table The table to extract options from
+    --- @return table The extracted options
+    local extract_opts = function(values)
+      local options = {}
+      if values and values.range then
+        options.range = true
+      end
+      if values and values.expr then
+        options.expr = true
+      end
+      return options
+    end
+
     if type(action) == 'table' then
       -- Handle mode-specific mappings
       for mode, command in pairs(action) do
         local mode_prefix = mode:upper()
         local full_desc = string.format('[%s] [%s] %s', mode_prefix, readable_key, desc)
-        local options = opts.expr and { expr = true } or {}
+        local options = extract_opts(opts)
         keymap(mode, key, command, full_desc, options)
         if opts and opts.cmd then
           -- If opts.cmd is provided, create a user command
@@ -261,7 +338,7 @@ local actions = {
     replace_all = cmd('normal %s///g'),
     rename_file = cmd(Snacks.rename.rename_file),
   },
-  --- @alias actions.buf { close: function, close_all: function, close_others: function, pick: function, next: function, prev: function, last: function }
+  --- @alias actions.buf { close: function, close_all: function, close_others: function, pick: function, next: function, prev: function, last: function, format: function, run_formatter: function }
   buf = {
     --- Delete buffers without disrupting window layout
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/bufdelete.md#snacksbufdeletedelete
@@ -290,6 +367,14 @@ local actions = {
     --- Go to last buffer
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbuflast
     last = cmd('buffer #'),
+
+    --- Format the current buffer
+    --- @see docs https://github.com/stevearc/conform.nvim/blob/main/doc/recipes.md#format-command
+    format = cmd(format),
+
+    --- Run a formatter
+    --- @see docs https://github.com/stevearc/conform.nvim/blob/master/doc/debugging.md#testing-vimsystem
+    run_formatter = cmd(run_formatter),
   },
   --- @alias actions.pick { highlights: function, keymaps: function, commands: function, smart: function, files: function, grep: function, find: function, explorer: function, help: function, diagnostics: function, diagnostics_buffer: function, filetypes: function, options: function, lua_path_items: function, runtimepath_items: function, buffers: function, autocmds: function, command_history: function, colorschemes: function, icons: function, lazy: function, notifications: function, recent: function, jumps: function, move_buffer_split: function, execute: function }
   pick = {
