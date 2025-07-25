@@ -9,7 +9,6 @@ ARG TERM=xterm-256color
 ARG BRANCH=main
 ARG USERNAME=vscode
 ARG GROUPNAME=vscode
-ARG GITHUB_REPO_NAME=dots
 ARG GITHUB_REPO=roalcantara/dots
 
 # Essential environment variables only

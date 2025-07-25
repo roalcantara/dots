@@ -252,10 +252,21 @@ setup_arguments() {
   done
 }
 setup_environment_variables() {
-  section "[ENV/SETUP] ($HOME) ($GROUP) Setting up environment variables..."
-  [[ "$OS" =~ "darwin" ]] && USERHOME="/Users/$USERNAME" && GROUPNAME=${GROUPNAME:-"staff"}
-  [[ -z "$HOME" || $HOME != "$USERHOME" ]] && exec_cmd export HOME="$USERHOME"
-  [[ -z "$GROUP" || $GROUP != "$GROUPNAME" ]] && exec_cmd export GROUP="$GROUPNAME"
+  section "[ENV/SETUP] ($HOME/$USERHOME) ($GROUP/$GROUPNAME) Setting up environment variables..."
+  if [[ "$OS" =~ "darwin" ]]; then
+    USERHOME="/Users/$USERNAME"
+    GROUPNAME=${GROUPNAME:-"staff"}
+  else
+    USERHOME="/home/$USERNAME"
+  fi
+  if [ -z "$HOME" ] || [ "$HOME" != "$USERHOME" ]; then
+    HOME="$USERHOME"
+    w "HOME updated to '$HOME' ✔︎"
+  fi
+  if [ -z "$GROUP" ] || [ "$GROUP" != "$GROUPNAME" ]; then
+    GROUP="$GROUPNAME"
+    w "GROUP updated to '$GROUP' ✔︎"
+  fi
 
   exec_cmd export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
   exec_cmd export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}

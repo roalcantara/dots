@@ -34,10 +34,13 @@
   USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
   USAGE_SECRET_PATH="{{option(name="secret", default="./.secrets/github_token.secret")}}"
   USAGE_DISTRO="{{option(name="distro", default="debian")}}"
-  USAGE_TAG="{{option(name="tag", default="dev")}}"
-  USAGE_BRANCH="{{option(name="branch", default="main")}}"
-  USAGE_REPO="{{option(name="repo", default="roalcantara/dots")}}"
+  USAGE_TAG="{{option(name="tag")}}"
+  USAGE_BRANCH="{{option(name="branch")}}"
+  USAGE_REPO="{{option(name="repo")}}"
+  USAGE_USERNAME="{{option(name="user")}}"
+  USAGE_GROUPNAME="{{option(name="group")}}"
   USAGE_BUILD_ARGS="{{option(name="build-arg", var=true)}}"
+  DOCKERFILE_VALUE="Dockerfile"
 
   # Platform mapping
   case "$USAGE_PLATFORM" in
@@ -61,24 +64,36 @@
   DOCKER_CMD=(
     DOCKER_BUILDKIT=1 docker build
     --build-arg=BUILDKIT_INLINE_CACHE=1
-    --build-arg=BRANCH="$USAGE_BRANCH"
-    --build-arg=GITHUB_REPO="$USAGE_REPO"
-    --platform="$PLATFORM_VALUE"
   )
+
+  if [ -n "$USAGE_USERNAME" ]; then
+    DOCKER_CMD+=(--build-arg=USERNAME="$USAGE_USERNAME")
+  fi
+
+  if [ -n "$USAGE_GROUPNAME" ]; then
+    DOCKER_CMD+=(--build-arg=GROUPNAME="$USAGE_GROUPNAME")
+  fi
+
+  if [ -n "$USAGE_BRANCH" ]; then
+    DOCKER_CMD+=(--build-arg=BRANCH="$USAGE_BRANCH")
+  fi
+
+  if [ -n "$USAGE_REPO" ]; then
+    DOCKER_CMD+=(--build-arg=GITHUB_REPO="$USAGE_REPO")
+  fi
 
   # Add extra build-args if any
   for arg in $USAGE_BUILD_ARGS; do
     DOCKER_CMD+=(--build-arg="$arg")
   done
 
-  # Add --no-cache if requested
-  if [ "{{flag(name="nocache")}}" = "true" ]; then
-    DOCKER_CMD+=(--no-cache)
-  fi
-
   # Add secret if available
   if [[ -z $GITHUB_TOKEN && -f $USAGE_SECRET_PATH ]]; then
     DOCKER_CMD+=(--secret="id=github_token,src=$USAGE_SECRET_PATH")
+  fi
+
+  if [ -n "$PLATFORM_VALUE" ]; then
+    DOCKER_CMD+=(--platform="$PLATFORM_VALUE")
   fi
 
   # Compose tag
@@ -86,11 +101,14 @@
   [ -n "$USAGE_TAG" ] && TAG_VALUE="$TAG_VALUE-$USAGE_TAG"
   DOCKER_CMD+=(--tag="$TAG_VALUE")
 
+  # Add --no-cache if requested
+  if [ "{{flag(name="nocache")}}" = "true" ]; then
+    DOCKER_CMD+=(--no-cache)
+  fi
+
   # Select Dockerfile
   if [ '{{flag(name="runtime")}}' = 'true' ]; then
     DOCKERFILE_VALUE="Dockerfile.runtime"
-  else
-    DOCKERFILE_VALUE="Dockerfile"
   fi
   DOCKER_CMD+=(--file="distros/$USAGE_DISTRO/$DOCKERFILE_VALUE" .)
 

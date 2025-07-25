@@ -18,7 +18,7 @@ At the moment, the `install` script is only handles `debian` distros.
     curl -fsSL "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash -s -- -u "vscode" -g "vscode"
     ```
 
-- Regular Installation
+- Normal Installation
 
     ```sh
     # Clone the repository and run the install script (roalcantara:wheel)
@@ -43,15 +43,37 @@ At the moment, the `install` script is only handles `debian` distros.
 
 - **Tooling**
 
-  - ✅ [Mise][6] to manage tools and dependencies
-  - ✅ [ZSH][15] as default shell
-  - ✅ [Starship][16] as prompt
-  - ✅ [Git][5] as version control system
-  - ✅ [Gitlint][8] to manage git commit messages
-  - ✅ [Pre-Commit][7] to manage pre-commit hooks
-  - ✅ [Docker][11] to manage container images
-  - ✅ [CST (Container Structure Tests)][12] to validate the structure of your container images
-  - ✅ [OCI Best Practices Image Annotations][13] to validate the structure of your container images
+    | **Manager** | **Package**    | **Description**                                                              |
+    | :---------: | -------------- | ---------------------------------------------------------------------------- |
+    |   DISTRO    | Ruby           | Powerful, clean, object-oriented scripting language                          |
+    |   DISTRO    | Git            | Distributed version control system                                           |
+    |   DISTRO    | GitLint        | Git commit message linter                                                    |
+    |   DISTRO    | ZSH            | UNIX shell (command interpreter)                                             |
+    |    MISE     | Bat            | cat(1)'s clone with syntax highlighting and Git integration                  |
+    |    MISE     | Corepack       | Platform built on V8 to build network applications                           |
+    |    MISE     | Delta          | Syntax-highlighter and pager for git and diff output                         |
+    |    MISE     | Eza            | Modern, maintained replacement for ls                                        |
+    |    MISE     | Fd             | Simple, fast and user-friendly alternative to find                           |
+    |    MISE     | Fzf            | Command-line fuzzy finder written in Go                                      |
+    |    MISE     | Gh             | GitHub command-line tool                                                     |
+    |    MISE     | Go             | Open source programming language to build simple/reliable/efficient software |
+    |    MISE     | Gofmt          | Go formatter                                                                 |
+    |    MISE     | Gum            | Tool for glamorous shell scripts                                             |
+    |    MISE     | Idle3          | Modern Python IDE                                                            |
+    |    MISE     | Node           | JavaScript runtime built on Chrome's V8 JavaScript engine                    |
+    |    MISE     | Npm            | Package manager for JavaScript                                               |
+    |    MISE     | Npx            | Execute JavaScript packages                                                  |
+    |    MISE     | Nvim           | Highly configurable text editor                                              |
+    |    MISE     | Pre-Commit     | Manage multi-language pre-commit hooks                                       |
+    |    MISE     | Pip3           | Install Python packages                                                      |
+    |    MISE     | Pydoc3         | Generate documentation for Python modules                                    |
+    |    MISE     | Python3        | A programming language                                                       |
+    |    MISE     | Python3-config | Configure Python                                                             |
+    |    MISE     | Rg             | A tool for searching text with regex                                         |
+    |    MISE     | Starship       | Minimal, blazing-fast, and extremely customizable prompt for any shell       |
+    |    MISE     | Usage          | Display command usage statistics                                             |
+    |    MISE     | Watchexec      | Execute commands when files change                                           |
+    |    MISE     | Zoxide         | Smarter cd command for your terminal                                         |
 
 ### DEPENDENCIES
 
@@ -67,36 +89,54 @@ At the moment, the `install` script is only handles `debian` distros.
 
 At the moment, the `build` task is only available for the `debian` distro.
 
- ```sh
-  mise run build
-  # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=BRANCH=main --build-arg=GITHUB_REPO=roalcantara/dots --platform=linux/arm64 --secret=id=github_token,src=./.secrets/github_token.secret --tag=dots:debian-arm64-dev --file=distros/debian/Dockerfile .
+1. Basic
 
-  mise run build --tag local
-  mise run build --tag testing --nocache
-  mise run build --tag latest --platform amd64
-  mise run build --tag runtime --nocache --runtime
-  # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=BRANCH=main --build-arg=GITHUB_REPO=roalcantara/dots --platform=linux/arm64 --no-cache --secret=id=github_token,src=./.secrets/github_token.secret --tag=dots:debian-arm64-runtime --file=distros/debian/Dockerfile.runtime .
+    ```sh
+    mise run build
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile .
 
-  mise run build --tag runtime --nocache --runtime --platform amd64
-  # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=BRANCH=main --build-arg=GITHUB_REPO=roalcantara/dots --platform=linux/amd64 --no-cache --secret=id=github_token,src=./.secrets/github_token.secret --tag=dots:debian-amd64-runtime --file=distros/debian/Dockerfile.runtime .
-```
+    mise run build --tag testing
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-testing --file=distros/debian/Dockerfile .
+
+    mise run build --nocache --tag preview
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-preview --no-cache --file=distros/debian/Dockerfile .
+
+    mise run build --runtime --tag dev
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-dev --file=distros/debian/Dockerfile.runtime .
+
+    mise run build --nocache --runtime --tag stag
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-stag --no-cache --file=distros/debian/Dockerfile.runtime .
+
+    mise run build --platform amd64 --tag latest
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-latest --file=distros/debian/Dockerfile .
+
+    mise run build --nocache --runtime --platform amd64 --tag local
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-local --no-cache --file=distros/debian/Dockerfile.runtime .
+    ```
+
+2. Advanced
+
+    ```sh
+    mise run build --branch main --repo roalcantara/dotfiles --user root --group root --workdir /workspaces/foo --tag custom
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=GITHUB_REPO=roalcantara/dotfiles --build-arg=BRANCH=main --build-arg=USERNAME=root --build-arg=GROUPNAME=root --workdir=/workspaces/foo --tag=dots:debian-arm64-custom --file=distros/debian/Dockerfile .
+    ```
 
 #### RUNNING
 
 At the moment, the `start` task is only available for the `debian` distro.
 
  ```sh
-  mise run start --tag dev
-  # => docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-arm64-dev
-
-  mise run start --tag local --platform amd64
-  # => docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-amd64-local
-
   mise run start
-  # => docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
+  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
 
   mise run start --user root --workdir /workspaces/foo
-  # => docker run -it --tty --rm --user=root --workdir=/workspaces/foo --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
+  # ==> docker run -it --tty --rm --user=root --workdir=/workspaces/foo --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
+
+  mise run start --tag dev
+  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-arm64-dev
+
+  mise run start --platform amd64 --tag latest
+  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-amd64-latest
 ```
 
 ### TESTING
