@@ -413,12 +413,30 @@ step_dotfiles() {
 
   s "[DOTS] Setup completed ✔"
 }
+step_chown() {
+  section "[CHOWN] Ensuring ownership of essential directories started..."
+
+  if [ -d "$XDG_LOCAL_DIR" ]; then
+    exec_cmd sudo chown "$USERNAME:$GROUPNAME" "$XDG_LOCAL_DIR"
+    i "[CHOWN] '$XDG_LOCAL_DIR' are owned by '$USERNAME:$GROUPNAME' ✔︎"
+  else
+    setup_dir "$XDG_LOCAL_DIR" "CHOWN/$XDG_LOCAL_DIR"
+  fi
+
+  for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" "$XDG_DATA_HOME"; do
+    setup_dir "$dir" "CHOWN/$dir"
+  done
+
+  s "[CHOWN] Completed ✔︎"
+}
 step_xdg() {
   if [ -x "$XDG_ZSH_SETUP_SCRIPT" ]; then
     section "[XDG] Setting up XDG/ZSH environment via '$XDG_ZSH_SETUP_SCRIPT'..."
     . "$XDG_ZSH_SETUP_SCRIPT" "$USERNAME" "$GROUPNAME"
     s "[XDG] Setting up XDG/ZSH environment for '$USERNAME:$GROUPNAME' via '$XDG_ZSH_SETUP_SCRIPT' ✔"
   fi
+
+  step_chown
 }
 step_mise() {
   section "[MISE] Setup started..."
@@ -645,27 +663,6 @@ step_nvim() {
       -c 'MasonInstall ast-grep bash-language-server css-lsp diagnostic-languageserver docker-compose-language-service dockerfile-language-server eslint-lsp html-lsp json-lsp lua-language-server marksman neocmakelsp prettier pyright ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server' +qa
 
   s "[NVIM] Setup completed ✔︎"
-}
-step_chown() {
-  section "[CHOWN] Ensuring ownership of essential directories started..."
-
-  if [ -d "$XDG_LOCAL_DIR" ]; then
-    exec_cmd sudo chown "$USERNAME:$GROUPNAME" "$XDG_LOCAL_DIR"
-    i "[CHOWN] '$XDG_LOCAL_DIR' are owned by '$USERNAME:$GROUPNAME' ✔︎"
-  else
-    w "[CHOWN] '$XDG_LOCAL_DIR' does not exist. Skipping.. ✔︎"
-  fi
-
-  for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" "$XDG_DATA_HOME"; do
-    if [ -d "$dir" ]; then
-      exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$dir"
-      i "[CHOWN] '$dir' are owned (recursively) by '$USERNAME:$GROUPNAME' ✔︎"
-    else
-      w "[CHOWN] '$dir' does not exist. Skipping.. ✔︎"
-    fi
-  done
-
-  s "[CHOWN] Completed ✔︎"
 }
 
 main() {
