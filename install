@@ -679,11 +679,11 @@ step_nvim() {
 
   # Install nvim plugins
   exec_cmd cd "$XDG_CONFIG_HOME/nvim" &&
-    exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless +verbose \
-      +'Lazy! sync' \
-      +'Lazy! clean' \
-      +'Lazy! clear' \
-      +'TSUpdateSync' \
+    exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless \
+      +Lazy! sync \
+      +Lazy! clean \
+      +Lazy! clear \
+      +TSUpdateSync \
       -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' \
       -c 'MasonInstall ast-grep bash-language-server css-lsp diagnostic-languageserver docker-compose-language-service dockerfile-language-server eslint-lsp html-lsp json-lsp lua-language-server marksman neocmakelsp prettier pyright ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server' +qa
 
