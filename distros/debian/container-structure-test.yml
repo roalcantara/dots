@@ -5,7 +5,40 @@ globalEnvVars:
     value: vscode
   - key: HOME
     value: /home/vscode
-
+  - key: CLICOLOR
+    value: 1
+  - key: COLORTERM
+    value: truecolor
+  - key: XDG_CONFIG_HOME
+    value: /home/vscode/.config
+  - key: XDG_CACHE_HOME
+    value: /home/vscode/.cache
+  - key: XDG_STATE_HOME
+    value: /home/vscode/.local/state
+  - key: XDG_DATA_HOME
+    value: /home/vscode/.local/share
+  - key: ZDOTDIR
+    value: /home/vscode/.config/zsh
+  - key: ZIM_HOME
+    value: /home/vscode/.local/share/zim
+  - key: MISE_GLOBAL_CONFIG_DIR
+    value: /home/vscode/.local/share/mise
+  - key: MISE_GLOBAL_CONFIG_FILE
+    value: /home/vscode/.local/share/mise/config.toml
+  - key: MISE_CACHE_DIR
+    value: /home/vscode/.cache/mise
+  - key: NPM_CONFIG_USERCONFIG
+    value: /home/vscode/.config/npm/.npmrc
+  - key: NPM_CONFIG_PREFIX
+    value: /home/vscode/.local/share/npm
+  - key: NPM_CONFIG_CACHE
+    value: /home/vscode/.cache/npm
+  - key: STARSHIP_CONFIG_HOME
+    value: /home/vscode/.config/starship
+  - key: STARSHIP_CONFIG
+    value: /home/vscode/.config/starship/starship.toml
+  - key: GOPATH
+    value: /home/vscode/.local/share/go
 commandTests:
   # System
   - name: curl should be installed
@@ -125,10 +158,10 @@ fileExistenceTests:
     path: /home/vscode/.config/zsh
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: ~/.config/npm  (NPM_CONFIG_USERCONFIG)
-    path: /home/vscode/.config/npm
+  - name: ~/.config/npm/.npmrc file (NPM_CONFIG_USERCONFIG)
+    path: /home/vscode/.config/npm/.npmrc
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: -rw-r--r--
   - name: ~/.config/git directory
     path: /home/vscode/.config/git
     shouldExist: true
@@ -141,28 +174,15 @@ fileExistenceTests:
     path: /home/vscode/.config/starship
     shouldExist: true
     permissions: drwxr-xr-x
+  - name: ~/.config/starship/starship.toml file (STARSHIP_CONFIG)
+    path: /home/vscode/.config/starship/starship.toml
+    shouldExist: true
+    permissions: -rwxr-xr-x
 
   # CACHE
   - name: ~/.cache directory (XDG_CACHE_HOME)
     path: /home/vscode/.cache
-    shouldExist: true
-    permissions: drwxr-xr-x
-  - name: ~/.cache/npm (NPM_CONFIG_CACHE)
-    path: /home/vscode/.cache/npm
-    shouldExist: true
-    permissions: drwxr-xr-x
-  - name: ~/.cache/mise directory (MISE_CACHE_DIR)
-    path: /home/vscode/.cache/mise
-    shouldExist: true
-    permissions: drwxr-xr-x
-  - name: ~/.cache/starship directory
-    path: /home/vscode/.cache/starship
-    shouldExist: true
-    permissions: drwxr-xr-x
-  - name: ~/.cache/zsh directory
-    path: /home/vscode/.cache/zsh
-    shouldExist: true
-    permissions: drwxr-xr-x
+    shouldExist: false
 
   # LOCAL/STATE
   - name: ~/.local/state directory (XDG_STATE_HOME)
@@ -219,6 +239,10 @@ fileExistenceTests:
     path: /home/vscode/.local/share/mise
     shouldExist: true
     permissions: drwxr-xr-x
+  - name: ~/.local/share/mise/config.toml file (MISE_GLOBAL_CONFIG_FILE)
+    path: /home/vscode/.local/share/mise/config.toml
+    shouldExist: true
+    permissions: -rw-r--r--
 
   # LOCAL/SHARE (MISE INSTALLED TOOLS)
   - name: bat should be installed

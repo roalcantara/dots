@@ -5,38 +5,6 @@ set -eu
 # ./install                                             -- install with default values
 # ./install -u <username> -g <groupname> -t <timezone>  -- install with custom values
 
-# GLOBAL variables
-REPO_URL="https://github.com/roalcantara/dots"
-TIMEZONE=${TZ:-'America/Sao_Paulo'}
-LOCALGROUP=$(id -gn 2>/dev/null)
-LOCALUSER=$(id -un 2>/dev/null)
-USR_LOCAL_BIN=${USR_LOCAL_BIN:-/usr/local/bin}
-XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-~/.config}
-XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
-XDG_LOCAL_DIR=${XDG_LOCAL_DIR:-~/.local}
-XDG_DATA_HOME=${XDG_DATA_HOME:-$XDG_LOCAL_DIR/share}
-XDG_STATE_HOME=${XDG_STATE_HOME:-$XDG_LOCAL_DIR/state}
-XDG_COMMON_DIRS=${XDG_COMMON_DIRS:-".config .cache .local .local/share .local/state .local/bin"}
-ZDOTDIR=${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}
-ZSH_CACHE_DIR=${ZSH_CACHE_DIR:-$XDG_CACHE_HOME/zsh}
-ZSH_COMPCACHE=${ZSH_COMPCACHE:-$ZSH_CACHE_DIR/compcache}
-ZSH_COMPDUMP=${ZSH_COMPDUMP:-$ZSH_COMPCACHE/.zcompdump}
-MISE_DATA_HOME=${MISE_DATA_HOME:-$XDG_DATA_HOME/mise}
-BACKUP_DIR_ROOT=${BACKUP_DIR_ROOT:-$XDG_DATA_HOME/backup}
-DOTS_DIR=${DOTS_DIR:-$XDG_DATA_HOME/dots}
-XDG_ZSH_SETUP_SCRIPT=${XDG_ZSH_SETUP_SCRIPT:-$ZDOTDIR/etc/functions/zsetup}
-BACKUP_RESOURCES=${BACKUP_RESOURCES:-".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .config"}
-MISE_PACKAGES=${MISE_PACKAGES:-"ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node python go"}
-NPM_CONFIG_PREFIX=${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}
-NPM_CONFIG_CACHE=${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}
-USERNAME='roalcantara'
-GROUPNAME=''
-CONTEXT=''
-HOME=''
-ARCH=''
-ENV=''
-OS=''
-
 # COLORS
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
@@ -44,6 +12,23 @@ readonly YELLOW='\033[1;33m'
 readonly BLUE='\033[0;34m'
 readonly PURPLE='\033[0;35m'
 readonly NC='\033[0m'
+
+# GLOBAL variables
+declare -g OS="darwin"
+declare -g USERNAME="roalcantara"
+declare -g GROUPNAME="staff"
+declare -g USERHOME="/Users/$USERNAME"
+declare -g TIMEZONE="America/Sao_Paulo"
+declare -g REPO_URL="https://github.com/roalcantara/dots"
+declare -g LOCALGROUP=$(id -gn 2>/dev/null)
+declare -g LOCALUSER=$(id -un 2>/dev/null)
+declare -g USR_LOCAL_BIN="/usr/local/bin"
+declare -g XDG_COMMON_DIRS=".config .cache .local .local/share .local/state .local/bin"
+declare -g BACKUP_RESOURCES=".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .config"
+declare -g MISE_PACKAGES="ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node python go"
+declare -g CONTEXT
+declare -g ARCH
+declare -g ENV
 
 puts() {
   if [ -n "$CONTEXT" ]; then
@@ -72,12 +57,9 @@ is_container() {
   if [ -n "${DOCKER_CONTAINER:-}" ] || [ -n "${container:-}" ] ||
     [ -f "/.dockerenv" ] || [ -f "/var/run/docker.sock" ] || [ -f "/run/.containerenv" ] ||
     ([ -f "/proc/1/cgroup" ] && (grep -q "docker" "/proc/1/cgroup" || grep -q '^0::/$' /proc/1/cgroup)); then
-    i "Running in container environment"
     return 0
-  else
-    i "Not running in container environment"
-    return 1
   fi
+  return 1
 }
 # Remove the GitHub token from the environment
 # Usage: cleanup_github_token <section_name>
@@ -98,6 +80,17 @@ exec_cmd() {
 # Usage: has_command <command>
 has_command() {
   command -v "$1" >/dev/null 2>&1
+}
+export_env_var() {
+  local env_var_name="$1"
+  local value="$2"
+  local section_name="$3"
+  local force=("${@:4}")
+
+  if [ "${force[*]}" == "--force" ] || [ -z "${!env_var_name:-}" ]; then
+    exec_cmd eval "export $env_var_name=\"$value\""
+    i "[$section_name] $env_var_name set to '$value' ${force[*]} ✔︎"
+  fi
 }
 # Setup directory with proper ownership (without environment variable) as sudo
 # Usage: setup_dir <path> <section_name>
@@ -128,33 +121,43 @@ setup_env_and_dir() {
   setup_dir "${!env_var_name}" "$section_name/$env_var_name"
 
   # Set environment variable if not already set
-  if [ -z "${!env_var_name:-}" ]; then
-    eval "export $env_var_name=\"$default_path\""
-    i "[$section_name] $env_var_name set to '${!env_var_name}' ✔︎"
-  fi
+  export_env_var "$env_var_name" "$default_path" "$section_name" "${@:4}"
 }
-step_extract_arguments() {
-  section "[ARGS] Extracting arguments..."
+setup_platform() {
+  section "[ENV/DETECT] Detecting platform..."
+  OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  UNAMED_ARCH="$(uname -m)"
+  if [ "$UNAMED_ARCH" = "aarch64" ] || [ "$UNAMED_ARCH" = "arm64" ]; then
+    ARCH="arm64"
+  else
+    ARCH="amd64"
+  fi
+  if is_container; then
+    ENV="container"
+  else
+    ENV="host"
+  fi
+  CONTEXT="$OS/$ARCH/$ENV"
+  s "Detected platform: '$CONTEXT' ✔︎"
+}
+setup_arguments() {
+  section "[ENV/ARGS] Extracting arguments..."
   while [[ $# -gt 0 ]]; do
     case "$1" in
     -r | --repo_url)
       REPO_URL="$2"
-      d "[ARGS] REPO_URL = '$REPO_URL' ✔︎"
       shift 2
       ;;
     -t | --timezone)
       TIMEZONE="$2"
-      d "[ARGS] TIMEZONE = '$TIMEZONE' ✔︎"
       shift 2
       ;;
     -u | --username)
       USERNAME="$2"
-      d "[ARGS] USERNAME = '$USERNAME' ✔︎"
       shift 2
       ;;
     -g | --groupname)
       GROUPNAME="$2"
-      d "[ARGS] GROUPNAME = '$GROUPNAME' ✔︎"
       shift 2
       ;;
     --usr_local_bin)
@@ -206,7 +209,7 @@ step_extract_arguments() {
       shift 2
       ;;
     --xdg_zsh_setup_script)
-      XDG_ZSH_SETUP_SCRIPT="$2"
+      ZSH_XDG_SETUP_SCRIPT="$2"
       shift 2
       ;;
     --backup_resources)
@@ -220,40 +223,33 @@ step_extract_arguments() {
     esac
   done
 }
-step_detect_platform() {
-  section "[DETECT] Detecting platform..."
+setup_environment_variables() {
+  section "[ENV/SETUP] ($HOME) ($GROUP) Setting up environment variables..."
+  [[ ! "$OS" =~ "darwin" ]] && USERHOME="/home/$USERNAME" && GROUPNAME=${GROUPNAME:-"wheel"}
+  [[ -z "$HOME" || $HOME != "$USERHOME" ]] && exec_cmd export HOME="$USERHOME"
+  [[ -z "$GROUP" || $GROUP != "$GROUPNAME" ]] && exec_cmd export GROUP="$GROUPNAME"
 
-  OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
-  ARCH="$(uname -m)"
-
-  # Translate architecture names
-  if [ "$ARCH" = "x86_64" ]; then
-    ARCH="amd64"
-  elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
-    ARCH="arm64"
-  fi
-
-  # Set HOME directory
-  if [ "$OS" = "linux" ]; then
-    [ -z "$HOME" ] && HOME="/home/$USERNAME"
-    [ -z "$GROUPNAME" ] && GROUPNAME="wheel"
-  elif [ "$OS" = "darwin" ]; then
-    [ -z "$HOME" ] && HOME="/Users/$USERNAME"
-    [ -z "$GROUPNAME" ] && GROUPNAME="staff"
-  fi
-
-  # Set environment type based on container detection
-  if is_container; then
-    ENV="container"
-  else
-    ENV="host"
-  fi
-
-  CONTEXT="$OS/$ARCH/$ENV"
-  s "Detected platform: '$CONTEXT' ✔︎"
+  exec_cmd export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+  exec_cmd export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+  exec_cmd export XDG_LOCAL_DIR=${XDG_LOCAL_DIR:-$HOME/.local}
+  exec_cmd export XDG_DATA_HOME=${XDG_DATA_HOME:-$XDG_LOCAL_DIR/share}
+  exec_cmd export XDG_STATE_HOME=${XDG_STATE_HOME:-$XDG_LOCAL_DIR/state}
+  exec_cmd export ZDOTDIR=${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}
+  exec_cmd export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:-$XDG_CACHE_HOME/zsh}
+  exec_cmd export ZSH_COMPCACHE=${ZSH_COMPCACHE:-$ZSH_CACHE_DIR/compcache}
+  exec_cmd export ZSH_COMPDUMP=${ZSH_COMPDUMP:-$ZSH_COMPCACHE/.zcompdump}
+  exec_cmd export ZSH_XDG_SETUP_SCRIPT=${ZSH_XDG_SETUP_SCRIPT:-$ZDOTDIR/etc/functions/zsetup}
+  exec_cmd export MISE_DATA_HOME=${MISE_DATA_HOME:-$XDG_DATA_HOME/mise}
+  exec_cmd export DOTS_DIR=${DOTS_DIR:-$XDG_DATA_HOME/dots}
+  exec_cmd export BACKUP_DIR_ROOT=${BACKUP_DIR_ROOT:-$XDG_DATA_HOME/backup}
+  exec_cmd export NPM_CONFIG_PREFIX=${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}
+  exec_cmd export NPM_CONFIG_CACHE=${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}
 }
-step_set_and_show_environment_variables() {
-  section "Environment Variables"
+step_setup_environment() {
+  setup_platform
+  setup_arguments "$@"
+  setup_environment_variables
+  section "[ENV/SHOW] Showing environment variables..."
   i "OS = \"$OS\""
   i "ARCH = \"$ARCH\""
   i "ENV = \"$ENV\""
@@ -275,11 +271,11 @@ step_set_and_show_environment_variables() {
   i "ZSH_CACHE_DIR = \"$ZSH_CACHE_DIR\""
   i "ZSH_COMPCACHE = \"$ZSH_COMPCACHE\""
   i "ZSH_COMPDUMP = \"$ZSH_COMPDUMP\""
+  i "ZSH_XDG_SETUP_SCRIPT = \"$ZSH_XDG_SETUP_SCRIPT\""
   i "MISE_DATA_HOME = \"$MISE_DATA_HOME\""
   i "BACKUP_DIR_ROOT = \"$BACKUP_DIR_ROOT\""
-  i "DOTS_DIR = \"$DOTS_DIR\""
-  i "XDG_ZSH_SETUP_SCRIPT = \"$XDG_ZSH_SETUP_SCRIPT\""
   i "BACKUP_RESOURCES = \"$BACKUP_RESOURCES\""
+  i "DOTS_DIR = \"$DOTS_DIR\""
 }
 step_prepare() {
   section "[PREP] Setting up essential dependencies..."
@@ -357,12 +353,7 @@ step_dotfiles() {
 
   # Ensure parent directory exists
   dots_parent_dir="$(dirname "$DOTS_DIR")"
-  if [ ! -d "$dots_parent_dir" ]; then
-    exec_cmd sudo mkdir -p "$dots_parent_dir"
-    d "[DOTS] Created Dotfiles parent directory: '$dots_parent_dir'"
-  fi
-  exec_cmd sudo chown "$USERNAME:$GROUPNAME" "$dots_parent_dir"
-  d "[DOTS] Dotfiles parent directory '$dots_parent_dir' is owned by '$USERNAME:$GROUPNAME' ✔"
+  setup_dir "$dots_parent_dir" "DOTS/$dots_parent_dir"
 
   # Clone or update repository
   if [ -d "$DOTS_DIR/.git" ]; then
@@ -371,8 +362,7 @@ step_dotfiles() {
       e "[DOTS] Failed to update repository"
     fi
   elif [ -d "$DOTS_DIR" ]; then
-    i "[DOTS] Dots directory exists at '$DOTS_DIR' but is not a git repository. Skipping clone/update."
-    i "[DOTS] Assuming dots are already installed or will be handled separately."
+    w "[DOTS] Dots directory exists at '$DOTS_DIR' but is not a git repository. Assuming to be already installed or will be handled separately.."
   else
     i "[DOTS] Cloning from $REPO_URL into '$DOTS_DIR'..."
     if ! exec_cmd sudo git clone --depth 1 "$REPO_URL" "$DOTS_DIR"; then
@@ -424,16 +414,17 @@ step_chown() {
   fi
 
   for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" "$XDG_DATA_HOME"; do
-    setup_dir "$dir" "CHOWN/$dir"
+    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$dir"
+    i "[CHOWN] '$dir' are owned by '$USERNAME:$GROUPNAME' ✔︎"
   done
 
   s "[CHOWN] Completed ✔︎"
 }
 step_xdg() {
-  if [ -x "$XDG_ZSH_SETUP_SCRIPT" ]; then
-    section "[XDG] Setting up XDG/ZSH environment via '$XDG_ZSH_SETUP_SCRIPT'..."
-    . "$XDG_ZSH_SETUP_SCRIPT" "$USERNAME" "$GROUPNAME"
-    s "[XDG] Setting up XDG/ZSH environment for '$USERNAME:$GROUPNAME' via '$XDG_ZSH_SETUP_SCRIPT' ✔"
+  if [ -x "$ZSH_XDG_SETUP_SCRIPT" ]; then
+    section "[XDG] Setting up XDG/ZSH environment via '$ZSH_XDG_SETUP_SCRIPT'..."
+    . "$ZSH_XDG_SETUP_SCRIPT" "$USERNAME" "$GROUPNAME"
+    s "[XDG] Setting up XDG/ZSH environment for '$USERNAME:$GROUPNAME' via '$ZSH_XDG_SETUP_SCRIPT' ✔"
   fi
 
   step_chown
@@ -499,7 +490,7 @@ step_mise() {
   # Set mise to use global packages
   i "[MISE] Setting mise global packages: '$MISE_PACKAGES' ..."
   exec_cmd mise use --cd "$DOTS_DIR" --yes --global --pin $MISE_PACKAGES
-  w "[MISE] Mise global packages: '$MISE_PACKAGES' ✔︎"
+  w "[MISE] Mise global packages: '$MISE_PACKAGES' ✔�������������"
 
   # Cleanup GitHub token
   cleanup_github_token "MISE"
@@ -583,14 +574,14 @@ step_nvim_setup_provider_npm() {
 
   # Configure the NPM environment variables
   # https://docs.npmjs.com/cli/v7/configuring-npm
-  setup_dir "$NPM_CONFIG_PREFIX" "NVIM/NPM"
-  setup_dir "$NPM_CONFIG_CACHE" "NVIM/NPM"
+  setup_env_and_dir "NPM_CONFIG_PREFIX" "$NPM_CONFIG_PREFIX" "NVIM/NPM" --force
+  setup_env_and_dir "NPM_CONFIG_CACHE" "$NPM_CONFIG_CACHE" "NVIM/NPM" --force
   exec_cmd export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/.npmrc}"
   i "[NVIM/NPM] NPM_CONFIG_USERCONFIG set to '$NPM_CONFIG_USERCONFIG' (owned by '$USERNAME') ✔︎"
 
   # Install neovim's required NPM packages
   exec_cmd npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim @mermaid-js/mermaid-cli
-  i "[NVIM/NPM] Required NPM packages installed at '$NPM_CONFIG_PREFIX/lib/node_modules' (owned by '$USERNAME') ✔︎"
+  i "[NVIM/NPM] Required NPM packages installed at '$NPM_CONFIG_PREFIX' (owned by '$USERNAME') ✔︎"
 }
 step_nvim_setup_provider_python() {
   section "[NVIM/PYTHON] Setting up Python provider..."
@@ -664,12 +655,9 @@ step_nvim() {
 
   s "[NVIM] Setup completed ✔︎"
 }
-
 main() {
-  step_extract_arguments "$@"
-  step_detect_platform
-  w "[INSTALL] ($CONTEXT) Starting 🚀"
-  step_set_and_show_environment_variables
+  step_setup_environment "$@"
+  w "[INSTALL] Starting 🚀"
   step_prepare
   step_cleanup
   step_backup
@@ -680,7 +668,7 @@ main() {
   step_go
   step_nvim
   step_chown
-  s "[INSTALL] ($CONTEXT) DONE ✅"
+  s "[INSTALL] DONE ✔✔"
 }
 
 main "$@"
