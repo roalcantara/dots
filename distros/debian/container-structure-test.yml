@@ -7,86 +7,344 @@ globalEnvVars:
     value: /home/vscode
 
 commandTests:
-  - name: Test zsh is installed
+  # System
+  - name: curl should be installed
     command: which
-    args: [zsh]
-    expectedOutput: [/usr/bin/zsh]
-  - name: Test jq is installed
+    args: [curl]
+    expectedOutput: [/usr/bin/curl]
+  - name: jq should be installed
     command: which
     args: [jq]
     expectedOutput: [/usr/bin/jq]
-  - name: Test mise is installed
+  - name: ZSH should be installed
+    command: which
+    args: [zsh]
+    expectedOutput: [/usr/bin/zsh]
+
+  # /usr/local
+  - name: Ruby should be installed
+    command: which
+    args: [ruby]
+    expectedOutput: [/usr/local/bin/ruby]
+  - name: (Ruby) Bundler should be installed
+    command: which
+    args: [bundler]
+    expectedOutput: [/usr/local/bin/bundler]
+  - name: (Ruby) Gems should be installed
+    command: which
+    args: [gem]
+    expectedOutput: [/usr/local/bin/gem]
+  - name: Git should be installed
+    command: which
+    args: [git]
+    expectedOutput: [/usr/local/bin/git]
+  - name: Mise should be installed
     command: which
     args: [mise]
     expectedOutput: [/usr/local/bin/mise]
 
 fileExistenceTests:
-  - name: Test starship is installed
-    path: '/home/vscode/.local/share/mise/installs/starship'
+  # HOME
+  - name: ~/Desktop directory
+    path: /home/vscode/Desktop
     shouldExist: true
-  - name: Test age is installed
-    path: '/home/vscode/.local/share/mise/installs/age'
+    permissions: drwxr-xr-x
+  - name: ~/Documents directory
+    path: /home/vscode/Documents
     shouldExist: true
-  - name: Test bat is installed
-    path: '/home/vscode/.local/share/mise/installs/bat'
+    permissions: drwxr-xr-x
+  - name: ~/Downloads directory
+    path: /home/vscode/Downloads
     shouldExist: true
-  - name: Test delta is installed
-    path: '/home/vscode/.local/share/mise/installs/delta'
+    permissions: drwxr-xr-x
+  - name: ~/Movies directory
+    path: /home/vscode/Movies
     shouldExist: true
-  - name: Test eza is installed
-    path: '/home/vscode/.local/share/mise/installs/eza'
+    permissions: drwxr-xr-x
+  - name: ~/Music directory
+    path: /home/vscode/Music
     shouldExist: true
-  - name: Test fd is installed
-    path: '/home/vscode/.local/share/mise/installs/fd'
+    permissions: drwxr-xr-x
+  - name: ~/Pictures directory
+    path: /home/vscode/Pictures
     shouldExist: true
-  - name: Test fzf is installed
-    path: '/home/vscode/.local/share/mise/installs/fzf'
+    permissions: drwxr-xr-x
+  - name: ~/Projects directory
+    path: /home/vscode/Projects
     shouldExist: true
-  - name: Test gh is installed
-    path: '/home/vscode/.local/share/mise/installs/gh'
+    permissions: drwxr-xr-x
+  - name: ~/Work directory
+    path: /home/vscode/Work
     shouldExist: true
-  - name: Test neovim is installed
-    path: '/home/vscode/.local/share/mise/installs/neovim'
-    shouldExist: true
-  - name: Test sops is installed
-    path: '/home/vscode/.local/share/mise/installs/sops'
-    shouldExist: true
-  - name: Test usage is installed
-    path: '/home/vscode/.local/share/mise/installs/usage'
-    shouldExist: true
-  - name: Test watchexec is installed
-    path: '/home/vscode/.local/share/mise/installs/watchexec'
-    shouldExist: true
-  - name: Test zoxide is installed
-    path: '/home/vscode/.local/share/mise/installs/zoxide'
-    shouldExist: true
-  - name: Mise installation directory
-    path: /home/vscode/.local/share/mise/installs
-    shouldExist: true
-  - name: Test gum is installed
-    path: /home/vscode/.local/share/mise/installs/gum
-    shouldExist: true
-  - name: Zsh shell
-    path: /usr/bin/zsh
-    shouldExist: true
-  - name: Bash activation in .bashrc
-    path: /home/vscode/.bashrc
-    shouldExist: false
-  - name: Zsh activation in .zshenv
+    permissions: drwxr-xr-x
+  - name: ~/.zshenv directory
     path: /home/vscode/.zshenv
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: Oh-my-zsh directory
+  - name: ~/.bashrc initialization file
+    path: /home/vscode/.bashrc
+    shouldExist: false
+  - name: ~/.oh-my-zsh directory
     path: /home/vscode/.oh-my-zsh
     shouldExist: false
-  - name: ~/.config directory
+
+  # CONFIG
+  - name: ~/.config directory (XDG_CONFIG_HOME)
     path: /home/vscode/.config
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: ~/.local directory
-    path: /home/vscode/.local
+  - name: ~/.config/eza directory
+    path: /home/vscode/.config/eza
     shouldExist: true
     permissions: drwxr-xr-x
+  - name: ~/.config/nvim directory
+    path: /home/vscode/.config/nvim
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.config/nvim/init.lua file (MYVIMRC)
+    path: /home/vscode/.config/nvim/init.lua
+    shouldExist: true
+    permissions: -rw-r--r--
+  - name: ~/.config/nvim/.venv directory
+    path: /home/vscode/.config/nvim/.venv
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.config/nvim/.venv/bin directory
+    path: /home/vscode/.config/nvim/.venv/bin
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.config/nvim/.venv/bin/activate file
+    path: /home/vscode/.config/nvim/.venv/bin/activate
+    shouldExist: true
+    permissions: -rw-rw-r--
+  - name: ~/.config/nvim/.venv/bin/python3 file
+    path: /home/vscode/.config/nvim/.venv/bin/python3
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: ~/.config/zsh directory (ZDOTDIR)
+    path: /home/vscode/.config/zsh
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.config/npm  (NPM_CONFIG_USERCONFIG)
+    path: /home/vscode/.config/npm
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.config/git directory
+    path: /home/vscode/.config/git
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.config/snippets directory
+    path: /home/vscode/.config/snippets
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.config/starship directory (STARSHIP_CONFIG_HOME)
+    path: /home/vscode/.config/starship
+    shouldExist: true
+    permissions: drwxr-xr-x
+
+  # CACHE
+  - name: ~/.cache directory (XDG_CACHE_HOME)
+    path: /home/vscode/.cache
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.cache/npm (NPM_CONFIG_CACHE)
+    path: /home/vscode/.cache/npm
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.cache/mise directory (MISE_CACHE_DIR)
+    path: /home/vscode/.cache/mise
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.cache/starship directory
+    path: /home/vscode/.cache/starship
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.cache/zsh directory
+    path: /home/vscode/.cache/zsh
+    shouldExist: true
+    permissions: drwxr-xr-x
+
+  # LOCAL/STATE
+  - name: ~/.local/state directory (XDG_STATE_HOME)
+    path: /home/vscode/.local/state
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/state/mise directory
+    path: /home/vscode/.local/state/mise
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/state/nvim directory
+    path: /home/vscode/.local/state/nvim
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/state/zim directory
+    path: /home/vscode/.local/state/zim
+    shouldExist: true
+    permissions: drwxr-xr-x
+
+  # LOCAL/SHARE
+  - name: ~/.local/share directory (XDG_DATA_HOME)
+    path: /home/vscode/.local/share
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/share/npm directory (NPM_CONFIG_PREFIX)
+    path: /home/vscode/.local/share/npm
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/share/npm/bin directory
+    path: /home/vscode/.local/share/npm/bin
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/share/npm/lib directory
+    path: /home/vscode/.local/share/npm/lib
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/share/npm/lib/node_modules directory
+    path: /home/vscode/.local/share/npm/lib/node_modules
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/share/zim directory (ZIM_HOME)
+    path: /home/vscode/.local/share/zim
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/share/zsh directory
+    path: /home/vscode/.local/share/zsh
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/share/go directory (GOPATH)
+    path: /home/vscode/.local/share/go
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.local/share/mise directory (MISE_GLOBAL_CONFIG_DIR)
+    path: /home/vscode/.local/share/mise
+    shouldExist: true
+    permissions: drwxr-xr-x
+
+  # LOCAL/SHARE (MISE INSTALLED TOOLS)
+  - name: bat should be installed
+    path: /home/vscode/.local/share/mise/shims/bat
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: corepack should be installed
+    path: /home/vscode/.local/share/mise/shims/corepack
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: delta should be installed
+    path: /home/vscode/.local/share/mise/shims/delta
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: eza should be installed
+    path: /home/vscode/.local/share/mise/shims/eza
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: fd should be installed
+    path: /home/vscode/.local/share/mise/shims/fd
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: fzf should be installed
+    path: /home/vscode/.local/share/mise/shims/fzf
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: gh should be installed
+    path: /home/vscode/.local/share/mise/shims/gh
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: go should be installed
+    path: /home/vscode/.local/share/mise/shims/go
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: gofmt should be installed
+    path: /home/vscode/.local/share/mise/shims/gofmt
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: gum should be installed
+    path: /home/vscode/.local/share/mise/shims/gum
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: idle3 should be installed
+    path: /home/vscode/.local/share/mise/shims/idle3
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: idle3.13 should be installed
+    path: /home/vscode/.local/share/mise/shims/idle3.13
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: node should be installed
+    path: /home/vscode/.local/share/mise/shims/node
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: npm should be installed
+    path: /home/vscode/.local/share/mise/shims/npm
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: npx should be installed
+    path: /home/vscode/.local/share/mise/shims/npx
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: nvim should be installed
+    path: /home/vscode/.local/share/mise/shims/nvim
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: pip should be installed
+    path: /home/vscode/.local/share/mise/shims/pip
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: pip3 should be installed
+    path: /home/vscode/.local/share/mise/shims/pip3
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: pip3.13 should be installed
+    path: /home/vscode/.local/share/mise/shims/pip3.13
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: pydoc3 should be installed
+    path: /home/vscode/.local/share/mise/shims/pydoc3
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: pydoc3.13 should be installed
+    path: /home/vscode/.local/share/mise/shims/pydoc3.13
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: python should be installed
+    path: /home/vscode/.local/share/mise/shims/python
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: python3 should be installed
+    path: /home/vscode/.local/share/mise/shims/python3
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: python3-config should be installed
+    path: /home/vscode/.local/share/mise/shims/python3-config
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: python3.13 should be installed
+    path: /home/vscode/.local/share/mise/shims/python3.13
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: python3.13-config should be installed
+    path: /home/vscode/.local/share/mise/shims/python3.13-config
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: rg should be installed
+    path: /home/vscode/.local/share/mise/shims/rg
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: starship should be installed
+    path: /home/vscode/.local/share/mise/shims/starship
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: usage should be installed
+    path: /home/vscode/.local/share/mise/shims/usage
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: watchexec should be installed
+    path: /home/vscode/.local/share/mise/shims/watchexec
+    shouldExist: true
+    permissions: Lrwxrwxrwx
+  - name: zoxide should be installed
+    path: /home/vscode/.local/share/mise/shims/zoxide
+    shouldExist: true
+    permissions: Lrwxrwxrwx
 
 fileContentTests:
   - name: Mise activation in .zshrc

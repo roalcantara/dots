@@ -99,31 +99,6 @@ exec_cmd() {
 has_command() {
   command -v "$1" >/dev/null 2>&1
 }
-# Setup environment variable and directory with proper ownership
-# Usage: setup_env_and_dir <env_var_name> <default_path> <section_name>
-setup_env_and_dir() {
-  local env_var_name="$1"
-  local default_path="$2"
-  local section_name="$3"
-
-  # Set environment variable if not already set
-  if [ -z "${!env_var_name:-}" ]; then
-    eval "export $env_var_name=\"$default_path\""
-    i "[$section_name] $env_var_name set to '${!env_var_name}' ✔︎"
-  fi
-
-  # Create directory if it doesn't exist
-  if [ ! -d "${!env_var_name}" ]; then
-    exec_cmd sudo mkdir -p "${!env_var_name}"
-    i "[$section_name] '${!env_var_name}' created ✔︎"
-  fi
-
-  # Set ownership if not already correct
-  if [ "$(stat -c '%U:%G' "${!env_var_name}" 2>/dev/null)" != "$USERNAME:$GROUPNAME" ]; then
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "${!env_var_name}"
-    i "[$section_name] '${!env_var_name}' owned by '$USERNAME' ✔︎"
-  fi
-}
 # Setup directory with proper ownership (without environment variable) as sudo
 # Usage: setup_dir <path> <section_name>
 setup_dir() {
@@ -142,7 +117,22 @@ setup_dir() {
     i "[$section_name] '$path' owned by '$USERNAME' ✔︎"
   fi
 }
+# Setup environment variable and directory with proper ownership
+# Usage: setup_env_and_dir <env_var_name> <default_path> <section_name>
+setup_env_and_dir() {
+  local env_var_name="$1"
+  local default_path="$2"
+  local section_name="$3"
 
+  # Create directory if it doesn't exist
+  setup_dir "${!env_var_name}" "$section_name/$env_var_name"
+
+  # Set environment variable if not already set
+  if [ -z "${!env_var_name:-}" ]; then
+    eval "export $env_var_name=\"$default_path\""
+    i "[$section_name] $env_var_name set to '${!env_var_name}' ✔︎"
+  fi
+}
 step_extract_arguments() {
   section "[ARGS] Extracting arguments..."
   while [[ $# -gt 0 ]]; do
