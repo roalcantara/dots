@@ -672,9 +672,10 @@ step_nvim() {
   setup_dir "$XDG_DATA_HOME/nvim" "NVIM"
 
   # Setup nvim providers
-  step_nvim_setup_provider_npm
-  step_nvim_setup_provider_python
-  step_nvim_setup_provider_ruby
+  step_nvim_setup_provider_npm &
+  step_nvim_setup_provider_python &
+  step_nvim_setup_provider_ruby &
+  wait
 
   # Install nvim plugins
   exec_cmd cd "$XDG_CONFIG_HOME/nvim" &&
@@ -683,7 +684,7 @@ step_nvim() {
       +Lazy! clear \
       +TSUpdateSync \
       -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' \
-      -c 'MasonInstall bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksmanruby-lsp shfmt stylua taplo vim-language-server yaml-language-server' +qa
+      -c 'MasonInstall bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksman ruby-lsp shfmt stylua taplo vim-language-server yaml-language-server' +qa
 
   s "[NVIM] Setup completed ✔︎"
 }
