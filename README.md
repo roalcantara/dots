@@ -93,35 +93,35 @@ At the moment, the `build` task is only available for the `debian` distro.
 
     ```sh
     mise run build
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile .
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile --target=remote .
     # ==> dots:debian-arm64
 
     mise run build --tag testing
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-testing --file=distros/debian/Dockerfile .
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-testing --file=distros/debian/Dockerfile --target=remote .
     # ==> dots:debian-arm64-testing
 
     mise run build --nocache --tag preview
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-preview --no-cache --file=distros/debian/Dockerfile .
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-preview --no-cache --file=distros/debian/Dockerfile --target=remote .
     # ==> dots:debian-arm64-preview
 
     mise run build --tag latest --platform amd64
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-latest --file=distros/debian/Dockerfile .
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-latest --file=distros/debian/Dockerfile --target=remote .
     # ==> dots:debian-amd64-latest
 
-    mise run build --runtime
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile.runtime .
+    mise run build --local
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile --target=local .
     # ==> dots:debian-arm64
 
-    mise run build --runtime --tag dev
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-dev --file=distros/debian/Dockerfile.runtime .
+    mise run build --local --tag dev
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-dev --file=distros/debian/Dockerfile --target=local .
     # ==> dots:debian-arm64-dev
 
-    mise run build --runtime --nocache --tag stag
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-stag --no-cache --file=distros/debian/Dockerfile.runtime .
+    mise run build --local --nocache --tag stag
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-stag --no-cache --file=distros/debian/Dockerfile --target=local .
     # ==> dots:debian-arm64-stag
 
-    mise run build --runtime --nocache --tag local --platform amd64
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-local --no-cache --file=distros/debian/Dockerfile.runtime .
+    mise run build --local --nocache --tag local --platform amd64
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-local --no-cache --file=distros/debian/Dockerfile --target=local .
     # ==> dots:debian-amd64-local
     ```
 
@@ -129,7 +129,7 @@ At the moment, the `build` task is only available for the `debian` distro.
 
     ```sh
     mise run build --branch main --repo roalcantara/dotfiles --user root --group root --workdir /workspaces/foo --tag custom
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=GITHUB_REPO=roalcantara/dotfiles --build-arg=BRANCH=main --build-arg=USERNAME=root --build-arg=GROUPNAME=root --workdir=/workspaces/foo --tag=dots:debian-arm64-custom --file=distros/debian/Dockerfile .
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=GITHUB_REPO=roalcantara/dotfiles --build-arg=BRANCH=main --build-arg=USERNAME=root --build-arg=GROUPNAME=root --workdir=/workspaces/foo --tag=dots:debian-arm64-custom --file=distros/debian/Dockerfile --target=remote .
     ```
 
 #### RUNNING

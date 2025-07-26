@@ -40,7 +40,6 @@
   USAGE_USERNAME="{{option(name="user")}}"
   USAGE_GROUPNAME="{{option(name="group")}}"
   USAGE_BUILD_ARGS="{{option(name="build-arg", var=true)}}"
-  DOCKERFILE_VALUE="Dockerfile"
 
   # Platform mapping
   case "$USAGE_PLATFORM" in
@@ -107,10 +106,13 @@
   fi
 
   # Select Dockerfile
-  if [ '{{flag(name="runtime")}}' = 'true' ]; then
-    DOCKERFILE_VALUE="Dockerfile.runtime"
+  DOCKER_CMD+=(--file="distros/$USAGE_DISTRO/Dockerfile")
+
+  if [ '{{flag(name="local")}}' = 'true' ]; then
+    DOCKER_CMD+=(--target=local .)
+  else
+    DOCKER_CMD+=(--target=remote .)
   fi
-  DOCKER_CMD+=(--file="distros/$USAGE_DISTRO/$DOCKERFILE_VALUE" .)
 
   echo "  ==> ${DOCKER_CMD[*]}"
   eval "${DOCKER_CMD[*]}"

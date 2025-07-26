@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
 # https://mcr.microsoft.com/en-us/artifact/mar/devcontainers/ruby/tags
-FROM mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
+FROM mcr.microsoft.com/devcontainers/ruby:3.4-bookworm AS base
 
 # Build arguments with defaults
 ARG TZ=America/Sao_Paulo
@@ -11,27 +11,44 @@ ARG USERNAME=vscode
 ARG GROUPNAME=vscode
 ARG GITHUB_REPO=roalcantara/dots
 
-# Essential environment variables only
 ENV CLICOLOR=1 \
     TZ=$TZ \
     TERM="$TERM" \
     COLORTERM=truecolor \
     DEBIAN_FRONTEND=noninteractive \
     USER="$USERNAME" \
-    HOME="/home/$USERNAME" \
-    GROUP="$GROUPNAME"
+    GROUP="$GROUPNAME" \
+    HOME="/home/$USERNAME"
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# Set working directory for dotfiles
+WORKDIR /home/$USERNAME/.local/share/dots
 
+# Stage for local dotfiles installation
+FROM base AS local
+COPY --chown=$USERNAME:$GROUPNAME ../../. ./
 RUN --mount=type=secret,id=github_token,target=/tmp/github_token,required=false \
     --mount=type=cache,target=$HOME/.cache,uid=1000,gid=1000 \
-    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install?$(date +%s)" | bash -s -- -u "${USERNAME}" -g "${GROUPNAME}" -t "${TZ}"
+    echo "[INFO] Using local dotfiles installation..." && \
+    rm -rf .git config/nvim/.venv && \
+    chmod +x install && \
+    chown -R "$USERNAME:$GROUPNAME" "/home/$USERNAME/.local" && \
+    chown "$USERNAME:$GROUPNAME" install && \
+    ./install -u "$USERNAME" -g "$GROUPNAME" -t "$TZ"
 
 USER $USERNAME
 WORKDIR $HOME
+SHELL ["/usr/bin/zsh", "-c"]
+ENTRYPOINT ["/usr/bin/zsh", "-il"]
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD zsh -c 'echo "Container health check passed"' || exit 1
+# Stage for remote dotfiles installation
+FROM base AS remote
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN --mount=type=secret,id=github_token,target=/tmp/github_token,required=false \
+    --mount=type=cache,target=$HOME/.cache,uid=1000,gid=1000 \
+    echo "[INFO] Using remote dotfiles installation..." && \
+    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install?$(date +%s)" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ"
 
+USER $USERNAME
+WORKDIR $HOME
 SHELL ["/usr/bin/zsh", "-c"]
 ENTRYPOINT ["/usr/bin/zsh", "-il"]

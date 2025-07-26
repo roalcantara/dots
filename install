@@ -98,6 +98,27 @@ export_env_var() {
     i "[$section_name] $env_var_name set to '$value' ${force[*]} ✔︎"
   fi
 }
+# Ensure ownership of a path
+# Usage: setup_ownership <path> <section_name> (required_owner)
+set_ownership() {
+  local TARGET="$1"
+  local LABEL="$2"
+  local OWNER="${3:-"$USERNAME:$GROUPNAME"}"
+
+  exec_cmd sudo chown -R "$OWNER" "$TARGET"
+  s "[$LABEL/CHOWN] '$TARGET' owned by '$OWNER' ✔︎"
+}
+# Ensure ownership of a path
+# Usage: setup_ownership <path> <section_name> (required_owner)
+setup_ownership() {
+  local TARGET="$1"
+  local LABEL="$2"
+  local OWNER="${3:-"$USERNAME:$GROUPNAME"}"
+
+  if [ "$(stat -c '%U:%G' "$TARGET" 2>/dev/null)" != "$OWNER" ]; then
+    set_ownership "$TARGET" "$LABEL" "$OWNER"
+  fi
+}
 # Setup directory with proper ownership (without environment variable) as sudo
 # Usage: setup_dir <path> <section_name>
 setup_dir() {
@@ -110,11 +131,8 @@ setup_dir() {
     i "[$section_name] '$path' created ✔︎"
   fi
 
-  # Set ownership if not already correct
-  if [ "$(stat -c '%U:%G' "$path" 2>/dev/null)" != "$USERNAME:$GROUPNAME" ]; then
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$path"
-    i "[$section_name] '$path' owned by '$USERNAME' ✔︎"
-  fi
+  # Ensure ownership
+  setup_ownership "$path" "$section_name"
 }
 # Setup environment variable and directory with proper ownership
 # Usage: setup_env_and_dir <env_var_name> <default_path> <section_name>
@@ -343,52 +361,48 @@ step_prepare() {
 }
 step_cleanup() {
   section "[CLEAN] Initializing..."
-
   for e in "$HOME" /root; do
     for f in "$e/.bashrc" "$e/.bash_logout" "$e/.oh-my-zsh" "$e/.profile"; do
       if [ -e "$f" ]; then
         exec_cmd sudo rm -rf "$f"
-        w "[CLEAN] '$f' removed ✔︎"
       fi
     done
   done
-  s "[CLEAN] Completed (oh-my-zsh removed) ✔︎"
+  s "[CLEAN] Completed (and oh-my-zsh removed)! ✔︎"
 }
 step_backup() {
   section "[BAK] Initializing.."
 
-  # Create backup directory with current timestamp
-  BACKUP_DIR="$BACKUP_DIR_ROOT/$(date +%Y-%m-%d_%H-%M-%S)"
-  exec_cmd sudo mkdir -p "$BACKUP_DIR"
-  exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$BACKUP_DIR_ROOT"
-  i "[BAK] Backup folder created at '$BACKUP_DIR' ("$USERNAME:$GROUPNAME") ✔"
+  if is_container; then
+    w "[BAK] 🐳 Removing files instead of backing up ✔"
+    for resource in $BACKUP_RESOURCES; do
+      resource_path="$HOME/$resource"
+      if [ -e "$resource_path" ]; then
+        exec_cmd sudo rm -rf "$resource_path"
+      fi
+    done
+    s "[BAK] Completed @ '$USERNAME:$GROUPNAME' ✔"
+  else
+    w "[BAK] Creating backup directory with current timestamp ✔"
+    BACKUP_DIR="$BACKUP_DIR_ROOT/$(date +%Y-%m-%d_%H-%M-%S)"
+    exec_cmd sudo mkdir -p "$BACKUP_DIR"
+    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$BACKUP_DIR_ROOT"
+    i "[BAK] Backup folder created at '$BACKUP_DIR' ("$USERNAME:$GROUPNAME") ✔"
 
-  # Backup existing files
-  for resource in $BACKUP_RESOURCES; do
-    resource_path="$HOME/$resource"
-    if [ -e "$resource_path" ]; then
-      if [ -L "$resource_path" ]; then
-        d "Backing up symlink: $resource_path"
-      elif [ -d "$resource_path" ]; then
-        d "Backing up directory: $resource_path"
+    for resource in $BACKUP_RESOURCES; do
+      resource_path="$HOME/$resource"
+      if [ -e "$resource_path" ]; then
+        exec_cmd sudo mv "$resource_path" "$BACKUP_DIR/"
+        if [[ "$XDG_COMMON_DIRS" == *"$resource"* ]]; then
+          exec_cmd sudo install -d -o "$USERNAME" -g "$USERNAME" "$resource_path"
+          i "Recreated directory: $resource_path owned by $USERNAME:$USERNAME ✔"
+        fi
       else
-        d "Backing up file: $resource_path"
+        d "Resource does not exist, skipping: $resource_path"
       fi
-
-      exec_cmd sudo mv "$resource_path" "$BACKUP_DIR/"
-      i "Backed up: $resource_path ✔"
-
-      # If it was an XDG directory, recreate it with proper ownership
-      if [[ "$XDG_COMMON_DIRS" == *"$resource"* ]]; then
-        exec_cmd sudo install -d -o "$USERNAME" -g "$USERNAME" "$resource_path"
-        i "Recreated directory: $resource_path owned by $USERNAME:$USERNAME ✔"
-      fi
-    else
-      d "Resource does not exist, skipping: $resource_path"
-    fi
-  done
-
-  s "[BAK] Completed @ '$BACKUP_DIR@$USERNAME:$GROUPNAME' ✔"
+    done
+    s "[BAK] Completed @ '$BACKUP_DIR@$USERNAME:$GROUPNAME' ✔"
+  fi
 }
 step_dotfiles() {
   section "[DOTS] Setup started.."
@@ -403,44 +417,89 @@ step_dotfiles() {
     if ! exec_cmd git -C "$DOTS_DIR" pull origin main; then
       e "[DOTS] Failed to update repository"
     fi
-  elif [ -d "$DOTS_DIR" ]; then
-    w "[DOTS] Dots directory exists at '$DOTS_DIR' but is not a git repository. Assuming to be already installed or will be handled separately.."
-  else
-    i "[DOTS] Cloning from $REPO_URL into '$DOTS_DIR'..."
+  elif [ -d "$DOTS_DIR" ] && [ ! -d "$DOTS_DIR/config" ]; then
+    i "[DOTS] '$DOTS_DIR/config' not found! Cloning from $REPO_URL into '$DOTS_DIR'..."
     if ! exec_cmd sudo git clone --depth 1 "$REPO_URL" "$DOTS_DIR"; then
       e "[DOTS] Failed to clone repository"
     fi
     i "[DOTS] Dotfiles downloaded to '$DOTS_DIR' ✔"
+    exec_cmd ls -la "$DOTS_DIR"
+    exec_cmd ls -la "$DOTS_DIR/config"
+  else
+    w "[DOTS] '$DOTS_DIR/config' found! But not a git repository! Assuming to be already installed or will be handled separately.."
   fi
 
-  # Handle .config symlink
+  if [ ! -d "$DOTS_DIR/config" ]; then
+    e "[DOTS] '$DOTS_DIR/config' directory not found! Impossible to continue..."
+    exec_cmd ls -la "$XDG_DATA_HOME"
+    exec_cmd ls -la "$dots_parent_dir"
+    exec_cmd ls -la "$DOTS_DIR"
+    exec_cmd ls -la "$DOTS_DIR/config"
+    return 1
+  fi
+
+  i "[DOTS] Handling existent '$HOME/.config' directory/symlink.."
   config_symlink="$HOME/.config"
   if [ -e "$config_symlink" ]; then
+    i "[DOTS] '$config_symlink' exists! Checking if it is a symlink.."
     if [ -L "$config_symlink" ]; then
+      i "[DOTS] '$config_symlink' is a symlink! Checking the current target of the symlink '$config_symlink'.."
       current_target="$(readlink "$config_symlink")"
+      i "[DOTS] Handling existent '$config_symlink' targeting '$current_target'.."
       if [ "$current_target" != "$DOTS_DIR/config" ]; then
-        d "[DOTS] Backing up existing .config symlink to '$BACKUP_DIR'.."
-        exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
+        if is_container; then
+          exec_cmd sudo rm -rf "$config_symlink"
+          w "[DOTS] 🐳 Existent '$config_symlink' symlink has been removed ✔"
+        else
+          exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
+          d "[DOTS] Existing '$config_symlink' symlink backed up to '$BACKUP_DIR' ✔"
+        fi
       fi
     else
-      d "[DOTS] Backing up existing .config directory to '$BACKUP_DIR'.."
-      exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
+      i "[DOTS] '$config_symlink' is not a symlink!"
+      if is_container; then
+        exec_cmd sudo rm -rf "$config_symlink"
+        w "[DOTS] 🐳 Existent '$config_symlink' directory has been removed ✔"
+      else
+        exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
+        d "[DOTS] Existing '$config_symlink' directory backed up to '$BACKUP_DIR' ✔"
+      fi
     fi
+  else
+    w "[DOTS] '$config_symlink' directory not found ✔"
   fi
 
-  if [ ! -L "$config_symlink" ] && [ -d "$DOTS_DIR/config" ]; then
-    i "[DOTS] Symlinking '$DOTS_DIR/config' to '$config_symlink'.."
+  i "[DOTS] Ensuring correct symlink for '$config_symlink' to '$DOTS_DIR/config'.."
+  if [ -e "$config_symlink" ] && [ -L "$config_symlink" ]; then
+    current_target="$(readlink "$config_symlink")"
+    i "[DOTS] Handling existent symlink '$config_symlink' targeting '$current_target'.."
+    if [ "$current_target" != "$DOTS_DIR/config" ]; then
+      if is_container; then
+        exec_cmd sudo rm -rf "$config_symlink"
+        w "[DOTS] Existent '$config_symlink' symlink has been removed ✔"
+      else
+        exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
+        d "[DOTS] Existing '$config_symlink' symlink backed up to '$BACKUP_DIR' ✔"
+      fi
+    fi
+  else
+    w "[DOTS] '$config_symlink' is not a symlink ✔"
+  fi
+
+  i "[DOTS] Symlinking '$DOTS_DIR/config' to '$config_symlink'.."
+  if [ ! -L "$config_symlink" ]; then
     exec_cmd sudo ln -sf "$DOTS_DIR/config" "$config_symlink"
-    d "[DOTS] Symlink created: '$config_symlink' -> '$DOTS_DIR/config' ✔"
+    i "[DOTS] Symlink created: '$config_symlink' -> '$DOTS_DIR/config' ✔"
+  else
+    w "[DOTS] No existent '$config_symlink' symlink to '$DOTS_DIR/config' found ✔"
   fi
 
-  i "[DOTS] Ensuring correct permissions for '$config_symlink' symlink.."
-  exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$config_symlink"
-  i "[DOTS] '$config_symlink' is owned by '$USERNAME:$GROUPNAME' ✔"
+  # Ensure ownership of the symlink
+  setup_ownership "$config_symlink" "DOTS"
 
+  # Ensure ownership of all files and directories in the symlink
   for dir in "$config_symlink"/*; do
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$dir"
-    d "[DOTS] '$dir' is owned by '$USERNAME:$GROUPNAME' ✔"
+    setup_ownership "$dir" "DOTS/SYMLINK"
   done
 
   s "[DOTS] Setup completed ✔"
@@ -449,15 +508,13 @@ step_chown() {
   section "[CHOWN] Ensuring ownership of essential directories started..."
 
   if [ -d "$XDG_LOCAL_DIR" ]; then
-    exec_cmd sudo chown "$USERNAME:$GROUPNAME" "$XDG_LOCAL_DIR"
-    i "[CHOWN] '$XDG_LOCAL_DIR' are owned by '$USERNAME:$GROUPNAME' ✔︎"
+    set_ownership "$XDG_LOCAL_DIR" "CHOWN"
   else
     setup_dir "$XDG_LOCAL_DIR" "CHOWN/$XDG_LOCAL_DIR"
   fi
 
   for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" "$XDG_DATA_HOME"; do
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$dir"
-    i "[CHOWN] '$dir' are owned by '$USERNAME:$GROUPNAME' ✔︎"
+    set_ownership "$dir" "CHOWN"
   done
 
   s "[CHOWN] Completed ✔︎"
@@ -586,6 +643,8 @@ step_nvim_setup_provider_npm() {
   section "[NVIM/NPM] Setting up NPM provider..."
   # https://neovim.io/doc/user/provider.html#provider-nodejs
 
+  exec_cmd eval "$(mise activate zsh --yes --quiet --shims)"
+
   if ! command -v npm >/dev/null 2>&1; then
     w "[NVIM/NPM] npm is not installed! skipping..."
     return
@@ -606,9 +665,15 @@ step_nvim_setup_provider_python() {
   section "[NVIM/PYTHON] Setting up Python provider..."
   # https://neovim.io/doc/user/provider.html#provider-python
 
+  exec_cmd eval "$(mise activate zsh --yes --quiet --shims)"
+
   if ! command -v python3 >/dev/null 2>&1; then
     w "[NVIM/PYTHON] python3 is not installed! skipping..."
     return
+  fi
+
+  if [ ! -d "$XDG_CACHE_HOME/pip" ]; then
+    setup_dir "$XDG_CACHE_HOME/pip" "NVIM/PYTHON"
   fi
 
   if [ ! -d "$XDG_CONFIG_HOME/nvim/.venv" ]; then
@@ -636,7 +701,7 @@ step_nvim_setup_provider_ruby() {
   exec_cmd gem update --system --no-document
 
   # Install neovim's required Ruby packages
-  exec_cmd gem install neovim rubocop && gem cache clean --force && gem cleanup
+  exec_cmd gem install neovim && gem cache clean --force && gem cleanup
   i "[NVIM/RUBY] Required GEM packages installed at '$GEM_HOME' (owned by '$USERNAME') ✔︎"
 }
 step_nvim() {
@@ -664,13 +729,12 @@ step_nvim() {
   wait
 
   # Install nvim plugins
-  exec_cmd cd "$XDG_CONFIG_HOME/nvim" &&
-    exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless \
-      +Lazy! sync \
-      +Lazy! clear \
-      +TSUpdateSync \
-      -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' \
-      -c 'MasonInstall bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksman ruby-lsp shfmt stylua taplo vim-language-server yaml-language-server' +qa
+  exec_cmd cd "$XDG_CONFIG_HOME/nvim"
+  exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless +Lazy! sync +Lazy! clear
+
+  exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless +TSUpdateSync &
+  exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' -c 'MasonInstall bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksman ruby-lsp shfmt stylua taplo vim-language-server yaml-language-server' +qa &
+  wait
 
   s "[NVIM] Setup completed ✔︎"
 }
