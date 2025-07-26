@@ -37,8 +37,6 @@ globalEnvVars:
     value: /home/vscode/.config/starship
   - key: STARSHIP_CONFIG
     value: /home/vscode/.config/starship/starship.toml
-  - key: GOPATH
-    value: /home/vscode/.local/share/go
 commandTests:
   # System
   - name: curl should be installed
@@ -231,10 +229,6 @@ fileExistenceTests:
     path: /home/vscode/.local/share/zsh
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: ~/.local/share/go directory (GOPATH)
-    path: /home/vscode/.local/share/go
-    shouldExist: true
-    permissions: drwxr-xr-x
   - name: ~/.local/share/mise directory (MISE_GLOBAL_CONFIG_DIR)
     path: /home/vscode/.local/share/mise
     shouldExist: true
@@ -271,14 +265,6 @@ fileExistenceTests:
     permissions: Lrwxrwxrwx
   - name: gh should be installed
     path: /home/vscode/.local/share/mise/shims/gh
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: go should be installed
-    path: /home/vscode/.local/share/mise/shims/go
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: gofmt should be installed
-    path: /home/vscode/.local/share/mise/shims/gofmt
     shouldExist: true
     permissions: Lrwxrwxrwx
   - name: gum should be installed

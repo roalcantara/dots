@@ -94,24 +94,35 @@ At the moment, the `build` task is only available for the `debian` distro.
     ```sh
     mise run build
     # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile .
+    # ==> dots:debian-arm64
 
     mise run build --tag testing
     # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-testing --file=distros/debian/Dockerfile .
+    # ==> dots:debian-arm64-testing
 
     mise run build --nocache --tag preview
     # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-preview --no-cache --file=distros/debian/Dockerfile .
+    # ==> dots:debian-arm64-preview
+
+    mise run build --tag latest --platform amd64
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-latest --file=distros/debian/Dockerfile .
+    # ==> dots:debian-amd64-latest
+
+    mise run build --runtime
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile.runtime .
+    # ==> dots:debian-arm64
 
     mise run build --runtime --tag dev
     # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-dev --file=distros/debian/Dockerfile.runtime .
+    # ==> dots:debian-arm64-dev
 
-    mise run build --nocache --runtime --tag stag
+    mise run build --runtime --nocache --tag stag
     # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-stag --no-cache --file=distros/debian/Dockerfile.runtime .
+    # ==> dots:debian-arm64-stag
 
-    mise run build --platform amd64 --tag latest
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-latest --file=distros/debian/Dockerfile .
-
-    mise run build --nocache --runtime --platform amd64 --tag local
+    mise run build --runtime --nocache --tag local --platform amd64
     # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-local --no-cache --file=distros/debian/Dockerfile.runtime .
+    # ==> dots:debian-amd64-local
     ```
 
 2. Advanced
@@ -147,20 +158,24 @@ At the moment, the `start` task is only available for the `debian` distro.
     brew install container-structure-test
     ```
 
-2. Build the image for testing
+2. Build and running the Container Structure Tests
 
     ```sh
-    mise run build --nocache --platform amd64 --tag testing
-    ```
+        mise run build  # ==> dots:debian-arm64
+        mise run test
+        # ==> container-structure-test test --image dots:debian-arm64 --config distros/debian/container-structure-test.yml
 
-3. Run the Container Structure Tests
+        mise run build --tag stag  # ==> dots:debian-arm64-stag
+        mise run test --tag stag
+        # ==> container-structure-test test --image dots:debian-arm64-stag --config distros/debian/container-structure-test.yml
 
-    ```sh
-    # via mise
-    mise run test --platform amd64 --tag testing
+        mise run build --tag testing --platform amd64  # ==> dots:debian-amd64-testing
+        mise run test --tag testing --platform amd64
+        # ==> container-structure-test test --image dots:debian-amd64-testing --config distros/debian/container-structure-test.yml
 
-    # via container-structure-test
-    container-structure-test test --image dots:debian-amd64-testing --config distros/debian/container-structure-test.yml
+        mise run build --tag local --platform amd64  # ==> dots:debian-amd64-local
+        mise run test --image dots:debian-amd64-local --config distros/debian/container-structure-test.yml
+        # ==> container-structure-test test --image dots:debian-amd64-local --config distros/debian/container-structure-test.yml
     ```
 
 ## ACKNOWLEDGEMENTS

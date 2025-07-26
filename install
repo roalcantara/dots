@@ -582,20 +582,6 @@ step_zsh() {
 
   s "[ZSH] Setup completed ✔︎"
 }
-step_go() {
-  section "[GO] Setup started..."
-
-  if ! command -v go >/dev/null 2>&1; then
-    w "[GO] go is not installed! skipping..."
-    return
-  fi
-
-  # Configure the Go environment variables
-  # https://go.dev/doc/gopath_code
-  export_env_and_make_dir "GOPATH" "${GOPATH:-$XDG_DATA_HOME/go}" "GO"
-
-  s "[GO] Setup completed ✔︎"
-}
 step_nvim_setup_provider_npm() {
   section "[NVIM/NPM] Setting up NPM provider..."
   # https://neovim.io/doc/user/provider.html#provider-nodejs

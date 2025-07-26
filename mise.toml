@@ -168,49 +168,31 @@
   # Set defaults and parse options
   USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
   USAGE_DISTRO="{{option(name="distro", default="debian")}}"
-  USAGE_TAG="{{option(name="tag", default="dev")}}"
-  USAGE_USER="{{option(name="user", default="vscode")}}"
-  USAGE_WORKDIR="{{option(name="workdir", default="/workspaces/dots")}}"
+  USAGE_TAG="{{option(name="tag")}}"
+  USAGE_IMAGE="{{option(name="image")}}"
+  USAGE_CONFIG="{{option(name="config")}}"
 
-  # Platform mapping
-  case "$USAGE_PLATFORM" in
-    amd64)    PLATFORM_VALUE="linux/amd64" ;;
-    arm64)    PLATFORM_VALUE="linux/arm64" ;;
-    amd64v2)  PLATFORM_VALUE="linux/amd64/v2" ;;
-    riscv64)  PLATFORM_VALUE="linux/riscv64" ;;
-    ppc64le)  PLATFORM_VALUE="linux/ppc64le" ;;
-    s390x)    PLATFORM_VALUE="linux/s390x" ;;
-    386)      PLATFORM_VALUE="linux/386" ;;
-    *)        PLATFORM_VALUE="linux/arm64" ;;
-  esac
-
-  # Distro mapping
-  case "$USAGE_DISTRO" in
-    debian)   DISTRO_NAME="bookworm" ;;
-    *)        DISTRO_NAME="bookworm" ;;
-  esac
-
-  DOCKER_CMD=(
-    docker run -it --tty --rm
-    --user="$USAGE_USER"
-    --workdir="$USAGE_WORKDIR"
+  CST_CMD=(
+    container-structure-test test
   )
 
-  if [ "{{flag(name="base")}}" = "true" ]; then
-    DOCKER_CMD+=(mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_NAME)
+  if [ -z "$USAGE_IMAGE" ]; then
+    USAGE_IMAGE="dots:$USAGE_DISTRO-$USAGE_PLATFORM"
+    if [ -n "$USAGE_TAG" ]; then
+      USAGE_IMAGE="$USAGE_IMAGE-$USAGE_TAG"
+    fi
+  fi
+  CST_CMD+=(--image "$USAGE_IMAGE")
+
+  if [ -n "$USAGE_CONFIG" ]; then
+    CST_CMD+=(--config "$USAGE_CONFIG")
   else
-    DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_PLATFORM-$USAGE_TAG)
+    CST_CMD+=(--config "distros/$USAGE_DISTRO/container-structure-test.yml")
   fi
 
-  echo "  ==> ${DOCKER_CMD[*]}"
-  eval "${DOCKER_CMD[*]}"
-
-  # Set defaults and parse options
-  USAGE_IMAGE="{{option(name="image", default="dots:debian-arm64-dev")}}"
-  USAGE_CONFIG="{{option(name="config", default="distros/debian/container-structure-test.yml")}}"
-
   # Run container-structure-test
-  container-structure-test test --image "$USAGE_IMAGE" --config "$USAGE_CONFIG"
+  echo "  ==> ${CST_CMD[*]}"
+  eval "${CST_CMD[*]}"
   '''
 
 # Settings
