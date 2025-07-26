@@ -8,6 +8,7 @@ return {
   -- https://lazyvim.org/plugins/treesitter#nvim-treesitter
   {
     'nvim-treesitter/nvim-treesitter',
+    ft = { 'toml' },
     init = function()
       -- Mise + Neovim Cookbook | Code highlight for run commands
       -- Ensure to only apply the highlighting on mise files instead of all toml files
@@ -33,7 +34,6 @@ return {
       opts.indent = { enable = true }
       opts.ignore_install = { 'latex' }
       vim.list_extend(opts.ensure_installed, {
-        'css',
         'dockerfile',
         'git_config',
         'git_rebase',
@@ -42,14 +42,9 @@ return {
         'gitignore',
         'ini',
         'make',
-        'norg',
         'ruby',
-        'scss',
-        'svelte',
         'tsx',
         'typescript',
-        'typst',
-        'vue',
       })
       return opts
     end,
@@ -560,18 +555,6 @@ return {
         end,
       })
 
-      table.insert(opts.sections.lualine_x, {
-        function()
-          return '󱉶'
-        end,
-        fmt = function()
-          return table.concat(require("lint").get_running(), ", ")
-        end,
-        cond = function()
-          return #require("lint").get_running() > 0
-        end,
-      })
-
       return vim.tbl_deep_extend('force', opts or {}, {
         options = {
           section_separators = { left = '', right = '' },
@@ -596,6 +579,7 @@ return {
   {
     'isak102/ghostty.nvim',
     lazy = true,
+    ft = { 'ghostty' },
     cond = require('core/vi/fn/paths').is_executable('ghostty'),
     opts = {
       -- The autocmd pattern matched against the filename of the buffer. If this pattern

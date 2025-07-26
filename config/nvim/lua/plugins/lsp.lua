@@ -16,16 +16,9 @@ return {
     opts = {
       ensure_installed = {
         "beautysh",
-        "delve",
-        "flake8",
-        "gofumpt",
-        "goimports",
-        "gomodifytags",
-        "impl",
         "selene",
         "shellcheck",
         "shfmt",
-        "sql-formatter",
         "stylua",
         "yamlfix",
         "yamlfmt",
@@ -43,29 +36,17 @@ return {
       -- Enable all configured LSP servers using nvim-lspconfig configurations
       -- These configurations are provided by nvim-lspconfig in its lsp/ directory
       vim.lsp.enable({
-        'ast_grep',
         'bashls',
-        'biome',
         'copilot',
-        'cssls',
         'diagnosticls',
         'docker_compose_language_service',
         'dockerls',
-        'eslint',
-        'gopls',
-        'html',
         'jsonls',
-        'kotlin_language_server',
         'lua_ls',
         'marksman',
-        'neocmake',
-        'pyright',
-        'rubocop',
         'ruby_lsp',
         'taplo',
-        'ruff',
         'vimls',
-        'vtsls',
         'yamlls',
       })
 

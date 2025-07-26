@@ -32,7 +32,8 @@ declare -g ENV
 declare -g -A PACKAGES=(
   # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
   [debian]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint"
-  [mise]="ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node python pre-commit go"
+  [mise]="ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node python pre-commit"
+  [mason]="ast-grep bash-language-server css-lsp diagnostic-languageserver docker-compose-language-service dockerfile-language-server eslint-lsp html-lsp json-lsp lua-language-server marksman neocmakelsp prettier pyright ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server"
 )
 
 puts() {
@@ -142,8 +143,10 @@ export_env_and_make_dir() {
   export_env_var "$env_var_name" "$default_path" "$section_name" "${@:4}"
 }
 setup_platform() {
-  section "[ENV/DETECT] Detecting platform..."
+  section "[ENV/DETECT] Detecting platform and package managers..."
+
   OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+
   if [ -f "/etc/os-release" ]; then
     DISTRO=$(. /etc/os-release && echo "$ID" | head -1 | tr '[:upper:]' '[:lower:]')
   elif [ -f "/etc/arch-release" ]; then
@@ -153,18 +156,20 @@ setup_platform() {
   else
     DISTRO="unknown"
   fi
-  echo "DISTRO: '$DISTRO'"
+
   UNAMED_ARCH="$(uname -m)"
   if [ "$UNAMED_ARCH" = "aarch64" ] || [ "$UNAMED_ARCH" = "arm64" ]; then
     ARCH="arm64"
   else
     ARCH="amd64"
   fi
+
   if is_container; then
     ENV="container"
   else
     ENV="host"
   fi
+
   CONTEXT="$OS/$ARCH/$ENV"
   s "Detected platform: '$CONTEXT' ✔︎"
 }
@@ -319,12 +324,6 @@ step_setup_environment() {
 step_prepare() {
   section "[PREP/$DISTRO] Setting up essential dependencies"
 
-  w "[$DISTRO] All packages: '${PACKAGES[*]}'"
-  w "[$DISTRO] Mise packages: '${PACKAGES[mise]}'"
-  w "[$DISTRO] Debian packages: '${PACKAGES[debian]}'"
-  w "[$DISTRO] Installing essential packages: '${PACKAGES[$DISTRO]}'"
-
-  # Detect platform and setup accordingly
   if has_command apt; then
     exec_cmd apt-get update && apt-get install -y --no-install-recommends ${PACKAGES[$DISTRO]} &&
       sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
@@ -520,7 +519,7 @@ step_mise() {
   exec_cmd mise settings add trusted_config_paths "$XDG_DATA_HOME/dots"
   exec_cmd mise settings set activate_aggressive true
   exec_cmd mise settings set auto_install true
-  i "[MISE] Global configuration set to '$XDG_DATA_HOME/mise/config.toml' (owned by '$USERNAME') ���������������������������������������︎"
+  i "[MISE] Global configuration set to '$XDG_DATA_HOME/mise/config.toml' (owned by '$USERNAME') ✔"
 
   # Install global packages
   exec_cmd mise use --cd "$DOTS_DIR" --yes --global --pin ${PACKAGES[mise]}
@@ -614,7 +613,7 @@ step_nvim_setup_provider_npm() {
   i "[NVIM/NPM] NPM_CONFIG_USERCONFIG set to '$NPM_CONFIG_USERCONFIG' (owned by '$USERNAME') ✔︎"
 
   # Install neovim's required NPM packages
-  exec_cmd npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim @mermaid-js/mermaid-cli
+  exec_cmd npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim && npm cache clean --force
   i "[NVIM/NPM] Required NPM packages installed at '$NPM_CONFIG_PREFIX' (owned by '$USERNAME') ✔︎"
 }
 step_nvim_setup_provider_python() {
@@ -651,7 +650,7 @@ step_nvim_setup_provider_ruby() {
   exec_cmd gem update --system --no-document
 
   # Install neovim's required Ruby packages
-  exec_cmd gem install neovim rubocop
+  exec_cmd gem install neovim rubocop && gem cache clean --force && gem cleanup
   i "[NVIM/RUBY] Required GEM packages installed at '$GEM_HOME' (owned by '$USERNAME') ✔︎"
 }
 step_nvim() {
@@ -684,7 +683,7 @@ step_nvim() {
       +Lazy! clear \
       +TSUpdateSync \
       -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' \
-      -c 'MasonInstall ast-grep bash-language-server css-lsp diagnostic-languageserver docker-compose-language-service dockerfile-language-server eslint-lsp html-lsp json-lsp lua-language-server marksman neocmakelsp prettier pyright ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server' +qa
+      -c 'MasonInstall bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksmanruby-lsp shfmt stylua taplo vim-language-server yaml-language-server' +qa
 
   s "[NVIM] Setup completed ✔︎"
 }
@@ -698,7 +697,6 @@ main() {
   step_xdg
   step_mise
   step_zsh
-  step_go
   step_nvim
   step_chown
   s "[INSTALL] DONE ✔✔"
