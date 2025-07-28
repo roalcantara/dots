@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env
+.venv
+*.md
+*.log
+node_modules
+tmp
+.DS_Store
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
