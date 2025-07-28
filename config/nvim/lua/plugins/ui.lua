@@ -480,7 +480,7 @@ return {
         -- Hide written messages
         -- https://github.com/folke/noice.nvim?tab=readme-ov-file#-routes
         -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#hide-written-messages-1
-        routes = vim.tbl_deep_extend('force', opts.routes or {}, {
+        routes = {
           {
             filter = {
               event = 'notify',
@@ -488,7 +488,7 @@ return {
             },
             opts = { skip = true },
           },
-        }),
+        },
       })
     end,
   },

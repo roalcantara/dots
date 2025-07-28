@@ -9,6 +9,7 @@ return {
 
   {
     'mg979/vim-visual-multi',
+    lazy = true,
     event = 'VeryLazy',
     init = function()
       -- Disable the default keymaps

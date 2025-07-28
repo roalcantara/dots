@@ -31,32 +31,32 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = 'VeryLazy',
-    config = function()
-      -- Enable all configured LSP servers using nvim-lspconfig configurations
-      -- These configurations are provided by nvim-lspconfig in its lsp/ directory
-      vim.lsp.enable({
-        'bashls',
-        'copilot',
-        'diagnosticls',
-        'docker_compose_language_service',
-        'dockerls',
-        'jsonls',
-        'lua_ls',
-        'marksman',
-        'ruby_lsp',
-        'taplo',
-        'vimls',
-        'yamlls',
-      })
-
-      -- Configure diagnostic display
-      vim.diagnostic.config({
-        virtual_text = { current_line = true },
-        virtual_lines = true,
-        underline = true,
-        signs = true,
-      })
-    end,
+    opts = {
+      --     -- you can do any additional lsp server setup here
+      --     -- return true if you don't want this server to be setup with lspconfig
+      --     ---@type table<string, fun(server, opts):boolean?>
+      setup = {
+        --       -- example to setup with typescript.nvim
+        --       -- tsserver = function(_, opts)
+        --       --   require("typescript").setup({ server = opts })
+        --       --   return true
+        --       -- end,
+        --       -- Specify * to use this function as a fallback for any server
+        ["*"] = function(server, opts)
+          --- Remove LSP keymaps
+          -- vim.api.nvim_create_autocmd({ 'LspAttach' }, {
+          --   callback = function(ev)
+          --     if ev.file:match('%.vim$') then
+          --       pcall(vim.keymap.del, 'n', 'K', { buffer = ev.buf })
+          --     end
+          --   end,
+          -- })
+          vim.schedule(function()
+            require("core/vi/ui/lsp").setup_capabilities(server, opts)
+          end)
+        end,
+      },
+    },
   },
 
   -- Otter.nvim provides LSP features and a code completion source for code embedded in other documents

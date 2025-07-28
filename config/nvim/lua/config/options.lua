@@ -44,20 +44,20 @@ local options = {
 -- When running without a GUI
 if #vim.api.nvim_list_uis() == 0 then
   options.g = {
-    shortmess = "",   -- try to prevent echom from cutting messages off or prompting
-    more = false,     -- don't pause listing when screen is filled
+    shortmess = '', -- try to prevent echom from cutting messages off or prompting
+    more = false, -- don't pause listing when screen is filled
     cmdheight = 9999, -- helps avoiding |hit-enter| prompts.
-    columns = 9999,   -- set the widest screen possible
+    columns = 9999, -- set the widest screen possible
     swapfile = false, -- don't use a swap file
   }
 else
   options.g = {
-    have_nerd_fonts = true,                    -- [go] Whether the system has Nerd Fonts installed
-    loaded_perl_provider = 0,                  -- disable perl provider
-    cmdwinheight = 7,                          -- [go] Number of lines to use for the command-line window
-    suffixes = ".bak,~,.o,.h,.info,.swp,.obj", -- [go] List of file suffixes to add to the 'wildignore' list
+    have_nerd_fonts = true, -- [go] Whether the system has Nerd Fonts installed
+    loaded_perl_provider = 0, -- disable perl provider
+    cmdwinheight = 7, -- [go] Number of lines to use for the command-line window
+    suffixes = '.bak,~,.o,.h,.info,.swp,.obj', -- [go] List of file suffixes to add to the 'wildignore' list
     python3_host_prog = require('core/vi/fn/paths').bin_for_python3_venv(),
-    lazyvim_picker = "snacks",                 -- [go] Picker for LazyVim (https://lazyvim.org/extras/editor/snacks_picker)
+    lazyvim_picker = 'snacks', -- [go] Picker for LazyVim (https://lazyvim.org/extras/editor/snacks_picker)
 
     -- Set to `false` to prevent "non-lsp snippets"" from appearing inside completion windows
     -- Motivation: Less clutter in completion windows and a more direct usage of snippits
@@ -74,9 +74,9 @@ else
     rubycomplete_rails = 1,
 
     -- LazyVim Configuration to disable default keymaps
-    lazyvim_keys = false,           -- [go] Disable LazyVim's default keymaps
-    lazyvim_leader = false,         -- [go] Disable LazyVim's leader key setup
-    lazyvim_which_key = false,      -- [go] Disable LazyVim's which-key integration
+    lazyvim_keys = false, -- [go] Disable LazyVim's default keymaps
+    lazyvim_leader = false, -- [go] Disable LazyVim's leader key setup
+    lazyvim_which_key = false, -- [go] Disable LazyVim's which-key integration
     lazyvim_picker_keymaps = false, -- [go] Disable LazyVim's picker keymaps
 
     -- LSP Hover Configuration
@@ -84,119 +84,119 @@ else
   }
   options.o = {
     -- Performance optimizations
-    lazyredraw = false,           -- Don't redraw while executing macros
-    ttyfast = true,               -- Faster terminal connection
-    updatetime = 100,             -- Faster response for CursorHold events
-    timeoutlen = 300,             -- Faster key sequence timeout
-    ttimeoutlen = 10,             -- Faster key code timeout
+    lazyredraw = false, -- Don't redraw while executing macros
+    ttyfast = true, -- Faster terminal connection
+    updatetime = 100, -- Faster response for CursorHold events
+    timeoutlen = 300, -- Faster key sequence timeout
+    ttimeoutlen = 10, -- Faster key code timeout
 
     -- Search and Completion
-    incsearch = true,             -- [go] Highlight match while typing search pattern
-    hlsearch = true,              -- When there is a previous search pattern, highlight all its matches
+    incsearch = true, -- [go] Highlight match while typing search pattern
+    hlsearch = true, -- When there is a previous search pattern, highlight all its matches
 
     -- Folds
-    foldenable = true,            -- Enable folds by default
-    foldcolumn = "1",             -- '0' is not bad
-    foldlevelstart = 99,          -- Start unfolded
+    foldenable = true, -- Enable folds by default
+    foldcolumn = '1', -- '0' is not bad
+    foldlevelstart = 99, -- Start unfolded
 
     -- Editor UI
-    background = "dark",          -- [bo] Set background
-    showcmdloc = "statusline",    -- Show cmd in the statusline (https://github.com/nvim-lualine/lualine.nvim/issues/949)
-    cmdheight = 0,                -- [go, t] Number of screen lines to use for the command-line. Helps avoiding hit-enter prompts.
-    showtabline = 0,              -- [go] Tells when the tab pages line is displayed => 0: never, 2: always, 1: only if there are at least two tab pages
+    background = 'dark', -- [bo] Set background
+    showcmdloc = 'statusline', -- Show cmd in the statusline (https://github.com/nvim-lualine/lualine.nvim/issues/949)
+    cmdheight = 0, -- [go, t] Number of screen lines to use for the command-line. Helps avoiding hit-enter prompts.
+    showtabline = 0, -- [go] Tells when the tab pages line is displayed => 0: never, 2: always, 1: only if there are at least two tab pages
 
     -- Line Display
-    numberwidth = 3,              -- [wo] minimal number of columns to use for the line number {default 4}
-    colorcolumn = "+1",           -- [wo] colour the 81st (or 73rd) column so that we don`t type over our limit
+    numberwidth = 3, -- [wo] minimal number of columns to use for the line number {default 4}
+    colorcolumn = '+1', -- [wo] colour the 81st (or 73rd) column so that we don`t type over our limit
 
     -- Text Editing
-    textwidth = 72,               -- [bo] Maximum width of text that is being inserted
-    autoindent = true,            -- [bo] Copy indent from current line when starting a new line
-    smarttab = true,              -- [go] Use 'shiftwidth' when inserting <Tab>
-    softtabstop = 2,              -- [bo] uses 'shiftwidth' counts for while performing editing operations
-    preserveindent = true,        -- [bo] Preserve the indent structure of the file
+    textwidth = 72, -- [bo] Maximum width of text that is being inserted
+    autoindent = true, -- [bo] Copy indent from current line when starting a new line
+    smarttab = true, -- [go] Use 'shiftwidth' when inserting <Tab>
+    softtabstop = 2, -- [bo] uses 'shiftwidth' counts for while performing editing operations
+    preserveindent = true, -- [bo] Preserve the indent structure of the file
 
     -- Menus
-    wildignorecase = true,        -- [go] ignored when completing file names and directories
-    wildmenu = true,              -- command-line completion operates in an enhanced modes
-    pumheight = 25,               -- [bo] Maximum number of entries in a popup
+    wildignorecase = true, -- [go] ignored when completing file names and directories
+    wildmenu = true, -- command-line completion operates in an enhanced modes
+    pumheight = 25, -- [bo] Maximum number of entries in a popup
 
     -- File Handling
-    encoding = "utf-8",           -- [bo] The encoding used inside the buffer
-    modeline = true,              -- [go] Enable modeline
+    encoding = 'utf-8', -- [bo] The encoding used inside the buffer
+    modeline = true, -- [go] Enable modeline
 
     -- Mouse | https://neovim.io/doc/user/options.html#'mousem'
     -- mousemodel = "extend", -- Enables all mouse features including: 1. Right click opens a menu, 2. Shift + left click extends selection, 3. Right drag extends selection
   }
   options.opt = {
-    pumheight = 25,        -- [bo] Maximum number of entries in a popup
-    winborder = "rounded", -- [go] Border style for floating windows and popup menus
-    wildignore = {         -- [go] Allow specified keys to cross line boundaries
-      "._*",
-      ".lock",
-      ".sass-cache",
-      "*.*~",
-      "*.aux",
-      "*.avi",
-      "*.class",
-      "*.dll",
-      "*.doc",
-      "*.DS_Stoe",
-      "*.eot",
-      "*.gem",
-      "*.gif",
-      "*.hg",
-      "*.ico",
-      "*.jar",
-      "*.jpeg",
-      "*.jpg",
-      "*.o",
-      "*.obj",
-      "*.otf",
-      "*.out",
-      "*.pdf",
-      "*.png",
-      "*.pyc",
-      "*.rar",
-      "*.rbc",
-      "*.svn",
-      "*.swp",
-      "*.tar.bz2",
-      "*.tar.gz",
-      "*.tar.xz",
-      "*.toc",
-      "*.ttf",
-      "*.wav",
-      "*.webm",
-      "*.woff",
-      "**/bower_modules/**",
-      "**/node_modules/**",
-      "*/.bundle/*",
-      "*/vendor/cache/*",
-      "*/vendor/gems/*",
-      "*~ ",
-      "tags.lock",
+    pumheight = 25, -- [bo] Maximum number of entries in a popup
+    winborder = 'rounded', -- [go] Border style for floating windows and popup menus
+    wildignore = { -- [go] Allow specified keys to cross line boundaries
+      '._*',
+      '.lock',
+      '.sass-cache',
+      '*.*~',
+      '*.aux',
+      '*.avi',
+      '*.class',
+      '*.dll',
+      '*.doc',
+      '*.DS_Stoe',
+      '*.eot',
+      '*.gem',
+      '*.gif',
+      '*.hg',
+      '*.ico',
+      '*.jar',
+      '*.jpeg',
+      '*.jpg',
+      '*.o',
+      '*.obj',
+      '*.otf',
+      '*.out',
+      '*.pdf',
+      '*.png',
+      '*.pyc',
+      '*.rar',
+      '*.rbc',
+      '*.svn',
+      '*.swp',
+      '*.tar.bz2',
+      '*.tar.gz',
+      '*.tar.xz',
+      '*.toc',
+      '*.ttf',
+      '*.wav',
+      '*.webm',
+      '*.woff',
+      '**/bower_modules/**',
+      '**/node_modules/**',
+      '*/.bundle/*',
+      '*/vendor/cache/*',
+      '*/vendor/gems/*',
+      '*~ ',
+      'tags.lock',
     },
     listchars = { -- [go] Characters used to show whitespace characters in the buffer
-      tab = "▸ ", -- Tab character
-      trail = "·", -- Trailing spaces
-      extends = "›", -- Character used to indicate that there is more text to the right
-      precedes = "‹", -- Character used to indicate that there is more text to the left
-      nbsp = "␣", -- Non-breaking space character
-    }
+      tab = '▸ ', -- Tab character
+      trail = '·', -- Trailing spaces
+      extends = '›', -- Character used to indicate that there is more text to the right
+      precedes = '‹', -- Character used to indicate that there is more text to the left
+      nbsp = '␣', -- Non-breaking space character
+    },
   }
   options.go = {
-    emoji = true,                  -- [go] When on all Unicode emoji characters are considered to be full width
-    equalalways = false,           -- [go] Windows are automatically made the same size
-    switchbuf = "useopen,uselast", -- [go] Sets behavior when switching to another buffer
-    whichwrap = "h,l,<,>,[,],~",   -- [go] Allow specified keys to cross line boundaries
-    wildignorecase = true,         -- [go] Ignore case when completing file names
-    wrapscan = true,               -- [go] Searches wrap around the end of the file
+    emoji = true, -- [go] When on all Unicode emoji characters are considered to be full width
+    equalalways = false, -- [go] Windows are automatically made the same size
+    switchbuf = 'useopen,uselast', -- [go] Sets behavior when switching to another buffer
+    whichwrap = 'h,l,<,>,[,],~', -- [go] Allow specified keys to cross line boundaries
+    wildignorecase = true, -- [go] Ignore case when completing file names
+    wrapscan = true, -- [go] Searches wrap around the end of the file
   }
 
   local function setup_clipboard()
     local clipboard_tools = {
-      pbcopy = "pbcopy, pbpaste (macOS)",
+      pbcopy = 'pbcopy, pbpaste (macOS)',
       -- ["wl-copy"]   = "unnamedplus",-- "wl-copy, wl-paste (if $WAYLAND_DISPLAY is set)",
       -- wayclip       = "unnamedplus",-- "waycopy, waypaste (if $WAYLAND_DISPLAY is set)",
       -- xsel          = "unnamedplus",-- "xsel (if $DISPLAY is set)",
@@ -225,28 +225,19 @@ else
     end
 
     local clipboard_tool = has_clipboard_tool()
-    if is_remote_env() or type(clipboard_tool) == "nil" then
+    if is_remote_env() or type(clipboard_tool) == 'nil' then
       vim.g.clipboard = 'osc52'
       vim.schedule(function()
         Snacks.notify.warn("Setting `vim.g.clipboard = 'osc52'`", {
-          title = "No clipboard tool found!",
-          style = "fancy",
-          icon = "❌",
+          title = 'No clipboard tool found!',
+          style = 'fancy',
+          icon = '❌',
           keep = false,
           timeout = 4000,
         })
       end)
     else
-      vim.opt.clipboard = "unnamedplus"
-      vim.schedule(function()
-        Snacks.notify.info("Setting **vim.opt.clipboard** = `unnamedplus`", {
-          title = "Clipboard tool '" .. clipboard_tool .. "' found!",
-          style = "fancy",
-          icon = "✅",
-          keep = false,
-          timeout = 1000,
-        })
-      end)
+      vim.opt.clipboard = 'unnamedplus'
     end
   end
 
@@ -257,14 +248,14 @@ end
 for ctx, values in pairs(options) do
   for option, value in pairs(values) do
     if value then
-      if type(value) == "function" then
+      if type(value) == 'function' then
         value(vim[ctx][option])
       else
         local ok, err = pcall(function()
           vim[ctx][option] = value
         end)
         if not ok then
-          vim.notify("Failed to set option '" .. ctx .. "." .. option .. "': " .. tostring(err), vim.log.levels.ERROR)
+          vim.notify("Failed to set option '" .. ctx .. '.' .. option .. "': " .. tostring(err), vim.log.levels.ERROR)
         end
       end
     end

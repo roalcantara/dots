@@ -33,7 +33,7 @@ declare -g -A PACKAGES=(
   # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
   [debian]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint"
   [mise]="ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node python pre-commit"
-  [mason]="ast-grep bash-language-server css-lsp diagnostic-languageserver docker-compose-language-service dockerfile-language-server eslint-lsp html-lsp json-lsp lua-language-server marksman neocmakelsp prettier pyright ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server"
+  [mason]="bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksman ruby-lsp shfmt stylua taplo vim-language-server yaml-language-server"
 )
 
 puts() {
@@ -729,12 +729,7 @@ step_nvim() {
   wait
 
   # Install nvim plugins
-  exec_cmd cd "$XDG_CONFIG_HOME/nvim"
-  exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless +Lazy! sync +Lazy! clear
-
-  exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless +TSUpdateSync &
-  exec_cmd "$MISE_DATA_HOME/shims/nvim" --headless -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' -c 'MasonInstall bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksman ruby-lsp shfmt stylua taplo vim-language-server yaml-language-server' +qa &
-  wait
+  exec_cmd cd "$XDG_CONFIG_HOME/nvim" && "$MISE_DATA_HOME/shims/nvim" --headless +Lazy! sync +TSUpdateSync -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' -c "MasonInstall ${PACKAGES[mason]}" +qa
 
   s "[NVIM] Setup completed ✔︎"
 }

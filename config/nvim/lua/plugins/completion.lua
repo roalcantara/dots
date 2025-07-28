@@ -1,6 +1,7 @@
 return {
   {
     "saghen/blink.cmp",
+    lazy = true,
     event = 'VeryLazy',
     dependencies = {
       -- LAZYDEV - Configure Lua LSP Neovim config for runtime, plugins, completions, annotations, signatures and apis

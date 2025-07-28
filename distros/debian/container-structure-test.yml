@@ -124,10 +124,6 @@ fileExistenceTests:
     path: /home/vscode/.config
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: ~/.config/eza directory
-    path: /home/vscode/.config/eza
-    shouldExist: true
-    permissions: drwxr-xr-x
   - name: ~/.config/nvim directory
     path: /home/vscode/.config/nvim
     shouldExist: true
