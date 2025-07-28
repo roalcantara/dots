@@ -96,7 +96,6 @@ export_env_var() {
 
   if [ "${force[*]}" == "--force" ] || [ -z "${!env_var_name:-}" ]; then
     exec_cmd eval "export $env_var_name=\"$value\""
-    i "[$section_name] $env_var_name set to '$value' ${force[*]} ✔︎"
   fi
 }
 # Ensure ownership of a path
@@ -107,7 +106,6 @@ set_ownership() {
   local OWNER="${3:-"$USERNAME:$GROUPNAME"}"
 
   exec_cmd sudo chown -R "$OWNER" "$TARGET"
-  s "[$LABEL/CHOWN] '$TARGET' owned by '$OWNER' ✔︎"
 }
 # Ensure ownership of a path
 # Usage: setup_ownership <path> <section_name> (required_owner)
@@ -129,7 +127,6 @@ setup_dir() {
   # Create directory if it doesn't exist
   if [ ! -d "$path" ]; then
     exec_cmd sudo mkdir -p "$path"
-    i "[$section_name] '$path' created ✔︎"
   fi
 
   # Ensure ownership
@@ -454,10 +451,8 @@ step_dotfiles() {
       if [ "$current_target" != "$DOTS_DIR/config" ]; then
         if is_container; then
           exec_cmd sudo rm -rf "$config_symlink"
-          w "[DOTS] 🐳 Existent '$config_symlink' symlink has been removed ✔"
         else
           exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
-          d "[DOTS] Existing '$config_symlink' symlink backed up to '$BACKUP_DIR' ✔"
         fi
       fi
     else
@@ -481,10 +476,8 @@ step_dotfiles() {
     if [ "$current_target" != "$DOTS_DIR/config" ]; then
       if is_container; then
         exec_cmd sudo rm -rf "$config_symlink"
-        w "[DOTS] Existent '$config_symlink' symlink has been removed ✔"
       else
         exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
-        d "[DOTS] Existing '$config_symlink' symlink backed up to '$BACKUP_DIR' ✔"
       fi
     fi
   else
@@ -494,7 +487,6 @@ step_dotfiles() {
   i "[DOTS] Symlinking '$DOTS_DIR/config' to '$config_symlink'.."
   if [ ! -L "$config_symlink" ]; then
     exec_cmd sudo ln -sf "$DOTS_DIR/config" "$config_symlink"
-    i "[DOTS] Symlink created: '$config_symlink' -> '$DOTS_DIR/config' ✔"
   else
     w "[DOTS] No existent '$config_symlink' symlink to '$DOTS_DIR/config' found ✔"
   fi
@@ -543,7 +535,7 @@ step_mise() {
     for location in /tmp/github_token /run/secrets/github_token $HOME/.github_token $HOME/.secrets/github_token; do
       if [ -f "$location" ]; then
         export GITHUB_TOKEN="$(cat "$location")"
-        w "[MISE] GITHUB_TOKEN loaded from '$location' ✔︎"
+        w "[MISE] GITHUB_TOKEN loaded from '$location' ✔"
         break
       fi
     done
@@ -567,14 +559,11 @@ step_mise() {
     fi
 
     exec_cmd sudo chmod +x "$MISE_INSTALL_PATH"
-    i "[MISE] mise installed successfully system-wide at '$MISE_INSTALL_PATH' ✔︎"
   fi
 
   i "[MISE] Setting up global configuration..."
   export_env_and_make_dir "MISE_STATE_HOME" "$XDG_STATE_HOME/mise" "MISE"
   export_env_and_make_dir "MISE_GLOBAL_CONFIG_DIR" "$XDG_DATA_HOME/mise" "MISE"
-
-  # Setup global config file, attributes and trusted paths
   exec_cmd export MISE_GLOBAL_CONFIG_FILE="$XDG_DATA_HOME/mise/config.toml"
   exec_cmd mise settings set global_config_file "$XDG_DATA_HOME/mise/config.toml"
   exec_cmd mise settings add trusted_config_paths "$MISE_GLOBAL_CONFIG_DIR"
@@ -645,10 +634,8 @@ step_zsh() {
   s "[ZSH] Setup completed ✔︎"
 }
 step_nvim_setup_provider_npm() {
-  section "[NVIM/NPM] Setting up NPM provider..."
+  section "[NVIM/NPM] Setting up NPM provider ($NPM_CONFIG_PREFIX)..."
   # https://neovim.io/doc/user/provider.html#provider-nodejs
-
-  exec_cmd eval "$(mise activate zsh --yes --quiet --shims)"
 
   if ! command -v npm >/dev/null 2>&1; then
     w "[NVIM/NPM] npm is not installed! skipping..."
@@ -660,17 +647,11 @@ step_nvim_setup_provider_npm() {
   export_env_and_make_dir "NPM_CONFIG_PREFIX" "$NPM_CONFIG_PREFIX" "NVIM/NPM" --force
   export_env_and_make_dir "NPM_CONFIG_CACHE" "$NPM_CONFIG_CACHE" "NVIM/NPM" --force
   exec_cmd export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/.npmrc}"
-  i "[NVIM/NPM] NPM_CONFIG_USERCONFIG set to '$NPM_CONFIG_USERCONFIG' (owned by '$USERNAME') ✔︎"
-
-  # Install neovim's required NPM packages
   exec_cmd npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim && npm cache clean --force
-  i "[NVIM/NPM] Required NPM packages installed at '$NPM_CONFIG_PREFIX' (owned by '$USERNAME') ✔︎"
 }
 step_nvim_setup_provider_python() {
-  section "[NVIM/PYTHON] Setting up Python provider..."
+  section "[NVIM/PYTHON] Setting up Python provider ($XDG_CONFIG_HOME/nvim/.venv)..."
   # https://neovim.io/doc/user/provider.html#provider-python
-
-  exec_cmd eval "$(mise activate zsh --yes --quiet --shims)"
 
   if ! command -v python3 >/dev/null 2>&1; then
     w "[NVIM/PYTHON] python3 is not installed! skipping..."
@@ -687,10 +668,9 @@ step_nvim_setup_provider_python() {
 
   # Use uv to create a virtual environment
   exec_cmd cd "$XDG_CONFIG_HOME/nvim" && source "$XDG_CONFIG_HOME/nvim/.venv/bin/activate" && pip install greenlet pynvim neovim --force-reinstall
-  i "[NVIM/PYTHON] Required Python packages installed at '$XDG_CONFIG_HOME/nvim/.venv' (owned by '$USERNAME') ✔︎"
 }
 step_nvim_setup_provider_ruby() {
-  section "[NVIM/RUBY] Setting up Ruby provider..."
+  section "[NVIM/RUBY] Setting up Ruby provider (${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems})..."
   # https://neovim.io/doc/user/provider.html#provider-ruby
 
   if ! command -v gem >/dev/null 2>&1; then
@@ -706,8 +686,7 @@ step_nvim_setup_provider_ruby() {
   exec_cmd gem update --system --no-document
 
   # Install neovim's required Ruby packages
-  exec_cmd gem install neovim && gem cache clean --force && gem cleanup
-  i "[NVIM/RUBY] Required GEM packages installed at '$GEM_HOME' (owned by '$USERNAME') ✔︎"
+  exec_cmd gem install neovim && gem cleanup
 }
 step_nvim() {
   section "[NVIM] Setup started..."
@@ -718,6 +697,7 @@ step_nvim() {
     return
   fi
 
+  # Check if nvim config directory exists
   if [ ! -d "$XDG_CONFIG_HOME/nvim" ]; then
     w "[NVIM] nvim is not installed at '$XDG_CONFIG_HOME/nvim'! skipping..."
     return
@@ -728,10 +708,9 @@ step_nvim() {
   setup_dir "$XDG_DATA_HOME/nvim" "NVIM"
 
   # Setup nvim providers
-  step_nvim_setup_provider_npm &
-  step_nvim_setup_provider_python &
-  step_nvim_setup_provider_ruby &
-  wait
+  step_nvim_setup_provider_npm
+  step_nvim_setup_provider_python
+  step_nvim_setup_provider_ruby
 
   # Install nvim plugins
   exec_cmd cd "$XDG_CONFIG_HOME/nvim" && "$MISE_DATA_HOME/shims/nvim" --headless +Lazy! sync +TSUpdateSync -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' -c "MasonInstall ${PACKAGES[mason]}" +qa
