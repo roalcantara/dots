@@ -377,20 +377,20 @@ step_backup() {
   section "[BAK] Initializing.."
 
   if is_container; then
-    w "[BAK] 🐳 Removing files instead of backing up ✔"
+    w "[BAK] 🐳 Removing files instead of backing up ✔︎"
     for resource in $BACKUP_RESOURCES; do
       resource_path="$HOME/$resource"
       if [ -e "$resource_path" ]; then
         exec_cmd sudo rm -rf "$resource_path"
       fi
     done
-    s "[BAK] Completed @ '$USERNAME:$GROUPNAME' ✔"
+    s "[BAK] Completed @ '$USERNAME:$GROUPNAME' ✔︎"
   else
-    w "[BAK] Creating backup directory with current timestamp ✔"
+    w "[BAK] Creating backup directory with current timestamp ✔︎"
     BACKUP_DIR="$BACKUP_DIR_ROOT/$(date +%Y-%m-%d_%H-%M-%S)"
     exec_cmd sudo mkdir -p "$BACKUP_DIR"
     exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$BACKUP_DIR_ROOT"
-    i "[BAK] Backup folder created at '$BACKUP_DIR' ("$USERNAME:$GROUPNAME") ✔"
+    i "[BAK] Backup folder created at '$BACKUP_DIR' ("$USERNAME:$GROUPNAME") ✔︎"
 
     for resource in $BACKUP_RESOURCES; do
       resource_path="$HOME/$resource"
@@ -398,13 +398,13 @@ step_backup() {
         exec_cmd sudo mv "$resource_path" "$BACKUP_DIR/"
         if [[ "$XDG_COMMON_DIRS" == *"$resource"* ]]; then
           exec_cmd sudo install -d -o "$USERNAME" -g "$USERNAME" "$resource_path"
-          i "Recreated directory: $resource_path owned by $USERNAME:$USERNAME ✔"
+          i "Recreated directory: $resource_path owned by $USERNAME:$USERNAME ✔︎"
         fi
       else
         d "Resource does not exist, skipping: $resource_path"
       fi
     done
-    s "[BAK] Completed @ '$BACKUP_DIR@$USERNAME:$GROUPNAME' ✔"
+    s "[BAK] Completed @ '$BACKUP_DIR@$USERNAME:$GROUPNAME' ✔︎"
   fi
 }
 step_dotfiles() {
@@ -420,13 +420,13 @@ step_dotfiles() {
     if ! exec_cmd git -C "$DOTS_DIR" pull origin "$BRANCH"; then
       e "[DOTS] Failed to update repository"
     fi
-    i "[DOTS] '$REPO_URL' ($BRANCH) updated to '$DOTS_DIR' ✔"
+    i "[DOTS] '$REPO_URL' ($BRANCH) updated to '$DOTS_DIR' ✔︎"
   elif [ -d "$DOTS_DIR" ] && [ ! -d "$DOTS_DIR/config" ]; then
     i "[DOTS] '$DOTS_DIR/config' not found! Cloning from '$REPO_URL' ($BRANCH) into '$DOTS_DIR'..."
     if ! exec_cmd sudo git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$DOTS_DIR"; then
       e "[DOTS] Failed to clone repository"
     fi
-    i "[DOTS] '$REPO_URL' ($BRANCH) cloned to '$DOTS_DIR' ✔"
+    i "[DOTS] '$REPO_URL' ($BRANCH) cloned to '$DOTS_DIR' ✔︎"
   else
     w "[DOTS] '$DOTS_DIR/config' found! But not a git repository! Assuming to be already installed or will be handled separately.."
   fi
@@ -459,14 +459,14 @@ step_dotfiles() {
       i "[DOTS] '$config_symlink' is not a symlink!"
       if is_container; then
         exec_cmd sudo rm -rf "$config_symlink"
-        w "[DOTS] 🐳 Existent '$config_symlink' directory has been removed ✔"
+        w "[DOTS] 🐳 Existent '$config_symlink' directory has been removed ✔︎"
       else
         exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
-        d "[DOTS] Existing '$config_symlink' directory backed up to '$BACKUP_DIR' ✔"
+        d "[DOTS] Existing '$config_symlink' directory backed up to '$BACKUP_DIR' ✔︎"
       fi
     fi
   else
-    w "[DOTS] '$config_symlink' directory not found ✔"
+    w "[DOTS] '$config_symlink' directory not found ✔︎"
   fi
 
   i "[DOTS] Ensuring correct symlink for '$config_symlink' to '$DOTS_DIR/config'.."
@@ -481,14 +481,14 @@ step_dotfiles() {
       fi
     fi
   else
-    w "[DOTS] '$config_symlink' is not a symlink ✔"
+    w "[DOTS] '$config_symlink' is not a symlink ✔︎"
   fi
 
   i "[DOTS] Symlinking '$DOTS_DIR/config' to '$config_symlink'.."
   if [ ! -L "$config_symlink" ]; then
     exec_cmd sudo ln -sf "$DOTS_DIR/config" "$config_symlink"
   else
-    w "[DOTS] No existent '$config_symlink' symlink to '$DOTS_DIR/config' found ✔"
+    w "[DOTS] No existent '$config_symlink' symlink to '$DOTS_DIR/config' found ✔︎"
   fi
 
   # Ensure ownership of the symlink
@@ -499,7 +499,7 @@ step_dotfiles() {
     setup_ownership "$dir" "DOTS/SYMLINK"
   done
 
-  s "[DOTS] Setup completed ✔"
+  s "[DOTS] Setup completed ✔︎"
 }
 step_chown() {
   section "[CHOWN] Ensuring ownership of essential directories started..."
@@ -520,7 +520,7 @@ step_xdg() {
   if [ -x "$ZSH_XDG_SETUP_SCRIPT" ]; then
     section "[XDG] Setting up XDG/ZSH environment via '$ZSH_XDG_SETUP_SCRIPT'..."
     . "$ZSH_XDG_SETUP_SCRIPT" "$USERNAME" "$GROUPNAME"
-    s "[XDG] Setting up XDG/ZSH environment for '$USERNAME:$GROUPNAME' via '$ZSH_XDG_SETUP_SCRIPT' ✔"
+    s "[XDG] Setting up XDG/ZSH environment for '$USERNAME:$GROUPNAME' via '$ZSH_XDG_SETUP_SCRIPT' ✔︎"
   fi
 
   step_chown
@@ -535,7 +535,7 @@ step_mise() {
     for location in /tmp/github_token /run/secrets/github_token $HOME/.github_token $HOME/.secrets/github_token; do
       if [ -f "$location" ]; then
         export GITHUB_TOKEN="$(cat "$location")"
-        w "[MISE] GITHUB_TOKEN loaded from '$location' ✔"
+        w "[MISE] GITHUB_TOKEN loaded from '$location' ✔︎"
         break
       fi
     done
@@ -570,7 +570,7 @@ step_mise() {
   exec_cmd mise settings add trusted_config_paths "$XDG_DATA_HOME/dots"
   exec_cmd mise settings set activate_aggressive true
   exec_cmd mise settings set auto_install true
-  i "[MISE] Global configuration set to '$XDG_DATA_HOME/mise/config.toml' (owned by '$USERNAME') ✔"
+  i "[MISE] Global configuration set to '$XDG_DATA_HOME/mise/config.toml' (owned by '$USERNAME') ✔︎"
 
   # Install global packages
   exec_cmd mise use --cd "$DOTS_DIR" --yes --global --pin ${PACKAGES[mise]}
@@ -729,7 +729,7 @@ main() {
   step_zsh
   step_nvim
   step_chown
-  s "[INSTALL] DONE ✔✔"
+  s "[INSTALL] DONE ✔︎✔︎"
 }
 
 main "$@"
