@@ -423,13 +423,13 @@ step_dotfiles() {
     if ! exec_cmd git -C "$DOTS_DIR" pull origin "$BRANCH"; then
       e "[DOTS] Failed to update repository"
     fi
-    i "[DOTS] '$REPO_URL/$BRANCH' updated to '$DOTS_DIR' ✔"
+    i "[DOTS] '$REPO_URL' ($BRANCH) updated to '$DOTS_DIR' ✔"
   elif [ -d "$DOTS_DIR" ] && [ ! -d "$DOTS_DIR/config" ]; then
-    i "[DOTS] '$DOTS_DIR/config' not found! Cloning from '$REPO_URL/$BRANCH' into '$DOTS_DIR'..."
+    i "[DOTS] '$DOTS_DIR/config' not found! Cloning from '$REPO_URL' ($BRANCH) into '$DOTS_DIR'..."
     if ! exec_cmd sudo git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$DOTS_DIR"; then
       e "[DOTS] Failed to clone repository"
     fi
-    i "[DOTS] '$REPO_URL/$BRANCH' cloned to '$DOTS_DIR' ✔"
+    i "[DOTS] '$REPO_URL' ($BRANCH) cloned to '$DOTS_DIR' ✔"
   else
     w "[DOTS] '$DOTS_DIR/config' found! But not a git repository! Assuming to be already installed or will be handled separately.."
   fi
