@@ -658,16 +658,14 @@ step_nvim_setup_provider_python() {
     return
   fi
 
-  if [ ! -d "$XDG_CACHE_HOME/pip" ]; then
-    setup_dir "$XDG_CACHE_HOME/pip" "NVIM/PYTHON"
-  fi
+  setup_dir "$XDG_CACHE_HOME/pip" "NVIM/PYTHON"
 
   if [ ! -d "$XDG_CONFIG_HOME/nvim/.venv" ]; then
     exec_cmd cd "$XDG_CONFIG_HOME/nvim" && python3 -m venv "$XDG_CONFIG_HOME/nvim/.venv"
   fi
 
   # Use uv to create a virtual environment
-  exec_cmd cd "$XDG_CONFIG_HOME/nvim" && source "$XDG_CONFIG_HOME/nvim/.venv/bin/activate" && pip install greenlet pynvim neovim --force-reinstall
+  exec_cmd cd "$XDG_CONFIG_HOME/nvim" && source "$XDG_CONFIG_HOME/nvim/.venv/bin/activate" && pip install pynvim neovim
 }
 step_nvim_setup_provider_ruby() {
   section "[NVIM/RUBY] Setting up Ruby provider (${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems})..."
@@ -708,9 +706,9 @@ step_nvim() {
   setup_dir "$XDG_DATA_HOME/nvim" "NVIM"
 
   # Setup nvim providers
-  step_nvim_setup_provider_npm &
-  step_nvim_setup_provider_python &
-  step_nvim_setup_provider_ruby &
+  step_nvim_setup_provider_npm >&2 &
+  step_nvim_setup_provider_python >&2 &
+  step_nvim_setup_provider_ruby >&2 &
   wait
 
   # Install nvim plugins
