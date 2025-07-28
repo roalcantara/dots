@@ -79,8 +79,13 @@ jobs:
           push: false
           load: true
           tags: ${{ env.IMG_NAME }}:${{ matrix.distro }}-amd64-pr-${{ github.event.pull_request.number }}
-          cache-from: type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}
-          cache-to: type=inline
+          cache-from: |
+            type=gha,scope=build-${{ matrix.distro }}
+            type=gha,scope=build-${{ matrix.distro }}-${{ github.head_ref || github.ref_name }}
+            type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}
+            type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}-${{ github.head_ref || github.ref_name }}
+            type=registry,ref=${{ env.IMG_NAME }}:cache-base
+          cache-to: type=gha,scope=build-${{ matrix.distro }},mode=max
           outputs: type=docker
 
       - name: Inspect image
@@ -164,8 +169,13 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
-          cache-from: type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}
-          cache-to: type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }},mode=max
+          cache-from: |
+            type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}
+            type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}-${{ github.head_ref || github.ref_name }}
+            type=gha,scope=build-${{ matrix.distro }}
+          cache-to: |
+            type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }},mode=max
+            type=gha,scope=build-${{ matrix.distro }},mode=max
           provenance: true
           sbom: true
           push: true
