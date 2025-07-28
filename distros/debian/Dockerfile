@@ -46,7 +46,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN --mount=type=secret,id=github_token,target=/tmp/github_token,required=false \
     --mount=type=cache,target=$HOME/.cache,uid=1000,gid=1000 \
     echo "[INFO] Using remote dotfiles installation..." && \
-    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install?$(date +%s)" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ"
+    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install?$(date +%s)" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -b "$BRANCH"
 
 USER $USERNAME
 WORKDIR $HOME

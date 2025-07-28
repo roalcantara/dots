@@ -75,6 +75,7 @@ jobs:
           platforms: linux/amd64
           context: .
           target: remote
+          build-args: BRANCH=${{ github.head_ref || github.ref_name }}
           file: distros/${{ matrix.distro }}/Dockerfile
           push: false
           load: true
@@ -174,6 +175,7 @@ jobs:
         with:
           context: .
           target: remote
+          build-args: BRANCH=${{ github.head_ref || github.ref_name }}
           file: distros/${{ matrix.distro }}/Dockerfile
           platforms: linux/arm64,linux/amd64
           tags: ${{ steps.meta.outputs.tags }}

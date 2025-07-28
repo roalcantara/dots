@@ -21,6 +21,7 @@ declare -g GROUPNAME="wheel"
 declare -g USERHOME="/home/$USERNAME"
 declare -g TIMEZONE="America/Sao_Paulo"
 declare -g REPO_URL="https://github.com/roalcantara/dots"
+declare -g BRANCH="main"
 declare -g LOCALGROUP=$(id -gn 2>/dev/null)
 declare -g LOCALUSER=$(id -un 2>/dev/null)
 declare -g USR_LOCAL_BIN="/usr/local/bin"
@@ -195,8 +196,12 @@ setup_arguments() {
   section "[ENV/ARGS] Extracting arguments..."
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -r | --repo_url)
+    -r | --repo)
       REPO_URL="$2"
+      shift 2
+      ;;
+    -b | --branch)
+      BRANCH="$2"
       shift 2
       ;;
     -t | --timezone)
@@ -318,6 +323,7 @@ step_setup_environment() {
   i "HOME = \"$HOME\""
   i "CONTEXT = \"$CONTEXT\""
   i "REPO_URL = \"$REPO_URL\""
+  i "BRANCH = \"$BRANCH\""
   i "TIMEZONE = \"$TIMEZONE\""
   i "LOCALGROUP = \"$LOCALGROUP\""
   i "LOCALUSER = \"$LOCALUSER\""
@@ -413,18 +419,17 @@ step_dotfiles() {
 
   # Clone or update repository
   if [ -d "$DOTS_DIR/.git" ]; then
-    i "[DOTS] Git repository already exists at '$DOTS_DIR'. Pulling latest changes..."
-    if ! exec_cmd git -C "$DOTS_DIR" pull origin main; then
+    i "[DOTS] Git repository already exists at '$DOTS_DIR'. Pulling latest changes from '$BRANCH'..."
+    if ! exec_cmd git -C "$DOTS_DIR" pull origin "$BRANCH"; then
       e "[DOTS] Failed to update repository"
     fi
+    i "[DOTS] '$REPO_URL/$BRANCH' updated to '$DOTS_DIR' ✔"
   elif [ -d "$DOTS_DIR" ] && [ ! -d "$DOTS_DIR/config" ]; then
-    i "[DOTS] '$DOTS_DIR/config' not found! Cloning from $REPO_URL into '$DOTS_DIR'..."
-    if ! exec_cmd sudo git clone --depth 1 "$REPO_URL" "$DOTS_DIR"; then
+    i "[DOTS] '$DOTS_DIR/config' not found! Cloning from '$REPO_URL/$BRANCH' into '$DOTS_DIR'..."
+    if ! exec_cmd sudo git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$DOTS_DIR"; then
       e "[DOTS] Failed to clone repository"
     fi
-    i "[DOTS] Dotfiles downloaded to '$DOTS_DIR' ✔"
-    exec_cmd ls -la "$DOTS_DIR"
-    exec_cmd ls -la "$DOTS_DIR/config"
+    i "[DOTS] '$REPO_URL/$BRANCH' cloned to '$DOTS_DIR' ✔"
   else
     w "[DOTS] '$DOTS_DIR/config' found! But not a git repository! Assuming to be already installed or will be handled separately.."
   fi
