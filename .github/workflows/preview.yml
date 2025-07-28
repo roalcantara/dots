@@ -119,7 +119,7 @@ jobs:
       id-token: write
     environment:
       name: preview
-      url: https://hub.docker.com/r/roalcantara/dots/tags?name=pr-${{ github.event.pull_request.number }}
+      url: https://hub.docker.com/r/roalcantara/dots/tags
     strategy:
       matrix:
         distro: [debian]
@@ -226,7 +226,7 @@ jobs:
           echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
           echo "| Debian | \`docker pull ${{ env.IMG_NAME }}:debian-pr-${{ github.event.pull_request.number }}-${{ steps.get_short_sha.outputs.SHORT_SHA }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View all PR images on [DockerHub](https://hub.docker.com/r/roalcantara/dots/tags?name=pr-${{ github.event.pull_request.number }})" >> $GITHUB_STEP_SUMMARY
+          echo "View all PR images on [DockerHub](https://hub.docker.com/r/roalcantara/dots/tags)" >> $GITHUB_STEP_SUMMARY
       - if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
@@ -243,7 +243,7 @@ jobs:
             | --- | --- |
             | Debian | \`docker pull ${{ env.IMG_NAME }}:debian-pr-${prNumber}-${sha}\` |
 
-            [View all PR images on DockerHub](https://hub.docker.com/r/roalcantara/dots/tags?name=pr-${prNumber})
+            [View all PR images on DockerHub](https://hub.docker.com/r/roalcantara/dots/tags)
 
             ### Testing instructions
 
