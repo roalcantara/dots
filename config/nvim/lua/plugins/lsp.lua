@@ -16,7 +16,6 @@ return {
     opts = {
       ensure_installed = {
         "beautysh",
-        "selene",
         "shellcheck",
         "shfmt",
         "stylua",
@@ -64,7 +63,6 @@ return {
   -- https://github.com/jmbuhr/otter.nvim
   {
     'jmbuhr/otter.nvim',
-    ft = 'toml',
     event = 'VeryLazy',
     dependencies = {
       'nvim-treesitter/nvim-treesitter',

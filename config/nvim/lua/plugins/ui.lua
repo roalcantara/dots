@@ -8,16 +8,17 @@ return {
   -- https://lazyvim.org/plugins/treesitter#nvim-treesitter
   {
     'nvim-treesitter/nvim-treesitter',
-    ft = { 'toml' },
     init = function()
       -- Mise + Neovim Cookbook | Code highlight for run commands
       -- Ensure to only apply the highlighting on mise files instead of all toml files
       -- https://mise.jdx.dev/mise-cookbook/neovim.html#code-highlight-for-run-commands
-      require("vim.treesitter.query").add_predicate("is-mise?", function(_, _, bufnr, _)
-        local filepath = vim.api.nvim_buf_get_name(tonumber(bufnr) or 0)
-        local filename = vim.fn.fnamemodify(filepath, ":t")
-        return string.match(filename, ".*mise.*%.toml$") ~= nil
-      end, { force = true, all = false })
+      vim.schedule(function()
+        require("vim.treesitter.query").add_predicate("is-mise?", function(_, _, bufnr, _)
+          local filepath = vim.api.nvim_buf_get_name(tonumber(bufnr) or 0)
+          local filename = vim.fn.fnamemodify(filepath, ":t")
+          return string.match(filename, ".*mise.*%.toml$") ~= nil
+        end, { force = true, all = false })
+      end)
     end,
     opts = function(_, opts)
       opts = opts or {}
@@ -593,55 +594,5 @@ return {
       -- If the command takes longer than this it will be killed.
       check_timeout = 1000,
     },
-  },
-
-  -- SHOWKEYS - Minimal Eye-candy keys screencaster
-  -- https://github.com/nvzone/showkeys | https://youtu.be/E4qXZv34NQQ
-  {
-    'nvzone/showkeys',
-    lazy = true,
-    cmd = 'ShowkeysToggle',
-    -- Called during startup, plugins' configurations typically is set in an init function
-    init = function()
-      vim.cmd('ShowkeysToggle')
-    end,
-    opts = function(_, opts)
-      return vim.tbl_deep_extend('force', opts, {
-        winhl = 'FloatBorder:Comment,Normal:Normal',
-        maxkeys = 3,
-        show_count = true,
-        keyformat = {
-          ['<BS>'] = '󰁮 ',
-          ['<C>'] = '⌃',
-          ['<CR>'] = '↵',
-          ['<D>'] = '⌘',
-          ['<Del>'] = '⌦',
-          ['<DEL>'] = '⌦',
-          ['<Down>'] = '↓',
-          ['<End>'] = '⇲',
-          ['<END>'] = '⇲',
-          ['<Enter>'] = '↵',
-          ['<ENTER>'] = '↵',
-          ['<Esc>'] = '⎋',
-          ['<ESC>'] = '⎋',
-          ['<Home>'] = '⇱',
-          ['<HOME>'] = '⇱',
-          ['<Left>'] = '←',
-          ['<M>'] = '⌥',
-          ['<Return>'] = '⏎',
-          ['<RETURN>'] = '⏎',
-          ['<Right>'] = '→',
-          ['<S>'] = '⇧',
-          ['<Space>'] = '␣',
-          ['<SPACE>'] = '␣',
-          ['<SPC>'] = '␣',
-          ['<Tab>'] = '⇥',
-          ['<TAB>'] = '⇥',
-          ['<Up>'] = '↑',
-          ['<PageUp>'] = '⇞',
-          ['<PageDown>'] = '⇟',
-        },
-      })
-    end,
   },
 }
