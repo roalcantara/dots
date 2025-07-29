@@ -13,10 +13,10 @@ return {
       require("tokyonight").setup(opts)
       vim.cmd.colorscheme('tokyonight-moon')
       vim.cmd(':hi statusline guibg=NONE')
-      vim.api.nvim_set_hl(0, "BlinkCmpMenu", { bg = "#1a1b2e" })                       -- Darker menu bg
-      vim.api.nvim_set_hl(0, "BlinkCmpMenuBorder", { bg = "#1a1b2e", fg = "#364a82" }) -- Match border
-      vim.api.nvim_set_hl(0, "BlinkCmpMenuSelection", { bg = "#2d3f76" })              -- Selection highlight
-      vim.api.nvim_set_hl(0, "BlinkCmpGhostText", { fg = "#737AA2" })                  -- Label foreground color
+      vim.api.nvim_set_hl(0, 'BlinkCmpMenu', { bg = '#1a1b2e' })                       -- Darker menu bg
+      vim.api.nvim_set_hl(0, 'BlinkCmpMenuBorder', { bg = '#1a1b2e', fg = '#364a82' }) -- Match border
+      vim.api.nvim_set_hl(0, 'BlinkCmpMenuSelection', { bg = '#2d3f76' })              -- Selection highlight
+      vim.api.nvim_set_hl(0, 'BlinkCmpGhostText', { fg = '#737AA2' })                  -- Label foreground color
 
       -- Configure BlinkCmpLabelMatch to only have bold style (no foreground color)
       -- This improves the colorful-menu.nvim appearance
@@ -24,19 +24,29 @@ return {
     end
   },
 
+  -- Treesitter is a new parser generator tool that we can
+  -- use in Neovim to power faster and more accurate syntax highlighting.
   {
-    "nvim-treesitter/nvim-treesitter",
-    version = false,
-    build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" },
+    'nvim-treesitter/nvim-treesitter',
+    version = false, -- last release is way too old and doesn't work on Windows
+    build = ':TSUpdate',
+    event = 'VeryLazy',
+    lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
+    init = function(plugin)
+      -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
+      -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
+      -- no longer trigger the **nvim-treesitter** module to be loaded in time.
+      -- Luckily, the only things that those plugins need are the custom queries, which we make available
+      -- during startup.
+      require('lazy.core.loader').add_to_rtp(plugin)
+      require('nvim-treesitter.query_predicates')
+    end,
+    cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
     dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
+      'nvim-treesitter/nvim-treesitter-textobjects',
     },
     opts = {
-      auto_install = true,
-      sync_install = true,
-      ignore_install = { "latex" },
-      modules = {},
+      ignore_install = { 'latex' },
       highlight = {
         enable = true,
         -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
@@ -155,6 +165,51 @@ return {
         },
       },
     },
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    event = "VeryLazy",
+    enabled = true,
+    config = function()
+      local lazy = require('core/vi/fn/lazy')
+      -- If treesitter is already loaded, we need to run config again for textobjects
+      if lazy.is_loaded('nvim-treesitter') then
+        local opts = lazy.opts('nvim-treesitter')
+        require('nvim-treesitter.configs').setup({ textobjects = opts.textobjects })
+      end
+
+      -- When in diff mode, we want to use the default
+      -- vim text objects c & C instead of the treesitter ones.
+      local move = require('nvim-treesitter.textobjects.move') --- @type table<string,fun(...)>
+      local configs = require('nvim-treesitter.configs')
+      for name, fn in pairs(move) do
+        if name:find('goto') == 1 then
+          move[name] = function(q, ...)
+            if vim.wo.diff then
+              local config = configs.get_module('textobjects.move')[name] --- @type table<string,string>
+              for key, query in pairs(config or {}) do
+                if q == query and key:find('[%]%[][cC]') then
+                  vim.cmd('normal! ' .. key)
+                  return
+                end
+              end
+            end
+            return fn(q, ...)
+          end
+        end
+      end
+    end,
+  },
+
+  -- Automatically add closing tags for HTML and JSX
+  {
+    'windwp/nvim-ts-autotag',
+    event = 'VeryLazy',
+    opts = {},
   },
 
   -- SNACKS | A modern UI library for Neovim | https://github.com/folke/snacks.nvim
@@ -526,6 +581,7 @@ return {
   -- https://github.com/folke/noice.nvim
   {
     'folke/noice.nvim',
+    event = "VeryLazy",
     opts = {
       lsp = {
         override = {
@@ -576,6 +632,7 @@ return {
 
   {
     "stevearc/aerial.nvim",
+    event = "VeryLazy",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
       "nvim-tree/nvim-web-devicons"
@@ -660,7 +717,7 @@ return {
   -- https://github.com/nvim-lualine/lualine.nvim
   {
     'nvim-lualine/lualine.nvim',
-    event = 'VeryLazy',
+    event = "VeryLazy",
     opts = function(_, opts)
       -- Lualine has the following sections. Each section has components.
       -- +-------------------------------------------------+
@@ -833,72 +890,72 @@ return {
   },
 
   {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
-    opts_extend = { "spec" },
+    'folke/which-key.nvim',
+    event = 'VeryLazy',
+    opts_extend = { 'spec' },
     opts = {
-      preset = "helix",
+      preset = 'helix',
       defaults = {},
       spec = {
         {
-          mode = { "n", "v" },
-          { "<leader><tab>", group = "tabs" },
-          { "<leader>c", group = "code" },
-          { "<leader>d", group = "debug" },
-          { "<leader>dp", group = "profiler" },
-          { "<leader>f", group = "file/find" },
-          { "<leader>g", group = "git" },
-          { "<leader>gh", group = "hunks" },
-          { "<leader>q", group = "quit/session" },
-          { "<leader>s", group = "search" },
-          { "<leader>u", group = "ui", icon = { icon = "󰙵 ", color = "cyan" } },
-          { "<leader>x", group = "diagnostics/quickfix", icon = { icon = "󱖫 ", color = "green" } },
-          { "[", group = "prev" },
-          { "]", group = "next" },
-          { "g", group = "goto" },
-          { "gs", group = "surround" },
-          { "z", group = "fold" },
+          mode = { 'n', 'v' },
+          { '<leader><tab>', group = 'tabs' },
+          { '<leader>c', group = 'code' },
+          { '<leader>d', group = 'debug' },
+          { '<leader>dp', group = 'profiler' },
+          { '<leader>f', group = 'file/find' },
+          { '<leader>g', group = 'git' },
+          { '<leader>gh', group = 'hunks' },
+          { '<leader>q', group = 'quit/session' },
+          { '<leader>s', group = 'search' },
+          { '<leader>u', group = 'ui', icon = { icon = '󰙵 ', color = 'cyan' } },
+          { '<leader>x', group = 'diagnostics/quickfix', icon = { icon = '󱖫 ', color = 'green' } },
+          { '[', group = 'prev' },
+          { ']', group = 'next' },
+          { 'g', group = 'goto' },
+          { 'gs', group = 'surround' },
+          { 'z', group = 'fold' },
           {
-            "<leader>b",
-            group = "buffer",
+            '<leader>b',
+            group = 'buffer',
             expand = function()
-              return require("which-key.extras").expand.buf()
+              return require('which-key.extras').expand.buf()
             end,
           },
           {
-            "<leader>w",
-            group = "windows",
-            proxy = "<c-w>",
+            '<leader>w',
+            group = 'windows',
+            proxy = '<c-w>',
             expand = function()
               return require("which-key.extras").expand.win()
             end,
           },
           -- better descriptions
-          { "gx", desc = "Open with system app" },
+          { 'gx', desc = 'Open with system app' },
         },
       },
     },
     keys = {
       {
-        "<leader>?",
+        '<leader>?',
         function()
-          require("which-key").show({ global = false })
+          require('which-key').show({ global = false })
         end,
-        desc = "Buffer Keymaps (which-key)",
+        desc = 'Buffer Keymaps (which-key)',
       },
       {
-        "<c-w><space>",
+        '<c-w><space>',
         function()
-          require("which-key").show({ keys = "<c-w>", loop = true })
+          require('which-key').show({ keys = '<c-w>', loop = true })
         end,
-        desc = "Window Hydra Mode (which-key)",
+        desc = 'Window Hydra Mode (which-key)',
       },
     },
     config = function(_, opts)
-      local wk = require("which-key")
+      local wk = require('which-key')
       wk.setup(opts)
       if not vim.tbl_isempty(opts.defaults) then
-        Snacks.warn("which-key: opts.defaults is deprecated. Please use opts.spec instead.")
+        Snacks.warn('which-key: opts.defaults is deprecated. Please use opts.spec instead.')
         wk.register(opts.defaults)
       end
     end,

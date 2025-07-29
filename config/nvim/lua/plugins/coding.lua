@@ -3,14 +3,14 @@ return {
   -- https://github.com/ibhagwan/fzf-lua | https://lazyvim.org/extras/editor/fzf
   {
     'ibhagwan/fzf-lua',
+    event = "VeryLazy",
     cmd = 'FzfLua',
     dependencies = { 'echasnovski/mini.icons' },
   },
 
   {
     'mg979/vim-visual-multi',
-    lazy = true,
-    event = 'VeryLazy',
+    event = "VeryLazy",
     init = function()
       -- Disable the default keymaps
       -- https://github.com/mg979/vim-visual-multi/issues/241

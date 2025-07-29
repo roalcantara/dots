@@ -712,7 +712,7 @@ step_nvim() {
   wait
 
   # Install nvim plugins
-  exec_cmd cd "$XDG_CONFIG_HOME/nvim" && "$MISE_DATA_HOME/shims/nvim" --headless +Lazy! sync +TSUpdateSync +qa -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' -c "MasonInstall ${PACKAGES[mason]}" +qa
+  exec_cmd cd "$XDG_CONFIG_HOME/nvim" && "$MISE_DATA_HOME/shims/nvim" --headless +Lazy! sync +TSUpdateSync -c 'lua require("lazy").load({plugins = {"mason.nvim"}})' -c "MasonInstall ${PACKAGES[mason]}" +qa
 
   s "[NVIM] Setup completed ✔︎"
 }

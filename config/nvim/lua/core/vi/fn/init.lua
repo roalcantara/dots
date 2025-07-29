@@ -8,4 +8,5 @@ return {
   trim = require('core/vi/fn/trim'),
   get_valid_buffers = require('core/vi/fn/get_valid_buffers'),
   root = require('core/vi/fn/root'),
+  lazy = require('core/vi/fn/lazy'),
 }
