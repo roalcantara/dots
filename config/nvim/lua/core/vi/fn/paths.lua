@@ -162,7 +162,18 @@ function M.get_runtimepath_path_items()
 end
 
 function M.bin_for_python3_venv()
-  return os.getenv("VIRTUAL_ENV") or os.getenv("NEOVIM_PYTHON3_VENV_PATH") or M.join(M.stdpath('config'), '.venv', 'bin', 'python3')
+  return os.getenv("VIRTUAL_ENV") or os.getenv("NEOVIM_PYTHON3_VENV_PATH") or
+    M.join(M.stdpath('config'), '.venv', 'bin', 'python3')
+end
+
+function M.norm(path)
+  if not path or path == '' then
+    return ''
+  end
+  if M.is_directory(path) == 1 then
+    return M.join(path, '')
+  end
+  return vim.fs.normalize((vim.uv or vim.loop).cwd() or ".")
 end
 
 return M

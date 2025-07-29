@@ -8,8 +8,6 @@ globals:
     any: true
   vim:
     any: true
-  LazyVim:
-    any: true
   Snacks:
     any: true
   assert:

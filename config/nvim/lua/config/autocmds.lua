@@ -1,172 +1,120 @@
--- Autocmds are automatically loaded on the VeryLazy event
--- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
--- Add any additional autocmds here
-local modules = {}
-local h = {
-
-  --- Get a module from the modules table or load it if it doesn't exist
-  --- @param module_path string
-  --- @return function|table|false module or false if failed to load
-  get_module = function(module_path)
-    if not modules[module_path] then
-      local ok, module = pcall(require, module_path)
-      if not ok then
-        return false -- Early return on failure
-      end
-      modules[module_path] = module
-    end
-    return modules[module_path]
-  end,
-  get_command = function(module, action)
-    if action and type(action) == 'function' then
-      return function()
-        return action(module)
-      end
-    end
-
-    if type(module) == 'function' then
-      return module
-    end
-
-    return module
-  end,
-}
-local function create_single_user_command(info)
-  local name, module_path, opts, action = info.cmd, info.module.path, info.opts, info.action
-
-  local module = h.get_module(module_path)
-  if not module then
-    Snacks.notify.error('Failed to load module: ' .. module_path)
-    return false
-  end
-
-  local command = h.get_command(module, action)
-  if type(command) ~= 'function' and type(command) ~= 'string' then
-    Snacks.notify.error('Failed to load command: `' .. name .. '`. Module is not a function or action is not defined!')
-    return false
-  end
-
-  return vim.api.nvim_create_user_command(name, command, opts or {})
-end
-h.load_modules = function(options)
-  local mods = {}
-  for mod_name, mod in pairs(options) do
-    mods[mod_name] = h.get_module(mod.path)
-  end
-  return mods
-end
-
-local function on_init_create_autocmd_async(options)
-  --- @async
-  local init_co = coroutine.create(function()
-    local mods = h.load_modules(options.modules)
-    local augroup = mods.augroup
-    local autocmd = mods.autocmd
-    for augroup_name, autocommands in pairs(options.autocmds) do
-      for _, autocommand in ipairs(autocommands) do
-        autocmd(
-          autocommand.event,
-          vim.tbl_extend('force', autocommand.opts, {
-            group = augroup(augroup_name),
-          })
-        )
-      end
-    end
-    coroutine.yield()
-  end)
-
-  local function resume_loading()
-    if coroutine.status(init_co) ~= 'dead' then
-      coroutine.resume(init_co)
-      vim.defer_fn(resume_loading, 50)
-    end
-  end
-
-  vim.schedule(resume_loading)
-end
--- Create user commands on init (async)
-local function on_init_create_user_commands_async(options)
-  --- @async
-  local init_co = coroutine.create(function()
-    for _, info in pairs(options) do
-      create_single_user_command(info)
-      coroutine.yield()
-    end
-  end)
-
-  local function resume_loading()
-    if coroutine.status(init_co) ~= 'dead' then
-      coroutine.resume(init_co)
-      vim.defer_fn(resume_loading, 50)
-    end
-  end
-
-  vim.schedule(resume_loading)
-end
-
-on_init_create_user_commands_async({
-  {
-    cmd = 'RealLuaRuntimePath',
-    module = { path = 'core/vi/fn/paths' },
-    opts = { desc = 'Shows the Real Lua Runtime Path' },
-    action = function(paths)
-      Snacks.notify.info('Lua Runtime Path: ' .. vim.inspect(paths.lua.runtime.path))
-    end,
-  },
-  {
-    cmd = 'RealLuaWorkspaceLibraryPath',
-    module = { path = 'core/vi/fn/paths' },
-    opts = { desc = 'Shows the Real Lua Workspace Library Path' },
-    action = function(paths)
-      Snacks.notify.info('Lua Workspace Library Path: ' .. vim.inspect(paths.lua.workspace.library))
-    end,
-  },
-  {
-    cmd = 'LspHoverMouseDelay',
-    module = { path = 'core/vi/fn/ver' },
-    opts = {
-      desc = 'Set LSP mouse hover delay in milliseconds',
-      nargs = '?',
-      complete = function()
-        return { '100', '250', '500', '750', '1000' }
-      end,
-    },
-    action = function(ver)
-      local args = vim.fn.argv()
-      local delay = tonumber(args[1])
-
-      if delay and delay > 0 then
-        vim.g.lsp_hover_mouse_delay = delay
-        Snacks.notify.info('LSP mouse hover delay set to ' .. delay .. 'ms')
-      else
-        local current_delay = vim.g.lsp_hover_mouse_delay or 500
-        Snacks.notify.info('Current LSP mouse hover delay: ' .. current_delay .. 'ms')
-        Snacks.notify.info('Usage: :LspHoverMouseDelay <milliseconds>')
-      end
-    end,
-  },
-  {
-    cmd = 'DebugHoverFilter',
-    module = { path = 'core/vi/ui/lsp/hover_filter' },
-    opts = { desc = 'Debug hover filter for current cursor position' },
-    action = function(hover_filter)
-      local node_info = hover_filter.debug_current_node()
-      if node_info then
-        Snacks.notify.info('Node type: ' .. node_info.type)
-        Snacks.notify.info('Node text: ' .. (node_info.text or 'nil'))
-        Snacks.notify.info('Should show hover: ' .. tostring(node_info.should_show_hover))
-      else
-        Snacks.notify.error('No node found at current cursor position')
-      end
-    end,
-  },
-})
-on_init_create_autocmd_async({
+-- https://lazyvim.org/configuration/general#auto-commands
+require('core/vi/au/setup_au_async')({
   modules = {
-    augroup = { path = 'core/vi/maps/augroup' },
-    autocmd = { path = 'core/vi/maps/autocmd' },
+    augroup = { path = 'core/vi/au/aug' },
+    autocmd = { path = 'core/vi/au/au' },
   },
   autocmds = {
+    checktime = {
+      {
+        event = { 'FocusGained', 'TermClose', 'TermLeave' },
+        opts = {
+          callback = function()
+            if vim.o.buftype ~= 'nofile' then
+              vim.cmd('checktime')
+            end
+          end,
+          desc = 'Check if we need to reload the file when it changed',
+        },
+      }
+    },
+    highlight_yank = {
+      {
+        event = 'TextYankPost',
+        opts = {
+          callback = function()
+            (vim.hl or vim.highlight).on_yank()
+          end,
+          desc = 'Highlight on yank',
+        },
+      }
+    },
+    resize_splits = {
+      {
+        event = 'VimResized',
+        opts = {
+          callback = function()
+            local current_tab = vim.fn.tabpagenr()
+            vim.cmd('tabdo wincmd =')
+            vim.cmd('tabnext ' .. current_tab)
+          end,
+          desc = 'Resize splits when window is resized',
+        },
+      }
+    },
+    last_loc = {
+      {
+        event = 'BufReadPost',
+        opts = {
+          callback = function(event)
+            local exclude = { 'gitcommit' }
+            local buf = event.buf
+            if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].neovim_last_loc then
+              return
+            end
+            vim.b[buf].neovim_last_loc = true
+            local mark = vim.api.nvim_buf_get_mark(buf, "'")
+            local lcount = vim.api.nvim_buf_line_count(buf)
+            if mark[1] > 0 and mark[1] <= lcount then
+              pcall(vim.api.nvim_win_set_cursor, 0, mark)
+            end
+          end,
+          desc = 'Go to last location when opening a buffer',
+        },
+      }
+    },
+    man_unlisted = {
+      {
+        event = 'FileType',
+        opts = {
+          pattern = { 'man' },
+          callback = function(event)
+            vim.bo[event.buf].buflisted = false
+          end,
+          desc = 'Make it easier to close man-files when opened inline',
+        },
+      }
+    },
+    wrap_spell = {
+      {
+        event = 'FileType',
+        opts = {
+          pattern = { 'text', 'plaintex', 'typst', 'gitcommit', 'markdown' },
+          callback = function()
+            vim.opt_local.wrap = true
+            vim.opt_local.spell = true
+          end,
+          desc = 'Enable wrap and check for spell in text filetypes',
+        },
+      }
+    },
+    json_conceal = {
+      {
+        event = 'FileType',
+        opts = {
+          pattern = { 'json', 'jsonc', 'json5' },
+          callback = function()
+            vim.opt_local.conceallevel = 0
+          end,
+          desc = 'Disable conceallevel for json files',
+        },
+      }
+    },
+    auto_create_dir = {
+      {
+        event = 'BufWritePre',
+        opts = {
+          callback = function(event)
+            if event.match:match('^%w%w+:[\\/][\\/]') then
+              return
+            end
+            local file = vim.uv.fs_realpath(event.match) or event.match
+            vim.fn.mkdir(vim.fn.fnamemodify(file, ':p:h'), 'p')
+          end,
+          desc = 'Auto create directory when saving a file, in case some intermediate directory does not exist'
+        }
+      }
+    },
     filetypedetect = {
       {
         event = 'BufRead',
@@ -185,7 +133,7 @@ on_init_create_autocmd_async({
         },
       },
     },
-    close_with_esc = {
+    close_with_q_or_esc = {
       {
         event = 'FileType',
         opts = {
@@ -249,17 +197,26 @@ on_init_create_autocmd_async({
             "startuptime",
             "tsplayground",
           },
-          callback = function()
-            local execute_on_esc = h.get_module('core/vi/maps/execute_on_esc')
-            if type(execute_on_esc) == 'function' then
-              execute_on_esc({
-                on_esc = function(event)
-                  vim.cmd('close')
-                  pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
-                end,
-                desc = 'Quit on <Esc>',
+          callback = function(event)
+            vim.bo[event.buf].buflisted = false
+            vim.schedule(function()
+              vim.keymap.set('n', 'q', function()
+                vim.cmd('close')
+                pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+              end, {
+                buffer = event.buf,
+                silent = true,
+                desc = 'Quit buffer (q)',
               })
-            end
+              vim.keymap.set('n', '<Esc>', function()
+                vim.cmd('close')
+                pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+              end, {
+                buffer = event.buf,
+                silent = true,
+                desc = 'Quit buffer (<Esc>)',
+              })
+            end)
           end,
           desc = 'Close buffer with <Esc>',
         },
@@ -277,13 +234,19 @@ on_init_create_autocmd_async({
         },
       },
     },
-    on_lsp_attach = {
-      event = 'LspAttach',
-      opts = {
-        callback = function(ev)
-          require("core/vi/ui/lsp").setup_capabilities(ev.data.client_id, ev.data.client_info)
-        end,
-      },
+    on_lsp_attach_set_capabilities = {
+      {
+        event = 'LspAttach',
+        opts = {
+          callback = function(event)
+            local client = vim.lsp.get_client_by_id(event.data.client_id)
+            if type(client) ~= nil and vim.api.nvim_buf_is_valid(event.buf) then
+              require('core/vi/lsp/features').setup_capabilities(client, event.buf, event)
+            end
+          end,
+          desc = 'LSP Attach: Setup autocommands and settings for LSP feature capabilities',
+        },
+      }
     },
   },
 })
