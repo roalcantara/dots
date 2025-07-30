@@ -1,6 +1,7 @@
 # dots
 
 [![Preview](https://github.com/roalcantara/dots/actions/workflows/preview.yml/badge.svg)](https://github.com/roalcantara/dots/actions/workflows/preview.yml)
+[![Release](https://github.com/roalcantara/dots/actions/workflows/release.yml/badge.svg)](https://github.com/roalcantara/dots/actions/workflows/release.yml)
 
 An opinionated [DotFiles][10]. Ready to Engage!
 

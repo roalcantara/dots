@@ -1,0 +1,50 @@
+# https://semantic-release.gitbook.io/semantic-release/recipes/ci-configurations/github-actions
+# https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys#deploy-keys
+name: Create Release
+
+on:
+  push:
+    branches: [main]
+  repository_dispatch:
+    types: [semantic-release]
+
+concurrency:
+  cancel-in-progress: true
+  group: 'dots-${{ github.ref }}'
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read # for checkout
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write # to be able to comment on released issues
+      contents: write # to be able to publish a GitHub release
+      id-token: write # to enable use of OIDC for npm provenance
+      pull-requests: write # to be able to comment on released pull requests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install semantic-release
+        run: npm install -g semantic-release @semantic-release/changelog @semantic-release/git conventional-changelog-conventionalcommits
+
+      - name: Create Release
+        env:
+          # Automatically populated GITHUB_TOKEN cannot be used if branch protection is enabled for the target branch
+          # https://semantic-release.gitbook.io/semantic-release/recipes/ci-configurations/github-actions#pushing-package.json-changes-to-your-repository
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npx semantic-release
