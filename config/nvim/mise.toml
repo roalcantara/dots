@@ -1,0 +1,136 @@
+# The config file for mise
+# https://mise.jdx.dev/configuration.html
+
+[env]
+LUA_PATH = "./lua/?.lua;./lua/?/init.lua;;"
+
+# Tasks
+# Like make, it manages tasks used to build and test projects
+# https://mise.jdx.dev/tasks
+[tasks]
+  [tasks."build:busted"]
+  description = "Direct Docker commands for the multi-stage build"
+  run = "docker build -f tools/Dockerfile --target busted -t nvim:busted ."
+
+  [tasks."build:selene"]
+  description = "Build the selene image"
+  run = "docker build -f tools/Dockerfile --target selene -t nvim:selene ."
+
+  [tasks."build:shell"]
+  run = "docker build -f tools/Dockerfile --target tools -t nvim:shell ."
+
+  [tasks."run:busted"]
+  description = "Run commands with built images"
+  run = "docker run --rm -v $(pwd)/specs:/app/spec -v $(pwd)/lua:/app/src nvim:busted --helper spec/tools/spec_helper.lua --output=utfTerminal spec/"
+
+  [tasks."run:selene"]
+  run = "docker run --rm -v $(pwd)/lua:/app/lua nvim:selene /app/lua"
+
+  [tasks."run:shell"]
+  run = "docker run --rm -it -v $(pwd)/specs:/app/spec -v $(pwd)/lua:/app/lua nvim:shell"
+
+  [tasks."up:test"]
+  description = "New multi-stage Docker commands"
+  run = "docker-compose -f tools/docker-compose.yml run --build --rm test"
+
+  [tasks."up:lint"]
+  run = "docker-compose -f tools/docker-compose.yml run --build --rm lint"
+
+  [tasks."up:shell"]
+  run = "docker-compose -f tools/docker-compose.yml run --build --rm shell"
+
+  [tasks."startuptime"]
+  description = "Run startuptime"
+  run = '''
+  #!/usr/bin/env bash
+    LOGFILE=$(date '+%Y-%m-%d_%H:%M:%S')_startuptime.log
+    USE_LOGDIR={{option(name='logdir', default='./.tmp/logs')}}
+    mkdir -p $USE_LOGDIR
+
+  if [ "{{flag(name="log")}}" = "true" ]; then
+    echo "  ==> nvim --headless --startuptime $USE_LOGDIR/$LOGFILE +qa 2>&1 | tee $USE_LOGDIR/$LOGFILE"
+    nvim --headless --startuptime $USE_LOGDIR/$LOGFILE +qa 2>&1 | tee $USE_LOGDIR/$LOGFILE
+  else
+    echo "  ==> nvim --headless --startuptime +qa 2>&1 | tee $USE_LOGDIR/$LOGFILE"
+    nvim --headless --startuptime +qa 2>&1 | tee $USE_LOGDIR/$LOGFILE
+  fi
+  '''
+
+  # mise run setup
+  # mise run setup --lazy
+  # mise run setup --treesitter
+  # mise run setup --lsp
+  # mise run setup --lazy --treesitter --lsp
+  [tasks.setup]
+  description = "Setup the neovim plugins and tools"
+  run = '''
+  #!/usr/bin/env bash
+
+  # Build command
+  CMD=(nvim --headless)
+
+  # Add --no-cache if requested
+  if [ "{{flag(name="lazy")}}" = "true" ]; then
+    CMD+=(+Lazy! sync)
+  fi
+
+  if [ "{{flag(name="treesitter")}}" = "true" ]; then
+    CMD+=(+TSUpdateSync)
+  fi
+
+  if [ "{{flag(name="lsp")}}" = "true" ]; then
+    CMD+=(-c 'lua require("lazy").load({plugins = {"mason.nvim"}})' -c 'MasonInstall bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksman ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server')
+  fi
+
+  CMD+=(+qa)
+
+  echo "  ==> ${CMD[*]}"
+  eval "${CMD[*]}"
+  '''
+
+# Settings
+# https://mise.jdx.dev/configuration/settings.html#settings
+[settings]
+  # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
+  # https://mise.jdx.dev/configuration/settings.html#activate_aggressive
+  activate_aggressive=true
+
+  # Automatically install missing tools when running mise x, mise run, or as part of the 'not found' handler.
+  # https://mise.jdx.dev/configuration/settings.html#auto_install
+  auto_install=true
+
+  # set to true to enable experimental features
+  # https://mise.jdx.dev/configuration/settings.html#experimental
+  experimental=true
+
+  # Config files with these prefixes will be trusted by default
+  # https://mise.jdx.dev/configuration/settings.html#global_config_file
+  global_config_file="~/.local/share/mise/config.toml"
+
+  # Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
+  # https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
+  idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
+
+  # Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
+  # https://mise.jdx.dev/configuration/settings.html#lockfile
+  lockfile=true
+
+  # Change output style when executing tasks. This controls the output of mise run.
+  # https://mise.jdx.dev/configuration/settings.html#task_output
+  task_output="interleave"
+
+  # Automatically install tools that are not installed when running tasks
+  # https://mise.jdx.dev/configuration/settings.html#task_run_auto_install
+  task_run_auto_install=true
+
+  # Config files with these prefixes will be trusted by default
+  # https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
+  trusted_config_paths=["~/.local/share/dots", "~/.local/share/mise", "~/.local/share/dots/config/nvim", "~/.config/nvim"]
+
+  # set to true to automatically answer yes to all prompts
+  # https://mise.jdx.dev/configuration/settings.html#yes
+  yes=true
+
+  # set to true to see full installation output, see `MISE_VERBOSE`
+  # https://mise.jdx.dev/configuration/settings.html#verbose
+  # verbose=true

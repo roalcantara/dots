@@ -1,29 +1,53 @@
--- Adding a plugin is as simple as adding the plugin spec to one of the files under lua/plugins/*.lua.
--- You can structure your lua/plugins folder with a file per plugin, or a separate file containing all the plugin specs for some functionality.
--- You can create as many files there as you want. In order to disable a plugin, add a spec with enabled=false
--- https://lazyvim.org/configuration/plugins
 return {
-  -- Treesitter is a new parser generator tool to power faster and more accurate syntax highlighting
-  -- https://lazyvim.org/configuration/examples
-  -- https://lazyvim.org/plugins/treesitter#nvim-treesitter
+  {
+    'folke/tokyonight.nvim',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000,
+    opts = {
+      transparent = true,
+      styles = {
+        floats = 'normal'
+      }
+    },
+    config = function(_, opts)
+      require("tokyonight").setup(opts)
+      vim.cmd.colorscheme('tokyonight-moon')
+      vim.cmd(':hi statusline guibg=NONE')
+      vim.api.nvim_set_hl(0, 'BlinkCmpMenu', { bg = '#1a1b2e' })                       -- Darker menu bg
+      vim.api.nvim_set_hl(0, 'BlinkCmpMenuBorder', { bg = '#1a1b2e', fg = '#364a82' }) -- Match border
+      vim.api.nvim_set_hl(0, 'BlinkCmpMenuSelection', { bg = '#2d3f76' })              -- Selection highlight
+      vim.api.nvim_set_hl(0, 'BlinkCmpGhostText', { fg = '#737AA2' })                  -- Label foreground color
+
+      -- Configure BlinkCmpLabelMatch to only have bold style (no foreground color)
+      -- This improves the colorful-menu.nvim appearance
+      vim.api.nvim_set_hl(0, 'BlinkCmpLabelMatch', { bold = true })
+    end
+  },
+
+  -- Treesitter is a new parser generator tool that we can
+  -- use in Neovim to power faster and more accurate syntax highlighting.
   {
     'nvim-treesitter/nvim-treesitter',
-    init = function()
-      -- Mise + Neovim Cookbook | Code highlight for run commands
-      -- Ensure to only apply the highlighting on mise files instead of all toml files
-      -- https://mise.jdx.dev/mise-cookbook/neovim.html#code-highlight-for-run-commands
-      vim.schedule(function()
-        require("vim.treesitter.query").add_predicate("is-mise?", function(_, _, bufnr, _)
-          local filepath = vim.api.nvim_buf_get_name(tonumber(bufnr) or 0)
-          local filename = vim.fn.fnamemodify(filepath, ":t")
-          return string.match(filename, ".*mise.*%.toml$") ~= nil
-        end, { force = true, all = false })
-      end)
+    version = false, -- last release is way too old and doesn't work on Windows
+    build = ':TSUpdate',
+    event = 'VeryLazy',
+    lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
+    init = function(plugin)
+      -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
+      -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
+      -- no longer trigger the **nvim-treesitter** module to be loaded in time.
+      -- Luckily, the only things that those plugins need are the custom queries, which we make available
+      -- during startup.
+      require('lazy.core.loader').add_to_rtp(plugin)
+      require('nvim-treesitter.query_predicates')
     end,
-    opts = function(_, opts)
-      opts = opts or {}
-      opts.auto_install = true
-      opts.highlight = {
+    cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter-textobjects',
+    },
+    opts = {
+      ignore_install = { 'latex' },
+      highlight = {
         enable = true,
         -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
         -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
@@ -31,51 +55,183 @@ return {
         -- Instead of true it can also be a list of languages
         -- https://github.com/catppuccin/nvim?tab=readme-ov-file#wrong-treesitter-highlights
         additional_vim_regex_highlighting = false,
-      }
-      opts.indent = { enable = true }
-      opts.ignore_install = { 'latex' }
-      vim.list_extend(opts.ensure_installed, {
+      },
+      indent = { enable = true },
+      ensure_installed = {
+        'bash',
+        'c',
+        'css',
+        'diff',
         'dockerfile',
         'git_config',
         'git_rebase',
         'gitattributes',
         'gitcommit',
         'gitignore',
+        'html',
         'ini',
+        'javascript',
+        'jsdoc',
+        'json',
+        'jsonc',
+        'latex',
+        'lua',
+        'luadoc',
+        'luap',
         'make',
+        'markdown_inline',
+        'markdown',
+        'norg',
+        'printf',
+        'python',
+        'query',
+        'regex',
         'ruby',
+        'scss',
+        'svelte',
+        'toml',
         'tsx',
         'typescript',
-      })
-      return opts
+        'typst',
+        'vim',
+        'vimdoc',
+        'vue',
+        'xml',
+        'yaml',
+        "go",
+        "gomod",
+        "gosum",
+        "gowork",
+      },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = "<leader>vv",
+          node_incremental = "+",
+          scope_incremental = false,
+          node_decremental = "_",
+        },
+      },
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+
+          keymaps = {
+            -- You can use the capture groups defined in textobjects.scm
+            ["af"] = { query = "@function.outer", desc = "around a function" },
+            ["if"] = { query = "@function.inner", desc = "inner part of a function" },
+            ["ac"] = { query = "@class.outer", desc = "around a class" },
+            ["ic"] = { query = "@class.inner", desc = "inner part of a class" },
+            ["ai"] = { query = "@conditional.outer", desc = "around an if statement" },
+            ["ii"] = { query = "@conditional.inner", desc = "inner part of an if statement" },
+            ["al"] = { query = "@loop.outer", desc = "around a loop" },
+            ["il"] = { query = "@loop.inner", desc = "inner part of a loop" },
+            ["ap"] = { query = "@parameter.outer", desc = "around parameter" },
+            ["ip"] = { query = "@parameter.inner", desc = "inside a parameter" },
+          },
+          selection_modes = {
+            ["@parameter.outer"] = "v",   -- charwise
+            ["@parameter.inner"] = "v",   -- charwise
+            ["@function.outer"] = "v",    -- charwise
+            ["@conditional.outer"] = "V", -- linewise
+            ["@loop.outer"] = "V",        -- linewise
+            ["@class.outer"] = "<c-v>",   -- blockwise
+          },
+          include_surrounding_whitespace = false,
+        },
+        move = {
+          enable = true,
+          set_jumps = true, -- whether to set jumps in the jumplist
+          goto_previous_start = {
+            ["[f"] = { query = "@function.outer", desc = "Previous function" },
+            ["[c"] = { query = "@class.outer", desc = "Previous class" },
+            ["[p"] = { query = "@parameter.inner", desc = "Previous parameter" },
+          },
+          goto_next_start = {
+            ["]f"] = { query = "@function.outer", desc = "Next function" },
+            ["]c"] = { query = "@class.outer", desc = "Next class" },
+            ["]p"] = { query = "@parameter.inner", desc = "Next parameter" },
+          },
+        },
+        swap = {
+          enable = true,
+          swap_next = {
+            ["<leader>a"] = "@parameter.inner",
+          },
+          swap_previous = {
+            ["<leader>A"] = "@parameter.inner",
+          },
+        },
+      },
+    },
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
     end,
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    event = "VeryLazy",
+    enabled = true,
+    config = function()
+      local lazy = require('core/vi/fn/lazy')
+      -- If treesitter is already loaded, we need to run config again for textobjects
+      if lazy.is_loaded('nvim-treesitter') then
+        local opts = lazy.opts('nvim-treesitter')
+        require('nvim-treesitter.configs').setup({ textobjects = opts.textobjects })
+      end
+
+      -- When in diff mode, we want to use the default
+      -- vim text objects c & C instead of the treesitter ones.
+      local move = require('nvim-treesitter.textobjects.move') --- @type table<string,fun(...)>
+      local configs = require('nvim-treesitter.configs')
+      for name, fn in pairs(move) do
+        if name:find('goto') == 1 then
+          move[name] = function(q, ...)
+            if vim.wo.diff then
+              local config = configs.get_module('textobjects.move')[name] --- @type table<string,string>
+              for key, query in pairs(config or {}) do
+                if q == query and key:find('[%]%[][cC]') then
+                  vim.cmd('normal! ' .. key)
+                  return
+                end
+              end
+            end
+            return fn(q, ...)
+          end
+        end
+      end
+    end,
+  },
+
+  -- Automatically add closing tags for HTML and JSX
+  {
+    'windwp/nvim-ts-autotag',
+    event = 'VeryLazy',
+    opts = {},
   },
 
   -- SNACKS | A modern UI library for Neovim | https://github.com/folke/snacks.nvim
   -- https://lazyvim.org/extras/editor/snacks_picker#snacksnvim-1
   {
     'folke/snacks.nvim',
-    dependencies = {
-      'folke/flash.nvim'
-    },
+    priority = 1000,
+    lazy = false,
     opts = function(_, opts)
-      local snacks_default_exclusions = require('core/vi/ui/snacks/defaults').default_exclusions
+      local snacks_default_exclusions = require('core/ui/snacks/defaults').default_exclusions
       return vim.tbl_deep_extend('force', opts or {}, {
         dashboard = {
           enabled = true,
           open_on_startup = true,
           preset = {
-            pick = function(cmd, opt)
-              return LazyVim.pick(cmd, opt)()
-            end,
-            header = require('core/vi/ui/snacks/dashboard').header(),
+            header = require('core/ui/snacks/dashboard').header(),
             keys = {
               { icon = '󰀶 ', key = 's', desc = 'Smart Find Files', action = ':lua Snacks.picker.smart({})' },
               { icon = ' ', key = 'f', desc = 'Find File', action = ':lua Snacks.picker.files()' },
               { icon = ' ', key = 'n', desc = 'New File', action = ':ene | startinsert' },
               { icon = ' ', key = 'g', desc = 'Find Text', action = ':lua Snacks.picker.grep()' },
               { icon = ' ', key = 'r', desc = 'Recent Files', action = ':lua Snacks.picker.recent()' },
-              { icon = ' ', key = 'x', desc = 'Lazy Extras', action = ':LazyExtras' },
               { icon = '󰒲 ', key = 'l', desc = 'Lazy', action = ':Lazy' },
               { icon = ' ', key = 'q', desc = 'Quit', action = '<CMD>:qa<CR>' },
             },
@@ -212,52 +368,7 @@ return {
           formatters = {
             file = { filename_first = true },
           },
-          actions = {
-            flash = function(picker)
-              require('flash').jump({
-                pattern = '',
-                label = { after = { 0, 0 } },
-                search = {
-                  mode = 'search',
-                  exclude = {
-                    function(win)
-                      return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= 'snacks_picker_list'
-                    end,
-                  },
-                },
-                action = function(match)
-                  local idx = picker.list:row2idx(match.pos[1])
-                  picker.list:_move(idx, true, true)
-                end,
-              })
-            end,
-
-            -- move_split_down = function(picker)
-            --   vim.cmd('botright split')
-            --   vim.api.nvim_set_current_buf(picker.list:get_item().buf)
-            -- end,
-
-            -- move_split_up = function(picker)
-            --   vim.cmd('topleft split')
-            --   vim.api.nvim_set_current_buf(picker.list:get_item().buf)
-            -- end,
-
-            -- move_split_right = function(picker)
-            --   vim.cmd('botright vsplit')
-            --   vim.api.nvim_set_current_buf(picker.list:get_item().buf)
-            -- end,
-
-            -- move_split_left = function(picker)
-            --   vim.cmd('topleft vsplit')
-            --   vim.api.nvim_set_current_buf((picker.list or picker.input):get_item().buf)
-            -- end,
-
-            -- edit_split_down = { action = 'confirm', cmd = 'botright split' },
-            -- edit_split_up = { action = 'confirm', cmd = 'topleft split' },
-            -- edit_split_right = { action = 'confirm', cmd = 'leftabove vsplit | bprev | wincmd l' },
-            -- -- edit_split_right = { action = 'confirm', cmd = 'botright vsplit' },
-            -- edit_split_left = { action = 'confirm', cmd = 'topleft vsplit' },
-          },
+          actions = {},
           sources = {
             explorer = {
               finder = 'explorer',
@@ -470,34 +581,143 @@ return {
   -- https://github.com/folke/noice.nvim
   {
     'folke/noice.nvim',
-    opts = function(_, opts)
-      -- https://github.com/folke/noice.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
-      return vim.tbl_deep_extend('force', opts or {}, {
-        -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#presets
-        presets = vim.tbl_deep_extend('force', opts.presets or {}, {
-          lsp_doc_border = true,
-        }),
-        -- Hide written messages
-        -- https://github.com/folke/noice.nvim?tab=readme-ov-file#-routes
-        -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#hide-written-messages-1
-        routes = {
-          {
-            filter = {
-              event = 'notify',
-              find = 'No information available',
+    event = "VeryLazy",
+    opts = {
+      lsp = {
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true
+        },
+        hover = {
+          enable = false
+        },
+        signature = {
+          enabled = true,
+        },
+        documentation = {
+          enabled = true,
+        }
+      },
+      -- Hide written messages
+      -- https://github.com/folke/noice.nvim?tab=readme-ov-file#-routes
+      -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#hide-written-messages-1
+      routes = {
+        {
+          filter = {
+            event = "msg_show",
+            any = {
+              { find = "%d+L, %d+B" },
+              { find = "; after #%d+" },
+              { find = "; before #%d+" },
             },
-            opts = { skip = true },
+          },
+          view = "mini",
+        },
+        {
+          filter = {
+            event = 'notify',
+            find = 'No information available',
+          },
+          opts = { skip = true },
+        },
+      },
+      presets = {
+        bottom_search = true,
+        command_palette = true,
+        long_message_to_split = true,
+        lsp_doc_border = true
+      },
+    },
+  },
+
+  {
+    "stevearc/aerial.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons"
+    },
+    opts = function()
+      local kind_filter = {
+        default = {
+          "Class",
+          "Constructor",
+          "Enum",
+          "Field",
+          "Function",
+          "Interface",
+          "Method",
+          "Module",
+          "Namespace",
+          "Package",
+          "Property",
+          "Struct",
+          "Trait",
+        },
+        markdown = false,
+        help = false,
+        -- you can specify a different filter for each filetype
+        lua = {
+          "Class",
+          "Constructor",
+          "Enum",
+          "Field",
+          "Function",
+          "Interface",
+          "Method",
+          "Module",
+          "Namespace",
+          -- "Package", -- remove package since luals uses it for control flow structures
+          "Property",
+          "Struct",
+          "Trait",
+        },
+      }
+      local icons = vim.deepcopy(require('core/ui').icons.kinds)
+
+      -- HACK: fix lua's weird choice for `Package` for control
+      -- structures like if/else/for/etc.
+      icons.lua = { Package = icons.Control }
+
+      --- @type table<string, string[]>|false
+      local filter_kind = false
+      if kind_filter then
+        filter_kind = assert(vim.deepcopy(kind_filter))
+        filter_kind._ = filter_kind.default
+        filter_kind.default = nil
+      end
+
+      local opts = {
+        attach_mode = "global",
+        backends = { "lsp", "treesitter", "markdown", "man" },
+        show_guides = true,
+        layout = {
+          resize_to_content = false,
+          win_opts = {
+            winhl = "Normal:NormalFloat,FloatBorder:NormalFloat,SignColumn:SignColumnSB",
+            signcolumn = "yes",
+            statuscolumn = " ",
           },
         },
-      })
-    end,
+        icons = icons,
+        filter_kind = filter_kind,
+        -- stylua: ignore
+        guides = {
+          mid_item   = "├╴",
+          last_item  = "└╴",
+          nested_top = "│ ",
+          whitespace = "  ",
+        },
+      }
+      return opts
+    end
   },
 
   -- Lualine | Blazing fast and easy to configure statusline written in pure lua
   -- https://github.com/nvim-lualine/lualine.nvim
   {
     'nvim-lualine/lualine.nvim',
-    event = 'VeryLazy',
+    event = "VeryLazy",
     opts = function(_, opts)
       -- Lualine has the following sections. Each section has components.
       -- +-------------------------------------------------+
@@ -515,49 +735,20 @@ return {
           place = places,
         })
       end
-      if opts.sections.lualine_c[2] then
-        opts.sections.lualine_c[2] = vim.tbl_deep_extend('force', opts.sections.lualine_c[2] or {}, {
-          on_click = function()
-            vim.cmd('LspToggleDiagnostics')
-          end,
-        })
-      end
-      if opts.sections.lualine_c[3] then
-        opts.sections.lualine_c[3] = vim.tbl_deep_extend('force', opts.sections.lualine_c[3] or {}, {
-          on_click = function()
-            vim.cmd('FileTypes')
-          end,
-        })
-      end
-      if opts.sections.lualine_c[5] then
-        opts.sections.lualine_c[5] = vim.tbl_deep_extend('force', opts.sections.lualine_c[5] or {}, {
-          on_click = function()
-            Snacks.picker.lsp_symbols({ layout = 'dropdown', enter = true, focus = 'list' })
-          end,
-        })
-      end
-      if opts.sections.lualine_x[6] then
-        opts.sections.lualine_x[6] = vim.tbl_deep_extend('force', opts.sections.lualine_x[6] or {}, {
-          on_click = function()
-            vim.schedule(function()
-              vim.cmd [[Lazy sync]]
-              refresh('window', 'statusline')
-            end)
-          end,
-        })
-      end
 
-      table.insert(opts.sections.lualine_x, {
-        function()
-          return '🔄'
-        end,
-        cond = function()
-          return vim.fn.exists('g:lazy_version')
-        end,
-      })
+      -- PERF: we don't need this lualine require madness 🤷
+      local lualine_require = require('lualine_require')
+      lualine_require.require = require
 
-      return vim.tbl_deep_extend('force', opts or {}, {
+      local icons = require('core/ui').icons
+
+      vim.o.laststatus = vim.g.lualine_laststatus
+
+      local opts = {
         options = {
+          theme = "auto",
+          globalstatus = vim.o.laststatus == 3,
+          disabled_filetypes = { statusline = { 'dashboard', 'alpha', 'ministarter', 'snacks_dashboard' } },
           section_separators = { left = '', right = '' },
           component_separators = { left = '', right = '' }
         },
@@ -569,30 +760,204 @@ return {
                 return str:sub(1, 1) .. ' '
               end,
             },
-          }
-        }
-      })
+          },
+          lualine_b = { 'branch' },
+
+          lualine_c = {
+            require('core/ui/statusline').root_dir(),
+            {
+              "diagnostics",
+              symbols = {
+                error = icons.diagnostics.Error,
+                warn = icons.diagnostics.Warn,
+                info = icons.diagnostics.Info,
+                hint = icons.diagnostics.Hint,
+              },
+              on_click = function()
+                vim.cmd('LspToggleDiagnostics')
+              end,
+            },
+            {
+              "filetype",
+              icon_only = true,
+              separator = "",
+              padding = { left = 1, right = 0 },
+              on_click = function()
+                vim.cmd('FileTypes')
+              end,
+            },
+            { require('core/ui/statusline').pretty_path() },
+            {
+              "aerial",
+              sep = " ",     -- separator between symbols
+              sep_icon = "", -- separator between icon and symbol
+
+              -- The number of symbols to render top-down. In order to render only 'N' last
+              -- symbols, negative numbers may be supplied. For instance, 'depth = -1' can
+              -- be used in order to render only current symbol.
+              depth = 5,
+
+              -- When 'dense' mode is on, icons are not rendered near their symbols. Only
+              -- a single icon that represents the kind of current symbol is rendered at
+              -- the beginning of status line.
+              dense = false,
+
+              -- The separator to be used to separate symbols in dense mode.
+              dense_sep = ".",
+
+              -- Color the symbol icons.
+              colored = true,
+              on_click = function()
+                Snacks.picker.lsp_symbols({ layout = 'dropdown', enter = true, focus = 'list' })
+              end,
+            }
+          },
+          lualine_x = {
+            Snacks.profiler.status(),
+            require('core/ui/statusline').status(icons.kinds.Copilot, function()
+              local clients = package.loaded['copilot'] and
+                require('core/vi/lsp/utils').get_clients({ name = 'copilot', bufnr = 0 }) or
+                {}
+              if #clients > 0 then
+                local status = require('copilot.api').status.data.status
+                return (status == 'InProgress' and 'pending') or (status == 'Warning' and 'error') or 'ok'
+              end
+            end),
+            -- stylua: ignore
+            {
+              function() return require("noice").api.status.command.get() end,
+              cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
+              color = function() return { fg = Snacks.util.color("Statement") } end,
+            },
+            -- stylua: ignore
+            {
+              function() return require("noice").api.status.mode.get() end,
+              cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
+              color = function() return { fg = Snacks.util.color("Constant") } end,
+            },
+            -- stylua: ignore
+            {
+              function() return "  " .. require("dap").status() end,
+              cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
+              color = function() return { fg = Snacks.util.color("Debug") } end,
+            },
+            -- stylua: ignore
+            {
+              require("lazy.status").updates,
+              cond = require("lazy.status").has_updates,
+              color = function() return { fg = Snacks.util.color("Special") } end,
+              on_click = function()
+                vim.schedule(function()
+                  vim.cmd [[Lazy sync]]
+                  refresh('window', 'statusline')
+                end)
+              end,
+            },
+            {
+              "diff",
+              symbols = {
+                added = icons.git.added,
+                modified = icons.git.modified,
+                removed = icons.git.removed,
+              },
+              source = function()
+                local gitsigns = vim.b.gitsigns_status_dict
+                if gitsigns then
+                  return {
+                    added = gitsigns.added,
+                    modified = gitsigns.changed,
+                    removed = gitsigns.removed,
+                  }
+                end
+              end,
+            },
+          },
+          lualine_y = {
+            { "progress", separator = " ",                  padding = { left = 1, right = 0 } },
+            { "location", padding = { left = 0, right = 1 } },
+          },
+          lualine_z = {
+            function()
+              return " " .. os.date("%R")
+            end,
+          },
+        },
+        extensions = { 'neo-tree', 'lazy', 'fzf' },
+      }
+
+      return opts
     end,
   },
 
-  -- Automatically validate your Ghostty configuration on save
-  -- https://github.com/isak102/ghostty.nvim
   {
-    'isak102/ghostty.nvim',
-    lazy = true,
-    ft = { 'ghostty' },
-    cond = require('core/vi/fn/paths').is_executable('ghostty'),
+    'folke/which-key.nvim',
+    event = 'VeryLazy',
+    opts_extend = { 'spec' },
     opts = {
-      -- The autocmd pattern matched against the filename of the buffer. If this pattern
-      -- matches, ghostty.nvim will run on save in that buffer. This pattern is passed to
-      -- nvim_create_autocmd, check ":h autocmd-pattern" for more information. Can be
-      -- either a string or a list of strings
-      -- file_pattern = vim.fn.expand(paths.to_xdg_config_home({ 'ghostty', 'config' })),
-      -- The ghostty executable to run.
-      ghostty_cmd = 'ghostty',
-      -- The timeout in milliseconds for the check command.
-      -- If the command takes longer than this it will be killed.
-      check_timeout = 1000,
+      preset = 'helix',
+      defaults = {},
+      spec = {
+        {
+          mode = { 'n', 'v' },
+          { '<leader><tab>', group = 'tabs' },
+          { '<leader>c', group = 'code' },
+          { '<leader>d', group = 'debug' },
+          { '<leader>dp', group = 'profiler' },
+          { '<leader>f', group = 'file/find' },
+          { '<leader>g', group = 'git' },
+          { '<leader>gh', group = 'hunks' },
+          { '<leader>q', group = 'quit/session' },
+          { '<leader>s', group = 'search' },
+          { '<leader>u', group = 'ui', icon = { icon = '󰙵 ', color = 'cyan' } },
+          { '<leader>x', group = 'diagnostics/quickfix', icon = { icon = '󱖫 ', color = 'green' } },
+          { '[', group = 'prev' },
+          { ']', group = 'next' },
+          { 'g', group = 'goto' },
+          { 'gs', group = 'surround' },
+          { 'z', group = 'fold' },
+          {
+            '<leader>b',
+            group = 'buffer',
+            expand = function()
+              return require('which-key.extras').expand.buf()
+            end,
+          },
+          {
+            '<leader>w',
+            group = 'windows',
+            proxy = '<c-w>',
+            expand = function()
+              return require("which-key.extras").expand.win()
+            end,
+          },
+          -- better descriptions
+          { 'gx', desc = 'Open with system app' },
+        },
+      },
     },
-  },
+    keys = {
+      {
+        '<leader>?',
+        function()
+          require('which-key').show({ global = false })
+        end,
+        desc = 'Buffer Keymaps (which-key)',
+      },
+      {
+        '<c-w><space>',
+        function()
+          require('which-key').show({ keys = '<c-w>', loop = true })
+        end,
+        desc = 'Window Hydra Mode (which-key)',
+      },
+    },
+    config = function(_, opts)
+      local wk = require('which-key')
+      wk.setup(opts)
+      if not vim.tbl_isempty(opts.defaults) then
+        Snacks.warn('which-key: opts.defaults is deprecated. Please use opts.spec instead.')
+        wk.register(opts.defaults)
+      end
+    end,
+  }
 }

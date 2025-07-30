@@ -21,6 +21,7 @@ declare -g GROUPNAME="wheel"
 declare -g USERHOME="/home/$USERNAME"
 declare -g TIMEZONE="America/Sao_Paulo"
 declare -g REPO_URL="https://github.com/roalcantara/dots"
+declare -g BRANCH="main"
 declare -g LOCALGROUP=$(id -gn 2>/dev/null)
 declare -g LOCALUSER=$(id -un 2>/dev/null)
 declare -g USR_LOCAL_BIN="/usr/local/bin"
@@ -33,7 +34,7 @@ declare -g -A PACKAGES=(
   # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
   [debian]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint"
   [mise]="ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node python pre-commit"
-  [mason]="bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksman ruby-lsp shfmt stylua taplo vim-language-server yaml-language-server"
+  [mason]="bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksman ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server"
 )
 
 puts() {
@@ -95,7 +96,6 @@ export_env_var() {
 
   if [ "${force[*]}" == "--force" ] || [ -z "${!env_var_name:-}" ]; then
     exec_cmd eval "export $env_var_name=\"$value\""
-    i "[$section_name] $env_var_name set to '$value' ${force[*]} ✔︎"
   fi
 }
 # Ensure ownership of a path
@@ -106,7 +106,6 @@ set_ownership() {
   local OWNER="${3:-"$USERNAME:$GROUPNAME"}"
 
   exec_cmd sudo chown -R "$OWNER" "$TARGET"
-  s "[$LABEL/CHOWN] '$TARGET' owned by '$OWNER' ✔︎"
 }
 # Ensure ownership of a path
 # Usage: setup_ownership <path> <section_name> (required_owner)
@@ -128,7 +127,6 @@ setup_dir() {
   # Create directory if it doesn't exist
   if [ ! -d "$path" ]; then
     exec_cmd sudo mkdir -p "$path"
-    i "[$section_name] '$path' created ✔︎"
   fi
 
   # Ensure ownership
@@ -195,8 +193,12 @@ setup_arguments() {
   section "[ENV/ARGS] Extracting arguments..."
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -r | --repo_url)
+    -r | --repo | --repo_url)
       REPO_URL="$2"
+      shift 2
+      ;;
+    -b | --branch)
+      BRANCH="$2"
       shift 2
       ;;
     -t | --timezone)
@@ -318,6 +320,7 @@ step_setup_environment() {
   i "HOME = \"$HOME\""
   i "CONTEXT = \"$CONTEXT\""
   i "REPO_URL = \"$REPO_URL\""
+  i "BRANCH = \"$BRANCH\""
   i "TIMEZONE = \"$TIMEZONE\""
   i "LOCALGROUP = \"$LOCALGROUP\""
   i "LOCALUSER = \"$LOCALUSER\""
@@ -374,20 +377,20 @@ step_backup() {
   section "[BAK] Initializing.."
 
   if is_container; then
-    w "[BAK] 🐳 Removing files instead of backing up ✔"
+    w "[BAK] 🐳 Removing files instead of backing up ✔︎"
     for resource in $BACKUP_RESOURCES; do
       resource_path="$HOME/$resource"
       if [ -e "$resource_path" ]; then
         exec_cmd sudo rm -rf "$resource_path"
       fi
     done
-    s "[BAK] Completed @ '$USERNAME:$GROUPNAME' ✔"
+    s "[BAK] Completed @ '$USERNAME:$GROUPNAME' ✔︎"
   else
-    w "[BAK] Creating backup directory with current timestamp ✔"
+    w "[BAK] Creating backup directory with current timestamp ✔︎"
     BACKUP_DIR="$BACKUP_DIR_ROOT/$(date +%Y-%m-%d_%H-%M-%S)"
     exec_cmd sudo mkdir -p "$BACKUP_DIR"
     exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$BACKUP_DIR_ROOT"
-    i "[BAK] Backup folder created at '$BACKUP_DIR' ("$USERNAME:$GROUPNAME") ✔"
+    i "[BAK] Backup folder created at '$BACKUP_DIR' ("$USERNAME:$GROUPNAME") ✔︎"
 
     for resource in $BACKUP_RESOURCES; do
       resource_path="$HOME/$resource"
@@ -395,13 +398,13 @@ step_backup() {
         exec_cmd sudo mv "$resource_path" "$BACKUP_DIR/"
         if [[ "$XDG_COMMON_DIRS" == *"$resource"* ]]; then
           exec_cmd sudo install -d -o "$USERNAME" -g "$USERNAME" "$resource_path"
-          i "Recreated directory: $resource_path owned by $USERNAME:$USERNAME ✔"
+          i "Recreated directory: $resource_path owned by $USERNAME:$USERNAME ✔︎"
         fi
       else
         d "Resource does not exist, skipping: $resource_path"
       fi
     done
-    s "[BAK] Completed @ '$BACKUP_DIR@$USERNAME:$GROUPNAME' ✔"
+    s "[BAK] Completed @ '$BACKUP_DIR@$USERNAME:$GROUPNAME' ✔︎"
   fi
 }
 step_dotfiles() {
@@ -413,18 +416,17 @@ step_dotfiles() {
 
   # Clone or update repository
   if [ -d "$DOTS_DIR/.git" ]; then
-    i "[DOTS] Git repository already exists at '$DOTS_DIR'. Pulling latest changes..."
-    if ! exec_cmd git -C "$DOTS_DIR" pull origin main; then
+    i "[DOTS] Git repository already exists at '$DOTS_DIR'. Pulling latest changes from '$BRANCH'..."
+    if ! exec_cmd git -C "$DOTS_DIR" pull origin "$BRANCH"; then
       e "[DOTS] Failed to update repository"
     fi
+    i "[DOTS] '$REPO_URL' ($BRANCH) updated to '$DOTS_DIR' ✔︎"
   elif [ -d "$DOTS_DIR" ] && [ ! -d "$DOTS_DIR/config" ]; then
-    i "[DOTS] '$DOTS_DIR/config' not found! Cloning from $REPO_URL into '$DOTS_DIR'..."
-    if ! exec_cmd sudo git clone --depth 1 "$REPO_URL" "$DOTS_DIR"; then
+    i "[DOTS] '$DOTS_DIR/config' not found! Cloning from '$REPO_URL' ($BRANCH) into '$DOTS_DIR'..."
+    if ! exec_cmd sudo git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$DOTS_DIR"; then
       e "[DOTS] Failed to clone repository"
     fi
-    i "[DOTS] Dotfiles downloaded to '$DOTS_DIR' ✔"
-    exec_cmd ls -la "$DOTS_DIR"
-    exec_cmd ls -la "$DOTS_DIR/config"
+    i "[DOTS] '$REPO_URL' ($BRANCH) cloned to '$DOTS_DIR' ✔︎"
   else
     w "[DOTS] '$DOTS_DIR/config' found! But not a git repository! Assuming to be already installed or will be handled separately.."
   fi
@@ -449,24 +451,22 @@ step_dotfiles() {
       if [ "$current_target" != "$DOTS_DIR/config" ]; then
         if is_container; then
           exec_cmd sudo rm -rf "$config_symlink"
-          w "[DOTS] 🐳 Existent '$config_symlink' symlink has been removed ✔"
         else
           exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
-          d "[DOTS] Existing '$config_symlink' symlink backed up to '$BACKUP_DIR' ✔"
         fi
       fi
     else
       i "[DOTS] '$config_symlink' is not a symlink!"
       if is_container; then
         exec_cmd sudo rm -rf "$config_symlink"
-        w "[DOTS] 🐳 Existent '$config_symlink' directory has been removed ✔"
+        w "[DOTS] 🐳 Existent '$config_symlink' directory has been removed ✔︎"
       else
         exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
-        d "[DOTS] Existing '$config_symlink' directory backed up to '$BACKUP_DIR' ✔"
+        d "[DOTS] Existing '$config_symlink' directory backed up to '$BACKUP_DIR' ✔︎"
       fi
     fi
   else
-    w "[DOTS] '$config_symlink' directory not found ✔"
+    w "[DOTS] '$config_symlink' directory not found ✔︎"
   fi
 
   i "[DOTS] Ensuring correct symlink for '$config_symlink' to '$DOTS_DIR/config'.."
@@ -476,22 +476,19 @@ step_dotfiles() {
     if [ "$current_target" != "$DOTS_DIR/config" ]; then
       if is_container; then
         exec_cmd sudo rm -rf "$config_symlink"
-        w "[DOTS] Existent '$config_symlink' symlink has been removed ✔"
       else
         exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
-        d "[DOTS] Existing '$config_symlink' symlink backed up to '$BACKUP_DIR' ✔"
       fi
     fi
   else
-    w "[DOTS] '$config_symlink' is not a symlink ✔"
+    w "[DOTS] '$config_symlink' is not a symlink ✔︎"
   fi
 
   i "[DOTS] Symlinking '$DOTS_DIR/config' to '$config_symlink'.."
   if [ ! -L "$config_symlink" ]; then
     exec_cmd sudo ln -sf "$DOTS_DIR/config" "$config_symlink"
-    i "[DOTS] Symlink created: '$config_symlink' -> '$DOTS_DIR/config' ✔"
   else
-    w "[DOTS] No existent '$config_symlink' symlink to '$DOTS_DIR/config' found ✔"
+    w "[DOTS] No existent '$config_symlink' symlink to '$DOTS_DIR/config' found ✔︎"
   fi
 
   # Ensure ownership of the symlink
@@ -502,7 +499,7 @@ step_dotfiles() {
     setup_ownership "$dir" "DOTS/SYMLINK"
   done
 
-  s "[DOTS] Setup completed ✔"
+  s "[DOTS] Setup completed ✔︎"
 }
 step_chown() {
   section "[CHOWN] Ensuring ownership of essential directories started..."
@@ -523,7 +520,7 @@ step_xdg() {
   if [ -x "$ZSH_XDG_SETUP_SCRIPT" ]; then
     section "[XDG] Setting up XDG/ZSH environment via '$ZSH_XDG_SETUP_SCRIPT'..."
     . "$ZSH_XDG_SETUP_SCRIPT" "$USERNAME" "$GROUPNAME"
-    s "[XDG] Setting up XDG/ZSH environment for '$USERNAME:$GROUPNAME' via '$ZSH_XDG_SETUP_SCRIPT' ✔"
+    s "[XDG] Setting up XDG/ZSH environment for '$USERNAME:$GROUPNAME' via '$ZSH_XDG_SETUP_SCRIPT' ✔︎"
   fi
 
   step_chown
@@ -562,21 +559,18 @@ step_mise() {
     fi
 
     exec_cmd sudo chmod +x "$MISE_INSTALL_PATH"
-    i "[MISE] mise installed successfully system-wide at '$MISE_INSTALL_PATH' ✔︎"
   fi
 
   i "[MISE] Setting up global configuration..."
   export_env_and_make_dir "MISE_STATE_HOME" "$XDG_STATE_HOME/mise" "MISE"
   export_env_and_make_dir "MISE_GLOBAL_CONFIG_DIR" "$XDG_DATA_HOME/mise" "MISE"
-
-  # Setup global config file, attributes and trusted paths
   exec_cmd export MISE_GLOBAL_CONFIG_FILE="$XDG_DATA_HOME/mise/config.toml"
   exec_cmd mise settings set global_config_file "$XDG_DATA_HOME/mise/config.toml"
   exec_cmd mise settings add trusted_config_paths "$MISE_GLOBAL_CONFIG_DIR"
   exec_cmd mise settings add trusted_config_paths "$XDG_DATA_HOME/dots"
   exec_cmd mise settings set activate_aggressive true
   exec_cmd mise settings set auto_install true
-  i "[MISE] Global configuration set to '$XDG_DATA_HOME/mise/config.toml' (owned by '$USERNAME') ✔"
+  i "[MISE] Global configuration set to '$XDG_DATA_HOME/mise/config.toml' (owned by '$USERNAME') ✔︎"
 
   # Install global packages
   exec_cmd mise use --cd "$DOTS_DIR" --yes --global --pin ${PACKAGES[mise]}
@@ -640,10 +634,8 @@ step_zsh() {
   s "[ZSH] Setup completed ✔︎"
 }
 step_nvim_setup_provider_npm() {
-  section "[NVIM/NPM] Setting up NPM provider..."
+  section "[NVIM/NPM] Setting up NPM provider ($NPM_CONFIG_PREFIX)..."
   # https://neovim.io/doc/user/provider.html#provider-nodejs
-
-  exec_cmd eval "$(mise activate zsh --yes --quiet --shims)"
 
   if ! command -v npm >/dev/null 2>&1; then
     w "[NVIM/NPM] npm is not installed! skipping..."
@@ -655,37 +647,28 @@ step_nvim_setup_provider_npm() {
   export_env_and_make_dir "NPM_CONFIG_PREFIX" "$NPM_CONFIG_PREFIX" "NVIM/NPM" --force
   export_env_and_make_dir "NPM_CONFIG_CACHE" "$NPM_CONFIG_CACHE" "NVIM/NPM" --force
   exec_cmd export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/.npmrc}"
-  i "[NVIM/NPM] NPM_CONFIG_USERCONFIG set to '$NPM_CONFIG_USERCONFIG' (owned by '$USERNAME') ✔︎"
-
-  # Install neovim's required NPM packages
   exec_cmd npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim && npm cache clean --force
-  i "[NVIM/NPM] Required NPM packages installed at '$NPM_CONFIG_PREFIX' (owned by '$USERNAME') ✔︎"
 }
 step_nvim_setup_provider_python() {
-  section "[NVIM/PYTHON] Setting up Python provider..."
+  section "[NVIM/PYTHON] Setting up Python provider ($XDG_CONFIG_HOME/nvim/.venv)..."
   # https://neovim.io/doc/user/provider.html#provider-python
-
-  exec_cmd eval "$(mise activate zsh --yes --quiet --shims)"
 
   if ! command -v python3 >/dev/null 2>&1; then
     w "[NVIM/PYTHON] python3 is not installed! skipping..."
     return
   fi
 
-  if [ ! -d "$XDG_CACHE_HOME/pip" ]; then
-    setup_dir "$XDG_CACHE_HOME/pip" "NVIM/PYTHON"
-  fi
+  setup_dir "$XDG_CACHE_HOME/pip" "NVIM/PYTHON"
 
   if [ ! -d "$XDG_CONFIG_HOME/nvim/.venv" ]; then
     exec_cmd cd "$XDG_CONFIG_HOME/nvim" && python3 -m venv "$XDG_CONFIG_HOME/nvim/.venv"
   fi
 
   # Use uv to create a virtual environment
-  exec_cmd cd "$XDG_CONFIG_HOME/nvim" && source "$XDG_CONFIG_HOME/nvim/.venv/bin/activate" && pip install greenlet pynvim neovim --force-reinstall
-  i "[NVIM/PYTHON] Required Python packages installed at '$XDG_CONFIG_HOME/nvim/.venv' (owned by '$USERNAME') ✔︎"
+  exec_cmd cd "$XDG_CONFIG_HOME/nvim" && source "$XDG_CONFIG_HOME/nvim/.venv/bin/activate" && pip install pynvim neovim
 }
 step_nvim_setup_provider_ruby() {
-  section "[NVIM/RUBY] Setting up Ruby provider..."
+  section "[NVIM/RUBY] Setting up Ruby provider (${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems})..."
   # https://neovim.io/doc/user/provider.html#provider-ruby
 
   if ! command -v gem >/dev/null 2>&1; then
@@ -701,8 +684,7 @@ step_nvim_setup_provider_ruby() {
   exec_cmd gem update --system --no-document
 
   # Install neovim's required Ruby packages
-  exec_cmd gem install neovim && gem cache clean --force && gem cleanup
-  i "[NVIM/RUBY] Required GEM packages installed at '$GEM_HOME' (owned by '$USERNAME') ✔︎"
+  exec_cmd gem install neovim && gem cleanup
 }
 step_nvim() {
   section "[NVIM] Setup started..."
@@ -713,6 +695,7 @@ step_nvim() {
     return
   fi
 
+  # Check if nvim config directory exists
   if [ ! -d "$XDG_CONFIG_HOME/nvim" ]; then
     w "[NVIM] nvim is not installed at '$XDG_CONFIG_HOME/nvim'! skipping..."
     return
@@ -723,13 +706,13 @@ step_nvim() {
   setup_dir "$XDG_DATA_HOME/nvim" "NVIM"
 
   # Setup nvim providers
-  step_nvim_setup_provider_npm &
-  step_nvim_setup_provider_python &
-  step_nvim_setup_provider_ruby &
+  step_nvim_setup_provider_npm >&2 &
+  step_nvim_setup_provider_python >&2 &
+  step_nvim_setup_provider_ruby >&2 &
   wait
 
   # Install nvim plugins
-  exec_cmd cd "$XDG_CONFIG_HOME/nvim" && "$MISE_DATA_HOME/shims/nvim" --headless +Lazy! sync +TSUpdateSync -c 'lua require("lazy").load({plugins = {"mason-lspconfig.nvim"}})' -c "MasonInstall ${PACKAGES[mason]}" +qa
+  exec_cmd cd "$XDG_CONFIG_HOME/nvim" && "$MISE_DATA_HOME/shims/nvim" --headless +Lazy! sync +TSUpdateSync -c 'lua require("lazy").load({plugins = {"mason.nvim"}})' -c "MasonInstall ${PACKAGES[mason]}" +qa
 
   s "[NVIM] Setup completed ✔︎"
 }
@@ -745,7 +728,7 @@ main() {
   step_zsh
   step_nvim
   step_chown
-  s "[INSTALL] DONE ✔✔"
+  s "[INSTALL] DONE ✔︎✔︎"
 }
 
 main "$@"
