@@ -128,27 +128,15 @@ jobs:
 
       - name: Set Short SHA
         id: short_sha
-        run: |
-          SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
-          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_OUTPUT  # Use GITHUB_OUTPUT for step outputs
-          echo "$SHORT_SHA"  # Optional: still print to console
+        run: echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
         env:
           GITHUB_SHA: ${{ github.sha }}
-
-      - name: Use short SHA
-        run: echo "SHA is ${{ steps.short_sha.outputs.SHORT_SHA }}"
 
       - name: Set Preview URL
         id: preview_url
-        run: |
-          PREVIEW_URL=https://hub.docker.com/r/roalcantara/dots/tags?name=pr-${{ github.event.pull_request.number }}-${{ steps.short_sha.outputs.SHORT_SHA }}
-          echo "PREVIEW_URL=$PREVIEW_URL" >> $GITHUB_OUTPUT  # Use GITHUB_OUTPUT for step outputs
-          echo "$PREVIEW_URL"  # Optional: still print to console
+        run: echo "PREVIEW_URL=https://hub.docker.com/r/roalcantara/dots/tags?name=pr-${{ github.event.pull_request.number }}-${{ steps.short_sha.outputs.SHORT_SHA }}" >> $GITHUB_OUTPUT
         env:
           GITHUB_SHA: ${{ github.sha }}
-
-      - name: Use preview URL
-        run: echo "Preview URL is ${{ steps.preview_url.outputs.PREVIEW_URL }}"
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -215,9 +203,9 @@ jobs:
       pull-requests: write
       contents: read
     steps:
-      - name: Get Short SHA
-        id: get_short_sha
-        run: echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+      - name: Set Short SHA
+        id: short_sha
+        run: echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
         env:
           GITHUB_SHA: ${{ github.sha }}
       - name: Create summary
@@ -229,16 +217,17 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| distro | Docker Pull Command |" >> $GITHUB_STEP_SUMMARY
           echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
-          echo "| Debian | \`docker pull ${{ env.IMG_NAME }}:debian-pr-${{ github.event.pull_request.number }}-${{ steps.get_short_sha.outputs.SHORT_SHA }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Debian | \`docker pull ${{ env.IMG_NAME }}:debian-pr-${{ github.event.pull_request.number }}-${{ steps.short_sha.outputs.SHORT_SHA }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View all PR images on [DockerHub](https://hub.docker.com/r/roalcantara/dots/tags)" >> $GITHUB_STEP_SUMMARY
+          echo "View all PR images on [DockerHub](https://hub.docker.com/r/roalcantara/dots/tags?name=pr-${{ github.event.pull_request.number }})" >> $GITHUB_STEP_SUMMARY
+
       - if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           result-encoding: string
           script: |
-            const sha = '${{ steps.get_short_sha.outputs.SHORT_SHA }}';
+            const sha = '${{ steps.short_sha.outputs.SHORT_SHA }}';
             const prNumber = '${{ github.event.pull_request.number }}';
             const body = `## 🐳 Preview Docker Images Available
 
@@ -248,7 +237,7 @@ jobs:
             | --- | --- |
             | Debian | \`docker pull ${{ env.IMG_NAME }}:debian-pr-${prNumber}-${sha}\` |
 
-            [View all PR images on DockerHub](https://hub.docker.com/r/roalcantara/dots/tags)
+            [View all PR images on DockerHub](https://hub.docker.com/r/roalcantara/dots/tags?name=pr-${{ github.event.pull_request.number }})
 
             ### Testing instructions
 
