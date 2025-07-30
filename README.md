@@ -15,7 +15,7 @@ At the moment, the `install` script is only handles `debian` distros.
 - One-liner Installation script
 
     ```sh
-    # user:roalcantara, group:wheel
+    # roalcantara:wheel by default
     curl -fsSL "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash
 
     # customizing user and group
@@ -37,7 +37,7 @@ At the moment, the `install` script is only handles `debian` distros.
 - **Features**
 
   - ✅ Installation script to setup a development environment
-  - ✅ Ready to be used in DevContainers
+  - ✅ Ready to be used in [DevContainers][15]
   - ✅ Uses whatever shell the install script configured
 
 - **DevContainer**
@@ -47,37 +47,30 @@ At the moment, the `install` script is only handles `debian` distros.
 
 - **Tooling**
 
-    | **Manager** | **Package**    | **Description**                                                              |
-    | :---------: | -------------- | ---------------------------------------------------------------------------- |
-    |   DISTRO    | Ruby           | Powerful, clean, object-oriented scripting language                          |
-    |   DISTRO    | Git            | Distributed version control system                                           |
-    |   DISTRO    | GitLint        | Git commit message linter                                                    |
-    |   DISTRO    | ZSH            | UNIX shell (command interpreter)                                             |
-    |    MISE     | Bat            | cat(1)'s clone with syntax highlighting and Git integration                  |
-    |    MISE     | Corepack       | Platform built on V8 to build network applications                           |
-    |    MISE     | Delta          | Syntax-highlighter and pager for git and diff output                         |
-    |    MISE     | Eza            | Modern, maintained replacement for ls                                        |
-    |    MISE     | Fd             | Simple, fast and user-friendly alternative to find                           |
-    |    MISE     | Fzf            | Command-line fuzzy finder written in Go                                      |
-    |    MISE     | Gh             | GitHub command-line tool                                                     |
-    |    MISE     | Go             | Open source programming language to build simple/reliable/efficient software |
-    |    MISE     | Gofmt          | Go formatter                                                                 |
-    |    MISE     | Gum            | Tool for glamorous shell scripts                                             |
-    |    MISE     | Idle3          | Modern Python IDE                                                            |
-    |    MISE     | Node           | JavaScript runtime built on Chrome's V8 JavaScript engine                    |
-    |    MISE     | Npm            | Package manager for JavaScript                                               |
-    |    MISE     | Npx            | Execute JavaScript packages                                                  |
-    |    MISE     | Nvim           | Highly configurable text editor                                              |
-    |    MISE     | Pre-Commit     | Manage multi-language pre-commit hooks                                       |
-    |    MISE     | Pip3           | Install Python packages                                                      |
-    |    MISE     | Pydoc3         | Generate documentation for Python modules                                    |
-    |    MISE     | Python3        | A programming language                                                       |
-    |    MISE     | Python3-config | Configure Python                                                             |
-    |    MISE     | Rg             | A tool for searching text with regex                                         |
-    |    MISE     | Starship       | Minimal, blazing-fast, and extremely customizable prompt for any shell       |
-    |    MISE     | Usage          | Display command usage statistics                                             |
-    |    MISE     | Watchexec      | Execute commands when files change                                           |
-    |    MISE     | Zoxide         | Smarter cd command for your terminal                                         |
+    | **Manager** | **Package** | **Description**                                                        |
+    | :---------: | ----------- | ---------------------------------------------------------------------- |
+    |   DISTRO    | Ruby        | Powerful, clean, object-oriented scripting language                    |
+    |   DISTRO    | Git         | Distributed version control system                                     |
+    |   DISTRO    | GitLint     | Git commit message linter                                              |
+    |   DISTRO    | ZSH         | UNIX shell (command interpreter)                                       |
+    |    MISE     | Bat         | cat(1)'s clone with syntax highlighting and Git integration            |
+    |    MISE     | Delta       | Syntax-highlighter and pager for git and diff output                   |
+    |    MISE     | Eza         | Modern, maintained replacement for ls                                  |
+    |    MISE     | Fd          | Simple, fast and user-friendly alternative to find                     |
+    |    MISE     | Fzf         | Command-line fuzzy finder written in Go                                |
+    |    MISE     | Gh          | GitHub command-line tool                                               |
+    |    MISE     | Gum         | Tool for glamorous shell scripts                                       |
+    |    MISE     | Node        | JavaScript runtime built on Chrome's V8 JavaScript engine              |
+    |    MISE     | Npm         | Package manager for JavaScript                                         |
+    |    MISE     | Npx         | Execute JavaScript packages                                            |
+    |    MISE     | Nvim        | Highly configurable text editor                                        |
+    |    MISE     | Pre-Commit  | Manage multi-language pre-commit hooks                                 |
+    |    MISE     | Python3     | A programming language                                                 |
+    |    MISE     | Rg          | A tool for searching text with regex                                   |
+    |    MISE     | Starship    | Minimal, blazing-fast, and extremely customizable prompt for any shell |
+    |    MISE     | Usage       | Display command usage statistics                                       |
+    |    MISE     | Watchexec   | Execute commands when files change                                     |
+    |    MISE     | Zoxide      | Smarter cd command for your terminal                                   |
 
 ### DEPENDENCIES
 
@@ -216,3 +209,4 @@ The project is available as open source under the terms of the [MIT][1] [License
 [12]: https://github.com/GoogleContainerTools/container-structure-test 'CST (Container Structure Tests): validate the structure of your container images'
 [13]: https://github.com/opencontainers/image-spec/blob/main/annotations.md 'OCI Best Practices Image Annotations'
 [14]: https://docker.com/blog/multi-arch-build-and-images-the-simple-way 'Multi-arch build and images the simple way'
+[15]: https://containers.dev 'Open specification for enriching containers with development specific content and settings'
