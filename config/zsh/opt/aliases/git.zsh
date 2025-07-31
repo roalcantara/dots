@@ -27,8 +27,15 @@ alias gprm='g pull --rebase --autostash $(git main-branch)'
 alias gprd='g pull --rebase --autostash develop'
 
 # CHECKOUT
-alias gco='g fzc' # (fuzzy) git checkout --guess [<pathspec>…​]
-alias gcoo='g checkout -b'
+# alias gco='g fzc' # (fuzzy) git checkout --guess [<pathspec>…​]
+gco() {
+  if [ $# -eq 0 ]; then
+    # (fuzzy) git checkout --guess [<pathspec>…​]
+    git fzc
+  else
+    git checkout -b "$@"
+  fi
+}
 alias gco!='g fetch --all && git remote prune origin && git fzc'
 alias gcom='g checkout $(git main-branch)'
 alias gcod='g checkout develop'
