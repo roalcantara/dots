@@ -1,0 +1,569 @@
+# ------------------------------------------------------------------------------
+# Ghostty configuration file
+# https://github.com/ghostty-org/ghostty/blob/main/src/config/Config.zig
+#
+# This template file has been automatically created at the following
+# path since Ghostty couldn't find any existing config files on your system:
+#
+#   {[path]s}
+#
+# The template does not set any default options, since Ghostty ships
+# with sensible defaults for all options. Users should only need to set
+# options that they want to change from the default.
+#
+# Run `ghostty +show-config --default --docs` to view a list of
+# all available config options and their default values.
+#
+# Additionally, each config option is also explained in detail
+# on Ghostty's website, at https://ghostty.org/docs/config.
+
+# Config syntax crash course
+# ==========================
+# # The config file consists of simple key-value pairs,
+# # separated by equals signs.
+# font-family = Iosevka
+# window-padding-x = 2
+#
+# # Spacing around the equals sign does not matter.
+# # All of these are identical:
+# key=value
+# key= value
+# key =value
+# key = value
+#
+# # Any line beginning with a # is a comment. It's not possible to put
+# # a comment after a config option, since it would be interpreted as a
+# # part of the value. For example, this will have a value of "#123abc":
+# background = #123abc
+#
+# # Empty values are used to reset config keys to default.
+# key =
+#
+# # Some config options have unique syntaxes for their value,
+# # which is explained in the docs for that config option.
+# # Just for example:
+# resize-overlay-duration = 4s 200ms
+# ------------------------------------------------------------------------------
+
+##
+## MAIN SETTINGS
+## https://ghostty.org/docs/config/reference
+##
+
+# Only the XDG config path ($XDG_CONFIG_HOME/ghostty/config).
+# https://ghostty.org/docs/config/reference#config-default-files
+config-default-files = true
+
+# Do not confirm that a surface should be closed before closing it
+# https://ghostty.org/docs/config/reference#confirm-close-surface
+confirm-close-surface = false
+
+# Quit after the last surface is closed
+# https://ghostty.org/docs/config/reference#quit-after-last-window-closed
+quit-after-last-window-closed = true
+
+# Enable shell integration auto-injection
+# Shell integration greatly enhances the terminal experience:
+# - Working directory reporting so new tabs, splits inherit the previous terminal's working directory.
+# - Prompt marking that enables the "jump_to_prompt" keybinding.
+# - If you're sitting at a prompt, closing a terminal will not ask for confirmation.
+# - Resizing the window with a complex prompt usually paints much better.
+# https://ghostty.org/docs/config/reference#shell-integration
+# https://ghostty.org/docs/features/shell-integration
+shell-integration = zsh
+
+# Prevent sudo from resetting environment variables and raise errors about missing or unsuitable terminal: xterm-ghostty when running some programs
+# https://ghostty.org/docs/config/reference#shell-integration-features
+# https://ghostty.org/docs/features/shell-integration
+# https://ghostty.org/docs/help/terminfo#sudo
+shell-integration-features = sudo, no-cursor
+
+# Quick Terminal
+# A Lightweight terminal displayed as a modal/popup for instant access and quick commands without interrupting work
+# https://ghostty.org/docs/config/reference#quick-terminal-position
+quick-terminal-screen = mouse
+quick-terminal-position = center
+
+# Duration (secs) of quick terminal enter/exit animation. 0 disable it.
+# https://ghostty.org/docs/config/reference#quick-terminal-autohide
+quick-terminal-animation-duration = .5
+
+# https://ghostty.org/docs/config/reference#quick-terminal-autohide
+quick-terminal-autohide = true
+
+# https://ghostty.org/docs/config/reference#quick-terminal-space-behavior
+quick-terminal-space-behavior = remain
+
+##
+## THEME & COLORS
+## To see all available themes run: ghostty +list-themes
+## https://ghostty.org/docs/features/theme
+##
+
+# A theme to use. It can be a built-in theme name, a custom theme name, or an absolute path to a custom theme file.
+# Some themes are "Ayu Mirage" "Andromeda" "catppuccin-macchiato" "catppuccin-mocha" "catppuccin-frappe" "Kanagawa Wave" "tokyonight_moon"
+# https://ghostty.org/docs/config/reference#theme
+theme = tokyonight_moon
+
+# Color palette for the 256 colors used by many terminal apps (https://ditig.com/256-colors-cheat-sheet). It is defined as N=COLOR where:
+# - N is 0-255 of the terminal color table. It can be decimal (default), binary (0b), octal (0o), or hexadecimal (0x).
+# - COLOR is a typical RGB color code such as #AABBCC or AABBCC, or a named X11 color
+# List of 256 colors for Xterm prompt: https://ditig.com/256-colors-cheat-sheet
+# https://ghostty.org/docs/config/reference#palette
+# palette
+
+# Foreground color for the window. Specified as either hex (#RRGGBB or RRGGBB) or a named X11 color
+# List of 256 colors for Xterm prompt: https://ditig.com/256-colors-cheat-sheet
+# https://ghostty.org/docs/config/reference#foreground
+# foreground = #RRGGBB
+
+# Background color for the window. Specified as either hex (#RRGGBB or RRGGBB) or a named X11 color
+# List of 256 colors for Xterm prompt: https://ditig.com/256-colors-cheat-sheet
+# https://ghostty.org/docs/config/reference#background
+# background = #171F2C
+
+# Foreground color for selection. Specified as either hex (#RRGGBB or RRGGBB) or a named X11 color.
+# If this is not set, then the selection color is just the inverted window foreground. NOTE: not to be confused with the cell fg
+# List of 256 colors for Xterm prompt: https://ditig.com/256-colors-cheat-sheet
+# https://ghostty.org/docs/config/reference#selection-foreground
+# selection-foreground = #RRGGBB
+
+# Background color for selection. Specified as either hex (#RRGGBB or RRGGBB) or a named X11 color.
+# If this is not set, then the selection color is just the inverted window background. NOTE: not to be confused with the cell bg
+# List of 256 colors for Xterm prompt: https://ditig.com/256-colors-cheat-sheet
+# https://ghostty.org/docs/config/reference#selection-background
+# selection-background = #RRGGBB
+
+# Color space used to alpha blending: native | liner | linear-corrected
+# https://ghostty.org/docs/config/reference#alpha-blending
+alpha-blending = linear-corrected
+
+##
+## FONTS
+## https://ghostty.org/docs/config/reference#font-family
+## To see all available fonts run: ghostty +list-fonts
+##
+
+# Font size in points. I.E.: 13.5pt @ 2px/pt = 27px
+# https://ghostty.org/docs/config/reference#font-size
+font-size = 14
+
+# The font families to use | ghostty +list-fonts
+# https://ghostty.org/docs/config/reference#font-family
+# "Cascadia Code PL Regular Regular" "CaskaydiaMono NFM SemiBold Italic"
+# font-family = "Cascadia Code PL"
+# font-family = "CaskaydiaMono NFM SemiBold Italic"
+# font-family = "JetBrainsMonoNL NFM Thin"
+# font-family = "JetBrainsMono NFM Regular"
+# font-family = "FiraCode Nerd Font Mono Reg"
+# font-family = "Fira Code Light SemiBold"
+font-family = "Fira Code Retina"
+
+# https://ghostty.org/docs/config/reference#font-style
+# font-style = Regular
+
+# https://ghostty.org/docs/config/reference#font-style-bold
+# font-style-bold = Semibold
+
+# https://ghostty.org/docs/config/reference#font-style-italic
+# font-style-italic = Italic
+
+# https://ghostty.org/docs/config/reference#font-style-bold-italic
+# font-style-bold-italic = Semibold Italic
+
+# fonts with a thicker stroke
+# https://ghostty.org/docs/config/reference#font-thicken
+font-thicken = true
+
+# 0-255 where 0 corresponds to the lightest available thickening
+# https://ghostty.org/docs/config/reference#font-thicken-strength
+font-thicken-strength = 50
+
+# bold text uses the bright color palette
+# https://ghostty.org/docs/config/reference#bold-is-bright
+bold-is-bright = true
+
+# Apply a font feature (comma separated list)
+# https://ghostty.org/docs/config/reference#font-feature
+# font-feature = "'cv01', 'cv02', 'cv06', 'cv09', 'cv13', 'cv14', 'cv17', 'cv22', 'cv25', 'cv26', 'cv28', 'cv29', 'cv30', 'cv31', 'cv32', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss09', 'ss10', 'zero', 'onum'"
+font-feature = "'cv01', 'cv09', 'cv19', 'cv20', 'cv21', 'cv22', 'cv24', 'cv25', 'cv26', 'cv32', 'cv27', 'cv28', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'ss19', 'ss20', 'calt', 'zero', 'onum'"
+# font-feature = "'ss01', 'ss02', 'ss03', 'ss19', 'ss20', 'calt'"
+# font-feature = '+calt, +liga, +dlig, +rclt, +ss20, +zero, +ccmp'
+
+# All of the configurations behavior adjust various metrics determined by the font
+# https://ghostty.org/docs/config/reference#adjust-cell-height
+adjust-cell-height = 5
+
+# adjust-font-baseline = -5
+
+##
+## CLIPBOARD & MOUSE SETTINGS
+##
+
+# Allow programs running in the terminal to read to the system clipboard
+# https://ghostty.org/docs/config/reference#clipboard-read
+clipboard-read = allow
+
+# Allow programs running in the terminal to write to the system clipboard
+# https://ghostty.org/docs/config/reference#clipboard-write
+clipboard-write = allow
+
+# Trims trailing whitespace on data that is copied to the clipboard
+# https://ghostty.org/docs/config/reference#clipboard-trim-trailing-spaces
+clipboard-trim-trailing-spaces = true
+
+# Automatically copy selected text to the clipboard
+# https://ghostty.org/docs/config/reference#copy-on-select
+copy-on-select = clipboard
+
+# Hide the mouse immediately when typing
+# https://ghostty.org/docs/config/reference#mouse-hide-while-typing
+mouse-hide-while-typing = true
+
+# Enable the mouse to shift-click to capture text
+# https://ghostty.org/docs/config/reference#mouse-shift-capture
+mouse-shift-capture = true
+
+# When there are multiple split panes, the mouse selects the focused pane
+# https://ghostty.org/docs/config/reference#focus-follows-mouse
+focus-follows-mouse = true
+
+##
+## WINDOW SETTINS
+##
+
+# The theme to use for the windows: auto | system | light | dark | ghostty (only linux)
+# https://ghostty.org/docs/config/reference#window-theme
+window-theme = auto
+
+# Specifies a preference; the actual OS, desktop environment, window manager, etc. may override this preference: none | auto | client | system
+# https://ghostty.org/docs/config/reference#window-decoration
+window-decoration = auto
+
+# The colorspace to use for the windows: srgb | display-p3 | a98-rgb
+# https://ghostty.org/docs/config/reference#window-colorspace
+window-colorspace = display-p3
+
+# Horizontal window padding.
+# Applies padding between the terminal cells and the left and right window borders.
+# https://ghostty.org/docs/config/reference#window-padding-x
+window-padding-x = 15
+# window-padding-x = 0
+
+# Vertical window padding.
+# Applies padding between the terminal cells and the top and bottom window borders.
+# https://ghostty.org/docs/config/reference#window-padding-y
+window-padding-y = 15,0
+# window-padding-y = 0
+
+# The viewport dimensions are usually not perfectly divisible by the cell size.
+# In this case, some extra padding on the end of a column and the bottom of the final row may exist.
+# If true, the extra padding is automatically balanced between all four edges to minimize imbalance on one side
+# https://ghostty.org/docs/config/reference#window-padding-balance
+# window-padding-balance = true
+window-padding-balance = false
+
+# The color of the padding area of the window: background | extend | extend-always
+# https://ghostty.org/docs/config/reference#window-padding-color
+window-padding-color = extend-always
+
+# The font that will be used for the application's window and tab titles
+# https://ghostty.org/docs/config/reference#window-title-font-family
+window-title-font-family = "JetBrainsMonoNL NFM Thin"
+
+# The text that will be displayed in the subtitle of the window
+# https://ghostty.org/docs/config/reference#window-subtitle
+window-subtitle = false
+
+##
+## MACOS SETTINGS
+## https://ghostty.org/docs/features#macos
+##
+
+# Automatically enable the "Secure Input" feature when it detects that a password prompt is being displayed
+# https://ghostty.org/docs/config/reference#macos-auto-secure-input
+macos-auto-secure-input = true
+
+# Show a graphical indication when secure input is enabled
+# https://ghostty.org/docs/config/reference#macos-secure-input-indication
+macos-secure-input-indication = true
+
+# The style of the macOS titlebar: native | transparent | tabs | hidden
+# https://ghostty.org/docs/config/reference#macos-titlebar-style
+macos-titlebar-style = hidden
+
+# Use non-native fullscreen mode: visible-menu | true | false
+# https://ghostty.org/docs/config/reference#macos-non-native-fullscreen
+macos-non-native-fullscreen = true
+
+# Whether to enable the macOS window shadow
+# https://ghostty.org/docs/config/reference#macos-window-shadow
+macos-window-shadow = false
+
+# Use option as alt key
+# https://ghostty.org/docs/config/reference#macos-option-as-alt
+macos-option-as-alt = true
+
+# The opacity level (opposite of transparency) of the background.
+# A value of 1 is fully opaque and a value of 0 is fully transparent.
+# https://ghostty.org/docs/config/reference#background-opacity
+background-opacity = 1
+
+# Whether to blur the background when background-opacity is less than 1.
+#    a nonnegative integer specifying the blur intensity
+#    false, equivalent to a blur intensity of 0
+#    true, equivalent to the default blur intensity of 20, which is reasonable for a good looking blur.
+#    Higher blur intensities may cause strange rendering and performance issues.
+# https://ghostty.org/docs/config/reference#background-blur
+background-blur = true
+
+##
+## KEYBINDINGS SETTINGS
+## Key bindings. The format is trigger=action
+## https://ghostty.org/docs/config/reference#keybind
+## To see all available keybinds, run: ghostty +list-keybinds
+## To see all available actions, run: ghostty +list-actions
+##
+
+#
+# UNBINDINGS
+# It removes previous bound action, and the key will be sent through to the child command if it is printable.
+#
+
+# select_all
+keybind = super+a=unbind
+# new_split:right
+keybind = super+d=unbind
+# new_window
+keybind = super+n=unbind
+# clear_screen
+keybind = super+k=unbind
+# quit
+keybind = super+q=unbind
+# close_surface
+keybind = super+w=unbind
+# new_tab
+keybind = super+t=unbind
+# jump_to_prompt:-1
+keybind = super+up=unbind
+# increase_font_size:1
+keybind = super+plus=unbind
+# reset_font_size
+keybind = super+zero=unbind
+# close_all_windows
+keybind = super+alt+w=unbind
+# new_tab
+keybind = super+alt+t=unbind
+# goto_split:up
+keybind = super+alt+up=unbind
+# goto_split:next
+keybind = super+right_bracket=unbind
+# scroll_page_up
+keybind = super+page_up=unbind
+# scroll_page_down
+keybind = super+page_down=unbind
+# decrease_font_size:1
+keybind = super+minus=unbind
+# goto_split:previous
+keybind = super+left_bracket=unbind
+# scroll_to_top
+keybind = super+home=unbind
+# increase_font_size:1
+keybind = super+equal=unbind
+# toggle_fullscreen
+keybind = super+enter=unbind
+# jump_to_prompt:1
+keybind = super+down=unbind
+# open_config
+keybind = super+comma=unbind
+
+# inspector:toggle
+keybind = super+alt+i=unbind
+# goto_split:down
+keybind = super+alt+down=unbind
+# goto_split:left
+keybind = super+alt+left=unbind
+# goto_split:right
+keybind = super+alt+right=unbind
+# close_all_windows
+keybind = super+alt+shift+w=unbind
+# write_screen_file:open
+keybind = super+alt+shift+j=unbind
+
+# toggle_fullscreen
+keybind = super+ctrl+f=unbind
+# resize_split:up,10
+keybind = super+ctrl+up=unbind
+# resize_split:down,10
+keybind = super+ctrl+down=unbind
+# resize_split:left,10
+keybind = super+ctrl+left=unbind
+# resize_split:right,10
+keybind = super+ctrl+right=unbind
+# equalize_splits
+keybind = super+ctrl+equal=unbind
+
+# SUPER+SHIFT+T
+keybind = super+shift+t=unbind
+keybind = unconsumed:super+shift+t=unbind
+keybind = global:unconsumed:super+shift+t=unbind
+
+# CMD+SHIFT+T
+keybind = cmd+shift+t=unbind
+keybind = unconsumed:cmd+shift+t=unbind
+keybind = global:unconsumed:cmd+shift+t=unbind
+
+# close_window
+keybind = super+shift+w=unbind
+# paste_from_selection
+keybind = super+shift+v=unbind
+# write_screen_file:paste
+keybind = super+shift+j=unbind
+# new_split:down
+keybind = super+shift+d=unbind
+# jump_to_prompt:-1
+keybind = super+shift+up=unbind
+# toggle_split_zoom
+keybind = super+shift+enter=unbind
+# jump_to_prompt:1
+keybind = super+shift+down=unbind
+# reload_config
+keybind = super+shift+comma=unbind
+# next_tab
+keybind = super+shift+right_bracket=unbind
+# previous_tab
+keybind = super+shift+left_bracket=unbind
+
+# ghost help
+keybind = super+shift+slash=unbind
+keybind = super+?=unbind
+
+# adjust_selection:up
+keybind = shift+up=unbind
+# adjust_selection:end
+keybind = shift+end=unbind
+# adjust_selection:down
+keybind = shift+down=unbind
+# adjust_selection:left
+keybind = shift+left=unbind
+# adjust_selection:home
+keybind = shift+home=unbind
+# adjust_selection:right
+keybind = shift+right=unbind
+# adjust_selection:page_up
+keybind = shift+page_up=unbind
+# adjust_selection:page_down
+keybind = shift+page_down=unbind
+# next_tab
+keybind = ctrl+tab=unbind
+# previous_tab
+keybind = ctrl+shift+tab=unbind
+
+keybind = super+up=unbind
+keybind = super+down=unbind
+keybind = super+right=unbind
+keybind = super+left=unbind
+keybind = super+ctrl+alt+n=unbind
+keybind = super+ctrl+alt+t=unbind
+
+# goto_to_tab
+keybind = super+one=unbind
+keybind = super+two=unbind
+keybind = super+three=unbind
+keybind = super+four=unbind
+keybind = super+five=unbind
+keybind = super+six=unbind
+keybind = super+seven=unbind
+keybind = super+eight=unbind
+keybind = super+nine=unbind
+keybind = super+shift+left_shift=unbind
+keybind = super+shift+backslash=unbind
+keybind = global:unconsumed:shift+cmd+backslash=unbind
+keybind = global:unconsumed:shift+super+backslash=unbind
+
+##
+## HYPER KEY BINDINGS
+## The RIGHT_CMD acts as a HYPER KEY which triggers the combination `super+ctrl+alt`
+## https://ghostty.org/docs/config/reference#keybind
+## To see all available keybinds, run: ghostty +list-keybinds
+## To see all available actions, run: ghostty +list-actions
+##
+
+# General
+keybind = unconsumed:super+ctrl+alt+n=new_window
+keybind = unconsumed:super+ctrl+alt+w=close_surface
+keybind = unconsumed:super+ctrl+alt+q=quit
+keybind = unconsumed:ctrl+l=clear_screen
+keybind = unconsumed:super+ctrl+alt+i=inspector:toggle
+keybind = unconsumed:super+ctrl+alt+comma=reload_config
+keybind = unconsumed:super+ctrl+alt+enter=toggle_fullscreen
+
+# The `performable` prefix indicates that the keybind should only consume the
+# input if the action is performed. Otherwise, passed it to shell
+keybind = performable:super+ctrl+alt+v=paste_from_selection
+
+# Quick Terminal Toggle
+# Lightweight terminal that animates for instant access without interrupting work.
+# https://ghostty.org/docs/config/reference#quick-terminal-position
+keybind = global:unconsumed:super+ctrl+alt+t=toggle_quick_terminal
+
+# SPLITS
+keybind = global:unconsumed:super+ctrl+alt+up=unbind
+keybind = global:unconsumed:super+ctrl+alt+down=unbind
+keybind = global:unconsumed:super+ctrl+alt+right=unbind
+keybind = global:unconsumed:super+ctrl+alt+left=unbind
+
+# super + shift + p               toggle_command_palette
+keybind = global:unconsumed:super+shift+p=unbind
+keybind = global:unconsumed:super+ctrl+alt+p=toggle_command_palette
+
+# keybind = unconsumed:super+ctrl+alt+up=new_split:up
+# keybind = unconsumed:super+ctrl+alt+down=new_split:down
+# keybind = unconsumed:super+ctrl+alt+right=new_split:right
+# keybind = unconsumed:super+ctrl+alt+left=new_split:left
+# keybind = unconsumed:super+ctrl+alt+equal=equalize_splits
+# keybind = unconsumed:super+ctrl+alt+right_bracket=goto_split:next
+# keybind = unconsumed:super+ctrl+alt+left_bracket=goto_split:previous
+# keybind = unconsumed:super+ctrl+alt+shift+up=goto_split:up
+# keybind = unconsumed:super+ctrl+alt+shift+left=goto_split:left
+# keybind = unconsumed:super+ctrl+alt+shift+down=goto_split:down
+# keybind = unconsumed:super+ctrl+alt+shift+right=goto_split:right
+
+# TABS
+# New windows and splits are prefered over tabs
+#
+# keybind = unconsumed:super+ctrl+alt+t=new_tab
+# keybind = unconsumed:super+ctrl+alt+tab=next_tab
+# keybind = unconsumed:super+ctrl+alt+shift+tab=previous_tab
+# keybind = unconsumed:super+ctrl+alt+one=goto_tab:1
+# keybind = unconsumed:super+ctrl+alt+two=goto_tab:2
+# keybind = unconsumed:super+ctrl+alt+three=goto_tab:3
+# keybind = unconsumed:super+ctrl+alt+four=goto_tab:4
+# keybind = unconsumed:super+ctrl+alt+five=goto_tab:5
+# keybind = unconsumed:super+ctrl+alt+six=goto_tab:6
+# keybind = unconsumed:super+ctrl+alt+seven=goto_tab:7
+# keybind = unconsumed:super+ctrl+alt+eight=goto_tab:8
+# keybind = unconsumed:super+ctrl+alt+nine=goto_tab:9
+
+###
+### NEOVIM HACKS
+### Allows ⌘ to be used in Neovim
+### https://ghostty.org/docs/features/neovim
+###
+
+# keybind = super+shift+physical:t=unbind
+# keybind = unconsumed:super+shift+physical:t=unbind
+# keybind = global:unconsumed:super+shift+physical:t=unbind
+# keybind = cmd+shift+physical:t=unbind
+# keybind = unconsumed:cmd+shift+physical:t=unbind
+# keybind = global:unconsumed:cmd+shift+physical:t=unbind
+# keybind = global:shift+cmd+physical:backslash=unbind
+# keybind = global:shift+super+physical:backslash=unbind
+# keybind = global:unconsumed:shift+cmd+physical:backslash=unbind
+# keybind = global:unconsumed:shift+super+physical:backslash=unbind
+# keybind = cmd+physical:/=esc:/
+
+# CLAUDE-CODE Fix
+keybind = shift+enter=text:/n
+
+# vi: set ft=ghostty:
