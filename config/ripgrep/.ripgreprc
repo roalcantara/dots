@@ -1,0 +1,60 @@
+# RIPGREP CONFIGURATION FILE
+# https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file
+
+# Limit long lines to avoid overwhelming the terminal, and show where they break.
+--max-columns=150
+--max-columns-preview
+
+# Search hidden files and directories (e.g., dotfiles) by default.
+--hidden
+
+# Exclude VCS and build system files.
+--glob=!**/.git/**
+
+# Exclude hidden and non-hidden cache directories and their contents.
+--glob=!**/.cache/**
+--glob=!**/cache/**
+
+# Exclude temporary files and directories.
+--glob=!**/*.tmp
+--glob=!**/tmp/**
+
+# Exclude dependencies and build artifacts.
+--glob=!**/node_modules/**
+--glob=!**/dist/**
+
+# Enable smart case-sensitivity: ignore case unless the query has uppercase letters.
+--smart-case
+
+# Always use line numbers in output for easy reference.
+--line-number
+
+# Display context (lines before/after a match) for better understanding of results.
+--context=3
+
+# Detect the encoding of files automatically.
+--encoding=auto
+
+# Follow symlinks for more thorough searches.
+--follow
+
+# Use a fixed string search when no regex metacharacters are detected for performance.
+# The --fixed-strings flag will treat all searches as literal strings, disabling regex functionality entirely. This may be too restrictive as it prevents users from using regex patterns when needed
+# https://github.com/roalcantara/dots/pull/5#discussion_r2247436858
+# --fixed-strings
+
+# Highlight matches with clearer distinction.
+--heading
+--color=always
+
+# Customize color settings for better visual distinction.
+--colors=line:none
+--colors=line:style:bold
+--colors=path:fg:green
+--colors=path:style:bold
+--colors=match:fg:black
+--colors=match:bg:yellow
+--colors=match:style:nobold
+
+# For large projects, skip files larger than 10 MB to speed up searches.
+--max-filesize=10M

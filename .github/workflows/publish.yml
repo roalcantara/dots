@@ -82,9 +82,17 @@ jobs:
           push: true
           provenance: true
           cache-from: |
-            type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}
+            type=gha,scope=build-${{ matrix.distro }}-linux/amd64
+            type=gha,scope=build-${{ matrix.distro }}-linux/arm64
+            type=gha,scope=build-${{ matrix.distro }}-${{ github.ref_name }}-linux/amd64
+            type=gha,scope=build-${{ matrix.distro }}-${{ github.ref_name }}-linux/arm64
+            type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}-linux/amd64
+            type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}-linux/arm64
             type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}-${{ github.ref_name }}
-            type=gha,scope=build-${{ matrix.distro }}
+            type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }}
+            type=registry,ref=${{ env.IMG_NAME }}:cache-base
           cache-to: |
             type=registry,ref=${{ env.IMG_NAME }}:cache-${{ matrix.distro }},mode=max
-            type=gha,scope=build-${{ matrix.distro }},mode=max
+            type=gha,scope=build-${{ matrix.distro }}-linux/amd64,mode=max
+            type=gha,scope=build-${{ matrix.distro }}-linux/arm64,mode=max
+          github-token: ${{ secrets.GH_TOKEN }}

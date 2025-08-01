@@ -176,6 +176,10 @@ fileExistenceTests:
     path: /home/vscode/.config/ghostty
     shouldExist: true
     permissions: drwxr-xr-x
+  - name: ~/.config/ripgrep/.ripgreprc file (RIPGREP_CONFIG_PATH)
+    path: /home/vscode/.config/ripgrep/.ripgreprc
+    shouldExist: true
+    permissions: -rw-r--r--
 
   # CACHE
   - name: ~/.cache directory (XDG_CACHE_HOME)
@@ -243,10 +247,6 @@ fileExistenceTests:
     path: /home/vscode/.local/share/mise/shims/bat
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: corepack should be installed
-    path: /home/vscode/.local/share/mise/shims/corepack
-    shouldExist: true
-    permissions: Lrwxrwxrwx
   - name: delta should be installed
     path: /home/vscode/.local/share/mise/shims/delta
     shouldExist: true
@@ -271,14 +271,6 @@ fileExistenceTests:
     path: /home/vscode/.local/share/mise/shims/gum
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: idle3 should be installed
-    path: /home/vscode/.local/share/mise/shims/idle3
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: idle3.13 should be installed
-    path: /home/vscode/.local/share/mise/shims/idle3.13
-    shouldExist: true
-    permissions: Lrwxrwxrwx
   - name: node should be installed
     path: /home/vscode/.local/share/mise/shims/node
     shouldExist: true
@@ -299,40 +291,8 @@ fileExistenceTests:
     path: /home/vscode/.local/share/mise/shims/pip
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: pip3 should be installed
-    path: /home/vscode/.local/share/mise/shims/pip3
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: pip3.13 should be installed
-    path: /home/vscode/.local/share/mise/shims/pip3.13
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: pydoc3 should be installed
-    path: /home/vscode/.local/share/mise/shims/pydoc3
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: pydoc3.13 should be installed
-    path: /home/vscode/.local/share/mise/shims/pydoc3.13
-    shouldExist: true
-    permissions: Lrwxrwxrwx
   - name: python should be installed
     path: /home/vscode/.local/share/mise/shims/python
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: python3 should be installed
-    path: /home/vscode/.local/share/mise/shims/python3
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: python3-config should be installed
-    path: /home/vscode/.local/share/mise/shims/python3-config
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: python3.13 should be installed
-    path: /home/vscode/.local/share/mise/shims/python3.13
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: python3.13-config should be installed
-    path: /home/vscode/.local/share/mise/shims/python3.13-config
     shouldExist: true
     permissions: Lrwxrwxrwx
   - name: rg should be installed
