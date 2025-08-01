@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/roalcantara/dots/compare/v1.2.0...v1.2.1) (2025-08-01)
+
+
+### Bug Fixes
+
+* **install:** Enhance user detection ([c76b85f](https://github.com/roalcantara/dots/commit/c76b85ff18e41541954fa4438bcc3211f8283420))
+
 # [1.2.0](https://github.com/roalcantara/dots/compare/v1.1.0...v1.2.0) (2025-08-01)
 
 
