@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/roalcantara/dots/compare/v1.0.0...v1.1.0) (2025-08-01)
+
+
+### Features
+
+* **config:** Add initial Ghostty configuration file ([dca96bb](https://github.com/roalcantara/dots/commit/dca96bba672f829b20156e11b8c0b693e3859212))
+* **nvim/tests:** Add Busted configuration and initial test setup ([389686e](https://github.com/roalcantara/dots/commit/389686e70810377bc310e997d552bfdc227ab185))
+
 # 1.0.0 (2025-07-30)
 
 
