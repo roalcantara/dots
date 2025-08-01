@@ -1,11 +1,11 @@
 return {
   {
     'saghen/blink.cmp',
-    event = "VeryLazy",
-    version = "1.*",
+    event = 'VeryLazy',
+    version = '1.*',
     dependencies = {
       'rafamadriz/friendly-snippets',
-      "onsails/lspkind.nvim",
+      'onsails/lspkind.nvim',
       -- Conventional Commits source for blink-cmp
       -- https://github.com/disrupted/blink-cmp-conventional-commits?tab=readme-ov-file#installation
       'disrupted/blink-cmp-conventional-commits',
@@ -41,7 +41,7 @@ return {
           ls = {
             lua_ls = {
               -- Maybe you want to dim arguments a bit.
-              arguments_hl = "@comment",
+              arguments_hl = '@comment',
             },
             gopls = {
               -- By default, we render variable/function's type in the right most side,
@@ -66,16 +66,16 @@ return {
             ts_ls = {
               -- false means do not include any extra info,
               -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
-              extra_info_hl = "@comment",
+              extra_info_hl = '@comment',
             },
             vtsls = {
               -- false means do not include any extra info,
               -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
-              extra_info_hl = "@comment",
+              extra_info_hl = '@comment',
             },
-            ["rust-analyzer"] = {
+            ['rust-analyzer'] = {
               -- Such as (as Iterator), (use std::io).
-              extra_info_hl = "@comment",
+              extra_info_hl = '@comment',
               -- Similar to the same setting of gopls.
               align_type_to_right = true,
               -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
@@ -83,11 +83,11 @@ return {
             },
             clangd = {
               -- Such as "From <stdio.h>".
-              extra_info_hl = "@comment",
+              extra_info_hl = '@comment',
               -- Similar to the same setting of gopls.
               align_type_to_right = true,
               -- the hl group of leading dot of "•std::filesystem::permissions(..)"
-              import_dot_hl = "@comment",
+              import_dot_hl = '@comment',
               -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
               preserve_type_when_truncate = true,
             },
@@ -96,30 +96,30 @@ return {
               align_type_to_right = true,
             },
             roslyn = {
-              extra_info_hl = "@comment",
+              extra_info_hl = '@comment',
             },
             dartls = {
-              extra_info_hl = "@comment",
+              extra_info_hl = '@comment',
             },
             -- The same applies to pyright/pylance
             basedpyright = {
               -- It is usually import path such as "os"
-              extra_info_hl = "@comment",
+              extra_info_hl = '@comment',
             },
             pylsp = {
-              extra_info_hl = "@comment",
+              extra_info_hl = '@comment',
               -- Dim the function argument area, which is the main
               -- difference with pyright.
-              arguments_hl = "@comment",
+              arguments_hl = '@comment',
             },
             -- If true, try to highlight "not supported" languages.
             fallback = true,
             -- this will be applied to label description for unsupport languages
-            fallback_extra_info_hl = "@comment",
+            fallback_extra_info_hl = '@comment',
           },
           -- If the built-in logic fails to find a suitable highlight group for a label,
           -- this highlight is applied to the label.
-          fallback_highlight = "@variable",
+          fallback_highlight = '@variable',
           -- If provided, the plugin truncates the final displayed text to
           -- this width (measured in display cells). Any highlights that extend
           -- beyond the truncation point are ignored. When set to a float
@@ -153,7 +153,7 @@ return {
         use_nvim_cmp_as_default = false,
         -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- adjusts spacing to ensure icons are aligned
-        nerd_font_variant = "mono",
+        nerd_font_variant = 'mono',
       },
       sources = {
         default = function(ctx)
@@ -168,14 +168,14 @@ return {
         end,
         providers = {
           copilot = {
-            name = "copilot",
-            module = "blink-copilot",
+            name = 'copilot',
+            module = 'blink-copilot',
             score_offset = 100,
             async = true
           },
           lazydev = {
-            name = "LazyDev",
-            module = "lazydev.integrations.blink",
+            name = 'LazyDev',
+            module = 'lazydev.integrations.blink',
             -- make lazydev completions top priority (see `:h blink.cmp`)
             score_offset = 100,
           },
@@ -211,13 +211,13 @@ return {
           },
           -- Native Snippets
           snippets = {
-            name = "snippets",
-            module = "blink.cmp.sources.snippets",
+            name = 'snippets',
+            module = 'blink.cmp.sources.snippets',
             score_offset = -3,
             opts = {
               friendly_snippets = true,
-              search_paths = { vim.fn.stdpath("config") .. "/snippets" },
-              global_snippets = { "all" },
+              search_paths = { vim.fn.stdpath('config') .. '/snippets' },
+              global_snippets = { 'all' },
               extended_filetypes = {},
               ignored_filetypes = {},
             }
@@ -275,17 +275,15 @@ return {
         ['<Down>'] = { 'select_next', 'fallback' },
         ['<C-p>'] = { 'select_prev', 'fallback_to_mappings' },
         ['<C-n>'] = { 'select_next', 'fallback_to_mappings' },
-
         ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
         ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
-
         ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
       },
       cmdline = {
         enabled = true,
         completion = { menu = { auto_show = true } },
         keymap = {
-          ["<CR>"] = { "accept_and_enter", "fallback" },
+          ['<CR>'] = { 'accept_and_enter', 'fallback' },
         },
       },
       completion = {
@@ -305,27 +303,21 @@ return {
           auto_show = true,
           draw = {
             padding = { 1, 0 },
-            columns = { { "kind_icon" }, { "label", gap = 1 } },
+            columns = { { 'kind_icon' }, { 'label', gap = 1 } },
             components = {
               kind_icon = {
                 text = function(ctx)
                   local icon = ctx.kind_icon
-                  if vim.tbl_contains({ "Path" }, ctx.source_name) then
-                    local dev_icon, _ = require("nvim-web-devicons").get_icon(ctx.label)
+                  if vim.tbl_contains({ 'Path' }, ctx.source_name) then
+                    local dev_icon, _ = require('nvim-web-devicons').get_icon(ctx.label)
                     if dev_icon then
                       icon = dev_icon
                     end
                   else
-                    icon = require("lspkind").symbolic(ctx.kind, {
-                      mode = "symbol",
+                    icon = require('lspkind').symbolic(ctx.kind, {
+                      mode = 'symbol',
                     })
                   end
-
-                  -- if type(icon) == nil then
-                  --  local icons = require('core/ui').icons
-                  --  icon = icons.kinds.Copilot
-                  -- end
-
                   return icon .. ' ' .. ctx.icon_gap
                 end,
                 -- Optionally, use the highlight groups from nvim-web-devicons
@@ -333,12 +325,8 @@ return {
                 -- keep the highlight groups in sync with the icons.
                 highlight = function(ctx)
                   local hl = ctx.kind_hl
-                  if vim.tbl_contains({ "Path" }, ctx.source_name) then
-                    -- local highlights_info = require("colorful-menu").blink_components_highlight(ctx)
-                    -- if highlights_info ~= nil then
-                    --  hl = highlights_info.highlights
-                    -- end
-                    local dev_icon, dev_hl = require("nvim-web-devicons").get_icon(ctx.label)
+                  if vim.tbl_contains({ 'Path' }, ctx.source_name) then
+                    local dev_icon, dev_hl = require('nvim-web-devicons').get_icon(ctx.label)
                     if dev_icon then
                       hl = dev_hl
                     end
@@ -348,92 +336,13 @@ return {
               },
               label = {
                 text = function(ctx)
-                  return require("colorful-menu").blink_components_text(ctx)
+                  return require('colorful-menu').blink_components_text(ctx)
                 end,
                 highlight = function(ctx)
-                  return require("colorful-menu").blink_components_highlight(ctx)
+                  return require('colorful-menu').blink_components_highlight(ctx)
                 end,
               },
             },
-            -- -- components = {
-            -- --   kind_icon = {
-            -- --     text = function(ctx)
-            -- --       local icon = ctx.kind_icon
-            -- --       if vim.tbl_contains({ "Path" }, ctx.source_name) then
-            -- --         local dev_icon, _ = require("nvim-web-devicons").get_icon(ctx.label)
-            -- --         if dev_icon then
-            -- --           icon = dev_icon
-            -- --         end
-            -- --       else
-            -- --         icon = require("lspkind").symbolic(ctx.kind, {
-            -- --           mode = "symbol",
-            -- --         })
-            -- --       end
-
-            -- --       return icon .. ctx.icon_gap
-            -- --     end,
-
-            -- --     -- Optionally, use the highlight groups from nvim-web-devicons
-            -- --     -- You can also add the same function for `kind.highlight` if you want to
-            -- --     -- keep the highlight groups in sync with the icons.
-            -- --     highlight = function(ctx)
-            -- --       local hl = ctx.kind_hl
-            -- --       if vim.tbl_contains({ "Path" }, ctx.source_name) then
-            -- --         local dev_icon, dev_hl = require("nvim-web-devicons").get_icon(ctx.label)
-            -- --         if dev_icon then
-            -- --           hl = dev_hl
-            -- --         end
-            -- --       end
-            -- --       return hl
-            -- --     end,
-            -- --   },
-            -- --   label = {
-            -- --     text = function(ctx)
-            -- --       return require("colorful-menu").blink_components_text(ctx)
-            -- --     end,
-            -- --     highlight = function(ctx)
-            -- --       return require("colorful-menu").blink_components_highlight(ctx)
-            -- --     end,
-            -- --   },
-            -- -- },
-            -- components = {
-            --   label = {
-            --     width = { fill = true, max = 60 },
-            --     text = function(ctx)
-            --       local icon = ctx.kind_icon
-            --       if vim.tbl_contains({ "Path" }, ctx.source_name) then
-            --         local dev_icon, _ = require("nvim-web-devicons").get_icon(ctx.label)
-            --         if dev_icon then
-            --           icon = dev_icon
-            --         end
-            --       else
-            --         icon = require("lspkind").symbolic(ctx.kind, {
-            --           mode = "symbol",
-            --         })
-            --       end
-            --       local highlights_info = require("colorful-menu").blink_highlights(ctx)
-            --       if highlights_info ~= nil then
-            --         vim_item.abbr_hl_group = highlights_info.highlights
-            --         vim_item.abbr = highlights_info.text
-            --         icon = highlights_info
-            --       end
-
-            --       return icon .. '  ' .. ctx.icon_gap
-            --     end,
-            --     highlight = function(ctx)
-            --       local highlights = {}
-            --       local highlights_info = require("colorful-menu").blink_highlights(ctx)
-            --       if highlights_info ~= nil then
-            --         highlights = highlights_info.highlights
-            --       end
-            --       for _, idx in ipairs(ctx.label_matched_indices) do
-            --         table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
-            --       end
-            --       -- Do something else
-            --       return highlights
-            --     end,
-            --   },
-            -- },
           },
           -- Avoid overlapping with the ghost text
           -- https://cmp.saghen.dev/recipes.html#avoid-multi-line-completion-ghost-text
@@ -522,8 +431,9 @@ return {
           -- or another window is in the way
           -- direction_priority = { 'n', 's' },
           direction_priority = function()
-            local ctx = require('blink.cmp').get_context()
-            local item = require('blink.cmp').get_selected_item()
+            local blink_cmp = require('blink.cmp')
+            local ctx = blink_cmp.get_context()
+            local item = blink_cmp.get_selected_item()
             if ctx == nil or item == nil then return { 's', 'n' } end
 
             local item_text = item.textEdit ~= nil and item.textEdit.newText or item.insertText or item.label

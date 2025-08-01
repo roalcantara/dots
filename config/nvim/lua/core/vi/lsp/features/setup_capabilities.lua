@@ -5,7 +5,6 @@ local M = {
   enabled_capabilities = {
     ['textDocument/documentHighlight'] = require('core/vi/lsp/features/text_document/document_highlight'),
     ['textDocument/hover'] = require('core/vi/lsp/features/text_document/hover'),
-    -- ['textDocument/completion'] = require('core/vi/lsp/features/text_document/completion'),
   }
 }
 

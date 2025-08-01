@@ -2,9 +2,9 @@ local M = {}
 
 function M.status(icon, status)
   local colors = {
-    ok = "Special",
-    error = "DiagnosticError",
-    pending = "DiagnosticWarn",
+    ok = 'Special',
+    error = 'DiagnosticError',
+    pending = 'DiagnosticWarn',
   }
   return {
     function()
@@ -47,27 +47,27 @@ end
 --- @param hl_group? string
 --- @return string
 function M.format(component, text, hl_group)
-  text = text:gsub("%%", "%%%%")
-  if not hl_group or hl_group == "" then
+  text = text:gsub('%%', '%%%%')
+  if not hl_group or hl_group == '' then
     return text
   end
   --- @type table<string, string>
   component.hl_cache = component.hl_cache or {}
   local lualine_hl_group = component.hl_cache[hl_group]
   if not lualine_hl_group then
-    local utils = require("lualine.utils.utils")
+    local utils = require('lualine.utils.utils')
     --- @type string[]
     local gui = vim.tbl_filter(function(x)
       return x
     end, {
-      utils.extract_highlight_colors(hl_group, "bold") and "bold",
-      utils.extract_highlight_colors(hl_group, "italic") and "italic",
+      utils.extract_highlight_colors(hl_group, 'bold') and 'bold',
+      utils.extract_highlight_colors(hl_group, 'italic') and 'italic',
     })
 
     lualine_hl_group = component:create_hl({
-      fg = utils.extract_highlight_colors(hl_group, "fg"),
-      gui = #gui > 0 and table.concat(gui, ",") or nil,
-    }, "LV_" .. hl_group) --[[@as string]]
+      fg = utils.extract_highlight_colors(hl_group, 'fg'),
+      gui = #gui > 0 and table.concat(gui, ',') or nil,
+    }, 'LV_' .. hl_group) --[[@as string]]
     component.hl_cache[hl_group] = lualine_hl_group
   end
   return component:format_hl(lualine_hl_group) .. text .. component:get_default_hl()
@@ -76,21 +76,21 @@ end
 --- @param opts? {cwd:false, subdirectory: true, parent: true, other: true, icon?:string}
 --- @return table
 function M.root_dir(opts)
-  opts = vim.tbl_extend("force", {
+  opts = vim.tbl_extend('force', {
     cwd = false,
     subdirectory = true,
     parent = true,
     other = true,
-    icon = "󱉭 ",
+    icon = '󱉭 ',
     color = function()
-      return { fg = Snacks.util.color("Special") }
+      return { fg = Snacks.util.color('Special') }
     end,
   }, opts or {})
 
   local function get()
-    local root_utils = require('core/vi/fn').root
-    local cwd = root_utils.cwd()
-    local root = root_utils.get({ normalize = true })
+    local paths = require('core/vi/paths')
+    local cwd = paths.cwd()
+    local root = paths.get({ normalize = true })
     local name = vim.fs.basename(root)
 
     if root == cwd then
@@ -110,10 +110,10 @@ function M.root_dir(opts)
 
   return {
     function()
-      return (opts.icon and opts.icon .. " ") .. get()
+      return (opts.icon and opts.icon .. ' ') .. get()
     end,
     cond = function()
-      return type(get()) == "string"
+      return type(get()) == 'string'
     end,
     color = opts.color,
   }
@@ -122,29 +122,29 @@ end
 --- @param opts? {relative: "cwd"|"root", modified_hl: string?, directory_hl: string?, filename_hl: string?, modified_sign: string?, readonly_icon: string?, length: number?}
 --- @return ...
 function M.pretty_path(opts)
-  opts = vim.tbl_extend("force", {
-    relative = "cwd",
-    modified_hl = "MatchParen",
-    directory_hl = "",
-    filename_hl = "Bold",
-    modified_sign = "",
-    readonly_icon = " 󰌾 ",
+  opts = vim.tbl_extend('force', {
+    relative = 'cwd',
+    modified_hl = 'MatchParen',
+    directory_hl = '',
+    filename_hl = 'Bold',
+    modified_sign = '',
+    readonly_icon = ' 󰌾 ',
     length = 3,
   }, opts or {})
 
   return function(self)
-    local path = vim.fn.expand("%:p") --[[@as string]]
+    local path = vim.fn.expand('%:p') --[[@as string]]
 
-    if path == "" then
-      return ""
+    if path == '' then
+      return ''
     end
 
-    local root_helper = require('core/vi/fn').root
-    path = require('core/vi/fn/paths').norm(path)
-    local root = root_helper.root.get({ normalize = true })
-    local cwd = root_helper.root.cwd()
+    local paths = require('core/vi/paths')
+    path = paths.norm(path)
+    local root = paths.get({ normalize = true })
+    local cwd = paths.cwd()
 
-    if opts.relative == "cwd" and path:find(cwd, 1, true) == 1 then
+    if opts.relative == 'cwd' and path:find(cwd, 1, true) == 1 then
       path = path:sub(#cwd + 2)
     elseif path:find(root, 1, true) == 1 then
       path = path:sub(#root + 2)
@@ -156,7 +156,7 @@ function M.pretty_path(opts)
     if opts.length == 0 then
       parts = parts
     elseif #parts > opts.length then
-      parts = { parts[1], "…", unpack(parts, #parts - opts.length + 2, #parts) }
+      parts = { parts[1], '…', unpack(parts, #parts - opts.length + 2, #parts) }
     end
 
     if opts.modified_hl and vim.bo.modified then
@@ -166,13 +166,13 @@ function M.pretty_path(opts)
       parts[#parts] = M.format(self, parts[#parts], opts.filename_hl)
     end
 
-    local dir = ""
+    local dir = ''
     if #parts > 1 then
       dir = table.concat({ unpack(parts, 1, #parts - 1) }, sep)
       dir = M.format(self, dir .. sep, opts.directory_hl)
     end
 
-    local readonly = ""
+    local readonly = ''
     if vim.bo.readonly then
       readonly = M.format(self, opts.readonly_icon, opts.modified_hl)
     end

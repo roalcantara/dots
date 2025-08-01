@@ -1,15 +1,7 @@
--- vim.keymap.set('n', '<leader>o', ':update<CR> :source<CR>')
--- vim.keymap.set('n', '<D-s>', ':write<CR>')
--- vim.keymap.set('n', '<D-p>', ':Pick files<CR>')
--- vim.keymap.set('n', '<D-;>', ':Pick help<CR>')
--- vim.keymap.set('n', '<leader>q', ':quit<CR>')
--- vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
--- vim.keymap.set({ 'n', 'v', 'x' }, '<D-c>', '"+y<CR>')
-
 vim.schedule_wrap(function()
   --- lua-language-server: disable
   -- stylua: ignore
-  require("core/vi/maps").set_keymaps(function(opts)
+  require('core/vi/maps').set_keymaps(function(opts)
     local buf, pick, toggle, lsp, ev, setup = opts.buf, opts.pick, opts.toggle, opts.lsp, opts.ev, opts.setup
 
     -- =============================================================================
@@ -18,142 +10,142 @@ vim.schedule_wrap(function()
     -- But doesn't work when remapping with `vim.keymap.set` so we call directly...
     -- gc<motion> must to be used manually
     -- =============================================================================
-    setup.toggle_comments_mappings("<D-/>")
+    setup.toggle_comments_mappings('<D-/>')
 
     return {
       -- ===========================================================================
       -- EDITOR
       -- ===========================================================================
-      ["<D-a>"] = { { n = 'normal ggVG', i = '<ESC>ggVG', v = '<ESC>ggVG' }, "Select All" },
-      ["<D-C-g>"] = { { n = '<Plug>(VM-Find-Under)', x = '<Plug>(VM-Find-Subword-Under)' }, "Select All Occurrences" },
-      ["<D-C-h>"] = { { v = 'y:%s#<C-R>=@"<CR>#' }, "Replace the selected text" },
-      ["<D-c>"] = { { n = 'normal y' }, "Copy" },
-      ["<D-n>"] = { { n = 'ene | startinsert', i = '<ESC>ene | startinsert' }, "New File" },
-      ["<D-s>"] = { { n = "<CMD>w<CR>", i = "<C-O><CMD>w<CR>", v = "<C-O><CMD>w<CR>gv" }, "Save File" },
-      ["<D-S-s>"] = { { n = "<CMD>wa<CR>", i = "<C-O><CMD>wa<CR>", v = "<C-O><CMD>wa<CR>gv" }, "Save All" },
-      ["<D-v>"] = { { n = 'normal P' }, "Paste" },
-      ["<D-x>"] = { { n = 'normal x' }, "Cut" },
-      ["<D-y>"] = { { n = 'normal <C-r>' }, "Redo" },
-      ["<D-z>"] = { { n = 'normal U' }, "Undo" },
-      ["<D-q>"] = { { n = "<CMD>q<CR>", i = "<Esc><CMD>q<CR>", v = "<Esc><CMD>q<CR>" }, "Quit Editor" },
-      ["<D-S-q>"] = { { n = "<CMD>q!<CR>", i = "<Esc><CMD>q!<CR>", v = "<Esc><CMD>q!<CR>" }, "Force Quit Editor" },
-      ["<D-M-q>"] = { { n = "<CMD>qa<CR>", i = "<Esc><CMD>qa<CR>", v = "<Esc><CMD>qa<CR>" }, "Quit All Editors" },
-      ["<D-S-M-q>"] = { { n = "<CMD>qa!<CR>", i = "<Esc><CMD>qa!<CR>", v = "<Esc><CMD>qa!<CR>" }, "Force Quit All Editors" },
-      ["<D-M-c>"] = { { n = 'normal y' }, "Copy File Path", { cmd = "CopyFilePath" } },
-      ["<D-M-v>"] = { { n = 'normal p' }, "Paste File Path", { cmd = "PasteFilePath" } },
+      ['<D-a>'] = { { n = 'normal ggVG', i = '<ESC>ggVG', v = '<ESC>ggVG' }, 'Select All' },
+      ['<D-C-g>'] = { { n = '<Plug>(VM-Find-Under)', x = '<Plug>(VM-Find-Subword-Under)' }, 'Select All Occurrences' },
+      ['<D-C-h>'] = { { v = 'y:%s#<C-R>=@"<CR>#' }, 'Replace the selected text' },
+      ['<D-c>'] = { { n = 'normal y' }, 'Copy' },
+      ['<D-n>'] = { { n = 'ene | startinsert', i = '<ESC>ene | startinsert' }, 'New File' },
+      ['<D-s>'] = { { n = '<CMD>w<CR>', i = '<C-O><CMD>w<CR>', v = '<C-O><CMD>w<CR>gv' }, 'Save File' },
+      ['<D-S-s>'] = { { n = '<CMD>wa<CR>', i = '<C-O><CMD>wa<CR>', v = '<C-O><CMD>wa<CR>gv' }, 'Save All' },
+      ['<D-v>'] = { { n = 'normal P' }, 'Paste' },
+      ['<D-x>'] = { { n = 'normal x' }, 'Cut' },
+      ['<D-y>'] = { { n = 'normal <C-r>' }, 'Redo' },
+      ['<D-z>'] = { { n = 'normal U' }, 'Undo' },
+      ['<D-q>'] = { { n = '<CMD>q<CR>', i = '<Esc><CMD>q<CR>', v = '<Esc><CMD>q<CR>' }, 'Quit Editor' },
+      ['<D-S-q>'] = { { n = '<CMD>q!<CR>', i = '<Esc><CMD>q!<CR>', v = '<Esc><CMD>q!<CR>' }, 'Force Quit Editor' },
+      ['<D-M-q>'] = { { n = '<CMD>qa<CR>', i = '<Esc><CMD>qa<CR>', v = '<Esc><CMD>qa<CR>' }, 'Quit All Editors' },
+      ['<D-S-M-q>'] = { { n = '<CMD>qa!<CR>', i = '<Esc><CMD>qa!<CR>', v = '<Esc><CMD>qa!<CR>' }, 'Force Quit All Editors' },
+      ['<D-M-c>'] = { { n = 'normal y' }, 'Copy File Path', { cmd = 'CopyFilePath' } },
+      ['<D-M-v>'] = { { n = 'normal p' }, 'Paste File Path', { cmd = 'PasteFilePath' } },
       -- =============================================================================
       -- MOVING AROUND
       -- =============================================================================
-      ["<A-Down>"] = { { n = "<CMD>execute 'move .+' . v:count1<CR>==", i = "<ESC><CMD>m .+1<CR>==gi", v = ":<C-u>execute \"'<,'>move '>+\" . v:count1<CR>gv=gv" }, "Move Line Down" },
-      ["<A-Up>"] = { { n = "<CMD>execute 'move .-' . (v:count1 + 1)<CR>==", i = "<ESC><CMD>m .-2<CR>==gi", v = ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<CR>gv=gv" }, "Move Line Up" },
-      ["<C-a>"] = { { n = "0", i = "<C-O>0", v = "<C-O>0" }, "Move to BoL" },
-      ["<C-e>"] = { { n = "$", i = "<C-O>$", v = "<C-O>$" }, "Move to EoL" },
-      ["<D-Up>"] = { { n = "gg", i = "<C-O>gg" }, "Go to BoF" },
-      ["<D-Down>"] = { { n = "G", i = "<C-O>G" }, "Go to EoF" },
-      ["<D-Left>"] = { { n = "0", i = "<C-O>0" }, "Move to BoL" },
-      ["<D-Right>"] = { { n = "$", i = "<C-O>$" }, "Move to EoL" },
+      ['<A-Down>'] = { { n = "<CMD>execute 'move .+' . v:count1<CR>==", i = '<ESC><CMD>m .+1<CR>==gi', v = ":<C-u>execute \"'<,'>move '>+\" . v:count1<CR>gv=gv" }, 'Move Line Down' },
+      ['<A-Up>'] = { { n = "<CMD>execute 'move .-' . (v:count1 + 1)<CR>==", i = '<ESC><CMD>m .-2<CR>==gi', v = ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<CR>gv=gv" }, 'Move Line Up' },
+      ['<C-a>'] = { { n = '0', i = '<C-O>0', v = '<C-O>0' }, 'Move to BoL' },
+      ['<C-e>'] = { { n = '$', i = '<C-O>$', v = '<C-O>$' }, 'Move to EoL' },
+      ['<D-Up>'] = { { n = 'gg', i = '<C-O>gg' }, 'Go to BoF' },
+      ['<D-Down>'] = { { n = 'G', i = '<C-O>G' }, 'Go to EoF' },
+      ['<D-Left>'] = { { n = '0', i = '<C-O>0' }, 'Move to BoL' },
+      ['<D-Right>'] = { { n = '$', i = '<C-O>$' }, 'Move to EoL' },
       -- ===========================================================================
       -- SELECTION (SHIFT + ARROW KEYS for LINE selection)
       -- ===========================================================================
-      ["<S-Down>"] = { { n = "V<Down>", x = "<Down>", v = "<Down>", i = "<C-O>V<Down>" }, "Select Line Down" },
-      ["<S-Up>"] = { { n = "V<Up>", x = "<Up>", v = "<Up>", i = "<C-O>V<Up>" }, "Select Line Up" },
-      ["<S-Right>"] = { { n = "vw", v = "w", x = "<Right>", i = "<C-O>vw" }, "Expand Selection" },
-      ["<S-Left>"] = { { n = "vb", v = "b", x = "<Left>", i = "<C-O>vb" }, "Shrink Selection" },
+      ['<S-Down>'] = { { n = 'V<Down>', x = '<Down>', v = '<Down>', i = '<C-O>V<Down>' }, 'Select Line Down' },
+      ['<S-Up>'] = { { n = 'V<Up>', x = '<Up>', v = '<Up>', i = '<C-O>V<Up>' }, 'Select Line Up' },
+      ['<S-Right>'] = { { n = 'vw', v = 'w', x = '<Right>', i = '<C-O>vw' }, 'Expand Selection' },
+      ['<S-Left>'] = { { n = 'vb', v = 'b', x = '<Left>', i = '<C-O>vb' }, 'Shrink Selection' },
       -- ===========================================================================
       -- SELECTION (CMD + SHIFT + ARROW KEYS for CHUNK selection)
       -- ===========================================================================
-      ["<D-S-Left>"] = { { n = "v0", v = "0", i = "<C-O>v0" }, "Select to BoL" },
-      ["<D-S-Right>"] = { { n = "v$", v = "$", i = "<C-O>v$" }, "Select to EoL" },
-      ["<D-S-Up>"] = { { n = "vgg", v = "gg", i = "<C-O>vgg" }, "Select to BoF" },
-      ["<D-S-Down>"] = { { n = "vG", v = "G", i = "<C-O>vG" }, "Select to EoF" },
+      ['<D-S-Left>'] = { { n = 'v0', v = '0', i = '<C-O>v0' }, 'Select to BoL' },
+      ['<D-S-Right>'] = { { n = 'v$', v = '$', i = '<C-O>v$' }, 'Select to EoL' },
+      ['<D-S-Up>'] = { { n = 'vgg', v = 'gg', i = '<C-O>vgg' }, 'Select to BoF' },
+      ['<D-S-Down>'] = { { n = 'vG', v = 'G', i = '<C-O>vG' }, 'Select to EoF' },
       -- ===========================================================================
       -- SELECTION (ALT + SHIFT + ARROW KEYS for WORD selection)
       -- ===========================================================================
-      ["<M-S-Right>"] = { { n = "ve", v = "e", i = "<C-O>ve" }, "Select to EoW" },
-      ["<M-S-Left>"] = { { n = "vb", v = "b", i = "<C-O>vb" }, "Select to BoW" },
-      ["<M-S-Down>"] = { { n = "v}", v = "}", i = "<C-O>v}" }, "Select to Next Paragraph" },
-      ["<M-S-Up>"] = { { n = "v{", v = "{", i = "<C-O>v{" }, "Select to Previous Paragraph" },
-      ["<D-M-Down>"] = { '<Plug>(VM-Add-Cursor-Down)', "Add cursor below" },
+      ['<M-S-Right>'] = { { n = 've', v = 'e', i = '<C-O>ve' }, 'Select to EoW' },
+      ['<M-S-Left>'] = { { n = 'vb', v = 'b', i = '<C-O>vb' }, 'Select to BoW' },
+      ['<M-S-Down>'] = { { n = 'v}', v = '}', i = '<C-O>v}' }, 'Select to Next Paragraph' },
+      ['<M-S-Up>'] = { { n = 'v{', v = '{', i = '<C-O>v{' }, 'Select to Previous Paragraph' },
+      ['<D-M-Down>'] = { '<Plug>(VM-Add-Cursor-Down)', 'Add cursor below' },
       -- ===========================================================================
       -- FOLDING
       -- ===========================================================================
-      ["<D-[>"] = { { n = "zc", i = "zc" }, "Fold" },
-      ["<D-]>"] = { { n = "zo", i = "zo" }, "Unfold" },
-      ["<D-M-[>"] = { { n = "zM", i = "zM" }, "Fold All" },
-      ["<D-M-]>"] = { { n = "zR", i = "zR" }, "Unfold All" },
+      ['<D-[>'] = { { n = 'zc', i = 'zc' }, 'Fold' },
+      ['<D-]>'] = { { n = 'zo', i = 'zo' }, 'Unfold' },
+      ['<D-M-[>'] = { { n = 'zM', i = 'zM' }, 'Fold All' },
+      ['<D-M-]>'] = { { n = 'zR', i = 'zR' }, 'Unfold All' },
       -- =============================================================================
       -- SEARCH
       -- =============================================================================
-      ["<D-p>"] = { { n = pick.smart, i = pick.smart }, "Smart Search Files", { cmd = "SmartSearch" } },
-      ["<D-S-p>"] = { { n = pick.commands, i = pick.commands, v = pick.commands }, "Command Palette", { cmd = "CommandPalette" } },
-      ["<D-M-p>"] = { { n = pick.files, i = pick.files, v = pick.files }, "Search Files", { cmd = "SearchFiles" } },
-      ["<D-f>"] = { { n = pick.find, i = pick.find }, "Find in File", { cmd = "FindInFile" } },
-      ["<D-S-f>"] = { { n = pick.grep, i = pick.grep, v = pick.grep }, "Search in Files (Grep)", { cmd = "Grep" } },
-      ["D-?"] = { { n = ":let @/='<C-R>=expand('<cword>')<CR>' | set hls<CR>", v = "y:let @/='<C-R>=escape(@\",'/\\')<CR>' | set hls<CR>", x = "<Esc>/\\%V" }, "Search word under cursor, the selected text or visual selection" },
+      ['<D-p>'] = { { n = pick.smart, i = pick.smart }, 'Smart Search Files', { cmd = 'SmartSearch' } },
+      ['<D-S-p>'] = { { n = pick.commands, i = pick.commands, v = pick.commands }, 'Command Palette', { cmd = 'CommandPalette' } },
+      ['<D-M-p>'] = { { n = pick.files, i = pick.files, v = pick.files }, 'Search Files', { cmd = 'SearchFiles' } },
+      ['<D-f>'] = { { n = pick.find, i = pick.find }, 'Find in File', { cmd = 'FindInFile' } },
+      ['<D-S-f>'] = { { n = pick.grep, i = pick.grep, v = pick.grep }, 'Search in Files (Grep)', { cmd = 'Grep' } },
+      ['D-?'] = { { n = ":let @/='<C-R>=expand('<cword>')<CR>' | set hls<CR>", v = "y:let @/='<C-R>=escape(@\",'/\\')<CR>' | set hls<CR>", x = "<Esc>/\\%V" }, 'Search word under cursor, the selected text or visual selection' },
       -- =============================================================================
       -- BUFFERS
       -- =============================================================================
-      ["<D-M-Left>"] = { { n = 'BufferLineCyclePrev', i = '<ESC>BufferLineCyclePrev', v = '<ESC>BufferLineCyclePrev' }, "Go to Previous Buffer (Left)" }, -- https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbufprevious
-      ["<D-M-Right>"] = { { n = 'BufferLineCycleNext', i = '<ESC>BufferLineCycleNext', v = '<ESC>BufferLineCycleNext' }, "Go to Next Buffer (Right)" },
-      ["<D-M-C-Right>"] = { { n = 'buffer #', i = '<ESC>buffer #', v = '<ESC>buffer #' }, "Go to Last Buffer (Right)" },                                  -- https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbuflast
-      ["<D-w>"] = { { n = buf.close, i = buf.close, v = buf.close }, "Close Buffer" },
-      ["<D-M-w>"] = { { n = buf.close_all, i = buf.close_all, v = buf.close_all }, "Close All Buffer" },
-      ["<D-S-w>"] = { { n = buf.close_others, i = buf.close_others, v = buf.close_others }, "Close All Others Buffer" },
-      ["<D-C-S-Left>"] = { { n = '<C-w>H', i = '<C-o><C-w>H', v = '<C-w>H' }, "Move window left" },
-      ["<D-C-S-Right>"] = { { n = '<C-w>J', i = '<C-o><C-w>J', v = '<C-w>J' }, "Move window bottom" },
-      ["<D-C-S-Up>"] = { { n = '<C-w>K', i = '<C-o><C-w>K', v = '<C-w>K' }, "Move window top" },
-      ["<D-C-S-Down>"] = { { n = '<C-w>L', i = '<C-o><C-w>L', v = '<C-w>L' }, "Move window right" },
-      ["<D-t>"] = { { n = toggle.term, i = toggle.term, v = toggle.term, t = toggle.term }, "Toggle terminal" },
+      ['<D-M-Left>'] = { { n = 'BufferLineCyclePrev', i = '<ESC>BufferLineCyclePrev', v = '<ESC>BufferLineCyclePrev' }, 'Go to Previous Buffer (Left)' }, -- https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbufprevious
+      ['<D-M-Right>'] = { { n = 'BufferLineCycleNext', i = '<ESC>BufferLineCycleNext', v = '<ESC>BufferLineCycleNext' }, 'Go to Next Buffer (Right)' },
+      ['<D-M-C-Right>'] = { { n = 'buffer #', i = '<ESC>buffer #', v = '<ESC>buffer #' }, 'Go to Last Buffer (Right)' },                                  -- https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbuflast
+      ['<D-w>'] = { { n = buf.close, i = buf.close, v = buf.close }, 'Close Buffer' },
+      ['<D-M-w>'] = { { n = buf.close_all, i = buf.close_all, v = buf.close_all }, 'Close All Buffer' },
+      ['<D-S-w>'] = { { n = buf.close_others, i = buf.close_others, v = buf.close_others }, 'Close All Others Buffer' },
+      ['<D-C-S-Left>'] = { { n = '<C-w>H', i = '<C-o><C-w>H', v = '<C-w>H' }, 'Move window left' },
+      ['<D-C-S-Right>'] = { { n = '<C-w>J', i = '<C-o><C-w>J', v = '<C-w>J' }, 'Move window bottom' },
+      ['<D-C-S-Up>'] = { { n = '<C-w>K', i = '<C-o><C-w>K', v = '<C-w>K' }, 'Move window top' },
+      ['<D-C-S-Down>'] = { { n = '<C-w>L', i = '<C-o><C-w>L', v = '<C-w>L' }, 'Move window right' },
+      ['<D-t>'] = { { n = toggle.term, i = toggle.term, v = toggle.term, t = toggle.term }, 'Toggle terminal' },
       -- =============================================================================
       -- PICKERS
       -- =============================================================================
-      ["<D-b>"] = { { n = pick.buffers, i = pick.buffers, v = pick.buffers }, "Neovim's Buffers", { cmd = "Buffers" } },
-      ["<D-;>"] = { { n = pick.help, i = pick.help, v = pick.help }, "Toggle Help", { cmd = "Help" } },
-      ["<D-Bslash>"] = { { n = pick.explorer, i = pick.explorer, v = pick.explorer }, "Toggle left side bar", { cmd = "ToggleSideBarLeft" } },
-      ["<D-S-Bslash>"] = { { n = toggle.new_scratch, i = toggle.new_scratch }, "Open scratch playground", { cmd = "ToggleNewScratch" } },
-      ["<D-S-M-Bslash>"] = { { n = toggle.select_scratch, i = toggle.select_scratch }, "Select existing scratch playground", { cmd = "ToggleSelectScratches" } },
-      ["<D-S-M-h>"] = { { n = pick.highlights, i = pick.highlights, v = pick.highlights }, "Neovim's Highlights", { cmd = "Highlights" } },
-      ["<D-S-M-l>"] = { { n = pick.lua_path_items, i = pick.lua_path_items, v = pick.lua_path_items }, "Lua path items", { cmd = "LuaPathItems" } },
-      ["<D-S-M-m>"] = { { n = toggle.menus.n, i = toggle.menus.i, v = toggle.menus.v }, "Toggle Menus", { cmd = "ToggleMenus" } },
-      ["<D-S-M-p>"] = { { n = toggle.news, i = toggle.news, v = toggle.news }, "Neovim News", { cmd = "NeovimNews" } },
-      ["<D-S-M-r>"] = { { n = pick.runtimepath_items, i = pick.runtimepath_items, v = pick.runtimepath_items }, "Runtimepath items", { cmd = "RuntimepathItems" } },
-      ["<D-S-M-t>"] = { { n = pick.filetypes, i = pick.filetypes, v = pick.filetypes }, "Neovim's FileTypes", { cmd = "FileTypes" } },
-      ["<D-S-M-k>"] = { { n = pick.keymaps, i = pick.keymaps }, "Toggle Keymaps", { cmd = "Maps" } },
-      ["<D-S-M-c>"] = { { n = lsp.config, i = lsp.config, v = lsp.config }, "LSP Configuration", { cmd = "LspConfig" } },
-      ["<D-S-M-a>"] = { { n = pick.autocmds, i = pick.autocmds, v = pick.autocmds }, "Neovim's Autocmds", { cmd = "Autocmds" } },
-      ["<D-S-M-o>"] = { { n = pick.options, i = pick.options, v = pick.options }, "Neovim's Options", { cmd = "Options" } },
-      ["<D-S-M-j>"] = { { n = pick.jumps, i = pick.jumps, v = pick.jumps }, "Neovim's Jumps", { cmd = "Jumps" } },
-      ["<D-S-M-s>"] = { { n = pick.move_buffer_split, i = pick.move_buffer_split, v = pick.move_buffer_split }, "Move Buffer Split", { cmd = "MoveBufferSplit" } },
-      ["<D-S-M-z>"] = { { n = toggle.zen, i = toggle.zen, v = toggle.zen }, "Toggle Zen Mode", { cmd = "ToggleZen" } },
+      ['<D-b>'] = { { n = pick.buffers, i = pick.buffers, v = pick.buffers }, 'Neovim\'s Buffers', { cmd = 'Buffers' } },
+      ['<D-;>'] = { { n = pick.help, i = pick.help, v = pick.help }, 'Toggle Help', { cmd = 'Help' } },
+      ['<D-Bslash>'] = { { n = pick.explorer, i = pick.explorer, v = pick.explorer }, 'Toggle left side bar', { cmd = 'ToggleSideBarLeft' } },
+      ['<D-S-Bslash>'] = { { n = toggle.new_scratch, i = toggle.new_scratch }, 'Open scratch playground', { cmd = 'ToggleNewScratch' } },
+      ['<D-S-M-Bslash>'] = { { n = toggle.select_scratch, i = toggle.select_scratch }, 'Select existing scratch playground', { cmd = 'ToggleSelectScratches' } },
+      ['<D-S-M-h>'] = { { n = pick.highlights, i = pick.highlights, v = pick.highlights }, 'Neovim`s Highlights', { cmd = 'Highlights' } },
+      ['<D-S-M-l>'] = { { n = pick.lua_path_items, i = pick.lua_path_items, v = pick.lua_path_items }, 'Lua path items', { cmd = 'LuaPathItems' } },
+      ['<D-S-M-m>'] = { { n = toggle.menus.n, i = toggle.menus.i, v = toggle.menus.v }, 'Toggle Menus', { cmd = 'ToggleMenus' } },
+      ['<D-S-M-p>'] = { { n = toggle.news, i = toggle.news, v = toggle.news }, 'Neovim News', { cmd = 'NeovimNews' } },
+      ['<D-S-M-r>'] = { { n = pick.runtimepath_items, i = pick.runtimepath_items, v = pick.runtimepath_items }, 'Runtimepath items', { cmd = 'RuntimepathItems' } },
+      ['<D-S-M-t>'] = { { n = pick.filetypes, i = pick.filetypes, v = pick.filetypes }, 'Neovim`s FileTypes', { cmd = 'FileTypes' } },
+      ['<D-S-M-k>'] = { { n = pick.keymaps, i = pick.keymaps }, 'Toggle Keymaps', { cmd = 'Maps' } },
+      ['<D-S-M-c>'] = { { n = lsp.config, i = lsp.config, v = lsp.config }, 'LSP Configuration', { cmd = 'LspConfig' } },
+      ['<D-S-M-a>'] = { { n = pick.autocmds, i = pick.autocmds, v = pick.autocmds }, 'Neovim`s Autocmds', { cmd = 'Autocmds' } },
+      ['<D-S-M-o>'] = { { n = pick.options, i = pick.options, v = pick.options }, 'Neovim`s Options', { cmd = 'Options' } },
+      ['<D-S-M-j>'] = { { n = pick.jumps, i = pick.jumps, v = pick.jumps }, 'Neovim`s Jumps', { cmd = 'Jumps' } },
+      ['<D-S-M-s>'] = { { n = pick.move_buffer_split, i = pick.move_buffer_split, v = pick.move_buffer_split }, 'Move Buffer Split', { cmd = 'MoveBufferSplit' } },
+      ['<D-S-M-z>'] = { { n = toggle.zen, i = toggle.zen, v = toggle.zen }, 'Toggle Zen Mode', { cmd = 'ToggleZen' } },
       -- ===========================================================================
       -- LSP
       -- ===========================================================================
-      ["<D-.>"] = { { n = vim.lsp.buf.code_action, i = vim.lsp.buf.code_action }, "Code Actions", { cmd = "LspCodeActions" } },
-      ["<D-M-k>"] = { { n = vim.lsp.buf.hover, i = vim.lsp.buf.hover }, "Hover information on symbol under the cursor", { cmd = "LspHover" } },
-      ["<D-M-f>"] = { { n = vim.lsp.buf.format, i = vim.lsp.buf.format }, "Format Document", { cmd = "LspFormat" } },
-      ["<D-S-M-f>"] = { { n = buf.format, i = buf.format }, "Format Current Selection or buffer", { cmd = "LspFormatRange", range = true } },
-      ["<D-M-CR>"] = { { n = vim.lsp.buf.rename, i = vim.lsp.buf.rename }, "Rename Symbol", { cmd = "LspRename" } },
-      ["<C-Space>"] = { { n = vim.lsp.completion.get, i = vim.lsp.completion.get }, "Trigger Suggestion", { cmd = "LspSuggestions" } },
-      -- ["<D-M-Space>"] = { { n = lsp.signature_help, i = lsp.signature_help }, "Signature Hints", { cmd = "LspSignatureHelp" } },
-      ["<D-d>"] = { { n = pick.diagnostics_buffer, i = pick.diagnostics_buffer, v = pick.diagnostics_buffer }, "Toggle Problems (Local)", { cmd = "LspToggleDiagnostics" } },
-      ["<D-S-d>"] = { { n = pick.diagnostics, i = pick.diagnostics, v = pick.diagnostics }, "Toggle Problems (Global)", { cmd = "LspToggleDiagnosticsGlobal" } },
-      ["<D-r>"] = { { n = lsp.symbols, i = lsp.symbols, v = lsp.symbols }, "Document Symbols", { cmd = "ToggleSymbols" } },
-      ["<D-S-r>"] = { { n = lsp.workspace_symbols, i = lsp.workspace_symbols, v = lsp.workspace_symbols }, "Workspace Symbols", { cmd = "LspToggleSymbolsWorkspace" } },
-      ["<D-i>"] = { { n = lsp.definitions, i = lsp.definitions, v = lsp.definitions }, "Go to Definition", { cmd = "GoToDefinition" } },
-      ["<D-S-i>"] = { { n = lsp.type_definitions, i = lsp.type_definitions, v = lsp.type_definitions }, "Find Type Definitions", { cmd = "LspGoToTypeDefinitions" } },
-      ["<D-M-i>"] = { { n = vim.lsp.buf.implementation, i = vim.lsp.buf.implementation, v = vim.lsp.buf.implementation }, "Go to Implementation", { cmd = "LspGoToImplementation" } },
-      ["<D-S-M-i>"] = { { n = lsp.implementations, i = lsp.implementations, v = lsp.implementations }, "Find Implementations", { cmd = "LspGoToImplementations" } },
-      ["<D-M-d>"] = { { n = vim.lsp.buf.declaration, i = vim.lsp.buf.declaration, v = vim.lsp.buf.declaration }, "Go to Declaration", { cmd = "LspGoToDeclaration" } },
-      ["<D-S-M-d>"] = { { n = lsp.declarations, i = lsp.declarations, v = lsp.declarations }, "Find Declarations", { cmd = "LspGoToDeclarations" } },
-      ["<D-M-r>"] = { { n = lsp.references, i = lsp.references, v = lsp.references }, "Find References", { cmd = "LspGoToReferences" } },
+      ['<D-.>'] = { { n = vim.lsp.buf.code_action, i = vim.lsp.buf.code_action }, 'Code Actions', { cmd = 'LspCodeActions' } },
+      ['<D-M-k>'] = { { n = vim.lsp.buf.hover, i = vim.lsp.buf.hover }, 'Hover information on symbol under the cursor', { cmd = 'LspHover' } },
+      ['<D-M-f>'] = { { n = vim.lsp.buf.format, i = vim.lsp.buf.format }, 'Format Document', { cmd = 'LspFormat' } },
+      ['<D-S-M-f>'] = { { n = buf.format, i = buf.format }, 'Format Current Selection or buffer', { cmd = 'LspFormatRange', range = true } },
+      ['<D-M-CR>'] = { { n = vim.lsp.buf.rename, i = vim.lsp.buf.rename }, 'Rename Symbol', { cmd = 'LspRename' } },
+      ['<C-Space>'] = { { n = vim.lsp.completion.get, i = vim.lsp.completion.get }, 'Trigger Suggestion', { cmd = 'LspSuggestions' } },
+      -- ['<D-M-Space>'] = { { n = lsp.signature_help, i = lsp.signature_help }, 'Signature Hints', { cmd = 'LspSignatureHelp' } },
+      ['<D-d>'] = { { n = pick.diagnostics_buffer, i = pick.diagnostics_buffer, v = pick.diagnostics_buffer }, 'Toggle Problems (Local)', { cmd = 'LspToggleDiagnostics' } },
+      ['<D-S-d>'] = { { n = pick.diagnostics, i = pick.diagnostics, v = pick.diagnostics }, 'Toggle Problems (Global)', { cmd = 'LspToggleDiagnosticsGlobal' } },
+      ['<D-r>'] = { { n = lsp.symbols, i = lsp.symbols, v = lsp.symbols }, 'Document Symbols', { cmd = 'ToggleSymbols' } },
+      ['<D-S-r>'] = { { n = lsp.workspace_symbols, i = lsp.workspace_symbols, v = lsp.workspace_symbols }, 'Workspace Symbols', { cmd = 'LspToggleSymbolsWorkspace' } },
+      ['<D-i>'] = { { n = lsp.definitions, i = lsp.definitions, v = lsp.definitions }, 'Go to Definition', { cmd = 'GoToDefinition' } },
+      ['<D-S-i>'] = { { n = lsp.type_definitions, i = lsp.type_definitions, v = lsp.type_definitions }, 'Find Type Definitions', { cmd = 'LspGoToTypeDefinitions' } },
+      ['<D-M-i>'] = { { n = vim.lsp.buf.implementation, i = vim.lsp.buf.implementation, v = vim.lsp.buf.implementation }, 'Go to Implementation', { cmd = 'LspGoToImplementation' } },
+      ['<D-S-M-i>'] = { { n = lsp.implementations, i = lsp.implementations, v = lsp.implementations }, 'Find Implementations', { cmd = 'LspGoToImplementations' } },
+      ['<D-M-d>'] = { { n = vim.lsp.buf.declaration, i = vim.lsp.buf.declaration, v = vim.lsp.buf.declaration }, 'Go to Declaration', { cmd = 'LspGoToDeclaration' } },
+      ['<D-S-M-d>'] = { { n = lsp.declarations, i = lsp.declarations, v = lsp.declarations }, 'Find Declarations', { cmd = 'LspGoToDeclarations' } },
+      ['<D-M-r>'] = { { n = lsp.references, i = lsp.references, v = lsp.references }, 'Find References', { cmd = 'LspGoToReferences' } },
       -- ===========================================================================
       -- NAVIGATION
       -- ===========================================================================
-      ["<D-S-C-n>"] = { { n = ':update<CR> $MYVIMRC<CR>', i = '<C-O>:update<CR> <C-O>$MYVIMRC<CR>', v = '<ESC>:update<CR> $MYVIMRC<CR>' }, "Reload [N]eovim config (init.lua)", { cmd = "SourceNeovim" } },
-      ["<D-S-C-f>"] = { { n = ev.src_vimrc_file, i = ev.src_vimrc_file, v = ev.src_vimrc_file }, "[R]eload Neovim & current file", { cmd = "SourceNeovimAndEvalFile" } },
-      ["<D-S-C-s>"] = { { n = ':update<CR> :source<CR>', i = '<C-O>:update<CR> <C-O>:source<CR>', v = '<ESC>:update<CR> :source<CR>' }, "Source and evaluate [C]urrent File", { cmd = "SourceAndEvalFile" } },
-      ["<D-S-C-c>"] = { { n = '<CMD>.:lua<CR>', i = '<C-O><CMD>.:lua<CR>', v = '<ESC><CMD>.:lua<CR>' }, "Evaluate current [L]ine", { cmd = "EvalLine" } },
-      ["<D-S-C-v>"] = { { n = '<CMD>:lua<CR>', i = '<C-O><CMD>:lua<CR>', v = '<ESC><CMD>:lua<CR>' }, "Evaluate [V]isual Selection", { cmd = "EvalSelection" } },
+      ['<D-S-C-n>'] = { { n = ':update<CR> $MYVIMRC<CR>', i = '<C-O>:update<CR> <C-O>$MYVIMRC<CR>', v = '<ESC>:update<CR> $MYVIMRC<CR>' }, 'Reload [N]eovim config (init.lua)', { cmd = 'SourceNeovim' } },
+      ['<D-S-C-f>'] = { { n = ev.src_vimrc_file, i = ev.src_vimrc_file, v = ev.src_vimrc_file }, '[R]eload Neovim & current file', { cmd = 'SourceNeovimAndEvalFile' } },
+      ['<D-S-C-s>'] = { { n = ':update<CR> :source<CR>', i = '<C-O>:update<CR> <C-O>:source<CR>', v = '<ESC>:update<CR> :source<CR>' }, 'Source and evaluate [C]urrent File', { cmd = 'SourceAndEvalFile' } },
+      ['<D-S-C-c>'] = { { n = '<CMD>.:lua<CR>', i = '<C-O><CMD>.:lua<CR>', v = '<ESC><CMD>.:lua<CR>' }, 'Evaluate current [L]ine', { cmd = 'EvalLine' } },
+      ['<D-S-C-v>'] = { { n = '<CMD>:lua<CR>', i = '<C-O><CMD>:lua<CR>', v = '<ESC><CMD>:lua<CR>' }, 'Evaluate [V]isual Selection', { cmd = 'EvalSelection' } },
       -- ===========================================================================
       -- KEYMAP REPORT
       -- ===========================================================================

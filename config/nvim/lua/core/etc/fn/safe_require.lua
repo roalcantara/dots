@@ -7,7 +7,7 @@ local function safe_require(module, opts)
   local ok, result = pcall(require, module)
   if not ok then
     if not opts.silent then
-      vim.notify("Failed to require: " .. module, vim.log.levels.ERROR)
+      vim.notify('Failed to require: ' .. module, vim.log.levels.ERROR)
     end
     return opts.default_return
   end

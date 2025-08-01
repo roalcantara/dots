@@ -1,4 +1,4 @@
-local trim = require("core/vi/fn/trim")
+local trim = require('core/vi/strings').trim
 
 -- State management
 local state = {
@@ -6,7 +6,7 @@ local state = {
   scratch_buf = nil,
   results_win = nil,
   results_buf = nil,
-  current_language = "lua",
+  current_language = 'lua',
   panel_open = false,
 }
 
@@ -14,8 +14,8 @@ local state = {
 local config = {
   panel = {
     width = 70,
-    title = " Scratch ",
-    position = "right",
+    title = ' Scratch ',
+    position = 'right',
   },
   execution = {
     auto_run = false,          -- Auto-run on buffer change
@@ -24,52 +24,52 @@ local config = {
   },
   languages = {
     lua = {
-      icon = "🌙",
-      name = "Lua",
+      icon = '🌙',
+      name = 'Lua',
       default_template = "-- Lua Scratch\nprint('Hello from Lua!')",
-      cmd = "lua -e ",
+      cmd = 'lua -e ',
     },
     python = {
-      icon = "🐍",
-      name = "Python",
+      icon = '🐍',
+      name = 'Python',
       default_template = "# Python Scratch\nprint('Hello from Python!')",
-      cmd = "python -c ",
+      cmd = 'python -c ',
     },
     javascript = {
-      icon = "🟨",
-      name = "JavaScript",
+      icon = '🟨',
+      name = 'JavaScript',
       default_template = "// JavaScript Scratch\nconsole.log('Hello from JS!');",
-      cmd = "node -e ",
+      cmd = 'node -e ',
     },
     typescript = {
-      icon = "🔷",
-      name = "TypeScript",
+      icon = '🔷',
+      name = 'TypeScript',
       default_template = "// TypeScript Scratch\nconsole.log('Hello from TS!');",
-      cmd = "npx ts-node -e ",
+      cmd = 'npx ts-node -e ',
     },
     bash = {
-      icon = "🐚",
-      name = "Bash",
+      icon = '🐚',
+      name = 'Bash',
       default_template = "# Bash Scratch\necho 'Hello from Bash!'",
-      cmd = "bash -c ",
+      cmd = 'bash -c ',
     },
     zsh = {
-      icon = "🐚",
-      name = "Zsh",
+      icon = '🐚',
+      name = 'Zsh',
       default_template = "# Zsh Scratch\necho 'Hello from Zsh!'",
-      cmd = "zsh -c ",
+      cmd = 'zsh -c ',
     },
     go = {
-      icon = "🐹",
-      name = "Go",
+      icon = '🐹',
+      name = 'Go',
       default_template = '// Go Scratch\npackage main\nimport "fmt"\nfunc main() {\n fmt.Println("Hello!") \n}',
-      cmd = "go run ",
+      cmd = 'go run ',
     },
     ruby = {
-      icon = "💎",
-      name = "Ruby",
+      icon = '💎',
+      name = 'Ruby',
       default_template = "# Ruby Scratch\nputs 'Hello from Ruby!'",
-      cmd = "ruby -e ",
+      cmd = 'ruby -e ',
     },
   },
 }
@@ -112,24 +112,24 @@ end
 local function create_results_buffer()
   if not state.results_buf or not vim.api.nvim_buf_is_valid(state.results_buf) then
     state.results_buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_set_option_value("buftype", "nofile", { buf = state.results_buf })
-    vim.api.nvim_set_option_value("bufhidden", "hide", { buf = state.results_buf })
-    vim.api.nvim_set_option_value("swapfile", false, { buf = state.results_buf })
-    vim.api.nvim_set_option_value("filetype", "text", { buf = state.results_buf })
-    vim.api.nvim_buf_set_name(state.results_buf, "Execution Results")
+    vim.api.nvim_set_option_value('buftype', "nofile", { buf = state.results_buf })
+    vim.api.nvim_set_option_value('bufhidden', 'hide', { buf = state.results_buf })
+    vim.api.nvim_set_option_value('swapfile', false, { buf = state.results_buf })
+    vim.api.nvim_set_option_value('filetype', 'text', { buf = state.results_buf })
+    vim.api.nvim_buf_set_name(state.results_buf, 'Execution Results')
   end
 
   -- Create results window at bottom
   if not state.results_win or not vim.api.nvim_win_is_valid(state.results_win) then
-    vim.cmd("botright 12split")
+    vim.cmd('botright 12split')
     state.results_win = vim.api.nvim_get_current_win()
     vim.api.nvim_win_set_buf(state.results_win, state.results_buf)
 
     -- Configure results window
-    vim.api.nvim_set_option_value("wrap", true, { win = state.results_win })
-    vim.api.nvim_set_option_value("number", false, { win = state.results_win })
-    vim.api.nvim_set_option_value("relativenumber", false, { win = state.results_win })
-    vim.api.nvim_set_option_value("winhighlight", "Normal:NormalFloat", { win = state.results_win })
+    vim.api.nvim_set_option_value('wrap', true, { win = state.results_win })
+    vim.api.nvim_set_option_value('number', false, { win = state.results_win })
+    vim.api.nvim_set_option_value('relativenumber', false, { win = state.results_win })
+    vim.api.nvim_set_option_value('winhighlight', 'Normal:NormalFloat', { win = state.results_win })
   end
 end
 
@@ -149,14 +149,14 @@ local function show_execution_result(code, output)
 
   local function on_exit(code_result)
     vim.schedule(function()
-      local timestamp = os.date("%H:%M:%S")
+      local timestamp = os.date('%H:%M:%S')
       local lang = config.languages[state.current_language]
 
       local result_lines = {
-        "",
-        "=== " .. timestamp .. " [" .. lang.icon .. " " .. lang.name .. "] ===",
-        "> " .. (code:match("^(.-)%s*$") or ""):sub(1, 50) .. (#code > 50 and "..." or ""),
-        "",
+        '',
+        '=== ' .. timestamp .. ' [' .. lang.icon .. ' ' .. lang.name .. '] ===',
+        '> ' .. (code:match('^(.-)%s*$') or ''):sub(1, 50) .. (#code > 50 and '...' or ''),
+        '',
       }
 
       if #output_lines > 0 then
@@ -164,17 +164,17 @@ local function show_execution_result(code, output)
       end
 
       if #stderr_lines > 0 then
-        table.insert(result_lines, "")
-        table.insert(result_lines, "STDERR:")
+        table.insert(result_lines, '')
+        table.insert(result_lines, 'STDERR:')
         vim.list_extend(result_lines, stderr_lines)
       end
 
       if code_result ~= 0 then
-        table.insert(result_lines, "")
-        table.insert(result_lines, "Exit code: " .. code_result)
+        table.insert(result_lines, '')
+        table.insert(result_lines, 'Exit code: ' .. code_result)
       end
 
-      table.insert(result_lines, "")
+      table.insert(result_lines, '')
 
       -- Append to results buffer
       local current_lines = vim.api.nvim_buf_get_lines(state.results_buf, 0, -1, false)
@@ -212,8 +212,8 @@ local function execute_external_language()
   local code = table.concat(lines, "\n")
 
   -- Ensures there is code to execute
-  if trim(code) == "" then
-    return Snacks.notify.error("No code to execute", "Scratch", "No code to execute")
+  if trim(code) == '' then
+    return Snacks.notify.error('No code to execute', 'Scratch', 'No code to execute')
   end
 
   -- Gets the current language and the command to execute
@@ -222,7 +222,7 @@ local function execute_external_language()
 
   -- Checks if is possible to execute the command
   if not command then
-    return Snacks.notify.error("Language not supported!", "Scratch", "Language '" .. lang .. "' is not supported!")
+    return Snacks.notify.error('Language not supported!', 'Scratch', 'Language ' .. lang .. ' is not supported!')
   end
 
   -- Executes the command
@@ -251,12 +251,12 @@ local function execute_code()
 
   -- Gets the current language
   local lang = config.languages[state.current_language]
-  if state.current_language == "lua" then
+  if state.current_language == 'lua' then
     -- If Lua, use Snacks' native execution via debug.run
     Snacks.notify.warn(lang.icon, lang.cmd,
-      table.concat(vim.api.nvim_buf_get_lines(state.scratch_buf, 0, -1, false), "\n"))
+      table.concat(vim.api.nvim_buf_get_lines(state.scratch_buf, 0, -1, false), '\n'))
     -- Printout the output within the current buffer
-    Snacks.debug.run({ buf = state.scratch_buf, name = "scratch." .. lang, print = true })
+    Snacks.debug.run({ buf = state.scratch_buf, name = 'scratch.' .. lang, print = true })
   else
     -- Other languages, perform external execution
     execute_external_language()
@@ -274,42 +274,42 @@ end
 local function open_scratch_panel_for(settings)
   -- Opens the scratch buffer
   local scratch_win = Snacks.scratch({
-    name = settings.name .. " Scratch",
+    name = settings.name .. ' Scratch',
     ft = state.current_language,
     template = settings.default_template,
     win = {
       position = config.panel.position,
       width = config.panel.width,
       height = vim.o.lines - 4,
-      border = "rounded",
-      title = " " .. settings.icon .. " " .. settings.name .. " Scratch ",
-      title_pos = "center",
+      border = 'rounded',
+      title = ' ' .. settings.icon .. ' ' .. settings.name .. ' Scratch ',
+      title_pos = 'center',
       backdrop = false,
       keys = {
         -- Execute code
         execute = {
-          "<D-Enter>",
+          '<D-Enter>',
           function(win)
             state.scratch_win = win.win
             state.scratch_buf = win.buf
             execute_code()
           end,
-          desc = "Execute the current code",
-          mode = { "n", "i", "v" },
+          desc = 'Execute the current code',
+          mode = { 'n', 'i', 'v' },
         },
         -- Clear results
         clear = {
-          "<C-c>",
+          '<C-c>',
           clear_results,
-          desc = "Clear",
-          mode = { "n", "i" },
+          desc = 'Clear',
+          mode = { 'n', 'i' },
         },
         -- Close panel
         close = {
-          "<Esc>",
+          '<Esc>',
           close_panel,
-          desc = "Close",
-          mode = { "n" },
+          desc = 'Close',
+          mode = { 'n' },
         },
       },
     },

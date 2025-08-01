@@ -6,7 +6,7 @@ local snacks_lua_path_items = require('core/ui/snacks/pickers/lua_path_items')
 local snacks_runtimepath_items = require('core/ui/snacks/pickers/runtimepath_items')
 local snacks_options = require('core/ui/snacks/pickers/options')
 local snacks_move_buffer_split = require('core/ui/snacks/pickers/move_buffer_split')
-local get_valid_buffers = require('core/vi/fn/get_valid_buffers')
+local get_valid_buffers = require('core/vi/buffers').get_valid_buffers
 
 --- Create a command that can be used in keymaps
 --- @param command string|function Command to execute
@@ -123,16 +123,16 @@ local function run_formatter(run_fmt_cmd, run_fmt_cwd, run_fmt_buffer_text)
     })
     local ret = proc:wait()
     if ret.code == 0 then
-      print("Success\n--------")
+      print('Success\n--------')
     else
-      print("Failure\n--------")
+      print('Failure\n--------')
     end
     print(ret.stdout)
     print(ret.stderr)
   end
   local function read_file(path)
-    local file = assert(io.open(path, "r"))
-    local content = file:read("*a")
+    local file = assert(io.open(path, 'r'))
+    local content = file:read('*a')
     file:close()
     return content
   end
@@ -312,7 +312,6 @@ local terminal_state = {
 }
 
 local actions = {
-  --- @alias actions.buf { close: function, close_all: function, close_others: function, pick: function, next: function, prev: function, last: function, format: function, run_formatter: function }
   buf = {
     --- Delete buffers without disrupting window layout
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/bufdelete.md#snacksbufdeletedelete
@@ -338,7 +337,6 @@ local actions = {
     --- @see docs https://github.com/stevearc/conform.nvim/blob/master/doc/debugging.md#testing-vimsystem
     run_formatter = cmd(run_formatter),
   },
-  --- @alias actions.pick { highlights: function, keymaps: function, commands: function, smart: function, files: function, grep: function, find: function, explorer: function, help: function, diagnostics: function, diagnostics_buffer: function, filetypes: function, options: function, lua_path_items: function, runtimepath_items: function, buffers: function, autocmds: function, command_history: function, colorschemes: function, icons: function, lazy: function, notifications: function, recent: function, jumps: function, move_buffer_split: function, execute: function }
   pick = {
     --- Search for highlights
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#highlights
@@ -479,7 +477,6 @@ local actions = {
     --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/picker.md#commands
     execute = cmd(Snacks.picker.pick, { source = 'execute' }),
   },
-  --- @alias actions.toggle { new_scratch: function, select_scratch: function, menus: table<string, string>, news: function, zen: function, term: function, comments: table<string, function> } }
   toggle = {
     --- Open new scratch buffer
     --- @see source https://github.com/folke/snacks.nvim/discussions/765#discussion-7880347
@@ -562,14 +559,12 @@ local actions = {
       end
     },
   },
-  --- @alias actions.ev { src_vimrc: string, src_file: string, src_vimrc_file: function, file: table<string, string>, line: table<string, string>, selection: table<string, string>, add_cursor_below: function }
   ev = {
     src_vimrc_file = function()
       vim.cmd('source $MYVIMRC')
       vim.cmd('source %')
     end,
   },
-  --- @alias actions.lsp { config: function, declarations: function, definitions: function, implementations: function, references: function, symbols: function, workspace_symbols: function, type_definitions: function, signature_help: function }
   lsp = {
     --- Search and pick for
     --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_config
@@ -613,12 +608,10 @@ local actions = {
       })
     end,
   },
-  --- @alias actions.on { tab: function, shift_tab: function }
   on = {
     tab = clever_tab,
     shift_tab = clever_shift_tab,
   },
-  --- @alias actions.setup { clear_all: function, toggle_comments_mappings: function }
   setup = {
     -- Clear all keymaps, autocommands, commands, highlights, and options
     clear_all = clear_all,
@@ -635,8 +628,7 @@ local actions = {
 }
 
 --- Parses the mappings table and creates keymaps
---- @alias kmaps.Opts { buf: actions.buf, pick: actions.pick, toggle: actions.toggle, lsp: actions.lsp, ev: actions.ev, on: actions.on, setup: actions.setup }
---- @param fn fun(opts: kmaps.Opts): table A function that returns a table of keymaps
+--- @param fn fun(opts: table): table A function that returns a table of keymaps
 --- @return nil Keymaps are created
 local function set_keymaps(fn)
   local keymappings = fn({
