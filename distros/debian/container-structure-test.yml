@@ -176,6 +176,10 @@ fileExistenceTests:
     path: /home/vscode/.config/ghostty
     shouldExist: true
     permissions: drwxr-xr-x
+  - name: ~/.config/ripgrep/.ripgreprc file (RIPGREP_CONFIG_PATH)
+    path: /home/vscode/.config/ripgrep/.ripgreprc
+    shouldExist: true
+    permissions: -rw-r--r--
 
   # CACHE
   - name: ~/.cache directory (XDG_CACHE_HOME)
