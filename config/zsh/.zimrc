@@ -58,12 +58,12 @@ zmodule MenkeTechnologies/zsh-cargo-completion --if-command cargo
 zmodule Aloxaf/fzf-tab --source fzf-tab.zsh --if-command fzf
 
 # Fish-like syntax highlighting for Zsh. It must be sourced after completion
-zmodule zsh-users/zsh-syntax-highlighting
+zmodule zdharma-continuum/fast-syntax-highlighting
 
-# Fish-like history search (up arrow) for Zsh. It must be sourced after zsh-syntax-highlighting
+# Fish-like history search (up arrow) for Zsh. It must be sourced after syntax-highlighting
 zmodule zsh-users/zsh-history-substring-search
 
-# Fish-like autosuggestions for Zsh. It must be sourced after zsh-syntax-highlighting
+# Fish-like autosuggestions for Zsh. It must be sourced after syntax-highlighting
 zmodule zsh-users/zsh-autosuggestions
 
 # }}} End configuration added by Zim install
