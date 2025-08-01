@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/roalcantara/dots/compare/v1.2.1...v1.3.0) (2025-08-01)
+
+
+### Bug Fixes
+
+* **install:** Update Node.js version ([f8be74e](https://github.com/roalcantara/dots/commit/f8be74e9c3cc64b860b2a6366eef0e3ce9bd4856))
+
+
+### Features
+
+* **ripgrep:** Add configuration file for ripgrep with custom settings ([cf3a62d](https://github.com/roalcantara/dots/commit/cf3a62df845e82b7f6cf2aa1b3de2e2e95761bfe))
+
 ## [1.2.1](https://github.com/roalcantara/dots/compare/v1.2.0...v1.2.1) (2025-08-01)
 
 
