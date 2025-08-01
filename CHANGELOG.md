@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/roalcantara/dots/compare/v1.1.0...v1.2.0) (2025-08-01)
+
+
+### Features
+
+* **zsh:** Update syntax highlighting module to fast-syntax-highlighting ([b62bfcf](https://github.com/roalcantara/dots/commit/b62bfcfa37722def78d82204bd86edcc83d9160e))
+
 # [1.1.0](https://github.com/roalcantara/dots/compare/v1.0.0...v1.1.0) (2025-08-01)
 
 
