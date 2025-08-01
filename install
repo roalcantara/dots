@@ -276,22 +276,92 @@ setup_arguments() {
     esac
   done
 }
-setup_environment_variables() {
-  section "[ENV/SETUP] ($HOME/$USERHOME) ($GROUP/$GROUPNAME) Setting up environment variables..."
-  if [[ "$OS" =~ "darwin" ]]; then
+detect_user_by_distribution() {
+  if [[ "$OS" =~ "darwin" || "$DISTRO" =~ "darwin" || "$DISTRO" =~ "macos" ]]; then
     USERHOME="/Users/$USERNAME"
     GROUPNAME=${GROUPNAME:-"staff"}
-  else
+  elif [[ "$DISTRO" =~ "debian" || "$DISTRO" =~ "ubuntu" ]]; then
+    # user detection
+    if [ -n "${USER:-}" ] && [ "$USER" != "root" ]; then
+      # Use the current USER environment variable if available and not root
+      USERNAME="$USER"
+    elif [ -d "/home" ]; then
+      # Check for users in /home directory
+      HOME_USERS=$(find /home -maxdepth 1 -type d 2>/dev/null | sed 's|.*/||' | tr '\n' ' ')
+      if [ "$(echo "$HOME_USERS" | wc -w)" -eq 1 ]; then
+        # If there's exactly one user directory in /home, use that
+        USERNAME=$(echo "$HOME_USERS" | tr -d ' ')
+      elif [ "$(echo "$HOME_USERS" | wc -w)" -gt 1 ]; then
+        # If multiple users, prioritize common DevContainer users
+        for preferred_user in "node" "vscode" "developer" "app"; do
+          if echo "$HOME_USERS" | grep -qw "$preferred_user"; then
+            USERNAME="$preferred_user"
+            break
+          fi
+        done
+        # If no preferred user found, use the first one
+        if [ -z "$USERNAME" ]; then
+          USERNAME=$(echo "$HOME_USERS" | awk '{print $1}')
+        fi
+      fi
+    fi
+
+    # If no user detected, try other methods
+    if [ -z "$USERNAME" ]; then
+      if command -v getent >/dev/null 2>&1; then
+        # Look for users with UID >= 1000 (typical for regular users)
+        # Prioritize common DevContainer users
+        for preferred_user in "node" "vscode" "developer" "app"; do
+          if getent passwd "$preferred_user" >/dev/null 2>&1; then
+            USERNAME="$preferred_user"
+            break
+          fi
+        done
+
+        # If no preferred user found, get the first regular user
+        if [ -z "$USERNAME" ]; then
+          MIN_UID=1000  # 1000 is the minimum UID for a regular user
+          MAX_UID=65534 # 65534 is the maximum UID for a regular user
+          USERNAME=$(getent passwd | awk -F: -v min_uid="$MIN_UID" -v max_uid="$MAX_UID" '$3 >= min_uid && $3 < max_uid {print $1; exit}')
+        fi
+      fi
+
+      # If still no user determined, create user and group 'vscode'
+      if [ -z "$USERNAME" ]; then
+        USERNAME="vscode"
+        w "[ENV/SETUP] Could not determine username, defaulting to '$USERNAME'"
+
+        # Create vscode group if they don't exist
+        if ! getent group vscode >/dev/null 2>&1; then
+          w "[ENV/SETUP] Creating group 'vscode'..."
+          groupadd vscode
+        fi
+
+        # Create vscode user if they don't exist
+        if ! getent passwd vscode >/dev/null 2>&1; then
+          w "[ENV/SETUP] Creating user 'vscode'..."
+          useradd -m -g vscode -s /bin/bash vscode
+        fi
+      fi
+    fi
+
     USERHOME="/home/$USERNAME"
+    if getent passwd "$USERNAME" >/dev/null 2>&1; then
+      GROUPNAME=$(id -gn "$USERNAME")
+    else
+      GROUPNAME="vscode"
+    fi
   fi
+
+  w "[ENV/SETUP/USER:GROUP] USERNAME='$USERNAME' ($USER) GROUPNAME='$GROUPNAME' ($GROUP) HOME='$USERHOME' ($HOME) ✔︎"
   if [ -z "$HOME" ] || [ "$HOME" != "$USERHOME" ]; then
     HOME="$USERHOME"
-    w "HOME updated to '$HOME' ✔︎"
+    w "[ENV/SETUP/USER:GROUP/HOME] HOME updated to '$HOME' ✔︎"
   fi
-  if [ -z "$GROUP" ] || [ "$GROUP" != "$GROUPNAME" ]; then
-    GROUP="$GROUPNAME"
-    w "GROUP updated to '$GROUP' ✔︎"
-  fi
+}
+setup_environment_variables() {
+  section "[ENV/SETUP] Setting up environment variables..."
+  detect_user_by_distribution
 
   exec_cmd export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
   exec_cmd export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
