@@ -10,7 +10,7 @@ return {
       }
     },
     config = function(_, opts)
-      require("tokyonight").setup(opts)
+      require('tokyonight').setup(opts)
       vim.cmd.colorscheme('tokyonight-moon')
       vim.cmd(':hi statusline guibg=NONE')
       vim.api.nvim_set_hl(0, 'BlinkCmpMenu', { bg = '#1a1b2e' })                       -- Darker menu bg
@@ -98,18 +98,18 @@ return {
         'vue',
         'xml',
         'yaml',
-        "go",
-        "gomod",
-        "gosum",
-        "gowork",
+        'go',
+        'gomod',
+        'gosum',
+        'gowork',
       },
       incremental_selection = {
         enable = true,
         keymaps = {
-          init_selection = "<leader>vv",
-          node_incremental = "+",
+          init_selection = '<leader>vv',
+          node_incremental = '+',
           scope_incremental = false,
-          node_decremental = "_",
+          node_decremental = '_',
         },
       },
       textobjects = {
@@ -119,24 +119,24 @@ return {
 
           keymaps = {
             -- You can use the capture groups defined in textobjects.scm
-            ["af"] = { query = "@function.outer", desc = "around a function" },
-            ["if"] = { query = "@function.inner", desc = "inner part of a function" },
-            ["ac"] = { query = "@class.outer", desc = "around a class" },
-            ["ic"] = { query = "@class.inner", desc = "inner part of a class" },
-            ["ai"] = { query = "@conditional.outer", desc = "around an if statement" },
-            ["ii"] = { query = "@conditional.inner", desc = "inner part of an if statement" },
-            ["al"] = { query = "@loop.outer", desc = "around a loop" },
-            ["il"] = { query = "@loop.inner", desc = "inner part of a loop" },
-            ["ap"] = { query = "@parameter.outer", desc = "around parameter" },
-            ["ip"] = { query = "@parameter.inner", desc = "inside a parameter" },
+            ['af'] = { query = '@function.outer', desc = 'around a function' },
+            ['if'] = { query = '@function.inner', desc = 'inner part of a function' },
+            ['ac'] = { query = '@class.outer', desc = 'around a class' },
+            ['ic'] = { query = '@class.inner', desc = 'inner part of a class' },
+            ['ai'] = { query = '@conditional.outer', desc = 'around an if statement' },
+            ['ii'] = { query = '@conditional.inner', desc = 'inner part of an if statement' },
+            ['al'] = { query = '@loop.outer', desc = 'around a loop' },
+            ['il'] = { query = '@loop.inner', desc = 'inner part of a loop' },
+            ['ap'] = { query = '@parameter.outer', desc = 'around parameter' },
+            ['ip'] = { query = '@parameter.inner', desc = 'inside a parameter' },
           },
           selection_modes = {
-            ["@parameter.outer"] = "v",   -- charwise
-            ["@parameter.inner"] = "v",   -- charwise
-            ["@function.outer"] = "v",    -- charwise
-            ["@conditional.outer"] = "V", -- linewise
-            ["@loop.outer"] = "V",        -- linewise
-            ["@class.outer"] = "<c-v>",   -- blockwise
+            ['@parameter.outer'] = 'v',   -- charwise
+            ['@parameter.inner'] = 'v',   -- charwise
+            ['@function.outer'] = 'v',    -- charwise
+            ['@conditional.outer'] = 'V', -- linewise
+            ['@loop.outer'] = 'V',        -- linewise
+            ['@class.outer'] = '<c-v>',   -- blockwise
           },
           include_surrounding_whitespace = false,
         },
@@ -144,38 +144,38 @@ return {
           enable = true,
           set_jumps = true, -- whether to set jumps in the jumplist
           goto_previous_start = {
-            ["[f"] = { query = "@function.outer", desc = "Previous function" },
-            ["[c"] = { query = "@class.outer", desc = "Previous class" },
-            ["[p"] = { query = "@parameter.inner", desc = "Previous parameter" },
+            ['[f'] = { query = '@function.outer', desc = 'Previous function' },
+            ['[c'] = { query = '@class.outer', desc = 'Previous class' },
+            ['[p'] = { query = '@parameter.inner', desc = 'Previous parameter' },
           },
           goto_next_start = {
-            ["]f"] = { query = "@function.outer", desc = "Next function" },
-            ["]c"] = { query = "@class.outer", desc = "Next class" },
-            ["]p"] = { query = "@parameter.inner", desc = "Next parameter" },
+            [']f'] = { query = '@function.outer', desc = 'Next function' },
+            [']c'] = { query = '@class.outer', desc = 'Next class' },
+            [']p'] = { query = '@parameter.inner', desc = 'Next parameter' },
           },
         },
         swap = {
           enable = true,
           swap_next = {
-            ["<leader>a"] = "@parameter.inner",
+            ['<leader>a'] = '@parameter.inner',
           },
           swap_previous = {
-            ["<leader>A"] = "@parameter.inner",
+            ['<leader>A'] = '@parameter.inner',
           },
         },
       },
     },
     config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
+      require('nvim-treesitter.configs').setup(opts)
     end,
   },
 
   {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    event = "VeryLazy",
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    event = 'VeryLazy',
     enabled = true,
     config = function()
-      local lazy = require('core/vi/fn/lazy')
+      local lazy = require('core/vi/plugins')
       -- If treesitter is already loaded, we need to run config again for textobjects
       if lazy.is_loaded('nvim-treesitter') then
         local opts = lazy.opts('nvim-treesitter')
@@ -284,7 +284,7 @@ return {
             footer_pos = 'center',
             keys = {
               ['source'] = {
-                '<D-cr>',
+                '<D-CR>',
                 function(self)
                   local name = 'scratch.' .. vim.fn.fnamemodify(vim.api.nvim_buf_get_name(self.buf), ':e')
                   Snacks.debug.run({ buf = self.buf, name = name })
@@ -581,12 +581,12 @@ return {
   -- https://github.com/folke/noice.nvim
   {
     'folke/noice.nvim',
-    event = "VeryLazy",
+    event = 'VeryLazy',
     opts = {
       lsp = {
         override = {
-          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          ["vim.lsp.util.stylize_markdown"] = true
+          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+          ['vim.lsp.util.stylize_markdown'] = true
         },
         hover = {
           enable = false
@@ -604,14 +604,14 @@ return {
       routes = {
         {
           filter = {
-            event = "msg_show",
+            event = 'msg_show',
             any = {
-              { find = "%d+L, %d+B" },
-              { find = "; after #%d+" },
-              { find = "; before #%d+" },
+              { find = '%d+L, %d+B' },
+              { find = '; after #%d+' },
+              { find = '; before #%d+' },
             },
           },
-          view = "mini",
+          view = 'mini',
         },
         {
           filter = {
@@ -631,49 +631,49 @@ return {
   },
 
   {
-    "stevearc/aerial.nvim",
-    event = "VeryLazy",
+    'stevearc/aerial.nvim',
+    event = 'VeryLazy',
     dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons"
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons'
     },
     opts = function()
       local kind_filter = {
         default = {
-          "Class",
-          "Constructor",
-          "Enum",
-          "Field",
-          "Function",
-          "Interface",
-          "Method",
-          "Module",
-          "Namespace",
-          "Package",
-          "Property",
-          "Struct",
-          "Trait",
+          'Class',
+          'Constructor',
+          'Enum',
+          'Field',
+          'Function',
+          'Interface',
+          'Method',
+          'Module',
+          'Namespace',
+          'Package',
+          'Property',
+          'Struct',
+          'Trait',
         },
         markdown = false,
         help = false,
         -- you can specify a different filter for each filetype
         lua = {
-          "Class",
-          "Constructor",
-          "Enum",
-          "Field",
-          "Function",
-          "Interface",
-          "Method",
-          "Module",
-          "Namespace",
-          -- "Package", -- remove package since luals uses it for control flow structures
-          "Property",
-          "Struct",
-          "Trait",
+          'Class',
+          'Constructor',
+          'Enum',
+          'Field',
+          'Function',
+          'Interface',
+          'Method',
+          'Module',
+          'Namespace',
+          -- 'Package', -- remove package since luals uses it for control flow structures
+          'Property',
+          'Struct',
+          'Trait',
         },
       }
-      local icons = vim.deepcopy(require('core/ui').icons.kinds)
+      local icons = vim.deepcopy(require('core/ui/icons').kinds)
 
       -- HACK: fix lua's weird choice for `Package` for control
       -- structures like if/else/for/etc.
@@ -688,25 +688,25 @@ return {
       end
 
       local opts = {
-        attach_mode = "global",
-        backends = { "lsp", "treesitter", "markdown", "man" },
+        attach_mode = 'global',
+        backends = { 'lsp', 'treesitter', 'markdown', 'man' },
         show_guides = true,
         layout = {
           resize_to_content = false,
           win_opts = {
             winhl = "Normal:NormalFloat,FloatBorder:NormalFloat,SignColumn:SignColumnSB",
-            signcolumn = "yes",
-            statuscolumn = " ",
+            signcolumn = 'yes',
+            statuscolumn = ' ',
           },
         },
         icons = icons,
         filter_kind = filter_kind,
         -- stylua: ignore
         guides = {
-          mid_item   = "├╴",
-          last_item  = "└╴",
-          nested_top = "│ ",
-          whitespace = "  ",
+          mid_item   = '├╴',
+          last_item  = '└╴',
+          nested_top = '│ ',
+          whitespace = '  ',
         },
       }
       return opts
@@ -740,7 +740,7 @@ return {
       local lualine_require = require('lualine_require')
       lualine_require.require = require
 
-      local icons = require('core/ui').icons
+      local icons = require('core/ui/icons')
 
       vim.o.laststatus = vim.g.lualine_laststatus
 
@@ -766,7 +766,7 @@ return {
           lualine_c = {
             require('core/ui/statusline').root_dir(),
             {
-              "diagnostics",
+              'diagnostics',
               symbols = {
                 error = icons.diagnostics.Error,
                 warn = icons.diagnostics.Warn,
@@ -778,9 +778,9 @@ return {
               end,
             },
             {
-              "filetype",
+              'filetype',
               icon_only = true,
-              separator = "",
+              separator = '',
               padding = { left = 1, right = 0 },
               on_click = function()
                 vim.cmd('FileTypes')
@@ -788,9 +788,9 @@ return {
             },
             { require('core/ui/statusline').pretty_path() },
             {
-              "aerial",
-              sep = " ",     -- separator between symbols
-              sep_icon = "", -- separator between icon and symbol
+              'aerial',
+              sep = ' ',     -- separator between symbols
+              sep_icon = '', -- separator between icon and symbol
 
               -- The number of symbols to render top-down. In order to render only 'N' last
               -- symbols, negative numbers may be supplied. For instance, 'depth = -1' can
@@ -803,7 +803,7 @@ return {
               dense = false,
 
               -- The separator to be used to separate symbols in dense mode.
-              dense_sep = ".",
+              dense_sep = '.',
 
               -- Color the symbol icons.
               colored = true,
@@ -825,27 +825,27 @@ return {
             end),
             -- stylua: ignore
             {
-              function() return require("noice").api.status.command.get() end,
-              cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-              color = function() return { fg = Snacks.util.color("Statement") } end,
+              function() return require('noice').api.status.command.get() end,
+              cond = function() return package.loaded['noice'] and require('noice').api.status.command.has() end,
+              color = function() return { fg = Snacks.util.color('Statement') } end,
             },
             -- stylua: ignore
             {
-              function() return require("noice").api.status.mode.get() end,
-              cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-              color = function() return { fg = Snacks.util.color("Constant") } end,
+              function() return require('noice').api.status.mode.get() end,
+              cond = function() return package.loaded['noice'] and require('noice').api.status.mode.has() end,
+              color = function() return { fg = Snacks.util.color('Constant') } end,
             },
             -- stylua: ignore
             {
-              function() return "  " .. require("dap").status() end,
-              cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
-              color = function() return { fg = Snacks.util.color("Debug") } end,
+              function() return '  ' .. require('dap').status() end,
+              cond = function() return package.loaded['dap'] and require('dap').status() ~= '' end,
+              color = function() return { fg = Snacks.util.color('Debug') } end,
             },
             -- stylua: ignore
             {
-              require("lazy.status").updates,
-              cond = require("lazy.status").has_updates,
-              color = function() return { fg = Snacks.util.color("Special") } end,
+              require('lazy.status').updates,
+              cond = require('lazy.status').has_updates,
+              color = function() return { fg = Snacks.util.color('Special') } end,
               on_click = function()
                 vim.schedule(function()
                   vim.cmd [[Lazy sync]]
@@ -854,7 +854,7 @@ return {
               end,
             },
             {
-              "diff",
+              'diff',
               symbols = {
                 added = icons.git.added,
                 modified = icons.git.modified,
@@ -873,12 +873,12 @@ return {
             },
           },
           lualine_y = {
-            { "progress", separator = " ",                  padding = { left = 1, right = 0 } },
-            { "location", padding = { left = 0, right = 1 } },
+            { 'progress', separator = ' ',                  padding = { left = 1, right = 0 } },
+            { 'location', padding = { left = 0, right = 1 } },
           },
           lualine_z = {
             function()
-              return " " .. os.date("%R")
+              return ' ' .. os.date('%R')
             end,
           },
         },

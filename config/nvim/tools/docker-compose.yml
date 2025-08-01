@@ -1,0 +1,40 @@
+services:
+  # Run Busted tests
+  test:
+    build:
+      context: ..
+      dockerfile: tools/Dockerfile
+      target: busted
+    volumes:
+      - ../lua:/app/src
+      - ../specs:/app/spec
+      - ../busted.lua:/app/busted.lua
+    working_dir: /app
+    environment:
+      - LUA_PATH=lua/?.lua;lua/?/init.lua;?.lua;?/init.lua;;
+    command: ['--output=TAP', 'spec/']
+
+  # Run Selene linter
+  lint:
+    build:
+      context: ..
+      dockerfile: tools/Dockerfile
+      target: selene
+    volumes:
+      - ../lua:/app/lua
+    command: ['--config', '/app/lua/selene.toml', '/app/lua']
+
+  # Interactive shell with both tools
+  shell:
+    build:
+      context: ..
+      dockerfile: tools/Dockerfile
+      target: shell
+    volumes:
+      - ../lua:/app/src
+      - ../specs:/app/spec
+      - ../busted.lua:/app/busted.lua
+    environment:
+      - LUA_PATH=lua/?.lua;lua/?/init.lua;?.lua;?/init.lua;;
+    stdin_open: true
+    tty: true

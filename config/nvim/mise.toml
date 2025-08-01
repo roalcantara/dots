@@ -8,36 +8,13 @@ LUA_PATH = "./lua/?.lua;./lua/?/init.lua;;"
 # Like make, it manages tasks used to build and test projects
 # https://mise.jdx.dev/tasks
 [tasks]
-  [tasks."build:busted"]
+  [tasks."busted:build"]
   description = "Direct Docker commands for the multi-stage build"
-  run = "docker build -f tools/Dockerfile --target busted -t nvim:busted ."
+  run = "docker build -f tools/Dockerfile -t nvim:busted --target busted ."
 
-  [tasks."build:selene"]
-  description = "Build the selene image"
-  run = "docker build -f tools/Dockerfile --target selene -t nvim:selene ."
-
-  [tasks."build:shell"]
-  run = "docker build -f tools/Dockerfile --target tools -t nvim:shell ."
-
-  [tasks."run:busted"]
+  [tasks."busted:run"]
   description = "Run commands with built images"
   run = "docker run --rm -v $(pwd)/specs:/app/spec -v $(pwd)/lua:/app/src nvim:busted --helper spec/tools/spec_helper.lua --output=utfTerminal spec/"
-
-  [tasks."run:selene"]
-  run = "docker run --rm -v $(pwd)/lua:/app/lua nvim:selene /app/lua"
-
-  [tasks."run:shell"]
-  run = "docker run --rm -it -v $(pwd)/specs:/app/spec -v $(pwd)/lua:/app/lua nvim:shell"
-
-  [tasks."up:test"]
-  description = "New multi-stage Docker commands"
-  run = "docker-compose -f tools/docker-compose.yml run --build --rm test"
-
-  [tasks."up:lint"]
-  run = "docker-compose -f tools/docker-compose.yml run --build --rm lint"
-
-  [tasks."up:shell"]
-  run = "docker-compose -f tools/docker-compose.yml run --build --rm shell"
 
   [tasks."startuptime"]
   description = "Run startuptime"

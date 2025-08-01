@@ -172,6 +172,10 @@ fileExistenceTests:
     path: /home/vscode/.config/starship/starship.toml
     shouldExist: true
     permissions: -rwxr-xr-x
+  - name: ~/.config/ghostty config file
+    path: /home/vscode/.config/ghostty
+    shouldExist: true
+    permissions: drwxr-xr-x
 
   # CACHE
   - name: ~/.cache directory (XDG_CACHE_HOME)
