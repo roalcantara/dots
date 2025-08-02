@@ -25,14 +25,22 @@ WORKDIR /home/$USERNAME/.local/share/dots
 
 # Stage for local dotfiles installation
 FROM base AS local
+
+# Copy the rest of the dotfiles
 COPY --chown=$USERNAME:$GROUPNAME ../../. ./
+
+# Install with selective caching strategy
 RUN --mount=type=secret,id=github_token,target=/tmp/github_token,required=false \
-    --mount=type=cache,target=$HOME/.cache,uid=1000,gid=1000 \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=cache,target=$HOME/.cache/pip,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/gem,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/mise,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/nvim,uid=1000,gid=1000 \
     echo "[INFO] Using local dotfiles installation..." && \
     rm -rf .git config/nvim/.venv && \
-    chmod +x install && \
     chown -R "$USERNAME:$GROUPNAME" "/home/$USERNAME/.local" && \
-    chown "$USERNAME:$GROUPNAME" install && \
+    chown "$USERNAME:$GROUPNAME" install && chmod +x install && \
     ./install -u "$USERNAME" -g "$GROUPNAME" -t "$TZ"
 
 USER $USERNAME
@@ -43,8 +51,14 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 # Stage for remote dotfiles installation
 FROM base AS remote
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# Install with selective caching strategy
 RUN --mount=type=secret,id=github_token,target=/tmp/github_token,required=false \
-    --mount=type=cache,target=$HOME/.cache,uid=1000,gid=1000 \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=cache,target=$HOME/.cache/pip,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/gem,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/mise,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/nvim,uid=1000,gid=1000 \
     echo "[INFO] Using remote dotfiles installation..." && \
     curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install?$(date +%s)" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -b "$BRANCH"
 

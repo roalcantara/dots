@@ -184,14 +184,23 @@ fileExistenceTests:
   # CACHE
   - name: ~/.cache directory (XDG_CACHE_HOME)
     path: /home/vscode/.cache
-    shouldExist: false
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.cache/npm directory (NPM_CONFIG_CACHE)
+    path: /home/vscode/.cache/npm
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.cache/zsh directory
+    path: /home/vscode/.cache/zsh
+    shouldExist: true
+    permissions: drwxr-xr-x
 
   # LOCAL/STATE
   - name: ~/.local/state directory (XDG_STATE_HOME)
     path: /home/vscode/.local/state
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: ~/.local/state/mise directory
+  - name: ~/.local/state/mise directory (MISE_STATE_DIR)
     path: /home/vscode/.local/state/mise
     shouldExist: true
     permissions: drwxr-xr-x
@@ -199,7 +208,7 @@ fileExistenceTests:
     path: /home/vscode/.local/state/nvim
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: ~/.local/state/zim directory
+  - name: ~/.local/state/zim directory (ZIM_HOME)
     path: /home/vscode/.local/state/zim
     shouldExist: true
     permissions: drwxr-xr-x
