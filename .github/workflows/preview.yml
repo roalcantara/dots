@@ -55,6 +55,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
+        with:
+          daemon-config: |
+            {
+              "debug": true,
+              "features": {
+                "containerd-snapshotter": true
+              }
+            }
+
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
@@ -72,29 +83,32 @@ jobs:
         with:
           context: .
           target: remote
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           build-args: BRANCH=${{ github.head_ref || github.ref_name }}
           file: distros/${{ matrix.distro }}/Dockerfile
           push: false
           load: true
-          tags: ${{ env.IMG_NAME }}:${{ matrix.distro }}-amd64-pr-${{ github.event.pull_request.number }}
+          tags: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
           cache-from: |
-            type=gha,scope=build-${{ matrix.distro }}-amd64
-            type=gha,scope=build-${{ matrix.distro }}-amd64-pr-${{ github.event.pull_request.number }}
-            type=gha,scope=build-${{ matrix.distro }}-amd64-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-amd64-pr-${{ github.event.pull_request.number }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-amd64-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
-          cache-to: type=gha,scope=build-${{ matrix.distro }}-amd64,mode=max
+            type=gha,scope=build-${{ matrix.distro }}
+            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}
+          cache-to: |
+            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }},mode=max
+            type=gha,scope=build-${{ matrix.distro }},mode=max
           outputs: type=docker
           github-token: ${{ secrets.GH_TOKEN }}
 
       - name: Inspect image
-        run: docker inspect ${{ env.IMG_NAME }}:${{ matrix.distro }}-amd64-pr-${{ github.event.pull_request.number }}
+        run: docker inspect ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
 
       - name: Container Structure Test GitHub Action
         uses: amardeep2006/container-structure-test-github-action@v1.2
         with:
-          dockerimage: ${{ env.IMG_NAME }}:${{ matrix.distro }}-amd64-pr-${{ github.event.pull_request.number }}
+          dockerimage: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
           args: -v debug --force --output junit --test-report cst_junit_report.xml --config distros/${{ matrix.distro }}/container-structure-test.yml
 
       - if: always()
@@ -169,11 +183,12 @@ jobs:
           push: true
           provenance: true
           cache-from: |
-            type=gha,scope=build-${{ matrix.distro }}-${{ github.head_ref || github.ref_name }}
             type=gha,scope=build-${{ matrix.distro }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-${{ github.head_ref || github.ref_name }}
+            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
             type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:base
           cache-to: |
             type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }},mode=max
             type=gha,scope=build-${{ matrix.distro }},mode=max
