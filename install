@@ -721,14 +721,18 @@ step_nvim_setup_provider_npm() {
 
   # Configure the NPM environment variables
   # https://docs.npmjs.com/cli/v7/configuring-npm
+  i "[NVIM/NPM] Configuring NPM environment..."
   export_env_and_make_dir "NPM_CONFIG_PREFIX" "$NPM_CONFIG_PREFIX" "NVIM/NPM" --force
   export_env_and_make_dir "NPM_CONFIG_CACHE" "$NPM_CONFIG_CACHE" "NVIM/NPM" --force
   exec_cmd export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/.npmrc}"
-  $TIMEOUT_CMD npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim
-  npm cache clean --force || {
+  i "[NVIM/NPM] Installing neovim package..."
+  $TIMEOUT_CMD npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim || {
     w "[NVIM/NPM] npm install failed or timed out, skipping NPM provider setup"
     return 1
   }
+  i "[NVIM/NPM] Cleaning npm cache..."
+  npm cache clean --force || w "[NVIM/NPM] npm cache clean failed, continuing..."
+  i "[NVIM/NPM] NPM provider setup completed"
 }
 step_nvim_setup_provider_python() {
   section "[NVIM/PYTHON] Setting up Python provider ($XDG_CONFIG_HOME/nvim/.venv)..."
@@ -756,18 +760,18 @@ step_nvim_setup_provider_python() {
   # Install Python packages for neovim
   # Use a more robust approach with proper error handling
   if [ -d "$XDG_CONFIG_HOME/nvim/.venv" ]; then
+    i "[NVIM/PYTHON] Virtual environment found, activating..."
     cd "$XDG_CONFIG_HOME/nvim" || return 1
     source "$XDG_CONFIG_HOME/nvim/.venv/bin/activate" || return 1
 
-    # Use pip with explicit cache directory and user flag to avoid permission issues
+    # Use pip with explicit cache directory to avoid permission issues
     # Add timeout to prevent hanging
-    $TIMEOUT_CMD pip install --cache-dir "$XDG_CACHE_HOME/pip" --user pynvim neovim || {
-      w "[NVIM/PYTHON] pip install timed out or failed, trying without --user flag"
-      $TIMEOUT_CMD pip install --cache-dir "$XDG_CACHE_HOME/pip" pynvim neovim || {
-        w "[NVIM/PYTHON] pip install failed, skipping Python provider setup"
-        return 1
-      }
+    i "[NVIM/PYTHON] Installing pynvim and neovim packages..."
+    $TIMEOUT_CMD pip install --cache-dir "$XDG_CACHE_HOME/pip" pynvim neovim || {
+      w "[NVIM/PYTHON] pip install failed, skipping Python provider setup"
+      return 1
     }
+    i "[NVIM/PYTHON] Python packages installed successfully"
   else
     w "[NVIM/PYTHON] Virtual environment not found at '$XDG_CONFIG_HOME/nvim/.venv'"
   fi
@@ -791,18 +795,22 @@ step_nvim_setup_provider_ruby() {
 
   # Configure the gem home directory
   # https://guides.rubygems.org/command-reference/#gem-environment
+  i "[NVIM/RUBY] Configuring Ruby environment..."
   export_env_and_make_dir "GEM_HOME" "${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems}" "NVIM/RUBY"
 
   # Update the RubyGems system
+  i "[NVIM/RUBY] Updating RubyGems system..."
   $TIMEOUT_CMD gem update --system --no-document || {
     w "[NVIM/RUBY] gem update failed or timed out, continuing with installation"
   }
 
   # Install neovim's required Ruby packages
+  i "[NVIM/RUBY] Installing neovim gem..."
   $TIMEOUT_CMD gem install neovim && gem cleanup || {
     w "[NVIM/RUBY] gem install failed or timed out, skipping Ruby provider setup"
     return 1
   }
+  i "[NVIM/RUBY] Ruby provider setup completed"
 }
 step_nvim() {
   section "[NVIM] Setup started..."
@@ -823,33 +831,19 @@ step_nvim() {
   setup_dir "$XDG_STATE_HOME/nvim" "NVIM"
   setup_dir "$XDG_DATA_HOME/nvim" "NVIM"
 
-  # Setup nvim providers
-  # Run providers in background with timeout to prevent hanging
-  step_nvim_setup_provider_npm >&2 &
-  npm_pid=$!
-  step_nvim_setup_provider_python >&2 &
-  python_pid=$!
-  step_nvim_setup_provider_ruby >&2 &
-  ruby_pid=$!
+  # Setup nvim providers sequentially
+  # This is more reliable than background processing in container environments
+  i "[NVIM] Setting up NPM provider..."
+  step_nvim_setup_provider_npm || w "[NVIM] NPM provider setup failed, continuing..."
 
-  # Wait for all background processes with timeout
-  wait_timeout=300 # 5 minutes timeout
-  wait_count=0
-  while [ $wait_count -lt $wait_timeout ]; do
-    if ! kill -0 $npm_pid 2>/dev/null && ! kill -0 $python_pid 2>/dev/null && ! kill -0 $ruby_pid 2>/dev/null; then
-      break # All processes completed
-    fi
-    sleep 1
-    wait_count=$((wait_count + 1))
-  done
+  i "[NVIM] Setting up Python provider..."
+  step_nvim_setup_provider_python || w "[NVIM] Python provider setup failed, continuing..."
 
-  # Kill any remaining processes if timeout reached
-  if [ $wait_count -eq $wait_timeout ]; then
-    w "[NVIM] Provider setup timeout reached, killing remaining processes"
-    kill -9 $npm_pid $python_pid $ruby_pid 2>/dev/null || true
-  fi
+  i "[NVIM] Setting up Ruby provider..."
+  step_nvim_setup_provider_ruby || w "[NVIM] Ruby provider setup failed, continuing..."
 
   # Install nvim plugins
+  i "[NVIM] Installing plugins..."
   # Check if timeout command is available
   if ! command -v timeout >/dev/null 2>&1; then
     w "[NVIM] timeout command not available, using direct execution"
