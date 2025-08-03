@@ -67,13 +67,12 @@ jobs:
       - name: Build multi-platform image for ${{ matrix.distro }}
         uses: docker/build-push-action@v6
         with:
-          context: .
           target: remote
           platforms: linux/amd64,linux/arm64
           build-args: BRANCH=${{ github.head_ref || github.ref_name }}
           file: distros/${{ matrix.distro }}/Dockerfile
           push: false
-          load: true
+          load: false
           tags: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
           cache-from: |
             type=gha,scope=build-${{ matrix.distro }}
@@ -85,7 +84,7 @@ jobs:
           cache-to: |
             type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }},mode=max
             type=gha,scope=build-${{ matrix.distro }},mode=max
-          outputs: type=docker,dest=${{ runner.temp }}/${{ matrix.distro }}-image.tar
+          outputs: type=image,dest=${{ runner.temp }}/${{ matrix.distro }}-image.tar
           github-token: ${{ secrets.GH_TOKEN }}
 
       - name: Upload image artifact
@@ -131,9 +130,15 @@ jobs:
           name: ${{ matrix.distro }}-image
           path: ${{ runner.temp }}
 
-      - name: Load image and tag for testing as amd64
+      - name: Load multi-platform image
         run: |
           docker load --input ${{ runner.temp }}/${{ matrix.distro }}-image.tar
+
+      - name: Extract amd64 platform for testing
+        run: |
+          # Pull the amd64 platform specifically from the loaded multi-platform image
+          docker pull --platform linux/amd64 ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+          # Tag it for testing
           docker tag ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }} ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
 
       - name: Container Structure Test GitHub Action
