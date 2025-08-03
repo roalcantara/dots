@@ -1,3 +1,5 @@
+# https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
+# https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/pass-job-outputs
 name: Preview
 
 on:
@@ -18,7 +20,7 @@ env:
   FORCE_COLOR: true
   DOCKER_BUILDKIT: 1
   BUILDKIT_INLINE_CACHE: 1
-  IMG_NAME: ${{ github.repository }}
+  REGISTRY_IMAGE: ${{ github.repository }}
 
 jobs:
   lint:
@@ -36,7 +38,7 @@ jobs:
         with:
           dockerfile: distros/${{ matrix.distro }}/Dockerfile
           config: ./.hadolint.yaml
-  build:
+  test:
     runs-on: ${{ matrix.image }}
     needs: lint
     permissions:
@@ -52,112 +54,56 @@ jobs:
           - distro: debian
             image: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: roalcantara
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Build multi-platform image for ${{ matrix.distro }}
+      - name: Build test image for ${{ matrix.distro }}
         uses: docker/build-push-action@v6
         with:
           target: remote
-          platforms: linux/amd64,linux/arm64
+          context: .
           build-args: BRANCH=${{ github.head_ref || github.ref_name }}
           file: distros/${{ matrix.distro }}/Dockerfile
+          platforms: linux/amd64
           push: false
-          load: false
-          tags: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+          load: true
+          tags: ${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
           cache-from: |
             type=gha,scope=build-${{ matrix.distro }}
             type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
             type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}
           cache-to: |
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }},mode=max
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
             type=gha,scope=build-${{ matrix.distro }},mode=max
-          outputs: type=image,dest=${{ runner.temp }}/${{ matrix.distro }}-image.tar
+          outputs: type=docker
           github-token: ${{ secrets.GH_TOKEN }}
-
-      - name: Upload image artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.distro }}-image
-          path: ${{ runner.temp }}/${{ matrix.distro }}-image.tar
-
-  test:
-    runs-on: ${{ matrix.image }}
-    needs: build
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-      checks: write
-      pull-requests: write
-    strategy:
-      matrix:
-        distro: [debian]
-        include:
-          - distro: debian
-            image: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: roalcantara
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Download image artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ matrix.distro }}-image
-          path: ${{ runner.temp }}
-
-      - name: Load multi-platform image
-        run: |
-          docker load --input ${{ runner.temp }}/${{ matrix.distro }}-image.tar
-
-      - name: Extract amd64 platform for testing
-        run: |
-          # Pull the amd64 platform specifically from the loaded multi-platform image
-          docker pull --platform linux/amd64 ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
-          # Tag it for testing
-          docker tag ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }} ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
-
-      - name: Container Structure Test GitHub Action
+      - name: Run container Structure Test
         uses: amardeep2006/container-structure-test-github-action@v1.2
         with:
-          dockerimage: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
+          dockerimage: ${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
           args: -v debug --force --output junit --test-report cst_junit_report.xml --config distros/${{ matrix.distro }}/container-structure-test.yml
-
-      - if: always()
+      - name: Upload Test Artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: cst_junit_report.xml
-
-      - uses: mikepenz/action-junit-report@v5
+      - name: Upload Test Report
         if: always()
+        uses: mikepenz/action-junit-report@v5
         with:
           report_paths: cst_junit_report.xml
-
   push:
     runs-on: ${{ matrix.image }}
     needs: test
@@ -167,7 +113,7 @@ jobs:
       id-token: write
     environment:
       name: preview
-      url: ${{ steps.setup.outputs.PREVIEW_URL }}
+      url: ${{ steps.setup.outputs.REGISTRY_URL }}
     strategy:
       matrix:
         distro: [debian]
@@ -175,37 +121,37 @@ jobs:
           - distro: debian
             image: ubuntu-latest
     steps:
+      - name: Setup outputs
+        id: setup
+        run: |
+          short_sha=$(echo $GITHUB_SHA | cut -c1-7)
+          registry_url_tags=https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags
+          echo "DISTRO=${{ matrix.distro }}" >> $GITHUB_OUTPUT
+          echo "SHORT_SHA=$short_sha" >> $GITHUB_OUTPUT
+          echo "IMAGE_NAME=${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${short_sha}" >> $GITHUB_OUTPUT
+          echo "REGISTRY_URL_TAGS=${registry_url_tags}" >> $GITHUB_OUTPUT
+          echo "REGISTRY_URL=${registry_url_tags}?name=pr-${{ github.event.pull_request.number }}-${short_sha}" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_SHA: ${{ github.sha }}
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: roalcantara
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Set version and URL
-        id: setup
-        run: |
-          echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
-          echo "PREVIEW_URL=https://hub.docker.com/r/${{ env.IMG_NAME }}/tags?name=pr-${{ github.event.pull_request.number }}-$SHORT_SHA" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Extract Docker Metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMG_NAME }}
+          images: ${{ env.REGISTRY_IMAGE }}
           tags: |
             type=raw,value=${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
             type=raw,value=${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ steps.setup.outputs.SHORT_SHA }}
             type=sha
-
-      - name: Build and push for ${{ matrix.distro }}
+      - name: Multi-platform Build and Push for ${{ matrix.distro }}
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
@@ -217,29 +163,28 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
           sbom: true
           push: true
-          provenance: true
+          # TODO: Enable provenance when we have a way to sign the images
+          provenance: false
           cache-from: |
             type=gha,scope=build-${{ matrix.distro }}
             type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
             type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}
           cache-to: |
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }},mode=max
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
             type=gha,scope=build-${{ matrix.distro }},mode=max
           github-token: ${{ secrets.GH_TOKEN }}
-
       - name: Update deployment status
         run: |
           echo "## Docker Image Published" >> $GITHUB_STEP_SUMMARY
           echo "| distro | Image | Tag |" >> $GITHUB_STEP_SUMMARY
           echo "| --- | --- | --- |" >> $GITHUB_STEP_SUMMARY
-          echo "| ${{ matrix.distro }} | ${{ env.IMG_NAME }} | ${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ steps.setup.outputs.SHORT_SHA }} |" >> $GITHUB_STEP_SUMMARY
-          echo "Pull with: \`docker pull ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ steps.setup.outputs.SHORT_SHA }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "| ${{ steps.setup.outputs.DISTRO }} | ${{ steps.setup.outputs.IMAGE_NAME }} |" >> $GITHUB_STEP_SUMMARY
+          echo "Pull with: \`docker pull ${{ steps.setup.outputs.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View all PR images on [DockerHub](https://hub.docker.com/r/${{ env.IMG_NAME }}/tags)" >> $GITHUB_STEP_SUMMARY
-
+          echo "View all PR images on [DockerHub](https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags)" >> $GITHUB_STEP_SUMMARY
       - name: Create summary
         run: |
           echo "# PR Image Deployment" >> $GITHUB_STEP_SUMMARY
@@ -249,31 +194,29 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| distro | Docker Pull Command |" >> $GITHUB_STEP_SUMMARY
           echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
-          echo "| ${{ matrix.distro }} | \`docker pull ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ steps.setup.outputs.SHORT_SHA }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| ${{ steps.setup.outputs.DISTRO }} | \`docker pull ${{ steps.setup.outputs.IMAGE_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View all PR images on [DockerHub](https://hub.docker.com/r/${{ env.IMG_NAME }}/tags?name=pr-${{ github.event.pull_request.number }})" >> $GITHUB_STEP_SUMMARY
-
-      - uses: actions/github-script@v7
+          echo "View all PR images on [DockerHub](${{ steps.setup.outputs.REGISTRY_URL }})" >> $GITHUB_STEP_SUMMARY
+      - name: Create review comment
+        uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN }}
           result-encoding: string
           script: |
-            const sha = '${{ steps.setup.outputs.SHORT_SHA }}';
-            const prNumber = '${{ github.event.pull_request.number }}';
             const body = `## 🐳 Preview Docker Images Available
 
             Preview images for this PR have been built and pushed to DockerHub:
 
             | distro | Image |
             | --- | --- |
-            | ${{ matrix.distro }} | \`docker pull ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${prNumber}-${sha}\` |
+            | ${{ steps.setup.outputs.DISTRO }} | \`docker pull ${{ steps.setup.outputs.IMAGE_NAME }}\` |
 
-            [View all PR images on DockerHub](https://hub.docker.com/r/${{ env.IMG_NAME }}/tags?name=pr-${{ github.event.pull_request.number }})
+            [View all PR images on DockerHub](${{ steps.setup.outputs.REGISTRY_URL }})
 
             ### Testing instructions
 
-            1. Pull the relevant image: \`docker pull ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${prNumber}-${sha}\`
-            2. Run the container: \`docker run -it ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${prNumber}-${sha}\`
+            1. Pull the relevant image: \`docker pull ${{ steps.setup.outputs.IMAGE_NAME }}\`
+            2. Run the container: \`docker run -it ${{ steps.setup.outputs.IMAGE_NAME }}\`
 
             These preview images contain all changes from this PR.`;
 
