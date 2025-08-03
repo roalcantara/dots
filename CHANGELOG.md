@@ -1,3 +1,12 @@
+# [1.4.0](https://github.com/roalcantara/dots/compare/v1.3.0...v1.4.0) (2025-08-03)
+
+
+### Features
+
+* **install/nvim:** Enhance LSP and Mason integration ([fa12017](https://github.com/roalcantara/dots/commit/fa120173da3c7e5a35ce04e49871d99792dc38cc))
+* **install:** Add timeout handling for provider setup ([f4175c3](https://github.com/roalcantara/dots/commit/f4175c347fb6ea55e09eb75ca91f753a24571892))
+* **install:** Refactor provider setup for sequential execution ([0025df1](https://github.com/roalcantara/dots/commit/0025df1e287263987748dcedb5449410b2986d88))
+
 # [1.3.0](https://github.com/roalcantara/dots/compare/v1.2.1...v1.3.0) (2025-08-01)
 
 
