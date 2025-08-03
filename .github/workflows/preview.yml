@@ -61,6 +61,7 @@ jobs:
           daemon-config: |
             {
               "debug": true,
+              
               "features": {
                 "containerd-snapshotter": true
               }
@@ -78,7 +79,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and test image for ${{ matrix.distro }}
+      - name: Build multi-platform image for ${{ matrix.distro }}
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -87,7 +88,7 @@ jobs:
           build-args: BRANCH=${{ github.head_ref || github.ref_name }}
           file: distros/${{ matrix.distro }}/Dockerfile
           push: false
-          load: true
+          load: false
           tags: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
           cache-from: |
             type=gha,scope=build-${{ matrix.distro }}
@@ -99,16 +100,39 @@ jobs:
           cache-to: |
             type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }},mode=max
             type=gha,scope=build-${{ matrix.distro }},mode=max
-          outputs: type=docker
+          outputs: type=image
+          github-token: ${{ secrets.GH_TOKEN }}
+
+      - name: Build amd64 image for testing
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: remote
+          platforms: linux/amd64
+          build-args: BRANCH=${{ github.head_ref || github.ref_name }}
+          file: distros/${{ matrix.distro }}/Dockerfile
+          push: false
+          load: true
+          tags: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
+          cache-from: |
+            type=gha,scope=build-${{ matrix.distro }}
+            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}
+          cache-to: |
+            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }},mode=max
+            type=gha,scope=build-${{ matrix.distro }},mode=max
           github-token: ${{ secrets.GH_TOKEN }}
 
       - name: Inspect image
-        run: docker inspect ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+        run: docker inspect ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
 
       - name: Container Structure Test GitHub Action
         uses: amardeep2006/container-structure-test-github-action@v1.2
         with:
-          dockerimage: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+          dockerimage: ${{ env.IMG_NAME }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
           args: -v debug --force --output junit --test-report cst_junit_report.xml --config distros/${{ matrix.distro }}/container-structure-test.yml
 
       - if: always()
