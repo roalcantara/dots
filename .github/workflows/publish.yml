@@ -41,6 +41,7 @@ jobs:
         id: setup
         run: |
           version=${GITHUB_REF#refs/tags/}
+          version=${version#v}
           echo "VERSION=${version}" >> $GITHUB_OUTPUT
           echo "REGISTRY_URL=https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags?name=${{ matrix.distro }}-${version}" >> $GITHUB_OUTPUT
       - name: Login to DockerHub
