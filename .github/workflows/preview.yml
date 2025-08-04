@@ -148,7 +148,7 @@ jobs:
           tags: |
             type=raw,value=${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
             type=raw,value=${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ steps.setup.outputs.SHORT_SHA }}
-            type=sha
+            type=sha,prefix=${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-
       - name: Multi-platform Build and Push for ${{ matrix.distro }}
         uses: docker/build-push-action@v6
         with:
