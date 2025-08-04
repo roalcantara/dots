@@ -1,3 +1,11 @@
+## [1.5.2](https://github.com/roalcantara/dots/compare/v1.5.1...v1.5.2) (2025-08-04)
+
+
+### Bug Fixes
+
+* **workflows:** Add prefix to SHA tag in Docker build/publish workflows ([aeef841](https://github.com/roalcantara/dots/commit/aeef8419a9095fed3ec900b01d9460451973ed96))
+* **zsh:** Ensure proper creation and permissions for XDG_RUNTIME_DIR ([0cdd929](https://github.com/roalcantara/dots/commit/0cdd92976df07ee91325b1e5ab12bbbb6e7eb5d7))
+
 ## [1.5.1](https://github.com/roalcantara/dots/compare/v1.5.0...v1.5.1) (2025-08-04)
 
 
