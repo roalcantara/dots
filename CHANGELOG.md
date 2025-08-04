@@ -1,3 +1,16 @@
+# [1.5.0](https://github.com/roalcantara/dots/compare/v1.4.0...v1.5.0) (2025-08-04)
+
+
+### Bug Fixes
+
+* **install:** Improve user/group detection and ownership setup ([5c75eab](https://github.com/roalcantara/dots/commit/5c75eab433dbb989aadebf93714a722f5c802ce7))
+
+
+### Features
+
+* **nvim:** Update Neovim packages ([af614d6](https://github.com/roalcantara/dots/commit/af614d644551219dd2241910e4d7e7f8befd9403))
+* **zsh:** Enhance XDG and ZSH folders setup ([3086083](https://github.com/roalcantara/dots/commit/3086083f45e507eed5ec84e70a4afa4fb9037d7a))
+
 # [1.4.0](https://github.com/roalcantara/dots/compare/v1.3.0...v1.4.0) (2025-08-03)
 
 
