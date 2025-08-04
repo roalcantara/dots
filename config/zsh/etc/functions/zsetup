@@ -12,56 +12,96 @@ elif [[ -n "${ZSH_VERSION:-}" ]]; then
   setopt PIPE_FAIL
 fi
 
+# Ensure ownership of a path
+# Usage: setup_ownership <path> <section_name> (required_owner)
+set_ownership() {
+  local TARGET="$1"
+  local OWNER="${2:-${UID:-"$USER:$GROUP"}}"
+
+  declare owner
+  case "$(uname)" in
+  Darwin)
+    owner=$(stat -f "%u" "$TARGET" 2>/dev/null || echo "0")
+    ;;
+  Linux)
+    owner=$(stat -c "%u" "$TARGET" 2>/dev/null || echo "0")
+    ;;
+  esac
+
+  if [[ "$owner" != "$OWNER" ]]; then
+    chown -R "$OWNER" "$TARGET" 2>/dev/null || sudo chown -R "$OWNER" "$TARGET" || {
+      echo "⚠ Failed to change ownership of $TARGET" >&2
+      return 1
+    }
+  fi
+}
+# Ensure ownership of a path
+# Usage: setup_ownership <path> <section_name> (required_owner)
+set_permission() {
+  local TARGET="$1"
+  local PERM="${2:-"700"}"
+
+  declare perms
+  case "$(uname)" in
+  Darwin)
+    perms=$(stat -f "%Lp" "$TARGET" 2>/dev/null || echo "000")
+    ;;
+  Linux)
+    perms=$(stat -c "%a" "$TARGET" 2>/dev/null || echo "000")
+    ;;
+  esac
+
+  if [[ "$perms" != "$PERM" ]]; then
+    chmod "$PERM" "$TARGET" 2>/dev/null || sudo chmod "$PERM" "$TARGET" || {
+      echo "⚠ Failed to set permissions on $TARGET" >&2
+      return 1
+    }
+  fi
+}
+# Setup directory with proper ownership (without environment variable) as sudo
+# Usage: setup_dir <path> <section_name>
+setup_dir() {
+  local TARGET="$1"
+  local OWNER="${2:-${UID:-"$USER:$GROUP"}}"
+
+  # Create directory if it doesn't exist
+  if [ ! -d "$TARGET" ]; then
+    mkdir -p "$TARGET" 2>/dev/null || sudo mkdir -p "$TARGET" || {
+      echo "⚠ Failed to create directory $TARGET" >&2
+      return 1
+    }
+  fi
+
+  # Ensure ownership
+  set_ownership "$TARGET" "$OWNER"
+}
 _zsetup_xdg() {
   USERNAME="$1"
   GROUPNAME="$2"
 
   # Export XDG variables with fallbacks
-  export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-  export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-  export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-  export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-  export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp/runtime-$USERNAME}"
+  export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+  export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+  export XDG_LOCAL_DIR=${XDG_LOCAL_DIR:-$HOME/.local}
+  export XDG_DATA_HOME=${XDG_DATA_HOME:-$XDG_LOCAL_DIR/share}
+  export XDG_STATE_HOME=${XDG_STATE_HOME:-$XDG_LOCAL_DIR/state}
+  export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/tmp/runtime-${USERNAME:-user}}
 
   # User directories
-  export XDG_DESKTOP_DIR="${XDG_DESKTOP_DIR:-$HOME/Desktop}"
-  export XDG_DOWNLOAD_DIR="${XDG_DOWNLOAD_DIR:-$HOME/Downloads}"
-  export XDG_DOCUMENTS_DIR="${XDG_DOCUMENTS_DIR:-$HOME/Documents}"
-  export XDG_MUSIC_DIR="${XDG_MUSIC_DIR:-$HOME/Music}"
-  export XDG_PICTURES_DIR="${XDG_PICTURES_DIR:-$HOME/Pictures}"
-  export XDG_VIDEOS_DIR="${XDG_VIDEOS_DIR:-$HOME/Movies}"
-  export XDG_PROJECTS_DIR="${XDG_PROJECTS_DIR:-$HOME/Projects}"
-  export XDG_WORKSPACE_DIR="${XDG_WORKSPACE_DIR:-$HOME/Work}"
+  export XDG_DESKTOP_DIR=${XDG_DESKTOP_DIR:-$HOME/Desktop}
+  export XDG_DOWNLOAD_DIR=${XDG_DOWNLOAD_DIR:-$HOME/Downloads}
+  export XDG_DOCUMENTS_DIR=${XDG_DOCUMENTS_DIR:-$HOME/Documents}
+  export XDG_MUSIC_DIR=${XDG_MUSIC_DIR:-$HOME/Music}
+  export XDG_PICTURES_DIR=${XDG_PICTURES_DIR:-$HOME/Pictures}
+  export XDG_VIDEOS_DIR=${XDG_VIDEOS_DIR:-$HOME/Movies}
+  export XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-$HOME/Projects}
+  export XDG_WORKSPACE_DIR=${XDG_WORKSPACE_DIR:-$HOME/Work}
 
-  # Create directories
-  mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR" "$XDG_RUNTIME_DIR"
-  chown "$USERNAME:$GROUPNAME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR" "$XDG_RUNTIME_DIR"
+  for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_LOCAL_DIR" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR" "$XDG_RUNTIME_DIR"; do
+    setup_dir "$dir" "$USERNAME:$GROUPNAME"
+  done
 
-  declare perms owner
-  case "$(uname)" in
-  Darwin)
-    perms=$(stat -f "%Lp" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "000")
-    owner=$(stat -f "%u" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "0")
-    ;;
-  Linux)
-    perms=$(stat -c "%a" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "000")
-    owner=$(stat -c "%u" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "0")
-    ;;
-  esac
-
-  if [[ "$perms" != "700" ]]; then
-    chmod 700 "$XDG_RUNTIME_DIR" || {
-      echo "⚠ Failed to set permissions on $runtime_dir" >&2
-      return 1
-    }
-  fi
-
-  if [[ "$owner" != "$UID" ]]; then
-    chown "$USERNAME" "$XDG_RUNTIME_DIR" || {
-      echo "⚠ Failed to change ownership of $runtime_dir" >&2
-      return 1
-    }
-  fi
+  set_permission "$XDG_RUNTIME_DIR" "700"
 }
 _zsetup_zsh() {
   USERNAME="$1"
@@ -81,17 +121,22 @@ _zsetup_zsh() {
   export ZIM_HOME="${ZIM_HOME:-$XDG_DATA_HOME/zim}"
 
   # Create directories
-  mkdir -p "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZDOTDIR_OPT" "$ZDOTDIR_ETC" "$ZIM_HOME"
-  chown "$USERNAME:$GROUPNAME" "$ZDOTDIR" "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZDOTDIR_OPT" "$ZDOTDIR_ETC" "$ZIM_HOME"
+  for dir in "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZIM_HOME"; do
+    setup_dir "$dir" "$USERNAME:$GROUPNAME"
+  done
 }
 zsetup() {
   USERNAME="${1:-$(id -un)}"
   GROUPNAME="${2:-$(id -gn)}"
 
-  if [[ -n "$USERNAME" && -n "$GROUPNAME" ]]; then
-    _zsetup_xdg "$USERNAME" "$GROUPNAME" || return 1
-    _zsetup_zsh "$USERNAME" "$GROUPNAME" || return 1
-  fi
+  _zsetup_xdg "$USERNAME" "$GROUPNAME" || {
+    echo "⚠ Failed to setup XDG environment variables and directories" >&2
+    return 1
+  }
+  _zsetup_zsh "$USERNAME" "$GROUPNAME" || {
+    echo "⚠ Failed to setup ZSH environment variables and directories" >&2
+    return 1
+  }
 }
 
 zsetup "${@}"
