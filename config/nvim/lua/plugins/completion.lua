@@ -25,17 +25,6 @@ return {
         dependencies = { 'nvim-lua/plenary.nvim' },
       },
       {
-        'folke/lazydev.nvim',
-        ft = 'lua',
-        opts = {
-          library = {
-            -- See the configuration section for more details
-            -- Load luvit types when the `vim.uv` word is found
-            { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-          },
-        },
-      },
-      {
         'xzbdmw/colorful-menu.nvim',
         opts = {
           ls = {
