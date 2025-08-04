@@ -4,6 +4,34 @@ return {
     event = 'VeryLazy',
     version = '1.*',
     dependencies = {
+      {
+        -- Properly configures LuaLS for editing your Neovim config by lazily updating your workspace libraries
+        -- https://github.com/folke/lazydev.nvim?tab=readme-ov-file#-installation
+        'folke/lazydev.nvim',
+        ft = 'lua', -- only load on lua files
+        opts = {
+          -- Configure library paths
+          library = {
+            -- It can be relative, which means they will be resolved from the plugin dir.
+            'lazy.nvim',
+            -- It can also be a table with trigger words / modifiers
+            -- Load luvit types when the `vim.uv` word is found
+            { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+          },
+          integrations = {
+            -- Fixes lspconfig's workspace management for LuaLS
+            -- Only create a new workspace if the buffer is not part
+            -- of an existing workspace or one of its libraries
+            lspconfig = true,
+            -- add the cmp source for completion of:
+            -- `require "modname"`
+            -- `---@module "modname"`
+            cmp = true,
+            -- same, but for Coq
+            coq = false,
+          },
+        },
+      },
       'rafamadriz/friendly-snippets',
       'onsails/lspkind.nvim',
       -- Conventional Commits source for blink-cmp

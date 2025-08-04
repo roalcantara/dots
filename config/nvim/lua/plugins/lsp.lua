@@ -1,38 +1,59 @@
---- Check if a command is available
---- @param name string The name of the command to check
---- @return function True if the command is available, false otherwise
-local function has(name)
-  return function()
-    return vim.fn.executable(name) == 1
-  end
-end
+-- =============================================================================
+-- Uses Neovim's built-in LSP client/framework
+-- -----------------------------------------------------------------------------
+-- 💡 TL;DR:
+-- 1. |mason-tool-installer.nvim| installs/updates LSP servers and tools automatically (via *mason.nvim*)
+-- 2. |nvim-lspconfig| provides default LSP client configuration for various servers (:h vim.lsp.config())
+--  ➡ LSP server configuration can be extended:
+--    ➡ To *STATICALLY* extend the Lua language server configuration:
+--      · use vim.lsp.config('lua_ls', { ... })
+--      · create the file ~/.config/nvim/lua/lsp/lua_ls.lua
+--    ➡ To *DYNAMICALLY* extend any LSP server configuration:
+--      · :h lsp-attach
+--      · Client:on_attach()
+-- 4. |mason-lspconfig.nvim| enables installed servers automatically (:h vim.lsp.enable())
+-- 5. When LSP is active in a buffer, Nvim sets some defaults:
+--    · options     (:h lsp-defaults)
+--    · mappings    (https://neovim.io/doc/user/lsp.html#grr)
+--    · diagnostics (:h diagnostic-defaults)
+-- -----------------------------------------------------------------------------
+-- 🔖 REFERENCES
+-- https://neovim.io/doc/user/lsp.html#lsp-config
+-- https://neovim.io/doc/user/lsp.html
+-- https://youtu.be/tdhxpn1XdjQ | https://youtu.be/5YQlibmXa0E
+-- =============================================================================
 
--- Install and upgrade third party tools automatically
--- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim
+local has = require('core/vi/paths').has
+
 return {
   {
-    'folke/lazydev.nvim',
-    ft = 'lua',
+    -- Enables installed servers automatically (:h vim.lsp.enable())
+    -- https://github.com/mason-org/mason-lspconfig.nvim?tab=readme-ov-file#automatically-enable-installed-servers
+    'mason-org/mason-lspconfig.nvim',
     opts = {
-      library = {
-        -- See the configuration section for more details
-        -- Load luvit types when the `vim.uv` word is found
-        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-      },
+      -- Ensure that installed servers are automatically enabled (vim.lsp.enable())
+      automatic_enable = true,
+    },
+    -- Requires that mason.nvim and nvim-lspconfig are set up first
+    -- https://github.com/mason-org/mason-lspconfig.nvim?tab=readme-ov-file#installation
+    dependencies = {
+      { 'mason-org/mason.nvim', opts = {} },
+      -- Provides default LSP client configuration for various servers (:h vim.lsp.config())
+      -- https://github.com/neovim/nvim-lspconfig?tab=readme-ov-file#important-%EF%B8%8F
+      'neovim/nvim-lspconfig',
     },
   },
-  'neovim/nvim-lspconfig',
-  { 'mason-org/mason.nvim',           opts = {} },
-  { 'mason-org/mason-lspconfig.nvim', opts = {} },
+  -- Installs/updates LSP servers and tools automatically (via *mason.nvim*)
+  -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = {
-      -- LSP servers to ensure are installed
-      -- It expects Mason package names by default
-      -- It also accepts lspconfig package names, as mason-lspconfig is installed
+      -- Defines LSP servers and tools to be installed automatically
+      -- It accepts Mason package names or lspconfig package names
       ensure_installed = {
         -- =====================================================================
-        -- LSP servers
+        -- LSP SERVERS
+        -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
         -- =====================================================================
 
         -- Language server for Bash
@@ -66,10 +87,6 @@ return {
         -- ESLint's Language server for javascript and typescript
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#eslint
         { 'eslint',    condition = has('eslint') },
-
-        -- Language server for Gleam Programming Language (https://gleam.run)
-        -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#gleam
-        { 'gleam',     condition = has('gleam') },
 
         -- (Google's) Language server for golang
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#gopls
@@ -144,7 +161,7 @@ return {
         'yaml-language-server',
 
         -- =====================================================================
-        -- Tools
+        -- TOOLS
         -- =====================================================================
 
         -- EditorConfig checker
@@ -235,6 +252,9 @@ return {
       },
     },
     init = function()
+      -- Prior to installing the first package, `MasonToolsStartingInstall` event is emitted once.
+      -- If there are no packages to install, no event will be emitted.
+      -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
       vim.api.nvim_create_autocmd('User', {
         pattern = 'MasonToolsStartingInstall',
         callback = function()
@@ -242,17 +262,21 @@ return {
             print('[mason-tool-installer] is starting...')
           end)
         end,
-        desc = 'MasonToolsStartingInstall',
+        desc = 'Warns when mason-tool-installer is starting to install tools',
       })
 
+      -- Upon completion of any installation/update, `MasonToolsUpdateCompleted` event is emitted.
+      -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
       vim.api.nvim_create_autocmd('User', {
         pattern = 'MasonToolsUpdateCompleted',
         callback = function(e)
-          vim.schedule(function()
-            print('[mason-tool-installer] done! ===> ' .. vim.inspect(e.data) .. '\r\n')
-          end)
+          if e.data then
+            vim.schedule(function()
+              print('[mason-tool-installer] done! ===> ' .. vim.inspect(e.data) .. '\r\n')
+            end)
+          end
         end,
-        desc = 'MasonToolsUpdateCompleted',
+        desc = 'Warns when mason-tool-installer is done installing/updating tools',
       })
     end,
   },

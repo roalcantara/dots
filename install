@@ -122,8 +122,8 @@ set_ownership() {
   fi
 }
 # Ensure permission of a path
-# Usage: set_permission <path> <section_name> (required_permission)
-set_permission() {
+# Usage: set_permissions <path> <section_name> (required_permission)
+set_permissions() {
   local TARGET="$1"
   local LABEL="$2"
   local PERM="${3:-700}"
