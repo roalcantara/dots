@@ -352,7 +352,7 @@ detect_user_by_distribution() {
     fi
   fi
 
-  w "[ENV/SETUP/USER:GROUP] USERNAME='$USERNAME' ($USER) GROUPNAME='$GROUPNAME' ($GROUP) HOME='$USERHOME' ($HOME) ✔︎"
+  w "[ENV/SETUP/USER:GROUP] USERNAME='$USERNAME' ($USER) GROUPNAME='$GROUPNAME' (${GROUP:-}) HOME='$USERHOME' ($HOME) ✔︎"
   if [ -z "$HOME" ] || [ "$HOME" != "$USERHOME" ]; then
     HOME="$USERHOME"
     w "[ENV/SETUP/USER:GROUP/HOME] HOME updated to '$HOME' ✔︎"
@@ -573,14 +573,8 @@ step_dotfiles() {
 step_chown() {
   section "[CHOWN] Ensuring ownership of essential directories started..."
 
-  if [ -d "$XDG_LOCAL_DIR" ]; then
-    set_ownership "$XDG_LOCAL_DIR" "CHOWN"
-  else
-    setup_dir "$XDG_LOCAL_DIR" "CHOWN/$XDG_LOCAL_DIR"
-  fi
-
-  for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" "$XDG_DATA_HOME"; do
-    set_ownership "$dir" "CHOWN"
+  for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_LOCAL_DIR" "$XDG_STATE_HOME" "$XDG_DATA_HOME"; do
+    setup_dir "$dir" "CHOWN/$dir"
   done
 
   s "[CHOWN] Completed ✔︎"
