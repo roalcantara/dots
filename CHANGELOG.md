@@ -1,3 +1,10 @@
+## [1.5.5](https://github.com/roalcantara/dots/compare/v1.5.4...v1.5.5) (2025-08-04)
+
+
+### Bug Fixes
+
+* **install:** Correct function name for setting perms on XDG_RUNTIME_DIR ([e46609a](https://github.com/roalcantara/dots/commit/e46609a3eb3fbe80fe6cbd7f4b855402a07d4710))
+
 ## [1.5.4](https://github.com/roalcantara/dots/compare/v1.5.3...v1.5.4) (2025-08-04)
 
 
