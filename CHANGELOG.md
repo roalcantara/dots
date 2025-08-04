@@ -1,3 +1,11 @@
+## [1.5.3](https://github.com/roalcantara/dots/compare/v1.5.2...v1.5.3) (2025-08-04)
+
+
+### Bug Fixes
+
+* **install:** Correct function name for setting XDG_RUNTIME_DIR perms ([6d376b8](https://github.com/roalcantara/dots/commit/6d376b8a4502ec41de8d6e737801073adfada8e7))
+* **workflows:** Add GITHUB_TOKEN secret to Docker preview workflows ([78c53d4](https://github.com/roalcantara/dots/commit/78c53d41c5e6b1c82db83829bd0c0e66dd5321d3))
+
 ## [1.5.2](https://github.com/roalcantara/dots/compare/v1.5.1...v1.5.2) (2025-08-04)
 
 
