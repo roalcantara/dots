@@ -13,7 +13,7 @@ env:
   FORCE_COLOR: true
   DOCKER_BUILDKIT: 1
   BUILDKIT_INLINE_CACHE: 1
-  IMG_NAME: ${{ github.repository }}
+  REGISTRY_IMAGE: ${{ github.repository }}
 
 defaults:
   run:
@@ -22,49 +22,48 @@ defaults:
 jobs:
   build-push:
     name: Build and Push Latest Images
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.image }}
     permissions:
       contents: read
       packages: write
       id-token: write
     environment:
       name: production
-      url: ${{ steps.setup.outputs.PRODUCTION_URL }}
+      url: ${{ steps.setup.outputs.REGISTRY_URL }}
     strategy:
       matrix:
         distro: [debian]
+        include:
+          - distro: debian
+            image: ubuntu-latest
     steps:
+      - name: Setup outputs
+        id: setup
+        run: |
+          version=${GITHUB_REF#refs/tags/}
+          echo "VERSION=${version}" >> $GITHUB_OUTPUT
+          echo "REGISTRY_URL=https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags?name=${{ matrix.distro }}-${version}" >> $GITHUB_OUTPUT
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: roalcantara
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Set version and URL
-        id: setup
-        run: |
-          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          echo "PRODUCTION_URL=https://hub.docker.com/r/${{ env.IMG_NAME }}/tags?name=${{ matrix.distro }}-$VERSION" >> $GITHUB_OUTPUT
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Extract Docker Metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMG_NAME }}
+          images: ${{ env.REGISTRY_IMAGE }}
           tags: |
             type=raw,value=${{ matrix.distro }}-latest
             type=semver,pattern=${{ matrix.distro }}-{{version}}
             type=semver,pattern=${{ matrix.distro }}-{{major}}.{{minor}}
             type=semver,pattern=${{ matrix.distro }}-{{major}}
             type=sha
-
-      - name: Build and push for ${{ matrix.distro }}
+      - name: Multi-platform Build and Push for ${{ matrix.distro }}
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
@@ -75,14 +74,15 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
           sbom: true
           push: true
-          provenance: true
+          # TODO: Enable provenance when we have a way to sign the images
+          provenance: false
           cache-from: |
-            type=gha,scope=build-${{ matrix.distro }}-${{ github.head_ref || github.ref_name }}
             type=gha,scope=build-${{ matrix.distro }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}-${{ github.head_ref || github.ref_name }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }}
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:base
+            type=gha,scope=build-${{ matrix.distro }}-${{ steps.setup.outputs.VERSION }}
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-${{ steps.setup.outputs.VERSION }}
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}
           cache-to: |
-            type=registry,ref=docker.io/${{ env.IMG_NAME }}-cache:${{ matrix.distro }},mode=max
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
             type=gha,scope=build-${{ matrix.distro }},mode=max
           github-token: ${{ secrets.GH_TOKEN }}
+          secrets: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
