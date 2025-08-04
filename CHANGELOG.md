@@ -1,3 +1,11 @@
+## [1.5.1](https://github.com/roalcantara/dots/compare/v1.5.0...v1.5.1) (2025-08-04)
+
+
+### Bug Fixes
+
+* **install:** Use sudo for changing user shell to ensure proper perms ([10d4c1c](https://github.com/roalcantara/dots/commit/10d4c1ce6a124a4ffda7986d88277c94099008be))
+* **workflos/publish:** Remove 'v' prefix from version ([cdb777e](https://github.com/roalcantara/dots/commit/cdb777eccb67e0fe4828d3f659d8a655ad18b621))
+
 # [1.5.0](https://github.com/roalcantara/dots/compare/v1.4.0...v1.5.0) (2025-08-04)
 
 
