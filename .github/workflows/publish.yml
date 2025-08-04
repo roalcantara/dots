@@ -63,7 +63,7 @@ jobs:
             type=semver,pattern=${{ matrix.distro }}-{{version}}
             type=semver,pattern=${{ matrix.distro }}-{{major}}.{{minor}}
             type=semver,pattern=${{ matrix.distro }}-{{major}}
-            type=sha
+            type=sha,prefix=${{ matrix.distro }}-
       - name: Multi-platform Build and Push for ${{ matrix.distro }}
         uses: docker/build-push-action@v6
         with:
