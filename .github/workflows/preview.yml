@@ -85,6 +85,7 @@ jobs:
             type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-amd64,mode=max
           outputs: type=docker
           github-token: ${{ secrets.GH_TOKEN }}
+          secrets: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
       - name: Run container Structure Test
         uses: amardeep2006/container-structure-test-github-action@v1.2
         with:
@@ -172,6 +173,7 @@ jobs:
             type=gha,scope=build-${{ matrix.distro }}-arm64,mode=max
             type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
           github-token: ${{ secrets.GH_TOKEN }}
+          secrets: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
       - name: Update deployment status
         run: |
           echo "## Docker Image Published" >> $GITHUB_STEP_SUMMARY
