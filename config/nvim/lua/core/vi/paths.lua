@@ -298,4 +298,13 @@ function M.get(opts)
   return M.get_separator() or ret
 end
 
+--- Check if a command is available
+--- @param name string The name of the command to check
+--- @return function True if the command is available, false otherwise
+function M.has(name)
+  return function()
+    return vim.fn.executable(name) == 1
+  end
+end
+
 return M
