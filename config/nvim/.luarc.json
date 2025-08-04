@@ -751,17 +751,10 @@
   ],
   "workspace.userThirdParty": [],
   "workspace.library": [
-    "/opt/homebrew/Cellar/neovim/HEAD-b77666e/share/nvim/runtime/lua",
-    "/opt/homebrew/bin/lua-language-server",
-    "/Users/roalcantara/.local/share/nvim/lazy/*/lua",
-    "/Users/roalcantara/.local/share/nvim/mason/*/lua",
-    "/Users/roalcantara/.local/share/nvim/blink/*/lua",
-    "/Users/roalcantara/.local/share/nvim/scratch/*/lua",
-    "/Users/roalcantara/.local/share/nvim/snacks/*/lua",
+    "$VIMRUNTIME",
     "${3rd}/lfs/library",
     "${3rd}/luv/library",
     "${3rd}/busted/library",
     "${3rd}/luassert/library",
-    "/Users/roalcantara/.config/nvim/lua"
   ]
 }

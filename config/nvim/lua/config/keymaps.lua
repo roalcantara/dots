@@ -12,6 +12,12 @@ vim.schedule_wrap(function()
     -- =============================================================================
     setup.toggle_comments_mappings('<D-/>')
 
+    -- Quickly source current file / execute Lua code
+    -- https://github.com/mplusp/nvim-0.12-vim-pack-intro/blob/main/lua/config/keymap.lua
+    vim.keymap.set('n', '<leader>xx', '<Cmd>source %<CR>', { desc = 'Source current file' })
+    vim.keymap.set('n', '<leader>x', '<Cmd>:.lua<CR>', { desc = 'Lua: execute current line' })
+    vim.keymap.set('v', '<leader>x', '<Cmd>:lua<CR>', { desc = 'Lua: execute current selection' })
+
     return {
       -- ===========================================================================
       -- EDITOR
@@ -81,7 +87,7 @@ vim.schedule_wrap(function()
       ['<D-M-p>'] = { { n = pick.files, i = pick.files, v = pick.files }, 'Search Files', { cmd = 'SearchFiles' } },
       ['<D-f>'] = { { n = pick.find, i = pick.find }, 'Find in File', { cmd = 'FindInFile' } },
       ['<D-S-f>'] = { { n = pick.grep, i = pick.grep, v = pick.grep }, 'Search in Files (Grep)', { cmd = 'Grep' } },
-      ['D-?'] = { { n = ":let @/='<C-R>=expand('<cword>')<CR>' | set hls<CR>", v = "y:let @/='<C-R>=escape(@\",'/\\')<CR>' | set hls<CR>", x = "<Esc>/\\%V" }, 'Search word under cursor, the selected text or visual selection' },
+      ['<D-?>'] = { { n = ":let @/='<C-R>=expand('<cword>')<CR>' | set hls<CR>", v = "y:let @/='<C-R>=escape(@\",'/\\')<CR>' | set hls<CR>", x = "<Esc>/\\%V" }, 'Search word under cursor, the selected text or visual selection' },
       -- =============================================================================
       -- BUFFERS
       -- =============================================================================

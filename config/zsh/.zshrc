@@ -7,7 +7,7 @@
 # https://zsh.sourceforge.io/Contrib/startup/std/zshrc
 
 # ZSH/ZIM ESSENTIAL VARIABLES
-export ZDOTDIR=${ZDOTDIR:=$XDG_CONFIG_HOME/zsh}
+export ZDOTDIR=$HOME/.config/zsh
 export ZIM_HOME=${ZIM_HOME:=$XDG_STATE_HOME/zim}
 export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:=$XDG_CACHE_HOME/zsh}
 export ZSH_COMPCACHE=$ZSH_CACHE_DIR/compcache
@@ -91,7 +91,11 @@ setopt short_loops # Shorter one-line loops | Enable shortened loop syntax => It
 # setopt aliases                # [SET BY ZIM!!] Expand aliases => `alias ls='echo ls'` will expand `ls` to `echo ls`
 # setopt clobber                # [SET BY ZIM!!] Allow the > operator to truncate existing files, and redirect all output to a file when the file exists => `ls -l /usr/bin/ls > ls.txt` will truncate `ls.txt` and redirect all output to it
 # setopt interactive_comments   # [SET BY ZIM!!] Better script documentation and command explanation | Allow comments even in interactive shells => `# hello world` will print `# hello world`
-# setopt no_mail_warning        # [SET BY ZIM!!] Reduces notification noise | Do not print a warning message if a mail file has been accessed => `mail` will not print a warning message if a mail file has been accessed
+
+# [SET BY ZIM!!] Reduces notification noise | Do not print a warning message if a mail file has been accessed => `mail` will not print a warning message if a mail file has been accessed
+setopt no_mail_warning
+setopt no_mailwarn
+setopt no_mailwarning
 # }
 
 # PROMPTING | http://zsh.sourceforge.io/Doc/Release/Options.html#Prompting

@@ -10,6 +10,17 @@ end
 -- Install and upgrade third party tools automatically
 -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim
 return {
+  {
+    'folke/lazydev.nvim',
+    ft = 'lua',
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+      },
+    },
+  },
   'neovim/nvim-lspconfig',
   { 'mason-org/mason.nvim',           opts = {} },
   { 'mason-org/mason-lspconfig.nvim', opts = {} },
@@ -47,6 +58,10 @@ return {
         -- Language server for dockerfiles
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#dockerls
         'dockerls',
+
+        -- Frontend-independent IDE "smartness" server for Elixir. Implements the "Language Server Protocol" standard and provides debugger support via the "Debug Adapter Protocol" (https://elixir-lsp.github.io/elixir-ls)
+        -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#elixirls
+        { 'elixirls',  condition = has('elixir') },
 
         -- ESLint's Language server for javascript and typescript
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#eslint

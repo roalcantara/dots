@@ -98,38 +98,70 @@ export_env_var() {
   fi
 }
 # Ensure ownership of a path
-# Usage: setup_ownership <path> <section_name> (required_owner)
+# Usage: set_ownership <path> <section_name> (required_owner)
 set_ownership() {
   local TARGET="$1"
   local LABEL="$2"
-  local OWNER="${3:-"$USERNAME:$GROUPNAME"}"
+  local OWNER="${3:-$UID}"
 
-  exec_cmd sudo chown -R "$OWNER" "$TARGET"
+  declare owner
+  case "$(uname)" in
+  Darwin)
+    owner=$(stat -f "%u" "$TARGET" 2>/dev/null || echo "0")
+    ;;
+  Linux)
+    owner=$(stat -c "%u" "$TARGET" 2>/dev/null || echo "0")
+    ;;
+  esac
+
+  if [[ "$owner" != "$OWNER" ]]; then
+    exec_cmd chown -R "$OWNER" "$TARGET" 2>/dev/null || sudo chown -R "$OWNER" "$TARGET" || {
+      e "[$LABEL] ⚠ Failed to change ownership of $TARGET" >&2
+      return 1
+    }
+  fi
 }
-# Ensure ownership of a path
-# Usage: setup_ownership <path> <section_name> (required_owner)
-setup_ownership() {
+# Ensure permission of a path
+# Usage: set_permission <path> <section_name> (required_permission)
+set_permission() {
   local TARGET="$1"
   local LABEL="$2"
-  local OWNER="${3:-"$USERNAME:$GROUPNAME"}"
+  local PERM="${3:-"700"}"
 
-  if [ "$(stat -c '%U:%G' "$TARGET" 2>/dev/null)" != "$OWNER" ]; then
-    set_ownership "$TARGET" "$LABEL" "$OWNER"
+  declare perms
+  case "$(uname)" in
+  Darwin)
+    perms=$(stat -f "%Lp" "$TARGET" 2>/dev/null || echo "000")
+    ;;
+  Linux)
+    perms=$(stat -c "%a" "$TARGET" 2>/dev/null || echo "000")
+    ;;
+  esac
+
+  if [[ "$perms" != "$PERM" ]]; then
+    exec_cmd chmod "$PERM" "$TARGET" 2>/dev/null || sudo chmod "$PERM" "$TARGET" || {
+      e "[$LABEL] ⚠ Failed to set permissions on $TARGET" >&2
+      return 1
+    }
   fi
 }
 # Setup directory with proper ownership (without environment variable) as sudo
 # Usage: setup_dir <path> <section_name>
 setup_dir() {
-  local path="$1"
-  local section_name="$2"
+  local TARGET="$1"
+  local LABEL="$2"
+  local OWNER="${3:-"$USERNAME:$GROUPNAME"}"
 
   # Create directory if it doesn't exist
-  if [ ! -d "$path" ]; then
-    exec_cmd sudo mkdir -p "$path"
+  if [ ! -d "$TARGET" ]; then
+    exec_cmd mkdir -p "$TARGET" 2>/dev/null || sudo mkdir -p "$TARGET" || {
+      e "[$LABEL] ⚠ Failed to create directory $TARGET" >&2
+      return 1
+    }
   fi
 
   # Ensure ownership
-  setup_ownership "$path" "$section_name"
+  set_ownership "$TARGET" "$LABEL" "$OWNER"
 }
 # Setup environment variable and directory with proper ownership
 # Usage: setup_env_and_dir <env_var_name> <default_path> <section_name>
@@ -260,10 +292,6 @@ setup_arguments() {
       DOTS_DIR="$2"
       shift 2
       ;;
-    --xdg_zsh_setup_script)
-      ZSH_XDG_SETUP_SCRIPT="$2"
-      shift 2
-      ;;
     --backup_resources)
       BACKUP_RESOURCES="$2"
       shift 2
@@ -352,7 +380,7 @@ detect_user_by_distribution() {
     fi
   fi
 
-  w "[ENV/SETUP/USER:GROUP] USERNAME='$USERNAME' ($USER) GROUPNAME='$GROUPNAME' ($GROUP) HOME='$USERHOME' ($HOME) ✔︎"
+  w "[ENV/SETUP/USER:GROUP] USERNAME='$USERNAME' ($USER) GROUPNAME='$GROUPNAME' (${GROUP:-}) HOME='$USERHOME' ($HOME) ✔︎"
   if [ -z "$HOME" ] || [ "$HOME" != "$USERHOME" ]; then
     HOME="$USERHOME"
     w "[ENV/SETUP/USER:GROUP/HOME] HOME updated to '$HOME' ✔︎"
@@ -362,21 +390,38 @@ setup_environment_variables() {
   section "[ENV/SETUP] Setting up environment variables..."
   detect_user_by_distribution
 
+  # Export XDG variables with fallbacks
   exec_cmd export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
   exec_cmd export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
   exec_cmd export XDG_LOCAL_DIR=${XDG_LOCAL_DIR:-$HOME/.local}
-  exec_cmd export XDG_DATA_HOME=${XDG_DATA_HOME:-$XDG_LOCAL_DIR/share}
-  exec_cmd export XDG_STATE_HOME=${XDG_STATE_HOME:-$XDG_LOCAL_DIR/state}
-  exec_cmd export ZDOTDIR=${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}
-  exec_cmd export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:-$XDG_CACHE_HOME/zsh}
-  exec_cmd export ZSH_COMPCACHE=${ZSH_COMPCACHE:-$ZSH_CACHE_DIR/compcache}
-  exec_cmd export ZSH_COMPDUMP=${ZSH_COMPDUMP:-$ZSH_COMPCACHE/.zcompdump}
-  exec_cmd export ZSH_XDG_SETUP_SCRIPT=${ZSH_XDG_SETUP_SCRIPT:-$ZDOTDIR/etc/functions/zsetup}
-  exec_cmd export MISE_DATA_HOME=${MISE_DATA_HOME:-$XDG_DATA_HOME/mise}
-  exec_cmd export DOTS_DIR=${DOTS_DIR:-$XDG_DATA_HOME/dots}
-  exec_cmd export BACKUP_DIR_ROOT=${BACKUP_DIR_ROOT:-$XDG_DATA_HOME/backup}
-  exec_cmd export NPM_CONFIG_PREFIX=${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}
-  exec_cmd export NPM_CONFIG_CACHE=${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}
+  exec_cmd export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+  exec_cmd export XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+  exec_cmd export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/tmp/runtime-${UID:-"${USERNAME:-$(id -un)}"}}
+
+  # User directories
+  exec_cmd export XDG_DESKTOP_DIR=${XDG_DESKTOP_DIR:-$HOME/Desktop}
+  exec_cmd export XDG_DOWNLOAD_DIR=${XDG_DOWNLOAD_DIR:-$HOME/Downloads}
+  exec_cmd export XDG_DOCUMENTS_DIR=${XDG_DOCUMENTS_DIR:-$HOME/Documents}
+  exec_cmd export XDG_MUSIC_DIR=${XDG_MUSIC_DIR:-$HOME/Music}
+  exec_cmd export XDG_PICTURES_DIR=${XDG_PICTURES_DIR:-$HOME/Pictures}
+  exec_cmd export XDG_VIDEOS_DIR=${XDG_VIDEOS_DIR:-$HOME/Movies}
+  exec_cmd export XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:-$HOME/Projects}
+  exec_cmd export XDG_WORKSPACE_DIR=${XDG_WORKSPACE_DIR:-$HOME/Work}
+
+  # ZSH
+  exec_cmd export ZDOTDIR=${ZDOTDIR:-$HOME/.config/zsh}
+  exec_cmd export ZSH_DATA_DIR=${ZSH_DATA_DIR:-$HOME/.local/share/zsh}
+  exec_cmd export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:-$HOME/.cache/zsh}
+  exec_cmd export ZSH_COMPCACHE=${ZSH_COMPCACHE:-$HOME/.cache/zsh/compcache}
+  exec_cmd export ZIM_HOME=${ZIM_HOME:-$HOME/.local/share/zim}
+  exec_cmd export ZSH_COMPDUMP=${ZSH_COMPDUMP:-$HOME/.cache/zsh/compcache/.zcompdump}
+
+  # MISE & MISC
+  exec_cmd export MISE_DATA_HOME=${MISE_DATA_HOME:-$HOME/.local/share/mise}
+  exec_cmd export DOTS_DIR=${DOTS_DIR:-$HOME/.local/share/dots}
+  exec_cmd export BACKUP_DIR_ROOT=${BACKUP_DIR_ROOT:-$HOME/.local/share/backup}
+  exec_cmd export NPM_CONFIG_PREFIX=${NPM_CONFIG_PREFIX:-$HOME/.local/share/npm}
+  exec_cmd export NPM_CONFIG_CACHE=${NPM_CONFIG_CACHE:-$HOME/.cache/npm}
 }
 step_setup_environment() {
   setup_platform
@@ -405,7 +450,6 @@ step_setup_environment() {
   i "ZSH_CACHE_DIR = \"$ZSH_CACHE_DIR\""
   i "ZSH_COMPCACHE = \"$ZSH_COMPCACHE\""
   i "ZSH_COMPDUMP = \"$ZSH_COMPDUMP\""
-  i "ZSH_XDG_SETUP_SCRIPT = \"$ZSH_XDG_SETUP_SCRIPT\""
   i "MISE_DATA_HOME = \"$MISE_DATA_HOME\""
   i "BACKUP_DIR_ROOT = \"$BACKUP_DIR_ROOT\""
   i "BACKUP_RESOURCES = \"$BACKUP_RESOURCES\""
@@ -561,38 +605,29 @@ step_dotfiles() {
   fi
 
   # Ensure ownership of the symlink
-  setup_ownership "$config_symlink" "DOTS"
+  set_ownership "$config_symlink" "DOTS"
 
   # Ensure ownership of all files and directories in the symlink
   for dir in "$config_symlink"/*; do
-    setup_ownership "$dir" "DOTS/SYMLINK"
+    set_ownership "$dir" "DOTS/SYMLINK"
   done
 
   s "[DOTS] Setup completed ✔︎"
 }
-step_chown() {
-  section "[CHOWN] Ensuring ownership of essential directories started..."
-
-  if [ -d "$XDG_LOCAL_DIR" ]; then
-    set_ownership "$XDG_LOCAL_DIR" "CHOWN"
-  else
-    setup_dir "$XDG_LOCAL_DIR" "CHOWN/$XDG_LOCAL_DIR"
-  fi
-
-  for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" "$XDG_DATA_HOME"; do
-    set_ownership "$dir" "CHOWN"
+step_ensure_ownership() {
+  section "[XDG] Ensuring ownership of XDG directories started..."
+  for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_LOCAL_DIR" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR" "$XDG_RUNTIME_DIR"; do
+    setup_dir "$dir" "XDG/CHOWN/$dir"
   done
+  s "[XDG] Completed ✔︎"
 
-  s "[CHOWN] Completed ✔︎"
-}
-step_xdg() {
-  if [ -x "$ZSH_XDG_SETUP_SCRIPT" ]; then
-    section "[XDG] Setting up XDG/ZSH environment via '$ZSH_XDG_SETUP_SCRIPT'..."
-    . "$ZSH_XDG_SETUP_SCRIPT" "$USERNAME" "$GROUPNAME"
-    s "[XDG] Setting up XDG/ZSH environment for '$USERNAME:$GROUPNAME' via '$ZSH_XDG_SETUP_SCRIPT' ✔︎"
+  if [[ "$*" =~ '--zsh' ]]; then
+    section "[ZSH] Ensuring ownership of ZSH directories started..."
+    for dir in "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZIM_HOME"; do
+      setup_dir "$dir" "ZSH/CHOWN/$dir"
+    done
+    s "[ZSH] Completed ✔︎"
   fi
-
-  step_chown
 }
 step_mise() {
   section "[MISE] Setting up..."
@@ -806,10 +841,12 @@ step_nvim_setup_provider_ruby() {
 
   # Install neovim's required Ruby packages
   i "[NVIM/RUBY] Installing neovim gem..."
-  $TIMEOUT_CMD gem install neovim && gem cleanup || {
+  if $TIMEOUT_CMD gem install neovim; then
+    gem cleanup
+  else
     w "[NVIM/RUBY] gem install failed or timed out, skipping Ruby provider setup"
     return 1
-  }
+  fi
   i "[NVIM/RUBY] Ruby provider setup completed"
 }
 step_nvim() {
@@ -865,11 +902,11 @@ main() {
   step_cleanup
   step_backup
   step_dotfiles
-  step_xdg
+  step_ensure_ownership
   step_mise
   step_zsh
   step_nvim
-  step_chown
+  step_ensure_ownership --zsh
   s "[INSTALL] DONE ✔︎✔︎"
 }
 
