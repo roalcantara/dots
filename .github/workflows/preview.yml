@@ -75,35 +75,33 @@ jobs:
           platforms: linux/amd64
           push: false
           load: true
-          tags: ${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
+          tags: ${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
           cache-from: |
-            type=gha,scope=build-${{ matrix.distro }}
-            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
-            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}
+            type=gha,scope=build-${{ matrix.distro }}-amd64
+            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-amd64
           cache-to: |
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
-            type=gha,scope=build-${{ matrix.distro }},mode=max
+            type=gha,scope=build-${{ matrix.distro }}-amd64,mode=max
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-amd64,mode=max
           outputs: type=docker
           github-token: ${{ secrets.GH_TOKEN }}
       - name: Run container Structure Test
         uses: amardeep2006/container-structure-test-github-action@v1.2
         with:
-          dockerimage: ${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
-          args: -v debug --force --output junit --test-report cst_junit_report.xml --config distros/${{ matrix.distro }}/container-structure-test.yml
+          dockerimage: ${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
+          args: -v debug --force --output junit --test-report cst_junit_report-${{ matrix.distro }}-amd64.xml --config distros/${{ matrix.distro }}/container-structure-test.yml
       - name: Upload Test Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: cst_junit_report.xml
+          name: test-results-${{ matrix.distro }}-amd64
+          path: cst_junit_report-${{ matrix.distro }}-amd64.xml
       - name: Upload Test Report
         if: always()
         uses: mikepenz/action-junit-report@v5
         with:
-          report_paths: cst_junit_report.xml
+          report_paths: cst_junit_report-${{ matrix.distro }}-amd64.xml
+          check_name: Container Structure Tests (${{ matrix.distro }}-amd64)
   push:
     runs-on: ${{ matrix.image }}
     needs: test
@@ -166,15 +164,13 @@ jobs:
           # TODO: Enable provenance when we have a way to sign the images
           provenance: false
           cache-from: |
-            type=gha,scope=build-${{ matrix.distro }}
-            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
-            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+            type=gha,scope=build-${{ matrix.distro }}-amd64
+            type=gha,scope=build-${{ matrix.distro }}-arm64
             type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}
           cache-to: |
+            type=gha,scope=build-${{ matrix.distro }}-amd64,mode=max
+            type=gha,scope=build-${{ matrix.distro }}-arm64,mode=max
             type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
-            type=gha,scope=build-${{ matrix.distro }},mode=max
           github-token: ${{ secrets.GH_TOKEN }}
       - name: Update deployment status
         run: |

@@ -77,12 +77,12 @@ jobs:
           # TODO: Enable provenance when we have a way to sign the images
           provenance: false
           cache-from: |
-            type=gha,scope=build-${{ matrix.distro }}
-            type=gha,scope=build-${{ matrix.distro }}-${{ steps.setup.outputs.VERSION }}
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-${{ steps.setup.outputs.VERSION }}
+            type=gha,scope=build-${{ matrix.distro }}-amd64
+            type=gha,scope=build-${{ matrix.distro }}-arm64
             type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}
           cache-to: |
+            type=gha,scope=build-${{ matrix.distro }}-amd64,mode=max
+            type=gha,scope=build-${{ matrix.distro }}-arm64,mode=max
             type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
-            type=gha,scope=build-${{ matrix.distro }},mode=max
           github-token: ${{ secrets.GH_TOKEN }}
           secrets: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
