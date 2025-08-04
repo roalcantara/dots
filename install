@@ -707,7 +707,7 @@ step_zsh() {
 
   if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
     if command -v chsh >/dev/null 2>&1; then
-      exec_cmd chsh -s "$ZSH_PATH" "$USERNAME"
+      exec_cmd sudo chsh -s "$ZSH_PATH" "$USERNAME"
       i "[ZSH] '$USERNAME' shell set to '$ZSH_PATH' ✔︎"
     elif [ "$(uname)" = "Darwin" ] && command -v dscl >/dev/null 2>&1; then
       exec_cmd sudo dscl . -change /Users/"$USERNAME" UserShell "$CURRENT_SHELL" "$ZSH_PATH"
