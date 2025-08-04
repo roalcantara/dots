@@ -63,6 +63,37 @@ export XDG_DATA_HOME=${XDG_DATA_HOME:-$XDG_LOCAL_DIR/share}
 export XDG_STATE_HOME=${XDG_STATE_HOME:-$XDG_LOCAL_DIR/state}
 export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/tmp/runtime-${UID:-"${USER:-$(id -un)}"}}
 
+if [ ! -d "$XDG_RUNTIME_DIR" ]; then
+  mkdir -p "$XDG_RUNTIME_DIR" 2>/dev/null || sudo mkdir -p "$XDG_RUNTIME_DIR" || {
+    echo "⚠ Failed to create directory $XDG_RUNTIME_DIR"
+  }
+fi
+
+declare perms owner
+case "$(uname)" in
+  Darwin)
+    perms=$(stat -f "%Lp" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "000")
+    owner=$(stat -f "%u" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "0")
+    ;;
+  Linux)
+    perms=$(stat -c "%a" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "000")
+    owner=$(stat -c "%u" "$XDG_RUNTIME_DIR" 2>/dev/null || echo "0")
+    ;;
+esac
+
+if [[ "$perms" != "700" ]]; then
+  chmod 700 "$XDG_RUNTIME_DIR" 2>/dev/null || sudo chmod 700 "$XDG_RUNTIME_DIR" || {
+    echo "⚠ Failed to set permissions on $XDG_RUNTIME_DIR"
+  }
+fi
+
+if [[ "$owner" != "$UID" ]]; then
+  USERNAME=${USERNAME:-$(id -un)}
+  chown "$USERNAME" "$XDG_RUNTIME_DIR" 2>/dev/null || sudo chown "$USERNAME" "$XDG_RUNTIME_DIR" || {
+    echo "⚠ Failed to change ownership of $XDG_RUNTIME_DIR"
+  }
+fi
+
 # User directories
 export XDG_DESKTOP_DIR=${XDG_DESKTOP_DIR:-$HOME/Desktop}
 export XDG_DOWNLOAD_DIR=${XDG_DOWNLOAD_DIR:-$HOME/Downloads}

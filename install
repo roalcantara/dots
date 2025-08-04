@@ -126,7 +126,7 @@ set_ownership() {
 set_permission() {
   local TARGET="$1"
   local LABEL="$2"
-  local PERM="${3:-"700"}"
+  local PERM="${3:-700}"
 
   declare perms
   case "$(uname)" in
@@ -139,7 +139,7 @@ set_permission() {
   esac
 
   if [[ "$perms" != "$PERM" ]]; then
-    exec_cmd chmod "$PERM" "$TARGET" 2>/dev/null || sudo chmod "$PERM" "$TARGET" || {
+    exec_cmd chmod $PERM "$TARGET" 2>/dev/null || sudo chmod $PERM "$TARGET" || {
       e "[$LABEL] ⚠ Failed to set permissions on $TARGET" >&2
       return 1
     }
@@ -619,6 +619,7 @@ step_ensure_ownership() {
   for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_LOCAL_DIR" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR" "$XDG_RUNTIME_DIR"; do
     setup_dir "$dir" "XDG/CHOWN/$dir"
   done
+  set_permissions "$XDG_RUNTIME_DIR" "XDG/CHMOD/$XDG_RUNTIME_DIR" 700
   s "[XDG] Completed ✔︎"
 
   if [[ "$*" =~ '--zsh' ]]; then
