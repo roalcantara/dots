@@ -1,3 +1,10 @@
+## [1.5.4](https://github.com/roalcantara/dots/compare/v1.5.3...v1.5.4) (2025-08-04)
+
+
+### Bug Fixes
+
+* **install:** Update function name for setting permissions ([3e4e7ca](https://github.com/roalcantara/dots/commit/3e4e7cadfce22ab2172b2aeb464fcbd5dbd49773))
+
 ## [1.5.3](https://github.com/roalcantara/dots/compare/v1.5.2...v1.5.3) (2025-08-04)
 
 
