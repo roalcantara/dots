@@ -24,7 +24,7 @@ ENV CLICOLOR=1 \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN --mount=type=secret,id=github_token,target=/tmp/github_token,required=false \
+RUN --mount=type=secret,id=GITHUB_TOKEN,target=/tmp/github_token,required=false \
     --mount=type=cache,target=$HOME/.cache,uid=1000,gid=1000 \
     curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install?$(date +%s)" | bash -s -- $INSTALL_ARGS
 
