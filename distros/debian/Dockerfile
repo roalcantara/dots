@@ -30,7 +30,7 @@ FROM base AS local
 COPY --chown=$USERNAME:$GROUPNAME ../../. ./
 
 # Install with selective caching strategy
-RUN --mount=type=secret,id=github_token,target=/tmp/github_token,required=false \
+RUN --mount=type=secret,id=GITHUB_TOKEN,target=/tmp/github_token,required=false \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=cache,target=$HOME/.cache/pip,uid=1000,gid=1000 \
@@ -52,7 +52,7 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 FROM base AS remote
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Install with selective caching strategy
-RUN --mount=type=secret,id=github_token,target=/tmp/github_token,required=false \
+RUN --mount=type=secret,id=GITHUB_TOKEN,target=/tmp/github_token,required=false \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=cache,target=$HOME/.cache/pip,uid=1000,gid=1000 \
