@@ -150,7 +150,7 @@ set_permissions() {
 setup_dir() {
   local TARGET="$1"
   local LABEL="$2"
-  local OWNER="${3:-"$USERNAME:$GROUPNAME"}"
+  local OWNER="${3:-$UID}"
 
   # Create directory if it doesn't exist
   if [ ! -d "$TARGET" ]; then
@@ -832,17 +832,19 @@ step_nvim_setup_provider_ruby() {
   # Configure the gem home directory
   # https://guides.rubygems.org/command-reference/#gem-environment
   i "[NVIM/RUBY] Configuring Ruby environment..."
-  export_env_and_make_dir "GEM_HOME" "${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems}" "NVIM/RUBY"
+  GEM_HOME="${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems}"
+  export_env_and_make_dir "GEM_HOME" "$GEM_HOME" "NVIM/RUBY"
 
   # Update the RubyGems system
   i "[NVIM/RUBY] Updating RubyGems system..."
-  $TIMEOUT_CMD gem update --system --no-document || {
+  # Do not use --system to avoid issues with user separation (root vs vscode)
+  $TIMEOUT_CMD GEM_HOME="$GEM_HOME" gem update --no-document || {
     w "[NVIM/RUBY] gem update failed or timed out, continuing with installation"
   }
 
   # Install neovim's required Ruby packages
   i "[NVIM/RUBY] Installing neovim gem..."
-  if $TIMEOUT_CMD gem install neovim; then
+  if $TIMEOUT_CMD GEM_HOME="$GEM_HOME" gem install neovim; then
     gem cleanup
   else
     w "[NVIM/RUBY] gem install failed or timed out, skipping Ruby provider setup"
