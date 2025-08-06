@@ -1,3 +1,10 @@
+## [1.5.6](https://github.com/roalcantara/dots/compare/v1.5.5...v1.5.6) (2025-08-06)
+
+
+### Bug Fixes
+
+* **install:** Update Ruby environment setup in installation script ([bd44a6e](https://github.com/roalcantara/dots/commit/bd44a6e956a6d8ec7f87f205e9cf739fe747f3f6))
+
 ## [1.5.5](https://github.com/roalcantara/dots/compare/v1.5.4...v1.5.5) (2025-08-04)
 
 
