@@ -1,3 +1,10 @@
+## [1.5.7](https://github.com/roalcantara/dots/compare/v1.5.6...v1.5.7) (2025-08-06)
+
+
+### Bug Fixes
+
+* **workflows:** Use the correct secret GITHUB_TOKEN ([2305aff](https://github.com/roalcantara/dots/commit/2305aff89be8e7ceec358cf3fcc0078497a18f65))
+
 ## [1.5.6](https://github.com/roalcantara/dots/compare/v1.5.5...v1.5.6) (2025-08-06)
 
 
