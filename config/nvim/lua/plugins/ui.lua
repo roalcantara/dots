@@ -959,5 +959,21 @@ return {
         wk.register(opts.defaults)
       end
     end,
-  }
+  },
+
+  -- Plugin to improve viewing Markdown files in Neovim
+  -- https://github.com/MeanderingProgrammer/render-markdown.nvim?tab=readme-ov-file
+  -- https://youtu.be/AAkrmfkC1L4?t=167
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {
+      completions = {
+        blink = { enabled = true },
+        lsp = { enabled = true }
+      },
+    },
+  },
 }
