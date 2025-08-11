@@ -33,7 +33,7 @@ declare -g ENV
 declare -g -A PACKAGES=(
   # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
   [debian]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint"
-  [mise]="ripgrep bat delta eza fd fzf gh neovim starship usage watchexec zoxide gum node@22.17 python pre-commit"
+  [mise]="ripgrep bat delta eza fd fzf starship usage watchexec zoxide gum node@22.17 python pre-commit neovim"
 )
 
 puts() {
