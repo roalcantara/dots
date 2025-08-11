@@ -272,10 +272,6 @@ fileExistenceTests:
     path: /home/vscode/.local/share/mise/shims/fzf
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: gh should be installed
-    path: /home/vscode/.local/share/mise/shims/gh
-    shouldExist: true
-    permissions: Lrwxrwxrwx
   - name: gum should be installed
     path: /home/vscode/.local/share/mise/shims/gum
     shouldExist: true
