@@ -206,6 +206,11 @@ if [[ -f $ZIM_HOME/init.zsh ]]; then
 fi
 # }
 
+# GO | https://go.dev {
+  # Configure the location of the Go workspace
+  export GOPATH=${GOPATH:-$XDG_DATA_HOME/go}
+# }
+
 # ZPROF {
 # profilling
 if [[ -n "$z_prof" ]]; then

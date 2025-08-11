@@ -159,11 +159,6 @@ export MANROFFOPT=${MANROFFOPT:-"-c"}
   export RBENV_ROOT=${RBENV_ROOT:-$XDG_DATA_HOME/rbenv}
 # }
 
-# GO | https://go.dev {
-  # Configure the location of the Go workspace
-  export GOPATH=${GOPATH:-$XDG_DATA_HOME/go}
-# }
-
 # LUA | https://lua.org {
   # Powerful, efficient, lightweight, embeddable scripting language
   # 💡 luajit -e 'print(package.path)' luajit -e 'print(package.cpath)'
