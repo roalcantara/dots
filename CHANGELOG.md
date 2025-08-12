@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/roalcantara/dots/compare/v1.7.0...v1.8.0) (2025-08-12)
+
+
+### Features
+
+* **install:** Enhance support for Ubuntu and improve user handling ([57562de](https://github.com/roalcantara/dots/commit/57562ded12f5f4cd84c3004ce8620a7cd4730ae1))
+
 # [1.7.0](https://github.com/roalcantara/dots/compare/v1.6.0...v1.7.0) (2025-08-12)
 
 
