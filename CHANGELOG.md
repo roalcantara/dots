@@ -1,3 +1,17 @@
+# [1.6.0](https://github.com/roalcantara/dots/compare/v1.5.7...v1.6.0) (2025-08-12)
+
+
+### Bug Fixes
+
+* **ci:** Streamlined output handling and improve readability ([fb773ad](https://github.com/roalcantara/dots/commit/fb773ad5920e16b90fe115b97e034009c8a36c7a))
+* **install:** Removed gh installation in package list ([dd8d3a3](https://github.com/roalcantara/dots/commit/dd8d3a392e8dde505db4b745b971d0e4591a0c76))
+
+
+### Features
+
+* **bat:** Add configuration and README files for `bat` setup ([0a29db9](https://github.com/roalcantara/dots/commit/0a29db9b21fb9424a2063c99e2a5638199b605da))
+* **gitlint:** Add gitlint configuration file for commit message rules ([9d87416](https://github.com/roalcantara/dots/commit/9d87416c0e211755368eabcb5edcf6e3780f64d7))
+
 ## [1.5.7](https://github.com/roalcantara/dots/compare/v1.5.6...v1.5.7) (2025-08-06)
 
 
