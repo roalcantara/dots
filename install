@@ -637,7 +637,8 @@ step_mise() {
     w "[MISE] GITHUB_TOKEN not set, looking up for token..."
 
     GITHUB_TOKEN=""
-    for location in /tmp/github_token /run/secrets/github_token $HOME/.github_token $HOME/.secrets/github_token; do
+    for location in /run/secrets/github_token /tmp/github_token $HOME/.github_token $HOME/.secrets/github_token; do
+      echo "[MISE] Checking for GITHUB_TOKEN in '$location'..."
       if [ -f "$location" ]; then
         export GITHUB_TOKEN="$(cat "$location")"
         w "[MISE] GITHUB_TOKEN loaded from '$location' ✔︎"

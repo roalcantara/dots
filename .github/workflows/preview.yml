@@ -1,5 +1,5 @@
 # https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
-# https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/pass-job-outputs
+# https://docs.docker.com/build/ci/github-actions/test-before-push
 name: Preview
 
 on:
@@ -24,11 +24,14 @@ env:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     if: github.event.pull_request.draft == false
     strategy:
       matrix:
         distro: [debian]
+        include:
+          - distro: debian
+            runner: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -38,93 +41,30 @@ jobs:
         with:
           dockerfile: distros/${{ matrix.distro }}/Dockerfile
           config: ./.hadolint.yaml
-  test:
-    runs-on: ${{ matrix.image }}
+  validate:
+    runs-on: ${{ matrix.runner }}
     needs: lint
+    strategy:
+      matrix:
+        distro: [debian]
+        include:
+          - distro: debian
+            runner: ubuntu-latest
     permissions:
       contents: read
       packages: write
       id-token: write
       checks: write
       pull-requests: write
-    strategy:
-      matrix:
-        distro: [debian]
-        include:
-          - distro: debian
-            image: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: roalcantara
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build test image for ${{ matrix.distro }}
-        uses: docker/build-push-action@v6
-        with:
-          target: remote
-          context: .
-          build-args: BRANCH=${{ github.head_ref || github.ref_name }}
-          file: distros/${{ matrix.distro }}/Dockerfile
-          platforms: linux/amd64
-          push: false
-          load: true
-          tags: ${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
-          cache-from: |
-            type=gha,scope=build-${{ matrix.distro }}-amd64
-            type=gha,scope=build-${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-amd64
-          cache-to: |
-            type=gha,scope=build-${{ matrix.distro }}-amd64,mode=max
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-amd64,mode=max
-          outputs: type=docker
-          github-token: ${{ secrets.GH_TOKEN }}
-          secrets: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
-      - name: Run container Structure Test
-        uses: amardeep2006/container-structure-test-github-action@v1.2
-        with:
-          dockerimage: ${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-amd64
-          args: -v debug --force --output junit --test-report cst_junit_report-${{ matrix.distro }}-amd64.xml --config distros/${{ matrix.distro }}/container-structure-test.yml
-      - name: Upload Test Artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-${{ matrix.distro }}-amd64
-          path: cst_junit_report-${{ matrix.distro }}-amd64.xml
-      - name: Upload Test Report
-        if: always()
-        uses: mikepenz/action-junit-report@v5
-        with:
-          report_paths: cst_junit_report-${{ matrix.distro }}-amd64.xml
-          check_name: Container Structure Tests (${{ matrix.distro }}-amd64)
-  push:
-    runs-on: ${{ matrix.image }}
-    needs: test
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
     environment:
       name: preview
       url: ${{ steps.setup.outputs.REGISTRY_URL }}
-    strategy:
-      matrix:
-        distro: [debian]
-        include:
-          - distro: debian
-            image: ubuntu-latest
     steps:
       - name: Setup outputs
         id: setup
         run: |
           short_sha=$(echo $GITHUB_SHA | cut -c1-7)
-          registry_url_tags=https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags
+          registry_url_tags=https://hub.do«cker.com/r/${{ env.REGISTRY_IMAGE }}/tags
           echo "DISTRO=${{ matrix.distro }}" >> $GITHUB_OUTPUT
           echo "SHORT_SHA=$short_sha" >> $GITHUB_OUTPUT
           echo "IMAGE_NAME=${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${short_sha}" >> $GITHUB_OUTPUT
@@ -132,7 +72,9 @@ jobs:
           echo "REGISTRY_URL=${registry_url_tags}?name=pr-${{ github.event.pull_request.number }}-${short_sha}" >> $GITHUB_OUTPUT
         env:
           GITHUB_SHA: ${{ github.sha }}
-      - name: Login to DockerHub
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: roalcantara
@@ -141,7 +83,36 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: remote
+          build-args: BRANCH=${{ github.head_ref || github.ref_name }}
+          file: distros/${{ matrix.distro }}/Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: ${{ steps.setup.outputs.IMAGE_NAME }}-amd64
+          cache-from: |
+            type=gha,scope=build-${{ matrix.distro }}-amd64
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-amd64
+          cache-to: |
+            type=gha,scope=build-${{ matrix.distro }}-amd64,mode=max
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}-amd64,mode=max
+          github-token: ${{ secrets.GH_TOKEN }}
+          secrets: github_token=${{ secrets.GH_TOKEN }}
+      - name: Run Container Structure Test (${{ matrix.distro }}/amd64)
+        uses: docker://gcr.io/gcp-runtimes/container-structure-test:latest
+        with:
+          args: test -v debug --force --output junit --test-report cst_junit_report.xml --config distros/${{ matrix.distro }}/container-structure-test.yml --image ${{ steps.setup.outputs.IMAGE_NAME }}-amd64
+      - name: Upload Test Report
+        if: always()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: cst_junit_report.xml
+          check_name: Container Structure Tests (${{ matrix.distro }}/amd64)
       - name: Extract Docker Metadata
+        if: success()
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -151,6 +122,8 @@ jobs:
             type=raw,value=${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${{ steps.setup.outputs.SHORT_SHA }}
             type=sha,prefix=${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-
       - name: Multi-platform Build and Push for ${{ matrix.distro }}
+        if: success()
+        id: build
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
@@ -173,8 +146,9 @@ jobs:
             type=gha,scope=build-${{ matrix.distro }}-arm64,mode=max
             type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
           github-token: ${{ secrets.GH_TOKEN }}
-          secrets: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
+          secrets: github_token=${{ secrets.GH_TOKEN }}
       - name: Update deployment status
+        if: success()
         run: |
           echo "## Docker Image Published" >> $GITHUB_STEP_SUMMARY
           echo "| distro | Image | Tag |" >> $GITHUB_STEP_SUMMARY
@@ -184,6 +158,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "View all PR images on [DockerHub](https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags)" >> $GITHUB_STEP_SUMMARY
       - name: Create summary
+        if: success()
         run: |
           echo "# PR Image Deployment" >> $GITHUB_STEP_SUMMARY
           echo "## PR #${{ github.event.pull_request.number }} Preview Images" >> $GITHUB_STEP_SUMMARY
@@ -196,6 +171,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "View all PR images on [DockerHub](${{ steps.setup.outputs.REGISTRY_URL }})" >> $GITHUB_STEP_SUMMARY
       - name: Create review comment
+        if: success()
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_TOKEN }}
