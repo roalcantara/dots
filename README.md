@@ -10,7 +10,7 @@ An opinionated [DotFiles][10]. Ready to Engage!
 
 ## INSTALL
 
-At the moment, the `install` script is only handles `debian` distros.
+At the moment, the `install` script is only handles `debian` and `ubuntu` distros.
 
 - One-liner Installation script
 
@@ -84,12 +84,16 @@ At the moment, the `install` script is only handles `debian` distros.
 
 ### BUILDING
 
-At the moment, the `build` task is only available for the `debian` distro.
+At the moment, the `build` task is only available for the `debian` and `ubuntu` distros.
 
 1. Basic
 
     ```sh
     mise run build
+    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile --target=remote .
+    # ==> dots:debian-arm64
+
+    mise run build --distro=ubuntu
     # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile --target=remote .
     # ==> dots:debian-arm64
 
@@ -131,7 +135,7 @@ At the moment, the `build` task is only available for the `debian` distro.
 
 #### RUNNING
 
-At the moment, the `start` task is only available for the `debian` distro.
+At the moment, the `start` task is only available for the `debian` and `ubuntu` distros.
 
  ```sh
   mise run start

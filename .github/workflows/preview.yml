@@ -28,9 +28,11 @@ jobs:
     if: github.event.pull_request.draft == false
     strategy:
       matrix:
-        distro: [debian]
+        distro: [debian, ubuntu]
         include:
           - distro: debian
+            runner: ubuntu-latest
+          - distro: ubuntu
             runner: ubuntu-latest
     steps:
       - name: Checkout code
@@ -46,19 +48,24 @@ jobs:
     needs: lint
     strategy:
       matrix:
-        distro: [debian]
+        distro: [debian, ubuntu]
         include:
           - distro: debian
+            runner: ubuntu-latest
+          - distro: ubuntu
             runner: ubuntu-latest
     permissions:
       contents: read
       packages: write
       id-token: write
       checks: write
-      pull-requests: write
-    environment:
-      name: preview
-      url: ${{ steps.setup.outputs.REGISTRY_URL }}
+    outputs:
+      DISTRO: ${{ matrix.distro }}
+      SHORT_SHA: ${{ steps.setup.outputs.SHORT_SHA }}
+      IMAGE_NAME: ${{ steps.setup.outputs.IMAGE_NAME }}
+      REGISTRY_URL_TAGS: ${{ steps.setup.outputs.REGISTRY_URL_TAGS }}
+      REGISTRY_URL: ${{ steps.setup.outputs.REGISTRY_URL }}
+      IMAGE_INFO: ${{ steps.setup.outputs.IMAGE_INFO }}
     steps:
       - name: Setup outputs
         id: setup
@@ -147,18 +154,126 @@ jobs:
             type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
           github-token: ${{ secrets.GH_TOKEN }}
           secrets: github_token=${{ secrets.GH_TOKEN }}
+      - name: Collect outputs
+        id: collect-outputs
+        run: |
+          # Create JSON object with this distro's info
+          image_info=$(jq -n -c \
+            --arg distro "${{ matrix.distro }}" \
+            --arg image_name "${{ steps.setup.outputs.IMAGE_NAME }}" \
+            --arg short_sha "${{ steps.setup.outputs.SHORT_SHA }}" \
+            --arg registry_url "${{ steps.setup.outputs.REGISTRY_URL }}" \
+            '{
+              distro: $distro,
+              image_name: $image_name,
+              short_sha: $short_sha,
+              registry_url: $registry_url
+            }')
+          echo "IMAGE_INFO=$image_info" >> $GITHUB_OUTPUT
+  publish:
+    runs-on: ubuntu-latest
+    needs: validate
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      checks: write
+      pull-requests: write
+    environment:
+      name: preview
+      url: ${{ needs.validate.outputs.REGISTRY_URL }}
+    steps:
+      - name: Collect all distro data
+        id: collect-data
+        run: |
+          # The validate job outputs will be an array of JSON objects
+          # We need to process them into a format we can use
+
+          # Get all the outputs (this is a bit tricky with matrix jobs)
+          # GitHub doesn't directly give us an array, so we need to work around this
+          echo "Processing distro outputs..."
+
+          # For now, let's create the data manually since we know the distros
+          # In a more dynamic setup, you'd parse the actual job outputs
+          short_sha=$(echo $GITHUB_SHA | cut -c1-7)
+
+          # Create our summary data
+          cat << EOF > distro_summary.md
+          ## 🐳 Preview Docker Images Available
+
+          Preview images for PR #${{ github.event.pull_request.number }} have been built and pushed to DockerHub:
+
+          | Distro | Image | Platforms |
+          | --- | --- | --- |
+          | debian | \`docker pull ${{ env.REGISTRY_IMAGE }}:debian-pr-${{ github.event.pull_request.number }}-${short_sha}\` | linux/amd64, linux/arm64 |
+          | ubuntu | \`docker pull ${{ env.REGISTRY_IMAGE }}:ubuntu-pr-${{ github.event.pull_request.number }}-${short_sha}\` | linux/amd64, linux/arm64 |
+
+          [View all PR images on DockerHub](https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags?name=pr-${{ github.event.pull_request.number }}-${short_sha})
+
+          ### Testing instructions
+
+          1. Pull the relevant image for your distro
+          2. Run the container: \`docker run -it <image_name>\`
+
+          These preview images contain all changes from this PR.
+          EOF
+
+          echo "SHORT_SHA=${short_sha}" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+      - name: Create step summary
+        run: |
+          cat distro_summary.md >> $GITHUB_STEP_SUMMARY
+      - name: Create PR comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('distro_summary.md', 'utf8');
+
+            // Check if we already commented on this PR
+            const comments = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            // Look for existing bot comment
+            const existingComment = comments.data.find(comment => 
+              comment.user.login === 'github-actions[bot]' && 
+              comment.body.includes('Preview Docker Images Available')
+            );
+
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.pulls.updateReview({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                review_id: existingComment.id,
+                body: body
+              });
+            } else {
+              // Create new comment
+              await github.rest.pulls.createReview({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                body: body,
+                event: 'COMMENT'
+              });
+            }
       - name: Update deployment status
-        if: success()
         run: |
           echo "## Docker Image Published" >> $GITHUB_STEP_SUMMARY
           echo "| distro | Image | Tag |" >> $GITHUB_STEP_SUMMARY
           echo "| --- | --- | --- |" >> $GITHUB_STEP_SUMMARY
-          echo "| ${{ steps.setup.outputs.DISTRO }} | ${{ steps.setup.outputs.IMAGE_NAME }} |" >> $GITHUB_STEP_SUMMARY
-          echo "Pull with: \`docker pull ${{ steps.setup.outputs.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "| ${{ needs.validate.outputs.DISTRO }} | ${{ needs.validate.outputs.IMAGE_NAME }} |" >> $GITHUB_STEP_SUMMARY
+          echo "Pull with: \`docker pull ${{ needs.validate.outputs.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "View all PR images on [DockerHub](https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags)" >> $GITHUB_STEP_SUMMARY
       - name: Create summary
-        if: success()
         run: |
           echo "# PR Image Deployment" >> $GITHUB_STEP_SUMMARY
           echo "## PR #${{ github.event.pull_request.number }} Preview Images" >> $GITHUB_STEP_SUMMARY
@@ -167,11 +282,10 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| distro | Docker Pull Command |" >> $GITHUB_STEP_SUMMARY
           echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
-          echo "| ${{ steps.setup.outputs.DISTRO }} | \`docker pull ${{ steps.setup.outputs.IMAGE_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| ${{ needs.validate.outputs.DISTRO }} | \`docker pull ${{ needs.validate.outputs.IMAGE_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View all PR images on [DockerHub](${{ steps.setup.outputs.REGISTRY_URL }})" >> $GITHUB_STEP_SUMMARY
+          echo "View all PR images on [DockerHub](${{ needs.validate.outputs.REGISTRY_URL }})" >> $GITHUB_STEP_SUMMARY
       - name: Create review comment
-        if: success()
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_TOKEN }}
@@ -183,14 +297,14 @@ jobs:
 
             | distro | Image |
             | --- | --- |
-            | ${{ steps.setup.outputs.DISTRO }} | \`docker pull ${{ steps.setup.outputs.IMAGE_NAME }}\` |
+            | ${{ needs.validate.outputs.DISTRO }} | \`docker pull ${{ needs.validate.outputs.IMAGE_NAME }}\` |
 
-            [View all PR images on DockerHub](${{ steps.setup.outputs.REGISTRY_URL }})
+            [View all PR images on DockerHub](${{ needs.validate.outputs.REGISTRY_URL }})
 
             ### Testing instructions
 
-            1. Pull the relevant image: \`docker pull ${{ steps.setup.outputs.IMAGE_NAME }}\`
-            2. Run the container: \`docker run -it ${{ steps.setup.outputs.IMAGE_NAME }}\`
+            1. Pull the relevant image: \`docker pull ${{ needs.validate.outputs.IMAGE_NAME }}\`
+            2. Run the container: \`docker run -it ${{ needs.validate.outputs.IMAGE_NAME }}\`
 
             These preview images contain all changes from this PR.`;
 

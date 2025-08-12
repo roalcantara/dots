@@ -21,7 +21,9 @@
 # https://mise.jdx.dev/tasks
 [tasks] # mise run
 
+  # mise run build
   # mise run build --nocache
+  # mise run build --nocache --distro ubuntu
   # mise run build --nocache --runtime
   # mise run build --nocache --platform amd64 --tag latest
   # mise run build --nocache --runtime --distro debian --platform amd64 --tag latest --build-arg USERNAME=roalcantara --build-arg GROUPNAME=staff
@@ -51,12 +53,6 @@
     s390x)    PLATFORM_VALUE="linux/s390x" ;;
     386)      PLATFORM_VALUE="linux/386" ;;
     *)        PLATFORM_VALUE="linux/arm64" ;;
-  esac
-
-  # Distro mapping
-  case "$USAGE_DISTRO" in
-    debian)   DISTRO_NAME="bookworm" ;;
-    *)        DISTRO_NAME="bookworm" ;;
   esac
 
   # Compose docker build command
@@ -137,8 +133,9 @@
 
   # Distro mapping
   case "$USAGE_DISTRO" in
-    debian)   DISTRO_NAME="bookworm" ;;
-    *)        DISTRO_NAME="bookworm" ;;
+    debian)   DISTRO_NAME="ruby:3.4-bookworm" ;;
+    ubuntu)   DISTRO_NAME="base:ubuntu" ;;
+    *)        DISTRO_NAME="ruby:3.4-bookworm" ;;
   esac
 
   DOCKER_CMD=(
@@ -148,7 +145,7 @@
   )
 
   if [ -z "$USAGE_TAG" ]; then
-    DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_NAME)
+    DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/$DISTRO_NAME)
   else
     DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_PLATFORM)
   fi
