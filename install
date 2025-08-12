@@ -104,24 +104,11 @@ export_env_var() {
 set_ownership() {
   local TARGET="$1"
   local LABEL="$2"
-  local OWNER="${3:-$UID}"
 
-  declare owner
-  case "$(uname)" in
-  Darwin)
-    owner=$(stat -f "%u" "$TARGET" 2>/dev/null || echo "0")
-    ;;
-  Linux)
-    owner=$(stat -c "%u" "$TARGET" 2>/dev/null || echo "0")
-    ;;
-  esac
-
-  if [[ "$owner" != "$OWNER" ]]; then
-    exec_cmd chown -R "$OWNER" "$TARGET" 2>/dev/null || sudo chown -R "$OWNER" "$TARGET" || {
-      e "[$LABEL] ⚠ Failed to change ownership of $TARGET" >&2
-      return 1
-    }
-  fi
+  exec_cmd chown -R "$USERNAME:$GROUPNAME" "$TARGET" 2>/dev/null || sudo chown -R "$USERNAME:$GROUPNAME" "$TARGET" || {
+    e "[$LABEL] ⚠ Failed to change ownership of $TARGET" >&2
+    return 1
+  }
 }
 # Ensure permission of a path
 # Usage: set_permissions <path> <section_name> (required_permission)
@@ -130,22 +117,10 @@ set_permissions() {
   local LABEL="$2"
   local PERM="${3:-700}"
 
-  declare perms
-  case "$(uname)" in
-  Darwin)
-    perms=$(stat -f "%Lp" "$TARGET" 2>/dev/null || echo "000")
-    ;;
-  Linux)
-    perms=$(stat -c "%a" "$TARGET" 2>/dev/null || echo "000")
-    ;;
-  esac
-
-  if [[ "$perms" != "$PERM" ]]; then
-    exec_cmd chmod $PERM "$TARGET" 2>/dev/null || sudo chmod $PERM "$TARGET" || {
-      e "[$LABEL] ⚠ Failed to set permissions on $TARGET" >&2
-      return 1
-    }
-  fi
+  exec_cmd chmod $PERM "$TARGET" 2>/dev/null || sudo chmod $PERM "$TARGET" || {
+    e "[$LABEL] ⚠ Failed to set permissions on $TARGET" >&2
+    return 1
+  }
 }
 # Setup directory with proper ownership (without environment variable) as sudo
 # Usage: setup_dir <path> <section_name>

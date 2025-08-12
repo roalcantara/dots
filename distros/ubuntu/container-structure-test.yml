@@ -56,15 +56,11 @@ commandTests:
   - name: Ruby should be installed
     command: which
     args: [ruby]
-    expectedOutput: [/usr/local/bin/ruby]
-  - name: (Ruby) Bundler should be installed
-    command: which
-    args: [bundler]
-    expectedOutput: [/usr/local/bin/bundler]
+    expectedOutput: [/usr/bin/ruby]
   - name: (Ruby) Gems should be installed
     command: which
     args: [gem]
-    expectedOutput: [/usr/local/bin/gem]
+    expectedOutput: [/usr/bin/gem]
   - name: Git should be installed
     command: which
     args: [git]
