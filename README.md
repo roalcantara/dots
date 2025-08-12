@@ -89,48 +89,48 @@ At the moment, the `build` task is only available for the `debian` and `ubuntu` 
 1. Basic
 
     ```sh
-    mise run build
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile --target=remote .
-    # ==> dots:debian-arm64
+        mise run build
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian --file=distros/debian/Dockerfile --target=remote .
+        # ==> dots:debian
 
-    mise run build --distro=ubuntu
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile --target=remote .
-    # ==> dots:debian-arm64
+        mise run build --distro=ubuntu
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:ubuntu --file=distros/ubuntu/Dockerfile --target=remote .
+        # ==> dots:ubuntu
 
-    mise run build --tag testing
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-testing --file=distros/debian/Dockerfile --target=remote .
-    # ==> dots:debian-arm64-testing
+        mise run build --tag testing
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-testing --file=distros/debian/Dockerfile --target=remote .
+        # ==> dots:debian-testing
 
-    mise run build --nocache --tag preview
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-preview --no-cache --file=distros/debian/Dockerfile --target=remote .
-    # ==> dots:debian-arm64-preview
+        mise run build --nocache --tag preview
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-preview --no-cache --file=distros/debian/Dockerfile --target=remote .
+        # ==> dots:debian-preview
 
-    mise run build --tag latest --platform amd64
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-latest --file=distros/debian/Dockerfile --target=remote .
-    # ==> dots:debian-amd64-latest
+        mise run build --tag latest --platform amd64
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-latest --file=distros/debian/Dockerfile --target=remote .
+        # ==> dots:debian-latest
 
-    mise run build --local
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64 --file=distros/debian/Dockerfile --target=local .
-    # ==> dots:debian-arm64
+        mise run build --local
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian --file=distros/debian/Dockerfile --target=local .
+        # ==> dots:debian
 
-    mise run build --local --tag dev
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-dev --file=distros/debian/Dockerfile --target=local .
-    # ==> dots:debian-arm64-dev
+        mise run build --local --tag dev
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-dev --file=distros/debian/Dockerfile --target=local .
+        # ==> dots:debian-dev
 
-    mise run build --local --nocache --tag stag
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-arm64-stag --no-cache --file=distros/debian/Dockerfile --target=local .
-    # ==> dots:debian-arm64-stag
+        mise run build --local --nocache --tag stag
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-stag --no-cache --file=distros/debian/Dockerfile --target=local .
+        # ==> dots:debian-stag
 
-    mise run build --local --nocache --tag local --platform amd64
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-amd64-local --no-cache --file=distros/debian/Dockerfile --target=local .
-    # ==> dots:debian-amd64-local
+        mise run build --local --nocache --tag local --platform amd64
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-local --no-cache --file=distros/debian/Dockerfile --target=local .
+        # ==> dots:debian-local
     ```
 
 2. Advanced
 
     ```sh
-    mise run build --branch main --repo roalcantara/dotfiles --user root --group root --workdir /workspaces/foo --tag custom
-    # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=GITHUB_REPO=roalcantara/dotfiles --build-arg=BRANCH=main --build-arg=USERNAME=root --build-arg=GROUPNAME=root --workdir=/workspaces/foo --tag=dots:debian-arm64-custom --file=distros/debian/Dockerfile --target=remote .
+        mise run build --branch main --repo roalcantara/dotfiles --user root --group root --workdir /workspaces/foo --tag custom
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=GITHUB_REPO=roalcantara/dotfiles --build-arg=BRANCH=main --build-arg=USERNAME=root --build-arg=GROUPNAME=root --workdir=/workspaces/foo --tag=dots:debian-custom --file=distros/debian/Dockerfile --target=remote .
     ```
 
 #### RUNNING
@@ -145,10 +145,13 @@ At the moment, the `start` task is only available for the `debian` and `ubuntu` 
   # ==> docker run -it --tty --rm --user=root --workdir=/workspaces/foo --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
 
   mise run start --tag dev
-  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-arm64-dev
+  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-dev
 
   mise run start --platform amd64 --tag latest
-  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-amd64-latest
+  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-latest
+
+  mise run start --distro ubuntu --tag latest
+  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:ubuntu-latest
 ```
 
 ### TESTING
@@ -162,21 +165,30 @@ At the moment, the `start` task is only available for the `debian` and `ubuntu` 
 2. Build and running the Container Structure Tests
 
     ```sh
-        mise run build  # ==> dots:debian-arm64
+        mise run build
+        # ==> dots:debian
         mise run test
-        # ==> container-structure-test test --image dots:debian-arm64 --config distros/debian/container-structure-test.yml
+        # ==> container-structure-test test --image dots:debian --config distros/debian/container-structure-test.yml
 
-        mise run build --tag stag  # ==> dots:debian-arm64-stag
+        mise run build --tag stag
+        # ==> dots:debian-stag
         mise run test --tag stag
-        # ==> container-structure-test test --image dots:debian-arm64-stag --config distros/debian/container-structure-test.yml
+        # ==> container-structure-test test --image dots:debian-stag --config distros/debian/container-structure-test.yml
 
-        mise run build --tag testing --platform amd64  # ==> dots:debian-amd64-testing
+        mise run build --tag testing --platform amd64
+        # ==> dots:debian-testing
         mise run test --tag testing --platform amd64
-        # ==> container-structure-test test --image dots:debian-amd64-testing --config distros/debian/container-structure-test.yml
+        # ==> container-structure-test test --image dots:debian-testing --config distros/debian/container-structure-test.yml
 
-        mise run build --tag local --platform amd64  # ==> dots:debian-amd64-local
-        mise run test --image dots:debian-amd64-local --config distros/debian/container-structure-test.yml
-        # ==> container-structure-test test --image dots:debian-amd64-local --config distros/debian/container-structure-test.yml
+        mise run build --tag local --platform amd64
+        # ==> dots:debian-local
+        mise run test --image dots:debian-local --config distros/debian/container-structure-test.yml
+        # ==> container-structure-test test --image dots:debian-local --config distros/debian/container-structure-test.yml
+
+        mise run build --distro ubuntu --tag latest
+        # ==> dots:ubuntu-latest
+        mise run test --distro ubuntu --tag latest
+        # ==> container-structure-test test --image dots:ubuntu-latest --config distros/ubuntu/container-structure-test.yml
     ```
 
 ## ACKNOWLEDGEMENTS

@@ -33,9 +33,9 @@
   #!/usr/bin/env bash
 
   # Set defaults and parse options
+  USAGE_DISTRO="{{option(name="distro", default="debian")}}"
   USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
   USAGE_SECRET_PATH="{{option(name="secret", default="./.secrets/github_token.secret")}}"
-  USAGE_DISTRO="{{option(name="distro", default="debian")}}"
   USAGE_TAG="{{option(name="tag")}}"
   USAGE_BRANCH="{{option(name="branch")}}"
   USAGE_REPO="{{option(name="repo")}}"
@@ -125,8 +125,8 @@
   #!/usr/bin/env bash
 
   # Set defaults and parse options
-  USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
   USAGE_DISTRO="{{option(name="distro", default="debian")}}"
+  USAGE_PLATFORM="{{option(name="platform")}}"
   USAGE_TAG="{{option(name="tag")}}"
   USAGE_USER="{{option(name="user", default="vscode")}}"
   USAGE_WORKDIR="{{option(name="workdir", default="/workspaces/dots")}}"
@@ -144,20 +144,18 @@
     --workdir="$USAGE_WORKDIR"
   )
 
-  if [ -z "$USAGE_TAG" ]; then
-    DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/$DISTRO_NAME)
+  if [ -n "$USAGE_TAG" ]; then
+    DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_TAG)
   else
-    DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_PLATFORM)
+    DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/$DISTRO_NAME)
   fi
 
   echo "  ==> ${DOCKER_CMD[*]}"
   eval "${DOCKER_CMD[*]}"
   '''
 
-
-
   # mise run test
-  # mise run test --image dots:debian-arm64-dev
+  # mise run test --distro ubuntu --tag latest
   # mise run test --image dots:debian-amd64-latest --config distros/debian/container-structure-test.yml
   [tasks.test]
   description = "Run the Container Structure Tests for the Docker image"
@@ -165,8 +163,8 @@
   #!/usr/bin/env bash
 
   # Set defaults and parse options
-  USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
   USAGE_DISTRO="{{option(name="distro", default="debian")}}"
+  USAGE_PLATFORM="{{option(name="platform")}}"
   USAGE_TAG="{{option(name="tag")}}"
   USAGE_IMAGE="{{option(name="image")}}"
   USAGE_CONFIG="{{option(name="config")}}"
@@ -176,7 +174,10 @@
   )
 
   if [ -z "$USAGE_IMAGE" ]; then
-    USAGE_IMAGE="dots:$USAGE_DISTRO-$USAGE_PLATFORM"
+    USAGE_IMAGE="dots:$USAGE_DISTRO"
+    if [ -n "$USAGE_PLATFORM" ]; then
+      USAGE_IMAGE="$USAGE_IMAGE-$USAGE_PLATFORM"
+    fi
     if [ -n "$USAGE_TAG" ]; then
       USAGE_IMAGE="$USAGE_IMAGE-$USAGE_TAG"
     fi
