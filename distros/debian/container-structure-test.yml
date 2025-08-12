@@ -180,6 +180,10 @@ fileExistenceTests:
     path: /home/vscode/.config/ripgrep/.ripgreprc
     shouldExist: true
     permissions: -rw-r--r--
+  - name: ~/.config/opencode/opencode.jsonc
+    path: /home/vscode/.config/opencode/opencode.jsonc
+    shouldExist: true
+    permissions: -rw-r--r--
 
   # CACHE
   - name: ~/.cache directory (XDG_CACHE_HOME)
