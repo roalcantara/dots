@@ -14,6 +14,7 @@ readonly PURPLE='\033[0;35m'
 readonly NC='\033[0m'
 
 # GLOBAL variables
+declare -g DEVCONTAINER_USERNAME="vscode"
 declare -g OS="debian"
 declare -g DISTRO="debian"
 declare -g USERNAME="roalcantara"
@@ -32,6 +33,7 @@ declare -g ARCH
 declare -g ENV
 declare -g -A PACKAGES=(
   # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
+  [ubuntu]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint ruby-full"
   [debian]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint"
   [mise]="ripgrep bat delta eza fd fzf starship usage watchexec zoxide gum node@22.17 python pre-commit neovim"
 )
@@ -320,7 +322,7 @@ detect_user_by_distribution() {
         USERNAME=$(echo "$HOME_USERS" | tr -d ' ')
       elif [ "$(echo "$HOME_USERS" | wc -w)" -gt 1 ]; then
         # If multiple users, prioritize common DevContainer users
-        for preferred_user in "node" "vscode" "developer" "app"; do
+        for preferred_user in "node" "$DEVCONTAINER_USERNAME" "developer" "app"; do
           if echo "$HOME_USERS" | grep -qw "$preferred_user"; then
             USERNAME="$preferred_user"
             break
@@ -338,7 +340,7 @@ detect_user_by_distribution() {
       if command -v getent >/dev/null 2>&1; then
         # Look for users with UID >= 1000 (typical for regular users)
         # Prioritize common DevContainer users
-        for preferred_user in "node" "vscode" "developer" "app"; do
+        for preferred_user in "node" "$DEVCONTAINER_USERNAME" "developer" "app"; do
           if getent passwd "$preferred_user" >/dev/null 2>&1; then
             USERNAME="$preferred_user"
             break
@@ -353,21 +355,21 @@ detect_user_by_distribution() {
         fi
       fi
 
-      # If still no user determined, create user and group 'vscode'
+      # If still no user determined, create user and group '$DEVCONTAINER_USERNAME'
       if [ -z "$USERNAME" ]; then
-        USERNAME="vscode"
+        USERNAME="$DEVCONTAINER_USERNAME"
         w "[ENV/SETUP] Could not determine username, defaulting to '$USERNAME'"
 
-        # Create vscode group if they don't exist
-        if ! getent group vscode >/dev/null 2>&1; then
-          w "[ENV/SETUP] Creating group 'vscode'..."
-          groupadd vscode
+        # Create group if they don't exist
+        if ! getent group "$DEVCONTAINER_USERNAME" >/dev/null 2>&1; then
+          w "[ENV/SETUP] Creating group '$DEVCONTAINER_USERNAME'..."
+          groupadd "$DEVCONTAINER_USERNAME"
         fi
 
-        # Create vscode user if they don't exist
-        if ! getent passwd vscode >/dev/null 2>&1; then
-          w "[ENV/SETUP] Creating user 'vscode'..."
-          useradd -m -g vscode -s /bin/bash vscode
+        # Create user if they don't exist
+        if ! getent passwd "$DEVCONTAINER_USERNAME" >/dev/null 2>&1; then
+          w "[ENV/SETUP] Creating user '$DEVCONTAINER_USERNAME'..."
+          useradd -m -g "$DEVCONTAINER_USERNAME" -s /bin/bash "$DEVCONTAINER_USERNAME"
         fi
       fi
     fi
@@ -376,7 +378,7 @@ detect_user_by_distribution() {
     if getent passwd "$USERNAME" >/dev/null 2>&1; then
       GROUPNAME=$(id -gn "$USERNAME")
     else
-      GROUPNAME="vscode"
+      GROUPNAME="$DEVCONTAINER_USERNAME"
     fi
   fi
 
@@ -430,6 +432,7 @@ step_setup_environment() {
   section "[ENV/SHOW] Showing environment variables..."
   i "OS = \"$OS\""
   i "ARCH = \"$ARCH\""
+  i "DISTRO = \"$DISTRO\""
   i "ENV = \"$ENV\""
   i "HOME = \"$HOME\""
   i "CONTEXT = \"$CONTEXT\""
@@ -440,20 +443,34 @@ step_setup_environment() {
   i "LOCALUSER = \"$LOCALUSER\""
   i "USERNAME = \"$USERNAME\""
   i "GROUPNAME = \"$GROUPNAME\""
+  i "DEVCONTAINER_USERNAME = \"$DEVCONTAINER_USERNAME\""
   i "USR_LOCAL_BIN = \"$USR_LOCAL_BIN\""
   i "XDG_CONFIG_HOME = \"$XDG_CONFIG_HOME\""
   i "XDG_CACHE_HOME = \"$XDG_CACHE_HOME\""
   i "XDG_LOCAL_DIR = \"$XDG_LOCAL_DIR\""
   i "XDG_DATA_HOME = \"$XDG_DATA_HOME\""
   i "XDG_STATE_HOME = \"$XDG_STATE_HOME\""
+  i "XDG_RUNTIME_DIR = \"$XDG_RUNTIME_DIR\""
+  i "XDG_DESKTOP_DIR = \"$XDG_DESKTOP_DIR\""
+  i "XDG_DOWNLOAD_DIR = \"$XDG_DOWNLOAD_DIR\""
+  i "XDG_DOCUMENTS_DIR = \"$XDG_DOCUMENTS_DIR\""
+  i "XDG_MUSIC_DIR = \"$XDG_MUSIC_DIR\""
+  i "XDG_PICTURES_DIR = \"$XDG_PICTURES_DIR\""
+  i "XDG_VIDEOS_DIR = \"$XDG_VIDEOS_DIR\""
+  i "XDG_PROJECTS_DIR = \"$XDG_PROJECTS_DIR\""
+  i "XDG_WORKSPACE_DIR = \"$XDG_WORKSPACE_DIR\""
   i "ZDOTDIR = \"$ZDOTDIR\""
+  i "ZSH_DATA_DIR = \"$ZSH_DATA_DIR\""
   i "ZSH_CACHE_DIR = \"$ZSH_CACHE_DIR\""
   i "ZSH_COMPCACHE = \"$ZSH_COMPCACHE\""
+  i "ZIM_HOME = \"$ZIM_HOME\""
   i "ZSH_COMPDUMP = \"$ZSH_COMPDUMP\""
   i "MISE_DATA_HOME = \"$MISE_DATA_HOME\""
+  i "DOTS_DIR = \"$DOTS_DIR\""
+  i "NPM_CONFIG_PREFIX = \"$NPM_CONFIG_PREFIX\""
+  i "NPM_CONFIG_CACHE = \"$NPM_CONFIG_CACHE\""
   i "BACKUP_DIR_ROOT = \"$BACKUP_DIR_ROOT\""
   i "BACKUP_RESOURCES = \"$BACKUP_RESOURCES\""
-  i "DOTS_DIR = \"$DOTS_DIR\""
 }
 step_prepare() {
   section "[PREP/$DISTRO] Setting up essential dependencies"
@@ -838,7 +855,7 @@ step_nvim_setup_provider_ruby() {
 
   # Update the RubyGems system
   i "[NVIM/RUBY] Updating RubyGems system..."
-  # Do not use --system to avoid issues with user separation (root vs vscode)
+  # Do not use --system to avoid issues with user separation (root vs $DEVCONTAINER_USERNAME)
   $TIMEOUT_CMD GEM_HOME="$GEM_HOME" gem update --no-document || {
     w "[NVIM/RUBY] gem update failed or timed out, continuing with installation"
   }

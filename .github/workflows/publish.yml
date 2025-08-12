@@ -24,9 +24,11 @@ jobs:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        distro: [debian]
+        distro: [debian, ubuntu]
         include:
           - distro: debian
+            runner: ubuntu-latest
+          - distro: ubuntu
             runner: ubuntu-latest
     permissions:
       contents: read
