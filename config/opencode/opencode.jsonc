@@ -1,0 +1,118 @@
+// Opencode | Global configuration
+// https://opencode.ai/docs/config/#global
+{
+  "$schema": "https://opencode.ai/config.json",
+  // https://opencode.ai/docs/themes
+  "theme": "tokyonight",
+  "autoupdate": true,
+  // opencode comes with several built-in formatters for popular languages and frameworks.
+  // https://opencode.ai/docs/formatters
+  "formatter": {
+    // if your project has prettier in your package.json, opencode will automatically use it
+    // https://prettier.io/docs/index.html
+    "prettier": {
+      // Set this to true to disable the formatter
+      "disabled": false,
+      // The command to run for formatting
+      "command": [],
+      // Environment variables to set when running the formatter
+      "environment": {},
+      // File extensions this formatter should handle
+      "extensions": [
+        "js",
+        "jsx",
+        "ts",
+        "tsx",
+        "html",
+        "css",
+        "md",
+        "json",
+        "yaml",
+        "yml"
+      ]
+    },
+    // https://biomejs.dev/
+    "biome": {
+      "disabled": false
+    },
+    // https://pkg.go.dev/cmd/gofmt
+    "gofmt": {
+      "disabled": false
+    },
+    // CUSTOM FORMATTERS
+    // https://opencode.ai/docs/formatters/#custom-formatters
+    "shfmt": {
+      "disabled": false,
+      "command": [
+        "shfmt",
+        "--write",
+        "$FILE"
+      ],
+      "extensions": [
+        "sh"
+      ]
+    }
+  },
+  // AGENTS
+  // Specialized AI assistants that can be configured for specific tasks and workflows
+  // Create new agents: opencode agent create
+  // https://opencode.ai/docs/agents
+  // ###########################################################################
+  // TYPES OF AGENTS
+  // There are two types of agents in opencode:
+  // primary agents ===>
+  // Main assistants.
+  // There are two built-in primary agents: Build & Plan
+  // subagents agents =>
+  // Specialized in specific tasks. It can be invoked via @agentname.
+  // There is one built-in subagent: General
+  // Some examples agents: https://opencode.ai/docs/agents/#examples
+  "agent": {
+    "build": {
+      "mode": "primary",
+      "model": "anthropic/claude-sonnet-4-20250514",
+      "prompt": "{file:./prompts/build.txt}",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true
+      }
+    },
+    "plan": {
+      "mode": "primary",
+      "model": "anthropic/claude-haiku-4-20250514",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": false
+      }
+    },
+    // Create built-in subagents
+    // https://opencode.ai/docs/agents/#configure
+    "reviewer": {
+      // brief description of what the agent does and when to use it.
+      // https://opencode.ai/docs/agents/#description
+      "description": "Reviews code for best practices and potential issues",
+      // Control the agent’s mode: "primary", "subagent", "all"
+      // https://opencode.ai/docs/agents/#mode
+      "mode": "subagent",
+      // override the default model for this agent
+      // https://opencode.ai/docs/agents/#model
+      // "model": "anthropic/claude-sonnet-4-20250514",
+      // Specify a custom system prompt file containing instructions specific to the agent’s purpose
+      // The path is relative to where the config file is located
+      // "prompt": "{file:./prompts/code-review.txt}",
+      // https://opencode.ai/docs/agents/#prompt
+      // Which tools are available in this agent
+      // https://opencode.ai/docs/agents/#tools
+      "tools": {
+        "read": true,
+        "write": false,
+        "edit": false,
+        "bash": false,
+        "grep": true,
+        "glob": true
+      }
+    }
+  }
+}
