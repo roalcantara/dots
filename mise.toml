@@ -96,7 +96,7 @@
   fi
 
   # Compose tag
-  TAG_VALUE="dots:$USAGE_DISTRO-$USAGE_PLATFORM"
+  TAG_VALUE="dots:$USAGE_DISTRO"
   [ -n "$USAGE_TAG" ] && TAG_VALUE="$TAG_VALUE-$USAGE_TAG"
   DOCKER_CMD+=(--tag="$TAG_VALUE")
 
@@ -150,7 +150,7 @@
   if [ -z "$USAGE_TAG" ]; then
     DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/ruby:3.4-$DISTRO_NAME)
   else
-    DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_PLATFORM-$USAGE_TAG)
+    DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_PLATFORM)
   fi
 
   echo "  ==> ${DOCKER_CMD[*]}"

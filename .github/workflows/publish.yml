@@ -8,6 +8,10 @@ concurrency:
   cancel-in-progress: true
   group: 'dots-${{ github.ref }}'
 
+defaults:
+  run:
+    shell: bash
+
 env:
   CI: true
   FORCE_COLOR: true
@@ -15,14 +19,15 @@ env:
   BUILDKIT_INLINE_CACHE: 1
   REGISTRY_IMAGE: ${{ github.repository }}
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
-  build-push:
-    name: Build and Push Latest Images
-    runs-on: ${{ matrix.image }}
+  publish:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        distro: [debian]
+        include:
+          - distro: debian
+            runner: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -30,12 +35,6 @@ jobs:
     environment:
       name: production
       url: ${{ steps.setup.outputs.REGISTRY_URL }}
-    strategy:
-      matrix:
-        distro: [debian]
-        include:
-          - distro: debian
-            image: ubuntu-latest
     steps:
       - name: Setup outputs
         id: setup
@@ -86,4 +85,4 @@ jobs:
             type=gha,scope=build-${{ matrix.distro }}-arm64,mode=max
             type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
           github-token: ${{ secrets.GH_TOKEN }}
-          secrets: GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
+          secrets: github_token=${{ secrets.GH_TOKEN }}
