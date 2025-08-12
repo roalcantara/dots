@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/roalcantara/dots/compare/v1.6.0...v1.7.0) (2025-08-12)
+
+
+### Features
+
+* **opencode:** Add global configuration file ([eb67729](https://github.com/roalcantara/dots/commit/eb67729ec3fe425a99367306cbd4fc0fe287c910))
+
 # [1.6.0](https://github.com/roalcantara/dots/compare/v1.5.7...v1.6.0) (2025-08-12)
 
 
