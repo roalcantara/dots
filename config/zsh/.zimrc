@@ -32,11 +32,11 @@ zmodule input       # Applies correct bindkeys for input events. (https://github
 zmodule run-help    # Figures out where to get the best help, and gets it. Type ESC-H to execute run-help for the current command. (https://github.com/zimfw/run-help)
 
 # Tool Integration
-zmodule joke/zim-mise --if-command mise --if '[[ -z $MISE_GLOBAL_CONFIG_FILE ]]' # Sets up mise Zsh shell integration (https://github.com/joke/zim-mise)
-zmodule fzf --if-command fzf                                                     # Fuzzy finder (https://github.com/zimfw/fzf)
-zmodule joke/zim-starship --if-command starship                                  # The minimal, blazing-fast, and infinitely customizable prompt for any shell (https://starship.rs)
-zmodule sorin-ionescu/prezto --root modules/spectrum --no-submodules             # This module contains git submodules, which are not supported by zimfw's degit. The zmodule option --no-submodules disable this warning.
-zmodule kiesman99/zim-zoxide --if-command zoxide                                 # Zoxide is a smarter cd command
+zmodule joke/zim-mise --if-command mise --if '[[ -z $MISE_GLOBAL_CONFIG_FILE ]]'              # Sets up mise Zsh shell integration (https://github.com/joke/zim-mise)
+zmodule fzf --if-command fzf                                                                  # Fuzzy finder (https://github.com/zimfw/fzf)
+zmodule joke/zim-starship --if-command starship --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'  # The minimal, blazing-fast, and infinitely customizable prompt for any shell (https://starship.rs) - Skip in Warp
+zmodule sorin-ionescu/prezto --root modules/spectrum --no-submodules                          # This module contains git submodules, which are not supported by zimfw's degit. The zmodule option --no-submodules disable this warning.
+zmodule kiesman99/zim-zoxide --if-command zoxide                                              # Zoxide is a smarter cd command
 
 #
 # Completion
@@ -58,13 +58,16 @@ zmodule MenkeTechnologies/zsh-cargo-completion --if-command cargo
 zmodule Aloxaf/fzf-tab --source fzf-tab.zsh --if-command fzf
 
 # Fish-like syntax highlighting for Zsh. It must be sourced after completion
-zmodule zdharma-continuum/fast-syntax-highlighting
+# Skip in Warp Terminal as it has native syntax highlighting
+zmodule zdharma-continuum/fast-syntax-highlighting --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'
 
 # Fish-like history search (up arrow) for Zsh. It must be sourced after syntax-highlighting
-zmodule zsh-users/zsh-history-substring-search
+# Skip in Warp Terminal as it has enhanced history search
+zmodule zsh-users/zsh-history-substring-search --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'
 
 # Fish-like autosuggestions for Zsh. It must be sourced after syntax-highlighting
-zmodule zsh-users/zsh-autosuggestions
+# Skip in Warp Terminal as it has AI-powered suggestions
+zmodule zsh-users/zsh-autosuggestions --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'
 
 # }}} End configuration added by Zim install
 

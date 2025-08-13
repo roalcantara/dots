@@ -119,7 +119,7 @@ export MANROFFOPT=${MANROFFOPT:-"-c"}
   # The GNU Privacy Guard
   # Needed for git PGP-signed commits also needed for sops
   # https://gnupg.org/documentation/manuals/gnupg/GPG-Configuration.html
-  export GPG_TTY=${GPG_TTY:="$(tty)"}
+  export GPG_TTY=${GPG_TTY:-"$(tty)"}
   export GNUPGHOME=${GNUPGHOME:-$XDG_CONFIG_HOME/gnupg}
 # }
 
@@ -162,8 +162,8 @@ export MANROFFOPT=${MANROFFOPT:-"-c"}
 # LUA | https://lua.org {
   # Powerful, efficient, lightweight, embeddable scripting language
   # 💡 luajit -e 'print(package.path)' luajit -e 'print(package.cpath)'
-  export LUA_PATH=${LUA_PATH:="./?.lua;$HOMEBREW_SHARE/luajit-2.1/?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/share/lua/5.1/?/init.lua;$HOMEBREW_SHARE/lua/5.1/?.lua;/$HOMEBREW_SHARE/lua/5.1/?/init.lua"}
-  export LUA_CPATH=${LUA_CPATH:="./?.so;/usr/local/lib/lua/5.1/?.so;/opt/homebrew/lib/lua/5.1/?.so;/usr/local/lib/lua/5.1/loadall.so"}
+  export LUA_PATH=${LUA_PATH:-"./?.lua;$HOMEBREW_SHARE/luajit-2.1/?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/share/lua/5.1/?/init.lua;$HOMEBREW_SHARE/lua/5.1/?.lua;/$HOMEBREW_SHARE/lua/5.1/?/init.lua"}
+  export LUA_CPATH=${LUA_CPATH:-"./?.so;/usr/local/lib/lua/5.1/?.so;/opt/homebrew/lib/lua/5.1/?.so;/usr/local/lib/lua/5.1/loadall.so"}
 # }
 
 # CARGO | https://doc.rust-lang.org/cargo {
@@ -186,7 +186,7 @@ export MANROFFOPT=${MANROFFOPT:-"-c"}
 
   # Set the jq colors
   # https://stedolan.github.io/jq/manual/#Advancedfeatures
-  export JQ_COLORS=${JQ_COLORS:="1;30:0;37:0;37:0;37:0;32:1;37:1;37"}
+  export JQ_COLORS=${JQ_COLORS:-"1;30:0;37:0;37:0;37:0;32:1;37:1;37"}
 # }
 
 # RIPGREP | https://github.com/BurntSushi/ripgrep {
@@ -238,6 +238,6 @@ export MANROFFOPT=${MANROFFOPT:-"-c"}
 # }
 
 # if .zshrc exists, source it
-if [[ -r "$ZDOTDIR/.zshrc" ]]; then
+if [[ $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zshrc" ]]; then
   source "$ZDOTDIR/.zshrc"
 fi

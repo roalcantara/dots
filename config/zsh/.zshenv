@@ -128,6 +128,6 @@ export LC_COLLATE=C
 # }
 
 # if .zprofile exists, source it
-if [[ -r "$ZDOTDIR/.zprofile" ]]; then
+if [[ $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zprofile" ]]; then
   source "$ZDOTDIR/.zprofile"
 fi
