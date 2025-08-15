@@ -623,6 +623,9 @@ local actions = {
     toggle_comments_mappings = function(key)
       vim.cmd('nmap ' .. key .. ' gcc')
       vim.cmd('imap ' .. key .. ' <C-O>gcc')
+      vim.cmd('vmap ' .. key .. ' gc')
+      vim.cmd('omap ' .. key .. ' gc')
+      vim.cmd('xmap ' .. key .. ' gc')
     end,
   }
 }
