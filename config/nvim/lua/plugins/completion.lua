@@ -1,4 +1,7 @@
 return {
+  -- Completion plugin with support for LSPs, cmdline, signature help and snippets
+  -- https://cmp.saghen.dev
+  -- https://youtu.be/GKIxgCcKAq4
   {
     'saghen/blink.cmp',
     event = 'VeryLazy',
@@ -52,103 +55,13 @@ return {
         'Kaiser-Yang/blink-cmp-git',
         dependencies = { 'nvim-lua/plenary.nvim' },
       },
-      {
-        'xzbdmw/colorful-menu.nvim',
-        opts = {
-          ls = {
-            lua_ls = {
-              -- Maybe you want to dim arguments a bit.
-              arguments_hl = '@comment',
-            },
-            gopls = {
-              -- By default, we render variable/function's type in the right most side,
-              -- to make them not to crowd together with the original label.
-
-              -- when true:
-              -- foo             *Foo
-              -- ast         "go/ast"
-
-              -- when false:
-              -- foo *Foo
-              -- ast "go/ast"
-              align_type_to_right = true,
-              -- When true, label for field and variable will format like "foo: Foo"
-              -- instead of go's original syntax "foo Foo". If align_type_to_right is
-              -- true, this option has no effect.
-              add_colon_before_type = false,
-              -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
-              preserve_type_when_truncate = true,
-            },
-            -- for lsp_config or typescript-tools
-            ts_ls = {
-              -- false means do not include any extra info,
-              -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
-              extra_info_hl = '@comment',
-            },
-            vtsls = {
-              -- false means do not include any extra info,
-              -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
-              extra_info_hl = '@comment',
-            },
-            ['rust-analyzer'] = {
-              -- Such as (as Iterator), (use std::io).
-              extra_info_hl = '@comment',
-              -- Similar to the same setting of gopls.
-              align_type_to_right = true,
-              -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
-              preserve_type_when_truncate = true,
-            },
-            clangd = {
-              -- Such as "From <stdio.h>".
-              extra_info_hl = '@comment',
-              -- Similar to the same setting of gopls.
-              align_type_to_right = true,
-              -- the hl group of leading dot of "•std::filesystem::permissions(..)"
-              import_dot_hl = '@comment',
-              -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
-              preserve_type_when_truncate = true,
-            },
-            zls = {
-              -- Similar to the same setting of gopls.
-              align_type_to_right = true,
-            },
-            roslyn = {
-              extra_info_hl = '@comment',
-            },
-            dartls = {
-              extra_info_hl = '@comment',
-            },
-            -- The same applies to pyright/pylance
-            basedpyright = {
-              -- It is usually import path such as "os"
-              extra_info_hl = '@comment',
-            },
-            pylsp = {
-              extra_info_hl = '@comment',
-              -- Dim the function argument area, which is the main
-              -- difference with pyright.
-              arguments_hl = '@comment',
-            },
-            -- If true, try to highlight "not supported" languages.
-            fallback = true,
-            -- this will be applied to label description for unsupport languages
-            fallback_extra_info_hl = '@comment',
-          },
-          -- If the built-in logic fails to find a suitable highlight group for a label,
-          -- this highlight is applied to the label.
-          fallback_highlight = '@variable',
-          -- If provided, the plugin truncates the final displayed text to
-          -- this width (measured in display cells). Any highlights that extend
-          -- beyond the truncation point are ignored. When set to a float
-          -- between 0 and 1, it'll be treated as percentage of the width of
-          -- the window: math.floor(max_width * vim.api.nvim_win_get_width(0))
-          -- Default 60.
-          max_width = 60,
-        },
-      }
+      -- Bring enjoyment to your auto completion.
+      -- https://github.com/xzbdmw/colorful-menu.nvim
+      'xzbdmw/colorful-menu.nvim'
     },
     opts = {
       -- Configure native snippets
+      -- https://cmp.saghen.dev/configuration/snippets.html
       snippets = {
         expand = function(snippet)
           vim.snippet.expand(snippet)
@@ -163,6 +76,7 @@ return {
           vim.snippet.jump(direction)
         end,
       },
+      -- https://cmp.saghen.dev/configuration/appearance.html
       appearance = {
         -- sets the fallback highlight groups to nvim-cmp's highlight groups
         -- useful for when your theme doesn't support blink.cmp
@@ -171,7 +85,21 @@ return {
         -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- adjusts spacing to ensure icons are aligned
         nerd_font_variant = 'mono',
+
+        kind_icons = {
+          claude = "󰋦",
+          openai = "󱢆",
+          codestral = "󱎥",
+          gemini = "",
+          Groq = "",
+          Openrouter = "󱂇",
+          Ollama = "󰳆",
+          ["Llama.cpp"] = "󰳆",
+          Deepseek = "",
+        },
       },
+      -- https://cmp.saghen.dev/configuration/sources.html
+      -- https://cmp.saghen.dev/configuration/sources.html#community-sources
       sources = {
         default = function(ctx)
           local success, node = pcall(vim.treesitter.get_node)
@@ -271,6 +199,7 @@ return {
           },
         },
       },
+      -- https://cmp.saghen.dev/configuration/keymap.html
       keymap = {
         -- https://cmp.saghen.dev/configuration/keymap.html#super-tab
         -- preset = 'super-tab',
@@ -296,14 +225,24 @@ return {
         ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
         ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
       },
+      -- https://cmp.saghen.dev/modes/cmdline.html
       cmdline = {
         enabled = true,
-        completion = { menu = { auto_show = true } },
+        completion = {
+          -- https://cmp.saghen.dev/modes/cmdline.html#show-menu-automatically
+          menu = { auto_show = true },
+          -- https://cmp.saghen.dev/modes/cmdline.html#ghost-text
+          ghost_text = { enabled = true }
+        },
+        -- https://cmp.saghen.dev/modes/cmdline.html#keymap-preset
         keymap = {
           ['<CR>'] = { 'accept_and_enter', 'fallback' },
         },
       },
+      -- https://cmp.saghen.dev/configuration/completion.html
       completion = {
+        -- Manages the appearance of the completion menu
+        -- https://cmp.saghen.dev/configuration/completion.html#menu
         menu = {
           enabled = true,
           border = nil, -- Defaults to `vim.o.winborder` on nvim 0.11+
@@ -318,32 +257,53 @@ return {
           scrollbar = false,
           -- Whether to automatically show the window when new completion items are available
           auto_show = true,
+          -- Blink uses a grid-based layout to render the completion menu.
+          -- https://cmp.saghen.dev/configuration/completion.html#menu-draw
+          -- https://cmp.saghen.dev/recipes.html#completion-menu-drawing
           draw = {
-            padding = { 1, 0 },
-            columns = { { 'kind_icon' }, { 'label', gap = 1 } },
+            -- Aligns the keyword you've typed to a component in the menu
+            align_to = 'label', -- or 'none' to disable, or 'cursor' to align to the cursor
+            -- Left and right padding, optionally { left, right } for different padding on each side
+            padding = { 1, 1 },
+            -- Gap between columns
+            gap = 2,
+            -- Priority of the cursorline highlight, setting this to 0 will render it below other highlights
+            cursorline_priority = 10000,
+            -- Use treesitter to highlight the label text for the given list of sources
+            treesitter = { 'lsp' },
+            -- Define text and highlight functions which are called for each completion item. Each defines:
+            --   ellipsis: whether to add an ellipsis when truncating the text
+            --   width: control the min, max and fill behavior of the component
+            --   text function: will be called for each item
+            --   highlight function: will be called only when the line appears on screen
             components = {
+              kind = {
+                ellipsis = false,
+                width = { fill = true },
+                text = function(ctx) return ctx.kind end,
+                highlight = function(ctx) return ctx.kind_hl end,
+              },
               kind_icon = {
                 text = function(ctx)
                   local icon = ctx.kind_icon
-                  if vim.tbl_contains({ 'Path' }, ctx.source_name) then
-                    local dev_icon, _ = require('nvim-web-devicons').get_icon(ctx.label)
+                  if vim.tbl_contains({ "Path" }, ctx.source_name) then
+                    local dev_icon, _ = require("nvim-web-devicons").get_icon(ctx.label)
                     if dev_icon then
                       icon = dev_icon
                     end
                   else
-                    icon = require('lspkind').symbolic(ctx.kind, {
-                      mode = 'symbol',
-                    })
+                    local lspkind_icon = require("lspkind").symbolic(ctx.kind, nil)
+                    if lspkind_icon ~= "" then
+                      icon = lspkind_icon
+                    end
                   end
-                  return icon .. ' ' .. ctx.icon_gap
+
+                  return icon .. ctx.icon_gap
                 end,
-                -- Optionally, use the highlight groups from nvim-web-devicons
-                -- You can also add the same function for `kind.highlight` if you want to
-                -- keep the highlight groups in sync with the icons.
                 highlight = function(ctx)
                   local hl = ctx.kind_hl
-                  if vim.tbl_contains({ 'Path' }, ctx.source_name) then
-                    local dev_icon, dev_hl = require('nvim-web-devicons').get_icon(ctx.label)
+                  if vim.tbl_contains({ "Path" }, ctx.source_name) then
+                    local dev_icon, dev_hl = require("nvim-web-devicons").get_icon(ctx.label)
                     if dev_icon then
                       hl = dev_hl
                     end
@@ -356,11 +316,51 @@ return {
                   return require('colorful-menu').blink_components_text(ctx)
                 end,
                 highlight = function(ctx)
+                  if ctx.deprecated then
+                    local highlights = {
+                      { 0, #ctx.label, group = 'BlinkCmpLabelDeprecated' },
+                    }
+                    if ctx.label_detail then
+                      table.insert(highlights,
+                        { #ctx.label, #ctx.label + #ctx.label_detail, group = 'BlinkCmpLabelDetail' })
+                    end
+                    -- characters matched on the label by the fuzzy matcher
+                    for _, idx in ipairs(ctx.label_matched_indices) do
+                      table.insert(highlights, { idx, idx + 1, group = 'BlinkCmpLabelMatch' })
+                    end
+
+                    return highlights
+                  end
                   return require('colorful-menu').blink_components_highlight(ctx)
                 end,
               },
+              label_description = {
+                width = { max = 30 },
+                text = function(ctx) return ctx.label_description end,
+                highlight = 'BlinkCmpLabelDescription',
+              },
+              source_name = {
+                width = { max = 30 },
+                text = function(ctx) return ctx.source_name end,
+                highlight = 'BlinkCmpSource',
+              },
+              source_id = {
+                width = { max = 30 },
+                text = function(ctx) return ctx.source_id end,
+                highlight = 'BlinkCmpSource',
+              },
             },
+
+            -- Columns effectively allow you to vertically align a set of components.
+            -- Each column, defined as an array in draw.columns, will be rendered for all of the completion items,
+            -- where the longest rendered row will determine the width of the column.
+            -- For a setup similar to nvim-cmp, use the following config:
+            -- columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind" } }
+            -- We don't need label_description now because label and label_description are already combined together in label by colorful-menu.nvim.
+            -- https://github.com/xzbdmw/colorful-menu.nvim?tab=readme-ov-file#use-it-in-blinkcmp
+            columns = { { 'kind_icon' }, { 'label', gap = 1 } },
           },
+
           -- Avoid overlapping with the ghost text
           -- https://cmp.saghen.dev/recipes.html#avoid-multi-line-completion-ghost-text
           direction_priority = function()
@@ -380,6 +380,8 @@ return {
             return { 's', 'n' }
           end,
         },
+        -- Manages the documentation window
+        -- https://cmp.saghen.dev/configuration/completion.html#documentation
         documentation = {
           window = {
             border = nil,
@@ -391,8 +393,11 @@ return {
           -- Try to prevent duplicate documentation
           treesitter_highlighting = true,
         },
+        -- Manages the completion list and its behavior when selecting items
+        -- https://cmp.saghen.dev/configuration/completion.html#list
         list = {
-          max_items = 50, -- Maximum number of items to display
+          max_items = 200, -- Maximum number of items to display
+          -- https://cmp.saghen.dev/configuration/keymap.html#super-tab
           selection = { preselect = function(ctx) return not require('blink.cmp').snippet_active({ direction = 1 }) end, auto_insert = true },
           cycle = {
             -- When `true`, calling `select_next` at the _bottom_ of the completion list
@@ -403,12 +408,16 @@ return {
             from_top = true,
           },
         },
+        -- Manages the behavior when accepting an item in the completion menu
+        -- https://cmp.saghen.dev/configuration/completion.html#accept
         accept = {
           -- experimental auto-brackets support
           auto_brackets = {
             enabled = true,
           },
         },
+        -- Shows a preview of the currently selected item as virtual text inline
+        -- https://cmp.saghen.dev/configuration/completion.html#ghost-text
         ghost_text = {
           enabled = true,
           show_with_selection = true,     -- Show the ghost text when an item has been selected
@@ -474,7 +483,13 @@ return {
           treesitter_highlighting = true,
           show_documentation = false,
         },
-      }
+      },
+      -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
+      -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
+      -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
+      -- https://cmp.saghen.dev/configuration/fuzzy.html
+      -- https://github.com/saghen/frizbee
+      fuzzy = { implementation = 'prefer_rust_with_warning' }
     }
   }
 }

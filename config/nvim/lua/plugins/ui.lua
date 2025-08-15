@@ -205,6 +205,15 @@ return {
     end,
   },
 
+  -- Helpview | A modern UI for Neovim's help system
+  -- The plugin should be loaded after your colorscheme to ensure the correct highlight groups are used
+  -- https://github.com/OXY2DEV/helpview.nvim
+  {
+    "OXY2DEV/helpview.nvim",
+    lazy = false,
+    opts = {},
+  },
+
   -- Automatically add closing tags for HTML and JSX
   {
     'windwp/nvim-ts-autotag',
@@ -967,13 +976,14 @@ return {
   {
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-    ---@module 'render-markdown'
-    ---@type render.md.UserConfig
+    --- @module 'render-markdown'
+    --- @type render.md.UserConfig
     opts = {
+      latex = { enabled = false },
       completions = {
         blink = { enabled = true },
         lsp = { enabled = true }
       },
     },
-  },
+  }
 }

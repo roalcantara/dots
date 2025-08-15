@@ -16,6 +16,7 @@ return {
       -- https://github.com/mg979/vim-visual-multi/issues/241
       vim.g.VM_default_mappings = 0
       vim.g.VM_maps = {
+        -- ['Visual All'] = '<D-C-g>',
         ['Find Under'] = '<D-C-g>',
         ['Find Subword Under'] = '<D-C-g>',
         ['Add Cursor Down'] = '<A-D-Down>',
