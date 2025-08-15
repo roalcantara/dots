@@ -12,12 +12,6 @@ vim.schedule_wrap(function()
     -- =============================================================================
     setup.toggle_comments_mappings('<D-/>')
 
-    -- Quickly source current file / execute Lua code
-    -- https://github.com/mplusp/nvim-0.12-vim-pack-intro/blob/main/lua/config/keymap.lua
-    vim.keymap.set('n', '<leader>xx', '<Cmd>source %<CR>', { desc = 'Source current file' })
-    vim.keymap.set('n', '<leader>x', '<Cmd>:.lua<CR>', { desc = 'Lua: execute current line' })
-    vim.keymap.set('v', '<leader>x', '<Cmd>:lua<CR>', { desc = 'Lua: execute current selection' })
-
     return {
       -- ===========================================================================
       -- EDITOR
@@ -145,17 +139,14 @@ vim.schedule_wrap(function()
       ['<D-S-M-d>'] = { { n = lsp.declarations, i = lsp.declarations, v = lsp.declarations }, 'Find Declarations', { cmd = 'LspGoToDeclarations' } },
       ['<D-M-r>'] = { { n = lsp.references, i = lsp.references, v = lsp.references }, 'Find References', { cmd = 'LspGoToReferences' } },
       -- ===========================================================================
-      -- NAVIGATION
+      -- DEVELOPMENT
+      -- https://github.com/mplusp/nvim-0.12-vim-pack-intro/blob/main/lua/config/keymap.lua
       -- ===========================================================================
       ['<D-S-C-n>'] = { { n = ':update<CR> $MYVIMRC<CR>', i = '<C-O>:update<CR> <C-O>$MYVIMRC<CR>', v = '<ESC>:update<CR> $MYVIMRC<CR>' }, 'Reload [N]eovim config (init.lua)', { cmd = 'SourceNeovim' } },
       ['<D-S-C-f>'] = { { n = ev.src_vimrc_file, i = ev.src_vimrc_file, v = ev.src_vimrc_file }, '[R]eload Neovim & current file', { cmd = 'SourceNeovimAndEvalFile' } },
-      ['<D-S-C-s>'] = { { n = ':update<CR> :source<CR>', i = '<C-O>:update<CR> <C-O>:source<CR>', v = '<ESC>:update<CR> :source<CR>' }, 'Source and evaluate [C]urrent File', { cmd = 'SourceAndEvalFile' } },
-      ['<D-S-C-c>'] = { { n = '<CMD>.:lua<CR>', i = '<C-O><CMD>.:lua<CR>', v = '<ESC><CMD>.:lua<CR>' }, 'Evaluate current [L]ine', { cmd = 'EvalLine' } },
-      ['<D-S-C-v>'] = { { n = '<CMD>:lua<CR>', i = '<C-O><CMD>:lua<CR>', v = '<ESC><CMD>:lua<CR>' }, 'Evaluate [V]isual Selection', { cmd = 'EvalSelection' } },
-      -- ===========================================================================
-      -- KEYMAP REPORT
-      -- ===========================================================================
-      -- ["<D-S-C-k>"] = { { n = "<CMD>KeymapReport<CR>", i = "<CMD>KeymapReport<CR>", v = "<CMD>KeymapReport<CR>" }, "Generate Keymap Report", { cmd = "KeymapReport" } },
+      ['<D-S-C-s>'] = { { n = '<CMD>source %<CR>', i = '<C-O>source %<CR>', v = '<ESC><CMD>source %<CR>' }, 'Source and evaluate [C]urrent File', { cmd = 'SourceAndEvalFile' } },
+      ['<D-S-C-c>'] = { { n = '<CMD>.:lua<CR>', i = '<C-O>.:lua<CR>', v = '<ESC><CMD>.:lua<CR>' }, 'Evaluate current Line', { cmd = 'EvalLine' } },
+      ['<D-S-C-v>'] = { { n = '<CMD>:lua<CR>', i = '<C-O>:lua<CR>', v = '<ESC><CMD>:lua<CR>' }, 'Evaluate current Visual Selection', { cmd = 'EvalSelection' } },
     }
   end)
 end)()
