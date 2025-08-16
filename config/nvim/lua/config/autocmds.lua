@@ -1,5 +1,7 @@
+-- https://neovim.io/doc/user/lua-guide.html#lua-guide-autocommand-create
+-- https://neovim.io/doc/user/lua-guide.html#lua-guide-autocommands-group
 -- https://lazyvim.org/configuration/general#auto-commands
-require('core/vi/au/setup_au_async')({
+require('core/vi/au').setup_au_async({
   checktime = {
     {
       event = { 'FocusGained', 'TermClose', 'TermLeave' },
@@ -79,10 +81,7 @@ require('core/vi/au/setup_au_async')({
           local buf = event.buf
           vim.opt_local.wrap = true
           vim.opt_local.spell = true
-          vim.notify("wrap and spell enabled for " .. vim.bo[buf].filetype, vim.log.levels.INFO, {
-            title = "wrap and spell",
-            timeout = 3000,
-          })
+          Neo.debug(("wrap and spell enabled for %s"):format(vim.bo[buf].filetype), { title = 'Options' })
         end,
         desc = 'Enable wrap and check for spell in text filetypes',
       },
@@ -117,15 +116,7 @@ require('core/vi/au/setup_au_async')({
   },
   filetypedetect = {
     {
-      event = 'BufRead',
-      opts = {
-        pattern = { '*.yml' },
-        command = 'set filetype=yaml',
-        desc = 'Setup filetype=yaml for files ended with .yml',
-      },
-    },
-    {
-      event = 'BufNewFile',
+      event = { 'BufRead', 'BufNewFile' },
       opts = {
         pattern = { '*.yml' },
         command = 'set filetype=yaml',
@@ -172,8 +163,8 @@ require('core/vi/au/setup_au_async')({
           'snacks_notif_history',
           'snacks_notif_log',
           'snacks_notif',
-          'snacks_win',
           'snacks_picker_list',
+          'snacks_win',
           'spectre_panel',
           'startuptime',
           'trouble',
@@ -181,21 +172,6 @@ require('core/vi/au/setup_au_async')({
           'TroubleToggle',
           'tsplayground',
           'unix',
-          "checkhealth",
-          "dbout",
-          "gitsigns-blame",
-          "grug-far",
-          "help",
-          "lspinfo",
-          "neotest-output-panel",
-          "neotest-output",
-          "neotest-summary",
-          "notify",
-          "PlenaryTestPopup",
-          "qf",
-          "spectre_panel",
-          "startuptime",
-          "tsplayground",
         },
         callback = function(event)
           vim.bo[event.buf].buflisted = false
@@ -204,7 +180,6 @@ require('core/vi/au/setup_au_async')({
             pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
           end, {
             buffer = event.buf,
-            silent = true,
             desc = 'Quit buffer (q)',
           })
           vim.keymap.set('n', '<Esc>', function()
@@ -212,7 +187,6 @@ require('core/vi/au/setup_au_async')({
             pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
           end, {
             buffer = event.buf,
-            silent = true,
             desc = 'Quit buffer (<Esc>)',
           })
         end,
@@ -243,6 +217,21 @@ require('core/vi/au/setup_au_async')({
           end
         end,
         desc = 'LSP Attach: Setup autocommands and settings for LSP feature capabilities',
+      },
+    }
+  },
+  on_gitcommit_generate_conventional_commit_message = {
+    {
+      event = 'FileType',
+      opts = {
+        pattern = 'gitcommit',
+        callback = function(event)
+          Neo.debug(("Initializing Conventional Commit Generator for %s"):format(vim.bo[event.buf].filetype),
+            { title = 'GitCommit' }
+          )
+          require('core/ui/git/generate_conventional_commit').generate_conventional_commit()
+        end,
+        desc = 'Generate conventional commit message',
       },
     }
   }
