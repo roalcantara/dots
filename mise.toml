@@ -139,7 +139,7 @@
   esac
 
   DOCKER_CMD=(
-    docker run -it --tty --rm
+    docker run -it --rm
     --user="$USAGE_USER"
     --workdir="$USAGE_WORKDIR"
   )
