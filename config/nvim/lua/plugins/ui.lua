@@ -279,45 +279,36 @@ return {
         -- Scratch buffers with a persistent file
         -- https://github.com/folke/snacks.nvim/blob/main/docs/scratch.md
         scratch = {
-          enabled = false,
+          enabled = true,
           ft = function()
             return vim.bo.filetype ~= '' and vim.bo.filetype or 'lua'
           end,
           win = {
-            width = 0.7,
-            height = 0.6,
-            border = 'rounded',
-            enter = true,
-            minimal = false,
-            title_pos = 'center',
-            footer_pos = 'center',
-            keys = {
-              ['source'] = {
-                '<D-CR>',
-                function(self)
-                  local name = 'scratch.' .. vim.fn.fnamemodify(vim.api.nvim_buf_get_name(self.buf), ':e')
-                  Snacks.debug.run({ buf = self.buf, name = name })
-                end,
-                desc = 'Run',
-                mode = { 'n', 'i', 'v', 'x' },
+            style = 'scratch',
+            -- width = 0.7,
+            -- height = 0.6,
+            -- border = 'rounded',
+            -- enter = true,
+            -- minimal = false,
+            -- title_pos = 'center',
+            -- footer_pos = 'center',
+            -- keys = {
+            --   q = 'close',
+            -- },
+          },
+          win_by_ft = {
+            lua = {
+              keys = {
+                ["source"] = {
+                  '<D-CR>',
+                  function(self)
+                    local name = "scratch." .. vim.fn.fnamemodify(vim.api.nvim_buf_get_name(self.buf), ":e")
+                    Snacks.debug.run({ buf = self.buf, name = name })
+                  end,
+                  desc = "Source buffer",
+                  mode = { "n", "x" },
+                },
               },
-              ['reset'] = {
-                '<D-r>',
-                function(self)
-                  self:reset()
-                end,
-                desc = 'Reset',
-                mode = { 'n', 'i', 'v', 'x' },
-              },
-              ['quit'] = {
-                '<D-S-Bslash>',
-                function(self)
-                  self:close()
-                end,
-                desc = 'Quit',
-                mode = { 'n', 'i', 'v', 'x' },
-              },
-              q = 'close',
             },
           },
         },
@@ -591,54 +582,141 @@ return {
   {
     'folke/noice.nvim',
     event = 'VeryLazy',
-    opts = {
-      lsp = {
-        override = {
-          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-          ['vim.lsp.util.stylize_markdown'] = true
+    dependencies = {
+      'MunifTanjim/nui.nvim'
+    },
+    opts = function(_, opts)
+      return vim.tbl_deep_extend('force', opts or {}, {
+        -- https://github.com/folke/noice.nvim/wiki/A-Guide-to-Messages#lsp-messages
+        lsp = {
+          override = {
+            ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+            ['vim.lsp.util.stylize_markdown'] = true
+          },
+          hover = {
+            enable = false
+          },
+          signature = {
+            enabled = true,
+          },
+          documentation = {
+            enabled = true,
+          }
         },
-        hover = {
-          enable = false
+        -- Hide written messages
+        -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#hide-written-messages-1
+        routes = {
+          {
+            filter = {
+              event = 'msg_show',
+              any = {
+                { find = '%d+L, %d+B' },
+                { find = '; after #%d+' },
+                { find = '; before #%d+' },
+              },
+            },
+            view = 'mini',
+          },
+          {
+            filter = {
+              event = 'notify',
+              find = 'No information available',
+            },
+            opts = { skip = true },
+          },
+          {
+            filter = {
+              event = "msg_show",
+              kind = "search_count",
+            },
+            opts = { skip = true },
+          }
         },
-        signature = {
-          enabled = true,
+        messages = {
+          -- NOTE: If you enable messages, then the cmdline is enabled automatically.
+          -- This is a current Neovim limitation.
+          enabled = true,              -- enables the Noice messages UI
+          view = "notify",             -- default view for messages
+          view_error = "notify",       -- view for errors
+          view_warn = "notify",        -- view for warnings
+          view_history = "messages",   -- view for :messages
+          view_search = "virtualtext", -- view for search count messages. Set to `false` to disable
         },
-        documentation = {
-          enabled = true,
-        }
-      },
-      -- Hide written messages
-      -- https://github.com/folke/noice.nvim?tab=readme-ov-file#-routes
-      -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#hide-written-messages-1
-      routes = {
-        {
-          filter = {
-            event = 'msg_show',
-            any = {
-              { find = '%d+L, %d+B' },
-              { find = '; after #%d+' },
-              { find = '; before #%d+' },
+        popupmenu = {
+          enabled = true,  -- enables the Noice popupmenu UI
+          backend = "nui", -- backend to use to show regular cmdline completions
+          -- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
+          kind_icons = {}, -- set to `false` to disable icons
+        },
+        -- default options for require('noice').redirect
+        -- see the section on Command Redirection
+        redirect = {
+          view = "popup",
+          filter = { event = "msg_show" },
+        },
+        -- You can add any custom commands below that will be available with `:Noice command`
+        commands = {
+          history = {
+            -- options for the message history that you get with `:Noice`
+            view = "split",
+            opts = { enter = true, format = "details" },
+            filter = {
+              any = {
+                { event = "notify" },
+                { error = true },
+                { warning = true },
+                { event = "msg_show", kind = { "" } },
+                { event = "lsp",      kind = "message" },
+              },
             },
           },
-          view = 'mini',
-        },
-        {
-          filter = {
-            event = 'notify',
-            find = 'No information available',
+          -- :Noice last
+          last = {
+            view = "popup",
+            opts = { enter = true, format = "details" },
+            filter = {
+              any = {
+                { event = "notify" },
+                { error = true },
+                { warning = true },
+                { event = "msg_show", kind = { "" } },
+                { event = "lsp",      kind = "message" },
+              },
+            },
+            filter_opts = { count = 1 },
           },
-          opts = { skip = true },
+          -- :Noice errors
+          errors = {
+            -- options for the message history that you get with `:Noice`
+            view = "popup",
+            opts = { enter = true, format = "details" },
+            filter = { error = true },
+            filter_opts = { reverse = true },
+          },
+          all = {
+            -- options for the message history that you get with `:Noice`
+            view = "split",
+            opts = { enter = true, format = "details" },
+            filter = {},
+          },
         },
-      },
-      presets = {
-        bottom_search = true,
-        command_palette = true,
-        long_message_to_split = true,
-        lsp_doc_border = true
-      },
-    },
+        notify = {
+          enabled = true,
+          view = 'notify',
+        },
+        -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#presets
+        presets = {
+          bottom_search = true,
+          command_palette = true,
+          long_message_to_split = true,
+          lsp_doc_border = true
+        },
+      })
+    end,
   },
 
+  -- Aerial | A fast and lightweight alternative to the built-in LSP symbols
+  -- https://github.com/stevearc/aerial.nvim
   {
     'stevearc/aerial.nvim',
     event = 'VeryLazy',
@@ -646,7 +724,7 @@ return {
       'nvim-treesitter/nvim-treesitter',
       'nvim-tree/nvim-web-devicons'
     },
-    opts = function()
+    opts = function(_, opts)
       local kind_filter = {
         default = {
           'Class',
@@ -696,7 +774,7 @@ return {
         filter_kind.default = nil
       end
 
-      local opts = {
+      return vim.tbl_deep_extend('force', opts or {}, {
         attach_mode = 'global',
         backends = { 'lsp', 'treesitter', 'markdown', 'man' },
         show_guides = true,
@@ -717,8 +795,7 @@ return {
           nested_top = '│ ',
           whitespace = '  ',
         },
-      }
-      return opts
+      })
     end
   },
 
@@ -753,7 +830,7 @@ return {
 
       vim.o.laststatus = vim.g.lualine_laststatus
 
-      local opts = {
+      return vim.tbl_deep_extend('force', opts or {}, {
         options = {
           theme = "auto",
           globalstatus = vim.o.laststatus == 3,
@@ -770,8 +847,9 @@ return {
               end,
             },
           },
-          lualine_b = { 'branch' },
-
+          lualine_b = {
+            'branch',
+          },
           lualine_c = {
             require('core/ui/statusline').root_dir(),
             {
@@ -832,6 +910,7 @@ return {
                 return (status == 'InProgress' and 'pending') or (status == 'Warning' and 'error') or 'ok'
               end
             end),
+            -- https://github.com/folke/noice.nvim?tab=readme-ov-file#-statusline-components
             -- stylua: ignore
             {
               function() return require('noice').api.status.command.get() end,
@@ -843,6 +922,12 @@ return {
               function() return require('noice').api.status.mode.get() end,
               cond = function() return package.loaded['noice'] and require('noice').api.status.mode.has() end,
               color = function() return { fg = Snacks.util.color('Constant') } end,
+            },
+            -- stylua: ignore
+            {
+              function() return require('noice').api.status.search.get() end,
+              cond = function() return package.loaded['noice'] and require('noice').api.status.search.has() end,
+              color = function() return { fg = Snacks.util.color('Statement') } end,
             },
             -- stylua: ignore
             {
@@ -892,12 +977,12 @@ return {
           },
         },
         extensions = { 'neo-tree', 'lazy', 'fzf' },
-      }
-
-      return opts
+      })
     end,
   },
 
+  -- WhichKey | A popup that displays possible keybindings of the command you started typing
+  -- https://github.com/folke/which-key.nvim
   {
     'folke/which-key.nvim',
     event = 'VeryLazy',
@@ -976,14 +1061,14 @@ return {
   {
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-    --- @module 'render-markdown'
-    --- @type render.md.UserConfig
-    opts = {
-      latex = { enabled = false },
-      completions = {
-        blink = { enabled = true },
-        lsp = { enabled = true }
-      },
-    },
-  }
+    opts = function(_, opts)
+      return vim.tbl_deep_extend('force', opts or {}, {
+        latex = { enabled = false },
+        completions = {
+          blink = { enabled = true },
+          lsp = { enabled = true }
+        },
+      })
+    end,
+  },
 }
