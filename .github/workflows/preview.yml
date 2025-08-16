@@ -71,7 +71,7 @@ jobs:
         id: setup
         run: |
           short_sha=$(echo $GITHUB_SHA | cut -c1-7)
-          registry_url_tags=https://hub.do«cker.com/r/${{ env.REGISTRY_IMAGE }}/tags
+          registry_url_tags=https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags
           echo "DISTRO=${{ matrix.distro }}" >> $GITHUB_OUTPUT
           echo "SHORT_SHA=$short_sha" >> $GITHUB_OUTPUT
           echo "IMAGE_NAME=${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${short_sha}" >> $GITHUB_OUTPUT
