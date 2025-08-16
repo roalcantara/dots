@@ -1,3 +1,18 @@
+# [1.9.0](https://github.com/roalcantara/dots/compare/v1.8.0...v1.9.0) (2025-08-16)
+
+
+### Bug Fixes
+
+* **workflows:** Correct Docker registry URL in preview workflow ([6a9188e](https://github.com/roalcantara/dots/commit/6a9188e4dc389c2c6063893dc5d87884763d908c))
+
+
+### Features
+
+* **git:** Add AI-powered conventional commit generation ([a79e74c](https://github.com/roalcantara/dots/commit/a79e74c0ad46aa52ce9e44d6d2b5ee4bf063a107))
+* **nvim/formater:** Enhance configuration for conform.nvim formatter ([108f201](https://github.com/roalcantara/dots/commit/108f2013821cc8af78d39ada385844ed8386e33e))
+* **nvim:** Add user commands and async autocmd setup ([5765f09](https://github.com/roalcantara/dots/commit/5765f0938660aeda9fa1bb88e5a4b680186729ec))
+* **ui:** Update UI plugin configuration ([d972701](https://github.com/roalcantara/dots/commit/d972701ed134f2d8cd1508619a4e8b1c6a664277))
+
 # [1.8.0](https://github.com/roalcantara/dots/compare/v1.7.0...v1.8.0) (2025-08-12)
 
 
