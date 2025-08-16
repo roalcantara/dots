@@ -139,19 +139,19 @@ At the moment, the `start` task is only available for the `debian` and `ubuntu` 
 
  ```sh
   mise run start
-  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
+  # ==> docker run -it --rm --user=vscode --workdir=/workspaces/dots --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
 
   mise run start --user root --workdir /workspaces/foo
-  # ==> docker run -it --tty --rm --user=root --workdir=/workspaces/foo --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
+  # ==> docker run -it --rm --user=root --workdir=/workspaces/foo --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
 
   mise run start --tag dev
-  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-dev
+  # ==> docker run -it --rm --user=vscode --workdir=/workspaces/dots dots:debian-dev
 
   mise run start --platform amd64 --tag latest
-  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:debian-latest
+  # ==> docker run -it --rm --user=vscode --workdir=/workspaces/dots dots:debian-latest
 
   mise run start --distro ubuntu --tag latest
-  # ==> docker run -it --tty --rm --user=vscode --workdir=/workspaces/dots dots:ubuntu-latest
+  # ==> docker run -it --rm --user=vscode --workdir=/workspaces/dots dots:ubuntu-latest
 ```
 
 ### TESTING
