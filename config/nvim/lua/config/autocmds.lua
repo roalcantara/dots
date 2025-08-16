@@ -219,20 +219,5 @@ require('core/vi/au').setup_au_async({
         desc = 'LSP Attach: Setup autocommands and settings for LSP feature capabilities',
       },
     }
-  },
-  on_gitcommit_generate_conventional_commit_message = {
-    {
-      event = 'FileType',
-      opts = {
-        pattern = 'gitcommit',
-        callback = function(event)
-          Neo.debug(("Initializing Conventional Commit Generator for %s"):format(vim.bo[event.buf].filetype),
-            { title = 'GitCommit' }
-          )
-          require('core/ui/git/generate_conventional_commit').generate_conventional_commit()
-        end,
-        desc = 'Generate conventional commit message',
-      },
-    }
   }
 })
