@@ -20,6 +20,7 @@ vim.g.lsp_hover_mouse_delay = 1000            -- [go] Mouse hover delay in milli
 vim.o.clipboard = vim.env.SSH_TTY and '' or 'unnamedplus' -- Sync with system clipboard
 
 -- Performance optimizations
+vim.g.snacks_animate = false
 vim.opt.lazyredraw = false                    -- Don't redraw while executing macros
 vim.opt.ttyfast = true                        -- Faster terminal connection
 vim.opt.updatetime = 100                      -- Save swap file and trigger CursorHold

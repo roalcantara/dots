@@ -176,7 +176,8 @@ function M.norm(path)
   if M.is_directory(path) == 1 then
     return M.join(path, '')
   end
-  return vim.fs.normalize((vim.uv or vim.loop).cwd() or '.')
+  -- Fix: Actually normalize the input path instead of returning cwd
+  return vim.fs.normalize(path) or path
 end
 
 --- Check if a command is executable
