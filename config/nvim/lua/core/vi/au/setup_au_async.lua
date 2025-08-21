@@ -12,15 +12,15 @@ end
 -- https://neovim.io/doc/user/lua-guide.html#lua-guide-autocommand-create
 -- https://neovim.io/doc/user/lua-guide.html#lua-guide-autocommands-group
 local function create_autocmds(options)
+  local augroup = require('core/vi/au/aug')
   local created = 1
   --- @async
   local init_co = coroutine.create(function()
     for augroup_name, autocommands in pairs(options) do
-      local group = vim.api.nvim_create_augroup("neovim_custom_" .. augroup_name, { clear = true })
+      local group = augroup(augroup_name)
       for _, autocommand in ipairs(autocommands) do
-        vim.api.nvim_create_autocmd(autocommand.event,
-          vim.tbl_deep_extend('force', autocommand.opts or {}, { group = group })
-        )
+        local opts = vim.tbl_deep_extend('force', autocommand.opts or {}, { group = group })
+        vim.api.nvim_create_autocmd(autocommand.event, opts)
         debug(augroup_name, autocommand, created)
         created = created + 1
       end
@@ -41,7 +41,7 @@ end
 -- Autocmds are automatically loaded on the VeryLazy event
 -- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 local function setup_au_async(options)
-  create_autocmds(options)
+  return create_autocmds(options)
 end
 
 return setup_au_async

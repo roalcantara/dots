@@ -28,7 +28,7 @@ local DEFAULT_OPTIONS = {
 }
 
 --- @class Neo
---- @field level 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'OFF'
+--- @field level number
 --- @field debug function
 --- @field info function
 --- @field warn function
@@ -48,11 +48,15 @@ _G.Neo = {
   --- @example Neo.debug('Hello, world!', { title = 'Debug' })
   debug = function(message, opts)
     if Neo.level <= vim.log.levels.DEBUG then
-      Snacks.notifier.notify(message, vim.log.levels.DEBUG, vim.tbl_deep_extend('force', {
-        style = DEFAULT_OPTIONS.style,
-        timeout = DEFAULT_OPTIONS.timeout,
-        title = 'DEBUG',
-      }, opts or {}))
+      Snacks.notifier.notify(
+        message,
+        vim.log.levels.DEBUG,
+        vim.tbl_deep_extend('force', {
+          style = DEFAULT_OPTIONS.style,
+          timeout = DEFAULT_OPTIONS.timeout,
+          title = 'DEBUG',
+        }, opts or {})
+      )
     end
   end,
   --- Prints a message to the console if the level is greater than or equal to vim.log.levels.INFO
@@ -60,11 +64,15 @@ _G.Neo = {
   --- @param opts NeoOptions The options for the notification
   info = function(message, opts)
     if Neo.level <= vim.log.levels.INFO then
-      Snacks.notifier.notify(message, vim.log.levels.INFO, vim.tbl_deep_extend('force', {
-        style = DEFAULT_OPTIONS.style,
-        timeout = DEFAULT_OPTIONS.timeout,
-        title = 'INFO',
-      }, opts or {}))
+      Snacks.notifier.notify(
+        message,
+        vim.log.levels.INFO,
+        vim.tbl_deep_extend('force', {
+          style = DEFAULT_OPTIONS.style,
+          timeout = DEFAULT_OPTIONS.timeout,
+          title = 'INFO',
+        }, opts or {})
+      )
     end
   end,
   --- Prints a message to the console if the level is greater than or equal to vim.log.levels.WARN
@@ -72,11 +80,15 @@ _G.Neo = {
   --- @param opts NeoOptions The options for the notification
   warn = function(message, opts)
     if Neo.level <= vim.log.levels.WARN then
-      Snacks.notifier.notify(message, vim.log.levels.WARN, vim.tbl_deep_extend('force', {
-        style = DEFAULT_OPTIONS.style,
-        timeout = DEFAULT_OPTIONS.timeout,
-        title = 'WARN',
-      }, opts or {}))
+      Snacks.notifier.notify(
+        message,
+        vim.log.levels.WARN,
+        vim.tbl_deep_extend('force', {
+          style = DEFAULT_OPTIONS.style,
+          timeout = DEFAULT_OPTIONS.timeout,
+          title = 'WARN',
+        }, opts or {})
+      )
     end
   end,
   --- Prints a message to the console if the level is greater than or equal to vim.log.levels.ERROR
@@ -84,11 +96,15 @@ _G.Neo = {
   --- @param opts NeoOptions The options for the notification
   error = function(message, opts)
     if Neo.level <= vim.log.levels.ERROR then
-      Snacks.notifier.notify(message, vim.log.levels.ERROR, vim.tbl_deep_extend('force', {
-        style = DEFAULT_OPTIONS.style,
-        timeout = DEFAULT_OPTIONS.timeout,
-        title = 'ERROR',
-      }, opts or {}))
+      Snacks.notifier.notify(
+        message,
+        vim.log.levels.ERROR,
+        vim.tbl_deep_extend('force', {
+          style = DEFAULT_OPTIONS.style,
+          timeout = DEFAULT_OPTIONS.timeout,
+          title = 'ERROR',
+        }, opts or {})
+      )
     end
   end,
 }
