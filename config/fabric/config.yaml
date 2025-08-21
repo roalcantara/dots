@@ -1,0 +1,7 @@
+defaults:
+  commit_style: conventional
+  commit_scope_required: true
+  commit_breaking_change_required: false
+  commit_footer_required: false
+  max_subject_length: 50
+  max_body_line_length: 72
