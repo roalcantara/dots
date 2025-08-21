@@ -141,6 +141,11 @@ function M.pretty_path(opts)
 
     local paths = require('core/vi/paths')
     path = paths.norm(path)
+
+    if not path then
+      return ''
+    end
+
     local root = paths.get({ normalize = true })
     local cwd = paths.cwd()
 
