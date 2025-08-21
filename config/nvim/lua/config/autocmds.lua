@@ -210,10 +210,10 @@ require('core/vi/au').setup_au_async({
     {
       event = 'LspAttach',
       opts = {
-        callback = function(event)
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if type(client) ~= nil and vim.api.nvim_buf_is_valid(event.buf) then
-            require('core/vi/lsp/features').setup_capabilities(client, event.buf, event)
+        callback = function(args)
+          local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+          if type(client) ~= nil and vim.api.nvim_buf_is_valid(args.buf) then
+            require('core/vi/lsp/features').setup_capabilities(client, args.buf, args)
           end
         end,
         desc = 'LSP Attach: Setup autocommands and settings for LSP feature capabilities',
