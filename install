@@ -42,7 +42,7 @@ declare -g -A PACKAGES=(
   # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
   [ubuntu]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint ruby-full"
   [debian]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint"
-  [mise]="ripgrep bat delta eza fd fzf starship usage watchexec zoxide gum node@22.17 python pre-commit neovim"
+  [mise]="ripgrep bat delta eza fd fzf starship usage watchexec zoxide gum node@22.17 python pre-commit tree-sitter neovim"
   [flox]="nodejs python311Full ruby ripgrep bat delta eza fd fzf starship zoxide gum pre-commit gitlint neovim"
 )
 
