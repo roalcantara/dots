@@ -24,9 +24,9 @@
   # mise run build
   # mise run build --nocache
   # mise run build --nocache --distro ubuntu
-  # mise run build --nocache --runtime
+  # mise run build --nocache --local
   # mise run build --nocache --platform amd64 --tag latest
-  # mise run build --nocache --runtime --distro debian --platform amd64 --tag latest --build-arg USERNAME=roalcantara --build-arg GROUPNAME=staff
+  # mise run build --nocache --local --distro debian --platform amd64 --tag latest --build-arg USERNAME=roalcantara --build-arg GROUPNAME=staff
   [tasks.build]
   description = "Build a Docker image for dotfiles"
   run = '''

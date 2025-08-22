@@ -199,6 +199,9 @@ At the moment, the `start` task is only available for the `debian` and `ubuntu` 
 - [CST (Container Structure Tests)][12]
 - [OCI Best Practices Image Annotations][13]
 - [Multi-arch build and images the simple way][14]
+- [Flox: Manage all of your software and its dependencies, down to the smallest package][16]
+- [Devbox: Portable, Isolated Dev Environments on any Machine][17]
+- [Devenv: Fast, Declarative, Reproducible and Composable Developer Environments using Nix][18]
 
 ## CONTRIBUTING
 
@@ -226,3 +229,6 @@ The project is available as open source under the terms of the [MIT][1] [License
 [13]: https://github.com/opencontainers/image-spec/blob/main/annotations.md 'OCI Best Practices Image Annotations'
 [14]: https://docker.com/blog/multi-arch-build-and-images-the-simple-way 'Multi-arch build and images the simple way'
 [15]: https://containers.dev 'Open specification for enriching containers with development specific content and settings'
+[16]: https://flox.dev 'The Flox tool - Manage all of your software and its dependencies, down to the smallest package'
+[17]: https://jetify.com/devbox 'Devbox: Portable, Isolated Dev Environments on any Machine'
+[18]: https://devenv.sh 'Devenv: Fast, Declarative, Reproducible and Composable Developer Environments using Nix'
