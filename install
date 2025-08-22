@@ -26,16 +26,24 @@ declare -g BRANCH="main"
 declare -g LOCALGROUP=$(id -gn 2>/dev/null)
 declare -g LOCALUSER=$(id -un 2>/dev/null)
 declare -g USR_LOCAL_BIN="/usr/local/bin"
+declare -g MISE_INSTALL_PATH="$USR_LOCAL_BIN/mise"
 declare -g XDG_COMMON_DIRS=".config .cache .local .local/share .local/state .local/bin"
 declare -g BACKUP_RESOURCES=".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .config"
 declare -g CONTEXT
 declare -g ARCH
 declare -g ENV
+declare -g -A PACKERS=(
+  ['mise:curl']="curl https://mise.run | MISE_INSTALL_PATH=$MISE_INSTALL_PATH sh"
+  ['mise:wget']="wget -qO- https://mise.run | MISE_INSTALL_PATH=$MISE_INSTALL_PATH sh"
+  ['flox:apt:arm64']="curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.1.aarch64-linux.deb -o /tmp/flox.deb && dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version"
+  ['flox:apt:amd64']="curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.1.x86_64-linux.deb -o /tmp/flox.deb && dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version"
+)
 declare -g -A PACKAGES=(
   # https://guides.rubyonrails.org/development_dependencies_install.html#ubuntu
   [ubuntu]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint ruby-full"
   [debian]="sudo build-essential libssl-dev libffi-dev libyaml-dev libxml2-dev xclip xsel gitlint"
   [mise]="ripgrep bat delta eza fd fzf starship usage watchexec zoxide gum node@22.17 python pre-commit neovim"
+  [flox]="nodejs python311Full ruby ripgrep bat delta eza fd fzf starship zoxide gum pre-commit gitlint neovim"
 )
 
 puts() {
@@ -90,9 +98,9 @@ has_command() {
   command -v "$1" >/dev/null 2>&1
 }
 export_env_var() {
-  local env_var_name="$1"
-  local value="$2"
-  local section_name="$3"
+  local env_var_name=$1
+  local value=$2
+  local section_name=$3
   local force=("${@:4}")
 
   if [ "${force[*]}" == "--force" ] || [ -z "${!env_var_name:-}" ]; then
@@ -102,10 +110,11 @@ export_env_var() {
 # Ensure ownership of a path
 # Usage: set_ownership <path> <section_name> (required_owner)
 set_ownership() {
-  local TARGET="$1"
-  local LABEL="$2"
+  local TARGET=$1
+  local LABEL=$2
+  local OWNER=${3:-$USERNAME:$GROUPNAME}
 
-  exec_cmd chown -R "$USERNAME:$GROUPNAME" "$TARGET" 2>/dev/null || sudo chown -R "$USERNAME:$GROUPNAME" "$TARGET" || {
+  exec_cmd chown -R $OWNER $TARGET 2>/dev/null || sudo chown -R $OWNER $TARGET || {
     e "[$LABEL] ⚠ Failed to change ownership of $TARGET" >&2
     return 1
   }
@@ -125,9 +134,8 @@ set_permissions() {
 # Setup directory with proper ownership (without environment variable) as sudo
 # Usage: setup_dir <path> <section_name>
 setup_dir() {
-  local TARGET="$1"
-  local LABEL="$2"
-  local OWNER="${3:-$UID}"
+  local TARGET=$1
+  local LABEL=$2
 
   # Create directory if it doesn't exist
   if [ ! -d "$TARGET" ]; then
@@ -136,6 +144,16 @@ setup_dir() {
       return 1
     }
   fi
+}
+# Setup directory with proper ownership (without environment variable) as sudo
+# Usage: setup_dir <path> <section_name>
+setup_dir_and_chown() {
+  local TARGET=$1
+  local LABEL=$2
+  local OWNER=${3:-$USERNAME:$GROUPNAME}
+
+  # Create directory if it doesn't exist
+  setup_dir "$TARGET" "$LABEL"
 
   # Ensure ownership
   set_ownership "$TARGET" "$LABEL" "$OWNER"
@@ -143,28 +161,28 @@ setup_dir() {
 # Setup environment variable and directory with proper ownership
 # Usage: setup_env_and_dir <env_var_name> <default_path> <section_name>
 setup_env_and_dir() {
-  local env_var_name="$1"
-  local default_path="$2"
-  local section_name="$3"
+  local env_var_name=$1
+  local default_path=$2
+  local section_name=$3
 
   # Create directory if it doesn't exist
   setup_dir "${!env_var_name}" "$section_name/$env_var_name"
 
   # Set environment variable if not already set
-  export_env_var "$env_var_name" "$default_path" "$section_name" "${@:4}"
+  export_env_var $env_var_name $default_path $section_name "${@:4}"
 }
 # Setup environment variable and directory with proper ownership
 # Usage: setup_env_and_dir <env_var_name> <default_path> <section_name>
 export_env_and_make_dir() {
-  local env_var_name="$1"
-  local default_path="$2"
-  local section_name="$3"
+  local env_var_name=$1
+  local default_path=$2
+  local section_name=$3
 
   # Create directory if it doesn't exist
-  setup_dir "$default_path" "$section_name/$env_var_name"
+  setup_dir_and_chown $default_path $section_name/$env_var_name
 
   # Set environment variable if not already set
-  export_env_var "$env_var_name" "$default_path" "$section_name" "${@:4}"
+  export_env_var $env_var_name $default_path $section_name "${@:4}"
 }
 setup_platform() {
   section "[ENV/DETECT] Detecting platform and package managers..."
@@ -391,14 +409,20 @@ setup_environment_variables() {
   exec_cmd export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:-$HOME/.cache/zsh}
   exec_cmd export ZSH_COMPCACHE=${ZSH_COMPCACHE:-$HOME/.cache/zsh/compcache}
   exec_cmd export ZIM_HOME=${ZIM_HOME:-$HOME/.local/share/zim}
+  exec_cmd export ZIM_STATE_DIR=${ZIM_STATE_DIR:-$HOME/.local/state/zim}
   exec_cmd export ZSH_COMPDUMP=${ZSH_COMPDUMP:-$HOME/.cache/zsh/compcache/.zcompdump}
 
   # MISE & MISC
   exec_cmd export MISE_DATA_HOME=${MISE_DATA_HOME:-$HOME/.local/share/mise}
+  exec_cmd export MISE_STATE_HOME=${MISE_STATE_HOME:-$HOME/.local/state/mise}
+  exec_cmd export MISE_GLOBAL_CONFIG_DIR=${MISE_GLOBAL_CONFIG_DIR:-$HOME/.local/share/mise}
   exec_cmd export DOTS_DIR=${DOTS_DIR:-$HOME/.local/share/dots}
   exec_cmd export BACKUP_DIR_ROOT=${BACKUP_DIR_ROOT:-$HOME/.local/share/backup}
   exec_cmd export NPM_CONFIG_PREFIX=${NPM_CONFIG_PREFIX:-$HOME/.local/share/npm}
   exec_cmd export NPM_CONFIG_CACHE=${NPM_CONFIG_CACHE:-$HOME/.cache/npm}
+  exec_cmd export FLOX_DIR=${FLOX_DIR:-$HOME/.flox}
+  # https://guides.rubygems.org/command-reference/#gem-environment
+  exec_cmd export GEM_HOME=${GEM_HOME:-$XDG_DATA_HOME/gems}
 }
 step_setup_environment() {
   setup_platform
@@ -439,6 +463,7 @@ step_setup_environment() {
   i "ZSH_CACHE_DIR = \"$ZSH_CACHE_DIR\""
   i "ZSH_COMPCACHE = \"$ZSH_COMPCACHE\""
   i "ZIM_HOME = \"$ZIM_HOME\""
+  i "ZIM_STATE_DIR = \"$ZIM_STATE_DIR\""
   i "ZSH_COMPDUMP = \"$ZSH_COMPDUMP\""
   i "MISE_DATA_HOME = \"$MISE_DATA_HOME\""
   i "DOTS_DIR = \"$DOTS_DIR\""
@@ -472,7 +497,7 @@ step_cleanup() {
   for e in "$HOME" /root; do
     for f in "$e/.bashrc" "$e/.bash_logout" "$e/.oh-my-zsh" "$e/.profile"; do
       if [ -e "$f" ]; then
-        exec_cmd sudo rm -rf "$f"
+        exec_cmd rm -rf "$f"
       fi
     done
   done
@@ -486,30 +511,29 @@ step_backup() {
     for resource in $BACKUP_RESOURCES; do
       resource_path="$HOME/$resource"
       if [ -e "$resource_path" ]; then
-        exec_cmd sudo rm -rf "$resource_path"
+        exec_cmd rm -rf "$resource_path"
       fi
     done
-    s "[BAK] Completed @ '$USERNAME:$GROUPNAME' ✔︎"
+    s "[BAK] Completed ✔︎"
   else
     w "[BAK] Creating backup directory with current timestamp ✔︎"
     BACKUP_DIR="$BACKUP_DIR_ROOT/$(date +%Y-%m-%d_%H-%M-%S)"
-    exec_cmd sudo mkdir -p "$BACKUP_DIR"
-    exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$BACKUP_DIR_ROOT"
-    i "[BAK] Backup folder created at '$BACKUP_DIR' ("$USERNAME:$GROUPNAME") ✔︎"
+    exec_cmd mkdir -p "$BACKUP_DIR"
+    i "[BAK] Backup folder created at '$BACKUP_DIR' ✔︎"
 
     for resource in $BACKUP_RESOURCES; do
       resource_path="$HOME/$resource"
       if [ -e "$resource_path" ]; then
-        exec_cmd sudo mv "$resource_path" "$BACKUP_DIR/"
+        exec_cmd mv "$resource_path" "$BACKUP_DIR/"
         if [[ "$XDG_COMMON_DIRS" == *"$resource"* ]]; then
-          exec_cmd sudo install -d -o "$USERNAME" -g "$USERNAME" "$resource_path"
+          exec_cmd install -d -o "$USERNAME" -g "$USERNAME" "$resource_path"
           i "Recreated directory: $resource_path owned by $USERNAME:$USERNAME ✔︎"
         fi
       else
         d "Resource does not exist, skipping: $resource_path"
       fi
     done
-    s "[BAK] Completed @ '$BACKUP_DIR@$USERNAME:$GROUPNAME' ✔︎"
+    s "[BAK] Completed @ '$BACKUP_DIR' ✔︎"
   fi
 }
 step_dotfiles() {
@@ -517,7 +541,7 @@ step_dotfiles() {
 
   # Ensure parent directory exists
   dots_parent_dir="$(dirname "$DOTS_DIR")"
-  setup_dir "$dots_parent_dir" "DOTS/$dots_parent_dir"
+  setup_dir_and_chown "$dots_parent_dir" "DOTS/$dots_parent_dir"
 
   # Clone or update repository
   if [ -d "$DOTS_DIR/.git" ]; then
@@ -528,7 +552,7 @@ step_dotfiles() {
     i "[DOTS] '$REPO_URL' ($BRANCH) updated to '$DOTS_DIR' ✔︎"
   elif [ -d "$DOTS_DIR" ] && [ ! -d "$DOTS_DIR/config" ]; then
     i "[DOTS] '$DOTS_DIR/config' not found! Cloning from '$REPO_URL' ($BRANCH) into '$DOTS_DIR'..."
-    if ! exec_cmd sudo git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$DOTS_DIR"; then
+    if ! exec_cmd git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$DOTS_DIR"; then
       e "[DOTS] Failed to clone repository"
     fi
     i "[DOTS] '$REPO_URL' ($BRANCH) cloned to '$DOTS_DIR' ✔︎"
@@ -555,7 +579,7 @@ step_dotfiles() {
       i "[DOTS] Handling existent '$config_symlink' targeting '$current_target'.."
       if [ "$current_target" != "$DOTS_DIR/config" ]; then
         if is_container; then
-          exec_cmd sudo rm -rf "$config_symlink"
+          exec_cmd rm -rf "$config_symlink"
         else
           exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
         fi
@@ -580,7 +604,7 @@ step_dotfiles() {
     i "[DOTS] Handling existent symlink '$config_symlink' targeting '$current_target'.."
     if [ "$current_target" != "$DOTS_DIR/config" ]; then
       if is_container; then
-        exec_cmd sudo rm -rf "$config_symlink"
+        exec_cmd rm -rf "$config_symlink"
       else
         exec_cmd mv "$config_symlink" "$BACKUP_DIR/"
       fi
@@ -591,36 +615,123 @@ step_dotfiles() {
 
   i "[DOTS] Symlinking '$DOTS_DIR/config' to '$config_symlink'.."
   if [ ! -L "$config_symlink" ]; then
-    exec_cmd sudo ln -sf "$DOTS_DIR/config" "$config_symlink"
+    exec_cmd ln -sf "$DOTS_DIR/config" "$config_symlink"
   else
     w "[DOTS] No existent '$config_symlink' symlink to '$DOTS_DIR/config' found ✔︎"
   fi
 
-  # Ensure ownership of the symlink
-  set_ownership "$config_symlink" "DOTS"
-
-  # Ensure ownership of all files and directories in the symlink
-  for dir in "$config_symlink"/*; do
-    set_ownership "$dir" "DOTS/SYMLINK"
+  # Create symlinks for the ZSH config files
+  ZSH_CONFIG_FILES=".zshenv"
+  for file in $ZSH_CONFIG_FILES; do
+    if [ -f "$ZDOTDIR/$file" ] && [ ! -L "$HOME/$file" ]; then
+      exec_cmd ln -sf "$ZDOTDIR/$file" "$HOME/$file"
+      i "[ZSH] $ZDOTDIR/$file symlinked to $HOME/$file ✔︎"
+    fi
   done
 
   s "[DOTS] Setup completed ✔︎"
 }
+step_zsh() {
+  section "[ZSH] Setup started..."
+
+  # Determine the current shell for the user in a cross-platform way
+  if command -v getent >/dev/null 2>&1; then
+    CURRENT_SHELL=$(getent passwd "$USERNAME" | cut -d: -f7)
+  else
+    # macOS and some BSDs: use dscl or fallback to /etc/passwd
+    if command -v dscl >/dev/null 2>&1; then
+      CURRENT_SHELL=$(dscl . -read /Users/"$USERNAME" UserShell | awk '{print $2}')
+    else
+      CURRENT_SHELL=$(awk -F: -v user="$USERNAME" '$1 == user {print $7}' /etc/passwd)
+    fi
+  fi
+
+  ZSH_PATH="$(command -v zsh)"
+
+  if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
+    if command -v chsh >/dev/null 2>&1; then
+      exec_cmd chsh -s "$ZSH_PATH" "$USERNAME"
+      i "[ZSH] '$USERNAME' shell set to '$ZSH_PATH' ✔︎"
+    elif [ "$(uname)" = "Darwin" ] && command -v dscl >/dev/null 2>&1; then
+      exec_cmd dscl . -change /Users/"$USERNAME" UserShell "$CURRENT_SHELL" "$ZSH_PATH"
+      i "[ZSH] '$USERNAME' shell set to '$ZSH_PATH' (via dscl) ✔︎"
+    else
+      w "[ZSH] Could not change shell automatically. Please set '$ZSH_PATH' as the shell for '$USERNAME' manually."
+    fi
+  else
+    i "[ZSH] '$USERNAME' shell is already set to '$ZSH_PATH' ✔︎"
+  fi
+
+  for dir in $ZSH_DATA_DIR $ZSH_CACHE_DIR $ZIM_HOME $ZIM_STATE_DIR; do
+    setup_dir "$dir" "ZSH/$dir"
+  done
+
+  s "[ZSH] Setup completed ✔︎"
+}
 step_ensure_ownership() {
-  section "[XDG] Ensuring ownership of XDG directories started..."
+  section "[CHOWN] Ensuring ownership of XDG directories started..."
   for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_LOCAL_DIR" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_DESKTOP_DIR" "$XDG_DOWNLOAD_DIR" "$XDG_DOCUMENTS_DIR" "$XDG_MUSIC_DIR" "$XDG_PICTURES_DIR" "$XDG_VIDEOS_DIR" "$XDG_PROJECTS_DIR" "$XDG_WORKSPACE_DIR" "$XDG_RUNTIME_DIR"; do
     setup_dir "$dir" "XDG/CHOWN/$dir"
   done
   set_permissions "$XDG_RUNTIME_DIR" "XDG/CHMOD/$XDG_RUNTIME_DIR" 700
-  s "[XDG] Completed ✔︎"
+  set_ownership "$HOME" "CHOWN/$HOME"
+  s "[CHOWN] Completed ✔︎"
+}
+step_flox() {
+  section "[FLOX] Setting up..."
 
-  if [[ "$*" =~ '--zsh' ]]; then
-    section "[ZSH] Ensuring ownership of ZSH directories started..."
-    for dir in "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_COMPCACHE" "$ZIM_HOME"; do
-      setup_dir "$dir" "ZSH/CHOWN/$dir"
+  if [ -z "${GITHUB_TOKEN:-}" ]; then
+    w "[FLOX] GITHUB_TOKEN not set, looking up for token..."
+
+    GITHUB_TOKEN=""
+    for location in /run/secrets/github_token /tmp/github_token $HOME/.github_token $HOME/.secrets/github_token; do
+      echo "[FLOX] Checking for GITHUB_TOKEN in '$location'..."
+      if [ -f "$location" ]; then
+        export GITHUB_TOKEN="$(cat "$location")"
+        w "[FLOX] GITHUB_TOKEN loaded from '$location' ✔︎"
+        break
+      fi
     done
-    s "[ZSH] Completed ✔︎"
   fi
+
+  if [ -z "${GITHUB_TOKEN:-}" ]; then
+    w "[FLOX] No GitHub token found - API rate limits may apply"
+  fi
+
+  if has_command "flox"; then
+    i "[FLOX] flox is already installed ✔︎"
+    return
+  else
+    w "[FLOX] flox is not found! Installing..."
+    if has_command "apt"; then
+      exec_cmd eval ${PACKERS["flox:apt:$ARCH"]}
+    else
+      e "[FLOX] Neither apt nor curl nor wget is installed. Please install one of them to proceed."
+      return 1
+    fi
+  fi
+
+  if is_container; then
+    FLOX_DIR="/root"
+  else
+    FLOX_DIR="$HOME"
+  fi
+
+  i "[FLOX] Setting up global configuration..."
+  exec_cmd cd "$FLOX_DIR" && flox init
+  i "[FLOX] Activated flox for the current session for '$FLOX_DIR' ✔︎"
+  exec_cmd eval "$(flox activate -d "$FLOX_DIR")"
+  i "[FLOX] Installing global packages '${PACKAGES[flox]}'.."
+  exec_cmd flox install -d "$FLOX_DIR" ${PACKAGES[flox]}
+  i "[FLOX] List installed packages ✔︎"
+  exec_cmd flox list
+  i "[FLOX] List environments ✔︎"
+  exec_cmd flox envs
+
+  # Cleanup GitHub token if it exists
+  cleanup_github_token "FLOX"
+
+  s "[FLOX] Setup completed ✔︎"
 }
 step_mise() {
   section "[MISE] Setting up..."
@@ -645,91 +756,40 @@ step_mise() {
 
   # Check if mise is installed
   if ! has_command "mise"; then
-    w "[MISE] mise is not found! Installing..."
-    MISE_INSTALL_PATH="$USR_LOCAL_BIN/mise"
+    w "[MISE] mise is not found! Installing at '$MISE_INSTALL_PATH'..."
     if has_command "curl"; then
-      curl https://mise.run | sudo MISE_INSTALL_PATH=$MISE_INSTALL_PATH sh
+      exec_cmd eval ${PACKERS['mise:curl']}
     elif has_command "wget"; then
-      wget -qO- https://mise.run | sudo MISE_INSTALL_PATH=$MISE_INSTALL_PATH sh
+      exec_cmd eval ${PACKERS['mise:wget']}
     else
       e "[MISE] Neither curl nor wget is installed. Please install one of them to proceed."
       return 1
     fi
 
-    exec_cmd sudo chmod +x "$MISE_INSTALL_PATH"
+    exec_cmd chmod +x "$MISE_INSTALL_PATH"
   fi
 
-  i "[MISE] Setting up global configuration..."
-  export_env_and_make_dir "MISE_STATE_HOME" "$XDG_STATE_HOME/mise" "MISE"
-  export_env_and_make_dir "MISE_GLOBAL_CONFIG_DIR" "$XDG_DATA_HOME/mise" "MISE"
-  exec_cmd export MISE_GLOBAL_CONFIG_FILE="$XDG_DATA_HOME/mise/config.toml"
-  exec_cmd mise settings set global_config_file "$XDG_DATA_HOME/mise/config.toml"
+  i "[MISE] Setting up global configuration at '$MISE_GLOBAL_CONFIG_DIR/config.toml'..."
+  setup_dir_and_chown "$MISE_GLOBAL_CONFIG_DIR" "MISE/GLOBAL_CONFIG_DIR"
+  exec_cmd export MISE_GLOBAL_CONFIG_FILE="$MISE_GLOBAL_CONFIG_DIR/config.toml"
+  exec_cmd mise settings set global_config_file "$MISE_GLOBAL_CONFIG_DIR/config.toml"
   exec_cmd mise settings add trusted_config_paths "$MISE_GLOBAL_CONFIG_DIR"
   exec_cmd mise settings add trusted_config_paths "$XDG_DATA_HOME/dots"
   exec_cmd mise settings set activate_aggressive true
   exec_cmd mise settings set auto_install true
   i "[MISE] Global configuration set to '$XDG_DATA_HOME/mise/config.toml' (owned by '$USERNAME') ✔︎"
 
-  # Install global packages
+  # Install global packages  
   exec_cmd mise use --cd "$DOTS_DIR" --yes --global --pin ${PACKAGES[mise]}
   i "[MISE] Global packages installed: '${PACKAGES[mise]}' ✔︎"
 
-  # Cleanup GitHub token if it exists
+  # Cleanup GitHub token if it exists  
   cleanup_github_token "MISE"
 
   # Activate mise for the current session
   exec_cmd eval "$(mise activate zsh --yes --quiet --shims)"
 
   s "[MISE] Setup completed ✔︎"
-}
-step_zsh() {
-  section "[ZSH] Setup started..."
-
-  # Determine the current shell for the user in a cross-platform way
-  if command -v getent >/dev/null 2>&1; then
-    CURRENT_SHELL=$(getent passwd "$USERNAME" | cut -d: -f7)
-  else
-    # macOS and some BSDs: use dscl or fallback to /etc/passwd
-    if command -v dscl >/dev/null 2>&1; then
-      CURRENT_SHELL=$(dscl . -read /Users/"$USERNAME" UserShell | awk '{print $2}')
-    else
-      CURRENT_SHELL=$(awk -F: -v user="$USERNAME" '$1 == user {print $7}' /etc/passwd)
-    fi
-  fi
-
-  ZSH_PATH="$(command -v zsh)"
-
-  if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
-    if command -v chsh >/dev/null 2>&1; then
-      exec_cmd sudo chsh -s "$ZSH_PATH" "$USERNAME"
-      i "[ZSH] '$USERNAME' shell set to '$ZSH_PATH' ✔︎"
-    elif [ "$(uname)" = "Darwin" ] && command -v dscl >/dev/null 2>&1; then
-      exec_cmd sudo dscl . -change /Users/"$USERNAME" UserShell "$CURRENT_SHELL" "$ZSH_PATH"
-      i "[ZSH] '$USERNAME' shell set to '$ZSH_PATH' (via dscl) ✔︎"
-    else
-      w "[ZSH] Could not change shell automatically. Please set '$ZSH_PATH' as the shell for '$USERNAME' manually."
-    fi
-  else
-    i "[ZSH] '$USERNAME' shell is already set to '$ZSH_PATH' ✔︎"
-  fi
-
-  # Create the ~/.cache/zsh/compcache directory if it doesn't exist
-  setup_dir "$ZSH_COMPCACHE" "ZSH"
-
-  # Create symlinks for the ZSH config files
-  ZSH_CONFIG_FILES=".zshenv"
-  for file in $ZSH_CONFIG_FILES; do
-    if [ -f "$ZDOTDIR/$file" ] && [ ! -L "$HOME/$file" ]; then
-      exec_cmd ln -sf "$ZDOTDIR/$file" "$HOME/$file"
-      exec_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$HOME/$file"
-      i "[ZSH] $ZDOTDIR/$file symlinked to $HOME/$file owned by '$USERNAME' ✔︎"
-    fi
-  done
-
-  # Create ZIM's state directory if it doesn't exist
-  setup_dir "$XDG_STATE_HOME/zim" "ZSH"
-
-  s "[ZSH] Setup completed ✔︎"
 }
 step_nvim_setup_provider_npm() {
   section "[NVIM/NPM] Setting up NPM provider ($NPM_CONFIG_PREFIX)..."
@@ -751,9 +811,7 @@ step_nvim_setup_provider_npm() {
   # Configure the NPM environment variables
   # https://docs.npmjs.com/cli/v7/configuring-npm
   i "[NVIM/NPM] Configuring NPM environment..."
-  export_env_and_make_dir "NPM_CONFIG_PREFIX" "$NPM_CONFIG_PREFIX" "NVIM/NPM" --force
-  export_env_and_make_dir "NPM_CONFIG_CACHE" "$NPM_CONFIG_CACHE" "NVIM/NPM" --force
-  exec_cmd export NPM_CONFIG_USERCONFIG="${NPM_CONFIG_USERCONFIG:-$XDG_CONFIG_HOME/npm/.npmrc}"
+  exec_cmd export NPM_CONFIG_USERCONFIG="$NPM_CONFIG_PREFIX/.npmrc"
   i "[NVIM/NPM] Installing neovim package..."
   $TIMEOUT_CMD npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim || {
     w "[NVIM/NPM] npm install failed or timed out, skipping NPM provider setup"
@@ -780,7 +838,7 @@ step_nvim_setup_provider_python() {
     TIMEOUT_CMD="timeout 300"
   fi
 
-  setup_dir "$XDG_CACHE_HOME/pip" "NVIM/PYTHON"
+  setup_dir_and_chown "$XDG_CACHE_HOME/pip" "NVIM/PYTHON"
 
   if [ ! -d "$XDG_CONFIG_HOME/nvim/.venv" ]; then
     exec_cmd cd "$XDG_CONFIG_HOME/nvim" && python3 -m venv "$XDG_CONFIG_HOME/nvim/.venv"
@@ -796,6 +854,7 @@ step_nvim_setup_provider_python() {
     # Use pip with explicit cache directory to avoid permission issues
     # Add timeout to prevent hanging
     i "[NVIM/PYTHON] Installing pynvim and neovim packages..."
+
     $TIMEOUT_CMD pip install --cache-dir "$XDG_CACHE_HOME/pip" pynvim neovim || {
       w "[NVIM/PYTHON] pip install failed, skipping Python provider setup"
       return 1
@@ -806,7 +865,7 @@ step_nvim_setup_provider_python() {
   fi
 }
 step_nvim_setup_provider_ruby() {
-  section "[NVIM/RUBY] Setting up Ruby provider (${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems})..."
+  section "[NVIM/RUBY] Setting up Ruby provider (GEM_HOME=$GEM_HOME)..."
   # https://neovim.io/doc/user/provider.html#provider-ruby
 
   if ! command -v gem >/dev/null 2>&1; then
@@ -824,23 +883,23 @@ step_nvim_setup_provider_ruby() {
 
   # Configure the gem home directory
   # https://guides.rubygems.org/command-reference/#gem-environment
-  i "[NVIM/RUBY] Configuring Ruby environment..."
-  GEM_HOME="${GEM_HOME:-${HOMEBREW_OPT:-$XDG_DATA_HOME}/gems}"
+  i "[NVIM/RUBY] Configuring Ruby environment (GEM_HOME=$GEM_HOME)..."
+  GEM_HOME=${GEM_HOME:-$XDG_DATA_HOME/gems}
   export_env_and_make_dir "GEM_HOME" "$GEM_HOME" "NVIM/RUBY"
 
   # Update the RubyGems system
-  i "[NVIM/RUBY] Updating RubyGems system..."
+  i "[NVIM/RUBY] Updating RubyGems system (GEM_HOME=$GEM_HOME)..."
   # Do not use --system to avoid issues with user separation (root vs $DEVCONTAINER_USERNAME)
-  $TIMEOUT_CMD GEM_HOME="$GEM_HOME" gem update --no-document || {
-    w "[NVIM/RUBY] gem update failed or timed out, continuing with installation"
+  $TIMEOUT_CMD gem update --no-document || {
+    w "[NVIM/RUBY] gem update failed or timed out, continuing with installation (GEM_HOME=$GEM_HOME)..."
   }
 
   # Install neovim's required Ruby packages
-  i "[NVIM/RUBY] Installing neovim gem..."
-  if $TIMEOUT_CMD GEM_HOME="$GEM_HOME" gem install neovim; then
+  i "[NVIM/RUBY] Installing neovim gem (GEM_HOME=$GEM_HOME)..."
+  if $TIMEOUT_CMD gem install neovim; then
     gem cleanup
   else
-    w "[NVIM/RUBY] gem install failed or timed out, skipping Ruby provider setup"
+    w "[NVIM/RUBY] gem install failed or timed out, skipping Ruby provider setup (GEM_HOME=$GEM_HOME)..."
     return 1
   fi
   i "[NVIM/RUBY] Ruby provider setup completed"
@@ -860,9 +919,8 @@ step_nvim() {
     return
   fi
 
-  # Create nvim's required directories
-  setup_dir "$XDG_STATE_HOME/nvim" "NVIM"
-  setup_dir "$XDG_DATA_HOME/nvim" "NVIM"
+  # Setup nvim state directory
+  setup_dir_and_chown "$XDG_STATE_HOME/nvim" "NVIM/XDG_STATE_HOME/nvim"
 
   # Setup nvim providers sequentially
   # This is more reliable than background processing in container environments
@@ -898,11 +956,11 @@ main() {
   step_cleanup
   step_backup
   step_dotfiles
+  step_zsh
   step_ensure_ownership
   step_mise
-  step_zsh
   step_nvim
-  step_ensure_ownership --zsh
+  set_ownership "$HOME" "CHOWN/$HOME"
   s "[INSTALL] DONE ✔︎✔︎"
 }
 
