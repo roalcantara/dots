@@ -102,6 +102,12 @@ jobs:
           tags: ${{ steps.setup.outputs.IMAGE_NAME }}-amd64
           github-token: ${{ secrets.GH_TOKEN }}
           secrets: github_token=${{ secrets.GH_TOKEN }}
+          cache-from: |
+            type=gha,scope=build-${{ matrix.distro }}-amd64
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}
+          cache-to: |
+            type=gha,scope=build-${{ matrix.distro }}-amd64,mode=max
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
       - name: Run Container Structure Test (${{ matrix.distro }}/amd64)
         uses: docker://gcr.io/gcp-runtimes/container-structure-test:latest
         with:

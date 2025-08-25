@@ -60,7 +60,7 @@ commandTests:
   - name: (Ruby) Bundler should be installed
     command: which
     args: [bundler]
-    expectedOutput: [/usr/local/bin/bundler]
+    expectedOutput: [/usr/local/rvm/gems/default/bin/bundler]
   - name: (Ruby) Gems should be installed
     command: which
     args: [gem]
