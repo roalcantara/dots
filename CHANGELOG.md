@@ -1,3 +1,16 @@
+# [1.10.0](https://github.com/roalcantara/dots/compare/v1.9.0...v1.10.0) (2025-08-25)
+
+
+### Bug Fixes
+
+* **install:** Add tree-sitter to mise package list ([cd33e36](https://github.com/roalcantara/dots/commit/cd33e3616128544c5d5ccbb0725ee3d872e0e9f3))
+
+
+### Features
+
+* **install:** Enhance script with new packers and configuration updates ([97ba3f0](https://github.com/roalcantara/dots/commit/97ba3f0bd587370caaf01b14da60e1477436053a))
+* **nvim:** Update configuration and UI components ([9881ea4](https://github.com/roalcantara/dots/commit/9881ea44e662aa1042d6a39ace73b894b4103986))
+
 # [1.9.0](https://github.com/roalcantara/dots/compare/v1.8.0...v1.9.0) (2025-08-16)
 
 
