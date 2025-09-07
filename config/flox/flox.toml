@@ -1,0 +1,62 @@
+# Flox Environment Manifest for Dotfiles
+# This file defines all the tools and packages needed for the development environment
+# https://flox.dev/docs/reference/command-reference/manifest.toml
+
+[install]
+# Core development tools
+git.pkg-path = "git"
+curl.pkg-path = "curl"
+wget.pkg-path = "wget"
+zsh.pkg-path = "zsh"
+
+# Modern CLI replacements
+ripgrep.pkg-path = "ripgrep"      # Better grep
+bat.pkg-path = "bat"              # Better cat
+delta.pkg-path = "delta"          # Better diff
+eza.pkg-path = "eza"              # Better ls
+fd.pkg-path = "fd"                # Better find
+fzf.pkg-path = "fzf"              # Fuzzy finder
+zoxide.pkg-path = "zoxide"        # Better cd
+
+# Development languages and runtimes
+nodejs.pkg-path = "nodejs"     # Node.js v22
+python.pkg-path = "python313Full" # Python 3.11 with full features
+ruby.pkg-path = "ruby"            # Ruby
+
+# Development tools
+neovim.pkg-path = "neovim"        # Modern Vim
+starship.pkg-path = "starship"    # Cross-shell prompt
+gum.pkg-path = "gum"              # Glamorous shell scripts
+pre-commit.pkg-path = "pre-commit" # Git hooks framework
+gitlint.pkg-path = "gitlint"      # Git commit linter
+tree-sitter.pkg-path = "tree-sitter" # Parser generator
+
+# Build tools (for development dependencies)
+build-essential.pkg-path = "gcc"  # C compiler
+make.pkg-path = "gnumake"         # Build automation
+
+[options]
+# Support multiple platforms - adjust as needed
+systems = ["aarch64-linux", "x86_64-linux", "aarch64-darwin", "x86_64-darwin"]
+
+[hook]
+# Run on environment activation
+# on-activate = '''
+# echo "🚀 Development environment activated!"
+# echo "📦 Available tools: git, neovim, node, python, ruby, and modern CLI tools"
+
+# # Ensure XDG directories exist
+# mkdir -p "$HOME/.config" "$HOME/.cache" "$HOME/.local/share" "$HOME/.local/state" "$HOME/.local/bin"
+
+# # Add helpful environment setup
+# export EDITOR=nvim
+# export PAGER=bat
+# export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+# # Initialize zoxide if available
+# if command -v zoxide >/dev/null 2>&1; then
+#     eval "$(zoxide init zsh)" 2>/dev/null || true
+# fi
+# '''
+
+# vim: set ft=toml:

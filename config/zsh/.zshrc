@@ -214,14 +214,14 @@
   fi
 # }
 
-# FLOX | https://flox.dev {
-  # The Flox tool
+# FLOX | https://flox.dev/docs/tutorials/default-environment {
+  # Activate the Flox Default Environment at the home directory
   if _has_command flox; then
-    eval "$(flox activate -d "$HOME" -m run)"
+    eval "$(flox activate --dir $HOME/.config/flox -m run)"
   fi
 # }
 
-# GOPASS | https://www.gopass.pw {
+# GOPASS | https://gopass.pw {
   # The missing password manager for teams
   # Load API keys from gopass if available
   if _has_command gopass; then
@@ -231,6 +231,8 @@
 # }
 
 # EDITOR {
+  # Set default editor to nvim, vim or vi
+  # https://neovim.io/doc/user/starting.html#config
   if _has_command nvim; then
     export EDITOR=${EDITOR:-"$(command -v nvim)"}
     export VIM_PATH=${VIM_PATH:-$XDG_CONFIG_HOME/nvim}

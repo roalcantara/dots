@@ -10,6 +10,7 @@ ARG BRANCH=main
 ARG USERNAME=vscode
 ARG GROUPNAME=vscode
 ARG GITHUB_REPO=roalcantara/dots
+ARG PACKAGE_MANAGER=flox
 
 ENV CLICOLOR=1 \
     TZ=$TZ \
@@ -18,7 +19,10 @@ ENV CLICOLOR=1 \
     DEBIAN_FRONTEND=noninteractive \
     USER="$USERNAME" \
     GROUP="$GROUPNAME" \
-    HOME="/home/$USERNAME"
+    HOME="/home/$USERNAME" \
+    GITHUB_REPO="$GITHUB_REPO" \
+    BRANCH="$BRANCH" \
+    PACKAGE_MANAGER="$PACKAGE_MANAGER"
 
 # Set working directory for dotfiles
 WORKDIR /home/$USERNAME/.local/share/dots
@@ -33,18 +37,16 @@ COPY --chown=$USERNAME:$GROUPNAME ../../. ./
 RUN --mount=type=secret,id=github_token \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    --mount=type=cache,target=$HOME/.cache/pip,uid=1000,gid=1000 \
-    --mount=type=cache,target=$HOME/.cache/gem,uid=1000,gid=1000 \
-    --mount=type=cache,target=$HOME/.cache/mise,uid=1000,gid=1000 \
-    --mount=type=cache,target=$HOME/.cache/nvim,uid=1000,gid=1000 \
+    --mount=type=cache,target=/home/$USERNAME/.cache/pip,uid=1000,gid=1000 \
+    --mount=type=cache,target=/home/$USERNAME/.cache/gem,uid=1000,gid=1000 \
+    --mount=type=cache,target=/home/$USERNAME/.cache/mise,uid=1000,gid=1000 \
+    --mount=type=cache,target=/home/$USERNAME/.cache/nvim,uid=1000,gid=1000 \
     echo "[INFO] Using local dotfiles installation..." && \
-    rm -rf .git config/nvim/.venv && \
-    chown -R "$USERNAME:$GROUPNAME" "/home/$USERNAME/.local" && \
-    chown "$USERNAME:$GROUPNAME" install && chmod +x install && \
-    ./install -u "$USERNAME" -g "$GROUPNAME" -t "$TZ"
+    chown -R "$USERNAME:$GROUPNAME" "/home/$USERNAME" && \
+    ./install -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -p "$PACKAGE_MANAGER"
 
 USER $USERNAME
-WORKDIR $HOME
+WORKDIR /home/$USERNAME
 SHELL ["/usr/bin/zsh", "-c"]
 ENTRYPOINT ["/usr/bin/zsh", "-il"]
 
@@ -55,14 +57,14 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN --mount=type=secret,id=github_token \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    --mount=type=cache,target=$HOME/.cache/pip,uid=1000,gid=1000 \
-    --mount=type=cache,target=$HOME/.cache/gem,uid=1000,gid=1000 \
-    --mount=type=cache,target=$HOME/.cache/mise,uid=1000,gid=1000 \
-    --mount=type=cache,target=$HOME/.cache/nvim,uid=1000,gid=1000 \
+    --mount=type=cache,target=/home/$USERNAME/.cache/pip,uid=1000,gid=1000 \
+    --mount=type=cache,target=/home/$USERNAME/.cache/gem,uid=1000,gid=1000 \
+    --mount=type=cache,target=/home/$USERNAME/.cache/mise,uid=1000,gid=1000 \
+    --mount=type=cache,target=/home/$USERNAME/.cache/nvim,uid=1000,gid=1000 \
     echo "[INFO] Using remote dotfiles installation..." && \
-    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -b "$BRANCH"
+    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -b "$BRANCH" -p "$PACKAGE_MANAGER"
 
 USER $USERNAME
-WORKDIR $HOME
+WORKDIR /home/$USERNAME
 SHELL ["/usr/bin/zsh", "-c"]
 ENTRYPOINT ["/usr/bin/zsh", "-il"]
