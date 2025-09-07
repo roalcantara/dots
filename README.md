@@ -6,6 +6,7 @@
 
 An opinionated [DotFiles][10]. Ready to Engage!
 
+<!-- markdownlint-disable MD013 -->
 [![MIT license](https://img.shields.io/badge/License-MIT-brightgreen.svg?style=flat-square)](LICENSE) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg?style=flat-square)][2] [![Editor Config](https://img.shields.io/badge/Editor%20Config-1.0.1-crimson.svg?style=flat-square)][3] [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)][4] [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?logo=conventional-commits&style=flat-square)][9]
 
 ## INSTALL
@@ -90,39 +91,48 @@ At the moment, the `build` task is only available for the `debian` and `ubuntu` 
 
     ```sh
         mise run build
-        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian --file=distros/debian/Dockerfile --target=remote .
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian \
+        #   --file=distros/debian/Dockerfile --target=remote .
         # ==> dots:debian
 
         mise run build --distro=ubuntu
-        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:ubuntu --file=distros/ubuntu/Dockerfile --target=remote .
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:ubuntu \
+        #   --file=distros/ubuntu/Dockerfile --target=remote .
         # ==> dots:ubuntu
 
         mise run build --tag testing
-        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-testing --file=distros/debian/Dockerfile --target=remote .
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-testing \
+        #   --file=distros/debian/Dockerfile --target=remote .
         # ==> dots:debian-testing
 
         mise run build --nocache --tag preview
-        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-preview --no-cache --file=distros/debian/Dockerfile --target=remote .
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-preview \
+        #   --no-cache --file=distros/debian/Dockerfile --target=remote .
         # ==> dots:debian-preview
 
         mise run build --tag latest --platform amd64
-        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-latest --file=distros/debian/Dockerfile --target=remote .
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-latest \
+        #   --file=distros/debian/Dockerfile --target=remote .
         # ==> dots:debian-latest
 
         mise run build --local
-        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian --file=distros/debian/Dockerfile --target=local .
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian \
+        #   --file=distros/debian/Dockerfile --target=local .
         # ==> dots:debian
 
         mise run build --local --tag dev
-        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-dev --file=distros/debian/Dockerfile --target=local .
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-dev \
+        #   --file=distros/debian/Dockerfile --target=local .
         # ==> dots:debian-dev
 
         mise run build --local --nocache --tag stag
-        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-stag --no-cache --file=distros/debian/Dockerfile --target=local .
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/arm64 --tag=dots:debian-stag \
+        #   --no-cache --file=distros/debian/Dockerfile --target=local .
         # ==> dots:debian-stag
 
         mise run build --local --nocache --tag local --platform amd64
-        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-local --no-cache --file=distros/debian/Dockerfile --target=local .
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --platform=linux/amd64 --tag=dots:debian-local \
+        #   --no-cache --file=distros/debian/Dockerfile --target=local .
         # ==> dots:debian-local
     ```
 
@@ -130,7 +140,9 @@ At the moment, the `build` task is only available for the `debian` and `ubuntu` 
 
     ```sh
         mise run build --branch main --repo roalcantara/dotfiles --user root --group root --workdir /workspaces/foo --tag custom
-        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=GITHUB_REPO=roalcantara/dotfiles --build-arg=BRANCH=main --build-arg=USERNAME=root --build-arg=GROUPNAME=root --workdir=/workspaces/foo --tag=dots:debian-custom --file=distros/debian/Dockerfile --target=remote .
+        # ==> DOCKER_BUILDKIT=1 docker build --build-arg=BUILDKIT_INLINE_CACHE=1 --build-arg=GITHUB_REPO=roalcantara/dotfiles \
+        #   --build-arg=BRANCH=main --build-arg=USERNAME=root --build-arg=GROUPNAME=root --workdir=/workspaces/foo \
+        #   --tag=dots:debian-custom --file=distros/debian/Dockerfile --target=remote .
     ```
 
 #### RUNNING
@@ -207,7 +219,7 @@ At the moment, the `start` task is only available for the `debian` and `ubuntu` 
 
 - Bug reports and pull requests are welcome on [GitHub][0]
 - Do follow [Editor Config][3] rules.
-- Everyone interacting in the project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [Contributor Covenant][2] code of conduct.
+- All contributors must follow the [Contributor Covenant][2] code of conduct.
 
 ## LICENSE
 

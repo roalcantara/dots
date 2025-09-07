@@ -1,3 +1,4 @@
+# shellcheck disable=all
 # https://git-scm.com/docs/git-config#Documentation/git-config.txt-color
 
 [color]
@@ -709,3 +710,5 @@ credentialStore = keychain
 
 [credential "https://dev.azure.com"]
 useHttpPath = true
+
+# vi: set ft=gitconfig:
