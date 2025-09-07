@@ -3,19 +3,12 @@
 # XDG Base Directory Specification
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
-# Custom XDG Directories
-export XDG_LOCAL_DIR=${XDG_LOCAL_DIR:=$HOME/.local}
-export XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:=$HOME/Projects}
-export XDG_WORKSPACE_DIR=${XDG_WORKSPACE_DIR:=$HOME/Work}
-# https://freedesktop.org/software/systemd/man/latest/file-hierarchy.html#~/.local/bin/
-export XDG_LOCAL_BIN_DIR=${XDG_LOCAL_BIN_DIR:=$XDG_LOCAL_DIR/bin}
-
 # Set XDG Base Directories
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:=$HOME/.cache}
 export XDG_DATA_HOME=${XDG_DATA_HOME:=$XDG_LOCAL_DIR/share}
 export XDG_STATE_HOME=${XDG_STATE_HOME:=$XDG_LOCAL_DIR/state}
-export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/tmp/runtime-$USER}
+export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:=/tmp/runtime-$(id -u "$USER")}
 
 # Set XDG User Directories
 export XDG_DESKTOP_DIR=${XDG_DESKTOP_DIR:=$HOME/Desktop}
@@ -24,5 +17,11 @@ export XDG_DOCUMENTS_DIR=${XDG_DOCUMENTS_DIR:=$HOME/Documents}
 export XDG_MUSIC_DIR=${XDG_MUSIC_DIR:=$HOME/Music}
 export XDG_PICTURES_DIR=${XDG_PICTURES_DIR:=$HOME/Pictures}
 export XDG_VIDEOS_DIR=${XDG_VIDEOS_DIR:=$HOME/Movies}
+
+# Custom XDG Directories | https://freedesktop.org/software/systemd/man/latest/file-hierarchy.html#~/.local/bin/
+export XDG_LOCAL_DIR=${XDG_LOCAL_DIR:=$HOME/.local}
+export XDG_PROJECTS_DIR=${XDG_PROJECTS_DIR:=$HOME/Projects}
+export XDG_WORKSPACE_DIR=${XDG_WORKSPACE_DIR:=$HOME/Work}
+export XDG_LOCAL_BIN_DIR=${XDG_LOCAL_BIN_DIR:=$XDG_LOCAL_DIR/bin}
 
 # vi: set ft=sh:

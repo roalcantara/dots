@@ -25,8 +25,7 @@
   # mise run build --nocache
   # mise run build --nocache --distro ubuntu
   # mise run build --nocache --local
-  # mise run build --nocache --platform amd64 --tag latest
-  # mise run build --nocache --local --distro debian --platform amd64 --tag latest --build-arg USERNAME=roalcantara --build-arg GROUPNAME=staff
+  # mise run build --nocache --local --user vscode --group wheel --tag latest
   [tasks.build]
   description = "Build a Docker image for dotfiles"
   run = '''
@@ -41,6 +40,7 @@
   USAGE_REPO="{{option(name="repo")}}"
   USAGE_USERNAME="{{option(name="user")}}"
   USAGE_GROUPNAME="{{option(name="group")}}"
+  USAGE_PACKAGE_MANAGER="{{option(name="package-manager", default="flox")}}"
   USAGE_BUILD_ARGS="{{option(name="build-arg", var=true)}}"
 
   # Platform mapping
@@ -75,6 +75,10 @@
 
   if [ -n "$USAGE_REPO" ]; then
     DOCKER_CMD+=(--build-arg=GITHUB_REPO="$USAGE_REPO")
+  fi
+
+  if [ -n "$USAGE_PACKAGE_MANAGER" ]; then
+    DOCKER_CMD+=(--build-arg=PACKAGE_MANAGER="$USAGE_PACKAGE_MANAGER")
   fi
 
   # Add extra build-args if any
@@ -118,6 +122,7 @@
   # mise run start --base
   # mise run start --tag local
   # mise run start --tag local --platform amd64
+  # mise run start --tag local --user vscode --workdir /workspaces/dots
   # mise run start --tag local --user root --workdir /workspaces/foo
   [tasks.start]
   description = "Start a container"
@@ -131,13 +136,6 @@
   USAGE_USER="{{option(name="user", default="vscode")}}"
   USAGE_WORKDIR="{{option(name="workdir", default="/workspaces/dots")}}"
 
-  # Distro mapping
-  case "$USAGE_DISTRO" in
-    debian)   DISTRO_NAME="ruby:3.4-bookworm" ;;
-    ubuntu)   DISTRO_NAME="base:ubuntu" ;;
-    *)        DISTRO_NAME="ruby:3.4-bookworm" ;;
-  esac
-
   DOCKER_CMD=(
     docker run -it --rm
     --user="$USAGE_USER"
@@ -147,6 +145,11 @@
   if [ -n "$USAGE_TAG" ]; then
     DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_TAG)
   else
+    case "$USAGE_DISTRO" in
+      debian)   DISTRO_NAME="ruby:3.4-bookworm" ;;
+      ubuntu)   DISTRO_NAME="base:ubuntu" ;;
+      *)        DISTRO_NAME="ruby:3.4-bookworm" ;;
+    esac
     DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/$DISTRO_NAME)
   fi
 
