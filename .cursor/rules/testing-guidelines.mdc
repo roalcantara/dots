@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
 # Testing Guidelines
@@ -13,9 +13,9 @@ This file contains test guidelines for Cursor IDE
 2. Prefer BDD/Gherkin approach for writing style
 3. Prefer tests using tables as arguments to dry-up the code
 4. Use Busted for automating Lua code testing
-5. Use [shellspec](mdc:https:/shellspec.info) for automating shell script testing 
+5. Use [shellspec](mdc:https:/shellspec.info) for automating shell script testing
 6. Use [shellspec](mdc:https:/shellspec.info) for automating Makefiles target testing
 7. Use Testcontainers (<https://testcontainers.com>) is used for automating container testing
 8. Keep tests minimal and focused
-9.  Document any special requirements
+9. Document any special requirements
 10. Include test cases where possible

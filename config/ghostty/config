@@ -1,3 +1,4 @@
+# shellcheck disable=all
 # ------------------------------------------------------------------------------
 # Ghostty configuration file
 # https://github.com/ghostty-org/ghostty/blob/main/src/config/Config.zig
@@ -52,11 +53,11 @@
 
 # Only the XDG config path ($XDG_CONFIG_HOME/ghostty/config).
 # https://ghostty.org/docs/config/reference#config-default-files
-config-default-files = true
+config-default-files=true
 
 # Do not confirm that a surface should be closed before closing it
 # https://ghostty.org/docs/config/reference#confirm-close-surface
-confirm-close-surface = false
+confirm-close-surface=false
 
 # Quit after the last surface is closed
 # https://ghostty.org/docs/config/reference#quit-after-last-window-closed
@@ -103,7 +104,7 @@ quick-terminal-space-behavior = remain
 # A theme to use. It can be a built-in theme name, a custom theme name, or an absolute path to a custom theme file.
 # Some themes are "Ayu Mirage" "Andromeda" "catppuccin-macchiato" "catppuccin-mocha" "catppuccin-frappe" "Kanagawa Wave" "tokyonight_moon"
 # https://ghostty.org/docs/config/reference#theme
-theme = tokyonight_moon
+theme=tokyonight_moon
 
 # Color palette for the 256 colors used by many terminal apps (https://ditig.com/256-colors-cheat-sheet). It is defined as N=COLOR where:
 # - N is 0-255 of the terminal color table. It can be decimal (default), binary (0b), octal (0o), or hexadecimal (0x).
@@ -566,4 +567,4 @@ keybind = global:unconsumed:super+ctrl+alt+p=toggle_command_palette
 # CLAUDE-CODE Fix
 keybind = shift+enter=text:/n
 
-# vi: set ft=ghostty:
+# vi: set ft=ini:

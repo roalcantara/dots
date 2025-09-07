@@ -13,11 +13,9 @@
 
 # [1.9.0](https://github.com/roalcantara/dots/compare/v1.8.0...v1.9.0) (2025-08-16)
 
-
 ### Bug Fixes
 
 * **workflows:** Correct Docker registry URL in preview workflow ([6a9188e](https://github.com/roalcantara/dots/commit/6a9188e4dc389c2c6063893dc5d87884763d908c))
-
 
 ### Features
 
@@ -28,13 +26,11 @@
 
 # [1.8.0](https://github.com/roalcantara/dots/compare/v1.7.0...v1.8.0) (2025-08-12)
 
-
 ### Features
 
 * **install:** Enhance support for Ubuntu and improve user handling ([57562de](https://github.com/roalcantara/dots/commit/57562ded12f5f4cd84c3004ce8620a7cd4730ae1))
 
 # [1.7.0](https://github.com/roalcantara/dots/compare/v1.6.0...v1.7.0) (2025-08-12)
-
 
 ### Features
 
@@ -42,12 +38,10 @@
 
 # [1.6.0](https://github.com/roalcantara/dots/compare/v1.5.7...v1.6.0) (2025-08-12)
 
-
 ### Bug Fixes
 
 * **ci:** Streamlined output handling and improve readability ([fb773ad](https://github.com/roalcantara/dots/commit/fb773ad5920e16b90fe115b97e034009c8a36c7a))
 * **install:** Removed gh installation in package list ([dd8d3a3](https://github.com/roalcantara/dots/commit/dd8d3a392e8dde505db4b745b971d0e4591a0c76))
-
 
 ### Features
 
@@ -56,13 +50,11 @@
 
 ## [1.5.7](https://github.com/roalcantara/dots/compare/v1.5.6...v1.5.7) (2025-08-06)
 
-
 ### Bug Fixes
 
 * **workflows:** Use the correct secret GITHUB_TOKEN ([2305aff](https://github.com/roalcantara/dots/commit/2305aff89be8e7ceec358cf3fcc0078497a18f65))
 
 ## [1.5.6](https://github.com/roalcantara/dots/compare/v1.5.5...v1.5.6) (2025-08-06)
-
 
 ### Bug Fixes
 
@@ -70,20 +62,17 @@
 
 ## [1.5.5](https://github.com/roalcantara/dots/compare/v1.5.4...v1.5.5) (2025-08-04)
 
-
 ### Bug Fixes
 
 * **install:** Correct function name for setting perms on XDG_RUNTIME_DIR ([e46609a](https://github.com/roalcantara/dots/commit/e46609a3eb3fbe80fe6cbd7f4b855402a07d4710))
 
 ## [1.5.4](https://github.com/roalcantara/dots/compare/v1.5.3...v1.5.4) (2025-08-04)
 
-
 ### Bug Fixes
 
 * **install:** Update function name for setting permissions ([3e4e7ca](https://github.com/roalcantara/dots/commit/3e4e7cadfce22ab2172b2aeb464fcbd5dbd49773))
 
 ## [1.5.3](https://github.com/roalcantara/dots/compare/v1.5.2...v1.5.3) (2025-08-04)
-
 
 ### Bug Fixes
 
@@ -92,14 +81,12 @@
 
 ## [1.5.2](https://github.com/roalcantara/dots/compare/v1.5.1...v1.5.2) (2025-08-04)
 
-
 ### Bug Fixes
 
 * **workflows:** Add prefix to SHA tag in Docker build/publish workflows ([aeef841](https://github.com/roalcantara/dots/commit/aeef8419a9095fed3ec900b01d9460451973ed96))
 * **zsh:** Ensure proper creation and permissions for XDG_RUNTIME_DIR ([0cdd929](https://github.com/roalcantara/dots/commit/0cdd92976df07ee91325b1e5ab12bbbb6e7eb5d7))
 
 ## [1.5.1](https://github.com/roalcantara/dots/compare/v1.5.0...v1.5.1) (2025-08-04)
-
 
 ### Bug Fixes
 
@@ -108,11 +95,9 @@
 
 # [1.5.0](https://github.com/roalcantara/dots/compare/v1.4.0...v1.5.0) (2025-08-04)
 
-
 ### Bug Fixes
 
 * **install:** Improve user/group detection and ownership setup ([5c75eab](https://github.com/roalcantara/dots/commit/5c75eab433dbb989aadebf93714a722f5c802ce7))
-
 
 ### Features
 
@@ -120,7 +105,6 @@
 * **zsh:** Enhance XDG and ZSH folders setup ([3086083](https://github.com/roalcantara/dots/commit/3086083f45e507eed5ec84e70a4afa4fb9037d7a))
 
 # [1.4.0](https://github.com/roalcantara/dots/compare/v1.3.0...v1.4.0) (2025-08-03)
-
 
 ### Features
 
@@ -130,11 +114,9 @@
 
 # [1.3.0](https://github.com/roalcantara/dots/compare/v1.2.1...v1.3.0) (2025-08-01)
 
-
 ### Bug Fixes
 
 * **install:** Update Node.js version ([f8be74e](https://github.com/roalcantara/dots/commit/f8be74e9c3cc64b860b2a6366eef0e3ce9bd4856))
-
 
 ### Features
 
@@ -142,13 +124,11 @@
 
 ## [1.2.1](https://github.com/roalcantara/dots/compare/v1.2.0...v1.2.1) (2025-08-01)
 
-
 ### Bug Fixes
 
 * **install:** Enhance user detection ([c76b85f](https://github.com/roalcantara/dots/commit/c76b85ff18e41541954fa4438bcc3211f8283420))
 
 # [1.2.0](https://github.com/roalcantara/dots/compare/v1.1.0...v1.2.0) (2025-08-01)
-
 
 ### Features
 
@@ -156,14 +136,12 @@
 
 # [1.1.0](https://github.com/roalcantara/dots/compare/v1.0.0...v1.1.0) (2025-08-01)
 
-
 ### Features
 
 * **config:** Add initial Ghostty configuration file ([dca96bb](https://github.com/roalcantara/dots/commit/dca96bba672f829b20156e11b8c0b693e3859212))
 * **nvim/tests:** Add Busted configuration and initial test setup ([389686e](https://github.com/roalcantara/dots/commit/389686e70810377bc310e997d552bfdc227ab185))
 
 # 1.0.0 (2025-07-30)
-
 
 ### Bug Fixes
 
@@ -177,7 +155,6 @@
 * **install:** Update symlink for ~/.config ([30f314a](https://github.com/roalcantara/dots/commit/30f314a8e13f1e42cec14f578130698fef7718cd))
 * **nvim:** Enable clipboard in containers ([219cdd9](https://github.com/roalcantara/dots/commit/219cdd9d8845845ae3db9afc2b6d1468fb934a69))
 * **zsh:** Correct syntax in .zshrc for plugin manager and initialization ([e47ac97](https://github.com/roalcantara/dots/commit/e47ac9744c90e45e432f5d2360240934ca0f5917))
-
 
 ### Features
 

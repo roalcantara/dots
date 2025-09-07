@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
 # Technical Stack
@@ -16,7 +16,7 @@ alwaysApply: true
 - Makefile centralise all code/script executed on the project
 - GitHub Actions for managing CI/CD pipelines
 - ShellCheck for Shell script validation
-- SOPS defines which files are encrypted 
+- SOPS defines which files are encrypted
 - Sensitive files (SSH keys, API tokens) automatically encrypted on commit
 - Conventional Commits as git commit guidelines
 - DevContainers to Containerize the project
