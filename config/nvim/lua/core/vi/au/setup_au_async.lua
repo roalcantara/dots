@@ -40,8 +40,8 @@ end
 
 -- Autocmds are automatically loaded on the VeryLazy event
 -- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
-local function setup_au_async(options)
+local function setup_autocommands_async(options)
   return create_autocmds(options)
 end
 
-return setup_au_async
+return setup_autocommands_async

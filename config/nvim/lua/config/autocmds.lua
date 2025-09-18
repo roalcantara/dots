@@ -1,7 +1,7 @@
 -- https://neovim.io/doc/user/lua-guide.html#lua-guide-autocommand-create
 -- https://neovim.io/doc/user/lua-guide.html#lua-guide-autocommands-group
 -- https://lazyvim.org/configuration/general#auto-commands
-require('core/vi/au').setup_au_async({
+require('core/vi/au').setup_autocommands_async({
   checktime = {
     {
       event = { 'FocusGained', 'TermClose', 'TermLeave' },
