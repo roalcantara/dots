@@ -1,7 +1,7 @@
 --- Creating user commands
----@param options table<string, UserCommand> The user commands to create
----@return nil
----@see https://neovim.io/doc/user/lua-guide.html#lua-guide-commands-create
+--- @param options table<string, UserCommand> The user commands to create
+--- @return nil
+--- @see https://neovim.io/doc/user/lua-guide.html#lua-guide-commands-create
 local function create_user_commands(options)
   local created = 1
   --- @async
@@ -41,8 +41,8 @@ end
 --- @param values table<string, UserCommand> The user commands to create
 --- @return nil
 --- @see https://neovim.io/doc/user/lua-guide.html#lua-guide-commands-create
-local function setup_com_async(values)
+local function setup_user_commands_async(values)
   return create_user_commands(values)
 end
 
-return setup_com_async
+return setup_user_commands_async

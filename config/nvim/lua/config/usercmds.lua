@@ -1,7 +1,7 @@
 -- https://neovim.io/doc/user/lua-guide.html#lua-guide-commands-create
-require('core/vi/au').setup_com_async({
+require('core/vi/au').setup_user_commands_async({
   GenerateGitCommit = {
-    command = require('core/ui/git/generate_conventional_commit').generate_conventional_commit,
+    command = require('core/ui/git/commits').generate_conventional_commit,
     opts = {
       desc = 'Generate a git conventional commit message',
     },
