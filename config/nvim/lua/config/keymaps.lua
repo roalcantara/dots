@@ -1,9 +1,7 @@
 vim.schedule_wrap(function()
   --- lua-language-server: disable
   -- stylua: ignore
-  require('core/vi/maps').set_keymaps(function(opts)
-    local buf, pick, toggle, lsp, ev, setup = opts.buf, opts.pick, opts.toggle, opts.lsp, opts.ev, opts.setup
-
+  require('core/vi/maps').set_keymaps(function(buf, pick, toggle, lsp, ev, setup)
     -- =============================================================================
     -- NATIVE COMMENTS (https://neovim.io/doc/user/various.html#commenting)
     -- nvim 0.10.0 has builtin support for commenting (:h commenting)
@@ -16,23 +14,23 @@ vim.schedule_wrap(function()
       -- ===========================================================================
       -- EDITOR
       -- ===========================================================================
-      ['<D-a>'] = { { n = 'normal ggVG', i = '<ESC>ggVG', v = '<ESC>ggVG' }, 'Select All' },
+      ['<D-a>'] = { { n = 'ggVG', i = '<C-O>ggVG', v = '<ESC>ggVG' }, 'Select All' },
       ['<D-C-g>'] = { { n = '<Plug>(VM-Find-Under)', x = '<Plug>(VM-Find-Subword-Under)' }, 'Select All Occurrences' },
       ['<D-C-h>'] = { { v = 'y:%s#<C-R>=@"<CR>#' }, 'Replace the selected text' },
-      ['<D-c>'] = { { n = 'normal y' }, 'Copy' },
-      ['<D-n>'] = { { n = 'ene | startinsert', i = '<ESC>ene | startinsert' }, 'New File' },
+      ['<D-c>'] = { { n = '"+yy', i = '<C-O>"+yy', v = '"+y' }, 'Copy to Clipboard' },
+      ['<D-n>'] = { { n = '<CMD>enew<CR>', i = '<C-O><CMD>enew<CR>', v = '<ESC><CMD>enew<CR>' }, 'New File' },
       ['<D-s>'] = { { n = '<CMD>w<CR>', i = '<C-O><CMD>w<CR>', v = '<C-O><CMD>w<CR>gv' }, 'Save File' },
       ['<D-S-s>'] = { { n = '<CMD>wa<CR>', i = '<C-O><CMD>wa<CR>', v = '<C-O><CMD>wa<CR>gv' }, 'Save All' },
-      ['<D-v>'] = { { n = 'normal P' }, 'Paste' },
-      ['<D-x>'] = { { n = 'normal x' }, 'Cut' },
-      ['<D-y>'] = { { n = 'normal <C-r>' }, 'Redo' },
-      ['<D-z>'] = { { n = 'normal U' }, 'Undo' },
+      ['<D-v>'] = { { n = '"+p', i = '<C-O>"+p', v = '"+p' }, 'Paste' },
+      ['<D-x>'] = { { n = '"+dd', i = '<C-O>"+dd', v = '"+d' }, 'Cut' },
+      ['<D-y>'] = { { n = '<C-r>', i = '<C-O><C-r>', v = '<C-O><C-r>gv' }, 'Redo' },
+      ['<D-z>'] = { { n = 'u', i = '<C-O>u', v = '<C-O>ugv' }, 'Undo' },
       ['<D-q>'] = { { n = '<CMD>q<CR>', i = '<Esc><CMD>q<CR>', v = '<Esc><CMD>q<CR>' }, 'Quit Editor' },
       ['<D-S-q>'] = { { n = '<CMD>q!<CR>', i = '<Esc><CMD>q!<CR>', v = '<Esc><CMD>q!<CR>' }, 'Force Quit Editor' },
       ['<D-M-q>'] = { { n = '<CMD>qa<CR>', i = '<Esc><CMD>qa<CR>', v = '<Esc><CMD>qa<CR>' }, 'Quit All Editors' },
       ['<D-S-M-q>'] = { { n = '<CMD>qa!<CR>', i = '<Esc><CMD>qa!<CR>', v = '<Esc><CMD>qa!<CR>' }, 'Force Quit All Editors' },
-      ['<D-M-c>'] = { { n = 'normal y' }, 'Copy File Path', { cmd = 'CopyFilePath' } },
-      ['<D-M-v>'] = { { n = 'normal p' }, 'Paste File Path', { cmd = 'PasteFilePath' } },
+      ['<D-M-c>'] = { { n = '<CMD>let @+ = expand("%:p")<CR>', i = '<C-O><CMD>let @+ = expand("%:p")<CR>', v = '<ESC><CMD>let @+ = expand("%:p")<CR>' }, 'Copy File Path', { cmd = 'CopyFilePath' } },
+      ['<D-M-v>'] = { { n = '"+p', i = '<C-O>"+p', v = '"+p' }, 'Paste File Path', { cmd = 'PasteFilePath' } },
       -- =============================================================================
       -- MOVING AROUND
       -- =============================================================================
@@ -44,6 +42,11 @@ vim.schedule_wrap(function()
       ['<D-Down>'] = { { n = 'G', i = '<C-O>G' }, 'Go to EoF' },
       ['<D-Left>'] = { { n = '0', i = '<C-O>0' }, 'Move to BoL' },
       ['<D-Right>'] = { { n = '$', i = '<C-O>$' }, 'Move to EoL' },
+      -- ===========================================================================
+      -- INDENTATION
+      -- ===========================================================================
+      ['<Tab>'] = { { n = '>>', i = '<C-O>>>', v = '>gv' }, 'Indent Line/Selection' },
+      ['<S-Tab>'] = { { n = '<<', i = '<C-O><<', v = '<gv' }, 'Outdent Line/Selection' },
       -- ===========================================================================
       -- SELECTION (SHIFT + ARROW KEYS for LINE selection)
       -- ===========================================================================
@@ -85,16 +88,16 @@ vim.schedule_wrap(function()
       -- =============================================================================
       -- BUFFERS
       -- =============================================================================
-      ['<D-M-Left>'] = { { n = 'BufferLineCyclePrev', i = '<ESC>BufferLineCyclePrev', v = '<ESC>BufferLineCyclePrev' }, 'Go to Previous Buffer (Left)' }, -- https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbufprevious
-      ['<D-M-Right>'] = { { n = 'BufferLineCycleNext', i = '<ESC>BufferLineCycleNext', v = '<ESC>BufferLineCycleNext' }, 'Go to Next Buffer (Right)' },
-      ['<D-M-C-Right>'] = { { n = 'buffer #', i = '<ESC>buffer #', v = '<ESC>buffer #' }, 'Go to Last Buffer (Right)' },                                  -- https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbuflast
+      ['<D-M-Left>'] = { { n = '<CMD>BufferLineCyclePrev<CR>', i = '<C-O><CMD>BufferLineCyclePrev<CR>', v = '<ESC><CMD>BufferLineCyclePrev<CR>' }, 'Go to Previous Buffer (Left)' },
+      ['<D-M-Right>'] = { { n = '<CMD>BufferLineCycleNext<CR>', i = '<C-O><CMD>BufferLineCycleNext<CR>', v = '<ESC><CMD>BufferLineCycleNext<CR>' }, 'Go to Next Buffer (Right)' },
+      ['<D-M-C-Right>'] = { { n = '<CMD>buffer #<CR>', i = '<C-O><CMD>buffer #<CR>', v = '<ESC><CMD>buffer #<CR>' }, 'Go to Last Buffer (Right)' }, -- https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbuflast
       ['<D-w>'] = { { n = buf.close, i = buf.close, v = buf.close }, 'Close Buffer' },
       ['<D-M-w>'] = { { n = buf.close_all, i = buf.close_all, v = buf.close_all }, 'Close All Buffer' },
       ['<D-S-w>'] = { { n = buf.close_others, i = buf.close_others, v = buf.close_others }, 'Close All Others Buffer' },
       ['<D-C-S-Left>'] = { { n = '<C-w>H', i = '<C-o><C-w>H', v = '<C-w>H' }, 'Move window left' },
-      ['<D-C-S-Right>'] = { { n = '<C-w>J', i = '<C-o><C-w>J', v = '<C-w>J' }, 'Move window bottom' },
+      ['<D-C-S-Right>'] = { { n = '<C-w>L', i = '<C-o><C-w>L', v = '<C-w>L' }, 'Move window right' },
       ['<D-C-S-Up>'] = { { n = '<C-w>K', i = '<C-o><C-w>K', v = '<C-w>K' }, 'Move window top' },
-      ['<D-C-S-Down>'] = { { n = '<C-w>L', i = '<C-o><C-w>L', v = '<C-w>L' }, 'Move window right' },
+      ['<D-C-S-Down>'] = { { n = '<C-w>J', i = '<C-o><C-w>J', v = '<C-w>J' }, 'Move window bottom' },
       ['<D-t>'] = { { n = toggle.term, i = toggle.term, v = toggle.term, t = toggle.term }, 'Toggle terminal' },
       -- =============================================================================
       -- PICKERS
@@ -103,7 +106,6 @@ vim.schedule_wrap(function()
       ['<D-;>'] = { { n = pick.help, i = pick.help, v = pick.help }, 'Toggle Help', { cmd = 'Help' } },
       ['<D-Bslash>'] = { { n = pick.explorer, i = pick.explorer, v = pick.explorer }, 'Toggle left side bar', { cmd = 'ToggleSideBarLeft' } },
       ['<D-S-Bslash>'] = { { n = toggle.new_scratch, i = toggle.new_scratch }, 'Open scratch playground', { cmd = 'ToggleNewScratch' } },
-      ['<D-S-M-Bslash>'] = { { n = toggle.select_scratch, i = toggle.select_scratch }, 'Select existing scratch playground', { cmd = 'ToggleSelectScratches' } },
       ['<D-S-M-h>'] = { { n = pick.highlights, i = pick.highlights, v = pick.highlights }, 'Neovim`s Highlights', { cmd = 'Highlights' } },
       ['<D-S-M-l>'] = { { n = pick.lua_path_items, i = pick.lua_path_items, v = pick.lua_path_items }, 'Lua path items', { cmd = 'LuaPathItems' } },
       ['<D-S-M-m>'] = { { n = toggle.menus.n, i = toggle.menus.i, v = toggle.menus.v }, 'Toggle Menus', { cmd = 'ToggleMenus' } },
@@ -126,7 +128,7 @@ vim.schedule_wrap(function()
       ['<D-S-M-f>'] = { { n = buf.format, i = buf.format }, 'Format Current Selection or buffer', { cmd = 'LspFormatRange', range = true } },
       ['<D-M-CR>'] = { { n = vim.lsp.buf.rename, i = vim.lsp.buf.rename }, 'Rename Symbol', { cmd = 'LspRename' } },
       ['<C-Space>'] = { { n = vim.lsp.completion.get, i = vim.lsp.completion.get }, 'Trigger Suggestion', { cmd = 'LspSuggestions' } },
-      -- ['<D-M-Space>'] = { { n = lsp.signature_help, i = lsp.signature_help }, 'Signature Hints', { cmd = 'LspSignatureHelp' } },
+      ['<D-M-Space>'] = { { n = lsp.signature_help, i = lsp.signature_help }, 'Signature Hints', { cmd = 'LspSignatureHelp' } },
       ['<D-d>'] = { { n = pick.diagnostics_buffer, i = pick.diagnostics_buffer, v = pick.diagnostics_buffer }, 'Toggle Problems (Local)', { cmd = 'LspToggleDiagnostics' } },
       ['<D-S-d>'] = { { n = pick.diagnostics, i = pick.diagnostics, v = pick.diagnostics }, 'Toggle Problems (Global)', { cmd = 'LspToggleDiagnosticsGlobal' } },
       ['<D-r>'] = { { n = lsp.symbols, i = lsp.symbols, v = lsp.symbols }, 'Document Symbols', { cmd = 'ToggleSymbols' } },
@@ -142,11 +144,11 @@ vim.schedule_wrap(function()
       -- DEVELOPMENT
       -- https://github.com/mplusp/nvim-0.12-vim-pack-intro/blob/main/lua/config/keymap.lua
       -- ===========================================================================
-      ['<D-S-C-n>'] = { { n = ':update<CR> $MYVIMRC<CR>', i = '<C-O>:update<CR> <C-O>$MYVIMRC<CR>', v = '<ESC>:update<CR> $MYVIMRC<CR>' }, 'Reload [N]eovim config (init.lua)', { cmd = 'SourceNeovim' } },
+      ['<D-S-C-n>'] = { { n = '<CMD>source $MYVIMRC<CR>', i = '<C-O><CMD>source $MYVIMRC<CR>', v = '<ESC><CMD>source $MYVIMRC<CR>' }, 'Reload [N]eovim config (init.lua)', { cmd = 'SourceNeovim' } },
       ['<D-S-C-f>'] = { { n = ev.src_vimrc_file, i = ev.src_vimrc_file, v = ev.src_vimrc_file }, '[R]eload Neovim & current file', { cmd = 'SourceNeovimAndEvalFile' } },
-      ['<D-S-C-s>'] = { { n = '<CMD>source %<CR>', i = '<C-O>source %<CR>', v = '<ESC><CMD>source %<CR>' }, 'Source and evaluate [C]urrent File', { cmd = 'SourceAndEvalFile' } },
-      ['<D-S-C-c>'] = { { n = '<CMD>.:lua<CR>', i = '<C-O>.:lua<CR>', v = '<ESC><CMD>.:lua<CR>' }, 'Evaluate current Line', { cmd = 'EvalLine' } },
-      ['<D-S-C-v>'] = { { n = '<CMD>:lua<CR>', i = '<C-O>:lua<CR>', v = '<ESC><CMD>:lua<CR>' }, 'Evaluate current Visual Selection', { cmd = 'EvalSelection' } },
+      ['<D-S-C-s>'] = { { n = '<CMD>source %<CR>', i = '<C-O><CMD>source %<CR>', v = '<ESC><CMD>source %<CR>' }, 'Source and evaluate [C]urrent File', { cmd = 'SourceAndEvalFile' } },
+      ['<D-S-C-c>'] = { { n = '<CMD>lua vim.api.nvim_exec(vim.api.nvim_get_current_line(), false)<CR>', i = '<C-O><CMD>lua vim.api.nvim_exec(vim.api.nvim_get_current_line(), false)<CR>', v = '<ESC><CMD>lua vim.api.nvim_exec(vim.api.nvim_get_current_line(), false)<CR>' }, 'Evaluate current Line', { cmd = 'EvalLine' } },
+      ['<D-S-C-v>'] = { { v = '"vy<CMD>lua vim.api.nvim_exec(@v, false)<CR>' }, 'Evaluate current Visual Selection', { cmd = 'EvalSelection' } },
     }
   end)
 end)()
