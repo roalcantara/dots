@@ -1,3 +1,20 @@
+# [1.11.0](https://github.com/roalcantara/dots/compare/v1.10.0...v1.11.0) (2025-09-18)
+
+
+### Features
+
+* **codestyle:** Add markdownlint configuration and fix violations ([4c2e50d](https://github.com/roalcantara/dots/commit/4c2e50dac7cfb6c7708735e8dc974ce7dc361ee3))
+* **fabric:** Add AI library with 200+ analysis and generation patterns ([a035097](https://github.com/roalcantara/dots/commit/a0350978fd0cac295a7f1422fcbda919cd4606fa))
+* **fabric:** Add job posting and cover letter generation patterns ([340c0a7](https://github.com/roalcantara/dots/commit/340c0a78d107c24c2d0c2589d60316470098edea))
+* **nvim:** Add conventional commit generation ([11e90f7](https://github.com/roalcantara/dots/commit/11e90f7d44598507edead156f7b16390a9d7aba2))
+* **nvim:** Add Mini Pairs for automatic pairing ([e28eff2](https://github.com/roalcantara/dots/commit/e28eff2145ba617ae90da07e740cafef7ba670cf))
+* **nvim:** Enhance colorscheme configuration ([2549b2b](https://github.com/roalcantara/dots/commit/2549b2b3b38746a11a2697c94debebcb223675f6))
+* **nvim:** Refactor keymap definitions ([495b154](https://github.com/roalcantara/dots/commit/495b154e66245fce3f212bfe45f2ec3a4be37c6a))
+* **nvim:** Update LuaLS configuration ([1dea424](https://github.com/roalcantara/dots/commit/1dea424d8b6c5387045a7c9a063fafc20e44b5d0))
+* **snippets:** Add Biome config and Codility lesson templates ([2e17cbd](https://github.com/roalcantara/dots/commit/2e17cbdb0264e29fdb7f4453aba89a73444de31c))
+* **zsh/zim:** Add pnpm shell completion ([549546d](https://github.com/roalcantara/dots/commit/549546d59d2561ee449b490246467ec50dbf7fad))
+* **zsh:** Add support for loading API keys from gopass ([4c7f7ab](https://github.com/roalcantara/dots/commit/4c7f7abce8d42c75c1883c36f90f1eb9577cc53f))
+
 # [1.10.0](https://github.com/roalcantara/dots/compare/v1.9.0...v1.10.0) (2025-08-25)
 
 
