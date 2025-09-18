@@ -8,8 +8,8 @@ return {
     version = '1.*',
     dependencies = {
       {
-        -- Properly configures LuaLS for editing your Neovim config by lazily updating your workspace libraries
-        -- https://github.com/folke/lazydev.nvim?tab=readme-ov-file#-installation
+        -- Configures LuaLS to support auto-completion and type checking while editing your Neovim configuration
+        -- https://github.com/folke/lazydev.nvim?tab=readme-ov-file#-installation | https://www.lazyvim.org/plugins/coding#lazydevnvim
         'folke/lazydev.nvim',
         ft = 'lua', -- only load on lua files
         opts = {
@@ -20,6 +20,9 @@ return {
             -- It can also be a table with trigger words / modifiers
             -- Load luvit types when the `vim.uv` word is found
             { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+            { path = 'LazyVim',            words = { 'LazyVim' } },
+            { path = 'snacks.nvim',        words = { 'Snacks' } },
+            { path = 'lazy.nvim',          words = { 'LazyVim' } },
           },
           integrations = {
             -- Fixes lspconfig's workspace management for LuaLS
