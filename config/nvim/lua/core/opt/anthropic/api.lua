@@ -6,7 +6,7 @@ local M = {
     model = 'claude-sonnet-4-20250514',
     max_tokens = 1024,
     api_version = '2023-06-01',
-  }
+  },
 }
 
 --- Get the Anthropic API key
@@ -17,13 +17,13 @@ end
 
 local function get_request_body(content)
   if type(content) == 'table' then
-    content = table.concat(content, "\n")
+    content = table.concat(content, '\n')
   end
 
   return vim.json.encode({
     model = M.config.model,
     max_tokens = M.config.max_tokens,
-    messages = { { role = "user", content = content } }
+    messages = { { role = 'user', content = content } },
   })
 end
 
@@ -45,19 +45,30 @@ function M.messages(content)
 
   local body = get_request_body(content)
 
-  local ok, result = pcall(exec_cmd, { 'curl', '-s', M.config.api_url,
-    '-H', 'Content-Type: application/json',
-    '-H', 'x-api-key: ' .. api_key,
-    '-H', 'anthropic-version: ' .. M.config.api_version,
-    '-d', body })
+  local ok, result = pcall(
+    exec_cmd,
+    {
+      'curl',
+      '-s',
+      M.config.api_url,
+      '-H',
+      'Content-Type: application/json',
+      '-H',
+      'x-api-key: ' .. api_key,
+      '-H',
+      'anthropic-version: ' .. M.config.api_version,
+      '-d',
+      body,
+    }
+  )
 
   if not ok or (result and result.stderr) then
-    return error(result and result.stderr or "Unknown error", result and result.code or 0)
+    return error(result and result.stderr or 'Unknown error', result and result.code or 0)
   end
 
   local parsed_ok, response = pcall(vim.json.decode, result)
   if not parsed_ok or not response.content or not response.content[1] or not response.content[1].text then
-    return error("Failed to parse API response: " .. result, 0)
+    return error('Failed to parse API response: ' .. result, 0)
   end
 
   return response.content[1].text

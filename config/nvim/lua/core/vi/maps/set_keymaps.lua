@@ -39,7 +39,7 @@ end
 --- @param opts table|nil Keymap option
 local function set_keymap(mode, lhs, rhs, desc, opts)
   local defaults_opts = {
-    desc = desc,    -- Mapping Description
+    desc = desc, -- Mapping Description
     noremap = true, -- Non-recursive mapping
     silent = false, -- Silent mapping
   }
@@ -102,10 +102,10 @@ local function format(args)
     local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
     range = {
       start = { args.line1, 0 },
-      ["end"] = { args.line2, end_line:len() },
+      ['end'] = { args.line2, end_line:len() },
     }
   end
-  require("conform").format({ async = true, lsp_format = "fallback", range = range })
+  require('conform').format({ async = true, lsp_format = 'fallback', range = range })
 end
 
 --- Run a formatter
@@ -285,23 +285,23 @@ local function smart_buffer_close(opts)
 end
 
 local function clear_all()
-  vim.cmd('mapclear')        -- Clear all keymaps
-  vim.cmd('mapclear!')       -- Clear all keymaps including those set by plugins
-  vim.cmd('nmapclear')       -- Clear normal mode keymaps
-  vim.cmd('vmapclear')       -- Clear visual mode keymaps
-  vim.cmd('xmapclear')       -- Clear visual block mode keymaps
-  vim.cmd('smapclear')       -- Clear select mode keymaps
-  vim.cmd('omapclear')       -- Clear operator-pending mode keymaps
-  vim.cmd('imapclear')       -- Clear insert mode keymaps
-  vim.cmd('lmapclear')       -- Clear language map keymaps
-  vim.cmd('cmapclear')       -- Clear command mode keymaps
-  vim.cmd('tmapclear')       -- Clear terminal mode keymaps
-  vim.cmd('autocmd!')        -- Clear all autocommands
-  vim.cmd('comclear')        -- Clear all user commands
+  vim.cmd('mapclear') -- Clear all keymaps
+  vim.cmd('mapclear!') -- Clear all keymaps including those set by plugins
+  vim.cmd('nmapclear') -- Clear normal mode keymaps
+  vim.cmd('vmapclear') -- Clear visual mode keymaps
+  vim.cmd('xmapclear') -- Clear visual block mode keymaps
+  vim.cmd('smapclear') -- Clear select mode keymaps
+  vim.cmd('omapclear') -- Clear operator-pending mode keymaps
+  vim.cmd('imapclear') -- Clear insert mode keymaps
+  vim.cmd('lmapclear') -- Clear language map keymaps
+  vim.cmd('cmapclear') -- Clear command mode keymaps
+  vim.cmd('tmapclear') -- Clear terminal mode keymaps
+  vim.cmd('autocmd!') -- Clear all autocommands
+  vim.cmd('comclear') -- Clear all user commands
   vim.cmd('highlight clear') -- Clear all highlights
-  vim.cmd('set all&')        -- Reset all options to their default values
-  vim.cmd('filetype off')    -- Disable filetype detection
-  vim.cmd('syntax off')      -- Disable syntax highlighting
+  vim.cmd('set all&') -- Reset all options to their default values
+  vim.cmd('filetype off') -- Disable filetype detection
+  vim.cmd('syntax off') -- Disable syntax highlighting
 end
 
 -- Terminal state management
@@ -316,7 +316,7 @@ local terminal_state = {
 --- @return nil Keymaps are created
 local function set_keymaps(fn)
   return mappings(fn(
-  -- buf
+    -- buf
     {
       --- Delete buffers without disrupting window layout
       --- @see docs https://github.com/folke/snacks.nvim/blob/main/docs/bufdelete.md#snacksbufdeletedelete
@@ -548,7 +548,10 @@ local function set_keymaps(fn)
 
       --- Search and pick for lsp_workspace_symbols
       --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_workspace_symbols
-      workspace_symbols = cmd(Snacks.picker.lsp_workspace_symbols, { layout = 'dropdown', enter = true, focus = 'list' }),
+      workspace_symbols = cmd(
+        Snacks.picker.lsp_workspace_symbols,
+        { layout = 'dropdown', enter = true, focus = 'list' }
+      ),
 
       --- Search and pick for lsp_type_definitions
       --- @see docs http://github.com/folke/snacks.nvim/blob/main/docs/picker.md#lsp_type_definitions
@@ -560,7 +563,15 @@ local function set_keymaps(fn)
         return vim.lsp.buf.signature_help({
           focusable = false,
           focus = false,
-          close_events = { 'CursorMoved', 'InsertLeave', 'BufHide', 'BufLeave', 'WinLeave', 'FocusLost', 'InsertCharPre' },
+          close_events = {
+            'CursorMoved',
+            'InsertLeave',
+            'BufHide',
+            'BufLeave',
+            'WinLeave',
+            'FocusLost',
+            'InsertCharPre',
+          },
         })
       end,
     },

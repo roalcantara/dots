@@ -26,7 +26,7 @@ return function()
 
     -- Format display text
     local display_text =
-      string.format("%-25s %-10s %-10s %s", name, option.shortname or '', option.type or '', current_value or '')
+      string.format('%-25s %-10s %-10s %s', name, option.shortname or '', option.type or '', current_value or '')
 
     table.insert(items, {
       id = name,

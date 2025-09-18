@@ -42,7 +42,7 @@ end
 --- @param opts table|nil Keymap option
 function M.set_keymap(mode, lhs, rhs, desc, opts)
   local defaults_opts = {
-    desc = desc,    -- Mapping Description
+    desc = desc, -- Mapping Description
     noremap = true, -- Non-recursive mapping
     silent = false, -- Silent mapping
   }
@@ -105,10 +105,10 @@ function M.format(args)
     local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
     range = {
       start = { args.line1, 0 },
-      ["end"] = { args.line2, end_line and #end_line or 0 },
+      ['end'] = { args.line2, end_line and #end_line or 0 },
     }
   end
-  require("conform").format({ async = true, lsp_fallback = true, range = range })
+  require('conform').format({ async = true, lsp_fallback = true, range = range })
 end
 
 --- Execute a function when Escape is pressed

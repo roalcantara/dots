@@ -18,8 +18,8 @@ local config = {
     position = 'right',
   },
   execution = {
-    auto_run = false,          -- Auto-run on buffer change
-    clear_on_run = false,      -- Clear previous results
+    auto_run = false, -- Auto-run on buffer change
+    clear_on_run = false, -- Clear previous results
     show_errors_inline = true, -- Use Snacks' inline error display
   },
   languages = {
@@ -112,7 +112,7 @@ end
 local function create_results_buffer()
   if not state.results_buf or not vim.api.nvim_buf_is_valid(state.results_buf) then
     state.results_buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_set_option_value('buftype', "nofile", { buf = state.results_buf })
+    vim.api.nvim_set_option_value('buftype', 'nofile', { buf = state.results_buf })
     vim.api.nvim_set_option_value('bufhidden', 'hide', { buf = state.results_buf })
     vim.api.nvim_set_option_value('swapfile', false, { buf = state.results_buf })
     vim.api.nvim_set_option_value('filetype', 'text', { buf = state.results_buf })
@@ -192,12 +192,12 @@ local function show_execution_result(code, output)
   vim.system({ output }, {
     stdout = function(_, data)
       if data then
-        vim.list_extend(output_lines, vim.split(data, "\n"))
+        vim.list_extend(output_lines, vim.split(data, '\n'))
       end
     end,
     stderr = function(_, data)
       if data then
-        vim.list_extend(stderr_lines, vim.split(data, "\n"))
+        vim.list_extend(stderr_lines, vim.split(data, '\n'))
       end
     end,
   }, function(result)
@@ -209,7 +209,7 @@ end
 --- @return nil
 local function execute_external_language()
   local lines = vim.api.nvim_buf_get_lines(state.scratch_buf, 0, -1, false)
-  local code = table.concat(lines, "\n")
+  local code = table.concat(lines, '\n')
 
   -- Ensures there is code to execute
   if trim(code) == '' then
@@ -253,8 +253,11 @@ local function execute_code()
   local lang = config.languages[state.current_language]
   if state.current_language == 'lua' then
     -- If Lua, use Snacks' native execution via debug.run
-    Snacks.notify.warn(lang.icon, lang.cmd,
-      table.concat(vim.api.nvim_buf_get_lines(state.scratch_buf, 0, -1, false), '\n'))
+    Snacks.notify.warn(
+      lang.icon,
+      lang.cmd,
+      table.concat(vim.api.nvim_buf_get_lines(state.scratch_buf, 0, -1, false), '\n')
+    )
     -- Printout the output within the current buffer
     Snacks.debug.run({ buf = state.scratch_buf, name = 'scratch.' .. lang, print = true })
   else

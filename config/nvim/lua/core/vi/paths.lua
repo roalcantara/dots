@@ -165,8 +165,9 @@ function M.get_runtimepath_path_items()
 end
 
 function M.bin_for_python3_venv()
-  return os.getenv('VIRTUAL_ENV') or os.getenv('NEOVIM_PYTHON3_VENV_PATH') or
-    M.join(M.stdpath('config'), '.venv', 'bin', 'python3')
+  return os.getenv('VIRTUAL_ENV')
+    or os.getenv('NEOVIM_PYTHON3_VENV_PATH')
+    or M.join(M.stdpath('config'), '.venv', 'bin', 'python3')
 end
 
 function M.norm(path)
@@ -200,7 +201,7 @@ function M.xdg_config_home(...)
 end
 
 function M.realpath(path)
-  if path == "" or path == nil then
+  if path == '' or path == nil then
     return nil
   end
   path = vim.uv.fs_realpath(path) or path

@@ -1,4 +1,4 @@
-local MOUSE_HOVER_DELAY = 2500                                             -- Default delay for mouse hover in milliseconds
+local MOUSE_HOVER_DELAY = 2500 -- Default delay for mouse hover in milliseconds
 local mouse_hover_delay = vim.g.lsp_hover_mouse_delay or MOUSE_HOVER_DELAY -- Configurable delay for mouse hover
 local HOVER_DOCS_IS_ENABLED = true
 local mouse_hover_timer = nil
@@ -128,8 +128,12 @@ local M = {
 
     -- Clear mouse hover on <Esc>
     vim.schedule(function()
-      vim.keymap.set('n', '<Esc>', close_hover_documentation,
-        { buffer = buffer, nowait = true, noremap = true, desc = 'Clear LSP hover on <Esc>' })
+      vim.keymap.set(
+        'n',
+        '<Esc>',
+        close_hover_documentation,
+        { buffer = buffer, nowait = true, noremap = true, desc = 'Clear LSP hover on <Esc>' }
+      )
     end)
   end,
 }

@@ -3,16 +3,16 @@
 
 return {
   -- Test output format
-  output = "TAP",
+  output = 'TAP',
 
   -- Verbose output
   verbose = true,
 
   -- Test directory
-  tests = "spec/",
+  tests = 'spec/',
 
   -- Lua path for module loading
-  lua_path = "lua/?.lua;lua/?/init.lua;?.lua;?/init.lua;;",
+  lua_path = 'lua/?.lua;lua/?/init.lua;?.lua;?/init.lua;;',
 
   -- Coverage settings (if using luacov)
   coverage = false,
@@ -27,5 +27,5 @@ return {
   timeout = 30,
 
   -- Initial file to load before running tests
-  load_file = "spec/tools/spec_helper.lua"
+  load_file = 'spec/tools/spec_helper.lua',
 }
