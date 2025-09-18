@@ -36,7 +36,7 @@ M.excluded_node_types = {
   -- Basic punctuation
   ',',
   ';',
-  ":",
+  ':',
   '.',
   '!',
   '?',
@@ -115,12 +115,12 @@ function M.should_show_hover()
   local node_text = vim.treesitter.get_node_text(node, 0)
   if node_text then
     -- Exclude single characters that are likely punctuation
-    if #node_text == 1 and vim.fn.match(node_text, "[(){}\\[\\]<>.,;:!?]") >= 0 then
+    if #node_text == 1 and vim.fn.match(node_text, '[(){}\\[\\]<>.,;:!?]') >= 0 then
       return false
     end
 
     -- Exclude simple string literals (quoted strings)
-    if node_text:match("^[\"'`].*[\"'`]$") then
+    if node_text:match('^["\'`].*["\'`]$') then
       return false
     end
   end

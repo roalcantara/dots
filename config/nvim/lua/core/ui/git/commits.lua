@@ -41,7 +41,7 @@ end
 function M.generate_conventional_commit_message()
   local instructions = git.get_conventional_commits_instructions()
 
-  if not instructions or instructions == "" then
+  if not instructions or instructions == '' then
     return error('No changes found! Skipping...')
   end
 
@@ -49,7 +49,7 @@ function M.generate_conventional_commit_message()
 
   local ok, result = pcall(anthropic.api.messages, instructions)
 
-  if not ok or result == nil or result == "" then
+  if not ok or result == nil or result == '' then
     return result
   end
 
@@ -66,7 +66,7 @@ function M.generate_conventional_commit()
 
   vim.schedule(function()
     local ok, result = pcall(M.generate_conventional_commit_message)
-    if not ok or result == nil or result == "" then
+    if not ok or result == nil or result == '' then
       return error('Failed to generate commit message: "' .. vim.inspect(result) .. '"')
     end
 

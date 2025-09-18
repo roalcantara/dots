@@ -1,4 +1,4 @@
-local success, pcall_result = pcall(require, "notify")
+local success, pcall_result = pcall(require, 'notify')
 
 local nvim_notify
 
@@ -9,7 +9,7 @@ end
 local M = {}
 
 local config = {
-  spinner = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
+  spinner = { '⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷' },
 }
 
 --- Storage for the current notification and timer
@@ -20,8 +20,8 @@ local current_notification = {
   is_running = false,
   on_done = {
     title = nil,
-    message = nil
-  }
+    message = nil,
+  },
 }
 
 local function get_notify_options(default_opts, options)
@@ -33,15 +33,15 @@ local function get_notify_options(default_opts, options)
     end
   end
 
-  return vim.tbl_deep_extend("force", {}, default_opts, overrides)
+  return vim.tbl_deep_extend('force', {}, default_opts, overrides)
 end
 
 local function format_notification_msg(message, spinner_idx)
   if spinner_idx == 0 or spinner_idx == nil then
-    return string.format(" %s ", message)
+    return string.format(' %s ', message)
   end
 
-  return string.format(" %s %s ", config.spinner[spinner_idx], message)
+  return string.format(' %s %s ', config.spinner[spinner_idx], message)
 end
 
 --- Start the loading notification with spinning animation
@@ -52,8 +52,8 @@ M.run = function(title)
   current_notification.is_running = true
 
   local notify_config = {
-    id = "loading_notification_id",
-    title = title
+    id = 'loading_notification_id',
+    title = title,
   }
 
   local function update_spinner()
@@ -81,7 +81,11 @@ M.run = function(title)
         vim.log.levels.INFO,
         get_notify_options(
           notify_config,
-          { replace = current_notification.notify_record.id, timeout = 2000, title = current_notification.on_done.title }
+          {
+            replace = current_notification.notify_record.id,
+            timeout = 2000,
+            title = current_notification.on_done.title,
+          }
         )
       )
     end

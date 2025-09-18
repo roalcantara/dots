@@ -8,8 +8,12 @@ local M = {}
 --- @return string The padded string
 --- @example print(l_just('foo', 12, '_')) => "foo_________"
 function M.l_just(str, len, char)
-  if not len then len = 1 end
-  if not char then char = ' ' end
+  if not len then
+    len = 1
+  end
+  if not char then
+    char = ' '
+  end
 
   -- Allowed flags:
   -- - : left align result inside field
@@ -34,8 +38,12 @@ end
 --- @return string The padded string
 --- @example print(rjust('bar', 12, '_')) => "_________bar"
 function M.r_just(str, len, char)
-  if not len then len = 1 end
-  if not char then char = ' ' end
+  if not len then
+    len = 1
+  end
+  if not char then
+    char = ' '
+  end
 
   -- Allowed flags:
   -- - : left align result inside field
@@ -56,8 +64,8 @@ end
 --- @param value string The string to trim
 --- @return string The trimmed string
 function M.trim(value)
-  if not value or type(value) == "nil" then
-    return ""
+  if not value or type(value) == 'nil' then
+    return ''
   end
   return string.match(value, '^()%s*$') and '' or string.match(value, '^%s*(.*%S)')
 end

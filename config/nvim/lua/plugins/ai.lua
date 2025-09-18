@@ -7,7 +7,7 @@ return {
       suggestion = { enabled = false },
       panel = { enabled = false },
       filetypes = {
-        ['*'] = true
+        ['*'] = true,
       },
     },
     config = function(_, opts)
@@ -20,6 +20,6 @@ return {
           -- require('copilot.suggestion').next()
         end
       end, { silent = false, desc = 'Accept Copilot suggestion or next' })
-    end
-  }
+    end,
+  },
 }

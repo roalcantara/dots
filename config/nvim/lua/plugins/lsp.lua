@@ -62,7 +62,7 @@ return {
 
         -- Fast formatter, linter, for JavaScript, TypeScript, JSX, TSX, JSON, HTML, CSS and GraphQL written in Rust (https://biomejs.dev)
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#biome
-        { 'biome',     condition = has('biome') },
+        { 'biome', condition = has('biome') },
 
         -- Diagnostic language server integrate with linters
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#diagnosticls
@@ -82,15 +82,15 @@ return {
 
         -- Frontend-independent IDE "smartness" server for Elixir. Implements the "Language Server Protocol" standard and provides debugger support via the "Debug Adapter Protocol" (https://elixir-lsp.github.io/elixir-ls)
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#elixirls
-        { 'elixirls',  condition = has('elixir') },
+        { 'elixirls', condition = has('elixir') },
 
         -- ESLint's Language server for javascript and typescript
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#eslint
-        { 'eslint',    condition = has('eslint') },
+        { 'eslint', condition = has('eslint') },
 
         -- (Google's) Language server for golang
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#gopls
-        { 'gopls',     condition = has('go') },
+        { 'gopls', condition = has('go') },
 
         -- (Microsoft's) Language server for gradle files
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#gradle_ls
@@ -98,7 +98,7 @@ return {
 
         -- Groovy Language server
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#groovyls
-        { 'groovyls',  condition = has('groovy') },
+        { 'groovyls', condition = has('groovy') },
 
         -- Language server for JSON and JSON schema
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#jsonls
@@ -106,7 +106,7 @@ return {
 
         -- Language server for the KCL configuration and policy language (https://kcl-lang.io)
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#kcl
-        { 'kcl',        condition = has('kcl') },
+        { 'kcl', condition = has('kcl') },
 
         -- Official Kotlin LSP implementation and support for VSCode
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#kotlin_lsp
@@ -118,23 +118,23 @@ return {
 
         -- Language server for Markdown providing completion, cross-references, diagnostics, and more (https://github.com/artempyanykh/marksman)
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#marksman
-        { 'marksman',      condition = has('marksman') },
+        { 'marksman', condition = has('marksman') },
 
         -- Language server for Nx Workspaces (https://github.com/nrwl/nx-console/tree/master/apps/nxls)
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#nxls
-        { 'nxls',          condition = has('nxls') },
+        { 'nxls', condition = has('nxls') },
 
         -- Language server and tools for Postgres, focusing on developer experience and reliable SQL tooling (https://pgtools.dev)
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#postgres_lsp
-        { 'postgres_lsp',  condition = has('psql') },
+        { 'postgres_lsp', condition = has('psql') },
 
         -- Fast Python type checker written in Rust (https://pyrefly.org)
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#pyrefly
-        { 'pyrefly',       condition = has('python') },
+        { 'pyrefly', condition = has('python') },
 
         -- Language server maintained by Shopify, with built-in RuboCop integration, which provides the best dev experience for Ruby/Rails projects
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#ruby_lsp
-        { 'ruby_lsp',      condition = has('ruby') },
+        { 'ruby_lsp', condition = has('ruby') },
 
         -- Rust Language server
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#rust_analyzer
@@ -142,7 +142,7 @@ return {
 
         -- Extremely fast Python linter and code formatter, written in Rust (https://docs.astral.sh/ruff)
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#ruff
-        { 'ruff',          condition = has('python') },
+        { 'ruff', condition = has('python') },
 
         -- Language server for Taplo, a TOML toolkit (https://taplo.tamasfe.dev/cli/usage/language-server.html)
         -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#taplo
@@ -174,11 +174,11 @@ return {
 
         -- A tool to automatically apply fixes to Go source code
         -- https://github.com/mvdan/gofumpt
-        { 'gofumpt',      condition = has('go') },
+        { 'gofumpt', condition = has('go') },
 
         -- A tool to help you write better Go code
         -- https://github.com/segmentio/golines
-        { 'golines',      condition = has('go') },
+        { 'golines', condition = has('go') },
 
         -- A tool to automatically add tags to Go functions
         -- https://github.com/fatih/gomodifytags
@@ -186,7 +186,7 @@ return {
 
         -- A tool to automatically generate Go test files
         -- https://github.com/cweill/gotests
-        { 'gotests',      condition = has('go') },
+        { 'gotests', condition = has('go') },
 
         -- A shell script static analysis tool
         -- https://shellcheck.net

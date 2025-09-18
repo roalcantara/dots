@@ -1,19 +1,19 @@
 local busted = require('busted')
 
 local function trim(value)
-  if not value or type(value) == "nil" then
-    return ""
+  if not value or type(value) == 'nil' then
+    return ''
   end
   return string.match(value, '^()%s*$') and '' or string.match(value, '^%s*(.*%S)')
 end
 
 local function is_empty(value)
-  if not value or type(value) == "nil" then
+  if not value or type(value) == 'nil' then
     return true
   end
 
-  if type(value) == "string" then
-    return trim(value) == ""
+  if type(value) == 'string' then
+    return trim(value) == ''
   end
 
   return false
@@ -33,23 +33,23 @@ busted.setup(function()
         local parts = select(2, ...)
         local opts = select(3, ...) or {}
         local normalize = opts.normalize or false
-        local separator = opts.separator or "/"
-        local inverted_separator = separator == "/" and "\\" or "/"
+        local separator = opts.separator or '/'
+        local inverted_separator = separator == '/' and '\\' or '/'
 
         -- Clean base path
         local clean_base = nil
         if base ~= nil and not is_empty(base) then
-          clean_base = base:gsub(separator .. "+$", "")
+          clean_base = base:gsub(separator .. '+$', '')
         end
 
         local function flatten_recursive(item, result)
-          if type(item) == "string" and item ~= "" then
+          if type(item) == 'string' and item ~= '' then
             -- Remove leading/trailing slashes from individual components
-            local cleaned = item:gsub("^" .. separator .. "+", ""):gsub("" .. separator .. "+$", "")
-            if cleaned ~= "" then
+            local cleaned = item:gsub('^' .. separator .. '+', ''):gsub('' .. separator .. '+$', '')
+            if cleaned ~= '' then
               table.insert(result, cleaned)
             end
-          elseif type(item) == "table" then
+          elseif type(item) == 'table' then
             for _, sub_item in ipairs(item) do
               flatten_recursive(sub_item, result)
             end
@@ -57,7 +57,7 @@ busted.setup(function()
         end
 
         if parts == nil or #parts == 0 then
-          return clean_base or ""
+          return clean_base or ''
         end
 
         local flattened = {}
@@ -72,10 +72,10 @@ busted.setup(function()
         local joined = table.concat(flattened, separator)
 
         if normalize then
-          return vim.fs.normalize(joined) or ""
+          return vim.fs.normalize(joined) or ''
         end
 
-        joined = joined:gsub("//", separator)
+        joined = joined:gsub('//', separator)
         joined = joined:gsub(inverted_separator, separator)
 
         if not joined:match(separator) then
@@ -85,12 +85,12 @@ busted.setup(function()
         return joined
       end,
       normalize = function(path)
-        if type(path) ~= "string" then
-          error("Path must be a string", 2)
+        if type(path) ~= 'string' then
+          error('Path must be a string', 2)
         end
 
-        if path == "" then
-          return "."
+        if path == '' then
+          return '.'
         end
 
         -- Use LuaJIT string buffer for better performance
@@ -106,7 +106,7 @@ busted.setup(function()
           if path:byte(i) == 47 then -- Found '/'
             if i > start then
               local component = path:sub(start, i - 1)
-              if component ~= "" then
+              if component ~= '' then
                 table.insert(components, component)
               end
             end
@@ -118,7 +118,7 @@ busted.setup(function()
         -- Add the last component if exists
         if start <= len then
           local component = path:sub(start, len)
-          if component ~= "" then
+          if component ~= '' then
             table.insert(components, component)
           end
         end
@@ -128,19 +128,19 @@ busted.setup(function()
 
         for j = 1, #components do
           local component = components[j]
-          if component == ".." then
+          if component == '..' then
             if is_absolute then
               if #stack > 0 then
                 table.remove(stack)
               end
             else
-              if #stack > 0 and stack[#stack] ~= ".." then
+              if #stack > 0 and stack[#stack] ~= '..' then
                 table.remove(stack)
               else
-                table.insert(stack, "..")
+                table.insert(stack, '..')
               end
             end
-          elseif component ~= "." then
+          elseif component ~= '.' then
             table.insert(stack, component)
           end
         end
@@ -148,52 +148,52 @@ busted.setup(function()
         -- Build result
         if is_absolute then
           if #stack == 0 then
-            return "/"
+            return '/'
           end
-          return "/" .. table.concat(stack, "/")
+          return '/' .. table.concat(stack, '/')
         else
           if #stack == 0 then
-            return "."
+            return '.'
           end
-          return table.concat(stack, "/")
+          return table.concat(stack, '/')
         end
       end,
       basename = function(path)
-        if not path or path == "" then
-          return ""
+        if not path or path == '' then
+          return ''
         end
         local parts = {}
-        for part in path:gmatch("[^/]+") do
+        for part in path:gmatch('[^/]+') do
           table.insert(parts, part)
         end
-        return parts[#parts] or ""
+        return parts[#parts] or ''
       end,
       dirname = function(path)
-        if not path or path == "" then
-          return ""
+        if not path or path == '' then
+          return ''
         end
         local parts = {}
-        for part in path:gmatch("[^/]+") do
+        for part in path:gmatch('[^/]+') do
           table.insert(parts, part)
         end
         if #parts <= 1 then
-          return ""
+          return ''
         end
         table.remove(parts)
-        return "/" .. table.concat(parts, "/")
-      end
+        return '/' .. table.concat(parts, '/')
+      end,
     },
     loop = {
       os_uname = function()
         return {
-          name = "Darwin",
-          release = "20.6.0"
+          name = 'Darwin',
+          release = '20.6.0',
         }
-      end
+      end,
     },
     fn = {
       has = function(feature)
-        if feature == "mac" then
+        if feature == 'mac' then
           return 1
         end
         return 0
@@ -217,28 +217,28 @@ busted.setup(function()
         return path
       end,
       executable = function(name)
-        return name == "git" and 1 or 0
+        return name == 'git' and 1 or 0
       end,
     },
     opt = {
       runtimepath = {
         get = function()
-          return { "/test/path1", "/test/path2" }
-        end
-      }
+          return { '/test/path1', '/test/path2' }
+        end,
+      },
     },
     uv = {
       cwd = function()
-        return "."
-      end
+        return '.'
+      end,
     },
 
     env = {
-      HOMEBREW_PREFIX = "/opt/homebrew",
-      VIMRUNTIME = "/opt/homebrew/share/nvim/runtime",
-      XDG_CONFIG_HOME = "/home/dev/.config",
-      HOME = "/home/dev",
-    }
+      HOMEBREW_PREFIX = '/opt/homebrew',
+      VIMRUNTIME = '/opt/homebrew/share/nvim/runtime',
+      XDG_CONFIG_HOME = '/home/dev/.config',
+      HOME = '/home/dev',
+    },
   }
 end)
 

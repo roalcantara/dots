@@ -13,7 +13,7 @@ require('core/vi/au').setup_autocommands_async({
         end,
         desc = 'Check if we need to reload the file when it changed',
       },
-    }
+    },
   },
   highlight_yank = {
     {
@@ -24,7 +24,7 @@ require('core/vi/au').setup_autocommands_async({
         end,
         desc = 'Highlight on yank',
       },
-    }
+    },
   },
   resize_splits = {
     {
@@ -37,7 +37,7 @@ require('core/vi/au').setup_autocommands_async({
         end,
         desc = 'Resize splits when window is resized',
       },
-    }
+    },
   },
   last_loc = {
     {
@@ -58,7 +58,7 @@ require('core/vi/au').setup_autocommands_async({
         end,
         desc = 'Go to last location when opening a buffer',
       },
-    }
+    },
   },
   man_unlisted = {
     {
@@ -70,7 +70,7 @@ require('core/vi/au').setup_autocommands_async({
         end,
         desc = 'Make it easier to close man-files when opened inline',
       },
-    }
+    },
   },
   wrap_spell = {
     {
@@ -81,11 +81,11 @@ require('core/vi/au').setup_autocommands_async({
           local buf = event.buf
           vim.opt_local.wrap = true
           vim.opt_local.spell = true
-          Neo.debug(("wrap and spell enabled for %s"):format(vim.bo[buf].filetype), { title = 'Options' })
+          Neo.debug(('wrap and spell enabled for %s'):format(vim.bo[buf].filetype), { title = 'Options' })
         end,
         desc = 'Enable wrap and check for spell in text filetypes',
       },
-    }
+    },
   },
   json_conceal = {
     {
@@ -97,7 +97,7 @@ require('core/vi/au').setup_autocommands_async({
         end,
         desc = 'Disable conceallevel for json files',
       },
-    }
+    },
   },
   auto_create_dir = {
     {
@@ -110,9 +110,9 @@ require('core/vi/au').setup_autocommands_async({
           local file = vim.uv.fs_realpath(event.match) or event.match
           vim.fn.mkdir(vim.fn.fnamemodify(file, ':p:h'), 'p')
         end,
-        desc = 'Auto create directory when saving a file, in case some intermediate directory does not exist'
-      }
-    }
+        desc = 'Auto create directory when saving a file, in case some intermediate directory does not exist',
+      },
+    },
   },
   filetypedetect = {
     {
@@ -218,6 +218,6 @@ require('core/vi/au').setup_autocommands_async({
         end,
         desc = 'LSP Attach: Setup autocommands and settings for LSP feature capabilities',
       },
-    }
-  }
+    },
+  },
 })

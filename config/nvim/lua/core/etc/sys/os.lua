@@ -3,7 +3,7 @@ local M = {
   -- Cache for expensive operations
   _cache = {},
   join = vim.fs.joinpath,
-  normalize = vim.fs.normalize
+  normalize = vim.fs.normalize,
 }
 
 --- Helper function to cache expensive operations
@@ -116,7 +116,7 @@ end
 --- @return string separator for file paths
 function M.get_separator()
   return get('separator', function()
-    return is_windows() and "\\" or '/'
+    return is_windows() and '\\' or '/'
   end)
 end
 

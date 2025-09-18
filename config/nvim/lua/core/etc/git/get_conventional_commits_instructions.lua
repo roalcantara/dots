@@ -1,5 +1,4 @@
-local conventional_commits_format =
-[[
+local conventional_commits_format = [[
 <type>[(scope)]: <subject>
 
 [optional body]
@@ -20,16 +19,20 @@ local conventional_commits_format =
 
 return function()
   local changes, change_type = require('core/etc/git/get_changes')()
-  if not changes or changes == "" then
+  if not changes or changes == '' then
     return nil
   end
 
   local instructions = {
-    'Generate the commit message for the following git ' .. change_type .. ' changes:\n\n' ..
-    changes .. '\n\n' ..
-    'Use the Conventional Commits format:\n\n' ..
-    conventional_commits_format .. '\n\n' ..
-    'Return only the commit message, no other text or comments.\n\n'
+    'Generate the commit message for the following git '
+      .. change_type
+      .. ' changes:\n\n'
+      .. changes
+      .. '\n\n'
+      .. 'Use the Conventional Commits format:\n\n'
+      .. conventional_commits_format
+      .. '\n\n'
+      .. 'Return only the commit message, no other text or comments.\n\n',
   }
 
   return instructions

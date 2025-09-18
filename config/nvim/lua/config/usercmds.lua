@@ -14,5 +14,5 @@ require('core/vi/au').setup_user_commands_async({
     opts = {
       desc = 'Show Notification History',
     },
-  }
+  },
 })

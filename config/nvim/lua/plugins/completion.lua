@@ -20,9 +20,9 @@ return {
             -- It can also be a table with trigger words / modifiers
             -- Load luvit types when the `vim.uv` word is found
             { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-            { path = 'LazyVim',            words = { 'LazyVim' } },
-            { path = 'snacks.nvim',        words = { 'Snacks' } },
-            { path = 'lazy.nvim',          words = { 'LazyVim' } },
+            { path = 'LazyVim', words = { 'LazyVim' } },
+            { path = 'snacks.nvim', words = { 'Snacks' } },
+            { path = 'lazy.nvim', words = { 'LazyVim' } },
           },
           integrations = {
             -- Fixes lspconfig's workspace management for LuaLS
@@ -49,8 +49,8 @@ return {
         'fang2hou/blink-copilot',
         opts = {
           max_completions = 5, -- Global default for max completions
-          max_attempts = 4,    -- Global default for max attempts
-        }
+          max_attempts = 4, -- Global default for max attempts
+        },
       },
       -- Git source for blink-cmp
       -- https://github.com/Kaiser-Yang/blink-cmp-git?tab=readme-ov-file#lazynvim
@@ -60,7 +60,7 @@ return {
       },
       -- Bring enjoyment to your auto completion.
       -- https://github.com/xzbdmw/colorful-menu.nvim
-      'xzbdmw/colorful-menu.nvim'
+      'xzbdmw/colorful-menu.nvim',
     },
     opts = {
       -- Configure native snippets
@@ -90,15 +90,15 @@ return {
         nerd_font_variant = 'mono',
 
         kind_icons = {
-          claude = "󰋦",
-          openai = "󱢆",
-          codestral = "󱎥",
-          gemini = "",
-          Groq = "",
-          Openrouter = "󱂇",
-          Ollama = "󰳆",
-          ["Llama.cpp"] = "󰳆",
-          Deepseek = "",
+          claude = '󰋦',
+          openai = '󱢆',
+          codestral = '󱎥',
+          gemini = '',
+          Groq = '',
+          Openrouter = '󱂇',
+          Ollama = '󰳆',
+          ['Llama.cpp'] = '󰳆',
+          Deepseek = '',
         },
       },
       -- https://cmp.saghen.dev/configuration/sources.html
@@ -119,7 +119,7 @@ return {
             name = 'copilot',
             module = 'blink-copilot',
             score_offset = 100,
-            async = true
+            async = true,
           },
           lazydev = {
             name = 'LazyDev',
@@ -136,26 +136,25 @@ return {
 
             -- Function to transform the items before they're returned
             transform_items = function(_, items)
-              return vim.tbl_filter(
-                function(item) return item.kind ~= require('blink.cmp.types').CompletionItemKind.Text end,
-                items
-              )
+              return vim.tbl_filter(function(item)
+                return item.kind ~= require('blink.cmp.types').CompletionItemKind.Text
+              end, items)
             end,
             opts = { tailwind_color_icon = '██' },
             --- These properties apply to !!ALL sources!!
             --- NOTE: All of these options may be functions to get dynamic behavior
             --- See the type definitions for more information
-            enabled = true,           -- Whether or not to enable the provider
-            async = false,            -- Whether we should show the completions before this provider returns, without waiting for it
-            timeout_ms = 2000,        -- How long to wait for the provider to return before showing completions and treating it as asynchronous
+            enabled = true, -- Whether or not to enable the provider
+            async = false, -- Whether we should show the completions before this provider returns, without waiting for it
+            timeout_ms = 2000, -- How long to wait for the provider to return before showing completions and treating it as asynchronous
             should_show_items = true, -- Whether or not to show the items
-            max_items = nil,          -- Maximum number of items to display in the menu
-            min_keyword_length = 0,   -- Minimum number of characters in the keyword to trigger the provider
+            max_items = nil, -- Maximum number of items to display in the menu
+            min_keyword_length = 0, -- Minimum number of characters in the keyword to trigger the provider
             -- If this provider returns 0 items, it will fallback to these providers.
             -- If multiple providers fallback to the same provider, all of the providers must return 0 items for it to fallback
             fallbacks = { 'buffer' },
             score_offset = 0, -- Boost/penalize the score of the items
-            override = nil,   -- Override the source's functions
+            override = nil, -- Override the source's functions
           },
           -- Native Snippets
           snippets = {
@@ -168,7 +167,7 @@ return {
               global_snippets = { 'all' },
               extended_filetypes = {},
               ignored_filetypes = {},
-            }
+            },
           },
           path = {
             module = 'blink.cmp.sources.path',
@@ -177,11 +176,13 @@ return {
             opts = {
               trailing_slash = true,
               label_trailing_slash = true,
-              get_cwd = function(context) return vim.fn.expand(('#%d:p:h'):format(context.bufnr)) end,
+              get_cwd = function(context)
+                return vim.fn.expand(('#%d:p:h'):format(context.bufnr))
+              end,
               show_hidden_files_by_default = false,
               -- Treat `/path` as starting from the current working directory (cwd) instead of the root of your filesystem
               ignore_root_slash = false,
-            }
+            },
           },
           cmdline = {
             module = 'blink.cmp.sources.cmdline',
@@ -194,10 +195,14 @@ return {
           },
           omni = {
             module = 'blink.cmp.sources.complete_func',
-            enabled = function() return vim.bo.omnifunc ~= 'v:lua.vim.lsp.omnifunc' end,
+            enabled = function()
+              return vim.bo.omnifunc ~= 'v:lua.vim.lsp.omnifunc'
+            end,
             --- @type blink.cmp.CompleteFuncOpts
             opts = {
-              complete_func = function() return vim.bo.omnifunc end,
+              complete_func = function()
+                return vim.bo.omnifunc
+              end,
             },
           },
         },
@@ -217,7 +222,7 @@ return {
             end
           end,
           'snippet_forward',
-          'fallback'
+          'fallback',
         },
         ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
         ['<Up>'] = { 'select_prev', 'fallback' },
@@ -235,7 +240,7 @@ return {
           -- https://cmp.saghen.dev/modes/cmdline.html#show-menu-automatically
           menu = { auto_show = true },
           -- https://cmp.saghen.dev/modes/cmdline.html#ghost-text
-          ghost_text = { enabled = true }
+          ghost_text = { enabled = true },
         },
         -- https://cmp.saghen.dev/modes/cmdline.html#keymap-preset
         keymap = {
@@ -283,20 +288,24 @@ return {
               kind = {
                 ellipsis = false,
                 width = { fill = true },
-                text = function(ctx) return ctx.kind end,
-                highlight = function(ctx) return ctx.kind_hl end,
+                text = function(ctx)
+                  return ctx.kind
+                end,
+                highlight = function(ctx)
+                  return ctx.kind_hl
+                end,
               },
               kind_icon = {
                 text = function(ctx)
                   local icon = ctx.kind_icon
-                  if vim.tbl_contains({ "Path" }, ctx.source_name) then
-                    local dev_icon, _ = require("nvim-web-devicons").get_icon(ctx.label)
+                  if vim.tbl_contains({ 'Path' }, ctx.source_name) then
+                    local dev_icon, _ = require('nvim-web-devicons').get_icon(ctx.label)
                     if dev_icon then
                       icon = dev_icon
                     end
                   else
-                    local lspkind_icon = require("lspkind").symbolic(ctx.kind, nil)
-                    if lspkind_icon ~= "" then
+                    local lspkind_icon = require('lspkind').symbolic(ctx.kind, nil)
+                    if lspkind_icon ~= '' then
                       icon = lspkind_icon
                     end
                   end
@@ -305,8 +314,8 @@ return {
                 end,
                 highlight = function(ctx)
                   local hl = ctx.kind_hl
-                  if vim.tbl_contains({ "Path" }, ctx.source_name) then
-                    local dev_icon, dev_hl = require("nvim-web-devicons").get_icon(ctx.label)
+                  if vim.tbl_contains({ 'Path' }, ctx.source_name) then
+                    local dev_icon, dev_hl = require('nvim-web-devicons').get_icon(ctx.label)
                     if dev_icon then
                       hl = dev_hl
                     end
@@ -324,8 +333,10 @@ return {
                       { 0, #ctx.label, group = 'BlinkCmpLabelDeprecated' },
                     }
                     if ctx.label_detail then
-                      table.insert(highlights,
-                        { #ctx.label, #ctx.label + #ctx.label_detail, group = 'BlinkCmpLabelDetail' })
+                      table.insert(
+                        highlights,
+                        { #ctx.label, #ctx.label + #ctx.label_detail, group = 'BlinkCmpLabelDetail' }
+                      )
                     end
                     -- characters matched on the label by the fuzzy matcher
                     for _, idx in ipairs(ctx.label_matched_indices) do
@@ -339,17 +350,23 @@ return {
               },
               label_description = {
                 width = { max = 30 },
-                text = function(ctx) return ctx.label_description end,
+                text = function(ctx)
+                  return ctx.label_description
+                end,
                 highlight = 'BlinkCmpLabelDescription',
               },
               source_name = {
                 width = { max = 30 },
-                text = function(ctx) return ctx.source_name end,
+                text = function(ctx)
+                  return ctx.source_name
+                end,
                 highlight = 'BlinkCmpSource',
               },
               source_id = {
                 width = { max = 30 },
-                text = function(ctx) return ctx.source_id end,
+                text = function(ctx)
+                  return ctx.source_id
+                end,
                 highlight = 'BlinkCmpSource',
               },
             },
@@ -369,7 +386,9 @@ return {
           direction_priority = function()
             local ctx = require('blink.cmp').get_context()
             local item = require('blink.cmp').get_selected_item()
-            if ctx == nil or item == nil then return { 's', 'n' } end
+            if ctx == nil or item == nil then
+              return { 's', 'n' }
+            end
 
             local item_text = item.textEdit ~= nil and item.textEdit.newText or item.insertText or item.label
             local is_multi_line = item_text:find('\n') ~= nil
@@ -401,7 +420,12 @@ return {
         list = {
           max_items = 200, -- Maximum number of items to display
           -- https://cmp.saghen.dev/configuration/keymap.html#super-tab
-          selection = { preselect = function(ctx) return not require('blink.cmp').snippet_active({ direction = 1 }) end, auto_insert = true },
+          selection = {
+            preselect = function(ctx)
+              return not require('blink.cmp').snippet_active({ direction = 1 })
+            end,
+            auto_insert = true,
+          },
           cycle = {
             -- When `true`, calling `select_next` at the _bottom_ of the completion list
             -- will select the _first_ completion item.
@@ -423,10 +447,10 @@ return {
         -- https://cmp.saghen.dev/configuration/completion.html#ghost-text
         ghost_text = {
           enabled = true,
-          show_with_selection = true,     -- Show the ghost text when an item has been selected
+          show_with_selection = true, -- Show the ghost text when an item has been selected
           show_without_selection = false, -- Show the ghost text when no item has been selected, defaulting to the first item
-          show_with_menu = true,          -- only show when menu is closed
-          show_without_menu = true,       -- Show the ghost text when the menu is closed
+          show_with_menu = true, -- only show when menu is closed
+          show_without_menu = true, -- Show the ghost text when the menu is closed
         },
       },
       -- Experimental signature help support
@@ -463,7 +487,9 @@ return {
             local blink_cmp = require('blink.cmp')
             local ctx = blink_cmp.get_context()
             local item = blink_cmp.get_selected_item()
-            if ctx == nil or item == nil then return { 's', 'n' } end
+            if ctx == nil or item == nil then
+              return { 's', 'n' }
+            end
 
             local item_text = item.textEdit ~= nil and item.textEdit.newText or item.insertText or item.label
             local is_multi_line = item_text:find('\n') ~= nil
@@ -492,7 +518,7 @@ return {
       -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
       -- https://cmp.saghen.dev/configuration/fuzzy.html
       -- https://github.com/saghen/frizbee
-      fuzzy = { implementation = 'prefer_rust_with_warning' }
-    }
-  }
+      fuzzy = { implementation = 'prefer_rust_with_warning' },
+    },
+  },
 }

@@ -8,26 +8,26 @@ return {
     priority = 1000,
     config = function()
       -- https://github.com/folke/tokyonight.nvim/blob/main/extras/lua/tokyonight_moon.lua
-      local bg = '#202734'             -- editor.background
-      local bg_dark = '#1e2531'        -- sideBar.background
-      local bg_darker = '#202734'      -- panel.background
-      local bg_highlight = '#272F3F'   -- editorHoverWidget.background
-      local bg_visual = '#2c3648'      -- editor.selectionBackground (solid version)
+      local bg = '#202734' -- editor.background
+      local bg_dark = '#1e2531' -- sideBar.background
+      local bg_darker = '#202734' -- panel.background
+      local bg_highlight = '#272F3F' -- editorHoverWidget.background
+      local bg_visual = '#2c3648' -- editor.selectionBackground (solid version)
       local bg_cursor_line = '#2a3445' -- editor.lineHighlightBackground (solid version)
-      local fg = '#d8dde7'             -- editor.foreground
-      local fg_dark = '#b9c2d3'        -- sideBar.foreground
-      local fg_darker = '#536686'      -- tab.inactiveForeground
-      local fg_gutter = '#3b4261'      -- editorLineNumber.activeForeground (brighter)
-      local border = '#161c25'         -- editorGroup.border
-      local panel_bg = '#1E2532'       -- sideBar.background from VS Code theme
-      local panel_border = '#536686'   -- editorGroup.border from VS Code theme
-      local green = '#4BF8A8'          -- '#10FA8D'
+      local fg = '#d8dde7' -- editor.foreground
+      local fg_dark = '#b9c2d3' -- sideBar.foreground
+      local fg_darker = '#536686' -- tab.inactiveForeground
+      local fg_gutter = '#3b4261' -- editorLineNumber.activeForeground (brighter)
+      local border = '#161c25' -- editorGroup.border
+      local panel_bg = '#1E2532' -- sideBar.background from VS Code theme
+      local panel_border = '#536686' -- editorGroup.border from VS Code theme
+      local green = '#4BF8A8' -- '#10FA8D'
       local purple = '#fca7ea'
       local magenta = '#ED8AEF'
       local magenta2 = '#ff007c'
       local yellow_bright = '#ffd8ab'
-      local cyan = "#70E8DB"
-      local cyan_bright = "#222A38"
+      local cyan = '#70E8DB'
+      local cyan_bright = '#222A38'
 
       require('tokyonight').setup({
         style = 'moon',
@@ -376,12 +376,12 @@ return {
             ['ip'] = { query = '@parameter.inner', desc = 'inside a parameter' },
           },
           selection_modes = {
-            ['@parameter.outer'] = 'v',   -- charwise
-            ['@parameter.inner'] = 'v',   -- charwise
-            ['@function.outer'] = 'v',    -- charwise
+            ['@parameter.outer'] = 'v', -- charwise
+            ['@parameter.inner'] = 'v', -- charwise
+            ['@function.outer'] = 'v', -- charwise
             ['@conditional.outer'] = 'V', -- linewise
-            ['@loop.outer'] = 'V',        -- linewise
-            ['@class.outer'] = '<c-v>',   -- blockwise
+            ['@loop.outer'] = 'V', -- linewise
+            ['@class.outer'] = '<c-v>', -- blockwise
           },
           include_surrounding_whitespace = false,
         },
@@ -480,7 +480,7 @@ return {
           },
           sections = {
             { section = 'header' },
-            { section = 'keys',   gap = 1, padding = 1 },
+            { section = 'keys', gap = 1, padding = 1 },
             { section = 'startup' },
           },
         },
@@ -739,10 +739,10 @@ return {
             },
             smart = {
               multi = { 'buffers', 'recent', 'files' },
-              format = 'file',     -- use `file` format for all sources
+              format = 'file', -- use `file` format for all sources
               matcher = {
-                cwd_bonus = true,  -- boost cwd matches
-                frecency = true,   -- use frecency boosting
+                cwd_bonus = true, -- boost cwd matches
+                frecency = true, -- use frecency boosting
                 sort_empty = true, -- sort even when the filter is empty
               },
               transform = 'unique_file',
@@ -936,15 +936,15 @@ return {
         messages = {
           -- NOTE: If you enable messages, then the cmdline is enabled automatically.
           -- This is a current Neovim limitation.
-          enabled = true,              -- enables the Noice messages UI
-          view = 'notify',             -- default view for messages
-          view_error = 'notify',       -- view for errors
-          view_warn = 'notify',        -- view for warnings
-          view_history = 'messages',   -- view for :messages
+          enabled = true, -- enables the Noice messages UI
+          view = 'notify', -- default view for messages
+          view_error = 'notify', -- view for errors
+          view_warn = 'notify', -- view for warnings
+          view_history = 'messages', -- view for :messages
           view_search = 'virtualtext', -- view for search count messages. Set to `false` to disable
         },
         popupmenu = {
-          enabled = true,  -- enables the Noice popupmenu UI
+          enabled = true, -- enables the Noice popupmenu UI
           backend = 'nui', -- backend to use to show regular cmdline completions
           -- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
           kind_icons = {}, -- set to `false` to disable icons
@@ -967,7 +967,7 @@ return {
                 { error = true },
                 { warning = true },
                 { event = 'msg_show', kind = { '' } },
-                { event = 'lsp',      kind = 'message' },
+                { event = 'lsp', kind = 'message' },
               },
             },
           },
@@ -981,7 +981,7 @@ return {
                 { error = true },
                 { warning = true },
                 { event = 'msg_show', kind = { '' } },
-                { event = 'lsp',      kind = 'message' },
+                { event = 'lsp', kind = 'message' },
               },
             },
             filter_opts = { count = 1 },
@@ -1195,7 +1195,7 @@ return {
             { 'filename' },
             {
               'aerial',
-              sep = ' ',     -- separator between symbols
+              sep = ' ', -- separator between symbols
               sep_icon = '', -- separator between icon and symbol
 
               -- The number of symbols to render top-down. In order to render only 'N' last
@@ -1222,7 +1222,7 @@ return {
             Snacks.profiler.status(),
             require('core/ui/statusline').status(icons.kinds.Copilot, function()
               local clients = package.loaded['copilot']
-                and require('core/vi/lsp/utils').get_clients({ name = 'copilot', bufnr = 0 })
+                  and require('core/vi/lsp/utils').get_clients({ name = 'copilot', bufnr = 0 })
                 or {}
               if #clients > 0 then
                 local status = require('copilot.api').status.data.status
@@ -1286,7 +1286,7 @@ return {
             },
           },
           lualine_y = {
-            { 'progress', separator = ' ',                  padding = { left = 1, right = 0 } },
+            { 'progress', separator = ' ', padding = { left = 1, right = 0 } },
             { 'location', padding = { left = 0, right = 1 } },
           },
           lualine_z = {
@@ -1384,9 +1384,9 @@ return {
         latex = { enabled = false },
         completions = {
           blink = { enabled = true },
-          lsp = { enabled = true }
-        }
+          lsp = { enabled = true },
+        },
       })
-    end
-  }
+    end,
+  },
 }
