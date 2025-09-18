@@ -221,6 +221,15 @@
   fi
 # }
 
+# GOPASS | https://www.gopass.pw {
+  # The missing password manager for teams
+  # Load API keys from gopass if available
+  if _has_command gopass; then
+    export ANTHROPIC_API_KEY=$(gopass show -n --password tokens/anthropic.com)
+    export GEMINI_API_KEY=$(gopass show -n --password tokens/gemini.google.com)
+  fi
+# }
+
 # EDITOR {
   if _has_command nvim; then
     export EDITOR=${EDITOR:-"$(command -v nvim)"}
