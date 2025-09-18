@@ -107,6 +107,9 @@ _G.Neo = {
       )
     end
   end,
+
+  -- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/util/mini.lua
+  mini = require('core/neo/mini'),
 }
 
 -- bootstrap lazy.nvim and your plugins

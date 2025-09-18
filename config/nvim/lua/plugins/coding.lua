@@ -8,6 +8,40 @@ return {
     dependencies = { 'echasnovski/mini.icons' },
   },
 
+  -- Mini Pairs | Autopair
+  -- Auto pairs Automatically inserts a matching closing character when you type an opening character like ", [, or (.
+  -- https://github.com/nvim-mini/mini.pairs | https://lazyvim.org/plugins/coding#minipairs
+  {
+    'nvim-mini/mini.pairs',
+    event = 'VeryLazy',
+    opts = {
+      modes = { insert = true, command = true, terminal = false },
+      -- skip autopair when next character is one of these
+      skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
+      -- skip autopair when the cursor is inside these treesitter nodes
+      skip_ts = { 'string' },
+      -- skip autopair when next character is closing pair
+      -- and there are more closing pairs than opening pairs
+      skip_unbalanced = true,
+      -- better deal with markdown code blocks
+      markdown = true,
+    },
+    config = function(_, opts)
+      Neo.mini.pairs(opts)
+    end,
+  },
+
+  -- TS Comments | Comments for Treesitter
+  -- Improves comment syntax, lets Neovim handle multiple types of comments for a single language, and relaxes rules for uncommenting.
+  -- https://github.com/folke/ts-comments.nvim | https://www.lazyvim.org/plugins/coding#ts-commentsnvim
+  {
+    'folke/ts-comments.nvim',
+    event = 'VeryLazy',
+    opts = {},
+  },
+
+  -- Visual Multi | Multiple cursors
+  -- https://github.com/mg979/vim-visual-multi
   {
     'mg979/vim-visual-multi',
     event = 'VeryLazy',
