@@ -1,31 +1,209 @@
+--- @diagnostic disable: codestyle-check
 return {
+  -- TokyoNight colorscheme
+  -- https://github.com/folke/tokyonight.nvim
   {
     'folke/tokyonight.nvim',
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
     priority = 1000,
-    opts = {
-      transparent = true,
-      styles = {
-        floats = 'normal'
-      }
-    },
-    config = function(_, opts)
-      require('tokyonight').setup(opts)
-      vim.cmd.colorscheme('tokyonight-moon')
-      vim.cmd(':hi statusline guibg=NONE')
-      vim.api.nvim_set_hl(0, 'BlinkCmpMenu', { bg = '#1a1b2e' })                       -- Darker menu bg
-      vim.api.nvim_set_hl(0, 'BlinkCmpMenuBorder', { bg = '#1a1b2e', fg = '#364a82' }) -- Match border
-      vim.api.nvim_set_hl(0, 'BlinkCmpMenuSelection', { bg = '#2d3f76' })              -- Selection highlight
-      vim.api.nvim_set_hl(0, 'BlinkCmpGhostText', { fg = '#737AA2' })                  -- Label foreground color
+    config = function()
+      -- https://github.com/folke/tokyonight.nvim/blob/main/extras/lua/tokyonight_moon.lua
+      local bg = '#202734'             -- editor.background
+      local bg_dark = '#1e2531'        -- sideBar.background
+      local bg_darker = '#202734'      -- panel.background
+      local bg_highlight = '#272F3F'   -- editorHoverWidget.background
+      local bg_visual = '#2c3648'      -- editor.selectionBackground (solid version)
+      local bg_cursor_line = '#2a3445' -- editor.lineHighlightBackground (solid version)
+      local fg = '#d8dde7'             -- editor.foreground
+      local fg_dark = '#b9c2d3'        -- sideBar.foreground
+      local fg_darker = '#536686'      -- tab.inactiveForeground
+      local fg_gutter = '#3b4261'      -- editorLineNumber.activeForeground (brighter)
+      local border = '#161c25'         -- editorGroup.border
+      local panel_bg = '#1E2532'       -- sideBar.background from VS Code theme
+      local panel_border = '#536686'   -- editorGroup.border from VS Code theme
+      local green = '#4BF8A8'          -- '#10FA8D'
+      local purple = '#fca7ea'
+      local magenta = '#ED8AEF'
+      local magenta2 = '#ff007c'
+      local yellow_bright = '#ffd8ab'
+      local cyan = "#70E8DB"
+      local cyan_bright = "#222A38"
 
-      -- Configure BlinkCmpLabelMatch to only have bold style (no foreground color)
-      -- This improves the colorful-menu.nvim appearance
-      vim.api.nvim_set_hl(0, 'BlinkCmpLabelMatch', { bold = true })
-    end
+      require('tokyonight').setup({
+        style = 'moon',
+        transparent = false,
+        terminal_colors = true,
+        styles = {
+          comments = { italic = true },
+          keywords = { italic = true, bold = true },
+          functions = {},
+          variables = {},
+          sidebars = 'dark',
+          floats = 'dark',
+        },
+        sidebars = { 'qf', 'help', 'vista_kind', 'terminal', 'packer' },
+        day_brightness = 0.3,
+        hide_inactive_statusline = false,
+        dim_inactive = false,
+        lualine_bold = false,
+        on_colors = function(colors)
+          -- Main background colors
+          colors.green = green
+          colors.magenta = magenta
+          colors.cyan = cyan
+          colors.bg = bg
+          colors.bg_dark = bg_dark
+          colors.bg_darker = bg_darker
+          colors.bg_float = bg_highlight
+          colors.bg_popup = bg_highlight
+          colors.bg_sidebar = bg_dark
+          colors.bg_statusline = bg
+          colors.bg_visual = bg_visual
+          colors.bg_cursor_line = bg_cursor_line
+
+          -- Text colors
+          colors.fg = fg
+          colors.fg_dark = fg_dark
+          colors.fg_darker = fg_darker
+          colors.fg_gutter = fg_gutter
+          colors.fg_sidebar = fg_dark
+
+          -- Border and line colors
+          colors.border = border
+          colors.fg_border = border
+
+          -- Special colors
+          colors.comment = fg_darker
+        end,
+        on_highlights = function(hl, c)
+          hl['@property'] = {
+            fg = '#F19A68', -- "#F6A373",
+          }
+          hl['@variable'] = {
+            fg = c.red,
+          }
+          hl['@variable.parameter'] = {
+            fg = c.magenta,
+          }
+          hl.Constant = {
+            fg = c.red,
+          }
+          hl['@keyword'] = {
+            bold = true,
+            cterm = {
+              bold = true,
+              italic = true,
+            },
+            fg = c.cyan,
+            italic = true,
+          }
+          hl['@keyword.function'] = {
+            fg = c.cyan,
+            italic = true,
+          }
+          hl['@keyword.return'] = {
+            fg = c.magenta,
+            italic = true,
+          }
+          hl.LineNr = {
+            fg = c.orange,
+            bg = bg,
+            bold = true,
+          }
+          hl.Number = {
+            fg = c.fg,
+          }
+          hl.CursorLineNr = {
+            fg = c.orange,
+            bg = bg_cursor_line,
+            bold = true,
+          }
+          hl.BlinkCmpMenu = {
+            bg = panel_bg,
+          }
+          hl.BlinkCmpMenuBorder = {
+            bg = panel_bg,
+            fg = panel_border,
+          }
+          hl.BlinkCmpMenuSelection = {
+            bg = bg_visual,
+          }
+          hl.BlinkCmpGhostText = {
+            fg = fg_darker,
+          }
+          hl.BlinkCmpLabelMatch = {
+            bold = true,
+          }
+          hl.NoiceSplitBackground = {
+            bg = '#252F41',
+          }
+          hl.NoiceSplitBorder = {
+            bg = panel_bg,
+            -- fg = panel_border,
+            fg = c.orange,
+          }
+          hl.NoicePopupBackground = {
+            bg = panel_bg,
+          }
+          hl.NoicePopupBorder = {
+            bg = panel_bg,
+            fg = panel_border,
+          }
+          hl.NoiceNotifyBackground = {
+            bg = panel_bg,
+          }
+          hl.NoiceNotifyBorder = {
+            bg = panel_bg,
+            fg = panel_border,
+          }
+          hl.SnacksPickerBackground = {
+            bg = panel_bg,
+          }
+          hl.SnacksPickerBorder = {
+            bg = panel_bg,
+            fg = panel_border,
+          }
+          hl.NormalFloat = {
+            bg = panel_bg,
+            fg = c.fg,
+          }
+          hl.FloatTitle = {
+            bg = panel_bg,
+            fg = c.orange,
+          }
+          hl.SnacksPickerInputTitle = {
+            bg = panel_bg,
+            fg = c.orange,
+          }
+          hl.SnacksPickerInputBorder = {
+            bg = panel_bg,
+            fg = c.orange,
+          }
+          hl.SnacksPickerBoxTitle = {
+            bg = panel_bg,
+            fg = c.orange,
+          }
+          hl.SnacksPickerBoxInputTitle = {
+            bg = panel_bg,
+            fg = c.orange,
+          }
+          hl.SnacksPickerBoxInputBorder = {
+            bg = panel_bg,
+            fg = c.orange,
+          }
+          -- ColorColumn - vertical line that marks textwidth limit
+          hl.ColorColumn = {
+            bg = bg_highlight,
+            fg = 'NONE',
+          }
+        end,
+      })
+      vim.cmd([[ colorscheme tokyonight-moon]])
+    end,
   },
 
-  -- Treesitter is a new parser generator tool that we can
-  -- use in Neovim to power faster and more accurate syntax highlighting.
+  -- Treesitter is a new parser generator tool that we can use in Neovim to power faster and more accurate syntax highlighting
+  -- https://github.com/nvim-treesitter/nvim-treesitter | https://lazyvim.org/plugins/treesitter#nvim-treesitter
   {
     'nvim-treesitter/nvim-treesitter',
     version = false, -- last release is way too old and doesn't work on Windows
@@ -43,7 +221,74 @@ return {
     end,
     cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
     dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
+      -- Text Objects for Treesitter
+      -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects | https://lazyvim.org/plugins/treesitter#nvim-treesitter-textobjects
+      {
+        'nvim-treesitter/nvim-treesitter-textobjects',
+        branch = 'main',
+        event = 'VeryLazy',
+        opts = {},
+        keys = function()
+          local moves = {
+            goto_next_start = { [']f'] = '@function.outer', [']c'] = '@class.outer', [']a'] = '@parameter.inner' },
+            goto_next_end = { [']F'] = '@function.outer', [']C'] = '@class.outer', [']A'] = '@parameter.inner' },
+            goto_previous_start = { ['[f'] = '@function.outer', ['[c'] = '@class.outer', ['[a'] = '@parameter.inner' },
+            goto_previous_end = { ['[F'] = '@function.outer', ['[C'] = '@class.outer', ['[A'] = '@parameter.inner' },
+          }
+          local ret = {} --- @type LazyKeysSpec[]
+          for method, keymaps in pairs(moves) do
+            for key, query in pairs(keymaps) do
+              local desc = query:gsub('@', ''):gsub('%..*', '')
+              desc = desc:sub(1, 1):upper() .. desc:sub(2)
+              desc = (key:sub(1, 1) == '[' and 'Prev ' or 'Next ') .. desc
+              desc = desc .. (key:sub(2, 2) == key:sub(2, 2):upper() and ' End' or ' Start')
+              ret[#ret + 1] = {
+                key,
+                function()
+                  -- don't use treesitter if in diff mode and the key is one of the c/C keys
+                  if vim.wo.diff and key:find('[cC]') then
+                    return vim.cmd('normal! ' .. key)
+                  end
+                  require('nvim-treesitter-textobjects.move')[method](query, 'textobjects')
+                end,
+                desc = desc,
+                mode = { 'n', 'x', 'o' },
+                silent = true,
+              }
+            end
+          end
+          return ret
+        end,
+        config = function(_, opts)
+          local TS = require('nvim-treesitter-textobjects')
+          if not TS.setup then
+            Neo.error('Please use `:Lazy` and update `nvim-treesitter`')
+            return
+          end
+          TS.setup(opts)
+        end,
+      },
+      -- Treesitter Context | A plugin for displaying the context of the current cursor position
+      -- https://github.com/nvim-treesitter/nvim-treesitter-context | https://lazyvim.org/extras/ui/treesitter-context#nvim-treesitter-context
+      {
+        'nvim-treesitter/nvim-treesitter-context',
+        event = 'VeryLazy',
+        opts = function()
+          local tsc = require('treesitter-context')
+          Snacks.toggle({
+            name = 'Treesitter Context',
+            get = tsc.enabled,
+            set = function(state)
+              if state then
+                tsc.enable()
+              else
+                tsc.disable()
+              end
+            end,
+          }):map('<leader>ut')
+          return { mode = 'cursor', max_lines = 3 }
+        end,
+      },
     },
     opts = {
       ignore_install = { 'latex' },
@@ -68,6 +313,10 @@ return {
         'gitattributes',
         'gitcommit',
         'gitignore',
+        'go',
+        'gomod',
+        'gosum',
+        'gowork',
         'html',
         'ini',
         'javascript',
@@ -98,10 +347,6 @@ return {
         'vue',
         'xml',
         'yaml',
-        'go',
-        'gomod',
-        'gosum',
-        'gowork',
       },
       incremental_selection = {
         enable = true,
@@ -170,55 +415,43 @@ return {
     end,
   },
 
-  {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    event = 'VeryLazy',
-    enabled = true,
-    config = function()
-      local lazy = require('core/vi/plugins')
-      -- If treesitter is already loaded, we need to run config again for textobjects
-      if lazy.is_loaded('nvim-treesitter') then
-        local opts = lazy.opts('nvim-treesitter')
-        require('nvim-treesitter.configs').setup({ textobjects = opts.textobjects })
-      end
-
-      -- When in diff mode, we want to use the default
-      -- vim text objects c & C instead of the treesitter ones.
-      local move = require('nvim-treesitter.textobjects.move') --- @type table<string,fun(...)>
-      local configs = require('nvim-treesitter.configs')
-      for name, fn in pairs(move) do
-        if name:find('goto') == 1 then
-          move[name] = function(q, ...)
-            if vim.wo.diff then
-              local config = configs.get_module('textobjects.move')[name] --- @type table<string,string>
-              for key, query in pairs(config or {}) do
-                if q == query and key:find('[%]%[][cC]') then
-                  vim.cmd('normal! ' .. key)
-                  return
-                end
-              end
-            end
-            return fn(q, ...)
-          end
-        end
-      end
-    end,
-  },
-
   -- Helpview | A modern UI for Neovim's help system
   -- The plugin should be loaded after your colorscheme to ensure the correct highlight groups are used
   -- https://github.com/OXY2DEV/helpview.nvim
   {
-    "OXY2DEV/helpview.nvim",
+    'OXY2DEV/helpview.nvim',
     lazy = false,
     opts = {},
   },
 
   -- Automatically add closing tags for HTML and JSX
+  -- https://github.com/windwp/nvim-ts-autotag | https://lazyvim.org/plugins/treesitter#nvim-ts-autotag
   {
     'windwp/nvim-ts-autotag',
     event = 'VeryLazy',
     opts = {},
+  },
+
+  -- Mini Icons | A set of icons for Neovim
+  -- https://github.com/nvim-mini/mini.icons | https://lazyvim.org/plugins/ui#miniicons
+  {
+    'nvim-mini/mini.icons',
+    lazy = true,
+    opts = {
+      file = {
+        ['.keep'] = { glyph = '󰊢', hl = 'MiniIconsGrey' },
+        ['devcontainer.json'] = { glyph = '', hl = 'MiniIconsAzure' },
+      },
+      filetype = {
+        dotenv = { glyph = '', hl = 'MiniIconsYellow' },
+      },
+    },
+    init = function()
+      package.preload['nvim-web-devicons'] = function()
+        require('mini.icons').mock_nvim_web_devicons()
+        return package.loaded['nvim-web-devicons']
+      end
+    end,
   },
 
   -- SNACKS | A modern UI library for Neovim | https://github.com/folke/snacks.nvim
@@ -299,22 +532,22 @@ return {
           win_by_ft = {
             lua = {
               keys = {
-                ["source"] = {
+                ['source'] = {
                   '<D-CR>',
                   function(self)
-                    local name = "scratch." .. vim.fn.fnamemodify(vim.api.nvim_buf_get_name(self.buf), ":e")
+                    local name = 'scratch.' .. vim.fn.fnamemodify(vim.api.nvim_buf_get_name(self.buf), ':e')
                     Snacks.debug.run({ buf = self.buf, name = name })
                   end,
-                  desc = "Source buffer",
-                  mode = { "n", "x" },
+                  desc = 'Source buffer',
+                  mode = { 'n', 'x' },
                 },
               },
             },
           },
         },
-        -- Smooth scrolling for Neovim. Properly handles scrolloff and mouse scrolling.
+        -- Disable snacks scroll when animate is enabled
         -- https://github.com/folke/snacks.nvim/blob/main/docs/scroll.md
-        scroll = { enabled = true },
+        scroll = { enabled = false },
         -- Pretty status column
         -- https://github.com/folke/snacks.nvim/blob/main/docs/statuscolumn.md
         statuscolumn = { enabled = false }, -- we set this in options.lua
@@ -364,6 +597,23 @@ return {
           enabled = true,
           layout = {
             layout = { backdrop = true },
+          },
+          -- Global win options for all pickers to make them visually distinct
+          win = {
+            input = {
+              win_options = {
+                winhighlight = 'Normal:SnacksPickerBackground,FloatBorder:SnacksPickerBorder',
+              },
+              keys = {
+                s = 'flash',
+                ['<A-s>'] = { 'flash', mode = { 'n', 'i' } },
+              },
+            },
+            list = {
+              win_options = {
+                winhighlight = 'Normal:SnacksPickerBackground,FloatBorder:SnacksPickerBorder',
+              },
+            },
           },
           formatters = {
             file = { filename_first = true },
@@ -564,14 +814,65 @@ return {
               end,
             },
           },
-          win = {
-            input = {
-              keys = {
-                s = 'flash',
-                ['<A-s>'] = { 'flash', mode = { 'n', 'i' } }
-              },
-            },
-          },
+        },
+      })
+    end,
+  },
+
+  -- Mini Animate | Animates many common Neovim actions, like scrolling, moving the cursor, and resizing windows
+  -- https://github.com/nvim-mini/mini.animate | https://lazyvim.org/extras/ui/mini-animate#minianimate
+  {
+    'nvim-mini/mini.animate',
+    event = 'VeryLazy',
+    cond = vim.g.neovide == nil,
+    opts = function(_, opts)
+      -- don't use animate when scrolling with the mouse
+      local mouse_scrolled = false
+      for _, scroll in ipairs({ 'Up', 'Down' }) do
+        local key = '<ScrollWheel' .. scroll .. '>'
+        vim.keymap.set({ '', 'i' }, key, function()
+          mouse_scrolled = true
+          return key
+        end, { expr = true })
+      end
+
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'grug-far',
+        callback = function()
+          vim.b.minianimate_disable = true
+        end,
+      })
+
+      Snacks.toggle({
+        name = 'Mini Animate',
+        get = function()
+          return not vim.g.minianimate_disable
+        end,
+        set = function(state)
+          vim.g.minianimate_disable = not state
+        end,
+      }):map('<leader>ua')
+
+      local animate = require('mini.animate')
+      return vim.tbl_deep_extend('force', opts, {
+        cursor = {
+          -- Whether to enable this animation
+          enable = false,
+        },
+        resize = {
+          timing = animate.gen_timing.linear({ duration = 50, unit = 'total' }),
+        },
+        scroll = {
+          timing = animate.gen_timing.linear({ duration = 150, unit = 'total' }),
+          subscroll = animate.gen_subscroll.equal({
+            predicate = function(total_scroll)
+              if mouse_scrolled then
+                mouse_scrolled = false
+                return false
+              end
+              return total_scroll > 1
+            end,
+          }),
         },
       })
     end,
@@ -583,7 +884,7 @@ return {
     'folke/noice.nvim',
     event = 'VeryLazy',
     dependencies = {
-      'MunifTanjim/nui.nvim'
+      'MunifTanjim/nui.nvim',
     },
     opts = function(_, opts)
       return vim.tbl_deep_extend('force', opts or {}, {
@@ -591,17 +892,17 @@ return {
         lsp = {
           override = {
             ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-            ['vim.lsp.util.stylize_markdown'] = true
+            ['vim.lsp.util.stylize_markdown'] = true,
           },
           hover = {
-            enable = false
+            enable = false,
           },
           signature = {
             enabled = true,
           },
           documentation = {
             enabled = true,
-          }
+          },
         },
         -- Hide written messages
         -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#hide-written-messages-1
@@ -626,61 +927,61 @@ return {
           },
           {
             filter = {
-              event = "msg_show",
-              kind = "search_count",
+              event = 'msg_show',
+              kind = 'search_count',
             },
             opts = { skip = true },
-          }
+          },
         },
         messages = {
           -- NOTE: If you enable messages, then the cmdline is enabled automatically.
           -- This is a current Neovim limitation.
           enabled = true,              -- enables the Noice messages UI
-          view = "notify",             -- default view for messages
-          view_error = "notify",       -- view for errors
-          view_warn = "notify",        -- view for warnings
-          view_history = "messages",   -- view for :messages
-          view_search = "virtualtext", -- view for search count messages. Set to `false` to disable
+          view = 'notify',             -- default view for messages
+          view_error = 'notify',       -- view for errors
+          view_warn = 'notify',        -- view for warnings
+          view_history = 'messages',   -- view for :messages
+          view_search = 'virtualtext', -- view for search count messages. Set to `false` to disable
         },
         popupmenu = {
           enabled = true,  -- enables the Noice popupmenu UI
-          backend = "nui", -- backend to use to show regular cmdline completions
+          backend = 'nui', -- backend to use to show regular cmdline completions
           -- Icons for completion item kinds (see defaults at noice.config.icons.kinds)
           kind_icons = {}, -- set to `false` to disable icons
         },
         -- default options for require('noice').redirect
         -- see the section on Command Redirection
         redirect = {
-          view = "popup",
-          filter = { event = "msg_show" },
+          view = 'popup',
+          filter = { event = 'msg_show' },
         },
         -- You can add any custom commands below that will be available with `:Noice command`
         commands = {
           history = {
             -- options for the message history that you get with `:Noice`
-            view = "split",
-            opts = { enter = true, format = "details" },
+            view = 'split',
+            opts = { enter = true, format = 'details' },
             filter = {
               any = {
-                { event = "notify" },
+                { event = 'notify' },
                 { error = true },
                 { warning = true },
-                { event = "msg_show", kind = { "" } },
-                { event = "lsp",      kind = "message" },
+                { event = 'msg_show', kind = { '' } },
+                { event = 'lsp',      kind = 'message' },
               },
             },
           },
           -- :Noice last
           last = {
-            view = "popup",
-            opts = { enter = true, format = "details" },
+            view = 'popup',
+            opts = { enter = true, format = 'details' },
             filter = {
               any = {
-                { event = "notify" },
+                { event = 'notify' },
                 { error = true },
                 { warning = true },
-                { event = "msg_show", kind = { "" } },
-                { event = "lsp",      kind = "message" },
+                { event = 'msg_show', kind = { '' } },
+                { event = 'lsp',      kind = 'message' },
               },
             },
             filter_opts = { count = 1 },
@@ -688,15 +989,15 @@ return {
           -- :Noice errors
           errors = {
             -- options for the message history that you get with `:Noice`
-            view = "popup",
-            opts = { enter = true, format = "details" },
+            view = 'popup',
+            opts = { enter = true, format = 'details' },
             filter = { error = true },
             filter_opts = { reverse = true },
           },
           all = {
             -- options for the message history that you get with `:Noice`
-            view = "split",
-            opts = { enter = true, format = "details" },
+            view = 'split',
+            opts = { enter = true, format = 'details' },
             filter = {},
           },
         },
@@ -704,12 +1005,30 @@ return {
           enabled = true,
           view = 'notify',
         },
+        -- Custom views with distinct backgrounds for better panel separation
+        views = {
+          split = {
+            win_options = {
+              winhighlight = 'Normal:NoiceSplitBackground,FloatBorder:NoiceSplitBorder',
+            },
+          },
+          popup = {
+            win_options = {
+              winhighlight = 'Normal:NoicePopupBackground,FloatBorder:NoicePopupBorder',
+            },
+          },
+          notify = {
+            win_options = {
+              winhighlight = 'Normal:NoiceNotifyBackground,FloatBorder:NoiceNotifyBorder',
+            },
+          },
+        },
         -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#presets
         presets = {
           bottom_search = true,
           command_palette = true,
           long_message_to_split = true,
-          lsp_doc_border = true
+          lsp_doc_border = true,
         },
       })
     end,
@@ -722,7 +1041,7 @@ return {
     event = 'VeryLazy',
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
-      'nvim-tree/nvim-web-devicons'
+      'nvim-tree/nvim-web-devicons',
     },
     opts = function(_, opts)
       local kind_filter = {
@@ -781,7 +1100,7 @@ return {
         layout = {
           resize_to_content = false,
           win_opts = {
-            winhl = "Normal:NormalFloat,FloatBorder:NormalFloat,SignColumn:SignColumnSB",
+            winhl = 'Normal:NormalFloat,FloatBorder:NormalFloat,SignColumn:SignColumnSB',
             signcolumn = 'yes',
             statuscolumn = ' ',
           },
@@ -796,14 +1115,14 @@ return {
           whitespace = '  ',
         },
       })
-    end
+    end,
   },
 
   -- Lualine | Blazing fast and easy to configure statusline written in pure lua
   -- https://github.com/nvim-lualine/lualine.nvim
   {
     'nvim-lualine/lualine.nvim',
-    event = "VeryLazy",
+    event = 'VeryLazy',
     opts = function(_, opts)
       -- Lualine has the following sections. Each section has components.
       -- +-------------------------------------------------+
@@ -832,11 +1151,11 @@ return {
 
       return vim.tbl_deep_extend('force', opts or {}, {
         options = {
-          theme = "auto",
+          theme = 'auto',
           globalstatus = vim.o.laststatus == 3,
           disabled_filetypes = { statusline = { 'dashboard', 'alpha', 'ministarter', 'snacks_dashboard' } },
           section_separators = { left = '', right = '' },
-          component_separators = { left = '', right = '' }
+          component_separators = { left = '', right = '' },
         },
         sections = {
           lualine_a = {
@@ -873,7 +1192,7 @@ return {
                 vim.cmd('FileTypes')
               end,
             },
-            { require('core/ui/statusline').pretty_path() },
+            { 'filename' },
             {
               'aerial',
               sep = ' ',     -- separator between symbols
@@ -897,14 +1216,14 @@ return {
               on_click = function()
                 Snacks.picker.lsp_symbols({ layout = 'dropdown', enter = true, focus = 'list' })
               end,
-            }
+            },
           },
           lualine_x = {
             Snacks.profiler.status(),
             require('core/ui/statusline').status(icons.kinds.Copilot, function()
-              local clients = package.loaded['copilot'] and
-                require('core/vi/lsp/utils').get_clients({ name = 'copilot', bufnr = 0 }) or
-                {}
+              local clients = package.loaded['copilot']
+                and require('core/vi/lsp/utils').get_clients({ name = 'copilot', bufnr = 0 })
+                or {}
               if #clients > 0 then
                 local status = require('copilot.api').status.data.status
                 return (status == 'InProgress' and 'pending') or (status == 'Warning' and 'error') or 'ok'
@@ -1021,7 +1340,7 @@ return {
             group = 'windows',
             proxy = '<c-w>',
             expand = function()
-              return require("which-key.extras").expand.win()
+              return require('which-key.extras').expand.win()
             end,
           },
           -- better descriptions
@@ -1055,9 +1374,8 @@ return {
     end,
   },
 
-  -- Plugin to improve viewing Markdown files in Neovim
-  -- https://github.com/MeanderingProgrammer/render-markdown.nvim?tab=readme-ov-file
-  -- https://youtu.be/AAkrmfkC1L4?t=167
+  -- Improve viewing Markdown files in Neovim
+  -- https://github.com/MeanderingProgrammer/render-markdown.nvim?tab=readme-ov-file | https://youtu.be/AAkrmfkC1L4?t=167
   {
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
@@ -1067,8 +1385,8 @@ return {
         completions = {
           blink = { enabled = true },
           lsp = { enabled = true }
-        },
+        }
       })
-    end,
-  },
+    end
+  }
 }
