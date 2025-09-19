@@ -1,0 +1,125 @@
+cheats:
+  Conditional types | TypeScript:
+    desc: Making the args argument optional based on whether T is provided
+    tags: [ts]
+    notes:
+      - ts: | #typescript
+          export abstract class AuthenticationService<T = undefined> {
+            abstract findByLogin(login: string, args?: T extends undefined ? never : T): Promise<Patient>
+          }
+  Extract vs Pick | TypeScript:
+    desc: Extract and Pick are two utility types in TypeScript that can be used to filter types based on certain conditions.
+    tags: [ts, utility-types]
+    notes:
+      - md: | #markdown
+          ## Differences between Extract and Pick:
+
+          ### Extract
+
+          - Works with union types (e.g., 'red' | 'blue' | 'green')
+          - Filters types based on assignability (what values can be assigned to the type)
+          - Returns a union type
+          - Use when you want to filter union types or get specific members from a union
+
+          ### Pick
+
+          - Works with object types (interfaces or type literals with properties)
+          - Selects specific properties from an object type by their exact names
+          - Returns an object type with selected properties
+          - Use when you want to create a new object type with only certain properties from an existing object type
+
+          ### Summary
+
+          1. **Extract** works with union types, **Pick** works with object types
+          2. **Extract** filters types based on assignability, **Pick** selects properties by exact names
+          3. **Extract** can work with any type, **Pick** requires an object type with known properties
+          4. **Extract** returns a union type, **Pick** returns an object type
+      - ts: | #typescript
+          // Example 1: Basic Usage
+          type Colors = 'red' | 'blue' | 'green' | 'yellow'
+          interface ColorsObject {
+            red: string;
+            blue: string;
+            green: string;
+            yellow: string;
+          }
+
+          // Extract works with union types
+          type WarmColors = Extract<Colors, 'red' | 'yellow'>  // type WarmColors = 'red' | 'yellow'
+
+          // Pick works with object types
+          type WarmColorsObject = Pick<ColorsObject, 'red' | 'yellow'>
+          /* type WarmColorsObject = {
+              red: string;
+              yellow: string;
+          } */
+
+          // Example 2: Working with Complex Types
+          interface Animal {
+            name: string;
+            type: 'mammal' | 'bird' | 'fish';
+            age: number;
+            canFly: boolean;
+          }
+
+          type AnimalTypes = Animal['type']  // 'mammal' | 'bird' | 'fish'
+
+          // Extract can filter union types based on assignability
+          type FlyingAnimals = Extract<AnimalTypes, 'bird'>  // type FlyingAnimals = 'bird'
+
+          // Pick selects properties from an object type
+          type AnimalBasicInfo = Pick<Animal, 'name' | 'age'>
+          /* type AnimalBasicInfo = {
+              name: string;
+              age: number;
+          } */
+
+          // Example 3: Working with Function Types
+          type Functions = (() => void) | string | number | ((a: number) => number)
+
+          // Extract can filter out function types
+          type OnlyFunctions = Extract<Functions, Function>  // type OnlyFunctions = (() => void) | ((a: number) => number)
+
+          // Pick doesn't work with union types
+          // This would cause an error:
+          // type WontWork = Pick<Functions, 'toString'>  // Error: Type 'Functions' does not satisfy the constraint 'object'
+
+          // Example 4: Conditional Types
+          type StringOrNumber = string | number | boolean | undefined
+
+          // Extract can work with conditional types
+          type NumbersOnly = Extract<StringOrNumber, number>  // type NumbersOnly = number
+
+          interface User {
+            id: number;
+            name: string;
+            email: string;
+            isAdmin: boolean;
+          }
+
+          // Pick works with literal property names only
+          type UserPublicInfo = Pick<User, 'name' | 'email'>
+          /* type UserPublicInfo = {
+              name: string;
+              email: string;
+          } */
+
+          // Example 5: Advanced Usage with Mapped Types
+          type Events = 'click' | 'scroll' | 'mousemove' | 'submit'
+
+          // Extract can filter union types based on string pattern
+          type ClickEvents = Extract<Events, `${'click' | 'mouse'}${string}`>  // type ClickEvents = "click" | "mousemove"
+
+          interface EventHandlers {
+            onClick: () => void;
+            onScroll: () => void;
+            onMousemove: () => void;
+            onSubmit: () => void;
+          }
+
+          // Pick can select properties based on literal names only
+          type MouseHandlers = Pick<EventHandlers, 'onClick' | 'onMousemove'>
+          /* type MouseHandlers = {
+              onClick: () => void;
+              onMousemove: () => void;
+          } */

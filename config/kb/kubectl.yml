@@ -1,0 +1,57 @@
+bookmarks:
+  https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/:
+    desc: Official Kubernetes guide for debugging running pods and examining pod lifecycle
+    tags: [kubernetes, debugging, pods, troubleshooting, logs]
+
+cheats:
+  Debugging Kubernetes Pod States and Transitions:
+    desc: A systematic approach to troubleshooting pod lifecycle issues and understanding pod phases
+    tags: [kubernetes, debugging, pods, states, lifecycle, troubleshooting]
+    notes:
+      - md: |
+          ## Overview
+
+          - Pod lifecycle states indicate the current status of pods
+          - Understanding transitions helps debug deployment issues
+          - Container states are distinct from pod phases
+
+          ### Key Concepts
+
+          - A pod is like a small apartment building where containers live
+          - Pod phases (Pending, Running, Succeeded, Failed) are like the building's overall status
+          - Container states (Waiting, Running, Terminated) are like the status of each apartment
+          - Pod conditions help us understand why a pod might be stuck
+
+          ### Common Debugging Patterns
+
+          - Check pod status first: `kubectl describe pod <pod-name>`
+          - Look at container logs: `kubectl logs <pod-name> -c <container-name>`
+          - Examine events: `kubectl get events --sort-by='.lastTimestamp'`
+
+          ## Summary
+
+          - Always check pod conditions before diving into container logs
+          - Use `-o json` or `-o yaml` for detailed debugging information
+          - Container restarts often indicate application issues
+          - Events provide chronological troubleshooting context
+          - Pod phases are high-level, container states provide details
+
+commands:
+  kubectl get pods -n <namespace> -o json | jq -r '.items[].status.phase':
+    desc: List all pod statuses in a namespace using kubectl and jq
+    tags: [kubernetes, kubectl, jq, pods, status, json, filtering]
+    notes:
+      - sh: |
+          # Get running pods only
+          kubectl get pods -n production -o json | jq -r '.items[] | select(.status.phase=="Running") | .metadata.name'
+
+          # Get failed pods with their last state
+          kubectl get pods -n production -o json | \
+            jq -r '.items[] | select(.status.phase=="Failed") | "\(.metadata.name) - \(.status.containerStatuses[0].lastState.terminated.reason)"'
+
+          # Count pods by status
+          kubectl get pods -n production -o json | \
+            jq -r '.items[].status.phase' | sort | uniq -c
+    links:
+      - https://kubernetes.io/docs/reference/kubectl/jsonpath
+      - https://stedolan.github.io/jq/manual

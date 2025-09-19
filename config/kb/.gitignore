@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# But track YAML files
+!*.yaml
+!*.yml
+
+# Also track .gitignore itself
+!.gitignore

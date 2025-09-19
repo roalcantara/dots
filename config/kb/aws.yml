@@ -1,0 +1,48 @@
+commands:
+  cat ~/.aws/config:
+    desc: Used by the AWS command-line interface (CLI) to store configuration settings for AWS profiles
+    tags: [aws, configure, profiles]
+
+  cat ~/.aws/credentials:
+    desc: Used by the AWS Command Line Interface (CLI) and SDKs to store the access key and secret access key for authenticating AWS API requests.
+    tags: [aws, configure, profiles]
+
+  aws configure list:
+    desc: List the current configuration values for AWS CLI
+    tags: [aws, configure, profiles]
+
+  aws configure --profile <profile_name>:
+    desc: Configure the AWS CLI with a named profile
+    tags: [aws, configure, profiles]
+
+  aws configure list-profiles:
+    desc: List the available profiles configured in the AWS CLI. It requires ACCESS_KEY_ID, SECRET_ACCESS_KEY and REGION
+    tags: [aws, configure, profiles]
+
+  aws iam list-policies:
+    desc: List all IAM policies in the current account
+    tags: [aws, iam, policies]
+
+  aws iam list-policies --output yaml:
+    desc: List all IAM policies in the current account in YAML format
+    tags: [aws, iam, policies]
+
+  aws lambda list-functions --output yaml:
+    desc: List all Lambda functions in the current account in YAML format
+    tags: [aws, lambda, functions]
+
+  aws secretsmanager list-secrets:
+    desc: List all secrets in the current account
+    tags: [aws, secretsmanager, secrets]
+
+  aws secretsmanager list-secrets --max-results 10:
+    desc: List the first 10 secrets in the current account
+    tags: [aws, secretsmanager, secrets]
+
+  aws secretsmanager list-secrets --filters Key=tag-key,Values=example-key:
+    desc: List all secrets in the current account that have a tag with the key 'example-key'
+    tags: [aws, secretsmanager, secrets]
+
+  aws secretsmanager list-secrets --query "SecretList[*].Name":
+    desc: List the names of all secrets in the current account
+    tags: [aws, secretsmanager, secrets]

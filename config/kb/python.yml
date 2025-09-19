@@ -1,0 +1,407 @@
+bookmarks:
+  https://docs.astral.sh/uv:
+    desc: An extremely fast Python package and project manager, written in Rust
+    tags: [python, packages]
+    links:
+      - Guides overview: https://docs.astral.sh/uv/guides/#guides-overview
+      - Integration guides: https://docs.astral.sh/uv/guides/integration
+      - Settings: https://docs.astral.sh/uv/reference/settings
+    notes:
+      - md: |
+          ## Highlights
+
+          > uv is backed by Astral, the creators of Ruff
+
+          🚀 A single tool to replace pip, pip-tools, pipx, poetry, pyenv, twine, virtualenv, and more.
+          ⚡️ 10-100x faster than pip.
+          🐍 Installs and manages Python versions.
+          🛠️ Runs and installs Python applications.
+          ❇️ Runs scripts, with support for inline dependency metadata.
+          🗂️ Provides comprehensive project management, with a universal lockfile.
+          🔩 Includes a pip-compatible interface for a performance boost with a familiar CLI.
+          🏢 Supports Cargo-style workspaces for scalable projects.
+          💾 Disk-space efficient, with a global cache for dependency deduplication.
+          ⏬ Installable without Rust or Python via curl or pip.
+          🖥️ Supports macOS, Linux, and Windows.
+
+      - sh: |
+          # Install the Astral package manager for Python.
+          brew install uv:
+
+          # Enable shell completion for uv commands in Zsh
+          echo 'eval "$(uv generate-shell-completion zsh)"' >> ~/.zshrc:
+
+          # Enable shell completion for uvx commands in Zsh
+          echo 'eval "$(uvx --generate-shell-completion zsh)"' >> ~/.zshrc:
+
+commands:
+  # UV | Installing and managing Python itself
+  # An extremely fast Python package and project manager, written in Rust
+  brew install uv:
+    desc: Install the Astral package manager for Python.
+    tags: [python, uv, packages]
+  echo 'eval "$(uv generate-shell-completion zsh)"' >> ~/.zshrc:
+    desc: Enable shell completion for uv commands in Zsh
+    tags: [python, uv, zsh]
+  echo 'eval "$(uvx --generate-shell-completion zsh)"' >> ~/.zshrc:
+    desc: Enable shell completion for uvx commands in Zsh
+    tags: [python, uv, zsh]
+  # UV | Installing and managing Python itself
+  uv python install:
+    desc: Install the latest Python version
+    title: Installing and managing Python itself
+    tags: [python, uv]
+    links:
+      - Install Python versions: https://docs.astral.sh/uv/guides/install-python
+      - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
+  uv python install 3.12:
+    desc: Install a specific Python version
+    title: Installing and managing Python itself
+    tags: [python, uv]
+    links:
+      - Install Python versions: https://docs.astral.sh/uv/guides/install-python
+      - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
+  uv python list:
+    desc: View available Python versions
+    title: Installing and managing Python itself
+    tags: [python, uv]
+    links:
+      - Install Python versions: https://docs.astral.sh/uv/guides/install-python
+      - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
+  uv python find:
+    desc: Find an installed Python version
+    title: Installing and managing Python itself
+    tags: [python, uv]
+    links:
+      - Install Python versions: https://docs.astral.sh/uv/guides/install-python
+      - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
+  uv python pin:
+    desc: Pin the current project to use a specific Python version
+    title: Installing and managing Python itself
+    tags: [python, uv]
+    links:
+      - Install Python versions: https://docs.astral.sh/uv/guides/install-python
+      - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
+  uv python uninstall:
+    desc: Uninstall a Python version
+    title: Installing and managing Python itself
+    tags: [python, uv]
+    links:
+      - Install Python versions: https://docs.astral.sh/uv/guides/install-python
+      - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
+  # UV | Projects | Creating and working on Python projects i.e., with a pyproject.toml
+  uv init:
+    desc: Create a new Python project
+    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/projects
+      - https://docs.astral.sh/uv/getting-started/features/#projects
+  uv add:
+    desc: Add a dependency to the project.
+    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/projects
+      - https://docs.astral.sh/uv/getting-started/features/#projects
+  uv build:
+    desc: Build the project into distribution archives.
+    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/projects
+      - https://docs.astral.sh/uv/getting-started/features/#projects
+  uv lock:
+    desc: Create a lockfile for the project's dependencies.
+    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/projects
+      - https://docs.astral.sh/uv/getting-started/features/#projects
+  uv publish:
+    desc: Publish the project to a package index.
+    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/projects
+      - https://docs.astral.sh/uv/getting-started/features/#projects
+  uv remove:
+    desc: Remove a dependency from the project.
+    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/projects
+      - https://docs.astral.sh/uv/getting-started/features/#projects
+  uv sync:
+    desc: Sync the project's dependencies with the environment.
+    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/projects
+      - https://docs.astral.sh/uv/getting-started/features/#projects
+  uv tree:
+    desc: View the dependency tree for the project.
+    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/projects
+      - https://docs.astral.sh/uv/getting-started/features/#projects
+  # UV | Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
+  uv tool install:
+    desc: Install a tool user-wide.
+    title: Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/tools
+      - https://docs.astral.sh/uv/getting-started/features/#tools
+  uv tool list:
+    desc: List installed tools.
+    title: Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/tools
+      - https://docs.astral.sh/uv/getting-started/features/#tools
+  uv tool uninstall:
+    desc: Uninstall a tool.
+    title: Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/tools
+      - https://docs.astral.sh/uv/getting-started/features/#tools
+  uv tool update-shell:
+    desc: Update the shell to include tool executables.
+    title: Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/tools
+      - https://docs.astral.sh/uv/getting-started/features/#tools
+  uvx / uv tool run:
+    desc: Run a tool in a temporary environment.
+    title: Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/tools
+      - https://docs.astral.sh/uv/getting-started/features/#tools
+  uv cache clean:
+    desc: Remove cache entries.
+    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/getting-started/features/#utility
+  uv cache dir:
+    desc: Show the uv cache directory path.
+    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/getting-started/features/#utility
+  uv cache prune:
+    desc: Remove outdated cache entries.
+    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/getting-started/features/#utility
+  uv python dir:
+    desc: Show the uv installed Python versions path.
+    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/getting-started/features/#utility
+  uv tool dir:
+    desc: Show the uv tool directory path.
+    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/getting-started/features/#utility
+  uv self update:
+    desc: Update uv to the latest version.
+    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/getting-started/features/#utility
+  # UV | PIP | Manually managing environments and packages — intended to be used in legacy workflows or cases where the high-level commands do not provide enough control
+  uv venv:
+    desc: Create a new virtual environment
+    title: PIP | Manually managing environments and packages — intended to be used in legacy workflows or cases where the high-level commands do not provide enough control
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/pip/environments
+      - https://docs.astral.sh/uv/getting-started/features/#the-pip-interface
+  # UV |  PIP | Managing packages in an environment (replacing pip and pipdeptree)
+  uv pip check:
+    desc: Check that the current environment has compatible packages
+    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/pip/packages
+  uv pip freeze:
+    desc: List installed packages and their versions
+    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/pip/packages
+  uv pip install:
+    desc: Install packages into the current environment
+    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/pip/packages
+  uv pip list:
+    desc: List installed packages
+    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/pip/packages
+  uv pip show:
+    desc: Show details about an installed package
+    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/pip/packages
+  uv pip tree:
+    desc: View the dependency tree for the environment
+    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/pip/packages
+  uv pip uninstall:
+    desc: Uninstall packages
+    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/pip/packages
+  # UV |  PIP | Locking packages in an environment (replacing pip-tools)
+  uv pip sync:
+    desc: Sync an environment with a lockfile
+    title: PIP | Locking packages in an environment (replacing pip-tools)
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/pip/compile
+  uv pip compile:
+    desc: Compile requirements into a lockfile
+    title: PIP | Locking packages in an environment (replacing pip-tools)
+    tags: [python, uv]
+    links:
+      - https//docs.astral.sh/uv/pip/compile
+  # UV | Scripts | Executing standalone Python scripts, e.g., example.py
+  uv run:
+    desc: Run a script.
+    title: Scripts | Executing standalone Python scripts, e.g., example.py
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/scripts
+      - https://docs.astral.sh/uv/getting-started/features/#scripts
+  uv add --script:
+    desc: Add a dependency to a script
+    title: Scripts | Executing standalone Python scripts, e.g., example.py
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/scripts
+      - https://docs.astral.sh/uv/getting-started/features/#scripts
+  uv remove --script:
+    desc: Remove a dependency from a script
+    title: Scripts | Executing standalone Python scripts, e.g., example.py
+    tags: [python, uv]
+    links:
+      - https://docs.astral.sh/uv/guides/scripts
+      - https://docs.astral.sh/uv/getting-started/features/#scripts
+
+cheats:
+  Python's range(start, stop):
+    desc: Generates a sequence of numbers starting from start and stopping before stop, meaning the stop number is not included in the sequence.
+    tags: [python, range, sequence]
+    notes:
+      - md: |
+
+          ## Python uses range function for loops, which generates a sequence.
+
+          ### Notice that 5 is not included in the output.
+
+          ```python
+          for i in range(1, 5):
+              print(i)
+
+          # Output: 1, 2, 3, 4
+          ```
+  zip():
+    desc: Combines two or more iterables into a single iterable.
+    tags: [python, zip, iterable]
+    notes:
+      - md: |
+          ## Pairing Elements of Two Lists
+
+          ```python
+          names = ['Alice', 'Bob', 'Charlie']
+          ages = [25, 30, 35]
+
+          paired = list(zip(names, ages))
+          print(paired)
+
+          # Output: [('Alice', 25), ('Bob', 30), ('Charlie', 35)]
+          ```
+      - md: |
+          ## Unzipping a List of Tuples
+
+          ```python
+          paired = [('Alice', 25), ('Bob', 30), ('Charlie', 35)]
+          names, ages = zip(*paired)
+
+          print(list(names))  # Output: ['Alice', 'Bob', 'Charlie']
+          print(list(ages))  # Output: [25, 30, 35]
+          ```
+      - md: |
+          ## Using zip with More Than Two Lists
+
+          The resulting tuples will have as many elements as there are iterables.
+
+          ```python
+          names = ['Alice', 'Bob', 'Charlie']
+          ages = [25, 30, 35]
+          cities = ['New York', 'Los Angeles', 'Chicago']
+
+          info = list(zip(names, ages, cities))
+          print(info)
+
+          # Output: [
+          #  ('Alice', 25, 'New York'),
+          #  ('Bob', 30, 'Los Angeles'),
+          #  ('Charlie', 35, 'Chicago')
+          # ]
+          ```
+      - md: |
+          ## Handling Iterables of Different Lengths
+
+          If the iterables are of different lengths, zip stops when the shortest iterable is exhausted.
+
+          Use `itertools.zip_longest` to handle iterables of different lengths without truncating to the shortest one.
+
+          ```python
+          from itertools import zip_longest
+
+          names = ['Alice', 'Bob', 'Charlie', 'David']
+          ages = [25, 30, 35]  # David's age is missing
+
+          paired = list(zip_longest(names, ages, fillvalue='Unknown'))
+          print(paired)
+
+          # Output: [
+          #  ('Alice', 25),
+          #  ('Bob', 30),
+          #  ('Charlie', 35),
+          #  ('David', 'Unknown')
+          # ]
+          ```
+      - md: |
+          ## Looping Over Two Lists at Once
+
+          ```python
+          names = ['Alice', 'Bob', 'Charlie']
+          ages = [25, 30, 35]
+
+          for name, age in zip(names, ages):
+              print(f'{name} is {age} years old')
+
+          # Output:
+          # Alice is 25 years old
+          # Bob is 30 years old
+          # Charlie is 35 years old
+          ```

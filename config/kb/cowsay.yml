@@ -1,0 +1,73 @@
+commands:
+  cowsay:
+    desc: is a program that generates ASCII art of a cow with speech or thought bubbles
+    tags: [cli, cat]
+    links:
+      - GitHub: https://github.com/piuccio/cowsay
+    notes:
+      - md: |
+          ## Overview
+
+          `cowsay` is a program that generates ASCII art of a cow with speech or thought bubbles.
+
+          ## Installation
+
+      - sh: |
+          # Installation
+          brew install cowsay
+
+      - sh: |
+          # Usage
+          cowsay "Hello, World!"
+
+      - sh: |
+          # Docker
+          docker run --rm -it cowsay "Hello, World!"
+
+  cowsay "Hello, World!":
+    desc: generates the ASCII art with the specified message.
+    tags: [cli, cat]
+    md: |
+      ```
+      $ cowsay "Hello, World!"
+      # => cowsay "Hello, World!"
+      ```
+
+  cowsay -f tux "I'm a penguin!":
+    desc: uses the "tux" cowfile to generate the ASCII art with the specified message.
+    tags: [cli, cat]
+    md: |
+      ```
+      $ cowsay -f tux "I'm a penguin!"
+      # => cowsay -f tux "I'm a penguin!"
+      ```
+
+  cowsay -l:
+    desc: lists all available cowfiles.
+    tags: [cli, cat]
+    md: |
+      ```
+      $ cowsay -l
+      # => cowsay -l
+      ```
+
+  cowsay -e ^^ "I'm excited!":
+    desc: uses the specified eyes ("-e") to generate the ASCII art with the specified message.
+    tags: [cli, cat]
+    sh: |
+      # prints 'cowsay -e ^^ "I'm excited!"''
+      cowsay -e ^^ "I'm excited!"
+
+  cowsay -T "V" "I'm a custom cow!":
+    desc: uses a custom cowfile to generate the ASCII art with the specified message.
+    tags: [cli, cat]
+    sh: |
+      # prints 'cowsay -T "V" "I'm a custom cow!"'
+      cowsay -T "V" "I'm a custom cow!"
+
+  cowsay -W 40 "This is a long message that wraps at 40 characters.":
+    desc: wraps the message at the specified width ("-W") to fit within 40 characters per line.
+    tags: [cli, cat]
+    sh: |
+      # prints 'cowsay -W 40 "This is a long message that wraps at 40 characters."'
+      cowsay -W 40 "This is a long message that wraps at 40 characters."

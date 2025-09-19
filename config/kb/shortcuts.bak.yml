@@ -1,0 +1,272 @@
+shortcuts:
+  ⌥ c:
+    zsh: Fuzzy find directory (fzf)
+    bash: Capitalize Word | Editing
+  ⌃ r:
+    zsh: Reverse search history (fzf)
+    bash: Reverse search history | History
+  ^ t:
+    zsh: Fuzzy find files (fzf)
+  ⌥ f:
+    zsh: Move cursor to next word (forward) | Navigation
+  ⌥ b:
+    zsh: Move cursor to previous word (backwards) | Navigation
+  ⌃ xx:
+    zsh: Toggle between the start of the line and the current cursor position | Navigation
+  ⌃ x,e:
+    zsh: Open the current command line in your default editor | Editing
+  ⌃ k:
+    zsh: Cut (delete) text from the current cursor position until the end of the line | Editing
+  ⌃ u:
+    zsh: delete whole line (zsh)/cut until beginning | Editing
+    bash: cuts (deletes) text from the current cursor position to the beginning of the line | Editing
+  ⌥ w:
+    zsh: Delete text from the current cursor position to the beginning of the word | Editing
+  ⌥ l:
+    zsh: Lowercase word | Editing
+  ⌥ u:
+    zsh: Uppercase word | Editing
+  ⌃ w:
+    zsh: Cut the previous word, starting from the current cursor position | Editing
+  ⌥ ⌫:
+    zsh: Delete previous word, preceding the current cursor position | Editing
+  ⌥ d:
+    zsh: delete next word, following the current cursor position | Editing
+  ⌥ .:
+    zsh: Previous command`s last argument | Editing
+  \!$:
+    zsh: retrieves the last argument from the previous command | Editing
+  \!*:
+    zsh: retrieves all arguments from the previous command | Editing
+  ⌥ t:
+    zsh: Swap the last two characters before the cursor (typo) | Editing
+  ⌃ t:
+    zsh: Swap the last two words before the cursor | Editing
+  ⎋ t:
+    zsh: Swap the last two words before the cursor | Editing
+  ⌃ y:
+    zsh: Paste the most recently deleted text | Editing
+  ⌃ _:
+    zsh: Undo the last change | Editing
+  ⌥ r:
+    zsh: Undo all changes made to the current command line | Editing
+  ⌃ l:
+    zsh: Clear screen | Process
+  ⌃ c:
+    zsh: Send an Interrupt/Kill signal to the currently running command | Process
+  ⌃ d:
+    zsh: Close Current Shell (“exit” or “logout.”) | Process
+  ⌃ z:
+    zsh: Suspends the currently running foreground job and moves it to the background | Process
+  fg:
+    zsh: Bring the most recent background job to the foreground | Process
+  ⌃ s:
+    zsh: Retrieves the next most recent command from your history | History
+  ^abc^def:
+    zsh: Replaces the first occurrence of “abc” in the previous command with “def” and executes the modified command | History
+  ⌃ x,v:
+    zsh: Switch to vi mode in Zsh | VI Mode
+  set -o vi:
+    zsh: Enables the vi mode for the current session | VI Mode
+  ⌘ ␣:
+    mac: Toggle Raycast
+  ⌘ p:
+    mac: Print the current document
+    vi: Search files by name
+    code: Search files by name (workbench.action.quickOpen)
+  ⌥ m:
+    code: Toggle Main Menu
+    wezterm: Toggle Main Menu
+    chrome: Toggle Main Menu
+  ⇧ ⌘ p:
+    code: Show command palette (workbench.action.showCommands)
+    vi: Show command palette (:CommandPalette)
+  ⌘ \:
+    zed: Toggle left side bar (workbench.action.toggleAuxiliaryBar)
+    code: Toggle left side bar (workbench.action.toggleSidebarVisibility)
+    vi: Toggle left side bar (:ToggleTree)
+  ⌥ ⌘ ←:
+    code: Go to tab at left (workbench.action.previousEditor)
+    vi: Move to buffer at left (BufferLineMovePrev)
+  ⌥ ⌘ →:
+    code: Go to tab at right (workbench.action.nextEditor)
+    vi: Move to buffer at right (BufferLineMoveNext)
+  ⌘ a:
+    mac: Select all items
+    finder: Selects all items in the active window (icon view), all items in the column (column view), or all items in the list (cover flow view)
+    code: editor.action.selectAll
+    vi: Select All (:SelectAll)
+  ⌘ n:
+    finder: Open a new Finder window
+    code: New File (workbench.action.files.newUntitledFile)
+    vi: New File (:New)
+  ⌘ ↑:
+    finder: Show enclosing folder
+    code: Go to the top of the file (cursorTop)
+    vi: Go to the top of the file (:FirstLine)
+  ⌘ ↓:
+    finder: Open the selected item
+    code: Go to the bottom of the file (cursorBottom)
+    vi: Go to the bottom of the file (:LastLine)
+  ⌃ a:
+    mac: Move to beginning of line
+    vi: Move to beginning of line (:FirstLetter)
+    code: Move to beginning of line (cursorLineStart)
+    zsh: Move cursor to beginning of command | Navigation
+  ⌃ e:
+    mac: Move to end of line
+    code: Move to end of line (cursorLineEnd)
+    vi: Move to end of line (:LastLetter)
+    zsh: Move cursor to end of command | Navigation
+  ⌘ x:
+    mac: Cut the selected item and copy it to the Clipboard
+    finder: Moves the selected item to the Trash
+    code: Cut selection to clipboard (editor.action.clipboardCutAction)
+    vi: Cut selection to clipboard ("+d)
+  ⌘ c:
+    mac: Copy the selected item to the Clipboard
+    finder: Copies selected items
+    code: Copy selection to clipboard (editor.action.clipboardCopyAction)
+    vi: Copy selection to clipboard ("+y)
+  ⌘ v:
+    mac: Paste the contents from Clipboard into the current document or app
+    finder: Pastes items from the Clipboard
+    code: Paste (editor.action.clipboardPasteAction)
+    vi: Paste the contents from Clipboard into the current document or app (:Paste)
+  ⌘ z:
+    mac: Undo the previous command
+    finder: Undoes the last action (if possible)
+    code: Undo (undo)
+    vi: Undo the previous command (u)
+  ⌘ y:
+    finder: Use Quick Look to preview the selected files
+    mac: Redo reversing the undo command. In some apps, you can undo and redo multiple commands
+    code: Redo (redo)
+    vi: Redo the previous command (Ctrl + r)
+  ⌥ ↓:
+    mac: Show all windows of the front app
+    code: Move Line Down (editor.action.moveLinesDownAction)
+    vi: Move Line Down (:m +1<CR>)
+  ⌥ ↑:
+    mac: Show all windows of the front app
+    code: Move Line Up (editor.action.moveLinesUpAction)
+    vi: Move Line Up (:m -2<CR>)
+  ⌘ ←:
+    code: Move to BOL (cursorHome)
+    vi: Move to BOL (:FirstLetter)
+  ⌘ →:
+    code: Move to EOL (cursorEnd)
+    vi: Move to EOL (:LastLetter)
+  ⌘ f:
+    mac: Find items in a document or open a Find window
+    finder: Displays the Find dialog
+    code: Find in files (actions.find)
+    vi: Find in files (:Find)
+  ⌘ ⇧ f:
+    code: Search in files (workbench.action.findInFiles)
+    vi: Find in project (:Grep)
+  ⌘ .:
+    code: Code actions (editor.action.quickFix)
+    vi: Code actions (:LspCodeActions)
+  ⌘ d:
+    finder: Duplicates the selected item(s)
+    code: Toggle Problems (workbench.actions.view.problems)
+    vi: Toggle Diagnostics (:Diagnostics)
+  ⇧ ⌘ e:
+    vi: Toggle Errors (:ToggleErrors)
+  ⌘ i:
+    finder: Shows info for selected item or items
+    code: Go to Definition (editor.action.revealDefinition)
+    vi: Go to Definition (:LspDefinitions)
+  ⌘ ⌥ i:
+    code: Go to Implementation (editor.action.goToImplementation)
+    vi: Go to Implementation (:LspImplementations)
+  ⌘ ⌥ d:
+    code: Go to Declaration (editor.action.goToDeclaration)
+    vi: Go to Declaration (:LspDeclarations)
+  ⌘ ⌥ t:
+    code: Go to Type Definition (editor.action.goToTypeDefinition)
+    vi: Go to Type Definition (:LspTypeDefinitions)
+  ⌘ ⌥ w:
+    code: Go to Workspace Symbols (workbench.action.showAllSymbols)
+    vi: Go to Workspace Symbols (:LspSymbolsWorkspace)
+  ⌘ T:
+    mac: Open a new tab
+    chrome: Open a new tab
+    code: Go to Symbol in File (workbench.action.gotoSymbol)
+    vi: Go to Symbol in File (:LspSymbols)
+  ⌘ ⇧ K:
+    mac: Delete the selected item
+    finder: Deletes the selected item
+    code: Show Hover Information (editor.action.showHover)
+    vi: Show Hover Information (:LspHoverDoc)
+  ⌘ ⇧ ␣:
+    mac: Show the Character Viewer
+    code: Trigger Parameter Hints (editor.action.triggerParameterHints)
+    vi: Trigger Parameter Hints (:LspSignatureHelp)
+  ⌘ ⌥ r:
+    code: Find References (references-view.findReferences)
+    vi: Find References (:LspReferences)
+  ⌘ ⌥ ↵:
+    code: Rename Symbol (editor.action.rename)
+    vi: Rename Symbol (:LspRename)
+  ⌘ ⌃ f:
+    code: Format Document (editor.action.formatDocument)
+    vi: Format Document (:FormatDocument)
+  ⌘ ⇧ ]:
+    code: Next Diagnostic Problem (editor.action.marker.next)
+    vi: Next Diagnostic (:DiagnosticNext)
+  ⌘ ⇧ [:
+    code: Previous Diagnostic Problem (editor.action.marker.prev)
+    vi: Previous Diagnostic (:DiagnosticPrev)
+  ⌘ [:
+    finder: Moves back to the previous Finder location
+    code: Fold (editor.fold)
+    vi: Fold (:Fold)
+  ⌥ ⌘ [:
+    code: Fold All (editor.foldAll)
+    vi: Fold All (:FoldAll)
+  ⌘ ]:
+    finder: Moves forward to the next Finder location
+    code: Unfold (editor.unfold)
+    vi: Unfold (:Unfold)
+  ⌥ ⌘ ]:
+    code: Unfold All (editor.unfoldAll)
+    vi: Unfold All (:UnfoldAll)
+  ⌘ ⌃ g:
+    code: Replace All Occurrences (editor.action.selectHighlights)
+  ⌘ ⌃ i:
+    code: Copilot | Inline Chat (inlineChat.start)
+  ⌘ ⌃ z:
+    code: Toggle Zen Mode (workbench.action.toggleZenMode)
+  ⌘ /:
+    finder: Toggle the status bar in Finder windows
+    code: Toggle comment line (editor.action.commentLine)
+    vi: Toggle comment line (:ToggleComment)
+  ⌘ w:
+    mac: Close the front window
+    finder: Close the front window
+    code: Close Editor (workbench.action.closeActiveEditor)
+    vi: Close Editor (:q)
+    wezterm: Close Tab
+
+  ✦ r_⌘ ⌥ 1:
+    wezterm: Switch to Tab 1
+  ✦ r_⌘ ⌥ 2:
+    wezterm: Switch to Tab 2
+  ✦ r_⌘ ⌥ T:
+    wezterm: New Tab
+  ✦ r_⌘ ⌥ →:
+    wezterm: Next Tab
+  ✦ r_⌘ ⌥ ←:
+    wezterm: Previous Tab
+  ✦ r_⌘ ↑:
+    wezterm: Split Panel Up
+  ✦ r_⌘ ↓:
+    wezterm: Split Panel Down
+  ✦ r_⌘ →:
+    wezterm: Split Panel Right
+  ✦ r_⌘ ←:
+    wezterm: Split Panel Left
+  ✦ p:
+    wezterm: Open Command Palette

@@ -1,0 +1,67 @@
+cheats:
+  CREATE TABLE:
+    desc: Used to create new tables in the database
+    notes:
+      sql: |
+        CREATE TABLE employees (
+          employee_id INT PRIMARY KEY,
+          first_name VARCHAR(50),
+          last_name VARCHAR(50),
+          job_title VARCHAR(100)
+        );
+    tags: [sql]
+  INSERT INTO:
+    desc: Used to insert new records in a table
+    notes:
+      sql: |
+        INSERT INTO employees (employee_id, first_name, last_name, job_title)
+        VALUES (1, 'John', 'Doe', 'Frontend Developer');
+    tags: [sql]
+  UPDATE:
+    desc: Used to modify the existing records in a table
+    notes:
+      sql: |
+        UPDATE employees
+        SET job_title = 'Senior Frontend Developer'
+        WHERE employee_id = 1;
+    tags: [sql]
+  DELETE:
+    desc: Used to delete existing records in a table
+    notes:
+      sql: |
+        DELETE FROM employees
+        WHERE employee_id = 1;
+    tags: [sql]
+  SELECT with INNER and LEFT JOIN:
+    desc: Select data from a database. INNER JOIN and LEFT JOIN are used to combine rows from two or more tables based on a related column between them.
+    notes:
+      sql: |
+        SELECT
+            t1.id AS customer_id,
+            t2.document_owner AS customer_card_document_owner,
+            t2.id AS customer_card_id,
+            t2.last4 AS customer_card_last4,
+            t2.kind AS customer_card_kind,
+            t2.flag AS customer_card_flag,
+            t2.iin AS customer_card_iin,
+            t2.default AS customer_card_default,
+            t3.credential_key AS ingenico_card_credential_key,
+            t3.token AS ingenico_card_token,
+            t2.created_at AS customer_card_created_at,
+            t2.updated_at AS customer_card_updated_at
+
+        FROM `customer` t1
+
+        -- INNER JOIN ensures to retrieve only customer_cards associated with customers and ingenico_card entries
+        INNER JOIN `customer_card` t2 ON t2.customer_id = t1.id
+        INNER JOIN `ingenico_card` t3 ON t3.customer_card_id = t2.id
+
+        -- LEFT JOIN to identify customer_cards not present in cybersource_card
+        LEFT JOIN `cybersource_card` t4 ON t4.customer_card_id = t2.id
+
+        WHERE t2.cancelled_at IS NULL
+        -- Filters for customer_cards that are not present in cybersource_card
+        AND t4.customer_card_id IS NULL
+
+        ORDER BY t1.id, t2.last4;
+    tags: [sql]
