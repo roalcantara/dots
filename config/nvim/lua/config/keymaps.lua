@@ -34,8 +34,8 @@ vim.schedule_wrap(function()
       -- =============================================================================
       -- MOVING AROUND
       -- =============================================================================
-      ['<A-Down>'] = { { n = "<CMD>execute 'move .+' . v:count1<CR>==", i = '<ESC><CMD>m .+1<CR>==gi', v = ":<C-u>execute \"'<,'>move '>+\" . v:count1<CR>gv=gv" }, 'Move Line Down' },
-      ['<A-Up>'] = { { n = "<CMD>execute 'move .-' . (v:count1 + 1)<CR>==", i = '<ESC><CMD>m .-2<CR>==gi', v = ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<CR>gv=gv" }, 'Move Line Up' },
+      ['<A-Down>'] = { { n = 'ddp', i = '<C-O>ddp', v = ':m \'>+1<CR>gv=gv' }, 'Move Line Down' },
+      ['<A-Up>'] = { { n = 'ddkP', i = '<C-O>ddkP', v = ':m \'<-2<CR>gv=gv' }, 'Move Line Up' },
       ['<C-a>'] = { { n = '0', i = '<C-O>0', v = '<C-O>0' }, 'Move to BoL' },
       ['<C-e>'] = { { n = '$', i = '<C-O>$', v = '<C-O>$' }, 'Move to EoL' },
       ['<D-Up>'] = { { n = 'gg', i = '<C-O>gg' }, 'Go to BoF' },
