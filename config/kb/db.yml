@@ -1,0 +1,324 @@
+cheats:
+  # CLOUD DATABASES
+  Top Database Types | SUMMARY:
+    desc: Relational x NoSQL x Key-Value x In-memory x Wide-column x Graph x Time-series
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ![Database Types](https://github.com/milanm/Cloud-Product-Mapping/blob/main/Cloud-Databases.png?raw=true?raycast-height=250)
+
+          | **Database Type** | **Use Cases/Ideal for**                                                                        |
+          | ----------------- | ---------------------------------------------------------------------------------------------- |
+          | **Relational**    | Complex queries and data integrity in structured data scenarios (financial systems)            |
+          | **NoSQL**         | Apps requiring agile development, flexible schema, and working with JSON, (CMS, mobile apps)   |
+          | **Key-Value**     | Simple data models and high scalability                                                        |
+          | **In-memory**     | Caching, session management, gaming leaderboards, geospatial apps                              |
+          | **Wide-column**   | High-scale industrial apps for equipment maintenance, fleet management, and route optimization |
+          | **Graph**         | Social networking, fraud detection, recommendation engines, knowledge graphs                   |
+          | **Time-series**   | Apps requiring high ingest rates and time-series analysis                                      |
+  Relational x NoSQL:
+    desc: Relational x NoSQL
+    tags: [db]
+    notes:
+      - md: | #markdown
+          ## Data Structure:
+
+          - **Relational Database:** Uses tables with rows and columns. Each row represents a record and each column represents a property of the record.
+          - **Document Database:** Stores data in documents (often JSON, BSON), which are more flexible and can contain nested structures.
+
+          ## Schema:
+
+          - **Relational Database:** Requires a predefined schema with structured data. Alterations to the schema can be complex.
+          - **Document Database:** Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ## Query Language:
+
+          - **Relational Database:** Typically uses SQL (Structured Query Language) for querying and manipulating data.
+          - **Document Database:** Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ## Scaling:
+
+          - **Relational Database:** Generally scales vertically (requires more powerful server hardware).
+          - **Document Database:** Often designed for horizontal scaling (distribution across multiple servers).
+
+          ## Relationships:
+
+          - **Relational Database:** Strong support for relationships between entities using foreign keys, facilitating complex joins.
+          - **Document Database:** Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ## ACID Properties:
+
+          - **Relational Database:** Strong emphasis on ACID (Atomicity, Consistency, Isolation, Durability) properties for transactions.
+          - **Document Database:** May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ## Use Cases:
+
+          - **Relational Database:** Ideal for complex queries and data integrity in structured data scenarios, like financial systems.
+          - **Document Database:** Better suited for applications requiring agile development, flexible schema, and working with JSON data, like content management systems and mobile apps.
+  Relational Databases:
+    desc: Traditional applications, ERP, CRM, e-commerce.
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Relational
+
+          > Traditional applications, ERP, CRM, e-commerce.
+
+          ### Use Cases
+          Ideal for complex queries and data integrity in structured data scenarios, like financial systems.
+
+          ### Data Structure
+          Uses tables with rows and columns. Each row represents a record and each column represents a property of the record.
+
+          ### Schema
+          Requires a predefined schema with structured data. Alterations to the schema can be complex.
+
+          ### Query Language
+          Typically uses SQL (Structured Query Language) for querying and manipulating data.
+
+          ### Scaling
+          Generally scales vertically (requires more powerful server hardware).
+
+          ### Relationships
+          Strong support for relationships between entities using foreign keys, facilitating complex joins.
+
+          ### ACID Properties
+          Strong emphasis on ACID (Atomicity, Consistency, Isolation, Durability) properties for transactions.
+
+          ### Examples
+
+            - Amazon Relational Database Service (RDS)
+            - Amazon Aurora:
+            - Amazon Redshift
+            - Amazon ElastiCache
+            - Amazon Neptune
+            - Amazon DocumentDB
+  NoSQL | Document Databases:
+    desc: Content management, catalogs, user profiles.
+    tags: [db, nosql]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Document
+
+          > Content management, catalogs, user profiles.
+
+          ### Use Cases
+          Ideal for applications requiring agile development, flexible schema, and working with JSON data, like content management systems and mobile apps.
+
+          ### Data Structure
+          Stores data in documents (often JSON, BSON), which are more flexible and can contain nested structures.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon DocumentDB
+            - MongoDB
+            - Amazon DynamoDB
+            - Amazon ElastiCache
+            - Amazon Neptune
+  Key-Value Databases:
+    desc: High-traffic web applications, e-commerce systems, and gaming applications.
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Key-Value
+
+          > High-traffic web applications, e-commerce systems, and gaming applications.
+
+          ### Use Cases
+          Ideal for simple data models and high scalability.
+
+          ### Data Structure
+          Stores data as key-value pairs, with a unique key that acts as an identifier.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon DynamoDB
+            - Amazon ElastiCache
+            - Redis
+            - Memcached
+  In-memory Databases:
+    desc: Caching, session management, gaming leaderboards, geospatial applications.
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## In-memory
+
+          > Caching, session management, gaming leaderboards, geospatial applications.
+
+          ### Use Cases
+          Ideal for applications requiring high performance and low latency.
+
+          ### Data Structure
+          Stores data in memory, allowing for fast retrieval.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon ElastiCache
+            - Redis
+            - Memcached
+  Wide-column Databases:
+    desc: High-scale industrial applications for equipment maintenance, fleet management, and route optimization.
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Wide-column
+
+          > High-scale industrial applications for equipment maintenance, fleet management, and route optimization.
+
+          ### Use Cases
+          Ideal for applications requiring high scalability and low latency.
+
+          ### Data Structure
+          Stores data in tables with rows and columns, similar to relational databases. However, each row can have a different set of columns, allowing for more flexibility.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon DynamoDB
+            - Amazon ElastiCache
+            - Redis
+            - Memcached
+  Graph Databases:
+    desc: Social networking, fraud detection, recommendation engines, knowledge graphs
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Graph
+
+          > Fraud detection, social networking, recommendation engines
+
+          ### Use Cases
+          Ideal for applications requiring complex relationships and traversals.
+
+          ### Data Structure
+          Stores data in nodes and edges, with nodes representing entities and edges representing relationships between nodes.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon Neptune
+            - Neo4j
+            - Amazon DynamoDB
+            - Amazon ElastiCache
+            - Redis
+            - Memcached
+  Time-series Databases:
+    desc: Internet of Things (IoT) applications, DevOps, industrial telemetry
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Time-series
+
+          > Internet of Things (IoT) applications, DevOps, industrial telemetry
+
+          ### Use Cases
+          Ideal for applications requiring high ingest rates and time-series analysis
+
+          ### Data Structure
+          Stores data in tables with rows and columns, similar to relational databases. However, each row can have a different set of columns, allowing for more flexibility.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon Timestream
+            - Amazon DynamoDB
+            - Amazon ElastiCache
+            - Redis
+            - Memcached

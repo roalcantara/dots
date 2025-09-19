@@ -1,0 +1,179 @@
+cheats:
+  curl | Basic POST Request with JSON Payload:
+    desc: Basic POST Request with JSON Payload
+    tags: [curl]
+    notes:
+      - sh: |
+          curl -X POST http://example.com/api/data \
+              -H "Content-Type: application/json" \
+              -d '{
+                    "name": "John Doe",
+                    "email": "john@example.com"
+                  }'
+  curl | GET Request with Query Parameters:
+    desc: GET request is made with multiple query parameters. The URL is split into multiple lines for clarity. Note that the backslash (\) at the end of each line is used to indicate that the command continues on the next line.
+    tags: [curl]
+    notes:
+      - sh: |
+          curl "http://example.com/search?\
+              query=example&\
+              page=1&\
+              limit=10"
+  curl | Using a Data File in a POST Request:
+    desc: shows how to upload a file using curl. The file path is specified after the @ symbol in the -F option
+    tags: [curl]
+    notes:
+      - sh: |
+          curl -X POST http://example.com/upload \
+          -H "Content-Type: multipart/form-data" \
+          -F "file=@/path/to/file.txt"
+  curl | Sending Custom Headers:
+    desc: custom headers are sent with a GET request. This is often used for setting authorization tokens and specifying the desired content type
+    notes:
+      - sh: |
+          curl -X GET http://example.com/data \
+              -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+              -H "Accept: application/json"
+    tags: [curl]
+  curl | In a Bash Script with Variables:
+    desc: a bash script uses variables to hold the URL and data payload. This approach makes the script more dynamic and easier to modify.
+    notes:
+      - sh: |
+          URL="http://example.com/api/data"
+          DATA='{
+                  "username": "user",
+                  "password": "pass"
+                }'
+
+          curl -X POST $URL \
+              -H "Content-Type: application/json" \
+              -d "$DATA"
+    tags: [curl]
+  curlie <URL>:
+    desc: Get content from URL
+    tags: [curlie]
+  curlie -f POST <URL> <ARGS>:
+    desc: Submit to url - like FORM
+    tags: [curlie]
+  curlie <URL> < <FILE>:
+    desc: Upload file to url - OFFLINE MODE
+    tags: [curlie]
+  curlie <URL> > <FILE>:
+    desc: Download file from url - OFFLINE MODE
+    tags: [curlie]
+  curlie --download <URL>:
+    desc: Download file from url - wget style
+    tags: [curlie]
+  curlie -d <URL> | tar zxf -:
+    desc: Download file from url and extracs with 'tar zxf'
+    tags: [curlie]
+  "curlie <URL> | pup'<FIELD> text{}' --color --plain":
+    desc: Extract fields from url
+    tags: [curlie]
+
+commands:
+  # OpenAI API
+  curlie 'https://api.openai.com/v1/chat/completions':
+    desc: Chat with GPT-3
+    tags: [curl, gpt]
+    notes:
+      - sh: |
+          curlie https://api.openai.com/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $(gopass show --password token/openai.com)" \
+            -d '{
+              "model": "gpt-3.5-turbo",
+              "messages": [ { "role": "system", "content": "You are a helpful assistant." }, { "role": "user", "content": "Hello!" } ]
+            }'
+  curlie 'https://api.openai.com/v1/chat/completions' to opencommit:
+    desc: Chat with GPT-4
+    tags: [curlie, gpt]
+    notes:
+      - sh: |
+          curlie https://api.openai.com/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $(gopass show --password token/opencommit.openai.com)" \
+            -d '{
+              "model": "gpt-4",
+              "messages": [{ "role": "system", "content": "You are a helpful assistant." }, {"role": "user", "content": "Hello, how are you?"}],
+              "temperature": 0.7
+            }'
+
+  # JWT
+  jwt encode --secret "a-256-bit-secret-key" '{"user":"example"}':
+    desc: Encode and payload into JWT token with a secret key
+    tags: [jwt]
+    notes:
+      - md: |
+          ## EXAMPLE
+
+          ```sh
+          # Encode a payload into a JWT Token with a secret key
+          $ jwt encode --secret "a-256-bit-secret-key" '{"user":"example"}'
+          # => eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzQwNTI5NzAsInVzZXIiOiJleGFtcGxlIn0.s7XzVxFdOc7oP9wiPkURglxaEREg177IorST-6S6EoA
+          ```
+
+          > The output is a JWT token that can be used for authentication and authorization purposes.
+
+          ```sh
+          # To decode the JWT token, use the following command:
+          $ jwt decode eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzQwNTI5NzAsInVzZXIiOiJleGFtcGxlIn0.s7XzVxFdOc7oP9wiPkURglxaEREg177IorST-6S6EoA
+          ```
+
+          > Token header
+          > ------------
+          > {
+          >   "typ": "JWT",
+          >   "alg": "HS256"
+          > }
+          >
+          > Token claims
+          > ------------
+          > {
+          >   "iat": 1719007185,
+          >   "user": "example"
+          > }
+          ```
+
+  # GitHub API
+  curlie 'https://api.github.com/licenses' | jq:
+    desc: List licenses
+    tags: [gh]
+  curlie 'https://api.github.com/licenses' | jq -r ".[].key" | fzf:
+    desc: List licenses and select one
+    tags: [gh]
+  curlie 'https://api.github.com/gitignore/templates' | jq:
+    desc: List gitignore templates
+    tags: [gh]
+  curlie 'https://api.github.com/gitignore/templates' | jq -r ".[]" | fzf:
+    desc: List gitignore templates and select one
+    tags: [gh]
+
+  # Weather API
+  curlie -s 'https://wttr.in/SaoPaulo':
+    desc: Get weather report in Sao Paulo
+    tags: [curlie, weather]
+  curlie -s 'https://wttr.in/SaoPaulo?format=1':
+    desc: Format 1 (single line)
+    tags: [curlie, weather]
+  curlie -s 'https://wttr.in/SaoPaulo?format=2':
+    desc: Format 2 (includes temperature and precipitation)
+    tags: [curlie, weather]
+  curlie -s 'https://wttr.in/SaoPaulo?n':
+    desc: Multiple days forecast
+    tags: [curlie, weather]
+  curlie -s 'https://wttr.in/SaoPaulo?u':
+    desc: Fahrenheit instead of Celsius
+    tags: [curlie, weather]
+  curlie -s 'https://wttr.in/SaoPaulo?T0':
+    desc: Only current weather with switch terminal sequences off
+    tags: [curlie, weather]
+  curlie -s 'https://wttr.in/SaoPaulo?format=%c':
+    desc: Just weather icons
+    tags: [curlie, weather]
+  curlie -s 'https://wttr.in/SaoPaulo?format=%C+%t+%w':
+    desc: Detailed current conditions
+    tags: [curlie, weather]
+  curlie -s 'https://wttr.in/SaoPaulo?T0u':
+    desc: Combine options | SaoPaulo weather in Fahrenheit, no color
+    tags: [curlie, weather]

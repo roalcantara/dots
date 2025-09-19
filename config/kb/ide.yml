@@ -1,0 +1,239 @@
+cheats:
+  User snippets variables | VSCode:
+    desc: User snippets variables in Visual Studio Code
+    tags: [vscode, snippets]
+    links:
+      - Snippets in Visual Studio Code: https://code.visualstudio.com/docs/editor/userdefinedsnippets
+      - Create your own snippets: https://code.visualstudio.com/docs/editor/userdefinedsnippets#_create-your-own-snippets
+    notes:
+      - md: | #markdown
+          # VSCODE snippets: Variables
+
+          ## Variables
+
+          - With `$name` or `${name:default}`, you can insert the value of a variable.
+          - When a variable isn't set, its **default** or the empty string is inserted.
+          - When a variable is unknown (that is, its name isn't defined) the name of the variable is inserted and it is transformed into a placeholder.
+
+          ### 1. The following variables can be used:
+
+            - `TM_SELECTED_TEXT` The currently selected text or the empty string
+            - `TM_CURRENT_LINE` The contents of the current line
+            - `TM_CURRENT_WORD` The contents of the word under cursor or the empty string
+            - `TM_LINE_INDEX` The zero-index based line number
+            - `TM_LINE_NUMBER` The one-index based line number
+            - `TM_FILENAME` The filename of the current document
+            - `TM_FILENAME_BASE` The filename of the current document without its extensions
+            - `TM_DIRECTORY` The directory of the current document
+            - `TM_FILEPATH` The full file path of the current document
+            - `RELATIVE_FILEPATH` The relative (to the opened workspace or folder) file path of the current document
+            - `CLIPBOARD` The contents of your clipboard
+            - `WORKSPACE_NAME` The name of the opened workspace or folder
+            - `WORKSPACE_FOLDER` The path of the opened workspace or folder
+
+          ### 2. For inserting the current date and time:
+
+            - `CURRENT_YEAR` The current year
+            - `CURRENT_YEAR_SHORT` The current year's last two digits
+            - `CURRENT_MONTH` The month as two digits (example '02')
+            - `CURRENT_MONTH_NAME` The full name of the month (example 'July')
+            - `CURRENT_MONTH_NAME_SHORT` The short name of the month (example 'Jul')
+            - `CURRENT_DATE` The day of the month
+            - `CURRENT_DAY_NAME` The name of day (example 'Monday')
+            - `CURRENT_DAY_NAME_SHORT` The short name of the day (example 'Mon')
+            - `CURRENT_HOUR` The current hour in 24-hour clock format
+            - `CURRENT_MINUTE` The current minute
+            - `CURRENT_SECOND` The current second
+            - `CURRENT_SECONDS_UNIX` The number of seconds since the Unix epoch
+
+          ### 3. For inserting random values:
+
+            - `RANDOM` 6 random Base-10 digits
+            - `RANDOM_HEX` 6 random Base-16 digits
+            - `UUID` A Version 4 UUID
+
+          ### 4. For inserting line or block comments, honoring the current language:
+
+            - `BLOCK_COMMENT_START` Example output: in PHP `/*` or in HTML `<!--`
+            - `BLOCK_COMMENT_END` Example output: in PHP `*/` or in HTML `-->`
+            - `LINE_COMMENT` Example output: in PHP `//`
+            - To inserts `/* Hello World */` in JavaScript files and `<!-- Hello World -->` in HTML files:
+
+              ```json
+              {
+                "hello": {
+                  "scope": "javascript,html",
+                  "prefix": "hello",
+                  "body": "$BLOCK_COMMENT_START Hello World $BLOCK_COMMENT_END"
+                }
+              }
+              ```
+
+          ### 5. Transform examples
+
+            - To get the current **folder name**
+
+              `"${TM_DIRECTORY/^.+[\\/\\\\]+(.*)$/$1/}}"`
+
+            - To replace the first `.` with `_` and generate `example-123_456-TEST.js`
+
+              `"${TM_FILENAME/[\\.]/_/}"`
+
+            - To replace each `.` or `-` with `_` and generate `example_123_456_TEST_js`
+
+              `"${TM_FILENAME/[\\.-]/_/g}"`
+
+            - To change to all `uppercase` and generate `EXAMPLE-123.456-TEST.JS`
+
+              `"${TM_FILENAME/(.*)/${1:/upcase}/}"`
+
+            - To remove `non-alphanumeric` characters and generate `example123456TESTjs`
+
+              `"${TM_FILENAME/[^0-9^a-z]//gi}"`
+  Keybord shortcuts macos | VSCode:
+    desc: Keyboard Shortcuts MacOs
+    tags: [vscode, shortcuts]
+    links: [https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf]
+    notes:
+      - md: | #markdown
+          ## vscode keybord shortcuts macos
+
+          ### General
+
+          | Shortcut | Action                     |
+          | -------- | -------------------------- |
+          | ⌘X       | Cut line (empty selection) |
+          | ⇧⌘P      | Show Command Palette       |
+          | ⌘P       | Quick Open, Go to File…    |
+          | ⇧⌘N      | New window/instance        |
+          | ⌘W       | Close window/instance      |
+          | ⌘,       | User Settings              |
+          | ⌘K ⌘S    | Keyboard Shortcuts         |
+
+          ### Basic Editing
+
+          | Shortcut         | Action                      |
+          | ---------------- | --------------------------- |
+          | ⌘X               | Cut line (empty selection)  |
+          | ⌘C               | Copy line (empty selection) |
+          | ⌥↓ / ⌥↑          | Move line down/up           |
+          | ⇧⌥↓ / ⇧⌥↑        | Copy line down/up           |
+          | ⇧⌘K              | Delete line                 |
+          | ⌘Enter / ⇧⌘Enter | Insert line below/above     |
+          | ⇧⌘\              | Jump to matching bracket    |
+          | ⌘] / ⌘[          | Indent/outdent line         |
+          | Home / End       | Go to beginning/end of line |
+          | ⌘↑ / ⌘↓          | Go to beginning/end of file |
+          | ⌃PgUp / ⌃PgDn    | Scroll line up/down         |
+          | ⌘PgUp /⌘PgDn     | Scroll page up/down         |
+          | ⌥⌘[ / ⌥⌘]        | Fold/unfold region          |
+          | ⌘K ⌘[ / ⌘K ⌘]    | Fold/unfold all subregions  |
+          | ⌘K ⌘0 / ⌘K ⌘J    | Fold/unfold all regions     |
+          | ⌘K ⌘C            | Add line comment            |
+          | ⌘K ⌘U            | Remove line comment         |
+          | ⌘/               | Toggle line comment         |
+          | ⇧⌥A              | Toggle block comment        |
+          | ⌥Z               | Toggle word wrap            |
+
+          ### Search and Replace
+
+          | Shortcut | Action                                 |
+          | -------- | -------------------------------------- |
+          | ⌘F       | Find                                   |
+          | ⌥⌘F      | Replace                                |
+          | ⌘G / ⇧⌘G | Find next/previous                     |
+          | ⌥Enter   | Select all occurrences of Find match   |
+          | ⌘D       | Add selection to next Find match       |
+          | ⌘K ⌘D    | Move last selection to next Find match |
+
+          ### Rich Languages Editing
+
+          | Shortcut   | Action                      |
+          | ---------- | --------------------------- |
+          | ⌃Space, ⌘I | Trigger suggestion          |
+          | ⇧⌘Space    | Trigger parameter hints     |
+          | ⇧⌥F        | Format document             |
+          | ⌘K ⌘F      | Format selection            |
+          | F12        | Go to Definition            |
+          | ⌥F12       | Peek Definition             |
+          | ⌘K F12     | Open Definition to the side |
+          | ⌘.         | Quick Fix                   |
+          | ⇧F12       | Show References             |
+          | F2         | Rename Symbol               |
+          | ⌘K ⌘X      | Trim trailing whitespace    |
+          | ⌘K M       | Change file language        |
+
+          ### Navigation
+
+          | Shortcut | Action                               |
+          | -------- | ------------------------------------ |
+          | ⌘T       | Show all Symbols                     |
+          | ⌃G       | Go to Line...                        |
+          | ⌘P       | Go to File...                        |
+          | ⇧⌘O      | Go to Symbol...                      |
+          | ⇧⌘M      | Show Problems panel                  |
+          | F8 / ⇧F8 | Go to next/previous error or warning |
+          | ⌃⇧Tab    | Navigate editor group history        |
+          | ⌃- / ⌃⇧- | Go back/forward                      |
+          | ⌃⇧M      | Toggle Tab moves focus               |
+
+          ### Editor Management
+
+          | Shortcut        | Action                                |
+          | --------------- | ------------------------------------- |
+          | ⌘W              | Close editor                          |
+          | ⌘K F            | Close folder                          |
+          | ⌘\:             | Split editor                          |
+          | ⌘1 / ⌘2 / ⌘3    | Focus into 1st, 2nd, 3rd editor group |
+          | ⌘K ⌘← / ⌘K ⌘→   | Focus into previous/next editor group |
+          | ⌘K ⇧⌘← / ⌘K ⇧⌘→ | Move editor left/right                |
+          | ⌘K ← / ⌘K →     | Move active editor group              |
+
+          ### File Management
+
+          | Shortcut     | Action                                  |
+          | ------------ | --------------------------------------- |
+          | ⌘N           | New File                                |
+          | ⌘O           | Open File...                            |
+          | ⌘S           | Save                                    |
+          | ⇧⌘S          | Save As...                              |
+          | ⌥⌘S          | Save All                                |
+          | ⌘W           | Close                                   |
+          | ⌘K ⌘W        | Close All                               |
+          | ⇧⌘T          | Reopen closed editor                    |
+          | ⌘K Enter     | Keep preview mode editor open           |
+          | ⌃Tab / ⌃⇧Tab | Open next / previous                    |
+          | ⌘K P         | Copy path of active file                |
+          | ⌘K R         | Reveal active file in Finder            |
+          | ⌘K O         | Show active file in new window/instance |
+
+          ### Display
+
+          | Shortcut | Action                                     |
+          | -------- | ------------------------------------------ |
+          | ⌃⌘F      | Toggle full screen                         |
+          | ⌥⌘0      | Toggle editor layout (horizontal/vertical) |
+          | ⌘= / ⇧⌘- | Zoom in/out                                |
+          | ⌘B       | Toggle Sidebar visibility                  |
+          | ⇧⌘E      | Show Explorer / Toggle focus               |
+          | ⇧⌘F      | Show Search                                |
+          | ⌃⇧G      | Show Source Control                        |
+          | ⇧⌘D      | Show Debug                                 |
+          | ⇧⌘X      | Show Extensions                            |
+          | ⇧⌘H      | Replace in files                           |
+          | ⇧⌘J      | Toggle Search details                      |
+          | ⇧⌘U      | Show Output panel                          |
+          | ⇧⌘V      | Open Markdown preview                      |
+          | ⌘K V     | Open Markdown preview to the side          |
+          | ⌘K Z     | Zen Mode (Esc Esc to exit)                 |
+
+          ### Integrated Terminal
+
+          | Shortcut    | Action                   |
+          | ----------- | ------------------------ |
+          | ⌃`          | Show integrated terminal |
+          | ⌃⇧`         | Create new terminal      |
+          | ⌘C          | Copy selection           |
+          | ⌘↑ / ↓      | Scroll up/down           |
+          | PgUp / PgDn | Scroll page up/down      |
+          | ⌘Home / End | Scroll to top/bottom     |

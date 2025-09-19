@@ -1,0 +1,10 @@
+bookmarks:
+  https://youtu.be/NUrmh7VVArM:
+    desc: The option "Format > Line Spacing > Keep with next" prevents a paragraph (or heading) from being separated from the paragraph that immediately follows it when text is moved to a new page. This is particularly useful for keeping a heading and its associated text together, ensuring a heading doesn't end up alone at the bottom of a page while its content starts on the next | Google Docs.
+    tags: [gdocs]
+    links: [https://support.google.com/docs/answer/1663349, https://support.google.com/docs/thread/143259822/how-to-have-keep-with-next-on-by-default?hl=en]
+
+  https://youtu.be/8e_qob4Ci0g:
+    desc: Select a text, go to "Format > Line & paragraph spacing > Keep lines together" to ensure the entire paragraph stays on a single page. This option prevents a paragraph from splitting across pages, but requires your document to be in "pages" format, not "pageless" format | Google Docs.
+    tags: [gdocs]
+    links: [https://support.google.com/docs/answer/1663349]

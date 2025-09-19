@@ -1,0 +1,34 @@
+commands:
+  sudo apt update && sudo apt upgrade -y:
+    desc: Update the package list and upgrade the system
+    tags: [debian]
+  useradd -m -s /bin/zsh -G users vscode:
+    desc: Add a user vscode to the system
+    tags: [debian]
+  passwd vscode:
+    desc: Set the password for the user vscode
+    tags: [debian]
+  usermod -aG sudo vscode:
+    desc: Add vscode:sudo (user vscode is in the sudo group)
+    tags: [debian]
+  su - vscode:
+    desc: Switch to the user vscode
+    tags: [debian]
+  sudo apt update && sudo apt upgrade -y && sudo apt install -y zsh git && useradd -m -s /bin/zsh -G users vscode && passwd vscode && usermod -aG sudo vscode && su - vscode:
+    desc: Update the package list and upgrade the system, install zsh and git, add a user vscode to the system, set the password for the user vscode, add vscode:sudo (user vscode is in the sudo group) and switch to the user vscode
+    tags: [debian]
+  useradd -m -s /bin/zsh -G users vscode && usermod -aG sudo vscode && echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && su - vscode:
+    desc: Add a passwordless sudo user vscode to the system, add vscode:sudo (user vscode is in the sudo group) and switch to the user vscode
+    tags: [debian]
+  sudo apt update && sudo apt upgrade -y && sudo apt install -y zsh git && useradd -m -s /bin/zsh -G users vscode && usermod -aG sudo vscode && echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && su - vscode:
+    desc: Setup Debian/Ubuntu, add zsh, git and user vscode:vscode as sudo and switch to the user vscode
+    tags: [debian]
+  useradd -m -s /bin/zsh -G users vscode && usermod -aG sudo vscode && echo "vscode ALL=(ALL) NOPASSWD:ALL" | EDITOR='tee -a' visudo && su - vscode:
+    desc: (SAFER) Add a passwordless sudo user vscode to the system, add vscode:sudo (user vscode is in the sudo group) and switch to the user vscode using VISUDO
+    tags: [debian]
+  useradd -m -s /bin/zsh -G users vscode && passwd -d vscode && usermod -aG sudo vscode && echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && su - vscode:
+    desc: (SAFER) Add a user vscode to the system, set the password for the user vscode to empty, add vscode:sudo (user vscode is in the sudo group) and switch to the user vscode
+    tags: [debian]
+  useradd -m -s /bin/zsh -G users vscode && passwd -d vscode && usermod -aG sudo vscode && echo "vscode ALL=(ALL) NOPASSWD:ALL" | EDITOR='tee -a' visudo && su - vscode:
+    desc: (SAFER) Add a user vscode to the system, set the password for the user vscode to empty, add vscode:sudo (user vscode is in the sudo group) and switch to the user vscode using VISUDO
+    tags: [debian]

@@ -1,0 +1,1506 @@
+bookmarks:
+  https://nodejs.org:
+    desc: Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine
+    tags: [node]
+    links: [https://nodejs.org/en/download]
+    notes:
+      - sh: | #shell
+          #! /bin/bash
+          # Download and install nvm:
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+          # in lieu of restarting the shell
+          \. "$HOME/.nvm/nvm.sh"
+
+          # Download and install Node.js:
+          nvm install 22
+
+          # Verify the Node.js version:
+          node -v # Should print "v22.18.0".
+          nvm current # Should print "v22.18.0".
+
+          # Verify npm version:
+          npm -v # Should print "10.9.3".
+      - dockerfile: | #dockerfile
+          FROM node:22
+          WORKDIR /app
+          COPY package*.json ./
+          RUN npm install
+          COPY . .
+          CMD ["npm", "start"]
+  https://nodejs.org/en/download:
+    desc: Download Node.js® LTS | JavaScript runtime built on Chrome's V8 JavaScript engine
+    tags: [node]
+  https://npmjs.com:
+    desc: The package manager for JavaScript
+    tags: [node, npm]
+  https://yarnpkg.com:
+    desc: Fast, reliable, and secure dependency management
+    tags: [node, yarn]
+  https://pnpm.io:
+    desc: Fast, disk space efficient package manager
+    tags: [node, pnpm]
+    links: [https://pnpm.io/motivation,https://pnpm.io/catalogs,https://pnpm.io/pnpm-cli]
+  https://pnpm.io/catalogs:
+    desc: Catalogs are a workspace feature for defining dependency version ranges as reusable constants. Constants defined in catalogs can later be referenced in package.json files.
+    tags: [node, pnpm]
+    links: [https://youtu.be/PuRUk4mV2jc]
+
+commands:
+  # npm | The package manager for JavaScript
+  # https://npmjs.com
+  rm -rf node_modules package-lock.json && npm i:
+    desc: Remove node_modules and package-lock.json and install
+    tags: [npm]
+  npm config edit:
+    desc: Opens the config file in an editor
+    tags: [npm, config]
+  npm config edit --global:
+    desc: Opens the global config file in an editor
+    tags: [npm, config]
+  npm config ls -l:
+    desc: List set of configuration parameters that are internal to npm, and are defaults if nothing else is specified
+    tags: [npm, config]
+  npm ls --parseable --long --loglevel info:
+    desc: List all parseable dependencies [INFO]
+    tags: [npm, config]
+  npm ls --global --parseable --long --loglevel info:
+    desc: List all global parseable dependencies [INFO]
+    tags: [npm, config]
+  npm config list --json:
+    desc: List all config settings [JSON]
+    tags: [npm, config]
+  npm prefix -g:
+    desc: Print the local prefix to standard output
+    tags: [npm, config]
+  npm config get prefix:
+    desc: Get npm prefix
+    tags: [npm, config]
+  npm config set prefix <PATH=/usr/local>:
+    desc: Set npm prefix
+    tags: [npm, config]
+  npm prefix:
+    desc: Print the local prefix to standard output. This is the closest parent directory to contain a package.json file or node_modules directory
+    tags: [npm, config]
+  npm --global list --long --loglevel info:
+    desc: List all global dependencies [INFO]
+    tags: [npm, packages]
+  npm list --long --loglevel info:
+    desc: List all local dependencies. This is the closest parent directory to contain a package.json file or node_modules directory [INFO]
+    tags: [npm, packages]
+  npm config set init-author-name'Rogério R. Alcântara' && npm config set init-author-email'rogerio.alcantara@gmail.com' && npm config set init-author-url'http://github.com/roalcantara' && npm config set init-license'MIT':
+    desc: Sets Default npm init Properties
+    tags: [npm, config]
+  npm outdated:
+    desc: List outdated packages
+    tags: [npm]
+  npm update:
+    desc: Bump (or install) packages from package.json
+    tags: [npm]
+  # npm/typescript
+  npm init -y && npm install --save-dev webpack webpack-cli copy-webpack-plugin typescript ts-loader @types/chrome && npx tsc --init:
+    desc: Initialize Chrome extension project
+    tags: [npm, chrome]
+  npm i typescript tslib ts-node ts-node-dev tsconfig-paths @types/node @tsconfig/recommended -D && npx tsc --init:
+    desc: Add and initialize TS
+    tags: [npm, packages]
+  npx tsc --init:
+    desc: Initialize TS
+    tags: [npm, ts]
+  # npm/eslint|jest
+  npm i -D @types/jest eslint-plugin-jest eslint-plugin-jest-formatting jest ts-jest && npx ts-jest config:init:
+    desc: Add jest
+    tags: [npm, packages]
+  npm i -D @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-config-airbnb-typescript eslint-config-prettier eslint-plugin-eslint-comments eslint-plugin-html eslint-plugin-import eslint-plugin-no-loops eslint-plugin-node eslint-plugin-prettier eslint-plugin-promise:
+    desc: Add eslint deps
+    tags: [npm, packages]
+  npx install-peerdeps -D eslint-config-airbnb:
+    desc: Install peer dependencies for eslint-config-airbnb
+    tags: [npm, eslint]
+  # npm/utilities
+  npm install -g npm-check-updates && ncu -u:
+    desc: Update packages to a new major version
+    tags: [npm]
+  npm i cheerio htmlparser2 && npm i @types/cheerio @types/htmlparser2 -D:
+    desc: Add cheerio
+    tags: [npm, packages]
+  npm install -g remark-reference-links remark-cli:
+    desc: Install remark cli
+    tags: [remark, markdown]
+  npx remark <PATH> --use remark-reference-links --output:
+    desc: Transform all the inline links in <PATH> to numerically-ascending reference-style links
+    tags: [remark, markdown]
+  npx -p @storybook/cli sb init:
+    desc: Add Storybook to project's root
+    tags: [npm, storybook, init]
+  npm i -D p5 @types/p5 p5-server:
+    desc: Add p5 packages
+    tags: [p5]
+  npx http-server dist/apps/<NAME>:
+    desc: Run app <NAME> locally from the dist folder (via http-server)
+    tags: [http-server]
+  npx npkill --sort size:
+    desc: Finds
+    tags: [npm, npkill]
+  npx npkill -D:
+    desc: Removes old node_modules folders
+    tags: [npm, npkill]
+  npx @backstage/create-app@latest:
+    desc: Create a new directory with a Backstage app inside. The wizard will ask you for the name of the app. This name will be created as sub directory in your current working directory.
+    tags: [backstage, devops]
+    links: [https://backstage.io/docs/getting-started]
+  npm install cosmiconfig:
+    desc: Find and load configuration from a package.json property, rc file, TypeScript module, and more!
+    tags: [npm, package, cosmiconfig]
+    links:
+      - npm: https://npmjs.com/package/cosmiconfig
+      - github: https://github.com/cosmiconfig/cosmiconfig
+      - install-mongodb-on-os-x: https://mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x
+    notes:
+      - md: |
+          # Install cosmiconfig
+          > npm install cosmiconfig
+
+          # Install insomnia CLI
+          > brew install inso
+
+          npm install --save ts-node express body-parser cors  
+  # npm/vite
+  # https://vite.dev
+  npm create vite@latest <app> -- --template vanilla:
+    desc: Create app 'vanillala'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template vanilla-ts:
+    desc: Create app 'vanilla-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template vue:
+    desc: Create app 'vue'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template vue-ts:
+    desc: Create app 'vue-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template react:
+    desc: Create app 'react'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template react-ts:
+    desc: Create app 'react-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template react-swc:
+    desc: Create app 'react-swc'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template react-swc-ts:
+    desc: Create app 'react-swc-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template preact:
+    desc: Create app 'preact'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template preact-ts:
+    desc: Create app 'preact-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template lit:
+    desc: Create app 'lit'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template lit-ts:
+    desc: Create app 'lit-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template svelte:
+    desc: Create app 'svelte'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> -- --template svelte-ts:
+    desc: Create app 'svelte-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template vanilla:
+    desc: Create app 'vanillala'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template vanilla-ts:
+    desc: Create app 'vanilla-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template vue:
+    desc: Create app 'vue'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template vue-ts:
+    desc: Create app 'vue-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template react:
+    desc: Create app 'react'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template react-ts:
+    desc: Create app 'react-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template react-swc:
+    desc: Create app 'react-swc'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template react-swc-ts:
+    desc: Create app 'react-swc-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template preact:
+    desc: Create app 'preact'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template preact-ts:
+    desc: Create app 'preact-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template lit:
+    desc: Create app 'lit'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template lit-ts:
+    desc: Create app 'lit-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template svelte:
+    desc: Create app 'svelte'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  npm create vite@latest <app> --template svelte-ts:
+    desc: Create app 'svelte-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+  # npm/vite/templates
+  # https://vite.dev/guide/#community-templates
+  # https://github.com/vitejs/awesome-vite#templates
+  # https://github.com/Rich-Harris/degit
+  npx degit huibizhang/template-vite-vanilla-tailwind-v3 <app>:
+    desc: Create app 'template-vite-vanilla-tailwind-v3'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit kbysiec/vite-vanilla-ts-lib-starter <app>:
+    desc: Create app 'vite-vanilla-ts-lib-starter' (lib CJS, ESM, IIFE)
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit kometolabs/vite-tailwind-nojs-starter <app>:
+    desc: Create app 'vite-tailwind-nojs-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit jeremyfrank/vite-tailwind-stimulus-starter <app>:
+    desc: Create app 'vite-tailwind-stimulus-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit sadman-shami/vite-tailwind-boilerplate <app>:
+    desc: Create app 'vite-tailwind-boilerplate'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit dendrofen/docker-vitejs-tailwind-handlebars <app>:
+    desc: Create app 'docker-vitejs-tailwind-handlebars'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit antfu/vitesse <app>:
+    desc: Create app 'vitesse'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit Uninen/vite-ts-tailwind-starter <app>:
+    desc: Create app 'vite-ts-tailwind-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit anncwb/vue-vben-admin <app>:
+    desc: Create app 'vue-vben-admin'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit xiaoxian521/vue-pure-admin <app>:
+    desc: Create app 'vue-pure-admin'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit fast-crud/fast-crud <app>:
+    desc: Create app 'fast-crud'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit logustra/vivu <app>:
+    desc: Create app 'vivu'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit yooneskh/vite-tauri-template <app>:
+    desc: Create app 'vite-tauri-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit LZHD/vue-vite-h5 <app>:
+    desc: Create app 'vue-vite-h5'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit alvarosaburido/vitesome <app>:
+    desc: Create app 'vitesome'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit antfu/vitesse-lite <app>:
+    desc: Create app 'vitesse-lite'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit antfu/vitesse-webext <app>:
+    desc: Create app 'vitesse-webext'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit nabaonan/todos-action/tree/master/vue-vite-ts-setup <app>:
+    desc: Create app 'vue-vite-ts-setup'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit Innei/naive-ui-dashboard-template <app>:
+    desc: Create app 'naive-ui-dashboard-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit zynth17/vitailse <app>:
+    desc: Create app 'vitailse'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit ctholho/vitespa <app>:
+    desc: Create app 'vitespa'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit fyeeme/vite-quasar <app>:
+    desc: Create app 'vite-quasar'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit parajs/vue3-mobile-template <app>:
+    desc: Create app 'vue3-mobile-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit lecoueyl/vue3-template <app>:
+    desc: Create app 'vue3-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit byoungd/modern-vue-template <app>:
+    desc: Create app 'modern-vue-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit nekobc1998923/vitecamp <app>:
+    desc: Create app 'vitecamp'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit skysign/vite-vue3-typescript-webcomponent <app>:
+    desc: Create app 'vite-vue3-typescript-webcomponent'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit Miguel-Bento-Github/vite-vue-ts-storybook <app>:
+    desc: Create app 'vite-vue-ts-storybook'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit huibizhang/template-vite-vue-tailwind-v3 <app>:
+    desc: Create app 'template-vite-vue-tailwind-v3'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit huibizhang/template-vite-vue-ts-tailwind-v3 <app>:
+    desc: Create app 'template-vite-vue-ts-tailwind-v3'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit hefengxian/vue3-ts-vite-vitest-todo <app>:
+    desc: Create app 'vue3-ts-vite-vitest-todo'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit feitian124/vue3-tailwind3-website-starter.git <app>:
+    desc: Create app 'vue3-tailwind3-website-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit kirklin/vite-boot <app>:
+    desc: Create app 'vite-boot'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit zclzone/vue-naive-admin <app>:
+    desc: Create app 'vue-naive-admin'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit cmdparkour/vue-admin-box <app>:
+    desc: Create app 'vue-admin-box'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit logustra/vivu-npm <app>:
+    desc: Create app 'vivu-npm'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit parajs/vue3-pc-template <app>:
+    desc: Create app 'vue3-pc-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit NicolaSpadari/vitauri <app>:
+    desc: Create app 'vitauri'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit developer-plus/vue-hbs-admin <app>:
+    desc: Create app 'vue-hbs-admin'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit xyhxx/vite-vue-proste <app>:
+    desc: Create app 'vite-vue-proste'
+    then: cd <app> && npm install && npm run dev
+  npx degit EverSeenTOTOTO/browser-app-boilerplate/tree/vue-vite-ssr <app>:
+    desc: Create app 'vue-vite-ssr'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit CharleeWa/vue3-vant-mobile <app>:
+    desc: Create app 'vue3-vant-mobile'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit UIC-Group/vue3-powerbuild <app>:
+    desc: Create app 'vue3-powerbuild'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit yugasun/vue-ts-starter <app>:
+    desc: Create app 'vue-ts-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit cstuncsik/vitequality <app>:
+    desc: Create app 'vitequality'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit ChronosMasterOfAllTime/vue-vite-tw-ts <app>:
+    desc: Create app 'vue-vite-tw-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit NelsonYong/vite-vue-box <app>:
+    desc: Create app 'vite-vue-box'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit ElanYoung/vite-vue-js-starter-template <app>:
+    desc: Create app 'vite-vue-js-starter-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit marcoarruda/vite-vue3-bootstrap-ts-vitest-starter <app>:
+    desc: Create app 'vite-vue3-bootstrap-ts-vitest-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit jsxiaosi/vue-xs-admin <app>:
+    desc: Create app 'vue-xs-admin'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit houtaroy/vue-component-template <app>:
+    desc: Create app 'vue-component-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit reslear/ionic-vue-vite <app>:
+    desc: Create app 'ionic-vue-vite'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit reslear/ionic-vue-pnpm-monorepo <app>:
+    desc: Create app 'ionic-vue-pnpm-monorepo'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit reslear/ionic-vue-pnpm-express-monorepo <app>:
+    desc: Create app 'ionic-vue-pnpm-express-monorepo'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit reslear/ionic-vue-capacitor <app>:
+    desc: Create app 'ionic-vue-capacitor'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit alireza0sfr/vue3-vite-ts-base <app>:
+    desc: Create app 'vue3-vite-ts-base'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit l-x-f/vite-vue-h5-app <app>:
+    desc: Create app 'x-f/vite-vue-h5-app'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit pengzhanbo/vulcan <app>:
+    desc: Create app 'vulcan'
+    then: cd <app> && npm install && npm run dev
+  npx degit alivadjid/vite-plugin-ssr-i18n-vue3 <app>:
+    desc: Create app 'vite-plugin-ssr-i18n-vue3'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit lstoeferle/vite-vue2-windicss-starter <app>:
+    desc: Create app 'vite-vue2-windicss-starter' - Vue2
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit nabaonan/todos-action/tree/master/vue2-vite-ts <app>:
+    desc: Create app 'vue2-vite-ts' - Vue2
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit logue/vite-vue2-ts-starter <app>:
+    desc: Create app 'vite-vue2-ts-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit logue/vite-vue2-vuetify-ts-starter <app>:
+    desc: Create app 'vite-vue2-vuetify-ts-starter' (OPTIMIZED)
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit Luncode/vite-vue2-ts-template-starter <app>:
+    desc: Create app 'vite-vue2-ts-template-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit kingyue737/vitify-admin <app>:
+    desc: Create app 'vitify-admin' - Vuetify
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit ElanYoung/vite-vue2-js-starter-template <app>:
+    desc: Create app 'vite-vue2-js-starter-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit wtchnm/Vitamin <app>:
+    desc: Create app 'Vitamin'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit TheSwordBreaker/vite-reactts-eslint-prettier <app>:
+    desc: Create app 'vite-reactts-eslint-prettier'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit ychengcloud/react-vite-admin <app>:
+    desc: Create app 'react-vite-admin'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit SafdarJamal/vite-template-react <app>:
+    desc: Create app 'vite-template-react' (ReactApp-like)
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit jihchi/vitejs-template-react-rescript <app>:
+    desc: Create app 'vitejs-template-react-rescript'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit lzm0x219/template-vite-react <app>:
+    desc: Create app 'template-vite-react' (MINIMAL)
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit joaopaulomoraes/reactjs-vite-tailwindcss-boilerplate <app>:
+    desc: Create app 'reactjs-vite-tailwindcss-boilerplate'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit bensmithett/tropical <app>:
+    desc: Create app 'tropical'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit The24thDS/vite-reactts18-chakra-jest-husky <app>:
+    desc: Create app 'vite-reactts18-chakra-jest-husky'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit fabien-ml/react-ts-vite-template <app>:
+    desc: Create app 'ml/react-ts-vite-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit IsaiaPhiliph/vite-reactts-tailwind-rtk-eslint <app>:
+    desc: Create app 'vite-reactts-tailwind-rtk-eslint'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit Innei/vite-react-tailwind-template <app>:
+    desc: Create app 'vite-react-tailwind-template' - React17 m
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit rizkimcitra/stravital <app>:
+    desc: Create app 'stravital' - TypeScript S
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit TeXmeijin/vite-react-ts-tailwind-firebase-starter <app>:
+    desc: Create app 'vite-react-ts-tailwind-firebase-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit uchihamalolan/vite-react-ts <app>:
+    desc: Create app 'vite-react-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit jvidalv/vital <app>:
+    desc: Create app 'vital'
+    then: cd <app> && npm install && npm run dev
+  npx degit pchmn/vite-react-ts-ghactions-template <app>:
+    desc: Create app 'vite-react-ts-ghactions-template'
+    then: cd <app> && npm install && npm run dev
+  npx degit huibizhang/template-vite-react-tailwind-v3 <app>:
+    desc: Create app 'template-vite-react-tailwind-v3'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit huibizhang/template-vite-react-ts-tailwind-v3 <app>:
+    desc: Create app 'template-vite-react-ts-tailwind-v3'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit laststance/vite-react-ts-extended <app>:
+    desc: Create app 'vite-react-ts-extended'
+    then: cd <app> && npm install && npm run dev
+  npx degit fabgrel10/vite-react-starter <app>:
+    desc: Create app 'vite-react-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit Jonghakseo/chrome-extension-boilerplate-react-vite <app>:
+    desc: Create app 'chrome-extension-boilerplate-react-vite'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit 1247748612/vite-ant-design-pro <app>:
+    desc: Create app 'vite-ant-design-pro'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit laststance/vite-rtk-query <app>:
+    desc: Create app 'vite-rtk-query'
+    then: cd <app> && npm install && npm run dev
+  npx degit xyhxx/vite-react-proste <app>:
+    desc: Create app 'vite-react-proste'
+    then: cd <app> && npm install && npm run dev
+  npx degit suren-atoyan/react-pwa <app>:
+    desc: Create app 'atoyan/react-pwa'
+    then: cd <app> && npm install && npm run dev
+  npx degit alessandropisu/vite-react-ts-minimal-template <app>:
+    desc: Create app 'vite-react-ts-minimal-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit EverSeenTOTOTO/browser-app-boilerplate/tree/react-vite-ssr <app>:
+    desc: Create app 'react-vite-ssr'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit MR-Mostafa/Viact <app>:
+    desc: Create app 'Viact'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit erdoganbulut/viterts <app>:
+    desc: Create app 'viterts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit potreco/viterc <app>:
+    desc: Create app 'viterc'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit Drumpy/vrttv-boilerplate <app>:
+    desc: Create app 'vrttv-boilerplate'
+    then: cd <app> && npm install && npm run dev
+  npx degit kriasoft/react-starter-kit <app>:
+    desc: Create app 'react-starter-kit'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit apicgg/vite-mern-template <app>:
+    desc: Create app 'vite-mern-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit maifeeulasad/react-pipeline <app>:
+    desc: Create app 'react-pipeline'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit altmshfkgudtjr/varsarr <app>:
+    desc: Create app 'varsarr'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit emre-cil/viterjs-template <app>:
+    desc: Create app 'viterjs-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit choisohyun/react-vite-ts-boilerplate <app>:
+    desc: Create Very Fast React App using the 'react-vite-ts-boilerplate'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://npmjs.com/package/react-vite-ts-boilerplate]
+  npx degit laoer536/vite3.0-react18-TypeScript-router-dom6-mobx6-Eslint-prettier-template <app>:
+    desc: Create app 'vite3.0-react18-TypeScript-router-dom6-mobx6-Eslint-prettier'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit dserranoc/vite-reactts18-eslint-tailwindcss <app>:
+    desc: Create app 'vite-reactts18-eslint-tailwindcss'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit KAROTT7/vite-plugin-react-views <app>:
+    desc: Create app 'vite-plugin-react-views' (FileSystem based Routes)
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit 985563349/react-vite-template <app>:
+    desc: Create app 'react-vite-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit jsxiaosi/react-xs-admin <app>:
+    desc: Create app 'react-xs-admin'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit emre-cil/vite-mui-ts <app>:
+    desc: Create app 'vite-mui-ts'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit Leo-Henrique/leo-react-app <app>:
+    desc: Create app 'leo-react-app'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit sveltejs/kit <app>:
+    desc: Create app 'sveltejs/kit'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit srmullen/sttv <app>:
+    desc: Create app 'srmullen/sttv'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit jiangfengming/svelte-vite-ssr <app>:
+    desc: Create app 'svelte-vite-ssr'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit andreecy/vite-solid <app>:
+    desc: Create app 'vite-solid'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit xbmlz/vitesse-solid <app>:
+    desc: Create app 'vitesse-solid'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit electron-vite/electron-vite-vue <app>:
+    desc: Create app 'electron-vite-vue'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit electron-vite/electron-vite-react <app>:
+    desc: Create app 'electron-vite-react'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit electron-vite/electron-vite-boilerplate <app>:
+    desc: Create app 'electron-vite-boilerplate'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit yingpengsha/electron-vite-quick-start <app>:
+    desc: Create app 'electron-vite-quick-start'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit umbrella22/electron-vite-template <app>:
+    desc: Create app 'electron-vite-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit ArcherGu/fast-vite-electron <app>:
+    desc: Create app 'fast-vite-electron'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit ArcherGu/fast-vite-nestjs-electron <app>:
+    desc: Create app 'fast-vite-nestjs-electron'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit electron-vite/vite-plugin-electron-quick-start <app>:
+    desc: Create app 'vite-plugin-electron-quick-start'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit cawa-93/vite-electron-builder <app>:
+    desc: Create app 'vite-electron-builder'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit maxstue/vite-reactts-electron-starter <app>:
+    desc: Create app 'vite-reactts-electron-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit hyroge/vitectron <app>:
+    desc: Create app 'vitectron'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit electron-vite/vite-plugin-electron-renderer <app>:
+    desc: Create app 'vite-plugin-electron-renderer'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit Deluze/electron-vue-template <app>:
+    desc: Create app 'electron-vue-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit tada5hi/vitron <app>:
+    desc: Create app 'vitron'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit jooy2/vutron <app>:
+    desc: Create app 'vutron'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit electron-vite/vite-electron-plugin <app>:
+    desc: Create app 'vite-electron-plugin'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit lindsaykwardell/vite-elm-template <app>:
+    desc: Create app 'vite-elm-template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit gacallea/elm_vite_tailwind_template <app>:
+    desc: Create app 'elm_vite_tailwind_template'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit lindsaykwardell/vite-elm-spa <app>:
+    desc: Create app 'vite-elm-spa'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit misitebao/vite-petite-vue-starter <app>:
+    desc: Create app 'vite-petite-vue-starter'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit makinteract/p5js-vite <app>:
+    desc: Create app 'p5js-vite'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit stefanfrede/11st-starter-kit <app>:
+    desc: Create app '11st-starter-kit'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  npx degit fell-lucas/chrome-ext-template-preact-windi-vite <app>:
+    desc: Create app 'chrome-ext-template-preact-windi-vite'
+    then: cd <app> && npm install && npm run dev
+    tags: [vite]
+    links: [https://vite.dev/guide/#community-templates,https://github.com/vitejs/awesome-vite#templates,https://github.com/Rich-Harris/degit]
+  # npm/nx
+  # https://nx.dev/getting-started/intro
+  npx create-nx-workspace@latest:
+    desc: Create a new Nx workspace
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=empty:
+    desc: Create NX workspace empty
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=apps:
+    desc: Create NX workspace set up for building applications
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=core:
+    desc: Create NX workspace set up for core
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=npm:
+    desc: Create NX workspace set up for npm
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=ts:
+    desc: Create NX workspace set up for ts
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/typescript]
+  npx create-nx-workspace@latest --preset=web-components:
+    desc: Create NX workspace set up for web-components
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=angular-monorepo:
+    desc: Create NX workspace set up for angular-monorepo
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/angular,https://nx.dev/concepts/decisions/why-monorepos]
+  npx create-nx-workspace@latest --preset=angular-standalone:
+    desc: Create NX workspace set up for angular-standalone
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/angular]
+  npx create-nx-workspace@latest --preset=react-monorepo:
+    desc: Create NX workspace set up for react-monorepo
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/react,https://nx.dev/concepts/decisions/why-monorepos]
+  npx create-nx-workspace@latest --preset=react-standalone:
+    desc: Create NX workspace set up for react-standalone
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/react]
+  npx create-nx-workspace@latest --preset=next:
+    desc: Create NX workspace set up for next
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=nextjs-standalone:
+    desc: Create NX workspace set up for nextjs-standalone
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=react-native:
+    desc: Create NX workspace set up for react-native
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/react]
+  npx create-nx-workspace@latest --preset=expo:
+    desc: Create NX workspace set up for expo
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=nest:
+    desc: Create NX workspace set up for nest
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/node/nest]
+  npx create-nx-workspace@latest --preset=express:
+    desc: Create NX workspace set up for express
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/node/express]
+  npx create-nx-workspace@latest --preset=react:
+    desc: Create NX workspace set up for react
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/react]
+  npx create-nx-workspace@latest --preset=angular:
+    desc: Create NX workspace set up for angular
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/angular]
+  npx create-nx-workspace@latest --preset=node-standalone:
+    desc: Create NX workspace set up for node-standalone
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/node]
+  npx create-nx-workspace@latest --preset=node-monorepo:
+    desc: Create NX workspace set up for node-monorepo
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/node,https://nx.dev/concepts/decisions/why-monorepos]
+  npx create-nx-workspace@latest --preset=ts-standalone:
+    desc: Create NX workspace set up for ts-standalone
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=react-monorepo --packageManager=pnpm --e2eTestRunner=cypress --ci=github --appName=app nx-mono:
+    desc: Create NX workspace set up for React Monorepo
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands]
+  npx create-nx-workspace@latest --preset=react-monorepo --packageManager=pnpm --e2eTestRunner=cypress --ci=github --workspaceType=integrated --bundler=vite --appName=app nx-mono:
+    desc: Create NX workspace set up for Vite/React Monorepo
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/create-nx-workspace,https://nx.dev/reference/nx-commands,https://nx.dev/technologies/react,https://nx.dev/concepts/decisions/why-monorepos]
+  npx add-nx-to-monorepo@latest:
+    desc: Add Nx to Lerna/Yarn/PNPM/NPM Workspace
+    tags: [nx]
+    links: [https://nx.dev/blog/single-file-monorepo-config-custom-workspace-presets-improved-tailwind-support-and-more-in-nx-13#single-file-monorepo-configuration,https://nx.dev/reference/nx-commands,https://nx.dev/concepts/decisions/why-monorepos]
+  npm i @nx/node -D && npx nx generate @nx/node:app <NAME>:
+    desc: Add TS Node App <NAME>
+    tags: [nx]
+    links: [https://nx.dev/reference/nx-commands,https://nx.dev/technologies/node,https://nx.dev/technologies/typescript]
+  npm i @nx/node -D && npx nx generate @nx/node:application <NAME>:
+    desc: Add a node App
+    tags: [nx]
+    links: [https://nx.dev/reference/nx-commands,https://nx.dev/technologies/node]
+  npm i @nx/node -D && npx nx generate @nx/node:application <NAME> --frontendProject<FRONTEND>:
+    desc: Add node App proxying to front
+    tags: [nx]
+    links: [https://nx.dev/reference/nx-commands,https://nx.dev/technologies/node]
+  npm i @nx/web -D && npx nx generate @nx/web:app <NAME>:
+    desc: Add TS web App
+    tags: [nx]
+    links: [https://nx.dev/reference/nx-commands,https://nx.dev/reference/core-api/web/generators/application]
+  npm i @nx/nest -D && npx nx g @nx/nest:application <NAME>:
+    desc: Add Nestjs App
+    tags: [nx]
+  npm i @nx/express -D && npx nx generate @nx/express:application <NAME>:
+    desc: Add Express App
+    tags: [nx]
+  npm i @nx/express -D && npx nx generate @nx/express:application <NAME> --frontendProject<FRONTEND>:
+    desc: Add Express App proxying to front
+    tags: [nx]
+  npm i @nx/react -D && npx nx generate @nx/react:application <NAME> --style scss:
+    desc: Add React App with scss style
+    tags: [nx]
+  npm i @nx/react -D && npx nx generate @nx/react:application <NAME> --style scss --routing:
+    desc: Add React App with scss style and routes
+    tags: [nx]
+  npm i @nx/angular -D && npx nx generate @nx/angular:application <NAME>:
+    desc: Add Angular App
+    tags: [nx]
+  npm i @nx/angular -D && npx nx generate @nx/angular:application <NAME> --addTailwind:
+    desc: Add Angular App with Tailwind
+    tags: [nx]
+  npx nx @nx/angular:setup-tailwind <PROJECT>:
+    desc: Configure tailwind
+    tags: [nx]
+  npm install -D @nx/web:
+    desc: Add web plugin
+    tags: [nx]
+  npm install -D @nx/js:
+    desc: Add @nx/js plugin - useful for JS/TS projects
+    tags: [nx]
+  npx cra-to-nx:
+    desc: Migrate CRA to Nx (from projectss root)
+    tags: [nx]
+  npx nx reset:
+    desc: Clears cached Nx artifacts and metadata about the workspace and shuts down the Nx Daemon
+    tags: [nx]
+    links: [https://nx.dev/reference/core-api/nx/documents/reset,https://nx.dev/reference/nx-commands]
+  npx nx show projects:
+    desc: Show all projects in the workspace
+    tags: [nx]
+    links: [https://nx.dev/nx-api/nx/documents/show,https://nx.dev/reference/nx-commands]
+  npx nx show projects --with-target serve:
+    desc: Show all projects with a serve target
+    tags: [nx]
+    links: [https://nx.dev/nx-api/nx/documents/show,https://nx.dev/reference/nx-commands]
+  npx nx test [project] --test-file="path/to/your/spec-file.spec.ts":
+    desc: Run tests for a specific project and test file
+    tags: [nx, test]
+  npx nx e2e [project] --test-file="path/to/your/test-file.spec.ts":
+    desc: Run end-to-end tests for a specific project and test file
+    tags: [nx, e2e]
+  npx nx run-many -t test --no-cache --parallel=5 --silent:
+    desc: Run tests in parallel
+    tags: [nx, test]
+  npx nx run-many -t build --no-cache --parallel=5 --silent:
+    desc: Run builds in parallel
+    tags: [nx, build]
+  npx nx migrate latest --interactive:
+    desc: Update Nx and run migrations
+    tags: [nx]
+  npx nx report:
+    desc: Report useful version numbers
+    tags: [nx]
+  npx nx migrate latest:
+    desc: Update Nx and run migrations
+    tags: [nx]
+  npx nx migrate --run-migrations:
+    desc: Run migrations
+    tags: [nx]
+  npx nx graph:
+    desc: Display project graph on browser
+    tags: [nx]
+  npx nx list:
+    desc: List plugins
+    tags: [nx]
+  npx nx list <PLUGIN>:
+    desc: List capabilities for plugins
+    tags: [nx]
+  npx nx@latest init:
+    desc: Initialize Nx workspace
+    tags: [nx]
+  npx nx generate @nx/js:convert-to-swc:
+    desc: Convert a TSC library to SWC
+    tags: [nx, swc]
+    links:
+      - '@nx/js:convert-to-swc': https://nx.dev/nx-api/js/generators/convert-to-swc
+  npx nx generate @nx/workspace:convert-to-nx-project --project <PROJECT>:
+    desc: Use project.json instead of workspace.json
+    tags: [nx]
+  npx nx generate @nx/workspace:convert-to-nx-project --all:
+    desc: Split workspace.json into project.jsons
+    tags: [nx]
+  npx nx generate @nx/workspace:library <NAME>:
+    desc: Add library to workspace
+    tags: [nx]
+  npx nx generate @nx/workspace:library <NAME> --buildable:
+    desc: Add buildable library to workspace
+    tags: [nx]
+  npx nx generate move --projectName app --destination app/client --newProjectName client:
+    desc: Move (or Rename) project from apps/app to apps/client
+    tags: [nx]
+  npx nx generate @nx/workspace:move --project <FROM> <TARGET>:
+    desc: Move project in workspace
+    tags: [nx]
+  npx nx generate @nx/js:lib shared-commons --directory=libs/shared/commons  --unitTestRunner=vitest --bundler=swc:
+    desc: Create a TypeScript Library
+    tags: [nx]
+    links:
+      - '@nx/js:library': https://nx.dev/nx-api/js/generators/library
+  npx nx generate @nx/react:library <NAME> --directory=libs/<NAME> --unitTestRunner=vitest --bundler=vite --compiler=swc:
+    desc: Create a React Library for an Nx workspace
+    tags: [nx]
+    refereces:
+      - '@nx/react:library': https://nx.dev/nx-api/react/generators/library#nxreactlibrary
+  npx nx generate @nx/react:component property-list --directory libs/properties/src/lib/property-list:
+    desc: Create a React Component for Nx
+    tags: [nx]
+    links:
+      - '@nx/react:component': https://nx.dev/nx-api/react/generators/component
+  npx nx generate @nx/workspace:run-commands <TARGET> --project <NAME> --command'<cmd>':
+    desc: Add commands to project
+    tags: [nx]
+  npx nx generate App <NAME>:
+    desc: Generate App
+    tags: [nx]
+  npx nx generate lib <NAME>:
+    desc: Generate lib
+    tags: [nx]
+  npx nx generate component <NAME>:
+    desc: Generate component
+    tags: [nx]
+  npx nx generate move <FROM> <TARGET>:
+    desc: Move project in workspace
+    tags: [nx]
+  npx nx generate remove <PROJECT>:
+    desc: Remove PROJECT from workspace
+    tags: [nx]
+  npx nx generate setup-tailwind <PROJECT>:
+    desc: Setup TailwindCSS
+    tags: [nx]
+  npx nx generate storybook-configuration <NAME>:
+    desc: Configure Storybook
+    tags: [nx]
+  npx nx generate web-worker <NAME> --project <PROJECT>:
+    desc: Add lib
+    tags: [nx]
+  npx nx generate @nx/eslint:convert-to-flat-config:
+    desc: Convert eslint to flat config
+    tags: [nx, eslint]
+    links:
+      - Convert eslint to flat config: https://nx.dev/recipes/tips-n-tricks/flat-config#switching-to-eslints-flat-config-format
+  npx nx generate @nx/angular:component <NAME>:
+    desc: Add component
+    tags: [nx]
+  npx nx generate @nx/react:storybook-configuration <NAME>:
+    desc: Add Storybook
+    tags: [nx]
+  npx nx generate @nx/angular:library <NAME>:
+    desc: Add lib
+    tags: [nx]
+  npx nx generate @nx/angular:library <NAME> --addTailwind:
+    desc: Add lib with Tailwind
+    tags: [nx]
+  npx nx generate @nx/angular:library <NAME> --buildable:
+    desc: Add buildable lib
+    tags: [nx]
+  npx nx generate @nx/angular:library <NAME> --buildable --addTailwind:
+    desc: Add lib with Tailwind
+    tags: [nx]
+  npx nx generate @nx/angular:storybook-configuration <NAME> --buildable --addTailwind:
+    desc: Add storybook with Tailwind buildable
+    tags: [nx]
+  npx nx generate npm-package <NAME>:
+    desc: Create npm pkgs to packages folder
+    tags: [nx]
+  npx nx run-many -t lint,build,test --no-cache--parallel=$(nproc) --silent:
+    desc: Run the lint,build and test tasks for all projects in the monorepo (CI mode)
+    tags: [nx]
+  npx nx run-many -t lint,build,test --no-cache--parallel=$(nproc) --silent --ci:
+    desc: Run the lint,build and test tasks for all projects in the monorepo
+    tags: [nx]
+  npx nx show projects --affected:
+    desc: Show affected projects in the workspace
+    tags: [nx]
+    links:
+      - https://nx.dev/nx-api/nx/documents/show
+  npx nx show projects --affected --type app:
+    desc: Show affected apps in the workspace
+    tags: [nx]
+    links:
+      - https://nx.dev/nx-api/nx/documents/show
+  npx nx graph --affected:
+    desc: visualize the affected projects using the Nx graph on browser
+    tags: [nx]
+  npx nx affected -t test:
+    desc: Run Only Tasks Affected by a PR
+    tags: [nx]
+    links:
+      - https://nx.dev/ci/features/affected
+      - https://youtu.be/q-cu5Lw3DoE
+  # npm/firebase
+  npm i firebase-admin firebase-functions firebase-tools -D:
+    desc: Add firebase dev deps
+    tags: [firebase]
+  npm i firebase:
+    desc: Add firebase web deps
+    tags: [firebase]
+  npm install -g firebase-tools:
+    desc: Install the Firebase CLI globally
+    tags: [firebase]
+  npx firebase login:
+    desc: Log into Firebase - current Google account
+    tags: [firebase]
+  npx firebase login:ci:
+    desc: Store token CI system as env var FIREBASE_TOKEN
+    tags: [firebase]
+  npx firebase projects:list:
+    desc: List Firebase projects - current Google account
+    tags: [firebase]
+  npx firebase init:
+    desc: Initialize a Firebase project
+    tags: [firebase]
+  npx firebase use --add <ALIAS>:
+    desc: Add project ALIAS to .firebaserc
+    tags: [firebase]
+  npx firebase use:
+    desc: List aliases for current project
+    tags: [firebase]
+  npx firebase use <ALIAS>:
+    desc: Setup Firebase to use a project
+    tags: [firebase]
+  npx firebase use --clear:
+    desc: Clear active project
+    tags: [firebase]
+  npx firebase init hosting:
+    desc: Setup Firebase Hosting
+    tags: [firebase]
+  npx firebase init hosting:github:
+    desc: Setup GH Actions to deploy to Firebase Hosting
+    tags: [firebase]
+  npx firebase init functions:
+    desc: Create Cloud Functions project
+    tags: [firebase]
+  npx firebase init emulators:
+    desc: Setup the Emulator Suite
+    tags: [firebase]
+  npx firebase emulators:start:
+    desc: Start Emulator Suite
+    tags: [firebase]
+  npx firebase emulators:start --only functions:
+    desc: Start Emulator Suite (ONLY FUNCTIONS)
+    tags: [firebase]
+  npx firebase emulators:start --only hosting:
+    desc: Start Emulator Suite (ONLY HOSTING)
+    tags: [firebase]
+  npx firebase deploy --only functions:
+    desc: Deploy firebase functions
+    tags: [firebase]
+  npx firebase deploy --only hosting:
+    desc: Deploy firebase hostings
+    tags: [firebase]
+  npx firebase deploy:
+    desc: Deploy to Firebase
+    tags: [firebase]
+  npx firebase hosting:channel:list:
+    desc: List channels - including 'live' - from default Hosting
+    tags: [firebase]
+  npx firebase hosting:channel:create <ID>:
+    desc: Create prev channel ID
+    tags: [firebase]
+  npx firebase hosting:channel:open <ID>:
+    desc: Open or returns channel ID URL
+    tags: [firebase]
+  npx firebase hosting:channel:deploy <ID>:
+    desc: Deploy prev channel to HOST - expires in 7d
+    tags: [firebase]
+  npx firebase hosting:channel:delete <ID>:
+    desc: Delete prev channel
+    tags: [firebase]
+
+  # pnpm | Fast, disk space efficient package manager
+  # https://pnpm.io
+  rm -rf node_modules pnpm-lock.yaml && pnpm i:
+    desc: Remove node_modules and pnpm-lock.yaml and install
+    tags: [pnpm]
+
+  # yarn | Fast, reliable, and secure dependency management
+  # https://yarnpkg.com
+  yarn create vite <app> --template vanilla:
+    desc: Create app 'vanillala'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template vanilla-ts:
+    desc: Create app 'vanilla-ts'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template vue:
+    desc: Create app 'vue'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template vue-ts:
+    desc: Create app 'vue-ts'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template react:
+    desc: Create app 'react'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template react-ts:
+    desc: Create app 'react-ts'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template react-swc:
+    desc: Create app 'react-swc'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template react-swc-ts:
+    desc: Create app 'react-swc-ts'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template preact:
+    desc: Create app 'preact'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template preact-ts:
+    desc: Create app 'preact-ts'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template lit:
+    desc: Create app 'lit'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template lit-ts:
+    desc: Create app 'lit-ts'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template svelte:
+    desc: Create app 'svelte'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+  yarn create vite <app> --template svelte-ts:
+    desc: Create app 'svelte-ts'
+    then: cd <app> && yarn && yarn dev
+    tags: [vite]
+
+  # biome | Format, lint, and more in a fraction of a second
+  # https://biomejs.dev
+  npm install --save-dev --save-exact @biomejs/biome:
+    desc: Install Biome
+    tags: [format, biome]
+    links: [https://biomejs.dev/guides/getting-started, https://biomejs.dev/blog/biome-v2]
+    notes:
+      - json: | #jsonc
+          // biome.jsonc
+          {
+            "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",
+            "formatter": {
+              "enabled": false
+            },
+            "linter": {
+              "enabled": false
+            },
+            "assist": {
+              "enabled": false
+            }
+          }
+  biome init:
+    desc: Create a configuration file
+    tags: [format, biome]
+    links:
+      - Getting Started: https://biomejs.dev/guides/getting-started
+      - Prettier/ESLint to Biome - The Lightning-Fast Rust-Based Tool: https://youtu.be/KI7mbm-BxqA
+  biome lint <DIRECTORY_OR_FILE_NAME>:
+    desc: Lint all files in a directory
+    tags: [format, biome]
+    links:
+      - Getting Started: https://biomejs.dev/guides/getting-started
+      - Prettier/ESLint to Biome - The Lightning-Fast Rust-Based Tool: https://youtu.be/KI7mbm-BxqA
+  biome check --apply <DIRECTORY_OR_FILE_NAME>:
+    desc: Format, lint and organize imports | Runs multiple tools at once
+    tags: [format, biome]
+    links:
+      - Getting Started: https://biomejs.dev/guides/getting-started
+      - Prettier/ESLint to Biome - The Lightning-Fast Rust-Based Tool: https://youtu.be/KI7mbm-BxqA
+  biome format ~/path/to/file.json --write --files-max-size=1000000000:
+    desc: Format a file, writing the result back to the file, with a maximum file size of 1GB
+    tags: [format, biome]
+    links:
+      - Getting Started: https://biomejs.dev/guides/getting-started
+      - Prettier/ESLint to Biome - The Lightning-Fast Rust-Based Tool: https://youtu.be/KI7mbm-BxqA
+  biome format <DIRECTORY_OR_FILE_NAME> --write --files-max-size=1000000000:
+    desc: Format all files in a directory
+    tags: [format, biome]
+    links:
+      - Getting Started: https://biomejs.dev/guides/getting-started
+      - Prettier/ESLint to Biome - The Lightning-Fast Rust-Based Tool: https://youtu.be/KI7mbm-BxqA
+  npm install --save-dev --save-exact @biomejs/biome && npx @biomejs/biome migrate eslint --write --include-inspired:
+    desc: Migrate from ESLint to Biome. It overwrites your initial Biome configuration.
+    tags: [format, biome]
+    links: [https://biomejs.dev/guides/migrate-eslint-prettier/#migrate-from-eslint, https://biomejs.dev/guides/integrate-in-vcs, https://biomejs.dev/linter]
+    notes:
+      - json: | #jsonc
+          // biome.jsonc
+          {
+            "linter": {
+              "enabled": true,
+              "rules": {
+                "recommended": true
+              }
+            }
+          }
+  npm install --save-dev --save-exact @biomejs/biome && npx @biomejs/biome migrate prettier --write:
+    desc: Migrate from Prettier to Biome. It overwrites your initial Biome configuration.
+    tags: [format, biome]
+    links: [https://biomejs.dev/guides/migrate-eslint-prettier/#migrate-from-prettier, https://biomejs.dev/guides/integrate-in-vcs, https://biomejs.dev/formatter]
+    notes:
+      - json: | #jsonc
+          // biome.jsonc
+          {
+            "linter": {
+              "enabled": true,
+              "rules": {
+                "recommended": true
+              }
+            }
+          }

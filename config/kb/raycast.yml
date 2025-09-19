@@ -1,0 +1,136 @@
+cheats:
+  time in nyc | Raycast:
+    desc: Show time in New York
+    tags: [raycast, calculator, time]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  time in nyc+6h | Raycast:
+    desc: Show time + 6 hours in New York
+    tags: [raycast, calculator, time]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  12% of $321 | Raycast:
+    desc: Calculate 12% of $321 (USD)
+    tags: [raycast, calculator, math]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  12% of $321 in BRL | Raycast:
+    desc: Calculate 12% of $321 (in BRL)
+    tags: [raycast, calculator, time]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  monday in 3 weeks | Raycast:
+    desc: What day is Monday in 3 weeks?
+    tags: [raycast, calculator, time]
+    links:
+      - Calculator: https://raycast.com/extensions/calculator
+  5pm ldn in sf | Raycast:
+    desc: What time is 5pm in London in San Francisco?
+    tags: [raycast, calculator, time]
+    links:
+      - Calculator: https://raycast.com/extensions/calculator
+  time in Dubai | Raycast:
+    desc: What time is it in Dubai?
+    tags: [raycast, calculator, time]
+    links:
+      - Calculator: https://raycast.com/extensions/calculator
+  days until 25 Dec | Raycast:
+    desc: How many days until Christmas?
+    tags: [raycast, calculator, time]
+    links:
+      - Calculator: https://raycast.com/extensions/calculator
+  workdays until 25 Dec | Raycast:
+    desc: How many workdays until Christmas?
+    tags: [raycast, calculator, time]
+    links:
+      - Calculator: https://raycast.com/extensions/calculator
+  35 days ago | Raycast:
+    desc: What day was it 35 days ago?
+    tags: [raycast, calculator, time]
+    links:
+      - Calculator: https://raycast.com/extensions/calculator
+  10 usd in gbp | Raycast:
+    desc: How much is 10 USD in GBP?
+    tags: [raycast, conversions]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  45 jpy to inr | Raycast:
+    desc: How much is 45 JPY in INR?
+    tags: [raycast, conversions]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  23C to F | Raycast:
+    desc: How much is 23 Celsius in Fahrenheit?
+    tags: [raycast, conversions]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  29 inches to cm | Raycast:
+    desc: How much is 29 inches in centimeters?
+    tags: [raycast, conversions]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  4 feet to cm | Raycast:
+    desc: How much is 4 feet in centimeters?
+    tags: [raycast, conversions]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  3 teaspoon in ml | Raycast:
+    desc: How much is 3 teaspoon in milliliters?
+    tags: [raycast, conversions]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  60 + 74 | Raycast:
+    desc: Sum of 60 and 74
+    tags: [raycast, math]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  4 power 6 | Raycast:
+    desc: 4 to the power of 6
+    tags: [raycast, math]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  32% of 5 | Raycast:
+    desc: 32 percent of 5
+    tags: [raycast, math]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  8 dollars/hour in gbp | Raycast:
+    desc: 8 dollars per hour in GBP
+    tags: [raycast, math]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  19m + 47% | Raycast:
+    desc: 19 meters plus 47 percent
+    tags: [raycast, math]
+    links:
+      - The non-nerd's guide to Raycast: https://youtu.be/xg2TQJyBEYc
+  10ft in m | Raycast:
+    desc: 10 feet in meters
+    tags: [raycast, math]
+    links:
+      - Calculator: https://raycastapp.notion.site/Calculator-8bf30191faa24f43b4363cbf1d00c01b#b12e437d46584aca9adae604ba35cd33
+  5 btc in gbp | Raycast:
+    desc: 5 bitcoins in GBP
+    tags: [raycast, math, crypto]
+    links:
+      - Calculator: https://raycastapp.notion.site/Calculator-8bf30191faa24f43b4363cbf1d00c01b#b12e437d46584aca9adae604ba35cd33
+  52% of 900 | Raycast:
+    desc: 52 percent of 900
+    tags: [raycast, math]
+    links:
+      - Calculator: https://raycastapp.notion.site/Calculator-8bf30191faa24f43b4363cbf1d00c01b#b12e437d46584aca9adae604ba35cd33
+  days until 31 Mar | Raycast:
+    desc: How many days until 31 March?
+    tags: [raycast, time]
+    links:
+      - Calculator: https://raycastapp.notion.site/Calculator-8bf30191faa24f43b4363cbf1d00c01b#b12e437d46584aca9adae604ba35cd33
+  square root of 625 | Raycast:
+    desc: Square root of 625
+    tags: [raycast, math]
+    links:
+      - Calculator: https://raycastapp.notion.site/Calculator-8bf30191faa24f43b4363cbf1d00c01b#b12e437d46584aca9adae604ba35cd33
+  2 power 10 | Raycast:
+    desc: 2 to the power of 10
+    tags: [raycast, math]
+    links:
+      - Calculator: https://raycastapp.notion.site/Calculator-8bf30191faa24f43b4363cbf1d00c01b#b12e437d46584aca9adae604ba35cd33

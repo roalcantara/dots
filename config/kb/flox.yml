@@ -1,0 +1,134 @@
+bookmarks:
+  https://blog.crafteo.io/2025/01/10/flox-novops-development-packages-secrets-and-multi-environment-management-all-in-one:
+    desc: Flox - NoOps Development Packages, Secrets and Multi-Environment Management All in One
+    tags: [flox]
+  https://flox.dev/docs/install-flox/install:
+    desc: Install Flox
+    tags: [flox]
+    links: [https://flox.dev/docs/install-flox/install]
+commands:
+  curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version:
+    desc: Download and install Flox in a Debian (Arm64) using curl
+    tags: [flox]
+    links: [https://flox.dev/docs/install-flox/install/#__tabbed_1_3]
+  wget -O /tmp/flox.deb https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version:
+    desc: Download and install Flox in a Debian (Arm64) using wget
+    tags: [flox]
+    links: [https://flox.dev/docs/install-flox/install/#__tabbed_1_3]
+  sudo apt update && sudo apt --only-upgrade install flox && flox --version:
+    desc: Upgrade existing Flox installation Debian/Ubuntu using apt
+    tags: [flox]
+    links: [https://flox.dev/docs/install-flox/install/#__tabbed_1_3]
+  sudo apt-get purge flox && sudo apt-get autoremove:
+    desc: Uninstall Flox in a Debian/Ubuntu using apt and remove unused dependencies
+    tags: [flox]
+    links: [https://flox.dev/docs/install-flox/uninstall/#__tabbed_1_3]
+  cd ~ && flox init:
+    desc: Create a Flox Default Environment at the home directory
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment]
+  echo 'eval "$(flox activate -d ~ -m run)"' >> ~/.bashrc:
+    desc: Add the Flox Default Environment to the ~/.bashrc file
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment]
+  echo 'eval "$(flox activate -d ~ -m run)"' >> ~/.bashrc && source ~/.bashrc:
+    desc: Add the Flox Default Environment to the ~/.bashrc file and source it
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment]
+  echo 'eval "$(flox activate -d ~ -m run)"' >> ~/.bashrc && sudo flox activate -d "$HOME":
+    desc: Add the Flox Default Environment to the ~/.bashrc file and activate it at the home directory
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment]
+  echo 'eval "$(flox activate -d ~ -m run)"' >> ~/.zshrc:
+    desc: Add the Flox Default Environment to the ~/.zshrc file
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment]
+  echo 'eval "$(flox activate -d ~ -m run)"' >> ~/.zshrc && source ~/.zshrc:
+    desc: Add the Flox Default Environment to the ~/.zshrc file and source it
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment]
+  echo 'eval "$(flox activate -d ~ -m run)"' >> ~/.zshrc && sudo flox activate -d "$HOME":
+    desc: Add the Flox Default Environment to the ~/.zshrc file and activate it at the home directory
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment]
+  flox activate -d "$HOME":
+    desc: Activate the Flox Default Environment at the home directory
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment]
+  flox install hello:
+    desc: Install the hello package
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#initial-setup]
+  flox uninstall hello:
+    desc: Uninstall the hello package
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#initial-setup]
+  flox install -d ~ hello:
+    desc: Use `-d` to install packages to the default environment from another Flox environment
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#installing-packages-to-the-default-environment-from-another-flox-environment]
+  flox install curl gitFull gnupg inetutils tree neovim:
+    desc: Install curl, gitFull, gnupg, inetutils, tree and neovim at once in the current environment
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#installing-packages]
+  flox install -d ~ curl gitFull gnupg inetutils tree neovim:
+    desc: Install curl, gitFull, gnupg, inetutils, tree and neovim at once to the default environment
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/layering-multiple-environments/#install-packages]
+  flox list:
+    desc: List all installed packages in the current environment
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#listing-packages]
+  flox list -d ~:
+    desc: List all installed packages in the default environment
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#listing-packages]
+  flox envs:
+    desc: List Flox activated and inactive environments
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#listing-environments]
+  flox push:
+    desc: Push the default environment to FloxHub to share it with other machines (authentication required)
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#sharing]
+  cd ~ && flox pull roalcantara/default:
+    desc: Pull the default environment from FloxHub keeping it in sync with the upstream (linking the two machines). This means that if a package is installed on the upstream, it will also be installed on this machine.
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#sharing]
+  cd ~ && flox pull --copy roalcantara/default:
+    desc: Pull the default environment from FloxHub using it as a starting point (without linking the two machines). This allows you to install/uninstall packages all you like and it won't affect any other machine.
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#sharing]
+  git clone https://github.com/mui/material-ui.git && cd material-ui && flox init -y && flox activate && flox install yarn && flox list && flox envs:
+    desc: Clone and cd into the material-ui repository, initialize a new Flox environment and activate it, install yarn and list the installed packages and list the environments
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment/#initial-setup]
+cheats:
+  Setup flox in a Debian:
+    desc: Setup flox in a Debian (container)
+    tags: [flox, debian]
+    notes:
+      - md: | #markdown
+          !#/bin/bash
+
+          # 1. in the host, start a container:
+          # docker run -it --rm -v $PWD:/app --entrypoint=zsh mcr.microsoft.com/devcontainers/base:debian
+
+          # 2. in the container, run:
+          apt-get update && apt-get install -y --no-install-recommends sudo xclip xsel git zsh curl
+
+          rm -rf /home/vscode/.config /home/vscode/.bash_logout /home/vscode/.bash_profile /home/vscode/.bashrc /home/vscode/.profile /home/vscode/.zshrc /home/vscode/.zprofile /home/vscode/.zshenv /home/vscode/.gitconfig /home/vscode/.oh-my-zsh
+          rm -rf /root/.config /root/.bash_logout /root/.bash_profile /root/.bashrc /root/.profile /root/.zshrc /root/.zprofile /root/.zshenv /root/.gitconfig /root/.oh-my-zsh /root/.zcompdump* /root/.zsh_*
+          mkdir -p /home/vscode/.local/share
+          cp -R /app /home/vscode/.local/share/dots
+
+          curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
+          flox init --name 'default' --dir /home/vscode/.config/flox
+          echo 'eval "$(flox activate --dir /home/vscode/.config/flox -m run)"' >> /home/vscode/.bashrc && source /home/vscode/.bashrc
+          echo 'eval "$(flox activate --dir /home/vscode/.config/flox -m run)"' >> /home/vscode/.zshrc && source /home/vscode/.zshrc
+          flox install --dir /home/vscode/.config/flox nodejs python313Full ripgrep bat delta eza fd fzf starship zoxide gum pre-commit tree-sitter gitlint ruby neovim
+          flox list --dir /home/vscode/.config/flox
+          flox envs
+          eval "$(FLOX_SHELL=/usr/bin/zsh flox activate --dir /home/vscode/.config/flox)"
+          flox list
+          flox envs

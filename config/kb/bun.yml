@@ -1,0 +1,190 @@
+commands:
+  bun create hono myapp:
+    desc: Hono is a lightweight ultrafast web framework designed for the edge.
+    tags: [bun, hono]
+    links:
+      - https://hono.dev/docs/getting-started/bun
+      - https://bun.sh/guides/ecosystem/hono
+      - https://hono.dev/docs/getting-started/basic
+    notes:
+      - sh: | #shell
+          #! /bin/bash
+          # Use create-hono to get started with one of Hono's project templates.
+          bun create hono@latest my-app # Select bun when prompted for a template
+          cd my-app
+          bun install
+          bun run dev
+          open http://localhost:3000
+      - ts: | #typescript
+          // index.ts
+          import { Hono } from "hono";
+          const app = new Hono();
+
+          app.get("/", c => c.text("Hono!"));
+
+          export default app;
+
+cheats:
+  Deploy a Hono app to AWS Lambda:
+    desc: Deploy a Hono app to AWS Lambda.
+    tags: [bun, hono]
+    links:
+      - https://hono.dev/docs/getting-started/aws-lambda
+      - https://github.com/hono-dev/hono/tree/main/examples/aws-lambda
+    notes:
+      - md: | #markdown
+          ## AWS Lambda
+
+          AWS Lambda is a serverless platform by Amazon Web Services.
+          You can run your code in response to events and automatically manages the underlying compute resources for you.
+
+          > Hono works on AWS Lambda with the Node.js 18+ environment.
+      - md: | #markdown
+          ## 1. SETUP
+
+          When creating the application on AWS Lambda, CDK is useful to setup the functions such as IAM Role, API Gateway, and others.
+
+          Initialize your project with the cdk CLI.
+
+          ```sh
+          mkdir my-app
+          cd my-app
+          cdk init app -l typescript
+          bun add hono
+          mkdir lambda
+          touch lambda/index.ts
+          ```
+      - md: | #markdown
+          ## 2. HELLO WORLD
+
+          ```tsh
+          // lambda/index.ts
+          import { Hono } from 'hono'
+          import { handle } from 'hono/aws-lambda'
+
+          const app = new Hono()
+
+          app.get('/', (c) => c.text('Hello Hono!'))
+
+          export const handler = handle(app)
+          ```
+      - md: | #markdown
+          ## 3. DEPLOY
+
+          ```sh
+          // lib/cdk-stack.ts
+          import * as cdk from 'aws-cdk-lib'
+          import { Construct } from 'constructs'
+          import * as lambda from 'aws-cdk-lib/aws-lambda'
+          import * as apigw from 'aws-cdk-lib/aws-apigateway'
+          import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
+
+          export class MyAppStack extends cdk.Stack {
+            constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+              super(scope, id, props)
+
+              const fn = new NodejsFunction(this, 'lambda', {
+                entry: 'lambda/index.ts',
+                handler: 'handler',
+                runtime: lambda.Runtime.NODEJS_20_X,
+              })
+              fn.addFunctionUrl({
+                authType: lambda.FunctionUrlAuthType.NONE,
+              })
+              new apigw.LambdaRestApi(this, 'myapi', {
+                handler: fn,
+              })
+            }
+          }
+          ```
+
+          Finally, run the command to deploy:
+
+          ```sh
+          cdk deploy
+          ```
+  Bun's MySQL & MariaDB in Bun.SQL:
+    desc: Bun's MySQL/MariaDB driver is written in Zig
+    tags: [bun, sql]
+    links: [https://bun.com/blog/bun-v1.2.21#mysql-mariadb-in-bun-sql]
+    notes:
+      - ts: | #typescript
+          // index.ts
+          // https://bun.com/blog/bun-v1.2.21
+          import { SQL } from "bun";
+
+          // Connect to a MySQL or MariaDB database
+          const sql = new SQL({
+            adapter: "mysql",
+            hostname: "127.0.0.1",
+            username: "user",
+            password: "password",
+            database: "buns_burgers",
+          });
+
+          // Run a query
+          const users = await sql`SELECT * FROM users;`.all();
+          console.log(users);
+
+          // or via url
+          const mysql = new SQL("mysql://user:password@127.0.0.1:3306/buns_burgers");
+
+          // Run a query
+          const users = await mysql`SELECT * FROM users;`;
+          console.log(users);
+  Bun's SQLite support in Bun.SQL:
+    desc: Bun's built-in SQLite in-memory or file-based database support
+    tags: [bun, sql]
+    links: [https://bun.com/blog/bun-v1.2.21#sqlite-in-bun-sql]
+    notes:
+      - ts: | #typescript
+          // index.ts
+          // https://bun.com/blog/bun-v1.2.21
+          import { SQL } from "bun";
+
+          // Create an in-memory SQLite database
+          // It can be an in-memory database by passing ":memory:"
+          // or a file-based database by providing a path like sqlite://path/to/db.sqlite.
+          const db = new SQL(":memory:");
+
+          // Create a table
+          await db`CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)`;
+
+          // Insert multiple users
+          const names = ["Alice", "Bob"];
+          await db`INSERT INTO users (name) VALUES ${SQL.values(
+            names.map((name) => [name]),
+          )}`;
+
+          // Query the users
+          const users = await db`SELECT * FROM users ORDER BY name ASC`;
+          console.log(users);
+          // => [ { id: 1, name: 'Alice' }, { id: 2, name: 'Bob' } ]
+  Bun.secrets - native secrets manager for CLI tools:
+    desc: Bun.secrets securely stores and retrieves credentials using the operating system's native credential storage - Keychain Services on macOS, libsecret (GNOME Keyring, KWallet) on Linux, and the Windows Credential Manager.
+    tags: [bun, secrets]
+    links: [https://bun.com/blog/bun-v1.2.21#bun-secrets-native-secrets-manager-for-cli-tools]
+    notes:
+      - ts: | #typescript
+          // index.ts
+          // https://bun.com/blog/bun-v1.2.21
+          import { secrets } from "bun";
+
+          // Store a GitHub token securely
+          await secrets.set({
+            service: "my-cli-tool",
+            name: "github-token",
+            value: "ghp_xxxxxxxxxxxxxxxxxxxx",
+          });
+
+          // Retrieve it when needed
+          const token = await secrets.get({
+            service: "my-cli-tool",
+            name: "github-token",
+          });
+
+          // Or delete it later
+          await secrets.delete({
+            service: "my-cli-tool",
+            name: "github-token",
+          });

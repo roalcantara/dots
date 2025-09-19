@@ -1,0 +1,28 @@
+cheats:
+  brew install rust:
+    desc: Install Rust using Homebrew
+    tags: [rust, homebrew]
+    notes:
+      - sh: |
+          # Install Rust using Homebrew
+          brew install rust
+
+          # verify installation
+          rustc --version
+    links:
+      - https://medium.com/@Brahmbhatnilay/rust-programming-language-installation-for-beginners-on-windows-and-mac-47bf7fdcbf80
+  cargo init hello:
+    desc: Create first project
+    tags: [rust, cargo]
+    notes:
+      - sh: |
+          # Create first project
+          cargo init hello
+      - rs: |
+          # src/main.rs
+          # example: cargo run
+          fn main() {
+              println!("Hello, world!");
+          }
+    links:
+      - https://doc.rust-lang.org/cargo/getting-started/first-steps.html
