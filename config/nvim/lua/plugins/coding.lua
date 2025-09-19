@@ -53,7 +53,7 @@ return {
         -- ['Visual All'] = '<D-C-g>',
         ['Find Under'] = '<D-C-g>',
         ['Find Subword Under'] = '<D-C-g>',
-        ['Add Cursor Down'] = '<A-D-Down>',
+        ['Add Cursor Down'] = '<D-M-Down>',
         ['Add Cursor Up'] = '<A-D-Up>',
         ['Skip Region'] = '<D-k>',
         ['Remove Region'] = '<D-x>',

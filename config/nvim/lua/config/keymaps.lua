@@ -68,7 +68,6 @@ vim.schedule_wrap(function()
       ['<M-S-Left>'] = { { n = 'vb', v = 'b', i = '<C-O>vb' }, 'Select to BoW' },
       ['<M-S-Down>'] = { { n = 'v}', v = '}', i = '<C-O>v}' }, 'Select to Next Paragraph' },
       ['<M-S-Up>'] = { { n = 'v{', v = '{', i = '<C-O>v{' }, 'Select to Previous Paragraph' },
-      ['<D-M-Down>'] = { '<Plug>(VM-Add-Cursor-Down)', 'Add cursor below' },
       -- ===========================================================================
       -- FOLDING
       -- ===========================================================================
