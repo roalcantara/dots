@@ -67,6 +67,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+# Virtual environments (recursive)
+**/venv/
+**/venv/**
 
 # Ruby
 *.gem
