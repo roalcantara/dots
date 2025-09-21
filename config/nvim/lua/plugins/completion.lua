@@ -20,9 +20,9 @@ return {
             -- It can also be a table with trigger words / modifiers
             -- Load luvit types when the `vim.uv` word is found
             { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-            { path = 'LazyVim', words = { 'LazyVim' } },
-            { path = 'snacks.nvim', words = { 'Snacks' } },
-            { path = 'lazy.nvim', words = { 'LazyVim' } },
+            { path = 'LazyVim',            words = { 'LazyVim' } },
+            { path = 'snacks.nvim',        words = { 'Snacks' } },
+            { path = 'lazy.nvim',          words = { 'LazyVim' } },
           },
           integrations = {
             -- Fixes lspconfig's workspace management for LuaLS
@@ -44,14 +44,8 @@ return {
       -- https://github.com/disrupted/blink-cmp-conventional-commits?tab=readme-ov-file#installation
       'disrupted/blink-cmp-conventional-commits',
       -- Configurable GitHub Copilot blink.cmp source for Neovim
-      -- https://github.com/fang2hou/blink-copilot?tab=readme-ov-file#with--lazyvim-copilot-extra
-      {
-        'fang2hou/blink-copilot',
-        opts = {
-          max_completions = 5, -- Global default for max completions
-          max_attempts = 4, -- Global default for max attempts
-        },
-      },
+      -- https://github.com/fang2hou/blink-copilot?tab=readme-ov-file#-recipes
+      'fang2hou/blink-copilot',
       -- Git source for blink-cmp
       -- https://github.com/Kaiser-Yang/blink-cmp-git?tab=readme-ov-file#lazynvim
       {
@@ -144,17 +138,17 @@ return {
             --- These properties apply to !!ALL sources!!
             --- NOTE: All of these options may be functions to get dynamic behavior
             --- See the type definitions for more information
-            enabled = true, -- Whether or not to enable the provider
-            async = false, -- Whether we should show the completions before this provider returns, without waiting for it
-            timeout_ms = 2000, -- How long to wait for the provider to return before showing completions and treating it as asynchronous
+            enabled = true,           -- Whether or not to enable the provider
+            async = false,            -- Whether we should show the completions before this provider returns, without waiting for it
+            timeout_ms = 2000,        -- How long to wait for the provider to return before showing completions and treating it as asynchronous
             should_show_items = true, -- Whether or not to show the items
-            max_items = nil, -- Maximum number of items to display in the menu
-            min_keyword_length = 0, -- Minimum number of characters in the keyword to trigger the provider
+            max_items = nil,          -- Maximum number of items to display in the menu
+            min_keyword_length = 0,   -- Minimum number of characters in the keyword to trigger the provider
             -- If this provider returns 0 items, it will fallback to these providers.
             -- If multiple providers fallback to the same provider, all of the providers must return 0 items for it to fallback
             fallbacks = { 'buffer' },
             score_offset = 0, -- Boost/penalize the score of the items
-            override = nil, -- Override the source's functions
+            override = nil,   -- Override the source's functions
           },
           -- Native Snippets
           snippets = {
@@ -447,10 +441,10 @@ return {
         -- https://cmp.saghen.dev/configuration/completion.html#ghost-text
         ghost_text = {
           enabled = true,
-          show_with_selection = true, -- Show the ghost text when an item has been selected
+          show_with_selection = true,     -- Show the ghost text when an item has been selected
           show_without_selection = false, -- Show the ghost text when no item has been selected, defaulting to the first item
-          show_with_menu = true, -- only show when menu is closed
-          show_without_menu = true, -- Show the ghost text when the menu is closed
+          show_with_menu = true,          -- only show when menu is closed
+          show_without_menu = true,       -- Show the ghost text when the menu is closed
         },
       },
       -- Experimental signature help support
