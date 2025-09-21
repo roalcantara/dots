@@ -1,4 +1,6 @@
 return {
+  -- Copilot plugin for Neovim configured for using blink-copilot with lazy.nvim
+  -- https://github.com/fang2hou/blink-copilot?tab=readme-ov-file#-recipes
   {
     'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
@@ -9,17 +11,6 @@ return {
       filetypes = {
         ['*'] = true,
       },
-    },
-    config = function(_, opts)
-      require('copilot').setup(opts)
-      vim.keymap.set('i', '<S-Tab>', function()
-        if require('copilot.suggestion').is_visible() then
-          require('copilot.suggestion').accept()
-        else
-          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<S-Tab>', true, false, true), 'n', true)
-          -- require('copilot.suggestion').next()
-        end
-      end, { silent = false, desc = 'Accept Copilot suggestion or next' })
-    end,
+    }
   },
 }
