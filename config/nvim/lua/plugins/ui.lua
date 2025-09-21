@@ -1076,7 +1076,7 @@ return {
           'Trait',
         },
       }
-      local icons = vim.deepcopy(require('core/ui/icons').kinds)
+      local icons = vim.deepcopy(require('core/ui/icons/icons_list').kinds)
 
       -- HACK: fix lua's weird choice for `Package` for control
       -- structures like if/else/for/etc.
@@ -1142,7 +1142,7 @@ return {
       local lualine_require = require('lualine_require')
       lualine_require.require = require
 
-      local icons = require('core/ui/icons')
+      local icons = require('core/ui/icons/icons_list')
 
       vim.o.laststatus = vim.g.lualine_laststatus
 
