@@ -2,14 +2,37 @@ vim.schedule_wrap(function()
   --- lua-language-server: disable
   -- stylua: ignore
   require('core/vi/maps').set_keymaps(function(buf, pick, toggle, lsp, ev, setup)
-    -- =============================================================================
-    -- NATIVE COMMENTS (https://neovim.io/doc/user/various.html#commenting)
-    -- nvim 0.10.0 has builtin support for commenting (:h commenting)
-    -- But doesn't work when remapping with `vim.keymap.set` so we call directly...
-    -- gc<motion> must to be used manually
-    -- =============================================================================
-    setup.toggle_comments_mappings('<D-/>')
 
+    -- Centralised place to define toggle keymaps
+    setup.map_toggles({
+      ['<D-/>'] = function(key)
+        -- nvim 0.10.0 has builtin support for commenting (:h commenting)
+        -- But doesn't work when remapping with `vim.keymap.set` so we call directly; gc<motion> must to be used manually
+        -- https://neovim.io/doc/user/various.html#commenting
+        vim.cmd('nmap ' .. key .. ' gcc')
+        vim.cmd('imap ' .. key .. ' <C-O>gcc')
+        vim.cmd('vmap ' .. key .. ' gc')
+        vim.cmd('omap ' .. key .. ' gc')
+        vim.cmd('xmap ' .. key .. ' gc')
+      end,
+      ['<leader>ut'] = {
+        get = function() return require('treesitter-context').enabled end,
+        set = function(state)
+          local tsc = require('treesitter-context')
+          return state and tsc.enable() or tsc.disable()
+        end,
+        desc = 'Toggle Treesitter Context' 
+      },
+      ['<leader>lt'] = {
+        get = vim.lsp.log.get_level,
+        set = function(state)
+          vim.lsp.log.set_level(state == vim.log.levels.DEBUG and vim.log.levels.OFF or vim.log.levels.DEBUG)
+        end,
+        desc = 'Toggle LSP verbose logging; Run :LspLog'
+      },
+    })
+
+    -- Define all regular keymaps
     return {
       -- ===========================================================================
       -- EDITOR
@@ -126,8 +149,8 @@ vim.schedule_wrap(function()
       ['<D-M-f>'] = { { n = vim.lsp.buf.format, i = vim.lsp.buf.format }, 'Format Document', { cmd = 'LspFormat' } },
       ['<D-S-M-f>'] = { { n = buf.format, i = buf.format }, 'Format Current Selection or buffer', { cmd = 'LspFormatRange', range = true } },
       ['<D-M-CR>'] = { { n = vim.lsp.buf.rename, i = vim.lsp.buf.rename }, 'Rename Symbol', { cmd = 'LspRename' } },
-      ['<C-Space>'] = { { n = vim.lsp.completion.get, i = vim.lsp.completion.get }, 'Trigger Suggestion', { cmd = 'LspSuggestions' } },
-      ['<D-M-Space>'] = { { n = lsp.signature_help, i = lsp.signature_help }, 'Signature Hints', { cmd = 'LspSignatureHelp' } },
+      ['<C-Space>'] = { { n = vim.lsp.completion.get, i = vim.lsp.completion.get }, 'Trigger LSP Autocompletion', { cmd = 'LspSuggestions' } },
+      ['<D-M-Space>'] = { { n = lsp.signature_help, i = lsp.signature_help }, 'Trigger LSP Signature Help', { cmd = 'LspSignatureHelp' } },
       ['<D-d>'] = { { n = pick.diagnostics_buffer, i = pick.diagnostics_buffer, v = pick.diagnostics_buffer }, 'Toggle Problems (Local)', { cmd = 'LspToggleDiagnostics' } },
       ['<D-S-d>'] = { { n = pick.diagnostics, i = pick.diagnostics, v = pick.diagnostics }, 'Toggle Problems (Global)', { cmd = 'LspToggleDiagnosticsGlobal' } },
       ['<D-r>'] = { { n = lsp.symbols, i = lsp.symbols, v = lsp.symbols }, 'Document Symbols', { cmd = 'ToggleSymbols' } },
