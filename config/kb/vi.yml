@@ -1,0 +1,230 @@
+cheats:
+  desc: VIMSCRIPT MAPPING using nmap, imap, vmap, xmap, smap, omap, lmap, cmap & tmap
+  tags: [vi, lua]
+  notes:
+    - md: | #markdown
+        ### 🔹 VIMSCRIPT MAPPING
+
+        | **MAPPING** | **MODE DESCRIPTION**  |
+        | :----------:| --------------------- |
+        |     nmap    | NORMAL MODE           |
+        |     imap    | INSERT MODE           |
+        |     vmap    | VISUAL MODE           |
+        |     xmap    | VISUAL BLOCK MODE     |
+        |     smap    | SELECT MODE           |
+        |     omap    | OPERATOR-PENDING MODE |
+        |     lmap    | LANGUAGE MAP MODE     |
+        |     cmap    | COMMAND MODE          |
+        |     tmap    | TERMINAL MODE         |
+
+        #### 🔹 VIMSCRIPT EXAMPLES
+
+        ```vim
+        " maps <leader>ff to open Telescope find_files
+        nmap <silent> <leader>ff :Telescope find_files<CR>
+        imap <silent> <leader>ff :Telescope find_files<CR>
+        vmap <silent> <leader>ff :Telescope find_files<CR>
+        xmap <silent> <leader>ff :Telescope find_files<CR>
+        smap <silent> <leader>ff :Telescope find_files<CR>
+        omap <silent> <leader>ff :Telescope find_files<CR>
+        lmap <silent> <leader>ff :Telescope find_files<CR>
+        cmap <silent> <leader>ff :Telescope find_files<CR>
+        tmap <silent> <leader>ff :Telescope find_files<CR>
+
+        " maps <leader>w to save the file
+        nmap <leader>w :w<CR>
+        imap <leader>w :w<CR>
+        vmap <leader>w :w<CR>
+        xmap <leader>w :w<CR>
+        smap <leader>w :w<CR>
+        omap <leader>w :w<CR>
+        lmap <leader>w :w<CR>
+        cmap <leader>w :w<CR>
+        tmap <leader>w :w<CR>
+
+        " maps <leader>q to close the window silently
+        nmap <silent> <leader>q :q<CR>
+        imap <silent> <leader>q :q<CR>
+        vmap <silent> <leader>q :q<CR>
+        xmap <silent> <leader>q :q<CR>
+        smap <silent> <leader>q :q<CR>
+        omap <silent> <leader>q :q<CR>
+        lmap <silent> <leader>q :q<CR>
+        cmap <silent> <leader>q :q<CR>
+        tmap <silent> <leader>q :q<CR>
+
+        " maps j and k to move by visual lines when lines are wrapped
+        nmap j gj
+        nmap k gk
+        imap j gj
+        vmap j gj
+        xmap j gj
+        smap j gj
+        omap j gj
+        lmap j gj
+        cmap j gj
+        tmap j gj
+
+        " maps <leader>p to paste over selection without yanking
+        nmap <leader>p "_dP
+        imap <leader>p "_dP
+        vmap <leader>p "_dP
+        xmap <leader>p "_dP
+        smap <leader>p "_dP
+        omap <leader>p "_dP
+        lmap <leader>p "_dP
+        cmap <leader>p "_dP
+        tmap <leader>p "_dP
+
+        " maps <leader>sv to save and source current file
+        nmap <leader>sv :w<CR>:source %<CR>
+        imap <leader>sv :w<CR>:source %<CR>
+        vmap <leader>sv :w<CR>:source %<CR>
+        xmap <leader>sv :w<CR>:source %<CR>
+        smap <leader>sv :w<CR>:source %<CR>
+        omap <leader>sv :w<CR>:source %<CR>
+        lmap <leader>sv :w<CR>:source %<CR>
+        cmap <leader>sv :w<CR>:source %<CR>
+        tmap <leader>sv :w<CR>:source %<CR>
+
+        " maps <leader>hi to call Lua from Vimscript
+        nmap <leader>hi :lua print('Hello from Lua!')<CR>
+        imap <leader>hi :lua print('Hello from Lua!')<CR>
+        vmap <leader>hi :lua print('Hello from Lua!')<CR>
+        xmap <leader>hi :lua print('Hello from Lua!')<CR>
+        smap <leader>hi :lua print('Hello from Lua!')<CR>
+        omap <leader>hi :lua print('Hello from Lua!')<CR>
+        lmap <leader>hi :lua print('Hello from Lua!')<CR>
+        cmap <leader>hi :lua print('Hello from Lua!')<CR>
+        tmap <leader>hi :lua print('Hello from Lua!')<CR>
+
+        " maps <leader>gs to a <Plug> mapping (plugin-specific)
+        nmap <leader>gs <Plug>(GitStatus)
+        imap <leader>gs <Plug>(GitStatus)
+        vmap <leader>gs <Plug>(GitStatus)
+        xmap <leader>gs <Plug>(GitStatus)
+        smap <leader>gs <Plug>(GitStatus)
+        omap <leader>gs <Plug>(GitStatus)
+        lmap <leader>gs <Plug>(GitStatus)
+        cmap <leader>gs <Plug>(GitStatus)
+        tmap <leader>gs <Plug>(GitStatus)
+
+        " Re-indent selected block with =
+        vmap = =
+        ```
+    - md: | #markdown
+        ### 🔹 VIMSCRIPT MAPPING IN LUA USING `vim.cmd('nmap ...')`
+
+        |        **MAPPING**       | **MODE DESCRIPTION**  |
+        | :----------------------: | --------------------- |
+        |   `vim.cmd('nmap ..')`   | NORMAL MODE           |
+        |   `vim.cmd('imap ..')`   | INSERT MODE           |
+        |   `vim.cmd('vmap ..')`   | VISUAL MODE           |
+        |   `vim.cmd('xmap ..')`   | VISUAL BLOCK MODE     |
+        |   `vim.cmd('smap ..')`   | SELECT MODE           |
+        |   `vim.cmd('omap ..')`   | OPERATOR-PENDING MODE |
+        |   `vim.cmd('lmap ..')`   | LANGUAGE MAP MODE     |
+        |   `vim.cmd('cmap ..')`   | COMMAND MODE          |
+        |   `vim.cmd('tmap ..')`   | TERMINAL MODE         |
+
+        #### 🔹 LIMITATIONS OF `vim.cmd('nmap ...')`
+
+        | **FEATURE**               | **SUPPORTED?**  | **ALTERNATIVE**      |
+        | ------------------------- | :-------------: | -------------------- |
+        | Silent mapping            |     ✔️ Yes       | <silent>              |
+        | Non-recursive             |     ✔️ Yes       | noremap family        |
+        | Descriptions              |     ❌ No        | Use vim.keymap.set()  |
+        | Telescope keymap show     |     ❌ No        | Use Lua API           |
+
+        #### 🔹 VIMSCRIPT MAPPING IN LUA EXAMPLES
+
+        ```lua
+        " maps <leader>ff to open Telescope find_files
+        vim.cmd('nmap <silent> <leader>ff :Telescope find_files<CR>')
+        vim.cmd('imap <silent> <leader>ff :Telescope find_files<CR>')
+        vim.cmd('vmap <silent> <leader>ff :Telescope find_files<CR>')
+        vim.cmd('xmap <silent> <leader>ff :Telescope find_files<CR>')
+        vim.cmd('smap <silent> <leader>ff :Telescope find_files<CR>')
+        vim.cmd('omap <silent> <leader>ff :Telescope find_files<CR>')
+        vim.cmd('lmap <silent> <leader>ff :Telescope find_files<CR>')
+        vim.cmd('cmap <silent> <leader>ff :Telescope find_files<CR>')
+        vim.cmd('tmap <silent> <leader>ff :Telescope find_files<CR>')
+
+        " maps <leader>w to save the file
+        vim.cmd('nmap <leader>w :w<CR>')
+        vim.cmd('imap <leader>w :w<CR>')
+        vim.cmd('vmap <leader>w :w<CR>')
+        vim.cmd('xmap <leader>w :w<CR>')
+        vim.cmd('smap <leader>w :w<CR>')
+        vim.cmd('omap <leader>w :w<CR>')
+        vim.cmd('lmap <leader>w :w<CR>')
+        vim.cmd('cmap <leader>w :w<CR>')
+        vim.cmd('tmap <leader>w :w<CR>')
+
+        " maps <leader>q to close the window silently
+        vim.cmd('nmap <silent> <leader>q :q<CR>')
+        vim.cmd('imap <silent> <leader>q :q<CR>')
+        vim.cmd('vmap <silent> <leader>q :q<CR>')
+        vim.cmd('xmap <silent> <leader>q :q<CR>')
+        vim.cmd('smap <silent> <leader>q :q<CR>')
+        vim.cmd('omap <silent> <leader>q :q<CR>')
+        vim.cmd('lmap <silent> <leader>q :q<CR>')
+        vim.cmd('cmap <silent> <leader>q :q<CR>')
+        vim.cmd('tmap <silent> <leader>q :q<CR>')
+
+        " maps j and k to move by visual lines when lines are wrapped
+        vim.cmd('nmap j gj')
+        vim.cmd('nmap k gk')
+        vim.cmd('imap j gj')
+        vim.cmd('vmap j gj')
+        vim.cmd('xmap j gj')
+        vim.cmd('smap j gj')
+        vim.cmd('omap j gj')
+        vim.cmd('lmap j gj')
+        vim.cmd('cmap j gj')
+        vim.cmd('tmap j gj')
+
+        " maps <leader>p to paste over selection without yanking
+        vim.cmd('nmap <leader>p "_dP')
+        vim.cmd('imap <leader>p "_dP')
+        vim.cmd('vmap <leader>p "_dP')
+        vim.cmd('xmap <leader>p "_dP')
+        vim.cmd('smap <leader>p "_dP')
+        vim.cmd('omap <leader>p "_dP')
+        vim.cmd('lmap <leader>p "_dP')
+        vim.cmd('cmap <leader>p "_dP')
+        vim.cmd('tmap <leader>p "_dP')
+
+        " maps <leader>sv to save and source current file
+        vim.cmd('nmap <leader>sv :w<CR>:source %<CR>')
+        vim.cmd('imap <leader>sv :w<CR>:source %<CR>')
+        vim.cmd('vmap <leader>sv :w<CR>:source %<CR>')
+        vim.cmd('xmap <leader>sv :w<CR>:source %<CR>')
+        vim.cmd('smap <leader>sv :w<CR>:source %<CR>')
+        vim.cmd('omap <leader>sv :w<CR>:source %<CR>')
+        vim.cmd('lmap <leader>sv :w<CR>:source %<CR>')
+        vim.cmd('cmap <leader>sv :w<CR>:source %<CR>')
+        vim.cmd('tmap <leader>sv :w<CR>:source %<CR>')
+
+        " maps <leader>hi to call Lua from Vimscript
+        vim.cmd('nmap <leader>hi :lua print('Hello from Lua!')<CR>')
+        vim.cmd('imap <leader>hi :lua print('Hello from Lua!')<CR>')
+        vim.cmd('vmap <leader>hi :lua print('Hello from Lua!')<CR>')
+        vim.cmd('xmap <leader>hi :lua print('Hello from Lua!')<CR>')
+        vim.cmd('smap <leader>hi :lua print('Hello from Lua!')<CR>')
+        vim.cmd('omap <leader>hi :lua print('Hello from Lua!')<CR>')
+        vim.cmd('lmap <leader>hi :lua print('Hello from Lua!')<CR>')
+        vim.cmd('cmap <leader>hi :lua print('Hello from Lua!')<CR>')
+        vim.cmd('tmap <leader>hi :lua print('Hello from Lua!')<CR>')
+
+        " maps <leader>gs to a <Plug> mapping (plugin-specific)
+        vim.cmd('nmap <leader>gs <Plug>(GitStatus)')
+        vim.cmd('imap <leader>gs <Plug>(GitStatus)')
+        vim.cmd('vmap <leader>gs <Plug>(GitStatus)')
+        vim.cmd('xmap <leader>gs <Plug>(GitStatus)')
+        vim.cmd('smap <leader>gs <Plug>(GitStatus)')
+        vim.cmd('omap <leader>gs <Plug>(GitStatus)')
+        vim.cmd('lmap <leader>gs <Plug>(GitStatus)')
+        vim.cmd('cmap <leader>gs <Plug>(GitStatus)')
+        vim.cmd('tmap <leader>gs <Plug>(GitStatus)')
+        ```
