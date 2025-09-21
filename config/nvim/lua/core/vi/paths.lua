@@ -26,6 +26,27 @@ function M.get_stdpaths()
   }
 end
 
+M.ensure = function(path)
+  if vim.fn.isdirectory(path) == 0 then
+    vim.fn.mkdir(path, 'p')
+  end
+end
+
+M.stdpaths = {
+  config = M.stdpath('config'),
+  data = M.stdpath('data'),
+  cache = M.stdpath('cache'),
+  state = M.stdpath('state'),
+  -- https://neovim.io/doc/user/options.html#'undodir'
+  undodir = M.join(M.stdpath('state'), 'undo'),
+  ensured = {
+    undodir = function()
+      M.ensure(M.stdpaths.undodir)
+      return M.stdpaths.undodir
+    end
+  }
+}
+
 function M.bin_for(name)
   return M.join(M.homebrew_prefix, 'bin', name)
 end
