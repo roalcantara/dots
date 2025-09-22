@@ -10,4 +10,5 @@ return {
   warn = neo_logger.warn,
   error = neo_logger.error,
   paths = require('core/vi/paths'),
+  storage = require('core/neo/storage'),
 }

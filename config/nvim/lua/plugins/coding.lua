@@ -1,3 +1,5 @@
+local neo = require('core/neo')
+
 return {
   -- Fzf-Lua | Improved fzf.vim written in lua
   -- https://github.com/ibhagwan/fzf-lua | https://lazyvim.org/extras/editor/fzf
@@ -26,9 +28,7 @@ return {
       -- better deal with markdown code blocks
       markdown = true,
     },
-    config = function(_, opts)
-      Neo.mini.pairs(opts)
-    end,
+    config = neo.mini.pairs,
   },
 
   -- TS Comments | Comments for Treesitter
@@ -77,7 +77,7 @@ return {
       -- matches, ghostty.nvim will run on save in that buffer. This pattern is passed to
       -- nvim_create_autocmd, check ":h autocmd-pattern" for more information. Can be
       -- either a string or a list of strings
-      file_pattern = require('core/vi/paths').xdg_config_home('ghostty', 'config'),
+      file_pattern = neo.paths.xdg.config.path_for('ghostty', 'config'),
       -- The ghostty executable to run.
       ghostty_cmd = 'ghostty',
       -- The timeout in milliseconds for the check command.

@@ -50,7 +50,8 @@ end
 --- @return boolean True if Windows
 local function is_windows()
   return get('is_windows', function()
-    return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1
+    return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 or vim.fn.getcmdtype() ~= ':' or
+      not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
   end)
 end
 
