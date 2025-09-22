@@ -12,166 +12,230 @@ elif [[ -n "${ZSH_VERSION:-}" ]]; then
   setopt PIPE_FAIL
 fi
 
-  # Helper functions
-  _zsys_usage() {
-    cat << 'EOF'
-Usage: zsys [OPTIONS] [COMMANDS]
+__usage() {
+  echo "Usage: zsys [OPTIONS] [COMMANDS]" >&2
+  echo "OPTIONS:" >&2
+  echo "  -h, --help              Show this help message" >&2
+  echo "COMMANDS:" >&2
+  echo "  path <subcommand>       Path manipulation" >&2
+  echo "    --list                  List all paths" >&2
+  echo "    --remove <path>         Remove path from PATH" >&2
+  echo "    --append <path>         Append path to PATH" >&2
+  echo "    --prepend <path>        Prepend path to PATH" >&2
+  echo "    --clean                 Remove non-existing paths" >&2
+  echo "  cmd <subcommand>        Command utilities" >&2
+  echo "    --exists <command>      Check if command exists" >&2
+  echo "    --path <command>        Get command path" >&2
+  echo "  file <subcommand>       File utilities" >&2
+  echo "    --source <file>         Source a file" >&2
+  echo "    --mtime <file>          Get file modification time" >&2
+  echo "  setup <subcommand>      Setup utilities" >&2
+  echo "    --profiling            Enable profiling" >&2
+  echo "    --debugging            Enable debugging" >&2
+  echo "    --xdg <path>           Run XDG setup with custom path" >&2
+  echo "EXAMPLES:" >&2
+  echo "  zsys --path list" >&2
+  echo "  zsys --cmd exists git" >&2
+  echo "  zsys --file source ~/.zshrc" >&2
+  echo "  zsys --setup --profiling --debugging" >&2
+  echo "  zsys --setup --xdg ~/.config/xdg/setup.sh" >&2
+}
+__path_command() {
+  # echo "[PATH/1] ARGS ===============> '${(@)@}'"
 
-OPTIONS:
-  -h, --help              Show this help message
+  # Use zparseopts to extract flags and arguments
+  # -D: remove parsed flags from $@
+  # -F: fail if an invalid option is found
+  # -E: stop at first non-option
+  # -A: store results in associative array
+  # Boolean flags (no colon)
+  # Options requiring values (with colon)
+  local -A path_opts
+  zparseopts -D -F -E -A path_opts -list -remove: -append: -prepend: -clean:
 
-COMMANDS:
-  path <subcommand>       Path manipulation
-    list                  List all paths
-    remove <path>         Remove path from PATH
-    append <path>         Append path to PATH
-    prepend <path>        Prepend path to PATH
-    clean                 Remove non-existing paths
+  # echo "[PATH/2] OPTS ===============> '${(@)path_opts[@]}'"
+  # echo "[PATH/2] ARGS ===============> '${(@)@}'"
 
-  cmd <subcommand>        Command utilities
-    exists <command>      Check if command exists
-    path <command>        Get command path
-
-  file <subcommand>       File utilities
-    source <file>         Source a file
-    mtime <file>          Get file modification time
-
-EXAMPLES:
-  zsys path clean
-  zsys cmd exists git
-  zsys file source ~/.zshrc
-EOF
-  }
-
-  _zsys_path_command() {
-    local subcmd="$1"
-    local target="$2"
-
-    case "$subcmd" in
-      list)
-        print -l "${(@)path}"
-        ;;
-      remove)
-        [[ -z "$target" ]] && { echo "Error: path remove requires a path argument" >&2; return 1; }
-        path=("${(@)path:#$target}")
-        echo "✓ Removed $target from PATH"
-        ;;
-      append)
-        [[ -z "$target" ]] && { echo "Error: path append requires a path argument" >&2; return 1; }
-        [[ -d "$target" ]] && {
-          path+="$target"
-          echo "✓ Appended $target to PATH"
-        } || {
-          echo "Error: directory '$target' does not exist" >&2
-          return 1
-        }
-        ;;
-      prepend)
-        [[ -z "$target" ]] && { echo "Error: path prepend requires a path argument" >&2; return 1; }
-        [[ -d "$target" ]] && {
-          path=("$target" "${(@)path:#$target}")
-          echo "✓ Prepended $target to PATH"
-        } || {
-          echo "Error: directory '$target' does not exist" >&2
-          return 1
-        }
-        ;;
-      clean)
-        local clean_path=()
-        local removed_count=0
-        for dir in "${(@)path}"; do
-          if [[ -d "$dir" ]]; then
-            clean_path+="$dir"
-          else
-            ((removed_count++))
-          fi
-        done
-        path=("${(@)clean_path}")
-        echo "✓ Cleaned PATH (removed $removed_count non-existing directories)"
-        ;;
-      *)
-        echo "Error: unknown path command '$subcmd'" >&2
-        echo "Available: list, remove, append, prepend, clean" >&2
-        return 1
-        ;;
-    esac
-  }
-
-  _zsys_cmd_command() {
-    local subcmd="$1"
-    local command_name="$2"
-
-    case "$subcmd" in
-      exists)
-        [[ -z "$command_name" ]] && { echo "Error: cmd exists requires a command name" >&2; return 1; }
-        (( ${+commands[$command_name]} ))
-        ;;
-      path)
-        [[ -z "$command_name" ]] && { echo "Error: cmd path requires a command name" >&2; return 1; }
-        if (( ${+commands[$command_name]} )); then
-          echo "${commands[$command_name]}"
-        else
-          echo "Command '$command_name' not found" >&2
-          return 1
-        fi
-        ;;
-      *)
-        echo "Error: unknown cmd command '$subcmd'" >&2
-        echo "Available: exists, path" >&2
-        return 1
-        ;;
-    esac
-  }
-
-  _zsys_file_command() {
-    local subcmd="$1"
-    local file_path="$2"
-
-    case "$subcmd" in
-      source)
-        [[ -z "$file_path" ]] && { echo "Error: file source requires a file path" >&2; return 1; }
-        [[ -f "$file_path" ]] && {
-          source "$file_path"
-          echo "✓ Sourced $file_path"
-        } || {
-          echo "Error: file '$file_path' not found" >&2
-          return 1
-        }
-        ;;
-      mtime)
-        [[ -z "$file_path" ]] && { echo "Error: file mtime requires a file path" >&2; return 1; }
-        if [[ -f "$file_path" ]]; then
-          case "$(uname)" in
-            Darwin) stat -f "%m" "$file_path" ;;
-            Linux)  stat -c "%Y" "$file_path" ;;
-          esac
-        else
-          echo "Error: file '$file_path' not found" >&2
-          return 1
-        fi
-        ;;
-      *)
-        echo "Error: unknown file command '$subcmd'" >&2
-        echo "Available: source, mtime" >&2
-        return 1
-        ;;
-    esac
-  }
-
-# Process remaining commands
-case "$1" in
-  path)
-    _zsys_path_command "${@:2}"
-    ;;
-  cmd)
-    _zsys_cmd_command "${@:2}"
-    ;;
-  file)
-    _zsys_file_command "${@:2}"
-    ;;
-  *)
-    echo "Error: unknown command '$1'" >&2
-    _zsys_usage
+  if [[ ${#path_opts[@]} -eq 0 ]]; then
+    __usage
     return 1
-    ;;
-esac
+  fi
+
+  # echo "[PATH/3] OPTS ===============> '${(@)path_opts[@]}'"
+  # echo "[PATH/3] ARGS ===============> '${(@)@}'"
+
+  if (( ${+path_opts[--list]} )); then
+    print -l "${(@)path}"
+  fi
+
+  if [[ -n ${path_opts[--remove]} ]]; then
+    path=("${(@)path:#$path_opts[--remove]}")
+    echo "✓ Removed $path_opts[--remove] from PATH"
+  fi
+
+  if [[ -n ${path_opts[--append]} ]]; then
+    path=("${(@)path:#$path_opts[--append]}")
+    echo "✓ Appended $path_opts[--append] to PATH"
+  fi
+
+  if [[ -n ${path_opts[--prepend]} ]]; then
+    path=("${(@)path:#$path_opts[--prepend]}")
+    echo "✓ Prepended $path_opts[--prepend] to PATH"
+  fi
+
+  if [[ -n ${path_opts[--clean]} ]]; then
+    path=("${(@)path:#$path_opts[--clean]}")
+    echo "✓ Cleaned PATH (removed $path_opts[--clean] non-existing directories)"
+  fi
+}
+__cmd_command() {
+  # echo "[CMD/1] ARGS ===============> '${(@)@}'"
+
+  # Use zparseopts to extract flags and arguments
+  # -D: remove parsed flags from $@
+  # -F: fail if an invalid option is found
+  # -E: stop at first non-option
+  # -A: store results in associative array
+  # Boolean flags (no colon)
+  # Options requiring values (with colon)
+  local -A cmd_opts
+  zparseopts -D -F -E -A cmd_opts -exists: -path:
+
+  # echo "[CMD/2] OPTS ===============> '${(@)cmd_opts[@]}'"
+  # echo "[CMD/2] ARGS ===============> '${(@)@}'"
+
+  if [[ ${#cmd_opts[@]} -eq 0 ]]; then
+    __usage
+    return 1
+  fi
+
+  # echo "[CMD/3] OPTS ===============> '${(@)cmd_opts[@]}'"
+  # echo "[CMD/3] ARGS ===============> '${(@)@}'"
+
+  if [[ -n ${cmd_opts[--exists]} ]]; then
+    (( ${+commands[$cmd_opts[--exists]]} ))
+  fi
+
+  if [[ -n ${cmd_opts[--path]} ]]; then
+    if (( ${+commands[$cmd_opts[--path]]} )); then
+      echo "${commands[$cmd_opts[--path]]}"
+    else
+      echo "Command '$cmd_opts[--path]' not found" >&2
+      return 1
+    fi
+  fi
+}
+__file_command() {
+  # echo "[FILE/1] ARGS ===============> '${(@)@}'"
+
+  # Use zparseopts to extract flags and arguments
+  # -D: remove parsed flags from $@
+  # -F: fail if an invalid option is found
+  # -E: stop at first non-option
+  # -A: store results in associative array
+  # Boolean flags (no colon)
+  # Options requiring values (with colon)
+  local -A file_opts
+  zparseopts -D -F -E -A file_opts -source: -mtime:
+
+  # echo "[FILE/2] OPTS ===============> '${(@)file_opts[@]}'"
+  # echo "[FILE/2] ARGS ===============> '${(@)@}'"
+
+  if [[ ${#file_opts[@]} -eq 0 ]]; then
+    __usage
+    return 1
+  fi
+
+  # echo "[FILE/3] OPTS ===============> '${(@)file_opts[@]}'"
+  # echo "[FILE/3] ARGS ===============> '${(@)@}'"
+
+  if [[ -n ${file_opts[--source]} ]]; then
+    local file_path="${file_opts[--source]:-}"
+    if [[ ! -f "$file_path" ]]; then
+      echo "Error: file '$file_path' not found" >&2
+      return 1
+    fi
+    source "$file_path"
+  fi
+
+  if [[ -n ${file_opts[--mtime]} ]]; then
+    local file_path="${file_opts[--mtime]:-}"
+    if [[ ! -f "$file_path" ]]; then
+      echo "Error: file '$file_path' not found" >&2
+      return 1
+    fi
+    case "$(uname)" in
+      Darwin) stat -f "%m" "$file_path" ;;
+      Linux)  stat -c "%Y" "$file_path" ;;
+    esac
+  fi
+}
+__setup_command() {
+  # echo "[SETUP/1] ARGS ===============> '${(@)@}'"
+  # Use zparseopts to extract flags and arguments
+  # -D: remove parsed flags from $@
+  # -F: fail if an invalid option is found
+  # -E: stop at first non-option
+  # -A: store results in associative array
+  # Boolean flags (no colon)
+  # Options requiring values (with colon)
+  local -A setup_opts
+  zparseopts -D -F -E -A setup_opts -profiling -debugging -xdg:
+
+  # echo "[SETUP/2] OPTS ===============> '${(@)setup_opts[@]}'"
+  # echo "[SETUP/2] ARGS ===============> '${(@)@}'"
+
+  if [[ ${#setup_opts[@]} -eq 0 ]]; then
+    __usage
+    return 1
+  fi
+
+  # echo "[SETUP/3] OPTS ===============> '${(@)setup_opts[@]}'"
+  # echo "[SETUP/3] ARGS ===============> '${(@)@}'"
+
+  if (( ${+setup_opts[--profiling]} )); then
+    [ -n "$z_prof" ] && zmodload zsh/zprof
+    if [[ -n "$z_trace" ]]; then
+      PS4=$'%D{%H:%M:%S} ${(%):-%N:%i}> '
+      exec 3>&2 2>>$HOME/.config/zsh/tmp/benchmark.$$.start.log
+      setopt xtrace prompt_subst
+    fi
+  fi
+  if (( ${+setup_opts[--debugging]} )); then
+    if [[ -n "$z_debug" ]]; then
+      autoload -Uz +X compinit
+      functions[compinit]=$'print -u2 \'compinit being called at \'${funcfiletrace[1]}
+      '${functions[compinit]}
+    fi
+  fi
+  if [[ -n ${setup_opts[--xdg]} ]]; then
+    local xdg_script_path="${setup_opts[--xdg]-$HOME/.config/xdg/setup.sh}"
+    if [[ -n "$xdg_script_path" ]] && [[ -x "$xdg_script_path" ]]; then
+      set -a
+      source "$xdg_script_path"
+      set +a
+    fi
+  fi
+}
+
+main() {
+  # echo "[MAIN] ARGS ===============> '${(@)@}'"
+
+  local subcommand="$1"
+  shift
+
+  case "$subcommand" in
+    setup) __setup_command "$@" ;;
+    file) __file_command "$@" ;;
+    cmd) __cmd_command "$@" ;;
+    path) __path_command "$@" ;;
+    help|--help|-h) __usage ;;
+    *)
+      echo "Error: unknown command '$subcommand'" >&2
+      __usage
+      return 1
+      ;;
+  esac
+}
+
+main "$@"

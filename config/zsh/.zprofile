@@ -5,15 +5,6 @@
 # Contains commands that should be executed only in login shells
 # http://zsh.sourceforge.net/Intro/intro_3.html
 
-# HELPERS {
-  # Redirects stdout (file descriptor 1) to /dev/null
-  # Then redirects stderr (file descriptor 2) to wherever stdout is going (which is now /dev/null)
-  # Works in all POSIX-compliant shells (sh, dash, bash, zsh, etc.)
-  _has_command() {
-    command -v "$1" >/dev/null 2>&1
-  }
-# }
-
 # Directory stack size
 export DIRSTACKSIZE=${DIRSTACKSIZE:-100}
 export PAGER=${PAGER:-"less -FREXi"}
@@ -41,11 +32,6 @@ export MANROFFOPT=${MANROFFOPT:-"-c"}
 
   # Set the cache directory path
   export MISE_CACHE_DIR=${MISE_CACHE_DIR:-$XDG_CACHE_HOME/mise}
-
-  # Activate mise if it is installed and load the shims
-  if _has_command mise; then
-    eval "$(mise activate zsh --yes --quiet --shims)"
-  fi
 # }
 
 # STARSHIP | https://starship.rs {
@@ -159,6 +145,29 @@ export MANROFFOPT=${MANROFFOPT:-"-c"}
   # WakaTime command line interface
   # Set the wakatime config path
   export WAKATIME_HOME=${WAKATIME_HOME:-$XDG_CONFIG_HOME/wakatime}
+# }
+
+# GO | https://go.dev {
+  # Configure the location of the Go workspace
+  export GOPATH=${GOPATH:-$XDG_DATA_HOME/go}
+# }
+
+# GOPASS | https://gopass.pw {
+  # The missing password manager for teams | Load API keys from gopass if available
+  # WITHOUT ==> dots zsh --prof avg => │ USER:40ms  │ SYSTEM:20ms │ CPU:91% │ TOTAL:69ms │
+  # if _has_command gopass; then
+  #   WITH => dots zsh --prof avg => │ USER:765ms  │ SYSTEM:88ms │ CPU:92% │ TOTAL:921ms │
+  #   export ANTHROPIC_API_KEY=$(gopass show -n --password tokens/anthropic.com)
+  #   export GEMINI_API_KEY=$(gopass show -n --password tokens/gemini.google.com)
+  # fi
+# }
+
+# LOCAL ENVIRONMENT VARIABLES {
+if [[ -e $HOME/.config/.env ]]; then
+  set -a;
+  source $HOME/.config/.env
+  set +a
+fi
 # }
 
 # if .zshrc exists, source it

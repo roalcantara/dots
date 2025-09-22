@@ -15,15 +15,11 @@
   }
 # }
 
-# ZSH/ZIM VARIABLES & COLORS {
-  export ZDOTDIR=$HOME/.config/zsh
-  export ZIM_HOME=${ZIM_HOME:=$XDG_STATE_HOME/zim}
-  export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:=$XDG_CACHE_HOME/zsh}
-  export ZSH_COMPCACHE=$ZSH_CACHE_DIR/compcache
-  export zdumpfile=${ZSH_COMPDUMP:=$ZSH_COMPCACHE/.zcompdump}
-  export HISTFILE=${ZSH_DATA_DIR:=$XDG_DATA_HOME/zsh}/.zsh_history
+# COLORS {
   export CLICOLOR=${CLICOLOR:-1}
-  source $ZDOTDIR/opt/plugins/theme-tokyonight-moon.zsh
+  export LSCOLORS=EgCeDdEeCcghhahahacac
+  export LS_COLORS='di=0;38;2;122;162;247:ln=0;38;2;42;195;222:ex=1;38;2;158;206;106:fi=0;38;2;192;202;245:pi=0;38;2;65;72;104:so=0;38;2;65;72;104:bd=0;38;2;224;175;104:cd=0;38;2;224;175;104:su=0;38;2;255;0;124:sg=0;38;2;255;0;124:tw=0;38;2;255;0;124:ow=0;38;2;255;0;124:st=0;38;2;255;0;124:mi=0;38;2;157;124;216:or=0;38;2;157;124;216:*.c=0;38;2;158;206;106:*.h=0;38;2;158;206;106:*.cpp=0;38;2;158;206;106:*.hpp=0;38;2;158;206;106:*.cc=0;38;2;158;206;106:*.cxx=0;38;2;158;206;106:*.py=0;38;2;158;206;106:*.js=0;38;2;158;206;106:*.ts=0;38;2;158;206;106:*.tsx=0;38;2;158;206;106:*.jsx=0;38;2;158;206;106:*.rs=0;38;2;158;206;106:*.go=0;38;2;158;206;106:*.java=0;38;2;158;206;106:*.kt=0;38;2;158;206;106:*.swift=0;38;2;158;206;106:*.rb=0;38;2;158;206;106:*.php=0;38;2;158;206;106:*.pl=0;38;2;158;206;106:*.sh=0;38;2;158;206;106:*.bash=0;38;2;158;206;106:*.zsh=0;38;2;158;206;106:*.fish=0;38;2;158;206;106:*.lua=0;38;2;158;206;106:*.vim=0;38;2;158;206;106:*.el=0;38;2;158;206;106:*.clj=0;38;2;158;206;106:*.hs=0;38;2;158;206;106:*.ml=0;38;2;158;206;106:*.fs=0;38;2;158;206;106:*.fsx=0;38;2;158;206;106:*.fsi=0;38;2;158;206;106:*.dart=0;38;2;158;206;106:*.scala=0;38;2;158;206;106:*.groovy=0;38;2;158;206;106:*.gradle=0;38;2;158;206;106:*.sbt=0;38;2;158;206;106:*.kts=0;38;2;158;206;106:*.sql=0;38;2;158;206;106:*.r=0;38;2;158;206;106:*.jl=0;38;2;158;206;106:*.cr=0;38;2;158;206;106:*.ex=0;38;2;158;206;106:*.exs=0;38;2;158;206;106:*.cs=0;38;2;158;206;106:*.vb=0;38;2;158;206;106:*.pas=0;38;2;158;206;106:*.dpr=0;38;2;158;206;106:*.inc=0;38;2;158;206;106:*.asm=0;38;2;158;206;106:*.s=0;38;2;158;206;106:*.S=0;38;2;158;206;106:*.ll=0;38;2;158;206;106:*.bc=0;38;2;158;206;106:*.mir=0;38;2;158;206;106:*.erl=0;38;2;158;206;106:*.hrl=0;38;2;158;206;106:*.app.src=0;38;2;158;206;106:*.app=0;38;2;158;206;106:*.appup=0;38;2;158;206;106:*.rel=0;38;2;158;206;106:*.config=0;38;2;42;195;222:*.conf=0;38;2;42;195;222:*.cfg=0;38;2;42;195;222:*.ini=0;38;2;42;195;222:*.toml=0;38;2;42;195;222:*.yaml=0;38;2;42;195;222:*.yml=0;38;2;42;195;222:*.json=0;38;2;42;195;222:*.xml=0;38;2;42;195;222:*.html=0;38;2;42;195;222:*.htm=0;38;2;42;195;222:*.css=0;38;2;42;195;222:*.scss=0;38;2;42;195;222:*.sass=0;38;2;42;195;222:*.less=0;38;2;42;195;222:*.md=0;38;2;122;162;247:*.markdown=0;38;2;122;162;247:*.rst=0;38;2;122;162;247:*.tex=0;38;2;122;162;247:*.ltx=0;38;2;122;162;247:*.sty=0;38;2;122;162;247:*.cls=0;38;2;122;162;247:*.bib=0;38;2;122;162;247:*.bst=0;38;2;122;162;247:*.dot=0;38;2;122;162;247:*.gv=0;38;2;122;162;247:*.ui=0;38;2;122;162;247:*.glade=0;38;2;122;162;247:*.desktop=0;38;2;122;162;247:*.service=0;38;2;122;162;247:*.timer=0;38;2;122;162;247:*.socket=0;38;2;122;162;247:*.target=0;38;2;122;162;247:*.mount=0;38;2;180;249;248:*.automount=0;38;2;180;249;248:*.swap=0;38;2;180;249;248:*.path=0;38;2;180;249;248:*.slice=0;38;2;180;249;248:*.scope=0;38;2;180;249;248:*.nix=0;38;2;42;195;222:*.flake=0;38;2;42;195;222:*.lock=0;38;2;42;195;222:*.gitignore=0;38;2;42;195;222:*.gitattributes=0;38;2;42;195;222:*.gitmodules=0;38;2;42;195;222:*.gitconfig=0;38;2;42;195;222:*.hgrc=0;38;2;42;195;222:*.hgignore=0;38;2;42;195;222:*.svnignore=0;38;2;42;195;222:*.bzrignore=0;38;2;42;195;222:*.cvsignore=0;38;2;42;195;222:*.dockerignore=0;38;2;42;195;222:*.fdignore=0;38;2;42;195;222:*.rgignore=0;38;2;42;195;222:*.ignore=0;38;2;42;195;222:*.editorconfig=0;38;2;42;195;222:'
+  export EXA_COLORS="di=1;38;2;122;162;247:ex=01;38;5;10:fi=0;38;2;192;202;245:pi=2;38;2;65;72;104:so=3;38;2;65;72;104:bd=4;38;2;224;175;104:cd=0;38;2;224;175;104:ln=04;01;38;5;205:or=0;38;2;157;124;216:bl=38;5;220:ga=36:gd=31:gm=33:gn=38;5;160:gr=34:gt=37:gu=35;1:gv=33:gw=1;34:gx=1;32:lc=37:sb=32:sf=37:sn=32:su=37:tr=34:tw=1;34:tx=1;35:ue=1;35:un=38;5;160:ur=1;32:uu=1;36:uw=1;34:ux=1;32"
 # }
 
 # ZSH OPTIONS | http://zsh.sourceforge.io/Doc/Release/Options {
@@ -35,9 +31,6 @@
   setopt bad_pattern       # Reports bad patterns during globbing => `[[ 1 = 2 ]]` will print an error
   setopt brace_ccl         # Enables brace character class lists expansion => `echo {a..z}` will print `abcdefghijklmnopqrstuvwxyz`
   setopt numeric_glob_sort # Natural number sorting | Sort filenames numerically when it makes sense => `ls file*` shows: file1 file2 file10 (rather than file1 file10 file2)
-  # setopt extended_glob          # [SET BY ZIM!!] Advanced pattern matching. I.E.: `rm -rf ^*.txt` removes everything except `.txt` files whereas `ls **/*.{jpg,png}` recursively find images
-  # setopt mark_dirs              # Add a trailing `/` to all directory names resulting from filename expansion => `echo *.txt` will print `*.txt/`
-  # setopt nomatch                # [SET BY ZIM!!] Shows error instead of keeping pattern when no matches found => `ls *.nonexistent` shows error instead of keeping pattern
   # }
 
   # HISTORY | http://zsh.sourceforge.io/Doc/Release/Options.html#History
@@ -47,8 +40,6 @@
   setopt hist_ignore_all_dups   # When trimming history, remove duplicates => `history -c` will remove duplicates
   setopt hist_reduce_blanks     # Remove superfluous blanks from each command line being added to the history list => `history -c` will remove superfluous blanks
   setopt hist_subst_pattern     # Perform pattern substitution on history expansion => `history -c` will perform pattern substitution on history expansion
-  # setopt hist_verify            # [SET BY ZIM!!] When using history substitution, put the expanded command in the edit buffer instead of executing it => `history -c` will execute the expanded command
-  # setopt share_history          # [SET BY ZIM!!] Share history between all sessions => `history -c` will share history between all sessions
   # }
 
   # INPUT OUTPUT | http://zsh.sourceforge.io/Doc/Release/Options.html#Input_002fOutput
@@ -57,9 +48,6 @@
   setopt path_dirs   # Improves command execution speed | Perform path search even on command names with slashes => `ls -l /usr/bin/ls` will print `/usr/bin/ls`
   setopt rc_quotes   # Easier string handling | Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'
   setopt short_loops # Shorter one-line loops | Enable shortened loop syntax => It allows `for i in *; echo $i` to be used instead of `for i in *; do echo $i; done`
-  # setopt aliases                # [SET BY ZIM!!] Expand aliases => `alias ls='echo ls'` will expand `ls` to `echo ls`
-  # setopt clobber                # [SET BY ZIM!!] Allow the > operator to truncate existing files, and redirect all output to a file when the file exists => `ls -l /usr/bin/ls > ls.txt` will truncate `ls.txt` and redirect all output to it
-  # setopt interactive_comments   # [SET BY ZIM!!] Better script documentation and command explanation | Allow comments even in interactive shells => `# hello world` will print `# hello world`
 
   # [SET BY ZIM!!] Reduces notification noise | Do not print a warning message if a mail file has been accessed => `mail` will not print a warning message if a mail file has been accessed
   setopt no_mail_warning
@@ -69,7 +57,6 @@
 
   # PROMPTING | http://zsh.sourceforge.io/Doc/Release/Options.html#Prompting
   setopt transient_rprompt # Reduces notification noise | Do not print a warning message if a mail file has been accessed => `mail` will not print a warning message if a mail file has been accessed
-  # setopt prompt_subst           # [SET BY ZIM!!] Allow substitution in the prompt => `PS1='$(date)'` will print the current date in the prompt
   # }
 
   # SCRIPTS AND FUNCTIONS | http://zsh.sourceforge.io/Doc/Release/Options.html#Scripts-and-Functions
@@ -77,19 +64,16 @@
   setopt bsd_echo          # Cross-platform scripts | Makes echo behave like BSD echo => `echo "Hello\nWorld"` prints literal `\n` whereas `echo -e "Hello\nWorld"` prints on two lines
   setopt sh_file_expansion # sh-compatibility needs | Makes file expansion sh-compatible => `ls !(*.txt)` will list all files except those with the .txt extension
   setopt typeset_silent    # Cleaner script output | Suppresses typeset command output => `typeset -A myarray` will not print `myarray`
-  # setopt multios                # [SET BY ZIM!!] Advanced I/O operations | Enable multiple redirections => `echo "test" > file1 > file2` writes to both whereas `cat < file1 < file2` reads from both
   # }
 
   # JOB CONTROL | http://zsh.sourceforge.io/Doc/Release/Options.html#Job-Control
   setopt auto_resume # Resume background jobs automatically | Resume background jobs automatically => `ls &` will resume the job even if the shell is closed
-  # setopt long_list_jobs         # [SET BY ZIM!!] Better job listing | List jobs in the long format by default => `jobs` will list jobs in the long format by default
   # }
 
   # ZLE | http://zsh.sourceforge.io/Doc/Release/Options.html#Zle
   setopt combining_chars # Multilingual text handling | Handles Unicode combining characters => `echo "e\u0301"` outputs: é
   setopt no_beep         # Reduces notification noise | Silences beeps on tab completion errors => `ls -l /usr/bin/ls` will not print a beep when tab completing
   setopt no_flow_control # Disables ^S/^Q flow control | Frees up ^S for history search and ^Q for exiting the shell => `C-q` will not suspend the shell
-  # setopt no_list_beep           # [SET BY ZIM!!] Reduces notification noise | Disables beep in completion lists and Silences beeps during tab completion => `ls -l /usr/bin/ls` will not print a beep when tab completing
   # }
 
   # COMPLETIONS | http://zsh.sourceforge.io/Doc/Release/Options.html#Completion-4 {
@@ -100,8 +84,6 @@
   setopt complete_in_word # Completion Navigation | Complete from both ends of a word.
   setopt glob_dots        # Globbing | Include dotfiles in globbing
   setopt list_ambiguous   # Completion Navigation | Show unambiguous prefix first
-  # setopt always_to_end          # [SET BY ZIM!!] Completion Navigation | Cursor moves to end after completion.
-  # setopt no_case_glob           # [SET BY ZIM!!] Globbing | Case insensitive globbing.
   # }
 
   # https://no-color.org
@@ -191,6 +173,7 @@
 # HOMEBREW | https://brew.sh{
   # The missing package manager for macOS (and Linux)
   # Determine Homebrew environment variables based on OS and architecture and load it
+  # https://docs.brew.sh/Manpage#bundle-subcommand
   if [[ -d /opt/homebrew || -d /home/linuxbrew/.linuxbrew || -d /usr/local/Homebrew || -e /usr/local/bin/brew ]]; then
     export HOMEBREW_PREFIX=${HOMEBREW_PREFIX:-$(if [[ -x /opt/homebrew/bin/brew ]]; then echo "/opt/homebrew"; elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then echo "/home/linuxbrew/.linuxbrew"; elif [[ -x /usr/local/bin/brew ]]; then echo "/usr/local"; else echo "/usr/local"; fi)}
     export HOMEBREW_BIN=$HOMEBREW_PREFIX/bin
@@ -201,7 +184,6 @@
     export HOMEBREW_BAT=true                      # Use bat for the brew cat command
     export HOMEBREW_BAT_THEME=dracula             # Use this as the bat theme for syntax highlighting
     export HOMEBREW_BUNDLE_DUMP_NO_VSCODE=1       # Don't dump vscode extensions
-    # https://docs.brew.sh/Manpage#bundle-subcommand
     export HOMEBREW_BUNDLE_FILE=${HOMEBREW_BUNDLE_FILE:-$XDG_CONFIG_HOME/homebrew/Brewfile}
     eval "$("$HOMEBREW_BIN"/brew shellenv)"
 
@@ -216,18 +198,9 @@
 
 # FLOX | https://flox.dev/docs/tutorials/default-environment {
   # Activate the Flox Default Environment at the home directory
-  if _has_command flox; then
-    eval "$(flox activate --dir $HOME/.config/flox -m run)"
-  fi
-# }
-
-# GOPASS | https://gopass.pw {
-  # The missing password manager for teams
-  # Load API keys from gopass if available
-  if _has_command gopass; then
-    export ANTHROPIC_API_KEY=$(gopass show -n --password tokens/anthropic.com)
-    export GEMINI_API_KEY=$(gopass show -n --password tokens/gemini.google.com)
-  fi
+  # if _has_command flox; then
+  #   eval "$(flox activate --dir $HOME/.config/flox -m run)"
+  # fi
 # }
 
 # EDITOR {
@@ -289,11 +262,6 @@
   if [[ -f $ZIM_HOME/init.zsh ]]; then
     source $ZIM_HOME/init.zsh
   fi
-# }
-
-# GO | https://go.dev {
-  # Configure the location of the Go workspace
-  export GOPATH=${GOPATH:-$XDG_DATA_HOME/go}
 # }
 
 # ZPROF {

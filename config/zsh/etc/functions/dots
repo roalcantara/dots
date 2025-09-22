@@ -171,6 +171,18 @@ dots() {
         ;;
       esac
       ;;
+    # Recompile ZSH completions
+    --recompile)
+      zimfw clean-compiled && zimfw compile
+      ;;
+    # Rebuild ZSH
+    --rebuild)
+      zimfw clean && zimfw reinstall && zimfw compile && zimfw info
+      ;;
+    # Show full path of sourced files
+    --trace|--sourcetrace)
+      zsh --sourcetrace
+      ;;
     # Profilling ZSH
     --prof)
       # https://medium.com/tarkalabs/optimize-zsh-fce424fcfd5
@@ -234,6 +246,7 @@ dots() {
         ;;
       esac
       ;;
+
     esac
     ;;
   *)

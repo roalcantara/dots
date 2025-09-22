@@ -203,6 +203,15 @@ At the moment, the `start` task is only available for the `debian` and `ubuntu` 
         # ==> container-structure-test test --image dots:ubuntu-latest --config distros/ubuntu/container-structure-test.yml
     ```
 
+## REPORTS
+
+| **DATE**            | **COMMAND**         | **USER** | **SYSTEM** | **CPU** | **TOTAL** | **COMMENT**                                                                                                                                                                   | **SOURCE**    |
+| ------------------- | ------------------- | :------: | :--------: | :-----: | :-------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| 2025-09-22 05:00:57 | dots zsh --prof avg |  782ms   |    98ms    |   91%   |   964ms   | WHEN LOADING KEYS FROM GOPASS                                                                                                                                                 | `~/.zprofile` |
+| 2025-09-22 05:08:57 | dots zsh --prof avg |   41ms   |    22ms    |   91%   |   71ms    | NO LOADING KEYS FROM GOPASS                                                                                                                                                   | `~/.zprofile` |
+| 2025-09-22 05:20:00 | dots zsh --prof avg |   40ms   |    20ms    |   91%   |   69ms    | WITHOUT `set -a; while IFS= read -r -d '' env_file; do source $env_file; done < <(find -L "$HOME/.config/xdg" -maxdepth 1 -name "*.env" -type f -print0 2>/dev/null); set +a` | `~/.zhenv`    |
+| 2025-09-22 06:00:00 | dots zsh --prof avg |   41ms   |    21ms    |   90%   |   68ms    | WITH `set -a; source $HOME/.config/.env; set +a`                                                                                                                              | `~/.zprofile` |
+
 ## ACKNOWLEDGEMENTS
 
 - [Standard Readme][4]
