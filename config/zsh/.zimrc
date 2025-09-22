@@ -8,16 +8,7 @@
 
 # Start configuration added by Zim install {{{
 
-# Essential Environment Variables
-export ZDOTDIR=${ZDOTDIR:="$HOME/.config/zsh"}
-export ZDOTDIR_OPT=${ZDOTDIR_OPT:=$ZDOTDIR/opt}
-export ZSH_CACHE_DIR=${ZSH_CACHE_DIR:="$HOME/.cache/zsh"}
-export ZSH_COMPCACHE=$ZSH_CACHE_DIR/compcache
-export zdumpfile=${ZSH_COMPDUMP:=$ZSH_COMPCACHE/.zcompdump}
-
 # Essential settings first
-# zstyle ':zim' 'disable-version-check' 'true'                                # [UNECESSARY] Disable zimfw version check
-# zstyle ':zim:input' double-dot-expand yes                                   # [BUGS the zim into reporting] Append `../` to your input for each `.` you type after an initial `..` | https://github.com/zimfw/input?tab=readme-ov-file#settings
 zstyle ':zim:zmodule' use 'degit'              # Use degit to clone modules - better when git history is not needed, quick module installation is priority, disk space is limited
 zstyle ':zim:completion' dumpfile "$zdumpfile" # Enables and configures smart and extensive tab completion.
 
@@ -35,7 +26,6 @@ zmodule run-help    # Figures out where to get the best help, and gets it. Type 
 zmodule joke/zim-mise --if-command mise --if '[[ -z $MISE_GLOBAL_CONFIG_FILE ]]'              # Sets up mise Zsh shell integration (https://github.com/joke/zim-mise)
 zmodule fzf --if-command fzf                                                                  # Fuzzy finder (https://github.com/zimfw/fzf)
 zmodule joke/zim-starship --if-command starship --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'  # The minimal, blazing-fast, and infinitely customizable prompt for any shell (https://starship.rs) - Skip in Warp
-zmodule sorin-ionescu/prezto --root modules/spectrum --no-submodules                          # This module contains git submodules, which are not supported by zimfw's degit. The zmodule option --no-submodules disable this warning.
 zmodule kiesman99/zim-zoxide --if-command zoxide                                              # Zoxide is a smarter cd command
 
 #
