@@ -82,7 +82,7 @@ local function close_hover_documentation()
   HOVER_DOCS_IS_ENABLED = false
 end
 
-local M = {
+return {
   --- Shows hover documentation only for meaningful code elements
   --- Excluding simple strings, brackets, punctuation, and other basic elements
   --- @param opts table { buffer = number, augroup = function, autocmd = function }
@@ -98,9 +98,7 @@ local M = {
     autocmd({ 'CursorHold', 'CursorHoldI' }, {
       group = group,
       buffer = buffer,
-      callback = vim.schedule_wrap(function()
-        start_mouse_hover_timer()
-      end),
+      callback = vim.schedule_wrap(start_mouse_hover_timer),
       desc = 'Show hover documentation on cursor hold for a while',
     })
 
@@ -127,15 +125,11 @@ local M = {
     })
 
     -- Clear mouse hover on <Esc>
-    vim.schedule(function()
-      vim.keymap.set(
-        'n',
-        '<Esc>',
-        close_hover_documentation,
-        { buffer = buffer, nowait = true, noremap = true, desc = 'Clear LSP hover on <Esc>' }
-      )
-    end)
+    vim.schedule_wrap(vim.keymap.set(
+      'n',
+      '<Esc>',
+      close_hover_documentation,
+      { buffer = buffer, nowait = true, noremap = true, desc = 'Clear LSP hover on <Esc>' }
+    ))
   end,
 }
-
-return M

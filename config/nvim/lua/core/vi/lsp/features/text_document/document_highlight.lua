@@ -1,4 +1,3 @@
-local augroup = require('core/vi/au/aug')
 local autocmd = vim.api.nvim_create_autocmd
 
 --- Handle highlighting symbols under the cursor on hold and clearing on move
@@ -43,19 +42,17 @@ local function clear_symbols_under_cursor_on_detach(buffer, group)
   })
 end
 
-local M = {
+return {
   --- Highlight symbol under cursor on cursor hold and clear on cursor move
   --- @see https://vonheikemen.github.io/devlog/tools/neovim-lsp-client-guide
   highlight_symbol_under_cursor = function(opts)
     local buffer = opts.buffer
 
     -- Create autocommands for this buffer
-    local group = augroup('lsp_highlight_symbol_under_cursor_' .. tostring(buffer), { clear = false })
+    local group = opts.augroup('lsp_highlight_symbol_under_cursor_' .. tostring(buffer), { clear = false })
     vim.api.nvim_clear_autocmds({ group = group, buffer = buffer })
 
     handle_symbols_under_cursor_on_hold_or_move(buffer, group)
     clear_symbols_under_cursor_on_detach(buffer, group)
   end,
 }
-
-return M
