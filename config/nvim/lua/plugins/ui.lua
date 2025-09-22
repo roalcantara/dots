@@ -1,3 +1,9 @@
+local icons = require('core/ui/icons/icons_list')
+local paths = require('core/vi/paths')
+local statusline = require('core/ui/statusline')
+local snacks_default_exclusions = require('core/ui/snacks/defaults').default_exclusions
+local snacks_dashboard = require('core/ui/snacks/dashboard')
+
 --- @diagnostic disable: codestyle-check
 return {
   -- TokyoNight colorscheme
@@ -458,13 +464,12 @@ return {
     priority = 1000,
     lazy = false,
     opts = function(_, opts)
-      local snacks_default_exclusions = require('core/ui/snacks/defaults').default_exclusions
       return vim.tbl_deep_extend('force', opts or {}, {
         dashboard = {
           enabled = true,
           open_on_startup = true,
           preset = {
-            header = require('core/ui/snacks/dashboard').header(),
+            header = snacks_dashboard.header(),
             keys = {
               { icon = '󰀶 ', key = 's', desc = 'Smart Find Files', action = ':lua Snacks.picker.smart({})' },
               { icon = ' ', key = 'f', desc = 'Find File', action = ':lua Snacks.picker.files()' },
@@ -1076,7 +1081,7 @@ return {
           'Trait',
         },
       }
-      local icons = vim.deepcopy(require('core/ui/icons/icons_list').kinds)
+      local icons = vim.deepcopy(icons.kinds)
 
       -- HACK: fix lua's weird choice for `Package` for control
       -- structures like if/else/for/etc.
@@ -1125,27 +1130,7 @@ return {
       -- +-------------------------------------------------+
       -- | A | B | C                             X | Y | Z |
       -- +-------------------------------------------------+
-      local function refresh(scope, ...)
-        local places = { ... }
-        if #places == 0 then
-          places = { 'statusline', 'winbar', 'tabline' }
-        end
-
-        return require('lualine').refresh({
-          force = true,
-          scope = scope,
-          place = places,
-        })
-      end
-
-      -- PERF: we don't need this lualine require madness 🤷
-      local lualine_require = require('lualine_require')
-      lualine_require.require = require
-
-      local icons = require('core/ui/icons/icons_list')
-
       vim.o.laststatus = vim.g.lualine_laststatus
-
       return vim.tbl_deep_extend('force', opts or {}, {
         options = {
           theme = 'auto',
@@ -1167,19 +1152,8 @@ return {
             'branch',
           },
           lualine_c = {
-            require('core/ui/statusline').root_dir(),
-            {
-              'diagnostics',
-              symbols = {
-                error = icons.diagnostics.Error,
-                warn = icons.diagnostics.Warn,
-                info = icons.diagnostics.Info,
-                hint = icons.diagnostics.Hint,
-              },
-              on_click = function()
-                vim.cmd('LspToggleDiagnostics')
-              end,
-            },
+            statusline.sessions.lualine_c.root_basename,
+            statusline.sessions.lualine_c.diagnostics,
             {
               'filetype',
               icon_only = true,
@@ -1217,79 +1191,21 @@ return {
           },
           lualine_x = {
             Snacks.profiler.status(),
-            require('core/ui/statusline').status(icons.kinds.Copilot, function()
-              local clients = package.loaded['copilot']
-                and require('core/vi/lsp/utils').get_clients({ name = 'copilot', bufnr = 0 })
-                or {}
-              if #clients > 0 then
-                local status = require('copilot.api').status.data.status
-                return (status == 'InProgress' and 'pending') or (status == 'Warning' and 'error') or 'ok'
-              end
-            end),
-            -- https://github.com/folke/noice.nvim?tab=readme-ov-file#-statusline-components
-            -- stylua: ignore
-            {
-              function() return require('noice').api.status.command.get() end,
-              cond = function() return package.loaded['noice'] and require('noice').api.status.command.has() end,
-              color = function() return { fg = Snacks.util.color('Statement') } end,
-            },
-            -- stylua: ignore
-            {
-              function() return require('noice').api.status.mode.get() end,
-              cond = function() return package.loaded['noice'] and require('noice').api.status.mode.has() end,
-              color = function() return { fg = Snacks.util.color('Constant') } end,
-            },
-            -- stylua: ignore
-            {
-              function() return require('noice').api.status.search.get() end,
-              cond = function() return package.loaded['noice'] and require('noice').api.status.search.has() end,
-              color = function() return { fg = Snacks.util.color('Statement') } end,
-            },
-            -- stylua: ignore
-            {
-              function() return '  ' .. require('dap').status() end,
-              cond = function() return package.loaded['dap'] and require('dap').status() ~= '' end,
-              color = function() return { fg = Snacks.util.color('Debug') } end,
-            },
-            -- stylua: ignore
-            {
-              require('lazy.status').updates,
-              cond = require('lazy.status').has_updates,
-              color = function() return { fg = Snacks.util.color('Special') } end,
-              on_click = function()
-                vim.schedule(function()
-                  vim.cmd [[Lazy sync]]
-                  refresh('window', 'statusline')
-                end)
-              end,
-            },
-            {
-              'diff',
-              symbols = {
-                added = icons.git.added,
-                modified = icons.git.modified,
-                removed = icons.git.removed,
-              },
-              source = function()
-                local gitsigns = vim.b.gitsigns_status_dict
-                if gitsigns then
-                  return {
-                    added = gitsigns.added,
-                    modified = gitsigns.changed,
-                    removed = gitsigns.removed,
-                  }
-                end
-              end,
-            },
+            statusline.sessions.lualine_x.copilot,
+            statusline.sessions.lualine_x.message,
+            statusline.sessions.lualine_x.command,
+            statusline.sessions.lualine_x.mode,
+            statusline.sessions.lualine_x.search,
+            statusline.sessions.lualine_x.dap,
+            statusline.sessions.lualine_x.lazy,
+            statusline.sessions.lualine_x.diff,
           },
           lualine_y = {
             { 'progress', separator = ' ',                  padding = { left = 1, right = 0 } },
             { 'location', padding = { left = 0, right = 1 } },
           },
           lualine_z = {
-            function()
-              return ' ' .. os.date('%R')
-            end,
+            statusline.sessions.lualine_z.time,
           },
         },
         extensions = { 'neo-tree', 'lazy', 'fzf' },

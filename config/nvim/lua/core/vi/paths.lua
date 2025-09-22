@@ -1,35 +1,215 @@
+local sys_os = require('core/etc/sys/os')
+local storage = require('core/neo/storage')
+local strings = require('core/vi/strings')
+
 -- Path and file system utilities
 local M = {
   -- Project root detection utilities
   cache = {},
   spec = { 'lsp', { '.git', 'lua' }, 'cwd' },
   detectors = {},
-  join = require('core/etc/sys/os').join,
-  separator = require('core/etc/sys/os').get_separator,
+  sys = sys_os,
+  separator = sys_os.get_separator,
   expand = vim.fn.expand,
   basename = vim.fs.basename,
   dirname = vim.fs.dirname,
-  is_directory = vim.fn.isdirectory,
-  filereadable = vim.fn.filereadable,
-  stdpath = vim.fn.stdpath,
   homebrew_prefix = vim.env.HOMEBREW_PREFIX or '/opt/homebrew',
 }
+
+--- Returns |standard-path| locations of various default files and directories.
+--- The locations are driven by |base-directories| which you can configure via |$NVIM_APPNAME| or the `$XDG_…` environment variables.
+--- @param what 'cache' | 'config' | 'config_dirs' | 'data' | 'data_dirs' | 'log' | 'run' | 'state' The type of standard path to get
+--- @return string The standard path
+--- @example
+--- ```lua
+--- stdpath_base('config') -- => "/Users/user/.config/nvim"
+--- stdpath_base('state') -- => "/Users/user/.local/state/nvim"
+--- ```
+local function stdpath_base(what)
+  return storage.memo('paths::stdpath', vim.fn.stdpath, what)
+end
+
+--- Join multiple paths
+--- @param ... string Paths to join
+--- @return string Joined path
+function M.join(...)
+  local args = { ... } or {}
+  return storage.memoize(storage.cache_key('paths::join', ...), function()
+    return sys_os.join(unpack(args))
+  end)
+end
+
+--- Returns |standard-path| locations of various default files and directories.
+--- The locations are driven by |base-directories| which you can configure via |$NVIM_APPNAME| or the `$XDG_…` environment variables.
+--- @param what 'cache' | 'config' | 'config_dirs' | 'data' | 'data_dirs' | 'log' | 'run' | 'state' The type of standard path to get
+--- @param ... string Additional arguments to pass to stdpath
+--- @return string The standard path
+--- @example
+--- ```lua
+--- stdpath('config') -- => "/Users/user/.config/nvim"
+--- stdpath('state', 'undo') -- => "/Users/user/.local/state/nvim/undo"
+--- stdpath('config', 'subdir', 'file.txt') -- => "/Users/user/.config/nvim/subdir/file.txt"
+--- ```
+function M.stdpath(what, ...)
+  local args = { ... } or {}
+  return storage.memoize(storage.cache_key('paths::stdpath', what, ...), function()
+    return M.join(stdpath_base(what), unpack(args))
+  end)
+end
 
 --- Get standard Neovim paths
 --- @return table Table with config, data, cache, and state paths
 function M.get_stdpaths()
-  return {
-    config = M.stdpath('config'),
-    data = M.stdpath('data'),
-    cache = M.stdpath('cache'),
-    state = M.stdpath('state'),
-  }
+  return storage.memo('paths::stdpaths', function()
+    return {
+      config = M.stdpath('config'),
+      data = M.stdpath('data'),
+      cache = M.stdpath('cache'),
+      state = M.stdpath('state'),
+    }
+  end)
 end
 
-M.ensure = function(path)
-  if vim.fn.isdirectory(path) == 0 then
-    vim.fn.mkdir(path, 'p')
-  end
+--- Check if a path is a directory
+--- @param path string Path to check
+--- @return boolean True if path is a directory
+function M.is_directory(path)
+  return storage.memo('paths::is_directory', function(value)
+    return vim.fn.isdirectory(value) == 1
+  end, path)
+end
+
+--- Ensure a path is a directory
+--- @param path string Path to ensure
+--- @return string Path to the ensured directory
+function M.ensure(path)
+  return storage.memo('paths::ensure', function(value)
+    if not M.is_directory(value) then
+      vim.fn.mkdir(value, 'p')
+    end
+    return value
+  end, path)
+end
+
+--- Get the path to the bin for a given name
+--- @param name string Name of the bin
+--- @return string Path to the bin
+function M.bin_for(name)
+  return M.join(M.homebrew_prefix, 'bin', name)
+end
+
+--- Get the current working directory of a buffer
+--- @param bufnr number The buffer number
+--- @return string The current working directory of the buffer
+function M.bufcwd(bufnr)
+  return storage.memo('bufcwd', function(value)
+    return vim.fn.expand(('#%d:p:h'):format(value))
+  end, bufnr)
+end
+
+--- Normalize a path
+--- @param path string Path to normalize
+--- @return string Normalized path
+--- @example
+--- ```lua
+--- normalize('') -- => ""
+--- normalize(nil) -- => ""
+--- normalize('.') -- => "."
+--- normalise([[C:\Users\jdoe]]) -- => "C:/Users/jdoe"
+--- normalise("~/src/neovim") -- => "/home/jdoe/src/neovim"
+--- normalise("$XDG_CONFIG_HOME/nvim/init.vim") -- => "/Users/jdoe/.config/nvim/init.vim"
+--- normalise("~/src/nvim/api/../tui/./tui.c") -- => "/home/jdoe/src/nvim/tui/tui.c"
+--- normalise("./foo/bar") -- => "foo/bar"
+--- normalise("foo/../../../bar") -- => "../../bar"
+--- normalise("/home/jdoe/../../../bar") -- => "/bar"
+--- normalise("C:foo/../../baz") -- => "C:../baz"
+--- normalise("C:/foo/../../baz") -- => "C:/baz"
+--- normalise([[\\?\UNC\server\share\foo\..\..\..\bar]]) -- => "//?/UNC/server/share/bar"
+--- ```
+function M.normalize(path)
+  return storage.memo('paths::normalize', vim.fs.normalize, path)
+end
+
+--- Get the real path of a given path
+--- @param path string The path to get the real path of
+--- @return string The real path of the given path
+function M.realpath(path)
+  return storage.memo('paths::realpath', function(value)
+    return M.normalize(vim.uv.fs_realpath(value) or value)
+  end, path)
+end
+
+--- Check if a command is executable
+--- @param name string
+--- @return boolean true if the command is executable
+function M.is_executable(name)
+  return storage.memo('paths::is_executable', function(value)
+    return vim.fn.executable(value) == 1
+  end, name)
+end
+
+--- Get the value of an environment variable
+--- @param varname string The name of the environment variable
+--- @return string The value of the environment variable
+function M.getenv(varname)
+  return storage.memo('paths::getenv', os.getenv, varname)
+end
+
+--- Get the path to the bin for python3 venv
+--- @return string The path to the bin for python3 venv
+function M.bin_for_python3_venv()
+  return storage.memo('paths::bin_for_python3_venv', function(value)
+    return M.getenv(value)
+      or M.getenv('NEOVIM_PYTHON3_VENV_PATH')
+      or M.stdpath('config', '.venv', 'bin', 'python3')
+  end, 'VIRTUAL_ENV')
+end
+
+-- returns the root directory based on:
+-- * lsp workspace folders
+-- * lsp root_dir
+-- * root pattern of filename of the current buffer
+-- * root pattern of cwd
+--- @param opts {normalize:boolean, buf:number}
+--- @return string
+--- @example
+--- ```lua
+--- get_root({ buf = 1, normalize = true }) -- => "/home/user/test"
+--- get_root({ buf = 1, normalize = false }) -- => "~/test"
+function M.root_path(opts)
+  return storage.memo('paths::root_path', function(value)
+    local roots = M.detect({ all = false, buf = opts.buf })
+    if roots and roots[1] and roots[1].paths and roots[1].paths[1] then
+      local root_path = roots[1].paths[1]
+      if opts.normalize then
+        return M.normalize(root_path)
+      else
+        return root_path
+      end
+    else
+      return vim.uv.cwd()
+    end
+  end, opts.buf, opts.normalize and 'normalized' or 'unnormalized')
+end
+
+-- returns the root directory based on:
+-- * lsp workspace folders
+-- * lsp root_dir
+-- * root pattern of filename of the current buffer
+-- * root pattern of cwd
+--- @param opts {normalize:boolean, buf:number}
+--- @return string
+function M.basename(opts)
+  return storage.memo('paths::basename', function(value)
+    local cwd = value[1]
+    local root = M.root_path(opts)
+
+    if root == cwd then
+      return nil
+    end
+
+    return storage.memo('paths::basename', vim.fs.basename, root)
+  end, vim.uv.cwd(), opts.buf, opts.normalize and 'normalized' or 'unnormalized')
 end
 
 M.stdpaths = {
@@ -38,7 +218,10 @@ M.stdpaths = {
   cache = M.stdpath('cache'),
   state = M.stdpath('state'),
   -- https://neovim.io/doc/user/options.html#'undodir'
-  undodir = M.join(M.stdpath('state'), 'undo'),
+  undodir = M.stdpath('state', 'undo'),
+  --- Return the path to the snippets directory
+  --- @return string The path to the snippets directory
+  snippets = M.stdpath('config', 'snippets'),
   ensured = {
     undodir = function()
       M.ensure(M.stdpaths.undodir)
@@ -46,39 +229,6 @@ M.stdpaths = {
     end
   }
 }
-
-function M.bin_for(name)
-  return M.join(M.homebrew_prefix, 'bin', name)
-end
-
---- Check if a path exists
---- @param path string Path to check
---- @return boolean True if path exists
-function M.exists(path)
-  return M.is_directory(path) == 1 or M.filereadable(path) == 1
-end
-
-function M.get_lua_paths_with_name()
-  local rtp = vim.opt.runtimepath:get()
-  local items = {}
-
-  for _, path in ipairs(rtp) do
-    local lua_path = M.expand(M.join(path, 'lua'))
-    if M.exists(lua_path) then
-      local basename = M.basename(path)
-      local display_text = string.format('%-25s %s', basename, lua_path)
-
-      table.insert(items, {
-        id = lua_path,
-        text = display_text,
-        data = lua_path,
-        value = lua_path,
-      })
-    end
-  end
-
-  return items
-end
 
 M.lua = {
   runtime = {
@@ -89,18 +239,18 @@ M.lua = {
       M.join('lua', '?', 'init.lua'),
       M.join(vim.env.VIMRUNTIME, 'lua', '?.lua'),
       M.join(vim.env.VIMRUNTIME, 'lua', '?', 'init.lua'),
-      M.join(M.stdpath('config'), '*', 'lua', '?.lua'),
-      M.join(M.stdpath('config'), '*', 'lua', '?', 'init.lua'),
-      M.join(M.stdpath('data'), 'lazy', '*', 'lua', '?.lua'),
-      M.join(M.stdpath('data'), 'lazy', '*', 'lua', '?', 'init.lua'),
-      M.join(M.stdpath('data'), 'mason', '*', 'lua', '?.lua'),
-      M.join(M.stdpath('data'), 'mason', '*', 'lua', '?', 'init.lua'),
-      M.join(M.stdpath('data'), 'blink', '*', 'lua', '?.lua'),
-      M.join(M.stdpath('data'), 'blink', '*', 'lua', '?', 'init.lua'),
-      M.join(M.stdpath('data'), 'scratch', '*', 'lua', '?.lua'),
-      M.join(M.stdpath('data'), 'scratch', '*', 'lua', '?', 'init.lua'),
-      M.join(M.stdpath('data'), 'snacks', '*', 'lua', '?.lua'),
-      M.join(M.stdpath('data'), 'snacks', '*', 'lua', '?', 'init.lua'),
+      M.stdpath('config', '*', 'lua', '?.lua'),
+      M.stdpath('config', '*', 'lua', '?', 'init.lua'),
+      M.stdpath('data', 'lazy', '*', 'lua', '?.lua'),
+      M.stdpath('data', 'lazy', '*', 'lua', '?', 'init.lua'),
+      M.stdpath('data', 'mason', '*', 'lua', '?.lua'),
+      M.stdpath('data', 'mason', '*', 'lua', '?', 'init.lua'),
+      M.stdpath('data', 'blink', '*', 'lua', '?.lua'),
+      M.stdpath('data', 'blink', '*', 'lua', '?', 'init.lua'),
+      M.stdpath('data', 'scratch', '*', 'lua', '?.lua'),
+      M.stdpath('data', 'scratch', '*', 'lua', '?', 'init.lua'),
+      M.stdpath('data', 'snacks', '*', 'lua', '?.lua'),
+      M.stdpath('data', 'snacks', '*', 'lua', '?', 'init.lua'),
     },
     special = {
       include = 'require',
@@ -112,16 +262,16 @@ M.lua = {
     library = {
       M.join(vim.env.VIMRUNTIME, 'lua'),
       M.bin_for('lua-language-server'),
-      M.join(M.stdpath('data'), 'lazy', '*', 'lua'),
-      M.join(M.stdpath('data'), 'mason', '*', 'lua'),
-      M.join(M.stdpath('data'), 'blink', '*', 'lua'),
-      M.join(M.stdpath('data'), 'scratch', '*', 'lua'),
-      M.join(M.stdpath('data'), 'snacks', '*', 'lua'),
+      M.stdpath('data', 'lazy', '*', 'lua'),
+      M.stdpath('data', 'mason', '*', 'lua'),
+      M.stdpath('data', 'blink', '*', 'lua'),
+      M.stdpath('data', 'scratch', '*', 'lua'),
+      M.stdpath('data', 'snacks', '*', 'lua'),
       '${3rd}/lfs/library',
       '${3rd}/luv/library',
       '${3rd}/busted/library',
       '${3rd}/luassert/library',
-      M.join(M.stdpath('config'), 'lua'),
+      M.stdpath('config', 'lua'),
     },
   },
 }
@@ -131,22 +281,22 @@ M.lua_runtime_paths = {
   M.join('?', 'init.lua'),
   M.join('lua', '?.lua'),
   M.join('lua', '?', 'init.lua'),
-  M.expand(M.join(M.stdpath('config'), 'lua', '?.lua')),
-  M.expand(M.join(M.stdpath('config'), 'lua', '?', 'init.lua')),
-  M.expand(M.join(M.stdpath('data'), 'lazy', '*', 'lua', '?.lua')),
-  M.expand(M.join(M.stdpath('data'), 'lazy', '*', 'lua', '?', 'init.lua')),
-  M.expand(M.join(M.stdpath('data'), 'mason', '*', 'lua', '?.lua')),
-  M.expand(M.join(M.stdpath('data'), 'mason', '*', 'lua', '?', 'init.lua')),
-  M.expand(M.join(M.stdpath('data'), 'blink', '*', 'lua', '?.lua')),
-  M.expand(M.join(M.stdpath('data'), 'blink', '*', 'lua', '?', 'init.lua')),
-  M.expand(M.join(M.stdpath('data'), 'scratch', '*', 'lua', '?.lua')),
-  M.expand(M.join(M.stdpath('data'), 'scratch', '*', 'lua', '?', 'init.lua')),
-  M.expand(M.join(M.stdpath('data'), 'snacks', '*', 'lua', '?.lua')),
-  M.expand(M.join(M.stdpath('data'), 'snacks', '*', 'lua', '?', 'init.lua')),
-  M.expand(M.join(vim.env.VIMRUNTIME, 'lua', '?.lua')),
-  M.expand(M.join(vim.env.VIMRUNTIME, 'lua', '?', 'init.lua')),
-  M.expand(M.join(vim.env.VIMRUNTIME, '*', 'lua', '?.lua')),
-  M.expand(M.join(vim.env.VIMRUNTIME, '*', 'lua', '?', 'init.lua')),
+  M.stdpath('config', 'lua', '?.lua'),
+  M.stdpath('config', 'lua', '?', 'init.lua'),
+  M.stdpath('data', 'lazy', '*', 'lua', '?.lua'),
+  M.stdpath('data', 'lazy', '*', 'lua', '?', 'init.lua'),
+  M.stdpath('data', 'mason', '*', 'lua', '?.lua'),
+  M.stdpath('data', 'mason', '*', 'lua', '?', 'init.lua'),
+  M.stdpath('data', 'blink', '*', 'lua', '?.lua'),
+  M.stdpath('data', 'blink', '*', 'lua', '?', 'init.lua'),
+  M.stdpath('data', 'scratch', '*', 'lua', '?.lua'),
+  M.stdpath('data', 'scratch', '*', 'lua', '?', 'init.lua'),
+  M.stdpath('data', 'snacks', '*', 'lua', '?.lua'),
+  M.stdpath('data', 'snacks', '*', 'lua', '?', 'init.lua'),
+  M.join(vim.env.VIMRUNTIME, 'lua', '?.lua'),
+  M.join(vim.env.VIMRUNTIME, 'lua', '?', 'init.lua'),
+  M.join(vim.env.VIMRUNTIME, '*', 'lua', '?.lua'),
+  M.join(vim.env.VIMRUNTIME, '*', 'lua', '?', 'init.lua'),
 }
 
 function M.get_lua_runtime_paths_items()
@@ -166,7 +316,7 @@ function M.get_lua_runtime_paths_items()
 end
 
 function M.get_runtimepath_path_items()
-  local rtp = vim.opt.runtimepath:get()
+  local rtp = vim.opt.runtimepath:get_root()
   local items = {}
 
   for _, path in ipairs(rtp) do
@@ -185,30 +335,6 @@ function M.get_runtimepath_path_items()
   return items
 end
 
-function M.bin_for_python3_venv()
-  return os.getenv('VIRTUAL_ENV')
-    or os.getenv('NEOVIM_PYTHON3_VENV_PATH')
-    or M.join(M.stdpath('config'), '.venv', 'bin', 'python3')
-end
-
-function M.norm(path)
-  if not path or path == '' then
-    return ''
-  end
-  if M.is_directory(path) == 1 then
-    return M.join(path, '')
-  end
-  -- Fix: Actually normalize the input path instead of returning cwd
-  return vim.fs.normalize(path) or path
-end
-
---- Check if a command is executable
---- @param name string
---- @return boolean true if the command is executable
-function M.is_executable(name)
-  return vim.fn.executable(name) == 1
-end
-
 --- Get the XDG config home path for a given set of paths
 --- @param ... string|string[] Path to XDG_CONFIG_HOME
 --- @return string path to XDG_CONFIG_HOME
@@ -221,105 +347,14 @@ function M.xdg_config_home(...)
   return M.join(xdg_config_home, paths)
 end
 
-function M.realpath(path)
-  if path == '' or path == nil then
-    return nil
-  end
-  path = vim.uv.fs_realpath(path) or path
-  return M.norm(path)
-end
+M.xdg = {
+  config_home = M.xdg_config_home,
+  config = {
+    path = M.xdg_config_home(),
+    path_for = function(...) return M.xdg_config_home(...) end,
+  }
+}
 
-function M.cwd()
-  return M.realpath(vim.uv.cwd()) or ''
-end
-
-function M.bufpath(buf)
-  return M.realpath(vim.api.nvim_buf_get_name(assert(buf)))
-end
-
-function M.detectors.pattern(buf, patterns)
-  patterns = type(patterns) == 'string' and { patterns } or patterns
-  local path = M.bufpath(buf) or vim.uv.cwd()
-  local pattern = vim.fs.find(function(name)
-    for _, p in ipairs(patterns) do
-      if name == p then
-        return true
-      end
-      if p:sub(1, 1) == '*' and name:find(vim.pesc(p:sub(2)) .. '$') then
-        return true
-      end
-    end
-    return false
-  end, { path = path, upward = true })[1]
-  return pattern and { vim.fs.dirname(pattern) } or {}
-end
-
---- @param spec LazyRootSpec
---- @return function
-function M.resolve(spec)
-  if M.detectors[spec] then
-    return M.detectors[spec]
-  elseif type(spec) == 'function' then
-    return spec
-  end
-  return function(buf)
-    return M.detectors.pattern(buf, spec)
-  end
-end
-
---- @param opts? { buf?: number, spec?: LazyRootSpec[], all?: boolean }
---- @return LazyRoot[]
-function M.detect(opts)
-  opts = opts or {}
-  opts.spec = opts.spec or type(vim.g.root_spec) == 'table' and vim.g.root_spec or M.spec
-  opts.buf = (opts.buf == nil or opts.buf == 0) and vim.api.nvim_get_current_buf() or opts.buf
-
-  local ret = {} --- @type LazyRoot[]
-  for _, spec in ipairs(opts.spec) do
-    local paths = M.resolve(spec)(opts.buf)
-    paths = paths or {}
-    paths = type(paths) == 'table' and paths or { paths }
-    local roots = {} --- @type string[]
-    for _, p in ipairs(paths) do
-      local pp = M.realpath(p)
-      if pp and not vim.tbl_contains(roots, pp) then
-        roots[#roots + 1] = pp
-      end
-    end
-    table.sort(roots, function(a, b)
-      return #a > #b
-    end)
-    if #roots > 0 then
-      ret[#ret + 1] = { spec = spec, paths = roots }
-      if opts.all == false then
-        break
-      end
-    end
-  end
-  return ret
-end
-
--- returns the root directory based on:
--- * lsp workspace folders
--- * lsp root_dir
--- * root pattern of filename of the current buffer
--- * root pattern of cwd
---- @param opts? {normalize?:boolean, buf?:number}
---- @return string
-function M.get(opts)
-  opts = opts or {}
-  local buf = opts.buf or vim.api.nvim_get_current_buf()
-  local ret = M.cache[buf]
-  if not ret then
-    local roots = M.detect({ all = false, buf = buf })
-    ret = roots[1] and roots[1].paths[1] or vim.uv.cwd()
-    M.cache[buf] = ret
-  end
-  if opts and opts.normalize then
-    return ret
-  end
-  return M.get_separator() or ret
-end
 
 --- Check if a command is available
 --- @param name string The name of the command to check
