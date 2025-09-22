@@ -40,7 +40,7 @@ return {
       { 'mason-org/mason.nvim', opts = {} },
       -- Provides default LSP client configuration for various servers (:h vim.lsp.config())
       -- https://github.com/neovim/nvim-lspconfig?tab=readme-ov-file#important-%EF%B8%8F
-      'neovim/nvim-lspconfig',
+      'neovim/nvim-lspconfig'
     },
   },
   -- Installs/updates LSP servers and tools automatically (via *mason.nvim*)
@@ -245,39 +245,11 @@ return {
       -- cannot use these alternative names. It also suppresses loading of those
       -- module(s) (assuming any are installed) which is sometimes wanted when
       -- doing lazy loading.
-      integrations = {
-        ['mason-lspconfig'] = true,
-        ['mason-null-ls'] = true,
-        ['mason-nvim-dap'] = true,
-      },
-    },
-    init = function()
-      -- Prior to installing the first package, `MasonToolsStartingInstall` event is emitted once.
-      -- If there are no packages to install, no event will be emitted.
-      -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
-      vim.api.nvim_create_autocmd('User', {
-        pattern = 'MasonToolsStartingInstall',
-        callback = function()
-          vim.schedule(function()
-            print('[mason-tool-installer] is starting...')
-          end)
-        end,
-        desc = 'Warns when mason-tool-installer is starting to install tools',
-      })
-
-      -- Upon completion of any installation/update, `MasonToolsUpdateCompleted` event is emitted.
-      -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
-      vim.api.nvim_create_autocmd('User', {
-        pattern = 'MasonToolsUpdateCompleted',
-        callback = function(e)
-          if e.data then
-            vim.schedule(function()
-              print('[mason-tool-installer] done! ===> ' .. vim.inspect(e.data) .. '\r\n')
-            end)
-          end
-        end,
-        desc = 'Warns when mason-tool-installer is done installing/updating tools',
-      })
-    end,
+      -- integrations = {
+      --   ['mason-lspconfig'] = true,
+      --   ['mason-null-ls'] = true,
+      --   ['mason-nvim-dap'] = true,
+      -- },
+    }
   },
 }

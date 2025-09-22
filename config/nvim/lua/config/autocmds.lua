@@ -1,3 +1,6 @@
+local lsp_features = require('core/vi/lsp/features')
+
+-- Set up autocommands for handling several events asynchronously
 -- https://neovim.io/doc/user/lua-guide.html#lua-guide-autocommand-create
 -- https://neovim.io/doc/user/lua-guide.html#lua-guide-autocommands-group
 -- https://lazyvim.org/configuration/general#auto-commands
@@ -206,18 +209,53 @@ require('core/vi/au').setup_autocommands_async({
       },
     },
   },
-  on_lsp_attach_set_capabilities = {
+  on_lsp_attach = {
     {
       event = 'LspAttach',
       opts = {
-        callback = function(args)
-          local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-          if type(client) ~= nil and vim.api.nvim_buf_is_valid(args.buf) then
-            require('core/vi/lsp/features').setup_capabilities(client, args.buf, args)
+        callback = function(opts)
+          -- Handle LspAttach events emitted by LSP clients in a group whose name starts with "on_lsp_attach"
+          -- When the LSP client starts Nvim sets various default options, mappings, and diagnostics
+          -- https://neovim.io/doc/user/lsp.html#lsp-defaults | https://neovim.io/doc/user/diagnostic.html#diagnostic-defaults | https://gpanders.com/blog/whats-new-in-neovim-0-11
+          local client = vim.lsp.get_client_by_id(opts.data.client_id)
+          if type(client) ~= nil and vim.api.nvim_buf_is_valid(opts.buf) then
+            lsp_features.setup_capabilities(client, opts.buf, opts)
           end
         end,
-        desc = 'LSP Attach: Setup autocommands and settings for LSP feature capabilities',
+        desc = 'LSP Attach: Setup LSP capabilities when an non-null client attaches to a valid buffer',
       },
     },
   },
+  on_mason_tools_install = {
+    {
+      event = 'User',
+      opts = {
+        pattern = { 'MasonToolsStartingInstall' },
+        callback = function()
+          -- Handle user events emitted by mason in a group whose name starts with "on_on_mason_tools_trigger"
+          -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
+          -- Handles user event emitted prior installing the first package if there are packages to install.
+          Snacks.debug.inspect(string.format("[%s] is starting..", 'mason-tool-installer'))
+        end,
+        desc = 'Mason: Warns when mason-tool-installer starts to install tools',
+      }
+    }
+  },
+  on_mason_tools_completes = {
+    {
+      event = 'User',
+      opts = {
+        pattern = { 'MasonToolsUpdateCompleted' },
+        callback = function(e)
+          -- Handle user events emitted by mason in a group whose name starts with "on_on_mason_tools_trigger"
+          -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
+          -- Handles user event emitted upon packages installation/update completes.
+          if e.data then
+            Snacks.debug.inspect(string.format("[%s] done! ===> %s", 'mason-tool-installer', vim.inspect(e.data)))
+          end
+        end,
+        desc = 'Mason: Warns when mason-tool-installer is done installing/updating tools',
+      }
+    }
+  }
 })

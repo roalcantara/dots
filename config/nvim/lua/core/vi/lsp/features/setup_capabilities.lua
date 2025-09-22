@@ -3,20 +3,28 @@ local autocmd = require('core/vi/au/au')
 
 local M = {
   enabled_capabilities = {
-    ['textDocument/documentHighlight'] = require('core/vi/lsp/features/text_document/document_highlight'),
-    ['textDocument/hover'] = require('core/vi/lsp/features/text_document/hover'),
-  },
+    [vim.lsp.protocol.Methods.textDocument_documentHighlight] = require('core/vi/lsp/features/text_document/document_highlight'),
+    [vim.lsp.protocol.Methods.textDocument_hover] = require('core/vi/lsp/features/text_document/hover'),
+    [vim.lsp.protocol.Methods.textDocument_signatureHelp] = require('core/vi/lsp/features/text_document/signature_help'),
+    [vim.lsp.protocol.Methods.textDocument_formatting] = require('core/vi/lsp/features/text_document/formatting'),
+    [vim.lsp.protocol.Methods.textDocument_inlineCompletion] = require('core/vi/lsp/features/text_document/inline_completion'),
+    [vim.lsp.protocol.Methods.textDocument_completion] = require('core/vi/lsp/features/text_document/completion'),
+    [vim.lsp.protocol.Methods.textDocument_inlayHint] = require('core/vi/lsp/features/text_document/inlay_hints'),
+  }
 }
 
 --- Add features for each capability method supported by LSP
+--- Not all language servers provide the same capabilities!
 --- @param client table LSP client
 --- @param buffer? number LSP config options
---- @param event? table LSP event
+--- @param opts? table LSP options
 --- @see https://vonheikemen.github.io/devlog/tools/neovim-lsp-client-guide
-local setup_capabilities = function(client, buffer, event)
+local setup_capabilities = function(client, buffer, opts)
   -- For each LSP capability method
   for method, features in pairs(M.enabled_capabilities) do
-    -- When the capability method is supported by the LSP
+    -- Not all language servers provide the same capabilities!
+    -- Check server capabilities (in a LSP-enabled buffer) via :lua =vim.lsp.get_clients()[1].server_capabilities
+    -- https://neovim.io/doc/user/lsp.html#lsp-attach
     if client:supports_method(method, buffer) then
       -- For each feature defined for the supported capability method
       for name, feature in pairs(features) do
@@ -24,12 +32,10 @@ local setup_capabilities = function(client, buffer, event)
         feature({
           client = client,
           buffer = buffer,
-          event = event,
+          event = opts,
           augroup = augroup,
           autocmd = autocmd,
         })
-        -- Logs that the feature has been added to the LSP client and buffer
-        Neo.debug(string.format("[%s/%s] (%s) Setup feature '%s' ✔", client.name, event, method, name))
       end
     end
   end
