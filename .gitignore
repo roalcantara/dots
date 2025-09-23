@@ -140,7 +140,21 @@ dist
 # ignore all files ended with .secret
 .secrets
 *.secret
-# ignore all files ended with .env
+
+# ENV FILES
 *.env
-# ignore all files ended with .env.*
 *.env.*
+.env.bak
+.env.local
+.env~
+
+# gcloud
+gcloud/cache/*
+gcloud/logs/*
+.bak/*
+
+# AGE keys (various locations)
+.config/age/keys.txt
+age/keys.txt
+**/age/keys.txt
+keys.txt
