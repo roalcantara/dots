@@ -94,6 +94,7 @@ bookmarks:
   https://runme.dev:
     desc: Runme is an interactive documentation tool that allows you to create, share, and execute code snippets directly within your documentation.
     tags: [devops, tools]
+
 commands:
   # MISE | The Modern Infrastructure as Code Tool
   # https://mise.jdx.dev
@@ -412,3 +413,30 @@ cheats:
 
           **Make Security Everyone's Job**:
             - Train developers and embed security specialists in teams
+  AGE:
+  SOPS/AGE:
+    desc: SOPS (Secrets OPerationS) is an editor of encrypted files that supports YAML, JSON, ENV, INI and BINARY formats and encrypts with AWS KMS, GCP KMS, Azure Key Vault, PGP and age.
+    tags: [pattern, deployment, secrets]
+    notes:
+      - md: | #markdown
+          # SOPS/AGE
+
+          SOPS (Secrets OPerationS) is an editor of encrypted files that supports YAML, JSON, ENV, INI and BINARY formats and encrypts with AWS KMS, GCP KMS, Azure Key Vault, PGP and age.
+
+          AGE is a simple, modern and secure file encryption tool, format, and Go library. It supports both password-based and public key encryption.
+      - md: | #markdown
+          ### SOPS
+
+          ```bash
+          # MacOS
+          brew install sops
+
+          # Debian/Ubuntu
+          sudo apt install sops
+
+          # Fedora
+          sudo dnf install sops
+
+          # Arch Linux
+          sudo pacman -S sops
+          ```

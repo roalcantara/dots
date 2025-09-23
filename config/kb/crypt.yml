@@ -71,13 +71,6 @@ bookmarks:
           # On container start
           RUN source ~/.config/credentials # Contains encrypted GH_TOKEN
           RUN git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "git@github.com:"
-  # SOPS/AGE
-  https://github.com/getsops/sops:
-    desc: Simple and flexible tool for managing secrets
-    tags: [sops, age, encryption]
-  https://github.com/FiloSottile/age:
-    desc: Simple, modern and secure encryption tool
-    tags: [age, encryption]
   https://blog.gitguardian.com/authentication-and-authorization:
     desc: Authentication (who you are) and Authorization (what you can do)
     tags: [crypt, best-practices]
@@ -118,7 +111,6 @@ bookmarks:
             ### Bottom Line
 
             - **Choose methods based on your specific needs**, always encrypt communications, and follow established security practices rather than reinventing solutions.
-
   https://blog.gitguardian.com/symmetric-cryptography-key-management:
     desc: Symmetric Cryptography Key Management
     tags: [crypt, best-practices]
