@@ -913,18 +913,6 @@ bookmarks:
     desc: Actionable insights into your codebase
     tags: [git, code-review]
 
-  https://raycast.com:
-    desc: Supercharge your productivity with Alfred for Mac
-    tags: [raycast]
-
-  https://raycast.com/extensions:
-    desc: Extensions
-    tags: [raycast]
-
-  https://developers.raycast.com/utilities/react-hooks/usefetch:
-    desc: Documentation > useFetch
-    tags: [raycast, docs]
-
   https://runkit.com:
     desc: Node Playground in the browser
     tags: [repl, node]
@@ -1960,26 +1948,6 @@ bookmarks:
   https://youtu.be/B5d7Vy8rYU0:
     desc: The Most SOUNDPROOF Window YOU Can Build! But HOW?
     tags: [soundproof]
-
-  https://youtu.be/c96IXGOo6E4:
-    desc: Quick Tip — Find Images by Text
-    tags: [raycast]
-
-  https://youtu.be/JsZpAXFj8vM:
-    desc: Getting started with Raycast by Paul Minors
-    tags: [raycast]
-
-  https://youtu.be/lhJwEckGi4U:
-    desc: The Top 8 Ways I Use Raycast by Steve Dylan
-    tags: [raycast]
-
-  https://youtu.be/xg2TQJyBEYc:
-    desc: The non-nerd's guide to Raycast
-    tags: [raycast]
-
-  https://raycastapp.notion.site/Calculator-8bf30191faa24f43b4363cbf1d00c01b#b12e437d46584aca9adae604ba35cd33:
-    desc: Calculator | Raycast Extensions
-    tags: [raycast]
 
   https://youtu.be/4Uwq0xB30JE:
     desc: How to use WebSockets with React and Node | Ably Realtime
@@ -3421,10 +3389,6 @@ bookmarks:
       - LogRocket TypeScript Meetup | TypeScript Alternatives | JSDoc JavaScript: https://youtu.be/5MZoAcheyE4
       - Can't use TypeScript? Use JSDoc / TSDoc for JavaScript: https://youtu.be/ytWbqnppzyc
       - Should I use TypeScript, JSDoc, or Both?: https://youtu.be/JTYhDiJiiFI
-
-  https://github.com/raycast/extensions/tree/main/extensions/raycast-explorer:
-    desc: Raycast Explorer | Raycast Extensions
-    tags: [raycast, explorer]
 
   https://youtu.be/kEfXPTm1aCI:
     desc: Improving the development experience with language servers by Vinicius Stock | RubyConf 2022

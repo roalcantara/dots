@@ -340,6 +340,14 @@ commands:
     desc: Applies specific commits from one branch to another.
     tags: [git]
 
+  ## INSPECTING FILES
+  git show :config/.env | head -5:
+    desc: Shows the first 5 lines of the config/.env file as it exists in Git's staging area; Useful for reviewing what changes you've staged before committing them
+    tags: [git]
+  git show HEAD:config/.env | head -5:
+    desc: Shows the first 5 lines of the config/.env file as it exists in the committed version; Useful for reviewing what changes you've committed before pushing them
+    tags: [git]
+
   ## REMOTE REPOSITORIES
   git remote -vvv:
     desc: Lists remote repositories and their URLs.
