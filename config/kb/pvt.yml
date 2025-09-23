@@ -240,6 +240,122 @@ cheats:
           **IELTS: Pontuação 75** — Cambridge University Press & Assessment
           **CAE: C1 Advanced** — Cambridge University Press & Assessment
           **FCA: B2 First** — Cambridge University Press & Assessment
+  FULLSTACK-DEVOPS Developer / PERFIRL:
+    desc: Perfil, Habilidades e Competências
+    tags: [pvt, jobs]
+    links: [https://perfil.vagas.solides.com.br]
+    notes:
+      - md: | #markdown
+          ### PERFIL: Executor
+          - Meu perfil é predominantemente **Executor**, o que significa que ajo de forma prática, determinada e focada em resultados.
+          - Tenho histórico de **reduzir MTTR em 60% e executar migrações sem downtime**, unindo execução rápida com análise estruturada.
+          - Essa combinação é ideal para papéis **Fullstack/DevOps**, que exigem confiabilidade técnica, agilidade e resiliência.
+
+          ### Executor (42%)
+          - Sou reconhecido por **agir com determinação e foco em resultados**, mesmo em cenários críticos.
+          - No projeto da **N2B Brasil (DevOps)**, por exemplo, liderei o cutover de produção com **zero downtime**, implementando monitoramento e alertas proativos.
+          - Também padronizei **DevContainers e CI/CD**, o que reduziu drasticamente o tempo de onboarding da equipe.
+          - Essas experiências reforçam minha capacidade de **tomar decisões rápidas e entregar com confiabilidade**.
+
+          ### Analista (22%)
+          - Tenho facilidade em **avaliar dados, processos e riscos antes de agir**, garantindo que as decisões sejam fundamentadas.
+          - Na **Clinicorp**, liderei a iniciativa de observabilidade, ampliando a visibilidade do sistema em **40% e reduzindo MTTR em 60%**.
+          - Esse viés analítico também esteve presente na **Equalize**, ao automatizar fluxos de compliance que reduziram ciclos de aprovação de meses para semanas.
+          - Essa habilidade mostra meu equilíbrio entre **execução rápida e análise criteriosa**.
+
+          ### Planejador (19%)
+          - Busco sempre **organizar etapas, estruturar processos e antecipar riscos**, garantindo consistência nas entregas.
+          - Como **CTO da N2B Brasil**, planejei a arquitetura de uma plataforma serverless no Firebase/GCP que escalou para **1M+ usuários**, além de estruturar pipelines de automação para **16 aplicativos white-label**.
+          - Esse perfil planejador me ajuda a **transformar visão em estratégia prática**, sem perder a agilidade.
+
+          ### Comunicador (18%)
+          - Embora meu foco seja execução e análise, tenho sólida experiência em **mentoria e engajamento de times**.
+          - Na **Clinicorp**, treinei equipes em práticas de DevOps e padronização de pipelines; na **Equalize**, promovi cultura de TDD e GitHub Flow; e na **Viaflow**, liderei times em projetos de automação com ganhos de até **70% em redução de custos**.
+          - Essa experiência mostra que, além de executar e planejar, também **sei comunicar e influenciar mudanças positivas**.
+
+          #### HABILIDADES BASICAS de PERFIL EXECUTOR
+          - Tem qualidades de liderança e comando, baseada em sua natureza direta e exigente.
+          - Isto o torna adequado às situações formais e estruturadas, situações que não exijam laços mais íntimos.
+          - Toma decisões de forma confiante e competente.
+          - É capaz de chegar a uma conclusão rapidamente e agir com um mínimo de informações.
+          - Gosta de tomar decisões sem perda de tempo.
+          - Está preparado para lidar com situações que outros achariam insuportavelmente estressantes e esses desafios o tornam extraordinariamente eficiente para superar obstáculos
+
+  FULLSTACK-DEVOPS Developer pt-BR (ATS friendly):
+    desc: Job Opportunity
+    tags: [pvt, jobs]
+    notes:
+      - md: | #markdown
+          ROGÉRIO RODRIGUES DE ALCÂNTARA
+          FULL-STACK/DEVOPS DEVELOPER
+
+          CONTATO
+          rogerio.alcantara@gmail.com
+          +55 11 99687-3252
+
+          RESUMO
+          Mais de 15 anos projetando e escalando plataformas que atendem milhões de usuários. Experiência em migrações sem downtime, redução de MTTR em 60% e habilitação de releases diárias com automação de plataformas de desenvolvimento.
+
+          COMPETÊNCIAS PRINCIPAIS
+
+          ● DEVOPS: Docker, DevContainers, GitHub Actions, Jenkins, Bitrise, Fastlane, Ansible, Nix
+          ● CLOUD & SERVERLESS: AWS (Lambda, S3, SNS, SQS), GCP (Firebase, Functions, Firestore, Pub/Sub), Azure DevOps
+          ● BACKEND & APIS: Node.js (NestJS, Express), Ruby on Rails, Grails (Java, Spring Boot)
+          ● FRONTEND & MOBILE: React, Angular, Android (Kotlin, Jetpack), iOS (Objective-C), Ionic
+          ● BANCOS DE DADOS: PostgreSQL, MySQL, MS SQL, Firestore, Elasticsearch
+          ● ARQUITETURA: Microsserviços, Serverless, Event-Driven, Clean Architecture, DDD, TDD, BDD
+
+          EXPERIÊNCIA
+
+          N2B BRASIL - DevOps Developer | São Paulo/SP | Mai 2024 - Mai 2025
+          STACK: Node.js, NestJS, TypeScript, GCP (Cloud Run, Functions, Firestore, Pub/Sub), GitHub Actions, DevContainers
+          ● Desenvolveu microsserviços orientados a eventos com auditoria e circuit breakers; migração confiável para Cybersource
+          ● Liderou cutover de produção com monitoramento proativo; nenhum downtime
+          ● Padronizou DevContainers e CI/CD; acelerou onboarding de novos devs
+
+          CLINICORP - Tech Lead | Jaraguá do Sul/SC | Ago 2023 - Abr 2024
+          STACK: Node.js, React, Docker, GCP (Storage, Monitoring, Alerts), OpenTelemetry, BDD (Gherkin)
+          ● Implantou iniciativa de observabilidade; visibilidade aumentou 40%, MTTR caiu 60%
+          ● Expandiu monitoramento para ETL, reduzindo riscos de dados e acelerando feedback de falhas
+          ● Treinou times em práticas DevOps; pipelines e CI/CD padronizados em múltiplas squads
+
+          ISOLUTIONS - Mobile Developer | São Paulo/SP | Nov 2021 - Nov 2022
+          STACK: Kotlin, Jetpack, Clean Architecture, Agile (BDD, Kanban), Jira, Confluence, Bitbucket
+          ● Refatorou app Android com Jetpack e Clean Architecture; dívida técnica -30%
+          ● Promoveu adoção de Lean e Kanban; entregas mais ágeis e colaborativas
+          ● Automatizou testes e pipelines CI/CD; qualidade consistente em releases
+
+          N2B BRASIL - CTO / Platform Architect | São Paulo/SP | Jan 2018 - Nov 2020
+          STACK: Node.js (Angular, Nx), GCP/Firebase (Auth, Firestore, Functions, Storage, Pub/Sub), Bitrise, Fastlane
+          ● Arquitetou plataforma serverless em Firebase/GCP; +1M usuários; escolhida para Google Launchpad
+          ● Entregou 16 apps white-label (nota 4.5+, 1M+ downloads); pipelines de release totalmente automatizados
+          ● Plataforma adquirida e incorporada pela SmartFit (SmartFit Nutri)
+
+          EQUALIZE - Tech Lead | São Paulo/SP | Jun 2016 - Nov 2017
+          STACK: Ruby on Rails (RSpec), PostgreSQL, AWS (EC2, S3, RDS), Docker, CircleCI, Heroku, ElasticSearch
+          ● Automação de compliance; ciclo de aprovação caiu de 3 meses para 1 semana
+          ● Uso de Docker e AWS; provisionamento caiu de dias para horas
+          ● Implementou GitHub Flow, ambientes PR e TDD (RSpec); cobertura 100%
+
+          AVATEK - Full-Stack Developer | São Paulo/SP, Buenos Aires/AR, Perth/AU | Out 2013 - Mai 2016
+          STACK: Groovy, Grails, Java, Spring Boot, JPA, Gradle, MySQL, AWS, Jenkins, Selenium, Jira, BitBucket, New Relic
+          ● Reengenharia de plataforma POS multilíngue; expansão LATAM com releases ágeis
+          ● Integração e estabilização de sistemas legados em rollouts internacionais; operações contínuas asseguradas
+          ● Criou sistema modular com personalização por mercado a partir de uma única base
+
+          EXPERIÊNCIAS ANTERIORES - Full-Stack / Mobile / DevOps Developer | São Paulo/SP | Fev 2003 - Set 2013
+          STACK: .NET (C#, ASP.NET), SAP/ABAP Integration, Java (Struts, JSP, Spring), iOS (Objective-C), Android (Java), AWS Beanstalk
+          ● PTI, GOMMO, MIND SERVICES, MATEC ENGENHARIA, SYSTEMA RCC
+
+          FORMAÇÃO
+
+          Un. Anhembi Morumbi | São Paulo/SP | Jan 2005 - Jun 2007
+          Certificação de Especialização Profissional em Desenvolvimento de Software para Web
+          Curso Superior - Tecnólogo em Ciência da Computação (equivalente)
+
+          UFSCAR - Univ. Federal de São Carlos | São Carlos/SP | Jun 2008 - Jun 2010
+          Desenvolvimento de Software com Java, foco em Open Source (não concluído)
+          Programa de Pós-Graduação (Stricto Sensu)
   Um Feliz 2024, Clóvis:
     desc: Mensagem de Ano Novo para Clóvis
     tags: [msgs]
