@@ -15,7 +15,11 @@
   }
 # }
 
-# COLORS {
+# COMMON VARS & COLORS | https://en.wikipedia.org/wiki/LS_COLORS {
+  export DIRSTACKSIZE=${DIRSTACKSIZE:-100}
+  export PAGER=${PAGER:-"less -FREXi"}
+  export BROWSER=${BROWSER:-"open"}
+  export MANROFFOPT=${MANROFFOPT:-"-c"}
   export CLICOLOR=${CLICOLOR:-1}
   export LSCOLORS=EgCeDdEeCcghhahahacac
   export LS_COLORS='di=0;38;2;122;162;247:ln=0;38;2;42;195;222:ex=1;38;2;158;206;106:fi=0;38;2;192;202;245:pi=0;38;2;65;72;104:so=0;38;2;65;72;104:bd=0;38;2;224;175;104:cd=0;38;2;224;175;104:su=0;38;2;255;0;124:sg=0;38;2;255;0;124:tw=0;38;2;255;0;124:ow=0;38;2;255;0;124:st=0;38;2;255;0;124:mi=0;38;2;157;124;216:or=0;38;2;157;124;216:*.c=0;38;2;158;206;106:*.h=0;38;2;158;206;106:*.cpp=0;38;2;158;206;106:*.hpp=0;38;2;158;206;106:*.cc=0;38;2;158;206;106:*.cxx=0;38;2;158;206;106:*.py=0;38;2;158;206;106:*.js=0;38;2;158;206;106:*.ts=0;38;2;158;206;106:*.tsx=0;38;2;158;206;106:*.jsx=0;38;2;158;206;106:*.rs=0;38;2;158;206;106:*.go=0;38;2;158;206;106:*.java=0;38;2;158;206;106:*.kt=0;38;2;158;206;106:*.swift=0;38;2;158;206;106:*.rb=0;38;2;158;206;106:*.php=0;38;2;158;206;106:*.pl=0;38;2;158;206;106:*.sh=0;38;2;158;206;106:*.bash=0;38;2;158;206;106:*.zsh=0;38;2;158;206;106:*.fish=0;38;2;158;206;106:*.lua=0;38;2;158;206;106:*.vim=0;38;2;158;206;106:*.el=0;38;2;158;206;106:*.clj=0;38;2;158;206;106:*.hs=0;38;2;158;206;106:*.ml=0;38;2;158;206;106:*.fs=0;38;2;158;206;106:*.fsx=0;38;2;158;206;106:*.fsi=0;38;2;158;206;106:*.dart=0;38;2;158;206;106:*.scala=0;38;2;158;206;106:*.groovy=0;38;2;158;206;106:*.gradle=0;38;2;158;206;106:*.sbt=0;38;2;158;206;106:*.kts=0;38;2;158;206;106:*.sql=0;38;2;158;206;106:*.r=0;38;2;158;206;106:*.jl=0;38;2;158;206;106:*.cr=0;38;2;158;206;106:*.ex=0;38;2;158;206;106:*.exs=0;38;2;158;206;106:*.cs=0;38;2;158;206;106:*.vb=0;38;2;158;206;106:*.pas=0;38;2;158;206;106:*.dpr=0;38;2;158;206;106:*.inc=0;38;2;158;206;106:*.asm=0;38;2;158;206;106:*.s=0;38;2;158;206;106:*.S=0;38;2;158;206;106:*.ll=0;38;2;158;206;106:*.bc=0;38;2;158;206;106:*.mir=0;38;2;158;206;106:*.erl=0;38;2;158;206;106:*.hrl=0;38;2;158;206;106:*.app.src=0;38;2;158;206;106:*.app=0;38;2;158;206;106:*.appup=0;38;2;158;206;106:*.rel=0;38;2;158;206;106:*.config=0;38;2;42;195;222:*.conf=0;38;2;42;195;222:*.cfg=0;38;2;42;195;222:*.ini=0;38;2;42;195;222:*.toml=0;38;2;42;195;222:*.yaml=0;38;2;42;195;222:*.yml=0;38;2;42;195;222:*.json=0;38;2;42;195;222:*.xml=0;38;2;42;195;222:*.html=0;38;2;42;195;222:*.htm=0;38;2;42;195;222:*.css=0;38;2;42;195;222:*.scss=0;38;2;42;195;222:*.sass=0;38;2;42;195;222:*.less=0;38;2;42;195;222:*.md=0;38;2;122;162;247:*.markdown=0;38;2;122;162;247:*.rst=0;38;2;122;162;247:*.tex=0;38;2;122;162;247:*.ltx=0;38;2;122;162;247:*.sty=0;38;2;122;162;247:*.cls=0;38;2;122;162;247:*.bib=0;38;2;122;162;247:*.bst=0;38;2;122;162;247:*.dot=0;38;2;122;162;247:*.gv=0;38;2;122;162;247:*.ui=0;38;2;122;162;247:*.glade=0;38;2;122;162;247:*.desktop=0;38;2;122;162;247:*.service=0;38;2;122;162;247:*.timer=0;38;2;122;162;247:*.socket=0;38;2;122;162;247:*.target=0;38;2;122;162;247:*.mount=0;38;2;180;249;248:*.automount=0;38;2;180;249;248:*.swap=0;38;2;180;249;248:*.path=0;38;2;180;249;248:*.slice=0;38;2;180;249;248:*.scope=0;38;2;180;249;248:*.nix=0;38;2;42;195;222:*.flake=0;38;2;42;195;222:*.lock=0;38;2;42;195;222:*.gitignore=0;38;2;42;195;222:*.gitattributes=0;38;2;42;195;222:*.gitmodules=0;38;2;42;195;222:*.gitconfig=0;38;2;42;195;222:*.hgrc=0;38;2;42;195;222:*.hgignore=0;38;2;42;195;222:*.svnignore=0;38;2;42;195;222:*.bzrignore=0;38;2;42;195;222:*.cvsignore=0;38;2;42;195;222:*.dockerignore=0;38;2;42;195;222:*.fdignore=0;38;2;42;195;222:*.rgignore=0;38;2;42;195;222:*.ignore=0;38;2;42;195;222:*.editorconfig=0;38;2;42;195;222:'
@@ -131,43 +135,18 @@
 # }
 
 # ZSH PARAMETERS | http://zsh.sourceforge.io/Doc/Release/Parameters.html {
-
-  # PROMPTING {
-    # General ZSH's parameters related to prompt
-    export PROMPT='❯ '          # default prompt
-    export ZLE_RPROMPT_INDENT=0 # If set, used to give the indentation between the right hand side of the right prompt in the line editor as given by RPS1 or RPROMPT and the right hand side of the screen. If not set, the value 1 is used. See https://superuser.com/a/726509/389767
-  # }
-
-  # PATH {
-    # set PATH so it includes user's private bin if it exists
-    declare -gaU path=(
-      {${XDG_LOCAL_BIN_DIR:-$HOME/.local},${CARGO_HOME:-$XDG_DATA_HOME/cargo},${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm},${PNPM_HOME:-$XDG_DATA_HOME/pnpm}}/bin
-      $path
-    )
-  # }
-
-  # FPATH {
-    # Where the shell searches to find shell functions
-    declare -gaU fpath=(
-      $fpath
-    )
-  # }
-
-  # CDPATH {
-    # Directories that the shell searches to find the current directory when the user changes directories using the cd command
-    declare -gaU cdpath=(
-      $HOME
-      $XDG_CONFIG_HOME
-      $ZDOTDIR
-      $cdpath
-    )
-  # }
-
-  # MANPATH {
-    export -a manpath=(
-      "${manpath[@]}"
-    )
-  # }
+  # General ZSH's parameters related to prompt
+  export PROMPT='❯ '
+  # If set, used to give the indentation between the right hand side of the right prompt in the line editor as given by RPS1 or RPROMPT and the right hand side of the screen. If not set, the value 1 is used. See https://superuser.com/a/726509/389767
+  export ZLE_RPROMPT_INDENT=0
+  # PATH; Where the shell searches for commands; set PATH so it includes user's private bin if it exists
+  declare -gaU path=(${XDG_LOCAL_BIN_DIR:-$HOME/.local}/bin ${CARGO_HOME:-$XDG_DATA_HOME/cargo}/bin ${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}/bin ${PNPM_HOME:-$XDG_DATA_HOME/pnpm}/bin $path)
+  # FPATH; Where the shell searches to find shell functions
+  declare -gaU fpath=($ZIM_HOME/functions $fpath)
+  # CDPATH; Directories that the shell searches to find the current directory when the user changes directories using the cd command
+  declare -gaU cdpath=($HOME $XDG_CONFIG_HOME $ZDOTDIR $cdpath)
+  # MANPATH; Directories that the shell searches to find the manual pages
+  export -a manpath=($manpath)
 # }
 
 # HOMEBREW | https://brew.sh{
@@ -186,7 +165,6 @@
     export HOMEBREW_BUNDLE_DUMP_NO_VSCODE=1       # Don't dump vscode extensions
     export HOMEBREW_BUNDLE_FILE=${HOMEBREW_BUNDLE_FILE:-$XDG_CONFIG_HOME/homebrew/Brewfile}
     eval "$("$HOMEBREW_BIN"/brew shellenv)"
-
     path=(
       $HOMEBREW_PREFIX/opt/{ruby,gems,curl,rustup}/bin
       $HOMEBREW_PREFIX/opt/gawk/libexec/gnubin
@@ -217,7 +195,6 @@
     export EDITOR=${EDITOR:-"$(command -v vim || command -v vi)"}
     alias vi=vim
   fi
-
   export VISUAL=${VISUAL:-$EDITOR}
   export SUDO_EDITOR=${SUDO_EDITOR:-$EDITOR}
   export GIT_EDITOR=${GIT_EDITOR:-"$EDITOR -c 'startinsert'"}
@@ -240,7 +217,6 @@
 
 # ZIM | https://zimfw.sh {
   # The Zsh configuration framework with blazing speed and modular extensions.
-
   # Download zimfw plugin manager if missing
   if [[ ! -e $ZIM_HOME/zimfw.zsh ]]; then
     ZIM_URL="https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh"
@@ -252,12 +228,10 @@
       echo "ZIM could not be installed: curl or wget is required!"
     fi
   fi
-
   # Install missing modules, and update $ZIM_HOME/init.zsh if missing or outdated
   if [[ ! $ZIM_HOME/init.zsh -nt $ZDOTDIR/.zimrc ]]; then
     source $ZIM_HOME/zimfw.zsh init -q
   fi
-
   # Initialize modules
   if [[ -f $ZIM_HOME/init.zsh ]]; then
     source $ZIM_HOME/init.zsh
