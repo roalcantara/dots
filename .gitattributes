@@ -1,1 +1,1 @@
-config/.env filter=sops diff=sops
+*.env filter=sops diff=sops
