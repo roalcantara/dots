@@ -176,9 +176,9 @@
 
 # FLOX | https://flox.dev/docs/tutorials/default-environment {
   # Activate the Flox Default Environment at the home directory
-  # if _has_command flox; then
-  #   eval "$(flox activate --dir $HOME/.config/flox -m run)"
-  # fi
+  if _has_command flox; then
+    eval "$(flox activate --dir $HOME/.config/flox -m run)"
+  fi
 # }
 
 # EDITOR {
