@@ -10,10 +10,6 @@
 #   https://github.com/getsops/sops/issues/1137
 #   https://devops.datenkollektiv.de/using-sops-with-age-and-git-like-a-pro.html
 #   https://developers.redhat.com/articles/2022/02/02/protect-secrets-git-cleansmudge-filter
-echo "[SCRIPT/CLEAN] Starting.." >&2
 scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"   # Get the script directory
 cd "${scriptDir}/.." || exit 1                                                  # Change to the repository root
-echo "[SCRIPT/CLEAN/${scriptDir}] Running 'sops --encrypt $1' ..." >&2
-exec 3<<< "$(cat $1)"                                                           # Read the input from stdin
-sops --encrypt /dev/fd/3                                                        # Encrypt the input
-echo "[SCRIPT/CLEAN/${scriptDir}] 'sops --encrypt $1' ✔" >&2
+sops --encrypt "$1"                                                             # Encrypt the input
