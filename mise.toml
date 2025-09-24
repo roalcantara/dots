@@ -25,7 +25,7 @@
   # mise run build --nocache
   # mise run build --nocache --distro ubuntu
   # mise run build --nocache --local
-  # mise run build --nocache --local --user vscode --group wheel --tag latest
+  # mise run build --nocache --local --user vscode --group vscode --tag latest
   [tasks.build]
   description = "Build a Docker image for dotfiles"
   run = '''
@@ -146,9 +146,9 @@
     DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_TAG)
   else
     case "$USAGE_DISTRO" in
-      debian)   DISTRO_NAME="ruby:3.4-bookworm" ;;
+      debian)   DISTRO_NAME="base:debian" ;;
       ubuntu)   DISTRO_NAME="base:ubuntu" ;;
-      *)        DISTRO_NAME="ruby:3.4-bookworm" ;;
+      *)        DISTRO_NAME="base:debian" ;;
     esac
     DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/$DISTRO_NAME)
   fi
