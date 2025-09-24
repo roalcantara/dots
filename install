@@ -142,8 +142,13 @@ fix_flox_permissions() {
     run_cmd chown -R "$username:$GROUPNAME" "$user_profile_dir"
 
     # Fix user's flox directories
-    [ -d "/home/$username/.config/flox" ] && run_cmd chown -R "$username:$GROUPNAME" "/home/$username/.config/flox"
-    [ -d "/home/$username/.local/share/flox" ] && run_cmd chown -R "$username:$GROUPNAME" "/home/$username/.local/share/flox"
+    if [ -d "/home/$username" ]; then
+      run_cmd chown -R "$username:$GROUPNAME" "/home/$username"
+    elif [ -d "/home/$username/.config/flox" ]; then
+      run_cmd chown -R "$username:$GROUPNAME" "/home/$username/.config/flox"
+    elif [ -d "/home/$username/.local/share/dots/config/flox" ]; then
+      run_cmd chown -R "$username:$GROUPNAME" "/home/$username/.local/share/dots/config/flox"
+    fi
   fi
 }
 package_manager_install_flox() {
@@ -174,21 +179,21 @@ packages_install_flox() {
   # Run as root to avoid Nix permission issues, then fix ownership
   if [ "$(id -u)" -eq 0 ]; then
     # Run flox commands as root
-    run_cmd flox init --name 'default' --dir "$HOME/.config/flox"
-    run_cmd flox install --dir "$HOME/.config/flox" ${PACKAGES[flox]}
+    run_cmd flox init --name 'default' --dir "$HOME"
+    run_cmd flox install --dir "$HOME" ${PACKAGES[flox]}
 
     # Fix ownership of created files
-    run_cmd chown -R "$USERNAME:$GROUPNAME" "$HOME/.config/flox"
-    run_cmd chown -R "$USERNAME:$GROUPNAME" "$HOME/.local/share/flox" 2>/dev/null || true
+    run_cmd chown -R "$USERNAME:$GROUPNAME" "$HOME"
+    run_cmd chown -R "$USERNAME:$GROUPNAME" "$HOME" 2>/dev/null || true
   else
     # Run normally if not root
-    run_cmd flox init --name 'default' --dir "$HOME/.config/flox"
-    run_cmd flox install --dir "$HOME/.config/flox" ${PACKAGES[flox]}
+    run_cmd flox init --name 'default' --dir "$HOME"
+    run_cmd flox install --dir "$HOME" ${PACKAGES[flox]}
   fi
 
   run_cmd flox envs
-  run_cmd flox list --dir "$HOME/.config/flox"
-  eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME/.config/flox)"
+  run_cmd flox list --dir "$HOME"
+  eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
 }
 packages_install_mise() {
   run_cmd mise settings set global_config_file "$MISE_DATA_HOME/config.toml"
@@ -368,7 +373,9 @@ prepare_home_and_xdg_dirs() {
     "$HOME/Projects:XDG_PROJECTS_DIR" \
     "$HOME/Work:XDG_WORKSPACE_DIR" \
     "$HOME/.cache/zsh:ZSH_CACHE_DIR" \
+    "$HOME/.cache/npm:NPM_CONFIG_CACHE" \
     "$HOME/.local/state/zim:ZIM_HOME" \
+    "$HOME/.local/share/zsh:ZSH_DATA_DIR" \
     "$HOME/.local/share/npm:NPM_CONFIG_PREFIX" \
     "$HOME/.local/share/gems:GEM_HOME" \
     "$HOME/.local/share/mise:MISE_DATA_HOME" \

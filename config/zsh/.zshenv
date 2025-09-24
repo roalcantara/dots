@@ -93,7 +93,7 @@ export ZSH_COMPDUMP=$HOME/.cache/zsh/compcache/.zcompdump
 export zdumpfile=$HOME/.cache/zsh/compcache/.zcompdump
 export ZDOTDIR_ETC=$HOME/.config/zsh/etc
 export ZDOTDIR_OPT=$HOME/.config/zsh/opt
-export ZIM_HOME=$HOME/.local/share/zim
+export ZIM_HOME=$HOME/.local/state/zim
 # }
 
 # if .zprofile exists, source it (after XDG setup so ZDOTDIR is available)
