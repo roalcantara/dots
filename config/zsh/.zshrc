@@ -182,11 +182,12 @@
 # }
 
 # LOCAL/DEV ENVIRONMENT VARIABLES {
-if _has_command sops age && [[ -r $HOME/.config/.env ]]; then
-  set -a
-  source "$HOME/.config/.env"
-  set +a
-fi
+  # Only source if the file is not age-encrypted (does not contain 'BEGIN AGE ENCRYPTED FILE')
+  if ! grep -q 'BEGIN AGE ENCRYPTED FILE' "$HOME/.config/.env" && _has_command sops age && [[ -r $HOME/.config/.env ]]; then
+    set -a
+    source "$HOME/.config/.env"
+    set +a
+  fi
 # }
 
 # EDITOR {
