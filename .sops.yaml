@@ -1,11 +1,16 @@
----
+# SOPS CONFIGURATION FILE
+#  https://github.com/getsops/sops/blob/master/docs/sops-yaml.md
+# path_regex:
+#   only encrypt files whose path matches the regex. FOR EXAMPLE, GIVEN path_regex: \.env$ THEN:
+#   .env                              => WILL BE ENCRYPTED!
+#   config/.env                       => WILL BE ENCRYPTED!
+#   .env.example                      => WILL NOT BE ENCRYPTED!
+#   config/.env.example               => WILL NOT BE ENCRYPTED!
+# encrypted_regex:
+#   only encrypt values whose variable names contains SECRET, KEY, TOKEN, PASSWORD, or PASS. FOR EXAMPLE:
+#   API_SECRET=sk-1234567890abcdef   => WILL BE ENCRYPTED!
+#   DEBUG_MODE=true                  => WILL NOT BE ENCRYPTED!
 creation_rules:
-  - path_regex: .*secrets(\.encrypted)?\.yaml$
-    age: age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4
-    encrypted_regex: '^(id|secret|bootstraptoken|secretboxencryptionsecret|token|ca|crt|key|value)$'
-  - path_regex: .*(^|/)\.env($|\..*)?
-    age: age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4
-    encrypted_regex: '^.*_(SECRET|KEY|TOKEN|PASSWORD|PASS).*$'
-  - path_regex: .*config/\.env($|\..*)?
+  - path_regex: \.env$
     age: age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4
     encrypted_regex: '^.*_(SECRET|KEY|TOKEN|PASSWORD|PASS).*$'
