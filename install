@@ -17,20 +17,14 @@ declare -g -A PACKAGES=(
 )
 
 # UTILITIES functions
-log() {
-  echo -e "${COLORS[MAGENTA]} ==> [$(date '+%Y-%m-%d %H:%M:%S')]${COLORS[NC]} ${COLORS[$1]}[$1]${CONTEXT:+ ($CONTEXT)}${COLORS[NC]} ${*:2}"
-}
+log() { echo -e "${COLORS[MAGENTA]} ==> [$(date '+%Y-%m-%d %H:%M:%S')]${COLORS[NC]} ${COLORS[$1]}[$1]${CONTEXT:+ ($CONTEXT)}${COLORS[NC]} ${*:2}"; }
 info() { log "I" "$@"; }
 warn() { log "W" "$@"; }
 error() { log "E" "$@" >&2; }
 fatal() { log "F" "$@" >&2; exit 1; }
 success() { log "S" "$@"; }
-ok() {
-  log "S" "${COLORS[I]}==> |$1| [$(printf '%20s' "$2")] ==> READY ${4:-✔✔}${COLORS[NC]} ${3:-''}"
-}
-has_cmd() {
-  command -v "$1" >/dev/null 2>&1
-}
+ok() { log "S" "${COLORS[I]}==> |$1| [$(printf '%20s' "$2")] ==> READY ${4:-✔✔}${COLORS[NC]} ${3:-''}"; }
+has_cmd() { command -v "$1" >/dev/null 2>&1; }
 is_container() {
   if [ -n "${DOCKER_CONTAINER:-}" ] || [ -n "${container:-}" ] ||
     [ -f "/.dockerenv" ] || [ -f "/var/run/docker.sock" ] || [ -f "/run/.containerenv" ] ||
@@ -39,18 +33,11 @@ is_container() {
   fi
   return 1
 }
-run_cmd() {
-  info "Running: $*"; "$@"
-}
-ensure_dir() {
-  [ -d "$1" ] || run_cmd mkdir -p "$1"
-}
-ensure_dir_and_export_var() {
-  ensure_dir "$1"
-  [ -n "$2" ] && export "$2"="$1"
-}
+run_cmd() { info "Running: $*"; "$@"; }
+ensure_dir() { [ -d "$1" ] || run_cmd mkdir -p "$1"; }
+ensure_dir_and_export_var() { ensure_dir "$1"; [ -n "$2" ] && export "$2"="$1"; }
 ensure_dirs_and_export_vars() {
-  for dir_var in "$@"; do
+ for dir_var in "$@"; do
     ensure_dir_and_export_var "${dir_var%%:*}" "${dir_var##*:}";
   done
 }
@@ -255,16 +242,12 @@ ensure_user_and_group_debian() {
 }
 run_as_user() {
   local username="$1"; shift
-
   if [ "$(id -u)" -eq 0 ] && [ "$username" != "root" ]; then
     warn "Running command as user '$username' => '$*'"
-
     # Export all required function dependencies
-    local all_functions="$(declare -f log info warn error fatal success ok run_cmd has_cmd download_file package_manager_install_flox package_manager_install_mise packages_install_flox packages_install_mise prepare_tools_zsh prepare_tools_nvim)"
-
+    local all_functions="$(declare -f log info warn error fatal success ok run_cmd has_cmd download_file package_manager_install_flox package_manager_install_mise packages_install_flox packages_install_mise prepare_tools_zsh prepare_tools_nvim prepare_tools_sops)"
     # Export required arrays and variables
     local all_arrays="$(declare -p COLORS PACKAGES)"
-
     # Preserve environment variables for the target user
     sudo -u "$username" -H \
       HOME="$HOME" \
@@ -379,7 +362,6 @@ prepare_home_and_xdg_dirs() {
     "$HOME/.local/share/gems:GEM_HOME" \
     "$HOME/.local/share/mise:MISE_DATA_HOME" \
     "$HOME/.local/share/mise:MISE_GLOBAL_CONFIG_DIR"
-
   ok "$1" "HOME/XDG/DIRS" "{HOME=$HOME, XDG_CONFIG_HOME=$XDG_CONFIG_HOME, XDG_CACHE_HOME=$XDG_CACHE_HOME, XDG_DATA_HOME=$XDG_DATA_HOME, XDG_STATE_HOME=$XDG_STATE_HOME, ZSH_CACHE_DIR=$ZSH_CACHE_DIR, NPM_CONFIG_PREFIX=$NPM_CONFIG_PREFIX, GEM_HOME=$GEM_HOME, MISE_DATA_HOME=$MISE_DATA_HOME, MISE_GLOBAL_CONFIG_DIR=$MISE_GLOBAL_CONFIG_DIR} exported!" "✔"
 }
 prepare_tools_zsh() {
@@ -392,7 +374,7 @@ prepare_tools_zsh() {
       warn "$1 ZSH Failed to change default shell..."
     fi
   fi
-  ok "$1" "TOOLS/ZSH" "$zsh_path ensured for user '$USERNAME'!" "✔"
+  ok "$1" "TOOLS/ZSH"
 }
 prepare_tools_nvim() {
   [ ! -d "$XDG_CONFIG_HOME/nvim" ] && { warn "$1 Neovim config not found at '$XDG_CONFIG_HOME/nvim'! Skipping..."; return; }
@@ -400,13 +382,57 @@ prepare_tools_nvim() {
   has_cmd python3 && { run_cmd rm -rf "$XDG_CONFIG_HOME/nvim/.venv" && cd "$XDG_CONFIG_HOME/nvim" && python3 -m venv .venv && source .venv/bin/activate && timeout 300 pip install pynvim neovim 2>/dev/null; } || warn "$1 NEOVIM/PROVIDERS/PYTHON NOT FOUND => PIP packages installation skipped..."
   has_cmd gem && timeout 300 gem install neovim 2>/dev/null || warn "$1 NEOVIM/PROVIDERS/RUBY NOT FOUND => Gems installation skipped..."
   has_cmd nvim && timeout 600 nvim --headless "+Lazy! sync" "+TSUpdateSync" "+MasonToolsUpdateSync" "+qa" 2>/dev/null || warn "$1 NEOVIM/MASON plugins failed => non-fatal, continue the setup..."
-  ok "$1" "TOOLS/NEOVIM" "Neovim fully configured for development!"
+  ok "$1" "TOOLS/NEOVIM"
+}
+prepare_tools_sops() {
+  info "$1 Validating SOPS/AGE configuration..."
+
+  # Check if SOPS and AGE are available
+  if ! has_cmd sops; then
+    warn "$1 SOPS not found, skipping SOPS validation"
+    return 0 # Skip SOPS validation if SOPS is not found; 0 is success in bash (not an error)
+  fi
+
+  if ! has_cmd age; then
+    warn "$1 AGE not found, skipping SOPS validation"
+    return 0 # Skip SOPS validation if AGE is not found; 0 is success in bash (not an error)
+  fi
+
+  # Check if AGE keys are accessible (via symlink or direct file)
+  local age_key_file="${XDG_CONFIG_HOME:-$HOME/.config}/sops/age/keys.txt"
+  if [ -f "$age_key_file" ]; then
+    info "$1 AGE keys found at '$age_key_file'"
+  else
+    warn "$1 AGE keys not found at '$age_key_file' - SOPS encryption will not work"
+    warn "$1 To enable SOPS: copy AGE keys to '$age_key_file' manually"
+    return 0 # Skip SOPS validation if AGE keys are not found; 0 is success in bash (not an error)
+  fi
+
+  # Verify SOPS configuration
+  if [ -f "$HOME/.local/share/dots/.sops.yaml" ]; then
+    success "$1 SOPS configuration file found at '$HOME/.local/share/dots/.sops.yaml'"
+  else
+    warn "$1 SOPS configuration file '$HOME/.local/share/dots/.sops.yaml' not found"
+  fi
+
+  # Test SOPS functionality if keys are available
+  local test_file="/tmp/sops_test.env"
+  echo "TEST_SECRET=test-value" > "$test_file"
+  if sops --encrypt --in-place "$test_file" 2>/dev/null && sops --decrypt --in-place "$test_file" 2>/dev/null; then
+    run_cmd rm -f "$test_file"
+    success "$1 SOPS/AGE validation passed! Skipping..."
+  else
+    warn "$1 SOPS/AGE test failed - AGE keys may be missing or invalid! Skipping..."
+    run_cmd rm -f "$test_file"
+  fi
+
+  ok "$1" "SOPS/AGE"
 }
 
 # CORE functions
 setup_ownership() {
   run_cmd chown -R "$USERNAME:$GROUPNAME" "$HOME" 2>/dev/null || sudo chown -R "$USERNAME:$GROUPNAME" "$HOME" || {
-    fatal "$1 Failed to ensure ownership of $HOME to '$USERNAME:$GROUPNAME'"
+    fatal "$1 Failed to ensure ownership of '$HOME' to '$USERNAME:$GROUPNAME'"
   }
   ok "$1" "CHOWN$HOME" "{USER=$USERNAME, GROUP=$GROUPNAME}" "${2:-✔}"
 }
@@ -415,7 +441,7 @@ setup_system() {
   prepare_argument_parsing "$1" "${@:2}"
   prepare_system_min_packages "$1"
   prepare_system_post_install "$1"
-  ok "$1" "SYSTEM/PACKAGES" "System prepared for $CONTEXT!"
+  ok "$1" "SYSTEM/PACKAGES/$CONTEXT"
 }
 setup_user_home_and_dotfiles() {
   prepare_user_and_group "$1"
@@ -433,16 +459,16 @@ setup_user_home_and_dotfiles() {
 }
 setup_user_context() {
   setup_ownership "$1" # Just ensure ownership, no user switching
-  ok "$1" "USER_CONTEXT" "User context prepared for $USERNAME"
+  ok "$1" "USER_CONTEXT/$USERNAME"
 }
 setup_package_manager() {
   local original_pm="$PACKAGE_MANAGER"
   if ! prepare_package_manager "$1" "$PACKAGE_MANAGER"; then
     local fallback_pm=$([ "$PACKAGE_MANAGER" = "flox" ] && echo "mise" || echo "flox")
-    warn "$1 Trying '$fallback_pm' as fallback..."
+    warn "$1 Trying '$fallback_pm' as fallback! Skipping..."
     if prepare_package_manager "$1" "$fallback_pm"; then
       PACKAGE_MANAGER="$fallback_pm"
-      warn "$1 Successfully switched to $fallback_pm"
+      warn "$1 Successfully switched to '$fallback_pm'! Skipping..."
     else
       fatal "$1 Both '$original_pm' and '$fallback_pm' installation failed"
     fi
@@ -451,17 +477,23 @@ setup_package_manager() {
 }
 setup_packages() {
   get_github_token
-  if [ "$PACKAGE_MANAGER" = "flox" ]; then # Run flox setup directly (handles permissions internally)
+  if [ "$PACKAGE_MANAGER" = "flox" ]; then
+    # Run flox setup directly (handles permissions internally)
     packages_install_flox
-  else # Run mise as target user
+  else
+    # Run mise as target user
     run_as_user "$USERNAME" "packages_install_mise"
   fi
   ok "$1" "PM/$PACKAGE_MANAGER/PACKAGES" "{${PACKAGES[$PACKAGE_MANAGER]}}"
 }
 setup_tools() {
-  prepare_tools_zsh "$1" # Run chsh as current user (likely root) since it needs system access
+  # Run chsh as current user (likely root) since it needs system access
+  prepare_tools_zsh "$1"
+  # Run nvim setup as target user
   run_as_user "$USERNAME" "prepare_tools_nvim '$1'"
-  ok "$1" "TOOLS"
+  # Run sops setup as target user
+  run_as_user "$USERNAME" "prepare_tools_sops '$1'"
+  ok "$1" "TOOLS/SOPS"
 }
 
 # MAIN execution
