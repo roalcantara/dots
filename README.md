@@ -151,10 +151,10 @@ At the moment, the `start` task is only available for the `debian` and `ubuntu` 
 
  ```sh
   mise run start
-  # ==> docker run -it --rm --user=vscode --workdir=/workspaces/dots --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
+  # ==> docker run -it --rm --user=vscode --workdir=/workspaces/dots --entrypoint=zsh mcr.microsoft.com/devcontainers/base:debian
 
   mise run start --user root --workdir /workspaces/foo
-  # ==> docker run -it --rm --user=root --workdir=/workspaces/foo --entrypoint=zsh mcr.microsoft.com/devcontainers/ruby:3.4-bookworm
+  # ==> docker run -it --rm --user=root --workdir=/workspaces/foo --entrypoint=zsh mcr.microsoft.com/devcontainers/base:debian
 
   mise run start --tag dev
   # ==> docker run -it --rm --user=vscode --workdir=/workspaces/dots dots:debian-dev

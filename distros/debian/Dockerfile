@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
-# https://mcr.microsoft.com/en-us/artifact/mar/devcontainers/ruby/tags
-FROM mcr.microsoft.com/devcontainers/ruby:3.4-bookworm AS base
+# https://mcr.microsoft.com/en-us/artifact/mar/devcontainers/base/tags
+FROM mcr.microsoft.com/devcontainers/base:debian AS base
 
 # Build arguments with defaults
 ARG TZ=America/Sao_Paulo
