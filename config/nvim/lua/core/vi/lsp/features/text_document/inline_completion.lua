@@ -5,7 +5,7 @@ return {
   --- https://github.com/mplusp/nvim-0.12-built-in-inline-completion/blob/main/lua/core/lsp.lua
   enable_inline_completion_buffer = function(opts)
     local filter = opts.buffer and { bufnr = opts.buffer } or opts.client.id and { client_id = opts.client.id } or {}
-    if not vim.lsp.inline_completion.is_enabled(filter) then
+    if vim.lsp.inline_completion and not vim.lsp.inline_completion.is_enabled(filter) then
       vim.lsp.inline_completion.enable(true, filter)
       vim.keymap.set('i', '<D-C-CR>', function()
           if not vim.lsp.inline_completion.get() then
