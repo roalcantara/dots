@@ -45,9 +45,9 @@ function M.generate_conventional_commit_message()
     return error('No changes found! Skipping...')
   end
 
-  local anthropic = require('core/opt/anthropic')
+  local openai = require('core/opt/openai')
 
-  local ok, result = pcall(anthropic.api.messages, instructions)
+  local ok, result = pcall(openai.api.responses, instructions)
 
   if not ok or result == nil or result == '' then
     return result
