@@ -181,6 +181,14 @@
   fi
 # }
 
+# LOCAL/DEV ENVIRONMENT VARIABLES {
+if _has_command sops age && [[ -r $HOME/.config/.env ]]; then
+  set -a
+  source "$HOME/.config/.env"
+  set +a
+fi
+# }
+
 # EDITOR {
   # Set default editor to nvim, vim or vi
   # https://neovim.io/doc/user/starting.html#config

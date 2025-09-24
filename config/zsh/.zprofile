@@ -136,14 +136,6 @@
   # fi
 # }
 
-# LOCAL/DEV ENVIRONMENT VARIABLES {
-if [[ -e $HOME/.config/.env ]]; then
-  set -a;
-  source $HOME/.config/.env
-  set +a
-fi
-# }
-
 # if .zshrc exists, source it
 if [[ $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zshrc" ]]; then
   source "$ZDOTDIR/.zshrc"

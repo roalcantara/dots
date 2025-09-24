@@ -69,7 +69,7 @@ commandTests:
   - name: All minimum tools should be installed in the default environment
     command: flox
     args: [list, --dir=/home/vscode, --name]
-    expectedOutput: ['bat', 'delta', 'eza', 'fd', 'fzf', 'gitlint', 'gum', 'neovim', 'nodejs', 'pre-commit', 'python313Full', 'ripgrep', 'ruby', 'starship', 'tree-sitter', 'zoxide']
+    expectedOutput: ['age', 'bat', 'delta', 'eza', 'fd', 'fzf', 'gitlint', 'gum', 'neovim', 'nodejs', 'pre-commit', 'python313Full', 'ripgrep', 'ruby', 'sops', 'starship', 'tree-sitter', 'zoxide']
 
 # HOME DIRECTORIES
 fileExistenceTests:
