@@ -175,9 +175,9 @@
 # }
 
 # FLOX | https://flox.dev/docs/tutorials/default-environment {
-  # Activate the Flox Default Environment at the home directory
+  # Activate the Default Environment
   if _has_command flox; then
-    eval "$(flox activate --dir $HOME/.config/flox -m run)"
+    eval "$(FLOX_SHELL=/usr/bin/zsh flox activate --dir $( [[ -e ~/.flox ]] && echo ~ || echo ~/.config/flox ) -m run)"
   fi
 # }
 
