@@ -174,22 +174,49 @@ bookmarks:
   https://augmentcode.com:
     desc: The most powerful AI software development platform backed by the industry-leading context engine
     tags: [ai, tools]
-    links: [https://docs.augmentcode.com/introduction,https://docs.augmentcode.com/quickstart,https://docs.augmentcode.com/cli]
+    links: [https://docs.augmentcode.com/introduction, https://docs.augmentcode.com/quickstart, https://docs.augmentcode.com/cli]
   https://github.com/github/spec-kit:
     desc: Toolkit to help you get started with Spec-Driven Development
     tags: [ai, tools]
-    links: [https://github.com/github/spec-kit?tab=readme-ov-file#-get-started,https://github.com/github/spec-kit/blob/main/spec-driven.md,https://youtu.be/em3vIT9aUsg]
+    links: [https://github.com/github/spec-kit?tab=readme-ov-file#-get-started, https://github.com/github/spec-kit/blob/main/spec-driven.md, https://youtu.be/em3vIT9aUsg]
+  https://claude.com:
+    desc: Claude | The AI-powered coding assistant
+    tags: [ai, tools, coding]
+    links:
+      - Quickstart: https://docs.claude.com/en/docs/get-started
+      - Anthropic API Fundamentals: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
+      - Anthropic Console: https://console.anthropic.com
     notes:
-      - md: | #markdown
-        ### 1. Install Specify
-        
-      
+      - sh: | #shell
+          #!/bin/bash
+          curl https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "content-type: application/json" \
+            -H "anthropic-version: 2023-06-01" \
+            -d '{"model": "claude-3-haiku-20240307", "max_tokens": 10, "messages": [{"role": "user", "content": "Hi"}]}'
+  https://console.anthropic.com:
+    desc: Anthropic Console | Account Management and API Keys
+    tags: [ai, tools]
+    links:
+      - Anthropic API Fundamentals: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
 commands:
   # https://platform.openai.com/docs/quickstart?api-mode=responses | OpenAI API Quickstart
   'curl https://api.openai.com/v1/responses -H "Content-Type: application/json" -H "Authorization: Bearer $OPENAI_API_KEY" -d ''{ "model": "gpt-4.1", "input": "Tell me a three sentence bedtime story about a unicorn." }''':
     desc: OpenAI API Quickstart
     tags: [ai, tools]
     links: [https://platform.openai.com/docs/quickstart?api-mode=responses]
+  'curl https://api.openai.com/v1/responses -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/openai.com)" -d ''{ "model": "gpt-4.1", "input": "Tell me a three sentence bedtime story about a unicorn." }''':
+    desc: OpenAI API Quickstart
+    tags: [ai, tools]
+    links: [https://platform.openai.com/docs/quickstart?api-mode=responses]
+
+  # https://docs.claude.com/en/docs/get-started | CLAUDE API
+  'curl https://api.anthropic.com/v1/messages -H "Content-Type: application/json" -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" -d ''{ "model": "claude-3-haiku-20240307", "max_tokens": 10, "messages": [{"role": "user", "content": "Hi"}] }''':
+    desc: Claude API Quickstart
+    tags: [ai, tools]
+    links:
+      - Quickstart: https://docs.claude.com/en/docs/get-started
+      - Anthropic API Fundamentals: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
 
   # https://github.com/danielmiessler/Fabric | Augmenting humans using AI
   fabric -y "https://www.youtube.com/watch?v=VIDEO_ID" --pattern summarize:
