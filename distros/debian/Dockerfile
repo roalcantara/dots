@@ -24,15 +24,12 @@ ENV CLICOLOR=1 \
     BRANCH="$BRANCH" \
     PACKAGE_MANAGER="$PACKAGE_MANAGER"
 
-# Set working directory for dotfiles
-WORKDIR /home/$USERNAME/.local/share/dots
-
 # Stage for local dotfiles installation
 FROM base AS local
-
+# Set working directory for dotfiles (MUST BE SET BEFORE COPYING THE REST OF THE DOTFILES!!)
+WORKDIR /home/$USERNAME/.local/share/dots
 # Copy the rest of the dotfiles
 COPY --chown=$USERNAME:$GROUPNAME ../../. ./
-
 # Install with selective caching strategy
 RUN --mount=type=secret,id=github_token \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -62,7 +59,7 @@ RUN --mount=type=secret,id=github_token \
     --mount=type=cache,target=/home/$USERNAME/.cache/mise,uid=1000,gid=1000 \
     --mount=type=cache,target=/home/$USERNAME/.cache/nvim,uid=1000,gid=1000 \
     echo "[INFO] Using remote dotfiles installation..." && \
-    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -b "$BRANCH" -p "$PACKAGE_MANAGER"
+    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -p "$PACKAGE_MANAGER" -b "$BRANCH"
 
 USER $USERNAME
 WORKDIR /home/$USERNAME

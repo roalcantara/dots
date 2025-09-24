@@ -11,8 +11,8 @@ declare -g -A COLORS=([E]='\033[0;31m' [F]='\033[0;31m' [S]='\033[0;32m' [W]='\0
 declare -g USERNAME="roalcantara" GROUPNAME="staff" TIMEZONE="America/Sao_Paulo" REPO_URL="https://github.com/roalcantara/dots" BRANCH="main" USR_LOCAL_BIN="/usr/local/bin" PACKAGE_MANAGER="flox" FLOX_VERSION="1.7.2" CONFIGS_TO_BACKUP=".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .oh-my-zsh"
 declare -g UNAME ARCH PLATFORM_ARCH DISTRO ENV CONTEXT HOME DOTS_SRC_DIR FLOX_PATH BACKUP_DIR
 declare -g -A PACKAGES=(
-  [mise]="node@22.17 python ripgrep bat delta eza fd fzf starship zoxide gum pre-commit tree-sitter neovim"
-  [flox]="nodejs python313Full ripgrep bat delta eza fd fzf starship zoxide gum pre-commit tree-sitter gitlint ruby neovim"
+  [mise]="node@22.17 python ripgrep bat delta eza fd fzf starship zoxide gum pre-commit tree-sitter neovim age sops"
+  [flox]="nodejs python313Full ripgrep bat delta eza fd fzf starship zoxide gum pre-commit tree-sitter gitlint ruby neovim age sops"
   [apt]="sudo xclip xsel git zsh curl"
 )
 
@@ -198,10 +198,10 @@ packages_install_flox() {
 packages_install_mise() {
   run_cmd mise settings set global_config_file "$MISE_DATA_HOME/config.toml"
   run_cmd mise settings add trusted_config_paths "$MISE_GLOBAL_CONFIG_DIR"
-  run_cmd mise settings add trusted_config_paths "$XDG_DATA_HOME/dots"
+  run_cmd mise settings add trusted_config_paths "$HOME/.local/share/dots"
   run_cmd mise settings set activate_aggressive true
   run_cmd mise settings set auto_install true
-  run_cmd mise use --cd "$DOTS_SRC_DIR" --yes --global --pin ${PACKAGES[mise]}
+  run_cmd mise use --cd "$HOME/.local/share/dots" --yes --global --pin ${PACKAGES[mise]}
   run_cmd eval "$(mise activate zsh --yes --quiet --shims)"
 }
 ensure_user_and_group_darwin() {
@@ -272,7 +272,6 @@ run_as_user() {
       GROUPNAME="$GROUPNAME" \
       XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-}" \
       XDG_DATA_HOME="${XDG_DATA_HOME:-}" \
-      DOTS_SRC_DIR="${DOTS_SRC_DIR:-}" \
       MISE_DATA_HOME="${MISE_DATA_HOME:-}" \
       FLOX_PATH="${FLOX_PATH:-}" \
       GITHUB_TOKEN="${GITHUB_TOKEN:-}" \
@@ -421,17 +420,16 @@ setup_system() {
 setup_user_home_and_dotfiles() {
   prepare_user_and_group "$1"
   prepare_home_and_xdg_dirs "$1"
-  export DOTS_SRC_DIR="$HOME/.local/share/dots"
-  if [ ! -d "$DOTS_SRC_DIR" ]; then # Clone repo if not present
-    run_cmd git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$DOTS_SRC_DIR"
-  elif [ -d "$DOTS_SRC_DIR/.git" ]; then # Update repo if already present
-    run_cmd git -C "$DOTS_SRC_DIR" pull origin "$BRANCH"
+  if [ ! -d "$HOME/.local/share/dots" ]; then # Clone repo if not present
+    run_cmd git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$HOME/.local/share/dots"
+  elif [ -d "$HOME/.local/share/dots/.git" ]; then # Update repo if already present
+    run_cmd git -C "$HOME/.local/share/dots" pull origin "$BRANCH"
   fi
-  [ -d "$DOTS_SRC_DIR/config" ] && backup "$HOME/.config" "$DOTS_SRC_DIR/config" || fatal "Source directory '$DOTS_SRC_DIR/config' not found!"
+  [ -d "$HOME/.local/share/dots/config" ] && backup "$HOME/.config" "$HOME/.local/share/dots/config" || fatal "Source directory '$HOME/.local/share/dots/config' not found!"
   backup "$HOME/.zshenv" "$HOME/.config/zsh/.zshenv"
   ensure_dirs_and_export_vars "$HOME/.config/zsh:ZDOTDIR" "$HOME/.config/flox:FLOX_PATH"
-  is_container && run_cmd rm -rf "$DOTS_SRC_DIR/.git"
-  ok "$1" "USER/HOME/DOTS" "{DOTS_SRC_DIR=$DOTS_SRC_DIR, XDG_CONFIG_HOME=$XDG_CONFIG_HOME, ZDOTDIR=$ZDOTDIR, FLOX_PATH=$FLOX_PATH}"
+  is_container && run_cmd rm -rf "$HOME/.local/share/dots/.git"
+  ok "$1" "USER/HOME/DOTS" "{XDG_CONFIG_HOME=$XDG_CONFIG_HOME, ZDOTDIR=$ZDOTDIR, FLOX_PATH=$FLOX_PATH}"
 }
 setup_user_context() {
   setup_ownership "$1" # Just ensure ownership, no user switching

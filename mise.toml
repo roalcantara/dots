@@ -23,9 +23,9 @@
 
   # mise run build
   # mise run build --nocache
-  # mise run build --nocache --distro ubuntu
+  # mise run build --nocache --distro 'ubuntu'
   # mise run build --nocache --local
-  # mise run build --nocache --local --user vscode --group vscode --tag latest
+  # mise run build --nocache --local --user 'vscode' --group 'vscode' --tag 'latest'
   [tasks.build]
   description = "Build a Docker image for dotfiles"
   run = '''
@@ -120,10 +120,10 @@
 
   # mise run start
   # mise run start --base
-  # mise run start --tag local
-  # mise run start --tag local --platform amd64
-  # mise run start --tag local --user vscode --workdir /workspaces/dots
-  # mise run start --tag local --user root --workdir /workspaces/foo
+  # mise run start --tag 'local'
+  # mise run start --tag 'local' --platform 'amd64'
+  # mise run start --tag 'local' --user 'vscode' --workdir '/workspaces/dots'
+  # mise run start --tag 'local' --user 'root' --workdir '/workspaces/foo'
   [tasks.start]
   description = "Start a container"
   run = '''
@@ -158,8 +158,8 @@
   '''
 
   # mise run test
-  # mise run test --distro ubuntu --tag latest
-  # mise run test --image dots:debian-amd64-latest --config distros/debian/container-structure-test.yml
+  # mise run test --distro 'ubuntu' --tag 'latest'
+  # mise run test --image 'dots:debian-amd64-latest' --config 'distros/debian/container-structure-test.yml'
   [tasks.test]
   description = "Run the Container Structure Tests for the Docker image"
   run = '''
