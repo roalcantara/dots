@@ -12,4 +12,4 @@
 #   https://developers.redhat.com/articles/2022/02/02/protect-secrets-git-cleansmudge-filter
 scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"   # Get the script directory
 cd "${scriptDir}/.." || exit 1                                                  # Change to the repository root
-sops --decrypt "$1"                                                             # Decrypt the input
+sops --decrypt --filename-override "$1" /dev/stdin                              # Decrypt the input
