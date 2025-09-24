@@ -27,7 +27,7 @@
 
 # Disable the newline at the start of the prompt
 add_newline = false
-command_timeout = 500
+command_timeout = 800
 scan_timeout = 10
 
 # Warning: This config does not include keys that have an unset value
