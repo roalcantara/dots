@@ -171,11 +171,21 @@ quit-after-last-window-closed = true
 # https://ghostty.org/docs/config/reference#shell-integration
 # https://ghostty.org/docs/features/shell-integration
 shell-integration = zsh
+
+# The style of the cursor. This sets the default style. A running program can still request an explicit cursor style using escape sequences (such as CSI q). Shell configurations will often request specific cursor styles.
+# https://ghostty.org/docs/config/reference#cursor-style
+cursor-style = block
+
+# Enables the ability to move the cursor at prompts by using alt+click on Linux and option+click on macOS.
+# https://ghostty.org/docs/config/reference#cursor-click-to-move
+cursor-click-to-move = true
+
 # Prevent sudo from resetting environment variables and raise errors about missing or unsuitable terminal: xterm-ghostty when running some programs
 # https://ghostty.org/docs/config/reference#shell-integration-features
 # https://ghostty.org/docs/features/shell-integration
 # https://ghostty.org/docs/help/terminfo#sudo
 shell-integration-features = sudo, no-cursor
+
 # Quick Terminal
 # A Lightweight terminal displayed as a modal/popup for instant access and quick commands without interrupting work
 # https://ghostty.org/docs/config/reference#quick-terminal-position
