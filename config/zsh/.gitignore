@@ -6,6 +6,9 @@
 *.zwc
 *.zwc.old
 
+# Data files
+*.dat
+
 # Zsh completion-optimization dumpfile
 *zcompdump*
 *.zcompdump*

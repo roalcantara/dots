@@ -1,70 +1,47 @@
 #!/usr/bin/env zsh
 
-# Zim | The Zsh configuration framework with blazing speed and modular extensions (https://zimfw.sh)
+# ZIM | The Zsh configuration framework with blazing speed and modular extensions (https://zimfw.sh)
+# https://zimfw.sh/docs/commands/#zmodule
 # zimfw clean && zimfw install -v
 # zimfw clean && zimfw update -v
 # zimfw clean && zimfw install -v && zimfw update -v
 # zimfw list -v
 
-# Start configuration added by Zim install {{{
-
-# Essential settings first
+# SETTINGS | https://zimfw.sh/docs/settings
 zstyle ':zim:zmodule' use 'degit'              # Use degit to clone modules - better when git history is not needed, quick module installation is priority, disk space is limited
 zstyle ':zim:completion' dumpfile "$zdumpfile" # Enables and configures smart and extensive tab completion.
+zstyle ':completion::complete:*' cache-path $HOME/.cache/zsh/zcompcache
 
-#
-# Modules
-# https://zimfw.sh/docs/modules
-#
-
-# Foundation modules
+# FOUNDATION MODULES | https://zimfw.sh/docs/modules
 zmodule environment # Sets sane Zsh built-in environment options. (https://github.com/zimfw/environment)
 zmodule input       # Applies correct bindkeys for input events. (https://github.com/zimfw/input)
 zmodule run-help    # Figures out where to get the best help, and gets it. Type ESC-H to execute run-help for the current command. (https://github.com/zimfw/run-help)
 
-# Tool Integration
-zmodule joke/zim-mise --if-command mise --if '[[ -z $MISE_GLOBAL_CONFIG_FILE ]]'              # Sets up mise Zsh shell integration (https://github.com/joke/zim-mise)
+# TOOL INTEGRATION | https://zimfw.sh/docs/modules
 zmodule fzf --if-command fzf                                                                  # Fuzzy finder (https://github.com/zimfw/fzf)
-zmodule joke/zim-starship --if-command starship --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'  # The minimal, blazing-fast, and infinitely customizable prompt for any shell (https://starship.rs) - Skip in Warp
 zmodule kiesman99/zim-zoxide --if-command zoxide                                              # Zoxide is a smarter cd command
+zmodule joke/zim-mise --if-command mise --if '[[ -z $MISE_GLOBAL_CONFIG_FILE ]]'              # Sets up mise Zsh shell integration (https://github.com/joke/zim-mise)
+zmodule joke/zim-starship --if-command starship --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'  # The minimal, blazing-fast, and infinitely customizable prompt for any shell (https://starship.rs) - Skip in Warp
 
-#
-# Completion
+# COMPLETION | https://zimfw.sh/docs/install/#create-~%2F.zimrc
 # Completions should be configured before compinit, as stated in the zsh-completions manual installation guide.
-#
-zmodule completion # calls compinit and must be sourced after all modules that add completion definitions
-
-#
-# Modules that must be initialized last
-#
-zmodule ~/.config/zsh/etc --fpath functions --autoload "$(/bin/ls ~/.config/zsh/etc/functions | tr '\n' ' ')"
-zmodule ~/.config/zsh/opt --fpath completions
 zmodule zchee/zsh-completions --fpath src/zsh --fpath src/macOS --fpath src/go
-zmodule chrisands/zsh-yarn-completions --if-command yarn
-zmodule lukechilds/zsh-better-npm-completion --if-command npm
+zmodule $HOME/.config/zsh/opt --fpath completions
+zmodule $HOME/.config/zsh/etc --fpath functions
+zmodule completion
+# Ensure that any other plugins that use compdef are loaded after zmodule completion.
+zmodule $HOME/.config/zsh/etc --autoload "$(/bin/ls $HOME/.config/zsh/etc/functions | tr '\n' ' ')"
 zmodule g-plane/pnpm-shell-completion --if-command pnpm --on-pull './zplug.zsh'
 zmodule MenkeTechnologies/zsh-cargo-completion --if-command cargo
+zmodule lukechilds/zsh-better-npm-completion --if-command npm
+zmodule chrisands/zsh-yarn-completions --if-command yarn
+zmodule Aloxaf/fzf-tab --source fzf-tab.zsh --if-command fzf                                      # MUST be sourced after compinit but before other plugins
 
-# fzf-tab needs to be loaded after comp init, but before plugins which will wrap widgets, such as zsh-autosuggestions or fast-syntax-highlighting
-zmodule Aloxaf/fzf-tab --source fzf-tab.zsh --if-command fzf
+zmodule zdharma-continuum/fast-syntax-highlighting --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'   # MUST be sourced after completion. Skip in Warp Terminal as it has native syntax highlighting
+zmodule zsh-users/zsh-history-substring-search --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'       # MUST be sourced after syntax-highlighting. Skip in Warp Terminal as it has enhanced history search
+zmodule zsh-users/zsh-autosuggestions --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'                # MUST be sourced after syntax-highlighting. Skip in Warp Terminal as it has AI-powered suggestions
 
-# Fish-like syntax highlighting for Zsh. It must be sourced after completion
-# Skip in Warp Terminal as it has native syntax highlighting
-zmodule zdharma-continuum/fast-syntax-highlighting --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'
-
-# Fish-like history search (up arrow) for Zsh. It must be sourced after syntax-highlighting
-# Skip in Warp Terminal as it has enhanced history search
-zmodule zsh-users/zsh-history-substring-search --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'
-
-# Fish-like autosuggestions for Zsh. It must be sourced after syntax-highlighting
-# Skip in Warp Terminal as it has AI-powered suggestions
-zmodule zsh-users/zsh-autosuggestions --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'
-
-# }}} End configuration added by Zim install
-
-# ZSH PLUGIN LOADING & Post-init ZIM module configuration {
-# Local configurations (local plugins)
+# ZSH PLUGIN LOADING
 for custom_plugin in aliases keybindings plugins; do
-  zmodule ~/.config/zsh/opt"/$custom_plugin"
+  zmodule $HOME/.config/zsh/opt"/$custom_plugin"
 done
-# }

@@ -60,7 +60,7 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(
 # vi-forward-char                                 : Using vi mode? Press 'l' to accept suggestion character by character. Vi-style autocompletion!
 # vi-end-of-line                                  : In vi mode, press '$' to accept entire suggestion. Quick way to grab that full command!
 # vi-add-eol                                      : Vi mode's 'A' key - jumps to end AND accepts full suggestion. One key to rule them all!
-# ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=("${(@)ZSH_AUTOSUGGEST_ACCEPT_WIDGETS}")
+ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=("${(@)ZSH_AUTOSUGGEST_ACCEPT_WIDGETS}")
 
 ### ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS (https://bit.ly/4j6Tww9) - WIDGETS IN THIS ARRAY WILL PARTIALLY ACCEPT THE SUGGESTION WHEN INVOKED:
 # forward-word                                    :Press ALT+F/ESC+F to accept suggestion up to next word. Quick way to grab partial matches!
@@ -71,7 +71,7 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(
 # vi-forward-blank-word-end                       :Vi's 'E' accepts to end of next space-separated word. Quick way to grab chunks!
 # vi-find-next-char                               :Vi's 'f' key accepts suggestion up to character you specify. Precise acceptance!
 # vi-find-next-char-skip                          :Vi's 't' accepts up to (but not including) specified char. Fine-tuned control!
-# ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=("${(@)ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS}")
+ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=("${(@)ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS}")
 
 ### ZSH_AUTOSUGGEST_IGNORE_WIDGETS (https://bit.ly/40sVKyz) - WIDGETS IN THIS ARRAY WILL NOT TRIGGER ANY CUSTOM BEHAVIOR:
 # orig-*                                          :Blocks suggestions during original widget behavior. Keeps things predictable!
@@ -82,7 +82,7 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(
 # yank                                            :Pasting with CTRL+Y? No suggestions mixing with your clipboard content!
 # yank-pop                                        :Cycling through kill ring? Suggestions pause until you find what you need.
 # zle-*                                           :ZLE (Zsh Line Editor) internal stuff - suggestions don't interfere with editor magic!
-# ZSH_AUTOSUGGEST_IGNORE_WIDGETS=("${(@)ZSH_AUTOSUGGEST_IGNORE_WIDGETS}")
+ZSH_AUTOSUGGEST_IGNORE_WIDGETS=("${(@)ZSH_AUTOSUGGEST_IGNORE_WIDGETS}")
 
 ### ZSH_AUTOSUGGEST_EXECUTE_WIDGETS (https://bit.ly/42acICW) - WIDGETS IN THIS ARRAY WILL EXECUTE THE SUGGESTION WHEN INVOKED:
-# ZSH_AUTOSUGGEST_EXECUTE_WIDGETS=("${(@)ZSH_AUTOSUGGEST_EXECUTE_WIDGETS}")
+ZSH_AUTOSUGGEST_EXECUTE_WIDGETS=("${(@)ZSH_AUTOSUGGEST_EXECUTE_WIDGETS}")
