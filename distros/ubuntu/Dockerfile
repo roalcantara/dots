@@ -50,6 +50,7 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 
 # Stage for remote dotfiles installation
 FROM base AS remote
+ARG CACHE_BUST=unknown
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Install with selective caching strategy
 RUN --mount=type=secret,id=github_token \
@@ -59,7 +60,7 @@ RUN --mount=type=secret,id=github_token \
     --mount=type=cache,target=$HOME/.cache/gem,uid=1000,gid=1000 \
     --mount=type=cache,target=$HOME/.cache/mise,uid=1000,gid=1000 \
     --mount=type=cache,target=$HOME/.cache/nvim,uid=1000,gid=1000 \
-    echo "[INFO] Using remote dotfiles installation..." && \
+    echo "[INFO] Using remote dotfiles installation (commit: ${CACHE_BUST})..." && \
     curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -p "$PACKAGE_MANAGER" -b "$BRANCH"
 
 USER $USERNAME
