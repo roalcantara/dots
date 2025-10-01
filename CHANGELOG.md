@@ -1,3 +1,43 @@
+# [1.12.0](https://github.com/roalcantara/dots/compare/v1.11.0...v1.12.0) (2025-10-01)
+
+
+### Bug Fixes
+
+* **ci:** Invalidate docker cache on publish workflow ([8f12288](https://github.com/roalcantara/dots/commit/8f1228886ec3ae60ed5276594668b8ea90b2c5f1))
+* **ci:** Invalidate docker cache when remote content changes ([7957b5a](https://github.com/roalcantara/dots/commit/7957b5a64786ebfddb0b5a6c57fae3fc730d1ad4))
+* **docker:** Update base image references in configuration files ([d7a8e71](https://github.com/roalcantara/dots/commit/d7a8e7140d4d32206dfab306b15a7176602a6141))
+* **env:** Add encrypted .env file and .sops.yaml ([2cf7414](https://github.com/roalcantara/dots/commit/2cf7414b845f189c680eaff02575d8f21ea40ad9))
+* **install:** Ensure dotfiles clone when necessary ([269825f](https://github.com/roalcantara/dots/commit/269825f0d4d7e0063b3b8cc6397d285bbffa8472))
+* **nvim:** Adjust Copilot and blink integration ([22f7665](https://github.com/roalcantara/dots/commit/22f76658b8044750293e7e8fa06048095a170701))
+* **nvim:** Fix Visual Multi keybinding to behave like VSCode ([e682f43](https://github.com/roalcantara/dots/commit/e682f430dfa807f349756d03bd77a18cad5f871a))
+* **secrets:** Correct secret version ([141ebdb](https://github.com/roalcantara/dots/commit/141ebdb0b143c86728c26a127c086f92eea6f894))
+* **secrets:** Correct SOPS scripts ([c7f582c](https://github.com/roalcantara/dots/commit/c7f582c3f98b1c4752afa4a11a29bd5ff0693b57))
+* **secrets:** Enhance SOPS/AGE execution and validation ([1ba570b](https://github.com/roalcantara/dots/commit/1ba570b036fff500f9ea63d58e358fe237f79197))
+
+
+### Features
+
+* **docker:** Ignore venv directories recursively ([b4e32d1](https://github.com/roalcantara/dots/commit/b4e32d11114bd461e87c0054011c67aa3043840a))
+* **ghostty:** Add cursor style and click-to-move options ([766e91f](https://github.com/roalcantara/dots/commit/766e91f3c2836a24d19c5cb8662b5d0d08eaa107))
+* **install:** Add flox ([6166204](https://github.com/roalcantara/dots/commit/6166204d0b091855506024d19da64c8dca9a71d1))
+* **kb:** Add Knowledge Base entries for various tools and techs ([8deab5a](https://github.com/roalcantara/dots/commit/8deab5a539de6105da6d97c0725f65910c6fd547))
+* **kb:** Add vi and angular entries ([c45dcf3](https://github.com/roalcantara/dots/commit/c45dcf3ad2c20cd2ff244cb66cd032c4921fb4b7))
+* **kb:** Extract, organize and centralize Raycast Snippets ([d3821a7](https://github.com/roalcantara/dots/commit/d3821a70bcf849166986bc8374035e2436bdec4f))
+* **kb:** Update some entries ([ba3099d](https://github.com/roalcantara/dots/commit/ba3099df8e20414681fa88c8af9e04e1bbf487f6))
+* **nvim:** Add OpenAI API integration and config ([f123a07](https://github.com/roalcantara/dots/commit/f123a078b96acca61aac10d8c798bc221cb3d739))
+* **nvim:** Add toggle key mappings ([aa75484](https://github.com/roalcantara/dots/commit/aa7548491c7accb804118850b0d8e4e339b13c31))
+* **nvim:** Fix Copilot and Blink integration issues ([980945b](https://github.com/roalcantara/dots/commit/980945bac5eec730a208491cd8d4ce5cd3aecf69))
+* **nvim:** Fix line movement to preserve cursor column position ([ab1d16e](https://github.com/roalcantara/dots/commit/ab1d16e0f11c014c674e1cf564f7ac4a09b17b89))
+* **xdg:** Add blazing fast XDG environment setup with caching ([98a09d0](https://github.com/roalcantara/dots/commit/98a09d054319ee5aab556b27467266b3f72cdb2e))
+* **zsh:** Enable flox loading in ZSH bootstrap ([e42f2ac](https://github.com/roalcantara/dots/commit/e42f2ac920068920a277324ccd5bebeaf337b3b0))
+* **zsh:** Setup Flox Default Environment on Startup ([917d8fc](https://github.com/roalcantara/dots/commit/917d8fce391631b2599757741b2aa4813a6af7bc))
+
+
+### Performance Improvements
+
+* **nvim:** Add standard caching logic ([9c60897](https://github.com/roalcantara/dots/commit/9c608977385f92073eeef97c56415e646969ae6e))
+* **zsh:** Improve shell startup ([a024137](https://github.com/roalcantara/dots/commit/a024137de22be535ef5aa75e030108d852dfd62b))
+
 # [1.11.0](https://github.com/roalcantara/dots/compare/v1.10.0...v1.11.0) (2025-09-18)
 
 
