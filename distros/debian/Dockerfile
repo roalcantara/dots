@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
+# A simple Debian container with Git and other common utilities installed
 # https://mcr.microsoft.com/en-us/artifact/mar/devcontainers/base/tags
 FROM mcr.microsoft.com/devcontainers/base:debian AS base
 
@@ -16,13 +17,13 @@ ENV CLICOLOR=1 \
     TZ=$TZ \
     TERM="$TERM" \
     COLORTERM=truecolor \
-    DEBIAN_FRONTEND=noninteractive \
     USER="$USERNAME" \
     GROUP="$GROUPNAME" \
     HOME="/home/$USERNAME" \
     GITHUB_REPO="$GITHUB_REPO" \
     BRANCH="$BRANCH" \
-    PACKAGE_MANAGER="$PACKAGE_MANAGER"
+    PACKAGE_MANAGER="$PACKAGE_MANAGER" \
+    DEBIAN_FRONTEND=noninteractive
 
 # Stage for local dotfiles installation
 FROM base AS local
@@ -34,10 +35,10 @@ COPY --chown=$USERNAME:$GROUPNAME ../../. ./
 RUN --mount=type=secret,id=github_token \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    --mount=type=cache,target=/home/$USERNAME/.cache/pip,uid=1000,gid=1000 \
-    --mount=type=cache,target=/home/$USERNAME/.cache/gem,uid=1000,gid=1000 \
-    --mount=type=cache,target=/home/$USERNAME/.cache/mise,uid=1000,gid=1000 \
-    --mount=type=cache,target=/home/$USERNAME/.cache/nvim,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/pip,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/gem,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/mise,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/nvim,uid=1000,gid=1000 \
     echo "[INFO] Using local dotfiles installation..." && \
     chown -R "$USERNAME:$GROUPNAME" "/home/$USERNAME" && \
     ./install -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -p "$PACKAGE_MANAGER"
@@ -55,12 +56,12 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN --mount=type=secret,id=github_token \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    --mount=type=cache,target=/home/$USERNAME/.cache/pip,uid=1000,gid=1000 \
-    --mount=type=cache,target=/home/$USERNAME/.cache/gem,uid=1000,gid=1000 \
-    --mount=type=cache,target=/home/$USERNAME/.cache/mise,uid=1000,gid=1000 \
-    --mount=type=cache,target=/home/$USERNAME/.cache/nvim,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/pip,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/gem,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/mise,uid=1000,gid=1000 \
+    --mount=type=cache,target=$HOME/.cache/nvim,uid=1000,gid=1000 \
     echo "[INFO] Using remote dotfiles installation (commit: ${CACHE_BUST})..." && \
-    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -p "$PACKAGE_MANAGER" -b "$BRANCH"
+    wget -qO- "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -p "$PACKAGE_MANAGER" -b "$BRANCH"
 
 USER $USERNAME
 WORKDIR /home/$USERNAME

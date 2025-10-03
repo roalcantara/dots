@@ -12,7 +12,6 @@ declare -g USERNAME="roalcantara" GROUPNAME="staff" TIMEZONE="America/Sao_Paulo"
 declare -g UNAME ARCH PLATFORM_ARCH DISTRO ENV CONTEXT HOME DOTS_SRC_DIR FLOX_PATH BACKUP_DIR
 declare -g -A PACKAGES=(
   [mise]="node@22.17 python ripgrep bat delta eza fd fzf starship zoxide gum pre-commit tree-sitter neovim age sops"
-  [flox]="nodejs python313Full ripgrep bat delta eza fd fzf starship zoxide gum pre-commit tree-sitter gitlint ruby neovim age sops"
   [apt]="sudo xclip xsel git zsh curl"
 )
 
@@ -32,6 +31,9 @@ is_container() {
     return 0
   fi
   return 1
+}
+needs_sudo() {
+  [ "$(id -u)" -ne 0 ] && return 0 || return 1
 }
 run_cmd() { info "Running: $*"; "$@"; }
 ensure_dir() { [ -d "$1" ] || run_cmd mkdir -p "$1"; }
@@ -96,22 +98,10 @@ download_file() {
   local url="$1" output="$2"
   if [ "$output" = "-" ]; then
     # Stream to stdout if output is "-" (Unix convention)
-    if has_cmd curl; then
-      run_cmd curl -L "$url"
-    elif has_cmd wget; then
-      run_cmd wget -O- "$url"
-    else
-      fatal "No suitable download tool available or download failed"
-    fi
+    run_cmd wget -O- "$url"
   else
     # Download to file
-    if has_cmd curl; then
-      run_cmd curl -L "$url" -o "$output"
-    elif has_cmd wget; then
-      run_cmd wget "$url" -O "$output"
-    else
-      fatal "No suitable download tool available or download failed"
-    fi
+    run_cmd wget "$url" -O "$output"
   fi
 }
 fix_flox_permissions() {
@@ -155,29 +145,24 @@ package_manager_install_flox() {
 package_manager_install_mise() {
   # curl -L https://mise.run | MISE_INSTALL_PATH="/usr/local/bin/mise" sh && sudo chmod +x /usr/local/bin/mise && mise --version | wget https://mise.run -O- | MISE_INSTALL_PATH="/usr/local/bin/mise" sh && sudo chmod +x /usr/local/bin/mise && mise --version
   local install_path="$USR_LOCAL_BIN/mise"
-  if [ "$(id -u)" -ne 0 ]; then # If running as non-root user, install to user directory
+  if needs_sudo; then # If running as non-root user, install to user directory
     install_path="$HOME/.local/bin/mise"
     mkdir -p "$(dirname "$install_path")"
   fi
   download_file "https://mise.run" "-" | MISE_INSTALL_PATH="$install_path" sh
-  [ "$(id -u)" -eq 0 ] && run_cmd chmod +x "$install_path" || chmod +x "$install_path"
+  needs_sudo && run_cmd chmod +x "$install_path" || chmod +x "$install_path"
 }
 packages_install_flox() {
   # Run as root to avoid Nix permission issues, then fix ownership
-  if [ "$(id -u)" -eq 0 ]; then
+  if needs_sudo; then
     # Run flox commands as root
-    run_cmd flox init --name 'default' --dir "$HOME"
-    run_cmd flox install --dir "$HOME" ${PACKAGES[flox]}
-
+    run_cmd sudo flox pull roalcantara/default --dir "$HOME" --force
     # Fix ownership of created files
-    run_cmd chown -R "$USERNAME:$GROUPNAME" "$HOME"
-    run_cmd chown -R "$USERNAME:$GROUPNAME" "$HOME" 2>/dev/null || true
+    run_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$HOME" 2>/dev/null || true
   else
     # Run normally if not root
-    run_cmd flox init --name 'default' --dir "$HOME"
-    run_cmd flox install --dir "$HOME" ${PACKAGES[flox]}
+    run_cmd flox pull roalcantara/default --dir "$HOME" --force
   fi
-
   run_cmd flox envs
   run_cmd flox list --dir "$HOME"
   eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
@@ -309,7 +294,11 @@ prepare_argument_parsing() {
 }
 prepare_system_min_packages() {
   if has_cmd apt; then
-    run_cmd apt-get update && apt-get install -y --no-install-recommends ${PACKAGES[apt]} && apt-get clean && rm -rf /var/lib/apt/lists/*
+    local cmd_prefix=""
+    if needs_sudo; then
+      cmd_prefix="sudo "
+    fi
+    run_cmd ${cmd_prefix}apt-get update && ${cmd_prefix}apt-get install -y --no-install-recommends ${PACKAGES[apt]} && ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
     success "$1 System MINIMAL packages installed successfully! ✔"
   else
     warn "$1 No SYSTEM PACKAGE MANAGER found! Skipping system packages installation..."
@@ -484,7 +473,7 @@ setup_packages() {
     # Run mise as target user
     run_as_user "$USERNAME" "packages_install_mise"
   fi
-  ok "$1" "PM/$PACKAGE_MANAGER/PACKAGES" "{${PACKAGES[$PACKAGE_MANAGER]}}"
+  ok "$1" "PM/$PACKAGE_MANAGER/PACKAGES"
 }
 setup_tools() {
   # Run chsh as current user (likely root) since it needs system access
