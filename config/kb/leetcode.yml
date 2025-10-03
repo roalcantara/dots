@@ -5408,7 +5408,6 @@ cheats:
           - Searching for paths in graphs and trees.
           - Constraint satisfaction problems (e.g., the traveling salesman problem).
           - Game-playing algorithms (e.g., chess AI).
-
       - md: |
 
           ### Python (Template)
@@ -5427,6 +5426,15 @@ cheats:
 
               return ans
           ```
+      - py: | #python
+          def backtrack(choices, path):
+              if is_solution(path):
+                  process_solution(path)
+              for choice in choices:
+                  if is_valid(choice, path):
+                      path.append(choice)
+                      backtrack(choices, path)
+                      path.pop()
   Merge Intervals | Coding Pattern:
     desc: A technique used to merge overlapping intervals. It simplifies interval-based operations.
     tags: [leetcode, coding_patterns]
@@ -6208,22 +6216,9 @@ cheats:
                   exp *= 10
               return arr
           ```
-  Backtracking | Coding Pattern:
-    desc: A general algorithm for finding all (or some) solutions to computational problems, notably constraint satisfaction problems.
-    tags: [leetcode, coding_patterns]
-    notes:
-      - py: | #python
-          def backtrack(choices, path):
-              if is_solution(path):
-                  process_solution(path)
-              for choice in choices:
-                  if is_valid(choice, path):
-                      path.append(choice)
-                      backtrack(choices, path)
-                      path.pop()
   # MATH
   Permutations for a sequence?:
-    desc: The number of permutations of n distinct elements is n! (n factorial). IE: 3! = 6 (3 x 2 x 1), 4! = 24 (4 x 3 x 2 x 1), ...
+    desc: 'The number of permutations of n distinct elements is n! (n factorial). IE: 3! = 6 (3 x 2 x 1), 4! = 24 (4 x 3 x 2 x 1), ...'
     tags: [leetcode, math]
     notes:
       - py: | #python
