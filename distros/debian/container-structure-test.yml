@@ -65,7 +65,8 @@ commandTests:
   - name: Flox should have a default environment
     command: flox
     args: [envs]
-    expectedOutput: [default  /home/vscode]
+    expectedOutput:
+      - "\\s*default.*\\/home\\/vscode.*"
   - name: All minimum tools should be installed in the default environment
     command: flox
     args: [list, --dir=/home/vscode, --name]

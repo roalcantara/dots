@@ -15,6 +15,25 @@ version = 1
 ##  $ flox show gum     <- show all versions of a package
 ## -------------------------------------------------------------------
 [install]
+jq.pkg-path = "jq"
+fd.pkg-path = "fd"
+fzf.pkg-path = "fzf"
+starship.pkg-path = "starship"
+nodejs.pkg-path = "nodejs"
+python313Full.pkg-path = "python313Full"
+ripgrep.pkg-path = "ripgrep"
+bat.pkg-path = "bat"
+delta.pkg-path = "delta"
+eza.pkg-path = "eza"
+zoxide.pkg-path = "zoxide"
+gum.pkg-path = "gum"
+pre-commit.pkg-path = "pre-commit"
+tree-sitter.pkg-path = "tree-sitter"
+gitlint.pkg-path = "gitlint"
+ruby.pkg-path = "ruby"
+neovim.pkg-path = "neovim"
+age.pkg-path = "age"
+sops.pkg-path = "sops"
 # gum.pkg-path = "gum"
 # gum.version = "^0.14.5"
 

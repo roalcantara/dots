@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
 # A simple Ubuntu container with Git and other common utilities installed
-# https://github.com/devcontainers/images/tree/main/src/base-ubuntu
 # https://mcr.microsoft.com/en-us/artifact/mar/devcontainers/base/tags
 FROM mcr.microsoft.com/devcontainers/base:ubuntu AS base
 
@@ -61,7 +60,7 @@ RUN --mount=type=secret,id=github_token \
     --mount=type=cache,target=$HOME/.cache/mise,uid=1000,gid=1000 \
     --mount=type=cache,target=$HOME/.cache/nvim,uid=1000,gid=1000 \
     echo "[INFO] Using remote dotfiles installation (commit: ${CACHE_BUST})..." && \
-    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -p "$PACKAGE_MANAGER" -b "$BRANCH"
+    wget -qO- "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -p "$PACKAGE_MANAGER" -b "$BRANCH"
 
 USER $USERNAME
 WORKDIR /home/$USERNAME

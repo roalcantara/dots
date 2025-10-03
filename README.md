@@ -13,23 +13,27 @@ An opinionated [DotFiles][10]. Ready to Engage!
 
 At the moment, the `install` script is only handles `debian` and `ubuntu` distros.
 
-- One-liner Installation script
+- One-liner Installation script `roalcantara:wheel` by default
 
     ```sh
-    # roalcantara:wheel by default
-    curl -fsSL "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash
-
-    # customizing user and group
-    curl -fsSL "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash -s -- -u "vscode" -g "vscode"
+    wget -qO- "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash
     ```
 
-- Normal Installation
+- One-liner Installation script with custom user and group
 
     ```sh
-    # Clone the repository and run the install script (roalcantara:wheel)
-    git clone https://github.com/roalcantara/dots ~/.local/share/dots && ~/.local/share/dots/install
+    wget -qO- "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash -s -- -u "vscode" -g "vscode"
+    ```
 
-    # Clone the repository and run the install script with customization (vscode:vscode)
+- Normal Installation `roalcantara:wheel` by default
+
+    ```sh
+    git clone https://github.com/roalcantara/dots ~/.local/share/dots && ~/.local/share/dots/install
+    ```
+
+- Normal Installation with custom user and group
+
+    ```sh
     git clone https://github.com/roalcantara/dots ~/.local/share/dots && ~/.local/share/dots/install -u "vscode" -g "vscode"
     ```
 
