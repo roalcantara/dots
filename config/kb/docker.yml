@@ -1,4 +1,63 @@
 cheats:
+  Using regex in Container Structure Tests:
+    desc: Using regex in Container Structure Tests
+    tags: [docker, test]
+    links: [https://github.com/GoogleContainerTools/container-structure-test/blob/main/README.md, https://github.com/GoogleContainerTools/container-structure-test/pkgs/container/container-structure-test]
+    notes:
+      - md: | #markdown
+          ### Using regex in Container Structure Tests
+
+          For `commandTests`, you can check the stdout and stderr for a specific pattern.
+
+          In this example, the test asserts that running the command `cat /etc/os-release` produces a
+          standard output that contains a line specifying the VERSION_ID.
+
+          The regex pattern `^VERSION_ID="(.+)"$` matches the entire line and captures the version string.
+
+          ```yaml
+          commandTests:
+            - name: "Check OS Version"
+              command: "cat"
+              args: ["/etc/os-release"]
+              expectedOutput:
+                - "^VERSION_ID=\"(.+)\"$"
+          ```
+
+          ### Using regex in file content tests
+
+          For `fileContentTests`, you can verify the contents of a specific file on the container's filesystem.
+
+          This test checks a hypothetical configuration file, `server.conf`, to ensure that the port is set to a valid integer.
+          The regex pattern `^port = [0-9]+$` matches a line starting with "port = ", followed by one or more digits.
+
+          ```yaml
+          fileContentTests:
+            - name: "Check server port config"
+              path: "/etc/myapp/server.conf"
+              expectedContents:
+                - "^port = [0-9]+$"
+          ```
+
+          ### Key properties for using regex
+
+          - **expectedOutput (or expectedError):**
+            - Array of regular expressions.
+            - The test passes if every regex in the list finds at least one match in the output string.
+
+          - **excludedOutput (or excludedError):**
+            - Array of regular expressions.
+            - The test passes if no regex in the list finds a match in the output string.
+
+          - **expectedContents:**
+            - Array of regular expressions for matching file content.
+
+          - **excludedContents:**
+            - Array of regular expressions for ensuring certain patterns do not exist in file content.
+
+          > 💡 **NOTE:**
+          > **container-structure-test** uses the Go standard library for regular expressions,
+          > which offers powerful features but has slightly different syntax than other regex engines.
+
   Build Multi-CPU Architecture Docker Images with Buildx:
     desc: Build multi-CPU architecture Docker images with Buildx
     tags: [docker, buildx]
@@ -185,6 +244,9 @@ commands:
     desc: Prune unused docker images, not just dangling ones
     tags: [docker]
   docker system prune -a --volumes:
+    desc: Prune unused docker containers, volumes, networks and images
+    tags: [docker]
+  docker image prune --all --force && docker system prune --all --volumes --force:
     desc: Prune unused docker containers, volumes, networks and images
     tags: [docker]
   docker images -a:

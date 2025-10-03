@@ -1,0 +1,1555 @@
+bookmarks:
+  https://leanpub.com/gitops:
+    desc: GitOps - Cloud-native Continuous Deployment
+    tags: [gitops, books]
+    links: [https://gitops.tech, https://weave.works/technologies/gitops, https://weave.works/blog/what-is-gitops-really]
+    notes:
+      - md: | #markdown
+          ## WHAT IS GITOPS?
+
+          - GitOps is a way of implementing Continuous Deployment for cloud native applications.
+          - It focuses on a developer-centric experience when operating infrastructure,
+          - by using tools developers are already familiar with, including Git and Continuous Deployment tools.
+
+          ### CORE IDEA
+
+          - Having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.
+          - If you want to deploy a new application or update an existing one, you only need to update the repository - the automated process handles everything else.
+          - It's like having cruise control for managing your applications in production.
+
+          > GitOps: versioned CI/CD on top of declarative infrastructure. Stop scripting and start shipping.
+          >
+          > — [Kelsey Hightower](https://twitter.com/kelseyhightower/status/953638870888849408)
+      - md: | #markdown
+          ## [Why should I use GitOps?](https://gitops.tech/#why-should-i-use-gitops)
+
+          ### [Deploy Faster More Often](https://gitops.tech/#deploy-faster-more-often)
+
+          - Okay, to be fair, probably every Continuous Deployment technology promises to make deploying faster and allows you to deploy more often.
+          - What is unique about GitOps is that you don't have to switch tools for deploying your application.
+          - Everything happens in the version control system you use for developing the application anyways.
+
+          > When we say “high velocity” we mean that every product team can safely ship updates many times a day — deploy instantly, observe the results in real time, and use this feedback to roll forward or back.
+          >
+          > — [Weaveworks](https://weave.works/blog/gitops-high-velocity-cicd-for-kubernetes)
+
+          ### [Easy and Fast Error Recovery](https://gitops.tech/#easy-and-fast-error-recovery)
+
+          - Oh no! Your production environment is down!
+          - With GitOps you have a complete history of how your environment changed over time.
+          - This makes error recovery as easy as issuing a `git revert` and watching your environment being restored.
+
+          > The Git record is then not just an audit log but also a transaction log. You can roll back & forth to any snapshot.
+          >
+          > — [Alexis Richardson](https://twitter.com/monadic/status/1002502644798238721)
+
+          ### [Easier Credential Management](https://gitops.tech/#easier-credential-management)
+
+          - GitOps allows you to manage deployments completely from inside your environment.
+          - For that, your environment only needs access to your repository and image registry. That's it.
+          - You don't have to give your developers direct access to the environment.
+
+          > kubectl is the new ssh. Limit access and only use it for deployments when better tooling is not available.
+          >
+          > — [Kelsey Hightower](https://twitter.com/kelseyhightower/status/1070413458045202433)
+
+          ### [Self-documenting Deployments](https://gitops.tech/#self-documenting-deployments)
+
+          - Have you ever SSH'd into a server and wondered what's running there?
+          - With GitOps, every change to any environment must happen through the repository.
+          - You can always check out the master branch and get a complete description of what is deployed where plus the complete history of every change ever made to the system.
+          - And you get an audit trail of any changes in your system for free!
+
+          ### [Shared Knowledge in Teams](https://gitops.tech/#shared-knowledge-in-teams)
+
+          - Using Git to store complete descriptions of your deployed infrastructure allows everybody in your team to check out its evolution over time.
+          - With great commit messages everybody can reproduce the thought process of changing infrastructure and also easily find examples of how to set up new systems.
+
+          > GitOps is the best thing since configuration as code. Git changed how we collaborate, but declarative configuration is the key to dealing with infrastructure at scale, and sets the stage for the next generation of management tools.
+          >
+          > — [Kelsey Hightower](https://twitter.com/kelseyhightower/status/1164192321891528704)
+      - md: | #markdown
+          ## [How does GitOps work?](https://gitops.tech/#how-does-gitops-work)
+
+          ### [Environment Configurations as Git repository](https://gitops.tech/#environment-configurations-as-git-repository)
+
+          - GitOps organizes the deployment process around code repositories as the central element.
+          - There are at least two repositories: the application repository and the environment configuration repository.
+          - The application repository contains the source code of the application and the deployment manifests to deploy the application.
+          - The environment configuration repository contains all deployment manifests of the currently desired infrastructure of an deployment environment.
+          - It describes what applications and infrastructural services (message broker, service mesh, monitoring tool, …) should run with what configuration and version in the deployment environment.
+
+          ### [Push-based vs. Pull-based Deployments](https://gitops.tech/#push-based-vs-pull-based-deployments)
+
+          - There are two ways to implement the deployment strategy for GitOps: Push-based and Pull-based deployments.
+          - The difference between the two deployment types is how it is ensured, that the deployment environment actually resembles the desired infrastructure.
+          - When possible, the Pull-based approach should be preferred as it is considered the more secure and thus better practice to implement GitOps.
+
+          #### [Push-based Deployments](https://gitops.tech/#push-based-deployments)
+
+          - The Push-based deployment strategy is implemented by popular CI/CD tools such as [Jenkins](https://jenkins.io), [CircleCI](https://circleci.com), or [Travis CI](https://travis-ci.org).
+          - The source code of the application lives inside the application repository along with the Kubernetes YAMLs needed to deploy the app.
+          - Whenever the application code is updated, the build pipeline is triggered, which builds the container images and finally the environment configuration repository is updated with new deployment descriptors.
+
+          > 💡 TIP: You can also just store templates of the YAMLs in the application repository.
+          > When a new version is built, the template can be used to generate the YAML in the environment configuration repository.
+
+          ![Push-based Deployments](https://gitops.tech/images/push.png)
+
+          - Changes to the environment configuration repository trigger the deployment pipeline.
+          - This pipeline is responsible for applying all manifests in the environment configuration repository to the infrastructure.
+          - With this approach it is indispensable to provide credentials to the deployment environment.
+          - So the pipeline has god-mode enabled.
+          - In some use cases a Push-based deployment is inevitable when running an automated provisioning of cloud infrastructure.
+          - In such cases it is strongly recommended to utilize the fine-granular configurable authorization system of the cloud provider for more restrictive deployment permissions.
+
+          **IMPORTANT**
+          - Another important thing to keep in mind when using this approach is that the deployment pipeline _only_ is triggered when the environment repository changes.
+          - It can not automatically notice any deviations of the environment and its desired state.
+          - This means, it needs some way of monitoring in place, so that one can intervene if the environment doesn't match what is described in the environment repository.
+
+          > **Want to see how to set it up?**
+          >
+          > Check out [How to set up Push-based deployments with their Cloud Builds and GKE](https://cloud.google.com/kubernetes-engine/docs/tutorials/gitops-cloud-build).
+
+          #### [Pull-based Deployments](https://gitops.tech/#pull-based-deployments)
+
+          - The Pull-based deployment strategy uses the same concepts as the push-based variant but differs in how the deployment pipeline works.
+          - Traditional CI/CD pipelines are triggered by an external event, for example when new code is pushed to an application repository.
+          - With the pull-based deployment approach, the _operator_ is introduced.
+          - It takes over the role of the pipeline by continuously comparing the desired state in the environment repository with the actual state in the deployed infrastructure.
+          - Whenever differences are noticed, the operator updates the infrastructure to match the environment repository.
+          - Additionally the image registry can be monitored to find new versions of images to deploy.
+
+          ![Pull-based Deployments](https://gitops.tech/images/pull.png)
+
+          - Just like the push-based deployment, this variant updates the environment whenever the environment repository changes.
+          - However, with the operator, changes can also be noticed in the other direction.
+          - Whenever the deployed infrastructure changes in any way not described in the environment repository, these changes are reverted.
+          - This ensures that all changes are made traceable in the Git log, by making all direct changes to the cluster impossible.
+
+          **IMPORTANT**
+          - This change in direction solves the problem of push-based deployments, where the environment is only updated when the environment repository is updated.
+          - However, this doesn't mean you can completely do without any monitoring in place.
+          - Most operators support sending mails or Slack notifications if it can not bring the environment to the desired state for any reason, for example if it can not pull a container image.
+          - Additionally, you probably should set up monitoring for the operator itself, as there is no longer any automated deployment process without it.
+
+          **NOTE**
+          - The operator should always live in the same environment or cluster as the application to deploy.
+          - This prevents the god-mode, seen with the push-based approach, where credentials for doing deployments are known by the CI/CD pipeline.
+          - When the actual deploying instance lives inside the very same environment, no credentials need to be known by external services.
+          - The Authorization mechanism of the deployment platform in use can be utilized to restrict the permissions on performing deployments.
+          - This has a huge impact in terms of security.
+          - When using Kubernetes, RBAC configurations and service accounts can be utilized.
+
+          > **Want to see how to set it up?**
+          >
+          > Check out [How to set up Pull-based GitOps on Google's GKE with Flux](https://gitops.tech/tutorial.html).
+
+          ---
+
+          #### [Working with Multiple Applications and Environments](https://gitops.tech/#working-with-multiple-applications-and-environments)
+          - Of course working with just one application repository and only one environment is not realistic for most applications.
+          - When you are using a microservices architecture, you probably want to keep each service in its own repository.
+          - GitOps can also handle such a use case.
+          - You can always just set up multiple build pipelines that update the environment repository.
+          - From there on the regular automated GitOps workflow kicks in and deploys all parts of your application.
+
+          ![Multiple applications and environments](https://gitops.tech/images/multiple.png)
+
+          **NOTE**
+          - Managing multiple environments with GitOps can be done by just using separate branches in the environment repository.
+          - You can set up the operator or the deployment pipeline to react to changes on one branch by deploying to the production environment and another to deploy to staging.
+      - md: | #markdown
+          ## [FAQ](https://gitops.tech/#faq)
+
+          ### [Is my project ready for GitOps?](https://gitops.tech/#is-my-project-ready-for-gitops)
+          - Most likely: Yes!
+          - The cool thing about GitOps is that you don't need to write any code differently.
+          - All you need to get started is infrastructure that can be managed with declarative Infrastructure as Code tools.
+
+          ### [I don't use Kubernetes. Can I still use GitOps?](https://gitops.tech/#i-dont-use-kubernetes-can-i-still-use-gitops)
+          - Yes! GitOps is not limited to Kubernetes.
+          - In principle, you can use any infrastructure that can be observed and described declaratively, and has Infrastructure as Code tools available.
+          - However, currently most operators for pull-based GitOps are implemented with Kubernetes in mind.
+
+          ### [Is GitOps just versioned Infrastructure as Code?](https://gitops.tech/#is-gitops-just-versioned-infrastructure-as-code)
+          > Is GitOps just a new name for Infra as Code?
+          >
+          > — [sholom](https://twitter.com/sholom/status/1173613576696795136)
+          - No.
+          - Declarative Infrastructure as Code plays a huge role for implementing GitOps, but it's not just that.
+          - GitOps takes the whole ecosystem and tooling around Git and applies it to infrastructure.
+          - Continuous Deployment systems guarantee that the currently desired state of the infrastructure is deployed in the production environment.
+          - Apart from that you gain all the benefits of code reviews, pull requests, and comments on changes for your infrastructure.
+
+          ### [How to get secrets into the environment without storing them in git?](https://gitops.tech/#how-to-get-secrets-into-the-environment-without-storing-them-in-git)
+          - First of all, never store secrets in plain text in git! Never!
+          - That being said, you have secrets created within the environment which never leave the environment.
+          - The secret stays unknown, and applications get the secrets they require but they aren't exposed to the outside world.
+          - For example, you provision a database within the environment and give the secret to the applications interacting with the database only.
+          - Another approach is to add a private key once to the environment (probably by someone from a dedicated ops team) and from that point you can add secrets encrypted by the public key to the environment repository.
+          - There's even tool support for such [sealed secrets](https://github.com/bitnami-labs/sealed-secrets) in the K8s ecosystem.
+
+          ### [How does GitOps Handle DEV to PROD Propagation?](https://gitops.tech/#how-does-gitops-handle-dev-to-prod-propagation)
+          - GitOps doesn't provide a solution to propagating changes from one stage to the next one.
+          - We recommend using only a single environment and avoid stage propagation altogether.
+          - But if you need multiple stages (e.g., DEV, QA, PROD, etc.) with an environment for each, you need to handle the propagation outside of the GitOps scope, for example by some CI/CD pipeline.
+
+          ### [We are already doing DevOps. What's the difference to GitOps?](https://gitops.tech/#we-are-already-doing-devops-whats-the-difference-to-gitops)
+          - DevOps is all about the cultural change in an organization to make people work better together.
+          - GitOps is a technique to implement Continuous Delivery.
+          - While DevOps and GitOps share principles like automation and self-serviced infrastructure, it doesn't really make sense to compare them.
+          - However, these shared principles certainly make it easier to adopt a GitOps workflow when you are already actively employing DevOps techniques.
+
+          ### [So, is GitOps basically NoOps?](https://gitops.tech/#so-is-gitops-basically-noops)
+          - You can use GitOps to implement NoOps, but it doesn't automatically make all operations tasks obsolete.
+          - If you are using cloud resources anyway, GitOps can be used to automate those.
+          - Typically, however, some part of the infrastructure like the network configuration or the Kubernetes cluster you use isn't managed by yourself decentrally but rather managed centrally by some operations team.
+          - So operations never really goes away.
+
+          ### [Should I hire GitOps engineers for my team now?](https://gitops.tech/#should-i-hire-gitops-engineers-for-my-team-now)
+          - No! There are no GitOps engineers.
+          - GitOps is not a role (and neither is DevOps) but set of practices!
+          - You can look for a developer who has experience practicing GitOps — or simply let your developers try out those practices.
+      - md: | #markdown
+          ## [TOOLS](https://gitops.tech/#tools-articles-and-talks)
+
+          - [Awesome-GitOps](https://github.com/weaveworks/awesome-gitops): Curated list of GitOps tools and resources
+          - [ArgoCD](https://argoproj.github.io/argo-cd): A GitOps operator for Kubernetes with a web interface
+          - [Flux](https://github.com/fluxcd/flux): The GitOps Kubernetes operator by the [creators](https://weave.works/technologies/gitops) of GitOps
+          - [Gitkube](https://github.com/hasura/gitkube): A tool for building and deploying docker images on Kubernetes using `git push`
+          - [JenkinsX](https://jenkins-x.io): Continuous Delivery on Kubernetes with built-in GitOps
+          - [Terragrunt](https://github.com/gruntwork-io/terragrunt): A wrapper for [Terraform](https://terraform.io) for keeping configurations DRY, and managing remote state
+          - [WKSctl](https://github.com/weaveworks/wksctl): A tool for Kubernetes cluster configuration management based on GitOps principles
+          - [Helm Operator](https://github.com/fluxcd/helm-operator): An operator for using GitOps on K8s with Helm
+          - [werf](https://werf.io): CLI to build images and deploy them to Kubernetes via push-based approach
+          - [Gimlet](https://gimlet.io): CLI and a dashboard that packages a set of conventions and matching workflows to manage a gitops developer platform effectively
+
+          ## [RESOURCES](https://gitops.tech/#blog-posts-and-social-media)
+
+          - [GitOps Push-based Deployments on GKE](https://cloud.google.com/kubernetes-engine/docs/tutorials/gitops-cloud-build)
+          - [GitOps Pull-based Deployments on GKE](https://gitops.tech/tutorial.html).
+          - [An Inside Look at GitOps](https://devops.com/an-inside-look-at-gitops)
+          - [GitOps - Operations by Pull Request](https://weave.works/blog/gitops-operations-by-pull-request)
+          - [GitOps: What, Why, and How.](https://reddit.com/r/kubernetes/comments/dc8bfd/gitops%5Fwhat%5Fwhy%5Fand%5Fhow)
+          - [What Is GitOps and Why It Might Be The Next Big Thing for DevOps](https://thenewstack.io/what-is-gitops-and-why-it-might-be-the-next-big-thing-for-devops)
+          - [What is GitOps Really?](https://weave.works/blog/what-is-gitops-really)
+          - [GitOps mit Helm und Kubernetes (German)](https://doag.org/formes/pubfiles/11761447/06%5F2019-Java%5Faktuell-Bernd%5FStuebinger%5FFlorian%5FHeubeck-GitOps%5Fmit%5FHelm%5Fund%5FKubernetes.pdf)
+
+          ## [TALKS](https://gitops.tech/#talks)
+
+          - [GitOps - Operations by Pull Request](https://youtube.com/watch?v=BSqE2RqctNs)
+          - [Tutorial: Hands-on Gitops](https://youtube.com/watch?v=0SFTaAuOzsI)
+          - [What is GitOps? Next level delivery with Flux & Kubernetes](https://youtube.com/watch?v=5zt-jzKHwX8)
+  https://opengitops.dev:
+    desc: OpenGitOps is a set of open-source standards, best practices, and community-focused education to help organizations adopt a structured, standardized approach to implementing GitOps.
+    tags: [devops, gitops]
+    links: [https://github.com/open-gitops]
+  https://gitops.tech:
+    desc: GitOps - Operations by Pull Request
+    tags: [gitops, best-practices]
+    links: [https://leanpub.com/gitops, https://opengitops.dev]
+  https://weave.works/technologies/gitops:
+    desc: GitOps - Operations by Pull Request
+    tags: [gitops, best-practices]
+    links: [https://weave.works/technologies/gitops, https://weave.works/blog/what-is-gitops-really, https://leanpub.com/gitops]
+  https://gopass.pw:
+    desc: Gopass - The Standard Unix Password Manager
+    tags: [gitops, gopass]
+    links: [https://gopass.pw, https://github.com/gopasspw/gopass, https://domaindrivenarchitecture.org/posts/2020-01-29-GopassQuickRef, https://codelinter.com/blog/post/managing-secrets-with-gopass-age]
+    notes:
+      - md: | #markdown
+          Gopass is a modern, open-source password manager that provides a secure and user-friendly way to manage your passwords.
+
+          1. Install Gopass
+
+            ```bash
+            brew install gopass
+            ```
+
+          2. Generate a new key pair
+
+            ```bash
+            age-keygen -o ~/.config/age/key.txt
+            # => PUBLIC KEY: age1PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+            # => SECRET KEY: AGE-SECRET-KEY-1SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+            ```
+
+          3. Add AGE SECRET and PUBLIC KEYS as AGE identity to the Gopass store
+
+            ```bash
+            gopass age identities add AGE-SECRET-KEY-1SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS age1PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+            ```
+
+          4. Add AGE PUBLIC KEY as recipient to the Gopass store
+
+            ```bash
+            gopass recipients add age1PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+            # If there are existing encrypted secrets, this will re-encrypt them.
+            ```
+
+          5. Setup Gopass with Age backend
+
+            ```bash
+            gopass setup --crypto age --storage gitfs
+            ```
+
+          6. Adjust the defaault template
+
+            1. Edit the default template
+
+              ```bash
+              gopass templates edit
+              ```
+
+            2. Add the following to the template
+
+              ```yaml
+                {{ .Content }}
+                ---
+                comment: "{{ .Name }}"
+                url: http://{{ .Name }}
+                username: rogerio.alcantara@gmail.com
+                password-change-url: https://{{ .Name }}/.well-known/change-password
+                # This is an example of the available template operations
+                # Predefined variables:
+                # - .Content: The secret payload, usually a generated password
+                # - .Name: The name of this secret
+                # - .Path: The path to this secret
+                # - .Dir: The dir of this secret
+                #
+                # Available Template functions:
+                # - md5sum: e.g. {{ .Content | md5sum }}
+                # - sha1sum: e.g. {{ .Content | sha1sum }}
+                # - blake3 e.g. {{ .Content | blake3 }}
+                # - md5crypt: e.g. {{ .Content | md5crypt }}
+                # - ssha: e.g. {{ .Content | ssha }}
+                # - ssha256: e.g. {{ .Content | ssha256 }}
+                # - ssha512: e.g. {{ .Content | ssha512 }}
+                # - get "key": e.g. {{ get "path/to/some/other/secret" | md5sum }}
+              ```
+
+          7. Add the create template for `tokens`:
+
+            1. Run the command
+
+              ```bash
+              vi ~/.local/share/gopass/password-store/.gopass/create/2-token.yml
+              ```
+
+            2. Add the following to the template
+
+              ```yaml
+                ---
+                priority: 2
+                name: Token
+                prefix: tokens
+                name_from:
+                  - org
+                welcome: "🧪 Creating Token"
+                attributes:
+                  - name: org
+                    type: string
+                    prompt: Organization
+                    min: 1
+                  - name: token
+                    type: password
+                    prompt: Token
+                  - name: comment
+                    type: string
+                    prompt: Comments
+                  - url: string
+                    type: string
+                    prompt: Source
+              ```
+
+            3. Sync the changes
+
+              ```bash
+                gopass fsck
+                # if it fails, run:
+                gopass sync
+                # if it fails, run:
+                cd ~/.local/share/gopass/password-store/
+                git push
+              ```
+
+          8. Add the create template for `aws`:
+
+            1. Run the command
+
+              ```bash
+              vi ~/.local/share/gopass/password-store/.gopass/create/3-aws.yml
+              ```
+
+            2. Add the following to the template
+
+              ```yaml
+                ---
+                priority: 3
+                name: AWS
+                prefix: aws
+                name_from:
+                  - org
+                  - user
+                welcome: "🧪 Creating AWS credentials"
+                # https://github.com/gopasspw/gopass/blob/master/docs/commands/create.md?plain=1
+                attributes:
+                  - name: org
+                    type: string
+                    prompt: Organization
+                    min: 1
+                  - name: user
+                    type: string
+                    prompt: User
+                    min: 1
+                  - name: password
+                    type: password # hide input
+                    prompt: Password
+                    always_prompt: true # do not offer password generation, always ask
+                    charset: abcdefghijklmnop # generate password with this charset
+                  - name: comment
+                    type: string
+                    prompt: Comments
+              ```
+
+            3. Sync the changes
+
+              ```bash
+                gopass fsck
+                # if it fails, run:
+                gopass sync
+                # if it fails, run:
+                cd ~/.local/share/gopass/password-store/
+                git push
+              ```
+  https://zev.averba.ch/oops:
+    desc: Automatically Encrypting Secrets
+    tags: [gitops, tools]
+  https://devops.datenkollektiv.de/using-sops-with-age-and-git-like-a-pro.html:
+    desc: Using SOPS with AGE and Git like a Pro
+    tags: [gitops, sops, age]
+  https://github.com/awslabs/git-secrets:
+    desc: Prevents you from committing passwords and other sensitive information to a git repository
+    tags: [gitops, tools]
+  https://github.com/sobolevn/git-secret:
+    desc: A bash-tool to store your private data inside a git repository
+    tags: [gitops, tools]
+    notes:
+      - md: | #markdown
+          ## Features
+          - Uses GPG for encryption/decryption
+          - Requires GPG keys for each user
+          - More complex setup but stronger security model
+          - Better for team collaboration as each user has their own key
+      - sh: | #shell
+          # Install
+          brew install git-secret
+
+          # Initialize
+          git secret init
+          git secret tell your@gpg.email
+
+          # Hide files
+          git secret add credentials.yml
+          git secret hide
+
+          # Reveal files
+          git secret reveal
+  https://github.com/elasticdog/transcrypt:
+    desc: Transparently encrypt files within a git repository
+    tags: [gitops, transcrypt]
+    notes:
+      - md: | #markdown
+          ## Features
+          - Actually encrypts files in the repository
+          - Uses OpenSSL to encrypt/decrypt files
+          - Files remain encrypted in the repository but are automatically decrypted when checked out
+          - Allows selective encryption of specific files
+          - Best for: Storing sensitive files that need to be in version control
+      - sh: | #shell
+          #!/bin/bash
+
+          # Install transcrypt
+          brew install transcrypt
+
+          # Initialize in your repository
+          cd ~/.dots
+          # Encrypt GH_TOKEN and other credentials
+          transcrypt -c aes-256-cbc -p 'your-password'
+
+          # Encrypt a file
+          transcrypt --add-config config/secrets.yml
+
+          # Add to .gitattributes
+          .config/credentials filter=crypt diff=crypt
+
+          # Configure which files to encrypt
+          echo "private-config.conf filter=crypt diff=crypt" >> .gitattributes
+          echo ".env filter=crypt diff=crypt" >> .gitattributes
+      - dockerfile: | #dockerfile
+          # Runtime stage
+          FROM ubuntu:latest
+          ENV TRANSCRYPT_PASSWORD='your-password'
+
+          # On container start
+          RUN source ~/.config/credentials # Contains encrypted GH_TOKEN
+          RUN git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "git@github.com:"
+  https://blog.gitguardian.com/authentication-and-authorization:
+    desc: Authentication (who you are) and Authorization (what you can do)
+    tags: [gitops, best-practices]
+    notes:
+      - md: | #markdown
+          > API security requires proper authentication (who you are) and authorization (what you can do) with secure implementation practices
+
+          ### Core Authentication Methods
+
+            - **Basic Auth**: Username/password in headers - only use with HTTPS
+            - **API Keys**: Unique identifiers - transmit via Authorization headers, not URLs
+            - **JWT**: Stateless tokens - eliminates database lookups, perfect for scaling
+            - **OAuth 2.0**: Third-party access without sharing credentials - industry standard
+            - **OpenID Connect**: OAuth 2.0 + authentication layer
+
+            ### Authorization Models
+
+            - **RBAC**: Role-based permissions - simple, scalable for most organizations
+            - **ABAC**: Attribute-based control - fine-grained but complex
+            - **PBAC**: Policy-based decisions - dynamic, context-aware access
+
+            ### Security Essentials
+
+            - **Always use HTTPS/TLS** - non-negotiable for any authentication method
+            - **Never store credentials in plaintext** - hash, salt, use secure storage
+            - **Follow least privilege** - minimal permissions only
+            - **Rotate credentials regularly** - API keys and passwords
+            - **Validate all inputs** - prevent injection attacks
+            - **Implement rate limiting** - prevent abuse and DoS attacks
+
+            ### Common Mistakes to Avoid
+
+            - **API keys in URLs** - they get logged everywhere
+            - **Custom auth schemes** - use established libraries instead
+            - **Hardcoded credentials** - use environment variables or secret managers
+            - **Default allow policies** - start with deny, explicitly grant access
+
+            ### Bottom Line
+
+            - **Choose methods based on your specific needs**, always encrypt communications, and follow established security practices rather than reinventing solutions.
+  https://blog.gitguardian.com/symmetric-cryptography-key-management:
+    desc: Symmetric Cryptography Key Management
+    tags: [gitops, best-practices]
+  https://developer.hashicorp.com/vault:
+    desc: Vault - A tool for managing secrets
+    tags: [gitops, vault]
+    links:
+      - What is Vault?: https://developer.hashicorp.com/vault/docs/about-vault/what-is-vault
+      - CLI: https://developer.hashicorp.com/vault/docs/commands
+      - Tutorials: https://developer.hashicorp.com/tutorials/library?product=vault
+  https://getsops.io:
+    desc: SOPS - Secrets OPerationS
+    tags: [gitops, sops]
+    links: [https://getsops.io, https://getsops.io/docs/#encrypting-using-age, https://nicholas-morris.com/articles/sops]
+  https://age-encryption.org:
+    desc: AGE is a simple, modern and secure encryption tool (and Go library) with small explicit keys, no config options, and UNIX-style composability
+    tags: [gitops, age]
+    links:
+      - GitHub: https://github.com/FiloSottile/age
+      - Specification: https://age-encryption.org/v1
+      - RUST Implementation: https://github.com/str4d/rage
+      - TypeScript implementation: https://github.com/FiloSottile/typage
+      - Hardware PIV tokens such as YubiKeys: https://github.com/str4d/age-plugin-yubikey
+      - Awesome AGE: https://github.com/FiloSottile/awesome-age
+      - MAN: https://filippo.io/age/age.1
+    notes:
+      - md: | #markdown
+          ## AGE
+
+          > **AGE** is a simple, modern and secure file encryption tool, format, and Go library.
+          > It supports both password-based and public key encryption
+          > It was created to replace some of the use cases for GnuPG (PGP), focusing on specialized, opinionated design for tasks like file encryption.
+          > It features small explicit keys, no config options, and UNIX-style composability.
+
+          ```sh
+          $ age-keygen -o key.txt
+          Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
+          $ tar cvz ~/data | age -r age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p > data.tar.gz.age
+          $ age --decrypt -i key.txt data.tar.gz.age > data.tar.gz
+          $ tar xvzf data.tar.gz
+          ```
+
+          ## 🔑 CONCEPTS
+
+          | **CONCEPT**         | **WHAT IT IS**                                              | **FLAGS**  |
+          | ------------------- | ----------------------------------------------------------- | ---------- |
+          | **RECIPIENT**       | A public key (or SSH public key) that is allowed to decrypt | `-r`, `-R` |
+          | **IDENTITY**        | A private key used to decrypt (read from a file)            | `-i`       |
+          | **RECIPIENTS FILE** | Text file with one recipient per line                       | `-R`       |
+          | **PASSPHRASE MODE** | Derives a key from a passphrase; no key files needed        | `-p`       |
+          | **ASCII ARMOR**     | ASCII armors the ciphertext (useful for copy/paste or git)  | `-a`       |
+
+          ## 💡 NOTES
+
+          - **AGE** doesn't use a keyring or agent by default.
+          - Point to identity files explicitly with `-i` when decrypting.
+          - SSH keys can be used as recipients _(public key)_ and identities _(private key)_.
+          - Prefer dedicated **AGE** keys for automation; SSH keys are handy for ad-hoc sharing.
+          - Key files are text files; they contain comments and one private key.
+          - Store them securely (e.g., `~/.config/age/keys.txt`).
+      - sh: | #shell
+          #!/bin/sh
+
+          ######################################################################
+          ## 🚀 QUICK-START
+          ######################################################################
+
+          # ==> 1. Install
+          brew install age                              # macOS
+          sudo apt update && sudo apt install -y age    # Debian/Ubuntu
+          sudo pacman -S age                            # Arch Linux
+          apk add age                                   # Alpine Linux
+
+          # ==> 2. Generate a new key pair (private + public)
+          mkdir -p ~/.config/age && age-keygen -o ~/.config/age/keys.txt > ~/.config/age/recipient.txt
+          # 💡 ~/.config/age/keys.txt
+          #     → Is IDENTITY (Private Key);
+          #     → Used to decrypt files;
+          #     → readable only by me;
+          #     → kept it secret! Never commit to git or share!
+          # 💡 ~/.config/age/recipient.txt
+          #     → Is RECIPIENT (Public Key);
+          #     → Used to encrypt files;
+          #     → shareable with others
+
+          # ==> 3. Secure the IDENTITY (Private Key)
+          chmod 600 ~/.config/age/keys.txt # Ensure the IDENTITY is secure and not readable by others
+          echo ".config/age/keys.txt" >> ~/.config/.gitignore # Ensure that IDENTITY will not be backed up to git (if you use git to manage your dotfiles)
+
+          # ==> 4. Create some file to encrypt
+          echo "my secret" > /tmp/secret.txt
+
+          # ==> 5. Encrypt for yourself (using your own RECIPIENT)
+          age -r $(grep -Eo 'age1[0-9a-z]+' ~/.config/age/keys.txt | head -1) -o /tmp/secret.txt.age /tmp/secret.txt
+
+          # ==> 6. Decrypt the file using your IDENTITY (Private Key)
+          age --decrypt --identity ~/.config/age/keys.txt -o /tmp/secret.out.txt /tmp/secret.txt.age
+
+          # ==> 7. Compare the original and decrypted files; OK means they are identical! 🎉🎉
+          diff -u /tmp/secret.txt /tmp/secret.out.txt && echo "OK"
+      - sh: | #shell
+          #!/bin/sh
+
+          ######################################################################
+          ## 🔖 ADVANCED SCENARIOS
+          ######################################################################
+
+          # Given a file to encrypt
+          echo "my secret" > /tmp/secret.txt
+
+          # Encrypt for any recipient (using the recipient file)
+          age -r $(cat ~/.config/age/recipient.txt) -o /tmp/secret.recipients.txt.age /tmp/secret.txt
+          # 💡 Ensure ~/.config/age/recipient.txt contains a valid recipient (public key)
+
+          # Encrypt for MULTIPLE RECIPIENTS (using your own RECIPIENT + another person's RECIPIENT);
+          age -r $(grep -Eo 'age1[0-9a-z]+' ~/.config/age/keys.txt | head -1) -r /path/to/OTHER_AGE_PUBLIC_KEY.txt /tmp/secret.txt > /tmp/secret.multiplerecipients.txt.age
+          # 💡 Ensure /path/to/OTHER_AGE_PUBLIC_KEY.txt contains a valid recipient (Public Key)
+          # 💡 Any of the recipients can decrypt the file using their own IDENTITY (Private Key)
+
+          # Encrypt using PASSWORD (symmetric encryption)
+          age -p -o /tmp/secret.passbased.txt.age /tmp/secret.txt
+          # 💡 It will prompt you to enter a passphrase (twice)
+          # 💡 /tmp/secret.passbased.txt.age can only be decrypted with the given passphrase
+
+          # Encrypt using existing SSH Public Key;
+          age -R ~/.ssh/id_ed25519.pub -o /tmp/config.ini.age /tmp/secret.txt
+          # 💡 Ensure you have an SSH key pair (e.g., ~/.ssh/id_ed25519)
+          # 💡 To extract SSH Public Key: ssh-keygen -y -f ~/.ssh/id_ed25519 > ~/.ssh/id_ed25519.pub
+
+          # Encrypt a whole directory (e.g., /opt/app) using multiple RECIPIENTS listed in a file;
+          tar czf - /opt/app | age -R ~/.config/age/recipients.txt > /tmp/app.tar.gz.age
+          # 💡 Ensure ~/.config/age/recipients.txt contains a list of valid recipients
+
+          # Use ASCII armor to protect the encrypted file safe for version control
+          age -a -R ~/.config/age/recipients.txt /tmp/secret.txt > /tmp/secret.txt.age.asc
+          # 💡 the output is ASCII text safe for version control
+  https://github.com/getsops/sops:
+    desc: Simple and flexible tool for managing secrets
+    tags: [gitops, sops]
+    notes:
+      - md: | #markdown
+          ## SOPS
+
+          > **SOPS** (Secrets OPerationS) is an editor of encrypted files that supports YAML, JSON, ENV, INI, and BINARY formats.
+          > It supports AWS KMS, GCP KMS, Azure Key Vault, HashiCorp Vault, and PGP as key management services.
+          > It was created to manage secrets in a git repository.
+          > It features a simple and flexible design, allowing you to encrypt only the parts of the file that need to be kept secret.
+      - sh: | #shell
+          #!/bin/sh
+
+          ######################################################################
+          ## 🚀 QUICK-START
+          ######################################################################
+
+          # ==> 1. Install
+          brew install sops                             # macOS
+          sudo apt update && sudo apt install -y sops   # Debian/Ubuntu
+          sudo pacman -S sops                           # Arch Linux
+          apk add sops                                  # Alpine Linux
+
+          # ==> 2. Generate a new AGE key pair (private + public)
+          mkdir -p ~/.config/age && age-keygen -o ~/.config/age/keys.txt > ~/.config/age/recipient.txt
+          # 💡 ~/.config/age/keys.txt
+          #     → Is IDENTITY (Private Key);
+          #     → Used to decrypt files;
+          #     → readable only by me;
+          #     → kept it secret! Never commit to git or share!
+          # 💡 ~/.config/age/recipient.txt
+          #     → Is RECIPIENT (Public Key);
+          #     → Used to encrypt files;
+          #     → shareable with others
+
+          # ==> 3. Secure the IDENTITY (Private Key)
+          chmod 600 ~/.config/age/keys.txt # Ensure the IDENTITY is secure and not readable by others
+          echo ".config/age/keys.txt" >> ~/.config/.gitignore # Ensure that IDENTITY will not be backed up to git (if you use git to manage your dotfiles)
+
+          # ==> 4. Create SOPS configuration file to use AGE as the default KMS
+          mkdir -p ~/.config/sops
+          cat > ~/.config/sops/config.yaml
+          # ---
+          # creation_rules:
+          #   - pgp: []
+          #     gcp_kms: []
+          #     azure_kv: []
+          #     aws_kms: []
+          #     age: ["$(cat ~/.config/age/recipient.txt)"]
+          #     encrypted_regex: '^(data|stringData)$'
+          #     path_regex: '.*\.ya?ml$'
+
+          # ==> 4. Create some file to encrypt
+          echo "DB_PASSWORD: mysecretpassword" > /tmp/config.yaml
+
+          # ==> 5. Encrypt the file using SOPS + AGE RECIPIENT (output to stdout)
+          sops --encrypt .env
+
+          # ==> 5. Encrypt the file using SOPS + AGE RECIPIENT (output to a different file)
+          sops --encrypt --input-type dotenv --output-type dotenv --output .env.sops .env
+
+          # ==> 5. Encrypt the file using SOPS + AGE RECIPIENT (pipe input to output)
+          sops --encrypt --input-type dotenv --output-type dotenv .env > .env.sops
+
+          # ==> 5. Encrypt the file using SOPS + AGE RECIPIENT (output to the same file, in-place)
+          sops --encrypt --in-place .env
+
+          # ==> 5. Encrypt the file using SOPS + AGE RECIPIENT
+          sops --encrypt --age $(cat ~/.config/age/recipient.txt) /tmp/config.yaml > /tmp/config.enc.yaml
+
+          # ==> 6. Decrypt the file using SOPS + AGE IDENTITY (Private Key)
+          sops --decrypt --age-identity ~/.config/age/keys.txt /tmp/config.enc.yaml > /tmp/config.dec.yaml
+
+          # ==> 7. Compare the original and decrypted files; OK means they are identical! 🎉🎉
+          diff -u /tmp/config.yaml /tmp/config.dec.yaml && echo "OK"
+      - sh: | #shell
+          #!/bin/sh
+
+          ## DECRIPTING FILES WITH SOPS + AGE IDENTITY (Private Key)
+          sops --decrypt --age-identity ~/.config/age/keys.txt /path/to/encrypted-file.yaml > /path/to/decrypted-file.yaml
+
+          # 💡 Use the SOPS_AGE_KEY environment variable (Recommended)
+          # Set SOPS_AGE_KEY environment variable to point to your AGE private key file
+          # This allows SOPS to use your AGE identity (private key) for decryption automatically
+          export SOPS_AGE_KEY=$(cat ~/.config/age/keys.txt)
+
+          # Use the SOPS_AGE_KEY_FILE environment variable
+          # Create a SOPS config file to automatically locate age keys
+          Create ~/.config/sops/age/keys.txt (symlink to your existing key):
+
+          # This allows SOPS to use your AGE identity (private key) for decryption automatically
+          export SOPS_AGE_KEY=$(cat ~/.config/age/keys.txt)
+          sops --decrypt --input-type dotenv --output-type dotenv .env.encrypted > .env.decrypted
+
+          # This allows SOPS to use your AGE identity (private key) for decryption automatically
+          export SOPS_AGE_KEY_FILE=~/.config/age/keys.txt
+          sops decrypt --input-type dotenv --output-type dotenv .env.encrypted > .env.decrypted
+
+
+          # 💡 To SOPS use your AGE identity (private key) for decryption automatically without needing to set the SOPS_AGE_KEY environment variable
+          mkdir -p ~/.config/sops
+          touch ~/.config/sops/config.yaml
+          # ---
+          # creation_rules:
+          #   - pgp: []
+          #     gcp_kms: []
+          #     azure_kv: []
+          #     aws_kms: []
+          #     age: ["$(cat ~/.config/age/recipient.txt)"]
+          #     encrypted_regex: '^(data|stringData)$'
+          #     path_regex: '.*\.ya?ml$'
+
+          # 💡 To SOPS use your AGE identity (private key) for decryption automatically without needing to set the SOPS_AGE_KEY environment variable
+          mkdir -p ~/.config/sops
+          ln -s ~/.config/age ~/.config/sops/age
+cheats:
+  What is GitOps?:
+    desc: Set of practices that use Git repositories as the source of truth for declarative infrastructure and applications deployment
+    tags: [gitops, best-practices]
+    links: [https://gitops.tech, https://opengitops.dev, https://weave.works/technologies/gitops]
+    notes:
+      - md: | #markdown
+          ## Brings the developer experience of Git to infrastructure and operations
+
+          > Operational framework that takes DevOps best practices used for application development, such as version control, collaboration, compliance, and CI/CD, and applies them to infrastructure automation.
+          > It enables teams to manage complex systems at scale, with improved reliability, security, and developer productivity.
+          > **If it's not in Git, it doesn't exist in production**
+
+          ### KEY POINTS
+
+          - **Declarative infrastructure**: describe desired state, not steps
+          - **Version control everything**: full audit trail and rollback capability
+          - **Automated deployment**: agents pull changes and apply them
+          - **Improved reliability**: reproducible, testable deployments
+
+          ### COMMON PRACTICES
+
+          - Store Kubernetes manifests, Terraform configs, or Helm charts in Git
+          - Use tools like ArgoCD, Flux, or Jenkins X to watch repos
+          - Make all changes through Git (no manual kubectl apply)
+          - Separate repos for app code vs. deployment configs
+          - Use PR reviews as deployment gates
+
+          ### KEY PRINCIPLES
+
+          1. **Declarative Descriptions**: All infrastructure and application configurations are defined declaratively, typically using YAML or JSON files. This allows for version control and easy auditing of changes.
+          2. **Version Control as the Source of Truth**: Git repositories serve as the single source of truth for the desired state of the system. Any changes to infrastructure or applications are made through pull requests (PRs) to the Git repository.
+          3. **Automated Reconciliation**: An automated process continuously monitors the Git repository and the actual state of the system. If discrepancies are detected, the system automatically reconciles the actual state to match the desired state defined in Git.
+          4. **Continuous Deployment**: Changes merged into the main branch of the Git repository trigger automated deployment processes, ensuring that updates are rolled out consistently and reliably.
+          5. **Observability and Monitoring**: Comprehensive monitoring and logging are essential to track the state of the system, detect issues, and ensure compliance with the desired state.
+          6. **Security and Compliance**: GitOps practices include robust security measures, such as access controls, encryption, and audit trails, to protect sensitive information and ensure compliance with regulatory requirements.
+
+          ### BENEFITS
+
+          - **Improved Collaboration**: Teams can collaborate more effectively using familiar Git workflows, such as branching and pull requests.
+          - **Faster Recovery**: The ability to revert to previous states quickly in case of failures enhances system reliability.
+          - **Increased Transparency**: All changes are documented in Git, providing a clear audit trail for compliance and troubleshooting.
+          - **Scalability**: Automated processes enable teams to manage complex systems at scale without increasing operational overhead.
+          - **Consistency**: Automated reconciliation ensures that environments remain consistent with the desired state defined in Git.
+
+          ### TOOLS
+
+          * [ArgoCD](https://argoproj.github.io/argo-cd/): A GitOps operator for Kubernetes with a web interface
+          * [Flux](https://github.com/fluxcd/flux): The GitOps Kubernetes operator by the creators of GitOps — [Weaveworks](https://weave.works/technologies/gitops/)
+          * [Gitkube](https://github.com/hasura/gitkube): A tool for building and deploying docker images on Kubernetes using `git push`
+          * [JenkinsX](https://jenkins-x.io/): Continuous Delivery on Kubernetes with built-in GitOps
+          * [Terragrunt](https://github.com/gruntwork-io/terragrunt): A wrapper for [Terraform](https://terraform.io) for keeping configurations DRY, and managing remote state
+          * [WKSctl](https://github.com/weaveworks/wksctl): A tool for Kubernetes cluster configuration management based on GitOps principles
+          * [Helm Operator](https://github.com/fluxcd/helm-operator): An operator for using GitOps on K8s with Helm
+          * [werf](https://werf.io/): A CLI tool to build images and deploy them to Kubernetes via push-based approach
+          * [Gimlet](https://gimlet.io): Gimlet is a command line tool and a dashboard that packages a set of conventions and matching workflows to manage a gitops developer platform effectively
+
+          ### BLOG POSTS AND SOCIAL MEDIA
+
+          * [An Inside Look at GitOps](https://devops.com/an-inside-look-at-gitops/)
+          * [GitOps - Operations by Pull Request](https://weave.works/blog/gitops-operations-by-pull-request)
+          * [GitOps: What, Why, and How.](https://reddit.com/r/kubernetes/comments/dc8bfd/gitops%5Fwhat%5Fwhy%5Fand%5Fhow/)
+          * [What Is GitOps and Why It Might Be The Next Big Thing for DevOps](https://thenewstack.io/what-is-gitops-and-why-it-might-be-the-next-big-thing-for-devops/)
+          * [What is GitOps Really?](https://weave.works/blog/what-is-gitops-really)
+          * [GitOps mit Helm und Kubernetes (German)](https://doag.org/formes/pubfiles/11761447/06%5F2019-Java%5Faktuell-Bernd%5FStuebinger%5FFlorian%5FHeubeck-GitOps%5Fmit%5FHelm%5Fund%5FKubernetes.pdf)
+          * [Awesome-GitOps](https://github.com/weaveworks/awesome-gitops)
+
+          ### TALKS
+
+          * [GitOps - Operations by Pull Request \[B\] - Alexis Richardson, Weaveworks & William Denniss, Google](https://youtube.com/watch?v=BSqE2RqctNs)
+          * [Tutorial: Hands-on Gitops - Brice Fernandes, Weaveworks](https://youtube.com/watch?v=0SFTaAuOzsI)
+          * [What is GitOps? Next level delivery with Flux & Kubernetes by Rafał Lewandowski](https://youtube.com/watch?v=5zt-jzKHwX8)
+
+          ### CONCLUSION
+
+          All system configuration lives in Git repos. Changes happen via pull requests. Automated agents continuously sync the live environment to match what's in Git.
+  Using Transcrypt to ecrypt files within git repositories:
+    desc: Transparently encrypt files within a git repository
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+    notes:
+      - md: | #markdown
+          ## Features
+          - Actually encrypts files in the repository
+          - Uses OpenSSL to encrypt/decrypt files
+          - Files remain encrypted in the repository but are automatically decrypted when checked out
+          - Allows selective encryption of specific files
+          - Best for: Storing sensitive files that need to be in version control
+      - sh: | #shell
+          #!/bin/bash
+
+          # Install transcrypt
+          brew install transcrypt
+      - sh: | #shell
+          #!/bin/bash
+
+          ## QUICKSTART
+
+          # 1. Initialize an Unconfigured Repository
+          cd /tmp/demo && git init && transcrypt
+
+          # 2. Designate a File to be Encrypted
+          $ transcrypt --add sensitive_file
+          $ git add .gitattributes sensitive_file
+          $ git commit -m 'Add encrypted version of a sensitive file'
+
+          # Encrypt GH_TOKEN and other credentials
+          transcrypt -p 'your-password'
+
+          # Encrypt a file
+          transcrypt --add-config config/secrets.yml
+
+          # Add to .gitattributes
+          .config/credentials filter=crypt diff=crypt
+
+          # Configure which files to encrypt
+          echo "private-config.conf filter=crypt diff=crypt" >> .gitattributes
+          echo ".env filter=crypt diff=crypt" >> .gitattributes
+
+      - sh: | #shell
+          #!/bin/bash
+
+          # Install transcrypt
+          brew install transcrypt
+
+          # Initialize in your repository
+          cd ~/.dots
+
+          # Encrypt GH_TOKEN and other credentials
+          transcrypt -c aes-256-cbc -p 'your-password'
+
+          # Encrypt a file
+          transcrypt --add-config config/secrets.yml
+
+          # Add to .gitattributes
+          .config/credentials filter=crypt diff=crypt
+
+          # Configure which files to encrypt
+          echo "private-config.conf filter=crypt diff=crypt" >> .gitattributes
+          echo ".env filter=crypt diff=crypt" >> .gitattributes
+      - sh: | #shell
+          #!/bin/bash
+
+          ## CONTEXTS
+          ## =====================================================================
+          ## Context names let you encrypt some files with different passwords for
+          ## a different audience, such as super-users. The 'default' context
+          ## applies unless you set a context name. Add a context by
+          ## reinitialising transcrypt with a context name then add a pattern with
+          ## crypt-<CONTEXTNAME> attributes to .gitattributes.
+          ## =====================================================================
+          ##
+          ## To encrypt a file _top-secret in a "super" context
+          ##
+
+          # 0. Initialize an Unconfigured Repository
+          $ git init
+          $ transcrypt
+
+          # 1. Initialise a new "super" context, and set a different password
+          $ transcrypt --context=super
+
+          # 2. Add a pattern to .gitattributes with "crypt-super" values
+          $ transcrypt --context=super --add=top-secret
+
+          # 3. Add and commit your top-secret and .gitattribute files
+          $ git add .gitattributes top-secret
+          $ git commit -m "Add top secret file for super-users only"
+
+          # 4. Listing the Currently Encrypted Files
+          $ transcrypt --list
+
+          # 5. List all contexts
+          $ transcrypt --list-contexts
+
+          # 6. Display the cipher and password for the "super" context
+          $ transcrypt --context=super --display
+
+  # SOPS - Simple and flexible tool for managing secrets
+  # https://github.com/getsops/sops
+  Using SOPS/AGE to encrypt sensitive data in YAML files and store them in git:
+    desc: SOPS (Secrets OPerationS) is an editor of encrypted files that supports YAML, JSON, ENV, INI and BINARY formats and encrypts with AWS KMS, GCP KMS, Azure Key Vault, PGP and age.
+    tags: [gitops, sops, age]
+    links:
+      - SOPS: https://github.com/getsops/sops
+      - AGE: https://github.com/FiloSottile/age
+      - Git filter: https://git-scm.com/docs/gitattributes
+      - Protect secrets in Git with the clean/smudge filter: https://developers.redhat.com/articles/2022/02/02/protect-secrets-git-cleansmudge-filter
+      - Using SOPS with Age and Git like a Pro: https://devops.datenkollektiv.de/using-sops-with-age-and-git-like-a-pro.html
+    notes:
+      - md: | #markdown
+          # ONE SENTENCE SUMMARY:
+          AGI and SOPS tools enable secure encryption of sensitive values in YAML files for safe storage in Git repositories.
+
+          # MAIN POINTS:
+          1. AGI encrypts files to binary format using public/private key pairs but results in non-human-readable files.
+          2. SOPS works with AGI to selectively encrypt only values in files while keeping keys readable.
+          3. A SOPS configuration file defines encryption rules based on file paths and which keys should be encrypted.
+          4. Encrypted YAML files maintain their structure and readability while securing sensitive information.
+          5. Naming conventions help prevent accidentally committing unencrypted secrets to Git repositories.
+          6. Creating automation scripts simplifies batch encryption/decryption of multiple secret files.
+          7. The presenter adds .secret.yaml files to .gitignore while only committing encrypted .secret.sops.yaml versions.
+          8. SOPS is not idempotent, so re-encrypting the same file creates different encrypted outputs.
+          9. Automation scripts compare file contents before encrypting to avoid unnecessary Git changes.
+          10. Taskfile integration allows running encryption/decryption scripts from anywhere in the repository.
+
+          # TAKEAWAYS:
+          1. Use AGI and SOPS together to securely store infrastructure-as-code secrets in Git repositories.
+          2. Establish consistent naming conventions to differentiate between encrypted and unencrypted files.
+          3. Add plain secret files to .gitignore to prevent accidentally committing sensitive information.
+          4. Automate secret management with scripts that handle batch encryption and decryption.
+          5. SOPS provides a better alternative to external secret stores when simplicity is preferred.
+      - md: | #markdown
+          ### SOPS
+
+          ```bash
+          # MacOS
+          brew install sops
+
+          # Debian/Ubuntu
+          sudo apt install sops
+
+          # Fedora
+          sudo dnf install sops
+
+          # Arch Linux
+          sudo pacman -S sops
+          ```
+      - sh: | #shell
+          #!/bin/bash
+
+          # Setup SOPS + Git Filters for Automatic Encryption/Decryption
+          # Run this from your dotfiles repository root
+
+          set -e
+
+          echo "Setting up SOPS git filters..."
+
+          # Configure git filters
+          echo "Configuring git clean filter (encrypt on commit)..."
+          git config filter.sops.clean 'sops --encrypt --input-type dotenv --output-type dotenv /dev/stdin'
+
+          echo "Configuring git smudge filter (decrypt on checkout)..."
+          git config filter.sops.smudge 'sops decrypt --input-type dotenv --output-type dotenv /dev/stdin'
+
+          echo "Configuring diff filter (show decrypted content in diffs)..."
+          git config diff.sops.textconv 'sops decrypt --input-type dotenv --output-type dotenv'
+
+          # Setup .gitattributes
+          echo "Setting up .gitattributes..."
+          if ! grep -q "\.config/\.env filter=sops" .gitattributes 2>/dev/null; then
+              echo ".config/.env filter=sops diff=sops" >> .gitattributes
+              echo "Added .config/.env to .gitattributes"
+          else
+              echo ".gitattributes already configured"
+          fi
+
+          # Check if .env exists and handle initial encryption
+          if [ -f ".config/.env" ]; then
+              echo "Found .config/.env file"
+
+              # Check if file is already encrypted
+              if head -1 .config/.env | grep -q "sops:"; then
+                  echo ".env file appears to be already encrypted"
+                  echo "Decrypting for local use..."
+                  sops decrypt --in-place --input-type dotenv --output-type dotenv .config/.env
+              else
+                  echo ".env file is currently unencrypted"
+                  echo "Encrypting and committing the encrypted version..."
+
+                  # Backup current file
+                  cp .config/.env .config/.env.backup
+
+                  # Encrypt for git
+                  sops --encrypt --in-place --input-type dotenv --output-type dotenv .config/.env
+
+                  # Add and commit encrypted version
+                  git add .config/.env .gitattributes
+                  git commit -m "Add encrypted .env file with SOPS git filters"
+
+                  # Restore decrypted version for local use
+                  cp .config/.env.backup .config/.env
+                  rm .config/.env.backup
+
+                  echo "Encrypted version committed, decrypted version restored for local use"
+              fi
+          else
+              echo "No .config/.env file found - you can create one normally and it will be auto-encrypted on commit"
+          fi
+
+          echo ""
+          echo "✅ SOPS git filters setup complete!"
+          echo ""
+          echo "Test your setup:"
+          echo "1. Edit .config/.env and add a test variable"
+          echo "2. Run 'git status' - should show .env as modified"
+          echo "3. Run 'git diff .config/.env' - should show decrypted diff"
+          echo "4. Run 'git add .config/.env && git show :0:.config/.env' - should show encrypted content"
+          echo ""
+          echo "The file will now be automatically encrypted on commit and decrypted on checkout!"
+      # - sh: | #shell
+      #     #!/usr/bin/env bash
+      #     # Setup and Using Gopass with Age on macOS - TL;DR Tutorial
+      #     # Run each section step by step, don't execute the whole script at once!
+
+      #     set -e
+
+      #     echo "🔐 Gopass + Age Setup Tutorial for macOS"
+      #     echo "========================================"
+      #     echo ""
+      #     echo "⚠️  Run each section manually, don't execute this entire script!"
+      #     echo ""
+
+      #     # ==============================================================================
+      #     # SECTION 1: INSTALLATION
+      #     # ==============================================================================
+
+      #     echo "📦 1. Install dependencies"
+      #     # Install Homebrew if not already installed
+      #     # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+      #     # Install gopass (password manager)
+      #     brew install gopass
+
+      #     # Install age (encryption tool)
+      #     brew install age
+
+      #     # Install GitHub CLI (optional, for remote storage)
+      #     brew install gh
+
+      #     # Verify installations
+      #     gopass version
+      #     age --version
+      #     gh --version
+
+      #     # ==============================================================================
+      #     # SECTION 2: GENERATE AGE KEY PAIR
+      #     # ==============================================================================
+
+      #     echo "🔑 2. Generate Age encryption keys"
+
+      #     # Generate a new Age key pair
+      #     age-keygen -o ~/.config/age/key.txt
+
+      #     # Show your public key (save this somewhere safe!)
+      #     echo "Your Age public key:"
+      #     age-keygen -y ~/.config/age/key.txt
+
+      #     # Set proper permissions
+      #     chmod 600 ~/.config/age/key.txt
+
+      #     # ==============================================================================
+      #     # SECTION 3: SETUP GITHUB REPOSITORY (OPTIONAL)
+      #     # ==============================================================================
+
+      #     echo "🐙 3. Setup remote Git repository"
+
+      #     # Authenticate with GitHub
+      #     gh auth login
+
+      #     # Create a private repository for your password store
+      #     gh repo create pass-store --description="Personal password store" --private
+
+      #     # Clone the repository
+      #     git clone git@github.com:$(gh api user --jq .login)/password-store.git ~/.local/share/gopass/stores/root
+
+      #     # Alternative: Initialize local git repo only
+      #     # git init ~/.local/share/gopass/stores/root
+
+      #     # ==============================================================================
+      #     # SECTION 4: INITIALIZE GOPASS WITH AGE
+      #     # ==============================================================================
+
+      #     echo "⚡ 4. Initialize gopass with Age backend"
+
+      #     # Initialize gopass with Age (not GPG)
+      #     gopass setup --crypto age --storage gitfs
+
+      #     # When prompted:
+      #     # - Enter your Age public key (from step 2)
+      #     # - Set store location: ~/.local/share/gopass/stores/root
+      #     # - Choose a name for your store: "root" (default)
+
+      #     # Alternative manual setup:
+      #     # gopass init --crypto age --storage gitfs $(age-keygen -y ~/.config/age/key.txt)
+
+      #     # ==============================================================================
+      #     # SECTION 5: CONFIGURE GOPASS
+      #     # ==============================================================================
+
+      #     echo "⚙️  5. Configure gopass settings"
+
+      #     # Set your git identity
+      #     gopass config core.git.user.name "Your Name"
+      #     gopass config core.git.user.email "your.email@example.com"
+
+      #     # Configure useful settings
+      #     gopass config core.showsafecontent true  # Show safe content without prompting
+      #     gopass config core.autoclip true         # Auto-copy to clipboard
+      #     gopass config core.cliptimeout 45        # Clipboard timeout in seconds
+
+      #     # Show current configuration
+      #     gopass config
+
+      #     # ==============================================================================
+      #     # SECTION 6: BASIC USAGE EXAMPLES
+      #     # ==============================================================================
+
+      #     echo "📝 6. Basic usage examples"
+
+      #     # Generate and store a new password
+      #     gopass generate websites/github.com/username 20
+
+      #     # Insert a password manually
+      #     gopass insert websites/twitter.com/username
+      #     # (you'll be prompted to enter the password)
+
+      #     # Insert multiline secrets (like SSH keys, API tokens)
+      #     gopass insert -m servers/production/ssh-key
+
+      #     # Store structured data
+      #     gopass insert websites/example.com/account <<EOF
+      #     password: super-secret-password
+      #     username: your-username
+      #     email: your.email@example.com
+      #     2fa-backup-codes:
+      #       - 123456
+      #       - 789012
+      #     url: https://example.com
+      #     notes: Created on $(date)
+      #     EOF
+
+      #     # ==============================================================================
+      #     # SECTION 7: RETRIEVE AND MANAGE PASSWORDS
+      #     # ==============================================================================
+
+      #     echo "🔍 7. Retrieve and manage passwords"
+
+      #     # List all passwords
+      #     gopass list
+      #     gopass ls  # short form
+
+      #     # Show a password (copies to clipboard)
+      #     gopass show websites/github.com/username
+      #     gopass websites/github.com/username  # short form
+
+      #     # Show password without copying to clipboard
+      #     gopass show -c websites/github.com/username
+
+      #     # Show only the password (first line)
+      #     gopass show -o websites/github.com/username
+
+      #     # Edit a password entry
+      #     gopass edit websites/github.com/username
+
+      #     # ==============================================================================
+      #     # SECTION 8: SEARCH AND ORGANIZE
+      #     # ==============================================================================
+
+      #     echo "🔎 8. Search and organize passwords"
+
+      #     # Search for passwords
+      #     gopass search github
+      #     gopass find twitter
+
+      #     # Create folders/organize
+      #     gopass generate work/gitlab.com/username 20
+      #     gopass generate personal/facebook.com/username 20
+
+      #     # Move/rename entries
+      #     gopass move old/path new/path
+      #     gopass mv websites/old-site.com websites/new-site.com
+
+      #     # Copy entries
+      #     gopass copy source/path destination/path
+
+      #     # Delete entries
+      #     gopass delete websites/unused-site.com
+      #     gopass rm websites/unused-site.com  # short form
+
+      #     # ==============================================================================
+      #     # SECTION 9: SYNC WITH REMOTE REPOSITORY
+      #     # ==============================================================================
+
+      #     echo "🔄 9. Sync with remote repository"
+
+      #     # Add remote origin (if not done during setup)
+      #     cd ~/.local/share/gopass/stores/root
+      #     git remote add origin git@github.com:yourusername/password-store.git
+
+      #     # Push to remote
+      #     gopass git push origin main
+
+      #     # Pull from remote
+      #     gopass git pull origin main
+
+      #     # Sync (pull + push)
+      #     gopass sync
+
+      #     # ==============================================================================
+      #     # SECTION 10: ADVANCED AGE FEATURES
+      #     # ==============================================================================
+
+      #     echo "🚀 10. Advanced Age integration"
+
+      #     # Export Age private key to gopass (for other tools like SOPS)
+      #     age-keygen -y ~/.config/age/key.txt | gopass insert -m age/public-key
+      #     cat ~/.config/age/key.txt | gopass insert -m age/private-key
+
+      #     # Use gopass-stored Age key with SOPS
+      #     export SOPS_AGE_KEY="$(gopass show age/private-key)"
+      #     # Now you can use SOPS with the same Age key
+
+      #     # Create a script to decrypt files using gopass-stored Age key
+      #     cat > ~/.local/bin/sops-decrypt << 'EOF'
+      #     #!/bin/bash
+      #     export SOPS_AGE_KEY="$(gopass show age/private-key)"
+      #     sops -d "$@"
+      #     EOF
+      #     chmod +x ~/.local/bin/sops-decrypt
+
+      #     # ==============================================================================
+      #     # SECTION 11: BACKUP AND RECOVERY
+      #     # ==============================================================================
+
+      #     echo "💾 11. Backup and recovery"
+
+      #     # Backup your Age private key (CRITICAL!)
+      #     cp ~/.config/age/key.txt ~/Desktop/age-key-backup.txt
+      #     echo "⚠️  Store this backup in a secure location!"
+
+      #     # Export all passwords (using our export script)
+      #     # ./gopass-export.sh --format yaml ~/Desktop/gopass-backup.yaml
+
+      #     # Backup gopass config
+      #     cp ~/.config/gopass/config.yml ~/Desktop/gopass-config-backup.yml
+
+      #     # Recovery process (on new machine):
+      #     # 1. Install gopass and age
+      #     # 2. Restore Age private key to ~/.config/age/key.txt
+      #     # 3. Clone password store repository
+      #     # 4. Initialize gopass: gopass setup --crypto age --storage git
+
+      #     # ==============================================================================
+      #     # SECTION 12: USEFUL ALIASES AND HELPERS
+      #     # ==============================================================================
+
+      #     echo "⚡ 12. Useful shell aliases"
+
+      #     # Add these to your ~/.zshrc or ~/.bashrc
+      #     cat >> ~/.zshrc << 'EOF'
+
+      #     # Gopass aliases
+      #     alias gp='gopass'
+      #     alias gpl='gopass list'
+      #     alias gps='gopass search'
+      #     alias gpg='gopass generate'
+      #     alias gpc='gopass show -c'  # show without clipboard
+      #     alias gpe='gopass edit'
+
+      #     # Quick password generation
+      #     alias genpw='gopass generate -n'  # generate without storing
+
+      #     # Sync shortcut
+      #     alias gpsync='gopass sync'
+
+      #     # Age + SOPS integration
+      #     alias sops-decrypt='SOPS_AGE_KEY="$(gopass show age/private-key)" sops -d'
+      #     alias sops-encrypt='SOPS_AGE_KEY="$(gopass show age/private-key)" sops -e'
+
+      #     EOF
+
+      #     # ==============================================================================
+      #     # SECTION 13: SECURITY BEST PRACTICES
+      #     # ==============================================================================
+
+      #     echo "🛡️  13. Security best practices"
+
+      #     # Set secure file permissions
+      #     chmod 700 ~/.config/gopass
+      #     chmod 700 ~/.local/share/gopass
+      #     chmod 600 ~/.config/age/key.txt
+
+      #     # Regularly backup your Age private key
+      #     # Store backup in multiple secure locations (encrypted USB, secure cloud storage)
+
+      #     # Use strong master passwords for your system
+      #     # Enable full disk encryption (FileVault on macOS)
+
+      #     # Regularly update gopass and age
+      #     brew upgrade gopass age
+
+      #     # Enable git commit signing (optional)
+      #     gopass config core.git.sign true
+
+      #     # ==============================================================================
+      #     # SECTION 14: TROUBLESHOOTING
+      #     # ==============================================================================
+
+      #     echo "🔧 14. Common troubleshooting"
+
+      #     # Check gopass configuration
+      #     gopass config
+
+      #     # Verify Age key is working
+      #     echo "test" | age -r $(age-keygen -y ~/.config/age/key.txt) | age -d -i ~/.config/age/key.txt
+
+      #     # Reset clipboard if stuck
+      #     pbcopy < /dev/null
+
+      #     # Check git status in store
+      #     gopass git status
+
+      #     # Repair git repository if corrupted
+      #     cd ~/.local/share/gopass/stores/root
+      #     git fsck
+
+      #     # Re-initialize store if needed (CAREFUL - this will reset everything!)
+      #     # gopass init --crypto age $(age-keygen -y ~/.config/age/key.txt)
+
+      #     echo ""
+      #     echo "✅ Setup complete! Your gopass + age password manager is ready."
+      #     echo ""
+      #     echo "📚 Quick reference:"
+      #     echo "   gopass generate site.com/user 20    # Generate new password"
+      #     echo "   gopass show site.com/user           # Show password"
+      #     echo "   gopass list                         # List all passwords"
+      #     echo "   gopass search term                  # Search passwords"
+      #     echo "   gopass sync                         # Sync with remote"
+      #     echo ""
+      #     echo "🔐 Remember to backup your Age private key: ~/.config/age/key.txt"
+commands:
+  ## GIT transcrypt
+  ## https://github.com/elasticdog/transcrypt
+  brew install transcrypt:
+    desc: Install transcrypt
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+  transcrypt -c aes-256-cbc -p 'password':
+    desc: Initialize transcrypt in a repository with AES-256-CBC cipher
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+  transcrypt -c aes-256-ctr -p 'password':
+    desc: Initialize transcrypt in a repository with AES-256-CTR cipher
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+  transcrypt --list-ciphers:
+    desc: Display available ciphers for transcrypt
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+  transcrypt --display:
+    desc: Show current repository's settings and files under encryption
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+  transcrypt --add-config path/to/file:
+    desc: Add new file to be encrypted without re-encrypting existing files
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+    notes:
+      - sh: | #shell
+          # Add multiple files
+          transcrypt --add-config file1 file2
+  transcrypt --flush-credentials:
+    desc: Remove locally cached encryption credentials
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+  transcrypt --rekey:
+    desc: Re-encrypt all encrypted files with a new password
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+    notes:
+      - sh: | #shell
+          # First flush old credentials
+          transcrypt --flush-credentials
+
+          # Then rekey with new password
+          transcrypt --rekey
+  transcrypt --import path/to/keyfile:
+    desc: Import encryption configuration from a file
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+  transcrypt --export-gpg recipient@example.com:
+    desc: Export credentials encrypted with GPG for secure sharing
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+  transcrypt --uninstall:
+    desc: Remove transcrypt configuration from repository
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+    notes:
+      - sh: | #shell
+          # Decrypt files first
+          transcrypt --flush-credentials
+          transcrypt --uninstall
+  transcrypt --show-raw file:
+    desc: Display raw encrypted contents of a file
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+  transcrypt --verify:
+    desc: Verify repository configuration and file consistency
+    tags: [gitops, transcrypt]
+    links: [https://github.com/elasticdog/transcrypt]
+    notes:
+      - sh: | #shell
+          # Check specific files
+          transcrypt --verify path/to/file
+
+  # AGE - Simple, modern and secure encryption tool
+  # https://age-encryption.org
+  brew install age:
+    desc: Install AGE
+    tags: [gitops, age]
+    links: [https://age-encryption.org]
+  mkdir -p ~/.config/age && age-keygen -o ~/.config/age/keys.txt > ~/.config/age/recipient.txt:
+    desc: Generate a new AGE key pair (private + public) and save them to ~/.config/age/
+    tags: [gitops, age]
+    links: [https://age-encryption.org]
+  chmod 600 ~/.config/age/keys.txt && echo ".config/age/keys.txt" >> ~/.config/.gitignore:
+    desc: Secure the IDENTITY (Private Key) and ensure it is not backed up to git
+    tags: [gitops, age]
+  mkdir -p ~/.config/age && age-keygen -o ~/.config/age/keys.txt > ~/.config/age/recipient.txt && chmod 600 ~/.config/age/keys.txt && echo ".config/age/keys.txt" >> ~/.config/.gitignore:
+    desc: Generate a new AGE key pair (private + public), save them to ~/.config/age/, secure the IDENTITY (Private Key) and ensure it is not backed up to git
+    tags: [gitops, age]
+  grep -Eo 'age1[0-9a-z]+' ~/.config/age/keys.txt | head -1:
+    desc: Extract the recipient from ~/.config/age/keys.txt
+    tags: [gitops, age]
+  age -r $(grep -Eo 'age1[0-9a-z]+' ~/.config/age/keys.txt | head -1) -o /tmp/secret.txt.age /tmp/secret.txt:
+    desc: Encrypt /tmp/secret.txt for yourself (using your own RECIPIENT)
+    tags: [gitops, age]
+  age -r $(cat ~/.config/age/recipient.txt) -o /tmp/secret.recipients.txt.age /tmp/secret.txt:
+    desc: Encrypt /tmp/secret.txt for any recipient (using the recipient file)
+    tags: [gitops, age]
+  age -p -o /tmp/secret.passbased.txt.age /tmp/secret.txt:
+    desc: Encrypt /tmp/secret.txt using PASSWORD (symmetric encryption)
+    tags: [gitops, age]
+  tar czf - /opt/app | age -R ~/.config/age/recipients.txt > /tmp/app.tar.gz.age:
+    desc: Encrypt a whole directory (e.g., /opt/app) using multiple RECIPIENTS listed in a file
+    tags: [gitops, age]
+  age -a -R ~/.config/age/recipients.txt /tmp/secret.txt > /tmp/secret.txt.age.asc:
+    desc: Use ASCII armor to protect /tmp/secret.txt.age safe for version control
+    tags: [gitops, age]
+  age-keygen -y ~/.config/age/keys.txt > ~/.config/age/recipient.txt:
+    desc: Extract (REGENERATE) the recipient from ~/.config/age/keys.txt and save it to ~/.config/age/recipient.txt
+    tags: [gitops, age]
+  age --decrypt --identity ~/.config/age/keys.txt -o /tmp/secret.out.txt /tmp/secret.txt.age:
+    desc: Decrypt /tmp/secret.txt.age using your IDENTITY (Private Key) and save the output to /tmp/secret.out.txt
+    tags: [gitops, age]
+
+  # SOPS - Simple and flexible tool for managing secrets
+  # https://github.com/getsops/sops
+  brew install sops:
+    desc: Install SOPS
+    tags: [gitops, sops]
+  sops -e -i config.yml:
+    desc: Encrypt a file
+    tags: [gitops, sops]
+  sops -d config.yml:
+    desc: Decrypt a file
+    tags: [gitops, sops]
+  sops --encrypt --in-place --age-recipient <recipient-id> <file>:
+    desc: Encrypt a file with AGE
+    tags: [gitops, sops]
+  sops --decrypt --in-place <file>:
+    desc: Decrypt a file with AGE
+    tags: [gitops, sops]
