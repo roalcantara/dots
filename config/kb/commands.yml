@@ -1880,30 +1880,6 @@ commands:
   "echo '# tmp' >> README.md && git init && git commit -m 'chore(bootstrap): a new hope..'":
     desc: Initilize a git repo w/ README & 1st commit
     tags: [git]
-  sqlite3 <DATABASE>:
-    desc: Create database and launch interactive shell
-    tags: [sqlite]
-  "sqlite3 <DATABASE>'create table <TABLE>(id INTEGER PRIMARY KEY AUTOINCREMENT, <FIELD>);'":
-    desc: Create a TABLE with FIELD and Primary key
-    tags: [sqlite]
-  sqlite3 <DATABASE>'INSERT into TABLE values(<VALUE>);':
-    desc: Insert data into a table
-    tags: [sqlite]
-  sqlite3 <DATABASE>'.tables':
-    desc: List tables @ database
-    tags: [sqlite]
-  sqlite3 <DATABASE>'.schema TABLE':
-    desc: Describe a table
-    tags: [sqlite]
-  sqlite3 <DATABASE>'select * from'<TABLE>'':
-    desc: View records from <TABLE> @ <DATABASE>
-    tags: [sqlite]
-  select * from TABLE where <FIELD>=VALUE;:
-    desc: View records from a table conditionally
-    tags: [sqlite]
-  sqlite3 <DATABASE>'select * from TABLE where <FIELD>= like VALUE>%;':
-    desc: Select from table
-    tags: [sqlite]
   yarn add <NAME> -DW:
     desc: Add dependency globlay to yarn workspace
     tags: [yarn, workspace]
