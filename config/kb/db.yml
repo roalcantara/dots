@@ -1,5 +1,347 @@
+bookmarks:
+  https://sqlite.org:
+    desc: SQLite | The most used database engine in the world
+    tags: [db, sqlite]
+  https://rqlite.io:
+    desc: The lightweight, distributed relational database built on SQLite
+    tags: [db, rqlite, sqlite]
+  https://turso.tech/libsql:
+    desc: libsql | SQLite-compatible modern fork
+    tags: [db, libsql, sqlite]
+    notes:
+      - md: | #markdown
+          ## What is libsql?
+
+          libsql is a modern, SQLite-compatible database engine designed for high performance, scalability, and ease of use. It is built as a fork of SQLite with enhancements to support distributed and cloud-native applications.
+
+          ## Key Features
+
+          - **SQLite Compatibility**: libsql maintains compatibility with SQLite, allowing you to use existing SQLite tools and libraries.
+          - **High Performance**: Optimized for speed and efficiency, making it suitable for high-throughput applications.
+          - **Scalability**: Designed to scale horizontally across multiple nodes, making it ideal for distributed systems.
+          - **Cloud-Native**: Built with cloud environments in mind, supporting modern deployment practices.
+
+          ### Feature Comparison
+
+          | **Feature**           | **sqlite3**                | **libsql**                 |
+          |-----------------------|----------------------------|----------------------------|
+          | Base                  | Original SQLite            | Fork of SQLite             |
+          | Compatibility         | 100% SQLite                | 99%+ SQLite compatible     |
+          | Extensions            | Standard SQLite            | + libSQL extensions        |
+          | WASM Functions        | ❌ No                       | ✅ Yes                     |
+          | Vector Search         | ❌ No                       | ✅ Yes (via extension)     |
+          | Randomized ROWID      | ❌ No                       | ✅ Yes                     |
+          | CLI Experience        | Traditional                | Same + new features        |
+          | File Format           | SQLite format              | Compatible SQLite format   |
+
+          ## Getting Started
+
+          To get started with libsql, you can follow these steps:
+
+          1. **Install libsql**: You can install libsql using package managers or by building from source. For example, using Homebrew:
+             ```sh
+             brew tap tursodatabase/tap
+             brew install libsql
+             ```
+
+          2. **Create a Database**: You can create a new database using the `libsql` command-line tool:
+             ```sh
+             libsql mydatabase.db
+             ```
+
+          3. **Use libsql in Your Application**: You can connect to libsql using standard SQLite libraries in your programming language of choice.
+
+          ## Example Usage
+
+          Here is a simple example of how to use libsql in a Node.js application:
+
+          ```javascript
+          const sqlite3 = require('sqlite3').verbose();
+          const db = new sqlite3.Database('mydatabase.db');
+
+          db.serialize(() => {
+            db.run("CREATE TABLE user (id INT, name TEXT)");
+
+            const stmt = db.prepare("INSERT INTO user VALUES (?, ?)");
+            stmt.run(1, "Alice");
+            stmt.run(2, "Bob");
+            stmt.finalize();
+
+            db.each("SELECT id, name FROM user", (err, row) => {
+              console.log(row.id + ": " + row.name);
+            });
+          });
+
+          db.close();
+          ```
+  https://github.com/tursodatabase/turso:
+    desc: Turso is an in-process SQL database, compatible with SQLite
+    tags: [db, turso, sqlite]
+    links: [https://turso.tech/blog/introducing-limbo-a-complete-rewrite-of-sqlite-in-rust]
+  https://min.io:
+    desc: Exascale object store for AI data, agentic computing, and analytics
+    tags: [storage, ai, analytics]
+  https://qlik.com:
+    desc: Seamless data integration and powerful Al-driven analytics to drive better business decisions
+    tags: [data, analytics, ai]
+  https://starburst.io:
+    desc: Bring Your AI to Your Data, Lakeside (FREMIUM) | STARBURST GALAXY
+    tags: [data, analytics, ai]
+  https://trino.io:
+    desc: Trino, a query engine that runs at ludicrous speed
+    tags: [sql, query, analytics]
+    links: [https://trino.io/docs/current/client/cli.html, https://trino.io/docs/current/glossary.html, https://youtu.be/SnvSBYhRZLg, https://starburst.io]
+    notes:
+      - md: | #markdown
+          ### OVERVIEW
+          Trino is a ludicrous fast, open source, distributed, massively parallel processing, SQL query engine to query large data sets across one or more heterogeneous data sources.
+      - sh: | #shell
+          #!/bin/bash
+          brew install trino
+      - md: | #markdown
+          ### Glossary
+          The glossary contains a list of key Trino terms and definitions
+
+          - **Catalog:**
+            - Catalogs define and name a configuration for connecting to a data source, allowing users to query the connected data.
+            - Each catalog's configuration specifies a connector to define which data source the catalog connects to.
+            - For more information about catalogs, see [Catalog](https://trino.io/docs/current/overview/concepts.html#trino-concept-catalog).
+
+          - **Certificate:**
+            - A public key certificate issued by a CA, sometimes abbreviated as cert, that verifies the ownership of a server's private keys.
+            - Certificate format is specified in the [X.509](https://wikipedia.org/wiki/X.509) standard.
+
+          - **Certificate Authority (CA):**
+            - A trusted organization that signs and issues certificates.
+            - Its signatures can be used to verify the validity of [certificates](https://trino.io/docs/current/glossary.html#glosscert).
+
+          - **Cluster:**
+            - A Trino cluster provides the resources to run queries against numerous data sources.
+            - Clusters define the number of nodes, the configuration for the JVM runtime, configured data sources, and others aspects.
+            - For more information, see [Cluster](https://trino.io/docs/current/overview/concepts.html#trino-concept-cluster).
+
+          - **Connector:**
+            - Translates data from a data source into Trino schemas, tables, columns, rows, and data types.
+            - A connector is specific to a data source, and is used in catalog configurations to define what data source the catalog connects to.
+            - A connector is one of many types of [plugins](https://trino.io/docs/current/glossary.html#glossplugin)
+
+          - **Container:**
+            - A lightweight virtual package of software that contains libraries, binaries, code, configuration files, and other dependencies needed to deploy an application.
+            - A running container does not include an operating system, instead using the operating system of the host machine.
+            - To learn more, read about [containers](https://kubernetes.io/docs/concepts/containers) in the Kubernetes documentation.
+
+          - **Data source:**
+            - A system from which data is retrieved - for example, PostgreSQL or Iceberg on S3 data.
+            - In Trino, users query data sources with catalogs that connect to each source.
+            - See [Data source](https://trino.io/docs/current/overview/concepts.html#trino-concept-data-source) for more information.
+
+          - **Data virtualization:**
+            - [Data virtualization](https://wikipedia.org/wiki/Data_virtualization) is a method of abstracting an interaction with multiple heterogeneous data sources, without needing to know the distributed nature of the data, its format, or any other technical details involved in presenting the data.
+
+          - **gzip:**
+            - [gzip](https://wikipedia.org/wiki/Gzip) is a compression format and software that compresses and decompresses files.
+            - This format is used several ways in Trino, including deployment and compressing files in object storage.
+            - The most common extension for gzip-compressed files is .gz.
+
+          - **HDFS:**
+            - [Hadoop Distributed Filesystem (HDFS)](https://wikipedia.org/wiki/Apache_Hadoop#HDFS) is a scalable open source filesystem that was one of the earliest distributed big data systems created to store large amounts of data for the Hadoop ecosystem.
+
+          - **Java KeyStore (JKS):**
+            - The system of public key cryptography supported as one part of the Java security APIs.
+            - The legacy JKS system recognizes keys and certificates stored in keystore files, typically with the .jks extension, and by default relies on a system-level list of CAs in truststore files installed as part of the current Java installation.
+
+          - **Key:**
+            - A cryptographic key specified as a pair of public and private strings generally used in the context of TLS to secure public network traffic.
+
+          - **Load Balancer (LB):**
+            - Software or a hardware device that sits on a network edge and accepts network connections on behalf of servers behind that wall, distributing traffic across network and server infrastructure to balance the load on networked services.
+
+          - **Object storage:**
+            - [Object storage](https://en.wikipedia.org/wiki/Object_storage) is a file storage mechanism.
+            - Examples of compatible object stores include the following:
+              - [Amazon S3](https://aws.amazon.com/s3)
+              - [Google Cloud Storage](https://cloud.google.com/storage)
+              - [Azure Blob Storage](https://azure.microsoft.com/en-us/products/storage/blobs)
+              - [MinIO](https://min.io) and other S3-compatible stores
+              - [HDFS](https://trino.io/docs/current/glossary.html#glosshdfs)
+
+          - **Open-source:**
+            - Typically refers to open-source software. which is software that has the source code made available for others to see, use, and contribute to.
+            - Allowed usage varies depending on the license that the software is licensed under.
+            - Trino is licensed under the Apache license, and is therefore maintained by a community of contributors from all across the globe.
+
+          - **PEM file format:**
+            - A format for storing and sending cryptographic keys and certificates.
+            - PEM format can contain both a key and its certificate, plus the chain of certificates from authorities back to the root CA, or back to a CA vendor's intermediate CA.
+
+          - **PKCS #12:**
+            - A binary archive used to store keys and certificates or certificate chains that validate a key.
+            - PKCS #12 files have .p12 or .pfx extensions.
+            - This format is a less popular alternative to PEM.
+
+          - **Plugin:**
+            - A bundle of code implementing the Trino Service Provider Interface (SPI). that is used to add new functionality.
+            - More information is available in [Plugins](https://trino.io/docs/current/installation/plugins.html).
+
+          - **Presto and PrestoSQL:**
+            The old name for Trino. To learn more about the name change to Trino, read the history.
+
+          - **Query federation:**
+            - A type of data virtualization that provides a common access point and data model across two or more heterogeneous data sources.
+            - A popular data model used by many query federation engines is translating different data sources to SQL tables.
+
+          - **Secure Sockets Layer (SSL):**
+            - Now superseded by [TLS](https://trino.io/docs/current/glossary.html#glosstls), but still recognized as the term for what TLS does.
+
+          - **Structured Query Language (SQL):**
+            - The standard language used with relational databases.
+            - For more information, see SQL.
+
+          - **Tarball:**
+            - A common abbreviation for [TAR file](https://wikipedia.org/wiki/Tar_(computing)), which is a common software distribution mechanism.
+            - This file format is a collection of multiple files distributed as a single file, commonly compressed using gzip compression.
+
+          - **Transport Layer Security (TLS):**
+            - TLS is a security protocol designed to provide secure communications over a network.
+            - It is the successor to SSL, and used in many applications like HTTPS, email, and Trino.
+            - These security topics use the term TLS to refer to both TLS and SSL.
+
+commands:
+  brew tap tursodatabase/tap && brew install libsql:
+    desc: Install libsql (SQLite-compatible modern fork)
+    tags: [db, libsql]
+    links: [https://turso.tech/libsql]
+  brew install sqlite3:
+    desc: Install sqlite3
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 <DATABASE>:
+    desc: Create database and launch interactive shell
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  "sqlite3 <DATABASE>'create table <TABLE>(id INTEGER PRIMARY KEY AUTOINCREMENT, <FIELD>);'":
+    desc: Create a TABLE with FIELD and Primary key
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 <DATABASE>'INSERT into TABLE values(<VALUE>);':
+    desc: Insert data into a table
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 <DATABASE>'.tables':
+    desc: List tables @ database
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 <DATABASE>'.schema TABLE':
+    desc: Describe a table
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 <DATABASE>'select * from'<TABLE>'':
+    desc: View records from <TABLE> @ <DATABASE>
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  select * from TABLE where <FIELD>=VALUE;:
+    desc: View records from a table conditionally
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 <DATABASE>'select * from TABLE where <FIELD>= like VALUE>%;':
+    desc: Select from table
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 demo.sqlite "VACUUM;":
+    desc: Creating database file with VACUUM - repacking it into a minimal amount of disk space
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+    notes:
+      - md: | #markdown
+          ### What is VACUUM?
+
+          `VACUUM` is a SQLite command that rebuilds the database file, repacking it into a minimal amount of disk space.
+
+          ### What VACUUM Does?
+
+          1. **Defragments the database** - Removes fragmented free space
+          2. **Reclaims unused space** - Shrinks the file size after deletions
+          3. **Rebuilds the entire database** - Creates a fresh, optimized copy
+          4. **Reorders data** - Reorganizes tables for better performance
+
+          ### When is VACUUM Useful?
+
+          ```sql
+          -- After deleting lots of data
+          DELETE FROM large_table WHERE condition;
+          VACUUM;  -- Reclaim the freed space
+
+          -- Database file is 100MB but only has 20MB of actual data
+          VACUUM;  -- Shrinks file from 100MB to ~20MB
+
+          -- Database has become fragmented over time
+          VACUUM;  -- Defragments and optimizes
+          ```
+
+          ### Why We Use It to Create Empty Database?
+
+          When run `sqlite3 demo.sqlite "VACUUM;"`:
+
+          1. Creates a valid SQLite database file (if it doesn't exist)
+          2. Initializes the proper SQLite file header
+          3. Compacts it to minimal size (since it's empty)
+
+          ```sh
+          # What happens:
+          sqlite3 new.db "VACUUM;"
+
+          # Creates a valid, minimal SQLite file:
+          # - Proper SQLite header (100 bytes)
+          # - Database schema page
+          # - Properly formatted and ready to use
+          ```
+
+          ### Performance Considerations
+
+          ```sh
+          -- VACUUM can be slow on large databases
+          -- It creates a complete copy of the database
+
+          -- On a 1GB database:
+          VACUUM;  -- Might take 10-30 seconds
+
+          -- On a 10GB database:
+          VACUUM;  -- Might take several minutes
+
+          -- Requires 2x the disk space temporarily
+          -- (original + copy during rebuild)
+          ```
+
+          ### When to VACUUM?
+
+          ```sql
+          -- ✅ After bulk deletes
+          DELETE FROM logs WHERE created_at < '2020-01-01';
+          VACUUM;
+
+          -- ✅ During maintenance windows
+          -- Schedule weekly VACUUM on production databases
+
+          -- ✅ After schema changes
+          ALTER TABLE users ADD COLUMN new_field TEXT;
+          VACUUM;
+          ```
+
+          ### When NOT to VACUUM?
+
+          ```sql
+          -- ❌ On every DELETE (too expensive)
+          DELETE FROM items WHERE id = 1;
+          VACUUM;  -- Don't do this!
+
+          -- ❌ On active production databases during peak hours
+          -- Wait for low-traffic period
+
+          -- ❌ If disk space is limited
+          -- VACUUM needs temporary space equal to DB size
+          ````
+
 cheats:
-  # CLOUD DATABASES
   Top Database Types | SUMMARY:
     desc: Relational x NoSQL x Key-Value x In-memory x Wide-column x Graph x Time-series
     tags: [db]
@@ -322,3 +664,231 @@ cheats:
             - Amazon ElastiCache
             - Redis
             - Memcached
+  libsql CLI vs sqlite3 CLI:
+    desc: Differences between libsql CLI and sqlite3 CLI
+    tags: [db, sqlite, libsql]
+    links: [https://turso.tech/libsql, https://sqlite.org]
+    notes:
+      - md: | #markdown
+          ## libSQL Advantages for Development
+
+          ### 1. Feature Parity with Production
+
+          If you deploy to Turso, using libsql locally ensures exact same behavior:
+
+          ```sh
+          # Local development with libsql
+          libsql moviedb.sqlite
+
+          # Production with Turso
+          # Same SQL dialect, same features, same behavior
+          ```
+
+          ### 2. WebAssembly User-Defined Functions
+
+          1. Only works with libsql, not sqlite3
+
+              ```sql
+              CREATE FUNCTION hello(name TEXT)
+              LANGUAGE wasm
+              AS '/path/to/hello.wasm';
+
+              SELECT hello('World'); -- Returns: Hello, World!
+              ```
+
+          2. Example WASM function (Rust):
+
+              ```rust
+              // hello.rs
+              #[no_mangle]
+              pub extern "C" fn hello(name: *const u8, len: usize) -> *const u8 {
+                  // Custom logic
+                  format!("Hello, {}!", name).as_ptr()
+              }
+              ```
+
+          ### 3. Randomized ROWID
+
+          ```sql
+          -- libsql: ROWIDs are randomized by default
+          -- Better security (no sequential ID guessing)
+          CREATE TABLE users (
+            id INTEGER PRIMARY KEY, -- Random instead of sequential
+            name TEXT
+          );
+
+          -- sqlite3: ROWIDs are sequential (1, 2, 3...)
+          -- Potential security issue if exposed
+          ```
+
+          ### 4. Vector Search Extensions
+
+          ```sql
+          -- libsql supports vector embeddings (useful for AI features)
+          CREATE VIRTUAL TABLE movie_embeddings USING vec0(
+            embedding FLOAT[384]
+          );
+
+          -- Search for similar movies
+          SELECT * FROM movie_embeddings
+          WHERE embedding MATCH vector('[0.1, 0.2, ...]')
+          ORDER BY distance
+          LIMIT 10;
+          ```
+
+          ### 5. Better JSON Support
+
+          ```sql
+          -- libsql has enhanced JSON functions
+          -- Same as SQLite but with additional operators:
+
+          --- Example: Extracting data from JSON
+          CREATE TABLE movies (id INTEGER PRIMARY KEY, metadata JSON);
+          INSERT INTO movies (metadata) VALUES ('{"title": "Inception", "director": "Nolan"}');
+          SELECT json_extract(metadata, '$.director') FROM movies;
+
+          -- More JSON functions available in libsql
+          SELECT json_set(metadata, '$.year', 2010) FROM movies;
+          ```
+
+          ### 6. Improved CLI Experience
+
+          ```sh
+          # libsql CLI has additional features
+          libsql mydb.sqlite
+          .help  -- More commands available
+          .mode json  -- Output results as JSON
+          .schema  -- View database schema
+          .exit  -- Exit the CLI
+          ```
+      - md: | #markdown
+          ### Practical Comparison
+
+          #### Using sqlite3 CLI
+
+          ```sh
+          $ sqlite3 moviedb.sqlite
+
+          SQLite version 3.43.0
+          sqlite> .tables
+          movies  cast  crew
+
+          sqlite> SELECT title FROM movies LIMIT 3;
+          Inception
+          The Dark Knight
+          Interstellar
+
+          sqlite> .exit
+          ```
+
+          #### Using libsql CLI
+
+          ```sh
+          $ libsql moviedb.sqlite
+
+          libSQL version 0.2.1 (based on SQLite 3.43.0)
+          libsql> .tables
+          movies  cast  crew
+
+          libsql> SELECT title FROM movies LIMIT 3;
+          Inception
+          The Dark Knight
+          Interstellar
+
+          # Same commands, same experience
+          libsql> .exit
+          ```
+  Trino, a query engine that runs at ludicrous speed:
+    desc: Distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources
+    tags: [db, sql]
+    links: [https://trino.io/docs/current/client/cli.html, https://trino.io/docs/current/glossary.html, https://youtu.be/SnvSBYhRZLg, https://starburst.io]
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          # TRINO's CHEATSHEET
+          # Distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources
+
+          # 1. Run trinodb container with a default configuration (containing some catalogs to explore) mounted at /etc/trino
+          docker run --rm -i --name trino -d -p 8080:8080 trinodb/trino
+
+          # 2. The default server URL in the CLI matches the port used in the command to start the container (-p 8080:8080)
+          open http://localhost:8080
+
+          # 3. Execute queries in the existing Trino server container
+          docker exec -it trino trino
+
+          # 4. After starting the client, type and execute a query example data
+          # trino>
+          select count(*) from tpch.sf1.nation;
+          # _col0
+          # -------
+          #     25
+          # (1 row)
+          #
+          # Query 20250908_195801_00000_3enfm, FINISHED, 1 node
+          # Splits: 13 total, 13 done (100.00%)
+          # 1.27 [25 rows, 0B] [19 rows/s, 0B/s]
+
+          # 5. When you are done with your exploration enter the quit command
+          # trino>
+          quit;
+
+          # CONTAINER CONFIGURATIONS
+
+          # 6. To customise the configuration files (rather than using the image's defaults) mounts /etc/trino
+          docker run --name trino -d -p 8080:8080 --volume $PWD/etc:/etc/trino trinodb/trino
+
+          # 7. To keep the default configuration and only configure catalogs, mounts /etc/trino/catalog - or individual catalog property files in it
+          docker run --name trino -d -p 8080:8080 --volume $PWD/etc/catalog:/etc/trino/catalog trinodb/trino
+
+          # 8. To use additional plugins mounts /usr/lib/trino/plugin
+          docker run --name trino -d -p 8080:8080 --volume $PWD/plugins:/usr/lib/trino/plugin trinodb/trino
+
+          # 14. Stop the trinodb container
+          docker stop trino
+
+          # 15. To start trinodb container
+          docker start trino
+
+          # 16. To remove a stopped trinodb container
+          docker rm trino
+      - sh: | #shell
+          #!/bin/bash
+
+          # TRINO's DYNAMIC CATALOG CHEATSHEET
+          # Distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources
+
+          # 1. To avoid having to create catalog files and mount them in the container enable dynamic catalog management
+          docker run --name trino -d -p 8080:8080 -e CATALOG_MANAGEMENT=dynamic trinodb/trino
+
+          # 2. To make dynamic catalog changes persistent across container restarts mounts /etc/trino/catalog
+          docker run --name trino -d -p 8080:8080 -e CATALOG_MANAGEMENT=dynamic --volume $PWD/etc/catalog:/etc/trino/catalog trinodb/trino
+
+          # 3. Execute queries in the existing Trino server container
+          docker exec -it trino trino
+
+          # 4. To create dynamic catalogs run
+          # trino>
+          CREATE CATALOG my_catalog WITH (
+              connector = 'hive',
+              hive.metastore.uri = 'thrift://localhost:9083'
+          );
+
+          # 5. After creating the dynamic catalog, you can use it in your queries
+          # trino>
+          SELECT * FROM my_catalog.my_table;
+
+          # 6. To drop dynamic catalogs run
+          # trino>
+          DROP CATALOG my_catalog;
+
+          # 7. When you are done with your exploration enter the quit command
+          # trino>
+          quit;
+
+          # 8. Stop the trinodb container
+          docker stop trino
+
+          # 8. To remove a stopped trinodb container
+          docker rm trino

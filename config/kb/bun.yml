@@ -103,14 +103,14 @@ cheats:
           ```sh
           cdk deploy
           ```
-  Bun's MySQL & MariaDB in Bun.SQL:
-    desc: Bun's MySQL/MariaDB driver is written in Zig
+  Bun's SQL client:
+    desc: Use Bun.SQL to connect to MySQL/MariaDB, SQLite, and PostgreSQL
     tags: [bun, sql]
-    links: [https://bun.com/blog/bun-v1.2.21#mysql-mariadb-in-bun-sql]
+    links: [https://bun.com/blog/bun-v1.2.21#bun-sql-unified-sql-client]
     notes:
       - ts: | #typescript
           // index.ts
-          // https://bun.com/blog/bun-v1.2.21
+          // The same database library just works for the three most popular SQL databases, with zero dependencies.
           import { SQL } from "bun";
 
           // Connect to a MySQL or MariaDB database
@@ -188,3 +188,32 @@ cheats:
             service: "my-cli-tool",
             name: "github-token",
           });
+  Bun's native YAML support:
+    desc: Import YAML files as you would a JavaScript module. Bun will parse the file and export its contents as the default export
+    tags: [bun, yaml]
+    links: [https://bun.com/blog/bun-v1.2.21#native-yaml-support]
+    notes:
+      - yaml: | #yaml
+          # bun.yaml
+          bun: 'BUN!'
+          bunny: { 'bunny': 'BUNNY!' }
+          BuN:
+            - javascript runtime
+            - package manager
+            - test runner
+            - and a BUNdler, all-in-one
+          BUN:
+            '8un': !!str |
+              bun
+              bun!
+      - ts: | #typescript
+          // index.ts
+          import bun from './bun.yaml'
+
+          // parse YAML strings at runtime
+          const BuN = Bun.YAML.parse(`
+            bun: "bun"
+          `)
+
+          console.log(bun)
+          console.log(BuN.bun)
