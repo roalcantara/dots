@@ -1,3 +1,13 @@
+# [1.13.0](https://github.com/roalcantara/dots/compare/v1.12.0...v1.13.0) (2025-10-07)
+
+
+### Features
+
+* **install:** Install packages from default Flox environment ([efd0037](https://github.com/roalcantara/dots/commit/efd0037c31ad79baf5b165ad0a854a68088c668b))
+* **kb:** Add TMDB API commands for movie and TV show data retrieval ([4fefeb5](https://github.com/roalcantara/dots/commit/4fefeb54d36623e4133dc6d9e8958081dd50450d))
+* **kb:** Enhance SQLite commands ([9c088b9](https://github.com/roalcantara/dots/commit/9c088b9adeee8ab8d7ddd986e278dd314d042008))
+* **kb:** Reorganize devops and prep entries ([689a391](https://github.com/roalcantara/dots/commit/689a39143a0576aac2b7c0dcc43124ef446f3f4b))
+
 # [1.12.0](https://github.com/roalcantara/dots/compare/v1.11.0...v1.12.0) (2025-10-01)
 
 
