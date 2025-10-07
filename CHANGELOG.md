@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/roalcantara/dots/compare/v1.13.0...v1.14.0) (2025-10-07)
+
+
+### Features
+
+* **dots:** Add runtime permissions management for XDG environment ([2ea4dc7](https://github.com/roalcantara/dots/commit/2ea4dc7cee2d3f3e2fe97bded70ec7e9a3858867))
+
 # [1.13.0](https://github.com/roalcantara/dots/compare/v1.12.0...v1.13.0) (2025-10-07)
 
 
