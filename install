@@ -305,7 +305,10 @@ prepare_system_min_packages() {
   fi
 }
 prepare_system_post_install() {
-  [ -n "$TIMEZONE" ] && { ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime; echo "$TIMEZONE" > /etc/timezone; }
+  if [ -n "$TIMEZONE" ]; then
+    ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime || sudo ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+    echo "$TIMEZONE" > /etc/timezone || echo "$TIMEZONE" | sudo tee /etc/timezone > /dev/null
+  fi
   success "$1 System post-install configuration READY! ✔"
 }
 prepare_package_manager() {
