@@ -306,8 +306,16 @@ prepare_system_min_packages() {
 }
 prepare_system_post_install() {
   if [ -n "$TIMEZONE" ]; then
-    ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime || sudo ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
-    echo "$TIMEZONE" > /etc/timezone || echo "$TIMEZONE" | sudo tee /etc/timezone > /dev/null
+    if [ -f "/usr/share/zoneinfo/$TIMEZONE" ]; then
+      ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime || sudo ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+      if echo "$TIMEZONE" > /etc/timezone 2>/dev/null || echo "$TIMEZONE" | sudo tee /etc/timezone > /dev/null; then
+        info "$1 Timezone '$TIMEZONE' set successfully."
+      else
+        error "$1 Failed to write timezone '$TIMEZONE' to /etc/timezone."
+      fi
+    else
+      error "$1 Invalid timezone: '$TIMEZONE'. Skipping timezone configuration."
+    fi
   fi
   success "$1 System post-install configuration READY! ✔"
 }
