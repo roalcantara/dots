@@ -236,19 +236,19 @@ run_as_user() {
     local all_arrays="$(declare -p COLORS PACKAGES)"
     # Preserve environment variables for the target user
     sudo -u "$username" -H \
-      HOME="$HOME" \
-      USERNAME="$USERNAME" \
-      GROUPNAME="$GROUPNAME" \
+      HOME="${HOME:-}" \
+      USERNAME="${USERNAME:-}" \
+      GROUPNAME="${GROUPNAME:-}" \
       XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-}" \
       XDG_DATA_HOME="${XDG_DATA_HOME:-}" \
       MISE_DATA_HOME="${MISE_DATA_HOME:-}" \
       FLOX_PATH="${FLOX_PATH:-}" \
       GITHUB_TOKEN="${GITHUB_TOKEN:-}" \
-      USR_LOCAL_BIN="$USR_LOCAL_BIN" \
-      PLATFORM_ARCH="$PLATFORM_ARCH" \
-      FLOX_VERSION="$FLOX_VERSION" \
-      UNAME="$UNAME" \
-      CONTEXT="$CONTEXT" \
+      USR_LOCAL_BIN="${USR_LOCAL_BIN:-}" \
+      PLATFORM_ARCH="${PLATFORM_ARCH:-}" \
+      FLOX_VERSION="${FLOX_VERSION:-}" \
+      UNAME="${UNAME:-}" \
+      CONTEXT="${CONTEXT:-}" \
       PATH="/usr/local/bin:$HOME/.local/bin:$PATH" \
       bash -c "
         # Import functions and arrays
@@ -290,12 +290,12 @@ prepare_argument_parsing() {
       ;;
     esac
   done
-  if [[ -z "$USERNAME" ]] || [[ "$USER" != "root" ]]; then
+  if [[ -z "${USERNAME:-}" ]] || [[ "$USER" != "root" ]]; then
     USERNAME=$USER
   else
     USERNAME="roalcantara"
   fi
-  if [[ -z "$GROUPNAME" ]] || [[ "$USER" != "root" ]]; then
+  if [[ -z "${GROUPNAME:-}" ]] || [[ "$USER" != "root" ]]; then
     GROUPNAME=$(id -gn)
   else
     if is_darwin; then
