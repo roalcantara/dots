@@ -1,3 +1,11 @@
+## [1.14.1](https://github.com/roalcantara/dots/compare/v1.14.0...v1.14.1) (2025-10-07)
+
+
+### Bug Fixes
+
+* **install:** Ensure that timezone is valid ([e597080](https://github.com/roalcantara/dots/commit/e59708035b204921bf1ac478579a533c078c56be))
+* **install:** Improve timezone configuration handling ([afa5f93](https://github.com/roalcantara/dots/commit/afa5f93d9061ee32fefecb617c337f859dacea48))
+
 # [1.14.0](https://github.com/roalcantara/dots/compare/v1.13.0...v1.14.0) (2025-10-07)
 
 
