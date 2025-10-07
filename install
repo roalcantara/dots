@@ -130,7 +130,7 @@ fix_flox_permissions() {
   fi
 }
 package_manager_install_flox() {
-  if [ "$UNAME" = "darwin" ]; then # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version | wget https://downloads.flox.dev/by-env/stable/osx/flox-1.7.2.aarch64-darwin.pkg -O /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version
+  if is_darwin; then # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version | wget https://downloads.flox.dev/by-env/stable/osx/flox-1.7.2.aarch64-darwin.pkg -O /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version
     download_file "https://downloads.flox.dev/by-env/stable/osx/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-darwin.pkg" "/tmp/flox.pkg"
     run_cmd sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg
   else # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version | wget https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -O /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
@@ -229,7 +229,7 @@ ensure_user_and_group_debian() {
 run_as_user() {
   local username="$1"; shift
   if [ "$(id -u)" -eq 0 ] && [ "$username" != "root" ]; then
-    warn "Running command as user '$username' => '$*'"
+    warn "Running command as user '$username' => '$*' ($USERNAME/$GROUPNAME)"
     # Export all required function dependencies
     local all_functions="$(declare -f log info warn error fatal success ok run_cmd has_cmd download_file package_manager_install_flox package_manager_install_mise packages_install_flox packages_install_mise prepare_tools_zsh prepare_tools_nvim prepare_tools_sops)"
     # Export required arrays and variables
@@ -347,12 +347,12 @@ prepare_package_manager() {
   run_as_user "$USERNAME" "command -v $mgr && $mgr --version" || fatal "$step Package Manager '$mgr' not accessible by user '$USERNAME'!"
 }
 prepare_user_and_group() {
-  [ "$UNAME" = "darwin" ] && ensure_user_and_group_darwin "$1" || ensure_user_and_group_debian "$1"
+  is_darwin && ensure_user_and_group_darwin "$1" || ensure_user_and_group_debian "$1"
   export USER="$USERNAME"; export GROUP="$GROUPNAME";
   ok "$1" "USER/GROUP" "{USER=$USER, GROUP=$GROUP} ensured!" "✔"
 }
 prepare_home_and_xdg_dirs() {
-  [ "$UNAME" = "darwin" ] && export HOME="/Users/$USERNAME" || export HOME="/home/$USERNAME"
+  is_darwin && export HOME="/Users/$USERNAME" || export HOME="/home/$USERNAME"
   backup_home "$1"
   export XDG_CONFIG_HOME="$HOME/.config"
   ensure_dirs_and_export_vars \
