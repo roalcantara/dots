@@ -247,6 +247,10 @@ commands:
     desc: Select from table
     tags: [db, sqlite]
     links: [https://sqlite.org]
+  sqlite3 /path/to/database.sqlite < /path/to/file.sql:
+    desc: Execute SQL file against a SQLite database. Creates the database file if it does not exist.
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
   sqlite3 demo.sqlite "VACUUM;":
     desc: Creating database file with VACUUM - repacking it into a minimal amount of disk space
     tags: [db, sqlite]

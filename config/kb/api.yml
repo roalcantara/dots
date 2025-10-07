@@ -36,3 +36,94 @@ cheats:
           ### Webhook
           - Event-driven, HTTP callbacks, asynchronous
           - Notifies systems when events occur
+
+commands:
+  'curlie "https://api.themoviedb.org/3/authentication" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Check authentication Status
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/authentication]
+
+  'curlie "https://api.themoviedb.org/3/discover/movie" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Find movies using over 30 filters and sort options
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/discover-movie]
+
+  'curlie "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get a list of movies that are currently in theatres
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/movie-now-playing-list]
+
+  'curlie "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get a list of movies ordered by popularity
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/movie-popular-list]
+
+  'curlie "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get a list of movies ordered by rating
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/movie-top-rated-list]
+
+  'curlie "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get a list of movies that are being released soon
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/movie-upcoming-list]
+
+  'curlie "https://api.themoviedb.org/3/movie/447365?language=en-US" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get the top level details of "Guardians of the Galaxy Volume 3" movie by ID
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/movie-details]
+
+  'curlie "https://api.themoviedb.org/3/movie/447365/similar?language=en-US&page=1" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get the similar "Guardians of the Galaxy Volume 3" movies based on genres and keywords
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/movie-similar]
+
+  'curlie "https://api.themoviedb.org/3/trending/movie/day?language=en-US" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get the trending movies on TMDB for the day
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/trending-movies]
+
+  'curlie "https://api.themoviedb.org/3/trending/movie/week?language=en-US" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get the trending movies on TMDB for the week
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/trending-movies]
+
+  'curlie "https://api.themoviedb.org/3/tv/airing_today?language=en-US&page=1" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get a list of TV shows airing today
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/tv-series-airing-today-list]
+
+  'curlie "https://api.themoviedb.org/3/tv/on_the_air?language=en-US&page=1" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get a list of TV shows that air in the next 7 days
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/tv-series-on-the-air-list]
+
+  'curlie "https://api.themoviedb.org/3/tv/popular?language=en-US&page=1" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get a list of TV shows ordered by popularity
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/tv-series-popular-list]
+
+  'curlie "https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get a list of TV shows ordered by rating
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/tv-series-top-rated-list]
+
+  'curlie "https://api.themoviedb.org/3/trending/tv/day?language=en-US" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get the trending TV shows on TMDB for the day
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/trending-tv]
+
+  'curlie "https://api.themoviedb.org/3/trending/tv/week?language=en-US" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get the trending TV shows on TMDB for the week
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/trending-tv]
+
+  'curlie "https://api.themoviedb.org/3/tv/60625?language=en-US" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get the details of a TV show "Rick and Morty" by ID
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/tv-series-details]
+
+  'curlie "https://api.themoviedb.org/3/tv/60625/similar?language=en-US&page=1" -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/themoviedb.org)"':
+    desc: TMDB | Get the similar "Rick and Morty" TV shows based on genres and keywords
+    tags: [api, movies]
+    links: [https://developer.themoviedb.org/reference/tv-series-similar]
