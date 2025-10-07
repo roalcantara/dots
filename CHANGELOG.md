@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/roalcantara/dots/compare/v1.14.1...v1.14.2) (2025-10-07)
+
+
+### Bug Fixes
+
+* **install:** Replace UNAME checks with is_darwin function ([4867906](https://github.com/roalcantara/dots/commit/4867906be87db9d403fbbb75cfcb1fa47b9c37c9))
+
 ## [1.14.1](https://github.com/roalcantara/dots/compare/v1.14.0...v1.14.1) (2025-10-07)
 
 
