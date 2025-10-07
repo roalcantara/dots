@@ -35,9 +35,59 @@
 ##?     dots zsh --benchmark [ measure | store | logs ]
 ##?     dots zsh --prof [ exec | store | stats | avg | logs ]
 ##?     dots zsh --prof trace [ --once ]
+##?     dots xdg check_runtime_perms
+##?     dots xdg ensure_runtime_perms
+
+__get_dir_permissions() {
+    local dir="$1"
+    local perms owner
+
+    case "$(uname)" in
+        Darwin)
+            perms=$(stat -f "%Lp" "$dir" 2>/dev/null || echo "000")
+            owner=$(stat -f "%u" "$dir" 2>/dev/null || echo "0")
+            ;;
+        Linux)
+            perms=$(stat -c "%a" "$dir" 2>/dev/null || echo "000")
+            owner=$(stat -c "%u" "$dir" 2>/dev/null || echo "0")
+            ;;
+        *)
+            echo "000:0"  # Unknown OS fallback
+            return 1
+            ;;
+    esac
+
+    echo "$perms:$owner"
+    return 0
+}
 
 dots() {
   case $1 in
+  # XDG subcommands
+  xdg)
+    case $2 in
+    check_runtime_perms)
+      local perms owner
+      IFS=':' read -r perms owner <<< "$(__get_dir_permissions "$XDG_RUNTIME_DIR")"
+      if [[ "$perms" != "700" ]] || [[ "$owner" != "${UID:-$(id -u)}" ]]; then
+        echo "XDG_RUNTIME_DIR => '$XDG_RUNTIME_DIR' -> '$perms:$owner'! (should be 700:$UID)! Run 'dots xdg ensure_runtime_perms' to fix.."
+        return 1
+      fi
+      echo "XDG_RUNTIME_DIR => '$XDG_RUNTIME_DIR' -> '$perms:$owner'! ✔✔"
+      return 0
+      ;;
+    ensure_runtime_perms)
+      local runtime_dir="${XDG_RUNTIME_DIR:-}"
+      [[ ! -d "$runtime_dir" ]] && mkdir -p "$runtime_dir" 2>/dev/null || sudo mkdir -p "$runtime_dir"
+      IFS=':' read -r perms owner <<< "$(__get_dir_permissions "$runtime_dir")"
+      [[ "$perms" != "700" ]] && chmod 700 "$runtime_dir" 2>/dev/null || sudo chmod 700 "$runtime_dir"
+      [[ "$owner" != "${UID:-$(id -u)}" ]] && local username="${USERNAME:-$(id -un)}" && chown "$username" "$runtime_dir" 2>/dev/null || sudo chown "$username" "$runtime_dir"
+      ;;
+    *)
+      dots xdg "$(gum filter --limit=1 'check_runtime_perms' 'ensure_runtime_perms')"
+      ;;
+    esac
+    ;;
   # Print the path
   path)
     echo "$PATH" | sed 's/:/\n/g' | uniq -c
@@ -250,7 +300,7 @@ dots() {
     esac
     ;;
   *)
-    dots "$(gum filter --limit=1 'path' 'fpath' 'cdpath' 'env' 'zsh' 'palette')"
+    dots "$(gum filter --limit=1 'path' 'fpath' 'cdpath' 'env' 'zsh' 'palette' 'xdg')"
     ;;
   esac
 }
