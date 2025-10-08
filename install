@@ -27,10 +27,15 @@ has_cmd() { command -v "$1" >/dev/null 2>&1; }
 is_container() {
   if [ -n "${DOCKER_CONTAINER:-}" ] || [ -n "${container:-}" ] ||
     [ -f "/.dockerenv" ] || [ -f "/var/run/docker.sock" ] || [ -f "/run/.containerenv" ] ||
-    ([ -f "/proc/1/cgroup" ] && (grep -q "docker" "/proc/1/cgroup" || grep -q '^0::/$' /proc/1/cgroup)); then
+    [ -n "${REMOTE_CONTAINERS:-}" ] || [ -n "${CODESPACES:-}" ] ||
+    ([ -f "/proc/1/cgroup" ] && (grep -q "docker" "/proc/1/cgroup" || grep -q '^0::/$' /proc/1/cgroup)) ||
+    ([ -f "/proc/1/cgroup" ] && grep -q "containerd" "/proc/1/cgroup"); then
     return 0
   fi
   return 1
+}
+is_devcontainer() {
+  [ -n "${REMOTE_CONTAINERS:-}" ] || [ -n "${CODESPACES:-}" ] || [ -f "/.devcontainer/.postCreateCommandMarker" ] || [ -d "/.devcontainer" ]
 }
 needs_sudo() {
   [ "$(id -u)" -ne 0 ] && return 0 || return 1
@@ -230,8 +235,8 @@ run_as_user() {
   local username="$1"; shift
   if [ "$(id -u)" -eq 0 ] && [ "$username" != "root" ]; then
     warn "Running command as user '$username' => '$*' ($USERNAME/$GROUPNAME)"
-    # Export all required function dependencies
-    local all_functions="$(declare -f log info warn error fatal success ok run_cmd has_cmd download_file package_manager_install_flox package_manager_install_mise packages_install_flox packages_install_mise prepare_tools_zsh prepare_tools_nvim prepare_tools_sops)"
+    # Export all required function dependencies - include ALL functions that might be called
+    local all_functions="$(declare -f log info warn error fatal success ok run_cmd has_cmd download_file package_manager_install_flox package_manager_install_mise packages_install_flox packages_install_mise prepare_tools_zsh prepare_tools_nvim prepare_tools_sops ensure_dir ensure_dir_and_export_var ensure_dirs_and_export_vars backup is_darwin group_exists user_exists get_github_token backup_home fix_flox_permissions is_container is_devcontainer needs_sudo)"
     # Export required arrays and variables
     local all_arrays="$(declare -p COLORS PACKAGES)"
     # Preserve environment variables for the target user
@@ -269,7 +274,7 @@ prepare_platform_detection() {
   [ "$UNAME" != "darwin" ] && [ "$UNAME" != "linux" ] && fatal "$1 Unsupported System '$UNAME'! Supported: darwin, linux (Debian-based)"
   DISTRO=$( [ "$UNAME" = "darwin" ] && echo "darwin" || { [ -f "/etc/os-release" ] && . /etc/os-release && echo "$ID"; } || echo "unknown" )
   case "$(uname -m)" in aarch64|arm64) ARCH="arm64"; PLATFORM_ARCH="aarch64";; x86_64|amd64) ARCH="amd64"; PLATFORM_ARCH="x86_64";; *) fatal "$1 Unsupported arch '$(uname -m)'! Supported: arm64, amd64";; esac
-  ENV=$(is_container && echo "container" || echo "host")
+  ENV=$(is_devcontainer && echo "devcontainer" || (is_container && echo "container" || echo "host"))
   CONTEXT="$UNAME/$ARCH/$ENV"
   success "$1 Context Detection READY => '$CONTEXT' ✔"
 }
@@ -290,18 +295,22 @@ prepare_argument_parsing() {
       ;;
     esac
   done
-  if [[ -z "${USERNAME:-}" ]] || [[ "$USER" != "root" ]]; then
-    USERNAME=$USER
-  else
-    USERNAME="roalcantara"
-  fi
-  if [[ -z "${GROUPNAME:-}" ]] || [[ "$USER" != "root" ]]; then
-    GROUPNAME=$(id -gn)
-  else
-    if is_darwin; then
-      GROUPNAME="staff"
+  if [[ -z "${USERNAME:-}" ]]; then
+    if [[ "$USER" == "root" ]]; then
+      USERNAME="roalcantara"
     else
-      GROUPNAME="wheel"
+      USERNAME=$USER
+    fi
+  fi
+  if [[ -z "${GROUPNAME:-}" ]]; then
+    if [[ "$USER" == "root" ]]; then
+      if is_darwin; then
+        GROUPNAME="staff"
+      else
+        GROUPNAME="wheel"
+      fi
+    else
+      GROUPNAME=$(id -gn)
     fi
   fi
   [[ "$PACKAGE_MANAGER" != "flox" && "$PACKAGE_MANAGER" != "mise" ]] && show_usage && exit 1
@@ -322,11 +331,16 @@ prepare_system_min_packages() {
 prepare_system_post_install() {
   if [ -n "$TIMEZONE" ]; then
     if [ -f "/usr/share/zoneinfo/$TIMEZONE" ]; then
-      ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime || sudo ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
-      if echo "$TIMEZONE" > /etc/timezone 2>/dev/null || echo "$TIMEZONE" | sudo tee /etc/timezone > /dev/null; then
-        info "$1 Timezone '$TIMEZONE' set successfully."
+      # Skip timezone setting in DevContainers as it's not allowed
+      if is_devcontainer; then
+        warn "$1 Skipping timezone setting in DevContainer environment (not allowed)"
       else
-        error "$1 Failed to write timezone '$TIMEZONE' to /etc/timezone."
+        ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime || sudo ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+        if echo "$TIMEZONE" > /etc/timezone 2>/dev/null || echo "$TIMEZONE" | sudo tee /etc/timezone > /dev/null; then
+          info "$1 Timezone '$TIMEZONE' set successfully."
+        else
+          error "$1 Failed to write timezone '$TIMEZONE' to /etc/timezone."
+        fi
       fi
     else
       error "$1 Invalid timezone: '$TIMEZONE'. Skipping timezone configuration."
@@ -339,12 +353,28 @@ prepare_package_manager() {
   if ! has_cmd "$mgr"; then
     warn "$step Installing Package Manager '$mgr' as user '$USERNAME'..."
     case "$mgr" in
-      flox) run_as_user "$USERNAME" "package_manager_install_flox" ;;
-      mise) run_as_user "$USERNAME" "package_manager_install_mise" ;;
+      flox)
+        if [ "$(id -u)" -eq 0 ] && [ "$USERNAME" != "root" ]; then
+          run_as_user "$USERNAME" "package_manager_install_flox"
+        else
+          package_manager_install_flox
+        fi
+        ;;
+      mise)
+        if [ "$(id -u)" -eq 0 ] && [ "$USERNAME" != "root" ]; then
+          run_as_user "$USERNAME" "package_manager_install_mise"
+        else
+          package_manager_install_mise
+        fi
+        ;;
     esac
   fi
   # Verify it works for target user
-  run_as_user "$USERNAME" "command -v $mgr && $mgr --version" || fatal "$step Package Manager '$mgr' not accessible by user '$USERNAME'!"
+  if [ "$(id -u)" -eq 0 ] && [ "$USERNAME" != "root" ]; then
+    run_as_user "$USERNAME" "command -v $mgr && $mgr --version" || fatal "$step Package Manager '$mgr' not accessible by user '$USERNAME'!"
+  else
+    command -v "$mgr" && "$mgr" --version || fatal "$step Package Manager '$mgr' not accessible!"
+  fi
 }
 prepare_user_and_group() {
   is_darwin && ensure_user_and_group_darwin "$1" || ensure_user_and_group_debian "$1"
@@ -496,18 +526,26 @@ setup_packages() {
     # Run flox setup directly (handles permissions internally)
     packages_install_flox
   else
-    # Run mise as target user
-    run_as_user "$USERNAME" "packages_install_mise"
+    # Run mise as target user or current user depending on context
+    if [ "$(id -u)" -eq 0 ] && [ "$USERNAME" != "root" ]; then
+      run_as_user "$USERNAME" "packages_install_mise"
+    else
+      packages_install_mise
+    fi
   fi
   ok "$1" "PM/$PACKAGE_MANAGER/PACKAGES"
 }
 setup_tools() {
   # Run chsh as current user (likely root) since it needs system access
   prepare_tools_zsh "$1"
-  # Run nvim setup as target user
-  run_as_user "$USERNAME" "prepare_tools_nvim '$1'"
-  # Run sops setup as target user
-  run_as_user "$USERNAME" "prepare_tools_sops '$1'"
+  # Run nvim setup as target user or current user depending on context
+  if [ "$(id -u)" -eq 0 ] && [ "$USERNAME" != "root" ]; then
+    run_as_user "$USERNAME" "prepare_tools_nvim '$1'"
+    run_as_user "$USERNAME" "prepare_tools_sops '$1'"
+  else
+    prepare_tools_nvim "$1"
+    prepare_tools_sops "$1"
+  fi
   ok "$1" "TOOLS/SOPS"
 }
 
