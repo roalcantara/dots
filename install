@@ -308,7 +308,7 @@ prepare_argument_parsing() {
 prepare_system_min_packages() {
   if has_cmd apt; then
     local cmd_prefix=""
-    if needs_sudo; then
+    if needs_sudo || is_container || is_devcontainer; then
       cmd_prefix="sudo "
     fi
     run_cmd ${cmd_prefix}apt-get update && ${cmd_prefix}apt-get install -y --no-install-recommends ${PACKAGES[apt]} && ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
@@ -374,7 +374,11 @@ prepare_tools_zsh() {
   local zsh_path="$(command -v zsh)"
   local current_shell="$(has_cmd getent && getent passwd "$USERNAME" | cut -d: -f7 || awk -F: -v user="$USERNAME" '$1 == user {print $7}' /etc/passwd)"
   if [ "$current_shell" != "$zsh_path" ] && has_cmd chsh; then
-    if run_cmd chsh -s "$zsh_path" "$USERNAME" 2>/dev/null; then
+    local cmd_prefix=""
+    if needs_sudo || is_container || is_devcontainer; then
+      cmd_prefix="sudo "
+    fi
+    if run_cmd ${cmd_prefix}chsh -s "$zsh_path" "$USERNAME" 2>/dev/null; then
       info "$1 Successfully changed default shell to $zsh_path for user '$USERNAME'"
     else
       warn "$1 ZSH Failed to change default shell..."
