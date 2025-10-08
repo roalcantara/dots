@@ -45,11 +45,7 @@ needs_user_switch() {
 }
 run_as_target_user() {
   local command="$1"
-  if needs_user_switch; then
-    run_as_user "$USERNAME" "$command"
-  else
-    eval "$command"
-  fi
+  run_as_user "$USERNAME" "$command"
 }
 run_cmd() { info "Running: $*"; "$@"; }
 ensure_dir() { [ -d "$1" ] || run_cmd mkdir -p "$1"; }
@@ -124,7 +120,7 @@ download_file() {
 fix_flox_permissions() {
   local username="$1"
 
-  if [ "$UNAME" != "darwin" ] && has_cmd flox; then
+  if [ "$UNAME" != "darwin" ] && has_cmd flox && [ -n "${username:-}" ] && [ "$username" != "root" ] && [ "$(id -u)" -eq 0 ]; then
     info "Fixing Nix/Flox permissions for user '$username'..."
 
     # Fix Nix database permissions
@@ -152,11 +148,6 @@ package_manager_install_flox() {
   else # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version | wget https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -O /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
     download_file "https://downloads.flox.dev/by-env/stable/deb/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-linux.deb" "/tmp/flox.deb"
     run_cmd sudo dpkg -i /tmp/flox.deb && rm -f /tmp/flox.deb
-
-    # Fix permissions after installation for container use
-    if [ -n "${USERNAME:-}" ] && [ "$USERNAME" != "root" ] && [ "$(id -u)" -eq 0 ]; then
-      fix_flox_permissions "$USERNAME"
-    fi
   fi
 }
 package_manager_install_mise() {
@@ -171,9 +162,9 @@ package_manager_install_mise() {
 }
 packages_install_flox() {
   run_cmd flox pull roalcantara/default --dir "$HOME" --force
+  eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
   run_cmd flox envs
   run_cmd flox list --dir "$HOME"
-  eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
 }
 packages_install_mise() {
   run_cmd mise settings set global_config_file "$MISE_DATA_HOME/config.toml"
@@ -357,7 +348,11 @@ prepare_package_manager() {
   if ! has_cmd "$mgr"; then
     warn "$step Installing Package Manager '$mgr' as user '$USERNAME'..."
     case "$mgr" in
-      flox) run_as_target_user "package_manager_install_flox" ;;
+      flox)
+        run_as_target_user "package_manager_install_flox"
+        # Fix permissions after installation for container/devcontainer use
+        fix_flox_permissions "$USERNAME"
+      ;;
       mise) run_as_target_user "package_manager_install_mise" ;;
     esac
   fi
