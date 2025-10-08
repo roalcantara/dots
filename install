@@ -123,20 +123,20 @@ fix_flox_permissions() {
     info "Fixing Nix/Flox permissions for user '$username'..."
 
     # Fix Nix database permissions
-    [ -d "/nix/var/nix" ] && run_cmd chown -R "$username:$GROUPNAME" "/nix/var/nix"
+    [ -d "/nix/var/nix" ] && run_cmd sudo chown -R "$username:$GROUPNAME" "/nix/var/nix"
 
     # Fix user profile directory
     local user_profile_dir="/nix/var/nix/profiles/per-user/$username"
-    [ -d "$user_profile_dir" ] || run_cmd mkdir -p "$user_profile_dir"
-    run_cmd chown -R "$username:$GROUPNAME" "$user_profile_dir"
+    [ -d "$user_profile_dir" ] || run_cmd sudo mkdir -p "$user_profile_dir"
+    run_cmd sudo chown -R "$username:$GROUPNAME" "$user_profile_dir"
 
     # Fix user's flox directories
     if [ -d "/home/$username" ]; then
-      run_cmd chown -R "$username:$GROUPNAME" "/home/$username"
+      run_cmd sudo chown -R "$username:$GROUPNAME" "/home/$username"
     elif [ -d "/home/$username/.config/flox" ]; then
-      run_cmd chown -R "$username:$GROUPNAME" "/home/$username/.config/flox"
+      run_cmd sudo chown -R "$username:$GROUPNAME" "/home/$username/.config/flox"
     elif [ -d "/home/$username/.local/share/dots/config/flox" ]; then
-      run_cmd chown -R "$username:$GROUPNAME" "/home/$username/.local/share/dots/config/flox"
+      run_cmd sudo chown -R "$username:$GROUPNAME" "/home/$username/.local/share/dots/config/flox"
     fi
   fi
 }
