@@ -158,3 +158,4 @@ gcloud/logs/*
 age/keys.txt
 **/age/keys.txt
 keys.txt
+*.lock
