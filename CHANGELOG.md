@@ -1,3 +1,10 @@
+## [1.14.11](https://github.com/roalcantara/dots/compare/v1.14.10...v1.14.11) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install/flox:** Add sudo to chown user directories ([eba110a](https://github.com/roalcantara/dots/commit/eba110ad5b884152c5aedc18052d085c444853c7))
+
 ## [1.14.10](https://github.com/roalcantara/dots/compare/v1.14.9...v1.14.10) (2025-10-08)
 
 
