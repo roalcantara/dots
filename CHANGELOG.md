@@ -1,3 +1,10 @@
+## [1.14.12](https://github.com/roalcantara/dots/compare/v1.14.11...v1.14.12) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install:** Enhance sudo handling for installation commands ([5737246](https://github.com/roalcantara/dots/commit/57372467285c8ae8ce512ce99e49322541909d89))
+
 ## [1.14.11](https://github.com/roalcantara/dots/compare/v1.14.10...v1.14.11) (2025-10-08)
 
 
