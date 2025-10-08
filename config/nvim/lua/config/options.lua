@@ -155,12 +155,15 @@ else                                                                            
   vim.opt.clipboard:append('unnamedplus')
 end
 
--- GLOBAL LANGUAGE PROVIDERS
+-- GLOBAL LANGUAGE PROVIDERS | https://neovim.io/doc/user/provider.html
+-- Modern Neovim trend is moving away from provider-dependent plugins
+vim.g.loaded_python3_provider = 0                                               -- Disable python3 provider
+vim.g.loaded_node_provider = 0                                                  -- Disable node provider
 vim.g.loaded_perl_provider = 0                                                  -- Disable perl provider
+vim.g.loaded_ruby_provider = 0                                                  -- Disable ruby provider
 vim.g.rubycomplete_buffer_loading = 1                                           -- Load classes in buffer
 vim.g.rubycomplete_classes_in_global = 1                                        -- Load classes in global
 vim.g.rubycomplete_rails = 1                                                    -- Load rails
-vim.g.python3_host_prog = paths.bin_for_python3_venv()          -- Python 3 host program
 
 -- GLOBAL LSP SETTINGS
 vim.g.lsp_hover_mouse_delay = 1000                                              -- [go] Mouse hover delay in milliseconds for LSP hover documentation

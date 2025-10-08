@@ -452,14 +452,6 @@ bookmarks:
     desc: A project explorer for open-source software
     tags: [libs, neovim]
 
-  https://dotfyle.com/neovim/colorscheme/trending:
-    desc: Neovim Trending Colorschemes
-    tags: [neovim, colorschemes]
-
-  https://dotfyle.com/neovim/colorscheme/top:
-    desc: Neovim Top Colorschemes
-    tags: [neovim, colorschemes]
-
   https://registry.jsonresume.org/roalcantara:
     desc: JSON Resume
     tags: [resume]
@@ -513,30 +505,6 @@ bookmarks:
     desc: Generates color palettes from Pokémon sprites
     tags: [colors, palette]
 
-  https://neovimcraft.com/?search={Query}:
-    desc: Search engine for Neovim plugins
-    tags: [neovim, plugins]
-
-  https://neovimcraft.com/?search=tag%3Acolorscheme:
-    desc: Search engine for Neovim colorschemes
-    tags: [neovim, colorschemes]
-
-  https://youtube.com/playlist?list=PLOe6AggsTaVsMfLjXeavVwzkmOfAZnfQb:
-    desc: Neovim Telescope
-    tags: [neovim, telescope]
-
-  https://neovim.io/doc/user/lua-guide.html:
-    desc: Lua guide for users
-    tags: [neovim, docs]
-
-  https://neovim.io/doc/user/options.html:
-    desc: List of all options
-    tags: [neovim, docs]
-
-  https://this-week-in-neovim.org/latest:
-    desc: Weekly newsletter about the development of Neovim
-    tags: [neovim, news]
-
   https://nerdfonts.com/cheat-sheet:
     desc: Project that patches developer targeted fonts with a high number of glyphs
     tags: [fonts]
@@ -564,10 +532,6 @@ bookmarks:
   https://taskwarrior.org/docs:
     desc: Docs for the Taskwarrior task management utility
     tags: [tw, docs]
-
-  https://vimcolorschemes.com:
-    desc: Colorscheme gallery for vim
-    tags: [vim, colorschemes]
 
   https://cloud.google.com/sdk/gcloud/reference/storage/rsync:
     desc: High-performance, parallelized tool to copy files to and from Google Cloud Storage
@@ -2016,22 +1980,6 @@ bookmarks:
   https://youtu.be/q_2irZO4SS8:
     desc: Simple Page Transitions Using The View Transitions API With SvelteKit
     tags: [web, transitions]
-
-  https://youtu.be/zHTeCSVAFNY:
-    desc: From 0 to IDE in NEOVIM from scratch | FREE COURSE // EP 1
-    tags: [vi, colorscheme, telescope, treesitter]
-
-  https://youtu.be/4zyZ3sw_ulc:
-    desc: A BEAUTIFUL neovim config with Lazy | FREE COURSE // EP 2
-    tags: [vi, lazy]
-
-  https://youtu.be/iXIwm4mCpuc:
-    desc: Autocomplete and Snippets in Neovim | FREE COURSE // EP 5
-    tags: [vi, autocomplete, snippets]
-
-  https://youtu.be/fFHlfbKVi30:
-    desc: Effective Neovim setup for web development towards 2024
-    tags: [vi, lsp]
 
   https://stylar.ai:
     desc: Make 2D Graphics Look 3D in Seconds, for Free
@@ -4118,10 +4066,6 @@ bookmarks:
   https://cheatsheetfactory.geekyhacker.com/version_control/git:
     desc: Git Cheat Sheet | A collection of git commands
     tags: [cheatsheet, git]
-
-  https://cheatsheetfactory.geekyhacker.com/linux/vim:
-    desc: Vim Cheat Sheet | A collection of vim commands
-    tags: [cheatsheet, vim]
 
   https://cheatsheetfactory.geekyhacker.com/container/docker:
     desc: Docker Cheat Sheet | A collection of docker commands
