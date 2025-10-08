@@ -158,7 +158,15 @@ package_manager_install_flox() {
   fi
 }
 packages_install_flox() {
-  run_cmd flox pull roalcantara/default --dir "$HOME" --force
+  local cmd_prefix=""
+  if is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
+  run_cmd ${cmd_prefix}flox pull roalcantara/default --dir "$HOME" --force
+  if is_container || is_devcontainer; then
+    # Fix permissions after installation for container/devcontainer use
+    fix_flox_permissions "$USERNAME"
+  fi
   eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
   run_cmd flox envs
   run_cmd flox list --dir "$HOME"
