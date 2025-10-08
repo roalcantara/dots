@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# USAGE: install [-u username] [-g groupname] [-t timezone] [-p flox|mise] [-r repo] [-b branch]
+# USAGE: install [-u username] [-g groupname] [-t timezone] [-p flox] [-r repo] [-b branch]
 # EXAMPLES:
 #   ./install
 #   ./install -u "vscode" -g "vscode"
@@ -11,7 +11,6 @@ declare -g -A COLORS=([E]='\033[0;31m' [F]='\033[0;31m' [S]='\033[0;32m' [W]='\0
 declare -g USERNAME GROUPNAME TIMEZONE="America/Sao_Paulo" REPO_URL="https://github.com/roalcantara/dots" BRANCH="main" USR_LOCAL_BIN="/usr/local/bin" PACKAGE_MANAGER="flox" FLOX_VERSION="1.7.2" CONFIGS_TO_BACKUP=".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .oh-my-zsh"
 declare -g UNAME ARCH PLATFORM_ARCH DISTRO ENV CONTEXT HOME DOTS_SRC_DIR FLOX_PATH BACKUP_DIR
 declare -g -A PACKAGES=(
-  [mise]="node@22.17 python ripgrep bat delta eza fd fzf starship zoxide gum pre-commit tree-sitter neovim age sops"
   [apt]="sudo xclip xsel git zsh curl"
 )
 
@@ -41,11 +40,21 @@ needs_sudo() {
   [ "$(id -u)" -ne 0 ] && return 0 || return 1
 }
 needs_user_switch() {
+  # In DevContainers, if we're already the target user, no need to switch
+  if is_devcontainer && [ "$USER" = "$USERNAME" ]; then
+    return 1
+  fi
+  # Otherwise, switch if we're root and target user is not root
   [ "$(id -u)" -eq 0 ] && [ "$USERNAME" != "root" ]
 }
 run_as_target_user() {
   local command="$1"
-  run_as_user "$USERNAME" "$command"
+  shift
+  if [ $# -gt 0 ]; then
+    run_as_user "$USERNAME" "$command" "$@"
+  else
+    run_as_user "$USERNAME" "$command"
+  fi
 }
 run_cmd() { info "Running: $*"; "$@"; }
 ensure_dir() { [ -d "$1" ] || run_cmd mkdir -p "$1"; }
@@ -78,7 +87,7 @@ show_usage() {
   echo "  -u, --username USER     Set username" >&2
   echo "  -g, --groupname GROUP   Set group name" >&2
   echo "  -t, --timezone TZ       Set timezone" >&2
-  echo "  -p, --package-manager   Package manager (flox|mise)" >&2
+  echo "  -p, --package-manager   Package manager (flox)" >&2
   echo "  -r, --repo URL          Repository URL" >&2
   echo "  -b, --branch BRANCH     Git branch" >&2
 }
@@ -107,16 +116,6 @@ backup_home() {
     ok "$1" "BAK$e" "{$CONFIGS_TO_BACKUP}" "✔"
   done
 }
-download_file() {
-  local url="$1" output="$2"
-  if [ "$output" = "-" ]; then
-    # Stream to stdout if output is "-" (Unix convention)
-    run_cmd wget -O- "$url"
-  else
-    # Download to file
-    run_cmd wget "$url" -O "$output"
-  fi
-}
 fix_flox_permissions() {
   local username="$1"
 
@@ -143,37 +142,18 @@ fix_flox_permissions() {
 }
 package_manager_install_flox() {
   if is_darwin; then # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version | wget https://downloads.flox.dev/by-env/stable/osx/flox-1.7.2.aarch64-darwin.pkg -O /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version
-    download_file "https://downloads.flox.dev/by-env/stable/osx/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-darwin.pkg" "/tmp/flox.pkg"
+    run_cmd wget "https://downloads.flox.dev/by-env/stable/osx/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-darwin.pkg" -O "/tmp/flox.pkg"
     run_cmd sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg
   else # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version | wget https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -O /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
-    download_file "https://downloads.flox.dev/by-env/stable/deb/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-linux.deb" "/tmp/flox.deb"
+    run_cmd wget "https://downloads.flox.dev/by-env/stable/deb/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-linux.deb" -O "/tmp/flox.deb"
     run_cmd sudo dpkg -i /tmp/flox.deb && rm -f /tmp/flox.deb
   fi
-}
-package_manager_install_mise() {
-  # curl -L https://mise.run | MISE_INSTALL_PATH="/usr/local/bin/mise" sh && sudo chmod +x /usr/local/bin/mise && mise --version | wget https://mise.run -O- | MISE_INSTALL_PATH="/usr/local/bin/mise" sh && sudo chmod +x /usr/local/bin/mise && mise --version
-  local install_path="$USR_LOCAL_BIN/mise"
-  if needs_sudo; then # If running as non-root user, install to user directory
-    install_path="$HOME/.local/bin/mise"
-    mkdir -p "$(dirname "$install_path")"
-  fi
-  download_file "https://mise.run" "-" | MISE_INSTALL_PATH="$install_path" sh
-  needs_sudo && run_cmd chmod +x "$install_path" || chmod +x "$install_path"
 }
 packages_install_flox() {
   run_cmd flox pull roalcantara/default --dir "$HOME" --force
   eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
   run_cmd flox envs
   run_cmd flox list --dir "$HOME"
-}
-packages_install_mise() {
-  run_cmd mise settings set global_config_file "$MISE_DATA_HOME/config.toml"
-  run_cmd mise settings add trusted_config_paths "$MISE_GLOBAL_CONFIG_DIR"
-  run_cmd mise settings add trusted_config_paths "$HOME/.local/share/dots"
-  run_cmd mise settings set activate_aggressive true
-  run_cmd mise settings set auto_install true
-  run_cmd mise use --cd "$HOME/.local/share/dots" --yes --global --pin ${PACKAGES[mise]}
-  run_cmd eval "$(mise activate zsh --yes --quiet --shims)"
 }
 ensure_user_and_group_darwin() {
   if ! user_exists "$USERNAME"; then
@@ -226,10 +206,14 @@ ensure_user_and_group_debian() {
 }
 run_as_user() {
   local username="$1"; shift
-  if is_devcontainer || ([ "$(id -u)" -eq 0 ] && [ "$username" != "root" ]); then
+  # In DevContainers, if we're already the target user, just run directly
+  if is_devcontainer && [ "$USER" = "$username" ]; then
+    warn "Running command as current user '$USER' in DevContainer => '$*'"
+    bash -c "$*"
+  elif [ "$(id -u)" -eq 0 ] && [ "$username" != "root" ]; then
     warn "Running command as user '$username' => '$*' ($USERNAME/$GROUPNAME)"
     # Export all required function dependencies - include ALL functions that might be called
-    local all_functions="$(declare -f log info warn error fatal success ok run_cmd has_cmd download_file package_manager_install_flox package_manager_install_mise packages_install_flox packages_install_mise prepare_tools_zsh prepare_tools_nvim prepare_tools_sops ensure_dir ensure_dir_and_export_var ensure_dirs_and_export_vars backup is_darwin group_exists user_exists get_github_token backup_home fix_flox_permissions is_container is_devcontainer needs_sudo needs_user_switch run_as_target_user)"
+    local all_functions="$(declare -f log info warn error fatal success ok run_cmd has_cmd package_manager_install_flox packages_install_flox prepare_tools_zsh prepare_tools_nvim prepare_tools_sops ensure_dir ensure_dir_and_export_var ensure_dirs_and_export_vars backup is_darwin group_exists user_exists get_github_token backup_home fix_flox_permissions is_container is_devcontainer needs_sudo needs_user_switch run_as_target_user)"
     # Export required arrays and variables
     local all_arrays="$(declare -p COLORS PACKAGES)"
     # Preserve environment variables for the target user
@@ -308,7 +292,7 @@ prepare_argument_parsing() {
       GROUPNAME=$(id -gn)
     fi
   fi
-  [[ "$PACKAGE_MANAGER" != "flox" && "$PACKAGE_MANAGER" != "mise" ]] && show_usage && exit 1
+  [[ "$PACKAGE_MANAGER" != "flox" ]] && show_usage && exit 1
   success "$step Arguments extraction READY => [USERNAME:$USERNAME, GROUPNAME:$GROUPNAME, TIMEZONE:$TIMEZONE, PACKAGE_MANAGER:$PACKAGE_MANAGER, REPO_URL:$REPO_URL, BRANCH:$BRANCH] ✔"
 }
 prepare_system_min_packages() {
@@ -342,26 +326,6 @@ prepare_system_post_install() {
     fi
   fi
   success "$1 System post-install configuration READY! ✔"
-}
-prepare_package_manager() {
-  local step="$1" mgr="$2"
-  if ! has_cmd "$mgr"; then
-    warn "$step Installing Package Manager '$mgr' as user '$USERNAME'..."
-    case "$mgr" in
-      flox)
-        run_as_target_user "package_manager_install_flox"
-        # Fix permissions after installation for container/devcontainer use
-        fix_flox_permissions "$USERNAME"
-      ;;
-      mise) run_as_target_user "package_manager_install_mise" ;;
-    esac
-  fi
-  # Verify it works for target user
-  if needs_user_switch; then
-    run_as_user "$USERNAME" "command -v $mgr && $mgr --version" || fatal "$step Package Manager '$mgr' not accessible by user '$USERNAME'!"
-  else
-    command -v "$mgr" && "$mgr" --version || fatal "$step Package Manager '$mgr' not accessible!"
-  fi
 }
 prepare_user_and_group() {
   is_darwin && ensure_user_and_group_darwin "$1" || ensure_user_and_group_debian "$1"
@@ -494,16 +458,21 @@ setup_user_context() {
   ok "$1" "USER_CONTEXT/$USERNAME"
 }
 setup_package_manager() {
-  local original_pm="$PACKAGE_MANAGER"
-  if ! prepare_package_manager "$1" "$PACKAGE_MANAGER"; then
-    local fallback_pm=$([ "$PACKAGE_MANAGER" = "flox" ] && echo "mise" || echo "flox")
-    warn "$1 Trying '$fallback_pm' as fallback! Skipping..."
-    if prepare_package_manager "$1" "$fallback_pm"; then
-      PACKAGE_MANAGER="$fallback_pm"
-      warn "$1 Successfully switched to '$fallback_pm'! Skipping..."
+  if ! has_cmd "$PACKAGE_MANAGER"; then
+    warn "$1 Installing Package Manager '$PACKAGE_MANAGER' as user '$USERNAME'..."
+    if [ "$PACKAGE_MANAGER" = "flox" ]; then
+      run_as_target_user "package_manager_install_flox"
+      # Fix permissions after installation for container/devcontainer use
+      fix_flox_permissions "$USERNAME"
     else
-      fatal "$1 Both '$original_pm' and '$fallback_pm' installation failed"
+      fatal "$1 '$PACKAGE_MANAGER' is unknown! Available options are: flox"
     fi
+  fi
+  # Verify it works for target user
+  if needs_user_switch; then
+    run_as_user "$USERNAME" "command -v $PACKAGE_MANAGER && $PACKAGE_MANAGER --version" || fatal "$1 Package Manager '$PACKAGE_MANAGER' not accessible by user '$USERNAME'!"
+  else
+    command -v "$PACKAGE_MANAGER" && "$PACKAGE_MANAGER" --version || fatal "$1 Package Manager '$PACKAGE_MANAGER' not accessible!"
   fi
   ok "$1" "PM/$PACKAGE_MANAGER"
 }
@@ -513,8 +482,7 @@ setup_packages() {
     # Run flox setup directly (handles permissions internally)
     packages_install_flox
   else
-    # Run mise as target user or current user depending on context
-    run_as_target_user "packages_install_mise"
+    fatal "$1 '$PACKAGE_MANAGER' is unknown! Available options are: flox"
   fi
   ok "$1" "PM/$PACKAGE_MANAGER/PACKAGES"
 }
