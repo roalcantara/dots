@@ -67,46 +67,46 @@ commandTests:
     args: [envs]
     expectedOutput:
       - "\\s*default.*\\/home\\/vscode.*"
-  - name: All minimum tools should be installed in the default environment
+  - name: Flox default environment should have all minimum tools installed
     command: flox
     args: [list, --dir=/home/vscode, --name]
     expectedOutput: ['age', 'bat', 'delta', 'eza', 'fd', 'fzf', 'gitlint', 'gum', 'neovim', 'nodejs', 'pre-commit', 'python313Full', 'ripgrep', 'ruby', 'sops', 'starship', 'tree-sitter', 'zoxide']
 
 # HOME DIRECTORIES
 fileExistenceTests:
-  - name: $HOME directory
+  - name: ~/ (HOME dir)
     path: /home/vscode
     shouldExist: true
     permissions: drwx------
-  - name: XDG_DESKTOP_DIR
+  - name: ~/Desktop dir (XDG_DESKTOP_DIR)
     path: /home/vscode/Desktop
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: XDG_DOCUMENTS_DIR
+  - name: ~/Documents dir (XDG_DOCUMENTS_DIR)
     path: /home/vscode/Documents
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: XDG_DOWNLOAD_DIR
+  - name: ~/Downloads dir (XDG_DOWNLOAD_DIR)
     path: /home/vscode/Downloads
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: XDG_VIDEOS_DIR
+  - name: ~/Movies dir (XDG_VIDEOS_DIR)
     path: /home/vscode/Movies
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: XDG_MUSIC_DIR
+  - name: ~/Music dir (XDG_MUSIC_DIR)
     path: /home/vscode/Music
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: XDG_PICTURES_DIR
+  - name: ~/Pictures dir (XDG_PICTURES_DIR)
     path: /home/vscode/Pictures
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: XDG_PROJECTS_DIR
+  - name: ~/Projects dir (XDG_PROJECTS_DIR)
     path: /home/vscode/Projects
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: XDG_WORKSPACE_DIR
+  - name: ~/Work dir (XDG_WORKSPACE_DIR)
     path: /home/vscode/Work
     shouldExist: true
     permissions: drwxr-xr-x
@@ -117,28 +117,28 @@ fileExistenceTests:
   - name: ~/.bashrc file
     path: /home/vscode/.bashrc
     shouldExist: false
-  - name: ~/.oh-my-zsh directory
+  - name: ~/.oh-my-zsh dir
     path: /home/vscode/.oh-my-zsh
     shouldExist: false
 
   # XDG_CONFIG_HOME (CONFIG)
-  - name: XDG_CONFIG_HOME
+  - name: ~/.config dir (XDG_CONFIG_HOME)
     path: /home/vscode/.config
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: ~/.config/nvim directory
+  - name: ~/.config/nvim dir
     path: /home/vscode/.config/nvim
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: MYVIMRC
+  - name: ~/.config/nvim/init.lua (MYVIMRC)
     path: /home/vscode/.config/nvim/init.lua
     shouldExist: true
     permissions: -rw-r--r--
-  - name: ~/.config/nvim/.venv directory
+  - name: ~/.config/nvim/.venv dir
     path: /home/vscode/.config/nvim/.venv
     shouldExist: true
     permissions: drwxrwxr-x
-  - name: ~/.config/nvim/.venv/bin directory
+  - name: ~/.config/nvim/.venv/bin dir
     path: /home/vscode/.config/nvim/.venv/bin
     shouldExist: true
     permissions: drwxrwxr-x
@@ -150,77 +150,77 @@ fileExistenceTests:
     path: /home/vscode/.config/nvim/.venv/bin/python3
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: ZDOTDIR
+  - name: ~/.config/zsh dir (ZDOTDIR)
     path: /home/vscode/.config/zsh
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: NPM_CONFIG_USERCONFIG
+  - name: ~/.config/npm/.npmrc (NPM_CONFIG_USERCONFIG)
     path: /home/vscode/.config/npm/.npmrc
     shouldExist: true
     permissions: -rw-r--r--
-  - name: ~/.config/git directory
+  - name: ~/.config/git dir
     path: /home/vscode/.config/git
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: ~/.config/snippets directory
+  - name: ~/.config/snippets dir
     path: /home/vscode/.config/snippets
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: STARSHIP_CONFIG_HOME
+  - name: ~/.config/starship dir (STARSHIP_CONFIG_HOME)
     path: /home/vscode/.config/starship
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: STARSHIP_CONFIG
+  - name: ~/.config/starship/starship.toml (STARSHIP_CONFIG)
     path: /home/vscode/.config/starship/starship.toml
     shouldExist: true
     permissions: -rwxr-xr-x
-  - name: ~/.config/ghostty config file
+  - name: ~/.config/ghostty config
     path: /home/vscode/.config/ghostty
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: RIPGREP_CONFIG_PATH
+  - name: ~/.config/ripgrep/.ripgreprc (RIPGREP_CONFIG_PATH)
     path: /home/vscode/.config/ripgrep/.ripgreprc
     shouldExist: true
     permissions: -rw-r--r--
 
   # XDG_CACHE_HOME (CACHE)
-  - name: XDG_CACHE_HOME
+  - name: ~/.cache dir (XDG_CACHE_HOME)
     path: /home/vscode/.cache
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: NPM_CONFIG_CACHE
+  - name: ~/.cache/npm dir (NPM_CONFIG_CACHE)
     path: /home/vscode/.cache/npm
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: ZSH_CACHE_DIR
+  - name: ~/.cache/zsh dir (ZSH_CACHE_DIR)
     path: /home/vscode/.cache/zsh
     shouldExist: true
     permissions: drwxr-xr-x
 
   # XDG_STATE_HOME (LOCAL/STATE)
-  - name: XDG_STATE_HOME
+  - name: ~/.local/state dir (XDG_STATE_HOME)
     path: /home/vscode/.local/state
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: ~/.local/state/nvim directory
+  - name: ~/.local/state/nvim dir
     path: /home/vscode/.local/state/nvim
     shouldExist: true
     permissions: drwx------
-  - name: ZIM_HOME
+  - name: ~/.local/state/zim dir (ZIM_HOME)
     path: /home/vscode/.local/state/zim
     shouldExist: true
     permissions: drwxr-xr-x
 
   # XDG_DATA_HOME (LOCAL/SHARE)
-  - name: XDG_DATA_HOME
+  - name: ~/.local/share dir (XDG_DATA_HOME)
     path: /home/vscode/.local/share
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: NPM_CONFIG_PREFIX
+  - name: ~/.local/share/npm dir (NPM_CONFIG_PREFIX)
     path: /home/vscode/.local/share/npm
     shouldExist: true
     permissions: drwxr-xr-x
-  - name: ZSH_DATA_DIR
+  - name: ~/.local/share/zsh dir (ZSH_DATA_DIR)
     path: /home/vscode/.local/share/zsh
     shouldExist: true
     permissions: drwxr-xr-x
