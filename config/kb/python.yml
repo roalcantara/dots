@@ -405,3 +405,44 @@ cheats:
           # Bob is 30 years old
           # Charlie is 35 years old
           ```
+  Python's venv (virtual environment):
+    desc: Creates a virtual environment for a Python project (via flox)
+    tags: [python, venv]
+    notes:
+      - md: | #markdown
+          ## What is Python's venv (virtual environment)?
+
+          - A virtual environment is a self-contained directory that contains a specific Python installation and its dependencies.
+          - It allows you to isolate a project's dependencies from the global Python installation and other projects.
+
+      - sh: | #shell
+          #!/bin/bash
+
+          # 1. Navigate to your project
+          cd ~/home/foo/demo
+
+          # 2. Install Python (via flox)
+          flox install python313Full # or python313
+
+          # 3. Verify Python installation
+          command -v python3 >/dev/null 2>&1 && echo 'python exists!' || echo 'python does not exist'
+
+          # 4. Create virtual environment
+          python3 -m venv .venv
+
+          # 5. Activate venv
+          source .venv/bin/activate
+
+          # 6. Check active: which python (should show .venv/bin/python)
+          which python
+
+          # 7. Upgrade pip (recommended)
+          pip install --upgrade pip
+
+          # 8. Install dependencies
+          pip install -r requirements.txt  # if you have requirements.txt
+
+          # 9. Work on your project...
+
+          # 10. Deactivate when done
+          deactivate
