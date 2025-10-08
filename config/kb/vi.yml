@@ -1,0 +1,125 @@
+bookmarks:
+  https://dotfyle.com/neovim/colorscheme/trending:
+    desc: Neovim Trending Colorschemes
+    tags: [vi, colorschemes]
+
+  https://dotfyle.com/neovim/colorscheme/top:
+    desc: Neovim Top Colorschemes
+    tags: [vi, colorschemes]
+
+  https://neovimcraft.com/?search={Query}:
+    desc: Search engine for Neovim plugins
+    tags: [vi, plugins]
+
+  https://neovimcraft.com/?search=tag%3Acolorscheme:
+    desc: Search engine for Neovim colorschemes
+    tags: [vi, colorschemes]
+
+  https://youtube.com/playlist?list=PLOe6AggsTaVsMfLjXeavVwzkmOfAZnfQb:
+    desc: Neovim Telescope
+    tags: [vi, telescope]
+
+  https://neovim.io/doc/user/lua-guide.html:
+    desc: Lua guide for users
+    tags: [vi, docs]
+
+  https://neovim.io/doc/user/options.html:
+    desc: List of all options
+    tags: [vi, docs]
+
+  https://this-week-in-neovim.org/latest:
+    desc: Weekly newsletter about the development of Neovim
+    tags: [vi, news]
+
+  https://youtu.be/zHTeCSVAFNY:
+    desc: From 0 to IDE in NEOVIM from scratch | FREE COURSE // EP 1
+    tags: [vi, colorscheme, telescope, treesitter]
+
+  https://youtu.be/4zyZ3sw_ulc:
+    desc: A BEAUTIFUL neovim config with Lazy | FREE COURSE // EP 2
+    tags: [vi, lazy]
+
+  https://youtu.be/iXIwm4mCpuc:
+    desc: Autocomplete and Snippets in Neovim | FREE COURSE // EP 5
+    tags: [vi, autocomplete, snippets]
+
+  https://youtu.be/fFHlfbKVi30:
+    desc: Effective Neovim setup for web development towards 2024
+    tags: [vi, lsp]
+
+  https://cheatsheetfactory.geekyhacker.com/linux/vim:
+    desc: Vim Cheat Sheet | A collection of vim commands
+    tags: [vi, cheatsheet]
+
+  https://vimcolorschemes.com:
+    desc: Colorscheme gallery for vim
+    tags: [vi, colorschemes]
+
+cheats:
+  Neovim Providers:
+    desc: Neovim Providers
+    tags: [vi]
+    links:
+      - Neovim Providers: https://neovim.io/doc/user/providers.html
+    notes:
+      - md: | #markdown
+          ## NEOVIM PROVIDERS
+
+          ### WHAT ARE PROVIDERS?
+
+          Providers allow Neovim to interface with external language runtimes (Python, Node.js, Ruby, Perl) to run plugins written in those languages.
+
+          ### BENEFITS OF SETTING UP PROVIDERS
+
+          **Python Provider:**
+          - Required for plugins like: `deoplete`, `semshi`, `vim-markdown-composer`, some LSP/completion plugins
+          - Enables `:python3` and `:py3` commands in Neovim
+          - Many legacy Vim plugins depend on it
+
+          **Node.js Provider:**
+          - Required for: `coc.nvim`, `markdown-preview.nvim`, many modern LSP/completion tools
+          - JavaScript/TypeScript-based plugins need it
+          - Growing ecosystem due to JS popularity
+
+          **Ruby Provider:**
+          - Less common, but needed for some legacy Vim plugins
+          - Few modern Neovim plugins use it
+
+          ### DISABLING PROVIDERS
+
+          ```lua
+          vim.g.loaded_python3_provider = 0
+          vim.g.loaded_ruby_provider = 0
+          vim.g.loaded_node_provider = 0
+          vim.g.loaded_perl_provider = 0
+          ```
+
+          ### PROBLEMS
+
+          1. **Plugin breakage**: Plugins requiring disabled providers will fail silently or with errors
+          2. **Missing features**: Commands like `:py3` won't work
+          3. **Health check warnings**: `:checkhealth` will show warnings/errors
+          4. **Limited plugin ecosystem**: Can't use popular plugins (e.g., CoC requires Node.js)
+
+          ### BENEFITS
+
+          1. **Faster startup**: ~5-50ms faster (minimal unless you have many providers)
+          2. **Fewer dependencies**: Don't need Python/Node/Ruby installed
+          3. **Cleaner environment**: No need to manage `pynvim`, `neovim` npm package, etc.
+
+          ### BEST PRACTICE RECOMMENDATION
+
+          ### MODERN NEOVIM (0.5+) WITH NATIVE LSP
+
+          ```lua
+          -- Disable what you don't use
+          vim.g.loaded_ruby_provider = 0
+          vim.g.loaded_perl_provider = 0
+          -- Keep Python/Node if you use plugins that need them
+          -- Check with :checkhealth to see what's actually needed
+          ```
+
+          ### MINIMAL SETUP (Lua-only plugins)
+
+          - If using only Lua-based plugins (treesitter, telescope, LSP), you can **`safely disable all providers`**
+          - Modern Neovim trend is moving away from provider-dependent plugins
