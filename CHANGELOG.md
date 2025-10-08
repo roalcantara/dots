@@ -1,3 +1,10 @@
+## [1.14.9](https://github.com/roalcantara/dots/compare/v1.14.8...v1.14.9) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install:** Add sudo support and permission for containers ([ab955e1](https://github.com/roalcantara/dots/commit/ab955e1504e452976059b056318d02b6bed304b0))
+
 ## [1.14.8](https://github.com/roalcantara/dots/compare/v1.14.7...v1.14.8) (2025-10-08)
 
 
