@@ -1,3 +1,10 @@
+## [1.14.6](https://github.com/roalcantara/dots/compare/v1.14.5...v1.14.6) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install:** Enhance user context handling in run_as_user function ([2d254d8](https://github.com/roalcantara/dots/commit/2d254d82f3dd378adde38ccba3daf4a0a7255671))
+
 ## [1.14.5](https://github.com/roalcantara/dots/compare/v1.14.4...v1.14.5) (2025-10-08)
 
 
