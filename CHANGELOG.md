@@ -1,3 +1,10 @@
+## [1.14.13](https://github.com/roalcantara/dots/compare/v1.14.12...v1.14.13) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install:** Simplify tool prep by removing user context handling ([30cbb62](https://github.com/roalcantara/dots/commit/30cbb62e7ed14314b4a3d1dfdd5208b88df49223))
+
 ## [1.14.12](https://github.com/roalcantara/dots/compare/v1.14.11...v1.14.12) (2025-10-08)
 
 
