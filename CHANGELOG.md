@@ -1,3 +1,10 @@
+## [1.14.4](https://github.com/roalcantara/dots/compare/v1.14.3...v1.14.4) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install:** Simplify flox command execution ([cbdd692](https://github.com/roalcantara/dots/commit/cbdd6924330f8b6889ed60e34f02a0250d172172))
+
 ## [1.14.3](https://github.com/roalcantara/dots/compare/v1.14.2...v1.14.3) (2025-10-08)
 
 
