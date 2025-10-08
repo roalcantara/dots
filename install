@@ -117,9 +117,9 @@ backup_home() {
   done
 }
 fix_flox_permissions() {
-  local username="$1"
+  local username="${1:-$USERNAME}"
 
-  if [ "$UNAME" != "darwin" ] && has_cmd flox && [ -n "${username:-}" ] && [ "$username" != "root" ] && [ "$(id -u)" -eq 0 ]; then
+  if is_container || is_devcontainer; then
     info "Fixing Nix/Flox permissions for user '$username'..."
 
     # Fix Nix database permissions
@@ -152,10 +152,6 @@ package_manager_install_flox() {
     run_cmd wget "https://downloads.flox.dev/by-env/stable/deb/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-linux.deb" -O "/tmp/flox.deb"
     run_cmd ${cmd_prefix}dpkg -i /tmp/flox.deb && rm -f /tmp/flox.deb
   fi
-  if is_container || is_devcontainer; then
-    # Fix permissions after installation for container/devcontainer use
-    fix_flox_permissions "$USERNAME"
-  fi
 }
 packages_install_flox() {
   local cmd_prefix=""
@@ -163,10 +159,8 @@ packages_install_flox() {
     cmd_prefix="sudo "
   fi
   run_cmd ${cmd_prefix}flox pull roalcantara/default --dir "$HOME" --force
-  if is_container || is_devcontainer; then
-    # Fix permissions after installation for container/devcontainer use
-    fix_flox_permissions "$USERNAME"
-  fi
+  # Fix permissions after installation for container/devcontainer use
+  fix_flox_permissions
   eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
   run_cmd flox envs
   run_cmd flox list --dir "$HOME"
