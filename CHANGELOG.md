@@ -1,3 +1,10 @@
+## [1.14.5](https://github.com/roalcantara/dots/compare/v1.14.4...v1.14.5) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install:** Improve Flox's permissions and packages installation ([5348355](https://github.com/roalcantara/dots/commit/53483559471a8b3dc8df1a2afe092d84dd0c0554))
+
 ## [1.14.4](https://github.com/roalcantara/dots/compare/v1.14.3...v1.14.4) (2025-10-08)
 
 
