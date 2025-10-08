@@ -1,3 +1,10 @@
+## [1.14.7](https://github.com/roalcantara/dots/compare/v1.14.6...v1.14.7) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install:** Remove mise package manager option ([6e54d9c](https://github.com/roalcantara/dots/commit/6e54d9cf54697514786a86ebebb30918b7977eb4))
+
 ## [1.14.6](https://github.com/roalcantara/dots/compare/v1.14.5...v1.14.6) (2025-10-08)
 
 
