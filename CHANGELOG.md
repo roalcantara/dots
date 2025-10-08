@@ -1,3 +1,11 @@
+## [1.14.8](https://github.com/roalcantara/dots/compare/v1.14.7...v1.14.8) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install:** Bump Flox version and add wget ([760b45e](https://github.com/roalcantara/dots/commit/760b45e395418b4fdcb0dfd1126c27db387ee305))
+* **install:** Improve user context handling when installing Flox ([c9323cf](https://github.com/roalcantara/dots/commit/c9323cf1590fa3e2616106a129ebc2a90c443926))
+
 ## [1.14.7](https://github.com/roalcantara/dots/compare/v1.14.6...v1.14.7) (2025-10-08)
 
 
