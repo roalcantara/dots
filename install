@@ -492,11 +492,9 @@ setup_packages() {
   ok "$1" "PM/$PACKAGE_MANAGER/PACKAGES"
 }
 setup_tools() {
-  # Run chsh as current user (likely root) since it needs system access
   prepare_tools_zsh "$1"
-  # Run nvim setup as target user or current user depending on context
-  run_as_target_user "prepare_tools_nvim" "$1"
-  run_as_target_user "prepare_tools_sops" "$1"
+  prepare_tools_nvim "$1"
+  prepare_tools_sops "$1"
   ok "$1" "TOOLS/SOPS"
 }
 

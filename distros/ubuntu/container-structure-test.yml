@@ -137,11 +137,11 @@ fileExistenceTests:
   - name: ~/.config/nvim/.venv dir
     path: /home/vscode/.config/nvim/.venv
     shouldExist: true
-    permissions: drwxrwxr-x
+    permissions: drwxr-xr-x
   - name: ~/.config/nvim/.venv/bin dir
     path: /home/vscode/.config/nvim/.venv/bin
     shouldExist: true
-    permissions: drwxrwxr-x
+    permissions: drwxr-xr-x
   - name: ~/.config/nvim/.venv/bin/activate file
     path: /home/vscode/.config/nvim/.venv/bin/activate
     shouldExist: true
