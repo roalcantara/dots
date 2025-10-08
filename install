@@ -141,12 +141,20 @@ fix_flox_permissions() {
   fi
 }
 package_manager_install_flox() {
-  if is_darwin; then # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version | wget https://downloads.flox.dev/by-env/stable/osx/flox-1.7.2.aarch64-darwin.pkg -O /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version
+  local cmd_prefix=""
+  if is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
+  if is_darwin; then # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.4.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version | wget https://downloads.flox.dev/by-env/stable/osx/flox-1.7.2.aarch64-darwin.pkg -O /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version
     run_cmd wget "https://downloads.flox.dev/by-env/stable/osx/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-darwin.pkg" -O "/tmp/flox.pkg"
-    run_cmd sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg
-  else # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version | wget https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -O /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
+    run_cmd ${cmd_prefix}installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg
+  else # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.4.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version | wget https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -O /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
     run_cmd wget "https://downloads.flox.dev/by-env/stable/deb/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-linux.deb" -O "/tmp/flox.deb"
-    run_cmd sudo dpkg -i /tmp/flox.deb && rm -f /tmp/flox.deb
+    run_cmd ${cmd_prefix}dpkg -i /tmp/flox.deb && rm -f /tmp/flox.deb
+  fi
+  if is_container || is_devcontainer; then
+    # Fix permissions after installation for container/devcontainer use
+    fix_flox_permissions "$USERNAME"
   fi
 }
 packages_install_flox() {
@@ -459,22 +467,13 @@ setup_user_context() {
 }
 setup_package_manager() {
   if ! has_cmd "$PACKAGE_MANAGER"; then
-    warn "$1 Installing Package Manager '$PACKAGE_MANAGER' as user '$USERNAME'..."
     if [ "$PACKAGE_MANAGER" = "flox" ]; then
-      run_as_target_user "package_manager_install_flox"
-      # Fix permissions after installation for container/devcontainer use
-      fix_flox_permissions "$USERNAME"
+      package_manager_install_flox
     else
       fatal "$1 '$PACKAGE_MANAGER' is unknown! Available options are: flox"
     fi
   fi
-  # Verify it works for target user
-  if needs_user_switch; then
-    run_as_user "$USERNAME" "command -v $PACKAGE_MANAGER && $PACKAGE_MANAGER --version" || fatal "$1 Package Manager '$PACKAGE_MANAGER' not accessible by user '$USERNAME'!"
-  else
-    command -v "$PACKAGE_MANAGER" && "$PACKAGE_MANAGER" --version || fatal "$1 Package Manager '$PACKAGE_MANAGER' not accessible!"
-  fi
-  ok "$1" "PM/$PACKAGE_MANAGER"
+  run_cmd which $PACKAGE_MANAGER && $PACKAGE_MANAGER --version && ok "$1" "PM/$PACKAGE_MANAGER" || fatal "$1 Package Manager '$PACKAGE_MANAGER' not accessible!"
 }
 setup_packages() {
   get_github_token
