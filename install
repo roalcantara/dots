@@ -387,12 +387,16 @@ prepare_tools_zsh() {
   ok "$1" "TOOLS/ZSH"
 }
 prepare_tools_nvim() {
-  [ ! -d "$XDG_CONFIG_HOME/nvim" ] && { warn "$1 Neovim config not found at '$XDG_CONFIG_HOME/nvim'! Skipping..."; return; }
+  if [ -d "$XDG_CONFIG_HOME/nvim" ]; then
+    rm -rf "$XDG_CONFIG_HOME/nvim/.venv"
+  else
+    warn "$1 Neovim config not found at '$XDG_CONFIG_HOME/nvim'! Skipping..."; return;
+  fi
   has_cmd npm && timeout 300 npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim 2>/dev/null || warn "$1 NEOVIM/PROVIDERS/NPM NOT FOUND => NPM packages installation skipped..."
-  has_cmd python3 && { run_cmd rm -rf "$XDG_CONFIG_HOME/nvim/.venv" && cd "$XDG_CONFIG_HOME/nvim" && python3 -m venv .venv && source .venv/bin/activate && timeout 300 pip install pynvim neovim 2>/dev/null; } || warn "$1 NEOVIM/PROVIDERS/PYTHON NOT FOUND => PIP packages installation skipped..."
+  has_cmd python3 && cd "$XDG_CONFIG_HOME/nvim" && python3 -m venv .venv && sudo chown -R "$USERNAME:$GROUPNAME" "$HOME" && .venv/bin/pip install pynvim neovim || warn "$1 NEOVIM/PROVIDERS/PYTHON NOT FOUND or failed to install pynvim/neovim => PIP packages installation skipped..."
   has_cmd gem && timeout 300 gem install neovim 2>/dev/null || warn "$1 NEOVIM/PROVIDERS/RUBY NOT FOUND => Gems installation skipped..."
   has_cmd nvim && timeout 600 nvim --headless "+Lazy! sync" "+TSUpdateSync" "+MasonToolsUpdateSync" "+qa" 2>/dev/null || warn "$1 NEOVIM/MASON plugins failed => non-fatal, continue the setup..."
-  ok "$1" "TOOLS/NEOVIM"
+  ok "$1" "TOOLS/NEOVIM/PROVIDERS/RUBY"
 }
 prepare_tools_sops() {
   info "$1 Validating SOPS/AGE configuration..."
