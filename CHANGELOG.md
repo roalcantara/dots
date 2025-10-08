@@ -1,3 +1,10 @@
+## [1.14.10](https://github.com/roalcantara/dots/compare/v1.14.9...v1.14.10) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install/flox:** Update permissions and ignore .lock files ([d42f4e6](https://github.com/roalcantara/dots/commit/d42f4e6ee36c23ee6d715290414f1331e5f026ee))
+
 ## [1.14.9](https://github.com/roalcantara/dots/compare/v1.14.8...v1.14.9) (2025-10-08)
 
 
