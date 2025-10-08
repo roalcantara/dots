@@ -1,3 +1,10 @@
+## [1.14.3](https://github.com/roalcantara/dots/compare/v1.14.2...v1.14.3) (2025-10-08)
+
+
+### Bug Fixes
+
+* **install:** Enhance container detection and user context handling ([b20ea4c](https://github.com/roalcantara/dots/commit/b20ea4cea35b4d08fdc7a9ce9ec5c8f0f58717a4))
+
 ## [1.14.2](https://github.com/roalcantara/dots/compare/v1.14.1...v1.14.2) (2025-10-07)
 
 
