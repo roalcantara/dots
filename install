@@ -170,16 +170,7 @@ package_manager_install_mise() {
   needs_sudo && run_cmd chmod +x "$install_path" || chmod +x "$install_path"
 }
 packages_install_flox() {
-  # Run as root to avoid Nix permission issues, then fix ownership
-  if needs_sudo; then
-    # Run flox commands as root
-    run_cmd sudo flox pull roalcantara/default --dir "$HOME" --force
-    # Fix ownership of created files
-    run_cmd sudo chown -R "$USERNAME:$GROUPNAME" "$HOME" 2>/dev/null || true
-  else
-    # Run normally if not root
-    run_cmd flox pull roalcantara/default --dir "$HOME" --force
-  fi
+  run_cmd flox pull roalcantara/default --dir "$HOME" --force
   run_cmd flox envs
   run_cmd flox list --dir "$HOME"
   eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
