@@ -226,7 +226,7 @@ ensure_user_and_group_debian() {
 }
 run_as_user() {
   local username="$1"; shift
-  if [ "$(id -u)" -eq 0 ] && [ "$username" != "root" ]; then
+  if is_devcontainer || ([ "$(id -u)" -eq 0 ] && [ "$username" != "root" ]); then
     warn "Running command as user '$username' => '$*' ($USERNAME/$GROUPNAME)"
     # Export all required function dependencies - include ALL functions that might be called
     local all_functions="$(declare -f log info warn error fatal success ok run_cmd has_cmd download_file package_manager_install_flox package_manager_install_mise packages_install_flox packages_install_mise prepare_tools_zsh prepare_tools_nvim prepare_tools_sops ensure_dir ensure_dir_and_export_var ensure_dirs_and_export_vars backup is_darwin group_exists user_exists get_github_token backup_home fix_flox_permissions is_container is_devcontainer needs_sudo needs_user_switch run_as_target_user)"
