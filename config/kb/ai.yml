@@ -15,6 +15,33 @@ bookmarks:
       - Developer Community: https://community.openai.com
       - OpenAPI Specification: https://spec.openapis.org/oas/latest.html
       - API Keys: https://platform.openai.com/settings/organization/api-keys
+  https://chatgpt.com/codex:
+    desc: One agent for everywhere you code—included in ChatGPT Plus, Pro, Team, Edu, and Enterprise plans
+    tags: [ai, tools, codex]
+    links:
+      - https://developers.openai.com/codex
+      - https://developers.openai.com/codex/quickstart
+      - https://chatgpt.com
+    notes:
+      - md: | #markdown
+          ## One agent for everywhere you code—included in ChatGPT Plus, Pro, Team, Edu, and Enterprise plans
+
+          Codex is a tool that allows you to write code with AI. It is included in ChatGPT Plus, Pro, Team, Edu, and Enterprise plans.
+
+          ### Features
+
+          - Codex is a tool that allows you to write code with AI.
+          - It is included in ChatGPT Plus, Pro, Team, Edu, and Enterprise plans.
+          - It is a tool that allows you to write code with AI.
+
+      - sh: | #shell
+          #!/bin/bash
+
+          # Install Codex
+          brew install codex
+
+          # Configure Codex
+          mkdir -p ~/.config/codex/ && vi ~/.config/codex/config.yaml
   https://github.com/Nutlope/aicommits:
     desc: AI Commits | A CLI that writes your git commit messages for you with AI
     tags: [ai, tools, git]
@@ -199,6 +226,499 @@ bookmarks:
     tags: [ai, tools]
     links:
       - Anthropic API Fundamentals: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
+  https://docs.claude.com/en/docs/claude-code/quickstart:
+    desc: Claude Code Quickstart
+    tags: [ai, coding, claude]
+    links:
+      - Quickstart: https://docs.claude.com/en/docs/claude-code/quickstart
+    notes:
+      - md: | #markdown
+          ### QUICKSTART
+
+          - This quickstart guide will have you using AI-powered coding assistance in just a few minutes.
+          - By the end, you'll understand how to use Claude Code for common development tasks.
+
+          #### REQUIREMENTS
+
+          - A terminal or command prompt open
+          - A code project to work with
+          - A [Claude.ai](https://claude.ai) (recommended) or [Claude Console](https://console.anthropic.com/) account
+
+          #### STEP 1: Install Claude Code
+
+          ```sh
+          brew install --cask claude-code
+          ```
+
+          #### STEP 2: Log in to your account
+
+          Claude Code requires an account to use. When you start an interactive session with the `claude` command, you'll need to log in:
+
+          ```sh
+          claude
+          # You'll be prompted to log in on first use
+          ```
+
+          ```sh
+          /login
+          # Follow the prompts to log in with your account
+          ```
+
+          You can log in using either account type:
+
+          - [Claude.ai](https://claude.ai) (subscription plans - recommended)
+          - [Claude Console](https://console.anthropic.com) (API access with pre-paid credits)
+
+          Once logged in, your credentials are stored and you won't need to log in again.
+
+          > 💡 **NOTE**
+          >
+          >  When you first authenticate Claude Code with your Claude Console account, a workspace called "Claude Code" is automatically created for you. This workspace provides centralized cost tracking and management for all Claude Code usage in your organization.
+          >  You can have both account types under the same email address. If you need to log in again or switch accounts, use the `/login` command within Claude Code.
+
+          #### STEP 3: Start your first session
+
+          Open your terminal in any project directory and start Claude Code:
+
+          ```sh
+          cd /path/to/your/project
+          claude
+          ```
+
+          - You'll see the Claude Code welcome screen with your session information, recent conversations, and latest updates.
+          - Type `/help` for available commands or `/resume` to continue a previous conversation.
+
+          > 💡 **TIP**
+          >
+          > After logging in (Step 2), your credentials are stored on your system. Learn more in [Credential Management](/en/docs/claude-code/iam#credential-management).
+
+          #### STEP 4: Ask your first question
+
+          - Let's start with understanding your codebase; try one of these commands:
+
+          ```
+          > what does this project do?
+          ```
+
+          - Claude will analyze your files and provide a summary; You can also ask more specific questions:
+
+          ```
+          > what technologies does this project use?
+          ```
+
+          ```
+          > where is the main entry point?
+          ```
+
+          ```
+          > explain the folder structure
+          ```
+
+          - You can also ask Claude about its own capabilities:
+
+          ```
+          > what can Claude Code do?
+          ```
+
+          ```
+          > how do I use slash commands in Claude Code?
+          ```
+
+          ```
+          > can Claude Code work with Docker?
+          ```
+
+          > 💡 **NOTE**
+          > Claude Code reads your files as needed - you don't have to manually add context. Claude also has access to its own documentation and can answer questions about its features and capabilities.
+
+          #### STEP 5: Make your first code change
+
+          - Now let's make Claude Code do some actual coding; try a simple task:
+
+          ```
+          > add a hello world function to the main file
+          ```
+
+          - Claude Code will:
+
+            1. Find the appropriate file
+            2. Show you the proposed changes
+            3. Ask for your approval
+            4. Make the edit
+
+          > 💡 **NOTE**
+          >
+          > Claude Code always asks for permission before modifying files. You can approve individual changes or enable "Accept all" mode for a session.
+
+          #### STEP 6: Use Git with Claude Code
+
+          Claude Code makes Git operations conversational:
+
+          ```
+          > what files have I changed?
+          ```
+
+          ```
+          > commit my changes with a descriptive message
+          ```
+
+          You can also prompt for more complex Git operations:
+
+          ```
+          > create a new branch called feature/quickstart
+          ```
+
+          ```
+          > show me the last 5 commits
+          ```
+
+          ```
+          > help me resolve merge conflicts
+          ```
+
+          #### STEP 7: Fix a bug or add a feature
+
+          Claude is proficient at debugging and feature implementation.
+
+          Describe what you want in natural language:
+
+          ```
+          > add input validation to the user registration form
+          ```
+
+          Or fix existing issues:
+
+          ```
+          > there's a bug where users can submit empty forms - fix it
+          ```
+
+          Claude Code will:
+
+          * Locate the relevant code
+          * Understand the context
+          * Implement a solution
+          * Run tests if available
+
+          #### STEP 8: Test out other common workflows
+
+          There are a number of ways to work with Claude:
+
+          | **TASK**              | **EXAMPLE COMMAND**                                                             |
+          | --------------------- | ------------------------------------------------------------------------------- |
+          | Refactor code         | `> refactor the authentication module to use async/await instead of callbacks`  |
+          | Write tests           | `> write unit tests for the calculator functions`                               |
+          | Update documentation  | `> update the README with installation instructions`                            |
+          | Code review           | `> review my changes and suggest improvements`                                  |
+
+          > 💡 **TIP > REMEMBER**
+          > Claude Code is your AI pair programmer.
+          > Talk to it like you would a helpful colleague - describe what you want to achieve, and it will help you get there
+
+          #### ESSENTIAL COMMANDS
+
+          Here are the most important commands for daily use:
+
+          | **COMMAND**         | **WHAT IT DOES**                  | **EXAMPLE**                         |
+          | ------------------- | --------------------------------- | ----------------------------------- |
+          | `claude`            | Start interactive mode            | `claude`                            |
+          | `claude "task"`     | Run a one-time task               | `claude "fix the build error"`      |
+          | `claude -p "query"` | Run one-off query, then exit      | `claude -p "explain this function"` |
+          | `claude -c`         | Continue most recent conversation | `claude -c`                         |
+          | `claude -r`         | Resume a previous conversation    | `claude -r`                         |
+          | `claude commit`     | Create a Git commit               | `claude commit`                     |
+          | `/clear`            | Clear conversation history        | `> /clear`                          |
+          | `/help`             | Show available commands           | `> /help`                           |
+          | `exit` or Ctrl+C    | Exit Claude Code                  | `> exit`                            |
+
+          See the [CLI reference](/en/docs/claude-code/cli-reference) for a complete list of commands.
+
+          #### PRO TIPS FOR BEGINNERS
+
+          > 💡 **BE SPECIFIC WITH YOUR REQUESTS**
+          >
+          > Instead of: `"fix the bug"`
+          > Try: `"fix the login bug where users see a blank screen after entering wrong credentials"`
+
+          > 💡 **USE STEP-BY-STEP INSTRUCTIONS**
+          >
+          > Instead of: `"create a new database table for user profiles"`
+          > Try: `"1. create a new database table for user profiles"`
+
+          > 💡 **LET CLAUDE EXPLORE FIRST**
+          >
+          > Before making changes, let Claude understand your code:
+
+          > 💡 **SAVE TIME WITH SHORTCUTS**
+          >
+          > Use Tab for command completion
+          > Press ↑ for command history
+          > Type `/` to see all slash commands
+
+          #### WHAT'S NEXT?
+
+          Now that you've learned the basics, explore more advanced features:
+
+          > 💡 **[COMMON WORKFLOWS](https://docs.claude.com/en/docs/claude-code/common-workflows)**
+          >
+          > Step-by-step guides for common tasks
+
+          > 💡 **[CLI REFERENCE](https://docs.claude.com/en/docs/claude-code/cli-reference)**
+          >
+          > Master all commands and options
+
+          > 💡 **[CONFIGURATION](https://docs.claude.com/en/docs/claude-code/settings)**
+          >
+          > Customize Claude Code for your workflow
+
+          #### GETTING HELP
+
+          * **In Claude Code**: Type `/help` or ask "how do I..."
+          * **Documentation**: You're here! Browse other guides
+          * **Community**: Join our [Discord](https://anthropic.com/discord) for tips and support
+  https://docs.claude.com/en/docs/claude-code/vs-code:
+    desc: Claude Code VS Code Extension
+    tags: [ai, coding, claude]
+    links: [https://docs.claude.com/en/docs/claude-code/vs-code]
+    notes:
+      - md: | #markdown
+          ### Visual Studio Code
+
+          > Use Claude Code with Visual Studio Code through our native extension or CLI integration
+
+          #### VS Code Extension (Beta)
+
+          The VS Code extension, available in beta, lets you see Claude's changes in real-time through a native graphical interface integrated directly into your IDE. The VS Code extension makes it easier to access and interact with Claude Code for users who prefer a visual interface over the terminal.
+
+          ##### FEATURES
+
+          The VS Code extension provides:
+
+          * **Native IDE experience**: Dedicated Claude Code sidebar panel accessed via the Spark icon
+          * **Plan mode with editing**: Review and edit Claude's plans before accepting them
+          * **Auto-accept edits mode**: Automatically apply Claude's changes as they're made
+          * **File management**: @-mention files or attach files and images using the system file picker
+          * **MCP server usage**: Use Model Context Protocol servers configured through the CLI
+          * **Conversation history**: Easy access to past conversations
+          * **Multiple sessions**: Run multiple Claude Code sessions simultaneously
+          * **Keyboard shortcuts**: Support for most shortcuts from the CLI
+          * **Slash commands**: Access most CLI slash commands directly in the extension
+
+          ##### REQUIREMENTS
+
+          * VS Code 1.98.0 or higher
+
+          ##### INSTALLATION
+
+          Download and install the extension from the [Visual Studio Code Extension Marketplace](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code).
+
+          ##### UPDATING
+
+          To update the VS Code extension:
+
+          1. Open the VS Code command palette with `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux)
+          2. Search for "Claude Code: Update"
+          3. Select the command to update to the latest version
+
+          ##### HOW IT WORKS
+
+          Once installed, you can start using Claude Code through the VS Code interface:
+
+          1. Click the Spark icon in your editor's sidebar to open the Claude Code panel
+          2. Prompt Claude Code in the same way you would in the terminal
+          3. Watch as Claude analyzes your code and suggests changes
+          4. Review and accept edits directly in the interface
+            * **Tip**: Drag the sidebar wider to see inline diffs, then click on them to expand for full details
+
+          ##### USING THIRD-PARTY PROVIDERS (VERTEX AND BEDROCK)
+
+          The VS Code extension supports using Claude Code with third-party providers like Amazon Bedrock and Google Vertex AI. When configured with these providers, the extension will not prompt for login. To use third-party providers, configure environment variables in the VS Code extension settings:
+
+          1. Open VS Code settings
+          2. Search for "Claude Code: Environment Variables"
+          3. Add the required environment variables
+
+          ##### ENVIRONMENT VARIABLES
+
+          | **VARIABLE**                  | **DESCRIPTION**                        | **REQUIRED**           | **EXAMPLE**                                      |
+          | :---------------------------- | :------------------------------------- | :--------------------- | :----------------------------------------------- |
+          | `CLAUDE_CODE_USE_BEDROCK`     | Enable Amazon Bedrock integration      | Required for Bedrock   | `"1"` or `"true"`                                |
+          | `CLAUDE_CODE_USE_VERTEX`      | Enable Google Vertex AI integration    | Required for Vertex AI | `"1"` or `"true"`                                |
+          | `ANTHROPIC_API_KEY`           | API key for third-party access         | Required               | `"your-api-key"`                                 |
+          | `AWS_REGION`                  | AWS region for Bedrock                 |                        | `"us-east-2"`                                    |
+          | `AWS_PROFILE`                 | AWS profile for Bedrock authentication |                        | `"your-profile"`                                 |
+          | `CLOUD_ML_REGION`             | Region for Vertex AI                   |                        | `"global"` or `"us-east5"`                       |
+          | `ANTHROPIC_VERTEX_PROJECT_ID` | GCP project ID for Vertex AI           |                        | `"your-project-id"`                              |
+          | `ANTHROPIC_MODEL`             | Override primary model                 | Override model ID      | `"us.anthropic.claude-3-7-sonnet-20250219-v1:0"` |
+          | `ANTHROPIC_SMALL_FAST_MODEL`  | Override small/fast model              | Optional               | `"us.anthropic.claude-3-5-haiku-20241022-v1:0"`  |
+
+          For detailed setup instructions and additional configuration options, see:
+
+          * [Claude Code on Amazon Bedrock](/en/docs/claude-code/amazon-bedrock)
+          * [Claude Code on Google Vertex AI](/en/docs/claude-code/google-vertex-ai)
+
+          ##### NOT YET IMPLEMENTED
+
+          The following features are not yet available in the VS Code extension:
+
+          * **Full MCP server configuration**: You need to [configure MCP servers through the CLI](/en/docs/claude-code/mcp) first, then the extension will use them
+          * **Subagents configuration**: Configure [subagents through the CLI](/en/docs/claude-code/sub-agents) to use them in VS Code
+          * **Checkpoints**: Save and restore conversation state at specific points
+          * **Advanced shortcuts**:
+            * `#` shortcut to add to memory
+            * `!` shortcut to run bash commands directly
+          * **Tab completion**: File path completion with tab key
+
+          We are working on adding these features in future updates.
+
+          ##### SECURITY CONSIDERATIONS
+
+          When Claude Code runs in VS Code with auto-edit permissions enabled, it may be able to modify IDE configuration files that can be automatically executed by your IDE. This may increase the risk of running Claude Code in auto-edit mode and allow bypassing Claude Code's permission prompts for bash execution.
+
+          When running in VS Code, consider:
+
+          * Enabling [VS Code Restricted Mode](https://code.visualstudio.com/docs/editor/workspace-trust#_restricted-mode) for untrusted workspaces
+          * Using manual approval mode for edits
+          * Taking extra care to ensure Claude is only used with trusted prompts
+
+          ##### LEGACY CLI INTEGRATION
+
+          The first VS Code integration that we released allows Claude Code running in the terminal to interact with your IDE. It provides selection context sharing (current selection/tab is automatically shared with Claude Code), diff viewing in the IDE instead of terminal, file reference shortcuts (`Cmd+Option+K` on Mac or `Alt+Ctrl+K` on Windows/Linux to insert file references like @File#L1-99), and automatic diagnostic sharing (lint and syntax errors).
+
+          The legacy integration auto-installs when you run `claude` from VS Code's integrated terminal. Simply run `claude` from the terminal and all features activate. For external terminals, use the `/ide` command to connect Claude Code to your VS Code instance. To configure, run `claude`, enter `/config`, and set the diff tool to `auto` for automatic IDE detection.
+
+          Both the extension and CLI integration work with Visual Studio Code, Cursor, Windsurf, and VSCodium.
+
+          ##### TROUBLESHOOTING
+
+          ##### EXTENSION NOT INSTALLING
+
+          * Ensure you have a compatible version of VS Code (1.85.0 or later)
+          * Check that VS Code has permission to install extensions
+          * Try installing directly from the marketplace website
+
+          ##### LEGACY INTEGRATION NOT WORKING
+
+          * Ensure you're running Claude Code from VS Code's integrated terminal
+          * Ensure the CLI for your IDE variant is installed:
+            * VS Code: `code` command should be available
+            * Cursor: `cursor` command should be available
+            * Windsurf: `windsurf` command should be available
+            * VSCodium: `codium` command should be available
+          * If the command isn't installed:
+            1. Open command palette with `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux)
+            2. Search for "Shell Command: Install 'code' command in PATH" (or equivalent for your IDE)
+
+          For additional help, see our [troubleshooting guide](/en/docs/claude-code/troubleshooting).
+  https://docs.claude.com/en/docs/claude-code/common-workflows:
+    desc: Common Workflows
+    tags: [ai, coding, claude]
+    links: [https://docs.claude.com/en/docs/claude-code/common-workflows]
+    notes:
+      - md: | #markdown
+          ### COMMON WORKFLOWS
+
+          > Learn about common workflows with Claude Code.
+
+          Each task in this document includes clear instructions, example commands, and best practices to help you get the most from Claude Code.
+
+          ## UNDERSTAND NEW CODEBASES
+
+          ### GET A QUICK CODEBASE OVERVIEW
+
+          Suppose you've just joined a new project and need to understand its structure quickly.
+
+          ```sh
+          #!/bin/bash
+
+          # 1. Navigate to the project root directory
+          cd /path/to/project
+
+          # 2. Start Claude Code
+          claude
+
+          # 3. Ask for a high-level overview (paste commands in Claude prompt)
+          # > give me an overview of this codebase
+
+          # 4. Dive deeper into specific components (paste commands in Claude prompt)
+          # > explain the main architecture patterns used here
+          # > what are the key data models?
+          # > how is authentication handled?
+          ```
+
+          > 💡 **TIP**
+          >
+          >  * Start with broad questions, then narrow down to specific areas
+          >  * Ask about coding conventions and patterns used in the project
+          >  * Request a glossary of project-specific terms
+
+          ### FIND RELEVANT CODE
+
+          Suppose you need to locate code related to a specific feature or functionality.
+
+          ```sh
+          #!/bin/bash
+
+          # 0. In the Claude Code prompt..
+
+          # 1. Ask Claude to find relevant files:
+          > find the files that handle user authentication
+
+          # 2. Get context on how components interact:
+          > how do these authentication files work together?
+
+          # 3. Understand the execution flow:
+          > trace the login process from front-end to database
+          ```
+
+          > 💡 **TIP**
+          >
+          >  * Be specific about what you're looking for
+          >  * Use domain language from the project
+
+          ## FIX BUGS EFFICIENTLY
+
+          Suppose you've encountered an error message and need to find and fix its source.
+
+          ```sh
+          #!/bin/bash
+          # 0. In the Claude Code prompt..
+
+          # 1. Ask Claude to find relevant files:
+          > find the files that handle user authentication
+
+          # 2. Get context on how components interact:
+          > how do these authentication files work together?
+
+          # 3. Understand the execution flow:
+          > trace the login process from front-end to database
+          ```
+
+          > 💡 **TIP**
+          >
+          >  * Be specific about what you're looking for
+          >  * Use domain language from the project
+
+          ## REFACTOR CODE
+
+          Suppose you need to update old code to use modern patterns and practices.
+
+          ```sh
+          #!/bin/bash
+          # 0. In the Claude Code prompt..
+
+          # 1. Identify legacy code for refactoring:
+          > find deprecated API usage in our codebase
+
+          # 2. Get refactoring recommendations:
+          > suggest how to refactor utils.js to use modern JavaScript features
+
+          # 3. Apply the changes safely:
+          > refactor utils.js to use ES2024 features while maintaining the same behavior
+          ```
+          > 💡 **TIP**
+          >
+          >  * Be specific about what you're looking for
+          >  * Use domain language from the project
 commands:
   # https://platform.openai.com/docs/quickstart?api-mode=responses | OpenAI API Quickstart
   'curl https://api.openai.com/v1/responses -H "Content-Type: application/json" -H "Authorization: Bearer $OPENAI_API_KEY" -d ''{ "model": "gpt-4.1", "input": "Tell me a three sentence bedtime story about a unicorn." }''':
@@ -217,7 +737,6 @@ commands:
     links:
       - Quickstart: https://docs.claude.com/en/docs/get-started
       - Anthropic API Fundamentals: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
-
   # https://github.com/danielmiessler/Fabric | Augmenting humans using AI
   fabric -y "https://www.youtube.com/watch?v=VIDEO_ID" --pattern summarize:
     desc: Extract a YouTube video transcript and process it with a pattern "Summarize"
@@ -1637,7 +2156,7 @@ commands:
 
   brew install codex:
     desc: Lightweight coding agent that runs in your terminal | OpenAI
-    tags: [ai, open_ai, tools]
+    tags: [ai, coding, codex]
     links: [https://chatgpt.com/codex/onboarding, https://github.com/openai/codex, https://youtu.be/glOM015IAEI]
 cheats:
   Brief, high-level explanation of the main LLM/AI concepts:
