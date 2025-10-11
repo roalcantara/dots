@@ -1,3 +1,15 @@
+# [1.15.0](https://github.com/roalcantara/dots/compare/v1.14.13...v1.15.0) (2025-10-11)
+
+
+### Bug Fixes
+
+* **install/nvim:** Enhance Python venv instructions ([375d54d](https://github.com/roalcantara/dots/commit/375d54ddc9464e0ecd08d3478b5624c525bbecb7))
+
+
+### Features
+
+* **kb:** Add entries for codex and claude-code ([9e63abd](https://github.com/roalcantara/dots/commit/9e63abd8af25c39defb2a60b019c1e53c5d81ff5))
+
 ## [1.14.13](https://github.com/roalcantara/dots/compare/v1.14.12...v1.14.13) (2025-10-08)
 
 
