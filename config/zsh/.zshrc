@@ -215,13 +215,15 @@
   zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)' # Max errors
 # }
 
+
+
 # ZSH PARAMETERS | http://zsh.sourceforge.io/Doc/Release/Parameters.html {
   # General ZSH's parameters related to prompt
   export PROMPT='❯ '
   # If set, used to give the indentation between the right hand side of the right prompt in the line editor as given by RPS1 or RPROMPT and the right hand side of the screen. If not set, the value 1 is used. See https://superuser.com/a/726509/389767
   export ZLE_RPROMPT_INDENT=0
   # PATH; Where the shell searches for commands; set PATH so it includes user's private bin if it exists
-  declare -gaU path=(${XDG_LOCAL_BIN_DIR:-$HOME/.local}/bin ${CARGO_HOME:-$XDG_DATA_HOME/cargo}/bin ${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}/bin ${PNPM_HOME:-$XDG_DATA_HOME/pnpm}/bin $path)
+  declare -gaU path=(${XDG_LOCAL_BIN_DIR:-$HOME/.local}/bin ${CARGO_HOME:-$XDG_DATA_HOME/cargo}/bin ${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}/bin ${PNPM_HOME:-$XDG_DATA_HOME/pnpm}/bin /usr/local/{bin,sbin} $path)
   # FPATH; Where the shell searches to find shell functions
   declare -gaU fpath=($ZIM_HOME/functions $fpath)
   # CDPATH; Directories that the shell searches to find the current directory when the user changes directories using the cd command

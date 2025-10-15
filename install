@@ -33,12 +33,8 @@ is_container() {
   fi
   return 1
 }
-is_devcontainer() {
-  [ -n "${REMOTE_CONTAINERS:-}" ] || [ -n "${CODESPACES:-}" ] || [ -f "/.devcontainer/.postCreateCommandMarker" ] || [ -d "/.devcontainer" ]
-}
-needs_sudo() {
-  [ "$(id -u)" -ne 0 ] && return 0 || return 1
-}
+is_devcontainer() { [ -n "${REMOTE_CONTAINERS:-}" ] || [ -n "${CODESPACES:-}" ] || [ -f "/.devcontainer/.postCreateCommandMarker" ] || [ -d "/.devcontainer" ]; }
+needs_sudo() { [ "$(id -u)" -ne 0 ] && return 0 || return 1; }
 needs_user_switch() {
   # In DevContainers, if we're already the target user, no need to switch
   if is_devcontainer && [ "$USER" = "$USERNAME" ]; then
@@ -118,7 +114,6 @@ backup_home() {
 }
 fix_flox_permissions() {
   local username="${1:-$USERNAME}"
-
   if is_container || is_devcontainer; then
     info "Fixing Nix/Flox permissions for user '$username'..."
 

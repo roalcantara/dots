@@ -37,6 +37,7 @@
 ##?     dots zsh --prof trace [ --once ]
 ##?     dots xdg check_runtime_perms
 ##?     dots xdg ensure_runtime_perms
+##?     dots setup local_settings
 
 __get_dir_permissions() {
     local dir="$1"
@@ -59,6 +60,60 @@ __get_dir_permissions() {
 
     echo "$perms:$owner"
     return 0
+}
+
+__setup_local_settings() {
+  # It turns out that VSCode and VSCode Insiders shared the same settings up usersettings, keybindkings and snippets
+  # In our dotfiles repositopry, these configurations are consolidadted ensuring consistency across both editors.
+  #
+  # BENEFITS:
+  #   - Single source of truth for all VSCode settings
+  #   - Identical shortcuts, snippets, and preferences across VSCode and VSCode Insiders
+  #   - Zero cognitive load switching between editors
+  #   - Version controlled settings with easy rollback
+  #
+  # ARCHITECTURE:
+  #   | VSCODE                             | VSCODE INSIDERS    | CONSOLIDATED SOLUTION               |
+  #   | ---------------------------------- | ------------------ | ----------------------------------- |
+  #   | ~/.local/share/dots/config/vscode/ | ~/./config/vscode/ | ~/.local/share/dots/config/vscode/  |
+
+  # 1. Validate dotfiles structure
+  if [ ! -L "$HOME/.config/vscode" ] && [ ! -d "$HOME/.config/vscode" ]; then
+    echo "'~/.config/vscode' does not exist - ensure dotfiles setup completed successfully. Skipping..."
+    return 0
+  fi
+
+  # 2. Determine platform-specific paths
+  local vscode_path vscode_insiders_path
+  if is_darwin; then
+    vscode_path="$HOME/Library/Application Support/Code/User"
+    vscode_insiders_path="$HOME/Library/Application Support/Code - Insiders/User"
+  else
+    vscode_path="$HOME/.config/Code/User"
+    vscode_insiders_path="$HOME/.config/Code - Insiders/User"
+  fi
+
+  # 3. Setup VSCode and VSCode Insiders settings
+  for editor in "VSCODE:$vscode_path" "VSCODE_INSIDERS:$vscode_insiders_path"; do
+    IFS=: read editor_name editor_path <<< "$editor"
+    if [ -d "$(dirname "$editor_path")" ]; then
+      echo "$editor_name detected - setting up symlinks..."
+      ensure_dir "$editor_path"
+
+      rm -rf "$editor_path/settings.json"
+      rm -rf "$editor_path/keybindings.json"
+      rm -rf "$editor_path/snippets"
+
+      ln -sf "$HOME/.config/vscode/settings.json" "$editor_path/settings.json"
+      ln -sf "$HOME/.config/vscode/keybindings.json" "$editor_path/keybindings.json"
+      ln -sf "$HOME/.config/vscode/snippets" "$editor_path/snippets"
+
+      echo "$editor_name" "Settings linked successfully! ✔"
+    else
+      echo "$editor_name not detected - skipping ${editor_name//_/ } setup!"
+    fi
+  done
+  echo "Local settings synchronization complete! ✔✔"
 }
 
 dots() {
@@ -103,6 +158,13 @@ dots() {
   # Print the environment variables
   env)
     env | sort | uniq | bat -l log
+    ;;
+  # Setup the local settings
+  setup)
+    case $2 in
+    local_settings) __setup_local_settings ;;
+    *) dots setup "$(gum filter --limit=1 'local_settings')" ;;
+    esac
     ;;
   # Print the ANSI color palette
   palette)

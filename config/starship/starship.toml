@@ -257,7 +257,7 @@ symbol_threshold = 1
 style = 'bold bright-yellow dimmed blink'
 format = '[$number$symbol]($style) '
 
-# Disables the custom module
-# https://docs.warp.dev/terminal/appearance/prompt#starship-settings
-[custom]
-disabled = false
+# # Disables the custom module
+# # https://docs.warp.dev/terminal/appearance/prompt#starship-settings
+# [custom]
+# disabled = false
