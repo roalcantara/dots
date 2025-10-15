@@ -1,8 +1,17 @@
 #########################################################################
 # Common packages among Brewfiles                                       #
 # $ brew bundle dump --file ~/.config/homebrew/Brewfile                 #
+# --------------------------------------------------------------------- #
+# 1. Uninstall everything                                               #
+# $ brew bundle cleanup --force --file /dev/null                        #
+# 2. Reinstall from your Brewfile                                       #
+# $ brew bundle -v --file ~/.config/homebrew/Brewfile                   #
+# 3. Verify everything installed correctly                              #
+# $ brew bundle check --file ~/.config/homebrew/Brewfile                #
+# --------------------------------------------------------------------- #
 # $ brew bundle -v --file ~/.config/homebrew/Brewfile                   #
 # $ brew bundle -v --force --cleanup --file ~/.config/homebrew/Brewfile #
+# --------------------------------------------------------------------- #
 # https://docs.brew.sh/Manpage#bundle-subcommand                        #
 #########################################################################
 
@@ -23,228 +32,54 @@ def is_container?
   false
 end
 
-def is_macos?
-  ENV.has_key?('HOMEBREW_SYSTEM') && ENV['HOMEBREW_SYSTEM'] == 'darwin'
-end
-
 def has_systemd?
   File.exist?('/run/systemd/system') && File.directory?('/run/systemd/system')
 end
 
 def can_run_containers_desktops_apps?
-  is_macos? || (!is_container? && has_systemd?)
+  OS.mac? || (!is_container? && has_systemd?)
 end
 
 # Platform-specific packages
-if is_macos? then
-  tap "homebrew/command-not-found"        # Command-not-found for Homebrew
-  tap "homebrew/test-bot"                 # Test bot for Homebrew
-  tap "homebrew/services"                 # For background services using launchctl on macOS
-  tap "dart-lang/dart"                    # Dart for Homebrew
-  tap "koekeishiya/formulae"              # Yabai for Homebrew
-  tap "modularml/packages"                # ModularML for Homebrew
-  tap "scullionw/tap"                     # Scullion for Homebrew
-  tap "spring-io/tap"                     # Spring for Homebrew
-  tap "buo/cask-upgrade"                  # Cask upgrade for Homebrew
+if OS.mac? && !is_container? && !is_ci? then
+  brew "aqua" # Declarative CLI version manager (https://aquaproj.github.io)
+  brew "bat-extras" # Bash scripts that integrate bat with various command-line tools (https://github.com/eth-p/bat-extras)
 
-  brew "aider"                            # AI-powered coding assistant (https://github.com/aider-chat/aider)
-  brew "act"                              # GitHub Actions CLI (https://github.com/nektos/act)
-  brew "aider"                            # AI-powered coding assistant (https://github.com/aider-chat/aider)
-  brew "bitwarden-cli"                    # Secure password manager for individuals, teams, and business (https://bitwarden.com)
-  brew "black", restart_service: :changed # Modern Python code formatter (https://github.com/psf/black)
-  brew "brotli"                           # Generic-purpose lossless compression algorithm by Google (https://github.com/google/brotli)
-  brew "btop"                             # A monitor for your system (https://github.com/aristocratos/btop)
-  brew "c-ares"                           # Asynchronous DNS library (https://c-ares.org)
-  brew "ca-certificates"                  # Mozilla CA certificate store (https://curl.se/docs/caextract.html)
-  brew "caddy"                            # Caddy is a powerful, enterprise-ready, and easy to deploy web server (https://caddyserver.com)
-  brew "chafa"                            # Display images in the terminal (https://hpjansson.org/chafa)
-  brew "checkmake"                        # Check Makefile syntax (https://github.com/mrtazz/checkmake)
-  brew "container-structure-test"         # Container Structure Test (https://github.com/GoogleContainerTools/container-structure-test)
-  brew "curlie"                           # Power of curl, ease of use of httpie (https://curlie.io)
-  brew "devcontainer"                     # Build, run, and manage dev containers (https://devcontainers.github.io)
-  brew "fontconfig"                       # Font configuration and customization library (https://freedesktop.org/wiki/Software/fontconfig)
-  brew "fontforge"                        # FontForge is a font editor (https://fontforge.org)
-  brew "freetype"                         # FreeType font engine (https://freetype.org)
-  brew "gengetopt"                        # GNU-style option parser (https://gnu.org/software/gengetopt)
-  brew "gettext"                          # GNU internationalization (i18n) and localization (l10n) library (https://gnu.org/software/gettext)
-  brew "git-extras"                       # Small git utilities (https://github.com/tj/git-extras)
-  brew "glab"                             # GitLab CLI (https://gitlab.com/gitlab-org/cli)
-  brew "glow"                             # Render markdown on the CLI, with pizzazz! (https://github.com/charmbracelet/glow)
-  brew "gnu-sed", args: ["--with-default-names"] # GNU implementation of the famous stream editor (https://gnu.org/software/sed)
-  brew "graphviz"                         # Graphviz is a tool for visualizing graphs (https://graphviz.org)
-  brew "grc"                              # Colorize logfiles and command output (https://github.com/garabik/grc)
-  brew "grep"                             # GNU grep, egrep and fgrep (https://gnu.org/software/grep)
-  brew "groff"                            # GNU troff text-formatting system (https://gnu.org/software/groff)
-  brew "highlight"                        # Highlight source code and syntax (https://github.com/rkitover/highlight)
-  brew "htmlq"                            # HTML5 parser that can be used as a command-line tool or as a library (https://github.com/mgdm/htmlq)
-  brew "htop"                             # Improved top (interactive process viewer) (https://htop.dev)
-  brew "http-server"                      # Simple zero-configuration command-line HTTP server (https://github.com/http-party/http-server)
-  brew "lesspipe"                         # Input filter for the pager less (https://www-zeuthen.desy.de/~friebel/unix/lesspipe.html)
-  brew "levant"                           # Templating and deployment tool for HashiCorp Nomad jobs (https://github.com/hashicorp/levant)
-  brew "librsvg"                          # SVG library (https://wiki.gnome.org/Projects/LibRsvg)
-  brew "litecli"                          # CLI for LiteDB (https://github.com/LiteDB/LiteDB)
-  brew "mike-engel/jwt-cli/jwt-cli"       # JWT CLI (https://github.com/mike-engel/jwt-cli)
-  brew "modularml/packages/modular"       # Modular developer CLI tool (https://modular.com)
-  brew "odo-dev"                          # Odo is a CLI for Kubernetes (https://odo.dev)
-  brew "oha"                              # HTTP load generator, inspired by rakyll/hey with tui animation (https://github.com/hatoo/oha)
-  brew "openapi-generator"                # OpenAPI Generator (https://openapi-generator.tech)
-  brew "pandoc"                           # Universal document converter (https://pandoc.org)
-  brew "parallel"                         # Shell command parallelization utility (https://savannah.gnu.org/projects/parallel)
-  brew "pastel"                           # Color and convert images in the terminal (https://github.com/sharkdp/pastel)
-  brew "pinentry-mac"                     # Pinentry for GPG on Mac (https://github.com/GPGTools/pinentry)
-  brew "pipx"                             # Execute binaries from Python packages in isolated environments (https://pipx.pypa.io)
-  brew "pkgconf"                          # A configuration file parser (https://github.com/pkgconf/pkgconf)
-  brew "pngpaste"                         # Paste PNG images to the clipboard (https://github.com/jcsalterego/pngpaste)
-  brew "potrace"                          # Convert bitmaps to vector graphics (https://potrace.sourceforge.net/)
-  brew "scullionw/tap/dirstat-rs"         # Directory statistics tool (https://github.com/scullionw/dirstat-rs)
-  brew "speedtest-cli"                    # Command-line interface for speedtest.net bandwidth tests (https://github.com/sivel/speedtest-cli)
-  brew "spring-io/tap/spring-boot"        # Spring Boot CLI (https://spring.io/projects/spring-boot)
-  brew "sqlfluff"                         # SQL linter and formatter (https://sqlfluff.com)
-  brew "taplo"                            # TOML toolkit written in Rust (https://taplo.tamasfe.dev)
-  brew "task"                             # Feature-rich console based todo list manager (https://taskwarrior.org)
-  brew "tealdeer"                         # Very fast implementation of tldr in Rust (https://github.com/dbrgn/tealdeer)
-  brew "terminal-notifier"                # Send macOS User Notifications from the command-line (https://github.com/julienXX/terminal-notifier)
-  brew "transcrypt"                       # Transparently encrypt files within a git repository (https://github.com/elasticdog/transcrypt)
-  brew "tree"                             # Display directories as trees (with optional color/HTML output) (https://oldmanprogrammer.net/source.php?dir=projects/tree)
-  brew "wakatime-cli"                     # Command-line interface to the WakaTime api (https://wakatime.com)
-  brew "websocat"                         # Command-line client for WebSockets (https://github.com/vi/websocat)
-  brew "whalebrew"                        # Run whale apps like a boss (https://github.com/whalebrew/whalebrew)
-  brew "xcodes"                           # Best command-line tool to install and switch between multiple versions of Xcode (https://github.com/XcodesOrg/xcodes)
-  brew "mise"                             # Mise is a tool for managing your shell environment (https://github.com/mise-app/mise)
-  brew "ruby-build"                       # Install rbenv Ruby versions (https://github.com/rbenv/ruby-build)
-  brew "neovim", args: ["HEAD"]           # Ambitious Vim-fork focused on extensibility and agility (https://neovim.io)
-  brew "utf8proc", args: ["HEAD"]         # UTF-8 processing library (https://github.com/JuliaStrings/utf8proc)
-
-  # macOS-specific casks
   cask_args appdir: "/Applications"
-  cask "brave-browser"                    # Web browser focusing on privacy (https://brave.com)
-  cask "chatgpt"                          # AI-powered productivity tool for the command-line (https://openai.com)
-  cask "claude"                           # Anthropic's official Claude AI desktop app (https://claude.ai/download)
-  cask "cursor"                           # A modern, open-source cursor editor (https://cursor.run)
-  cask "discord"                          # Voice and text chat software (https://discord.com)
-  cask "docker"                           # App to build and share containerised applications and microservices (https://docker.com/products/docker-desktop)
-  cask "firefox"                          # Web browser (https://mozilla.org/firefox)
-  cask "font-cascadia-code-pl"            # Version of Cascadia Code with embedded Powerline symbols (https://github.com/microsoft/cascadia-code)
-  cask "font-cascadia-code"               # Monospaced font that includes programming ligatures (https://github.com/microsoft/cascadia-code)
-  cask "font-caskaydia-mono-nerd-font"    # Nerd Font for Caskaydia Mono (https://github.com/ryanoasis/nerd-fonts)
-  cask "font-fira-code-nerd-font"         # Fira Code with Nerd Fonts (https://github.com/ryanoasis/nerd-fonts)
-  cask "font-fira-code"                   # Free monospaced font with programming ligatures (https://github.com/tonsky/FiraCode)
-  cask "font-jetbrains-mono-nerd-font"    # JetBrains Mono with Nerd Fonts (https://github.com/ryanoasis/nerd-fonts)
-  cask "ghostty"                          # GPU-accelerated cross-platform terminal emulator and multiplexer (https://ghostty.org)
-  cask "github"                           # Desktop client for GitHub repositories (https://desktop.github.com)
-  cask "google-chrome"                    # Web browser (https://google.com/chrome)
-  cask "google-cloud-sdk"                 # Set of tools to manage resources and applications hosted on Google Cloud (https://cloud.google.com/sdk)
-  cask "google-drive"                     # Client for the Google Drive storage service (https://google.com/drive)
-  cask "grammarly-desktop"                # Grammarly desktop app (https://grammarly.com)
-  cask "inkscape"                         # Vector graphics editor (https://inkscape.org)
-  cask "jetbrains-toolbox"                # JetBrains tools manager (https://jetbrains.com/toolbox-app)
-  cask "karabiner-elements"               # Custom keyboard remapping (https://karabiner-elements.pqrs.org)
-  cask "microsoft-edge"                   # Web browser (https://microsoft.com/en-us/edge?form=)
-  cask "orbstack"                         # Fast, light, and simple way to run containers and Linux machines (https://orbstack.dev)  
-  cask "parallels-toolbox"                # Bundle with over 30 tools (https://parallels.com/products/toolbox)
-  cask "postman"                          # Collaboration platform for API development (https://postman.com)
-  cask "protonvpn"                        # VPN client focusing on security (https://protonvpn.com)
-  cask "raycast"                          # Control your tools with a few keystrokes (https://raycast.com)
-  cask "sf-symbols"                       # Tool that provides consistent, highly configurable symbols for apps (https://developer.apple.com/design/human-interface-guidelines/sf-symbols)
-  cask "visual-studio-code@insiders"      # Open-source code editor (https://code.visualstudio.com/insiders)
-  cask "vlc"                              # Multimedia player (https://videolan.org/vlc)
-  cask "whatsapp"                         # Native desktop client for WhatsApp (https://whatsapp.com)
-  cask "zed"                              # Multiplayer code editor (https://zed.dev)
-  cask "zen-browser"                      # Browser for developers (https://zenbrowser.io)
-
-  # macOS-specific Mac App Store apps
-  brew "mas"                            # Mac App Store command-line interface (https://github.com/mas-cli/mas)
-  mas "Bitwarden",  id: 1352778147      # Secure and free password manager for all of your devices (https://bitwarden.com)
-  mas "Speedtest",  id: 1153157709      # Test your internet connection bandwidth (https://speedtest.net)
-else
-  # Linux-specific packages
-  # brew "gnu-sed"                          # GNU implementation of the famous stream editor (https://gnu.org/software/sed)
+  cask "amethyst" # Tiling window manager for macOS (https://ianyh.com/amethyst)
+  cask "bitwarden" # Secure and free password manager for all of your devices (https://bitwarden.com)
+  cask "brave-browser" # Web browser focusing on privacy (https://brave.com)
+  cask "chatgpt" # AI-powered productivity tool for the command-line (https://openai.com)
+  cask "claude-code" # Claude for code editing (https://claude.ai)
+  cask "claude" # Anthropic's official Claude AI desktop app (https://claude.ai/download)
+  cask "cursor" # A modern, open-source cursor editor (https://cursor.run)
+  cask "discord" # Voice and text chat software (https://discord.com)
+  cask "docker-desktop" # App to build and share containerised applications and microservices (https://docker.com/products/docker-desktop)
+  cask "firefox" # Web browser (https://mozilla.org/firefox)
+  cask "font-cascadia-code-pl" # Version of Cascadia Code with embedded Powerline symbols (https://github.com/microsoft/cascadia-code)
+  cask "font-cascadia-code" # Monospaced font that includes programming ligatures (https://github.com/microsoft/cascadia-code)
+  cask "font-caskaydia-mono-nerd-font" # Nerd Font for Caskaydia Mono (https://github.com/ryanoasis/nerd-fonts)
+  cask "font-fira-code-nerd-font" # Fira Code with Nerd Fonts (https://github.com/ryanoasis/nerd-fonts)
+  cask "font-fira-code" # Free monospaced font with programming ligatures (https://github.com/tonsky/FiraCode)
+  cask "font-hack-nerd-font" # Hack font with Nerd Fonts (https://github.com/ryanoasis/nerd-fonts)
+  cask "font-jetbrains-mono-nerd-font" # JetBrains Mono with Nerd Fonts (https://github.com/ryanoasis/nerd-fonts)
+  cask "ghostty" # GPU-accelerated cross-platform terminal emulator and multiplexer (https://ghostty.org)
+  cask "github" # Desktop client for GitHub repositories (https://desktop.github.com)
+  cask "google-chrome" # Web browser (https://google.com/chrome)
+  cask "google-cloud-sdk" # Set of tools to manage resources and applications hosted on Google Cloud (https://cloud.google.com/sdk)
+  cask "google-drive" # Client for the Google Drive storage service (https://google.com/drive)
+  cask "grammarly-desktop" # Grammarly desktop app (https://grammarly.com)
+  cask "karabiner-elements" # Custom keyboard remapping (https://karabiner-elements.pqrs.org)
+  cask "ollama-app" # Local AI model runner (https://ollama.com)
+  cask "postman" # Collaboration platform for API development (https://postman.com)
+  cask "raycast" # Control your tools with a few keystrokes (https://raycast.com)
+  cask "slack" # Slack desktop app (https://slack.com)
+  cask "visual-studio-code" # Open-source code editor (https://code.visualstudio.com)
+  cask "visual-studio-code@insiders" # Open-source code editor (https://code.visualstudio.com/insiders)
+  cask "vlc" # Multimedia player (https://videolan.org/vlc)
+  cask "warp" # Modern terminal with AI features (https://warp.dev)
+  cask "whatsapp" # Native desktop client for WhatsApp (https://whatsapp.com)
+  cask "zed" # Multiplayer code editor (https://zed.dev)
 end
-
-unless is_ci? || is_container? then
-  brew "age"                              # Age is a simple, modern, and secure encryption tool with a minimal design (https://age-encryption.org)
-  brew "ast-grep"                         # Generic AST grep tool (https://ast-grep.github.io)
-  brew "asyncapi"                         # AsyncAPI CLI (https://github.com/asyncapi/cli)
-  brew "atuin"                            # Shell history manager (https://github.com/ellie/atuin)
-  brew "biome"                            # One toolchain for your web project (https://biomejs.dev)
-  brew "git-lfs"                          # Git extension for versioning large files (https://git-lfs.com/)
-  brew "git-secret"                       # Bash-tool to store the private data (https://sobolevn.me/git-secret)
-  brew "grype"                            # Grype is a vulnerability scanner for container images and filesystems (https://github.com/anchore/grype)
-  brew "hyperfine"                        # Command-line benchmarking tool (https://github.com/sharkdp/hyperfine)
-  brew "jsonlint"                         # JSON lint (https://github.com/zaach/jsonlint)
-  brew "mike-engel/jwt-cli"               # JWT CLI (https://github.com/mike-engel/jwt-cli)
-  brew "oven-sh/bun/bun"                  # Bun is a fast, modern package manager for JavaScript and TypeScript (https://bun.sh)
-  brew "pnpm"                             # Fast, disk space efficient package manager (https://pnpm.io)
-  brew "sk"                               # Command-line fuzzy finder (https://github.com/lotabout/skim)
-  brew "sqlite"                           # SQL database engine (https://sqlite.org)
-  brew "uv"                               # Python package manager (https://docs.astral.sh/uv/getting-started/installation/)
-  brew "yarn"                             # JavaScript package manager (https://yarnpkg.com)
-  brew "yazi"                             # Blazing fast terminal file manager written in Rust, based on async I/O (https://github.com/sxyazi/yazi)
-  brew "yj"                               # CLI to convert between YAML, TOML, JSON and HCL (https://github.com/sclevine/yj)
-  brew "yq"                               # Process YAML, JSON, XML, CSV and properties documents from the CLI (https://github.com/mikefarah/yq)
-  brew "zf"                               # Command-line fuzzy finder (https://github.com/zlsun/zf)
-  brew "zoxide"                           # Command-line fuzzy directory jumper (https://github.com/ajeetdsouza/zoxide)
-  brew "gs"                               # Ghostscript is an interpreter for the PostScript language and for the PDF document format (https://ghostscript.com)
-  brew "imagemagick"                      # Image manipulation library (https://imagemagick.org)
-  if can_run_containers_desktops_apps? then
-    brew "docker"                           # Docker is a tool designed to make it easier to deploy applications (https://docker.com)
-    brew "docker-compose"                   # Docker Compose is a tool for defining and running multi-container applications with Docker (https://github.com/docker/compose)
-    brew "podman"                           # OCI container runtime for Linux (https://podman.io)
-    brew "podman-compose"                   # CLI for Podman and Docker Compose (https://github.com/containers/podman-compose)
-  end
-end
-
-## Common packages
-
-# System and Core Utilities
-brew "coreutils"                        # GNU File, Shell, and Text utilities (https://gnu.org/software/coreutils)
-brew "curl"                             # Get a file from an HTTP, HTTPS or FTP server (https://curl.se)
-brew "fastfetch"                        # Fast, customizable system information tool (https://github.com/LinusDierheimer/fastfetch)
-brew "gawk"                             # GNU awk utility (https://gnu.org/software/gawk)
-brew "make"                             # Utility for directing compilation (https://gnu.org/software/make)
-brew "wget"                             # GNU Wget is a free utility for non-interactive download of files from the web (https://gnu.org/software/wget)
-
-# File Management and Search
-brew "findutils"                        # GNU Find Utilities (https://www.gnu.org/software/findutils)
-brew "bat"                              # Clone of cat(1) with syntax highlighting and Git integration (https://github.com/sharkdp/bat)
-brew "bat-extras"                       # Bash scripts that integrate bat with various command-line tools (https://github.com/eth-p/bat-extras)
-brew "eza"                              # Modern, maintained replacement for ls (https://github.com/eza-community/eza)
-brew "fd"                               # Simple, fast and user-friendly alternative to find (https://github.com/sharkdp/fd)
-brew "fzf"                              # Command-line fuzzy finder written in Go (https://github.com/junegunn/fzf)
-brew "less"                             # Pager program similar to more (https://greenwoodsoftware.com/less/index.html)
-brew "ripgrep"                          # Like grep and The Silver Searcher (https://github.com/BurntSushi/ripgrep)
-
-# Programming Languages and Development Tools
-brew "gcc"                              # GNU Compiler Collection (https://gcc.gnu.org)
-brew "go"                               # Go programming language (https://go.dev)
-brew "lua"                              # Lua is a powerful, efficient, lightweight, embeddable scripting language (https://lua.org)
-brew "node"                             # Platform built on V8 to build network applications (https://nodejs.org)
-brew "python"                           # Interpreted, interactive, object-oriented programming language (https://python.org)
-brew "ruby"                             # Ruby is a dynamic, open source programming language with a focus on simplicity and productivity (https://ruby-lang.org)
-
-# Version Control and Git Tools
-brew "git"                              # Distributed revision control system (https://git-scm.com)
-brew "gh"                               # GitHub command-line tool (https://cli.github.com)
-brew "git-delta"                        # Syntax-highlighting pager for git and diff output (https://github.com/dandavison/delta)
-brew "gitlint"                          # Linting for your git commit messages (https://jorisroovers.com/gitlint)
-brew "lazygit"                          # Simple terminal UI for git commands (https://github.com/jesseduffield/lazygit)
-
-# Security and Encryption
-brew "age"                              # Age is a simple, modern, and secure encryption tool with a minimal design (https://age-encryption.org)
-brew "sops"                             # Editor of encrypted files (https://github.com/mozilla/sops)
-
-# Development Tools and Linters
-brew "hadolint"                         # Dockerfile linter (https://github.com/hadolint/hadolint)
-brew "jq"                               # Lightweight and flexible command-line JSON processor (https://jqlang.github.io/jq)
-brew "pre-commit"                       # Framework for managing multi-language pre-commit hooks (https://pre-commit.com)
-brew "shellcheck"                       # ShellCheck is a static analysis tool for shell scripts (https://shellcheck.net)
-brew "isort"                            # Sort Python imports automatically (https://pycqa.github.io/isort)
-
-# Shell and Terminal Utilities
-brew "bash"                             # Bourne-Again SHell, a UNIX command interpreter (https://gnu.org/software/bash)
-brew "bash-completion2"                 # Bash completion for the Bash shell (https://github.com/scop/bash-completion)
-brew "starship"                         # Cross-shell prompt for astronauts (https://starship.rs)
-brew "gum"                              # Tool for glamorous shell scripts (https://github.com/charmbracelet/gum)
-brew "zsh"                              # UNIX shell (command interpreter) (https://zsh.org)
 
 # vi: set ft=rb
