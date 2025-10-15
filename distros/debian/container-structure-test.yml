@@ -70,7 +70,7 @@ commandTests:
   - name: Flox default environment should have all minimum tools installed
     command: flox
     args: [list, --dir=/home/vscode, --name]
-    expectedOutput: ['age', 'bat', 'delta', 'eza', 'fd', 'fzf', 'gitlint', 'gum', 'neovim', 'nodejs', 'pre-commit', 'python313Full', 'ripgrep', 'ruby', 'sops', 'starship', 'tree-sitter', 'zoxide']
+    expectedOutput: ['age', 'bat', 'coreutils', 'curlie', 'delta', 'eza', 'fd', 'findutils', 'fzf', 'gawk', 'git-credential-manager', 'git-lfs', 'gitlint', 'glow', 'gnugrep', 'gnumake', 'gum', 'jq', 'less', 'lesspipe', 'mise', 'neovim', 'nodejs', 'pre-commit', 'python313Full', 'ripgrep', 'ruby', 'sops', 'sqlite', 'starship', 'tree-sitter', 'wget', 'zoxide', 'zsh']
 
 # HOME DIRECTORIES
 fileExistenceTests:
