@@ -657,10 +657,10 @@ browser = open
 addEmptyPathspec = false
 
 [filter "lfs"]
-clean = git-lfs clean -- %f
-smudge = git-lfs smudge -- %f
-process = git-lfs filter-process
-required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
 
 [status]
 submoduleSummary = true
@@ -709,6 +709,5 @@ helper = manager
 credentialStore = keychain
 
 [credential "https://dev.azure.com"]
-useHttpPath = true
 
 # vi: set ft=gitconfig:
