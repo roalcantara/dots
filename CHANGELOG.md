@@ -1,3 +1,19 @@
+# [1.16.0](https://github.com/roalcantara/dots/compare/v1.15.0...v1.16.0) (2025-10-15)
+
+
+### Bug Fixes
+
+* **git:** Correct indentation in Git configuration file ([9c9b26f](https://github.com/roalcantara/dots/commit/9c9b26f1c78cacee1b5e8e5c25b440b02ad2ea9c))
+* **git:** Remove unused editor configuration ([ca207f4](https://github.com/roalcantara/dots/commit/ca207f4f6b24f6089deac885324f03b57d6194ce))
+* **install:** Update expected output for Flox command ([a4b07e2](https://github.com/roalcantara/dots/commit/a4b07e29c50bcb6c6a63501ff4bd31142f696218))
+* **nvim:** Update lualine.nvim commit hash ([ec01f56](https://github.com/roalcantara/dots/commit/ec01f56f6f26694f1cddd0029e7527e2973cfd6e))
+
+
+### Features
+
+* **homebrew:** Update Brewfile with new macOS-specific casks ([c651b5d](https://github.com/roalcantara/dots/commit/c651b5d33619a07ed2f1a13948bacde928c7ea86))
+* **vscode:** Add keybindings and settings for enhanced user experience ([6f057a2](https://github.com/roalcantara/dots/commit/6f057a2721f2d1325c1f193af846e777281424da))
+
 # [1.15.0](https://github.com/roalcantara/dots/compare/v1.14.13...v1.15.0) (2025-10-11)
 
 
