@@ -672,7 +672,6 @@ color = always
 autocrlf = input
 excludesfile = ~/.config/git/ignore
 quotepath = on # Output unicode characters (e.g. emoji).
-editor = /opt/homebrew/bin/nvim -c 'startinsert'
 
 [merge]
 ff = only
@@ -707,7 +706,5 @@ signingkey = ~/.ssh/id_ed25519_github.pub
 [credential]
 helper = manager
 credentialStore = keychain
-
-[credential "https://dev.azure.com"]
 
 # vi: set ft=gitconfig:
