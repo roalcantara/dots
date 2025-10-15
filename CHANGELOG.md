@@ -1,3 +1,10 @@
+## [1.16.1](https://github.com/roalcantara/dots/compare/v1.16.0...v1.16.1) (2025-10-15)
+
+
+### Bug Fixes
+
+* **install:** Use sudo for package manager commands ([4058fd4](https://github.com/roalcantara/dots/commit/4058fd437033a140431f39b605c556bf6e96f066))
+
 # [1.16.0](https://github.com/roalcantara/dots/compare/v1.15.0...v1.16.0) (2025-10-15)
 
 
