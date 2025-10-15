@@ -1,3 +1,10 @@
+## [1.16.2](https://github.com/roalcantara/dots/compare/v1.16.1...v1.16.2) (2025-10-15)
+
+
+### Bug Fixes
+
+* **install:** Improve Nix/Flox permissions handling ([1e57d4c](https://github.com/roalcantara/dots/commit/1e57d4cde7cee13acd8c54ae8a9ddf3e6a2d947d))
+
 ## [1.16.1](https://github.com/roalcantara/dots/compare/v1.16.0...v1.16.1) (2025-10-15)
 
 
