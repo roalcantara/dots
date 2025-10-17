@@ -66,11 +66,11 @@ commandTests:
     command: flox
     args: [envs]
     expectedOutput:
-      - "\\s*default.*\\/home\\/vscode.*"
-  - name: Flox default environment should have all minimum tools installed
+      - "\\s*cockpit.*\\/home\\/vscode.*"
+  - name: Flox cockpit environment should have all minimum tools installed
     command: flox
     args: [list, --dir=/home/vscode, --name]
-    expectedOutput: ['age', 'bat', 'coreutils', 'curlie', 'delta', 'eza', 'fd', 'findutils', 'fzf', 'gawk', 'git-credential-manager', 'git-lfs', 'gitlint', 'glow', 'gnugrep', 'gnumake', 'gum', 'jq', 'less', 'lesspipe', 'mise', 'neovim', 'nodejs', 'pre-commit', 'python313Full', 'ripgrep', 'ruby', 'sops', 'sqlite', 'starship', 'tree-sitter', 'wget', 'zoxide', 'zsh']
+    expectedOutput: ['age', 'bat', 'coreutils', 'delta', 'eza', 'fd', 'findutils', 'fzf', 'gawk', 'gitlint', 'glow', 'gnugrep', 'gnumake', 'gum', 'less', 'lesspipe', 'mise', 'neovim', 'pre-commit', 'ripgrep', 'sops', 'sqlite', 'starship', 'tree-sitter', 'zoxide']
 
 # HOME DIRECTORIES
 fileExistenceTests:

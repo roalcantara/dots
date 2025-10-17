@@ -69,7 +69,6 @@ backup() {
       run_cmd mv "$target" "${BACKUP_DIR:?}/"
     fi
   fi
-
   if [ -n "$source" ] && [ -e "$source" ]; then
     run_cmd ln -sf "$source" "$target"
   fi
@@ -143,7 +142,7 @@ package_manager_install_flox() {
   fi
 }
 packages_install_flox() {
-  run_cmd sudo flox pull roalcantara/default --dir "$HOME" --force
+  run_cmd sudo flox pull roalcantara/cockpit --dir "$HOME" --force
   # Fix permissions after installation for container/devcontainer use
   fix_flox_permissions
   eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
@@ -290,6 +289,7 @@ prepare_argument_parsing() {
   [[ "$PACKAGE_MANAGER" != "flox" ]] && show_usage && exit 1
   success "$step Arguments extraction READY => [USERNAME:$USERNAME, GROUPNAME:$GROUPNAME, TIMEZONE:$TIMEZONE, PACKAGE_MANAGER:$PACKAGE_MANAGER, REPO_URL:$REPO_URL, BRANCH:$BRANCH] ✔"
 }
+\
 prepare_system_min_packages() {
   if has_cmd apt; then
     local cmd_prefix=""
