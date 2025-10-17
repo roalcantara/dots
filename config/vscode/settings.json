@@ -841,7 +841,7 @@
     "lua": true,
     "typescript": true,
     "javascript": true,
-    "yaml": false
+    "yaml": true
   },
   "github.copilot.advanced": {
     "enable": true,
@@ -1299,7 +1299,6 @@
     "wix",
     "yoavbls"
   ],
-  "hadolint.hadolintPath": "/opt/homebrew/bin/hadolint",
   "template-string-converter.autoRemoveTemplateString": true,
   "cursor.cpp.disabledLanguages": [
     "plaintext"
@@ -1355,7 +1354,6 @@
       "favorite": "Nebula Oni (Pegasus)"
     }
   },
-  "shellformat.path": "/opt/homebrew/bin/shfmt",
   "geminicodeassist.codeGenerationPaneViewEnabled": true,
   "geminicodeassist.chat.collapseCodeBlocksByDefault": true,
   "chat.mcp.discovery.enabled": {
@@ -1398,7 +1396,6 @@
   "containers.contexts.showInStatusBar": true,
   "docker.languageserver.formatter.ignoreMultilineInstructions": true,
   "raycast.loglevel": "error",
-  "mise.binPath": "/Users/roalcantara/.flox/run/aarch64-darwin.default.run/bin/mise",
   "git.confirmSync": false,
   "docker.extension.enableComposeLanguageServer": false,
   "errorLens.statusBarIconsEnabled": true,
@@ -1480,7 +1477,6 @@
     "sqlite3": true,
     "\"": true,
     "SELECT": true,
-    "/Users/roalcantara/Work/gu/unicsul/header_resumo.md": true,
     "'EOF'": true,
     "fancyhdr}": true,
     "fancy}": true,
@@ -1520,12 +1516,8 @@
   "direnv.restart.automatic": true,
   "direnv.status.showChangesCount": true,
   "direnv.watchForChanges": true,
-  "parallels-desktop.extension.path": "/Users/roalcantara/.parallels-desktop-vscode",
-  "parallels-desktop.devops-service.path": "/Users/roalcantara/.parallels-desktop-vscode/tools/prldevops",
-  "parallels-desktop.prlctl.path": "/usr/local/bin/prlctl",
-  "parallels-desktop.git.path": "/opt/homebrew/bin/git",
-  "parallels-desktop.brew.path": "/opt/homebrew/bin/brew",
   "github.copilot.nextEditSuggestions.enabled": true,
   "workbench.iconTheme": "material-icon-theme",
-  "workbench.colorTheme": "Blueberry dark theme"
+  "workbench.colorTheme": "Blueberry dark theme",
+  "biome.suggestInstallingGlobally": false
 }

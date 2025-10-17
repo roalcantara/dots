@@ -468,11 +468,6 @@
   },
   {
     "key": "alt+cmd+\\",
-    "command": "telesoho.insertMathSymbol",
-    "when": "editorTextFocus && editorLangId == 'markdown'"
-  },
-  {
-    "key": "alt+cmd+\\",
     "command": "-telesoho.insertMathSymbol",
     "when": "editorTextFocus"
   },
@@ -917,5 +912,21 @@
     "key": "cmd+/",
     "command": "-composer.openModelToggle",
     "when": "composerFocused && !editorTextFocus"
+  },
+  {
+    "key": "ctrl+cmd+enter",
+    "command": "workbench.action.splitEditor"
+  },
+  {
+    "key": "cmd+\\",
+    "command": "-workbench.action.splitEditor"
+  },
+  {
+    "key": "cmd+\\",
+    "command": "workbench.action.toggleSidebarVisibility"
+  },
+  {
+    "key": "cmd+b",
+    "command": "-workbench.action.toggleSidebarVisibility"
   }
 ]
