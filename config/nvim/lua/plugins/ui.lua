@@ -14,7 +14,7 @@ return {
     priority = 1000,
     config = function()
       -- https://github.com/folke/tokyonight.nvim/blob/main/extras/lua/tokyonight_moon.lua
-      local bg = '#202734'             -- editor.background
+      local bg = '#1D212F'             -- '#202734'             -- editor.background
       local bg_dark = '#1e2531'        -- sideBar.background
       local bg_darker = '#202734'      -- panel.background
       local bg_highlight = '#272F3F'   -- editorHoverWidget.background
@@ -36,7 +36,7 @@ return {
       local cyan_bright = '#222A38'
 
       require('tokyonight').setup({
-        style = 'moon',
+        style = 'night',
         transparent = false,
         terminal_colors = true,
         styles = {
@@ -281,7 +281,8 @@ return {
         'nvim-treesitter/nvim-treesitter-context',
         event = 'VeryLazy',
         opts = {
-          mode = 'cursor', max_lines = 3
+          mode = 'cursor',
+          max_lines = 3,
         },
       },
     },
