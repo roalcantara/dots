@@ -215,8 +215,6 @@
   zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)' # Max errors
 # }
 
-
-
 # ZSH PARAMETERS | http://zsh.sourceforge.io/Doc/Release/Parameters.html {
   # General ZSH's parameters related to prompt
   export PROMPT='❯ '
