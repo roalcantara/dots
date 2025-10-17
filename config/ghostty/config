@@ -56,10 +56,6 @@ font-thicken-strength = 50
 # font-feature = "'cv01', 'cv02', 'cv06', 'cv09', 'cv13', 'cv14', 'cv17', 'cv22', 'cv25', 'cv26', 'cv28', 'cv29', 'cv30', 'cv31', 'cv32', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss09', 'ss10', 'zero', 'onum'"
 # font-feature = "'ss01', 'ss02', 'ss03', 'ss19', 'ss20', 'calt'"
 font-feature = '+calt, +liga, +dlig, +rclt, +ss20, +zero, +ccmp'
-# font-feature = "'cv01', 'cv09', 'cv19', 'cv20', 'cv21', 'cv22', 'cv24', 'cv25', 'cv26', 'cv32', 'cv27', 'cv28', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'ss19', 'ss20', 'calt', 'zero', 'onum'"
-# bold text uses the bright color palette
-# https://ghostty.org/docs/config/reference#bold-is-bright
-bold-is-bright = true
 # All of the configurations behavior adjust various metrics determined by the font
 # https://ghostty.org/docs/config/reference#adjust-cell-height
 adjust-cell-height = 10
@@ -78,7 +74,7 @@ adjust-cell-height = 10
 # A theme to use. It can be a built-in theme name, a custom theme name, or an absolute path to a custom theme file.
 # Some themes are "Ayu Mirage" "Andromeda" "catppuccin-macchiato" "catppuccin-mocha" "catppuccin-frappe" "Kanagawa Wave" "tokyonight_moon"
 # https://ghostty.org/docs/config/reference#theme
-theme = Tokyonight Moon
+theme = TokyoNight
 # Color palette for the 256 colors used by many terminal apps (https://ditig.com/256-colors-cheat-sheet). It is defined as N=COLOR where:
 # - N is 0-255 of the terminal color table. It can be decimal (default), binary (0b), octal (0o), or hexadecimal (0x).
 # - COLOR is a typical RGB color code such as #AABBCC or AABBCC, or a named X11 color
@@ -92,7 +88,7 @@ theme = Tokyonight Moon
 # Background color for the window. Specified as either hex (#RRGGBB or RRGGBB) or a named X11 color
 # List of 256 colors for Xterm prompt: https://ditig.com/256-colors-cheat-sheet
 # https://ghostty.org/docs/config/reference#background
-# background = #171F2C
+background = #1D212F
 # Foreground color for selection. Specified as either hex (#RRGGBB or RRGGBB) or a named X11 color.
 # If this is not set, then the selection color is just the inverted window foreground. NOTE: not to be confused with the cell fg
 # List of 256 colors for Xterm prompt: https://ditig.com/256-colors-cheat-sheet
@@ -105,7 +101,7 @@ theme = Tokyonight Moon
 # selection-background = #RRGGBB
 # Color space used to alpha blending: native | liner | linear-corrected
 # https://ghostty.org/docs/config/reference#alpha-blending
-alpha-blending = linear-corrected
+alpha-blending = native
 
 
 ################################################################################
@@ -113,6 +109,14 @@ alpha-blending = linear-corrected
 ################################################################################
 
 
+# Horizontal window padding.
+# Applies padding between the terminal cells and the left and right window borders.
+# https://ghostty.org/docs/config/reference#window-padding-x
+window-padding-x = 15
+# Vertical window padding.
+# Applies padding between the terminal cells and the top and bottom window borders.
+# https://ghostty.org/docs/config/reference#window-padding-y
+window-padding-y = 15
 # The theme to use for the windows: auto | system | light | dark | ghostty (only linux)
 # https://ghostty.org/docs/config/reference#window-theme
 window-theme = auto
@@ -137,14 +141,6 @@ window-title-font-family = "JetBrainsMonoNL NFM Thin"
 # The text that will be displayed in the subtitle of the window
 # https://ghostty.org/docs/config/reference#window-subtitle
 window-subtitle = false
-# Horizontal window padding.
-# Applies padding between the terminal cells and the left and right window borders.
-# https://ghostty.org/docs/config/reference#window-padding-x
-window-padding-x = 15
-# Vertical window padding.
-# Applies padding between the terminal cells and the top and bottom window borders.
-# https://ghostty.org/docs/config/reference#window-padding-y
-window-padding-y = 15
 
 
 ################################################################################
@@ -152,7 +148,12 @@ window-padding-y = 15
 ## https://ghostty.org/docs/config/reference
 ################################################################################
 
-
+# Enable URL matching. URLs are matched on hover with control (Linux) or command (macOS) pressed and open using the default system application for the linked URL.
+# https://ghostty.org/docs/config/reference#link-url
+link-url=true
+# When true, link previews are shown for all matched URLs. When false, link previews are never shown.
+# https://ghostty.org/docs/config/reference#link-previews
+link-previews=true
 # Only the XDG config path ($XDG_CONFIG_HOME/ghostty/config).
 # https://ghostty.org/docs/config/reference#config-default-files
 config-default-files=true
@@ -170,22 +171,18 @@ quit-after-last-window-closed = true
 # - Resizing the window with a complex prompt usually paints much better.
 # https://ghostty.org/docs/config/reference#shell-integration
 # https://ghostty.org/docs/features/shell-integration
-shell-integration = zsh
-
-# The style of the cursor. This sets the default style. A running program can still request an explicit cursor style using escape sequences (such as CSI q). Shell configurations will often request specific cursor styles.
-# https://ghostty.org/docs/config/reference#cursor-style
-cursor-style = block
-
-# Enables the ability to move the cursor at prompts by using alt+click on Linux and option+click on macOS.
-# https://ghostty.org/docs/config/reference#cursor-click-to-move
-cursor-click-to-move = true
-
+shell-integration = detect
 # Prevent sudo from resetting environment variables and raise errors about missing or unsuitable terminal: xterm-ghostty when running some programs
 # https://ghostty.org/docs/config/reference#shell-integration-features
 # https://ghostty.org/docs/features/shell-integration
 # https://ghostty.org/docs/help/terminfo#sudo
-shell-integration-features = sudo, no-cursor
-
+shell-integration-features = sudo, no-cursor, ssh-env, ssh-terminfo
+# The style of the cursor. This sets the default style. A running program can still request an explicit cursor style using escape sequences (such as CSI q). Shell configurations will often request specific cursor styles.
+# https://ghostty.org/docs/config/reference#cursor-style
+cursor-style = block
+# Enables the ability to move the cursor at prompts by using alt+click on Linux and option+click on macOS.
+# https://ghostty.org/docs/config/reference#cursor-click-to-move
+cursor-click-to-move = true
 # Quick Terminal
 # A Lightweight terminal displayed as a modal/popup for instant access and quick commands without interrupting work
 # https://ghostty.org/docs/config/reference#quick-terminal-position
@@ -198,7 +195,6 @@ quick-terminal-animation-duration = .5
 quick-terminal-autohide = true
 # https://ghostty.org/docs/config/reference#quick-terminal-space-behavior
 quick-terminal-space-behavior = remain
-
 
 ################################################################################
 ## MACOS SETTINGS
@@ -225,6 +221,9 @@ macos-window-shadow = true
 # Use option as alt key
 # https://ghostty.org/docs/config/reference#macos-option-as-alt
 macos-option-as-alt = true
+# Whether macOS Shortcuts are allowed to control Ghostty
+# https://ghostty.org/docs/config/reference#macos-shortcuts
+macos-shortcuts = ask
 # The opacity level (opposite of transparency) of the background.
 # A value of 1 is fully opaque and a value of 0 is fully transparent.
 # https://ghostty.org/docs/config/reference#background-opacity
@@ -264,6 +263,10 @@ mouse-shift-capture = true
 # When there are multiple split panes, the mouse selects the focused pane
 # https://ghostty.org/docs/config/reference#focus-follows-mouse
 focus-follows-mouse = true
+
+# The action to take when the user right-clicks on the terminal surface
+# https://ghostty.org/docs/config/reference#right-click-action
+right-click-action = context-menu
 
 
 ################################################################################
