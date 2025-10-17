@@ -2,11 +2,9 @@ cheats:
   How to fix the following error?:
     desc: How to fix the following error prompt?
     tags: [ia, gpt, prompts]
-
   Suggestions to improve (simplify, beautify, clarify, shorten, make it less redundant) the following commit title and message?:
     desc: Suggestions to improve the following commit title and message prompt.
     tags: [ia, gpt, prompts]
-
   Use few-shot prompting to structure outputs:
     desc: Showing the model a few examples (also called "shots") of what you want it to do. Few shot prompts allows the AI to learn from these few examples.
     tags: [ia, gpt, prompt]
@@ -74,6 +72,53 @@ cheats:
       | **Question:** Ask the model a question. |
     links:
       - Formalizing Prompts: https://learnprompting.org/docs/basics/formalizing
+  Google Prompting Essential at Coursera:
+    desc: Google Prompting Essential at Coursera
+    tags: [ia, prompt]
+    links:
+      - https://coursera.org/learn/google-prompting-essential
+      - https://coursera.org/learn/google-start-writing-prompts-like-a-pro/supplement/tn0VT/course-overview
+    notes:
+      - md: | #markdown
+          ### OVERVIEW
+
+          Google Prompting Essentials has four courses:
+
+          1. Start writing prompts like a pro
+          2. Design prompts for everyday work tasks
+          3. Speed up data analysis and presentation building
+          4. Use AI as a creative or expert partner
+      - md: | #markdown
+          ## USE THE 5-STEP PROMPT FRAMEWORK
+
+          ### 1. A good prompt follows a simple framework
+          - Task _(or Thoughtfully)_
+          - Context _(or Create)_
+          - References _(or Really)_
+          - Evaluate _(or Excellent)_
+          - Iterate _(or Inputs)_
+
+          - **Task**
+            **WHAT** Describe the task you want the AI to help you with.
+            **HOW**
+            - **Persona** are the roles you want the AI to play. IE: "a food critic" or "a detective" or "a journalist"
+            - **Format** are the output you want the AI to produce. IE: "a review" or "a report" or "an article"
+
+          - **Context** 
+            **WHAT** is the background information you want the AI to use to complete the task. IE: "the user is a food critic" or "the user is a detective" or "the user is a journalist"
+            **HOW**
+            - **Background** What background information you want the AI to use to complete the task. IE: "the user is a food critic" or "the user is a detective" or "the user is a journalist"
+            - **Information** is the information you want the AI to use to complete the task. IE: "the user is a food critic" or "the user is a detective" or "the user is a journalist"
+          - **References** 
+            **WHAT** What external information you want the AI to use to complete the task. IE: "the user is a food critic" or "the user is a detective" or "the user is a journalist"
+            **HOW**
+            - **Examples** Give some ideas of what the output should look like. Examples of what the output should look like or what you have done in the past would be helpful.
+          - **Evaluate**
+            **WHAT** Ask yourself if the input you provided gave you the output you needed.
+            **HOW**
+            - **Criteria** IE: "did the AI provide a review of the pizza place?" or "did the AI provide a report on the crime scene?" or "did the AI provide an article about the latest news?"
+          - **Iterate**
+            **WHAT** If you evaluate your output and determine that you're not getting what you need, you can try again by adding more information or tweaking your prompt.
 
 prompts:
   You are VocabularyGPT, a linguistics professor, poet, and world renowned writer:

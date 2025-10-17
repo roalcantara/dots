@@ -1,0 +1,52 @@
+cheats:
+  Setup dev environment for Bitbucket SSH access:
+    desc: Setup dev environment for Bitbucket SSH access on Debian-based Linux
+    links:
+      - https://support.atlassian.com/bitbucket-cloud/docs/set-up-personal-ssh-keys-on-linux
+      - https://support.atlassian.com/bitbucket-cloud/docs/configure-ssh-and-two-step-verification
+    notes:
+      - md: | #markdown
+          ### Setup dev environment for Bitbucket SSH access
+
+          - Update environment and install required packages: 
+            sudo apt update && sudo apt upgrade -y && sudo apt install -y openssh-client xclip
+
+          - Check OpenSSH installation: 
+            ssh -V
+
+          - Check if OpenSSH agent is already running: 
+            ps -ax | grep ssh-agent
+
+          - If not, start the OpenSSH agent: 
+            eval $(ssh-agent)
+
+          - Add this command to your shell configuration file:
+              - ~/.bashrc: echo 'eval $(ssh-agent)' >> ~/.bashrc
+              - ~/.zshrc: echo 'eval $(ssh-agent)' >> ~/.zshrc
+              - ~/.profile: echo 'eval $(ssh-agent)' >> ~/.profile
+
+          - Create SSH Key Pair to use with Bitbucket: 
+              cd ~ && ssh-keygen -t ed25519 -b 4096 -C "username@consorciei.com.br" -f ~/.ssh/id_ed25519_bitbucket_work
+
+          - Add the created Private Key to the SSH agent: 
+              ssh-add ~/.ssh/id_ed25519_bitbucket_work
+              ssh-add --apple-use-keychain ~/.ssh/id_ed25519_bitbucket_work
+
+          - Setup SSH configuration file:
+              - Create if not exists: 
+                touch ~/.ssh/config
+
+              - Add/Append to ~/.ssh/config: |
+                  Host bitbucket.org
+                      AddKeysToAgent yes
+                      IdentityFile ~/.ssh/id_ed25519_bitbucket_work
+
+          - Add SSH Public Key to your Bitbucket user account:
+              - cat ~/.ssh/id_ed25519_bitbucket_work.pub | xclip -selection clipboard
+              - cat ~/.ssh/id_ed25519_bitbucket_work.pub | pbcopy
+              - open https://bitbucket.org/account/settings/ssh-keys
+              - Paste key from clipboard into the Key field; labeled as "username@consorciei.com.br"
+
+          - Test SSH connection:
+              - ssh -T git@bitbucket.org
+              - You should see a message like "authenticated via ssh key."
