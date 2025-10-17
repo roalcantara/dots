@@ -729,7 +729,7 @@ bookmarks:
           echo "DB_PASSWORD: mysecretpassword" > /tmp/config.yaml
 
           # ==> 5. Encrypt the file using SOPS + AGE RECIPIENT (output to stdout)
-          sops --encrypt .env
+          sops --encrypt /tmp/config.yaml
 
           # ==> 5. Encrypt the file using SOPS + AGE RECIPIENT (output to a different file)
           sops --encrypt --input-type dotenv --output-type dotenv --output .env.sops .env
@@ -769,7 +769,7 @@ bookmarks:
 
           # This allows SOPS to use your AGE identity (private key) for decryption automatically
           export SOPS_AGE_KEY_FILE=~/.config/age/keys.txt
-          sops decrypt --input-type dotenv --output-type dotenv .env.encrypted > .env.decrypted
+          sops --decrypt --input-type dotenv --output-type dotenv .env.encrypted > .env.decrypted
 
 
           # 💡 To SOPS use your AGE identity (private key) for decryption automatically without needing to set the SOPS_AGE_KEY environment variable

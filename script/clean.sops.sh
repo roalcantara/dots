@@ -2,7 +2,7 @@
 # CLEAN FILTER
 #   Encrypt sensitive data on commit using SOPS/AGE
 # SETUP
-#   git config --local filter.sops.clean script/clean.sops.sh
+#   git config --local filter.sops.clean 'script/clean.sops.sh %f'
 #   git config --local filter.sops.required true
 #   grep -qxF "*.env filter=sops diff=sops" .gitattributes 2>/dev/null || echo "*.env filter=sops diff=sops" >> .gitattributes
 #   git config --get-regexp "\.sops\."
@@ -10,6 +10,8 @@
 #   https://github.com/getsops/sops/issues/1137
 #   https://devops.datenkollektiv.de/using-sops-with-age-and-git-like-a-pro.html
 #   https://developers.redhat.com/articles/2022/02/02/protect-secrets-git-cleansmudge-filter
+
+echo "[clean.sops.sh] Encrypting .env file... '$1'"
 
 set -euo pipefail
 
