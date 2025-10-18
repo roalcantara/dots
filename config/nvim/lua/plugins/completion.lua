@@ -7,6 +7,7 @@ return {
     event = 'VeryLazy',
     version = '1.*',
     dependencies = {
+      { "nvim-tree/nvim-web-devicons", opts = {} },
       {
         -- Configures LuaLS to support auto-completion and type checking while editing your Neovim configuration
         -- https://github.com/folke/lazydev.nvim?tab=readme-ov-file#-installation | https://www.lazyvim.org/plugins/coding#lazydevnvim
@@ -99,6 +100,34 @@ return {
             Deepseek = '',
           },
         },
+        -- https://cmp.saghen.dev/modes/cmdline.html
+        cmdline = {
+          enabled = true,
+          keymap = { preset = 'cmdline' },
+          -- https://cmp.saghen.dev/modes/cmdline.html#keymap-preset
+          completion = {
+            -- https://cmp.saghen.dev/modes/cmdline.html#show-menu-automatically
+            trigger = {
+              show_on_blocked_trigger_characters = {},
+              show_on_x_blocked_trigger_characters = {},
+            },
+            list = {
+              selection = {
+                -- When `true`, will automatically select the first item in the completion list
+                preselect = true,
+                -- When `true`, inserts the completion item automatically when selecting it
+                auto_insert = true,
+              },
+            },
+            menu = {
+              auto_show = function(ctx)
+                return vim.fn.getcmdtype() == ':' or ctx.mode == 'cmdwin'
+              end,
+            },
+            -- https://cmp.saghen.dev/modes/cmdline.html#ghost-text
+            ghost_text = { enabled = true },
+          }
+        },
         -- https://cmp.saghen.dev/configuration/sources.html
         -- https://cmp.saghen.dev/configuration/sources.html#community-sources
         sources = {
@@ -182,9 +211,7 @@ return {
               },
             },
             cmdline = {
-              module = 'blink.cmp.sources.cmdline',
-              -- Disable shell commands on windows, since they cause neovim to hang
-              enabled = not paths.sys.is_windows,
+              module = 'blink.cmp.sources.cmdline'
             },
             omni = {
               module = 'blink.cmp.sources.complete_func',
@@ -234,24 +261,6 @@ return {
           ['<Up>'] = { 'select_prev', 'fallback' },
           ['<Down>'] = { 'select_next', 'fallback' },
           ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback_to_mappings', 'fallback' },
-        },
-        -- https://cmp.saghen.dev/modes/cmdline.html
-        cmdline = {
-          enabled = true,
-          completion = {
-            -- https://cmp.saghen.dev/modes/cmdline.html#show-menu-automatically
-            menu = { auto_show = true },
-            -- https://cmp.saghen.dev/modes/cmdline.html#ghost-text
-            ghost_text = { enabled = true },
-          },
-          -- https://cmp.saghen.dev/modes/cmdline.html#keymap-preset
-          keymap = {
-            ['<CR>'] = {
-              -- 1. On Enter, 'accept_and_enter' => Accepts the currently selected item and enters a new line
-              -- 2. Otherwise, 'fallback' => Runs the next non-blink keymap, or runs the built-in neovim binding
-              'accept_and_enter', 'fallback',
-            },
-          },
         },
         -- https://cmp.saghen.dev/configuration/completion.html
         completion = {
