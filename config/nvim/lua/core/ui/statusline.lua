@@ -3,6 +3,7 @@ local paths = require('core/vi/paths')
 local lsp_utils = require('core/vi/lsp/utils')
 local storage = require('core/neo/storage')
 local formatters = require('core/ui/formatters')
+local auto_dismiss = require('core/ui/auto_dismiss')
 
 local function get_noice()
   return storage.memo('statusline::noice_api', function()
@@ -158,17 +159,17 @@ M.sessions = {
       formatters.create_lualine_component(),
       on_click = formatters.create_click_handler(),
     },
-    message = create_noice_component('message', 'Constant'),  -- last line of the last message (event=show_msg)
-    command = create_noice_component('command', 'Statement'), -- showcmd
-    mode = create_noice_component('mode', 'Constant'),        -- showmode (@recording messages)
-    search = create_noice_component('search', 'Statement'),   -- @search (for search count messages)
-    dap = create_package_component({
+    message = auto_dismiss.create_noice_component_with_dismiss('message', 'Constant', 3000),  -- last line of the last message (event=show_msg) - auto-dismiss after 3s
+    command = auto_dismiss.create_noice_component_with_dismiss('command', 'Statement', 2000), -- showcmd - auto-dismiss after 2s
+    mode = auto_dismiss.create_noice_component_with_dismiss('mode', 'Constant', 1500),        -- showmode (@recording messages) - auto-dismiss after 1.5s
+    search = auto_dismiss.create_noice_component_with_dismiss('search', 'Statement', 4000),   -- @search (for search count messages) - auto-dismiss after 4s
+    dap = auto_dismiss.create_package_component_with_dismiss({
       package = 'dap',
       eval_fn = function(package) return package.status() end,
       cond_fn = function(package) return package.status() ~= '' end,
       color = 'Debug',
       icon = ''
-    }),
+    }, 5000), -- auto-dismiss after 5s
     lazy = create_package_component({
       package = 'lazy.status',
       eval_fn = function(lazy_package) return lazy_package.updates() end,
