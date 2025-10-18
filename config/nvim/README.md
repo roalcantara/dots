@@ -25,7 +25,6 @@ Yet another Neovim config
 1. **TESTING**
 
         ```sh
-        mise run busted:build
         mise run busted:run
         ```
 

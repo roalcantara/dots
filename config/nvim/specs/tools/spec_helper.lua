@@ -239,6 +239,78 @@ busted.setup(function()
       XDG_CONFIG_HOME = '/home/dev/.config',
       HOME = '/home/dev',
     },
+
+    -- Mock vim.keymap.set for testing keymap creation
+    keymap = {
+      set = function(mode, lhs, rhs, opts)
+        -- Mock implementation - just return the parameters for testing
+        return { mode = mode, lhs = lhs, rhs = rhs, opts = opts }
+      end,
+    },
+
+    -- Mock vim.tbl_deep_extend for testing option merging
+    tbl_deep_extend = function(strategy, ...)
+      local result = {}
+      local args = { ... }
+
+      for i = 1, #args do
+        local arg = args[i]
+        if type(arg) == 'table' then
+          for k, v in pairs(arg) do
+            if strategy == 'force' or result[k] == nil then
+              result[k] = v
+            end
+          end
+        end
+      end
+
+      return result
+    end,
+
+    -- Mock vim.list_extend for testing option merging
+    list_extend = function(target, source)
+      local result = {}
+
+      -- Copy target
+      if type(target) == 'table' then
+        for k, v in pairs(target) do
+          result[k] = v
+        end
+      end
+
+      -- Copy source
+      if type(source) == 'table' then
+        for k, v in pairs(source) do
+          result[k] = v
+        end
+      end
+
+      return result
+    end,
+
+    -- Mock vim.notify for testing error notifications
+    notify = function(msg, level)
+      -- Mock implementation - just return the message for testing
+      return { message = msg, level = level }
+    end,
+
+    -- Mock vim.log.levels for testing
+    log = {
+      levels = {
+        ERROR = 4,
+        WARN = 3,
+        INFO = 2,
+        DEBUG = 1,
+      },
+    },
+
+    -- Mock vim.api for user commands
+    api = {
+      nvim_create_user_command = function(name, callback, opts)
+        -- Mock implementation - just return the parameters for testing
+        return { name = name, callback = callback, opts = opts }
+      end,
+    },
   }
 end)
 

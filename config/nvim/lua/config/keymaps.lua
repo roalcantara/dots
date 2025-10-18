@@ -2,7 +2,6 @@ vim.schedule_wrap(function()
   --- lua-language-server: disable
   -- stylua: ignore
   require('core/vi/maps').set_keymaps(function(buf, pick, toggle, lsp, ev, setup)
-
     -- Centralised place to define toggle keymaps
     setup.map_toggles({
       ['<D-/>'] = function(key)
@@ -21,7 +20,7 @@ vim.schedule_wrap(function()
           local tsc = require('treesitter-context')
           return state and tsc.enable() or tsc.disable()
         end,
-        desc = 'Toggle Treesitter Context' 
+        desc = 'Toggle Treesitter Context'
       },
       ['<leader>lt'] = {
         get = vim.lsp.log.get_level,
@@ -34,6 +33,11 @@ vim.schedule_wrap(function()
 
     -- Define all regular keymaps
     return {
+      -- ===========================================================================
+      -- INDENTATION
+      -- ===========================================================================
+      -- [<TAB>] Smart Outdent/Completion is handled by native neovim's snippet engine
+      ['<S-Tab>'] = { { n = '<<', v = '<gv', i = { cmd = [[inoremap <expr> <S-Tab> pumvisible() ? "<C-p>" : "<BS>"]] } }, 'Smart Outdent/Completion' },
       -- ===========================================================================
       -- EDITOR
       -- ===========================================================================
@@ -65,11 +69,6 @@ vim.schedule_wrap(function()
       ['<D-Down>'] = { { n = 'G', i = '<C-O>G' }, 'Go to EoF' },
       ['<D-Left>'] = { { n = '0', i = '<C-O>0' }, 'Move to BoL' },
       ['<D-Right>'] = { { n = '$', i = '<C-O>$' }, 'Move to EoL' },
-      -- ===========================================================================
-      -- INDENTATION
-      -- ===========================================================================
-      ['<Tab>'] = { { n = '>>', i = '<C-O>>>', v = '>gv' }, 'Indent Line/Selection' },
-      ['<S-Tab>'] = { { n = '<<', i = '<C-O><<', v = '<gv' }, 'Outdent Line/Selection' },
       -- ===========================================================================
       -- SELECTION (SHIFT + ARROW KEYS for LINE selection)
       -- ===========================================================================

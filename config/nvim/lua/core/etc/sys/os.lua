@@ -12,7 +12,7 @@ local M = {
 --- @return any Cached or computed value
 local function get(key, default_fn)
   if M._cache[key] == nil then
-    M._cache[key] = default_fn()
+    M._cache[key] = default_fn and default_fn() or nil
   end
   return M._cache[key]
 end
@@ -50,8 +50,10 @@ end
 --- @return boolean True if Windows
 local function is_windows()
   return get('is_windows', function()
-    return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 or vim.fn.getcmdtype() ~= ':' or
-      not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
+    return pcall(function()
+      return vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 or vim.fn.getcmdtype() ~= ':' or
+        not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
+    end) or false
   end)
 end
 
