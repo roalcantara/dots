@@ -213,49 +213,67 @@ require('core/vi/au').setup_autocommands_async({
     {
       event = 'LspAttach',
       opts = {
-        callback = function(opts)
+        callback = function(ev)
           -- Handle LspAttach events emitted by LSP clients in a group whose name starts with "on_lsp_attach"
           -- When the LSP client starts Nvim sets various default options, mappings, and diagnostics
           -- https://neovim.io/doc/user/lsp.html#lsp-defaults | https://neovim.io/doc/user/diagnostic.html#diagnostic-defaults | https://gpanders.com/blog/whats-new-in-neovim-0-11
-          local client = vim.lsp.get_client_by_id(opts.data.client_id)
-          if type(client) ~= nil and vim.api.nvim_buf_is_valid(opts.buf) then
-            lsp_features.setup_capabilities(client, opts.buf, opts)
+          local client = vim.lsp.get_client_by_id(ev.data.client_id)
+          if type(client) ~= nil and vim.api.nvim_buf_is_valid(ev.buf) then
+            lsp_features.setup_capabilities(client, ev.buf, ev)
           end
         end,
         desc = 'LSP Attach: Setup LSP capabilities when an non-null client attaches to a valid buffer',
       },
     },
   },
-  on_mason_tools_install = {
+  on_vim_enter_or_color_scheme = {
     {
-      event = 'User',
+      -- URL detection and opening functionality
+      -- https://github.com/sontungexpt/url-open
+      event = { 'VimEnter', 'ColorScheme' },
       opts = {
-        pattern = { 'MasonToolsStartingInstall' },
         callback = function()
-          -- Handle user events emitted by mason in a group whose name starts with "on_on_mason_tools_trigger"
-          -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
-          -- Handles user event emitted prior installing the first package if there are packages to install.
-          Snacks.debug.inspect(string.format("[%s] is starting..", 'mason-tool-installer'))
+          local colors = require("tokyonight.colors").setup()
+          vim.api.nvim_set_hl(0, 'UrlOpenHighlight', {
+            fg = colors.orange,
+            underline = true,
+            bold = true,
+          })
         end,
-        desc = 'Mason: Warns when mason-tool-installer starts to install tools',
-      }
-    }
-  },
-  on_mason_tools_completes = {
-    {
-      event = 'User',
-      opts = {
-        pattern = { 'MasonToolsUpdateCompleted' },
-        callback = function(e)
-          -- Handle user events emitted by mason in a group whose name starts with "on_on_mason_tools_trigger"
-          -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
-          -- Handles user event emitted upon packages installation/update completes.
-          if e.data then
-            Snacks.debug.inspect(string.format("[%s] done! ===> %s", 'mason-tool-installer', vim.inspect(e.data)))
-          end
-        end,
-        desc = 'Mason: Warns when mason-tool-installer is done installing/updating tools',
-      }
+        desc = 'Set up custom highlight group for URLs',
+      },
     }
   }
+  -- on_mason_tools_install = {
+  --   {
+  --     event = 'User',
+  --     opts = {
+  --       pattern = { 'MasonToolsStartingInstall' },
+  --       callback = function()
+  --         -- Handle user events emitted by mason in a group whose name starts with "on_on_mason_tools_trigger"
+  --         -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
+  --         -- Handles user event emitted prior installing the first package if there are packages to install.
+  --         Snacks.debug.inspect(string.format("[%s] is starting..", 'mason-tool-installer'))
+  --       end,
+  --       desc = 'Mason: Warns when mason-tool-installer starts to install tools',
+  --     }
+  --   }
+  -- },
+  -- on_mason_tools_completes = {
+  --   {
+  --     event = 'User',
+  --     opts = {
+  --       pattern = { 'MasonToolsUpdateCompleted' },
+  --       callback = function(e)
+  --         -- Handle user events emitted by mason in a group whose name starts with "on_on_mason_tools_trigger"
+  --         -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
+  --         -- Handles user event emitted upon packages installation/update completes.
+  --         if e.data then
+  --           Snacks.debug.inspect(string.format("[%s] done! ===> %s", 'mason-tool-installer', vim.inspect(e.data)))
+  --         end
+  --       end,
+  --       desc = 'Mason: Warns when mason-tool-installer is done installing/updating tools',
+  --     }
+  --   }
+  -- }
 })

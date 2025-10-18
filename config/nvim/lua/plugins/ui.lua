@@ -1303,4 +1303,124 @@ return {
       })
     end,
   },
+
+  -- URL detection and opening functionality
+  -- https://github.com/sontungexpt/url-open
+  {
+    'sontungexpt/url-open',
+    event = 'VeryLazy',
+    cmd = "URLOpenUnderCursor",
+    keys = {
+      -- Map <D-LeftMouse> (Cmd+Click on macOS, Super+Click elsewhere) to open URL under cursor in normal mode
+      {
+        '<D-LeftMouse>',
+        '<ESC>:URLOpenUnderCursor<CR>',
+        mode = 'n',
+        desc = 'Open URL under cursor (Cmd+Click)',
+      },
+    },
+    opts = {
+      -- Highlight all URLs in the buffer
+      highlight = {
+        enabled = true,
+        -- Custom highlight group for URLs
+        hl_group = 'UrlOpenHighlight',
+      },
+      -- Auto-detect URLs on buffer load and text change
+      auto_detect = true,
+      -- File types where URL detection should be enabled
+      file_types = {
+        'markdown',
+        'text',
+        'gitcommit',
+        'help',
+        'lua',
+        'vim',
+        'javascript',
+        'typescript',
+        'python',
+        'go',
+        'rust',
+        'java',
+        'c',
+        'cpp',
+        'html',
+        'css',
+        'json',
+        'yaml',
+        'toml',
+        'ini',
+        'conf',
+        'config',
+        'readme',
+        'md',
+        'txt',
+        'log',
+        'diff',
+        'patch',
+      },
+      -- default will open url with default browser of your system or you can choose your browser like this
+      -- open_app = "micorsoft-edge-stable",
+      -- google-chrome, firefox, micorsoft-edge-stable, opera, brave, vivaldi
+      open_app = "default",
+      -- If true, only open the URL when the cursor is in the middle of the URL.
+      -- If false, open the next URL found from the cursor position,
+      -- which means you can open a URL even when the cursor is in front of the URL or in the middle of the URL.
+      open_only_when_cursor_on_url = false,
+      highlight_url = {
+        all_urls = {
+          enabled = true,
+          fg = "#FFC395", -- "text" or "#rrggbb"
+          -- fg = "text", -- text will set underline same color with text
+          bg = nil,       -- nil or "#rrggbb"
+          underline = false,
+        },
+        cursor_move = {
+          enabled = true,
+          fg = "#ff9e64", -- "text" or "#rrggbb"
+          -- fg = "text", -- text will set underline same color with text
+          bg = nil,       -- nil or "#rrggbb"
+          underline = true,
+          bold = true,
+        },
+      },
+      -- deep_pattern = false,
+      -- a list of patterns to open url under cursor
+      patterns = {
+        -- Standard HTTP/HTTPS URLs
+        'https?://[%w%-%.]+[%w%-%.%?%#%&%/%+%=%~%@%:%,%;%!%_]*',
+        -- URLs without protocol (www.example.com)
+        'www%.[%w%-%.]+[%w%-%.%?%#%&%/%+%=%~%@%:%,%;%!%_]*',
+        -- Email addresses
+        '[%w%._%+-]+@[%w%-%.]+[%w%-%.]*',
+        -- File paths (optional, can be disabled if too aggressive)
+        -- '[%w%-%./]+[%w%-%.]+',
+      },
+      -- a list of patterns to open url under cursor
+      extra_patterns = {
+        {
+          -- so the url will be https://www.npmjs.com/package/[pattern_found]
+          pattern = '["]([^%s]*)["]:%s*"[^"]*%d[%d%.]*"',
+          prefix = "https://www.npmjs.com/package/",
+          suffix = "",
+          file_patterns = { "package%.json" },
+          excluded_file_patterns = nil,
+          extra_condition = function(pattern_found)
+            return not vim.tbl_contains({ "version", "proxy" }, pattern_found)
+          end,
+        },
+        {
+          -- so the url will be https://www.npmjs.com/package/[pattern_found]/issues
+          pattern = '["]([^%s]*)["]:%s*"[^"]*%d[%d%.]*"',
+          prefix = "https://www.npmjs.com/package/",
+          suffix = "/issues",
+          file_patterns = { "package%.json" },
+          excluded_file_patterns = nil,
+          extra_condition = function(pattern_found)
+            return not vim.tbl_contains({ "version", "proxy" }, pattern_found)
+          end,
+        },
+      },
+    }
+  },
 }
