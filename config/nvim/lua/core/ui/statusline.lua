@@ -2,6 +2,7 @@ local icons = require('core/ui/icons/icons_list')
 local paths = require('core/vi/paths')
 local lsp_utils = require('core/vi/lsp/utils')
 local storage = require('core/neo/storage')
+local formatters = require('core/ui/formatters')
 
 local function get_noice()
   return storage.memo('statusline::noice_api', function()
@@ -153,6 +154,10 @@ M.sessions = {
         return (status == 'InProgress' and 'pending') or (status == 'Warning' and 'error') or 'ok'
       end
     end),
+    formatters = {
+      formatters.create_lualine_component(),
+      on_click = formatters.create_click_handler(),
+    },
     message = create_noice_component('message', 'Constant'),  -- last line of the last message (event=show_msg)
     command = create_noice_component('command', 'Statement'), -- showcmd
     mode = create_noice_component('mode', 'Constant'),        -- showmode (@recording messages)

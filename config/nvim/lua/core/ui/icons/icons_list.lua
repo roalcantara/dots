@@ -119,4 +119,28 @@ return {
     Value = ' ',
     Variable = '󰀫 ',
   },
+  formatters = {
+    -- Generic formatter icons
+    added = '󰘧',
+    modified = '󰘧',
+    removed = '󰘧',
+    stop_after_first = '󰘧',
+    lsp_format = '󰘧',
+    timeout_ms = '󰘧',
+
+    -- Specific formatter logos/icons
+    stylua = '󰢱', -- Lua formatter (Lua symbol)
+    isort = '󰌠', -- Python import sorter (Python symbol)
+    black = '🐍', -- Python formatter (Python snake)
+    rustfmt = '🦀', -- Rust formatter (Rust crab)
+    prettierd = '💎', -- Prettier daemon (gem/diamond)
+    prettier = '💎', -- Prettier formatter (gem/diamond)
+
+    -- Additional common formatters
+    gofmt = '🐹', -- Go formatter (Go gopher)
+    shfmt = '🐚', -- Shell formatter (shell)
+    yamlfmt = '📄', -- YAML formatter (document)
+    jsonfmt = '📋', -- JSON formatter (clipboard)
+    markdownfmt = '📝', -- Markdown formatter (memo)
+  }
 }

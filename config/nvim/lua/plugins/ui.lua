@@ -1191,6 +1191,7 @@ return {
           },
           lualine_x = {
             Snacks.profiler.status(),
+            statusline.sessions.lualine_x.formatters,
             statusline.sessions.lualine_x.copilot,
             statusline.sessions.lualine_x.message,
             statusline.sessions.lualine_x.command,
