@@ -4,7 +4,6 @@ local lsp_utils = require('core/vi/lsp/utils')
 local storage = require('core/neo/storage')
 local formatters = require('core/ui/formatters')
 local snacks_pickers = require('core/ui/snacks/pickers')
-local noice_helper = require('core/ui/noice')
 
 local function get_color_by_name(color_name)
   return storage.memo('statusline::color', Snacks.util.color, color_name)
