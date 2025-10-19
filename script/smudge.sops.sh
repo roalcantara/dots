@@ -11,8 +11,6 @@
 #   https://devops.datenkollektiv.de/using-sops-with-age-and-git-like-a-pro.html
 #   https://developers.redhat.com/articles/2022/02/02/protect-secrets-git-cleansmudge-filter
 
-echo "[smudge.sops.sh] Encrypting .env file... '$1'"
-
 set -euo pipefail
 
 # Get script directory and change to repository root
