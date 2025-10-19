@@ -1,13 +1,10 @@
 {
-  // [VSCODE] ======> WINDOW
   "window.newWindowProfile": "Default",
   "window.autoDetectHighContrast": false,
   "window.confirmSaveUntitledWorkspace": false,
   "window.commandCenter": true,
-  // [VSCODE] ======> DIFFEDITOR
   "diffEditor.codeLens": true,
   "diffEditor.hideUnchangedRegions.enabled": true,
-  // [VSCODE] ======> EDITOR
   "editor.accessibilitySupport": "off",
   "editor.bracketPairColorization.enabled": true,
   "editor.codeActionWidget.includeNearbyQuickFixes": true,
@@ -458,7 +455,6 @@
     ]
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  // [VSCODE] ======> EDITOR/SUGGESTIONS|COMPLETIONS
   "editor.tabCompletion": "on",
   "editor.acceptSuggestionOnCommitCharacter": false,
   "editor.acceptSuggestionOnEnter": "on",
@@ -474,18 +470,15 @@
     "other": true,
     "strings": true
   },
-  // [VSCODE] ======> EDITOR/INLINESUGGESTIONS
   "editor.inlineSuggest.enabled": true,
   "editor.inlineSuggest.edits.allowCodeShifting": "always",
   "editor.inlineSuggest.edits.renderSideBySide": "never",
   "editor.inlineSuggest.edits.showCollapsed": true,
   "editor.inlineSuggest.suppressSuggestions": true,
   "editor.inlineSuggest.syntaxHighlightingEnabled": true,
-  // [VSCODE] ======> SNIPPETS
   "editor.snippets.codeActions.enabled": true,
   "editor.snippetSuggestions": "top",
   "editor.suggest.showSnippets": true,
-  // [VSCODE] ======> EXPLORER
   "explorer.autoReveal": true,
   "explorer.fileNesting.expand": true,
   "explorer.expandSingleFolderWorkspaces": true,
@@ -638,7 +631,6 @@
     }
   },
   "workbench.editor.empty.hint": "hidden",
-  // [VSCODE] ======> FILES
   "files.associations": {
     "*.bqsql": "bigquery",
     "*.cheat": "shellscript",
@@ -702,7 +694,6 @@
   },
   "files.simpleDialog.enable": true,
   "files.trimTrailingWhitespace": true,
-  // [VSCODE] ======> SEARCH
   "search.exclude": {
     "**/*.code-search": true,
     "**/*.git": true,
@@ -716,19 +707,10 @@
   },
   "search.smartCase": true,
   "security.workspace.trust.untrustedFiles": "open",
-  // [VSCODE] ======> TASKS
   "task.allowAutomaticTasks": "on",
   "task.autoDetect": "on",
-  // [VSCODE] ======> TERMINAL
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.profiles.osx": {
-    "bash": {
-      "path": "bash",
-      "args": [
-        "-l"
-      ],
-      "icon": "terminal-bash"
-    },
     "zsh": {
       "path": "zsh",
       "args": [
@@ -741,10 +723,9 @@
   "terminal.integrated.defaultProfile.osx": "zsh",
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.inheritEnv": true,
-  // [VSCODE] ======> TERMINAL
   "terminal.integrated.shellIntegration.enabled": true,
   "terminal.integrated.suggest.selectionMode": "partial",
-  "terminal.integrated.suggest.enabled": true, // https://code.visualstudio.com/updates/v1_101#_language-server-based-terminal-suggest
+  "terminal.integrated.suggest.enabled": true,
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.enableImages": true,
   "terminal.integrated.gpuAcceleration": "auto",
@@ -765,7 +746,6 @@
   ],
   "terminal.integrated.fontLigatures.enabled": true,
   "terminal.integrated.macOptionIsMeta": true,
-  // [VSCODE] ======> SETTINGSSYNC
   "settingsSync.ignoredExtensions": [
     "bradlc.vscode-tailwindcss",
     "shopify.ruby-lsp",
@@ -774,28 +754,22 @@
     "aki77.rails-db-schema",
     "aliariff.vscode-erb-beautify"
   ],
-  // [VSCODE] ======> APPEARANCE
   "accessibility.dimUnfocused.enabled": false,
-  // [VSCODE] ======> DEBUG
   "debug.javascript.autoAttachFilter": "disabled",
-  // [VSCODE] ======> ZENMODE
   "zenMode.centerLayout": false,
   "zenMode.hideLineNumbers": false,
   "zenMode.hideStatusBar": true,
   "zenMode.showTabs": "single",
-  // [VSCODE] ======> JAVASCRIPT | https://code.visualstudio.com/docs/languages/javascript
   "javascript.preferences.quoteStyle": "single",
   "javascript.referencesCodeLens.enabled": true,
   "javascript.updateImportsOnPaste.enabled": true,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "javascript.suggest.completeJSDocs": true,
   "javascript.suggest.autoImports": true,
-  // [VSCODE] ======> TYPESCRIPT | https://code.visualstudio.com/docs/languages/typescript
   "typescript.autoClosingTags": true,
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.experimental.useTsgo": false,
   "typescript.format.enable": true,
-  "typescript.format.semicolons": "remove",
   "typescript.implementationsCodeLens.enabled": true,
   "typescript.implementationsCodeLens.showOnInterfaceMethods": true,
   "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
@@ -808,7 +782,6 @@
   "typescript.validate.enable": true,
   "typescript.workspaceSymbols.scope": "currentProject",
   "js/ts.implicitProjectConfig.checkJs": false,
-  // [VSCODE] ======> MARKDOWN | https://code.visualstudio.com/docs/languages/markdown
   "markdown.preview.fontSize": 13,
   "markdown.validate.enabled": true,
   "markdown.validate.fileLinks.enabled": "warning",
@@ -826,11 +799,9 @@
   "markdown.copyFiles.destination": {
     "/assets/**/*": "images/${documentBaseName/(.).*/$1/}/"
   },
-  // [VSCODE] ======> EXTENSIONS
   "extensions.autoUpdate": "onlyEnabledExtensions",
   "extensions.ignoreRecommendations": true,
-  "extensions.supportNodeGlobalNavigator": true, // https://code.visualstudio.com/updates/v1_101#_web-environment-detection
-  // [GITHUB] ======> COPILOT
+  "extensions.supportNodeGlobalNavigator": true,
   "github.copilot.chat.editor.temporalContext.enabled": true,
   "github.copilot.enable": {
     "*": true,
@@ -868,7 +839,7 @@
   "github.copilot.chat.languageContext.inline.typescript.enabled": true,
   "github.copilot.chat.languageContext.fix.typescript.enabled": true,
   "github.copilot.chat.languageContext.typescript.enabled": true,
-  "github.copilot.chat.commitMessageGeneration.instructions": [ // https://medium.com/medialesson/setting-up-github-copilot-for-better-commit-messages-in-vs-code-82d73fb6b016
+  "github.copilot.chat.commitMessageGeneration.instructions": [
     {
       "text": "Use conventional commit format: <type>[(scope)]: <Subject>\n\n[optional body]\n\n[optional footer(s)]"
     },
@@ -912,7 +883,6 @@
       "text": "Follow the constraints defined in the gitlint configuration, in order of precedence: .gitlint, ~/.config/gitlint/gitlint.cfg"
     }
   ],
-  // ===============> LANGUAGES
   "[markdown]": {
     "editor.defaultFormatter": "yzhang.markdown-all-in-one",
     "editor.codeActionsOnSave": {
@@ -982,9 +952,8 @@
     "basedpyright.analysis.typeCheckingMode": "standard",
     "basedpyright.analysis.diagnosticMode": "workspace",
     "basedpyright.analysis.autoImportCompletions": true,
-    // https://code.visualstudio.com/updates/v1_101#_language-server-based-terminal-suggest
     "python.terminal.shellIntegration.enabled": true,
-    "python.analysis.supportAllPythonDocuments": true,
+    "python.analysis.supportAllPythonDocuments": true
   },
   "[dockercompose]": {
     "editor.insertSpaces": true,
@@ -1000,7 +969,6 @@
   "[github-actions-workflow]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  // ==> EXTENSIONS
   "emmet.includeLanguages": {
     "javascript": "javascriptreact"
   },
@@ -1022,10 +990,6 @@
   "markdown-preview-github-styles.darkTheme": "light",
   "markdown-preview-github-styles.lightTheme": "dark_dimmed",
   "markdown-preview-github-styles.colorTheme": "dark",
-  // "markdown-mermaid.darkModeTheme": "dark",
-  // "markdown-preview-github-styles.darkTheme": "dark_tritanopia",
-  // "markdown-preview-github-styles.lightTheme": "dark_dimmed",
-  // "markdown-preview-github-styles.colorTheme": "dark",
   "npm-outdated.majorUpdateProtection": true,
   "prettier.requireConfig": true,
   "prettier.singleQuote": true,
@@ -1301,7 +1265,8 @@
   ],
   "template-string-converter.autoRemoveTemplateString": true,
   "cursor.cpp.disabledLanguages": [
-    "plaintext"
+    "plaintext",
+    "scminput"
   ],
   "geminicodeassist.inlineSuggestions.enableAuto": true,
   "geminicodeassist.project": "roalcantara-dev",
@@ -1401,9 +1366,6 @@
   "errorLens.statusBarIconsEnabled": true,
   "shell-syntax.defaultShell": "zsh",
   "files.trimTrailingWhitespaceInRegexAndStrings": false,
-  // "dotfiles.repository": "https://github.com/roalcantara/dots.git",
-  // "dotfiles.targetPath": "~/.local/share/dots",
-  // "dotfiles.installCommand": "install",
   "workbench.settings.showAISearchToggle": true,
   "rubyLsp.rubyExecutablePath": "/workspaces/ruby/.devcontainer/devcontainer.json",
   "notebook.formatOnSave.enabled": true,
@@ -1445,7 +1407,7 @@
     "!CHANGELOG.md",
     "!**/CHANGELOG.md",
     "!WARP.md",
-    "!**/WARP.md",
+    "!**/WARP.md"
   ],
   "shellcheck.ignorePatterns": {
     "**/*.csh": true,
@@ -1469,7 +1431,7 @@
     "**/*.zshenv": true,
     "**/zshenv": true,
     "**/*.zsh-theme": true,
-    "**/**/config": true,
+    "**/**/config": true
   },
   "chat.mcp.access": "all",
   "geminicodeassist.displayInlineContextHint": false,
@@ -1494,7 +1456,7 @@
   },
   "code-runner.executorMapByGlob": {
     "*.test.js": "bun test",
-    "*.spec.ts": "bun test",
+    "*.spec.ts": "bun test"
   },
   "codemetrics.basics.CodeLensEnabled": true,
   "codemetrics.basics.DecorationModeEnabled": true,
@@ -1517,7 +1479,7 @@
   "direnv.status.showChangesCount": true,
   "direnv.watchForChanges": true,
   "github.copilot.nextEditSuggestions.enabled": true,
-  "workbench.iconTheme": "material-icon-theme",
+  "biome.suggestInstallingGlobally": false,
   "workbench.colorTheme": "Blueberry dark theme",
-  "biome.suggestInstallingGlobally": false
+  "workbench.iconTheme": "material-icon-theme"
 }
