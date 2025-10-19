@@ -1,3 +1,29 @@
+# [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-19)
+
+
+### Bug Fixes
+
+* **env:** Update encrypted API keys in .env file ([3a06d80](https://github.com/roalcantara/dots/commit/3a06d80c8cb00b3cdb61e0f4f7a55c910e7fc2df))
+* **env:** Update encrypted API keys in .env file ([77769ee](https://github.com/roalcantara/dots/commit/77769ee3d1d8e35e8bbf09a76f5ef03032fb0f3f))
+* **env:** Update encrypted API keys in .env file ([71343c8](https://github.com/roalcantara/dots/commit/71343c80fa5d53e15daec2f93f3e6fe96bd5b338))
+* **env:** Update encrypted API keys in .env file ([0187596](https://github.com/roalcantara/dots/commit/018759676a25b965658f5c747853633890945d0f))
+* **nvim/ui:** Update background color and theme style ([9477e40](https://github.com/roalcantara/dots/commit/9477e40cf1ff9895f806adf73f394ac026924b70))
+* **nvim:** Enhance completions ([8687176](https://github.com/roalcantara/dots/commit/8687176b7e36db467558925d38303923ea4926d7))
+* **vscode/keybindings:** Remove and update keybindings ([ff1a884](https://github.com/roalcantara/dots/commit/ff1a8841b29bf05286c30387f0e8eac230a0eae7))
+
+
+### Features
+
+* **install:** Update Flox environment manifests and configurations ([4ccb907](https://github.com/roalcantara/dots/commit/4ccb90774f6e3225e1afc8b8065a7862cadf76b0))
+* **kb:** Add setup instructions for Bitbucket SSH access ([871878f](https://github.com/roalcantara/dots/commit/871878fe06505920cf45ce9755e7066fe88192c8))
+* **nvim:** Auto dismiss messages on lualine after a while ([11fdf97](https://github.com/roalcantara/dots/commit/11fdf977f8b27ef72f817671eb99a978e8b1432d))
+* **nvim:** Auto dismiss messages on lualine after a while ([50ed817](https://github.com/roalcantara/dots/commit/50ed8179432b64f7edaf9dad62c9d002eb98c920))
+* **nvim:** Display the current formatters available ([5a2dd5f](https://github.com/roalcantara/dots/commit/5a2dd5fac5b9f98fc398b792b53446367ad58c36))
+* **nvim:** Display the current formatters available ([2bbbd55](https://github.com/roalcantara/dots/commit/2bbbd5537f132df1548cec6fd2ae6f20b6e7a204))
+* **nvim:** Handle Tab/S-Tab properly ([306b6cf](https://github.com/roalcantara/dots/commit/306b6cfa9e28cab9eb082d5fccea1b4d1e51df8c))
+* **nvim:** Handle Tab/S-Tab properly ([918a9b1](https://github.com/roalcantara/dots/commit/918a9b1a1b79991d09b8ca4e7f7e55a55e51ac33))
+* **nvim:** Highlight links ([fdc3a64](https://github.com/roalcantara/dots/commit/fdc3a64ba2808bbcdafd7fe7d9cc1e6ad71922ed))
+
 ## [1.16.2](https://github.com/roalcantara/dots/compare/v1.16.1...v1.16.2) (2025-10-15)
 
 
