@@ -12,7 +12,8 @@ LUA_PATH = "./lua/?.lua;./lua/?/init.lua;;"
   description = "Direct Docker commands for the multi-stage build"
   run = "docker build -f tools/Dockerfile -t nvim:busted --target busted ."
 
-  [tasks."busted:run"]
+  [tasks.tests]
+  depends = ["busted:build"]
   description = "Run commands with built images"
   run = "docker run --rm -v $(pwd)/specs:/app/spec -v $(pwd)/lua:/app/src nvim:busted --helper spec/tools/spec_helper.lua --output=utfTerminal spec/"
 

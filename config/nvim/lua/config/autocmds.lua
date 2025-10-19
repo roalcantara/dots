@@ -1,3 +1,9 @@
+-- [[ Basic Autocommands ]]
+--  See `:help lua-guide-autocommands`
+
+-- Highlight when yanking (copying) text
+--  Try it with `yap` in normal mode
+--  See `:help vim.hl.on_yank()`
 local lsp_features = require('core/vi/lsp/features')
 
 -- Set up autocommands for handling several events asynchronously

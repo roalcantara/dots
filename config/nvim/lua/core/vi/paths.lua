@@ -355,7 +355,6 @@ M.xdg = {
   }
 }
 
-
 --- Check if a command is available
 --- @param name string The name of the command to check
 --- @return function True if the command is available, false otherwise

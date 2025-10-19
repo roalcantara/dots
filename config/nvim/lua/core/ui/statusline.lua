@@ -3,16 +3,8 @@ local paths = require('core/vi/paths')
 local lsp_utils = require('core/vi/lsp/utils')
 local storage = require('core/neo/storage')
 local formatters = require('core/ui/formatters')
-local auto_dismiss = require('core/ui/auto_dismiss')
-
-local function get_noice()
-  return storage.memo('statusline::noice_api', function()
-    if not package.loaded['noice'] then
-      return nil
-    end
-    return require('noice').api.status
-  end)
-end
+local snacks_pickers = require('core/ui/snacks/pickers')
+local noice_helper = require('core/ui/noice')
 
 local function get_color_by_name(color_name)
   return storage.memo('statusline::color', Snacks.util.color, color_name)
@@ -35,27 +27,30 @@ local function get_package_value(package_name, eval_fn)
   return false
 end
 
-local function get_noice_status_prop(component_name, prop_name)
-  local noice = get_noice()
-  if noice and noice[component_name] then
-    local ok, result = pcall(noice[component_name][prop_name])
-    if ok then return result end
-  end
-  return prop_name == 'get' and '' or false
-end
-
--- Generic noice component factory
--- https://github.com/folke/noice.nvim?tab=readme-ov-file#-statusline-components
-local function create_noice_component(component_name, color_name)
+--- Generic noice component factory
+--- @param component_name string<show_history_commands|show_history_messages|show_history_searches>
+--- @param color_name string color_name
+--- @return table
+--- @see https://github.com/folke/noice.nvim?tab=readme-ov-file#-statusline-components
+local function get_noice_component(component_name, color_name)
   return {
     function()
-      return get_noice_status_prop(component_name, 'get')
+      local n = snacks_pickers[component_name].total()
+      if n > 0 then
+        return (snacks_pickers[component_name].icon or ' ') .. tostring(n)
+      end
+      return ''
     end,
     cond = function()
-      return get_noice_status_prop(component_name, 'has')
+      return snacks_pickers[component_name].total() > 0
     end,
     color = function()
-      return { fg = get_color_by_name(color_name) }
+      return { fg = color_name and get_color_by_name(color_name) or 'yellow' }
+    end,
+    on_click = function()
+      vim.schedule(function()
+        snacks_pickers[component_name].pick()
+      end)
     end,
   }
 end
@@ -125,7 +120,7 @@ M.sessions = {
         end,
         color = function()
           return { fg = get_color_by_name('Special') }
-        end
+        end,
       }
     end,
     diagnostics = {
@@ -143,13 +138,11 @@ M.sessions = {
           vim.cmd('LspToggleDiagnostics')
         end)
       end,
-    }
+    },
   },
   lualine_x = {
     copilot = M.status(icons.kinds.Copilot, function()
-      local clients = package.loaded['copilot']
-        and lsp_utils.get_clients({ name = 'copilot', bufnr = 0 })
-        or {}
+      local clients = package.loaded['copilot'] and lsp_utils.get_clients({ name = 'copilot', bufnr = 0 }) or {}
       if #clients > 0 then
         local status = require('copilot.api').status.data.status
         return (status == 'InProgress' and 'pending') or (status == 'Warning' and 'error') or 'ok'
@@ -159,28 +152,34 @@ M.sessions = {
       formatters.create_lualine_component(),
       on_click = formatters.create_click_handler(),
     },
-    message = auto_dismiss.create_noice_component_with_dismiss('message', 'Constant', 3000),  -- last line of the last message (event=show_msg) - auto-dismiss after 3s
-    command = auto_dismiss.create_noice_component_with_dismiss('command', 'Statement', 2000), -- showcmd - auto-dismiss after 2s
-    mode = auto_dismiss.create_noice_component_with_dismiss('mode', 'Constant', 1500),        -- showmode (@recording messages) - auto-dismiss after 1.5s
-    search = auto_dismiss.create_noice_component_with_dismiss('search', 'Statement', 4000),   -- @search (for search count messages) - auto-dismiss after 4s
-    dap = auto_dismiss.create_package_component_with_dismiss({
+    message = get_noice_component('show_history_messages', 'Statement'),
+    history = get_noice_component('show_history_commands', 'Constant'),
+    dap = create_package_component({
       package = 'dap',
-      eval_fn = function(package) return package.status() end,
-      cond_fn = function(package) return package.status() ~= '' end,
+      eval_fn = function(package)
+        return package.status()
+      end,
+      cond_fn = function(package)
+        return package.status() ~= ''
+      end,
       color = 'Debug',
-      icon = ''
-    }, 5000), -- auto-dismiss after 5s
+      icon = '',
+    }), -- auto-dismiss after 5s
     lazy = create_package_component({
       package = 'lazy.status',
-      eval_fn = function(lazy_package) return lazy_package.updates() end,
-      cond_fn = function(lazy_package) return lazy_package.has_updates() end,
+      eval_fn = function(lazy_package)
+        return lazy_package.updates()
+      end,
+      cond_fn = function(lazy_package)
+        return lazy_package.has_updates()
+      end,
       on_click = function()
         vim.schedule(function()
-          vim.cmd [[Lazy sync]]
+          vim.cmd([[Lazy sync]])
           refresh('window', 'statusline')
         end)
       end,
-      color = 'Special'
+      color = 'HelpviewPalette5Inv',
     }),
     diff = {
       'diff',
@@ -201,7 +200,7 @@ M.sessions = {
           }
         end
       end,
-    }
+    },
   },
   lualine_z = {
     time = {
@@ -210,8 +209,8 @@ M.sessions = {
           return ' ' .. os.date('%R')
         end, os.date('%Y%m%d%H%M'))
       end,
-    }
-  }
+    },
+  },
 }
 
 return M

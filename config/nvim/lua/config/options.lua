@@ -1,5 +1,11 @@
 local paths = require('core/vi/paths')
 
+-- Set <space> as the leader key
+-- See `:help mapleader`
+--  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
 -- BASIC SETTINGS
 vim.opt.encoding = 'UTF-8'                                                      -- [bo] The encoding used inside the buffer
 vim.opt.errorbells = false                                                      -- Disable error sounds
@@ -78,6 +84,11 @@ vim.opt.fillchars = {                                                           
   diff = '╱',
   eob = ' ',
 }
+vim.opt.listchars = {
+  tab = '» ',
+  trail = '·',
+  nbsp = '␣' 
+}
 
 -- WINDOW SPLITTING SETTINGS
 vim.opt.splitbelow = true                                                       -- Put new windows below current
@@ -135,25 +146,31 @@ vim.opt.undolevels = 10000                                                      
 vim.opt.undodir = paths.stdpaths.ensured.undodir()                              -- Set undo directory and ensure it exists
 
 -- CLIPBOARD SETTINGS
-if vim.env.SSH_TTY then
-  vim.opt.clipboard = ''
-elseif vim.fn.executable('xclip') == 1 then                                -- Try to use xclip first
-  vim.opt.clipboard = {
-    name = 'xclip',
-    copy = { ['+'] = 'xclip -selection clipboard', ['*'] = 'xclip -selection primary' },
-    paste = { ['+'] = 'xclip -selection clipboard -o', ['*'] = 'xclip -selection primary -o' },
-    cache_enabled = 0,
-  }
-elseif vim.fn.executable('xsel') == 1 then                                 -- Try to use xsel as fallback
-  vim.opt.clipboard = {
-    name = 'xsel',
-    copy = { ['+'] = 'xsel --clipboard --input', ['*'] = 'xsel --primary --input' },
-    paste = { ['+'] = 'xsel --clipboard --output', ['*'] = 'xsel --primary --output' },
-    cache_enabled = 0,
-  }
-else                                                                            -- Use system clipboard
-  vim.opt.clipboard:append('unnamedplus')
-end
+-- Sync clipboard between OS and Neovim.
+--  Schedule the setting after `UiEnter` because it can increase startup-time.
+--  Remove this option if you want your OS clipboard to remain independent.
+--  See `:help 'clipboard'`
+vim.schedule(function()
+  if vim.env.SSH_TTY then
+    vim.opt.clipboard = ''
+  elseif vim.fn.executable('xclip') == 1 then                                -- Try to use xclip first
+    vim.opt.clipboard = {
+      name = 'xclip',
+      copy = { ['+'] = 'xclip -selection clipboard', ['*'] = 'xclip -selection primary' },
+      paste = { ['+'] = 'xclip -selection clipboard -o', ['*'] = 'xclip -selection primary -o' },
+      cache_enabled = 0,
+    }
+  elseif vim.fn.executable('xsel') == 1 then                                 -- Try to use xsel as fallback
+    vim.opt.clipboard = {
+      name = 'xsel',
+      copy = { ['+'] = 'xsel --clipboard --input', ['*'] = 'xsel --primary --input' },
+      paste = { ['+'] = 'xsel --clipboard --output', ['*'] = 'xsel --primary --output' },
+      cache_enabled = 0,
+    }
+  else                                                                            -- Use system clipboard
+    vim.opt.clipboard:append('unnamedplus')
+  end
+end)
 
 -- GLOBAL LANGUAGE PROVIDERS | https://neovim.io/doc/user/provider.html
 -- Modern Neovim trend is moving away from provider-dependent plugins

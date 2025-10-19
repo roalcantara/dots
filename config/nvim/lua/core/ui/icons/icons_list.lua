@@ -142,5 +142,13 @@ return {
     yamlfmt = '📄', -- YAML formatter (document)
     jsonfmt = '📋', -- JSON formatter (clipboard)
     markdownfmt = '📝', -- Markdown formatter (memo)
+  },
+  noice = {
+    kinds = {
+      command = ' ',
+      message = '󰨄 ',
+      mode = ' ',
+      search = '󱈆 ',
+    }
   }
 }

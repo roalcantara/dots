@@ -1,3 +1,5 @@
+-- [[ Install `lazy.nvim` plugin manager ]]
+--    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 -- https://lazy.folke.io/installation
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -23,10 +25,6 @@ vim.g.maplocalleader = '\\'
 
 -- Setup lazy.nvim
 require('lazy').setup({
-  spec = {
-    -- import your plugins
-    { import = 'plugins' },
-  },
   install = {
     missing = true,
     colorscheme = { 'tokyonight' },
@@ -41,6 +39,21 @@ require('lazy').setup({
   },
   ui = {
     border = 'rounded',
+    icons = vim.g.have_nerd_font and {} or {
+      cmd = '⌘',
+      config = '🛠',
+      event = '📅',
+      ft = '📂',
+      init = '⚙',
+      keys = '🗝',
+      plugin = '🔌',
+      runtime = '💻',
+      require = '🌙',
+      source = '📄',
+      start = '🚀',
+      task = '📌',
+      lazy = '💤 ',
+    },
   },
   performance = {
     rtp = {
@@ -65,4 +78,11 @@ require('lazy').setup({
     },
   },
   rocks = { enabled = false }, -- disable `luarocks` support completely
+  spec = {
+    -- import your plugins
+    { import = 'plugins' },
+  },
 })
+
+-- The line beneath this is called `modeline`. See `:help modeline`
+-- vim: ts=2 sts=2 sw=2 et

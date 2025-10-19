@@ -729,6 +729,10 @@ commands:
     desc: OpenAI API Quickstart
     tags: [ai, tools]
     links: [https://platform.openai.com/docs/quickstart?api-mode=responses]
+  'curlie https://api.openai.com/v1/models -H "Authorization: Bearer $(gopass show -n --password tokens/openai.com)" -H "OpenAI-Organization: $(gopass show -n --password tokens/org.openai.com)" -H "OpenAI-Project: $(gopass show -n --password tokens/project.openai.com)"':
+    desc: Usage from these API requests counts as usage for the specified organization and project
+    tags: [ai, tools]
+    links: [https://platform.openai.com/docs/api-reference/introduction, https://platform.openai.com/settings/organization/general, https://platform.openai.com/settings/organization/general]
 
   # https://docs.claude.com/en/docs/get-started | CLAUDE API
   'curl https://api.anthropic.com/v1/messages -H "Content-Type: application/json" -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" -d ''{ "model": "claude-3-haiku-20240307", "max_tokens": 10, "messages": [{"role": "user", "content": "Hi"}] }''':

@@ -817,6 +817,23 @@ return {
             },
           },
         },
+        styles = {
+          {
+            position = "float",
+            titlte = 'Neovim Help!',
+            backdrop = 60,
+            height = 0.9,
+            width = 0.9,
+            zindex = 50,
+          },
+          scratch = {
+            titlte = 'Playground',
+            keys = { esc = 'close' },
+          },
+          notification_history = {
+            keys = { q = 'close', esc = 'close' },
+          }
+        }
       })
     end,
   },
@@ -1194,9 +1211,7 @@ return {
             statusline.sessions.lualine_x.formatters,
             statusline.sessions.lualine_x.copilot,
             statusline.sessions.lualine_x.message,
-            statusline.sessions.lualine_x.command,
-            statusline.sessions.lualine_x.mode,
-            statusline.sessions.lualine_x.search,
+            statusline.sessions.lualine_x.history,
             statusline.sessions.lualine_x.dap,
             statusline.sessions.lualine_x.lazy,
             statusline.sessions.lualine_x.diff,
@@ -1211,80 +1226,6 @@ return {
         },
         extensions = { 'neo-tree', 'lazy', 'fzf' },
       })
-    end,
-  },
-
-  -- WhichKey | A popup that displays possible keybindings of the command you started typing
-  -- https://github.com/folke/which-key.nvim
-  {
-    'folke/which-key.nvim',
-    event = 'VeryLazy',
-    opts_extend = { 'spec' },
-    opts = {
-      preset = 'helix',
-      defaults = {},
-      spec = {
-        {
-          mode = { 'n', 'v' },
-          { '<leader><tab>', group = 'tabs' },
-          { '<leader>c', group = 'code' },
-          { '<leader>d', group = 'debug' },
-          { '<leader>dp', group = 'profiler' },
-          { '<leader>f', group = 'file/find' },
-          { '<leader>g', group = 'git' },
-          { '<leader>gh', group = 'hunks' },
-          { '<leader>q', group = 'quit/session' },
-          { '<leader>s', group = 'search' },
-          { '<leader>u', group = 'ui', icon = { icon = '󰙵 ', color = 'cyan' } },
-          { '<leader>x', group = 'diagnostics/quickfix', icon = { icon = '󱖫 ', color = 'green' } },
-          { '[', group = 'prev' },
-          { ']', group = 'next' },
-          { 'g', group = 'goto' },
-          { 'gs', group = 'surround' },
-          { 'z', group = 'fold' },
-          {
-            '<leader>b',
-            group = 'buffer',
-            expand = function()
-              return require('which-key.extras').expand.buf()
-            end,
-          },
-          {
-            '<leader>w',
-            group = 'windows',
-            proxy = '<c-w>',
-            expand = function()
-              return require('which-key.extras').expand.win()
-            end,
-          },
-          -- better descriptions
-          { 'gx', desc = 'Open with system app' },
-        },
-      },
-    },
-    keys = {
-      {
-        '<leader>?',
-        function()
-          require('which-key').show({ global = false })
-        end,
-        desc = 'Buffer Keymaps (which-key)',
-      },
-      {
-        '<c-w><space>',
-        function()
-          require('which-key').show({ keys = '<c-w>', loop = true })
-        end,
-        desc = 'Window Hydra Mode (which-key)',
-      },
-    },
-    config = function(_, opts)
-      local wk = require('which-key')
-      wk.setup(opts)
-      if not vim.tbl_isempty(opts.defaults) then
-        Snacks.warn('which-key: opts.defaults is deprecated. Please use opts.spec instead.')
-        wk.register(opts.defaults)
-      end
     end,
   },
 
@@ -1423,4 +1364,54 @@ return {
       },
     }
   },
+
+  -- SHOWKEYS - Minimal Eye-candy keys screencaster for Neovim 200 ~ LOC | https://github.com/nvzone/showkeys
+  -- https://youtu.be/E4qXZv34NQQ?si=612rj4bmIUpgnsDw&t=203
+  {
+    'nvzone/showkeys',
+    cmd = 'ShowkeysToggle',
+    event = 'VeryLazy',
+    -- Called during startup, plugins' configurations typically is set in an init function
+    init = function()
+      vim.cmd('ShowkeysToggle')
+    end,
+    opts = function(_, opts)
+      return vim.tbl_deep_extend('force', opts, {
+        winhl = 'FloatBorder:Comment,Normal:Normal',
+        maxkeys = 3,
+        show_count = true,
+        keyformat = {
+          ['<BS>'] = '󰁮 ',
+          ['<C>'] = '⌃',
+          ['<CR>'] = '↵',
+          ['<D>'] = '⌘',
+          ['<Del>'] = '⌦',
+          ['<DEL>'] = '⌦',
+          ['<Down>'] = '↓',
+          ['<End>'] = '⇲',
+          ['<END>'] = '⇲',
+          ['<Enter>'] = '↵',
+          ['<ENTER>'] = '↵',
+          ['<Esc>'] = '⎋',
+          ['<ESC>'] = '⎋',
+          ['<Home>'] = '⇱',
+          ['<HOME>'] = '⇱',
+          ['<Left>'] = '←',
+          ['<M>'] = '⌥',
+          ['<Return>'] = '⏎',
+          ['<RETURN>'] = '⏎',
+          ['<Right>'] = '→',
+          ['<S>'] = '⇧',
+          ['<Space>'] = '␣',
+          ['<SPACE>'] = '␣',
+          ['<SPC>'] = '␣',
+          ['<Tab>'] = '⇥',
+          ['<TAB>'] = '⇥',
+          ['<Up>'] = '↑',
+          ['<PageUp>'] = '⇞',
+          ['<PageDown>'] = '⇟',
+        },
+      })
+    end,
+  }
 }

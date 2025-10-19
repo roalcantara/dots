@@ -3,11 +3,13 @@ local autocmd = require('core/vi/au/au')
 
 local M = {
   enabled_capabilities = {
-    [vim.lsp.protocol.Methods.textDocument_documentHighlight] = require('core/vi/lsp/features/text_document/document_highlight'),
+    [vim.lsp.protocol.Methods.textDocument_documentHighlight] = require(
+      'core/vi/lsp/features/text_document/document_highlight'),
     [vim.lsp.protocol.Methods.textDocument_hover] = require('core/vi/lsp/features/text_document/hover'),
     [vim.lsp.protocol.Methods.textDocument_signatureHelp] = require('core/vi/lsp/features/text_document/signature_help'),
     [vim.lsp.protocol.Methods.textDocument_formatting] = require('core/vi/lsp/features/text_document/formatting'),
-    [vim.lsp.protocol.Methods.textDocument_inlineCompletion] = require('core/vi/lsp/features/text_document/inline_completion'),
+    [vim.lsp.protocol.Methods.textDocument_inlineCompletion] = require(
+      'core/vi/lsp/features/text_document/inline_completion'),
     [vim.lsp.protocol.Methods.textDocument_completion] = require('core/vi/lsp/features/text_document/completion'),
     [vim.lsp.protocol.Methods.textDocument_inlayHint] = require('core/vi/lsp/features/text_document/inlay_hints'),
   }

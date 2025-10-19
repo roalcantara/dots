@@ -2,7 +2,6 @@ local devicons = require('nvim-web-devicons')
 local lspkind = require('lspkind')
 local colorfulmenu = require('colorful-menu')
 local blink_cmp = require('blink.cmp')
-
 local cache = {}
 
 --- Get the cached icon and highlight for the given context.kind

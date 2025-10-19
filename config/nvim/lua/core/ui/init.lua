@@ -5,4 +5,5 @@ return {
   loading = require('core/ui/loading'),
   git = require('core/ui/git'),
   helper = require('core/ui/ui_helper'),
+  noice = require('core/ui/noice'),
 }

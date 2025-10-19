@@ -16,7 +16,6 @@
 -- • adds the libs loader
 -- • removes the default Nvim loader
 vim.loader.enable(true)
-
 --- @class Neo
 --- @field level number
 --- @field debug function
