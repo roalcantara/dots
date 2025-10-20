@@ -251,37 +251,44 @@ task_add_packages_from_homebrew() {
 task_add_packages_from_flatpak() {
   local apps_file="${1:-${PACKAGES[flatpak]}}"
   local indent="${2:-}"
-  local apps
+
   if ! command -v flatpak >/dev/null 2>&1; then
-    run_cmd sudo apt-get install -y flatpak gnome-software-plugin-flatpak
+    if dpkg -l 2>/dev/null | grep -q gnome-software; then
+      run_cmd sudo apt-get install -y flatpak gnome-software-plugin-flatpak
+    else
+      run_cmd sudo apt-get install -y flatpak
+    fi
     ok "$1" "FLATPAK" "Flatpak installed and configured! ✔"
   fi
-  if ! flatpak remotes | grep -q flathub; then
+
+  if ! flatpak remotes 2>/dev/null | grep -q flathub; then
     run_cmd sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
   fi
+
+  if [ ! -f "$apps_file" ]; then
+    warn "${indent}Flatpak apps file not found: $apps_file"
+    return 0
+  fi
+
   info "${indent}Installing Flatpak applications from $apps_file"
+  local apps
   apps=$(grep -v '^#' "$apps_file" | grep -v '^$' | tr '\n' ' ')
+
   if [ -z "$apps" ]; then
     info "${indent}No apps to install"
     return 0
   fi
-  info "${indent}Installing: $apps"
-  if sudo flatpak install -y --noninteractive flathub $apps 2>&1 | tee /tmp/flatpak-install.log; then
+
+  if sudo flatpak install -y --noninteractive flathub $apps 2>&1; then
     ok "${indent}" "FLATPAK" "Flatpak apps installed! ✔"
-    return 0
   else
-    # If batch install fails, try one by one
     warn "${indent}Batch install failed, trying individually..."
     for app in $apps; do
-      if flatpak list --app | grep -q "$app"; then
+      if flatpak list --app 2>/dev/null | grep -q "$app"; then
         info "${indent}  ✓ $app (already installed)"
       else
         info "${indent}  Installing $app..."
-        if sudo flatpak install -y --noninteractive flathub "$app"; then
-          ok "${indent}" "FLATPAK" "  ✓ $app installed"
-        else
-          warn "${indent}  ✗ Failed to install $app"
-        fi
+        sudo flatpak install -y --noninteractive flathub "$app" 2>/dev/null || warn "${indent}  ✗ Failed: $app"
       fi
     done
   fi
@@ -331,44 +338,88 @@ task_add_packages_from_snap() {
   run_cmd snap list
   ok "${indent}" "SNAP" "Snap apps installed: $installed, failed: $failed ✔"
 }
-task_add_apps_manually_linux() {
+task_add_packages_from_apt() {
+  local apps_file="${1:-${PACKAGES[apt]}}"
+  local indent="${2:-}"
+
+  if [ ! -f "$apps_file" ]; then
+    warn "${indent}APT apps file not found: $apps_file"
+    return 0
+  fi
+
+  local cmd_prefix=""
+  if needs_sudo || is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
+  run_cmd ${cmd_prefix}xargs -a "$apps_file" ${cmd_prefix}apt-get install -y --no-install-recommends && ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/* && ${cmd_prefix}fc-cache -f -v
+  run_cmd ${cmd_prefix}dpkg -l | awk '/^ii/ {print $2}'
+  ok "${indent}" "APT" "APT apps installed from '$apps_file'! ✔"
+}
+task_add_linux_docker_desktop() {
   local indent="${1:-}"
 
-  # Ollama: curl -fsSL https://ollama.ai/install.sh | sh
-  if ! command -v ollama >/dev/null 2>&1; then
-    info "$1 Installing Ollama"
-    if curl -fsSL https://ollama.ai/install.sh | sh; then
-      ok "$1" "OLLAMA" "Ollama installed! ✔"
-    else
-      warn "$1 Failed to install Ollama"
-    fi
-    ok "$1" "MANUAL" "Ollama installed! ✔"
+  if command -v docker >/dev/null 2>&1; then
+    info "$indent Docker already available, skipping..."
+    return 0
   fi
 
-  if [ ! -d $HOME/.local/share/fonts/NerdFonts ]; then
-    info "Installing Nerd Fonts..."
-    local nerd_fonts_dir="$HOME/.local/share/fonts/NerdFonts"
-    ensure_dir "$nerd_fonts_dir/CaskaydiaCove"
-    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip | unzip -qo -d "$nerd_fonts_dir/CaskaydiaCove" -
-    run_cmd fc-cache -f
-    ok "$1" "FONTS" "Nerd Fonts installed! ✔"
+  if [ ! -f "/etc/os-release" ]; then
+    warn "$indent Cannot detect OS, skipping Docker Desktop..."
+    return 0
   fi
 
-  # Docker Desktop: Use Docker Engine (apt install docker.io)
+  . /etc/os-release
+
+  if [[ "$ID" != "ubuntu" ]] && [[ "$ID_LIKE" != *"ubuntu"* ]]; then
+    warn "$indent Docker Desktop only available on Ubuntu-based systems (detected: $ID)"
+    return 0
+  fi
+
+  info "$indent Setting up Docker Desktop for $ID..."
+
   if [ ! -f "/etc/apt/sources.list.d/docker-desktop.list" ]; then
     run_cmd sudo install -m 0755 -d /etc/apt/keyrings
-    run_cmd curl -fsSL https://desktop.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker-desktop.gpg
-    local version_codename=$(. /etc/os-release && echo "$VERSION_CODENAME")
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-desktop.gpg] https://desktop.docker.com/linux/ubuntu $version_codename stable" | run_cmd sudo tee /etc/apt/sources.list.d/docker-desktop.list
-    run_cmd sudo apt-get update
-    ok "$1" "DOCKER" "Docker Desktop APT repository configured! ✔"
-  fi
-  if ! dpkg -l | grep -q docker-desktop; then
-    run_cmd sudo apt-get install -y docker-desktop
-    ok "$1" "DOCKER" "Docker Desktop installed! ✔"
-  fi
-  ok "$1" "MANUAL" "Manual installations completed! ✔"
 
+    if curl -fsSL https://desktop.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker-desktop.gpg 2>/dev/null; then
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-desktop.gpg] https://desktop.docker.com/linux/ubuntu ${VERSION_CODENAME} stable" | \
+        sudo tee /etc/apt/sources.list.d/docker-desktop.list > /dev/null
+
+      run_cmd sudo apt-get update
+      ok "$indent" "DOCKER" "Repository configured! ✔"
+    else
+      warn "$indent Failed to add Docker Desktop repository"
+      return 1
+    fi
+  fi
+
+  if ! dpkg -l 2>/dev/null | grep -q docker-desktop; then
+    if sudo apt-get install -y docker-desktop 2>/dev/null; then
+      ok "$indent" "DOCKER" "Docker Desktop installed! ✔"
+    else
+      warn "$indent Docker Desktop installation failed (non-fatal)"
+    fi
+  fi
+}
+task_add_linux_ollama() {
+  local indent="${1:-}"
+  if ! has_cmd ollama; then
+    info "$indent Installing Ollama"
+    if run_cmd curl -fsSL https://ollama.ai/install.sh | sh; then
+      ok "$indent" "OLLAMA" "Ollama installed! ✔"
+    else
+      warn "$indent Failed to install Ollama..."
+    fi
+  fi
+}
+task_add_apps_manually_linux() {
+  local indent="${1:-}"
+  # Ollama: curl -fsSL https://ollama.ai/install.sh | sh
+  task_add_linux_ollama "$indent"
+  # Nerd Fonts
+  task_add_linux_nerd_fonts "$indent"
+  # Docker Desktop: Use Docker Engine (apt install docker.io)
+  task_add_linux_docker_desktop "$indent"
+  # TODO
   # Claude/ChatGPT: Use web apps or manual installation
   # Ghostty: Build from source (https://github.com/ghostty-org/ghostty)
   # Google Drive: Use rclone or gnome-online-accounts
@@ -427,7 +478,7 @@ prepare_system_requirements() {
     if needs_sudo || is_container || is_devcontainer; then
       cmd_prefix="sudo "
     fi
-    run_cmd ${cmd_prefix}apt-get update && ${cmd_prefix}apt-get upgrade -y && $(xargs -a ${PACKAGES[apt]} ${cmd_prefix}apt-get install -y --no-install-recommends) && ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
+    run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y && ${cmd_prefix}add-apt-repository universe -y && ${cmd_prefix}apt-get install -y --no-install-recommends sudo wget unzip ca-certificates gnupg && ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
     success "$1 System MINIMAL packages installed successfully! ✔"
   else
     warn "$1 No SYSTEM PACKAGE MANAGER found! Skipping system packages installation..."
@@ -566,15 +617,16 @@ setup_tools() {
   ok "$1" "TOOLS/SOPS"
 }
 setup_operation_system() {
-  local indent="${1:-}"
   if is_host; then
+    local indent="${1:-}"
     if is_darwin; then
       task_add_packages_from_homebrew "${PACKAGES[homebrew]}" "${indent}  "
       ok "${indent}" "MACOS" "macOS prepared! ✔"
     elif has_cmd apt; then
-      info "${indent}Setting up GUI applications for '$UNAME'..."
+      info "${indent}Setting up GUI APPS for '$UNAME'..."
       task_add_packages_from_flatpak "${PACKAGES[flatpak]}" "${indent}  "
       task_add_packages_from_snap "${PACKAGES[snap]}" "${indent}  "
+      task_add_packages_from_apt "${PACKAGES[apt]}" "${indent}  "
       task_add_apps_manually_linux "${indent}  "
       ok "${indent}" "LINUX/DEBIAN" "Debian/Ubuntu environment prepared! ✔"
     fi
