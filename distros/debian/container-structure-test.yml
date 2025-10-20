@@ -134,6 +134,22 @@ fileExistenceTests:
     path: /home/vscode/.config/nvim/init.lua
     shouldExist: true
     permissions: -rw-r--r--
+  - name: ~/.config/nvim/.venv dir
+    path: /home/vscode/.config/nvim/.venv
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.config/nvim/.venv/bin dir
+    path: /home/vscode/.config/nvim/.venv/bin
+    shouldExist: true
+    permissions: drwxr-xr-x
+  - name: ~/.config/nvim/.venv/bin/activate file
+    path: /home/vscode/.config/nvim/.venv/bin/activate
+    shouldExist: true
+    permissions: -rw-r--r--
+  - name: ~/.config/nvim/.venv/bin/python3 file
+    path: /home/vscode/.config/nvim/.venv/bin/python3
+    shouldExist: true
+    permissions: Lrwxrwxrwx
   - name: ~/.config/zsh dir (ZDOTDIR)
     path: /home/vscode/.config/zsh
     shouldExist: true
