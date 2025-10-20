@@ -1,0 +1,8 @@
+##########################################################################
+# Debian/Ubuntu System Packages                                          #
+# ---------------------------------------------------------------------- #
+# Essential CLI tools and dependencies for Debian-based systems          #
+# Usage: xargs -a ~/.config/apt/requirements.txt sudo apt-get install -y #
+##########################################################################
+
+sudo zsh wget fonts-cascadia-code fonts-firacode fonts-hack fonts-jetbrains-mono fontconfig unzip
