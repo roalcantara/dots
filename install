@@ -116,15 +116,19 @@ run_as_target_user() {
 }
 backup() {
   local target="$1" source="${2:-''}"
+  local cmd_prefix=""
+  if needs_sudo || is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
   if [ -e "$target" ]; then
     if is_container; then
-      run_cmd rm -rf "$target"
+      run_cmd ${cmd_prefix}rm -rf "$target"
     else
-      run_cmd mv "$target" "${BACKUP_DIR:?}/"
+      run_cmd ${cmd_prefix}mv "$target" "${BACKUP_DIR:?}/"
     fi
   fi
   if [ -n "$source" ] && [ -e "$source" ]; then
-    run_cmd ln -sf "$source" "$target"
+    run_cmd ${cmd_prefix}ln -sf "$source" "$target"
   fi
 }
 backup_home() {
@@ -147,50 +151,58 @@ ensure_dirs_and_export_vars() {
   done
 }
 ensure_user_and_group_darwin() {
+  local cmd_prefix=""
+  if needs_sudo || is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
   if ! user_exists "$USERNAME"; then
     local next_uid=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -n | tail -1)
     next_uid=$((next_uid + 1))
-    run_cmd dscl . create /Users/"$USERNAME"
-    run_cmd dscl . create /Users/"$USERNAME" UserShell /bin/zsh
-    run_cmd dscl . create /Users/"$USERNAME" RealName "$USERNAME"
-    run_cmd dscl . create /Users/"$USERNAME" UniqueID "$next_uid"
-    run_cmd dscl . create /Users/"$USERNAME" PrimaryGroupID 20
-    run_cmd dscl . create /Users/"$USERNAME" NFSHomeDirectory /Users/"$USERNAME"
-    run_cmd createhomedir -c -u "$USERNAME"
-    run_cmd dscl . append /Groups/admin GroupMembership "$USERNAME"
+    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME"
+    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME" UserShell /bin/zsh
+    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME" RealName "$USERNAME"
+    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME" UniqueID "$next_uid"
+    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME" PrimaryGroupID 20
+    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME" NFSHomeDirectory /Users/"$USERNAME"
+    run_cmd ${cmd_prefix}createhomedir -c -u "$USERNAME"
+    run_cmd ${cmd_prefix}dscl . append /Groups/admin GroupMembership "$USERNAME"
     if is_container; then
       ok "$1" "USER/GROUP" "/Users/$USERNAME passwordless created; Admin group access granted!" "✔"
     else
-      run_cmd passwd "$USERNAME"
-      run_cmd pwpolicy -u "$USERNAME" -setpolicy "passwordCannotBeAccountName=1,requiresAlpha=1,requiresNumeric=1,minChars=8,maxFailedLoginAttempts=5,usingHistory=5,canModifyPasswordforSelf=1,expiresEveryNDays=90"
+      run_cmd ${cmd_prefix}passwd "$USERNAME"
+      run_cmd ${cmd_prefix}pwpolicy -u "$USERNAME" -setpolicy "passwordCannotBeAccountName=1,requiresAlpha=1,requiresNumeric=1,minChars=8,maxFailedLoginAttempts=5,usingHistory=5,canModifyPasswordforSelf=1,expiresEveryNDays=90"
       ok "$1" "USER/GROUP" "/Users/$USERNAME created; Forcing password change on first login!" "✔"
     fi
   fi
   if ! group_exists "$GROUPNAME"; then
     local next_gid=$(dscl . -list /Groups PrimaryGroupID | awk '{print $2}' | sort -n | tail -1)
     next_gid=$((next_gid + 1))
-    run_cmd dscl . create /Groups/"$GROUPNAME"
-    run_cmd dscl . create /Groups/"$GROUPNAME" PrimaryGroupID "$next_gid"
+    run_cmd ${cmd_prefix}dscl . create /Groups/"$GROUPNAME"
+    run_cmd ${cmd_prefix}dscl . create /Groups/"$GROUPNAME" PrimaryGroupID "$next_gid"
     ok "$1" "USER/GROUP" "/Groups/$GROUPNAME created; PrimaryGroupID=$next_gid!" "✔"
   fi
 }
 ensure_user_and_group_debian() {
+  local cmd_prefix=""
+  if needs_sudo || is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
   if ! group_exists "$GROUPNAME"; then
-    run_cmd groupadd "$GROUPNAME" 2>/dev/null;
+    run_cmd ${cmd_prefix}groupadd "$GROUPNAME" 2>/dev/null;
     ok "$1" "USER/GROUP" "Group $GROUPNAME created!" "✔"
   fi
   if ! user_exists "$USERNAME"; then
-    run_cmd useradd -m -s /bin/bash -G "$GROUPNAME" "$USERNAME" 2>/dev/null
+    run_cmd ${cmd_prefix}useradd -m -s /bin/bash -G "$GROUPNAME" "$USERNAME" 2>/dev/null
     if is_container; then
-      run_cmd usermod -aG sudo "$USERNAME" 2>/dev/null || run_cmd usermod -aG wheel "$USERNAME"
-      run_cmd passwd -d "$USERNAME"
+      run_cmd ${cmd_prefix}usermod -aG sudo "$USERNAME" 2>/dev/null || run_cmd ${cmd_prefix}usermod -aG wheel "$USERNAME"
+      run_cmd ${cmd_prefix}passwd -d "$USERNAME"
       echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/$USERNAME"
-      run_cmd chmod 440 "/etc/sudoers.d/$USERNAME"
+      run_cmd ${cmd_prefix}chmod 440 "/etc/sudoers.d/$USERNAME"
       ok "$1" "USER/GROUP" "User $USERNAME:$GROUPNAME passwordless created; Sudo access granted!" "✔"
     else
-      run_cmd usermod -aG sudo "$USERNAME" 2>/dev/null || run_cmd usermod -aG $GROUPNAME "$USERNAME" 2>/dev/null
-      run_cmd passwd "$USERNAME" 2>/dev/null
-      run_cmd chage -d 0 "$USERNAME" 2>/dev/null
+      run_cmd ${cmd_prefix}usermod -aG sudo "$USERNAME" 2>/dev/null || run_cmd ${cmd_prefix}usermod -aG $GROUPNAME "$USERNAME" 2>/dev/null
+      run_cmd ${cmd_prefix}passwd "$USERNAME" 2>/dev/null
+      run_cmd ${cmd_prefix}chage -d 0 "$USERNAME" 2>/dev/null
       ok "$1" "USER/GROUP" "User $USERNAME:$GROUPNAME created; Forcing password change on first login!" "✔"
     fi
   fi
