@@ -243,9 +243,13 @@ current-branch=rev-parse --abbrev-ref HEAD
 # @example: git main-branch
 main-branch=config init.defaultBranch
 
-# Delete branches that are merged, excluding main, master, and develop
+# Delete branches that are merged, excluding main, master, develop and current
 # @example: git clear-merged
-clear-merged=!git merged | grep -v '\\*\\|main\\|master\\|develop' | xargs git branch -D
+clear-merged = "!git merged | grep -vE \"^\\*|$(git current-branch)$|$(git main-branch)$|main$|master$|develop$\" | xargs -r git branch -d"
+
+# Delete branches whose remote tracking is gone (branches deleted on remote but still present locally)
+# @example: git clear-gone
+clear-gone = "!git fetch --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D"
 
 # List remote branches for a specified remote (default: origin)
 # @example: git remote-branches [remote-name]
@@ -619,7 +623,7 @@ defaultBranch = main
 defaultRemote = origin
 
 [fetch]
-prune = true
+	prune = true
 
 [log]
 all = true
