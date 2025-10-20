@@ -61,6 +61,7 @@ xsel.systems = ["aarch64-linux", "x86_64-linux"]
 nodejs.pkg-path = "nodejs"
 ruby.pkg-path = "ruby"
 python314Full.pkg-path = "python314Full"
+usage.pkg-path = "usage"
 
 ## Environment Variables ---------------------------------------------
 ##  ... available for use in the activated environment
