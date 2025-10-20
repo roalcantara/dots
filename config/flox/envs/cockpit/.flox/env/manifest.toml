@@ -53,6 +53,12 @@ glow.pkg-path = "glow"
 yq.pkg-path = "yq"
 mise.pkg-path = "mise"
 
+xclip.pkg-path = "xclip"
+xclip.systems = ["aarch64-linux", "x86_64-linux"]
+
+xsel.pkg-path = "xsel"
+xsel.systems = ["aarch64-linux", "x86_64-linux"]
+
 ## Environment Variables ---------------------------------------------
 ##  ... available for use in the activated environment
 ##      as well as [hook], [profile] scripts and [services] below.
@@ -127,7 +133,7 @@ mise.pkg-path = "mise"
 ## Other Environment Options -----------------------------------------
 [options]
 # Systems that environment is compatible with
-# allow.unfree = true
-# systems = ["aarch64-linux","x86_64-linux","aarch64-darwin","x86_64-darwin"]
+allow.unfree = true
+systems = ["aarch64-linux","x86_64-linux","aarch64-darwin","x86_64-darwin"]
 # Uncomment to disable CUDA detection.
 # cuda-detection = false
