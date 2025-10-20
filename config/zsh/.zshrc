@@ -297,17 +297,19 @@
 # }
 
 # ZIM | https://zimfw.sh {
-  # The Zsh configuration framework with blazing speed and modular extensions.
-  if [[ ! -e $ZIM_HOME/zimfw.zsh ]]; then   # Download zimfw plugin manager if missing QUIETLY
-    mkdir -p $ZIM_HOME && wget -q -O $ZIM_HOME/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
-  fi
-  # Install missing modules, and update $ZIM_HOME/init.zsh if missing or outdated
-  if [[ ! $ZIM_HOME/init.zsh -nt $ZDOTDIR/.zimrc ]]; then
-    source $ZIM_HOME/zimfw.zsh init -q
-  fi
-  # Initialize modules
-  if [[ -f $ZIM_HOME/init.zsh ]]; then
-    source $ZIM_HOME/init.zsh
+  if [[ ! -e $ZDOTDIR/.zimrc ]]; then
+    # The Zsh configuration framework with blazing speed and modular extensions.
+    if [[ ! -e $ZIM_HOME/zimfw.zsh ]]; then   # Download zimfw plugin manager if missing QUIETLY
+      mkdir -p $ZIM_HOME && wget -q -O $ZIM_HOME/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+    fi
+    # Install missing modules, and update $ZIM_HOME/init.zsh if missing or outdated
+    if [[ ! $ZIM_HOME/init.zsh -nt $ZDOTDIR/.zimrc ]]; then
+      source $ZIM_HOME/zimfw.zsh init -q
+    fi
+    # Initialize modules
+    if [[ -f $ZIM_HOME/init.zsh ]]; then
+      source $ZIM_HOME/init.zsh
+    fi
   fi
 # }
 
