@@ -39,7 +39,7 @@ user_exists() { id "$1" &>/dev/null; }
 run_cmd() { info "Running: $*"; "$@"; }
 is_darwin() { [ "$UNAME" = "darwin" ]; }
 group_exists() { is_darwin && dscl . -read /Groups/"$1" &>/dev/null || getent group "$1" &>/dev/null; }
-ensure_dir() { [ -d "$1" ] || run_cmd mkdir -p "$1"; }
+ensure_dir() { [ -d "$1" ] || run_cmd sudo mkdir -p "$1"; }
 ensure_dir_and_export_var() { ensure_dir "$1"; [ -n "$2" ] && export "$2"="$1"; }
 is_container() {
   if [ -n "${DOCKER_CONTAINER:-}" ] || [ -n "${container:-}" ] ||
