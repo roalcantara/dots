@@ -176,11 +176,11 @@ ensure_user_and_group_darwin() {
 }
 ensure_user_and_group_debian() {
   if ! group_exists "$GROUPNAME"; then
-    run_cmd groupadd "$GROUPNAME";
+    run_cmd groupadd "$GROUPNAME" 2>/dev/null;
     ok "$1" "USER/GROUP" "Group $GROUPNAME created!" "✔"
   fi
   if ! user_exists "$USERNAME"; then
-    run_cmd useradd -m -s /bin/bash -G "$GROUPNAME" "$USERNAME"
+    run_cmd useradd -m -s /bin/bash -G "$GROUPNAME" "$USERNAME" 2>/dev/null
     if is_container; then
       run_cmd usermod -aG sudo "$USERNAME" 2>/dev/null || run_cmd usermod -aG wheel "$USERNAME"
       run_cmd passwd -d "$USERNAME"
@@ -188,9 +188,9 @@ ensure_user_and_group_debian() {
       run_cmd chmod 440 "/etc/sudoers.d/$USERNAME"
       ok "$1" "USER/GROUP" "User $USERNAME:$GROUPNAME passwordless created; Sudo access granted!" "✔"
     else
-      run_cmd usermod -aG sudo "$USERNAME" 2>/dev/null || run_cmd usermod -aG wheel "$USERNAME"
-      run_cmd passwd "$USERNAME"
-      run_cmd chage -d 0 "$USERNAME"
+      run_cmd usermod -aG sudo "$USERNAME" 2>/dev/null || run_cmd usermod -aG $GROUPNAME "$USERNAME" 2>/dev/null
+      run_cmd passwd "$USERNAME" 2>/dev/null
+      run_cmd chage -d 0 "$USERNAME" 2>/dev/null
       ok "$1" "USER/GROUP" "User $USERNAME:$GROUPNAME created; Forcing password change on first login!" "✔"
     fi
   fi
