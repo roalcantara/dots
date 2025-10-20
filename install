@@ -576,15 +576,19 @@ setup_system() {
 setup_user_home_and_dotfiles() {
   prepare_user_and_group "$1"
   prepare_home_and_xdg_dirs "$1"
+  local cmd_prefix=""
+  if needs_sudo || is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
   if [ ! -d "$HOME/.local/share/dots" ]; then # Clone repo if not present
-    run_cmd git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$HOME/.local/share/dots"
+    run_cmd ${cmd_prefix}git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$HOME/.local/share/dots"
   elif [ -d "$HOME/.local/share/dots/.git" ]; then # Update repo if already present
-    run_cmd git -C "$HOME/.local/share/dots" pull origin "$BRANCH"
+    run_cmd ${cmd_prefix}git -C "$HOME/.local/share/dots" pull --ff-only origin "$BRANCH"
   fi
   [ -d "$HOME/.local/share/dots/config" ] && backup "$HOME/.config" "$HOME/.local/share/dots/config" || fatal "Source directory '$HOME/.local/share/dots/config' not found!"
   backup "$HOME/.zshenv" "$HOME/.config/zsh/.zshenv"
   ensure_dirs_and_export_vars "$HOME/.config/zsh:ZDOTDIR" "$HOME/.config/flox:FLOX_PATH"
-  is_container && run_cmd rm -rf "$HOME/.local/share/dots/.git"
+  is_container && run_cmd ${cmd_prefix}rm -rf "$HOME/.local/share/dots/.git"
   ok "$1" "USER/HOME/DOTS" "{XDG_CONFIG_HOME=$XDG_CONFIG_HOME, ZDOTDIR=$ZDOTDIR, FLOX_PATH=$FLOX_PATH}"
 }
 setup_user_context() {
