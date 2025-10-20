@@ -1,0 +1,48 @@
+#########################################################################
+# Linux GUI Applications via Flatpak                                    #
+# --------------------------------------------------------------------- #
+# macOS equivalent: ~/.config/homebrew/Brewfile                         #
+# When adding apps here, also update the Brewfile                       #
+# --------------------------------------------------------------------- #
+# Usage:                                                                #
+# Install all apps:                                                     #
+# $ cat flatpak-apps.txt | grep -v '^#' | grep -v '^$' | \             #
+#   xargs -L1 flatpak install -y flathub                                #
+#                                                                       #
+# Or use the install script which handles this automatically           #
+# --------------------------------------------------------------------- #
+# https://flatpak.org/                                                  #
+# https://flathub.org/                                                  #
+#########################################################################
+
+# Development Tools
+com.visualstudio.code
+dev.zed.Zed
+com.getpostman.Postman
+io.github.shiftey.Desktop
+
+# Browsers
+org.mozilla.firefox
+com.google.Chrome
+com.brave.Browser
+
+# Communication
+com.slack.Slack
+com.discordapp.Discord
+io.github.mimbrero.WhatsAppDesktop
+
+# Productivity & Security
+com.bitwarden.desktop
+
+# Media
+org.videolan.VLC
+
+#########################################################################
+# Notes on apps not available via Flatpak:                             #
+# --------------------------------------------------------------------- #
+# - Docker Desktop: Use Docker Engine (apt install docker.io)          #
+# - Ollama: curl -fsSL https://ollama.ai/install.sh | sh               #
+# - Claude/ChatGPT: Use web apps or manual installation                #
+# - Ghostty: Build from source (https://github.com/ghostty-org/ghostty)#
+# - Google Drive: Use rclone or gnome-online-accounts                  #
+#########################################################################

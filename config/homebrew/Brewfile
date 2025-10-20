@@ -1,16 +1,20 @@
 #########################################################################
-# Common packages among Brewfiles                                       #
-# $ brew bundle dump --file ~/.config/homebrew/Brewfile                 #
+# macOS GUI Applications via Homebrew                                   #
 # --------------------------------------------------------------------- #
-# 1. Uninstall everything                                               #
-# $ brew bundle cleanup --force --file /dev/null                        #
-# 2. Reinstall from your Brewfile                                       #
-# $ brew bundle -v --file ~/.config/homebrew/Brewfile                   #
-# 3. Verify everything installed correctly                              #
-# $ brew bundle check --file ~/.config/homebrew/Brewfile                #
+# This Brewfile works together with ~/.config/apps/gui-apps.conf       #
+# to provide cross-platform GUI app installation:                      #
+#   - macOS: Uses this Brewfile via `brew bundle`                      #
+#   - Linux: Reads gui-apps.conf and installs via flatpak/snap/apt     #
 # --------------------------------------------------------------------- #
-# $ brew bundle -v --file ~/.config/homebrew/Brewfile                   #
-# $ brew bundle -v --force --cleanup --file ~/.config/homebrew/Brewfile #
+# Usage:                                                                #
+# $ brew bundle install --file ~/.config/homebrew/Brewfile             #
+# $ brew bundle check --file ~/.config/homebrew/Brewfile               #
+# $ brew bundle cleanup --force --file ~/.config/homebrew/Brewfile     #
+# --------------------------------------------------------------------- #
+# When adding new apps:                                                 #
+# 1. Add cask to this file                                              #
+# 2. Add mapping to ~/.config/apps/gui-apps.conf                        #
+# 3. Test on both macOS and Linux                                       #
 # --------------------------------------------------------------------- #
 # https://docs.brew.sh/Manpage#bundle-subcommand                        #
 #########################################################################

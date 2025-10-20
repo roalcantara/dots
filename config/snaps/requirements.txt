@@ -1,0 +1,19 @@
+#########################################################################
+# Linux GUI Applications via Snap                                       #
+# --------------------------------------------------------------------- #
+# For apps not available in Flatpak or that work better via Snap       #
+# macOS equivalent: ~/.config/homebrew/Brewfile                         #
+# --------------------------------------------------------------------- #
+# Usage:                                                                #
+# $ cat snap-apps.txt | grep -v '^#' | grep -v '^$' | \                #
+#   while read app flags; do snap install $app $flags; done            #
+# --------------------------------------------------------------------- #
+# Format: app-name [flags]                                              #
+# Example: code-insiders --classic                                      #
+#########################################################################
+
+# Development Tools (Classic confinement needed for full system access)
+code-insiders --classic
+cursor --classic
+
+# Add more snap-specific apps here as needed
