@@ -239,7 +239,11 @@ task_add_flox() {
   fi
 }
 task_add_packages_from_flox() {
-  run_cmd sudo flox pull roalcantara/cockpit --dir "$HOME" --force
+  if is_host; then
+    run_cmd sudo flox pull roalcantara/default --dir "$HOME" --force
+  else
+    run_cmd sudo flox pull roalcantara/cockpit --dir "$HOME" --force
+  fi
   # Fix permissions after installation for container/devcontainer use
   task_add_flox_permissions
   eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
