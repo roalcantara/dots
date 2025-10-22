@@ -10,8 +10,8 @@ declare -g USERNAME GROUPNAME TIMEZONE="America/Sao_Paulo" REPO_URL="https://git
 declare -g UNAME ARCH PLATFORM_ARCH DISTRO ENV CONTEXT HOME DOTS_SRC_DIR FLOX_PATH BACKUP_DIR
 declare -g -A PACKAGES=(
   [apt]="$HOME/.config/apt/requirements.txt",
-  [flatpak]="$HOME/.config/flatpak/apps.txt",
-  [snap]="$HOME/.config/snap/apps.txt",
+  [flatpak]="$HOME/.config/flatpak/requirements.txt",
+  [snap]="$HOME/.config/snap/requirements.txt",
   [homebrew]="$HOME/.config/homebrew/Brewfile",
 )
 # UTILITIES functions
