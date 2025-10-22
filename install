@@ -494,7 +494,13 @@ prepare_system_requirements() {
     if needs_sudo || is_container || is_devcontainer; then
       cmd_prefix="sudo "
     fi
-    run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y && ${cmd_prefix}add-apt-repository universe -y && ${cmd_prefix}apt-get install -y --no-install-recommends sudo wget unzip ca-certificates gnupg && ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
+    if is_host; then
+      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y && ${cmd_prefix}apt-get install -y --no-install-recommends sudo git wget unzip ca-certificates gnupg
+      run_cmd ${cmd_prefix}add-apt-repository universe -y && ${cmd_prefix}apt-get update -y
+    else
+      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y
+    fi
+    run_cmd ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
     success "$1 System MINIMAL packages installed successfully! ✔"
   else
     warn "$1 No SYSTEM PACKAGE MANAGER found! Skipping system packages installation..."
