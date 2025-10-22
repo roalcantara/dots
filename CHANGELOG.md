@@ -9,6 +9,44 @@
 * **env:** Update encrypted API keys in .env file ([0187596](https://github.com/roalcantara/dots/commit/018759676a25b965658f5c747853633890945d0f))
 * **install:** Improve error handling for user and group creation ([44ae8d3](https://github.com/roalcantara/dots/commit/44ae8d33eae55e693a26910d89dd2322532287ba))
 * **install:** Update ensure_dir function to use sudo for directory creation ([06df9da](https://github.com/roalcantara/dots/commit/06df9dad9af21351990a0168beefd0207ee5e019))
+* **install:** Update package installation commands for improved efficiency ([bb40310](https://github.com/roalcantara/dots/commit/bb40310cdf2eaa848cba9bfc28fac2235cd621c7))
+* **install:** Update package pull command based on host type ([ae806ab](https://github.com/roalcantara/dots/commit/ae806ab8c2e3502911952b06f2c2d3b11d497e33))
+* **install:** Use sudo for commands in backup and user/group creation functions ([bce8cac](https://github.com/roalcantara/dots/commit/bce8caccec3ddfe60ab889bc0999e107717eac31))
+* **install:** Use sudo for git commands in user home setup ([f390832](https://github.com/roalcantara/dots/commit/f39083201b70748c2f62ec2341081cfda9d84d61))
+* **nvim/ui:** Update background color and theme style ([9477e40](https://github.com/roalcantara/dots/commit/9477e40cf1ff9895f806adf73f394ac026924b70))
+* **nvim:** Enhance completions ([8687176](https://github.com/roalcantara/dots/commit/8687176b7e36db467558925d38303923ea4926d7))
+* **vscode/keybindings:** Remove and update keybindings ([ff1a884](https://github.com/roalcantara/dots/commit/ff1a8841b29bf05286c30387f0e8eac230a0eae7))
+* **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
+* **zsh:** Update zimfw installation condition to check for .zimrc existence ([bd730dd](https://github.com/roalcantara/dots/commit/bd730dd8636f188ff67c120f24754c22e516d6c8))
+
+
+### Features
+
+* **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
+* **env:** Add xclip and xsel packages to Flox manifest ([4119132](https://github.com/roalcantara/dots/commit/41191320de52a079ded13994b7b8aaeeb89b0c24))
+* **install:** Enhance package management for Flatpak and APT ([302babd](https://github.com/roalcantara/dots/commit/302babdbc0851e1bbd0c95d2d7dfdbcc4d6a7617))
+* **install:** Ensure compatibility cross-platforms ([15aeb53](https://github.com/roalcantara/dots/commit/15aeb53877bf630411f3bf9eb92f5d2474c0d657))
+* **install:** Update Flox environment manifests and configurations ([4ccb907](https://github.com/roalcantara/dots/commit/4ccb90774f6e3225e1afc8b8065a7862cadf76b0))
+* **kb:** Add setup instructions for Bitbucket SSH access ([871878f](https://github.com/roalcantara/dots/commit/871878fe06505920cf45ce9755e7066fe88192c8))
+* **nvim:** Auto dismiss messages on lualine after a while ([11fdf97](https://github.com/roalcantara/dots/commit/11fdf977f8b27ef72f817671eb99a978e8b1432d))
+* **nvim:** Auto dismiss messages on lualine after a while ([50ed817](https://github.com/roalcantara/dots/commit/50ed8179432b64f7edaf9dad62c9d002eb98c920))
+* **nvim:** Display the current formatters available ([2bbbd55](https://github.com/roalcantara/dots/commit/2bbbd5537f132df1548cec6fd2ae6f20b6e7a204))
+* **nvim:** Enhance Neovim provider management and environment setup ([dc0199e](https://github.com/roalcantara/dots/commit/dc0199eb5a67bf8fa54236057073d8176a8eddaa))
+* **nvim:** Handle Tab/S-Tab properly ([306b6cf](https://github.com/roalcantara/dots/commit/306b6cfa9e28cab9eb082d5fccea1b4d1e51df8c))
+* **nvim:** Handle Tab/S-Tab properly ([918a9b1](https://github.com/roalcantara/dots/commit/918a9b1a1b79991d09b8ca4e7f7e55a55e51ac33))
+* **nvim:** Highlight links ([fdc3a64](https://github.com/roalcantara/dots/commit/fdc3a64ba2808bbcdafd7fe7d9cc1e6ad71922ed))
+
+# [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-22)
+
+
+### Bug Fixes
+
+* **env:** Update encrypted API keys in .env file ([3a06d80](https://github.com/roalcantara/dots/commit/3a06d80c8cb00b3cdb61e0f4f7a55c910e7fc2df))
+* **env:** Update encrypted API keys in .env file ([77769ee](https://github.com/roalcantara/dots/commit/77769ee3d1d8e35e8bbf09a76f5ef03032fb0f3f))
+* **env:** Update encrypted API keys in .env file ([71343c8](https://github.com/roalcantara/dots/commit/71343c80fa5d53e15daec2f93f3e6fe96bd5b338))
+* **env:** Update encrypted API keys in .env file ([0187596](https://github.com/roalcantara/dots/commit/018759676a25b965658f5c747853633890945d0f))
+* **install:** Improve error handling for user and group creation ([44ae8d3](https://github.com/roalcantara/dots/commit/44ae8d33eae55e693a26910d89dd2322532287ba))
+* **install:** Update ensure_dir function to use sudo for directory creation ([06df9da](https://github.com/roalcantara/dots/commit/06df9dad9af21351990a0168beefd0207ee5e019))
 * **install:** Update package pull command based on host type ([ae806ab](https://github.com/roalcantara/dots/commit/ae806ab8c2e3502911952b06f2c2d3b11d497e33))
 * **install:** Use sudo for commands in backup and user/group creation functions ([bce8cac](https://github.com/roalcantara/dots/commit/bce8caccec3ddfe60ab889bc0999e107717eac31))
 * **install:** Use sudo for git commands in user home setup ([f390832](https://github.com/roalcantara/dots/commit/f39083201b70748c2f62ec2341081cfda9d84d61))
