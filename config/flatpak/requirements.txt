@@ -23,7 +23,7 @@ io.github.shiftey.Desktop
 
 # Browsers
 org.mozilla.firefox
-com.google.Chrome
+org.chromium.Chromium
 com.brave.Browser
 
 # Communication
