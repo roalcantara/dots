@@ -9,10 +9,10 @@ declare -g -A COLORS=([E]='\033[0;31m' [F]='\033[0;31m' [S]='\033[0;32m' [W]='\0
 declare -g USERNAME GROUPNAME TIMEZONE="America/Sao_Paulo" REPO_URL="https://github.com/roalcantara/dots" BRANCH="main" USR_LOCAL_BIN="/usr/local/bin" PACKAGE_MANAGER="flox" FLOX_VERSION="1.7.4" CONFIGS_TO_BACKUP=".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .oh-my-zsh"
 declare -g UNAME ARCH PLATFORM_ARCH DISTRO ENV CONTEXT HOME DOTS_SRC_DIR FLOX_PATH BACKUP_DIR
 declare -g -A PACKAGES=(
-  [apt]="$HOME/.config/apt/requirements.txt",
-  [flatpak]="$HOME/.config/flatpak/requirements.txt",
-  [snap]="$HOME/.config/snap/requirements.txt",
-  [homebrew]="$HOME/.config/homebrew/Brewfile",
+  [apt]="$HOME/.config/apt/requirements.txt"
+  [flatpak]="$HOME/.config/flatpak/requirements.txt"
+  [snap]="$HOME/.config/snap/requirements.txt"
+  [homebrew]="$HOME/.config/homebrew/Brewfile"
 )
 # UTILITIES functions
 show_usage() {
