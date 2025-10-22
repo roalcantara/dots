@@ -512,7 +512,7 @@ prepare_system_requirements() {
       cmd_prefix="sudo "
     fi
     if is_host; then
-      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y && ${cmd_prefix}apt-get install -y --no-install-recommends sudo git wget unzip ca-certificates gnupg
+      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y && ${cmd_prefix}apt-get install -y --no-install-recommends sudo git wget unzip ca-certificates gnupg zsh
       run_cmd ${cmd_prefix}add-apt-repository universe -y && ${cmd_prefix}apt-get update -y
     else
       run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y
