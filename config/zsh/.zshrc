@@ -297,7 +297,7 @@
 # }
 
 # ZIM | https://zimfw.sh {
-  if [[ ! -e $ZDOTDIR/.zimrc ]]; then
+  if [[ -e $ZDOTDIR/.zimrc ]]; then
     # The Zsh configuration framework with blazing speed and modular extensions.
     if [[ ! -e $ZIM_HOME/zimfw.zsh ]]; then   # Download zimfw plugin manager if missing QUIETLY
       mkdir -p $ZIM_HOME && wget -q -O $ZIM_HOME/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
