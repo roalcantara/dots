@@ -267,35 +267,41 @@ task_add_packages_from_homebrew() {
 task_add_packages_from_flatpak() {
   local apps_file="${1:-${PACKAGES[flatpak]}}"
   local indent="${2:-}"
-
+  local cmd_prefix=""
+  if needs_sudo || is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
   if ! command -v flatpak >/dev/null 2>&1; then
     if dpkg -l 2>/dev/null | grep -q gnome-software; then
-      run_cmd sudo apt update -y && sudo apt install -y flatpak gnome-software-plugin-flatpak
+      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get install -y flatpak gnome-software-plugin-flatpak
     else
-      run_cmd sudo apt update -y && sudo apt install -y flatpak
+      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get install -y flatpak
     fi
+    run_cmd ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
+    run_cmd flatpak --version
     ok "$1" "FLATPAK" "Flatpak installed and configured! ✔"
   fi
 
   if ! flatpak remotes 2>/dev/null | grep -q flathub; then
-    run_cmd sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    run_cmd ${cmd_prefix}flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
   fi
 
+  info "${indent}Checking Flatpak applications from '$apps_file'"
   if [ ! -f "$apps_file" ]; then
-    warn "${indent}Flatpak apps file not found: $apps_file"
+    warn "${indent}Flatpak apps file not found: '$apps_file' ✗"
     return 0
   fi
 
-  info "${indent}Installing Flatpak applications from $apps_file"
+  info "${indent}Installing Flatpak applications from '$apps_file'"
   local apps
   apps=$(grep -v '^#' "$apps_file" | grep -v '^$' | tr '\n' ' ')
 
   if [ -z "$apps" ]; then
-    info "${indent}No apps to install"
+    info "${indent}No apps to install ✗"
     return 0
   fi
 
-  if sudo flatpak install -y --noninteractive flathub $apps 2>&1; then
+  if ${cmd_prefix}flatpak install -y --noninteractive flathub $apps 2>&1; then
     ok "${indent}" "FLATPAK" "Flatpak apps installed! ✔"
   else
     warn "${indent}Batch install failed, trying individually..."
@@ -304,19 +310,29 @@ task_add_packages_from_flatpak() {
         info "${indent}  ✓ $app (already installed)"
       else
         info "${indent}  Installing $app..."
-        sudo flatpak install -y --noninteractive flathub "$app" 2>/dev/null || warn "${indent}  ✗ Failed: $app"
+        ${cmd_prefix}flatpak install -y --noninteractive flathub "$app" 2>/dev/null || warn "${indent}  ✗ Failed: $app"
       fi
     done
   fi
   info "${indent}Installed Flatpak Apps:"
-  run_cmd flatpak list --app --columns=name,application
+  run_cmd ${cmd_prefix}flatpak list --app --columns=name,application
   ok "${indent}" "FLATPAK" "Flatpak apps installed! ✔"
 }
 task_add_packages_from_snap() {
-  run_cmd sudo apt-get install -y snapd
   local apps_file="${1:-${PACKAGES[snap]}}"
   local indent="${2:-}"
-  info "${indent}Installing Snap applications from '$apps_file'..."
+  local cmd_prefix=""
+  if needs_sudo || is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
+  info "${indent}Checking Snap applications from '$apps_file'"
+  if [ ! -f "$apps_file" ]; then
+    warn "${indent}Snap apps file not found: '$apps_file' ✗"
+    return 0
+  fi
+  run_cmd ${cmd_prefix}apt-get update -y && run_cmd ${cmd_prefix}apt-get install -y snapd
+  run_cmd ${cmd_prefix}apt-get clean && run_cmd ${cmd_prefix}rm -rf /var/lib/apt/lists/*
+  info "${indent}Installing Snap applications from '$apps_file'"
   local installed=0
   local failed=0
   while IFS= read -r line || [ -n "$line" ]; do
@@ -341,7 +357,7 @@ task_add_packages_from_snap() {
       ((installed++))
     else
       info "${indent}  Installing $app_name $app_flags..."
-      if sudo snap install $app_name $app_flags 2>/dev/null; then
+      if ${cmd_prefix}snap install $app_name $app_flags 2>/dev/null; then
         info "${indent}  ✓ $app_name installed"
         ((installed++))
       else
@@ -351,15 +367,16 @@ task_add_packages_from_snap() {
     fi
   done < "$apps_file"
   info "${indent}Installed Snap apps:"
-  run_cmd snap list
+  run_cmd ${cmd_prefix} snap list
   ok "${indent}" "SNAP" "Snap apps installed: $installed, failed: $failed ✔"
 }
 task_add_packages_from_apt() {
   local apps_file="${1:-${PACKAGES[apt]}}"
   local indent="${2:-}"
 
+  info "${indent}Checking APT applications from '$apps_file'"
   if [ ! -f "$apps_file" ]; then
-    warn "${indent}APT apps file not found: $apps_file"
+    warn "${indent}APT apps file not found: '$apps_file' ✗"
     return 0
   fi
 
