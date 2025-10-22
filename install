@@ -270,9 +270,9 @@ task_add_packages_from_flatpak() {
 
   if ! command -v flatpak >/dev/null 2>&1; then
     if dpkg -l 2>/dev/null | grep -q gnome-software; then
-      run_cmd sudo apt-get install -y flatpak gnome-software-plugin-flatpak
+      run_cmd sudo apt update -y && sudo apt install -y flatpak gnome-software-plugin-flatpak
     else
-      run_cmd sudo apt-get install -y flatpak
+      run_cmd sudo apt update -y && sudo apt install -y flatpak
     fi
     ok "$1" "FLATPAK" "Flatpak installed and configured! ✔"
   fi
