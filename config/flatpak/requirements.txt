@@ -26,7 +26,6 @@ org.chromium.Chromium
 com.brave.Browser
 
 # Communication
-com.slack.Slack
 com.discordapp.Discord
 io.github.mimbrero.WhatsAppDesktop
 
