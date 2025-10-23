@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/roalcantara/dots/compare/v1.17.0...v1.18.0) (2025-10-23)
+
+
+### Features
+
+* **snaps:** Refine requirements ([4b3b138](https://github.com/roalcantara/dots/commit/4b3b13855da5cefddd47ccd28078baa555f4593c))
+
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-23)
 
 
