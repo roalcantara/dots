@@ -13,8 +13,6 @@
 #########################################################################
 
 # Development Tools (Classic confinement needed for full system access)
-code-insiders --classic
-cursor --classic
 ghostty --classic
 
 # Add more snap-specific apps here as needed
