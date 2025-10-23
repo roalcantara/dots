@@ -432,11 +432,13 @@ task_add_packages_from_apt() {
 task_add_linux_docker_desktop() {
   local indent="${1:-}"
 
+  # Check if Docker is already available
   if command -v docker >/dev/null 2>&1; then
     info "$indent Docker already available, skipping..."
     return 0
   fi
 
+  # Check OS requirements
   if [ ! -f "/etc/os-release" ]; then
     warn "$indent Cannot detect OS, skipping Docker Desktop..."
     return 0
@@ -444,18 +446,33 @@ task_add_linux_docker_desktop() {
 
   . /etc/os-release
 
-  if [[ "$ID" != "ubuntu" ]] && [[ "$ID_LIKE" != *"ubuntu"* ]]; then
-    warn "$indent Docker Desktop only available on Ubuntu-based systems (detected: $ID)"
+  # Support both Ubuntu and Debian-based systems
+  if [[ "$ID" != "ubuntu" ]] && [[ "$ID" != "debian" ]] && [[ "$ID_LIKE" != *"ubuntu"* ]] && [[ "$ID_LIKE" != *"debian"* ]]; then
+    warn "$indent Docker Desktop only available on Ubuntu/Debian-based systems (detected: $ID)"
+    return 0
+  fi
+
+  # Check system requirements
+  if ! command -v systemctl >/dev/null 2>&1; then
+    warn "$indent Docker Desktop requires systemd, skipping..."
     return 0
   fi
 
   info "$indent Setting up Docker Desktop for $ID..."
 
+  # Set up Docker Desktop repository
   if [ ! -f "/etc/apt/sources.list.d/docker-desktop.list" ]; then
+    info "$indent Adding Docker Desktop repository..."
     run_cmd sudo install -m 0755 -d /etc/apt/keyrings
 
-    if curl -fsSL https://desktop.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker-desktop.gpg 2>/dev/null; then
-      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-desktop.gpg] https://desktop.docker.com/linux/ubuntu ${VERSION_CODENAME} stable" | \
+    # Use the correct repository URL for both Ubuntu and Debian
+    local repo_url="https://desktop.docker.com/linux/ubuntu"
+    if [[ "$ID" == "debian" ]]; then
+      repo_url="https://desktop.docker.com/linux/debian"
+    fi
+
+    if curl -fsSL "${repo_url}/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker-desktop.gpg 2>/dev/null; then
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-desktop.gpg] ${repo_url} ${VERSION_CODENAME} stable" | \
         sudo tee /etc/apt/sources.list.d/docker-desktop.list > /dev/null
 
       run_cmd sudo apt-get update
@@ -466,12 +483,18 @@ task_add_linux_docker_desktop() {
     fi
   fi
 
+  # Install Docker Desktop
   if ! dpkg -l 2>/dev/null | grep -q docker-desktop; then
-    if sudo apt-get install -y docker-desktop 2>/dev/null; then
+    info "$indent Installing Docker Desktop..."
+    if sudo apt-get install -y docker-desktop; then
       ok "$indent" "DOCKER" "Docker Desktop installed! ✔"
+      info "$indent Note: You may need to log out and back in to use Docker Desktop"
     else
-      warn "$indent Docker Desktop installation failed (non-fatal)"
+      warn "$indent Docker Desktop installation failed"
+      return 1
     fi
+  else
+    info "$indent Docker Desktop already installed"
   fi
 }
 task_add_linux_ollama() {
