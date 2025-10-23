@@ -1,3 +1,11 @@
+## [1.19.1](https://github.com/roalcantara/dots/compare/v1.19.0...v1.19.1) (2025-10-23)
+
+
+### Bug Fixes
+
+* **install:** Enhance Snap installation process ([d62c192](https://github.com/roalcantara/dots/commit/d62c19287622980d924838f75850147cf347517b))
+* **install:** Remove Slack from Flatpak requirements ([0a92e99](https://github.com/roalcantara/dots/commit/0a92e999acb4061765b66e29058d48f310d24345))
+
 # [1.19.0](https://github.com/roalcantara/dots/compare/v1.18.0...v1.19.0) (2025-10-23)
 
 
