@@ -332,6 +332,23 @@ task_add_packages_from_snap() {
   fi
   run_cmd ${cmd_prefix}apt-get update -y && run_cmd ${cmd_prefix}apt-get install -y snapd
   run_cmd ${cmd_prefix}apt-get clean && run_cmd ${cmd_prefix}rm -rf /var/lib/apt/lists/*
+  # Enable snapd socket and create symlink
+  run_cmd ${cmd_prefix}systemctl enable --now snapd.socket
+  run_cmd ${cmd_prefix}ln -sf /var/lib/snapd/snap /snap
+
+  # Wait for snapd to be ready
+  info "${indent}Waiting for snapd to be ready..."
+  local retries=0
+  while ! snap version >/dev/null 2>&1 && [ $retries -lt 10 ]; do
+    sleep 2
+    ((retries++))
+  done
+
+  if ! snap version >/dev/null 2>&1; then
+    warn "${indent}Snap daemon not ready, skipping Snap installations"
+    return 1
+  fi
+
   info "${indent}Installing Snap applications from '$apps_file'"
   local installed=0
   local failed=0
@@ -357,7 +374,7 @@ task_add_packages_from_snap() {
       ((installed++))
     else
       info "${indent}  Installing $app_name $app_flags..."
-      if ${cmd_prefix}snap install $app_name $app_flags 2>/dev/null; then
+      if ${cmd_prefix}snap install $app_name $app_flags; then
         info "${indent}  ✓ $app_name installed"
         ((installed++))
       else
@@ -366,7 +383,8 @@ task_add_packages_from_snap() {
       fi
     fi
   done < "$apps_file"
-  run_cmd ${cmd_prefix}snap refresh
+  info "${indent}Refreshing Snap packages..."
+  timeout 60 ${cmd_prefix}snap refresh || warn "${indent}Snap refresh timed out or failed"
   info "${indent}Installed Snap apps:"
   run_cmd ${cmd_prefix} snap list
   ok "${indent}" "SNAP" "Snap apps installed: $installed, failed: $failed ✔"
