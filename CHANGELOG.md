@@ -1,3 +1,11 @@
+## [1.19.2](https://github.com/roalcantara/dots/compare/v1.19.1...v1.19.2) (2025-10-23)
+
+
+### Bug Fixes
+
+* **install:** Update APT commands for non-interactive installation ([019027e](https://github.com/roalcantara/dots/commit/019027e9291aa112613b627cc753dcdd3dd06f3a))
+* **install:** Update FLOX_VERSION to 1.7.5 ([50d708c](https://github.com/roalcantara/dots/commit/50d708c6b59ecd4aaf6aa943a1d1e866426b2651))
+
 ## [1.19.1](https://github.com/roalcantara/dots/compare/v1.19.0...v1.19.1) (2025-10-23)
 
 
