@@ -22,7 +22,6 @@ com.getpostman.Postman
 io.github.shiftey.Desktop
 
 # Browsers
-org.mozilla.firefox
 org.chromium.Chromium
 com.brave.Browser
 
