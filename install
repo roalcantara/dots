@@ -374,6 +374,10 @@ task_add_packages_from_snap() {
 task_add_packages_from_apt() {
   local apps_file="${1:-${PACKAGES[apt]}}"
   local indent="${2:-}"
+  local cmd_prefix=""
+  if needs_sudo || is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
 
   info "${indent}Checking APT applications from '$apps_file'"
   if [ ! -f "$apps_file" ]; then
@@ -381,13 +385,49 @@ task_add_packages_from_apt() {
     return 0
   fi
 
-  local cmd_prefix=""
-  if needs_sudo || is_container || is_devcontainer; then
-    cmd_prefix="sudo "
+  # Update package lists first
+  info "${indent}Updating APT package lists..."
+  run_cmd ${cmd_prefix}apt-get update -y
+
+  local installed=0
+  local failed=0
+  local packages_to_install=()
+
+  # Collect packages to install
+  while IFS= read -r line || [ -n "$line" ]; do
+    # Skip comments and empty lines
+    [[ "$line" =~ ^#.*$ ]] && continue
+    [[ -z "$line" ]] && continue
+
+    local app_name=$(echo "$line" | awk '{print $1}')
+
+    # Check if already installed
+    if dpkg -l 2>/dev/null | grep -q "^ii  $app_name "; then
+      info "${indent}  ✓ $app_name (already installed)"
+      ((installed++))
+    else
+      packages_to_install+=("$app_name")
+    fi
+  done < "$apps_file"
+
+  # Install packages in batch
+  if [ ${#packages_to_install[@]} -gt 0 ]; then
+    info "${indent}Installing ${#packages_to_install[@]} APT packages..."
+    if ${cmd_prefix}apt-get install -y "${packages_to_install[@]}"; then
+      info "${indent}✓ All packages installed successfully"
+      ((installed += ${#packages_to_install[@]}))
+    else
+      warn "${indent}✗ Some packages failed to install"
+      ((failed += ${#packages_to_install[@]}))
+    fi
   fi
-  run_cmd ${cmd_prefix}xargs -a "$apps_file" ${cmd_prefix}apt-get install -y --no-install-recommends && ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/* && ${cmd_prefix}fc-cache -f -v
+
+  # Cleanup and show installed packages
+  info "${indent}Cleaning up APT cache..."
+  run_cmd ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/* && ${cmd_prefix}fc-cache -f -v
+  info "${indent}Installed APT packages:"
   run_cmd ${cmd_prefix}dpkg -l | awk '/^ii/ {print $2}'
-  ok "${indent}" "APT" "APT apps installed from '$apps_file'! ✔"
+  ok "${indent}" "APT" "APT apps installed: $installed, failed: $failed ✔"
 }
 task_add_linux_docker_desktop() {
   local indent="${1:-}"
