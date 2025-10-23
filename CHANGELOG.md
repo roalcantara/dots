@@ -1,3 +1,17 @@
+# [1.19.0](https://github.com/roalcantara/dots/compare/v1.18.0...v1.19.0) (2025-10-23)
+
+
+### Bug Fixes
+
+* **install:** Remove Firefox from Flatpak requirements ([126d3c5](https://github.com/roalcantara/dots/commit/126d3c5382438d6df3523965f438229be626ecc2))
+
+
+### Features
+
+* **install:** Add snapcraft to snap development tools ([daf4171](https://github.com/roalcantara/dots/commit/daf41718a25f9ee4bd97b38633781404a3111f60))
+* **install:** Enhance APT package installation process ([ce8052c](https://github.com/roalcantara/dots/commit/ce8052cb8dab6b569b663f30642225f246322c36))
+* **install:** Enhance Docker Desktop installation script ([b9e765e](https://github.com/roalcantara/dots/commit/b9e765e3c6786afe67b545ebd5fed71e300238e4))
+
 # [1.18.0](https://github.com/roalcantara/dots/compare/v1.17.0...v1.18.0) (2025-10-23)
 
 
