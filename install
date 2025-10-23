@@ -366,6 +366,7 @@ task_add_packages_from_snap() {
       fi
     fi
   done < "$apps_file"
+  run_cmd ${cmd_prefix}snap refresh
   info "${indent}Installed Snap apps:"
   run_cmd ${cmd_prefix} snap list
   ok "${indent}" "SNAP" "Snap apps installed: $installed, failed: $failed ✔"

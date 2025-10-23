@@ -13,6 +13,7 @@
 #########################################################################
 
 # Development Tools (Classic confinement needed for full system access)
+snapcraft --classic
 ghostty --classic
 
 # Add more snap-specific apps here as needed
