@@ -126,6 +126,14 @@
   export GOPATH=${GOPATH:-$XDG_DATA_HOME/go}
 # }
 
+# PUPPETEER | https://pptr.dev/api/puppeteer.configuration {
+  export PUPPETEER_CONFIG=${PUPPETEER_CONFIG:-$XDG_CONFIG_HOME/puppeter/config.yml}
+  export PUPPETEER_CACHE_DIR=${PUPPETEER_CACHE_DIR:-$XDG_CACHE_HOME/puppeteer}
+  export PUPPETEER_TMP_DIR=${PUPPETEER_TMP_DIR:-$XDG_DATA_HOME/puppeteer}
+  export PUPPETEER_SKIP_DOWNLOAD=false
+  export PUPPETEER_TIMEOUT=30000
+# }
+
 # GOPASS | https://gopass.pw {
   # The missing password manager for teams | Load API keys from gopass if available
   # WITHOUT ==> dots zsh --prof avg => │ USER:40ms  │ SYSTEM:20ms │ CPU:91% │ TOTAL:69ms │
