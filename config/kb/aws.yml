@@ -1,48 +1,142 @@
+bookmarks:
+  https://catalog.workshops.aws/complete-aws-sam/en-US:
+    desc: Complete AWS SAM Workshop - A comprehensive workshop that covers building, testing, and deploying serverless applications using AWS SAM.
+    tags: [aws, sam, serverless, workshop]
+  https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode:
+    desc: AWS Toolkit for Visual Studio Code - An open source plug-in that makes it easier to create, debug, and deploy applications on AWS from Visual Studio Code.
+    tags: [aws, vscode, toolkit]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html:
+    desc: AWS Serverless Application Model (SAM) - An open-source framework for building serverless applications.
+    tags: [aws, sam, serverless]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-test-and-debug.html:
+    desc: Testing and Debugging Serverless Applications - Guide on how to test and debug serverless applications built with AWS SAM.
+    tags: [aws, sam, serverless, testing, debugging]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-api.html:
+    desc: SAM CLI Command Reference - sam local start-api - Documentation for the 'sam local start-api' command used to run a local API Gateway from a SAM template.
+    tags: [aws, sam, serverless, cli]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-invoke.html:
+    desc: SAM CLI Command Reference - sam local invoke - Documentation for the 'sam local invoke' command used to invoke a Lambda function locally.
+    tags: [aws, sam, serverless, cli]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-init.html:
+    desc: Using the SAM CLI to Initialize a New Application - Guide on how to use the SAM CLI to create a new serverless application.
+    tags: [aws, sam, serverless, cli]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html:
+    desc: Getting Started with AWS SAM - Hello World Example - A step-by-step guide to building a simple "Hello World" serverless application using AWS SAM.
+    tags: [aws, sam, serverless, getting started]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-remote-invoke.html:
+    desc: Using the SAM CLI to Invoke Functions Remotely - Guide on how to use the SAM CLI to invoke Lambda functions deployed in AWS.
+    tags: [aws, sam, serverless, cli]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-remote-test-event.html:
+    desc: Using the SAM CLI to Test Events Remotely - Guide on how to use the SAM CLI to test events for Lambda functions deployed in AWS.
+    tags: [aws, sam, serverless, cli]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-invoke.html:
+    desc: Using the SAM CLI 'invoke' Command - Documentation on how to use the 'sam invoke' command to invoke Lambda functions.
+    tags: [aws, sam, serverless, cli]
+  https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/serverless-apps-run-debug-no-template.html:
+    desc: Running and Debugging Serverless Applications without a Template - Guide on how to run and debug serverless applications in Visual Studio Code without a SAM template.
+    tags: [aws, sam, serverless, vscode, debugging]
+  https://levelup.gitconnected.com/creating-an-aws-sam-cli-project-with-typescript-and-both-types-of-layers-dependencies-and-34da5efdaec8:
+    desc: Creating an AWS SAM CLI Project with TypeScript and Both Types of Layers - A tutorial on setting up an AWS SAM project using TypeScript and layers.
+    tags: [aws, sam, serverless, typescript]
+  # https://localstack.cloud
+  https://flox.dev/popular-packages/building-and-debugging-aws-workflows-locally-with-flox-localstack-and-colima:
+    desc: Building and Debugging AWS Workflows Locally with Flox, LocalStack, and Colima - A guide on how to use Flox along with LocalStack and Colima for local AWS workflow development.
+    tags: [aws, localstack, flox]
+  https://localstack.cloud:
+    desc: LocalStack - A fully functional local AWS cloud stack that allows you to develop and test your cloud applications offline. Docker is required!
+    tags: [aws, localstack]
+    links:
+      - https://blog.localstack.cloud
+      - https://marketplace.visualstudio.com/items?itemName=LocalStack.localstack
+      - https://docs.localstack.cloud/aws/tutorials/lambda-ecr-container-images
+      - https://docs.localstack.cloud/aws/integrations/containers/devcontainers
+      - https://docs.localstack.cloud/aws/getting-started/quickstart
+      - https://blog.localstack.cloud/aws-toolkit-vscode-localstack
+  https://docs.localstack.cloud/aws/tutorials/lambda-ecr-container-images:
+    desc: AWS Lambda with ECR Container Images - A tutorial on how to use AWS Lambda with container images stored in Amazon ECR using LocalStack.
+    tags: [aws, localstack, lambda]
+  https://docs.localstack.cloud/aws/integrations/containers/devcontainers:
+    desc: Developing AWS Applications with DevContainers in LocalStack - Guide on how to set up and use DevContainers for AWS application development with LocalStack.
+    tags: [aws, localstack, devcontainers]
 commands:
   cat ~/.aws/config:
     desc: Used by the AWS command-line interface (CLI) to store configuration settings for AWS profiles
     tags: [aws, configure, profiles]
-
   cat ~/.aws/credentials:
     desc: Used by the AWS Command Line Interface (CLI) and SDKs to store the access key and secret access key for authenticating AWS API requests.
     tags: [aws, configure, profiles]
-
   aws configure list:
     desc: List the current configuration values for AWS CLI
     tags: [aws, configure, profiles]
-
   aws configure --profile <profile_name>:
     desc: Configure the AWS CLI with a named profile
     tags: [aws, configure, profiles]
-
   aws configure list-profiles:
     desc: List the available profiles configured in the AWS CLI. It requires ACCESS_KEY_ID, SECRET_ACCESS_KEY and REGION
     tags: [aws, configure, profiles]
-
   aws iam list-policies:
     desc: List all IAM policies in the current account
     tags: [aws, iam, policies]
-
   aws iam list-policies --output yaml:
     desc: List all IAM policies in the current account in YAML format
     tags: [aws, iam, policies]
-
   aws lambda list-functions --output yaml:
     desc: List all Lambda functions in the current account in YAML format
     tags: [aws, lambda, functions]
-
   aws secretsmanager list-secrets:
     desc: List all secrets in the current account
     tags: [aws, secretsmanager, secrets]
-
   aws secretsmanager list-secrets --max-results 10:
     desc: List the first 10 secrets in the current account
     tags: [aws, secretsmanager, secrets]
-
   aws secretsmanager list-secrets --filters Key=tag-key,Values=example-key:
     desc: List all secrets in the current account that have a tag with the key 'example-key'
     tags: [aws, secretsmanager, secrets]
-
   aws secretsmanager list-secrets --query "SecretList[*].Name":
     desc: List the names of all secrets in the current account
     tags: [aws, secretsmanager, secrets]
+  # https://localstack.cloud
+  brew install localstack/tap/localstack-cli:
+    desc: Install the LocalStack CLI using Homebrew
+    tags: [aws, localstack]
+  localstack start:
+    desc: Start the LocalStack services
+    tags: [aws, localstack]
+cheats:
+  Starting LocalStack with Docker-ComposeSection:
+    desc: A sample Docker-Compose configuration to start LocalStack with essential services.
+    tags: [aws, localstack, docker]
+    links:
+      - https://docs.localstack.cloud/aws/getting-started/installation
+      - https://docs.localstack.cloud/aws/getting-started/quickstart
+    notes:
+      - sh: | #shell
+          !#/bin/bash
+          # 1. Before starting LocalStack, ensure you have Docker installed and running.
+          docker --version
+          # 2. Then get your LOCALSTACK_AUTH_TOKEN
+          open https://app.localstack.cloud/workspace/auth-tokens
+          # 3. export LOCALSTACK_AUTH_TOKEN=<your_auth_token_here>
+      - dockercompose: | #dockercompose
+          services:
+            localstack:
+              container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+              image: localstack/localstack
+              ports:
+                - "127.0.0.1:4566:4566"            # LocalStack Gateway
+                - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+              environment:
+                # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+                - DEBUG=${DEBUG:-0}
+              volumes:
+                - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+                - "/var/run/docker.sock:/var/run/docker.sock"
+      - sh: | #shell
+          # pulls the LocalStack nightly build from the main branch
+          docker compose up
+          # Or start LocalStack in Docker Container directly
+          docker run --rm -it -p 127.0.0.1:4566:4566 -p 127.0.0.1:4510-4559:4510-4559 -v /var/run/docker.sock:/var/run/docker.sock localstack/localstack
+          # Validate your environment
+          localstack config validate
+          # View the LocalStack logs
+          localstack logs

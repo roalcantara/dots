@@ -1,4 +1,718 @@
 commands:
+  # revealjs
+  flox install revea-md:
+    desc: Install revea-md
+    tags: [revealjs, presentation, cli]
+    links:
+      - Website: https://reveal-md.github.io
+      - Official Repository: https://github.com/webpro/reveal-md
+      - Reveal.js Documentation: https://revealjs.com
+      - Markdown Guide: https://markdownguide.org
+      - HTML Presentation Framework (1/6): https://youtu.be/a6ioNtv2H-E
+    notes:
+      - md: | #markdown
+          ## 🚀 QUICK START (5 minutes)
+
+          ### STEP 1: Install reveal-md (via Flox)
+
+          ```bash
+          flox install reveal-md
+          ```
+
+          ### STEP 2: Create a Simple Presentation
+
+          ```bash
+          mkdir -p ~/presentations
+          cd ~/presentations
+
+          # Create a simple presentation file
+          cat > SIMPLE.md << 'EOF'
+          # My First Presentation
+
+          ---
+
+          ## Slide 2: Basic Content
+
+          This is a simple slide with text.
+
+          ---
+
+          ## Slide 3: Lists
+
+          - Point 1
+          - Point 2
+          - Point 3
+
+          ---
+
+          ## Slide 4: Code
+
+          ```javascript
+          console.log("Hello, Reveal.js!");
+          ```
+
+          ---
+
+          ## Thank You!
+
+          Questions?
+          EOF
+          ```
+
+          ### STEP 3: View the Presentation
+          ```bash
+          # Open in browser (auto-opens at http://localhost:1948)
+          reveal-md SIMPLE.md
+
+          # Or specify theme
+          reveal-md SIMPLE.md --theme black
+          ```
+
+          **Controls:**
+          - Arrow keys or Space: Navigate slides
+          - ESC: Overview mode
+          - S: Speaker notes
+          - B: Black screen
+
+          ---
+
+          ## 📋 CONFIGURATION FILE (Optional but Recommended)
+
+          ### Create Config Directory
+          ```bash
+          mkdir -p ~/.config/reveal-md
+          ```
+
+          ### Create Config File
+          ```bash
+          cat > ~/.config/reveal-md/config.yml << 'EOF'
+          # Reveal-MD Configuration
+
+          # Default theme (black, white, league, sky, beige, simple, serif, blood, night, moon, solarized)
+          theme: black
+
+          # Slide separator (horizontal line between slides)
+          separator: "---"
+
+          # Vertical separator (for nested/vertical slides)
+          verticalSeparator: "----"
+
+          # Highlight theme for code blocks
+          highlightTheme: zenburn
+
+          # Presentation title
+          title: "My Presentation"
+
+          # Use reveal.js scroll view
+          # view: scroll
+
+          # Auto-open browser
+          disableAutoOpen: false
+
+          # Default host and port
+          host: localhost
+          port: 1948
+
+          # Features to enable
+          features:
+            overview: true
+            notes: true
+            controls: true
+            progress: true
+            history: true
+          EOF
+          ```
+
+          ### Use Config File
+          ```bash
+          reveal-md SIMPLE.md --config ~/.config/reveal-md/config.yml
+          ```
+
+          ---
+
+          ## 📝 SIMPLE PRESENTATION (5 slides)
+
+          ### Create File
+          ```bash
+          cat > SIMPLE.md << 'EOF'
+          # Simple Presentation
+
+          Welcome to Reveal-MD!
+
+          ---
+
+          ## Slide 2: Key Points
+
+          - Point 1: Important information
+          - Point 2: Another key point
+          - Point 3: Final thought
+
+          ---
+
+          ## Slide 3: Code Example
+
+          ```javascript
+          function hello() {
+            console.log("Hello, World!");
+          }
+          ```
+
+          ---
+
+          ## Slide 4: Quote
+
+          > "The best way to predict the future is to invent it."
+          > — Alan Kay
+
+          ---
+
+          ## Thank You!
+
+          Questions?
+          EOF
+          ```
+
+          ### View It
+          ```bash
+          reveal-md SIMPLE.md
+          ```
+
+          ---
+
+          ## 🎨 COMPLETE PRESENTATION (All Features)
+
+          ### Create Comprehensive File
+          ```bash
+          cat > COMPLETE.md << 'EOF'
+          # Complete Reveal-MD Presentation
+
+          A comprehensive guide to all Reveal-MD features
+
+          ---
+
+          ## Slide 2: Text Formatting
+
+          You can use **bold**, *italic*, and `code` in your slides.
+
+          You can also use ~~strikethrough~~ text.
+
+          ---
+
+          ## Slide 3: Headings
+
+          # Large Heading (H1)
+
+          ## Medium Heading (H2)
+
+          ### Small Heading (H3)
+
+          ---
+
+          ## Slide 4: Unordered Lists
+
+          - First item
+          - Second item
+            - Nested item
+            - Another nested item
+          - Third item
+
+          ---
+
+          ## Slide 5: Ordered Lists
+
+          1. First step
+          2. Second step
+          3. Third step
+            1. Sub-step A
+            2. Sub-step B
+          4. Fourth step
+
+          ---
+
+          ## Slide 6: Images
+
+          ![Sample Image](https://via.placeholder.com/400x200)
+
+          Note: Use external URLs or local image paths
+
+          ---
+
+          ## Slide 7: Code Blocks (JavaScript)
+
+          ```javascript
+          function calculateSum(a, b) {
+            return a + b;
+          }
+
+          const result = calculateSum(5, 3);
+          console.log(result); // Output: 8
+          ```
+
+          ---
+
+          ## Slide 8: Code Blocks (Python)
+
+          ```python
+          def calculate_sum(a, b):
+              return a + b
+
+          result = calculate_sum(5, 3)
+          print(result)  # Output: 8
+          ```
+
+          ---
+
+          ## Slide 9: Code Blocks (Bash)
+
+          ```bash
+          #!/bin/bash
+
+          echo "Hello, World!"
+          cd ~/presentations
+          ls -la COMPLETE.md
+          ```
+
+          ---
+
+          ## Slide 10: Blockquotes
+
+          > "The only way to do great work is to love what you do."
+          > — Steve Jobs
+
+          ---
+
+          ## Slide 11: Horizontal Rule
+
+          This is a paragraph.
+
+          ---
+
+          This is after a horizontal rule (created by --- on its own line with blank lines around it).
+
+          ---
+
+          ## Slide 12: Tables
+
+          | Feature | Status | Priority |
+          |---------|--------|----------|
+          | Feature A | ✅ Done | High |
+          | Feature B | 🔄 In Progress | Medium |
+          | Feature C | ❌ Not Started | Low |
+
+          ---
+
+          ## Slide 13: Links
+
+          [Visit GitHub](https://github.com)
+
+          [View my portfolio](https://example.com)
+
+          ---
+
+          ## Slide 14: Mixed Content
+
+          ### Title
+
+          Some introductory text here.
+
+          ```javascript
+          const greeting = "Hello!";
+          ```
+
+          - List item 1
+          - List item 2
+
+          ---
+
+          ## Slide 15: Speaker Notes
+
+          This slide demonstrates speaker notes.
+
+          Note: These notes are only visible in speaker view (press 's' to toggle).
+          You can add private notes here that won't show to the audience.
+
+          ---
+
+          ## Slide 16: Vertical Slides (Nested)
+
+          This is a main slide.
+
+          Click down arrow to see nested slides →
+
+          ----
+
+          ### Vertical Slide 16.1
+
+          This is nested under the previous slide
+
+          ---
+
+          ## Slide 17: Highlight Syntax
+
+          ```javascript
+          // Line 1
+          const x = 10;  // Line 2
+          console.log(x); // Line 3
+          ```
+
+          ---
+
+          ## Slide 18: Special Characters
+
+          © 2024 | License: MIT | Version: 1.0
+
+          Symbols: → ← ↑ ↓ • ◦ ★ ✓ ✗ ⚠ ❌ ✅
+
+          ---
+
+          ## Slide 19: Emoji Support 🎉
+
+          🎬 Presentations
+          💻 Code
+          🚀 Deployment
+          ✨ Features
+          🎨 Design
+
+          ---
+
+          ## Slide 20: Thank You
+
+          # Thank You!
+
+          **Questions?**
+
+          Contact: your-email@example.com
+
+          ---
+
+          EOF
+          ```
+
+          ### View Complete Presentation
+          ```bash
+          reveal-md COMPLETE.md
+          ```
+
+          ---
+
+          ## 🎯 COMMON REVEAL-MD COMMANDS
+
+          ### View with Different Theme
+          ```bash
+          # Available themes: black, white, league, sky, beige, simple, serif, blood, night, moon, solarized
+
+          reveal-md SIMPLE.md --theme white
+          reveal-md SIMPLE.md --theme league
+          reveal-md SIMPLE.md --theme sky
+          ```
+
+          ### Watch for Changes (Auto-reload)
+          ```bash
+          # Watches for file changes and auto-reloads browser
+          reveal-md SIMPLE.md --watch
+          ```
+
+          ### Change Port
+          ```bash
+          # Default is 1948
+          reveal-md SIMPLE.md --port 3000
+          ```
+
+          ### Change Host
+          ```bash
+          # Useful for network presentation
+          reveal-md SIMPLE.md --host 0.0.0.0
+          ```
+
+          ### Export to Static HTML
+          ```bash
+          # Creates _static/ directory with HTML
+          reveal-md SIMPLE.md --static
+
+          # Specify output directory
+          reveal-md SIMPLE.md --static ./output
+          ```
+
+          ### Print to PDF
+          ```bash
+          # Requires Chromium (can be installed via Flox)
+          reveal-md SIMPLE.md --print presentation.pdf
+          ```
+
+          ### Add Custom CSS
+          ```bash
+          reveal-md SIMPLE.md --css custom.css
+          ```
+
+          ### Use Custom Template
+          ```bash
+          reveal-md SIMPLE.md --template my-template.html
+          ```
+
+          ---
+
+          ## 🔧 USEFUL SNIPPETS
+
+          ### Full Command with Common Options
+          ```bash
+          reveal-md SIMPLE.md \
+            --theme black \
+            --highlight-theme zenburn \
+            --port 1948 \
+            --host localhost \
+            --watch
+          ```
+
+          ### Puppeteer Options (For PDF Export)
+          ```bash
+          # Use system Chromium instead of downloading
+          reveal-md SIMPLE.md \
+            --print presentation.pdf \
+            --puppeteer-chromium-executable /usr/bin/chromium
+          ```
+
+          ### With Preprocessor (Advanced)
+          ```bash
+          reveal-md SIMPLE.md \
+            --preprocessor ./preprocess.js
+          ```
+
+          ---
+
+          ## 📊 SLIDE SEPARATORS GUIDE
+
+          ### Horizontal Slides (Sequential)
+          Use `---` with blank lines above and below:
+          ```markdown
+          # Slide 1
+
+          ---
+
+          # Slide 2
+
+          ---
+
+          # Slide 3
+          ```
+
+          ### Vertical Slides (Nested)
+          Use `----` with blank lines above and below:
+          ```markdown
+          # Main Slide
+
+          Click down to see nested slides →
+
+          ----
+
+          # Nested Slide 1
+
+          ----
+
+          # Nested Slide 2
+
+          ---
+
+          # Back to main level
+          ```
+
+          ---
+
+          ## 💡 PRO TIPS
+
+          ### Tip 1: Use Speaker Notes for Presenter View
+          ```markdown
+          ## My Slide
+
+          Visible content here
+
+          Note: This is only visible in speaker view (press 's')
+          ```
+
+          ### Tip 2: Create a Slides Directory
+          ```bash
+          mkdir -p ~/presentations/slides
+          cd ~/presentations/slides
+
+          # Organize presentations by project
+          mkdir flux-architecture
+          mkdir project-updates
+          ```
+
+          ### Tip 3: Use Reveal-MD with Version Control
+          ```bash
+          cd ~/presentations
+          git init
+          git add COMPLETE.md SIMPLE.md
+          git commit -m "Initial presentations"
+          ```
+
+          ### Tip 4: Create a Makefile for Quick Commands
+          ```bash
+          cat > Makefile << 'EOF'
+          .PHONY: simple complete watch pdf
+
+          simple:
+            reveal-md SIMPLE.md --theme black
+
+          complete:
+            reveal-md COMPLETE.md --theme black
+
+          watch:
+            reveal-md COMPLETE.md --theme black --watch
+
+          pdf:
+            reveal-md COMPLETE.md --print presentation.pdf
+
+          static:
+            reveal-md COMPLETE.md --static ./output
+
+          .PHONY: help
+          help:
+            @echo "make simple    - View simple presentation"
+            @echo "make complete  - View complete presentation"
+            @echo "make watch     - Watch for changes"
+            @echo "make pdf       - Export to PDF"
+            @echo "make static    - Export to static HTML"
+          EOF
+
+          # Now use with:
+          make complete
+          make watch
+          make pdf
+          ```
+
+          ### Tip 5: Copy Presentation Template
+          ```bash
+          # Save a template for future presentations
+          cp COMPLETE.md templates/template.md
+
+          # For new presentation:
+          cp templates/template.md new-presentation.md
+          reveal-md new-presentation.md
+          ```
+
+          ---
+
+          ## 🎨 THEME REFERENCE
+
+          ### Preview Themes
+          ```bash
+          # Test each theme
+          for theme in black white league sky beige simple serif blood night moon solarized; do
+            echo "Testing theme: $theme"
+            reveal-md SIMPLE.md --theme $theme
+          done
+          ```
+
+          ### Popular Combinations
+          ```bash
+          # Modern/Dark
+          reveal-md SIMPLE.md --theme black --highlight-theme zenburn
+
+          # Light/Professional
+          reveal-md SIMPLE.md --theme white --highlight-theme atom-one-light
+
+          # Creative
+          reveal-md SIMPLE.md --theme moon --highlight-theme monokai
+
+          # Minimal
+          reveal-md SIMPLE.md --theme simple --highlight-theme github
+          ```
+
+          ---
+
+          ## 📱 PRESENTATION MODE SHORTCUTS
+
+          | Key | Action |
+          |-----|--------|
+          | Space or → | Next slide |
+          | ← or Shift+Space | Previous slide |
+          | ↓ | Vertical slides (if available) |
+          | ↑ | Up one slide |
+          | ESC | Overview/slide sorter |
+          | S | Speaker notes |
+          | F | Full screen |
+          | B | Black screen |
+          | W | White screen |
+          | ? | Help/keyboard shortcuts |
+
+          ---
+
+          ## 🚀 QUICK WORKFLOW
+
+          ```bash
+          # 1. Create a new presentation
+          cd ~/presentations
+          cat > MY_TALK.md << 'EOF'
+          # My Talk
+
+          ---
+
+          ## Section 1
+
+          Content here
+
+          ---
+
+          ## Section 2
+
+          More content
+          EOF
+
+          # 2. View it with watch mode
+          reveal-md MY_TALK.md --watch
+
+          # 3. Edit in another terminal
+          vi MY_TALK.md
+
+          # 4. Browser auto-refreshes as you save
+
+          # 5. When ready, export
+          reveal-md MY_TALK.md --static ./output
+          # or
+          reveal-md MY_TALK.md --print MY_TALK.pdf
+          ```
+
+          ---
+
+          ## 🎯 FOR YOUR FLUX ARCHITECTURE PRESENTATION
+
+          ### Use reveal-md to present your slides!
+
+          ```bash
+          # Create presentation
+          cat > FLUX-ARCHITECTURE.md << 'EOF'
+          # Flux Architecture v3
+
+          Productive Microservices: Nx + DevContainers + Ephemeral Environments
+
+          ---
+
+          ## Problem
+
+          Currently sharing one AWS environment...
+
+          ---
+
+          ## Solution
+
+          Three pillars: Nx, DevContainers, PR Environments
+
+          ---
+
+          ## Thank You
+
+          Questions?
+          EOF
+
+          # Present it
+          reveal-md FLUX-ARCHITECTURE.md --theme black --watch
+
+          # Export for sharing
+          reveal-md FLUX-ARCHITECTURE.md --static ./flux-presentation
+          reveal-md FLUX-ARCHITECTURE.md --print FLUX-ARCHITECTURE.pdf
+          ```
+
   # pokeget | A command-line utility to get Pokémon information
   # https://github.com/talwat/pokeget-rs
   pokeget charmander:
@@ -892,16 +1606,6 @@ commands:
     tags: [git]
     links:
       - https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch
-  ssh-add --apple-use-keychain ~/.ssh/id_ed25519:
-    desc: Add key to the SSH agent
-    tags: [ssh, keychain]
-    links:
-      - https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch
-  ssh-keygen -t ed25519 -C "rogerio.alcantara@gmail.com" -f ~/.ssh/id_ed25519:
-    desc: Create an SSH key pair
-    tags: [ssh]
-    links:
-      - https://docs.github.com/en/github/authenticating-to-github/about-ssh
 
   /usr/libexec/java_home:
     desc: Print default JDK path
@@ -2321,9 +3025,6 @@ commands:
     tags: [nu]
   'fetch -H[<HEADER_KEY> <HEADER_VALUE>] <URL>':
     desc: Fetch content from <URL>, with custom header
-    tags: [nu]
-  'ssh-agent -c | lines | first 2 | parse "setenv {name} {value};" | transpose -i -r -d | load-env':
-    desc: Manage SSH passphrases
     tags: [nu]
 
   kubectl config view:

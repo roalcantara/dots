@@ -1,3 +1,26 @@
+commands:
+  'ssh-agent -c | lines | first 2 | parse "setenv {name} {value};" | transpose -i -r -d | load-env':
+    desc: Manage SSH passphrases
+    tags: [nu]
+  ssh-add -l:
+    desc: List fingerprints of all identities currently represented by the agent
+    tags: [ssh, list]
+  ssh-add -D:
+    desc: Delete all identities from the agent
+    tags: [ssh, delete]
+  ssh-add --apple-use-keychain ~/.ssh/id_ed25519_github:
+    desc: Add id_ed25519_github key to the SSH agent
+    tags: [ssh, keychain, macos]
+    links: [https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch]
+  ssh-add --apple-use-keychain ~/.ssh/id_ed25519_bitbucket_work:
+    desc: Add id_ed25519_bitbucket_work key to the SSH agent
+    tags: [ssh, keychain, macos]
+    links: [https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch]
+  ssh-keygen -t ed25519 -C "rogerio.alcantara@gmail.com" -f ~/.ssh/id_ed25519:
+    desc: Create an SSH key pair id_ed25519 using the Ed25519 algorithm
+    tags: [ssh]
+    links: [https://docs.github.com/en/github/authenticating-to-github/about-ssh]
+
 cheats:
   Setup dev environment for Bitbucket SSH access:
     desc: Setup dev environment for Bitbucket SSH access on Debian-based Linux

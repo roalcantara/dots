@@ -989,7 +989,7 @@ cheats:
           · Habilidade de comunicação e colaboração com áreas de produto e atendimento a cliente.
 
             ## Desejável:
-            
+
           · Experiência com Cloud Providers (AWS, Azure ou GCP)
           · Conhecimento em observabilidade (monitoramento, logging e tracing)
           · Experiência em transformação digital e modernização de sistemas legados
@@ -1009,7 +1009,7 @@ cheats:
           Forsys - Java Tech Lead
 
           Alphavile - 100% Remota / Americana      - Today, I am grateful for ...
-          - 
+          -
           Silvio
   TLDR:
     desc: TLDR Template
@@ -1141,9 +1141,21 @@ cheats:
             - **References**:
               - Link to advanced tutorial
 commands:
+  flux install bun:
+    desc: Install bun in the current environment
+    tags: [flox]
   cd ~/.config/fabric/patterns; for folder in ../custom/*/; do ln -sf "$folder" "$(basename "$folder")"; done:
-    desc: Create symlinks for custom patterns
-    tags: [ail, tools, util]
-  rm ~/.config/kb/_database.db && cd ~/Work/raycast/arkn && bun run tools/src/migrate-to-sqlite.ts:
-    desc: Migrate to sqlite
-    tags: [ail, tools, util]
+    desc: Symlink custom patterns to fabric patterns folder
+    tags: [symlink]
+  for file in ~/.config/*; do ln -sf "$file" "$(basename "$file")"; done:
+    desc: Symlink each file from ~/.config to current folder
+    tags: [symlink]
+  bun ~/.config/raycast/scripts/bun/src/export-kb-to-sqlite.ts:
+    desc: Migrate to KnowledgeBase Files to SQLite
+    tags: [kb, sqlite]
+  cd ~/Work/dots && mise run build --nocache --local --user 'vscode' --group 'vscode' --tag 'latest':
+    desc: Build Dotfiles Docker image with Mise tagged 'latest'
+    tags: [mise, docker]
+  cd ~/Work/dots && mise run start --tag 'latest':
+    desc: Start Dotfiles Docker Container tagged 'latest' with Mise
+    tags: [mise, docker]
