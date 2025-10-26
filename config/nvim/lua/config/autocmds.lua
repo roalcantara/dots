@@ -239,7 +239,7 @@ require('core/vi/au').setup_autocommands_async({
       event = { 'VimEnter', 'ColorScheme' },
       opts = {
         callback = function()
-          local colors = require("tokyonight.colors").setup()
+          local colors = require('tokyonight.colors').setup()
           vim.api.nvim_set_hl(0, 'UrlOpenHighlight', {
             fg = colors.orange,
             underline = true,
@@ -248,38 +248,6 @@ require('core/vi/au').setup_autocommands_async({
         end,
         desc = 'Set up custom highlight group for URLs',
       },
-    }
-  }
-  -- on_mason_tools_install = {
-  --   {
-  --     event = 'User',
-  --     opts = {
-  --       pattern = { 'MasonToolsStartingInstall' },
-  --       callback = function()
-  --         -- Handle user events emitted by mason in a group whose name starts with "on_on_mason_tools_trigger"
-  --         -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
-  --         -- Handles user event emitted prior installing the first package if there are packages to install.
-  --         Snacks.debug.inspect(string.format("[%s] is starting..", 'mason-tool-installer'))
-  --       end,
-  --       desc = 'Mason: Warns when mason-tool-installer starts to install tools',
-  --     }
-  --   }
-  -- },
-  -- on_mason_tools_completes = {
-  --   {
-  --     event = 'User',
-  --     opts = {
-  --       pattern = { 'MasonToolsUpdateCompleted' },
-  --       callback = function(e)
-  --         -- Handle user events emitted by mason in a group whose name starts with "on_on_mason_tools_trigger"
-  --         -- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim?tab=readme-ov-file#events
-  --         -- Handles user event emitted upon packages installation/update completes.
-  --         if e.data then
-  --           Snacks.debug.inspect(string.format("[%s] done! ===> %s", 'mason-tool-installer', vim.inspect(e.data)))
-  --         end
-  --       end,
-  --       desc = 'Mason: Warns when mason-tool-installer is done installing/updating tools',
-  --     }
-  --   }
-  -- }
+    },
+  },
 })
