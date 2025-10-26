@@ -58,6 +58,9 @@ bookmarks:
   https://docs.localstack.cloud/aws/integrations/containers/devcontainers:
     desc: Developing AWS Applications with DevContainers in LocalStack - Guide on how to set up and use DevContainers for AWS application development with LocalStack.
     tags: [aws, localstack, devcontainers]
+  https://nx.dev/docs/reference/nx-cloud/launch-templates#aws-cli:
+    desc: AWS CLI Launch Template for Nx Cloud - Documentation on how to use the AWS CLI launch template for Nx Cloud.
+    tags: [aws, nx, cli]
 commands:
   cat ~/.aws/config:
     desc: Used by the AWS command-line interface (CLI) to store configuration settings for AWS profiles
