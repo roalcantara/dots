@@ -1,3 +1,18 @@
+# [1.20.0](https://github.com/roalcantara/dots/compare/v1.19.2...v1.20.0) (2025-10-26)
+
+
+### Bug Fixes
+
+* **nvim:** Adjust LSP installation and initialization manually ([94a22a5](https://github.com/roalcantara/dots/commit/94a22a546441c58c2401cadcbd2de168d1abbcea))
+
+
+### Features
+
+* **kb:** Add AWS entries ([4e8cd42](https://github.com/roalcantara/dots/commit/4e8cd4251661422ca0a5b66776a8a921df90db9b))
+* **raycast:** Store Raycast Command Scripts ([1f07a8f](https://github.com/roalcantara/dots/commit/1f07a8f3eb8b80e3cd96206cb42f3fc8161c0660))
+* **vscode:** Update settings.json for improved configuration ([2407b76](https://github.com/roalcantara/dots/commit/2407b761490f876e7a25c5cf96ef28f208b1d5e3))
+* **zsh:** Add Puppeteer configuration variables ([672fe00](https://github.com/roalcantara/dots/commit/672fe00d5d174c350517444b35034d145f872f8d))
+
 ## [1.19.2](https://github.com/roalcantara/dots/compare/v1.19.1...v1.19.2) (2025-10-23)
 
 
