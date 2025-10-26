@@ -505,14 +505,12 @@
     "*.sdb": "${capture}.${extname}-*",
     "*.s3db": "${capture}.${extname}-*"
   },
-  "workbench.productIconTheme": "macos-modern",
   "dotfiles.repository": "https://github.com/roalcantara/dots.git",
   "dotfiles.targetPath": "~/.local/share/dots",
   "dotfiles.installCommand": "install",
   "workbench.editor.revealIfOpen": true,
   "workbench.panel.showLabels": true,
   "workbench.editor.alwaysShowEditorActions": true,
-  "workbench.editor.enablePreview": false,
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.languageDetection": true,
   "workbench.editor.limit.enabled": true,
@@ -793,7 +791,6 @@
   "markdown.preview.scrollEditorWithPreview": true,
   "markdown.suggest.paths.includeWorkspaceHeaderCompletions": "onDoubleHash",
   "markdown.extension.tableFormatter.enabled": true,
-  "markdown.preview.breaks": true,
   "markdown.preview.markEditorSelection": true,
   "markdown.extension.theming.decoration.renderCodeSpan": true,
   "markdown.copyFiles.destination": {
@@ -987,7 +984,7 @@
   "git.openRepositoryInParentFolders": "never",
   "gitlens.views.repositories.files.layout": "list",
   "markdown-mermaid.darkModeTheme": "forest",
-  "markdown-preview-github-styles.darkTheme": "light",
+  "markdown-preview-github-styles.darkTheme": "dark",
   "markdown-preview-github-styles.lightTheme": "dark_dimmed",
   "markdown-preview-github-styles.colorTheme": "dark",
   "npm-outdated.majorUpdateProtection": true,
@@ -1369,7 +1366,6 @@
   "workbench.settings.showAISearchToggle": true,
   "rubyLsp.rubyExecutablePath": "/workspaces/ruby/.devcontainer/devcontainer.json",
   "notebook.formatOnSave.enabled": true,
-  "markdown.occurrencesHighlight.enabled": true,
   "markdown.extension.completion.enabled": true,
   "markdown.extension.print.theme": "dark",
   "markdown.extension.tableFormatter.normalizeIndentation": true,
@@ -1481,5 +1477,15 @@
   "github.copilot.nextEditSuggestions.enabled": true,
   "biome.suggestInstallingGlobally": false,
   "workbench.colorTheme": "Blueberry dark theme",
-  "workbench.iconTheme": "material-icon-theme"
+  "workbench.iconTheme": "material-icon-theme",
+  "vikings-icon-theme.showWelcomeMessage": false,
+  "markdown.marp.diagnostics.slideContentOverflow": true,
+  "markdown.marp.mathTypesetting": "off",
+  "markdown.marp.themes": [
+    "/Users/roalcantara/.config/marp/templates/dracula/dracula/dracula.css"
+  ],
+  "markdown.preferredMdPathExtensionStyle": "auto",
+  "markdown.styles": [
+    "/Users/roalcantara/.config/marp/templates/dracula/dracula/dracula.css"
+  ]
 }
