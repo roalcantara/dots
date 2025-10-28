@@ -1,3 +1,10 @@
+# [1.21.0](https://github.com/roalcantara/dots/compare/v1.20.0...v1.21.0) (2025-10-28)
+
+
+### Features
+
+* **kb:** Add AWS entries ([998d423](https://github.com/roalcantara/dots/commit/998d423e9d380f7ea2ff15c4ad89bc91db3ab115))
+
 # [1.20.0](https://github.com/roalcantara/dots/compare/v1.19.2...v1.20.0) (2025-10-26)
 
 
