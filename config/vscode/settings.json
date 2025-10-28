@@ -1481,11 +1481,5 @@
   "vikings-icon-theme.showWelcomeMessage": false,
   "markdown.marp.diagnostics.slideContentOverflow": true,
   "markdown.marp.mathTypesetting": "off",
-  "markdown.marp.themes": [
-    "/Users/roalcantara/.config/marp/templates/dracula/dracula/dracula.css"
-  ],
-  "markdown.preferredMdPathExtensionStyle": "auto",
-  "markdown.styles": [
-    "/Users/roalcantara/.config/marp/templates/dracula/dracula/dracula.css"
-  ]
+  "markdown.preferredMdPathExtensionStyle": "auto"
 }
