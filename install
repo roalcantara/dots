@@ -230,10 +230,10 @@ task_add_flox_permissions() {
   fi
 }
 task_add_flox() {
-  if is_darwin; then # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.4.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version | wget https://downloads.flox.dev/by-env/stable/osx/flox-1.7.2.aarch64-darwin.pkg -O /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg && flox --version
+  if is_darwin; then # curl -fL https://downloads.flox.dev/by-env/stable/osx/flox-1.7.5.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target /usr/local/bin && rm /tmp/flox.pkg && flox --version
     run_cmd wget "https://downloads.flox.dev/by-env/stable/osx/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-darwin.pkg" -O "/tmp/flox.pkg"
     run_cmd sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg
-  else # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.4.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version | wget https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -O /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
+  else # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.5.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version | wget https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -O /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
     run_cmd wget "https://downloads.flox.dev/by-env/stable/deb/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-linux.deb" -O "/tmp/flox.deb"
     run_cmd sudo dpkg -i /tmp/flox.deb && rm -f /tmp/flox.deb
   fi

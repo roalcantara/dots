@@ -7,11 +7,11 @@ bookmarks:
     tags: [flox]
     links: [https://flox.dev/docs/install-flox/install]
 commands:
-  curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.4.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version:
-    desc: Download and install Flox in a Debian (Arm64) using curl
+  curl -fL https://downloads.flox.dev/by-env/stable/osx/flox-1.7.5.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target /usr/local/bin && rm /tmp/flox.pkg && flox --version:
+    desc: Download and install/update Flox in a Mac (Arm64) using curl
     tags: [flox]
     links: [https://flox.dev/docs/install-flox/install/#__tabbed_1_3]
-  wget -O /tmp/flox.deb https://downloads.flox.dev/by-env/stable/deb/flox-1.7.4.aarch64-linux.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version:
+  wget -O /tmp/flox.deb https://downloads.flox.dev/by-env/stable/deb/flox-1.7.5.aarch64-linux.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version:
     desc: Download and install Flox in a Debian (Arm64) using wget
     tags: [flox]
     links: [https://flox.dev/docs/install-flox/install/#__tabbed_1_3]
