@@ -272,10 +272,11 @@ task_add_packages_from_flatpak() {
     cmd_prefix="sudo "
   fi
   if ! command -v flatpak >/dev/null 2>&1; then
+    export DEBIAN_FRONTEND=noninteractive
     if dpkg -l 2>/dev/null | grep -q gnome-software; then
-      run_cmd DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get update -y && DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get install -y flatpak gnome-software-plugin-flatpak
+      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get install -y flatpak gnome-software-plugin-flatpak
     else
-      run_cmd DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get update -y && DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get install -y flatpak
+      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get install -y flatpak
     fi
     run_cmd ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
     run_cmd flatpak --version
@@ -330,7 +331,8 @@ task_add_packages_from_snap() {
     warn "${indent}Snap apps file not found: '$apps_file' ✗"
     return 0
   fi
-  run_cmd DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get update -y && DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get install -y snapd
+  export DEBIAN_FRONTEND=noninteractive
+  run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get install -y snapd
   run_cmd ${cmd_prefix}apt-get clean && run_cmd ${cmd_prefix}rm -rf /var/lib/apt/lists/*
   # Enable snapd socket and create symlink
   run_cmd ${cmd_prefix}systemctl enable --now snapd.socket
@@ -405,7 +407,8 @@ task_add_packages_from_apt() {
 
   # Update package lists first
   info "${indent}Updating APT package lists..."
-  run_cmd DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get update -y
+  export DEBIAN_FRONTEND=noninteractive
+  run_cmd ${cmd_prefix}apt-get update -y
 
   local installed=0
   local failed=0
@@ -431,7 +434,8 @@ task_add_packages_from_apt() {
   # Install packages in batch
   if [ ${#packages_to_install[@]} -gt 0 ]; then
     info "${indent}Installing ${#packages_to_install[@]} APT packages..."
-    if DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get install -y "${packages_to_install[@]}"; then
+    export DEBIAN_FRONTEND=noninteractive
+    if ${cmd_prefix}apt-get install -y "${packages_to_install[@]}"; then
       info "${indent}✓ All packages installed successfully"
       ((installed += ${#packages_to_install[@]}))
     else
@@ -442,7 +446,8 @@ task_add_packages_from_apt() {
 
   # Cleanup and show installed packages
   info "${indent}Cleaning up APT cache..."
-  run_cmd DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/* && ${cmd_prefix}fc-cache -f -v
+  export DEBIAN_FRONTEND=noninteractive
+  run_cmd ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/* && ${cmd_prefix}fc-cache -f -v
   info "${indent}Installed APT packages:"
   run_cmd ${cmd_prefix}dpkg -l | awk '/^ii/ {print $2}'
   ok "${indent}" "APT" "APT apps installed: $installed, failed: $failed ✔"
@@ -493,7 +498,8 @@ task_add_linux_docker_desktop() {
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-desktop.gpg] ${repo_url} ${VERSION_CODENAME} stable" | \
         sudo tee /etc/apt/sources.list.d/docker-desktop.list > /dev/null
 
-      run_cmd DEBIAN_FRONTEND=noninteractive sudo apt-get update -y
+      export DEBIAN_FRONTEND=noninteractive
+      run_cmd sudo apt-get update -y
       ok "$indent" "DOCKER" "Repository configured! ✔"
     else
       warn "$indent Failed to add Docker Desktop repository"
@@ -504,7 +510,8 @@ task_add_linux_docker_desktop() {
   # Install Docker Desktop
   if ! dpkg -l 2>/dev/null | grep -q docker-desktop; then
     info "$indent Installing Docker Desktop..."
-    if DEBIAN_FRONTEND=noninteractive sudo apt-get install -y docker-desktop; then
+    export DEBIAN_FRONTEND=noninteractive
+    if sudo apt-get install -y docker-desktop; then
       ok "$indent" "DOCKER" "Docker Desktop installed! ✔"
       info "$indent Note: You may need to log out and back in to use Docker Desktop"
     else
@@ -593,11 +600,12 @@ prepare_system_requirements() {
     if needs_sudo || is_container || is_devcontainer; then
       cmd_prefix="sudo "
     fi
+    export DEBIAN_FRONTEND=noninteractive
     if is_host; then
-      run_cmd DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get update -y && DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get upgrade -y && DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get install -y --no-install-recommends sudo git wget unzip ca-certificates gnupg zsh
-      run_cmd ${cmd_prefix}add-apt-repository universe -y && DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get update -y
+      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y && ${cmd_prefix}apt-get install -y --no-install-recommends sudo git wget unzip ca-certificates gnupg zsh
+      run_cmd ${cmd_prefix}add-apt-repository universe -y && ${cmd_prefix}apt-get update -y
     else
-      run_cmd DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get update -y && DEBIAN_FRONTEND=noninteractive ${cmd_prefix}apt-get upgrade -y
+      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y
     fi
     run_cmd ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
     success "$1 System MINIMAL packages installed successfully! ✔"

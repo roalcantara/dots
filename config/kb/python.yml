@@ -446,3 +446,272 @@ cheats:
 
           # 10. Deactivate when done
           deactivate
+  UV - Fast Python Package Manager:
+    desc: The fastest Python package manager, written in Rust
+    tags: [python, uv]
+    notes:
+      - md: | #markdown
+          ### TL;DR: UV - Fast Python Package Manager
+
+          > WHAT IS UV?
+          > UV is a blazing-fast Python package installer and resolver written in Rust.
+          > It replaces pip, pip-tools, and venv with a single unified tool.
+
+          #### KEY PURPOSES:
+          - Install Python packages 10-100x faster than pip
+          - Manage virtual environments
+          - Lock dependencies reproducibly
+          - Handle complex dependency resolution efficiently
+
+          #### MAIN FEATURES:
+          - Lightning-fast package installation (Rust-based)
+          - Replaces pip, venv, and requirements.txt management
+          - Built-in virtual environment management
+          - Lock file support for reproducible installs
+          - Python version management
+          - Workspace support for monorepos
+          - Drop-in pip replacement (mostly compatible)
+      - sh: | #shell
+          #!/bin/bash
+          ################################################################################
+          ## QUICKSTART - INSTALLATION
+          ################################################################################
+
+          # Option 1: Install via curl (recommended)
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+
+          # Option 2: Install via Homebrew (macOS/Linux)
+          brew install uv
+
+          # Option 3: Install via Flox
+          flox install uv
+
+          # Option 4: Install via pip (bootstrap)
+          pip install uv
+
+          # Verify installation
+          uv --version
+      - sh: | #shell
+          #!/bin/bash
+          ################################################################################
+          ## COMMON WORKFLOWS
+          ################################################################################
+
+          # 1. CREATE A NEW PROJECT WITH VIRTUAL ENV
+          # ============================================
+          uv init my_project
+          cd my_project
+          # Creates: pyproject.toml, .python-version, venv/
+
+          # 2. ADD/INSTALL PACKAGES (replaces: pip install)
+          # =================================================
+          # Install single package
+          uv pip install requests
+
+          # Install multiple packages
+          uv pip install requests flask numpy
+
+          # Install with specific version
+          uv pip install "requests==2.31.0"
+
+          # Install from requirements.txt
+          uv pip install -r requirements.txt
+
+          # Install in development mode (editable)
+          uv pip install -e .
+
+          # 3. SYNC DEPENDENCIES (like pip install from lock file)
+          # ========================================================
+          # Install all dependencies from uv.lock
+          uv sync
+
+          # Sync specific dependency group
+          uv sync --group dev
+
+          # 4. LOCK DEPENDENCIES (create reproducible lock file)
+          # ======================================================
+          # Generate uv.lock from pyproject.toml
+          uv lock
+
+          # Update lock file
+          uv lock --upgrade
+
+          # 5. LIST INSTALLED PACKAGES (replaces: pip list)
+          # =================================================
+          uv pip list
+
+          # 6. SHOW PACKAGE INFO (replaces: pip show)
+          # ==========================================
+          uv pip show requests
+
+          # 7. FREEZE DEPENDENCIES (replaces: pip freeze)
+          # ==============================================
+          uv pip freeze
+
+          # Export to requirements.txt
+          uv pip freeze > requirements.txt
+
+          # 8. RUN PYTHON SCRIPTS IN ISOLATED ENVIRONMENT
+          # ===============================================
+          # Run script with auto-installed dependencies
+          uv run script.py
+
+          # Run with specific dependencies
+          uv run --with requests --with flask script.py
+
+          # Run in temporary environment
+          uv run --with pandas python -c "import pandas; print(pandas.__version__)"
+
+          # 9. MANAGE PYTHON VERSIONS (replaces: pyenv)
+          # =============================================
+          # Install Python version
+          uv python install 3.12
+
+          # List available Python versions
+          uv python list
+
+          # Use specific Python version in project
+          echo "3.12" > .python-version
+
+          # 10. WORK WITH VIRTUAL ENVIRONMENTS
+          # ====================================
+          # Create virtual environment
+          uv venv
+
+          # Create with specific Python version
+          uv venv --python 3.11
+
+          # Activate venv (same as standard venv)
+          source .venv/bin/activate  # Linux/macOS
+          # or
+          .venv\Scripts\activate     # Windows
+
+          # 11. REMOVE/UNINSTALL PACKAGES (replaces: pip uninstall)
+          # =========================================================
+          uv pip uninstall requests
+
+          # Remove without confirmation
+          uv pip uninstall -y requests
+
+          # 12. UPGRADE PACKAGES
+          # ====================
+          # Upgrade single package
+          uv pip install --upgrade requests
+
+          # Upgrade all packages
+          uv pip install --upgrade
+
+          # 13. COMPILE REQUIREMENTS (like pip-compile)
+          # =============================================
+          # Compile requirements-in to uv.lock
+          uv pip compile pyproject.toml -o requirements.txt
+
+          # 14. SEARCH PACKAGE INFORMATION
+          # ===============================
+          # Note: uv doesn't have built-in search, use PyPI:
+          # https://pypi.org/
+
+          # But you can check what's available:
+          uv pip index --help
+      - sh: | #shell
+          #!/bin/bash
+          ################################################################################
+          ## DEPENDENCY MANAGEMENT IN pyproject.toml
+          ################################################################################
+
+          # Instead of requirements.txt, use pyproject.toml:
+          cat > pyproject.toml << 'EOF'
+          [project]
+          name = "my-app"
+          version = "0.1.0"
+          dependencies = [
+              "requests>=2.31.0",
+              "flask>=3.0.0",
+          ]
+
+          [project.optional-dependencies]
+          dev = [
+              "pytest>=7.0.0",
+              "black>=23.0.0",
+              "mypy>=1.0.0",
+          ]
+          EOF
+
+          # Install with dev dependencies
+          uv sync --group dev
+      - sh: | #shell
+          #!/bin/bash
+          ################################################################################
+          ## WORKFLOW COMPARISON: pip vs uv
+          ################################################################################
+
+          # OLD WAY (pip)
+          # $ python -m venv venv
+          # $ source venv/bin/activate
+          # $ pip install -r requirements.txt
+          # $ pip freeze > requirements.txt
+          # $ pip install package_name
+
+          # NEW WAY (uv)
+          # $ uv sync              # Does it all!
+          # $ uv pip install package_name
+          # $ uv lock              # Auto-generated lock file
+      - sh: | #shell
+          #!/bin/bash
+          ################################################################################
+          ## PRO TIPS
+          ################################################################################
+
+          # 1. Use uv.lock for reproducible builds (check into git)
+          # Keep uv.lock in version control!
+
+          # 2. Group dependencies by purpose
+          uv sync --group dev --group test
+
+          # 3. Run isolated scripts without polluting your venv
+          uv run --with httpx --with beautifulsoup4 myscript.py
+
+          # 4. Combine with uv run for CI/CD pipelines
+          uv run pytest
+          uv run black .
+          uv run mypy src/
+
+          # 5. Check what changed in dependencies
+          git diff uv.lock
+
+          # 6. Use pyproject.toml for all config (modern Python standard)
+          # Avoid requirements.txt once you migrate
+      - sh: | #shell
+          #!/bin/bash
+          ################################################################################
+          ## COMMON ISSUES & SOLUTIONS
+          ################################################################################
+
+          # Issue: "ModuleNotFoundError" after installing
+          # Solution: Make sure venv is activated or use `uv run`
+
+          # Issue: Package version conflicts
+          # Solution: Use `uv lock --upgrade` to resolve
+          # or: `uv pip install --upgrade package_name`
+
+          # Issue: Different Python versions
+          # Solution: Set .python-version file, then `uv sync`
+
+          # Issue: Slow first installation
+          # Normal! First run caches everything, subsequent runs are instant
+      - sh: | #shell
+          #!/bin/bash
+          ################################################################################
+          ## QUICK REFERENCE
+          ################################################################################
+
+          # uv init <dir>               Create new project
+          # uv sync                     Install all dependencies
+          # uv lock                     Create lock file
+          # uv pip install <pkg>        Install package
+          # uv pip list                 List packages
+          # uv run <script>             Run script with deps
+          # uv venv                     Create virtual environment
+          # uv python install <version> Install Python version
+
+          ################################################################################
