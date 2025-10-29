@@ -288,6 +288,8 @@
       source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
     fi
     export SNACKS_GHOSTTY=true
+  elif [[ "$TERM_PROGRAM" == "vscode" ]] && _has_command code; then
+    source "$(code --locate-shell-integration-path zsh)"
   fi
   export TERM="${TERM:-xterm-256color}"
 # }
