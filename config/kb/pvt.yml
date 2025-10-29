@@ -1,3 +1,51 @@
+bookmarks:
+  https://youtu.be/47zf8kGobfk:
+    desc: Pearl Jam - Animal (Official) | Five Against One!
+    tags: [music, video]
+    notes:
+      - md: | #markdown
+          ## Pearl Jam - Animal (Official)
+
+          ```
+           One, two, three, four, five against one
+           Five, five, against one
+           Said one, two, three, four, five against one
+           Five, five...five, five...five against one
+
+           Torture from you to me
+           Abducted from the street
+           I'd rather be...
+           I'd rather be with...
+           I'd rather be with an animal
+
+           Why would you wanna hurt me?
+           So frightened of your pain...
+           I'd rather be...
+           I'd rather be with...
+           I'd rather be with an animal
+           I'd rather be...
+           I'd rather be...
+           I'd rather be with an animal
+
+           I'd rather be...
+           I'd rather be with...
+           I'd rather be with an animal
+           I'd rather be...
+           I'd rather be with...
+           I'd rather be with an animal
+
+           Said one, two, three, four, five against one
+           Five, five...five, five...five against one
+           One, two, three, four, five against one
+           Five, five...five, five...five against one
+          ```
+    links:
+      - 68d602abec613: https://bit.ly/3LzyxWc
+      - 6521776fa5f82: https://bit.ly/4oI1q0S
+      - 68c2ef3905b72: https://bit.ly/4nwMmSX
+      - 686c7905e64c2: https://bit.ly/4hxRrZN
+      - 6645d7ca17cf6: https://bit.ly/4hwa9kx
+
 cheats:
   Software Developer (short version):
     desc: Resume
@@ -1140,6 +1188,7 @@ cheats:
               - Related concepts to explore
             - **References**:
               - Link to advanced tutorial
+
 commands:
   flux install bun:
     desc: Install bun in the current environment

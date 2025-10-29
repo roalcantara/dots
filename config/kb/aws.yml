@@ -143,3 +143,167 @@ cheats:
           localstack config validate
           # View the LocalStack logs
           localstack logs
+  SAM (Serverless Application Model) CLI - Initialize, Build, and Test a Serverless Application:
+    desc: A step-by-step guide to initialize, build, and test a serverless application using the AWS SAM CLI.
+    tags: [aws, sam, serverless, cli]
+    links:
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-init.html
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-test-and-debug.html
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          # ============================================
+          # INSTALLATION
+          # ============================================
+
+          # Via Homebrew
+          brew tap aws/tap && brew install aws-sam-cli
+
+          # Via Flox
+          flox install aws-sam-cli
+
+          # Verify
+          sam --version
+
+
+          # ============================================
+          # ONE-TIME SETUP
+          # ============================================
+
+          # Configure AWS credentials
+          aws configure
+
+          # For LocalStack (local development)
+          export AWS_ACCESS_KEY_ID="test"
+          export AWS_SECRET_ACCESS_KEY="test"
+          export AWS_ENDPOINT_URL="http://localhost:4566"
+
+          # Verify credentials work
+          aws sts get-caller-identity
+
+
+          # ============================================
+          # COMMON WORKFLOWS
+          # ============================================
+
+          # 1. CREATE NEW PROJECT
+          sam init --runtime nodejs20.x --name my-lambda-app
+
+          # 2. BUILD
+          sam build
+
+          # 3. TEST LOCALLY (HTTP)
+          sam local start-api
+          # Then: curl http://localhost:3000/hello
+
+          # 4. TEST LOCALLY (Invoke function directly)
+          sam local invoke MyFunction -e events/event.json
+
+          # 5. DEPLOY (First time - interactive)
+          sam deploy --guided
+          # Saves settings to samconfig.toml
+
+          # 6. DEPLOY (Subsequent times - quick)
+          sam deploy
+
+          # 7. VIEW LOGS (real-time)
+          sam logs -n MyFunction --stack-name my-stack --tail
+
+          # 8. UPDATE CODE AND REDEPLOY
+          # 1. Edit code
+          # 2. sam build
+          # 3. sam deploy
+
+          # 9. DELETE EVERYTHING
+          sam delete --stack-name my-stack
+
+
+          # ============================================
+          # DEPLOY TO LOCALSTACK (Local AWS)
+          # ============================================
+
+          sam build
+
+          sam deploy \
+            --stack-name my-stack-local \
+            --endpoint-url http://localhost:4566 \
+            --region us-east-1 \
+            --no-confirm-changeset
+
+
+          # ============================================
+          # VALIDATE & PACKAGE
+          # ============================================
+
+          # Check if template is valid
+          sam validate --template template.yaml
+
+          # Package to S3 (if manual deployment)
+          sam package \
+            --template-file template.yaml \
+            --s3-bucket my-bucket \
+            --output-template-file packaged.yaml
+
+
+          # ============================================
+          # USEFUL FLAGS
+          # ============================================
+
+          sam local invoke --debug              # Debug mode
+          sam local start-api --port 8080       # Custom port
+          sam deploy --no-confirm-changeset     # Skip confirmation
+          sam logs --tail                        # Follow logs
+          sam logs --filter "ERROR"              # Filter logs
+
+
+          # ============================================
+          # REAL-WORLD WORKFLOW
+          # ============================================
+
+          # 1. Create
+          sam init --runtime nodejs20.x --name flux-auth
+
+          # 2. Code (edit src/handlers/index.ts)
+          vim src/handlers/index.ts
+
+          # 3. Test locally
+          sam build
+          sam local start-api
+          # Test in another terminal: curl http://localhost:3000/hello
+
+          # 4. Deploy to AWS
+          sam deploy --guided
+
+          # 5. Monitor
+          sam logs -n MyFunction --stack-name my-stack --tail
+
+          # 6. Update? Go to step 2, then: sam build && sam deploy
+
+
+          # ============================================
+          # DAILY ONE-LINERS
+          # ============================================
+
+          sam build                                    # Build only
+          sam local start-api                          # Test HTTP locally
+          sam local invoke MyFunction                  # Test function directly
+          sam deploy                                   # Deploy (uses samconfig.toml)
+          sam logs -n MyFunction --tail                # Watch logs
+          sam delete --stack-name my-stack             # Clean up
+          ```
+
+          ---
+
+          ## 📋 Template Structure (What SAM Expects)
+          ```
+          project/
+          ├── template.yaml              # ← SAM configuration (required)
+          ├── samconfig.toml             # ← Settings (auto-created)
+          ├── src/
+          │   └── handlers/
+          │       └── index.ts           # Lambda code
+          ├── tests/
+          │   └── unit.spec.ts
+          └── package.json
