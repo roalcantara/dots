@@ -55,7 +55,7 @@ font-thicken-strength = 50
 # https://ghostty.org/docs/config/reference#font-feature
 # font-feature = "'cv01', 'cv02', 'cv06', 'cv09', 'cv13', 'cv14', 'cv17', 'cv22', 'cv25', 'cv26', 'cv28', 'cv29', 'cv30', 'cv31', 'cv32', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss09', 'ss10', 'zero', 'onum'"
 # font-feature = "'ss01', 'ss02', 'ss03', 'ss19', 'ss20', 'calt'"
-font-feature = '+calt, +liga, +dlig, +rclt, +ss20, +zero, +ccmp'
+font-feature = "+calt, +liga, +dlig, +rclt, +ss20, +zero, +ccmp"
 # All of the configurations behavior adjust various metrics determined by the font
 # https://ghostty.org/docs/config/reference#adjust-cell-height
 adjust-cell-height = 10
@@ -74,7 +74,7 @@ adjust-cell-height = 10
 # A theme to use. It can be a built-in theme name, a custom theme name, or an absolute path to a custom theme file.
 # Some themes are "Ayu Mirage" "Andromeda" "catppuccin-macchiato" "catppuccin-mocha" "catppuccin-frappe" "Kanagawa Wave" "tokyonight_moon"
 # https://ghostty.org/docs/config/reference#theme
-theme = TokyoNight
+theme = "TokyoNight"
 # Color palette for the 256 colors used by many terminal apps (https://ditig.com/256-colors-cheat-sheet). It is defined as N=COLOR where:
 # - N is 0-255 of the terminal color table. It can be decimal (default), binary (0b), octal (0o), or hexadecimal (0x).
 # - COLOR is a typical RGB color code such as #AABBCC or AABBCC, or a named X11 color
@@ -88,7 +88,7 @@ theme = TokyoNight
 # Background color for the window. Specified as either hex (#RRGGBB or RRGGBB) or a named X11 color
 # List of 256 colors for Xterm prompt: https://ditig.com/256-colors-cheat-sheet
 # https://ghostty.org/docs/config/reference#background
-background = #1D212F
+background = "#1D212F"
 # Foreground color for selection. Specified as either hex (#RRGGBB or RRGGBB) or a named X11 color.
 # If this is not set, then the selection color is just the inverted window foreground. NOTE: not to be confused with the cell fg
 # List of 256 colors for Xterm prompt: https://ditig.com/256-colors-cheat-sheet
