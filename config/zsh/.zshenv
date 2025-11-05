@@ -90,10 +90,11 @@ export HISTFILE=$HOME/.local/share/zsh/.zsh_history
 export ZSH_CACHE_DIR=$HOME/.cache/zsh
 export ZSH_COMPCACHE=$HOME/.cache/zsh/compcache
 export ZSH_COMPDUMP=$HOME/.cache/zsh/compcache/.zcompdump
+export ZIM_HOME=$HOME/.local/state/zim
+mkdir -p $ZSH_DATA_DIR $ZSH_COMPCACHE $ZIM_HOME
 export zdumpfile=$HOME/.cache/zsh/compcache/.zcompdump
 export ZDOTDIR_ETC=$HOME/.config/zsh/etc
 export ZDOTDIR_OPT=$HOME/.config/zsh/opt
-export ZIM_HOME=$HOME/.local/state/zim
 # }
 
 # if .zprofile exists, source it (after XDG setup so ZDOTDIR is available)

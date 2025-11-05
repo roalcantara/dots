@@ -119,8 +119,11 @@
   # }
 
   # HISTORY | http://zsh.sourceforge.io/Doc/Release/Options.html#History
+  HISTSIZE=${HISTSIZE:-10000}    # Maximum number of commands to keep in memory
+  SAVEHIST=${SAVEHIST:-10000}    # Maximum number of commands to save to history file
   setopt bang_hist              # Treat the `!` character specially during expansion => `!ls` will execute `ls`
   setopt extended_history       # Save each command's beginning timestamp and the duration => `history` will print `beginning_timestamp duration command`
+  setopt inc_append_history     # Append history incrementally (after each command) rather than only at shell exit
   setopt hist_expire_dups_first # When trimming history, remove duplicates and commands that begin with a space => `history -c` will remove duplicates and commands that begin with a space
   setopt hist_ignore_all_dups   # When trimming history, remove duplicates => `history -c` will remove duplicates
   setopt hist_reduce_blanks     # Remove superfluous blanks from each command line being added to the history list => `history -c` will remove superfluous blanks
