@@ -653,9 +653,45 @@
   "files.autoGuessEncoding": true,
   "files.eol": "\n",
   "files.exclude": {
-    "**/*.zwc": false,
+    // macOS system files
+    "**/.DS_Store": true,
+    "**/.DS_Store*": true,
+    // Zsh compiled scripts
+    "**/*.zwc": true,
+    "**/*.zwc.old": true,
+    // Data files
+    "**/*.dat": true,
+    // Zsh completion dump files
+    "**/*zcompdump*": true,
+    "**/.zcompdump*": true,
+    // Zsh history
+    "**/.zsh_history": true,
+    // Zsh sessions
+    "**/.zsh_sessions": true,
+    "**/.zsh_sessions/**": true,
+    // Zsh zcalc history
+    "**/.zcalc_history": true,
+    // Zinit plugin manager files
+    "**/._zinit": true,
+    "**/._zinit/**": true,
+    "**/.zinit_lstupd": true,
+    // Zshelldoc tool files
+    "**/zsdoc/data": true,
+    "**/zsdoc/data/**": true,
+    // Per-directory history
+    "**/.directory_history": true,
+    // Python virtual environments
+    "**/.venv": true,
+    "**/.venv/**": true,
+    // Log files
+    "**/*.log": true,
+    // Temp directory
+    "**/tmp": true,
+    "**/tmp/**": true,
+    // Zim directory
+    "**/zim": true,
+    "**/zim/**": true,
     "**/.classpath": false,
-    "**/.DS_Store": false,
     "**/.factorypath": false,
     "**/.git": false,
     "**/.hg": false,
@@ -688,7 +724,23 @@
     "**/.trunk/*plugins/": true,
     "**/lua_modules/*/**": true,
     "**/node_modules/**": true,
-    "**/venv/**": true
+    "**/venv/**": true,
+    "**/*.zwc": true,
+    "**/*.zwc.old": true,
+    "**/*.dat": true,
+    "**/*zcompdump*": true,
+    "**/.zcompdump*": true,
+    "**/.zsh_history": true,
+    "**/.zsh_sessions/**": true,
+    "**/.zcalc_history": true,
+    "**/._zinit/**": true,
+    "**/.zinit_lstupd": true,
+    "**/zsdoc/data/**": true,
+    "**/.directory_history": true,
+    "**/.venv/**": true,
+    "**/*.log": true,
+    "**/tmp/**": true,
+    "**/zim/**": true
   },
   "files.simpleDialog.enable": true,
   "files.trimTrailingWhitespace": true,
@@ -701,7 +753,31 @@
     "**/venv": true,
     "**/.nx": true,
     "**/dist": true,
-    "**/tmp": true
+    "**/tmp": true,
+    // macOS system files
+    "**/.DS_Store": true,
+    "**/.DS_Store*": true,
+    "**/*.zwc": true,
+    "**/*.zwc.old": true,
+    "**/*.dat": true,
+    "**/*zcompdump*": true,
+    "**/.zcompdump*": true,
+    "**/.zsh_history": true,
+    "**/.zsh_sessions": true,
+    "**/.zsh_sessions/**": true,
+    "**/.zcalc_history": true,
+    "**/._zinit": true,
+    "**/._zinit/**": true,
+    "**/.zinit_lstupd": true,
+    "**/zsdoc/data": true,
+    "**/zsdoc/data/**": true,
+    "**/.directory_history": true,
+    "**/.venv": true,
+    "**/.venv/**": true,
+    "**/*.log": true,
+    "**/tmp/**": true,
+    "**/zim": true,
+    "**/zim/**": true
   },
   "search.smartCase": true,
   "security.workspace.trust.untrustedFiles": "open",
@@ -984,9 +1060,9 @@
   "git.openRepositoryInParentFolders": "never",
   "gitlens.views.repositories.files.layout": "list",
   "markdown-mermaid.darkModeTheme": "forest",
-  "markdown-preview-github-styles.darkTheme": "dark",
-  "markdown-preview-github-styles.lightTheme": "dark_dimmed",
-  "markdown-preview-github-styles.colorTheme": "dark",
+  "markdown-preview-github-styles.darkTheme": "dark_dimmed",
+  "markdown-preview-github-styles.lightTheme": "light_tritanopia",
+  "markdown-preview-github-styles.colorTheme": "light",
   "npm-outdated.majorUpdateProtection": true,
   "prettier.requireConfig": true,
   "prettier.singleQuote": true,
@@ -1476,10 +1552,10 @@
   "direnv.watchForChanges": true,
   "github.copilot.nextEditSuggestions.enabled": true,
   "biome.suggestInstallingGlobally": false,
-  "workbench.colorTheme": "Bearded Theme Monokai Reversed",
   "workbench.iconTheme": "material-icon-theme",
   "vikings-icon-theme.showWelcomeMessage": false,
   "markdown.marp.diagnostics.slideContentOverflow": true,
   "markdown.marp.mathTypesetting": "off",
-  "markdown.preferredMdPathExtensionStyle": "auto"
+  "markdown.preferredMdPathExtensionStyle": "auto",
+  "workbench.colorTheme": "Blueberry dark theme"
 }
