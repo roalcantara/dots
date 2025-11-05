@@ -1,3 +1,18 @@
+# [1.22.0](https://github.com/roalcantara/dots/compare/v1.21.0...v1.22.0) (2025-11-05)
+
+
+### Bug Fixes
+
+* **ghostty:** Update font feature and theme ([b1f48b5](https://github.com/roalcantara/dots/commit/b1f48b52ac286724759baed5d20a87817aa62b90))
+* **install:** export DEBIAN_FRONTEND=noninteractive ([52fc97c](https://github.com/roalcantara/dots/commit/52fc97c56b58a9d348469cfbb6612da7a7fdcefb))
+
+
+### Features
+
+* **kb:** Enhance AWS SAM CLI entries ([979ba7a](https://github.com/roalcantara/dots/commit/979ba7a89172e838b4c0a60b6c36d63f2bf3e570))
+* **zsh:** Add VSCode shell integration support ([49a3ac3](https://github.com/roalcantara/dots/commit/49a3ac3bfa9e1d772109c9037a262d0682559f06))
+* **zsh:** Update env configuration and history settings ([852a596](https://github.com/roalcantara/dots/commit/852a5961f00945b62814b15c86bd3e3485020ff0))
+
 # [1.21.0](https://github.com/roalcantara/dots/compare/v1.20.0...v1.21.0) (2025-10-28)
 
 
