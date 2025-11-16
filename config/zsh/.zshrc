@@ -128,6 +128,14 @@
   setopt hist_ignore_all_dups   # When trimming history, remove duplicates => `history -c` will remove duplicates
   setopt hist_reduce_blanks     # Remove superfluous blanks from each command line being added to the history list => `history -c` will remove superfluous blanks
   setopt hist_subst_pattern     # Perform pattern substitution on history expansion => `history -c` will perform pattern substitution on history expansion
+  # Load history file explicitly (required because NO_RCS prevents automatic loading)
+  [[ -r "$HISTFILE" ]] && fc -R "$HISTFILE"
+  # Save history on shell exit (backup to incremental saves)
+  autoload -Uz add-zsh-hook
+  zsh_history_save() {
+    fc -W "$HISTFILE"
+  }
+  add-zsh-hook zshexit zsh_history_save
   # }
 
   # INPUT OUTPUT | http://zsh.sourceforge.io/Doc/Release/Options.html#Input_002fOutput
