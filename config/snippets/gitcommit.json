@@ -687,5 +687,19 @@
       "- https://mise.jdx.dev/configuration.html"
     ],
     "description": "Add mise"
+  },
+"Short Description": {
+    "prefix": ["ch:setup", "setup"],
+    "body": [
+      "chore(setup): Add initial project configuration files",
+      "",
+      "- Create .editorconfig for consistent coding styles to various types.",
+      "- Add .gitignore to exclude build artifacts and temporary files.",
+      "- Introduce pre-commit hooks with gitlint.",
+      "- Include LICENSE file with MIT License terms.",
+      "- Update README.md for improved clarity and structure, and instructions.",
+      "- Add AGENTS.md for general guidelines on working on this project."
+    ],
+    "description": "Add initial project configuration files"
   }
 }
