@@ -8,26 +8,52 @@ commands:
   ssh-add -D:
     desc: Delete all identities from the agent
     tags: [ssh, delete]
-  ssh-add --apple-use-keychain ~/.ssh/id_ed25519_github:
-    desc: Add id_ed25519_github key to the SSH agent
-    tags: [ssh, keychain, macos]
-    links: [https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch]
-  ssh-add --apple-use-keychain ~/.ssh/id_ed25519_bitbucket_work:
-    desc: Add id_ed25519_bitbucket_work key to the SSH agent
-    tags: [ssh, keychain, macos]
-    links: [https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch]
-  ssh-add --apple-use-keychain ~/.ssh/coreservices-bastion-dev.pem:
-    desc: Add coreservices-bastion-dev.pem key to the SSH agent
-    tags: [ssh, keychain, macos]
-    links: [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html#AccessingInstancesLinuxSSHClient]
-  ssh-add --apple-use-keychain ~/.ssh/id_ed25519_github && ssh-add --apple-use-keychain ~/.ssh/id_ed25519_bitbucket_work && ssh-add --apple-use-keychain ~/.ssh/coreservices-bastion-dev.pem && ssh-add -l:
-    desc: Add multiple SSH keys to the SSH agent
-    tags: [ssh, keychain, macos]
-    links: [https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch, https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html#AccessingInstancesLinuxSSHClient]
-  ssh-keygen -t ed25519 -C "rogerio.alcantara@gmail.com" -f ~/.ssh/id_ed25519:
+
+  # SSH KEYS: GENERATE
+  ssh-keygen -t ed25519 -C "rogerio.alcantara@gmail.com" -f ~/.ssh/keys/id_ed25519.key:
     desc: Create an SSH key pair id_ed25519 using the Ed25519 algorithm
     tags: [ssh]
     links: [https://docs.github.com/en/github/authenticating-to-github/about-ssh]
+  ssh-keygen -t rsa -b 4096 -C "rogerio.alcantara@gmail.com" -f ~/.ssh/keys/id_rsa.key:
+    desc: Create an SSH key pair id_rsa using the RSA algorithm
+    tags: [ssh]
+    links: [https://docs.github.com/en/github/authenticating-to-github/about-ssh]
+  ssh-keygen -lf ~/.ssh/public_key.pub:
+    desc: Show fingerprint from public key
+    tags: [ssh, fingerprint]
+  ssh-keygen -lv -f ~/.ssh/public_key.pub:
+    desc: Show details of public key
+    tags: [ssh, fingerprint]
+
+  # SSH KEYS: ADD TO AGENT
+  ssh-add --apple-use-keychain ~/.ssh/keys/id_ed25519_github.key:
+    desc: Add id_ed25519_github key to the SSH agent
+    tags: [ssh, keychain, macos]
+    links: [https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch]
+  ssh-add --apple-use-keychain ~/.ssh/keys/id_ed25519_bitbucket_work.key:
+    desc: Add id_ed25519_bitbucket_work key to the SSH agent
+    tags: [ssh, keychain, macos]
+    links: [https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch]
+  ssh-add --apple-use-keychain ~/.ssh/keys/coreservices-bastion-dev.pem:
+    desc: Add coreservices-bastion-dev.pem key to the SSH agent
+    tags: [ssh, keychain, macos]
+    links: [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html#AccessingInstancesLinuxSSHClient]
+  ssh-add --apple-use-keychain ~/.ssh/keys/id_ed25519_github.key && ssh-add --apple-use-keychain ~/.ssh/keys/id_ed25519_bitbucket_work.key && ssh-add --apple-use-keychain ~/.ssh/keys/coreservices-bastion-dev.pem && ssh-add -l:
+    desc: Add multiple SSH keys to the SSH agent
+    tags: [ssh, keychain, macos]
+    links: [https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch, https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html#AccessingInstancesLinuxSSHClient]
+
+  # SSH KEYS: COPY TO REMOTE SERVER
+  ssh-copy-id $SSH_ID:
+    desc: Copy SSH key to remote server
+    tags: [ssh]
+    links: [https://ssh.com/ssh/copy-id, https://docs.github.com/en/github/authenticating-to-github/about-ssh]
+
+  # SSH KEYS: COPY TO REMOTE SERVER
+  cat ~/.ssh/id_rsa.pub | ssh rogerio@44.200.148.49 "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys":
+    desc: Copy SSH public key to remote server
+    tags: [ssh]
+    links: [https://digitalocean.com/community/tutorials/how-to-create-ssh-keys-with-openssh-on-macos-or-linux#copying-your-public-key-using-ssh]
   ssh -i /path/to/key.pem -L 3306:cs-dev.cluster-czcr94cvltso.us-east-1.rds.amazonaws.com:3306 ec2-user@44.200.148.49:
     desc: Create an SSH tunnel to access a remote database securely
     tags: [ssh, tunnel, database]
@@ -62,25 +88,26 @@ commands:
           ```sh
           mysql -h 127.0.0.1 -P 3306 -u seu_usuario -p
           ```
-  ssh-keygen -lf ~/.ssh/public_key.pub:
-    desc: Show fingerprint from public key
-    tags: [ssh, fingerprint]
+
+  # SSH KEYS: SET PERMISSIONS
   chmod 600 ~/.ssh/config:
     desc: Set permissions for SSH config file
     tags: [ssh, permissions]
   chmod 700 ~/.ssh:
     desc: Set permissions for SSH directory
     tags: [ssh, permissions]
-  ssh-copy-id $SSH_ID:
-    desc: Copy SSH key to remote server
-    tags: [ssh]
-    links: [https://ssh.com/ssh/copy-id, https://docs.github.com/en/github/authenticating-to-github/about-ssh]
+
+  # SSH KEYS: COPY PUBLIC KEY TO CLIPBOARD
   find ~/.ssh/*.pub | fzf --ansi | xargs cat | tr -d "\n" | pbcopy && echo "=> Public key copied to clipboard.":
     desc: Copy public key to clipboard
     tags: [ssh]
+
+  # SSH KEYS: START SSH AGENT
   eval "$(ssh-agent -s)":
     desc: Start the SSH agent
     tags: [ssh, agent]
+
+  # SSH KEYS: TEST CONNECTIONS
   ssh -T git@bitbucket.org:
     desc: Test SSH connection to Bitbucket
     tags: [ssh, test]

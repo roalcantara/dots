@@ -1,4 +1,5 @@
 cheats:
+  # DESIGN PATTERNS
   Explaining Design Patterns | Template Structure:
     desc: Template structure for explaining design patterns
     tags:
@@ -293,31 +294,101 @@ cheats:
             .setSeats(4)
             .addGPS()
             .build();
-  SOLID - The 5 Principles of Object-Oriented Design | OVERVIEW:
+
+  # SOLID
+  SOLID | The 5 Principles of Object-Oriented Design:
     desc: Guidelines to create better software, making code easier to maintain, test, and extend
-    tags:
-      - bp
-      - oop
-      - solid
+    tags: [bp, oop, solid]
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
       - SOLID Principle in Programming - Understand With Real Life Examples: https://geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples
     notes:
-      - md: |
-          ### S.O.L.I.D.: The 5 Principles of Object-Oriented Design
+      - md: | #markdown
+          ### S.O.L.I.D. 
+
+          #### The 5 Principles of Object-Oriented Design
 
           1. **[S]ingle Responsibility:** Classes should have only one job, which ensures only one reason to change.
           2. **[O]pen-Closed:** Classes should be open for extension, but closed for modification.
           3. **[L]iskov Substitution:** Subclasses should be replaceable with their parent class.
           4. **[I]nterface Segregation:** Clients should not implement unecessary interfaces or depend on unused methods.
           5. **[D]ependency Inversion:** High-level modules should depend on abstractions, not low-level modules (concrete implementations).
-  Single Responsibility Principle (with example):
+      - md: | #markdown
+          ### Frequently Asked Questions (FAQs)
+
+          #### 1. What are the 5 SOLID principles in software engineering?
+
+          - **SOLID** is an acronym representing five fundamental object-oriented design principles formulated by Robert C. Martin, also known as Uncle Bob. 
+          - These principles are:
+
+          - **Single-responsibility Principle (SRP)**: A class should have one and only one reason to change.
+          - **Open-closed Principle (OCP)**: Software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification.
+          - **Liskov Substitution Principle (LSP)**: Objects in a program should be replaceable with instances of their subtypes without altering the correctness of that program.
+          - **Interface Segregation Principle (ISP)**: Clients should not be forced to depend on interfaces they do not use.
+          - **Dependency Inversion Principle (DIP)**: High-level modules should not depend on low-level modules; both should depend on abstractions. Also, abstractions should not depend on details; details should depend on abstractions.
+
+          Together, these principles establish a set of best practices for developing software that is robust, adaptable, and easy to maintain and extend as projects evolve.
+
+          #### 2. Why is SOLID important in object-oriented programming?
+
+          - **SOLID** principles are critically important in object-oriented programming because they directly address common challenges in software development, such as rigidity, fragility, immobility, and viscosity. 
+          - By adhering to SOLID, developers can build systems that are:
+
+          - **More Maintainable**: Easier to understand and fix bugs.
+          - **More Flexible**: Can adapt to changing requirements without significant re-architecting.
+          - **More Extensible**: New features can be added with minimal impact on existing code.
+          - **Easier to Test**: Components can be isolated and tested independently, reducing the risk of side effects.
+          - **Less Prone to Code Smells**: They guide towards cleaner, more organized codebases, preventing the accumulation of bad design choices.
+
+          Ultimately, SOLID helps in creating high-quality software that is easier to evolve and has a longer lifespan.
+
+          #### 3. How do I apply the Single Responsibility Principle?
+
+          - Applying the Single Responsibility Principle (SRP) involves understanding the "responsibilities" of a class or module. 
+          - If you can identify more than one distinct "reason to change" for a given class, it likely violates SRP. 
+          - For instance, a class that both processes data and saves it to a database has two reasons to change: 
+            - one if the data processing logic changes, and another if the database interaction method changes.
+
+          - To apply SRP, you should:
+            - **Identify distinct responsibilities**: Ask yourself, "What would cause this class to change?" If there are multiple, independent answers, those are separate responsibilities.
+            - **Extract responsibilities into separate classes/modules**: Create new, focused classes or modules for each identified responsibility.
+            - **Ensure each new entity has only one reason to change**: The goal is that a modification in requirements for one responsibility should only affect one class, not multiple.
+
+            This separation leads to smaller, more focused, and highly cohesive components that are easier to understand, test, and maintain.
+
+          #### 4. What is the difference between Open-Closed Principle (OCP) and the Dependency Inversion Principle (DIP)?
+
+          > While both the Open-Closed Principle (OCP) and the Dependency Inversion Principle (DIP) aim to reduce coupling and increase flexibility, they address different aspects of design:
+
+          - **Open-Closed Principle (OCP)** focuses on behavioral extension. 
+            - It dictates that existing code should not be modified when new functionality is added. 
+            - Instead, you should extend its behavior, typically by creating new classes that implement an interface or extend an abstract class, or by using composition. 
+            - The emphasis is on adding features by adding new code, not by changing old code.
+
+          - **Dependency Inversion Principle (DIP)** focuses on dependency direction and abstraction. 
+            - It states that high-level modules (which contain important business logic) should not depend on low-level modules (which handle details like database interaction or file I/O).
+            - Instead, both should depend on abstractions (interfaces or abstract classes).
+            - This "inverts" the typical top-down dependency flow, promoting a system where concrete details depend on abstract contracts.
+            - In essence, DIP is often a key enabler for OCP. 
+            - By depending on abstractions (DIP), you can easily substitute different concrete implementations, allowing you to extend functionality (OCP) without altering the core logic that depends on those abstractions.
+            - OCP is a design goal, and DIP is a powerful pattern to achieve that goal.
+
+          #### 5. Are SOLID principles only for OOP?
+
+          > While the **SOLID principles** were originally articulated in the context of Object-Oriented Programming (OOP) and use terms like "class" and "interface," their underlying philosophies and benefits extend far beyond strict OOP. 
+
+          - The core ideas of managing dependencies, isolating changes, promoting modularity, and enabling extensibility are universal to good software design.
+            - The **Single Responsibility Principle (SRP)** can be applied to functions, modules, microservices, or even entire teams.
+            - The idea of **open for extension, closed for modification (OCP)** is desirable in any architectural style.
+            - **Liskov Substitution (LSP)** applies whenever you have polymorphic relationships, regardless of the language's specific features.
+            - **Interface Segregation (ISP)** promotes breaking down large contracts into smaller, more client-specific ones, which is valuable even in functional programming or service design.
+            - **Dependency Inversion (DIP)** encourages decoupling through abstractions, a crucial concept in many architectural patterns like hexagonal architecture or clean architecture, which aren't exclusively OOP. 
+
+          Therefore, while their origins are in OOP, the **SOLID principles** offer timeless wisdom for designing robust and maintainable software systems across various paradigms and scales.
+  SOLID | Single Responsibility Principle (with example):
     desc: Classes should have only one job, which ensures only one reason to change
-    tags:
-      - bp
-      - oop
-      - solid
+    tags: [bp, oop, solid]
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
@@ -351,12 +422,9 @@ cheats:
               // ...
             }
           }
-  Open-Closed Principle (with example):
+  SOLID | Open-Closed Principle (with example):
     desc: Classes should be open for extension, but closed for modification
-    tags:
-      - bp
-      - oop
-      - solid
+    tags: [bp, oop, solid]
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
@@ -397,12 +465,9 @@ cheats:
               return Math.PI * this.radius * this.radius;
             }
           }
-  Liskov Substitution Principle (with example):
+  SOLID | Liskov Substitution Principle (with example):
     desc: Subclasses should be replaceable with their parent class
-    tags:
-      - bp
-      - oop
-      - solid
+    tags: [bp, oop, solid]
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
@@ -447,12 +512,9 @@ cheats:
           // Both can be substituted without breaking functionality
           const shapes: Shape[] = [new Rectangle(5, 3), new Circle(2)];
           shapes.forEach(shape => console.log(shape.area())); // Works perfectly
-  Interface Segregation Principle (with example):
+  SOLID | Interface Segregation Principle (with example):
     desc: Clients should not be forced to depend on methods they do not use
-    tags:
-      - bp
-      - oop
-      - solid
+    tags: [bp, oop, solid]
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
@@ -498,12 +560,9 @@ cheats:
             work() { console.log("Working..."); }
             // Only implements what it needs!
           }
-  Dependency Inversion Principle (with example):
+  SOLID | Dependency Inversion Principle (with example):
     desc: Depend on interfaces/abstractions, not concrete implementations
-    tags:
-      - bp
-      - oop
-      - solid
+    tags: [bp, oop, solid]
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
@@ -553,6 +612,8 @@ cheats:
           // Can use any database implementation
           const service1 = new OrderService(new MySQLDatabase());
           const service2 = new OrderService(new MongoDatabase());
+
+  # CLIENT ARCHITECTURE PATTERNS
   Top Client Architecture Patterns:
     desc: MVC x MVP x MVVM x MVVM-C
     tags:
@@ -892,6 +953,8 @@ cheats:
       - Objc.io's introduction to VIPER: https://objc.io/issues/13-architecture/viper
       - Client Arch patterns: https://newsletter.techworld-with-milan.com/p/what-is-the-difference-between-mvc
       - Everything You NEED to Know About Client Architecture Patterns: https://youtu.be/I5c7fBgvkNY
+
+  # SOFTWARE ARCHITECTURE PATTERNS
   Top Software Architecture Patterns:
     desc: Monolithic x Layered x Clean x Microservices x Event-Driven x Space-based x Microkernel x Peer-to-Peer x Cloud-native x CQRS x Hexagonal
     tags:
@@ -978,7 +1041,7 @@ cheats:
         - **Complexity:** EDA can be complex to implement and manage, especially in large-scale systems.
         - **Event Consistency:** Ensuring consistency across events can be challenging, especially in distributed systems.
         - **Debugging:** Debugging can be difficult due to the asynchronous nature of events and the distributed nature of the system.
-        - **Event Storming:** A large number of events can lead to a situation called “event storming,” which can overwhelm the system or lead to performance bottlenecks.
+        - **Event Storming:** A large number of events can lead to a situation called "event storming," which can overwhelm the system or lead to performance bottlenecks.
         - **Data Consistency:** Ensuring data consistency across different services or components can be challenging in an event-driven system.
         - **Dependency on Messaging Infrastructure:** The system's reliability heavily depends on the robustness of the messaging infrastructure used for event communication.
 
@@ -1537,6 +1600,8 @@ cheats:
           |       |-- users/
           |       |    |-- user.entity.ts
           ```
+
+  # AGILE
   Conceitos Essenciais de SCRUM:
     desc: Papéis, eventos e artefatos do SCRUM
     tags: [pattern, scrum, agile]

@@ -1,10 +1,8 @@
 bookmarks:
   https://nodejs.org:
     desc: Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine
-    tags:
-      - node
-    links:
-      - https://nodejs.org/en/download
+    tags: [node]
+    links: [https://nodejs.org/en/download]
     notes:
       - sh: |
           #! /bin/bash
@@ -32,34 +30,61 @@ bookmarks:
           CMD ["npm", "start"]
   https://nodejs.org/en/download:
     desc: Download Node.js® LTS | JavaScript runtime built on Chrome's V8 JavaScript engine
-    tags:
-      - node
+    tags: [node]
   https://npmjs.com:
     desc: The package manager for JavaScript
-    tags:
-      - node
-      - npm
+    tags: [node, npm]
   https://yarnpkg.com:
     desc: Fast, reliable, and secure dependency management
-    tags:
-      - node
-      - yarn
+    tags: [node, yarn]
   https://pnpm.io:
     desc: Fast, disk space efficient package manager
-    tags:
-      - node
-      - pnpm
+    tags: [node, pnpm]
     links:
       - https://pnpm.io/motivation
       - https://pnpm.io/catalogs
       - https://pnpm.io/pnpm-cli
   https://pnpm.io/catalogs:
     desc: Catalogs are a workspace feature for defining dependency version ranges as reusable constants. Constants defined in catalogs can later be referenced in package.json files.
-    tags:
-      - node
-      - pnpm
-    links:
-      - https://youtu.be/PuRUk4mV2jc
+    tags: [node, pnpm]
+    links: [https://youtu.be/PuRUk4mV2jc]
+  https://digitalocean.com/community/tutorials/how-to-use-multithreading-in-node-js:
+    desc: How to Use Multithreading in Node.js
+    tags: [node]
+    notes:
+      - md: | #markdown
+          ### KEY TAKEAWAYS
+
+          - Worker Threads in Node.js v20+ provide true parallelism for CPU-heavy tasks without blocking the event loop
+          - Production workloads require pooling (Piscina, Poolifier), resource limits, observability, and lifecycle controls to remain reliable
+          - Queue-backed APIs, structured error handling, and container resource quotas keep multithreaded workloads stable at scale
+          - Monitoring thread utilization, heap growth, and queue depth is essential before shipping to production
+
+          ### CORE CONCEPTS:
+
+          - **Main thread safety:** Keep request handling, logging, and orchestration in the main event loop
+          - **Worker communication:** Use structured cloning via postMessage/on('message') or MessageChannel
+          - **SharedArrayBuffer and Atomics:** Enable zero-copy synchronization when you need shared state
+          - **resourceLimits:** Bound heap and stack usage per worker to prevent denial-of-service attacks
+  https://digitalocean.com/community/tutorials/understanding-the-event-loop-callbacks-promises-and-async-await-in-javascript:
+    desc: Understanding the Event Loop, Callbacks, Promises, and Async/Await in JavaScript
+    tags: [node]
+    notes:
+      - md: | #markdown
+          ### KEY TAKEAWAYS
+
+          - Worker Threads in Node.js v20+ provide true parallelism for CPU-heavy tasks without blocking the event loop
+          - Production workloads require pooling (Piscina, Poolifier), resource limits, observability, and lifecycle controls to remain reliable
+          - Queue-backed APIs, structured error handling, and container resource quotas keep multithreaded workloads stable at scale
+          - Monitoring thread utilization, heap growth, and queue depth is essential before shipping to production
+
+          ### CORE CONCEPTS:
+
+          - **Main thread safety:** Keep request handling, logging, and orchestration in the main event loop
+          - **Worker communication:** Use structured cloning via postMessage/on('message') or MessageChannel
+          - **SharedArrayBuffer and Atomics:** Enable zero-copy synchronization when you need shared state
+          - **resourceLimits:** Bound heap and stack usage per worker to prevent denial-of-service attacks
+
 commands:
   rm -rf node_modules package-lock.json && npm i:
     desc: Remove node_modules and package-lock.json and install

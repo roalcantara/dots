@@ -32,17 +32,11 @@ bookmarks:
           ## CucumberStudio - BDD & Test Management
 
           > BDD and agile test management platform integrated with Jira. Use BDD and test automation at scale
-
   https://support.smartbear.com/cucumberstudio/docs/integrations/jira/index.html:
     desc: CucumberStudio Documentation | CucumberStudio is a comprehensive software test management tool, which provides you with the ability to plan and organize all test cases, requirements, and defects associated with your release or user stories in a single place
     tags: [cucumber, documentation, consorciei]
     links:
       - https://support.smartbear.com/cucumberstudio/docs/general-info/about.html
-
-  https://school.cucumber.io:
-    desc: Learn BDD from the Cucumber team
-    tags: [cucumber, school, online, consorciei]
-
   https://rogerioalcantara.atlassian.net/jira/projects?page=1&sortKey=recommendation&sortOrder=DESC&types=software%2Cbusiness:
     desc: Atlassian Jira Projects
     tags: [jira, consorciei]
