@@ -1,7 +1,9 @@
 bookmarks:
   https://docs.astral.sh/uv:
     desc: An extremely fast Python package and project manager, written in Rust
-    tags: [python, packages]
+    tags:
+      - package
+      - py
     links:
       - Guides overview: https://docs.astral.sh/uv/guides/#guides-overview
       - Integration guides: https://docs.astral.sh/uv/guides/integration
@@ -23,7 +25,6 @@ bookmarks:
           💾 Disk-space efficient, with a global cache for dependency deduplication.
           ⏬ Installable without Rust or Python via curl or pip.
           🖥️ Supports macOS, Linux, and Windows.
-
       - sh: |
           # Install the Astral package manager for Python.
           brew install uv:
@@ -33,282 +34,321 @@ bookmarks:
 
           # Enable shell completion for uvx commands in Zsh
           echo 'eval "$(uvx --generate-shell-completion zsh)"' >> ~/.zshrc:
-
 commands:
-  # UV | Installing and managing Python itself
-  # An extremely fast Python package and project manager, written in Rust
   brew install uv:
     desc: Install the Astral package manager for Python.
-    tags: [python, uv, packages]
+    tags:
+      - package
+      - py
+      - uv
   echo 'eval "$(uv generate-shell-completion zsh)"' >> ~/.zshrc:
     desc: Enable shell completion for uv commands in Zsh
-    tags: [python, uv, zsh]
+    tags:
+      - py
+      - uv
+      - zsh
   echo 'eval "$(uvx --generate-shell-completion zsh)"' >> ~/.zshrc:
     desc: Enable shell completion for uvx commands in Zsh
-    tags: [python, uv, zsh]
-  # UV | Installing and managing Python itself
+    tags:
+      - py
+      - uv
+      - zsh
   uv python install:
     desc: Install the latest Python version
-    title: Installing and managing Python itself
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - Install Python versions: https://docs.astral.sh/uv/guides/install-python
       - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
   uv python install 3.12:
     desc: Install a specific Python version
-    title: Installing and managing Python itself
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - Install Python versions: https://docs.astral.sh/uv/guides/install-python
       - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
   uv python list:
     desc: View available Python versions
-    title: Installing and managing Python itself
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - Install Python versions: https://docs.astral.sh/uv/guides/install-python
       - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
   uv python find:
     desc: Find an installed Python version
-    title: Installing and managing Python itself
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - Install Python versions: https://docs.astral.sh/uv/guides/install-python
       - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
   uv python pin:
     desc: Pin the current project to use a specific Python version
-    title: Installing and managing Python itself
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - Install Python versions: https://docs.astral.sh/uv/guides/install-python
       - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
   uv python uninstall:
     desc: Uninstall a Python version
-    title: Installing and managing Python itself
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - Install Python versions: https://docs.astral.sh/uv/guides/install-python
       - Python versions: https://docs.astral.sh/uv/getting-started/features/#python-versions
-  # UV | Projects | Creating and working on Python projects i.e., with a pyproject.toml
   uv init:
     desc: Create a new Python project
-    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/projects
       - https://docs.astral.sh/uv/getting-started/features/#projects
   uv add:
     desc: Add a dependency to the project.
-    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/projects
       - https://docs.astral.sh/uv/getting-started/features/#projects
   uv build:
     desc: Build the project into distribution archives.
-    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/projects
       - https://docs.astral.sh/uv/getting-started/features/#projects
   uv lock:
     desc: Create a lockfile for the project's dependencies.
-    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/projects
       - https://docs.astral.sh/uv/getting-started/features/#projects
   uv publish:
     desc: Publish the project to a package index.
-    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/projects
       - https://docs.astral.sh/uv/getting-started/features/#projects
   uv remove:
     desc: Remove a dependency from the project.
-    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/projects
       - https://docs.astral.sh/uv/getting-started/features/#projects
   uv sync:
     desc: Sync the project's dependencies with the environment.
-    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/projects
       - https://docs.astral.sh/uv/getting-started/features/#projects
   uv tree:
     desc: View the dependency tree for the project.
-    title: Projects | Creating and working on Python projects i.e., with a pyproject.toml
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/projects
       - https://docs.astral.sh/uv/getting-started/features/#projects
-  # UV | Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
   uv tool install:
     desc: Install a tool user-wide.
-    title: Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/tools
       - https://docs.astral.sh/uv/getting-started/features/#tools
   uv tool list:
     desc: List installed tools.
-    title: Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/tools
       - https://docs.astral.sh/uv/getting-started/features/#tools
   uv tool uninstall:
     desc: Uninstall a tool.
-    title: Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/tools
       - https://docs.astral.sh/uv/getting-started/features/#tools
   uv tool update-shell:
     desc: Update the shell to include tool executables.
-    title: Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/tools
       - https://docs.astral.sh/uv/getting-started/features/#tools
   uvx / uv tool run:
     desc: Run a tool in a temporary environment.
-    title: Tools | Running and installing tools published to Python package indexes, e.g., ruff or black
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/tools
       - https://docs.astral.sh/uv/getting-started/features/#tools
   uv cache clean:
     desc: Remove cache entries.
-    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/getting-started/features/#utility
   uv cache dir:
     desc: Show the uv cache directory path.
-    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/getting-started/features/#utility
   uv cache prune:
     desc: Remove outdated cache entries.
-    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/getting-started/features/#utility
   uv python dir:
     desc: Show the uv installed Python versions path.
-    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/getting-started/features/#utility
   uv tool dir:
     desc: Show the uv tool directory path.
-    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/getting-started/features/#utility
   uv self update:
     desc: Update uv to the latest version.
-    title: Utility | Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/getting-started/features/#utility
-  # UV | PIP | Manually managing environments and packages — intended to be used in legacy workflows or cases where the high-level commands do not provide enough control
   uv venv:
     desc: Create a new virtual environment
-    title: PIP | Manually managing environments and packages — intended to be used in legacy workflows or cases where the high-level commands do not provide enough control
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/pip/environments
       - https://docs.astral.sh/uv/getting-started/features/#the-pip-interface
-  # UV |  PIP | Managing packages in an environment (replacing pip and pipdeptree)
   uv pip check:
     desc: Check that the current environment has compatible packages
-    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/pip/packages
   uv pip freeze:
     desc: List installed packages and their versions
-    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/pip/packages
   uv pip install:
     desc: Install packages into the current environment
-    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/pip/packages
   uv pip list:
     desc: List installed packages
-    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/pip/packages
   uv pip show:
     desc: Show details about an installed package
-    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/pip/packages
   uv pip tree:
     desc: View the dependency tree for the environment
-    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/pip/packages
   uv pip uninstall:
     desc: Uninstall packages
-    title: PIP | Managing packages in an environment (replacing pip and pipdeptree)
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/pip/packages
-  # UV |  PIP | Locking packages in an environment (replacing pip-tools)
   uv pip sync:
     desc: Sync an environment with a lockfile
-    title: PIP | Locking packages in an environment (replacing pip-tools)
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/pip/compile
   uv pip compile:
     desc: Compile requirements into a lockfile
-    title: PIP | Locking packages in an environment (replacing pip-tools)
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https//docs.astral.sh/uv/pip/compile
-  # UV | Scripts | Executing standalone Python scripts, e.g., example.py
   uv run:
     desc: Run a script.
-    title: Scripts | Executing standalone Python scripts, e.g., example.py
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/scripts
       - https://docs.astral.sh/uv/getting-started/features/#scripts
   uv add --script:
     desc: Add a dependency to a script
-    title: Scripts | Executing standalone Python scripts, e.g., example.py
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/scripts
       - https://docs.astral.sh/uv/getting-started/features/#scripts
   uv remove --script:
     desc: Remove a dependency from a script
-    title: Scripts | Executing standalone Python scripts, e.g., example.py
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     links:
       - https://docs.astral.sh/uv/guides/scripts
       - https://docs.astral.sh/uv/getting-started/features/#scripts
-
 cheats:
   Python's range(start, stop):
     desc: Generates a sequence of numbers starting from start and stopping before stop, meaning the stop number is not included in the sequence.
-    tags: [python, range, sequence]
+    tags:
+      - py
+      - range
+      - sequence
     notes:
       - md: |
 
@@ -324,7 +364,10 @@ cheats:
           ```
   zip():
     desc: Combines two or more iterables into a single iterable.
-    tags: [python, zip, iterable]
+    tags:
+      - iterable
+      - py
+      - zip
     notes:
       - md: |
           ## Pairing Elements of Two Lists
@@ -407,15 +450,16 @@ cheats:
           ```
   Python's venv (virtual environment):
     desc: Creates a virtual environment for a Python project (via flox)
-    tags: [python, venv]
+    tags:
+      - py
+      - venv
     notes:
-      - md: | #markdown
+      - md: |
           ## What is Python's venv (virtual environment)?
 
           - A virtual environment is a self-contained directory that contains a specific Python installation and its dependencies.
           - It allows you to isolate a project's dependencies from the global Python installation and other projects.
-
-      - sh: | #shell
+      - sh: |
           #!/bin/bash
 
           # 1. Navigate to your project
@@ -448,9 +492,11 @@ cheats:
           deactivate
   UV - Fast Python Package Manager:
     desc: The fastest Python package manager, written in Rust
-    tags: [python, uv]
+    tags:
+      - py
+      - uv
     notes:
-      - md: | #markdown
+      - md: |
           ### TL;DR: UV - Fast Python Package Manager
 
           > WHAT IS UV?
@@ -471,7 +517,7 @@ cheats:
           - Python version management
           - Workspace support for monorepos
           - Drop-in pip replacement (mostly compatible)
-      - sh: | #shell
+      - sh: |
           #!/bin/bash
           ################################################################################
           ## QUICKSTART - INSTALLATION
@@ -491,7 +537,7 @@ cheats:
 
           # Verify installation
           uv --version
-      - sh: | #shell
+      - sh: |
           #!/bin/bash
           ################################################################################
           ## COMMON WORKFLOWS
@@ -613,7 +659,7 @@ cheats:
 
           # But you can check what's available:
           uv pip index --help
-      - sh: | #shell
+      - sh: |
           #!/bin/bash
           ################################################################################
           ## DEPENDENCY MANAGEMENT IN pyproject.toml
@@ -639,7 +685,7 @@ cheats:
 
           # Install with dev dependencies
           uv sync --group dev
-      - sh: | #shell
+      - sh: |
           #!/bin/bash
           ################################################################################
           ## WORKFLOW COMPARISON: pip vs uv
@@ -656,7 +702,7 @@ cheats:
           # $ uv sync              # Does it all!
           # $ uv pip install package_name
           # $ uv lock              # Auto-generated lock file
-      - sh: | #shell
+      - sh: |
           #!/bin/bash
           ################################################################################
           ## PRO TIPS
@@ -681,7 +727,7 @@ cheats:
 
           # 6. Use pyproject.toml for all config (modern Python standard)
           # Avoid requirements.txt once you migrate
-      - sh: | #shell
+      - sh: |
           #!/bin/bash
           ################################################################################
           ## COMMON ISSUES & SOLUTIONS
@@ -699,7 +745,7 @@ cheats:
 
           # Issue: Slow first installation
           # Normal! First run caches everything, subsequent runs are instant
-      - sh: | #shell
+      - sh: |
           #!/bin/bash
           ################################################################################
           ## QUICK REFERENCE

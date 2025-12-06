@@ -1,14 +1,16 @@
 bookmarks:
   https://youtu.be/iplIF_eclvM:
     desc: Counting Numbers in Swedish from 1 to 20
-    tags: [sv]
+    tags:
+      - sv
     links:
       - https://youtu.be/PCDwE6_Iu8w
-
 cheats:
   Swedish alphabet:
     desc: A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Å Ä Ö
-    tags: [sv, alphabet]
+    tags:
+      - sv
+      - alphabet
     notes:
       - md: |
           ## Swedish Alphabet
@@ -18,7 +20,9 @@ cheats:
           - **A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Å Ä Ö**
   Swedish alphabet's additional letters:
     desc: Å å Ä ä Ö ö
-    tags: [sv, alphabet]
+    tags:
+      - sv
+      - alphabet
     notes:
       - md: |
           ## Additional Letters in the Swedish Alphabet
@@ -35,10 +39,12 @@ cheats:
           - **Ö** (pronounced like the "u" in "fur")  shortcut: `"O` (double quote + shift + o)
 
           These additional letters are used in Swedish words and are considered separate letters in the alphabet.
-
   min, mitt, mina (mine):
     desc: Indicate possession or ownership (mine).
-    tags: [sv, grammar, pronouns]
+    tags:
+      - sv
+      - grammar
+      - pronouns
     notes:
       - md: |
           ## Possessive Pronouns
@@ -61,7 +67,10 @@ cheats:
           - Mina hundar (My dogs)
   er, ert, era (your):
     desc: Indicate possession or ownership (your).
-    tags: [sv, grammar, pronouns]
+    tags:
+      - sv
+      - grammar
+      - pronouns
     notes:
       - md: |
           ## Possessive Pronouns
@@ -84,7 +93,10 @@ cheats:
           - Era hundar (Your dogs)
   din, ditt, dina (yours):
     desc: Indicate possession or ownership (yours).
-    tags: [sv, grammar, pronouns]
+    tags:
+      - sv
+      - grammar
+      - pronouns
     notes:
       - md: |
           ## Possessive Pronouns
@@ -107,7 +119,10 @@ cheats:
           - Dina hundar (Your dogs)
   sin, sitt, sina (his, her, its):
     desc: Indicate possession or ownership (his, her, its).
-    tags: [sv, grammar, pronouns]
+    tags:
+      - sv
+      - grammar
+      - pronouns
     notes:
       - md: |
           ## Possessive Pronouns
@@ -139,7 +154,10 @@ cheats:
           | Det är sina böcker     | It is its books    |
   vår, vårt, våra (our):
     desc: Indicate possession or ownership (our).
-    tags: [sv, grammar, pronouns]
+    tags:
+      - sv
+      - grammar
+      - pronouns
     notes:
       - md: |
           ## Possessive Pronouns
@@ -162,7 +180,10 @@ cheats:
           - Våra hundar (Our dogs)
   deras (their):
     desc: Indicate possession or ownership (their).
-    tags: [sv, grammar, pronouns]
+    tags:
+      - sv
+      - grammar
+      - pronouns
     notes:
       - md: |
           ## Possessive Pronouns
@@ -173,11 +194,12 @@ cheats:
 
           - Deras bilar (Their cars)
           - Deras hundar (Their dogs)
-
-  # =============================================== Favorites
   Min, Din, Hans, Hennes, Dess, Vår, Er, Deras (My, Your, His, Her, Its, Our, Your, Their):
     desc: Possessive pronouns in Swedish
-    tags: [sv, grammar, pronouns]
+    tags:
+      - sv
+      - grammar
+      - pronouns
     notes:
       - md: |
           ## Possessive Pronouns
@@ -192,108 +214,159 @@ cheats:
           | Vår bil     | Our car     |
           | Er hund     | Your dog    |
           | Deras hus   | Their house |
-
   Hej:
     desc: Hello
-    tags: [sv, greetings]
+    tags:
+      - sv
+      - greetings
   Hej da:
     desc: Goodbye
-    tags: [sv, greetings]
+    tags:
+      - sv
+      - greetings
   Hej min vän:
     desc: Hello my friend
-    tags: [sv]
+    tags:
+      - sv
   Tack:
     desc: Thank you
-    tags: [sv]
+    tags:
+      - sv
   Tack så mycket!:
     desc: Thank you very much!
-    tags: [sv, formal]
+    tags:
+      - sv
+      - formal
   Välkommen:
     desc: Welcome
-    tags: [sv, greetings]
+    tags:
+      - sv
+      - greetings
   Ja varsågod:
     desc: Yes, you're welcome!
-    tags: [sv]
+    tags:
+      - sv
   Vi ses:
     desc: See you
-    tags: [sv, farewell]
+    tags:
+      - sv
+      - farewell
   Forlat:
     desc: Excuse me
-    tags: [sv]
+    tags:
+      - sv
   Ursakta:
     desc: Excuse me
-    tags: [sv]
-
+    tags:
+      - sv
   Vad hallar du pa med?:
     desc: What are you up to?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vad vill du?:
     desc: What do you want?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vem vet?:
     desc: Who knows?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Varfor inte?:
     desc: Why not?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Som vadà?:
     desc: Like what?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Låt oss börja:
     desc: Let's start
-    tags: [sv, daily]
-
+    tags:
+      - sv
+      - daily
   Det är nära:
     desc: It is close (near)
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det är nästan omöjiligt:
     desc: It is almost impossible
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det är nästan klart!:
     desc: It is almost ready!
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det är definitivt sant:
     desc: It is definitely true
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det är absolut inte en sköldpadda:
     desc: It is abosutely not a tutle
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det är redan juli:
     desc: It is already July
-    tags: [sv]
+    tags:
+      - sv
   Det tar ungefär en timme:
     desc: It takes approximately one hour
-    tags: [sv, adverbs]
-
-  # Opinions
+    tags:
+      - sv
+      - adverbs
   Visst:
     desc: Sure
-    tags: [sv, positive]
+    tags:
+      - sv
+      - positive
   Utmärkt:
     desc: Excellent
-    tags: [sv, positive]
+    tags:
+      - sv
+      - positive
   Jättebra:
     desc: Great
-    tags: [sv, positive]
+    tags:
+      - sv
+      - positive
   Mycket bra!:
     desc: Very good!
-    tags: [sv, formal]
+    tags:
+      - sv
+      - formal
   Mojligtvis:
     desc: Possibly
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det finns inget att göra:
     desc: There is nothing to do
-    tags: [sv]
+    tags:
+      - sv
   Nu är det för sent!:
     desc: Now it is too late!
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   Jag ticker inte om det:
     desc: I don't care
-    tags: [sv, time]
-
+    tags:
+      - sv
+      - time
   Precis (exactly):
     desc: Exactly
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
     notes: |
       | Swedish                      | English                      |
       | ---------------------------- | ---------------------------- |
@@ -301,7 +374,9 @@ cheats:
       | Det är precis vad jag menade | That is exactly what I meant |
   Ungefär (approximately):
     desc: Approximately
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
     notes: |
       | Swedish                  | English                         |
       | ------------------------ | ------------------------------- |
@@ -309,7 +384,9 @@ cheats:
       | Det tar ungefär en timme | It takes approximately one hour |
   Troligen (probably):
     desc: Probably
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
     notes: |
       | Swedish                           | English                     |
       | --------------------------------- | --------------------------- |
@@ -317,7 +394,9 @@ cheats:
       | Det är troligtvis bara min mamma  | It is probably just my mom  |
   Snart (soon):
     desc: Soon
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
     notes: |
       | Swedish                 | English                |
       | ----------------------- | ---------------------- |
@@ -325,238 +404,327 @@ cheats:
       | Det är snart klart      | It is almost ready     |
   Heller (either):
     desc: Either
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
     notes: |
       | Swedish                 | English                |
       | ----------------------- | ---------------------- |
       | Jag dricker heller vin  | I drink wine too       |
   Heller inte (neither):
     desc: Neither
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
     notes: |
       | Swedish                         | English                         |
       | ------------------------------- | ------------------------------- |
       | Jag dricker inte heller         | I don't drink either            |
       | Han takar inte heller engelska  | He doesn't speak English either |
-
   Definitivt inte:
     desc: Definitely not
-    tags: [sv, negation]
+    tags:
+      - sv
+      - negation
   Absolut inte!:
     desc: Absolutely not!
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Vänta en stund:
     desc: Wait a moment
-    tags: [sv]
+    tags:
+      - sv
   Vänta en minut:
     desc: Wait a minute
-    tags: [sv]
-
+    tags:
+      - sv
   Inte nödvändigtvis:
     desc: Not necessarily
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Inte särskilt:
     desc: Not particularly/especially
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Inte alls:
     desc: Not at all
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Inte så mycket:
     desc: Not so much
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Inte så snabbt:
     desc: Not so fast
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Inte så ofta:
     desc: Not so often
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   allmänt:
     desc: Generally
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
     notes: |
       - Barn bor i allmänhet med sina föräldrar.
       - Barn bor i allmänhet hos sina föräldrar.
-
   Jag går till skolan:
     desc: I go to school
-    tags: [sv]
+    tags:
+      - sv
   Han har bara en handduk på sig:
     desc: He is wearing only a towel
-    tags: [sv]
+    tags:
+      - sv
   De säljer många olika garderober:
     desc: They sell many different wardrobes
-    tags: [sv]
-
-  # Thinking
+    tags:
+      - sv
   Låt mig tänka:
     desc: Let me think
-    tags: [sv]
+    tags:
+      - sv
   Jag vet inte:
     desc: I don't know
-    tags: [sv]
+    tags:
+      - sv
   Jag tror jag vet:
     desc: I think I know
-    tags: [sv]
-
+    tags:
+      - sv
   Vart är du?:
     desc: Where are you?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vart gar du?:
     desc: Where are you going?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vad är det?:
     desc: What is it?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Betalar du?:
     desc: Are you paying?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Varfor gor du det?:
     desc: Why are you doing that?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
     notes: |
       - Varför gör du det? "Why are you doing that?"
       - Varför gör du så? "Why are you doing that?"
       - Varför gär du dit? "Why are you going there?"
   Som är det?:
     desc: Who is it?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Jag ser honom ofta:
     desc: I often see him
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Jag ser honom sällan:
     desc: I rarely see him
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Jag ser honom aldrig:
     desc: I never see him
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Jag ser honom alltid:
     desc: I always see him
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Jag ser honom tydligt:
     desc: I clearly see him
-    tags: [sv, adverbs]
-
+    tags:
+      - sv
+      - adverbs
   Jag lär mig svenska:
     desc: I am learning Swedish
-    tags: [sv, daily]
+    tags:
+      - sv
+      - daily
   Jag vill lära mig svenska:
     desc: I want to learn Swedish
-    tags: [sv, daily]
+    tags:
+      - sv
+      - daily
   Jag behöver öva mer:
     desc: I need to practice more
-    tags: [sv, daily]
+    tags:
+      - sv
+      - daily
   Jab behöver hjälp:
     desc: I need help
-    tags: [sv]
+    tags:
+      - sv
   Jag är så trött:
     desc: I am so tired
-    tags: [sv]
+    tags:
+      - sv
   Jag dricker inte vin:
     desc: We don't drink wine
-    tags: [sv]
+    tags:
+      - sv
   Jag dricker inte heller öl:
     desc: I don't drink beer either
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Jag äter inte heller kött:
     desc: I do not eat meat either
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Jag har inget jobb än:
     desc: I don't have a job yet
-    tags: [sv]
-
+    tags:
+      - sv
   Till och med jag tycker om dit:
     desc: Even I like it
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Ar det tillrackligt?:
     desc: Is it enough?
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Ett ar senare:
     desc: One year later
-    tags: [sv, time]
-
-  # =============================================== Phrases
+    tags:
+      - sv
+      - time
   Vi ses där:
     desc: See you there
-    tags: [sv, farewell]
+    tags:
+      - sv
+      - farewell
   Vi ses da:
     desc: See you then
-    tags: [sv, farewell]
+    tags:
+      - sv
+      - farewell
   Vi ses när vi ses:
     desc: See you when we see you
-    tags: [sv, farewell]
+    tags:
+      - sv
+      - farewell
   Ni kom:
     desc: You come
-    tags: [sv]
+    tags:
+      - sv
   Vi äter innan vi gar:
     desc: We eat before we go
-    tags: [sv]
+    tags:
+      - sv
   Du vet att jag alskar dig:
     desc: You know that I love you
-    tags: [sv]
+    tags:
+      - sv
   Han gar inte utan springer:
     desc: He is not walking but running
-    tags: [sv]
+    tags:
+      - sv
   Vargen vet att bjornen är hungrig:
     desc: The wolf knows that the bear is hungry
-    tags: [sv]
+    tags:
+      - sv
   Flickan äter applen eftersom hon alskar frukt:
     desc: The girl is eating the apples because she loves fruit
-    tags: [sv]
+    tags:
+      - sv
   Jag äter inte kott eftersom jag är vegetarian:
     desc: I don't eat meat because I am a vegetarian
-    tags: [sv]
+    tags:
+      - sv
   Pojken bredvid mig laser en bok:
     desc: The boy next to me is reading a book
-    tags: [sv]
+    tags:
+      - sv
   Jag är inte hemma just nu:
     desc: I am not at home right now
-    tags: [sv]
+    tags:
+      - sv
   Jag är inte hemma i morgon:
     desc: I am not at home tomorrow
-    tags: [sv]
+    tags:
+      - sv
   Det är inte en alg utan en ren:
     desc: It is not a moose but a reindeer
-    tags: [sv]
+    tags:
+      - sv
   Kjolarna är vid dörren:
     desc: The skirts are by the door
-    tags: [sv]
+    tags:
+      - sv
   Kocken lagar mat at oss:
     desc: The chef is cooking for us
-    tags: [sv]
+    tags:
+      - sv
   Jag tycker om dig men jag alskar henne:
     desc: I like you but I love her
-    tags: [sv]
+    tags:
+      - sv
   Flickan har pa sig en klanning:
     desc: The girl is wearing a dress
-    tags: [sv]
+    tags:
+      - sv
   Nar jag lagar mat, äter hon:
     desc: When I cook, she eats
-    tags: [sv]
+    tags:
+      - sv
   Jag äter om du dricker:
     desc: I eat if you drink
-    tags: [sv]
+    tags:
+      - sv
   Flickan som äter ett apple tycker om hastar:
     desc: The girl who eats an apple likes horses
-    tags: [sv]
+    tags:
+      - sv
   Vi aker nar som heist:
     desc: We are leaving at any time
-    tags: [sv]
+    tags:
+      - sv
   Hon kommer nar som helst:
     desc: She is coming at any time
-    tags: [sv]
+    tags:
+      - sv
   Han sover nar som helst:
     desc: He sleeps at any time
-    tags: [sv]
+    tags:
+      - sv
   Kvinnan vet var booken ar:
     desc: The woman knows where the book is
-    tags: [sv]
-
-  # Verbs
+    tags:
+      - sv
   Grupp 1, Första konjugationen (42 %):
     desc: Group 1, First Conjugation (42%)
-    tags: [sv, grammar, verbs]
+    tags:
+      - sv
+      - grammar
+      - verbs
     notes:
       - md: |
 
@@ -601,7 +769,10 @@ cheats:
           - Examples of Group 1 verbs include "att prata" (to talk), "att dansa" (to dance), and "att sjunga" (to sing).
   Grupp 2, Andra konjugationen (31 %):
     desc: Group 2, Second Conjugation (31%)
-    tags: [sv, grammar, verbs]
+    tags:
+      - sv
+      - grammar
+      - verbs
     notes:
       - md: |
 
@@ -646,7 +817,10 @@ cheats:
           - Examples of Group 2 verbs include "att köpa" (to buy), "att läsa" (to read), and "att skriva" (to
   Grupp 3, Tredje konjugationen (27 %):
     desc: Group 3, Third Conjugation (27%)
-    tags: [sv, grammar, verbs]
+    tags:
+      - sv
+      - grammar
+      - verbs
     notes:
       - md: |
 
@@ -691,7 +865,10 @@ cheats:
           - Examples of Group 3 verbs include "att vara" (to be), "att ha" (to have), and "att göra" (to do).
   Grupp 4, Fjärde konjugationen (0.5 %):
     desc: Group 4, Fourth Conjugation (0.5%)
-    tags: [sv, grammar, verbs]
+    tags:
+      - sv
+      - grammar
+      - verbs
     notes:
       - md: |
 
@@ -734,11 +911,13 @@ cheats:
           - They are characterized by the infinitive form ending in -s.
           - The present tense conjugation for these verbs is regular and follows a pattern.
           - Examples of Group 4 verbs include "att dansa" (to dance), "att
-
-  # Grammar
   Questions are often SVO (subject-verb-object):
     desc: Questions are formed by changing the word order or by adding a question word at the beginning of the sentence
-    tags: [sv, questions, grammar, concepts]
+    tags:
+      - sv
+      - questions
+      - grammar
+      - concepts
     notes:
       - md: |
           # Forming Questions in Swedish
@@ -767,7 +946,10 @@ cheats:
           Any question word can be used to form a question in Swedish. .
   Word order:
     desc: The main verb will usually come second in a sentence, following the subject.
-    tags: [sv, grammar, word order]
+    tags:
+      - grammar
+      - sv
+      - word_order
     notes:
       - md: |
           ## Word Order
@@ -782,7 +964,10 @@ cheats:
           3. The first part can be moved to the end for emphasis or stylistic reasons.
   Adverbs:
     desc: Adverbs can change based on whether the verb is at rest or in motion
-    tags: [sv, grammar, adverbs]
+    tags:
+      - sv
+      - grammar
+      - adverbs
     notes:
       - md: |
           ## Adverbs
@@ -802,19 +987,29 @@ cheats:
           |hemma  | hem      | home    |
           |in     | in       | in      |
           |inne   | in       | inside  |
-
   Vilken:
     desc: Which | What used before singular common gender (en-words) nouns. i.e "Vilken bok läser du?" (Which book are you reading?)
-    tags: [sv, grammar, pronouns]
+    tags:
+      - sv
+      - grammar
+      - pronouns
   Vilket:
     desc: Which | What used before singular neuter gender (ett-words) nouns. i.e "Vilket hus bor du i?" (Which house do you live in?)
-    tags: [sv, grammar, pronouns]
+    tags:
+      - sv
+      - grammar
+      - pronouns
   Vilka:
     desc: Which | What used before plural nouns, regardless of gender. i.e "Vilka länder har du besökt?" (Which countries have you visited?)
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vilken, Vilket and Vilka:
     desc: Vilken, Vilket and Vilka (which | what) are relative pronouns used to ask questions about people or things.
-    tags: [sv, grammar, pronouns]
+    tags:
+      - sv
+      - grammar
+      - pronouns
     notes:
       - md: |
           > The choice between them depends on the gender (common or neuter) and number (singular or plural) of the noun they refer to.
@@ -837,10 +1032,11 @@ cheats:
           ## Summary
 
           Remember, the choice between "vilken," "vilket," and "vilka" depends solely on the grammatical gender and number of the noun being asked about, not the gender or number of the subject or object in the sentence.
-
   Vart:
     desc: Vart (where) used to indicate direction or location, often in the context of movement or travel. i.e "Vart går du?" (Where are you going?)
-    tags: [sv, grammar]
+    tags:
+      - sv
+      - grammar
     notes:
       - md: |
           ## Vart
@@ -849,7 +1045,9 @@ cheats:
           - For example, `"Vart går du?"` (Where are you going?)
   Var:
     desc: Var (where) used to indicate location or position. i.e "Var är du?" (Where are you?)
-    tags: [sv, grammar]
+    tags:
+      - sv
+      - grammar
     notes:
       - md: |
           ## Var
@@ -858,7 +1056,9 @@ cheats:
           - For example, `"Var är du?"` (Where are you?)
   Där:
     desc: Där (there) used to indicate a location or position. i.e "Jag är där" (I am there)
-    tags: [sv, grammar]
+    tags:
+      - sv
+      - grammar
     notes:
       - md: |
           ## Där
@@ -867,7 +1067,9 @@ cheats:
           - For example, `"Jag är där"` (I am there)
   Vart, var, and där:
     desc: Vart, var, and där (Where) are used to indicate location and direction
-    tags: [sv, grammar]
+    tags:
+      - sv
+      - grammar
     notes:
       - md: |
           ## Vart
@@ -889,19 +1091,26 @@ cheats:
           - **Vart:** Used to (questions) indicat direction or location in the context of movement or travel.
           - **Var:** Used to (questions) indicate location or position.
           - **Där:** Used to (answers) indicate a location or position.
-
   har ingen (singular common gender [en-words] nouns to mean "no" or "not any."). i.e "Jag har ingen bil." (I have no car.):
     desc: I have no
-    tags: [sv, grammar]
+    tags:
+      - sv
+      - grammar
   har inget (singular neuter gender [ett-words] nouns to mean "no" or "not any."). i.e "Jag har inget hus." (I have no house.):
     desc: I have no
-    tags: [sv, grammar]
+    tags:
+      - sv
+      - grammar
   har inga (plural nouns, regardless of their gender, to mean "no" or "not any."). i.e "Jag har inga pengar." (I have no money.):
     desc: I have no
-    tags: [sv, grammar]
+    tags:
+      - sv
+      - grammar
   har (ingen | inget | inga):
     desc: har (ingen | inget | inga) is used to express negation, specifically when talking about not having something or someone.
-    tags: [sv, grammar]
+    tags:
+      - sv
+      - grammar
     notes:
       - md: |
           The choice between "ingen," "inget," and "inga" depends on the gender (common or neuter) and number (singular or plural) of the noun they negate.
@@ -926,10 +1135,11 @@ cheats:
           The negation (ingen/inget/inga) directly follows "har" to negate the possession of the noun that follows.
 
           Unlike "nej," which is used to directly negate or answer questions, "ingen," "inget," and "inga" are used to specify what it is that one does not have.
-
   er, din, ditt, era:
     desc: er, din, ditt are possessive pronouns used to indicate possession or ownership.
-    tags: [sv, grammar]
+    tags:
+      - sv
+      - grammar
     notes:
       - md: |
           ## Possessive Pronouns
@@ -952,13 +1162,12 @@ cheats:
           - **Era:** Used to indicate possession or ownership of something by a group of people or a formal "you" (plural).
           - **Din:** Used to indicate possession or ownership of something by a singular informal "you."
           - **Ditt:** Used to indicate possession or ownership of something by a singular informal "you."
-
-  # Grammar: Auxiliary verbs
-
-  # HJÄLPVERB (Helping Verbs)
   HJÄLPVERB (Helping Verbs):
     desc: HJÄLPVERB (Helping Verbs) are auxiliary verbs that are used to form compound tenses, passive voice, and other grammatical constructions.
-    tags: [sv, grammar, auxiliary verbs]
+    tags:
+      - auxiliary_verbs
+      - grammar
+      - sv
     notes:
       - md: |
           ## HJÄLPVERB (Helping Verbs)
@@ -1013,242 +1222,351 @@ cheats:
           - **Hon börjar jobba klockan åtta.** (She starts working at eight o'clock.)
           - **Han slutar röka.** (He stops smoking.)
           - **Du bör äta mer grönsaker.** (You should eat more vegetables.)
-  # VILL (WANT), SKA (WILL), KOMMER (COME), FAR (GET), VAGAR (DARE), TÖR (DARE), BRUKAR (USUALLY), PLEJAR (USUALLY), LAR (TEACH), BEHÖVER (NEED), SKALL (SHALL), MASTE (MUST), VILL (WANT), KAN (CAN), FÅR (GET), SKA (WILL), KOMMER (COME), VAGAR (DARE), TÖR (DARE), BRUKAR (USUALLY), PLEJAR (USUALLY), LAR (TEACH), BEHÖVER (NEED), SKALL (SHALL), MASTE (MUST), VILL (WANT), KAN (CAN), FÅR (GET), SKA (WILL), KOMMER (COME), VAGAR (DARE), TÖR (DARE), BRUKAR (USUALLY), PLEJAR (USUALLY), LAR (TEACH), BEHÖVER (NEED), SKALL (SHALL), MASTE (MUST), VILL (WANT), KAN (CAN), FÅR (GET), SKA (WILL), KOMMER (COME), VAGAR (DARE), TÖR (DARE), BRUKAR (USUALLY), PLEJAR (USUALLY), LAR (TEACH), BEHÖVER (NEED), SKALL (SHALL), MASTE (MUST), VILL (WANT), KAN (CAN), FÅR (GET), SKA (WILL), KOMMER (COME), VAGAR (DARE), TÖR (DARE), BRUKAR (USUALLY), PLEJAR (USUALLY), LAR (TEACH), BEHÖVER (NEED), SKALL (SHALL), MASTE (MUST), VILL (WANT), KAN (CAN), FÅR (GET), SKA (WILL), KOMMER (COME), VAGAR (DARE), TÖR (DARE), BRUKAR (USUALLY), PLEJAR (USUALLY), LAR (TEACH), BEHÖVER (
-  # Questions
   Ar det din sons bok?:
     desc: Is it your son's book?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Är pappa hemma?:
     desc: Is dad home?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Va?:
     desc: What?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Vart ska vi?:
     desc: Where are we going?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vart springer du?:
     desc: Where are you running?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vart simmar du?:
     desc: Where are you swimming?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vart simmar ankan?:
     desc: Where is the duck swimming?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Vad heter du?:
     desc: What is your name?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vad gor du?:
     desc: What are you doing?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vad heter din farbror?:
     desc: What is your uncle's name?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vad är dagens datum?:
     desc: What is today's date?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vad gor du i helgen?:
     desc: What are you doing this weekend?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vad skrattar du at?:
     desc: What are you laughing at?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vad är en familj?:
     desc: What is a family?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Vet du varfor?:
     desc: Do you know why?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vet du var vargen ar?:
     desc: Do you know where the wolf is?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vet du var boken ar?:
     desc: Do you know where the book is?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Vilka smorgasarna är dina?:
     desc: Which sandwiches are yours?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vilka böcker läser du?:
     desc: Which books are you reading?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vilka strumpor är dina?:
     desc: Which socks are yours?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Vilken tallrik är din?:
     desc: Which plate is yours?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vilken skjorta är bla?:
     desc: Which shirt is blue?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vilken är din favoritfarg?:
     desc: What is your favorite color?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Vilket djur är blatt?:
     desc: Which animal is blue?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vilket är ditt favoritdjur?:
     desc: What is your favorite animal?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vilket rum är mitt?:
     desc: Which room is mine?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vlket djur äter gräs?:
     desc: Which animal eats grass?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Finns det en bok?:
     desc: Is there a book?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Finns det ingen kaffe?:
     desc: Is there no coffee?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Vem är du?:
     desc: Who are you?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vem är hon?:
     desc: Who is she?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vem frågar?:
     desc: Who is asking?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vem frågar du?:
     desc: Who are you asking?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Vems cykel är det?:
     desc: Whose bike is it?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vems bok är det?:
     desc: Whose book is it?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Vems katt är det?:
     desc: Whose cat is it?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Forstår du svenska?:
     desc: Do you understand Swedish?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Forstår du mig?:
     desc: Do you understand me?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Forstår du inte?:
     desc: Don't you understand?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Forstår du vad jag menar?:
     desc: Do you understand what I mean?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Forstår du boken?:
     desc: Do you understand the book?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Varfor kommer du inte?:
     desc: Why are you not coming?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Varfor dansar du inte?:
     desc: Why are'nt you dancing?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Varfor är lunchen sa dyr?:
     desc: Why is lunch so expensive?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Varfor kommer du hit?:
     desc: Why are you coming here?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Har du inget te?:
     desc: Don't you have any tea?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Har du ingen katt?:
     desc: Don't you have a cat?
-    tags: [sv, questions]
-
+    tags:
+      - sv
+      - questions
   Hur många bocker laser du?:
     desc: How many books are you reading?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Nar aker du?:
     desc: When are you going?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Nar kommer du?:
     desc: When are you coming?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Ticker han om mig?:
     desc: Does he like me?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Ticker du om boken?:
     desc: Do you like the book?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Nar anker du?:
     desc: When are you going?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Nar kommer han?:
     desc: When is he coming?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Hur sjunger hon?:
     desc: How does she sing?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Dricker du kaffe eller te?:
     desc: Are you drinking coffee or tea?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Sara och Peter, har ni en hund?:
     desc: Sara and Peter, do you have a dog?
-    tags: [sv, questions]
+    tags:
+      - sv
+      - questions
   Ser du flickan?:
     desc: Do you see the girl?
-    tags: [sv, questions]
-
-  # Negation
+    tags:
+      - sv
+      - questions
   Ibland vet jag inte varfor:
     desc: Sometimes I don't know why
-    tags: [sv, negation]
+    tags:
+      - sv
+      - negation
   Svaret är nej:
     desc: The answer is no
-    tags: [sv, negation]
+    tags:
+      - sv
+      - negation
   Jag pallar inte:
     desc: I can't be bothered
-    tags: [sv, negation]
-
-  # Being polite
+    tags:
+      - sv
+      - negation
   Jag är ledsen:
     desc: I am sorry
-    tags: [sv]
-
-  # Greetings
+    tags:
+      - sv
   Tack for maten:
     desc: Thank you for the food
-    tags: [sv]
+    tags:
+      - sv
   Tack for idag:
     desc: Thank you for today
-    tags: [sv]
+    tags:
+      - sv
   Tack for igoar:
     desc: Thank you for yesterday
-    tags: [sv]
+    tags:
+      - sv
   God morgon:
     desc: Good morning
-    tags: [sv]
+    tags:
+      - sv
   God natt:
     desc: Good night
-    tags: [sv]
+    tags:
+      - sv
   God aftermiddag:
     desc: Good afternoon
-    tags: [sv]
+    tags:
+      - sv
   God kvall:
     desc: Good evening
-    tags: [sv]
-
+    tags:
+      - sv
   Ja, det gor vi alltid:
     desc: Yes, we always do that
-    tags: [sv]
+    tags:
+      - sv
   Jag har ingen dator:
     desc: I don't have a computer
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1256,7 +1574,8 @@ cheats:
           - **Jag har ingen dator:** Used to say "I don't have a computer."
   Min syster har manga böcker:
     desc: My sister has many books
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1264,7 +1583,8 @@ cheats:
           - **Min syster har manga böcker:** Used to say
   Era tallrikar är rena:
     desc: Your plates are clean
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1272,9 +1592,11 @@ cheats:
           - **Era tallrikar är rena:** Used to say "Your plates are clean."
   SV is the language code for Swedish according to the ISO 639-1 standard:
     desc: The Swedish language is a North Germanic language spoken natively by 10 million people predominantly in Sweden and in parts of Finland, where it has equal legal standing with Finnish. It is largely mutually intelligible with Norwegian and to some extent with Danish, although the degree of mutual intelligibility is largely dependent on the dialect and accent of the speaker.
-    tags: [sv]
+    tags:
+      - sv
   Swedish Genders (En and Ett) Key differences from Portuguese Genders:
-    tags: [sv]
+    tags:
+      - sv
     desc: Swedish nouns are classified into two grammatical genders, "en" (common) and "ett" (neuter), which are distinct from the masculine and feminine genders in Brazilian Portuguese and do not correlate with biological or social gender
     notes:
       - md: |
@@ -1360,7 +1682,8 @@ cheats:
           | ett barn            | uma criança          | Ett             |
   Basic Words and Sentences:
     desc: Basic Words and Sentences in Swedish
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           # Common Words in Swedish
@@ -1675,7 +1998,8 @@ cheats:
           - **Thank you:** Tack
   ibland eller alltid:
     desc: Sometimes or Always
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Explanation
@@ -1782,7 +2106,8 @@ cheats:
           - It's located in a scenic region and offers a more relaxed lifestyle compared to the big cities.
   Counting in Swedish from 0 to 20:
     desc: Counting in Swedish from 0 to 20
-    tags: [sv]
+    tags:
+      - sv
     links:
       - https://youtu.be/iplIF_eclvM
     notes:
@@ -1814,7 +2139,8 @@ cheats:
           | 20     | tjugo   | [cu:gu]       |
   Jag äter en smorgas och ett apple:
     desc: I am eating a sandwich and an apple
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1822,7 +2148,8 @@ cheats:
           - **Jag äter en smorgas och ett apple:** Used to say
   Jar är so hungrig:
     desc: I am so hungry
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1830,7 +2157,8 @@ cheats:
           - **Jar är so hungrig:** Used to say "I
   Han äter ett apple:
     desc: He is eating an apple
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1838,31 +2166,40 @@ cheats:
           - **Han äter ett apple:** Used to say "He is eating an apple."
   Kvinnan är advokat:
     desc: The woman is a lawyer
-    tags: [sv]
+    tags:
+      - sv
   Man och kvinnor:
     desc: Man and Women
-    tags: [sv]
+    tags:
+      - sv
   Flickor och pojkar:
     desc: Girls and boys
-    tags: [sv]
+    tags:
+      - sv
   Jag alskar dig:
     desc: I love you
-    tags: [sv]
+    tags:
+      - sv
   Jag alskar min familj:
     desc: I love my family
-    tags: [sv]
+    tags:
+      - sv
   Jag är en flicka:
     desc: I am a girl
-    tags: [sv]
+    tags:
+      - sv
   Jag är en kvinna:
     desc: I am a woman
-    tags: [sv]
+    tags:
+      - sv
   Pojken äter en smorgas:
     desc: The boy is eating a sandwich
-    tags: [sv]
+    tags:
+      - sv
   Barnet dricker mjolk:
     desc: The child is drinking milk
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1870,7 +2207,8 @@ cheats:
           - **Barnet dricker mjolk:** Used to say "The child is drinking milk."
   Det är en fin dag idag:
     desc: It is a nice day today
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1878,31 +2216,37 @@ cheats:
           - **Det är en fin dag idag:** Used to say
   Det är ett aplle:
     desc: It is an apple
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
 
           - **Det är ett aplle:** Used to say "It is an apple."
-
   Mannen är lärare:
     desc: The man is a doctor.
-    tags: [sv]
+    tags:
+      - sv
   Kvinnan är laser en tidning:
     desc: The woman is reading a newspaper.
-    tags: [sv]
+    tags:
+      - sv
   Ja, Jag ser dig:
     desc: Yes, I see you.
-    tags: [sv]
+    tags:
+      - sv
   Ja, Jag ser kvinnan:
     desc: Yes, I see the woman.
-    tags: [sv]
+    tags:
+      - sv
   Han dricker for mycket alkohol:
     desc: He drinks too much alcohol.
-    tags: [sv]
+    tags:
+      - sv
   Anna och Lisa, bor ni i Stockholm?:
     desc: Anna and Lisa, do you live in Stockholm?
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1910,10 +2254,12 @@ cheats:
           - **Anna och Lisa, bor ni i Stockholm?:** Used to ask if Anna and Lisa live in Stockholm.
   Pojken äter agg:
     desc: The boy is eating eggs.
-    tags: [sv]
+    tags:
+      - sv
   Common Sentences:
     desc: Common Sentences
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Common Sentences
@@ -1935,7 +2281,8 @@ cheats:
           - **Kom igen:** Come on
   Some Sentences:
     desc: Some Sentences
-    tags: [sv]
+    tags:
+      - sv
     notes: |
       ## My apple and my orange
 
@@ -1971,13 +2318,16 @@ cheats:
       | Those are beef                | Det där är nötkött              |
   Han visar mig sin bil:
     desc: He is showing me his car
-    tags: [sv]
+    tags:
+      - sv
   De anvander sina datorer:
     desc: They are using their computers
-    tags: [sv]
+    tags:
+      - sv
   Flickan leker ofta med hunden:
     desc: The girl often plays with the dog
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1985,7 +2335,8 @@ cheats:
           - **Flickan leker ofta med hunden:** Used to say "The girl often plays with the dog"
   Mannen ritar en karta:
     desc: The man is drawing a map
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -1993,7 +2344,8 @@ cheats:
           - **Mannen ritar en karta:** Used to say "The man is drawing a map"
   De lyssnar pa musik:
     desc: They are listening to music
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -2001,7 +2353,8 @@ cheats:
           - **De lyssnar pa musik:** Used to say "They are listening to music"
   Mannen skrattar inte:
     desc: The man is not laughing
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -2009,7 +2362,8 @@ cheats:
           - **Mannen skrattar inte:** Used to say "The man is not laughing"
   Hon gar:
     desc: She is walking
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -2017,7 +2371,8 @@ cheats:
           - **Hon gar:** Used to say "She is walking"
   Flickan pratar och mannen lyssnar:
     desc: The girl is speaking and the man is listening
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -2025,7 +2380,8 @@ cheats:
           - **Flickan pratar och mannen lyssnar:** Used to say "The girl is speaking and the man is listening"
   De springer snabbt:
     desc: They are running fast
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -2033,7 +2389,8 @@ cheats:
           - **De springer snabbt:** Used to say "They are running fast"
   Hon sitter och han star:
     desc: She is sitting and he is standing
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -2041,19 +2398,24 @@ cheats:
           - **Hon sitter och han star:** Used to say "She is sitting and he is standing"
   Han vill pa en kopp kaffe:
     desc: He wants a cup of coffee
-    tags: [sv]
+    tags:
+      - sv
   Bjorn hitta en ny bok:
     desc: Bjorn finds a new book
-    tags: [sv]
+    tags:
+      - sv
   Hon koper en ny kostym:
     desc: She buys a new suit
-    tags: [sv]
+    tags:
+      - sv
   Hunden tar din tomater:
     desc: The dog takes your tomatoes
-    tags: [sv]
+    tags:
+      - sv
   De tvattar sina klader:
     desc: They wash their clothes
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -2061,7 +2423,8 @@ cheats:
           - **De tvattar sina klader:** Used to say "They wash their clothes"
   De visar sina skor:
     desc: They show their shoes
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -2069,13 +2432,16 @@ cheats:
           - **De visar sina skor:** Used to say "They show their shoes"
   Kvinnan skriver ett brev:
     desc: The woman writes a letter
-    tags: [sv]
+    tags:
+      - sv
   Vi gar pa bio:
     desc: We are going to the movies
-    tags: [sv]
+    tags:
+      - sv
   Det regnar idag:
     desc: It is raining today
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
@@ -2083,659 +2449,983 @@ cheats:
           - **Det regnar idag:** Used to say "It is raining today"
   Kocken lagar altid god mat:
     desc: The chef always cooks good food
-    tags: [sv]
+    tags:
+      - sv
     notes:
       - md: |
           ## Usage
 
           - **Kocken lagar altid god mat:** Used to say "The chef always cooks good food"
-
-  # Leading with time
   morgon:
     desc: Morning
-    tags: [sv]
+    tags:
+      - sv
   eftermiddag:
     desc: Afternoon
-    tags: [sv]
+    tags:
+      - sv
   kvall:
     desc: Evening
-    tags: [sv]
+    tags:
+      - sv
   natt:
     desc: Night
-    tags: [sv]
-
-  #  Days of week
+    tags:
+      - sv
   mandag, mandagar:
     desc: Monday, Mondays
-    tags: [sv, time, days]
+    tags:
+      - sv
+      - time
+      - days
   tisdag, tisdagar:
     desc: Tuesday, Tuesdays
-    tags: [sv, time, days]
+    tags:
+      - sv
+      - time
+      - days
   onsdag, onsdagar:
     desc: Wednesday, Wednesdays
-    tags: [sv, time, days]
+    tags:
+      - sv
+      - time
+      - days
   torsdag, torsdagar:
     desc: Thursday, Thursdays
-    tags: [sv, time, days]
+    tags:
+      - sv
+      - time
+      - days
   fredag, fredagar:
     desc: Friday, Fridays
-    tags: [sv, time, days]
+    tags:
+      - sv
+      - time
+      - days
   lordag, lordagar:
     desc: Saturday, Saturdays
-    tags: [sv, time, days]
+    tags:
+      - sv
+      - time
+      - days
   sondag, sondagar:
     desc: Sunday, Sundays
-    tags: [sv, time, days]
+    tags:
+      - sv
+      - time
+      - days
   mandag, tisdag, onsdag, torsdag, fredag, lordag, sondag:
     desc: Days of the week
-    tags: [sv, time, days]
+    tags:
+      - sv
+      - time
+      - days
   mandagar, tisdagar, onsdagar, torsdagar, fredagar, lordagar, sondagar:
     desc: Days of the week (plural)
-    tags: [sv, time, days]
+    tags:
+      - sv
+      - time
+      - days
   helgen:
     desc: Weekend
-    tags: [sv, time, days]
-
-  # Months
+    tags:
+      - sv
+      - time
+      - days
   manad:
     desc: Month
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   januari:
     desc: January
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   februari:
     desc: February
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   mars:
     desc: March
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   april:
     desc: April
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   maj:
     desc: May
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   juni:
     desc: June
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   juli:
     desc: July
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   augusti:
     desc: August
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   september:
     desc: September
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   oktober:
     desc: October
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   november:
     desc: November
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   december:
     desc: December
-    tags: [sv, time, months]
+    tags:
+      - sv
+      - time
+      - months
   januari, februari, mars, april, maj, juni, juli, augusti, september, oktober, november, december:
     desc: Months of the year
-    tags: [sv, time, months]
-
-  # Seasons
+    tags:
+      - sv
+      - time
+      - months
   vinter:
     desc: Winter
-    tags: [sv, time, seasons]
+    tags:
+      - sv
+      - time
+      - seasons
   var:
     desc: Spring
-    tags: [sv, time, seasons]
+    tags:
+      - sv
+      - time
+      - seasons
   sommar:
     desc: Summer
-    tags: [sv, time, seasons]
+    tags:
+      - sv
+      - time
+      - seasons
   host:
     desc: Autumn
-    tags: [sv, time, seasons]
+    tags:
+      - sv
+      - time
+      - seasons
   vinter, var, sommar, host:
     desc: Seasons
-    tags: [sv, time, seasons]
-
-  # Weather
+    tags:
+      - sv
+      - time
+      - seasons
   sol:
     desc: Sun
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   regn:
     desc: Rain
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   sno:
     desc: Snow
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   vind:
     desc: Wind
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   moln:
     desc: Cloud
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   blixt:
     desc: Lightning
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   aska:
     desc: Thunder
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   temperatur:
     desc: Temperature
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   varm:
     desc: Hot
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   kall:
     desc: Cold
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   varmt:
     desc: Warm
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   kallt:
     desc: Cold
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   solig:
     desc: Sunny
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   regnig:
     desc: Rainy
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   snoig:
     desc: Snowy
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   blasig:
     desc: Windy
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   molnig:
     desc: Cloudy
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   askig:
     desc: Stormy
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   sol, regn, sno, vind, moln, blixt, aska, temperatur, varm, kall, varmt, kallt, solig, regnig, snoig, blasig, molnig, askig:
     desc: Weather
-    tags: [sv, weather]
-
-  # Common sentences related to weather
+    tags:
+      - sv
+      - weather
   Det regnar nu:
     desc: It is raining now
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   Det snoar:
     desc: It is snowing
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   Det är kallt:
     desc: It is cold
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   Det är varmt:
     desc: It is hot
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   Det är soligt:
     desc: It is sunny
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   Det är molnigt:
     desc: It is cloudy
-    tags: [sv, weather]
+    tags:
+      - sv
+      - weather
   Nu är det sommar:
     desc: Now it is summer
-    tags: [sv, time]
-
-  # Common sentences related to time
+    tags:
+      - sv
+      - time
   Det tar en vecka:
     desc: It takes a week
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   I morgon är det fredag:
     desc: Tomorrow is Friday
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   I morgon är det helg:
     desc: Tomorrow is the weekend
-    tags: [sv, time]
-
+    tags:
+      - sv
+      - time
   Jag ticker inte om februari:
     desc: I don't like February
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   Mars är en bra manad:
     desc: March is a good month
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   Mars är en manad pa aret:
     desc: March is a month of the year
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   Hur manga dagar är det kvar till jul?:
     desc: How many days until Christmas?
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   Hur manga dagar är har i februari?:
     desc: How many days are there in February?
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   Hur manga dagar är det i en vecka?:
     desc: How many days are there in a week?
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   Hur manga dagar har april?:
     desc: How many days are there in April?
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   Viket datum är det i dag?:
     desc: What is the date today?
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   Ar det lordag eller sondag i dag?:
     desc: Is it Saturday or Sunday today?
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   Sekretären kommer senare:
     desc: The secretary will come later
-    tags: [sv, time]
+    tags:
+      - sv
+      - time
   En dag senare:
     desc: One day later
-    tags: [sv, time]
-
-  # Sentense related to daily life
+    tags:
+      - sv
+      - time
   Jag har en tröja:
     desc: I have a sweater
-    tags: [sv]
+    tags:
+      - sv
   Hon har en tröja:
     desc: She has a sweater
-    tags: [sv]
+    tags:
+      - sv
   Han har en tröja:
     desc: He has a sweater
-    tags: [sv]
+    tags:
+      - sv
   Vi har en tröja:
     desc: We have a sweater
-    tags: [sv]
+    tags:
+      - sv
   De har en tröja:
     desc: They have a sweater
-    tags: [sv]
-
-  # Ett Words:
+    tags:
+      - sv
   ett skrivbord:
     desc: a desk
-    tags: [sv]
+    tags:
+      - sv
   ett bord:
     desc: a table
-    tags: [sv]
+    tags:
+      - sv
   ett apple:
     desc: an apple
-    tags: [sv]
+    tags:
+      - sv
   ett skåp:
     desc: a cupboard
-    tags: [sv]
+    tags:
+      - sv
   ett skärp:
     desc: a belt
-    tags: [sv]
-
+    tags:
+      - sv
   Jag Heter Rogério:
     desc: My name is Rogério
-    tags: [sv]
-
-  # Opinions
+    tags:
+      - sv
   Maten är god:
     desc: The food is good
-    tags: [sv]
+    tags:
+      - sv
   Maten är verkligen god:
     desc: The food is really good
-    tags: [sv]
+    tags:
+      - sv
   Hennes klader är snygga:
     desc: Her clothes are nice
-    tags: [sv]
+    tags:
+      - sv
   Hennes klader är verkligen vacker:
     desc: Her clothes are really beautiful
-    tags: [sv]
-
+    tags:
+      - sv
   Hur mar du?:
     desc: How are you?
-    tags: [sv]
+    tags:
+      - sv
   Tack, jag mar bra:
     desc: Thank you, I am fine
-    tags: [sv]
+    tags:
+      - sv
   Jag mor bra, tack. Och du?:
     desc: I am fine, thank you. And you?
-    tags: [sv]
+    tags:
+      - sv
   Jag mor jättebra, tack.:
     desc: I am great, thank you.
-    tags: [sv]
+    tags:
+      - sv
   Jag mor inte sa bra:
     desc: I am not so good
-    tags: [sv]
+    tags:
+      - sv
   Jag mor inte sa bra idag:
     desc: I am not so good today
-    tags: [sv]
+    tags:
+      - sv
   Jag mor inte sa bra just nu:
     desc: I am not so good right now
-    tags: [sv]
+    tags:
+      - sv
   Jag mor dåligt:
     desc: I am feeling bad
-    tags: [sv]
+    tags:
+      - sv
   Jag mor jättdåligt:
     desc: I am feeling very bad
-    tags: [sv]
+    tags:
+      - sv
   Jag mor inte so dåligt idag:
     desc: I am not feeling so bad today
-    tags: [sv]
+    tags:
+      - sv
   Kottet är gott:
     desc: The meat is good
-    tags: [sv]
+    tags:
+      - sv
   Kottet är dyrt:
     desc: The meat is expensive
-    tags: [sv]
+    tags:
+      - sv
   Kladerna är dyra:
     desc: The clothes are expensive
-    tags: [sv]
+    tags:
+      - sv
   Kladerna är billiga:
     desc: The clothes are cheap
-    tags: [sv]
+    tags:
+      - sv
   Ett vackert hus:
     desc: A beautiful house
-    tags: [sv]
+    tags:
+      - sv
   Hans kostym är snygg:
     desc: His suit is nice
-    tags: [sv]
+    tags:
+      - sv
   Hans kostym är ful:
     desc: His suit is ugly
-    tags: [sv]
+    tags:
+      - sv
   Du är vacker:
     desc: You are beautiful
-    tags: [sv]
+    tags:
+      - sv
   Hundar är inte farliga:
     desc: Dogs are not dangerous
-    tags: [sv]
+    tags:
+      - sv
   Restaurangen är tom:
     desc: The restaurant is empty
-    tags: [sv]
+    tags:
+      - sv
   Rott är en fin färg:
     desc: Red is a nice color
-    tags: [sv]
+    tags:
+      - sv
   Rott är modernt i ar:
     desc: Red is trendy this year
-    tags: [sv]
+    tags:
+      - sv
   Boken är inte bra men jag tycker om den ändå:
     desc: The book is not good but I like it anyway
-    tags: [sv]
+    tags:
+      - sv
   Till och med jag kan göra det:
     desc: Even I can do it
-    tags: [sv]
+    tags:
+      - sv
   Till och med jag tycker om det:
     desc: Even I like it
-    tags: [sv]
-
-  # Giving information
+    tags:
+      - sv
   Byxorna är borta:
     desc: The pants are gone
-    tags: [sv]
+    tags:
+      - sv
   Byxorna är i garderoben:
     desc: The pants are in the closet
-    tags: [sv]
-
+    tags:
+      - sv
   Tolken är här:
     desc: The interpreter is here
-    tags: [sv]
+    tags:
+      - sv
   Tolken är redan här:
     desc: The interpreter is already here
-    tags: [sv]
-
+    tags:
+      - sv
   Hon är inte pilot än:
     desc: She is not a pilot yet
-    tags: [sv]
+    tags:
+      - sv
   Hon är inte pilot längre:
     desc: She is not a pilot anymore
-    tags: [sv]
+    tags:
+      - sv
   Hon talar till och med svenska:
     desc: She even speaks Swedish
-    tags: [sv]
-
+    tags:
+      - sv
   Han är inte här:
     desc: He is not here
-    tags: [sv]
+    tags:
+      - sv
   Han är egentligen inte min bror:
     desc: He is not actually my brother
-    tags: [sv]
+    tags:
+      - sv
   Han sager att han ar modell men han ar egentligen prast:
     desc: He says he is a model but he is actually a priest
-    tags: [sv]
+    tags:
+      - sv
   Han laser inte ens tidningar:
     desc: He doesn't even read newspapers
-    tags: [sv]
+    tags:
+      - sv
   Han dricker aldrig alkohol ändå:
     desc: He never drinks alcohol anyway
-    tags: [sv]
+    tags:
+      - sv
   Han dricker ändå aldrig alkohol:
     desc: He never drinks alcohol anyway
-    tags: [sv]
+    tags:
+      - sv
   Hon äter inte ens ägg:
     desc: She doesn't even eat eggs
-    tags: [sv]
+    tags:
+      - sv
   Hon äter inte frukt, inte ens äpplen:
     desc: She doesn't eat fruit, not even apples
-    tags: [sv]
-
+    tags:
+      - sv
   Vi behöver inte hjälp:
     desc: We don't need help
-    tags: [sv]
+    tags:
+      - sv
   Vi behöver verkligen en ingenjor som du:
     desc: We really need an engineer like you
-    tags: [sv]
+    tags:
+      - sv
   Vi bade behöver hjälp:
     desc: We both need help
-    tags: [sv]
+    tags:
+      - sv
   Vi bade skrattar och grater:
     desc: We both laugh and cry
-    tags: [sv]
-
+    tags:
+      - sv
   Det finns bade hundar och katter:
     desc: There is both dogs and cats
-    tags: [sv]
+    tags:
+      - sv
   Ar det redan fredag?:
     desc: Is it already Friday?
-    tags: [sv]
+    tags:
+      - sv
   Den ar redan här:
     desc: It is already here
-    tags: [sv]
+    tags:
+      - sv
   Den ar borta:
     desc: It is gone
-    tags: [sv]
-
+    tags:
+      - sv
   Klader är borta!:
     desc: Clothes are gone!
-    tags: [sv]
+    tags:
+      - sv
   Jag laser sallan tidningar:
     desc: I rarely read newspapers
-    tags: [sv]
+    tags:
+      - sv
   Jag har atminstone en hund:
     desc: at least I have one dog
-    tags: [sv]
+    tags:
+      - sv
   Jag har atminstone bekvama skor:
     desc: at least I have comfortable shoes
-    tags: [sv]
+    tags:
+      - sv
   Jag har atminstone dyra skor:
     desc: at least I have expensive shoes
-    tags: [sv]
-
+    tags:
+      - sv
   Kom igen:
     desc: Come on
-    tags: [sv]
+    tags:
+      - sv
   Jag har redan en hund:
     desc: I already have a dog
-    tags: [sv]
-
+    tags:
+      - sv
   Vi dricker sällan vin:
     desc: We rarely drink wine
-    tags: [sv]
-
+    tags:
+      - sv
   Min man vaknar altid tidigt:
     desc: My husband always wakes up early
-    tags: [sv]
-
+    tags:
+      - sv
   Nej, jag bara skojar:
     desc: No, I'm just kidding
-    tags: [sv]
+    tags:
+      - sv
   Nej, jag bakar aldrig:
     desc: No, I never bake
-    tags: [sv]
+    tags:
+      - sv
   Nej, jag bakar aldrig brod:
     desc: No, I never bake bread
-    tags: [sv]
-
+    tags:
+      - sv
   Katten sover var som helst:
     desc: The cat sleeps anywhere
-    tags: [sv]
-
-  # Adverbs
+    tags:
+      - sv
   For narvarande?:
     desc: Currently
-    tags: [sv, adverbs]
-
+    tags:
+      - sv
+      - adverbs
   Inte så långt:
     desc: Not so far
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Åtminstone:
     desc: At least
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Åker du dit ofta?:
     desc: Do you often go there?
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   När är det slut?:
     desc: When is it over?
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   När är festen slut?:
     desc: When is the party over?
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Snart börjar helgen:
     desc: Soon the weekend is starting
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Sköldpaddan långsamt passerar krabba:
     desc: The turtle is slowly passing the crab
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Sköldpaddan äter långsamt:
     desc: The turtle is eating slowly
-    tags: [sv, adverbs]
-
+    tags:
+      - sv
+      - adverbs
   Det är viktigt, särskilt för mamma:
     desc: It is important, especially for mom
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det är precis samma färg:
     desc: It is exactly the same color
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det är definitivt en älg:
     desc: It is definitely a moose
-    tags: [sv, adverbs]
-
+    tags:
+      - sv
+      - adverbs
   Varför går du dit:
     desc: Why are you going there?
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Min mamma är läkare:
     desc: My mom is a doctor
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Vi väljer den stora lunchen:
     desc: We are choosing the big lunch
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Hur långt är det till flygplatsen?:
     desc: How far is it to the airport?
-    tags: [sv, adverbs, questions]
+    tags:
+      - sv
+      - adverbs
+      - questions
   Är du tvåspråkig?:
     desc: Are you bilingual?
-    tags: [sv, adverbs, questions]
+    tags:
+      - sv
+      - adverbs
+      - questions
   Vakterna kommer snart:
     desc: The guards are comming soon
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   De kommer i helgen:
     desc: They are comming this weekend
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Hans föräldrar är rika:
     desc: His parents are rich
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Vem ser han ut som?:
     desc: Who does he look like?
-    tags: [sv, adverbs, questions]
+    tags:
+      - sv
+      - adverbs
+      - questions
   Barnet är trött:
     desc: The child is tired
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Till och med jag tycker om henne:
     desc: Even I like her
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Till och med farfar sjunger:
     desc: Even grandpa sings
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Den lilla lila lådan:
     desc: The small purple box
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Den är varken stor eller liten:
     desc: It is neither big nor small
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Varför står den stora lådan på bordet?:
     desc: Why is the big box on the table?
-    tags: [sv, adverbs, questions]
+    tags:
+      - sv
+      - adverbs
+      - questions
   Katten sitter bakom dörren:
     desc: The cat is sitting behind the door
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Stolen är bakom bordet:
     desc: The chair is behind the table
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Pratar vi om samma sak?:
     desc: Are we talking about the same thing?
-    tags: [sv, adverbs, questions]
+    tags:
+      - sv
+      - adverbs
+      - questions
   Varför ligger sakerna på golvet?:
     desc: Why are the things on the floor?
-    tags: [sv, adverbs, questions]
+    tags:
+      - sv
+      - adverbs
+      - questions
   Vilken våning bor du på?:
     desc: What floor do you live on?
-    tags: [sv, adverbs, questions]
+    tags:
+      - sv
+      - adverbs
+      - questions
   Vilken våning är det?:
     desc: What floor is it?
-    tags: [sv, adverbs, questions]
+    tags:
+      - sv
+      - adverbs
+      - questions
   I september sjungerr jag mycket:
     desc: In September I sing a lot
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Vad gör han för närvarande?:
     desc: What is he currently doing?
-    tags: [sv, adverbs, questions]
+    tags:
+      - sv
+      - adverbs
+      - questions
   Jag går dit:
     desc: I'm going there
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Har vi tillräckligt med tid?:
     desc: Do we have enough time?
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Aker du ofta dit?:
     desc: Do you often go there?
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Vi äter snart:
     desc: We eat soon
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Vi äter snart mat:
     desc: We eat food soon
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Snart borjar vi:
     desc: Soon we start
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Snart borjar helgen:
     desc: Soon we start the weekend
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Festen ar slut:
     desc: The party is over
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Antligen ser du mig!:
     desc: Finnaly you see me!
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Vanligtvis kommer han efter mig:
     desc: Usually he comes after me
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Hon studerar nastan hela sommaren:
     desc: She studies almost all summer
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det ar faktiskt min mamma:
     desc: It is actually my mom
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Algar ar i allmanhet vegetarianer:
     desc: Moose are generally vegetarians
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Han tallar inte heller engleska:
     desc: He does not speak English either
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Varken du eller jag:
     desc: Neither you nor I
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Varken du eller jag vet det:
     desc: Neither you nor I know it
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Hon tallar tydligt:
     desc: She speaks clearly
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det är ungefar en kilometer:
     desc: It is approximately one kilometer
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs
   Det är troligtvis en katt:
     desc: It is likely a cat
-    tags: [sv, adverbs]
+    tags:
+      - sv
+      - adverbs

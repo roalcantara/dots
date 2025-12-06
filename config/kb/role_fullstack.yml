@@ -1,15 +1,20 @@
 bookmarks:
   https://app.mindpal.co/profile:
     desc: MindPal | Profile
-    tags: [pvt, mindpal]
-
+    tags:
+      - pvt
+      - mindpal
   https://photos.app.goo.gl/n6S9BSBaUJgtzjrN6:
     desc: Austrália | Google Photos
-    tags: [pvt, google, photos]
-
+    tags:
+      - pvt
+      - google
+      - photos
   https://linkedin.com/jobs/view/3841893990:
     desc: Amicus | Senior Full Stack Engineer (28/02/2024)
-    tags: [pvt, job]
+    tags:
+      - pvt
+      - job
     notes:
       - md: |
           Full Stack Engineer
@@ -58,10 +63,11 @@ bookmarks:
           Thank you for considering my application. I am keen on the prospect of joining your team and contributing to the innovative work being done at Amicus.
 
           Best regards,
-
   https://linkedin.com/jobs/view/3839313256:
     desc: Thyme · Lisbon, Portugal | Back End Developer
-    tags: [pvt, job]
+    tags:
+      - pvt
+      - job
     notes:
       - md: |
           ### Back End Developer
@@ -118,10 +124,11 @@ bookmarks:
           Thank you for considering my application. I am enthusiastic about the opportunity to contribute to your team and help achieve its strategic goals.
 
           Best regards,
-
   https://linkedin.com/jobs/view/3831492834:
     desc: Apollo Solutions · Rotterdam, South Holland, Netherlands | Full Stack Engineer
-    tags: [pvt, job]
+    tags:
+      - pvt
+      - job
     notes:
       - md: |
           ### Full Stack Engineer
@@ -175,10 +182,11 @@ bookmarks:
           Thank you for considering my application. I am keen to explore how my background, skills, and enthusiasms align with the needs of your team.
 
           Warm regards,
-
   https://12factor.net/admin-processes:
     desc: The Twelve-Factor App
-    tags: [pvt, job]
+    tags:
+      - pvt
+      - job
     notes:
       - md: |
           ## Ruby Developer
@@ -207,10 +215,11 @@ bookmarks:
           - Test library (we use jest)
       - md: |
           ## Message
-
   https://thehub.io/jobs/65dd2d09c0cf3f0ed6574241:
     desc: Growth Engineer - Ruby on Rails | Copenhagen, Denmark | Tonsser (29/02/2024)
-    tags: [pvt, job]
+    tags:
+      - pvt
+      - job
     notes:
       - md: |
           Join the Tonsser Team as a Growth Engineer (Ruby on Rails)
@@ -271,11 +280,12 @@ bookmarks:
           Thank you for considering my application. I am keen to discuss how my background, recent experiences, and eagerness to focus on Ruby on Rails development can contribute to the dynamic team at Tonsser. I look forward to the opportunity to help shape the future of football through innovative technology solutions.
 
           Warm regards,
-
 cheats:
   Dev FullStack | Rede Dor:
     desc: React, Node, MongoDB, JavaScript/TypeScript e AWS
-    tags: [AVN, job]
+    tags:
+      - avn
+      - job
     links:
       - https://linkedin.com/jobs/view/3863895305
     notes: |
@@ -313,7 +323,9 @@ cheats:
       - Destacar vivência com manipulação de grande volume de dados em MongoDB (Importante para a geração de indicadores e insights para tomadas de decisão)
   Perguntas | Rede Dor:
     desc: Perguntas interessantes sobre Job Opportunity para fazer ao entrevistador (desafios, cultura, tecnologias, etc)
-    tags: [AVN, job]
+    tags:
+      - avn
+      - job
     notes: |
       ## Perguntas sobre a Job Opportunity
 
@@ -329,7 +341,9 @@ cheats:
       - **Tests:** Como é a cultura de testes na empresa? (TDD? BDD? Unit Tests? E2E?)
   Experiências relevantes | Rede Dor:
     desc: Experiências relevantes com as tecnologias solicitadas
-    tags: [AVN, job]
+    tags:
+      - avn
+      - job
     notes: |
       ## Experiências relevantes com as tecnologias solicitadas
 
@@ -342,7 +356,9 @@ cheats:
       - Utilizou WebSockets para comunicação em tempo real e WebWorkers para processamento em background.
   Conhecimento em arquitetura, DevOps e cloud (AWS) | Rede Dor:
     desc: Demonstrar conhecimento em arquitetura, DevOps e cloud (AWS)
-    tags: [AVN, job]
+    tags:
+      - avn
+      - job
     notes: |
       ## Demonstrar conhecimento em arquitetura, DevOps e cloud (AWS)
 
@@ -351,7 +367,9 @@ cheats:
       - Setup de pipelines CI/CD garantindo qualidade e entrega contínua para frontend, backend e mobile.
   Destacar vivência com grande volume de dados | Rede Dor:
     desc: Destacar vivência com manipulação de grande volume de dados
-    tags: [AVN, job]
+    tags:
+      - avn
+      - job
     notes: |
       ## Destacar vivência com manipulação de grande volume de dados
 
@@ -359,10 +377,12 @@ cheats:
       - Utilizou MongoDB com aggregations, índices, transações, replicação e sharding para otimizar consultas.
       - Migrou para Elasticsearch/Kibana para permitir buscas e consultas complexas em near-real-time.
       - Configurou e implementou workflows dinâmicos para tomada de decisão orientada a dados.
-
   useState | React.js:
     desc: Adicione o estado React a componentes funcionais
-    tags: [AVN, react, hooks]
+    tags:
+      - avn
+      - hooks
+      - react
     notes: |
       ## useState
 
@@ -387,7 +407,10 @@ cheats:
       ```
   useEffect | React.js:
     desc: Execute efeitos colaterais em componentes funcionais
-    tags: [AVN, react, hooks]
+    tags:
+      - avn
+      - hooks
+      - react
     notes: |
       ## useEffect
 
@@ -417,7 +440,10 @@ cheats:
       ```
   useContext | React.js:
     desc: Acesse o contexto React em componentes funcionais
-    tags: [AVN, react, hooks]
+    tags:
+      - avn
+      - hooks
+      - react
     notes: |
       ## useContext
 
@@ -435,7 +461,10 @@ cheats:
       ```
   Hook Custom | React.js:
     desc: Extraia lógica de componentes React em funções reutilizáveis
-    tags: [AVN, react, hooks]
+    tags:
+      - avn
+      - hooks
+      - react
     notes: |
       ## Custom Hook
 
@@ -454,7 +483,10 @@ cheats:
       ```
   useReducer | React.js:
     desc: Gerencie estados complexos em componentes React
-    tags: [AVN, react, hooks]
+    tags:
+      - avn
+      - hooks
+      - react
     notes: |
       ## useReducer
 
@@ -490,7 +522,10 @@ cheats:
       ```
   useRef | React.js:
     desc: Acesse o nó DOM de um componente React
-    tags: [AVN, react, hooks]
+    tags:
+      - avn
+      - hooks
+      - react
     notes: |
       ## useRef
 
@@ -516,7 +551,10 @@ cheats:
       ```
   useMemo | React.js:
     desc: Memorize valores computados em componentes React
-    tags: [AVN, react, hooks]
+    tags:
+      - avn
+      - hooks
+      - react
     notes: |
       ## useMemo
 
@@ -537,7 +575,10 @@ cheats:
       ```
   useCallback | React.js:
     desc: Memorize funções em componentes React
-    tags: [AVN, react, hooks]
+    tags:
+      - avn
+      - hooks
+      - react
     notes: |
       ## useCallback
 
@@ -560,7 +601,10 @@ cheats:
       ```
   useImperativeHandle | React.js:
     desc: Personalize o valor retornado por um componente React
-    tags: [AVN, react, hooks]
+    tags:
+      - avn
+      - hooks
+      - react
     notes: |
       ## useImperativeHandle
 
@@ -584,7 +628,10 @@ cheats:
       ```
   useLayoutEffect | React.js:
     desc: Execute efeitos colaterais após as mudanças no DOM
-    tags: [AVN, react, hooks]
+    tags:
+      - avn
+      - hooks
+      - react
     notes: |
       ## useLayoutEffect
 
@@ -603,7 +650,10 @@ cheats:
       ```
   Router | React.js:
     desc: Navegação declarativa
-    tags: [AVN, react, router]
+    tags:
+      - avn
+      - react
+      - router
     notes: |
       ## React Router
 
@@ -670,10 +720,12 @@ cheats:
       // Renderizando o componente App no elemento root
       ReactDOM.render(<App />, document.getElementById('root'));
       ```
-
   Middlewares | Express.js:
     desc: Funções que têm acesso ao objeto de solicitação (request), ao objeto de resposta (response) e à próxima função de middleware no ciclo solicitação-resposta da aplicação.
-    tags: [AVN, nodejs, express]
+    tags:
+      - avn
+      - express
+      - node
     notes: |
       ## Installation
       > npm install express
@@ -732,7 +784,10 @@ cheats:
       ```
   Helmet | Express.js:
     desc: Configura cabeçalhos HTTP para mitigar ataques comuns, como ataques de injeção de scripts, clickjacking, entre outros
-    tags: [AVN, nodejs, express]
+    tags:
+      - avn
+      - express
+      - node
     notes: |
       ### Usar Helmet
       O pacote Helmet ajuda a proteger sua aplicação Express configurando vários cabeçalhos HTTP. Isso ajuda a mitigar ataques comuns, como ataques de injeção de scripts, clickjacking, entre outros.
@@ -750,13 +805,19 @@ cheats:
       ```
   HTTPS | Express.js:
     desc: Sempre use HTTPS para garantir que os dados sejam transmitidos de forma segura entre o cliente e o servidor
-    tags: [AVN, nodejs, express]
+    tags:
+      - avn
+      - express
+      - node
     notes: |
       ### 3. Usar HTTPS
       Sempre use HTTPS para garantir que os dados sejam transmitidos de forma segura entre o cliente e o servidor.
   CORS (Cross-Origin Resource Sharing) | Express.js:
     desc: Configure as políticas de CORS (Cross-Origin Resource Sharing) para permitir ou bloquear solicitações de diferentes origens
-    tags: [AVN, nodejs, express]
+    tags:
+      - avn
+      - express
+      - node
     notes: |
       ### Configure CORS
 
@@ -772,7 +833,10 @@ cheats:
       ```
   Middlewares de Segurança | Express.js:
     desc: Para limitar o número de solicitações por IP e evitar ataques de negação de serviço
-    tags: [AVN, nodejs, express]
+    tags:
+      - avn
+      - express
+      - node
     notes: |
       ### Middlewares de Segurança
 
@@ -797,7 +861,10 @@ cheats:
       ```
   Middlewares de Segurança de Cookies | Express.js | Best Practices:
     desc: Para proteger as informações do usuário armazenadas em cookies
-    tags: [AVN, nodejs, express]
+    tags:
+      - avn
+      - express
+      - node
     notes: |
       ### Middlewares de Segurança de Cookies
 
@@ -821,7 +888,10 @@ cheats:
       ```
   Valide Dados de Entrada | Express.js:
     desc: Sempre valide os dados de entrada do usuário para evitar ataques de injeção de SQL, XSS e outros tipos de ataques.
-    tags: [AVN, nodejs, express]
+    tags:
+      - avn
+      - express
+      - node
     notes: |
       ### Valide Dados de Entrada
 
@@ -840,7 +910,10 @@ cheats:
       ```
   Sanitização de Entrada | Express.js:
     desc: Isso ajuda a prevenir ataques como SQL Injection e Cross-Site Scripting (XSS)
-    tags: [AVN, nodejs, express]
+    tags:
+      - avn
+      - express
+      - node
     notes: |
       ### Sanitização de Entrada
 
@@ -869,7 +942,10 @@ cheats:
       ```
   JWT | Express.js:
     desc: Autenticação e autorização robustas como JWT (JSON Web Tokens)
-    tags: [AVN, nodejs, express]
+    tags:
+      - avn
+      - express
+      - node
     notes: |
       ### Autenticação e Autorização
 
@@ -891,10 +967,12 @@ cheats:
         });
       };
       ```
-
   Cluster Module | Node.js:
     desc: Aproveite ao máximo os sistemas multi-core
-    tags: [AVN, nodejs, cluster]
+    tags:
+      - avn
+      - cluster
+      - node
     notes: |
       ## Cluster Module
 
@@ -927,7 +1005,10 @@ cheats:
       ```
   Performance Tuning | Node.js:
     desc: Ajuste o desempenho do Node.js para obter o máximo de desempenho
-    tags: [AVN, nodejs, performance]
+    tags:
+      - avn
+      - node
+      - performance
     notes: |
       ## Performance Tuning
 
@@ -942,7 +1023,10 @@ cheats:
       - `ab` (Apache Benchmark) para testar a capacidade de carga do seu servidor.
   Jest | Node.js:
     desc: Estrutura de teste de JavaScript com foco na simplicidade
-    tags: [AVN, nodejs, testing]
+    tags:
+      - avn
+      - node
+      - test
     notes: |
       ## Jest
 
@@ -972,7 +1056,10 @@ cheats:
       ```
   crypto.hash | Node.js:
     desc: Hashing a string and return the result as a hex-encoded string
-    tags: [AVN, nodejs, crypto]
+    tags:
+      - avn
+      - crypto
+      - node
     links:
       - https://nodejs.org/en/blog/release/v20.12.0#crypto-implement-cryptohash
     notes: |
@@ -985,10 +1072,12 @@ cheats:
       console.log(crypto.hash('sha1', string));
       // 10b3493287f831e81a438811a1ffba01f8cec4b7
       ```
-
   MongoDB:
     desc: General-purpose, document-based, distributed database built for modern application developers and for the cloud era.
-    tags: [AVN, mongodb, macos]
+    tags:
+      - avn
+      - macos
+      - mongo
     links:
       - Install On OSX: https://mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x
       - The MongoDB Database Tools Documentation: https://mongodb.com/docs/database-tools
@@ -1304,7 +1393,11 @@ cheats:
           - Backing up your data regularly
   mongosh | MongoDB:
     desc: A shell-centric CLI for MongoDB with syntax highlighting, intelligent autocomplete, and more.
-    tags: [AVN, mongodb, shell, cli]
+    tags:
+      - avn
+      - cli
+      - mongo
+      - shell
     notes:
       - sh: |
           # enter the MongoDB Shell
@@ -1377,7 +1470,10 @@ cheats:
           mydatabase> exit;
   Modeling | MongoDB:
     desc: Estratégias para modelar dados em MongoDB para grandes volumes de dados
-    tags: [AVN, mongodb, database]
+    tags:
+      - avn
+      - db
+      - mongo
     notes: |
       ## Modelagem de Dados para grande volume
 
@@ -1404,7 +1500,9 @@ cheats:
       Expirar documentos automaticamente após um período de tempo.
   Denormalization | MongoDB:
     desc: Incorporate related data into a single document to reduce the need for joins
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ## Denormalization
 
@@ -1448,7 +1546,9 @@ cheats:
       - Content management systems
   Sharding | MongoDB:
     desc: Distribute data across multiple servers to handle large data volumes
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ## Sharding
 
@@ -1474,7 +1574,9 @@ cheats:
       - **Router:** Routes queries to the appropriate shard.
   TTL | MongoDB:
     desc: Automatically expire documents after a specified period of time
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ## TTL Indexes
 
@@ -1503,7 +1605,9 @@ cheats:
       - The TTL index does not guarantee that expired data will be deleted immediately.
   Preaggregation | MongoDB:
     desc: Pre-calculate and store results of frequent queries to reduce response time
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ## Preaggregation
 
@@ -1534,7 +1638,10 @@ cheats:
       - Update the preaggregated data periodically to keep it up-to-date.
   Indexes | MongoDB:
     desc: Crie índices em campos frequentemente consultados para melhorar o desempenho das consultas
-    tags: [AVN, mongodb, performance]
+    tags:
+      - avn
+      - mongo
+      - performance
     notes: |
       > Indices podem ser criados em qualquer campo de um documento, incluindo campos dentro de arrays e subdocumentos, tornando as consultas mais rápidas e eficientes.
 
@@ -1582,7 +1689,9 @@ cheats:
       > db.customers.createIndex({ email: 1, createdAt: 1 });
   Aggregations | MongoDB:
     desc: Use pipelines de agregação para processar e transformar dados
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ### Aggregations
 
@@ -1597,7 +1706,9 @@ cheats:
       ```
   Aggregation Pipelines | MongoDB:
     desc: Transforming and combining data in collections through a multi-stage pipeline
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes:
       - md: |
           ## Aggregation Pipelines
@@ -1760,7 +1871,9 @@ cheats:
           ```
   Joins | MongoDB:
     desc: Use operações de junção para combinar dados de várias coleções
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ### Joins
 
@@ -1781,7 +1894,9 @@ cheats:
       ```
   Text Search | MongoDB:
     desc: Use índices de texto para pesquisar texto em campos de string
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ### Text Search
 
@@ -1796,7 +1911,9 @@ cheats:
       ```
   Geospatial Queries | MongoDB:
     desc: Use índices de texto para pesquisar texto em campos de string
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ### Geospatial Queries
 
@@ -1818,7 +1935,9 @@ cheats:
       ```
   Transactions | MongoDB:
     desc: Use transações para garantir a consistência dos dados
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ### Transactions
 
@@ -1841,7 +1960,9 @@ cheats:
       ```
   Change Streams | MongoDB:
     desc: Use streams de alterações para monitorar alterações em coleções
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ### Change Streams
 
@@ -1856,7 +1977,10 @@ cheats:
       ```
   Atlas | MongoDB:
     desc: MongoDB Atlas é um serviço de banco de dados gerenciado na nuvem
-    tags: [AVN, mongodb, database]
+    tags:
+      - avn
+      - db
+      - mongo
     notes: |
       ## MongoDB Atlas
 
@@ -1871,7 +1995,10 @@ cheats:
       - Integração com AWS, Azure e Google Cloud
   Realm | MongoDB:
     desc: MongoDB Realm é uma plataforma de desenvolvimento de aplicativos móveis e web
-    tags: [AVN, mongodb, database]
+    tags:
+      - avn
+      - db
+      - mongo
     notes: |
       ## MongoDB Realm
 
@@ -1886,7 +2013,10 @@ cheats:
       - Notificações push
   Best Practices | MongoDB:
     desc: Melhores práticas para modelagem de dados, consultas eficientes e segurança em MongoDB
-    tags: [AVN, mongodb, performance]
+    tags:
+      - avn
+      - mongo
+      - performance
     notes: |
       ## Melhores Práticas
 
@@ -1921,7 +2051,10 @@ cheats:
       - **Replicação:** Configure réplicas para garantir disponibilidade e desempenho
   Potenciais issues de grande volume de dados | MongoDB:
     desc: Problemas comuns ao lidar com grandes volumes de dados em MongoDB
-    tags: [AVN, mongodb, performance]
+    tags:
+      - avn
+      - mongo
+      - performance
     notes: |
 
       ## 1. Desempenho Lento
@@ -1967,7 +2100,10 @@ cheats:
       **Solução:** Usar ferramentas de monitoramento para identificar gargalos de desempenho e otimizar consultas.
   Principais desafios e soluções em ambientes de Big Data | MongoDB:
     desc: Desafios e soluções para gerenciar grandes volumes de dados em ambientes como o MongoDB
-    tags: [AVN, mongodb, performance]
+    tags:
+      - avn
+      - mongo
+      - performance
     notes: |
 
       ## 1. Problemas de Performance e Escalabilidade
@@ -2037,7 +2173,9 @@ cheats:
       Empregar as melhores práticas em arquitetura de sistemas, segurança da informação e gerenciamento de dados é crucial para superar esses desafios e aproveitar ao máximo os insights oferecidos por esses dados valiosos.
   Questions | MongoDB:
     desc: Perguntas para tentar entender os desafios enfrentados com grandes volumes de dados
-    tags: [AVN, mongodb]
+    tags:
+      - avn
+      - mongo
     notes: |
       ## Perguntas sobre MongoDB e Big Data
 

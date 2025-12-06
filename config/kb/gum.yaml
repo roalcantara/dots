@@ -1,15 +1,22 @@
 commands:
   gum input --placeholder "What's your name?":
     desc: Create a simple text input prompt
-    tags: [gum, input, interactive]
-
+    tags:
+      - gum
+      - input
+      - interactive
   gum input --password --placeholder "Enter password":
     desc: Create a password input that masks the characters
-    tags: [gum, input, security]
-
+    tags:
+      - gum
+      - input
+      - security
   gum write --placeholder "Enter description":
     desc: Create a multi-line text input area
-    tags: [gum, input, multiline]
+    tags:
+      - gum
+      - input
+      - multiline
     notes:
       - sh: |
           # With character limit
@@ -17,10 +24,12 @@ commands:
 
           # With specific dimensions
           gum write --width 50 --height 10
-
   gum choose "option1" "option2" "option3":
     desc: Create a single-choice selection menu
-    tags: [gum, choose, menu]
+    tags:
+      - gum
+      - choose
+      - menu
     notes:
       - sh: |
           # Multiple selection
@@ -28,10 +37,12 @@ commands:
 
           # With selection limit
           gum choose --multiple --limit 2 "opt1" "opt2" "opt3"
-
   gum style --foreground 212 "Colored text":
     desc: Style text with colors and formatting
-    tags: [gum, style, formatting]
+    tags:
+      - text-formatting
+      - color-coding
+      - styles
     notes:
       - sh: |
           # Combined styles
@@ -39,18 +50,23 @@ commands:
 
           # With border
           gum style --border double --margin "1" "Text"
-
   gum style --foreground 212 --border-foreground 212 --border double --align center --width 50 --margin "1 2" --padding "2 2" --margin "1 2" --padding "2 4" 'Bubble Gum (1¢)' 'So sweet and so fresh!':
     desc: Style text with colors, formatting and borders
-    tags: [gum, style, formatting, border]
+    tags:
+      - border
+      - format
+      - gum
+      - style
     notes:
       - sh: |
           # With border
           gum style --border double --margin "1" "Text"
-
   gum spin --spinner dot --title "Loading...":
     desc: Display a loading spinner with custom message
-    tags: [gum, spinner, loading]
+    tags:
+      - gum
+      - spinner
+      - loading
     notes:
       - sh: |
           # With timeout
@@ -58,10 +74,12 @@ commands:
 
           # Custom spinner type
           gum spin --spinner points -- sleep 5
-
   gum confirm "Are you sure?":
     desc: Create a yes/no confirmation prompt
-    tags: [gum, confirm, interactive]
+    tags:
+      - gum
+      - confirm
+      - interactive
     notes:
       - sh: |
           # Custom buttons
@@ -69,10 +87,12 @@ commands:
 
           # Default selection
           gum confirm "Continue?" --default=false
-
   gum file .:
     desc: Interactive file selection from current directory
-    tags: [gum, file, selection]
+    tags:
+      - gum
+      - file
+      - selection
     notes:
       - sh: |
           # Directory selection
@@ -80,10 +100,12 @@ commands:
 
           # With file type filter
           gum file --glob "*.yaml"
-
   gum format -t progress:
     desc: Create a progress bar display
-    tags: [gum, progress, ui]
+    tags:
+      - gum
+      - progress
+      - ui
     notes:
       - sh: |
           # Simple progress simulation
@@ -91,10 +113,12 @@ commands:
             echo $i
             sleep 0.1
           done | gum format -t progress
-
   gum table:
     desc: Display data in table format
-    tags: [gum, table, display]
+    tags:
+      - gum
+      - table
+      - display
     notes:
       - sh: |
           # CSV input
@@ -102,11 +126,14 @@ commands:
 
           # Custom separator
           echo "ID|Status" | gum table --separator "|"
-
   gum table create interactive and formatted tables in the terminal:
     desc: Create interactive and formatted tables in the terminal
-    tags: [gum, table, display, formatting, cli]
-
+    tags:
+      - cli
+      - display
+      - format
+      - gum
+      - table
     notes:
       - sh: |
           # Basic CSV data with headers
@@ -157,7 +184,6 @@ commands:
           ]}' | \
           jq -r '.services[] | [.name, .status, .latency] | @csv' | \
           gum table --separator "," --width 40
-
       - md: |
           ### JSON data converted to table
 
@@ -166,10 +192,12 @@ commands:
           | auth | up     | 45ms    |
           | api  | up     | 62ms    |
           | db   | down   | ---     |
-
   gum filter:
     desc: Interactive text filtering and selection
-    tags: [gum, filter, search]
+    tags:
+      - gum
+      - filter
+      - search
     notes:
       - sh: |
           # Filter git branches
@@ -177,10 +205,12 @@ commands:
 
           # Filter with limit
           cat items.txt | gum filter --limit 3
-
   gum join:
     desc: Join text horizontally or vertically
-    tags: [gum, join, layout]
+    tags:
+      - gum
+      - join
+      - layout
     notes:
       - sh: |
           # Horizontal join

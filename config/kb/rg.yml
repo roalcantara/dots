@@ -1,120 +1,153 @@
 commands:
-  # Ripgrep: A fast and powerful search tool that respects your .gitignore
-  # http://blog.burntsushi.net/ripgrep/
   brew install ripgrep:
     desc: Install ripgrep using HomeBrew
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg '^function':
     desc: Search for pattern '^function' recursively in current directory
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg '\bconst\b':
     desc: Search for whole word 'const' using regex
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg '\b[a-z]{3}\b':
     desc: Search for whole words with 3 lowercase letters
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg -i readne:
     desc: Case-insensitive search for pattern 'readne' (e.g. README)
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg -w TODO:
     desc: Match whole words only
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg -t py main:
     desc: Search only Python files for pattern 'main'
-    tags: [rg, ripgrep, filters]
-
+    tags:
+      - filter
+      - rg
+      - ripgrep
   rg -T js pattern:
     desc: Search all files except JavaScript
-    tags: [rg, ripgrep, filters]
-
+    tags:
+      - filter
+      - rg
+      - ripgrep
   rg -C 3 pattern:
     desc: Show 3 lines before and after each match
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg -B 3 pattern:
     desc: Show 3 lines before each match
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg -A 3 pattern:
     desc: Show 3 lines after each match
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg --files-with-matches pattern:
     desc: Only show files containing matches (useful for scripts)
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg --files-without-match pattern:
     desc: Only show files that don't contain matches
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg --hidden pattern:
     desc: Search hidden files and directories
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg -g 'tests/*' pattern:
     desc: Only search in files under tests directory
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg -e pattern1 -e pattern2:
     desc: Search for multiple patterns
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg '^pattern$':
     desc: Match pattern on line boundaries using regex
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg --vimgrep pattern:
     desc: Show results in vim-compatible format
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg --json pattern:
     desc: Output results in JSON format
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg --pretty pattern:
     desc: Show results with color and line numbers in a nice format
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg --threads 4 pattern:
     desc: Use exactly 4 threads for searching
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg --no-ignore pattern:
     desc: Don't respect ignore files (.gitignore, .ignore, etc)
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg -g '*.{js,ts}' -i 'function.*export':
     desc: Search for exported functions in JavaScript/TypeScript files
-    tags: [rg, ripgrep, complex]
-
+    tags:
+      - rg
+      - ripgrep
+      - complex
   rg --type-add 'web:*.{html,css,js}' -t web pattern:
     desc: Define and use custom file type for web files
-    tags: [rg, ripgrep, complex]
-
+    tags:
+      - rg
+      - ripgrep
+      - complex
   rg -l -g 'src/*.rs' '^pub struct':
     desc: List Rust files in src containing public structs
-    tags: [rg, ripgrep, complex]
-
-  # Combination with other tools
+    tags:
+      - rg
+      - ripgrep
+      - complex
   rg pattern -l | xargs sed -i 's/old/new/g':
     desc: Find files with pattern and perform replacement using sed
-    tags: [rg, ripgrep, complex]
-
+    tags:
+      - rg
+      - ripgrep
+      - complex
   rg --json pattern | jq '.data.lines.text':
     desc: Search with JSON output and process with jq
-    tags: [rg, ripgrep, complex]
-
-  # Special cases
+    tags:
+      - rg
+      - ripgrep
+      - complex
   rg -U pattern:
     desc: Search with multiline support (disable line-wise searching)
-    tags: [rg, ripgrep]
-
+    tags:
+      - rg
+      - ripgrep
   rg -F 'pattern[.*]':
     desc: Search for literal string (disable regex interpretation)
-    tags: [rg, ripgrep]
+    tags:
+      - rg
+      - ripgrep

@@ -1,7 +1,10 @@
 bookmarks:
   https://c4model.com:
     desc: C4 Model | A way to create maps of your code
-    tags: [arch, diagrams, c4]
+    tags:
+      - arch
+      - diagrams
+      - c4
     links:
       - C4 models as code - Simon Brown - NDC Oslo 2023: https://youtu.be/4HEd1EEQLR0
       - https://github.com/structurizr/java
@@ -10,17 +13,18 @@ bookmarks:
       - https://hub.docker.com/r/structurizr/lite
       - https://github.com/pmorch/c4viz
       - https://github.com/avisi-cloud/structurizr-site-generatr
-
   https://landscape.cncf.io:
     desc: The Cloud Native Computing Foundation (CNCF) landscape provides a comprehensive overview of the cloud-native ecosystem.
-    tags: [arch, cloud]
+    tags:
+      - arch
+      - cloud
     links:
       - Guide | Introduction: https://landscape.cncf.io/guide
-
-  # AWS
   https://aws.amazon.com/developer:
     desc: AWS Developer Center | Explore topics, Learn tutorials, Download tools, and Join us at an AWS Developer event
-    tags: [aws, developer]
+    tags:
+      - aws
+      - developer
     links:
       - Getting Started: https://aws.amazon.com/developer/getting-started
       - Tools: https://aws.amazon.com/developer/tools
@@ -31,7 +35,9 @@ bookmarks:
       - Events: https://aws.amazon.com/developer/events
   https://aws.amazon.com/developer/learning/devops-on-aws:
     desc: DevOps on AWS | Explore how DevOps on AWS can accelerate your development
-    tags: [aws, devops]
+    tags:
+      - aws
+      - devops
     links:
       - Introduction to DevOps on AWS: https://docs.aws.amazon.com/whitepapers/latest/introduction-devops-aws/introduction-to-devops.html
       - Difference Between Agile and DevOps: https://aws.amazon.com/compare/the-difference-between-agile-devops
@@ -46,7 +52,9 @@ bookmarks:
       - Decision Guides: https://aws.amazon.com/getting-started/decision-guides/
   https://aws.amazon.com/blogs/compute/getting-started-with-serverless-for-developers-part-1:
     desc: Getting Started with Serverless for Developers - Part 1
-    tags: [serverless, aws]
+    tags:
+      - serverless
+      - aws
     links:
       - Getting started with serverless for devs | Part 2 | The business logic: https://aws.amazon.com/blogs/compute/getting-started-with-serverless-for-developers-part-2-the-business-logic
       - Getting started with serverless for devs | Part 3 | The front door: https://aws.amazon.com/blogs/compute/getting-started-with-serverless-for-developers-part-3-the-front-door/
@@ -55,31 +63,45 @@ bookmarks:
       - https://github.com/aws-samples/getting-started-with-serverless
   https://catalog.workshops.aws:
     desc: Find physical and virtual self-paced Workshops, GameDays, Bootcamps, Immersion Days, and other events that require hands-on access to AWS accounts.
-    tags: [aws, workshops]
+    tags:
+      - aws
+      - workshops
   https://catalog.workshops.aws/stepfunctions:
     desc: The AWS Step Functions Workshop
-    tags: [aws, stepfunctions]
+    tags:
+      - aws
   https://youtu.be/CIMpoPPOq_k:
     desc: Introduction to AWS Step Functions Workflow Studio
-    tags: [aws, stepfunctions]
+    tags:
+      - aws
   https://youtu.be/9uKsdseowqE:
     desc: Getting Started with Serverless for Developers - AWS Online Tech Talks
-    tags: [serverless, aws, video]
+    tags:
+      - serverless
+      - aws
+      - video
     links:
       - Getting Started: https://aws.amazon.com/getting-started/hands-on/build-serverless-app-cdk
   https://serverless.com:
     desc: The Serverless Framework is an open-source platform for building serverless applications.
-    tags: [serverless, framework]
+    tags:
+      - serverless
+      - framework
     links:
       - Serverless.yml Reference: https://serverless.com/framework/docs/providers/aws/guide/serverless.yml
   http://serverlessworkflow.io:
     desc: A specification for defining serverless workflows using a JSON/YAML-based DSL.
-    tags: [serverless, workflow, specification]
     links:
       - Exanples: https://github.com/serverlessworkflow/specification/tree/main/examples
+    tags:
+      - devops
+      - infrastructure
+      - serverless
   https://workshop.serverlesscoffee.com:
     desc: Serverless Coffee | Serverless Coffee is a serverless coffee shop application built by the serverless developer advocacy team showcased at AWS re:Invent 2023
-    tags: [serverless, aws, coffee]
+    tags:
+      - serverless
+      - aws
     links:
       - Introduction: https://workshop.serverlesscoffee.com/0-introduction.html
       - Setup: https://workshop.serverlesscoffee.com/0-setup.html
@@ -92,7 +114,10 @@ bookmarks:
       - Deploying the backend: https://workshop.serverlesscoffee.com/99-the-code/5-deploy.html
   https://serverlessland.com:
     desc: This site brings together the latest information, blogs, videos, code, and learning resources for AWS Serverless. Learn to use and build apps that scale automatically on low-cost, fully-managed serverless architecture.
-    tags: [serverless, aws, eda]
+    tags:
+      - serverless
+      - aws
+      - eda
     referecnces:
       - Getting Started: https://serverlessland.com/learn/Getting-started
       - Learn: https://serverlessland.com/learn
@@ -103,21 +128,33 @@ bookmarks:
       - Event-Driven Architecture: https://serverlessland.com/event-driven-architecture
   https://serverlessland.com/learn/Getting-started:
     desc: Getting Started | AWS Serverless
-    tags: [serverless, aws, eda]
+    tags:
+      - serverless
+      - aws
+      - eda
     links:
       - Getting Started with Serverless for Developers - AWS Online Tech Talks: https://youtu.be/9uKsdseowqE
   https://serverlessland.com/learn:
     desc: Learn from a collection of resources around common topics, including blog posts, videos, workshops and other training. Choose a learning path from the list below to learn more.
-    tags: [serverless, aws, eda]
+    tags:
+      - serverless
+      - aws
+      - eda
   https://video.serverlessland.com:
     desc: Serverless Video | AWS Serverless
-    tags: [serverless, aws, video]
+    tags:
+      - serverless
+      - aws
+      - video
     links:
       - https://serverlessland.com/explore/serverlessvideo
       - https://github.com/aws-samples/serverless-video
   https://serverlessland.com/event-driven-architecture:
     desc: The Many Meanings of Event-Driven Architecture • Martin Fowler • GOTO 2017
-    tags: [serverless, aws, eda]
+    tags:
+      - serverless
+      - aws
+      - eda
     links:
       - What do you mean by event-driven?: https://martinfowler.com/articles/201701-event-driven.html
       - Intro | Introduction to Event Driven Architecture: https://serverlessland.com/event-driven-architecture/intro
@@ -151,12 +188,18 @@ bookmarks:
       - Summary | Conclusion: https://serverlessland.com/event-driven-architecture/conclusion
   https://serverlessland.com/explore/serverlessvideo:
     desc: Serverless Video | ServerlessVideo is a serverless video streaming application built by the serverless developer advocacy team showcased at AWS re:Invent 2023
-    tags: [serverless, aws, video]
+    tags:
+      - serverless
+      - aws
+      - video
     links:
       - https://github.com/aws-samples/serverless-video
   https://youtu.be/STKCRSUsyP0:
     desc: The Many Meanings of Event-Driven Architecture • Martin Fowler • GOTO 2017 | serverlessland
-    tags: [serverless, aws, eda]
+    tags:
+      - serverless
+      - aws
+      - eda
     links:
       - What do you mean by event-driven?: https://martinfowler.com/articles/201701-event-driven.html
       - Intro | Introduction to Event Driven Architecture: https://serverlessland.com/event-driven-architecture/intro
@@ -190,18 +233,21 @@ bookmarks:
       - Summary | Conclusion: https://serverlessland.com/event-driven-architecture/conclusion
   https://youtu.be/sVBKPPN652A:
     desc: 1 - Introducing the Ask Around Me Serverless Web App (AWS Learning Path)
-    tags: [serverless, aws, web]
+    tags:
+      - serverless
+      - aws
+      - web
     links:
       - Getting Started: https://serverlessland.com/learn/ask-around-me
       - Part 1: https://aws.amazon.com/blogs/compute/building-a-location-based-scalable-serverless-web-app-part-1
       - Part 2: https://aws.amazon.com/blogs/compute/building-a-location-based-scalable-serverless-web-app-part-2
       - Part 3: https://aws.amazon.com/blogs/compute/building-a-location-based-scalable-serverless-web-app-part-3
       - GitHub: https://github.com/aws-samples/ask-around-me
-
-  # EDA TOOLS
   https://swagger.io:
     desc: Swagger is a set of open-source tools built around the OpenAPI Specification that can help you design, build, document, and consume RESTful web services.
-    tags: [api, rest]
+    tags:
+      - api
+      - rest
     links:
       - OpenAPI Specification: https://swagger.io/specification
       - Swagger Editor: https://editor.swagger.io
@@ -210,7 +256,11 @@ bookmarks:
       - Swagger Inspector: https://swagger.io/tools/swagger-inspector
   https://icepanel.io:
     desc: Explain complex software systems. Align on technical decisions across your software engineering and product teams
-    tags: [serverless, eda, diagram, C4]
+    tags:
+      - c4
+      - diagram
+      - eda
+      - serverless
     links:
       - Docs: https://docs.icepanel.io
       - Dev.to: https://dev.to/icepanel
@@ -218,97 +268,55 @@ bookmarks:
       - Youtube: https://youtube.com/@icepanel950
   https://eventcatalog.dev:
     desc: Keeping track of consumers, producers, domains, and messages can be challenging. EventCatalog simplifies this process with an open source documentation tool.
-    tags: [serverless, aws, eda]
+    tags:
+      - serverless
+      - aws
+      - eda
   https://openapis.org:
     desc: Primarily designed for RESTful APIs. It is well-suited for request-response interactions where a client sends an HTTP request and receives a response. This makes it ideal for synchronous, stateless services such as typical web APIs.
-    tags: [api, rest]
-    notes: |
-      ## Communication Style
-
-        Focuses on synchronous communication (client-server model).
-        It defines endpoints (paths) and methods (GET, POST, etc.), where the client initiates requests and the server responds.
-
-      ## Core Concepts
-
-        Centers around paths, operations, and responses.
-
-        •	**Paths:** Define available endpoints.
-        •	**Operations:** Specify HTTP methods and their respective responses and parameters.
-        •	**Components:** Includes schemas, security, and other reusable elements.
-
-      ## Schemas and Messages
-
-        Uses schemas within the components section for defining request and response bodies, query parameters, headers, and more.
-        It specifies HTTP status codes and response schemas.
-
-      ## Protocols Supported
-
-        Primarily supports HTTP/HTTPS
-
-      ## Specification Elements
-
-        Paths and operations: Define API endpoints and HTTP methods.
-
-        •	**Responses:** Specify expected HTTP responses for each operation.
-        •	**Security:** Define authentication and authorization schemes (OAuth, API keys, etc.).
-
-      Documenting Patterns and Workflow
-
-        Primarily documents API operations and endpoints, with limited support for event-driven workflows.
+    tags:
+      - api
+      - rest
+    notes: "## Communication Style\n\n  Focuses on synchronous communication (client-server model).\n  It defines endpoints (paths) and methods (GET, POST, etc.), where the client initiates requests and the server responds.\n\n## Core Concepts\n\n  Centers around paths, operations, and responses.\n\n  •\t**Paths:** Define available endpoints.\n  •\t**Operations:** Specify HTTP methods and their respective responses and parameters.\n  •\t**Components:** Includes schemas, security, and other reusable elements.\n\n## Schemas and Messages\n\n  Uses schemas within the components section for defining request and response bodies, query parameters, headers, and more.\n  It specifies HTTP status codes and response schemas.\n\n## Protocols Supported\n\n  Primarily supports HTTP/HTTPS\n\n## Specification Elements\n\n  Paths and operations: Define API endpoints and HTTP methods.\n\n  •\t**Responses:** Specify expected HTTP responses for each operation.\n  •\t**Security:** Define authentication and authorization schemes (OAuth, API keys, etc.).\n\nDocumenting Patterns and Workflow\n\n  Primarily documents API operations and endpoints, with limited support for event-driven workflows.\n"
   https://asyncapi.com:
     desc: Designed for event-driven and asynchronous APIs, such as message-driven architectures using protocols like MQTT, AMQP, WebSockets, or AWS SQS. It is tailored for asynchronous communication where services exchange messages without a direct request-response pattern.
-    tags: [serverless, aws, eda]
-    notes: |
-      ## Communication Style
-
-      Focuses on asynchronous communication, supporting pub/sub, message queues, and event streaming.
-      It defines channels where messages are published or subscribed to, facilitating patterns like broadcasting or queue-based processing.
-
-      ## Core Concepts
-
-      > Centers around channels, messages, and operations (publish/subscribe).
-
-      •	**Channels:** Represent the topics or queues for message exchanges.
-      •	**Messages:** Define the data payload structure exchanged through channels.
-      •	**Servers:** Define connections for multiple protocols and environments (e.g., MQTT broker or WebSocket server).
-
-      ## Schemas and Messages
-
-        Uses messages as a primary unit, where each message has a payload that describes the content structure.
-        It also uses components to define reusable schemas and message definitions but focuses on asynchronous payload content rather than HTTP responses.
-
-      ## Protocols Supported
-
-        Supports multiple asynchronous protocols like AMQP, MQTT, WebSocket, Kafka, HTTP (for long polling), and even cloud-specific options like AWS SQS and Azure Service Bus.
-
-      ## Specification Elements
-
-        > Represent communication topics or queues.
-
-        •	**Servers:** Describe the connection details (host, port, protocol).
-        •	**Messages:** Define the payload structure for messages exchanged over channels.
-        •	**Security:** Supports a wider range of security schemes relevant to message brokers and other protocols.
-
-      ## Documenting Patterns and Workflow
-
-        Directly supports event-driven workflows, allowing documentation of pub/sub mechanisms and complex message flows between services in distributed systems.
+    tags:
+      - serverless
+      - aws
+      - eda
+    notes: "## Communication Style\n\nFocuses on asynchronous communication, supporting pub/sub, message queues, and event streaming.\nIt defines channels where messages are published or subscribed to, facilitating patterns like broadcasting or queue-based processing.\n\n## Core Concepts\n\n> Centers around channels, messages, and operations (publish/subscribe).\n\n•\t**Channels:** Represent the topics or queues for message exchanges.\n•\t**Messages:** Define the data payload structure exchanged through channels.\n•\t**Servers:** Define connections for multiple protocols and environments (e.g., MQTT broker or WebSocket server).\n\n## Schemas and Messages\n\n  Uses messages as a primary unit, where each message has a payload that describes the content structure.\n  It also uses components to define reusable schemas and message definitions but focuses on asynchronous payload content rather than HTTP responses.\n\n## Protocols Supported\n\n  Supports multiple asynchronous protocols like AMQP, MQTT, WebSocket, Kafka, HTTP (for long polling), and even cloud-specific options like AWS SQS and Azure Service Bus.\n\n## Specification Elements\n\n  > Represent communication topics or queues.\n\n  •\t**Servers:** Describe the connection details (host, port, protocol).\n  •\t**Messages:** Define the payload structure for messages exchanged over channels.\n  •\t**Security:** Supports a wider range of security schemes relevant to message brokers and other protocols.\n\n## Documenting Patterns and Workflow\n\n  Directly supports event-driven workflows, allowing documentation of pub/sub mechanisms and complex message flows between services in distributed systems.\n"
   https://studio.asyncapi.com:
     desc: Create, collaborate, and share your event-driven architecture with the AsyncAPI Studio. A visual editor for the AsyncAPI specification.
-    tags: [serverless, aws, eda]
+    tags:
+      - serverless
+      - aws
+      - eda
   https://structurizr.com:
     desc: Structurizr | Create software architecture diagrams
-    tags: [arch, diagrams, c4]
+    tags:
+      - arch
+      - diagrams
+      - c4
   https://ilograph.com:
     desc: Ilograph | Create beautiful architecture diagrams
-    tags: [arch, diagrams, c4]
+    tags:
+      - arch
+      - diagrams
+      - c4
   https://rdbmodel.github.io:
     desc: Create and visualize software architecture using a simplified version of the C4 model
-    tags: [arch, diagrams, c4]
+    tags:
+      - arch
+      - diagrams
+      - c4
     links:
       - Dropbox Example: https://rdbmodel.github.io/#/editor/view
   https://backstage.io:
     desc: Backstage is an open platform for building developer portals. Powered by a centralized service catalog, Backstage restores order to your microservices and infrastructure.
-    tags: [developer, portal, microservices]
+    tags:
+      - developer
+      - portal
+      - microservices
     links:
       - What is Backstage?: https://backstage.io/docs/overview/what-is-backstage
       - Docs: https://backstage.io/docs
@@ -316,10 +324,16 @@ bookmarks:
       - Getting Started with Backstage | From Zero to Operational Dev Portal: https://youtu.be/A-3Ai--Z-Gs
   https://eda-visuals.boyney.io:
     desc: Event-Driven Architecture Visuals | A collection of diagrams and visuals to help understand event-driven architecture
-    tags: [eda, diagrams]
+    tags:
+      - eda
+      - diagrams
   https://typespec.io:
     desc: Describe your data up front and generate schemas, API specifications, client / server code, docs, and more.
-    tags: [ts, json, openapi, protobuf]
+    tags:
+      - ts
+      - json
+      - openapi
+      - protobuf
     notes:
       - md: |
           ## Write TypeSpec, emit OpenAPI
@@ -408,11 +422,11 @@ bookmarks:
                     type: string
                   address:
                     $ref: '#/components/schemas/Address'
-
-  # TESTING TOOLS
   https://postman.com:
     desc: Postman | The Collaboration Platform for API Development
-    tags: [api, testing]
+    tags:
+      - api
+      - test
     links:
       - Postman Learning Center: https://learning.postman.com
       - Postman API Network: https://explore.postman.com
@@ -422,27 +436,31 @@ bookmarks:
       - Watch Flows video tutorials: https://learning.postman.com/docs/postman-flows/tutorials/video/overview/
   https://insomnia.rest:
     desc: Insomnia | The API Design Platform
-    tags: [api, testing]
+    tags:
+      - api
+      - test
     links:
       - Insomnia Designer: https://insomnia.rest/designer
       - Insomnia Core: https://insomnia.rest/core
       - Insomnia Blog: https://insomnia.rest/blog
       - Insomnia Community: https://community.insomnia.rest
-
-  # HASURA
   https://youtu.be/wwCByO2la2I:
     desc: Event-driven apps with Hasura and NestJS made simple
-    tags: [hasura, nestj]
-
-  #ARTICLES
+    tags:
+      - hasura
+      - nestj
   https://datadoghq.com/architecture/observability-in-event-driven-architecture/:
     desc: Observability in Event-Driven Architecture
-    tags: [eda, observability]
-
+    tags:
+      - eda
+      - observability
 cheats:
   What is an Event?:
     desc: An event is a significant change in state that occurs in a system or application.
-    tags: [eda, event, definition]
+    tags:
+      - eda
+      - event
+      - definition
     links:
       - https://en.wikipedia.org/wiki/Event_(computing)
     notes:
@@ -493,10 +511,12 @@ cheats:
               }
             }
           }
-
   Change Data Capture (CDC) Pattern:
     desc: Captures and processes changes in data (such as inserts, updates, and deletes) in real-time from a source system to ensure that downstream systems remain synchronized.
-    tags: [eda, structural, patterns]
+    tags:
+      - eda
+      - structural
+      - patterns
     links:
       - https://youtu.be/KXR17uwLEC8
     notes:
@@ -612,13 +632,14 @@ cheats:
                           format: date-time
                           description: 'Timestamp when the inventory was last modified'
           ````
-
         links:
           - RefactoringGuru / Design Patterns / Structural Patterns / Adapter: https://refactoring.guru/design-patterns/adapter
-
   Syncronous request-response model:
     desc: A design pattern that allows objects with incompatible interfaces to collaborate.
-    tags: [eda, structural, patterns]
+    tags:
+      - eda
+      - structural
+      - patterns
     links:
       - https://youtu.be/KXR17uwLEC8
     notes:
@@ -643,10 +664,12 @@ cheats:
             B -->|Response| A
       - md: |
           This replicates the flow where the sender initiates a request and the receiver sends a response back to the sender.
-
   Ascyronous point-to-point model (queue):
     desc: A design pattern that allows objects with incompatible interfaces to collaborate.
-    tags: [eda, structural, patterns]
+    tags:
+      - eda
+      - structural
+      - patterns
     links:
       - https://youtu.be/KXR17uwLEC8
     notes:
@@ -699,10 +722,12 @@ cheats:
           - This diagram shows a message queuing system where messages M1 and M2 are sent from the sender to the queue.
           - The queue distributes M1 to one receiver (Receiver1) and M2 to another receiver (Receiver2).
           - Acknowledgments (Ack) are sent from both receivers back to the queue, and from the queue back to the sender.
-
   Amazon SQS:
     desc: A fully managed message queuing service that makes it easy to decouple and scale microservices, distributed systems, and serverless applications.
-    tags: [messaging, queue, aws]
+    tags:
+      - messaging
+      - queue
+      - aws
     links:
       - https://aws.amazon.com/sqs/
     notes:
@@ -737,10 +762,13 @@ cheats:
           5. A notification service reads the confirmation message and sends an email to the user.
 
           This architecture allows each component to operate independently, improving fault tolerance and scalability.
-
   Ascyronous broadcast model (topic):
     desc: A design pattern that allows objects with incompatible interfaces to collaborate.
-    tags: [eda, structural, patterns, aws]
+    tags:
+      - eda
+      - structural
+      - patterns
+      - aws
     links:
       - https://youtu.be/KXR17uwLEC8
     notes:
@@ -784,10 +812,12 @@ cheats:
           - This represents a publish-subscribe pattern where a sender sends messages to a topic,
           - And the topic distributes these messages to various endpoints,
           - Including Email, SMS, HTTP, and Lambda.
-
   Amazon SNS:
     desc: A fully managed pub/sub messaging service that makes it easy to decouple and scale microservices, distributed systems, and serverless applications.
-    tags: [messaging, pubsub, aws]
+    tags:
+      - messaging
+      - pubsub
+      - aws
     links:
       - https://aws.amazon.com/sns/
     notes:
@@ -819,10 +849,12 @@ cheats:
           3. Subscribers to the topic, such as a Lambda function, an email service, and a database update service, receive the message.
           4. The Lambda function processes the user details, sends a welcome email, and updates the database.
           5. The email service sends a confirmation email to the user.
-
   Ascyronous point-to-point model (router):
     desc: A design pattern that allows objects with incompatible interfaces to collaborate.
-    tags: [eda, structural, patterns]
+    tags:
+      - eda
+      - structural
+      - patterns
     links:
       - https://youtu.be/KXR17uwLEC8
     notes:
@@ -852,10 +884,12 @@ cheats:
       - md: |
           > In this diagram, the sender sends multiple messages (M1, M2, M3) to different channels (Pink, Blue, Green, and Purple).
           > Each channel forwards the messages to its respective receiver, with some channels handling multiple messages and others handling a single message.
-
   Ascyronous point-to-point model (bus):
     desc: A design pattern that allows objects with incompatible interfaces to collaborate.
-    tags: [eda, structural, patterns]
+    tags:
+      - eda
+      - structural
+      - patterns
     links:
       - https://youtu.be/KXR17uwLEC8
     notes:
@@ -876,10 +910,12 @@ cheats:
           - In this diagram, the sender sends messages M1 and M2 to a bus.
           - The bus routes M1 to Receiver1 and M2 to Receiver2.
           - An acknowledgment (Ack) is sent back to the sender after the messages are processed by the bus.
-
   Amazon EventBridge:
     desc: A serverless event bus that makes it easy to connect applications together using data from your own applications, integrated Software-as-a-Service (SaaS) applications, and AWS services.
-    tags: [messaging, eventbus, aws]
+    tags:
+      - messaging
+      - eventbus
+      - aws
     links:
       - https://aws.amazon.com/eventbridge/
     notes:

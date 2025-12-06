@@ -1,31 +1,43 @@
 commands:
   yarn install --frozen-lockfile:
     desc: Install yarn dependencies withuot a lockfile. This is useful if you need reproducible dependencies, which is usually the case with continuous integration systems.
-    tags: [nodejs, yarn]
+    tags:
+      - node
+      - yarn
     links:
       - https://commands.dev/workflows/yarn_install_with_reproducible_dependencies
   yarn upgrade-interactive --latest:
     desc: Interactively upgrade dependencies to the latest version.
-    tags: [nodejs, yarn]
+    tags:
+      - node
+      - yarn
     links:
       - https://commands.dev/workflows/yarn_upgrade_interactive
   yarn outdated:
     desc: Check for outdated dependencies.
-    tags: [nodejs, yarn]
+    tags:
+      - node
+      - yarn
     links:
       - https://commands.dev/workflows/yarn_outdated
   yarn audit:
     desc: Check for vulnerabilities in your dependencies.
-    tags: [nodejs, yarn]
+    tags:
+      - node
+      - yarn
     links:
       - https://commands.dev/workflows/yarn_audit
   yarn run build:
     desc: Run the build script defined in your package.json file.
-    tags: [nodejs, yarn]
+    tags:
+      - node
+      - yarn
     links:
       - https://commands.dev/workflows/yarn_run_build
   yarn run test:
     desc: Run the test script defined in your package.json file.
-    tags: [nodejs, yarn]
+    tags:
+      - node
+      - yarn
     links:
       - https://commands.dev/workflows/yarn_run_test

@@ -1,9 +1,11 @@
 bookmarks:
   https://youtu.be/47zf8kGobfk:
     desc: Pearl Jam - Animal (Official) | Five Against One!
-    tags: [music, video]
+    tags:
+      - music
+      - video
     notes:
-      - md: | #markdown
+      - md: |
           ## Pearl Jam - Animal (Official)
 
           ```
@@ -45,13 +47,14 @@ bookmarks:
       - 68c2ef3905b72: https://bit.ly/4nwMmSX
       - 686c7905e64c2: https://bit.ly/4hxRrZN
       - 6645d7ca17cf6: https://bit.ly/4hwa9kx
-
 cheats:
   Software Developer (short version):
     desc: Resume
-    tags: [pvt, jobs]
+    tags:
+      - pvt
+      - jobs
     notes:
-      - md: | #markdown
+      - md: |
           ### Rogério Alcântara
 
           **Contact Information:**
@@ -98,7 +101,7 @@ cheats:
           - FCA: B2 First - Cambridge University Press & Assessment
           - IELTS: Score 75 - Cambridge University Press & Assessment
           - CAE: C1 Advanced - Cambridge University Press & Assessment
-      - md: | #markdown
+      - md: |
           # ROGÉRIO RODRIGUES DE ALCÂNTARA
 
           ## RESUMO
@@ -190,7 +193,7 @@ cheats:
           ● **IELTS: Pontuação 75** — Cambridge University Press & Assessment
           ● **CAE: C1 Advanced** — Cambridge University Press & Assessment
           ● **FCA: B2 First** — Cambridge University Press & Assessment
-      - md: | #markdown
+      - md: |
           # ROGÉRIO RODRIGUES DE ALCÂNTARA
 
           ## OBJETIVO
@@ -290,10 +293,13 @@ cheats:
           **FCA: B2 First** — Cambridge University Press & Assessment
   FULLSTACK-DEVOPS Developer / PERFIRL:
     desc: Perfil, Habilidades e Competências
-    tags: [pvt, jobs]
-    links: [https://perfil.vagas.solides.com.br]
+    tags:
+      - pvt
+      - jobs
+    links:
+      - https://perfil.vagas.solides.com.br
     notes:
-      - md: | #markdown
+      - md: |
           ### PERFIL: Executor
           - Meu perfil é predominantemente **Executor**, o que significa que ajo de forma prática, determinada e focada em resultados.
           - Tenho histórico de **reduzir MTTR em 60% e executar migrações sem downtime**, unindo execução rápida com análise estruturada.
@@ -328,12 +334,13 @@ cheats:
           - É capaz de chegar a uma conclusão rapidamente e agir com um mínimo de informações.
           - Gosta de tomar decisões sem perda de tempo.
           - Está preparado para lidar com situações que outros achariam insuportavelmente estressantes e esses desafios o tornam extraordinariamente eficiente para superar obstáculos
-
   FULLSTACK-DEVOPS Developer pt-BR (ATS friendly):
     desc: Job Opportunity
-    tags: [pvt, jobs]
+    tags:
+      - pvt
+      - jobs
     notes:
-      - md: | #markdown
+      - md: |
           ROGÉRIO RODRIGUES DE ALCÂNTARA
           FULL-STACK/DEVOPS DEVELOPER
 
@@ -406,9 +413,10 @@ cheats:
           Programa de Pós-Graduação (Stricto Sensu)
   Um Feliz 2024, Clóvis:
     desc: Mensagem de Ano Novo para Clóvis
-    tags: [msgs]
+    tags:
+      - msgs
     notes:
-      - md: | #markdown
+      - md: |
           Faala Clóvis, tudo bão?
 
           Feliz ano novo! Espero que você esteja bem e que tenha aproveitado as festas.
@@ -424,9 +432,10 @@ cheats:
           Um grande abraço e vamos que vamos!
   Um Feliz 2024, Diego:
     desc: Mensagem de Ano Novo para o Diego
-    tags: [msgs]
+    tags:
+      - msgs
     notes:
-      - md: | #markdown
+      - md: |
           Faaala Smallville, tudo bao??
 
           Agora sim! Feliz ano novo!
@@ -444,9 +453,10 @@ cheats:
           Um grande abraço, obrigado por tudo, e vamos que vamos!! 🙏🏼🍀🚀🥰
   Um Feliz 2024, Rodrigo:
     desc: Mensagem de Ano Novo para Rodrigo
-    tags: [msgs]
+    tags:
+      - msgs
     notes:
-      - md: | #markdown
+      - md: |
           Oieee Digooo! Tuudo bão??
 
           Feliz ano novo! (Antes tarde que nunca, não é? kkk)
@@ -464,9 +474,10 @@ cheats:
           Amo vcs!! 🥰🥰🥰
   Um Feliz 2024, Gilson:
     desc: Mensagem de Ano Novo para Gilson
-    tags: [msgs]
+    tags:
+      - msgs
     notes:
-      - md: | #markdown
+      - md: |
           Oieee Gilsoonnn! tuudo bão, querido??
 
           Feliz ano novo! Pq, antes tarde que nunca, não é? kkk
@@ -486,7 +497,8 @@ cheats:
           E vamos que vamos que a Lua é o limite - ao menos, por enquanto!! kkk 🙏🏼🍀🚀🥰 🥰🥰🥰
   Um Feliz 2024, Cesar:
     desc: Mensagem de Ano Novo para Cesar
-    tags: [msgs]
+    tags:
+      - msgs
     notes: |
       Faaala Cesaar, tudo bão, meu caro?
 
@@ -503,12 +515,13 @@ cheats:
       Um grande abraço, obrigado por tudo!
 
       E Go-Go-GOO para cima deles com tudo!!! 🙏🏼🍀🚀🥰🥰🥰🥰
-
   Desenvolvedor(a) Back-end Sênior | Node.js @ reviiv:
     desc: Job Opportunity
-    tags: [pvt, jobs]
+    tags:
+      - pvt
+      - jobs
     notes:
-      - md: | #markdown
+      - md: |
           Recruiter: Maria Eduarda
           Desenvolvedor(a) Back-end Sênior | Node.js
           Local: São Paulo, SP
@@ -553,30 +566,14 @@ cheats:
           Bônus semestral de acordo com desempenho (avaliação)
 
           Avenida Brigadeiro Faria Lima, 1461/1485 - 4º andar - Jardim Paulistano, São Paulo - SP, 01451-002
-      - md: | #markdown
-          1.	Sobre o papel e expectativas
-            - Qual o principal desafio técnico que o time enfrenta hoje em Node.js?
-            - O papel envolve apenas desenvolvimento ou também participação em decisões de arquitetura e DevOps?
-            - Qual a expectativa em relação à liderança técnica (mentoria, code review, definição de padrões)?
-
-          2.	Sobre a stack e infraestrutura
-            - Quais serviços AWS são mais críticos no dia a dia (uso intenso de Lambda, SQS, DynamoDB, etc.)?
-            - O time já usa Terraform ou há abertura para outras ferramentas de IaC (Ansible, Pulumi, CDK)?
-
-          3.	Sobre o time e cultura
-            - Como está estruturado o time de back-end? Há squads multidisciplinares?
-            - Como funcionam os rituais de agilidade e a comunicação entre equipes?
-
-          4.	Sobre crescimento
-            - Há oportunidades de atuação cross (ex.: arquitetura, DevOps, observabilidade)?
-            - Como é feita a avaliação de performance para o bônus semestral?
-      - md: | #markdown
+      - md: "1.\tSobre o papel e expectativas\n  - Qual o principal desafio técnico que o time enfrenta hoje em Node.js?\n  - O papel envolve apenas desenvolvimento ou também participação em decisões de arquitetura e DevOps?\n  - Qual a expectativa em relação à liderança técnica (mentoria, code review, definição de padrões)?\n\n2.\tSobre a stack e infraestrutura\n  - Quais serviços AWS são mais críticos no dia a dia (uso intenso de Lambda, SQS, DynamoDB, etc.)?\n  - O time já usa Terraform ou há abertura para outras ferramentas de IaC (Ansible, Pulumi, CDK)?\n\n3.\tSobre o time e cultura\n  - Como está estruturado o time de back-end? Há squads multidisciplinares?\n  - Como funcionam os rituais de agilidade e a comunicação entre equipes?\n\n4.\tSobre crescimento\n  - Há oportunidades de atuação cross (ex.: arquitetura, DevOps, observabilidade)?\n  - Como é feita a avaliação de performance para o bônus semestral?\n"
+      - md: |
           | Service | Purpose | Typical Use Cases | Node.js SDK Integration | Interview-Style Questions |
           | AWS Lambda | Run code without managing servers (serverless compute). | REST APIs, cron jobs, event triggers (e.g., S3 upload → process file), lightweight backends. | @aws-sdk/client-lambda or via API Gateway → Lambda handler. Functions are written in Node.js. | - How do you optimize cold starts in Node.js Lambdas?  - What are best practices for packaging dependencies? |
           | AWS SQS | Reliable message queue for async processing and decoupling. | Order processing, job scheduling, retry queues, buffering bursts of traffic. | @aws-sdk/client-sqs: sendMessage, receiveMessage, deleteMessage. Often consumed by Lambda. | - How would you design a system to process millions of jobs per day with guaranteed delivery?  - Difference between Standard and FIFO queues? |
           | AWS SNS | Pub/Sub messaging to multiple subscribers. | Notifications, fan-out events (e.g., one event triggers Lambda + email + SQS), system alerts. | @aws-sdk/client-sns: publish to a topic; subscribe consumers (SQS, Lambda, HTTP endpoints). | - When would you choose SNS vs. SQS?  - How would you prevent duplicate deliveries in SNS? |
           | AWS DynamoDB | NoSQL key-value and document database, fully managed and scalable. | User profiles, session storage, shopping carts, IoT data, event logs. | @aws-sdk/lib-dynamodb: putItem, getItem, query, scan. Works well with Lambda (low latency). | - How do you model one-to-many relationships in DynamoDB?  - Difference between query and scan?  - How to handle hot partitions? |
-      - md: | #markdown
+      - md: |
           ### AWS Lambda
 
           **How do you optimize cold starts in Node.js Lambdas?**
@@ -616,9 +613,11 @@ cheats:
             - Distribute keys better (e.g., add random suffix/shard ID), use write sharding, or increase WCU/RCU with auto-scaling.
   Descreva uma experiência prática em que você implementou ou evoluiu um sistema de meios de pagamento (PIX, TEF, A2A, adquirente ou gateway). Qual foi seu papel, as principais tecnologias, integrações e resultados alcançados?:
     desc: Job Experience
-    tags: [pvt, jobs]
+    tags:
+      - pvt
+      - jobs
     notes:
-      - md: | #markdown
+      - md: |
           Na N2B, liderei a arquitetura e implementação da migração do sistema de pagamentos de uma rede nacional de academias para o gateway Cybersource, processando mais de 50.000 transações mensais.
 
           **Meu Papel:** Arquiteto técnico responsável pelo design da solução, definição de padrões de integração e liderança da equipe de desenvolvimento.
@@ -644,9 +643,11 @@ cheats:
           - Conformidade PCI DSS Level 1 mantida durante toda migração
   Você já trabalhou com modelagem de processos no Camunda (BPMN) ou outra ferramenta BPMS? Se sim, cite um caso prático.:
     desc: Job Experience
-    tags: [pvt, jobs]
+    tags:
+      - pvt
+      - jobs
     notes:
-      - md: | #markdown
+      - md: |
           Embora minha experiência prática com Camunda seja limitada, tenho sólido conhecimento conceitual em BPMN e já implementei workflows complexos usando outras abordagens:
 
           **Experiência Relacionada:**
@@ -663,9 +664,11 @@ cheats:
           - Tenho grande interesse em aplicar Camunda especificamente para orquestração de processos financeiros complexos como antecipação de recebíveis e gestão de chargebacks
   Liste as principais stacks de tecnologia (back-end, front-end, cloud, automação, bancos de dados) que você utilizou em projetos de pagamentos e recebíveis:
     desc: Job Experience
-    tags: [pvt, jobs]
+    tags:
+      - pvt
+      - jobs
     notes:
-      - md: | #markdown
+      - md: |
           **Backend & APIs:**
           - Node.js/TypeScript: Desenvolvimento de microserviços financeiros com Express e Fastify
           - APIs REST: Design seguindo OpenAPI 3.0, versionamento e rate limiting
@@ -695,9 +698,11 @@ cheats:
           - Insomnia: Prototipação rápida de integrações com adquirentes
   Como você assegura compliance com PCI DSS e LGPD em sistemas que manipulam dados sensíveis de pagamentos?:
     desc: Job Experience
-    tags: [pvt, jobs]
+    tags:
+      - pvt
+      - jobs
     notes:
-      - md: | #markdown
+      - md: |
           **PCI DSS Compliance:**
 
           **Arquitetura Segura:**
@@ -743,9 +748,12 @@ cheats:
           - Compliance dashboards para stakeholders
   Especialista em Engenharia de Software - Arquitetura de Pagamentos e Recebíveis Cover Letter:
     desc: Job Experience
-    tags: [pvt, jobs, cover-letter]
+    tags:
+      - cover_letter
+      - jobs
+      - pvt
     notes:
-      - md: | #markdown
+      - md: |
           Prezados,
           Como Platform Engineer com 15+ anos arquitetando sistemas críticos escaláveis, tenho grande interesse na posição de Especialista em Arquitetura de Pagamentos da Vivo.
           Experiência Relevante:
@@ -769,9 +777,11 @@ cheats:
           Rogério Alcântara
   Applications:
     desc: Job Opportunities
-    tags: [pvt, jobs]
+    tags:
+      - pvt
+      - jobs
     notes:
-      - yml: | #yaml
+      - yml: |
           Desenvolvedor Full Stack | Inmetrics: |
               Olá!
               Sou Rogério, desenvolvedor full-stack, transformando estratégias em resultados por mais de 10 anos.
@@ -1015,7 +1025,11 @@ cheats:
             Rogério
   Tech Lead - Java e Arquitetura de Microserviços (Sênior) @ Forsys | Interview:
     desc: Tech Lead - Java e Arquitetura de Microserviços (Sênior) Interview
-    tags: [java, arquitetura, microservicos, senior]
+    tags:
+      - java
+      - arquitetura
+      - microservicos
+      - senior
     notes:
       - md: |
           # Tech Lead - Java e Arquitetura de Microserviços (Sênior)
@@ -1061,9 +1075,11 @@ cheats:
           Silvio
   TLDR:
     desc: TLDR Template
-    tags: [pvt, jobs]
+    tags:
+      - pvt
+      - jobs
     notes:
-      - md: | #markdown
+      - md: |
           # TL;DR BEST PRACTICES
 
           ## OVERVIEW
@@ -1188,23 +1204,53 @@ cheats:
               - Related concepts to explore
             - **References**:
               - Link to advanced tutorial
-
+              - 
+              aws:
+              https://us-east-1.console.aws.amazon.com/organizations/v2/home/root:
+              desc: AWS Root Account
+              tags: [aws] notes:
+              - md: | #markdown
+              # Root Details
+              1. https://us-east-1.console.aws.amazon.com/organizations/v2/home/accounts/381491999605:
+              - Type: Root
+              - ID: I-8rn5
+              - OrganizationID: 0-1832960jyy
+              - ARN: arn:aws:organizations::381491999605:100t/o-1832960jyy/r-8rn5
+              2. Children:
+              - ID: 381491999605
+              - EMAIL: rogerio.alcantara+1@gmail.com
+              - Name: roalcantara
+              - ARN: arn:aws:organizations::381491999605:account/o-1832960jyy/381491999605
 commands:
   flux install bun:
     desc: Install bun in the current environment
-    tags: [flox]
+    tags:
+      - flox
   cd ~/.config/fabric/patterns; for folder in ../custom/*/; do ln -sf "$folder" "$(basename "$folder")"; done:
     desc: Symlink custom patterns to fabric patterns folder
-    tags: [symlink]
+    tags:
+      - symlink
   for file in ~/.config/*; do ln -sf "$file" "$(basename "$file")"; done:
     desc: Symlink each file from ~/.config to current folder
-    tags: [symlink]
-  bun ~/.config/raycast/scripts/bun/src/export-kb-to-sqlite.ts:
+    tags:
+      - symlink
+  bun ~/.config/raycast/scripts/bun/src/export-kb-to-sqlite.ts --db:
     desc: Migrate to KnowledgeBase Files to SQLite
-    tags: [kb, sqlite]
+    tags:
+      - kb
+      - bun
+  bun ~/.config/raycast/scripts/bun/src/export-kb-to-sqlite.ts --assets:
+    desc: Extract missing KB assets from the DB item tags
+    tags:
+      - kb
+      - bun
   cd ~/Work/dots && mise run build --nocache --local --user 'vscode' --group 'vscode' --tag 'latest':
     desc: Build Dotfiles Docker image with Mise tagged 'latest'
-    tags: [mise, docker]
+    tags:
+      - mise
+      - docker
   cd ~/Work/dots && mise run start --tag 'latest':
     desc: Start Dotfiles Docker Container tagged 'latest' with Mise
-    tags: [mise, docker]
+    tags:
+      - mise
+      - docker

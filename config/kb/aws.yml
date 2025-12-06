@@ -1,50 +1,159 @@
 bookmarks:
+  https://catalog.workshops.aws:
+    desc: Find physical and virtual self-paced Workshops, GameDays, Bootcamps, Immersion Days, and other events that require hands-on access to AWS accounts.
+    tags: [aws, xp]
+
+  # AWS SAM
+  https://catalog.workshops.aws/workshops/9a27e484-7336-4ed0-8f90-f2747e4ac65c/en-US:
+    desc: The workshop employs a practical, code-centric approach, emphasizing direct implementation and real-world scenario exploration to ensure you develop serverless development skills across several critical areas including distributed event-driven architectures, messaging patterns, orchestration, and observability
+    tags: [aws, sam, serverless]
   https://catalog.workshops.aws/complete-aws-sam/en-US:
     desc: Complete AWS SAM Workshop - A comprehensive workshop that covers building, testing, and deploying serverless applications using AWS SAM.
-    tags: [aws, sam, serverless, workshop]
-  https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode:
-    desc: AWS Toolkit for Visual Studio Code - An open source plug-in that makes it easier to create, debug, and deploy applications on AWS from Visual Studio Code.
-    tags: [aws, vscode, toolkit]
+    tags:
+      - aws
+      - sam
+      - serverless
+      - workshop
+  https://serverlessland.com/patterns?framework=AWS+SAM:
+    desc: AWS SAM Patterns Collection - A collection of patterns for building serverless applications using AWS SAM.
+    tags:
+      - aws
+      - sam
+      - serverless
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local.html:
+    desc: Using the AWS SAM CLI to build and test serverless applications locally - Guide on how to build and test serverless applications locally using the AWS SAM CLI.
+    tags:
+      - aws
+      - sam
+      - serverless
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local-generate-event.html:
+    desc: Generate AWS service events for local testing - Guide on how to generate AWS service events for local testing.
+    tags:
+      - aws
+      - sam
+      - serverless
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local-invoke.html:
+    desc: Initiate a one-time invocation of an AWS Lambda function locally - Guide on how to initiate a one-time invocation of an AWS Lambda function locally.
+    tags:
+      - aws
+      - sam
+      - serverless
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local-start-api.html:
+    desc: Run your Lambda functions using a local HTTP server - Guide on how to run your Lambda functions using a local HTTP server.
+    tags:
+      - aws
+      - sam
+      - serverless
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local-start-lambda.html:
+    desc: Run your Lambda functions using a local HTTP server for use with the AWS CLI or SDKs - Guide on how to run your Lambda functions using a local HTTP server for use with the AWS CLI or SDKs.
+    tags:
+      - aws
+      - sam
+      - serverless
   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html:
     desc: AWS Serverless Application Model (SAM) - An open-source framework for building serverless applications.
-    tags: [aws, sam, serverless]
-  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-test-and-debug.html:
-    desc: Testing and Debugging Serverless Applications - Guide on how to test and debug serverless applications built with AWS SAM.
-    tags: [aws, sam, serverless, testing, debugging]
+    tags:
+      - aws
+      - sam
+      - serverless
   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-api.html:
     desc: SAM CLI Command Reference - sam local start-api - Documentation for the 'sam local start-api' command used to run a local API Gateway from a SAM template.
-    tags: [aws, sam, serverless, cli]
+    tags:
+      - aws
+      - sam
+      - serverless
+      - cli
   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-invoke.html:
     desc: SAM CLI Command Reference - sam local invoke - Documentation for the 'sam local invoke' command used to invoke a Lambda function locally.
-    tags: [aws, sam, serverless, cli]
+    tags:
+      - aws
+      - sam
+      - serverless
+      - cli
   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-init.html:
     desc: Using the SAM CLI to Initialize a New Application - Guide on how to use the SAM CLI to create a new serverless application.
-    tags: [aws, sam, serverless, cli]
+    tags:
+      - aws
+      - sam
+      - serverless
+      - cli
   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html:
     desc: Getting Started with AWS SAM - Hello World Example - A step-by-step guide to building a simple "Hello World" serverless application using AWS SAM.
-    tags: [aws, sam, serverless, getting started]
+    tags:
+      - aws
+      - getting_started
+      - sam
+      - serverless
   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-remote-invoke.html:
     desc: Using the SAM CLI to Invoke Functions Remotely - Guide on how to use the SAM CLI to invoke Lambda functions deployed in AWS.
-    tags: [aws, sam, serverless, cli]
+    tags:
+      - aws
+      - sam
+      - serverless
+      - cli
   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-remote-test-event.html:
     desc: Using the SAM CLI to Test Events Remotely - Guide on how to use the SAM CLI to test events for Lambda functions deployed in AWS.
-    tags: [aws, sam, serverless, cli]
+    tags:
+      - aws
+      - sam
+      - serverless
+      - cli
   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-invoke.html:
     desc: Using the SAM CLI 'invoke' Command - Documentation on how to use the 'sam invoke' command to invoke Lambda functions.
-    tags: [aws, sam, serverless, cli]
+    tags:
+      - aws
+      - sam
+      - serverless
+      - cli
   https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/serverless-apps-run-debug-no-template.html:
     desc: Running and Debugging Serverless Applications without a Template - Guide on how to run and debug serverless applications in Visual Studio Code without a SAM template.
-    tags: [aws, sam, serverless, vscode, debugging]
+    tags:
+      - aws
+      - debug
+      - sam
+      - serverless
+      - vscode
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-test-and-debug.html:
+    desc: Testing and Debugging Serverless Applications - Guide on how to test and debug serverless applications built with AWS SAM.
+    tags:
+      - aws
+      - sam
+      - serverless
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-finch.html:
+    desc: Using Finch for testing and debugging serverless applications
+    tags:
+      - aws
+      - sam
+      - serverless
+  https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode:
+    desc: AWS Toolkit for Visual Studio Code - An open source plug-in that makes it easier to create, debug, and deploy applications on AWS from Visual Studio Code.
+    tags:
+      - aws
+  https://youtu.be/e2mokcAzDCY:
+    desc: Using Localstack with the AWS Toolkit for VSCode - A video tutorial on how to use Localstack with the AWS Toolkit for VSCode.
+    tags:
+      - aws
+      - sam
+      - serverless
+      - localstack
   https://levelup.gitconnected.com/creating-an-aws-sam-cli-project-with-typescript-and-both-types-of-layers-dependencies-and-34da5efdaec8:
     desc: Creating an AWS SAM CLI Project with TypeScript and Both Types of Layers - A tutorial on setting up an AWS SAM project using TypeScript and layers.
-    tags: [aws, sam, serverless, typescript]
-  # https://localstack.cloud
-  https://flox.dev/popular-packages/building-and-debugging-aws-workflows-locally-with-flox-localstack-and-colima:
-    desc: Building and Debugging AWS Workflows Locally with Flox, LocalStack, and Colima - A guide on how to use Flox along with LocalStack and Colima for local AWS workflow development.
-    tags: [aws, localstack, flox]
+    tags:
+      - aws
+      - sam
+      - serverless
+      - ts
+  https://docs.aws.amazon.com/lambda/latest/dg/tenant-isolation.html:
+    desc: AWS Lambda Tenant Isolation - Documentation on how AWS Lambda implements tenant isolation.
+    tags:
+      - aws
+      - aws_lambda
+      - tenant
   https://localstack.cloud:
     desc: LocalStack - A fully functional local AWS cloud stack that allows you to develop and test your cloud applications offline. Docker is required!
-    tags: [aws, localstack]
+    tags:
+      - aws
+      - localstack
     links:
       - https://blog.localstack.cloud
       - https://marketplace.visualstudio.com/items?itemName=LocalStack.localstack
@@ -54,104 +163,581 @@ bookmarks:
       - https://blog.localstack.cloud/aws-toolkit-vscode-localstack
   https://docs.localstack.cloud/aws/tutorials/lambda-ecr-container-images:
     desc: AWS Lambda with ECR Container Images - A tutorial on how to use AWS Lambda with container images stored in Amazon ECR using LocalStack.
-    tags: [aws, localstack, lambda]
+    tags:
+      - aws
+      - aws_lambda
+      - localstack
   https://docs.localstack.cloud/aws/integrations/containers/devcontainers:
     desc: Developing AWS Applications with DevContainers in LocalStack - Guide on how to set up and use DevContainers for AWS application development with LocalStack.
-    tags: [aws, localstack, devcontainers]
+    tags:
+      - aws
+      - localstack
+      - devcontainers
   https://nx.dev/docs/reference/nx-cloud/launch-templates#aws-cli:
     desc: AWS CLI Launch Template for Nx Cloud - Documentation on how to use the AWS CLI launch template for Nx Cloud.
-    tags: [aws, nx, cli]
+    tags:
+      - aws
+      - nx
+      - cli
+  https://flox.dev/popular-packages/building-and-debugging-aws-workflows-locally-with-flox-localstack-and-colima:
+    desc: Building and Debugging AWS Workflows Locally with Flox, LocalStack, and Colima - A guide on how to use Flox along with LocalStack and Colima for local AWS workflow development.
+    tags:
+      - aws
+      - localstack
+      - flox
 commands:
   cat ~/.aws/config:
     desc: Used by the AWS command-line interface (CLI) to store configuration settings for AWS profiles
-    tags: [aws, configure, profiles]
+    tags:
+      - aws
+      - config
+      - profile
   cat ~/.aws/credentials:
     desc: Used by the AWS Command Line Interface (CLI) and SDKs to store the access key and secret access key for authenticating AWS API requests.
-    tags: [aws, configure, profiles]
+    tags:
+      - aws
+      - config
+      - profile
   aws configure list:
     desc: List the current configuration values for AWS CLI
-    tags: [aws, configure, profiles]
+    tags:
+      - aws
+      - config
+      - profile
   aws configure --profile <profile_name>:
     desc: Configure the AWS CLI with a named profile
-    tags: [aws, configure, profiles]
+    tags:
+      - aws
+      - config
+      - profile
   aws configure list-profiles:
     desc: List the available profiles configured in the AWS CLI. It requires ACCESS_KEY_ID, SECRET_ACCESS_KEY and REGION
-    tags: [aws, configure, profiles]
+    tags:
+      - aws
+      - config
+      - profile
   aws iam list-policies:
     desc: List all IAM policies in the current account
-    tags: [aws, iam, policies]
+    tags:
+      - aws
+      - iam
+      - policies
   aws iam list-policies --output yaml:
     desc: List all IAM policies in the current account in YAML format
-    tags: [aws, iam, policies]
+    tags:
+      - aws
+      - iam
+      - policies
   aws lambda list-functions --output yaml:
     desc: List all Lambda functions in the current account in YAML format
-    tags: [aws, lambda, functions]
+    tags:
+      - aws
+      - aws_lambda
+      - functions
   aws secretsmanager list-secrets:
     desc: List all secrets in the current account
-    tags: [aws, secretsmanager, secrets]
+    tags:
+      - aws
+      - secrets
   aws secretsmanager list-secrets --max-results 10:
     desc: List the first 10 secrets in the current account
-    tags: [aws, secretsmanager, secrets]
+    tags:
+      - aws
+      - secrets
   aws secretsmanager list-secrets --filters Key=tag-key,Values=example-key:
     desc: List all secrets in the current account that have a tag with the key 'example-key'
-    tags: [aws, secretsmanager, secrets]
+    tags:
+      - aws
+      - secrets
   aws secretsmanager list-secrets --query "SecretList[*].Name":
     desc: List the names of all secrets in the current account
-    tags: [aws, secretsmanager, secrets]
-  # https://localstack.cloud
-  brew install localstack/tap/localstack-cli:
-    desc: Install the LocalStack CLI using Homebrew
-    tags: [aws, localstack]
-  localstack start:
-    desc: Start the LocalStack services
-    tags: [aws, localstack]
-cheats:
-  Starting LocalStack with Docker-ComposeSection:
-    desc: A sample Docker-Compose configuration to start LocalStack with essential services.
-    tags: [aws, localstack, docker]
-    links:
-      - https://docs.localstack.cloud/aws/getting-started/installation
-      - https://docs.localstack.cloud/aws/getting-started/quickstart
+    tags:
+      - aws
+      - secrets
+
+  # AWS CLOUDFORMATION
+  aws cloudformation create-stack --stack-name my-stack --template-body file://template.yaml --parameters ParameterKey=Param1,ParameterValue=Value1:
+    desc: Create a CloudFormation stack named 'my-stack' with the specified template and parameters
+    tags: [aws, cloudformation]
+  aws cloudformation list-stacks:
+    desc: List all CloudFormation stacks in the current account
+    tags: [aws, cloudformation]
+  aws cloudformation update-stack --stack-name my-stack --template-body file://template.yaml --parameters ParameterKey=Param1,ParameterValue=Value1:
+    desc: Update the CloudFormation stack named 'my-stack' with a new template and parameters
+    tags: [aws, cloudformation]
+  aws cloudformation describe-stacks --stack-name my-stack:
+    desc: Describe the CloudFormation stack named 'my-stack'
+    tags: [aws, cloudformation]
+  aws cloudformation describe-stacks --stack-name my-lambda-stack --query 'Stacks[0].Outputs':
+    desc: Describe the outputs of the CloudFormation stack named 'my-lambda-stack'
+    tags: [aws, cloudformation]
+  aws cloudformation cancel-update-stack --stack-name my-lambda-stack:
+    desc: Cancel an ongoing update for the CloudFormation stack named 'my-lambda-stack'
+    tags: [aws, cloudformation]
+  aws cloudformation delete-stack --stack-name my-stack:
+    desc: Delete the CloudFormation stack named 'my-stack'
+    tags: [aws, cloudformation]
+
+  # AWS S3
+  aws s3 mb s3://my-deployment-bucket:
+    desc: Create a new S3 bucket named 'my-deployment-bucket'
+    tags: [aws, s3]
+
+  # AWS SAM
+  brew tap aws/tap && brew install aws-sam-cli:
+    desc: Install AWS SAM CLI using Homebrew
+    tags: [aws, sam, serverless]
+    notes:
+      - md: | #markdown
+          | **COMMAND**           | **WHAT IT DOES**                  |
+          | --------------------- | --------------------------------- |
+          | `sam init`            | Create new SAM project            |
+          | `sam validate`        | Check template syntax             |
+          | `sam build`           | Build & package code              |
+          | `sam local start-api` | Test HTTP locally                 |
+          | `sam local invoke`    | Test function directly            |
+          | `sam deploy --guided` | Deploy (first time, saves config) |
+          | `sam deploy`          | Deploy (quick, uses saved config) |
+          | `sam logs`            | View Lambda logs                  |
+          | `sam delete`          | Delete everything                 |
+      - yaml: | #yaml
+          # template.yaml - Common Structure
+          AWSTemplateFormatVersion: '2010-09-09'
+          Transform: AWS::Serverless-2010-05-13
+
+          Description: My Lambda Application
+
+          Globals:
+            Function:
+              Runtime: nodejs20.x
+              Timeout: 30
+              MemorySize: 256
+              Environment:
+                Variables:
+                  ENVIRONMENT: dev
+
+          Parameters:
+            Environment:
+              Type: String
+              Default: dev
+              AllowedValues: [dev, staging, prod]
+
+          Resources:
+            MyLambdaFunction:
+              Type: AWS::Serverless::Function
+              Properties:
+                FunctionName: !Sub 'my-function-${Environment}'
+                CodeUri: src/
+                Handler: handlers/index.handler
+                Runtime: nodejs20.x
+                Timeout: 30
+                MemorySize: 256
+                Environment:
+                  Variables:
+                    LOG_LEVEL: info
+                Events:
+                  ApiEvent:
+                    Type: Api
+                    Properties:
+                      RestApiId: !Ref MyApi
+                      Path: /hello
+                      Method: GET
+                  ScheduledEvent:
+                    Type: Schedule
+                    Properties:
+                      Schedule: 'rate(5 minutes)'
+
+            MyApi:
+              Type: AWS::Serverless::Api
+              Properties:
+                StageName: !Ref Environment
+                Auth:
+                  DefaultAuthorizer: MyCognitoAuth
+                Cors:
+                  AllowMethods: "'GET,POST,PUT,DELETE'"
+                  AllowHeaders: "'Content-Type'"
+                  AllowOrigin: "'*'"
+
+          Outputs:
+            ApiEndpoint:
+              Description: API Gateway endpoint
+              Value: !Sub 'https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}'
+            FunctionArn:
+              Description: Lambda function ARN
+              Value: !GetAtt MyLambdaFunction.Arn
+      - toml: | #toml
+          # Created by: sam deploy --guided
+
+          version = 0.1
+
+          [default]
+          [default.deploy]
+          [default.deploy.parameters]
+          stack_name = "my-lambda-stack"
+          s3_bucket = "my-deployment-bucket"
+          s3_prefix = "lambda/my-app"
+          region = "us-east-1"
+          confirm_changeset = true
+          capabilities = "CAPABILITY_IAM"
+          parameter_overrides = "Environment=dev"
+
+          [prod]
+          [prod.deploy]
+          [prod.deploy.parameters]
+          stack_name = "my-lambda-stack-prod"
+          s3_bucket = "my-deployment-bucket"
+          s3_prefix = "lambda/my-app-prod"
+          region = "us-east-1"
+          parameter_overrides = "Environment=prod"
+      - yaml: | #yaml
+          name: Deploy Lambda
+          on:
+            push:
+              branches: [main]
+          jobs:
+            deploy:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v3
+                - uses: aws-actions/configure-aws-credentials@v2
+                  with:
+                    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                    aws-region: us-east-1
+
+                - name: Build
+                  run: sam build
+
+                - name: Deploy
+                  run: sam deploy --no-confirm-changeset
+  flox install aws-sam-cli:
+    desc: Install AWS SAM CLI using Flox
+    tags: [aws, sam, serverless]
+  aws sts get-caller-identity:
+    desc: Verify AWS credentials by retrieving the caller identity
+    tags: [aws, sam, serverless]
     notes:
       - sh: | #shell
-          !#/bin/bash
-          # 1. Before starting LocalStack, ensure you have Docker installed and running.
-          docker --version
-          # 2. Then get your LOCALSTACK_AUTH_TOKEN
-          open https://app.localstack.cloud/workspace/auth-tokens
-          # 3. export LOCALSTACK_AUTH_TOKEN=<your_auth_token_here>
-      - dockercompose: | #dockercompose
-          services:
-            localstack:
-              container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
-              image: localstack/localstack
-              ports:
-                - "127.0.0.1:4566:4566"            # LocalStack Gateway
-                - "127.0.0.1:4510-4559:4510-4559"  # external services port range
-              environment:
-                # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-                - DEBUG=${DEBUG:-0}
-              volumes:
-                - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
-                - "/var/run/docker.sock:/var/run/docker.sock"
+          #!/bin/bash
+
+          # ============================================
+          # INSTALLATION
+          # ============================================
+
+          # Via Homebrew
+          brew tap aws/tap && brew install aws-sam-cli
+
+          # Configure AWS credentials
+          aws configure
+
+          # For LocalStack (local development)
+          export AWS_ACCESS_KEY_ID="test"
+          export AWS_SECRET_ACCESS_KEY="test"
+          export AWS_ENDPOINT_URL="http://localhost:4566"
+  sam init:
+    desc: Initialize a new AWS SAM project
+    tags: [aws, sam, serverless]
+  sam init --runtime nodejs20.x --name my-lambda-app:
+    desc: Create a new AWS SAM project with Node.js 20.x runtime
+    tags: [aws, sam, serverless]
+  sam init --runtime python3.14 --dependency-manager pip --app-template hello-world --name aws-powertools-demo:
+    desc: Initialize a new AWS SAM project with Python 3.14 runtime and pip dependency manager
+    tags: [aws, sam, serverless]
+  sam build:
+    desc: Build the AWS SAM project
+    tags: [aws, sam, serverless]
+  sam build --cached:
+    desc: Use cached dependencies
+    tags: [aws, sam, serverless]
+  sam build --parallel:
+    desc: Parallel build (faster)
+    tags: [aws, sam, serverless]
+  sam build --use-container:
+    desc: Build in Docker (for exact environment)
+    tags: [aws, sam, serverless]
+  sam local generate-event dynamodb put-record:
+    desc: Generate a DynamoDB put-record event for local testing
+    tags: [aws, sam, serverless]
+  sam local start-api:
+    desc: Start a local API Gateway to test Lambda functions locally with hot-reloading
+    tags: [aws, sam, serverless]
+    notes:
       - sh: | #shell
-          # pulls the LocalStack nightly build from the main branch
-          docker compose up
-          # Or start LocalStack in Docker Container directly
-          docker run --rm -it -p 127.0.0.1:4566:4566 -p 127.0.0.1:4510-4559:4510-4559 -v /var/run/docker.sock:/var/run/docker.sock localstack/localstack
-          # Validate your environment
-          localstack config validate
-          # View the LocalStack logs
-          localstack logs
-  SAM (Serverless Application Model) CLI - Initialize, Build, and Test a Serverless Application:
+          #!/bin/bash
+
+          sam build
+          sam local start-api
+          curl http://localhost:3000/hello
+  sam local start-api --env-vars env.json:
+    desc: Start a local API Gateway to test Lambda functions locally with hot-reloading overriding environment variables defined in your templates
+    tags: [aws, sam, serverless]
+    links:
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-start-api.html
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-api.html
+    notes:
+      - jsonc: | #jsonc
+          // env.json        
+          // Use Parameters to override environment variables globally to all resources
+          {
+              "Parameters": {
+                  "TABLE_NAME": "localtable",
+                  "BUCKET_NAME": "amzn-s3-demo-bucket",
+                  "STAGE": "dev"
+              }
+          }
+      - jsonc: | #jsonc
+          // env.json
+          // Use objects for each resource to override environment variables per function
+          {
+              "MyFunction1": {
+                  "TABLE_NAME": "localtable",
+                  "BUCKET_NAME": "amzn-s3-demo-bucket",
+              },
+              "MyFunction2": {
+                  "TABLE_NAME": "localtable",
+                  "STAGE": "dev"
+              }
+          }
+      - sh: | #shell
+          #!/bin/bash
+
+          sam build
+          sam local start-api --env-vars env.json
+          curl http://localhost:3000/hello
+  sam local start-api --port 8080:
+    desc: Start a local API Gateway on port 8080 to test Lambda functions locally
+    tags: [aws, sam, serverless]
+  sam local start-lambda:
+    desc: Builds Lambda functions in a local Docker container and outputs the local address to your HTTP server endpoint
+    tags: [aws, sam, serverless]
+    links:
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local-start-lambda.html
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-lambda.html
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          sam build
+          sam local start-lambda
+          aws lambda invoke --function-name "HelloWorldFunction" --endpoint-url "http://127.0.0.1:3001" --no-verify-ssl out.txt
+  sam local invoke --event events/event.json:
+    desc: Invoke the Lambda function 'MyFunction' locally with a test event
+    tags: [aws, sam, serverless]
+  sam local invoke HelloWorldFunction --event '{"key":"value"}':
+    desc: Invoke the Lambda function 'HelloWorldFunction' locally with a JSON payload
+    tags: [aws, sam, serverless]
+  sam local invoke --debug:
+    desc: Invoke the Lambda function 'MyFunction' locally with debug output
+    tags: [aws, sam, serverless]
+  sam validate --template template.yaml:
+    desc: Validate the AWS SAM template file 'template.yaml'
+    tags: [aws, sam, serverless]
+  sam package --template-file template.yaml --s3-bucket my-bucket --output-template-file packaged.yaml:
+    desc: Package the AWS SAM application and upload artifacts to the specified S3 bucket
+    tags: [aws, sam, serverless]
+  sam package --template-file template.yaml --s3-bucket my-deployment-bucket --s3-prefix "lambda/auth-service" --output-template-file packaged.yaml:
+    desc: Package the AWS SAM application with a specific S3 prefix (to organize files) for the Lambda function artifacts
+    tags: [aws, sam, serverless]
+  sam deploy --guided:
+    desc: Deploy the AWS SAM application with guided prompts and save settings to samconfig.toml
+    tags: [aws, sam, serverless]
+  sam deploy:
+    desc: Deploy the AWS SAM application using settings to samconfig.toml
+    tags: [aws, sam, serverless]
+  sam deploy --config-env prod:
+    desc: Deploy the AWS SAM application using the 'prod' environment settings from samconfig.toml
+    tags: [aws, sam, serverless]
+  sam deploy --no-confirm-changeset:
+    desc: Deploy the AWS SAM application without confirmation prompts
+    tags: [aws, sam, serverless]
+  sam deploy --config-env prod --no-confirm-changeset:
+    desc: Deploy the AWS SAM application using the 'prod' environment settings from samconfig.toml without confirmation prompts
+    tags: [aws, sam, serverless]
+  sam deploy --parameter-overrides ParameterKey=Environment,ParameterValue=production:
+    desc: Deploy the AWS SAM application with parameter overrides (e.g., setting Environment to production)
+    tags: [aws, sam, serverless]
+  sam logs -n MyFunction --stack-name my-stack --tail:
+    desc: View real-time logs for the Lambda function 'MyFunction' in the stack 'my-stack'
+    tags: [aws, sam, serverless]
+  sam logs -n HelloWorldFunction --stack-name my-lambda-stack --start-time 10m ago:
+    desc: View logs for the Lambda function 'HelloWorldFunction' in the stack 'my-lambda-stack' starting from 10 minutes ago
+    tags: [aws, sam, serverless]
+  sam logs --filter "ERROR":
+    desc: View logs for the Lambda function 'MyFunction' filtered by the keyword "ERROR"
+    tags: [aws, sam, serverless]
+  sam delete --stack-name my-stack:
+    desc: Delete the AWS SAM application stack 'my-stack'
+    tags: [aws, sam, serverless]
+
+  # LocalStack
+  brew install localstack/tap/localstack-cli:
+    desc: Install the LocalStack CLI using Homebrew
+    tags:
+      - aws
+      - localstack
+  localstack start:
+    desc: Start the LocalStack services
+    tags:
+      - aws
+      - localstack
+
+  # LocalStack Useful Endpoints
+  # https://docs.localstack.cloud/aws/integrations/aws-native-tools/aws-cli/
+  curlie 'http://localhost.localstack.cloud:4566/_localstack/init' | jq:
+    desc: Initialize LocalStack services (or curl -s 'http://localhost:4566/_localstack/init' | jq)
+    tags: [aws, sam, serverless, localstack]
+    links: [https://docs.localstack.cloud/aws/capabilities/config/initialization-hooks/#status-endpoint]
+  curlie 'http://localhost.localstack.cloud:4566/_localstack/init/ready' | jq:
+    desc: Check if LocalStack services are ready (or curl -s 'http://localhost:4566/_localstack/init/ready' | jq)
+    tags: [aws, sam, serverless, localstack]
+    links: [https://docs.localstack.cloud/aws/capabilities/config/initialization-hooks/#querying-stages]
+  curlie 'http://localhost.localstack.cloud:4566/_localstack/init/ready' | jq .completed:
+    desc: check whether a given stage has been completed (or curl -s 'http://localhost:4566/_localstack/init/ready' | jq .completed)
+    tags: [aws, sam, serverless, localstack]
+    links: [https://docs.localstack.cloud/aws/capabilities/config/initialization-hooks/#querying-stages]
+  curlie 'http://localhost.localstack.cloud:4566/_localstack/health' | jq:
+    desc: Check the health status of LocalStack services (or curl 'http://localhost:4566/_localstack/health' | jq)
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  curlie 'http://localhost.localstack.cloud:4566/_localstack/diagnose':
+    desc: Diagnose LocalStack issues and get a report (or curl 'http://localhost:4566/_localstack/diagnose')
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  curlie 'http://localhost.localstack.cloud:4566/_aws/lambda/runtimes?filter=supported':
+    desc: List supported Lambda runtimes in LocalStack (or curl 'http://localhost:4566/_aws/lambda/runtimes?filter=supported')
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  curlie 'http://localhost.localstack.cloud:4566/_aws/sqs/messages':
+    desc: List SQS queue messages without side effects in LocalStack (or curl 'http://localhost:4566/_aws/sqs/messages')
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+
+  # LocalStack & AWS-CLI/Lambda
+  aws --profile localstack lambda list-functions:
+    desc: List Lambda functions in LocalStack using the 'localstack' profile
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws --profile localstack lambda create-function --function-name address_get --runtime nodejs20.x --role arn:aws:iam::123456789012:role/lambda-ex --code S3Bucket=hot-reload,S3Key=$PWD/.dist --handler coreservices/address/functions/address/get.handler:
+    desc: Create 'address_get' Lambda function in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws --profile localstack lambda get-function --function-name address_get:
+    desc: Retrieve information about 'address_get' Lambda function in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws --profile localstack lambda invoke --function-name address_get --cli-binary-format raw-in-base64-out --payload '{ "name":"Bob" }' response.json:
+    desc: Invoke 'address_get' Lambda function in LocalStack with a test payload
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws --profile localstack lambda delete-function --function-name address_get:
+    desc: Delete 'address_get' Lambda function in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws --profile localstack lambda list-layers --compatible-runtime python3.11:
+    desc: List layers compatible with Python 3.11 runtime in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws --profile localstack lambda list-layers --compatible-runtime nodejs20.x:
+    desc: List layers compatible with Node.js 20.x runtime in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+
+  # LocalStack & AWS-CLI/DynamoDB
+  aws --profile localstack dynamodb list-tables:
+    desc: List DynamoDB tables in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws --profile localstack dynamodb create-table --table-name MusicCollection --attribute-definitions AttributeName=Artist,AttributeType=S AttributeName=SongTitle,AttributeType=S --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --tags Key=Owner,Value=blueTeam:
+    desc: Create a DynamoDB table named 'MusicCollection' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws --profile localstack dynamodb describe-table --table-name MusicCollection:
+    desc: Describe the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws --profile localstack dynamodb put-item --table-name MusicCollection --item file://item.json --return-consumed-capacity TOTAL --return-item-collection-metrics SIZE:
+    desc: Put an item into the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws --profile localstack dynamodb get-item --table-name MusicCollection --key '{"Artist":"Acme Band","SongTitle":"Happy Day"}':
+    desc: Get an item from the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws --profile localstack dynamodb query --table-name MusicCollection --projection-expression "SongTitle" --key-condition-expression "Artist = :v1" --expression-attribute-values file://expression-attributes.json --return-consumed-capacity TOTAL:
+    desc: Query the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws --profile localstack dynamodb delete-item --table-name MusicCollection --key file://key.json --return-values ALL_OLD --return-consumed-capacity TOTAL --return-item-collection-metrics SIZE:
+    desc: Delete an item from the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html, https://awscli.amazonaws.com/v2/documentation/api/latest/reference/dynamodb/delete-item.html]
+  aws --profile localstack dynamodb delete-table --table-name MusicCollection:
+    desc: Delete the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k, https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+
+  # LocalStack & AWS-CLI/Kinesis
+  aws --profile localstack kinesis list-streams:
+    desc: List Kinesis streams in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+
+  # LocalStack & AWS-CLI/SQS
+  aws --profile localstack sqs create-queue --queue-name my-queue:
+    desc: Create an SQS queue named 'my-queue' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://docs.localstack.cloud/aws/capabilities/config/initialization-hooks/#example]
+
+  # LocalStack & AWS-CLI/S3
+  aws --profile localstack s3 ls:
+    desc: List S3 buckets in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 mb s3://bucket1:
+    desc: Create an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 ls s3://bucket1:
+    desc: List objects in an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 cp local.txt s3://bucket1:
+    desc: Copy a local file to an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 cp s3://bucket1/local.txt local.txt:
+    desc: Copy an S3 object from S3 bucket 'bucket1' in LocalStack to a local file
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 rm s3://bucket1/local.txt:
+    desc: Remove an S3 object from S3 bucket 'bucket1' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 rb s3://bucket1:
+    desc: Remove an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+
+  # LocalStack & AWS-SAM
+  sam build && sam deploy --stack-name my-stack-local --endpoint-url http://localhost:4566 --region us-east-1 --no-confirm-changeset:
+    desc: Deploy the AWS SAM application to LocalStack
+    tags: [aws, sam, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+
+cheats:
+  AWS SAM CLI - Initialize, Build, and Test a Serverless Application:
     desc: A step-by-step guide to initialize, build, and test a serverless application using the AWS SAM CLI.
-    tags: [aws, sam, serverless, cli]
+    tags:
+      - aws
+      - sam
+      - serverless
+      - cli
     links:
       - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-init.html
       - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html
       - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-test-and-debug.html
     notes:
-      - sh: | #shell
+      - sh: |
           #!/bin/bash
 
           # ============================================
@@ -307,3 +893,3303 @@ cheats:
           ├── tests/
           │   └── unit.spec.ts
           └── package.json
+  AWS CLI v1 > OVERVIEW:
+    desc: Quick Reference, Configuration and Best Practices (v1 LocalStack-Compatible)
+    tags:
+      - aws
+      - cli
+      - v1
+      - localstack
+    links:
+      - https://docs.localstack.cloud/aws/integrations/aws-native-tools/aws-cli/
+      - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html
+      - https://docs.aws.amazon.com/cli/latest/reference/
+    notes:
+      - md: |
+          ## OVERVIEW
+
+          - **WHY v1?** AWS CLI v2 is NOT supported by LocalStack. Use v1 for local development with LocalStack.
+
+          - **PURPOSES**
+            - Manage AWS services directly from terminal (or LocalStack locally)
+            - Full programmatic access to AWS APIs
+            - Automate infrastructure and deployment workflows
+
+          - **KEY USAGES**:
+            - Automate infrastructure tasks (EC2, S3, Lambda, etc.)
+            - Deploy applications via CloudFormation/SAM
+            - Script batch operations and automation
+            - LocalStack integration for local/testing environments
+            - CI/CD pipeline integration
+
+          - **KEY FEATURES**:
+            - Multiple credential profiles for different AWS accounts/roles
+            - Environment-based configuration
+            - Temporary STS credentials support
+            - Cross-account role assumption
+            - LocalStack endpoint override for local testing
+            - Output formatting (JSON, table, text) for scripting
+  AWS CLI v1 > INSTALLATION:
+    desc: Install AWS CLI v1 (LocalStack-compatible)
+    tags:
+      - aws
+      - cli
+      - v1
+      - install
+    notes:
+      - md: |
+          ## INSTALLATION
+
+          ### ⚠️ Use v1 (Not v2) for LocalStack
+
+          ```bash
+          ### Python PIP (Recommended for v1)
+          # Install pip first (macOS)
+          python3 -m pip install --user awscli
+
+          # Or via Homebrew (older v1 version)
+          brew install awscli@1  # Or 'aws-cli' if v1
+
+          ### Verify Installation
+          aws --version
+          # Should show: aws-cli/1.x.x Python/3.x ...
+
+          ### Flox (Recommended for Cross-Platform)
+          # In your flox.nix or environment
+          packages = [ "awscli" ];  # Flox provides v1 by default
+
+          ### Virtual Environment (Best Practice)
+          python3 -m venv aws-cli-env
+          source aws-cli-env/bin/activate
+          pip install awscli
+          ```
+
+          > ⚠️ **IMPORTANT:** AWS CLI v2 is NOT supported by LocalStack. Ensure you're using v1.x.x
+  AWS CLI v1 > CREDENTIAL RESOLUTION PRECEDENCE:
+    desc: Order of credential resolution (explicit precedence)
+    tags:
+      - aws
+      - cli
+      - credentials
+      - precedence
+    notes:
+      - md: |
+          ## CREDENTIAL RESOLUTION PRECEDENCE
+
+          > 💡 AWS CLI checks credentials in this exact order. First match wins.
+
+          1. **ENVIRONMENT VARIABLES** (highest priority)
+             - `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` + `AWS_SESSION_TOKEN`
+             - Used immediately, ignoring all other sources
+
+          2. **AWS_SHARED_CREDENTIALS_FILE** (custom location)
+             - `export AWS_SHARED_CREDENTIALS_FILE=/path/to/credentials`
+             - Overrides default `~/.aws/credentials`
+
+          3. **DEFAULT PROFILE** from `~/.aws/credentials`
+             - `[default]` section if no `--profile` or `AWS_PROFILE` specified
+
+          4. **NAMED PROFILE** from `~/.aws/credentials` + `~/.aws/config`
+             - Specified via `--profile` flag or `AWS_PROFILE` env var
+
+          5. **IAM ROLES** (EC2/ECS/Lambda)
+             - Auto-detected if running on AWS infrastructure
+             - No credentials needed locally
+
+          ### Decision Tree: Which Authentication Method?
+
+          ```
+          Are you a human developer?
+          ├─ YES: Prefer AWS SSO (aws sso login) or temporary tokens
+          └─ NO: Is code running on AWS (EC2/Lambda/ECS)?
+             ├─ YES: Use IAM roles (no credentials needed)
+             └─ NO: Is it CI/CD pipeline?
+                ├─ YES: Use environment variables or aws-vault
+                └─ NO: Use named profiles (~/.aws/credentials)
+          ```
+  AWS CLI v1 > CREDENTIALS > AUTHENTICATION CONCEPTS:
+    desc: Three main ways to authenticate with AWS CLI v1
+    tags:
+      - aws
+      - cli
+      - credentials
+      - auth
+    notes:
+      - md: |
+          ## CREDENTIALS & AUTHENTICATION
+
+          ### 1. ENVIRONMENT VARIABLES (Highest Priority)
+
+          ```bash
+          export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
+          export AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+          export AWS_SESSION_TOKEN="optional-token"  # For temporary credentials
+          export AWS_DEFAULT_REGION="us-east-1"
+          export AWS_PROFILE=production  # Override default profile
+          export AWS_OUTPUT=json  # Override output format
+          ```
+
+          **GOOD FOR:** CI/CD, Docker, temporary access, one-off commands
+
+          ### 2. AWS_SHARED_CREDENTIALS_FILE (Custom Credentials Location)
+
+          ```bash
+          # Use non-standard credentials file location
+          export AWS_SHARED_CREDENTIALS_FILE=/path/to/custom/credentials
+          export AWS_CONFIG_FILE=/path/to/custom/config
+
+          # Now AWS CLI reads from these files instead of ~/.aws/
+          aws s3 ls --profile production
+          ```
+
+          **GOOD FOR:** Multiple AWS accounts, isolated environments, testing
+
+          ### 3. NAMED PROFILES (`~/.aws/credentials` + `~/.aws/config`)
+
+          ```bash
+          # Switch between profiles easily
+          aws s3 ls --profile production
+          aws s3 ls --profile development
+
+          # Set default for session
+          export AWS_PROFILE=production
+          aws ec2 describe-instances  # Uses production profile
+
+          # Unset
+          unset AWS_PROFILE
+          ```
+
+          **GOOD FOR:** Local development, multiple account management
+
+          ### 4. EC2 INSTANCE ROLE / ECS TASK ROLE (Best for AWS Workloads)
+
+          - Automatic credential provider on AWS infrastructure
+          - Credentials automatically rotated
+          - No credentials stored locally
+          - **BEST PRACTICE** for Lambda, ECS, EC2 tasks
+  AWS CLI v1 > CREDENTIAL TYPES:
+    desc: Types of AWS credentials and their use cases
+    tags:
+      - aws
+      - cli
+      - credentials
+      - type
+    notes:
+      - md: |
+          ## CREDENTIAL TYPES
+
+          ### 1. IAM USER CREDENTIALS (Long-term)
+
+          - **TYPE:** Access Key ID + Secret Access Key
+          - **DURATION:** Infinite (never expire)
+          - **ROTATION:** Manual
+          - **GOOD FOR:** CI/CD, scheduled jobs, service accounts
+          - **WARNING:** ⚠️ Use ONLY for non-interactive/automated services
+          - **SECURITY:** ⚠️ Medium (requires key rotation discipline)
+
+          ```ini
+          [cicd-user]
+          aws_access_key_id = AKIA...
+          aws_secret_access_key = wJalr...
+          ```
+
+          ### 2. SECURITY TOKEN SERVICE (STS) - Temporary Credentials
+
+          - **TYPE:** Access Key + Secret Key + Session Token
+          - **DURATION:** Default 1 hour, max 12 hours
+          - **ROTATION:** Automatic expiration
+          - **GOOD FOR:** Human CLI use, temporary access, role assumption
+          - **SECURITY:** ✅ High (automatic expiration)
+
+          ```bash
+          aws sts get-session-token \
+            --serial-number arn:aws:iam::123456789012:mfa/user \
+            --token-code 123456 \
+            --duration-seconds 3600
+          ```
+
+          ### 3. IAM ROLES (Best Practice for AWS Workloads)
+
+          - **TYPE:** No credentials file needed
+          - **DURATION:** Auto-rotated
+          - **ROTATION:** Automatic by AWS
+          - **GOOD FOR:** EC2, Lambda, ECS tasks
+          - **SECURITY:** ✅✅ Highest (automatic management)
+
+          ```bash
+          # Running on EC2 instance - credentials automatic
+          aws s3 ls  # Just works!
+          ```
+  AWS CLI v1 > CREDENTIALS FILES:
+    desc: Detailed explanation of ~/.aws/credentials and ~/.aws/config files
+    tags:
+      - aws
+      - cli
+      - credentials
+      - file
+    notes:
+      - md: |
+          ## CREDENTIALS FILES STRUCTURE
+
+          ```tree
+          ~/.aws/
+          ├── credentials         # ⚠️ SENSITIVE - Access keys (NEVER commit to git)
+          ├── config              # Region, output format, profile settings
+          ├── .aws_cache/         # Token cache for temporary credentials
+          └── sso/                # AWS SSO session cache
+          ```
+
+          ### ~/.aws/credentials - AUTHENTICATION
+
+          > **PURPOSE:** Store long-term and temporary credentials
+
+          ```ini
+          # Default profile (fallback if no --profile specified)
+          [default]
+          aws_access_key_id = AKIA...
+          aws_secret_access_key = wJalr...
+
+          # Production account
+          [production]
+          aws_access_key_id = AKIA...
+          aws_secret_access_key = wJalr...
+
+          # Development account
+          [development]
+          aws_access_key_id = AKIA...
+          aws_secret_access_key = wJalr...
+
+          # Cross-account role assumption
+          [cross-account-admin]
+          role_arn = arn:aws:iam::123456789012:role/CrossAccountAdminRole
+          source_profile = production
+          external_id = optional-external-id
+
+          # MFA-protected profile
+          [mfa-profile]
+          aws_access_key_id = AKIA...
+          aws_secret_access_key = wJalr...
+          mfa_serial = arn:aws:iam::123456789012:mfa/your-user
+          ```
+
+          ### ~/.aws/config - CONFIGURATION
+
+          > **PURPOSE:** Store region, output format, and profile-specific settings
+
+          ```ini
+          # Default profile
+          [default]
+          region = us-east-1
+          output = json
+
+          # Production profile (note: "profile" prefix required here)
+          [profile production]
+          region = us-east-1
+          output = json
+
+          # Development profile
+          [profile development]
+          region = us-west-2
+          output = table
+
+          # Cross-account profile with MFA
+          [profile cross-account-admin]
+          role_arn = arn:aws:iam::123456789012:role/AdminRole
+          source_profile = production
+          mfa_serial = arn:aws:iam::987654321098:mfa/your-user
+
+          # LocalStack (local development/testing)
+          [profile localstack]
+          region = us-east-1
+          output = json
+          ```
+
+          > ⚠️ **KEY DIFFERENCE:** In `config`, profiles use `[profile name]` syntax. In `credentials`, use `[name]` only.
+  AWS CLI v1 > PROFILE ORGANIZATION STRATEGIES:
+    desc: Best practices for organizing AWS CLI credential profiles
+    tags:
+      - aws
+      - cli
+      - organization
+      - profile
+    notes:
+      - md: |
+          ## PROFILE ORGANIZATION STRATEGIES
+
+          ### 1. By Environment
+
+          > **GOOD FOR:** Separating dev, staging, production credentials
+
+          ```ini
+          [development]
+          region = us-west-2
+          aws_access_key_id = ...
+
+          [staging]
+          region = us-east-1
+          aws_access_key_id = ...
+
+          [production]
+          region = us-east-1
+          aws_access_key_id = ...
+          ```
+
+          ### 2. By Account & Role
+
+          > **GOOD FOR:** Multi-account and cross-account access management
+
+          ```ini
+          [org-dev]
+          aws_access_key_id = ...
+
+          [org-prod]
+          aws_access_key_id = ...
+
+          [org-prod-admin]
+          role_arn = arn:aws:iam::ACCOUNT_ID:role/AdminRole
+          source_profile = org-prod
+          ```
+
+          ### 3. By Workload Type
+
+          > **GOOD FOR:** Isolating credentials by context (Lambda, CI/CD, LocalStack)
+
+          ```ini
+          [lambda-deploy]
+          aws_access_key_id = ...
+
+          [localstack-dev]
+          # No real credentials needed for LocalStack
+
+          [cicd]
+          aws_access_key_id = ...
+          ```
+
+          ### 4. Naming Convention (Recommended)
+
+          > **FORMAT:** `<org>-<environment>-<role>`
+
+          ```
+          consorciei-dev
+          consorciei-dev-readonly
+          consorciei-prod
+          consorciei-prod-admin
+          consorciei-prod-readonly
+          localstack-testing
+          ci-cd-deploy
+          ```
+
+          ### 5. Consorciei Migration Example
+
+          > Tailored to your Nx monorepo migration project
+
+          ```ini
+          [consorciei-dev]
+          region = us-east-1
+          aws_access_key_id = ...
+
+          [consorciei-staging]
+          region = us-east-1
+          aws_access_key_id = ...
+
+          [consorciei-prod]
+          region = us-east-1
+          aws_access_key_id = ...
+
+          [consorciei-prod-admin]
+          role_arn = arn:aws:iam::PROD_ACCOUNT:role/AdminRole
+          source_profile = consorciei-prod
+          mfa_serial = arn:aws:iam::PROD_ACCOUNT:mfa/your-user
+
+          [localstack-migration-test]
+          region = us-east-1
+          endpoint_url = http://localhost:4566
+          ```
+  AWS CLI v1 > COMMON COMMANDS & USE CASES:
+    desc: Common AWS CLI v1 commands and practical use cases
+    tags:
+      - aws
+      - cli
+      - cmd
+      - examples
+    notes:
+      - md: |
+          ## COMMON COMMANDS & USE CASES
+
+          ### List Available Profiles
+
+          ```bash
+          grep '\[profile' ~/.aws/config | sed 's/\[profile \(.*\)\]/\1/'
+          # Or for credentials file:
+          grep '^\[' ~/.aws/credentials | tr -d '[]'
+          ```
+
+          ### Use Specific Profile
+
+          ```bash
+          # One-off command
+          aws s3 ls --profile production
+
+          # Set for entire session
+          export AWS_PROFILE=production
+          aws ec2 describe-instances
+          unset AWS_PROFILE
+
+          # Environment variable override
+          AWS_PROFILE=staging AWS_REGION=us-west-2 aws s3 ls
+          ```
+
+          ### Check Current Identity
+
+          ```bash
+          # See who/what you're authenticated as
+          aws sts get-caller-identity --profile production
+
+          # Output:
+          # {
+          #     "UserId": "AIDAI...",
+          #     "Account": "123456789012",
+          #     "Arn": "arn:aws:iam::123456789012:user/your-user"
+          # }
+          ```
+
+          ### Get Temporary STS Credentials
+
+          ```bash
+          # Without MFA
+          aws sts get-session-token \
+            --duration-seconds 3600 \
+            --profile default
+
+          # With MFA
+          aws sts get-session-token \
+            --serial-number arn:aws:iam::123456789012:mfa/your-user \
+            --token-code 123456 \
+            --duration-seconds 3600 \
+            --profile default
+          ```
+
+          ### Assume Cross-Account Role
+
+          ```bash
+          # Simple (if configured in ~/.aws/config)
+          aws s3 ls --profile cross-account-admin
+
+          # Manual
+          aws sts assume-role \
+            --role-arn arn:aws:iam::ANOTHER_ACCOUNT:role/RoleName \
+            --role-session-name cross-account-session \
+            --profile production
+          ```
+
+          ### Output Filtering with --query (Practical Examples)
+
+          ```bash
+          # Get only instance IDs
+          aws ec2 describe-instances \
+            --query 'Reservations[].Instances[].InstanceId' \
+            --output text
+
+          # Get S3 bucket names only
+          aws s3api list-buckets \
+            --query 'Buckets[].Name' \
+            --output text
+
+          # Filter by tag (e.g., Environment=production)
+          aws ec2 describe-instances \
+            --filters "Name=tag:Environment,Values=production" \
+            --query 'Reservations[].Instances[].{ID:InstanceId,Type:InstanceType}' \
+            --output table
+
+          # Get Lambda function ARNs
+          aws lambda list-functions \
+            --query 'Functions[].FunctionArn' \
+            --output text
+          ```
+
+          ### Common Service Operations
+
+          ```bash
+          # S3
+          aws s3 ls --profile production
+          aws s3 cp file.txt s3://bucket/path/ --profile production
+
+          # Lambda
+          aws lambda list-functions --profile production
+          aws lambda invoke --function-name my-func /tmp/output.json
+
+          # CloudFormation / SAM
+          aws cloudformation describe-stacks --profile production
+          sam deploy --profile production
+
+          # LocalStack (development)
+          aws s3 ls --profile localstack
+          aws dynamodb list-tables --profile localstack
+          ```
+
+          ### Configuration Info
+
+          ```bash
+          aws configure list                           # Show current config
+          aws configure list --profile production      # Show specific profile
+          aws configure get region --profile production # Get specific value
+          ```
+  AWS CLI v1 > ALTERNATIVE TOOLS:
+    desc: aws-vault for enhanced credential management
+    tags:
+      - aws
+      - aws_vault
+      - cli
+      - tool
+    notes:
+      - md: |
+          ## ALTERNATIVE TOOLS FOR CREDENTIAL MANAGEMENT
+
+          ### aws-vault (Recommended for Enhanced Security)
+
+          > Encrypts credentials and keeps them in memory (not disk), with MFA support
+
+          ```bash
+          # Install
+          brew install aws-vault
+
+          # Add credentials (encrypted storage)
+          aws-vault add production
+
+          # Execute command with profile (MFA prompted if configured)
+          aws-vault exec production -- aws s3 ls
+
+          # Use for Docker
+          aws-vault exec production -- docker run \
+            -e AWS_ACCESS_KEY_ID \
+            -e AWS_SECRET_ACCESS_KEY \
+            -e AWS_SESSION_TOKEN \
+            my-app:latest
+
+          # List stored profiles
+          aws-vault list
+
+          # Manage profiles
+          aws-vault rm production  # Remove
+          aws-vault login production  # Open AWS console
+          ```
+
+          **ADVANTAGES:**
+          - Credentials encrypted at rest
+          - Keeps credentials in memory, not files
+          - Built-in MFA support
+          - Session token management
+          - AWS console login support
+
+          **WHEN TO USE:**
+          - Local development with multiple profiles
+          - High-security environments
+          - MFA requirement workflows
+  AWS CLI v1 > SECURITY BEST PRACTICES:
+    desc: Security best practices for AWS CLI credentials
+    tags:
+      - aws
+      - bp
+      - cli
+      - security
+    notes:
+      - md: |
+          ## SECURITY BEST PRACTICES
+
+          ### ✅ DO's
+
+          - **Restrict credentials file permissions**
+
+              ```bash
+              chmod 600 ~/.aws/credentials
+              chmod 644 ~/.aws/config
+              ```
+
+          - **Use environment variables in CI/CD** (never commit credentials)
+
+              ```bash
+              # GitHub Actions / GitLab CI - use secrets
+              export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+              export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              ```
+
+          - **Use temporary credentials (STS)** whenever possible
+
+              ```bash
+              aws sts get-session-token  # Better than static keys
+              ```
+
+          - **Use aws-vault** for local credential storage
+
+              ```bash
+              aws-vault add production  # Encrypts credentials
+              aws-vault exec production -- aws s3 ls
+              ```
+
+          - **Enable MFA for production profiles**
+
+              ```ini
+              [profile production]
+              mfa_serial = arn:aws:iam::123456789012:mfa/your-user
+              ```
+
+          - **Use IAM Roles for EC2/Lambda/ECS** (no credentials needed)
+
+          - **Follow principle of least privilege**
+            - Create IAM policies with minimal required permissions
+            - One profile per role (readonly, deploy, admin)
+
+          - **Exclude credentials from git**
+
+              ```bash
+              # .gitignore
+              .aws/credentials
+              .aws/config  # if sensitive
+              ~/.aws/**
+              .env
+              *.key
+              ```
+
+          - **Rotate long-term credentials regularly**
+            - Set calendar reminders for quarterly rotation
+            - Use STS tokens for preference
+
+          ### ❌ DON'Ts
+
+          - Commit credentials to git (ever)
+          - Use root AWS account for daily work
+          - Share credentials between team members (use roles instead)
+          - Store credentials in plaintext environment files
+          - Use `[default]` for sensitive operations
+          - Leave region unspecified (always explicit)
+          - Hard-code credentials in application code
+          - Use IAM user credentials for services (use roles)
+          - Store credentials in Docker images
+  AWS CLI v1 > ENCRYPTION & SECRET MANAGEMENT:
+    desc: Encrypt and manage AWS credentials securely with SOPS + AGE
+    tags:
+      - aws
+      - cli
+      - encryption
+      - sops
+      - age
+    notes:
+      - md: |
+          ## ENCRYPTION & SECRET MANAGEMENT
+
+          ### SOPS + AGE (Recommended Approach)
+
+          ```bash
+          # Install sops and age
+          brew install sops age
+
+          # Generate age key
+          age-keygen -o ~/.age/key.txt
+
+          # Encrypt credentials file
+          SOPS_AGE_RECIPIENTS=$(cat ~/.age/key.txt | grep "# public key:" | cut -d' ' -f4)
+          sops -e -i --age $SOPS_AGE_RECIPIENTS ~/.aws/credentials
+
+          # Git-safe: pre-commit hook to auto-encrypt
+          # Create .git/hooks/pre-commit to encrypt on every commit
+          ```
+
+          ### Using Encrypted Credentials in Scripts
+
+          ```bash
+          # Decrypt and use temporarily
+          export SOPS_AGE_KEY_FILE=~/.age/key.txt
+          export AWS_SHARED_CREDENTIALS_FILE=$(mktemp)
+
+          sops -d ~/.aws/credentials > $AWS_SHARED_CREDENTIALS_FILE
+          aws s3 ls --profile production
+          rm $AWS_SHARED_CREDENTIALS_FILE
+          ```
+
+          ### Using in Docker
+
+          ```bash
+          docker run \
+            -v ~/.age/key.txt:/root/.age/key.txt:ro \
+            -e SOPS_AGE_KEY_FILE=/root/.age/key.txt \
+            my-app:latest
+
+          # Inside container: decrypt at startup
+          sops -d ~/.aws/credentials > /tmp/credentials
+          export AWS_SHARED_CREDENTIALS_FILE=/tmp/credentials
+          ```
+
+          ### CI/CD Integration
+
+          ```bash
+          # GitHub Actions
+          - name: Decrypt AWS credentials
+            env:
+              SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+            run: |
+              sops -d .aws/credentials > /tmp/credentials
+              export AWS_SHARED_CREDENTIALS_FILE=/tmp/credentials
+          ```
+  AWS CLI v1 > DOCKER & LOCALSTACK:
+    desc: Using AWS CLI v1 with Docker and LocalStack
+    tags:
+      - aws
+      - cli
+      - docker
+      - localstack
+    notes:
+      - md: |
+          ## DOCKER & LOCALSTACK INTEGRATION
+
+          ### Pass AWS Credentials to Docker
+
+          ```bash
+          # Mount credentials file (read-only)
+          docker run \
+            -v ~/.aws/credentials:/root/.aws/credentials:ro \
+            -v ~/.aws/config:/root/.aws/config:ro \
+            -e AWS_PROFILE=production \
+            my-aws-app:latest
+
+          # Or mount entire ~/.aws directory
+          docker run \
+            -v ~/.aws:/home/appuser/.aws:ro \
+            -e AWS_PROFILE=production \
+            my-app:latest
+          ```
+
+          ### Docker Compose with AWS Credentials
+
+          ```yaml
+          version: '3.8'
+          services:
+            app:
+              image: my-app:latest
+              volumes:
+                - ~/.aws/credentials:/home/appuser/.aws/credentials:ro
+                - ~/.aws/config:/home/appuser/.aws/config:ro
+              environment:
+                AWS_PROFILE: production
+                AWS_REGION: us-east-1
+              networks:
+                - local
+
+          networks:
+            local:
+              driver: bridge
+          ```
+
+          ### LocalStack Development (v1-Compatible!)
+
+          > ⚠️ **IMPORTANT:** AWS CLI v2 NOT supported. Use v1 above.
+
+          ```yaml
+          version: '3.8'
+          services:
+            localstack:
+              image: localstack/localstack:latest
+              ports:
+                - "4566:4566"  # LocalStack API gateway
+              environment:
+                SERVICES: s3,lambda,dynamodb,sqs,cloudformation
+                DEBUG: 1
+                DATA_DIR: /tmp/localstack/data
+              volumes:
+                - "${TMPDIR}:/tmp/localstack"
+                - /var/run/docker.sock:/var/run/docker.sock
+
+            app:
+              image: my-app:latest
+              depends_on:
+                - localstack
+              environment:
+                AWS_ENDPOINT_URL: http://localstack:4566
+                AWS_ENDPOINT_URL_S3: http://localstack:4566
+                AWS_ACCESS_KEY_ID: test
+                AWS_SECRET_ACCESS_KEY: test
+                AWS_DEFAULT_REGION: us-east-1
+              volumes:
+                - ~/.aws/config:/home/appuser/.aws/config:ro
+
+          networks:
+            default:
+              name: localstack-net
+          ```
+
+          ### AWS CLI v1 with LocalStack Commands
+
+          ```bash
+          # List S3 buckets in LocalStack
+          aws s3 ls --profile localstack
+
+          # Create DynamoDB table in LocalStack
+          aws dynamodb create-table \
+            --table-name my-table \
+            --attribute-definitions AttributeName=id,AttributeType=S \
+            --key-schema AttributeName=id,KeyType=HASH \
+            --billing-mode PAY_PER_REQUEST \
+            --profile localstack
+
+          # Lambda operations
+          aws lambda list-functions --profile localstack
+
+          # CloudFormation / SAM deploy to LocalStack
+          sam deploy \
+            --profile localstack \
+            --s3-bucket localstack-bucket \
+            --parameter-overrides ParameterKey=Value
+          ```
+
+          ### LocalStack Profile Configuration
+
+          ```ini
+          # ~/.aws/config
+          [profile localstack]
+          region = us-east-1
+          output = json
+          endpoint_url = http://localhost:4566
+
+          # ~/.aws/credentials
+          [localstack]
+          aws_access_key_id = test
+          aws_secret_access_key = test
+          ```
+  AWS CLI v1 > MFA TROUBLESHOOTING:
+    desc: Troubleshooting MFA with AWS CLI v1
+    tags:
+      - aws
+      - cli
+      - mfa
+      - troubleshooting
+    notes:
+      - md: |
+          ## MFA TROUBLESHOOTING
+
+          ### "InvalidIdentity.MalformedId: The provided MFA serial is invalid"
+
+          ```bash
+          # ❌ WRONG - User ARN format
+          mfa_serial = arn:aws:iam::123456789012:user/my-user
+
+          # ✅ CORRECT - MFA device ARN format
+          mfa_serial = arn:aws:iam::123456789012:mfa/my-user
+          ```
+
+          Check `~/.aws/config`:
+
+          ```ini
+          [profile production]
+          mfa_serial = arn:aws:iam::123456789012:mfa/my-user  # Note: /mfa/ not /user/
+          ```
+
+          ### "AccessDenied when using MFA"
+
+          ```bash
+          # Token code expired (AWS tokens valid for ~30 seconds)
+          # Solution: Get fresh code from authenticator, try again
+
+          # MFA device not registered
+          aws iam list-mfa-devices
+          # If empty, register device: AWS Console → IAM → Users → Security credentials
+
+          # Credentials expired while MFA dialog pending
+          # Solution: Get new temporary credentials with correct token
+          ```
+
+          ### "MFA device is not registered for this user"
+
+          ```bash
+          # Register MFA in AWS Console, then:
+          aws iam list-mfa-devices --profile production
+
+          # Should show your registered device(s)
+          # {
+          #   "MFADevices": [
+          #     {
+          #       "UserName": "my-user",
+          #       "SerialNumber": "arn:aws:iam::123456789012:mfa/my-user",
+          #       "EnableDate": "2024-01-01T..."
+          #     }
+          #   ]
+          # }
+          ```
+
+          ### "Token code is invalid"
+
+          ```bash
+          # Time sync issue
+          # Authenticator time must match device time
+          # Check: AWS → IAM → Users → Console sign-in → Enable MFA
+
+          # Code already used
+          # Each code valid once; wait 30 seconds for next code
+          ```
+
+          ### Get Session Token with MFA
+
+          ```bash
+          # Terminal 1: Get session token
+          aws sts get-session-token \
+            --serial-number arn:aws:iam::123456789012:mfa/my-user \
+            --token-code 123456 \
+            --duration-seconds 3600 \
+            --profile production
+
+          # Output contains temporary credentials
+          # {
+          #   "Credentials": {
+          #     "AccessKeyId": "ASIA...",
+          #     "SecretAccessKey": "...",
+          #     "SessionToken": "...",
+          #     "Expiration": "2024-01-01T..."
+          #   }
+          # }
+
+          # Use these in environment:
+          export AWS_ACCESS_KEY_ID=ASIA...
+          export AWS_SECRET_ACCESS_KEY=...
+          export AWS_SESSION_TOKEN=...
+          ```
+  AWS CLI v1 > TROUBLESHOOTING:
+    desc: Common issues and solutions for AWS CLI v1
+    tags:
+      - aws
+      - cli
+      - troubleshooting
+      - debug
+    notes:
+      - md: |
+          ## TROUBLESHOOTING
+
+          ### "Unable to locate credentials"
+
+          ```bash
+          # Check environment variables
+          echo $AWS_ACCESS_KEY_ID
+          echo $AWS_SECRET_ACCESS_KEY
+
+          # Check credentials file exists
+          ls -la ~/.aws/credentials
+
+          # Check profile exists
+          grep "\[production\]" ~/.aws/credentials
+
+          # Check custom credentials file location
+          echo $AWS_SHARED_CREDENTIALS_FILE
+
+          # Verify precedence (env vars override everything)
+          unset AWS_ACCESS_KEY_ID
+          unset AWS_SECRET_ACCESS_KEY
+          ```
+
+          ### "The request must contain the parameter Authorization"
+
+          ```bash
+          # Credentials exist but invalid/expired
+          aws sts get-caller-identity --profile production
+
+          # If fails, credentials are wrong
+          # Solution: Regenerate access keys in AWS Console IAM → Users
+
+          # For MFA: Need to get temporary session token first
+          aws sts get-session-token --serial-number ... --token-code ...
+          ```
+
+          ### "Profile not found" or "Profile does not exist"
+
+          ```bash
+          # Config file syntax check
+          cat ~/.aws/config | grep "profile production"
+
+          # ❌ WRONG - config file
+          [production]
+
+          # ✅ CORRECT - config file
+          [profile production]
+
+          # Credentials file (no "profile" prefix)
+          grep "\[production\]" ~/.aws/credentials
+          ```
+
+          ### "Wrong region being used"
+
+          ```bash
+          # Check precedence
+          echo $AWS_DEFAULT_REGION
+          echo $AWS_REGION
+
+          # Check config file
+          grep "region" ~/.aws/config
+
+          # Override explicitly
+          aws s3 ls --region us-west-2 --profile production
+
+          # Or set environment variable
+          export AWS_DEFAULT_REGION=us-west-2
+          ```
+
+          ### "NoCredentialsError with LocalStack"
+
+          ```bash
+          # LocalStack requires credentials (even if dummy)
+          # Check profile
+          aws s3 ls --profile localstack
+
+          # Ensure profile exists
+          grep "\[localstack\]" ~/.aws/credentials
+          grep "\[profile localstack\]" ~/.aws/config
+
+          # Dummy credentials for LocalStack
+          [localstack]
+          aws_access_key_id = test
+          aws_secret_access_key = test
+          ```
+
+          ### "Connection refused to LocalStack"
+
+          ```bash
+          # LocalStack not running
+          docker ps | grep localstack
+
+          # Start LocalStack
+          docker-compose up localstack
+
+          # Check endpoint URL in profile
+          grep "endpoint_url" ~/.aws/config
+
+          # Should be: endpoint_url = http://localhost:4566
+          ```
+
+          ### Enable Debug Logging
+
+          ```bash
+          # See detailed request/response info
+          aws s3 ls --debug --profile production
+
+          # Redirect to file for analysis
+          aws s3 ls --debug --profile production 2> debug.log
+          ```
+  AWS CLI v1 > QUICK REFERENCE:
+    desc: Quick command reference for common AWS CLI v1 operations
+    tags:
+      - aws
+      - cli
+      - cmd
+      - reference
+    notes:
+      - md: |
+          ## QUICK COMMAND REFERENCE
+
+          ```bash
+          # CONFIGURATION
+          aws configure                                  # Interactive setup
+          aws configure --profile production             # Setup specific profile
+          aws configure list                             # Show current config
+          aws configure list --profile production        # Show profile config
+          aws configure get region --profile production  # Get specific value
+
+          # IDENTITY & VERIFICATION
+          aws sts get-caller-identity                    # Current identity
+          aws iam get-user                               # Current user info
+          aws iam list-access-keys --profile production  # List access keys
+
+          # CREDENTIALS & TOKENS
+          aws sts get-session-token --duration-seconds 3600
+          aws sts assume-role --role-arn arn:... --role-session-name session-name
+          aws sts get-session-token --serial-number arn:... --token-code 123456
+
+          # PROFILE MANAGEMENT
+          grep '\[profile' ~/.aws/config | sed 's/.*\[\(.*\)\].*/\1/'  # List profiles
+          export AWS_PROFILE=production                  # Set default
+          unset AWS_PROFILE                              # Unset
+          AWS_PROFILE=prod AWS_REGION=us-west-2 aws s3 ls  # Override
+
+          # ENVIRONMENT VARIABLES
+          export AWS_ACCESS_KEY_ID=AKIA...
+          export AWS_SECRET_ACCESS_KEY=...
+          export AWS_SESSION_TOKEN=...  # Optional
+          export AWS_DEFAULT_REGION=us-east-1
+          export AWS_SHARED_CREDENTIALS_FILE=/path/to/credentials
+          export AWS_CONFIG_FILE=/path/to/config
+
+          # S3 OPERATIONS
+          aws s3 ls --profile production
+          aws s3 cp file.txt s3://bucket/path/ --profile production
+          aws s3api list-buckets --profile production
+
+          # LAMBDA OPERATIONS
+          aws lambda list-functions --profile production
+          aws lambda invoke --function-name my-func /tmp/output.json --profile production
+
+          # EC2 OPERATIONS
+          aws ec2 describe-instances --profile production
+          aws ec2 describe-instances --filters Name=tag:Environment,Values=prod
+
+          # CLOUDFORMATION / SAM
+          aws cloudformation describe-stacks --profile production
+          sam deploy --profile production
+
+          # LOCALSTACK (v1-COMPATIBLE)
+          aws s3 ls --profile localstack
+          aws dynamodb list-tables --profile localstack
+          aws lambda list-functions --profile localstack
+          aws s3 ls --endpoint-url http://localhost:4566 --profile localstack
+
+          # OUTPUT FILTERING & FORMATTING
+          aws ec2 describe-instances --query 'Reservations[].Instances[].InstanceId' --output text
+          aws s3api list-buckets --query 'Buckets[].Name' --output text
+          aws lambda list-functions --query 'Functions[].{Name:FunctionName,Runtime:Runtime}' --output table
+
+          # DEBUG
+          aws s3 ls --debug --profile production
+          aws sts get-caller-identity --debug
+          ```
+  AWS CLI v1 > VERSION CHECK:
+    desc: Verify you're using AWS CLI v1 (not v2)
+    tags:
+      - aws
+      - cli
+      - version
+      - localstack
+    notes:
+      - md: |
+          ## VERSION VERIFICATION
+
+          ### Check Current Version
+
+          ```bash
+          aws --version
+
+          # ✅ CORRECT for LocalStack
+          # aws-cli/1.27.x Python/3.x...
+
+          # ❌ WRONG for LocalStack
+          # aws-cli/2.x.x Python/3.x...
+          ```
+
+          ### If You Have v2 Installed
+
+          ```bash
+          # Uninstall v2
+          rm -rf /usr/local/aws-cli
+          rm /usr/local/bin/aws
+
+          # Install v1 via Homebrew
+          brew install awscli@1
+
+          # Or via pip
+          pip install awscli  # Usually installs v1
+          ```
+
+          ### Pin to v1 in Flox
+
+          ```nix
+          # flox.nix
+          packages = [
+            "awscli"  # Flox provides v1
+          ];
+          ```
+
+          > ⚠️ LocalStack REQUIRES AWS CLI v1. Always verify with `aws --version`
+  AWS CLI v2 - TL; DR:
+    desc: Quick Reference, Configuration and Best Practices
+    tags:
+      - aws
+      - cli
+    links:
+      - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html
+      - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
+      - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html
+      - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sourcing-external.html
+    notes:
+      - md: |
+          ## OVERVIEW
+
+          - **PURPOSES**
+            - Allows managing AWS services directly from the terminal.
+            - Providing full programmatic access to all AWS APIs.
+
+          - **USAGES**:
+            - Automate infrastructure tasks (creating/managing EC2, S3, Lambda, etc.)
+            - Deploy applications via CloudFormation/SAM
+            - Script batch operations
+            - Integrate with CI/CD pipelines
+            - And interact with AWS during local development
+
+          - **KEY FEATURES**:
+            - Multiple credential profiles for different AWS accounts/roles
+            - Environment-based configuration
+            - Support for temporary STS credentials
+            - Cross-account role assumption
+            - LocalStack integration for local testing
+            - And output formatting (JSON, table, text) for easy parsing in scripts.
+
+          ## 0. QUICK SUMMARY
+
+          | **PROFILE TYPE**     | **USE CASE**                | **CREDENTIALS**          | **DURATION**   | **SECURITY** |
+          | -------------------- | --------------------------- | ------------------------ | -------------- | ------------ |
+          | Default              | Fallback, rarely used       | Long-term                | ∞              | ⚠️ Low        |
+          | Environment-specific | Dev/Staging/Prod separation | Long-term                | ∞              | ✅ Medium     |
+          | Role-based           | Admin/Read-only/Deploy      | Long-term or assumed     | ∞ or temporary | ✅ High       |
+          | SSO                  | Team/Organization users     | Temporary (auto-rotated) | ~1h            | ✅✅ Highest   |
+          | Cross-account        | Multi-account access        | Assumed from source      | Temporary      | ✅ High       |
+          | LocalStack           | Local development           | Test credentials         | ∞              | N/A          |
+
+          ## 1. INSTALLATION
+
+          ```bash
+          ### Homebrew
+          brew install awscli
+          aws --version
+
+          ### Flox (Recommended for Cross-Platform)
+          flox search awscli
+          flox install awscli
+
+          ### Direct Download to macOS
+          curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
+          sudo installer -pkg AWSCLIV2.pkg -target /
+
+          ### Direct Download to Linux
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip && sudo ./aws/install
+          ```
+
+          ## 2. CREDENTIALS & AUTHENTICATION
+
+          ### CONCEPTS
+
+          > 💡 Three Ways to Provide Credentials (Priority Order)
+
+          1. **ENVIRONMENT VARIABLES** (highest priority)
+
+            ```bash
+            # allows to quickly set credentials for one-off or CI/CD use
+            export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
+            export AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+            export AWS_SESSION_TOKEN="optional-token-for-temporary"  # Optional
+            export AWS_DEFAULT_REGION="us-east-1"
+            export AWS_PROFILE=production  # Set default profile
+            ```
+
+          2. **NAMED PROFILES** (in `~/.aws/credentials` and `~/.aws/config`)
+
+            ```bash
+            # allows to switch between multiple accounts/roles
+            aws s3 ls --profile production
+            export AWS_PROFILE=production  # Set default profile
+            ```
+
+          3. **EC2 INSTANCE ROLE / ECS TASK ROLE** (in AWS)
+
+            - Best practice for workloads running on AWS
+            - Automatic credential provider on instances
+            - No credentials stored locally
+
+          ### CREDENTIAL TYPES
+
+          1. **IAM Users:**
+
+            - **PURPOSE:** Long-term credentials for programmatic access
+            - **GOOD FOR:** Cross-account access, scheduled jobs
+            - **WARNING:** Use ONLY for CI/CD or non-interactive services
+            - **CHARACTERISTICS:**
+              - Access Key ID + Secret Access Key
+              - Never rotate automatically
+
+          2. **Security Token Service (STS):**
+
+            - **PURPOSE:** Temporary credentials, short-term credentials for temporary access
+            - **GOOD FOR:** Human CLI use, temporary access, assumed roles
+            - **CHARACTERISTICS:**
+              - Access Key + Secret Key + Session Token
+              - Expire after set time (default 1 hour, max 12 hours)
+
+          3. **IAM Roles:**
+
+            - **PURPOSE**: Assign permissions to AWS resources without long-term credentials
+            - **GOOD FOR:** EC2, Lambda, ECS tasks
+            - **BEST PRACTICES:** for AWS-running workloads
+            - **CHARACTERISTICS:**
+              - Credentials automatically rotated
+              - No credentials to manage locally
+
+          ## 3. CREDENTIALS FILES
+
+          1. **STRUCTURE**
+
+              ```tree
+              ~/.aws/
+              ├── credentials         # Access keys (NEVER commit to git)
+              ├── config              # Region, output format, profile settings
+              ├── .aws_cache/         # Token cache for temporary creds
+              └── sso/                # SSO session cache
+              ```
+
+          2. **~/.aws/credentials**
+
+            > 💡 Used to authenticate requests.
+
+            - **PURPOSE:** LONG FORM (Recommended Pattern)
+            - **GOOD FOR:** IAM User access keys for multiple accounts
+            - **PROFILES:**
+              - A profile is a named set of credentials.
+                - Contains `aws_access_key_id` and `aws_secret_access_key`.
+                - It is used to authenticate AWS CLI and SDK requests in a specific profile. EX:
+                  - A profile `[production]` contains credentials for the production AWS account.
+                  - A profile `[development]` contains credentials for the development AWS account.
+            - **DEFAULT PROFILE:**
+              - Contains default access keys.
+              - Fallback profile used when no `--profile` is specified.
+            - **CROSS-ACCOUNT ROLES:**
+              - Profiles can also define roles to assume using `role_arn` and `source_profile`.
+              - Allows access to resources in another AWS account.
+            - **MFA SUPPORT:**
+              - Profiles can include `mfa_serial` to require MFA for access.
+            - **COMMON USAGES EXAMPLES:**
+              - Use `aws configure --profile development` to set up credentials for the development profile.
+              - Run `aws s3 ls --profile production` to list S3 buckets in the production account.
+              - Run `aws sts assume-role --role-arn arn:aws:iam::123456789012:role/RoleName --profile development` to assume a role in another account.
+            - **EXAMPLE:**
+
+                  ```ini
+                  # Default profile (used if no --profile specified)
+                  [default]
+                  aws_access_key_id = AKIA...
+                  aws_secret_access_key = wJalr...
+
+                  # Production account
+                  [production]
+                  aws_access_key_id = AKIA...
+                  aws_secret_access_key = wJalr...
+
+                  # Development account
+                  [development]
+                  aws_access_key_id = AKIA...
+                  aws_secret_access_key = wJalr...
+
+                  # Cross-account role assumption (uses credentials from another profile)
+                  [cross-account-admin]
+                  role_arn = arn:aws:iam::123456789012:role/CrossAccountAdminRole
+                  source_profile = production
+                  external_id = optional-external-id
+
+                  # MFA-protected profile
+                  [mfa-profile]
+                  aws_access_key_id = AKIA...
+                  aws_secret_access_key = wJalr...
+                  # MFA serial number below
+                  ```
+
+          3. **~/.aws/config**
+
+            > 💡 Used to configure REGION & FORMAT SETTINGS.
+
+            - **PURPOSE:** LONG FORM (Recommended Pattern)
+            - **GOOD FOR:** Setting region, output format, and profile-specific settings
+            - **PROFILES:**
+              - It also uses profiles; Each profile is a named set of credentials.
+                  - Contains `region`, `output`, and other settings.
+                  - Allowed outputs are `json`, `table`, or `text`.
+                  - It is used to configure AWS CLI and SDK requests in a specific profile. EX:
+                    - A profile `[profile production]` contains region/output for the production AWS account.
+                    - A profile `[profile development]` contains region/output for the development AWS account.
+            - **DEFAULT PROFILE:**
+              - Contains default access keys.
+              - Fallback profile used when no `--profile` is specified.
+            - **COMMON USAGES EXAMPLES:**
+              - Use `aws configure set region us-east-1 --profile production` to set the region for the production profile.
+              - Use `aws configure set output json --profile development` to set the output format for the development profile.
+              - Run `aws s3 ls --profile production` to list S3 buckets in the production account.
+            - **EXAMPLE:**
+
+                ```ini
+                # Default profile config
+                [default]
+                region = us-east-1
+                output = json
+
+                # Production profile
+                [profile production]
+                region = us-east-1
+                output = json
+                # Optional: use session token from STS
+                # sso_start_url = https://my-sso-portal.awsapps.com/start
+                # sso_region = us-east-1
+                # sso_account_id = 123456789012
+                # sso_role_name = ProductionAdmin
+
+                # Development profile
+                [profile development]
+                region = us-west-2
+                output = table  # Easier to read in CLI
+
+                # Cross-account profile
+                [profile cross-account-admin]
+                role_arn = arn:aws:iam::123456789012:role/AdminRole
+                source_profile = production
+                mfa_serial = arn:aws:iam::987654321098:mfa/your-user
+
+                # LocalStack (development/testing)
+                [profile localstack]
+                region = us-east-1
+                endpoint_url = http://localhost:4566
+                output = json
+                ```
+
+          ## 4. PROFILE ORGANIZATION STRATEGY
+
+          1. By Environment
+
+              > 💡 Separate profiles for different environments (dev, staging, prod).
+              >
+              > **GOOD FOR:** Allows easy switching and isolation of credentials.
+
+              ```ini
+              [default]
+              # Rarely used, safe defaults
+
+              [development]
+              region = us-west-2
+              aws_access_key_id = ...
+
+              [staging]
+              region = us-east-1
+              aws_access_key_id = ...
+
+              [production]
+              region = us-east-1
+              aws_access_key_id = ...
+              ```
+
+          2. By Account & Role
+
+              > 💡 Separate profiles for different AWS accounts and roles.
+              >
+              > **GOOD FOR:** Managing cross-account access and role-based permissions.
+
+              ```ini
+              [org-dev]
+              aws_access_key_id = ...
+
+              [org-prod]
+              aws_access_key_id = ...
+
+              [org-prod-admin]
+              role_arn = arn:aws:iam::ACCOUNT_ID:role/AdminRole
+              source_profile = org-prod
+              ```
+
+          3. By Workload Type
+
+              > 💡 Separate profiles for different workloads (e.g., Lambda deployment, local development, CI/CD).
+              >
+              > **GOOD FOR:** Isolating credentials based on usage context.
+
+              ```ini
+              [lambda-deploy]
+              # Service-specific credentials with minimal permissions
+
+              [localstack-dev]
+              endpoint_url = http://localhost:4566
+
+              [ci-cd]
+              # IAM user with only necessary permissions
+              ```
+
+          4. Naming Convention Best Practice
+
+              > 💡 Use clear, consistent naming conventions for profiles
+              >
+              > **GOOD FOR:** Easy identification and management of profiles by environment and role.
+              >
+              > **EXAMPLE:** `<environment>-<role>`
+              >
+              > - consorciei-dev
+              > - consorciei-prod-admin
+              > - consorciei-prod-readonly
+              > - localstack-testing
+
+          ## 5. COMMON COMMANDS & USE CASES
+
+          1. List Available Profiles
+
+              ```bash
+              grep '\[profile' ~/.aws/config | sed 's/\[profile \(.*\)\]/\1/'
+              ```
+
+          2. Use Specific Profile
+
+              ```bash
+              # One-off command with profile
+              aws s3 ls --profile production
+
+              # Set profile for session
+              export AWS_PROFILE=production
+              aws ec2 describe-instances
+
+              # Unset
+              unset AWS_PROFILE
+              ```
+
+          3. Check Current Credentials
+
+              ```bash
+              # Shows which profile/identity is active
+              aws sts get-caller-identity --profile production
+
+              # Output:
+              # {
+              #     "UserId": "AIDAI...",
+              #     "Account": "123456789012",
+              #     "Arn": "arn:aws:iam::123456789012:user/your-user"
+              # }
+              ```
+
+          4. Get Temporary STS Credentials
+
+              ```bash
+              # Useful for Docker, CI/CD, temporary access
+              aws sts assume-role \
+                --role-arn arn:aws:iam::ACCOUNT:role/RoleName \
+                --role-session-name my-session \
+                --profile source-profile
+
+              # With MFA
+              aws sts get-session-token \
+                --serial-number arn:aws:iam::123456789012:mfa/your-user \
+                --token-code 123456 \
+                --duration-seconds 3600 \
+                --profile default
+              ```
+
+          5. Assume Cross-Account Role
+
+              ```bash
+              # ~/.aws/config already has this set up? Just use:
+              aws s3 ls --profile cross-account-admin
+
+              # Or manually:
+              aws sts assume-role \
+                --role-arn arn:aws:iam::ANOTHER_ACCOUNT:role/RoleName \
+                --role-session-name cross-account-session \
+                --profile production
+              ```
+
+          6. Common Service Operations
+
+              ```bash
+              # S3
+              aws s3 ls --profile production
+              aws s3 cp file.txt s3://bucket/path/ --profile production
+
+              # Lambda
+              aws lambda list-functions --profile production
+
+              # CloudFormation / SAM
+              aws cloudformation describe-stacks --profile production
+              sam deploy --profile production
+
+              # LocalStack (development)
+              aws s3 ls --profile localstack
+              aws dynamodb list-tables --profile localstack
+              ```
+
+          ## 6. SECURITY BEST PRACTICES
+
+          1. ✅ DO's
+
+              - Store `~/.aws/credentials` file with **restricted permissions**
+
+                  ```bash
+                  chmod 600 ~/.aws/credentials
+                  ```
+
+              - Use **environment variables for CI/CD** (not files in git)
+
+                  ```bash
+                  # GitHub Actions, GitLab CI, etc - use secrets, not commits
+                  export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+                  ```
+
+              - Use **temporary credentials (STS)** whenever possible
+
+                  ```bash
+                  aws sts get-session-token  # Good for humans
+                  ```
+
+              - Use **SSO** for human users (AWS SSO or third-party)
+
+                  ```bash
+                  aws sso login --profile production
+                  ```
+
+              - Use **MFA** for production profiles
+
+                  ```ini
+                  [profile production]
+                  mfa_serial = arn:aws:iam::123456789012:mfa/your-user
+                  ```
+
+              - Use **IAM Roles for EC2/Lambda/ECS** (no credentials needed)
+
+              - Use **principle of least privilege** - assign minimal IAM permissions per profile/role
+
+              - Exclude credentials from git
+
+                  ```bash
+                  # .gitignore
+                  .aws/credentials
+                  .aws/config  # if sensitive
+                  ~/.aws/**
+                  ```
+
+          2. ❌ DON'Ts
+
+            - Commit credentials to git (ever)
+            - Use root AWS account for daily work
+            - Share long-term credentials between team members (use roles instead)
+            - Store credentials in environment without expiration
+            - Use `[default]` for sensitive operations (make it a fallback)
+            - Leave `region` unspecified (always be explicit)
+
+          ## 7. ENCRYPTION & SECRET MANAGEMENT
+
+          1. Encrypt Credentials with SOPS + AGE
+
+              ```bash
+              # Install sops and age
+              brew install sops age
+
+              # Generate age key
+              age-keygen -o ~/.age/key.txt
+
+              # Encrypt ~/.aws/credentials
+              sops -e -i --age $(cat ~/.age/key.txt | grep "# public key:" | cut -d' ' -f4) ~/.aws/credentials
+
+              # Git pre-commit hook to auto-encrypt
+              # (see: https://github.com/mozilla/sops)
+              ```
+
+          2. Using Encrypted Files in CI/CD
+
+              ```bash
+              # Decrypt before use
+              export SOPS_AGE_KEY_FILE=~/.age/key.txt
+
+              sops -d ~/.aws/credentials > /tmp/credentials
+              export AWS_SHARED_CREDENTIALS_FILE=/tmp/credentials
+              ```
+
+          ## 8. DOCKER & CONTAINER BEST PRACTICES
+
+          1. Pass Credentials to Container
+
+              ```dockerfile
+              # NOT recommended - don't hard-code
+              # ENV AWS_ACCESS_KEY_ID=...
+
+              # GOOD - mount credentials file
+              # docker run -v ~/.aws/credentials:/root/.aws/credentials:ro
+              ```
+
+          2. Docker Run with AWS Credentials
+
+              ```bash
+              docker run \
+                -v ~/.aws/credentials:/root/.aws/credentials:ro \
+                -v ~/.aws/config:/root/.aws/config:ro \
+                -e AWS_PROFILE=production \
+                my-aws-app:latest
+
+              # Or mount and reference config
+              docker run \
+                -v ~/.aws:/home/appuser/.aws:ro \
+                -e AWS_PROFILE=localstack \
+                my-app:latest
+              ```
+
+          3. Docker Compose mount volumes
+
+              ```yaml
+              services:
+                app:
+                  image: my-app:latest
+                  volumes:
+                    - ~/.aws/credentials:/home/appuser/.aws/credentials:ro
+                    - ~/.aws/config:/home/appuser/.aws/config:ro
+                  environment:
+                    AWS_PROFILE: production
+                    AWS_REGION: us-east-1
+                  networks:
+                    - local
+              ```
+
+          4. LocalStack Development set environments
+
+              ```yaml
+              services:
+                localstack:
+                  image: localstack/localstack
+                  ports:
+                    - "4566:4566"  # LocalStack API
+                  environment:
+                    SERVICES: s3,lambda,dynamodb,sqs
+
+                app:
+                  image: my-app:latest
+                  environment:
+                    AWS_ENDPOINT_URL: http://localstack:4566
+                    AWS_PROFILE: localstack
+                  depends_on:
+                    - localstack
+              ```
+
+          ## 9. TROUBLESHOOTING
+
+          1. When `"Unable to locate credentials"`
+
+              ```bash
+              # Check environment variables
+              echo $AWS_ACCESS_KEY_ID
+              echo $AWS_SECRET_ACCESS_KEY
+
+              # Check credentials file exists and is readable
+              ls -la ~/.aws/credentials
+
+              # Check profile exists
+              grep "\[production\]" ~/.aws/credentials
+              ```
+
+          2. When `"The request must contain the parameter Authorization"`
+
+              ```bash
+              # Credentials exist but are incorrect - verify:
+              aws sts get-caller-identity --profile production
+              # Should return Account ID, User ARN
+
+              # If it fails, recheck credentials
+              ```
+
+          3. When `"Profile not found"`
+
+              ```bash
+              # Check config file
+              cat ~/.aws/config | grep "profile production"
+
+              # Syntax issue? Config must have "profile" prefix
+              # [profile production]  <- CORRECT
+              # [production]          <- WRONG (only in credentials)
+              ```
+
+          4. When `"Wrong region being used"`
+
+              ```bash
+              # Check order of precedence:
+              echo $AWS_DEFAULT_REGION
+              echo $AWS_REGION
+              grep "region" ~/.aws/config
+
+              # Explicit override
+              aws s3 ls --region us-west-2
+              ```
+
+          ## 10. QUICK REFERENCE
+
+            ```bash
+            # Configuration
+            aws configure                                     # Interactive setup
+            aws configure --profile production                # Setup specific profile
+            aws configure list                                # Show current config
+            aws configure list --profile production           # Show profile config
+
+            # Identity & Account Info
+            aws sts get-caller-identity                       # Current user/role
+            aws iam get-user                                  # Current IAM user info
+            aws iam list-access-keys --profile production     # List access keys
+
+            # Credentials
+            aws sts get-session-token --duration-seconds 3600
+            aws sts assume-role --role-arn arn:... --role-session-name session-name
+
+            # Profile Management
+            grep '\[profile' ~/.aws/config | sed 's/.*\[\(.*\)\].*/\1/'
+            export AWS_PROFILE=production
+            unset AWS_PROFILE
+
+            # Environment Variable Override
+            AWS_PROFILE=prod AWS_REGION=us-west-2 aws s3 ls
+
+            # LocalStack (Local Testing)
+            aws s3 ls --endpoint-url http://localhost:4566 --profile localstack
+            ```
+  AWS CLI v2 > OVERVIEW:
+    desc: Quick Reference, Configuration and Best Practices
+    tags:
+      - aws
+      - cli
+    links:
+      - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html
+      - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
+      - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html
+      - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sourcing-external.html
+    notes:
+      - md: |
+          ## OVERVIEW
+
+          - **PURPOSES**
+            - Allows managing AWS services directly from the terminal.
+            - Providing full programmatic access to all AWS APIs.
+
+          - **USAGES**:
+            - Automate infrastructure tasks (creating/managing EC2, S3, Lambda, etc.)
+            - Deploy applications via CloudFormation/SAM
+            - Script batch operations
+            - Integrate with CI/CD pipelines
+            - And interact with AWS during local development
+
+          - **KEY FEATURES**:
+            - Multiple credential profiles for different AWS accounts/roles
+            - Environment-based configuration
+            - Support for temporary STS credentials
+            - Cross-account role assumption
+            - LocalStack integration for local testing
+            - And output formatting (JSON, table, text) for easy parsing in scripts.
+  AWS CLI v2 > QUICK SUMMARY:
+    desc: Quick summary of its credential profile types
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## QUICK SUMMARY
+
+          | **PROFILE TYPE**     | **USE CASE**                | **CREDENTIALS**          | **DURATION**   | **SECURITY** |
+          | -------------------- | --------------------------- | ------------------------ | -------------- | ------------ |
+          | Default              | Fallback, rarely used       | Long-term                | ∞              | ⚠️ Low        |
+          | Environment-specific | Dev/Staging/Prod separation | Long-term                | ∞              | ✅ Medium     |
+          | Role-based           | Admin/Read-only/Deploy      | Long-term or assumed     | ∞ or temporary | ✅ High       |
+          | SSO                  | Team/Organization users     | Temporary (auto-rotated) | ~1h            | ✅✅ Highest   |
+          | Cross-account        | Multi-account access        | Assumed from source      | Temporary      | ✅ High       |
+          | LocalStack           | Local development           | Test credentials         | ∞              | N/A          |
+  AWS CLI v2 > INSTALLATION:
+    desc: Install AWS CLI in various ways
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## INSTALLATION
+
+          ```bash
+          ### Homebrew
+          brew install awscli
+          aws --version
+
+          ### Flox (Recommended for Cross-Platform)
+          flox search awscli
+          flox install awscli
+
+          ### Direct Download to macOS
+          curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
+          sudo installer -pkg AWSCLIV2.pkg -target /
+
+          ### Direct Download to Linux
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip && sudo ./aws/install
+          ```
+  AWS CLI v2 > CREDENTIALS:
+    desc: What are AWS Credentials & How to Authenticate
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## CREDENTIALS & AUTHENTICATION
+
+          ### CONCEPTS
+
+          > 💡 Three Ways to Provide Credentials (Priority Order)
+
+          1. **ENVIRONMENT VARIABLES** (highest priority)
+
+            ```bash
+            # allows to quickly set credentials for one-off or CI/CD use
+            export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
+            export AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+            export AWS_SESSION_TOKEN="optional-token-for-temporary"  # Optional
+            export AWS_DEFAULT_REGION="us-east-1"
+            export AWS_PROFILE=production  # Set default profile
+            ```
+
+          2. **NAMED PROFILES** (in `~/.aws/credentials` and `~/.aws/config`)
+
+            ```bash
+            # allows to switch between multiple accounts/roles
+            aws s3 ls --profile production
+            export AWS_PROFILE=production  # Set default profile
+            ```
+
+          3. **EC2 INSTANCE ROLE / ECS TASK ROLE** (in AWS)
+
+            - Best practice for workloads running on AWS
+            - Automatic credential provider on instances
+            - No credentials stored locally
+  AWS CLI v2 > CREDENTIAL TYPES:
+    desc: Different types of AWS credentials explained
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## CREDENTIAL TYPES
+
+          1. **IAM Users:**
+
+            - **PURPOSE:** Long-term credentials for programmatic access
+            - **GOOD FOR:** Cross-account access, scheduled jobs
+            - **WARNING:** Use ONLY for CI/CD or non-interactive services
+            - **CHARACTERISTICS:**
+              - Access Key ID + Secret Access Key
+              - Never rotate automatically
+
+          2. **Security Token Service (STS):**
+
+            - **PURPOSE:** Temporary credentials, short-term credentials for temporary access
+            - **GOOD FOR:** Human CLI use, temporary access, assumed roles
+            - **CHARACTERISTICS:**
+              - Access Key + Secret Key + Session Token
+              - Expire after set time (default 1 hour, max 12 hours)
+
+          3. **IAM Roles:**
+
+            - **PURPOSE**: Assign permissions to AWS resources without long-term credentials
+            - **GOOD FOR:** EC2, Lambda, ECS tasks
+            - **BEST PRACTICES:** for AWS-running workloads
+            - **CHARACTERISTICS:**
+              - Credentials automatically rotated
+              - No credentials to manage locally
+  AWS CLI v2 > CREDENTIALS FILES:
+    desc: AWS CLI credentials and config files explained
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## CREDENTIALS FILES
+
+          1. **STRUCTURE**
+
+              ```tree
+              ~/.aws/
+              ├── credentials         # Access keys (NEVER commit to git)
+              ├── config              # Region, output format, profile settings
+              ├── .aws_cache/         # Token cache for temporary creds
+              └── sso/                # SSO session cache
+              ```
+
+          2. **~/.aws/credentials**
+
+            > 💡 Used to authenticate requests.
+
+            - **PURPOSE:** LONG FORM (Recommended Pattern)
+            - **GOOD FOR:** IAM User access keys for multiple accounts
+            - **PROFILES:**
+              - A profile is a named set of credentials.
+                - Contains `aws_access_key_id` and `aws_secret_access_key`.
+                - It is used to authenticate AWS CLI and SDK requests in a specific profile. EX:
+                  - A profile `[production]` contains credentials for the production AWS account.
+                  - A profile `[development]` contains credentials for the development AWS account.
+            - **DEFAULT PROFILE:**
+              - Contains default access keys.
+              - Fallback profile used when no `--profile` is specified.
+            - **CROSS-ACCOUNT ROLES:**
+              - Profiles can also define roles to assume using `role_arn` and `source_profile`.
+              - Allows access to resources in another AWS account.
+            - **MFA SUPPORT:**
+              - Profiles can include `mfa_serial` to require MFA for access.
+            - **COMMON USAGES EXAMPLES:**
+              - Use `aws configure --profile development` to set up credentials for the development profile.
+              - Run `aws s3 ls --profile production` to list S3 buckets in the production account.
+              - Run `aws sts assume-role --role-arn arn:aws:iam::123456789012:role/RoleName --profile development` to assume a role in another account.
+            - **EXAMPLE:**
+
+                  ```ini
+                  # Default profile (used if no --profile specified)
+                  [default]
+                  aws_access_key_id = AKIA...
+                  aws_secret_access_key = wJalr...
+
+                  # Production account
+                  [production]
+                  aws_access_key_id = AKIA...
+                  aws_secret_access_key = wJalr...
+
+                  # Development account
+                  [development]
+                  aws_access_key_id = AKIA...
+                  aws_secret_access_key = wJalr...
+
+                  # Cross-account role assumption (uses credentials from another profile)
+                  [cross-account-admin]
+                  role_arn = arn:aws:iam::123456789012:role/CrossAccountAdminRole
+                  source_profile = production
+                  external_id = optional-external-id
+
+                  # MFA-protected profile
+                  [mfa-profile]
+                  aws_access_key_id = AKIA...
+                  aws_secret_access_key = wJalr...
+                  # MFA serial number below
+                  ```
+
+          3. **~/.aws/config**
+
+            > 💡 Used to configure REGION & FORMAT SETTINGS.
+
+            - **PURPOSE:** LONG FORM (Recommended Pattern)
+            - **GOOD FOR:** Setting region, output format, and profile-specific settings
+            - **PROFILES:**
+              - It also uses profiles; Each profile is a named set of credentials.
+                  - Contains `region`, `output`, and other settings.
+                  - Allowed outputs are `json`, `table`, or `text`.
+                  - It is used to configure AWS CLI and SDK requests in a specific profile. EX:
+                    - A profile `[profile production]` contains region/output for the production AWS account.
+                    - A profile `[profile development]` contains region/output for the development AWS account.
+            - **DEFAULT PROFILE:**
+              - Contains default access keys.
+              - Fallback profile used when no `--profile` is specified.
+            - **COMMON USAGES EXAMPLES:**
+              - Use `aws configure set region us-east-1 --profile production` to set the region for the production profile.
+              - Use `aws configure set output json --profile development` to set the output format for the development profile.
+              - Run `aws s3 ls --profile production` to list S3 buckets in the production account.
+            - **EXAMPLE:**
+
+                ```ini
+                # Default profile config
+                [default]
+                region = us-east-1
+                output = json
+
+                # Production profile
+                [profile production]
+                region = us-east-1
+                output = json
+                # Optional: use session token from STS
+                # sso_start_url = https://my-sso-portal.awsapps.com/start
+                # sso_region = us-east-1
+                # sso_account_id = 123456789012
+                # sso_role_name = ProductionAdmin
+
+                # Development profile
+                [profile development]
+                region = us-west-2
+                output = table  # Easier to read in CLI
+
+                # Cross-account profile
+                [profile cross-account-admin]
+                role_arn = arn:aws:iam::123456789012:role/AdminRole
+                source_profile = production
+                mfa_serial = arn:aws:iam::987654321098:mfa/your-user
+
+                # LocalStack (development/testing)
+                [profile localstack]
+                region = us-east-1
+                endpoint_url = http://localhost:4566
+                output = json
+                ```
+  AWS CLI v2 > CREDENTIALS > PROFILE ORGANIZATION STRATEGIES:
+    desc: Best practices for organizing AWS CLI credential profiles
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## PROFILE ORGANIZATION STRATEGIES
+
+          1. By Environment
+
+              > 💡 Separate profiles for different environments (dev, staging, prod).
+              >
+              > **GOOD FOR:** Allows easy switching and isolation of credentials.
+
+              ```ini
+              [default]
+              # Rarely used, safe defaults
+
+              [development]
+              region = us-west-2
+              aws_access_key_id = ...
+
+              [staging]
+              region = us-east-1
+              aws_access_key_id = ...
+
+              [production]
+              region = us-east-1
+              aws_access_key_id = ...
+              ```
+
+          2. By Account & Role
+
+              > 💡 Separate profiles for different AWS accounts and roles.
+              >
+              > **GOOD FOR:** Managing cross-account access and role-based permissions.
+
+              ```ini
+              [org-dev]
+              aws_access_key_id = ...
+
+              [org-prod]
+              aws_access_key_id = ...
+
+              [org-prod-admin]
+              role_arn = arn:aws:iam::ACCOUNT_ID:role/AdminRole
+              source_profile = org-prod
+              ```
+
+          3. By Workload Type
+
+              > 💡 Separate profiles for different workloads (e.g., Lambda deployment, local development, CI/CD).
+              >
+              > **GOOD FOR:** Isolating credentials based on usage context.
+
+              ```ini
+              [lambda-deploy]
+              # Service-specific credentials with minimal permissions
+
+              [localstack-dev]
+              endpoint_url = http://localhost:4566
+
+              [ci-cd]
+              # IAM user with only necessary permissions
+              ```
+
+          4. Naming Convention Best Practice
+
+              > 💡 Use clear, consistent naming conventions for profiles
+              >
+              > **GOOD FOR:** Easy identification and management of profiles by environment and role.
+              >
+              > **EXAMPLE:** `<environment>-<role>`
+              >
+              > - consorciei-dev
+              > - consorciei-prod-admin
+              > - consorciei-prod-readonly
+              > - localstack-testing
+  AWS CLI v2 > CREDENTIALS > COMMON COMMANDS & USE CASES:
+    desc: Common AWS CLI commands for managing credentials and profiles
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## COMMON COMMANDS & USE CASES
+
+          1. List Available Profiles
+
+              ```bash
+              grep '\[profile' ~/.aws/config | sed 's/\[profile \(.*\)\]/\1/'
+              ```
+
+          2. Use Specific Profile
+
+              ```bash
+              # One-off command with profile
+              aws s3 ls --profile production
+
+              # Set profile for session
+              export AWS_PROFILE=production
+              aws ec2 describe-instances
+
+              # Unset
+              unset AWS_PROFILE
+              ```
+
+          3. Check Current Credentials
+
+              ```bash
+              # Shows which profile/identity is active
+              aws sts get-caller-identity --profile production
+
+              # Output:
+              # {
+              #     "UserId": "AIDAI...",
+              #     "Account": "123456789012",
+              #     "Arn": "arn:aws:iam::123456789012:user/your-user"
+              # }
+              ```
+
+          4. Get Temporary STS Credentials
+
+              ```bash
+              # Useful for Docker, CI/CD, temporary access
+              aws sts assume-role \
+                --role-arn arn:aws:iam::ACCOUNT:role/RoleName \
+                --role-session-name my-session \
+                --profile source-profile
+
+              # With MFA
+              aws sts get-session-token \
+                --serial-number arn:aws:iam::123456789012:mfa/your-user \
+                --token-code 123456 \
+                --duration-seconds 3600 \
+                --profile default
+              ```
+
+          5. Assume Cross-Account Role
+
+              ```bash
+              # ~/.aws/config already has this set up? Just use:
+              aws s3 ls --profile cross-account-admin
+
+              # Or manually:
+              aws sts assume-role \
+                --role-arn arn:aws:iam::ANOTHER_ACCOUNT:role/RoleName \
+                --role-session-name cross-account-session \
+                --profile production
+              ```
+
+          6. Common Service Operations
+
+              ```bash
+              # S3
+              aws s3 ls --profile production
+              aws s3 cp file.txt s3://bucket/path/ --profile production
+
+              # Lambda
+              aws lambda list-functions --profile production
+
+              # CloudFormation / SAM
+              aws cloudformation describe-stacks --profile production
+              sam deploy --profile production
+
+              # LocalStack (development)
+              aws s3 ls --profile localstack
+              aws dynamodb list-tables --profile localstack
+              ```
+  AWS CLI v2 > CREDENTIALS > SECURITY BEST PRACTICES:
+    desc: Best practices for securing AWS CLI credentials
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## SECURITY BEST PRACTICES
+
+          1. ✅ DO's
+
+              - Store `~/.aws/credentials` file with **restricted permissions**
+
+                  ```bash
+                  chmod 600 ~/.aws/credentials
+                  ```
+
+              - Use **environment variables for CI/CD** (not files in git)
+
+                  ```bash
+                  # GitHub Actions, GitLab CI, etc - use secrets, not commits
+                  export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+                  ```
+
+              - Use **temporary credentials (STS)** whenever possible
+
+                  ```bash
+                  aws sts get-session-token  # Good for humans
+                  ```
+
+              - Use **SSO** for human users (AWS SSO or third-party)
+
+                  ```bash
+                  aws sso login --profile production
+                  ```
+
+              - Use **MFA** for production profiles
+
+                  ```ini
+                  [profile production]
+                  mfa_serial = arn:aws:iam::123456789012:mfa/your-user
+                  ```
+
+              - Use **IAM Roles for EC2/Lambda/ECS** (no credentials needed)
+
+              - Use **principle of least privilege** - assign minimal IAM permissions per profile/role
+
+              - Exclude credentials from git
+
+                  ```bash
+                  # .gitignore
+                  .aws/credentials
+                  .aws/config  # if sensitive
+                  ~/.aws/**
+                  ```
+
+          2. ❌ DON'Ts
+
+            - Commit credentials to git (ever)
+            - Use root AWS account for daily work
+            - Share long-term credentials between team members (use roles instead)
+            - Store credentials in environment without expiration
+            - Use `[default]` for sensitive operations (make it a fallback)
+            - Leave `region` unspecified (always be explicit)
+  AWS CLI v2 > CREDENTIALS > ENCRYPTION & SECRET MANAGEMENT:
+    desc: Best practices for encrypting and managing AWS CLI credentials
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## ENCRYPTION & SECRET MANAGEMENT
+
+          1. Encrypt Credentials with SOPS + AGE
+
+              ```bash
+              # Install sops and age
+              brew install sops age
+
+              # Generate age key
+              age-keygen -o ~/.age/key.txt
+
+              # Encrypt ~/.aws/credentials
+              sops -e -i --age $(cat ~/.age/key.txt | grep "# public key:" | cut -d' ' -f4) ~/.aws/credentials
+
+              # Git pre-commit hook to auto-encrypt
+              # (see: https://github.com/mozilla/sops)
+              ```
+
+          2. Using Encrypted Files in CI/CD
+
+              ```bash
+              # Decrypt before use
+              export SOPS_AGE_KEY_FILE=~/.age/key.txt
+
+              sops -d ~/.aws/credentials > /tmp/credentials
+              export AWS_SHARED_CREDENTIALS_FILE=/tmp/credentials
+              ```
+  AWS CLI v2 > BEST PRACTICES for DOCKER CONTAINER:
+    desc: Best practices for using AWS CLI credentials in containers
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## DOCKER & CONTAINER BEST PRACTICES
+
+          1. Pass Credentials to Container
+
+              ```dockerfile
+              # NOT recommended - don't hard-code
+              # ENV AWS_ACCESS_KEY_ID=...
+
+              # GOOD - mount credentials file
+              # docker run -v ~/.aws/credentials:/root/.aws/credentials:ro
+              ```
+
+          2. Docker Run with AWS Credentials
+
+              ```bash
+              docker run \
+                -v ~/.aws/credentials:/root/.aws/credentials:ro \
+                -v ~/.aws/config:/root/.aws/config:ro \
+                -e AWS_PROFILE=production \
+                my-aws-app:latest
+
+              # Or mount and reference config
+              docker run \
+                -v ~/.aws:/home/appuser/.aws:ro \
+                -e AWS_PROFILE=localstack \
+                my-app:latest
+              ```
+
+          3. Docker Compose mount volumes
+
+              ```yaml
+              services:
+                app:
+                  image: my-app:latest
+                  volumes:
+                    - ~/.aws/credentials:/home/appuser/.aws/credentials:ro
+                    - ~/.aws/config:/home/appuser/.aws/config:ro
+                  environment:
+                    AWS_PROFILE: production
+                    AWS_REGION: us-east-1
+                  networks:
+                    - local
+              ```
+
+          4. LocalStack Development set environments
+
+              ```yaml
+              services:
+                localstack:
+                  image: localstack/localstack
+                  ports:
+                    - "4566:4566"  # LocalStack API
+                  environment:
+                    SERVICES: s3,lambda,dynamodb,sqs
+
+                app:
+                  image: my-app:latest
+                  environment:
+                    AWS_ENDPOINT_URL: http://localstack:4566
+                    AWS_PROFILE: localstack
+                  depends_on:
+                    - localstack
+              ```
+  AWS CLI v2 > TROUBLESHOOTING:
+    desc: Common issues and how to resolve them
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## TROUBLESHOOTING
+
+          1. When `"Unable to locate credentials"`
+
+              ```bash
+              # Check environment variables
+              echo $AWS_ACCESS_KEY_ID
+              echo $AWS_SECRET_ACCESS_KEY
+
+              # Check credentials file exists and is readable
+              ls -la ~/.aws/credentials
+
+              # Check profile exists
+              grep "\[production\]" ~/.aws/credentials
+              ```
+
+          2. When `"The request must contain the parameter Authorization"`
+
+              ```bash
+              # Credentials exist but are incorrect - verify:
+              aws sts get-caller-identity --profile production
+              # Should return Account ID, User ARN
+
+              # If it fails, recheck credentials
+              ```
+
+          3. When `"Profile not found"`
+
+              ```bash
+              # Check config file
+              cat ~/.aws/config | grep "profile production"
+
+              # Syntax issue? Config must have "profile" prefix
+              # [profile production]  <- CORRECT
+              # [production]          <- WRONG (only in credentials)
+              ```
+
+          4. When `"Wrong region being used"`
+
+              ```bash
+              # Check order of precedence:
+              echo $AWS_DEFAULT_REGION
+              echo $AWS_REGION
+              grep "region" ~/.aws/config
+
+              # Explicit override
+              aws s3 ls --region us-west-2
+              ```
+  AWS CLI v2 > QUICK REFERENCE:
+    desc: Quick Reference, Configuration and Best Practices in a nutshell
+    tags:
+      - aws
+      - cli
+    notes:
+      - md: |
+          ## QUICK REFERENCE
+
+            ```bash
+            # Configuration
+            aws configure                                     # Interactive setup
+            aws configure --profile production                # Setup specific profile
+            aws configure list                                # Show current config
+            aws configure list --profile production           # Show profile config
+
+            # Identity & Account Info
+            aws sts get-caller-identity                       # Current user/role
+            aws iam get-user                                  # Current IAM user info
+            aws iam list-access-keys --profile production     # List access keys
+
+            # Credentials
+            aws sts get-session-token --duration-seconds 3600
+            aws sts assume-role --role-arn arn:... --role-session-name session-name
+
+            # Profile Management
+            grep '\[profile' ~/.aws/config | sed 's/.*\[\(.*\)\].*/\1/'
+            export AWS_PROFILE=production
+            unset AWS_PROFILE
+
+            # Environment Variable Override
+            AWS_PROFILE=prod AWS_REGION=us-west-2 aws s3 ls
+
+            # LocalStack (Local Testing)
+            aws s3 ls --endpoint-url http://localhost:4566 --profile localstack
+            ```
+  AWS SAM CLI > KEY CONCEPTS:
+    desc: Key Concepts and Terminology
+    tags: [aws, sam]
+    notes:
+      - md: |
+          ## KEY CONCEPTS
+
+          | Concept      | Meaning                                                         |
+          | ------------ | --------------------------------------------------------------- |
+          | **Stack**    | Your entire Lambda deployment (function + API + DB permissions) |
+          | **Template** | SAM/CloudFormation file describing resources                    |
+          | **Package**  | Upload code to S3 before deployment                             |
+          | **Deploy**   | Create/update resources in AWS                                  |
+          | **Invoke**   | Execute Lambda function                                         |
+          | **Event**    | What triggers your Lambda (HTTP request, scheduled, etc)        |
+  AWS SAM CLI > QUICK TROUBLESHOOTING:
+    desc: Common issues and how to resolve them
+    tags: [aws, sam]
+    notes:
+      - md: |
+          ## QUICK TROUBLESHOOTING
+
+          - ✅ AWS credentials configured: `aws sts get-caller-identity`
+          - ✅ S3 bucket exists: `aws s3 ls s3://my-bucket`
+          - ✅ Template is valid: `sam validate`
+          - ✅ Code builds: `sam build`
+          - ✅ Works locally: `sam local invoke`
+          - ✅ Permissions are correct: Check CloudFormation events
+          - ✅ Check logs: `sam logs --tail`
+  AWS Services Development locally with LocalStack:
+    desc: A sample Docker-Compose configuration to start LocalStack with essential services.
+    tags:
+      - aws
+      - localstack
+      - docker
+    links:
+      - https://docs.localstack.cloud/aws/getting-started/installation
+      - https://docs.localstack.cloud/aws/getting-started/quickstart
+    notes:
+      - sh: |
+          !#/bin/bash
+          # 1. Before starting LocalStack, ensure you have Docker installed and running.
+          docker --version
+          # 2. Then get your LOCALSTACK_AUTH_TOKEN
+          open https://app.localstack.cloud/workspace/auth-tokens
+          # 3. export LOCALSTACK_AUTH_TOKEN=<your_auth_token_here>
+      - dockercompose: |
+          services:
+            localstack:
+              container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+              image: localstack/localstack
+              ports:
+                - "127.0.0.1:4566:4566"            # LocalStack Gateway
+                - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+              environment:
+                # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+                - DEBUG=${DEBUG:-0}
+              volumes:
+                - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+                - "/var/run/docker.sock:/var/run/docker.sock"
+      - sh: |
+          # pulls the LocalStack nightly build from the main branch
+          docker compose up
+          # Or start LocalStack in Docker Container directly
+          docker run --rm -it -p 127.0.0.1:4566:4566 -p 127.0.0.1:4510-4559:4510-4559 -v /var/run/docker.sock:/var/run/docker.sock localstack/localstack
+          # Validate your environment
+          localstack config validate
+          # View the LocalStack logs
+          localstack logs
+  Sample Project - Amazon Cloudfront distribution in front of Amazon S3 and an Amazon API Gateway REST API to AWS Lambda to Amazon DynamoDB:
+    desc: This pattern creates an Amazon Cloudfront distribution in front of Amazon S3 and an Amazon API Gateway REST API which invokes an AWS Lambda function to store data in an Amazon DynamoDB table.
+    tags:
+      - aws
+      - serverless
+    links:
+      - https://serverlessland.com/patterns/cloudfront-apigw-rest-api-lambda-dynamodb-sam
+      - https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html
+      - https://github.com/aws-samples/serverless-patterns/tree/main/cloudfront-apigw-rest-api-lambda-dynamodb-sam
+    notes:
+      - md: |
+          ## OVERVIEW
+
+          - This sample project creates a simple webform application using Amazon Cloudfront in front of Amazon S3 and Amazon API Gateway REST API.
+          - The Amazon API Gateway REST API invokes an AWS Lambda function which stores the webform data in an Amazon DynamoDB table.
+          - This pattern uses AWS WAF to secure the CloudFront distribution and AWS Secrets Manager to store a validation string to validate API requests flow through Amazon Cloudfront.
+          - AWS X-Ray is also enabled to allow for distributed tracing.
+      - yml: |
+          AWSTemplateFormatVersion: '2010-09-09'
+          Transform: AWS::Serverless-2016-10-31
+          Description: Serverless Webform Sample (uksb-1tthgi812) (tag:cloudfront-apigw-rest-api-lambda-dynamodb-sam)
+
+          Parameters:
+            HTTPGetFloodRateParam:
+              Description: "A Rate-Based Rule looking for a maximum rate of a single IP address can perform HTTP Get requests in 5 minutes"
+              Type: Number
+              Default: 10000
+              MinValue: 100
+              MaxValue: 20000000
+            HTTPPostFloodRateParam:
+              Description: "A Rate-Based Rule looking for a maximum rate of a single IP address can perform HTTP Post requests in 5 minutes"
+              Type: Number
+              Default: 1000
+              MinValue: 100
+              MaxValue: 20000000
+
+          Resources:
+            API:
+              Type: AWS::Serverless::Api
+              Properties:
+                StageName: dev
+                EndpointConfiguration: REGIONAL
+                TracingEnabled: true
+
+            SubmitFunction:
+              Type: AWS::Serverless::Function
+              Properties:
+                CodeUri: src/function.js
+                Description: "Stores sample webform data in DynamoDB."
+                Handler: function.handler
+                PackageType: "Zip"
+                Tracing: Active
+                Runtime: "nodejs22.x"
+                Environment:
+                  Variables:
+                    DatabaseTable: !Ref DynamoDBTable
+                Policies:
+                  - DynamoDBWritePolicy:
+                      TableName: !Ref DynamoDBTable
+                Events:
+                  ApiEvents:
+                    Type: Api
+                    Properties:
+                      Path: /submit
+                      Method: POST
+                      RestApiId: !Ref API
+
+            DynamoDBTable:
+              Type: AWS::Serverless::SimpleTable
+              Properties:
+                PrimaryKey:
+                  Name: EmailAddress
+                  Type: String
+
+            OriginVerifyHeader:
+              Type: AWS::SecretsManager::Secret
+              Properties:
+                GenerateSecretString:
+                  SecretStringTemplate: !Sub '{"HEADERVALUE": "RandomHeader"}'
+                  GenerateStringKey: "HEADERVALUE"
+                  ExcludePunctuation: true
+
+            CloudFront:
+              Type: AWS::CloudFront::Distribution
+              Properties:
+                DistributionConfig:
+                  DefaultCacheBehavior:
+                    Compress: true
+                    ForwardedValues:
+                      QueryString: false
+                    TargetOriginId: s3
+                    ViewerProtocolPolicy: redirect-to-https
+                  DefaultRootObject: index.html
+                  Enabled: true
+                  HttpVersion: http2
+                  WebACLId: !GetAtt CloudFrontWebACL.Arn
+                  Origins:
+                    - Id: s3
+                      DomainName: !Join [ "", [ !Ref S3Bucket, ".s3.${AWS::URLSuffix}" ] ]
+                      S3OriginConfig:
+                        OriginAccessIdentity:
+                          !Join [ "", [ "origin-access-identity/cloudfront/", !Ref CloudFrontOriginAccessIdentity ] ]
+                    - Id: api
+                      DomainName: !Sub "${API}.execute-api.${AWS::Region}.${AWS::URLSuffix}"
+                      OriginPath: /dev
+                      OriginCustomHeaders:
+                        - HeaderName: "X-Origin-Verify"
+                          HeaderValue: !Join ['', ['{{resolve:secretsmanager:', !Ref OriginVerifyHeader, ':SecretString:HEADERVALUE}}' ]]
+                      CustomOriginConfig:
+                        HTTPSPort: 443
+                        OriginProtocolPolicy: https-only
+                        OriginSSLProtocols:
+                          - TLSv1.2
+                  CacheBehaviors:
+                    - AllowedMethods:
+                        - GET
+                        - HEAD
+                        - OPTIONS
+                        - PUT
+                        - POST
+                        - PATCH
+                        - DELETE
+                      CachedMethods:
+                        - HEAD
+                        - GET
+                        - OPTIONS
+                      Compress: false
+                      PathPattern: /submit
+                      TargetOriginId: api
+                      CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+                      ViewerProtocolPolicy: redirect-to-https
+
+
+            CloudFrontOriginAccessIdentity:
+              Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+              Properties:
+                CloudFrontOriginAccessIdentityConfig:
+                  Comment: !Sub 'CloudFront OAI for serverless webform sample'
+
+            S3Bucket:
+              Type: AWS::S3::Bucket
+              DeletionPolicy: Retain
+              Properties:
+                BucketEncryption:
+                  ServerSideEncryptionConfiguration:
+                    -
+                      ServerSideEncryptionByDefault:
+                        SSEAlgorithm: AES256
+
+            BucketPolicy:
+              Type: AWS::S3::BucketPolicy
+              Properties:
+                Bucket: !Ref S3Bucket
+                PolicyDocument:
+                  Statement:
+                    -
+                      Action:
+                        - s3:GetObject
+                      Effect: Allow
+                      Resource: !Join [ "", [ "arn:aws:s3:::", !Ref S3Bucket, "/*" ] ]
+                      Principal:
+                        CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+
+            CloudFrontWebACL:
+              Type: AWS::WAFv2::WebACL
+              Properties:
+                DefaultAction:
+                  Allow: {}
+                Scope: CLOUDFRONT
+                VisibilityConfig:
+                  SampledRequestsEnabled: True
+                  CloudWatchMetricsEnabled: True
+                  MetricName: WebformAPIWAFMetric
+                Rules:
+                  - Name: HTTPGetFloodPProtection
+                    Priority: 0
+                    Action:
+                      Block: {}
+                    VisibilityConfig:
+                      SampledRequestsEnabled: true
+                      CloudWatchMetricsEnabled: true
+                      MetricName: RateBased
+                    Statement:
+                      RateBasedStatement:
+                        Limit: !Ref HTTPGetFloodRateParam
+                        AggregateKeyType: IP
+                        ScopeDownStatement:
+                          ByteMatchStatement:
+                            SearchString: get
+                            FieldToMatch:
+                              Method: {}
+                            TextTransformations:
+                            - Priority: 0
+                              Type: LOWERCASE
+                            PositionalConstraint: EXACTLY
+                  - Name: HTTPPostFloodPProtection
+                    Priority: 1
+                    Action:
+                      Block: {}
+                    VisibilityConfig:
+                      SampledRequestsEnabled: true
+                      CloudWatchMetricsEnabled: true
+                      MetricName: test
+                    Statement:
+                      RateBasedStatement:
+                        Limit: !Ref HTTPPostFloodRateParam
+                        AggregateKeyType: IP
+                        ScopeDownStatement:
+                          AndStatement:
+                            Statements:
+                            - ByteMatchStatement:
+                                SearchString: submit
+                                FieldToMatch:
+                                  UriPath: {}
+                                TextTransformations:
+                                - Priority: 0
+                                  Type: LOWERCASE
+                                - Priority: 1
+                                  Type: URL_DECODE
+                                PositionalConstraint: CONTAINS
+                            - ByteMatchStatement:
+                                SearchString: post
+                                FieldToMatch:
+                                  Method: {}
+                                TextTransformations:
+                                - Priority: 0
+                                  Type: LOWERCASE
+                                PositionalConstraint: EXACTLY
+                  - Name: AWS-AWSManagedRulesAmazonIpReputationList
+                    Priority: 2
+                    OverrideAction:
+                      Count: {}
+                    VisibilityConfig:
+                      SampledRequestsEnabled: true
+                      CloudWatchMetricsEnabled: true
+                      MetricName: MetricForAMRIPRepList
+                    Statement:
+                      ManagedRuleGroupStatement:
+                        VendorName: AWS
+                        Name: AWSManagedRulesAmazonIpReputationList
+                  - Name: AWS-AWSManagedRulesAnonymousIpList
+                    Priority: 3
+                    OverrideAction:
+                      Count: {}
+                    VisibilityConfig:
+                      SampledRequestsEnabled: true
+                      CloudWatchMetricsEnabled: true
+                      MetricName: MetricForAMRAnonIpList
+                    Statement:
+                      ManagedRuleGroupStatement:
+                        VendorName: AWS
+                        Name: AWSManagedRulesAnonymousIpList
+                  - Name: AWS-AWSManagedRulesCommonRuleSet
+                    Priority: 4
+                    OverrideAction:
+                      None: {}
+                    VisibilityConfig:
+                      SampledRequestsEnabled: true
+                      CloudWatchMetricsEnabled: true
+                      MetricName: MetricForAMRCRS
+                    Statement:
+                      ManagedRuleGroupStatement:
+                        VendorName: AWS
+                        Name: AWSManagedRulesCommonRuleSet
+                  - Name: AWS-AWSManagedRulesKnownBadInputsRuleSet
+                    Priority: 5
+                    OverrideAction:
+                      None: {}
+                    VisibilityConfig:
+                      SampledRequestsEnabled: true
+                      CloudWatchMetricsEnabled: true
+                      MetricName: MetricForAMRKnownBadInputs
+                    Statement:
+                      ManagedRuleGroupStatement:
+                        VendorName: AWS
+                        Name: AWSManagedRulesKnownBadInputsRuleSet
+                  - Name: AWS-AWSManagedRulesBotControl
+                    Priority: 6
+                    OverrideAction:
+                      None: {}
+                    VisibilityConfig:
+                      SampledRequestsEnabled: true
+                      CloudWatchMetricsEnabled: true
+                      MetricName: MetricForAMRBotControl
+                    Statement:
+                      ManagedRuleGroupStatement:
+                        VendorName: AWS
+                        Name: AWSManagedRulesBotControlRuleSet
+
+            APIWebACL:
+              Type: AWS::WAFv2::WebACL
+              Properties:
+                DefaultAction:
+                  Block: {}
+                Scope: REGIONAL
+                VisibilityConfig:
+                  SampledRequestsEnabled: True
+                  CloudWatchMetricsEnabled: True
+                  MetricName: WebformAPIWAFMetric
+                Rules:
+                  - Name: X-Origin-Verify-Header
+                    Priority: 0
+                    Action:
+                        Allow: {}
+                    VisibilityConfig:
+                      SampledRequestsEnabled: true
+                      CloudWatchMetricsEnabled: true
+                      MetricName: X-Origin-Verify-Header
+                    Statement:
+                      OrStatement:
+                        Statements:
+                        - ByteMatchStatement:
+                            FieldToMatch:
+                              SingleHeader:
+                                Name: "X-Origin-Verify"
+                            PositionalConstraint: EXACTLY
+                            SearchString: !Join ['', ['{{resolve:secretsmanager:', !Ref OriginVerifyHeader, ':SecretString:HEADERVALUE}}' ]]
+                            TextTransformations:
+                              - Priority: 0
+                                Type: NONE
+                        - ByteMatchStatement:
+                            FieldToMatch:
+                              SingleHeader:
+                                Name: "X-Origin-Verify"
+                            PositionalConstraint: EXACTLY
+                            SearchString: !Join ['', ['{{resolve:secretsmanager:', !Ref OriginVerifyHeader, ':SecretString:HEADERVALUE}}' ]]
+                            TextTransformations:
+                              - Priority: 0
+                                Type: NONE
+            APIWAFAssociation:
+              Type: AWS::WAFv2::WebACLAssociation
+              Properties:
+                ResourceArn: !Sub arn:aws:apigateway:${AWS::Region}::/restapis/${API}/stages/dev
+                WebACLArn: !GetAtt  APIWebACL.Arn
+              DependsOn: APIdevStage
+
+          Outputs:
+            CloudfrontDomain:
+              Value: !GetAtt CloudFront.DomainName
+              Export:
+                Name: WebformCloudfrontDomain
+            S3BucketName:
+              Value: !Ref S3Bucket
+              Export:
+                Name: WebformS3Bucket
+      - sh: |
+          #!/bin/bash
+
+          # 1. Create a new directory, navigate to that directory in a terminal and clone the GitHub repository:
+          git clone https://github.com/aws-samples/serverless-patterns
+
+          # 2. Change directory to the pattern directory:
+          cd serverless-patterns/cloudfront-apigw-rest-api-lambda-dynamodb-sam
+
+          # 3. From the command line, use AWS SAM to deploy the AWS resources for the workflow as specified in the template.yaml file:
+          sam deploy --guided
+          # => Enter a stack name
+          # => Enter the desired AWS Region
+          # => Allow SAM CLI to create IAM roles with the required permissions.
+          # => Respond 'y' to all prompts
+          # => Accept all other defaults
+          # =>
+          # =>  Stack Name [sam-app]: cloudfront-apigw-rest-api-lambda-dynamodb-sam
+          # =>  AWS Region [us-east-1]:
+          # =>  Parameter HTTPGetFloodRateParam [10000]:
+          # =>  Parameter HTTPPostFloodRateParam [1000]:
+          # =>  #Shows you resources changes to be deployed and require a 'Y' to initiate deploy
+          # =>  Confirm changes before deploy [y/N]:
+          # =>  #SAM needs permission to be able to create roles to connect to the resources in your template
+          # =>  Allow SAM CLI IAM role creation [Y/n]:
+          # =>  SubmitFunction may not have authorization defined, Is this okay? [y/N]: y
+          # =>  Save arguments to configuration file [Y/n]:
+          # =>  SAM configuration file [samconfig.toml]:
+          # =>  SAM configuration environment [default]:
+
+          # 4. Note the outputs from the SAM deployment process. These contain the resource names and/or ARNs which are used for testing.
+
+          # 5. Deploy the frontend web interface via the provided deploy_frontend.sh script.
+          ./deploy_frontend.sh
+  Sample Project - Multi-Tenant Serverless API using Amazon API Gateway, AWS Lambda, and Amazon DynamoDB:
+    desc: Requests are authorized using API keys mapped to tenants in DynamoDB. Access to data is restricted using dynamic IAM policies based on the tenant ID.
+    tags:
+      - aws
+      - serverless
+    links:
+      - https://serverlessland.com/patterns/serverless-multi-tenant-api
+      - https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html
+      - https://docs.aws.amazon.com/apigateway/latest/developerguide/call-api-with-api-gateway-lambda-authorization.html
+      - https://github.com/aws-samples/serverless-patterns/tree/main/serverless-multi-tenant-api
+    notes:
+      - md: |
+          ## Multi-Tenant Serverless API
+
+          This project demonstrates a pattern for building a multi-tenant serverless API using API Gateway, Lambda, and DynamoDB, with tenant based access control. Requests are authorized using API keys mapped to tenants in DynamoDB. Access to data is restricted using dynamic IAM policies based on the tenant ID. This is not a production ready implementation of a multi-tenant API and only serves as a demo to illustrate the pattern.
+
+          ### Architecture
+
+          The project contains the following resources:
+
+          - API Gateway REST API
+          - Lambda authorizer  - Looks up the tenant ID from the API key and generates IAM policies
+          - Lambda GET function - Retrieves items by ID after validating the tenant ID
+          - Lambda POST function - Adds new items after validating the tenant ID
+          - DynamoDB tables - Stores tenant data isolated by partition keys with the tenant ID
+
+          The Lambda functions assume IAM roles with temporary credentials to access the tenant's data partition.
+      - yml: |
+          AWSTemplateFormatVersion: 2010-09-09
+
+          Description: >-
+            serverless-multi-tenant-api
+
+          Transform:
+          - AWS::Serverless-2016-10-31
+
+          Resources:
+            MyApi:
+              Type: AWS::Serverless::Api
+              Properties:
+                StageName: Prod
+                ApiKeySourceType : HEADER
+                Auth:
+                  ApiKeyRequired: true # sets for all methods
+                  DefaultAuthorizer: MyLambdaRequestAuthorizer
+                  Authorizers:
+                    MyLambdaRequestAuthorizer:
+                      FunctionPayloadType: REQUEST
+                      FunctionArn: !GetAtt authFunction.Arn
+                      Identity:
+                          ReauthorizeEvery: 0
+                          Headers:
+                            - x-api-key
+
+            # Create Usage Plan
+            UsagePlan:
+              Type: AWS::ApiGateway::UsagePlan
+              Properties:
+                ApiStages:
+                  - ApiId: !Ref MyApi
+                    Stage: !Ref MyApi.Stage
+                Description: Usage plan for API Gateway
+
+            # Create API Key
+            TestApiKey:
+              Type: AWS::ApiGateway::ApiKey
+              Properties:
+                Enabled: true
+                StageKeys:
+                  - RestApiId: !Ref MyApi
+                    StageName: !Ref MyApi.Stage
+
+            UsagePlanKey:
+              Type: AWS::ApiGateway::UsagePlanKey
+              Properties:
+                KeyId: !Ref TestApiKey
+                KeyType: API_KEY
+                UsagePlanId: !Ref UsagePlan
+
+            AuthorizerExecutionRole:
+              Type: AWS::IAM::Role
+              Properties:
+                Path: '/'
+                AssumeRolePolicyDocument:
+                  Version: 2012-10-17
+                  Statement:
+                    - Effect: Allow
+                      Principal:
+                        Service:
+                          - lambda.amazonaws.com
+                      Action:
+                        - sts:AssumeRole
+                ManagedPolicyArns:
+                  - arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy
+                  - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+                Policies:
+                  - PolicyName: authorizer-execution-policy
+                    PolicyDocument:
+                      Version: 2012-10-17
+                      Statement:
+                        - Effect: Allow
+                          Action:
+                            - dynamodb:GetItem
+                          Resource:
+                            - !GetAtt ConfigTable.Arn
+
+            AuthorizerAccessRole:
+              Type: AWS::IAM::Role
+              DependsOn: AuthorizerExecutionRole
+              Properties:
+                Path: '/'
+                AssumeRolePolicyDocument:
+                  Version: 2012-10-17
+                  Statement:
+                    - Effect: Allow
+                      Principal:
+                        AWS:
+                          - !GetAtt 'AuthorizerExecutionRole.Arn'
+                      Action:
+                        - sts:AssumeRole
+                Policies:
+                  - PolicyName: authorizer-access-role-policy
+                    PolicyDocument:
+                      Version: 2012-10-17
+                      Statement:
+                        - Effect: Allow
+                          Action:
+                            - dynamodb:GetItem
+                            - dynamodb:PutItem
+                          Resource:
+                            - !GetAtt ItemTable.Arn
+
+            # This is a Lambda function config associated with the source code: auth.js
+            authFunction:
+              Type: AWS::Serverless::Function
+              Properties:
+                Role: !GetAtt AuthorizerExecutionRole.Arn
+                Handler: src/handlers/auth.authHandler
+                Runtime: nodejs20.x
+                Architectures:
+                  - x86_64
+                MemorySize: 128
+                Timeout: 5
+                Environment:
+                  Variables:
+                    # Make table name accessible as environment variable from function code during execution
+                    CONFIG_TABLE: !Ref ConfigTable
+                    ITEM_TABLE_ARN: !GetAtt ItemTable.Arn
+                    AUTHORIZER_ACCESS_ROLE_ARN: !GetAtt AuthorizerAccessRole.Arn
+
+            # This is a Lambda function config associated with the source code: get-by-id.js
+            getByIdFunction:
+              Type: AWS::Serverless::Function
+              Properties:
+                Handler: src/handlers/get-by-id.getByIdHandler
+                Runtime: nodejs20.x
+                Architectures:
+                  - x86_64
+                MemorySize: 128
+                Timeout: 5
+                Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
+                Environment:
+                  Variables:
+                    # Make table name accessible as environment variable from function code during execution
+                    ITEM_TABLE: !Ref ItemTable
+                Events:
+                  Api:
+                    Type: Api
+                    Properties:
+                      RestApiId: !Ref MyApi
+                      Auth:
+                        ApiKeyRequired: true
+                      Path: /{id}
+                      Method: GET
+
+            # This is a Lambda function config associated with the source code: put-item.js
+            putItemFunction:
+              Type: AWS::Serverless::Function
+              Properties:
+                Handler: src/handlers/put-item.putItemHandler
+                Runtime: nodejs20.x
+                Architectures:
+                  - x86_64
+                MemorySize: 128
+                Timeout: 5
+                Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
+                Environment:
+                  Variables:
+                    # Make table name accessible as environment variable from function code during execution
+                    ITEM_TABLE: !Ref ItemTable
+                Events:
+                  Api:
+                    Type: Api
+                    Properties:
+                      RestApiId: !Ref MyApi
+                      Auth:
+                        ApiKeyRequired: true
+                      Path: /
+                      Method: POST
+
+            # DynamoDB table to store item: {id: <ID>, name: <NAME>}
+            ItemTable:
+              Type: AWS::Serverless::SimpleTable
+              Properties:
+                PrimaryKey:
+                  Name: PK
+                  Type: String
+
+            # DynamoDB table to store config: {id: <ID>}
+            ConfigTable:
+              Type: AWS::Serverless::SimpleTable
+              Properties:
+                PrimaryKey:
+                  Name: PK
+                  Type: String
+
+          Outputs:
+            WebEndpoint:
+              Description: "API Gateway endpoint URL for Prod stage"
+              Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/"
+            TestApiKeyOutput:
+              Description: "API Key"
+              Value: !Ref TestApiKey
+            DynamoDBTableName:
+              Description: "DynamoDB Table Name"
+              Value: !Ref ConfigTable
+      - md: |
+          ## Setup
+
+          1. Create a new directory, navigate to that directory in a terminal and clone the GitHub repository:
+              ```
+              git clone https://github.com/aws-samples/serverless-patterns
+              ```
+          2. Change directory to the pattern directory:
+              ```
+              cd serverless-patterns/serverless-multi-tenant-api
+              ```
+          3. From the command line, use AWS SAM to deploy the AWS resources for the workflow as specified in the template.yaml file:
+
+              ```
+              npm install
+              sam build
+              sam deploy --guided
+              ```
+
+          This will build and deploy the Lambda functions, API Gateway API, and DynamoDB tables.
+          The API endpoint will be output after deployment. You can test the endpoint with valid API keys and tenant IDs stored in DynamoDB.
+
+          Steps to set up a tenant in the ConfigTable DynamoDB table with the generated API Key:
+
+          1. Get the DynamoDB table name and API key value using the stack name you created :
+                aws cloudformation describe-stacks --stack-name `your-stack-name` \
+                    --query 'Stacks[0].Outputs[?OutputKey==`DynamoDBTableName`].OutputValue' \
+                    --output text
+
+          2. Get the API key name
+              aws cloudformation describe-stacks --stack-name `your-stack-name` \
+                    --query 'Stacks[0].Outputs[?OutputKey==`TestApiKeyOutput`].OutputValue' \
+                    --output text
+
+          3. Use the API key output from above step to get the API key value :
+              aws apigateway get-api-key --api-key `your-api-key-id` --include-value --query "value" --output text
+
+
+          4. Run the following command to put the sample tenant TENANT1 in DynamoDB table :
+              aws dynamodb put-item \
+                  --table-name `your-dynamodb-table` \
+                  --item ' {
+                          "PK": {
+                            "S": "`<your-api-key-value>`"
+                          },
+                          "TENANT_ID": {
+                            "S": "TENANT1"
+                          }
+                        }' \
+                    --return-consumed-capacity TOTAL
+
+          ## Testing Locally
+
+          To test locally, run:
+
+          ```
+          sam local start-api
+          ```
+
+          This will spin up a local API Gateway instance on port 3000. You can test routes by passing x-api-key headers mapped to tenants in your local DynamoDB tables.
+
+          Or test using curl:
+
+          1. POST - post item (id and name)
+            `curl -X POST -H "x-api-key: <the value of your api key>"  -d '{"id":"id1","name":"name1"}' <your WebEndpoint>`
+            A successful POST request returns the following response:
+              `{"id":"id1","name":"name1"}`
+
+          2. GET - get item by id
+            `curl -X GET  -H "x-api-key: <the value of your api key>" <your WebEndpoint>/id1`
+            A successful GET request returns the value of `id` saved earlier by the same tenant:
+              `{"id":"id1","name":"name1"}`
+
+          ## Implementation Details
+
+          Key files and components:
+
+          - template.yaml - Defines the API, Lambda functions, DynamoDB tables
+          - auth.js - Authorizer function to lookup tenant ID and create IAM policy
+          - get-by-id.js - GET function to retrieve items by ID
+          - put-item.js - POST function to add new items
+          - DynamoDB tables - Config and items tables to store tenants and data
+
+          The authorizer function demonstrates how to implement granular access control per tenant for a multi-tenant architecture on AWS.
+
+          ## Cleanup
+
+          To delete the sample application:
+
+          ```
+          sam delete
+          ```
