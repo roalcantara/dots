@@ -1,4 +1,9 @@
 bookmarks:
+  https://catalog.workshops.aws:
+    desc: Find physical and virtual self-paced Workshops, GameDays, Bootcamps, Immersion Days, and other events that require hands-on access to AWS accounts.
+    tags: [aws, xp]
+
+  # AWS SAM
   https://catalog.workshops.aws/workshops/9a27e484-7336-4ed0-8f90-f2747e4ac65c/en-US:
     desc: The workshop employs a practical, code-centric approach, emphasizing direct implementation and real-world scenario exploration to ensure you develop serverless development skills across several critical areas including distributed event-driven architectures, messaging patterns, orchestration, and observability
     tags: [aws, sam, serverless]

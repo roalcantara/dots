@@ -96,6 +96,15 @@ commands:
   chmod 700 ~/.ssh:
     desc: Set permissions for SSH directory
     tags: [ssh, permissions]
+  chmod 600 ~/.ssh/id_ed25519_github:
+    desc: Set permissions for SSH key
+    tags: [ssh, permissions]
+  chmod 600 ~/.ssh/id_ed25519_bitbucket_work:
+    desc: Set permissions for SSH key
+    tags: [ssh, permissions]
+  chmod 600 ~/.ssh/coreservices-bastion-dev.pem:
+    desc: Set permissions for SSH key
+    tags: [ssh, permissions]
 
   # SSH KEYS: COPY PUBLIC KEY TO CLIPBOARD
   find ~/.ssh/*.pub | fzf --ansi | xargs cat | tr -d "\n" | pbcopy && echo "=> Public key copied to clipboard.":

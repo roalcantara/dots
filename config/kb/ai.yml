@@ -1,10 +1,7 @@
 bookmarks:
   https://openai.com:
     desc: OpenAI
-    tags:
-      - ai
-      - openai
-      - tool
+    tags: [ai, openai, tool]
     links:
       - Docs: https://platform.openai.com/docs/overview?lang=curl
       - API: https://platform.openai.com/docs/api-reference
@@ -20,10 +17,7 @@ bookmarks:
       - API Keys: https://platform.openai.com/settings/organization/api-keys
   https://chatgpt.com/codex:
     desc: One agent for everywhere you code-included in ChatGPT Plus, Pro, Team, Edu, and Enterprise plans
-    tags:
-      - ai
-      - codex
-      - tool
+    tags: [ai, codex, tool]
     links:
       - https://developers.openai.com/codex
       - https://developers.openai.com/codex/quickstart
@@ -49,10 +43,7 @@ bookmarks:
           mkdir -p ~/.config/codex/ && vi ~/.config/codex/config.yaml
   https://github.com/Nutlope/aicommits:
     desc: AI Commits | A CLI that writes your git commit messages for you with AI
-    tags:
-      - ai
-      - git
-      - tool
+    tags: [ai, git, tool]
   https://github.com/coder/aicommit:
     desc: AI Commit | A tool that writes your git commit messages for you with AI
     tags:

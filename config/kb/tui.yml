@@ -1,0 +1,5 @@
+bookmarks:
+  https://posting.sh:
+    desc: A beautiful open-source terminal app for developing and testing APIs
+    tags: [tui, library]
+    links: [https://posting.sh/guide]
