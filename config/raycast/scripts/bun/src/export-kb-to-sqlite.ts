@@ -147,15 +147,55 @@ const migrate = async (db: Database, filePath: string) => {
   const allEntries = await parse(filePath)
   await insert(db, allEntries)
 }
-const main = async () => {
-  const yamlSourcesPath = expandHome(process.argv[2]?.trim() || `~/.config/kb`)
-  const dbPath = expandHome(process.argv[3]?.trim() || `~/.config/kb/_database.db`)
-  await $`rm -rf ${dbPath} 2> /dev/null`
 
-  puts(`(DB) Connect to ${dbPath}..`)
+const extract_kb_paths = () => {
+  const yamlSourcesPath = expandHome(process.argv[3]?.trim() || `~/.config/kb`)
+  puts(`(KB/PATHS) yamlSourcesPath: '${yamlSourcesPath}' ✔︎`)
+  const dbPath = expandHome(process.argv[4]?.trim() || `~/.config/kb/_database.db`)
+  puts(`(KB/PATHS) dbPath: '${dbPath}' ✔︎`)
+  const assetsPath = expandHome(process.argv[5]?.trim() || `~/.config/kb/_assets`)
+  puts(`(KB/PATHS) assetsPath: '${assetsPath}' ✔︎`)
+
+  return {
+    yamlSourcesPath,
+    dbPath,
+    assetsPath
+  }
+}
+
+/**
+ * Each DB item has a tags field that is an array of strings.
+ * Each tag of the array the strings has a file at ~/.config/kb/_assets/tag.svg
+ * This functions finds all tags that do not have a corresponding file at ~/.config/kb/_assets/tag.svg
+ * @param db - The SQLite database
+ * @returns A promise that resolves to a string[]
+ */
+const extract_missing_kb_assets = async () => {
+  const { dbPath, assetsPath } = extract_kb_paths()
   const db = new Database(dbPath)
-  puts(`(DB) Connect to ${dbPath} ✔︎`)
+  const tags: any[] = db.query(`SELECT json_each.value as tag FROM entries as e, json_each(e.tags)`).all()
+  const missingTags: string[] = Array.from(new Set(tags.map((row: any) => row.tag.toLowerCase()))).sort((a: string, b: string) => a.localeCompare(b))
+  const missingTagsAssets: string[] = (await Promise.all(missingTags.map(async (tag: string) => {
+    if (!await Bun.file(`${assetsPath}/${tag}.svg`).exists()) {
+      return tag
+    }
+    return null
+  })) ?? []).filter((item: string | null) => item !== null)
+  puts(`(ASSETS) missingTagsAssets (${missingTagsAssets.length}): ${JSON.stringify(missingTagsAssets, null, 2)} ✔︎`)
+  db.close()
+  return missingTagsAssets
+}
 
+/**
+ * Export KB to SQLite
+ * @param yamlSourcesPath - The path to the YAML files
+ * @param dbPath - The path to the SQLite database
+ * @returns A promise that resolves to a string
+ */
+const extract_kb_db = async () => {
+  const { yamlSourcesPath, dbPath } = extract_kb_paths()
+  await $`rm -rf ${dbPath} 2> /dev/null`
+  const db = new Database(dbPath)
   await createTables(db)
 
   if ((await Bun.file(yamlSourcesPath).stat()).isDirectory()) {
@@ -172,8 +212,28 @@ const main = async () => {
   } else {
     await migrate(db, yamlSourcesPath)
   }
-
+  db.close()
   return `[SQLITE-IMPORT] Files migrated to '${dbPath}' ✔︎✔︎`
+}
+
+/**
+ * Main function that either creates the KB table or extracts missing assets from the DB item tags depending on the given command line arguments
+ * @example `bun src/export-kb-to-sqlite.ts --db` -> Excludes, extracts and creates the KB table
+ * @example `bun src/export-kb-to-sqlite.ts --assets` -> Extracts and returns a list of missing assets from the DB item tags
+ * @returns A promise that resolves to a string
+ */
+const main = async () => {
+  if (process.argv.includes('--db')) {
+    puts('(MAIN) Extracting KB database..')
+    return await extract_kb_db()
+  } else if (process.argv.includes('--assets')) {
+    puts('(MAIN) Extracting missing KB assets..')
+    const missingAssets = extract_missing_kb_assets()
+    return JSON.stringify(missingAssets, null, 2)
+  } else {
+    console.error('Invalid command line argument')
+    process.exit(1)
+  }
 }
 
 main().then(console.log).catch(console.error)
