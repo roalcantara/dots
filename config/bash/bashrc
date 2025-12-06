@@ -1,0 +1,147 @@
+# shellcheck shell=bash disable=SC1090,SC1091
+# https://gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Bash-Startup-Files
+
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# Contains commands that should run every time a new shell is launched - aliases, functions, custom prompts, history customizations..
+# https://linuxize.com/post/bashrc-vs-bash-profile
+
+# If not running interactively, don't do anything
+case $- in
+*i*) ;;
+*) return ;;
+esac
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+shopt -s globstar
+
+# Load XDG environment variables from .profile
+if [ -f $HOME/.profile ]; then
+  source $HOME/.profile
+fi
+
+# PATH; Where the shell searches for commands; set PATH so it includes user's private bin if it exists
+export PATH="${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin}:${CARGO_HOME:-$XDG_DATA_HOME/cargo/bin}:${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm/bin}:${PNPM_HOME:-$XDG_DATA_HOME/pnpm}:/usr/local/bin:/usr/local/sbin:${PATH}"
+
+: "${HOMEBREW_PREFIX:=${HOMEBREW_PREFIX:-$(
+  if [ -d /opt/homebrew ]; then
+    echo "/opt/homebrew"
+  elif [ -d ~/.linuxbrew ]; then
+    echo "$HOME/.linuxbrew"
+  else
+    echo "/usr/local"
+  fi
+)}}"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+  debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+xterm-color | *-256color) color_prompt=yes ;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+    # a case would tend to support setf rather than setaf.)
+    color_prompt=yes
+  else
+    color_prompt=
+  fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+  PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+  PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm* | rxvt*) PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1" ;;
+*) ;;
+esac
+
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+# Load Homebrew if it exists and hasn't been loaded yet
+if ! command -v brew >/dev/null && [ -d "$HOMEBREW_PREFIX/bin" ]; then
+  eval "$("$HOMEBREW_PREFIX"/bin/brew shellenv)"
+fi
+
+# FLOX | https://flox.dev/docs/tutorials/default-environment {
+  # Activate the Default Environment
+  if ! command -v flox >/dev/null; then
+    eval "$(FLOX_SHELL=bin/bash flox activate --dir $( [[ -e ~/.flox ]] && echo ~ || echo ~/.config/flox ) -m run)"
+  fi
+# }
+
+# MISE | https://mise.jdx.dev/ {
+  if ! command -v mise >/dev/null; then
+    eval "$(mise activate bash)"
+  fi
+# }
+
+# EDITOR {
+  # Set default editor to nvim, vim or vi
+  # https://neovim.io/doc/user/starting.html#config
+  if ! command -v nvim >/dev/null; then
+    export EDITOR=${EDITOR:-"$(command -v nvim)"}
+    export VIM_PATH=${VIM_PATH:-$XDG_CONFIG_HOME/nvim}
+    export MYVIMRC=${MYVIMRC:-$VIM_PATH/init.lua}
+    export NVIM_LOG_FILE=${NVIM_LOG_FILE:-$XDG_CACHE_HOME/nvim/.nvimlog}
+    alias vim=nvim
+    alias vi=nvim
+  else
+    export EDITOR=${EDITOR:-"$(command -v vim || command -v vi)"}
+    alias vi=vim
+  fi
+  export VISUAL=${VISUAL:-$EDITOR}
+  export SUDO_EDITOR=${SUDO_EDITOR:-$EDITOR}
+  export GIT_EDITOR=${GIT_EDITOR:-"$EDITOR -c 'startinsert'"}
+  export LAUNCH_EDITOR=${LAUNCH_EDITOR:-$EDITOR}
+# }
+
+# TERM {
+  if [ "$TERM_PROGRAM" = "ghostty" ]; then
+    if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
+      builtin source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
+    fi
+    export SNACKS_GHOSTTY=true
+  elif [[ "$TERM_PROGRAM" == "vscode" ]] && _has_command code; then
+    builtin source "$(code --locate-shell-integration-path zsh)"
+  fi
+  export TERM="${TERM:-xterm-256color}"
+# }
