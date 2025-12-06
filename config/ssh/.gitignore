@@ -1,0 +1,6 @@
+# Ignore decrypted files
+*.key
+*.pem
+
+# Keep encrypted versions and metadata
+!keys/*

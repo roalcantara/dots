@@ -1,1 +1,5 @@
 *.env filter=sops diff=sops
+config/ssh/keys/*.key filter=sops diff=sops
+config/ssh/keys/*.pem filter=sops diff=sops
+config/ssh/keys/config filter=sops diff=sops
+config/ssh/known_hosts filter=sops diff=sops
