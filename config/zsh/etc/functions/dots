@@ -136,7 +136,7 @@ dots() {
       [[ ! -d "$runtime_dir" ]] && mkdir -p "$runtime_dir" 2>/dev/null || sudo mkdir -p "$runtime_dir"
       IFS=':' read -r perms owner <<< "$(__get_dir_permissions "$runtime_dir")"
       [[ "$perms" != "700" ]] && chmod 700 "$runtime_dir" 2>/dev/null || sudo chmod 700 "$runtime_dir"
-      [[ "$owner" != "${UID:-$(id -u)}" ]] && local username="${USERNAME:-$(id -un)}" && chown "$username" "$runtime_dir" 2>/dev/null || sudo chown "$username" "$runtime_dir"
+      [[ "$owner" != "${UID:-$(id -u)}" ]] && local username="${USERNAME:-$(id -un)}" && chown -R "$username" "$runtime_dir" 2>/dev/null || sudo chown -R "$username" "$runtime_dir"
       ;;
     *)
       dots xdg "$(gum filter --limit=1 'check_runtime_perms' 'ensure_runtime_perms')"
