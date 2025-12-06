@@ -1,10 +1,11 @@
 cheats:
-  # MATH
   Logaritmo é o inverso da exponenciação:
     desc: O logaritmo é o inverso da exponenciação. Se `b` elevado a `y` é igual a `x`, então o logaritmo de `x` na base `b` é igual a `y`.
-    tags: [math, logaritmo]
+    tags:
+      - math
+      - logaritmo
     notes:
-      - md: | #markdown
+      - md: |
           ### TL;DR Logaritmo
 
           A função matemática logarítmica, ou simplesmente "log", é o inverso da exponenciação.
@@ -26,13 +27,14 @@ cheats:
 
           Para resolver isso, perguntamos: "5 elevado a qual potência dá 25?".
           A resposta é 2, porque 5^2=25.
-
-  # GHERKIN
   Decrease scenarios with Background and tables | Gherkin:
     desc: Decrease scenarios with Background and tables in Gherkin
-    tags: [bdd, gherkin, cucumber]
+    tags:
+      - bdd
+      - gherkin
+      - cucumber
     notes:
-      - md: | #markdown
+      - md: |
           ### Como reduzir quantidade de cenários utilizando Background e tabelas em Gherkin
 
           Utilizar estas técnicas em Gherkin não só torna seus cenários mais concisos e fáceis de manter, mas também melhora a legibilidade e eficiência dos seus testes de aceitação.
@@ -96,12 +98,17 @@ cheats:
           - Reduzindo a quantidade de cenários escritos e mantendo o código **DRY** (Don't Repeat Yourself).
   Describing scenarios in BDD | Gherkin:
     desc: Describes scenarios
-    tags: [bdd, gherkin, cucumber, tests, features]
+    tags:
+      - bdd
+      - cucumber
+      - feature
+      - gherkin
+      - test
     links:
       - https://automationpanda.com/2017/01/30/bdd-101-writing-good-gherkin
       - https://automationpanda.com/2018/02/03/are-gherkin-scenarios-with-multiple-when-then-pairs-okay
     notes:
-      - md: | #markdown
+      - md: |
           ### Rules
 
           1. Steps are written in third-person
@@ -128,19 +135,21 @@ cheats:
           22. Adopt a standard set of tag names. Avoid duplicates.
           23. Write all tag names in lowercase, and use hyphens (“-“) to separate words.
           24. Limit the length of tag names.
-      - gherkin: | #gherkin
+      - gherkin: |
           Feature: Google Searching
 
             Scenario: Simple Google search
               Given the Google home page is displayed
               When the user enters "panda" into the search bar
               Then links related to "panda" are shown on the results page
-
   The 7 Basic Characteristics for Autism Diagnosis | NEW DSM-5:
     desc: The 7 Basic Characteristics for Autism Diagnosis [NEW DSM-5]
-    tags: [autism, diagnosis, dsm-5]
+    tags:
+      - autism
+      - diagnosis
+      - dsm_5
     notes:
-      - md: | #markdown
+      - md: |
           ### The 7 Basic Characteristics for Autism Diagnosis [NEW DSM-5]
 
           #### A) Persistent Deficits in Social Communication and Social Interaction Across Multiple Contexts
@@ -186,12 +195,13 @@ cheats:
           #### F) The disturbance is not better explained by another specific mental or behavioral disorder.
 
           #### G) The disturbance is not due to general medical or genetic conditions.
-
   Interceptors | NestJS:
     desc: Classes that can manipulate requests/responses, add extra logic before/after method execution, and modify method return values
-    tags: [nestjs, interceptor]
+    tags:
+      - nestjs
+      - interceptor
     notes:
-      - md: | #markdown
+      - md: |
           ### Interceptors in NestJS
 
           > **Interceptors** are classes that can process requests before they reach the route handler and responses before they are sent back to the client.
@@ -249,9 +259,11 @@ cheats:
           - They are a key feature of the framework that enables you to implement cross-cutting concerns and improve the overall structure of your application.
   Middlewares | NestJS:
     desc: Function called before the route handler and can be used to modify the request/response objects, end the request-response cycle, or call the next middleware
-    tags: [nestjs, middleware]
+    tags:
+      - nestjs
+      - middleware
     notes:
-      - md: | #markdown
+      - md: |
           ### Middlewares in NestJS
 
           > **Middlewares** are functions that can process requests before they reach the route handler and responses before they are sent back to the client.
@@ -302,9 +314,12 @@ cheats:
           - They are a key feature of the framework that enables you to implement cross-cutting concerns and improve the overall structure of your application.
   LoggingInterceptor vs LoggerMiddleware | NestJS:
     desc: LoggingInterceptor and LoggerMiddleware are two ways to log requests and responses in NestJS. LoggingInterceptor is a class-based interceptor, while LoggerMiddleware is a function-based middleware.
-    tags: [nestjs, interceptor, middleware]
+    tags:
+      - nestjs
+      - interceptor
+      - middleware
     notes:
-      - md: | #markdown
+      - md: |
           ### Overview
 
           #### Interceptors
@@ -342,13 +357,12 @@ cheats:
           - Example
             - **LoggerMiddleware** for basic request logging.
             - **LoggingInterceptor** for detailed execution time and response logging.
-
-  # LANG
   CEFR [Common European Framework of Reference for Languages] Levels:
     desc: The Common European Framework of Reference for Languages (CEFR) is an international standard for describing language ability. It describes language ability on a six-point scale, from A1 for beginners, up to C2 for those who have mastered a language.
-    tags: [lang]
+    tags:
+      - lang
     notes:
-      - md: | #markdown
+      - md: |
           > Language proficiency is commonly categorized using the Common European Framework of Reference for Languages (CEFR), which is a widely accepted standard for describing language ability.
           >
           > It divides learners into six levels, from complete beginners to advanced language users.
@@ -405,16 +419,16 @@ cheats:
           ## Summary
 
           In summary, while B2 is seen as a level where users can effectively communicate and interact in a variety of situations, C1 and C2 levels are generally associated with a high degree of fluency and comprehension, allowing for nuanced understanding and expression in the language.
-
-  # MOJO
   Code examples for nearly every dunder method | Mojo:
     desc: Code examples for nearly every Mojo🔥 dunder method, covering their purpose, expected IO, and implementation
-    tags: [mojo, python]
+    tags:
+      - mojo
+      - py
     links:
       - Python Dunder Methods: https://docs.python.org/3/reference/datamodel.html
       - https://x.com/Modular/status/1762236751492661449?s=20
     notes:
-      - md: | #markdown
+      - md: |
           ### Initialize, Copy, Move, Delete
 
           ```mojo
@@ -502,16 +516,17 @@ cheats:
           fn __bool__()       # Boolean
           fn __str__()        # String
           ```
-
-  # CYNEFIN FRAMEWORK
   Cynefin Framework:
     desc: Navigating complexity in decision-making. Simple for clear problems, Complicated for expert-solved issues, Complex for adaptive challenges, Chaotic for urgent crises, and Disorder when the path is unclear. A guide to understanding context and response in business.
-    tags: [business, decision-making, framework]
+    tags:
+      - business
+      - decision_making
+      - framework
     links:
       - Cynefin Framework: https://en.wikipedia.org/wiki/Cynefin_framework
       - Cynefin Framework: https://youtube.com/watch?v=N7oz366X0-8
     notes:
-      - md: | #markdown
+      - md: |
           # Cynefin Framework
 
           The Cynefin framework is a conceptual framework used to aid decision-making.
@@ -561,7 +576,7 @@ cheats:
           - **Example:** Facing a problem where it's unclear whether it's a technical issue, a communication problem with the client, or a combination of both.
 
           The framework is used to help leaders understand the context in which they are operating and to help them make decisions based on that context.
-      - md: | #markdown
+      - md: |
           Software estimation faces unique challenges in each domain of the Cynefin Framework. Here's a breakdown:
 
           ### Simple (Obvious):
@@ -598,18 +613,21 @@ cheats:
           Use a combination of estimation techniques tailored to each identified domain.
 
           In all domains, a key to better software estimation is recognizing the nature of the problem space and choosing estimation techniques that are best suited for that domain's challenges.
-
   In Coordinate System x-axis is horizontal and y-axis is vertical:
     desc: A coordinate system is a two-dimensional number line, for example, two perpendicular number lines or axes
-    tags: [math, geometry, coordinate-system]
+    tags:
+      - coordinate_system
+      - geometry
+      - math
     links:
       - Coordinate system and ordered pairs: https://mathplanet.com/education/pre-algebra/introducing-algebra/coordinate-system-and-ordered-pairs
-
   List of keyboard unicode symbols:
     desc: List of keyboard unicode symbols
-    tags: [unicode, keyboard]
+    tags:
+      - unicode
+      - keyboard
     notes:
-      - md: | #markdown
+      - md: |
           | Modifier     | Keys produced                                             | Level |
           | ------------ | --------------------------------------------------------- | :---: |
           | None         | Lowercase letters, numbers, etc                           |   1   |
@@ -617,7 +635,7 @@ cheats:
           | AltGr        | Extra symbols not printed on the keyboard, some dead keys |   3   |
           | AltGr-Shift  | Even more symbols, more dead keys                         |   4   |
           | Shift+Ctrl+U | Unicode composition                                       |   5   |
-      - md: | #markdown
+      - md: |
           | SYMBOL | UNICODE | COMMAND         | TYPE            |
           | :----: | :-----: | --------------- | --------------- |
           |   ^    | U+005E  | Control         | Modifier keys   |
@@ -658,7 +676,9 @@ cheats:
       - U+2325 - Option Key: https://unicode-table.com/en/2325
   Keyboard Shortcuts writting order and best practices:
     desc: Keyboard Shortcuts writting order and best practices
-    tags: [keyboard, shortcuts]
+    tags:
+      - keyboard
+      - shortcuts
     notes: |
       ## Conventional order that's typically followed
 
@@ -679,8 +699,6 @@ cheats:
       When the shortcut involves a single letter key, it is common to use upper case, regardless of whether the Shift key (⇧) is part of the shortcut.
 
       **Example:** `⌘C` instead of `⌘c`, even though pressing ⌘ and C together does not require the Shift key.
-
-  # PLANTUML
   plantuml/sequence-diagram:
     desc: PlantUML Sequence Diagram
     notes:
@@ -693,7 +711,9 @@ cheats:
           Alice -> Bob: Another authentication Request
           Alice <-- Bob: another authentication Response
           @enduml
-    tags: [diagram, plantuml]
+    tags:
+      - diagram
+      - plantuml
   plantuml | Display YAML Data:
     desc: Use PlantUML to visualize your data in YAML
     notes:
@@ -705,7 +725,9 @@ cheats:
             - Red
             - Green
           @endyaml
-    tags: [diagram, plantuml]
+    tags:
+      - diagram
+      - plantuml
     links:
       - plantuml.com/yaml: https://plantuml.com/yaml
   plantuml | Display YAML Data (complex):
@@ -732,7 +754,9 @@ cheats:
               location: "a pear tree"
             turtle-doves: two
           @endyaml
-    tags: [diagram, plantuml]
+    tags:
+      - diagram
+      - plantuml
     links:
       - plantuml.com/yaml: https://plantuml.com/yaml
   plantuml | Display YAML Data - Specific key (with symbols or unicode):
@@ -746,7 +770,9 @@ cheats:
           ❤: Heart
           ‰: Per mille
           @endyaml
-    tags: [diagram, plantuml]
+    tags:
+      - diagram
+      - plantuml
     links:
       - plantuml.com/yaml: https://plantuml.com/yaml
   plantuml | Display YAML Data - Highlight parts:
@@ -776,7 +802,9 @@ cheats:
               location: "a pear tree"
             turtle-doves: two
           @endyaml
-    tags: [diagram, plantuml]
+    tags:
+      - diagram
+      - plantuml
     links:
       - plantuml.com/yaml: https://plantuml.com/yaml
   plantuml | Display YAML Data - Custom Style:
@@ -815,7 +843,9 @@ cheats:
               location: "a pear tree"
             turtle-doves: two
           @endyaml
-    tags: [diagram, plantuml]
+    tags:
+      - diagram
+      - plantuml
     links:
       - plantuml.com/yaml: https://plantuml.com/yaml
   plantuml | Display YAML Data - Many Highlightings:
@@ -857,7 +887,9 @@ cheats:
               location: "a pear tree"
             turtle-doves: two
           @endyaml
-    tags: [diagram, plantuml]
+    tags:
+      - diagram
+      - plantuml
     links:
       - plantuml.com/yaml: https://plantuml.com/yaml
   plantuml | Display YAML Data - With Style (or CSS like style):
@@ -899,7 +931,9 @@ cheats:
               hr:   63
               avg:  0.288
           @endyaml
-    tags: [diagram, plantuml]
+    tags:
+      - diagram
+      - plantuml
     links:
       - plantuml.com/yaml: https://plantuml.com/yaml
       - style-evolution: https://plantuml.com/style-evolution
@@ -927,11 +961,14 @@ cheats:
               location: "a pear tree"
             turtle-doves: two
           @endyaml
-    tags: [diagram, plantuml]
-
+    tags:
+      - diagram
+      - plantuml
   3 Motivation Styles determined by Personality:
     desc: 3 Motivation Styles determined by Personality
-    tags: [motivation, personality]
+    tags:
+      - motivation
+      - personality
     notes: |
       # 3 Motivation Styles determined by Personality
 
@@ -979,13 +1016,13 @@ cheats:
 
         Self critical and prone to depression.
         Likely to give up when just they are about to succeed.
-
-  # mermaid
   mermaid/classDiagram:
     desc: Class Diagram
-    tags: [diagram, mermaid]
+    tags:
+      - diagram
+      - mermaid
     notes:
-      - md: | #markdown
+      - md: |
           ```mermcaid
             classDiagram
                 Animal <|-- Duck
@@ -1035,7 +1072,7 @@ cheats:
                 +bool is_wild
                 +run()
               }
-      - md: | #markdown
+      - md: |
           ```mermaid
           classDiagram
               class Board{
@@ -1079,10 +1116,11 @@ cheats:
                   +String updated
               }
               Board "1" -- "*" Item : has many
-
   mermaid/classDiagram/relations:
     desc: There are eight different types of relations defined for classes
-    tags: [diagram, mermaid]
+    tags:
+      - diagram
+      - mermaid
     notes:
       mermaid: |
         classDiagram
@@ -1097,7 +1135,9 @@ cheats:
           classP <|--|> classQ : Two-way relations
   mermaid/erDiagram:
     desc: ER Diagram
-    tags: [diagram, mermaid]
+    tags:
+      - diagram
+      - mermaid
     notes:
       mermaid: |
         erDiagram
@@ -1111,7 +1151,9 @@ cheats:
             PRODUCT ||--o{ ORDER-ITEM : "ordered in"
   mermaid/flowchart:
     desc: Flowchart
-    tags: [diagram, mermaid]
+    tags:
+      - diagram
+      - mermaid
     notes:
       mermaid: |
         graph TD;
@@ -1119,11 +1161,10 @@ cheats:
             A-->C;
             B-->D;
             C-->D;
-
-  # firestore
   firestore/queries/OR:
     desc: Firestore Query OR
-    tags: [firestore]
+    tags:
+      - firestore
     notes:
       js: |
         const carsRef = collection(db, 'cars');
@@ -1146,19 +1187,19 @@ cheats:
       - https://firebase.blog/posts/2023/05/whats-new-at-google-io
   firestore/queries/IN:
     desc: Firestore Query OR
-    tags: [firestore]
+    tags:
+      - firestore
     notes:
       js: |
         const citiesRef = db.collection("cities");
         const cityList = ["USA", "Japan", "Argentina", "Brazil", "Chile", "Bolivia", "Paraguay", "Uruguay", "UK", "Canada", "Mexico", "Mozambique"];
         const cities = citiesRef.where("country", whereIn: cityList);
-
     links:
       - https://firebase.blog/posts/2023/05/whats-new-at-google-io
-
   Azure DevOps:
     desc: Principais features
-    tags: [azure_devops]
+    tags:
+      - azure_devops
     notes:
       md: |
         ## 1. Boards
@@ -1224,10 +1265,11 @@ cheats:
           - Integração com Visual Studio e outras IDEs.
           - Suporte a Git e TFVC diretamente das IDEs.
           - Ferramentas de depuração e diagnóstico.
-
   Google Spreadsheet Charts Explained with Simple Examples:
     desc: Breakdown of each chart available, along with a simple example. Choosing the right chart depends on your data and how you want to present it
-    tags: [sheets, charts]
+    tags:
+      - sheets
+      - charts
     notes:
       - markdown: |
           **Line Chart:**
@@ -1243,7 +1285,6 @@ cheats:
           | April | 400 |
           | May | 500 |
           | June | 600 |
-
       - markdown: |
           **Area Chart:**
 
@@ -1258,7 +1299,6 @@ cheats:
           | April | 400 | 200 |
           | May | 500 | 250 |
           | June | 600 | 300 |
-
       - markdown: |
           **Column Chart:**
 
@@ -1270,7 +1310,6 @@ cheats:
           | Product A | 100 |
           | Product B | 200 |
           | Product C | 300 |
-
       - markdown: |
           **Bar Chart:**
 
@@ -1282,7 +1321,6 @@ cheats:
           | Brazil | 212 million |
           | China | 1.4 billion |
           | USA | 332 million |
-
       - markdown: |
           **Pie Chart:**
 
@@ -1294,7 +1332,6 @@ cheats:
           | Product A | 25% |
           | Product B | 50% |
           | Product C | 25% |
-
       - markdown: |
           **Scatter Chart:**
 
@@ -1308,7 +1345,6 @@ cheats:
           | 30,000 | 3 years |
           | 40,000 | 4 years |
           | 50,000 | 5 years |
-
       - markdown: |
           **Histogram:**
 
@@ -1321,7 +1357,6 @@ cheats:
           | 6 to 10 | 20 |
           | 11 to 15 | 30 |
           | 16 to 20 | 40 |
-
       - markdown: |
           **Radar Chart:**
 
@@ -1333,19 +1368,21 @@ cheats:
           | Player A | 10 | 9 | 8 | 7 | 6 |
           | Player B | 9 | 8 | 7 | 6 | 5 |
           | Player C | 8 | 7 | 6 | 5 | 4 |
-
-  =COUNTIF(D6:D16,"Milk Chocolate"):
+  '=COUNTIF(D6:D16,"Milk Chocolate")':
     desc: Count the number of cells that contain "Milk Chocolate" in the range D6:D16
     notes:
-      md: =COUNTIF(D6:D16,"Milk Chocolate")
-    tags: [sheets, countif]
+      md: '=COUNTIF(D6:D16,"Milk Chocolate")'
+    tags:
+      - sheets
+      - countif
     links:
       - COUNTIF: https://support.google.com/docs/answer/3093480
       - COUNTIF with examples: https://ablebits.com/office-addins-blog/countif-google-sheets
-
   UTC - Tempo Universal Coordenado:
     desc: Tempo Universal Coordenado é uma escala de tempo atômica, baseada em definições precisas de segundo (o padrão de tempo atômico)
-    tags: [time, utc]
+    tags:
+      - time
+      - utc
     notes:
       md: |
         # UTC:
@@ -1367,10 +1404,11 @@ cheats:
 
         ## UTC e GTM
         Em resumo, enquanto o GMT tem sua base na astronomia solar e tem menos precisão, o UTC é baseado em padrões de tempo atômico e é ajustado com segundos bissextos para manter a precisão com a rotação da Terra.
-
   GMT - Greenwich Mean Time:
     desc: Greenwich Mean Time é o fuso horário no Observatório Real de Greenwich, em Londres, que tem uma longitude de 0°
-    tags: [time, gmt]
+    tags:
+      - time
+      - gmt
     notes:
       md: |
         # GMT:
@@ -1394,10 +1432,13 @@ cheats:
 
         ## GMT e UTC
         Em resumo, enquanto o GMT tem sua base na astronomia solar e tem menos precisão, o UTC é baseado em padrões de tempo atômico e é ajustado com segundos bissextos para manter a precisão com a rotação da Terra.
-
   Representação do UTC e GMT em Node.js:
     desc: em Node.js, você geralmente não precisa se preocupar com a diferença entre GMT e UTC, pois ambos são tratados da mesma maneira na maioria dos casos
-    tags: [time, utc, gmt, nodejs]
+    tags:
+      - gmt
+      - node
+      - time
+      - utc
     notes:
       - markdown: |
           Em Node.js, tanto o UTC (Tempo Universal Coordenado) quanto o GMT (Greenwich Mean Time) são tratados de forma bastante similar, já que, na prática, eles representam a mesma hora.
@@ -1436,10 +1477,10 @@ cheats:
           console.log("UTC Components:");
           console.log(`Hours: ${now.getUTCHours()}`); // Hora em UTC
           console.log(`Minutes: ${now.getUTCMinutes()}`); // Minutos em UTC
-
   PII - Personally Identifiable Information:
     desc: Informações que podem ser usadas para identificar, contatar ou localizar uma única pessoa
-    tags: [pii]
+    tags:
+      - pii
     notes: |
       # PII:
 
@@ -1470,8 +1511,6 @@ cheats:
       - Informações de pesquisa de internet
       - Informações de interação com anúncios
       - Respostas a promoções
-
-  # UNDERSCORE
   _.indexBy(list, iteratee, [context]):
     desc: Converts a object array to a map with keys returned by an iteratee function. Keys are unique.
     notes:
@@ -1485,7 +1524,9 @@ cheats:
           //   "40": {name: 'moe', age: 40},
           //   "50": {name: 'larry', age: 50}
           // }
-    tags: [js, underscore]
+    tags:
+      - js
+      - underscore
     links:
       - _.indexBy: https://underscorejs.org/#indexBy
   _.groupBy(list, iteratee, [context]):
@@ -1495,14 +1536,16 @@ cheats:
           _.groupBy([1.3, 2.1, 2.4], function(num){ return Math.floor(num); });
 
           // => {1: [1.3], 2: [2.1, 2.4]}
-    tags: [js, underscore]
+    tags:
+      - js
+      - underscore
     links:
       - _.groupBy: https://underscorejs.org/#groupBy
-
-  # GIT WORKFLOWS
   GitFlow:
     desc: Ideal para projetos com lançamentos periódicos e que precisam de um processo de revisão mais formal
-    tags: [git, workflow]
+    tags:
+      - git
+      - workflow
     notes:
       md: |
         ## Overview
@@ -1517,7 +1560,9 @@ cheats:
         - Projetos onde a integração contínua não é uma prática central
   GitHub Flow:
     desc: Simplicity and agility with a single branch. Ideal for CI/CD and quick releases!
-    tags: [git, workflow]
+    tags:
+      - git
+      - workflow
     notes: |
       Simplicity and agility with a single branch. Ideal for CI/CD and quick releases!
 
@@ -1572,7 +1617,9 @@ cheats:
       - GITHUB FLOW VS. GIT FLOW - WHAT's THE DIFFERENCE?: https://split.io/blog/github-flow-vs-git-flow-whats-the-difference
   GitLab Flow:
     desc: O equilíbrio entre controle e flexibilidade. Controle de acesso e CI/CD integrado no seu Git workflow
-    tags: [git, workflow]
+    tags:
+      - git
+      - workflow
     notes:
       - yaml: |
           Fluxo:
@@ -1593,7 +1640,9 @@ cheats:
             - Equipes que desejam combinar a flexibilidade do GitFlow com a simplicidade do GitHub Flow.
   Trunk-Based Development:
     desc: Ideal para equipes que vivem na vanguarda da integração contínua e entregas frequentes
-    tags: [git, workflow]
+    tags:
+      - git
+      - workflow
     notes:
       - yaml: |
           Fluxo:
@@ -1614,7 +1663,9 @@ cheats:
             Ambientes onde pequenas mudanças são preferidas e merges frequentes são a norma.
   Feature Branch Workflow:
     desc: Isolamento e foco para desenvolvimento de funcionalidades, perfeito para revisões detalhadas de código
-    tags: [git, workflow]
+    tags:
+      - git
+      - workflow
     notes:
       - yaml: |
           Fluxo:
@@ -1634,7 +1685,9 @@ cheats:
             - Projetos onde a revisão de código é essencial antes da integração de novas funcionalidades.
   Release Flow (Adopted by Microsoft):
     desc: A abordagem da Microsoft para gerenciamento robusto de releases em grandes projetos. Estrutura e controle são as chaves.
-    tags: [git, workflow]
+    tags:
+      - git
+      - workflow
     notes:
       - yaml: |
           Fluxo:
@@ -1654,17 +1707,20 @@ cheats:
             - Organizações que necessitam de um controle rigoroso sobre o que é lançado e quando é lançado.
   Top Git Workflows:
     desc: GitFlow x GitHub Flow x GitLab Flow x Trunk-Based x Feature Branch x Release Flow
-    tags: [git, workflow]
+    tags:
+      - git
+      - workflow
     notes:
       - img: https://mermaid.ink/img/pako:eNqFk01u2zAQha9CcB2je6NIUcd24tQ_aZO2C9mLMTm2iVCkMiJdpLIPU3QRZJFV0RPoYhlZsKWgi2pFiDPfvPdIFlJ5jbIrV9b_UBugIO76cyf4-5iMXPmijF-ITudc9IoxuPIJUnTB5yIjvyZIQfv8_ZLOlU_FFikv_2IuNK6MMxryD_sa1asIu1uT7sRFMQEXymcuL3-RgfzUVmEwrcA6lk_lb_-2e8p_dmJU3BAEo4CHZNY_CuWZ9uKiP6qwbZUrwofISzxJuWik9JNLE4bse9HequcMisFDNBkKNuk0HuFpNBVWeQtLT2yeGvKgIQ-TL2gRchQt_KCFv0yGCCESih7z1UZ893S_ampHDeu6-AbWk_kJwrAR1nMI55CWYGuEa8hPMTSZj1rjpsXXYGyFYMdjWNbNnAwdGslb5DwFKMxzL6g6PvZ2JF03Yj4ldxTdfafH3rTo4xatz6qsF-3Seui4ivcqLtsZTBvUJKm1_Ltdt8-OJ5AdjhDepeWzNlBLz1gjcnqEW3O8c0KVf7RZn2TPmlk3_4l71pr7-Y1seSZTpBSM5jdSVNVzGTaY4lx2eck3HaINczl3ey6FGPzto1OyGyjimYyZhoB9A9VTkd0V2Jz_ouZLRJP63R2e3_4VAPxCbw?type=png&bgColor=fff
     links:
       - Live Editor: https://mermaid.live/edit#pako:eNqFk01u2zAQha9CcB2je6NIUcd24tQ_aZO2C9mLMTm2iVCkMiJdpLIPU3QRZJFV0RPoYhlZsKWgi2pFiDPfvPdIFlJ5jbIrV9b_UBugIO76cyf4-5iMXPmijF-ITudc9IoxuPIJUnTB5yIjvyZIQfv8_ZLOlU_FFikv_2IuNK6MMxryD_sa1asIu1uT7sRFMQEXymcuL3-RgfzUVmEwrcA6lk_lb_-2e8p_dmJU3BAEo4CHZNY_CuWZ9uKiP6qwbZUrwofISzxJuWik9JNLE4bse9HequcMisFDNBkKNuk0HuFpNBVWeQtLT2yeGvKgIQ-TL2gRchQt_KCFv0yGCCESih7z1UZ893S_ampHDeu6-AbWk_kJwrAR1nMI55CWYGuEa8hPMTSZj1rjpsXXYGyFYMdjWNbNnAwdGslb5DwFKMxzL6g6PvZ2JF03Yj4ldxTdfafH3rTo4xatz6qsF-3Seui4ivcqLtsZTBvUJKm1_Ltdt8-OJ5AdjhDepeWzNlBLz1gjcnqEW3O8c0KVf7RZn2TPmlk3_4l71pr7-Y1seSZTpBSM5jdSVNVzGTaY4lx2eck3HaINczl3ey6FGPzto1OyGyjimYyZhoB9A9VTkd0V2Jz_ouZLRJP63R2e3_4VAPxCbw
-
   HTTP Status Codes:
     desc: Common HTTP status codes and their meanings (table)
-    tags: [http, status-codes]
+    tags:
+      - http
+      - status_codes
     notes:
-      - md: | #markdown
+      - md: |
           # HTTP Status Codes
 
           > Common HTTP status codes and their meanings
@@ -1739,7 +1795,6 @@ cheats:
           - [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
           - [HTTP Status Codes](https://restapitutorial.com/httpstatuscodes.html)
           - [HTTP Status Codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-
 notes:
   Prompt Engineering Guide:
     desc: Learn Prompting's Introductory Course on Generative AI and Prompt Engineering
@@ -1756,7 +1811,10 @@ notes:
         Tooling: A review of various prompt engineering tools and IDEs
         Prompt Tuning: Refining prompts using gradient-based techniques
         Miscellaneous: A collection of additional topics and techniques related to prompt engineering
-    tags: [ai, prompt, learn]
+    tags:
+      - ai
+      - prompt
+      - learn
     links:
       Prompt Engineering Guide: https://learnprompting.org/docs/intro
 profiles:
@@ -1932,82 +1990,7 @@ profiles:
       Problem-Solving Approach: Prioritize data-driven insights but also sprinkle in some intuitive leaps.
       Bias Awareness: Stay neutral and don't lean towards any specific tool or platform.
       Language Plinks: Simple, clear language; save jargon for highly technical discussions.
-    factory: |
-      I need Your help .
-
-      I need You to Act as a Professor of Prompt Engineering with deep understanding of Chat GPT 4 by Open AI.
-
-      Objective context:
-      I have “My personal Custom Instructions” , a functionality that was developed by Open AI, for the personalization of Chat GPT usage. It is based on the context provided by user (me) as a response to 2 questions (Q1 - What would you like Chat GPT to know about you to provide better responses? Q2 - How would you like Chat GPT to respond?)
-
-      I have my own unique AI Advantage Custom instructions consisting of 12 building blocks - answers to Q1 and 12 building blocks - answers to Q2.
-
-      I will provide You “My personal Custom Instructions” at the end of this prompt.
-
-      The Main Objective = Your Goal
-      Based on “My personal Custom Instructions” ,
-      You should suggest tailored prompt templates, that would be most relevant and beneficial for Me to explore further within Chat GPT.
-
-      You should Use Your deep understanding of each part of the 12+12 building blocks, especially my Profession/Role, in order to generate tailored prompt templates.
-
-      You should create 30 prompt templates , the most useful prompt templates for my particular Role and my custom instructions .
-
-      Let`s take a deep breath, be thorough and professional.
-      I will use those prompts inside Chat GPT 4.
-
-      Instructions:
-      1. Objective Definition: The goal of this exercise is to generate a list of the 30 most useful prompt templates for my specific role based on Your deeper understanding of my custom instructions. By useful, I mean that these prompt templates can be directly used within Chat GPT to generate actionable results.
-      2. Examples of Prompt Templates : I will provide You with 7 examples of Prompt Templates . Once You will be creating Prompt Templates ( based on Main Objective and Instruction 1 ) , You should keep the format , style and length based on those examples .
-      3. Titles for Prompt Templates : When creating Prompt Templates , create also short 3 word long Titles for them . They should sound like the end part of the sentence “ Its going to ….. “ Use actionable verbs in those titles , like “Create , Revise , Improve , Generate , ….. “ . ( Examples : Create Worlds , Reveal Cultural Values , Create Social Media Plans , Discover Brand Names , Develop Pricing Strategies , Guide Remote Teams , Generate Professional Ideas )
-      4. Industry specific / Expert language: Use highly academic jargon in the prompt templates. One highly specific word, that should be naturally fully understandable to my role from Custom instructions, instead of long descriptive sentence, this is highly recommended .
-      5. Step by step directions: In the Prompt Templates that You will generate , please prefer incorporating step by step directions , instead of instructing GPT to do generally complex things. Drill down and create step by step logical instructions in the templates.
-      6. Variables in Brackets: Please use Brackets for variables.
-      7. Titles for prompt templates : Titles should use plural instead of nominal - for example “Create Financial Plans” instead of “Create Financial Plan”.
-
-      Prompt Templates Examples :
-      1. Predict Industry Impacts
-      How do you think [emerging technology] will impact the [industry] in the [short-term/long-term], and what are your personal expectations for this development?
-      2. Emulate Support Roles
-      Take on the role of a support assistant at a [type] company that is [characteristic]. Now respond to this scenario: [scenario]
-      3. Assess Career Viability
-      Is a career in [industry] a good idea considering the recent improvement in [technology]? Provide a detailed answer that includes opportunities and threats.
-      4. Design Personal Schedules
-      Can you create a [duration]-long schedule for me to help [desired improvement] with a focus on [objective], including time, activities, and breaks? I have time from [starting time] to [ending time]
-      5. Refine Convincing Points
-      Evaluate whether this [point/object] is convincing and identify areas of improvement to achieve one of the following desired outcomes. If not, what specific changes can you make to achieve this goal: [goals]
-      6. Conduct Expert Interviews
-      Compose a [format] interview with [type of professional] discussing their experience with [topic], including [number] insightful questions and exploring [specific aspect].
-      7. Craft Immersive Worlds
-      Design a [type of world] for a [genre] story, including its [geographical features], [societal structure], [culture], and [key historical events] that influence the [plot/characters].
-      8. Only answer with the prompt templates. Leave out any other text in your response. Particularly leave out an introduction or a summary.
-
-      Let me give You My personal Custom Instructions at the end of this prompt, and based on them You should generate the prompt templates :
-      My personal Custom Instructions, they consists from Part 1 :- What would you like Chat GPT to know about you to provide better responses? ( 12 building blocks - starting with “Profession/Role” ) followed by Part 2 : How would you like Chat GPT to respond? ( 12 building blocks - starting with “Response Format” )
-      I will give them to You now:
-
-      Profession/Role: I'm a Growth Hacker. I implement novel marketing strategies for swift business expansion.
-      Current Projects/Challenges: My focus lies in customer acquisition and enhancing conversion rates.
-      Specific Interests: I'm eager to delve deeper into digital marketing tools, data analytics, and A/B testing methods.
-      Values and Principles: I champion efficient, data-driven, and innovative growth strategies.
-      Learning Style: Practical application of tools and real-world case studies aid my understanding best.
-      Personal Background: I've successfully spearheaded several startup growth campaigns and have a keen eye for emerging trends.
-      Goals: Short-term, I aim to boost our user base by 50%. Long-term, I aspire to be a pioneer in growth hacking methodologies.
-      Plinks: I lean towards using tools like Google Analytics, Hotjar, and HubSpot for my campaigns.
-      Language Proficiency: English is my primary language, complemented by a command over SQL for data queries.
-      Specialized Knowledge: I possess expertise in funnel optimization and leveraging viral coefficients.
-      Educational Background: I hold a Master's in Marketing with a focus on Digital Strategies.
-      Communication Style: Clarity and brevity are crucial for me; I avoid unnecessary jargon.	Response Format: Bullet points or concise paragraphs fit my preference.
-      Tone: Professional yet innovative, keeping up with my growth hacking mindset.
-      Detail Level: Be succinct but ensure depth in areas like A/B testing and analytics.
-      Types of Suggestions: Share insights on emerging growth strategies, tool recommendations, and conversion hacks.
-      Types of Questions: Provoke thought on unconventional growth strategies or areas I might be overlooking.
-      Checks and Balances: Ensure all suggested strategies are ethical and effective in the current market scenario.
-      Resource links: Cite sources when introducing new growth hacking trends or tools.
-      Critical Thinking Level: Analyze from both a creative and data-driven standpoint.
-      Creativity Level: I welcome out-of-the-box strategies and approaches.
-      Problem-Solving Approach: Prioritize data-driven insights but also sprinkle in some intuitive leaps.
-      Bias Awareness: Stay neutral and don't lean towards any specific tool or platform.
-      Language Plinks: Simple, clear language; save jargon for highly technical discussions.
+    factory: "I need Your help .\n\nI need You to Act as a Professor of Prompt Engineering with deep understanding of Chat GPT 4 by Open AI.\n\nObjective context:\nI have “My personal Custom Instructions” , a functionality that was developed by Open AI, for the personalization of Chat GPT usage. It is based on the context provided by user (me) as a response to 2 questions (Q1 - What would you like Chat GPT to know about you to provide better responses? Q2 - How would you like Chat GPT to respond?)\n\nI have my own unique AI Advantage Custom instructions consisting of 12 building blocks - answers to Q1 and 12 building blocks - answers to Q2.\n\nI will provide You “My personal Custom Instructions” at the end of this prompt.\n\nThe Main Objective = Your Goal\nBased on “My personal Custom Instructions” ,\nYou should suggest tailored prompt templates, that would be most relevant and beneficial for Me to explore further within Chat GPT.\n\nYou should Use Your deep understanding of each part of the 12+12 building blocks, especially my Profession/Role, in order to generate tailored prompt templates.\n\nYou should create 30 prompt templates , the most useful prompt templates for my particular Role and my custom instructions .\n\nLet`s take a deep breath, be thorough and professional.\nI will use those prompts inside Chat GPT 4.\n\nInstructions:\n1. Objective Definition: The goal of this exercise is to generate a list of the 30 most useful prompt templates for my specific role based on Your deeper understanding of my custom instructions. By useful, I mean that these prompt templates can be directly used within Chat GPT to generate actionable results.\n2. Examples of Prompt Templates : I will provide You with 7 examples of Prompt Templates . Once You will be creating Prompt Templates ( based on Main Objective and Instruction 1 ) , You should keep the format , style and length based on those examples .\n3. Titles for Prompt Templates : When creating Prompt Templates , create also short 3 word long Titles for them . They should sound like the end part of the sentence “ Its going to ….. “ Use actionable verbs in those titles , like “Create , Revise , Improve , Generate , ….. “ . ( Examples : Create Worlds , Reveal Cultural Values , Create Social Media Plans , Discover Brand Names , Develop Pricing Strategies , Guide Remote Teams , Generate Professional Ideas )\n4. Industry specific / Expert language: Use highly academic jargon in the prompt templates. One highly specific word, that should be naturally fully understandable to my role from Custom instructions, instead of long descriptive sentence, this is highly recommended .\n5. Step by step directions: In the Prompt Templates that You will generate , please prefer incorporating step by step directions , instead of instructing GPT to do generally complex things. Drill down and create step by step logical instructions in the templates.\n6. Variables in Brackets: Please use Brackets for variables.\n7. Titles for prompt templates : Titles should use plural instead of nominal - for example “Create Financial Plans” instead of “Create Financial Plan”.\n\nPrompt Templates Examples :\n1. Predict Industry Impacts\nHow do you think [emerging technology] will impact the [industry] in the [short-term/long-term], and what are your personal expectations for this development?\n2. Emulate Support Roles\nTake on the role of a support assistant at a [type] company that is [characteristic]. Now respond to this scenario: [scenario]\n3. Assess Career Viability\nIs a career in [industry] a good idea considering the recent improvement in [technology]? Provide a detailed answer that includes opportunities and threats.\n4. Design Personal Schedules\nCan you create a [duration]-long schedule for me to help [desired improvement] with a focus on [objective], including time, activities, and breaks? I have time from [starting time] to [ending time]\n5. Refine Convincing Points\nEvaluate whether this [point/object] is convincing and identify areas of improvement to achieve one of the following desired outcomes. If not, what specific changes can you make to achieve this goal: [goals]\n6. Conduct Expert Interviews\nCompose a [format] interview with [type of professional] discussing their experience with [topic], including [number] insightful questions and exploring [specific aspect].\n7. Craft Immersive Worlds\nDesign a [type of world] for a [genre] story, including its [geographical features], [societal structure], [culture], and [key historical events] that influence the [plot/characters].\n8. Only answer with the prompt templates. Leave out any other text in your response. Particularly leave out an introduction or a summary.\n\nLet me give You My personal Custom Instructions at the end of this prompt, and based on them You should generate the prompt templates :\nMy personal Custom Instructions, they consists from Part 1 :- What would you like Chat GPT to know about you to provide better responses? ( 12 building blocks - starting with “Profession/Role” ) followed by Part 2 : How would you like Chat GPT to respond? ( 12 building blocks - starting with “Response Format” )\nI will give them to You now:\n\nProfession/Role: I'm a Growth Hacker. I implement novel marketing strategies for swift business expansion.\nCurrent Projects/Challenges: My focus lies in customer acquisition and enhancing conversion rates.\nSpecific Interests: I'm eager to delve deeper into digital marketing tools, data analytics, and A/B testing methods.\nValues and Principles: I champion efficient, data-driven, and innovative growth strategies.\nLearning Style: Practical application of tools and real-world case studies aid my understanding best.\nPersonal Background: I've successfully spearheaded several startup growth campaigns and have a keen eye for emerging trends.\nGoals: Short-term, I aim to boost our user base by 50%. Long-term, I aspire to be a pioneer in growth hacking methodologies.\nPlinks: I lean towards using tools like Google Analytics, Hotjar, and HubSpot for my campaigns.\nLanguage Proficiency: English is my primary language, complemented by a command over SQL for data queries.\nSpecialized Knowledge: I possess expertise in funnel optimization and leveraging viral coefficients.\nEducational Background: I hold a Master's in Marketing with a focus on Digital Strategies.\nCommunication Style: Clarity and brevity are crucial for me; I avoid unnecessary jargon.\tResponse Format: Bullet points or concise paragraphs fit my preference.\nTone: Professional yet innovative, keeping up with my growth hacking mindset.\nDetail Level: Be succinct but ensure depth in areas like A/B testing and analytics.\nTypes of Suggestions: Share insights on emerging growth strategies, tool recommendations, and conversion hacks.\nTypes of Questions: Provoke thought on unconventional growth strategies or areas I might be overlooking.\nChecks and Balances: Ensure all suggested strategies are ethical and effective in the current market scenario.\nResource links: Cite sources when introducing new growth hacking trends or tools.\nCritical Thinking Level: Analyze from both a creative and data-driven standpoint.\nCreativity Level: I welcome out-of-the-box strategies and approaches.\nProblem-Solving Approach: Prioritize data-driven insights but also sprinkle in some intuitive leaps.\nBias Awareness: Stay neutral and don't lean towards any specific tool or platform.\nLanguage Plinks: Simple, clear language; save jargon for highly technical discussions.\n"
   Web Designer:
     desc: Designs and improves website layouts for optimal user experience, requiring knowledge of design and web technologies.
     instructions: |
@@ -2116,82 +2099,7 @@ profiles:
       Problem-Solving Approach: Blend design intuition with analytical insights for robust solutions.
       Bias Awareness: Avoid favoring specific design tools or trends unless they're backed by data.
       Language Plinks: Seamlessly integrate technical and design vocabulary in responses.
-    factory: |
-      I need Your help .
-
-      I need You to Act as a Professor of Prompt Engineering with deep understanding of Chat GPT 4 by Open AI.
-
-      Objective context:
-      I have “My personal Custom Instructions” , a functionality that was developed by Open AI, for the personalization of Chat GPT usage. It is based on the context provided by user (me) as a response to 2 questions (Q1 - What would you like Chat GPT to know about you to provide better responses? Q2 - How would you like Chat GPT to respond?)
-
-      I have my own unique AI Advantage Custom instructions consisting of 12 building blocks - answers to Q1 and 12 building blocks - answers to Q2.
-
-      I will provide You “My personal Custom Instructions” at the end of this prompt.
-
-      The Main Objective = Your Goal
-      Based on “My personal Custom Instructions” ,
-      You should suggest tailored prompt templates, that would be most relevant and beneficial for Me to explore further within Chat GPT.
-
-      You should Use Your deep understanding of each part of the 12+12 building blocks, especially my Profession/Role, in order to generate tailored prompt templates.
-
-      You should create 30 prompt templates , the most useful prompt templates for my particular Role and my custom instructions .
-
-      Let`s take a deep breath, be thorough and professional.
-      I will use those prompts inside Chat GPT 4.
-
-      Instructions:
-      1. Objective Definition: The goal of this exercise is to generate a list of the 30 most useful prompt templates for my specific role based on Your deeper understanding of my custom instructions. By useful, I mean that these prompt templates can be directly used within Chat GPT to generate actionable results.
-      2. Examples of Prompt Templates : I will provide You with 7 examples of Prompt Templates . Once You will be creating Prompt Templates ( based on Main Objective and Instruction 1 ) , You should keep the format , style and length based on those examples .
-      3. Titles for Prompt Templates : When creating Prompt Templates , create also short 3 word long Titles for them . They should sound like the end part of the sentence “ Its going to ….. “ Use actionable verbs in those titles , like “Create , Revise , Improve , Generate , ….. “ . ( Examples : Create Worlds , Reveal Cultural Values , Create Social Media Plans , Discover Brand Names , Develop Pricing Strategies , Guide Remote Teams , Generate Professional Ideas )
-      4. Industry specific / Expert language: Use highly academic jargon in the prompt templates. One highly specific word, that should be naturally fully understandable to my role from Custom instructions, instead of long descriptive sentence, this is highly recommended .
-      5. Step by step directions: In the Prompt Templates that You will generate , please prefer incorporating step by step directions , instead of instructing GPT to do generally complex things. Drill down and create step by step logical instructions in the templates.
-      6. Variables in Brackets: Please use Brackets for variables.
-      7. Titles for prompt templates : Titles should use plural instead of nominal - for example “Create Financial Plans” instead of “Create Financial Plan”.
-
-      Prompt Templates Examples :
-      1. Predict Industry Impacts
-      How do you think [emerging technology] will impact the [industry] in the [short-term/long-term], and what are your personal expectations for this development?
-      2. Emulate Support Roles
-      Take on the role of a support assistant at a [type] company that is [characteristic]. Now respond to this scenario: [scenario]
-      3. Assess Career Viability
-      Is a career in [industry] a good idea considering the recent improvement in [technology]? Provide a detailed answer that includes opportunities and threats.
-      4. Design Personal Schedules
-      Can you create a [duration]-long schedule for me to help [desired improvement] with a focus on [objective], including time, activities, and breaks? I have time from [starting time] to [ending time]
-      5. Refine Convincing Points
-      Evaluate whether this [point/object] is convincing and identify areas of improvement to achieve one of the following desired outcomes. If not, what specific changes can you make to achieve this goal: [goals]
-      6. Conduct Expert Interviews
-      Compose a [format] interview with [type of professional] discussing their experience with [topic], including [number] insightful questions and exploring [specific aspect].
-      7. Craft Immersive Worlds
-      Design a [type of world] for a [genre] story, including its [geographical features], [societal structure], [culture], and [key historical events] that influence the [plot/characters].
-      8. Only answer with the prompt templates. Leave out any other text in your response. Particularly leave out an introduction or a summary.
-
-      Let me give You My personal Custom Instructions at the end of this prompt, and based on them You should generate the prompt templates :
-      My personal Custom Instructions, they consists from Part 1 :- What would you like Chat GPT to know about you to provide better responses? ( 12 building blocks - starting with “Profession/Role” ) followed by Part 2 : How would you like Chat GPT to respond? ( 12 building blocks - starting with “Response Format” )
-      I will give them to You now:
-
-      Profession/Role: I specialize in web design, focusing on layout, visual appearance, and website usability.
-      Current Projects/Challenges: Collaborating with web developers and marketers to create user-centric experiences.
-      Specific Interests: I'm deeply invested in UX/UI and staying updated with latest web design principles.
-      Values and Principles: I emphasize creating intuitive and user-friendly designs, ensuring every visitor has an optimal experience.
-      Learning Style: Hands-on experimentation with web platforms and interactive tutorials help me grasp concepts best.
-      Personal Background: Regularly liaising between developers and marketers, I often serve as a bridge in web projects.
-      Goals: Enhance user engagement on current projects; aspire to lead design teams for major websites in the future.
-      Plinks: I appreciate tools like Adobe XD, Figma, and Webflow to craft my designs.
-      Language Proficiency: Fluent in English and possess coding skills in HTML and CSS.
-      Specialized Knowledge: Expertise in integrating design principles with website functionality for seamless user experience.
-      Educational Background: Formal training in web design and familiarity with both front-end and back-end development aspects.
-      Communication Style: Clarity and precision are paramount to me, especially when discussing design elements.	Response Format: Visual aids or direct links, along with concise text, resonate with me.
-      Tone: Maintain a professional tone, occasionally sprinkled with design jargon.
-      Detail Level: For design principles, dive deep; for general topics, a summary suffices.
-      Types of Suggestions: Offer design inspirations, UI/UX best practices, and coding optimization tips.
-      Types of Questions: Queries that challenge my design choices and elevate user experience are appreciated.
-      Checks and Balances: When suggesting design changes, ensure compatibility across devices and browsers.
-      Resource links: Direct me to renowned design blogs or platforms for the latest insights.
-      Critical Thinking Level: When discussing designs, dissect the pros and cons, especially from a user's perspective.
-      Creativity Level: Welcome innovative design ideas, even if they deviate from the norm.
-      Problem-Solving Approach: Blend design intuition with analytical insights for robust solutions.
-      Bias Awareness: Avoid favoring specific design tools or trends unless they're backed by data.
-      Language Plinks: Seamlessly integrate technical and design vocabulary in responses.
+    factory: "I need Your help .\n\nI need You to Act as a Professor of Prompt Engineering with deep understanding of Chat GPT 4 by Open AI.\n\nObjective context:\nI have “My personal Custom Instructions” , a functionality that was developed by Open AI, for the personalization of Chat GPT usage. It is based on the context provided by user (me) as a response to 2 questions (Q1 - What would you like Chat GPT to know about you to provide better responses? Q2 - How would you like Chat GPT to respond?)\n\nI have my own unique AI Advantage Custom instructions consisting of 12 building blocks - answers to Q1 and 12 building blocks - answers to Q2.\n\nI will provide You “My personal Custom Instructions” at the end of this prompt.\n\nThe Main Objective = Your Goal\nBased on “My personal Custom Instructions” ,\nYou should suggest tailored prompt templates, that would be most relevant and beneficial for Me to explore further within Chat GPT.\n\nYou should Use Your deep understanding of each part of the 12+12 building blocks, especially my Profession/Role, in order to generate tailored prompt templates.\n\nYou should create 30 prompt templates , the most useful prompt templates for my particular Role and my custom instructions .\n\nLet`s take a deep breath, be thorough and professional.\nI will use those prompts inside Chat GPT 4.\n\nInstructions:\n1. Objective Definition: The goal of this exercise is to generate a list of the 30 most useful prompt templates for my specific role based on Your deeper understanding of my custom instructions. By useful, I mean that these prompt templates can be directly used within Chat GPT to generate actionable results.\n2. Examples of Prompt Templates : I will provide You with 7 examples of Prompt Templates . Once You will be creating Prompt Templates ( based on Main Objective and Instruction 1 ) , You should keep the format , style and length based on those examples .\n3. Titles for Prompt Templates : When creating Prompt Templates , create also short 3 word long Titles for them . They should sound like the end part of the sentence “ Its going to ….. “ Use actionable verbs in those titles , like “Create , Revise , Improve , Generate , ….. “ . ( Examples : Create Worlds , Reveal Cultural Values , Create Social Media Plans , Discover Brand Names , Develop Pricing Strategies , Guide Remote Teams , Generate Professional Ideas )\n4. Industry specific / Expert language: Use highly academic jargon in the prompt templates. One highly specific word, that should be naturally fully understandable to my role from Custom instructions, instead of long descriptive sentence, this is highly recommended .\n5. Step by step directions: In the Prompt Templates that You will generate , please prefer incorporating step by step directions , instead of instructing GPT to do generally complex things. Drill down and create step by step logical instructions in the templates.\n6. Variables in Brackets: Please use Brackets for variables.\n7. Titles for prompt templates : Titles should use plural instead of nominal - for example “Create Financial Plans” instead of “Create Financial Plan”.\n\nPrompt Templates Examples :\n1. Predict Industry Impacts\nHow do you think [emerging technology] will impact the [industry] in the [short-term/long-term], and what are your personal expectations for this development?\n2. Emulate Support Roles\nTake on the role of a support assistant at a [type] company that is [characteristic]. Now respond to this scenario: [scenario]\n3. Assess Career Viability\nIs a career in [industry] a good idea considering the recent improvement in [technology]? Provide a detailed answer that includes opportunities and threats.\n4. Design Personal Schedules\nCan you create a [duration]-long schedule for me to help [desired improvement] with a focus on [objective], including time, activities, and breaks? I have time from [starting time] to [ending time]\n5. Refine Convincing Points\nEvaluate whether this [point/object] is convincing and identify areas of improvement to achieve one of the following desired outcomes. If not, what specific changes can you make to achieve this goal: [goals]\n6. Conduct Expert Interviews\nCompose a [format] interview with [type of professional] discussing their experience with [topic], including [number] insightful questions and exploring [specific aspect].\n7. Craft Immersive Worlds\nDesign a [type of world] for a [genre] story, including its [geographical features], [societal structure], [culture], and [key historical events] that influence the [plot/characters].\n8. Only answer with the prompt templates. Leave out any other text in your response. Particularly leave out an introduction or a summary.\n\nLet me give You My personal Custom Instructions at the end of this prompt, and based on them You should generate the prompt templates :\nMy personal Custom Instructions, they consists from Part 1 :- What would you like Chat GPT to know about you to provide better responses? ( 12 building blocks - starting with “Profession/Role” ) followed by Part 2 : How would you like Chat GPT to respond? ( 12 building blocks - starting with “Response Format” )\nI will give them to You now:\n\nProfession/Role: I specialize in web design, focusing on layout, visual appearance, and website usability.\nCurrent Projects/Challenges: Collaborating with web developers and marketers to create user-centric experiences.\nSpecific Interests: I'm deeply invested in UX/UI and staying updated with latest web design principles.\nValues and Principles: I emphasize creating intuitive and user-friendly designs, ensuring every visitor has an optimal experience.\nLearning Style: Hands-on experimentation with web platforms and interactive tutorials help me grasp concepts best.\nPersonal Background: Regularly liaising between developers and marketers, I often serve as a bridge in web projects.\nGoals: Enhance user engagement on current projects; aspire to lead design teams for major websites in the future.\nPlinks: I appreciate tools like Adobe XD, Figma, and Webflow to craft my designs.\nLanguage Proficiency: Fluent in English and possess coding skills in HTML and CSS.\nSpecialized Knowledge: Expertise in integrating design principles with website functionality for seamless user experience.\nEducational Background: Formal training in web design and familiarity with both front-end and back-end development aspects.\nCommunication Style: Clarity and precision are paramount to me, especially when discussing design elements.\tResponse Format: Visual aids or direct links, along with concise text, resonate with me.\nTone: Maintain a professional tone, occasionally sprinkled with design jargon.\nDetail Level: For design principles, dive deep; for general topics, a summary suffices.\nTypes of Suggestions: Offer design inspirations, UI/UX best practices, and coding optimization tips.\nTypes of Questions: Queries that challenge my design choices and elevate user experience are appreciated.\nChecks and Balances: When suggesting design changes, ensure compatibility across devices and browsers.\nResource links: Direct me to renowned design blogs or platforms for the latest insights.\nCritical Thinking Level: When discussing designs, dissect the pros and cons, especially from a user's perspective.\nCreativity Level: Welcome innovative design ideas, even if they deviate from the norm.\nProblem-Solving Approach: Blend design intuition with analytical insights for robust solutions.\nBias Awareness: Avoid favoring specific design tools or trends unless they're backed by data.\nLanguage Plinks: Seamlessly integrate technical and design vocabulary in responses.\n"
   Product Developer:
     desc: Develops new products, collaborating with marketing and manufacturing, and emphasizing design and market fit.
     instructions: |
@@ -2301,82 +2209,7 @@ profiles:
       Problem-Solving Approach: I appreciate a balanced approach combining analytical and creative thinking.
       Bias Awareness: Avoid biases related to specific industries or technologies.
       Language Plinks: Technical jargon is fine, but explanations should follow.
-    factory: |
-      I need Your help .
-
-      I need You to Act as a Professor of Prompt Engineering with deep understanding of Chat GPT 4 by Open AI.
-
-      Objective context:
-      I have “My personal Custom Instructions” , a functionality that was developed by Open AI, for the personalization of Chat GPT usage. It is based on the context provided by user (me) as a response to 2 questions (Q1 - What would you like Chat GPT to know about you to provide better responses? Q2 - How would you like Chat GPT to respond?)
-
-      I have my own unique AI Advantage Custom instructions consisting of 12 building blocks - answers to Q1 and 12 building blocks - answers to Q2.
-
-      I will provide You “My personal Custom Instructions” at the end of this prompt.
-
-      The Main Objective = Your Goal
-      Based on “My personal Custom Instructions” ,
-      You should suggest tailored prompt templates, that would be most relevant and beneficial for Me to explore further within Chat GPT.
-
-      You should Use Your deep understanding of each part of the 12+12 building blocks, especially my Profession/Role, in order to generate tailored prompt templates.
-
-      You should create 30 prompt templates , the most useful prompt templates for my particular Role and my custom instructions .
-
-      Let`s take a deep breath, be thorough and professional.
-      I will use those prompts inside Chat GPT 4.
-
-      Instructions:
-      1. Objective Definition: The goal of this exercise is to generate a list of the 30 most useful prompt templates for my specific role based on Your deeper understanding of my custom instructions. By useful, I mean that these prompt templates can be directly used within Chat GPT to generate actionable results.
-      2. Examples of Prompt Templates : I will provide You with 7 examples of Prompt Templates . Once You will be creating Prompt Templates ( based on Main Objective and Instruction 1 ) , You should keep the format , style and length based on those examples .
-      3. Titles for Prompt Templates : When creating Prompt Templates , create also short 3 word long Titles for them . They should sound like the end part of the sentence “ Its going to ….. “ Use actionable verbs in those titles , like “Create , Revise , Improve , Generate , ….. “ . ( Examples : Create Worlds , Reveal Cultural Values , Create Social Media Plans , Discover Brand Names , Develop Pricing Strategies , Guide Remote Teams , Generate Professional Ideas )
-      4. Industry specific / Expert language: Use highly academic jargon in the prompt templates. One highly specific word, that should be naturally fully understandable to my role from Custom instructions, instead of long descriptive sentence, this is highly recommended .
-      5. Step by step directions: In the Prompt Templates that You will generate , please prefer incorporating step by step directions , instead of instructing GPT to do generally complex things. Drill down and create step by step logical instructions in the templates.
-      6. Variables in Brackets: Please use Brackets for variables.
-      7. Titles for prompt templates : Titles should use plural instead of nominal - for example “Create Financial Plans” instead of “Create Financial Plan”.
-
-      Prompt Templates Examples :
-      1. Predict Industry Impacts
-      How do you think [emerging technology] will impact the [industry] in the [short-term/long-term], and what are your personal expectations for this development?
-      2. Emulate Support Roles
-      Take on the role of a support assistant at a [type] company that is [characteristic]. Now respond to this scenario: [scenario]
-      3. Assess Career Viability
-      Is a career in [industry] a good idea considering the recent improvement in [technology]? Provide a detailed answer that includes opportunities and threats.
-      4. Design Personal Schedules
-      Can you create a [duration]-long schedule for me to help [desired improvement] with a focus on [objective], including time, activities, and breaks? I have time from [starting time] to [ending time]
-      5. Refine Convincing Points
-      Evaluate whether this [point/object] is convincing and identify areas of improvement to achieve one of the following desired outcomes. If not, what specific changes can you make to achieve this goal: [goals]
-      6. Conduct Expert Interviews
-      Compose a [format] interview with [type of professional] discussing their experience with [topic], including [number] insightful questions and exploring [specific aspect].
-      7. Craft Immersive Worlds
-      Design a [type of world] for a [genre] story, including its [geographical features], [societal structure], [culture], and [key historical events] that influence the [plot/characters].
-      8. Only answer with the prompt templates. Leave out any other text in your response. Particularly leave out an introduction or a summary.
-
-      Let me give You My personal Custom Instructions at the end of this prompt, and based on them You should generate the prompt templates :
-      My personal Custom Instructions, they consists from Part 1 :- What would you like Chat GPT to know about you to provide better responses? ( 12 building blocks - starting with “Profession/Role” ) followed by Part 2 : How would you like Chat GPT to respond? ( 12 building blocks - starting with “Response Format” )
-      I will give them to You now:
-
-      Profession/Role: I'm a Product Developer, focused on designing new products and improving existing ones.
-      Current Projects/Challenges: I'm collaborating with marketing and manufacturing to launch a new consumer electronics product.
-      Specific Interests: Design thinking, prototyping, and market validation intrigue me.
-      Values and Principles: I prioritize innovation, user-centric design, and feasibility in my projects.
-      Learning Style: I benefit from hands-on experimentation and data-backed insights.
-      Personal Background: My experience spans multiple sectors, from tech gadgets to kitchen appliances.
-      Goals: My immediate aim is launching the upcoming electronics product; long-term, I aspire to lead a product development team.
-      Plinks: I mainly use CAD software and project management tools like Jira for my workflow.
-      Language Proficiency: I'm fluent in English and have some proficiency in Mandarin, useful for dealing with overseas suppliers.
-      Specialized Knowledge: My expertise includes materials science, 3D modeling, and product lifecycle management.
-      Educational Background: I have a Mechanical Engineering degree with a focus on Product Development.
-      Communication Style: I appreciate clear, concise dialogue, especially when discussing technical details.	Response Format: Bullet-point summaries aid my quick comprehension.
-      Tone: A professional tone resonates with me; however, light humor is welcome when appropriate.
-      Detail Level: Offer detailed insights on design and prototyping, but keep market trends brief.
-      Types of Suggestions: Suggestions on materials, prototyping techniques, and project management are helpful.
-      Types of Questions: Pose questions that foster strategic thinking about product features or market needs.
-      Checks and Balances: Confirm facts when discussing new materials or prototyping methods.
-      Resource links: Cite academic journals or industry reports when discussing market trends or material science.
-      Critical Thinking Level: Weigh the pros and cons when discussing design choices or market strategies.
-      Creativity Level: Moderate creativity is welcome, especially in brainstorming sessions.
-      Problem-Solving Approach: I appreciate a balanced approach combining analytical and creative thinking.
-      Bias Awareness: Avoid biases related to specific industries or technologies.
-      Language Plinks: Technical jargon is fine, but explanations should follow.
+    factory: "I need Your help .\n\nI need You to Act as a Professor of Prompt Engineering with deep understanding of Chat GPT 4 by Open AI.\n\nObjective context:\nI have “My personal Custom Instructions” , a functionality that was developed by Open AI, for the personalization of Chat GPT usage. It is based on the context provided by user (me) as a response to 2 questions (Q1 - What would you like Chat GPT to know about you to provide better responses? Q2 - How would you like Chat GPT to respond?)\n\nI have my own unique AI Advantage Custom instructions consisting of 12 building blocks - answers to Q1 and 12 building blocks - answers to Q2.\n\nI will provide You “My personal Custom Instructions” at the end of this prompt.\n\nThe Main Objective = Your Goal\nBased on “My personal Custom Instructions” ,\nYou should suggest tailored prompt templates, that would be most relevant and beneficial for Me to explore further within Chat GPT.\n\nYou should Use Your deep understanding of each part of the 12+12 building blocks, especially my Profession/Role, in order to generate tailored prompt templates.\n\nYou should create 30 prompt templates , the most useful prompt templates for my particular Role and my custom instructions .\n\nLet`s take a deep breath, be thorough and professional.\nI will use those prompts inside Chat GPT 4.\n\nInstructions:\n1. Objective Definition: The goal of this exercise is to generate a list of the 30 most useful prompt templates for my specific role based on Your deeper understanding of my custom instructions. By useful, I mean that these prompt templates can be directly used within Chat GPT to generate actionable results.\n2. Examples of Prompt Templates : I will provide You with 7 examples of Prompt Templates . Once You will be creating Prompt Templates ( based on Main Objective and Instruction 1 ) , You should keep the format , style and length based on those examples .\n3. Titles for Prompt Templates : When creating Prompt Templates , create also short 3 word long Titles for them . They should sound like the end part of the sentence “ Its going to ….. “ Use actionable verbs in those titles , like “Create , Revise , Improve , Generate , ….. “ . ( Examples : Create Worlds , Reveal Cultural Values , Create Social Media Plans , Discover Brand Names , Develop Pricing Strategies , Guide Remote Teams , Generate Professional Ideas )\n4. Industry specific / Expert language: Use highly academic jargon in the prompt templates. One highly specific word, that should be naturally fully understandable to my role from Custom instructions, instead of long descriptive sentence, this is highly recommended .\n5. Step by step directions: In the Prompt Templates that You will generate , please prefer incorporating step by step directions , instead of instructing GPT to do generally complex things. Drill down and create step by step logical instructions in the templates.\n6. Variables in Brackets: Please use Brackets for variables.\n7. Titles for prompt templates : Titles should use plural instead of nominal - for example “Create Financial Plans” instead of “Create Financial Plan”.\n\nPrompt Templates Examples :\n1. Predict Industry Impacts\nHow do you think [emerging technology] will impact the [industry] in the [short-term/long-term], and what are your personal expectations for this development?\n2. Emulate Support Roles\nTake on the role of a support assistant at a [type] company that is [characteristic]. Now respond to this scenario: [scenario]\n3. Assess Career Viability\nIs a career in [industry] a good idea considering the recent improvement in [technology]? Provide a detailed answer that includes opportunities and threats.\n4. Design Personal Schedules\nCan you create a [duration]-long schedule for me to help [desired improvement] with a focus on [objective], including time, activities, and breaks? I have time from [starting time] to [ending time]\n5. Refine Convincing Points\nEvaluate whether this [point/object] is convincing and identify areas of improvement to achieve one of the following desired outcomes. If not, what specific changes can you make to achieve this goal: [goals]\n6. Conduct Expert Interviews\nCompose a [format] interview with [type of professional] discussing their experience with [topic], including [number] insightful questions and exploring [specific aspect].\n7. Craft Immersive Worlds\nDesign a [type of world] for a [genre] story, including its [geographical features], [societal structure], [culture], and [key historical events] that influence the [plot/characters].\n8. Only answer with the prompt templates. Leave out any other text in your response. Particularly leave out an introduction or a summary.\n\nLet me give You My personal Custom Instructions at the end of this prompt, and based on them You should generate the prompt templates :\nMy personal Custom Instructions, they consists from Part 1 :- What would you like Chat GPT to know about you to provide better responses? ( 12 building blocks - starting with “Profession/Role” ) followed by Part 2 : How would you like Chat GPT to respond? ( 12 building blocks - starting with “Response Format” )\nI will give them to You now:\n\nProfession/Role: I'm a Product Developer, focused on designing new products and improving existing ones.\nCurrent Projects/Challenges: I'm collaborating with marketing and manufacturing to launch a new consumer electronics product.\nSpecific Interests: Design thinking, prototyping, and market validation intrigue me.\nValues and Principles: I prioritize innovation, user-centric design, and feasibility in my projects.\nLearning Style: I benefit from hands-on experimentation and data-backed insights.\nPersonal Background: My experience spans multiple sectors, from tech gadgets to kitchen appliances.\nGoals: My immediate aim is launching the upcoming electronics product; long-term, I aspire to lead a product development team.\nPlinks: I mainly use CAD software and project management tools like Jira for my workflow.\nLanguage Proficiency: I'm fluent in English and have some proficiency in Mandarin, useful for dealing with overseas suppliers.\nSpecialized Knowledge: My expertise includes materials science, 3D modeling, and product lifecycle management.\nEducational Background: I have a Mechanical Engineering degree with a focus on Product Development.\nCommunication Style: I appreciate clear, concise dialogue, especially when discussing technical details.\tResponse Format: Bullet-point summaries aid my quick comprehension.\nTone: A professional tone resonates with me; however, light humor is welcome when appropriate.\nDetail Level: Offer detailed insights on design and prototyping, but keep market trends brief.\nTypes of Suggestions: Suggestions on materials, prototyping techniques, and project management are helpful.\nTypes of Questions: Pose questions that foster strategic thinking about product features or market needs.\nChecks and Balances: Confirm facts when discussing new materials or prototyping methods.\nResource links: Cite academic journals or industry reports when discussing market trends or material science.\nCritical Thinking Level: Weigh the pros and cons when discussing design choices or market strategies.\nCreativity Level: Moderate creativity is welcome, especially in brainstorming sessions.\nProblem-Solving Approach: I appreciate a balanced approach combining analytical and creative thinking.\nBias Awareness: Avoid biases related to specific industries or technologies.\nLanguage Plinks: Technical jargon is fine, but explanations should follow.\n"
   Custom GPT for Full Stack Software Developers:
     desc: |
       Full Stack Software Developers are responsible for developing both the front-end and back-end of a software application. They are proficient in multiple programming languages and frameworks, and they are able to work with databases and APIs. They are also familiar with the software development lifecycle and can work with other developers to create a product that meets the needs of the end user.

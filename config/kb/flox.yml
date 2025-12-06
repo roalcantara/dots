@@ -7,11 +7,11 @@ bookmarks:
     tags: [flox]
     links: [https://flox.dev/docs/install-flox/install]
 commands:
-  curl -fL https://downloads.flox.dev/by-env/stable/osx/flox-1.7.5.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target /usr/local/bin && rm /tmp/flox.pkg && flox --version:
+  curl -fL https://downloads.flox.dev/by-env/stable/osx/flox-1.7.6.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target /usr/local/bin && rm /tmp/flox.pkg && flox --version:
     desc: Download and install/update Flox in a Mac (Arm64) using curl
     tags: [flox]
     links: [https://flox.dev/docs/install-flox/install/#__tabbed_1_3]
-  wget -O /tmp/flox.deb https://downloads.flox.dev/by-env/stable/deb/flox-1.7.5.aarch64-linux.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version:
+  wget -O /tmp/flox.deb https://downloads.flox.dev/by-env/stable/deb/flox-1.7.6.aarch64-linux.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version:
     desc: Download and install Flox in a Debian (Arm64) using wget
     tags: [flox]
     links: [https://flox.dev/docs/install-flox/install/#__tabbed_1_3]
@@ -126,7 +126,7 @@ cheats:
           mkdir -p /home/vscode/.local/share
           cp -R /app /home/vscode/.local/share/dots
 
-          curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.4.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
+          curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.6.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
           flox init --name 'default' --dir /home/vscode/.config/flox
           echo 'eval "$(flox activate --dir /home/vscode/.config/flox -m run)"' >> /home/vscode/.bashrc && source /home/vscode/.bashrc
           echo 'eval "$(flox activate --dir /home/vscode/.config/flox -m run)"' >> /home/vscode/.zshrc && source /home/vscode/.zshrc
@@ -139,6 +139,7 @@ cheats:
   Complete environment setup with flox:
     desc: Complete environment setup with flox
     tags: [flox]
+    links: [https://flox.dev/docs/tutorials/default-environment]
     notes:
       - md: | #markdown
           ## THE MENTAL MODEL
@@ -583,3 +584,108 @@ cheats:
 
           echo "🎉 You're all set! Your default environment activates automatically!"
           echo "Just open a terminal and start coding!"
+  Reusing, combining and updating environments:
+    desc: Create reusable developer envs once, share across projects, and automatically propagate improvements
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/multi-arch-environments, https://flox.dev/docs/tutorials/composition]
+    notes:
+      - md: | #markdown
+          ## TL;DR: COMPOSITION CONCEPT
+
+          > 💡 Reuse developer envs across projects: create once, share everywhere, update automatically and spend less time setting up, more time coding
+
+          ### Key Concepts
+
+          - **Template:** A reusable environment with common tools (e.g., Python + Poetry) that you create once and reuse
+          - **FloxHub:** Cloud registry where you push/pull environments (like Docker Hub for dev environments)
+          - **Manifest:** Configuration file (`.flox/env/manifest.toml`) that defines packages and settings
+          - **Composition:** Layering environments - include a template and add project-specific packages on top
+          - **Copy vs Sync:** Copy creates independent snapshot; Sync stays connected to template for updates
+
+          ### Three Ways to Use Templates
+
+          1. **Copy (--copy):** Independent snapshot, no updates from template
+          2. **Direct use:** Stays connected, run `flox pull` to get template updates
+          3. **Composition:** Include template + add project-specific packages, run `flox include upgrade` to sync
+
+      - sh: | #shell
+          #!/usr/bin/env bash
+
+          # ============================================================================
+          # CASE: CREATE A TEMPLATE PROJECT
+          # WHY: Having a project containing common tools to be reused in similar projects.
+          # HOW: Create a project, add common/minimal tools; push it to FloxHub.
+          # ============================================================================
+          flox init -d /app/python_env
+          flox install -d /app/python_env python312 poetry
+          flox push -d /app/python_env
+
+      - sh: | #shell
+          #!/usr/bin/env bash
+
+          # ============================================================================
+          # CASE: USE THE TEMPLATE
+          # WHY: Use the template as a base for a new projects; This allow to update and receive updates from the template.
+          # HOW: Crete a new project; Include the template in the manifest; The new poroject uses the template as starting point.
+          # ============================================================================
+          flox pull -d /app/new_project lois/python_env
+
+      - sh: | #shell
+          #!/usr/bin/env bash
+
+          # ============================================================================
+          # CASE: USE A COPY OF THE TEMPLATE
+          # WHY: For temporary projects or quick testing; tools disconnected from template updates
+          # HOW: Creates an independent snapshot based on the template; changes to the template won't affect this copy.
+          # ============================================================================
+          flox pull -d /app/new_project --copy lois/python_env
+
+      - sh: | #shell
+          #!/usr/bin/env bash
+
+          # ============================================================================
+          # WHAT: COMPOSE (Template + Project-Specific Packages)
+          # WHY: Need template tools PLUS project-specific packages (best of both worlds)
+          # HOW: Create new env, include template in manifest, add project deps, upgrade to sync
+          # ============================================================================
+          flox init -d /app/composed_python_project
+          flox edit -d /app/composed_python_project  # Add to manifest: { remote = "lois/python_env" }
+          flox install -d /app/composed_python_project python312Packages.pytest
+          flox include upgrade -d /app/composed_python_project  # Get template updates
+  Flox useful commands and workflows:
+    desc: Useful commands and workflows for Flox
+    tags: [flox]
+    links: [https://flox.dev/docs/tutorials/multi-arch-environments]
+    notes:
+      - sh: | #shell
+          #!/usr/bin/env bash
+
+          # Create and push an environment
+          flox init -d /app/python_base
+          flox install -d /app/python_base python312Packages.pytest
+          flox push -d /app/python_base
+
+          # Create a new project based on a existing project on FloxHub
+          flox pull -d /app/first_project lois/python_base
+          flox edit -d /app/first_project
+          flox list -d -c /app/first_project
+          flox install -d /app/first_project python312Packages.pytest
+          flox include upgrade -d /app/first_project
+          flox edit -d /app/first_project          
+
+          # Create a ephemeral project based on a existing project on FloxHub using a copy
+          flox pull -d /app/second_project --copy lois/python_base
+          flox edit -d /app/second_project
+          flox list -d -c /app/second_project
+          flox include upgrade -d /app/second_project
+          flox edit -d /app/second_project
+          # Add environments 'remote = "lois/python_base"' to the [include] section
+          flox include upgrade -d /app/second_project
+          flox list -d /app/second_project
+          flox list -d -c /app/second_project
+
+          # Useful commands
+          flox envs
+          flox envs -a
+          flox update
+          flox include upgrade

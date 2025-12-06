@@ -1,0 +1,111 @@
+bookmarks:
+  https://gmail.com:
+    desc: Gmail
+    tags: [gmail, email, inbox]
+    notes:
+      - yaml: | #yaml
+          username: rogerio.alcantara@consorciei.com.br
+          password: o7S4!gg7
+  https://app2-caixa-stg.consorciei.com.br:
+    desc: fastin.caixa staging
+    tags: [fastin, caixa, staging, consorciei]
+  https://caas-caixa-stg.consorciei.com.br:
+    desc: caas.caixa staging
+    tags: [caas, caixa, staging, consorciei]
+  https://consorciei.atlassian.net/jira:
+    desc: Jira
+    tags: [consorciei]
+  https://consorciei.signin.aws.amazon.com/console:
+    desc: AWS Console
+    tags: [aws, console, consorciei]
+    notes:
+      - yaml: | #yaml
+          username: rogerio.alcantara
+          password: o7S4!gg7
+
+  # ATLASSIAN
+  https://rogerioalcantara.atlassian.net/jira/marketplace/discover/app/hiptest.jira-plugin:
+    desc: Atlassian Jira Marketplace > CucumberStudio - BDD & Test Management
+    tags: [jira, consorciei]
+    notes:
+      - md: | #markdown
+          ## CucumberStudio - BDD & Test Management
+
+          > BDD and agile test management platform integrated with Jira. Use BDD and test automation at scale
+  https://support.smartbear.com/cucumberstudio/docs/integrations/jira/index.html:
+    desc: CucumberStudio Documentation | CucumberStudio is a comprehensive software test management tool, which provides you with the ability to plan and organize all test cases, requirements, and defects associated with your release or user stories in a single place
+    tags: [cucumber, documentation, consorciei]
+    links:
+      - https://support.smartbear.com/cucumberstudio/docs/general-info/about.html
+  https://rogerioalcantara.atlassian.net/jira/projects?page=1&sortKey=recommendation&sortOrder=DESC&types=software%2Cbusiness:
+    desc: Atlassian Jira Projects
+    tags: [jira, consorciei]
+
+commands:
+  ssh -i ~/.ssh/coreservices-bastion-dev.pem -L 3306:cs-dev.cluster-czcr94cvltso.us-east-1.rds.amazonaws.com:3306 ec2-user@44.200.148.49:
+    desc: SSH tunnel to the RDS database through the bastion host
+    tags: [ssh, rds, database]
+    notes:
+      - yaml: | #yaml
+          host: 44.200.148.49
+          port: 22
+          user: ec2-user
+          remote host: cs-dev.cluster-czcr94cvltso.us-east-1.rds.amazonaws.com
+          remote port: 3306
+          local port: 3306
+          key file: ~/.ssh/coreservices-bastion-dev.pem
+  mysql -h 127.0.0.1 -P 3306 -u your_user -p:
+    desc: Connect to the RDS database through the SSH tunnel
+    tags: [mysql, rds, database]
+    notes:
+      - yaml: | #yaml
+          host: 127.0.0.1
+          port: 3306
+          db: core_services
+          user: rogerio.alcantara
+          password: WI9GLgGh1U
+
+cheats:
+  Ubuntu:
+    desc: Ubuntu
+    tags: [ubuntu, linux, terminal]
+    notes:
+      - yaml: | #yaml
+          username: rogerio.alcantara
+          password: 123Mud@r
+  VPN:
+    desc: VPN
+    tags: [vpn, internet, connection]
+    notes:
+      - yaml: | #yaml
+          Login: rralcantara
+          PIN: 55819069
+          MFA Key: 2WJVTJMZXGWZP647
+  Development Workflow:
+    desc: Development workflow
+    tags: [development, workflow]
+    notes:
+      - sh: | #shell
+          ### Development Workflow Cheatsheet (Ubuntu)
+          sudo apt update && sudo apt upgrade -y && sudo apt install -y openvpn
+
+          # Setup SSH agent
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/coreservices-bastion-dev.pem
+
+          # Setup SSH tunnel to the RDS database
+          ssh -i ~/.ssh/coreservices-bastion-dev.pem -L 3306:cs-dev.cluster-czcr94cvltso.us-east-1.rds.amazonaws.com:3306 ec2-user@44.200.148.49
+
+          # Clone the repositories
+          cd ~/Work
+          git clone git@bitbucket.org:consorciei/coreservices.git
+          git clone git@bitbucket.org:consorciei/common.git
+  Atlassian Jira:
+    desc: Atlassian Jira
+    tags: [jira, consorciei]
+    links:
+      - https://rogerioalcantara.atlassian.net?continue=https%3A%2F%2Frogerioalcantara.atlassian.net%2Fwelcome%2Fsoftware&atlOrigin=eyJpIjoiZWU0MjIwZjM4ZjA4NGUwY2E5YWZiYTlkOTAzMDUyYmYiLCJwIjoiaiJ9
+      - https://rogerioalcantara.atlassian.net/jira/software/projects/SCRUM/boards/1
+      - https://rogerioalcantara.atlassian.net/jira/marketplace/discover/app/hiptest.jira-plugin
+      - https://admin.atlassian.com/s/04057c99-c6e2-43af-a58f-b2ecdce69222/user-connected-apps/tab/installed
+      - https://admin.atlassian.com/s/04057c99-c6e2-43af-a58f-b2ecdce69222/user-connected-apps/connect/jira/hiptest.jira-plugin/details

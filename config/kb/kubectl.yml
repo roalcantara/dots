@@ -1,12 +1,22 @@
 bookmarks:
   https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/:
     desc: Official Kubernetes guide for debugging running pods and examining pod lifecycle
-    tags: [kubernetes, debugging, pods, troubleshooting, logs]
-
+    tags:
+      - debug
+      - kubernetes
+      - log
+      - pods
+      - troubleshooting
 cheats:
   Debugging Kubernetes Pod States and Transitions:
     desc: A systematic approach to troubleshooting pod lifecycle issues and understanding pod phases
-    tags: [kubernetes, debugging, pods, states, lifecycle, troubleshooting]
+    tags:
+      - debug
+      - kubernetes
+      - lifecycle
+      - pods
+      - state
+      - troubleshooting
     notes:
       - md: |
           ## Overview
@@ -35,11 +45,17 @@ cheats:
           - Container restarts often indicate application issues
           - Events provide chronological troubleshooting context
           - Pod phases are high-level, container states provide details
-
 commands:
   kubectl get pods -n <namespace> -o json | jq -r '.items[].status.phase':
     desc: List all pod statuses in a namespace using kubectl and jq
-    tags: [kubernetes, kubectl, jq, pods, status, json, filtering]
+    tags:
+      - kubernetes
+      - kubectl
+      - jq
+      - pods
+      - status
+      - json
+      - filtering
     notes:
       - sh: |
           # Get running pods only

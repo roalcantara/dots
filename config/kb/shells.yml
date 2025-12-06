@@ -1,99 +1,160 @@
 bookmarks:
   http://zsh.sourceforge.net/Guide/zshguide05.html#l124:
     desc: Official ZSH guide section on pattern matching and case statements
-    tags: [zsh, documentation, pattern-matching, reference]
-
+    tags:
+      - documentation
+      - pattern_matching
+      - reference
+      - zsh
 commands:
   bash:
     desc: Command interpreter and scripting shell
-    tags: [shell, tools]
+    tags:
+      - shell
+      - tool
   sh:
     desc: Legacy shell interpreter
-    tags: [shell, tools]
-
-  # SCRIPTING AND AUTOMATION
+    tags:
+      - shell
+      - tool
   cron:
     desc: Automate tasks
-    tags: [shell, tools]
+    tags:
+      - shell
+      - tool
   alias:
     desc: Create shortcuts for commands
-    tags: [shell, tools]
+    tags:
+      - shell
+      - tool
   source:
     desc: Execute commands from a file in the current shell
-    tags: [shell, tools]
-
+    tags:
+      - shell
+      - tool
   history | awk '{print $2}' | sort | uniq -c | sort -nr | head -10:
     desc: Show the top 10 most used commands from history
-    tags: [shell, zsh, history]
+    tags:
+      - shell
+      - zsh
+      - history
   until [ ! $(curl -s -o /dev/null -w "%{http_code}" https://github.com/ghostty-org/ghostty) = "404" ]; do echo "github:ghostty-org/ghostty responded 404 at $(date)"; sleep 3600; done; curl cliff/send -d 'title=Ghostty released!' -d 'body=At least, github:ghostty-org/ghostty is giving a non-404 response':
     desc: Create a cronjob to check if a URL is giving a 404 response and send a
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   fd . / -IH -e zwc -e zwc.old:
     desc: Find all zsh files in the system
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   hyperfine --warmup 5 --runs 100 "zsh -ic exit":
     desc: Run hyperfine benchmark to check how fast is "zsh -ic exit"
-    tags: [hyperfine, benchmark]
+    tags:
+      - hyperfine
+      - benchmark
   print -l ${^fpath}/_*(N:t):
     desc: List all completion files
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   find $HOME/.config/zsh/ -name 'startlog.*.log' -mtime +7 -delete:
     desc: Delete log files older than 7 days
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   if [ -e /path/to/file ]; then echo "File exists."; fi:
     desc: Check if file exists
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   set -o:
     desc: List all options
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   set -o | grep 'on$':
     desc: List only enabled options
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   set -o | grep 'off$':
     desc: List only disabled options
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   setopt:
     desc: Set an option. i.e. `setopt AUTO_CD`
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   unsetopt:
     desc: Unset an option. i.e. `unsetopt AUTO_CD`
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   functions:
     desc: List all function names
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   functions -u:
     desc: List all function names with source file locations
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   typeset -f:
     desc: List just function names
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   typeset -f -f:
     desc: List functions with their definitions
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   typeset +f:
     desc: List user-defined functions (exclude system ones)
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   typeset -f -u:
     desc: List autoload functions
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   typeset -f -t:
     desc: List functions with their trace output
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   which function_name:
     desc: Find the path of a function
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   type function_name:
     desc: Find the type of a function
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   whence -v function_name:
     desc: See where function is defined
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   autoload -U function_name:
     desc: Load a function from the autoload path
-    tags: [shell, zsh]
+    tags:
+      - shell
+      - zsh
   case "$variable" in pattern):
     desc: Basic case statement syntax for pattern matching in ZSH
-    tags: [zsh, shell, conditional, pattern-matching]
+    tags:
+      - conditional
+      - pattern_matching
+      - shell
+      - zsh
     notes:
       - sh: |
           # Basic case statement with single pattern
@@ -123,7 +184,11 @@ commands:
           It's a feline
   case ${var:l} in pattern):
     desc: Case-insensitive pattern matching using parameter expansion
-    tags: [zsh, shell, pattern-matching, case-insensitive]
+    tags:
+      - case_insensitive
+      - pattern_matching
+      - shell
+      - zsh
     notes:
       - sh: |
           # Case-insensitive matching using :l modifier
@@ -141,7 +206,12 @@ commands:
           Color is red (matched case-insensitive)
   case $var in ([0-9]##)):
     desc: Advanced pattern matching using extended glob operators
-    tags: [zsh, shell, pattern-matching, glob, regex]
+    tags:
+      - glob
+      - pattern_matching
+      - regex
+      - shell
+      - zsh
     notes:
       - sh: |
           # Extended glob pattern matching
@@ -162,65 +232,88 @@ commands:
           Input is numeric
   autoload -U compinit && compinit:
     desc: Load ZSH's completion script
-    tags: [zsh]
+    tags:
+      - zsh
   shtab --shell=zsh shtab.main.get_main_parser --error-unimportable >> ~/.config/zsh/opt/completions/_shtab:
     desc: Generate ZSH's completions using shtab
-    tags: [zsh]
+    tags:
+      - zsh
   bindkey -a:
     desc: Print keybindings
-    tags: [zsh]
+    tags:
+      - zsh
   bindkey -r <key-sequence>:
     desc: Remove key binding
-    tags: [zsh]
+    tags:
+      - zsh
   bindkey -l:
     desc: Print existing keymap names
-    tags: [zsh]
+    tags:
+      - zsh
   bindkey -M <KEYMAP>:
     desc: Print bindings for keymap KEYMAP
-    tags: [zsh]
+    tags:
+      - zsh
   zstyle:
     desc: List style definitions
-    tags: [zsh]
+    tags:
+      - zsh
   zstyle -L':completion:\*':
     desc: List style definition matching':completion:'
-    tags: [zsh]
+    tags:
+      - zsh
   zsh --sourcetrace:
     desc: Show full path of sourced files
-    tags: [zsh]
+    tags:
+      - zsh
   for i in $(seq 1 10); do /usr/bin/time zsh -i -c exit; done:
     desc: Run time 10x and prints the result
-    tags: [zsh]
+    tags:
+      - zsh
   for i in $(seq 1 10); do time zsh -i -c exit; done:
     desc: Run time 10x and prints the result
-    tags: [zsh]
+    tags:
+      - zsh
   dots stats --pretty:
     desc: Run time 10x and prints - pretty
-    tags: [zsh, dots]
+    tags:
+      - zsh
+      - dots
   dots prof:
     desc: Run dots' zsh prof
-    tags: [zsh, dots]
+    tags:
+      - zsh
+      - dots
   dots prof --once:
     desc: Run dots' ZSH prof 10x and returns once
-    tags: [zsh, dots]
+    tags:
+      - zsh
+      - dots
   dots prof --avg:
     desc: Run dots ZSH prof 10x and returns the average
-    tags: [zsh, dots]
+    tags:
+      - zsh
+      - dots
   dots prof --once --avg:
     desc: Run dots ZSH prof 10x and returns the average once
-    tags: [zsh, dots]
+    tags:
+      - zsh
+      - dots
   dots trace --once:
     desc: Run dots' zsh trace
-    tags: [zsh, dots]
+    tags:
+      - zsh
+      - dots
   dots zsh --recompile:
     desc: recomplie zsh completions
-    tags: [zsh, dots]
-
-  # zimfw
-  # The Zsh configuration framework with blazing speed and modular extensions.
-  # https://zimfw.sh
+    tags:
+      - zsh
+      - dots
   breew installl zimfw:
     desc: The Zsh configuration framework with blazing speed and modular extensions.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
       - https://zimfw.sh/docs/commands
@@ -229,108 +322,147 @@ commands:
       - https://zimfw.sh/docs/cheatsheet
   zimfw build:
     desc: Build /Users/roalcantara/.cache/zim/init.zsh and /Users/roalcantara/.cache/zim/login_init.zsh. Also does compile. Use -v to also see its output.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw clean:
     desc: Clean all. Does both clean-compiled and clean-dumpfile.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw clean-compiled:
     desc: Clean Zsh compiled files.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw clean-dumpfile:
     desc: Clean completion dumpfile.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw compile:
     desc: Compile Zsh files.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw help:
     desc: Print this help.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw info:
     desc: Print zimfw and system info.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw list:
     desc: List all modules currently defined in /Users/roalcantara/.config/zsh/.zimrc. Use -v to also see the modules details.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw init:
     desc: Same as install, but with output tailored to be used at terminal startup.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw install:
     desc: Install new modules. Also does build, compile. Use -v to also see their output, any on-pull output and skipped modules.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw reinstall:
     desc: Reinstall modules that failed check. Prompts for confirmation. Use -q for quiet reinstall. Also does build, compile. Use -v to also see their output, any on-pull output and skipped modules.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw uninstall:
     desc: Delete unused modules. Prompts for confirmation. Use -q for quiet uninstall.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw check:
     desc: Check if updates for current modules are available. Use -v to also see skipped and up to date modules.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw update:
     desc: Update current modules. Also does build, compile. Use -v to also see their output, any on-pull output and skipped modules.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw check-version:
     desc: Check if a new version of zimfw is available.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw upgrade:
     desc: Upgrade zimfw. Also does compile. Use -v to also see its output.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
   zimfw version:
     desc: Print zimfw versio.
     links:
       - https://zimfw.sh
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
   zimfw clean && zimfw reinstall && zimfw compile && zimfw info:
     desc: Clean, reinstall, compile, and show info.
-    tags: [zsh, zim]
+    tags:
+      - zsh
+      - zim
     links:
       - https://zimfw.sh
-
-  #ZLE
   zle -l:
     desc: List user-defined widgets
-    tags: [zsh]
+    tags:
+      - zsh
   zle -lL:
     desc: List user-defined widgets as commands
-    tags: [zsh]
+    tags:
+      - zsh
   zle -al:
     desc: List existing user-defined widgets
-    tags: [zsh]
+    tags:
+      - zsh
   zle accept-and-hold:
     desc: Executes the current command but keeps it in the prompt
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that runs 'git status' but keeps it in prompt
       git-status-and-hold() {
@@ -341,7 +473,9 @@ commands:
       bindkey '^Gs' git-status-and-hold
   zle accept-and-infer-next-history:
     desc: Executes command and shows next logical history entry
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that adds files and suggests commit
       git-add-and-commit() {
@@ -352,7 +486,9 @@ commands:
       bindkey '^Ga' git-add-and-commit
   zle accept-and-menu-complete:
     desc: Accepts current completion and shows menu for next completion
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget for nested directory completion
       deep-complete() {
@@ -363,7 +499,9 @@ commands:
       bindkey '^Gd' deep-complete
   zle accept-line:
     desc: Basic Enter key behavior - executes the current line
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that adds timestamp before executing
       timestamp-and-execute() {
@@ -374,7 +512,9 @@ commands:
       bindkey '^Xt' timestamp-and-execute
   zle accept-line-and-down-history:
     desc: Executes command and moves to next history entry
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that runs command and shows next related command
       run-and-next() {
@@ -385,7 +525,9 @@ commands:
       bindkey '^Xn' run-and-next
   zle accept-search:
     desc: Accepts current history search result
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that searches and accepts git commands
       search-git-commands() {
@@ -397,7 +539,9 @@ commands:
       bindkey '^Gh' search-git-commands
   zle zle-line-init:
     desc: Called when starting a new command line
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that sets up custom prompt on line init
       zle-line-init() {
@@ -407,7 +551,9 @@ commands:
       zle -N zle-line-init
   zle zle-line-finish:
     desc: Called after executing a command line
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that logs completed commands
       zle-line-finish() {
@@ -416,7 +562,9 @@ commands:
       zle -N zle-line-finish
   zle zle-line-pre-redraw:
     desc: Called before redrawing command line
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that updates prompt with git info
       zle-line-pre-redraw() {
@@ -426,7 +574,9 @@ commands:
       zle -N zle-line-pre-redraw
   zle execute-last-named-cmd:
     desc: Executes the last command run with execute-named-cmd
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that repeats last git command
       repeat-git-cmd() {
@@ -437,7 +587,9 @@ commands:
       bindkey '^Gr' repeat-git-cmd
   zle execute-named-cmd:
     desc: Prompts for and executes a command by name
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that runs git commands by name
       git-named-cmd() {
@@ -448,7 +600,9 @@ commands:
       bindkey '^Gx' git-named-cmd
   zle expand-cmd-path:
     desc: Expands command to full path
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that expands python command path
       expand-python-cmd() {
@@ -459,7 +613,9 @@ commands:
       bindkey '^Xp' expand-python-cmd
   zle expand-history:
     desc: Expands history references
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that expands last git command
       expand-last-git() {
@@ -470,7 +626,9 @@ commands:
       bindkey '^Ge' expand-last-git
   zle expand-or-complete:
     desc: Standard tab completion
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that starts directory completion
       start-dir-complete() {
@@ -481,7 +639,9 @@ commands:
       bindkey '^Xd' start-dir-complete
   zle read-command:
     desc: Reads a command name for execution
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that reads and executes git commands
       read-git-command() {
@@ -492,7 +652,9 @@ commands:
       bindkey '^Xg' read-git-command
   zle redisplay:
     desc: Redraws the command line
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that cleans and redraws prompt
       clean-and-redraw() {
@@ -503,7 +665,9 @@ commands:
       bindkey '^Xl' clean-and-redraw
   zle redo:
     desc: Redoes the last undone edit
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that combines undo and redo
       smart-redo() {
@@ -517,7 +681,9 @@ commands:
       bindkey '^Xr' smart-redo
   zle reset-prompt:
     desc: Forces prompt redraw
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that updates git status in prompt
       update-git-prompt() {
@@ -528,7 +694,9 @@ commands:
       bindkey '^Xu' update-git-prompt
   zle reverse-menu-complete:
     desc: Like tab completion but backwards
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that cycles completions backwards
       cycle-back-complete() {
@@ -539,7 +707,9 @@ commands:
       bindkey '^X^H' cycle-back-complete
   zle scroll-and-clear-screen:
     desc: Clears screen and scrolls current line to top
-    tags: [zsh, zle]
+    tags:
+      - zsh
+      - zle
     notes: |
       # Widget that clears screen and adds timestamp
       clear-with-timestamp() {
@@ -550,7 +720,10 @@ commands:
       bindkey '^X^L' clear-with-timestamp
   zle complete-word:
     desc: Complete word at cursor position
-    tags: [zsh, zle, completion]
+    tags:
+      - zsh
+      - zle
+      - completion
     notes: |
       # Complete git branch names when typing git checkout
       git-branch-complete() {
@@ -566,7 +739,10 @@ commands:
       bindkey '^Gb' git-branch-complete
   zle expand-or-complete-prefix:
     desc: Like expand-or-complete but only for prefix
-    tags: [zsh, zle, completion]
+    tags:
+      - zsh
+      - zle
+      - completion
     notes: |
       # Autocomplete only npm run script prefixes
       npm-script-complete() {
@@ -582,7 +758,10 @@ commands:
       bindkey '^Xn' npm-script-complete
   zle list-choices:
     desc: List possible completions
-    tags: [zsh, zle, completion]
+    tags:
+      - zsh
+      - zle
+      - completion
     notes: |
       # List available docker containers
       docker-container-list() {
@@ -598,7 +777,10 @@ commands:
       bindkey '^Xd' docker-container-list
   zle menu-complete:
     desc: Complete word from menu
-    tags: [zsh, zle, completion]
+    tags:
+      - zsh
+      - zle
+      - completion
     notes: |
       # Interactive cd navigation
       cd-menu-complete() {
@@ -614,7 +796,10 @@ commands:
       bindkey '^Xc' cd-menu-complete
   zle menu-expand-or-complete:
     desc: Show menu of completions
-    tags: [zsh, zle, completion]
+    tags:
+      - zsh
+      - zle
+      - completion
     notes: |
       # Show kill command completions with process list
       kill-menu-complete() {
@@ -630,7 +815,10 @@ commands:
       bindkey '^Xk' kill-menu-complete
   zle end-of-list:
     desc: End menu selection
-    tags: [zsh, zle, completion]
+    tags:
+      - zsh
+      - zle
+      - completion
     notes: |
       # Exit completion menu and append semicolon
       complete-and-semicolon() {
@@ -642,7 +830,10 @@ commands:
       bindkey '^X;' complete-and-semicolon
   zle send-break:
     desc: Exit menu selection
-    tags: [zsh, zle, completion]
+    tags:
+      - zsh
+      - zle
+      - completion
     notes: |
       # Cancel completion and clear line
       cancel-and-clear() {
@@ -654,7 +845,10 @@ commands:
       bindkey '^Xx' cancel-and-clear
   zle recursive-edit:
     desc: Allows creating a new editing context within current one, useful for complex inputs
-    tags: [zsh, zle, editing]
+    tags:
+      - zsh
+      - zle
+      - editing
     notes:
       - md: |
           ```sh
@@ -718,14 +912,15 @@ commands:
             - **BUFFER:** Content of edit buffer
             - **CURSOR:** Cursor position
             - **recursive-edit return:** 0 for success, 1 for cancel
-
 cheats:
-  # SH
   Scripting conditionals:
     desc: Shell script conditionals
-    tags: [shell, sh, conditionals]
+    tags:
+      - shell
+      - sh
+      - conditionals
     notes:
-      - sh: | #sh
+      - sh: |
           #!/bin/bash
 
           # if file exists
@@ -817,11 +1012,12 @@ cheats:
           if [ "$num1" -le "$num2" ]; then
             echo "First number is less or equal."
           fi
-
-  # ZSH
   Options Overview:
     desc: Set options with `setopt`, unset with `unsetopt`.
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     notes:
       - md: |
           ## Zsh Options
@@ -839,7 +1035,10 @@ cheats:
       - ZSH Options [16.2.5] Initialisation: https://zsh.sourceforge.io/Doc/Release/Options.html#Initialisation
   Changing Directories Options:
     desc: 16.2.1 Changing Directories
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.1] Changing-Directories: https://zsh.sourceforge.io/Doc/Release/Options.html#Changing-Directories
     notes:
@@ -861,7 +1060,10 @@ cheats:
           | PUSHD_TO_HOME     | `pushd` with no argument goes to `~`        |
   Completion Options:
     desc: 16.2.2 Completion
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.2] Completion: https://zsh.sourceforge.io/Doc/Release/Options.html#Completion-4
     notes:
@@ -964,7 +1166,10 @@ cheats:
           ```
   Expansion and Globbing Options:
     desc: 16.2.3 Expansion and Globbing
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.3] Expansion-and-Globbing: https://zsh.sourceforge.io/Doc/Release/Options.html#Expansion-and-Globbing
     notes:
@@ -1006,7 +1211,10 @@ cheats:
           | WARN_NESTED_VAR     | Warn when a nested function var violates scope |
   History Options:
     desc: 16.2.4 History
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.4] History: https://zsh.sourceforge.io/Doc/Release/Options.html#History
     notes:
@@ -1038,7 +1246,10 @@ cheats:
           | SHARE_HISTORY           | Save and restore history per line                |
   Initialization Options:
     desc: 16.2.5 Initialization
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.5] Initialisation: https://zsh.sourceforge.io/Doc/Release/Options.html#Initialisation
     notes:
@@ -1053,7 +1264,10 @@ cheats:
           | RCS\*           | Run startup files                   |
   Input/Output Options:
     desc: 16.2.6 Input/Output
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.6] Input_002fOutput: https://zsh.sourceforge.io/Doc/Release/Options.html#Input_002fOutput
     notes:
@@ -1083,7 +1297,10 @@ cheats:
           | SUN_KEYBOARD_HACK    | Unmatched `` ` `` at end of line ignored |
   Job Control Options:
     desc: 16.2.7 Job Control
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.7] Job-Control: https://zsh.sourceforge.io/Doc/Release/Options.html#Job-Control
     notes:
@@ -1102,7 +1319,10 @@ cheats:
           | NOTIFY\*       | Asynchronous job control messages  |
   Prompting Options:
     desc: 16.2.8 Prompting
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.8] Prompting: https://zsh.sourceforge.io/Doc/Release/Options.html#Prompting
     notes:
@@ -1118,7 +1338,10 @@ cheats:
           | TRANSIENT_RPROMPT | Right prompt goes away after edit  |
   Scripts and Functions Options:
     desc: 16.2.9 Scripts and Functions
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.9] Scripts-and-Functions: https://zsh.sourceforge.io/Doc/Release/Options.html#Scripts-and-Functions
     notes:
@@ -1142,7 +1365,10 @@ cheats:
           | XTRACE             | Show trace of execution with `$PS4`   |
   Shell Emulation Options:
     desc: 16.2.10 Shell Emulation
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.10] Shell-Emulation: https://zsh.sourceforge.io/Doc/Release/Options.html#Shell-Emulation
     notes:
@@ -1168,7 +1394,10 @@ cheats:
           | TRAPS_ASYNC        | Traps may run when `wait`ing         |
   Shell State Options:
     desc: 16.2.11 Shell State
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.11] Shell-State: https://zsh.sourceforge.io/Doc/Release/Options.html#Shell-State
     notes:
@@ -1185,7 +1414,10 @@ cheats:
           | SINGLE_COMMAND | Execute one command then exit      |
   ZLE Options:
     desc: 16.2.11 Zle
-    tags: [shells, zsh, options]
+    tags:
+      - shells
+      - zsh
+      - options
     links:
       - ZSH Options [16.2.12] Zle: https://zsh.sourceforge.io/Doc/Release/Options.html#Zle
     notes:
@@ -1203,7 +1435,10 @@ cheats:
           | ZLE             | Line editor used to input lines           |
   Overview of ZLE BUFERS, LBUFFERS, RBUFFERS:
     desc: ZLE buffers and their usage in ZSH
-    tags: [shells, zsh, buffers]
+    tags:
+      - shells
+      - zsh
+      - buffers
     notes:
       - md: |
           ## ZLE BUFFERS
@@ -1292,7 +1527,10 @@ cheats:
               ```
   Case Statement Pattern Matching Guide:
     desc: Comprehensive guide for ZSH case statement pattern matching syntax and best practices
-    tags: [shells, zsh, conditionals]
+    tags:
+      - shells
+      - zsh
+      - conditionals
     notes:
       - md: |
           ## Overview
@@ -1331,7 +1569,10 @@ cheats:
       - http://zsh.sourceforge.net/Doc/Release/Pattern-Matching.html
   Example of how to expand git aliases on completions:
     desc: Expand git aliases
-    tags: [shells, zsh, completions]
+    tags:
+      - shells
+      - zsh
+      - completions
     notes:
       - sh: |
           # #!/bin/zsh

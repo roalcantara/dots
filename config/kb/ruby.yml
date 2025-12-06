@@ -1,9 +1,11 @@
 cheats:
-  # DEVOPS
   Installing Ruby On Rails on Apple Silicon:
     desc: Install Ruby On Rails on macOS 14 Sonoma (Apple Silicon, M1, M2)
-    tags: [ruby, rails]
-    links: [https://gorails.com/setup/macos/14-sonoma]
+    tags:
+      - rails
+      - rb
+    links:
+      - https://gorails.com/setup/macos/14-sonoma
     notes:
       - md: |
           ## Install Ruby On Rails on macOS 14 Sonoma (Apple Silicon, M1, M2)
@@ -66,13 +68,12 @@ cheats:
           ### 13. That's it! You've successfully installed Ruby on Rails on macOS 14 Sonoma (Apple Silicon, M1, M2).
 
           ### 14. Enjoy coding! 🚀
-
-  # OVERVIEW
   Learn Ruby in Y minutes:
     desc: A quick overview of Ruby syntax
-    tags: [ruby]
+    tags:
+      - rb
     notes:
-      - md: | #markdown
+      - md: |
           ## Ruby in Y minutes
 
           ### Comments
@@ -487,11 +488,12 @@ cheats:
           ```
   Ruby Strings and Symbols | Overview:
     desc: A quick overview of Ruby's Strings and Symbols
-    tags: [ruby]
+    tags:
+      - rb
     links:
       - Learn Ruby in Y Minutes: https://learnxinyminutes.com/docs/ruby
     notes:
-      - md: | #markdown
+      - md: |
           ## Strings
 
           ```ruby
@@ -510,7 +512,7 @@ cheats:
           # ...or append to string
           'hello' << ' world' #=> "hello world"
           ```
-      - md: | #markdown
+      - md: |
 
           ## Symbols
 
@@ -535,7 +537,8 @@ cheats:
           ```
   Ruby Classes | Overview:
     desc: Ruby classes are the blueprints. In creating a custom class, you are creating a new data type
-    tags: [ruby]
+    tags:
+      - rb
     links:
       - Learn Ruby in Y Minutes: https://learnxinyminutes.com/docs/ruby
       - The Pragmatic Programmer's Guide: https://ruby-doc.com/docs/ProgrammingRuby/html/classes.html
@@ -617,13 +620,12 @@ cheats:
 
           #display the author of first_book object in console:
           puts first_book.author #=> J. R. R. Tolkien
-
-  # LANGUAGE FEATURES
   Ruby's (start..stop).each do |i|:
     desc: creates a range that includes both start and stop values. It's an inclusive range.
-    tags: [ruby]
+    tags:
+      - rb
     notes:
-      - md: | #markdown
+      - md: |
           ## Ruby uses (start..stop) range object directly in loops and iterates over each value within the range, including both ends.
 
           ```ruby
@@ -635,8 +637,11 @@ cheats:
           ```
   Setup bundle:
     desc: Setup bundle
-    tags: [ruby, bundle]
-    links: [https://bundler.io/guides/getting_started.html]
+    tags:
+      - bundle
+      - rb
+    links:
+      - https://bundler.io/guides/getting_started.html
     notes:
       - sh: |
 
@@ -650,7 +655,9 @@ cheats:
           bundle install
   puts `cmd`:
     desc: Execute the command and returns stdout (but not stderr)
-    tags: [ruby, shell]
+    tags:
+      - rb
+      - shell
     notes:
       ruby: |
         files = `ls docs`
@@ -658,7 +665,9 @@ cheats:
         p files # "demo\ndocs\nimages\n"
   puts %x{ cmd }:
     desc: Execute the command and returns stdout (but not stderr)
-    tags: [ruby, shell]
+    tags:
+      - rb
+      - shell
     notes:
       ruby: |
         files = %x{ ls docs }
@@ -666,7 +675,9 @@ cheats:
         p files # "demo\ndocs\nimages\n"
   system(cmd, args):
     desc: Executes the command in a subshell. Returns true for zero exit code, false for non-zero exit code, nil if it fails
-    tags: [ruby, shell]
+    tags:
+      - rb
+      - shell
     notes:
       ruby: |
         result = system 'ls', '-l', '.'
@@ -677,9 +688,11 @@ cheats:
         # result: true
   test/unit:
     desc: The test/unit framework in Ruby is a standard library for writing and executing unit tests
-    tags: [ruby, testing]
+    tags:
+      - rb
+      - test
     notes:
-      - md: | #markdown
+      - md: |
 
 
 
@@ -796,7 +809,9 @@ cheats:
           ```
   str.chars.sort.join:
     desc: Sort a string alphabetically
-    tags: [ruby, string]
+    tags:
+      - rb
+      - string
     notes:
       md: |
 
@@ -819,7 +834,9 @@ cheats:
         ```
   Set.new:
     desc: A collection of unordered values with no duplicates
-    tags: [ruby, set]
+    tags:
+      - rb
+      - set
     notes:
       md: |
 
@@ -940,9 +957,10 @@ cheats:
         ```
   Ruby Project Setup Guide (No Rails):
     desc: A guide to setting up a Ruby project
-    tags: [ruby]
+    tags:
+      - rb
     notes:
-      - md: | #markdown
+      - md: |
           # Ruby Project Setup Guide (No Rails)
 
           ## Prerequisites
@@ -1242,9 +1260,10 @@ cheats:
           ```
   Ruby Project Setup with `bundle gem`:
     desc: A guide to setting up a Ruby project with `bundle gem`
-    tags: [ruby]
+    tags:
+      - rb
     notes:
-      - md: | #markdown
+      - md: |
           # Ruby Project Setup with `bundle gem`
 
           ## Prerequisites

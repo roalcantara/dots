@@ -1,10 +1,14 @@
 bookmarks:
   https://github.com/google/clasp:
     desc: Clasp is the command line tool for Google Apps Script.
-    tags: [google, apps-script, clasp]
-    links: [https://developers.google.com/apps-script/guides/clasp]
+    tags:
+      - apps_script
+      - clasp
+      - google
+    links:
+      - https://developers.google.com/apps-script/guides/clasp
     notes:
-      - sh: | #shell
+      - sh: |
           #!/usr/bin/env bash
           set -euo pipefail
 
@@ -91,8 +95,11 @@ bookmarks:
 
           # 10) Logout (if needed)
           clasp logout
-
   https://developers.google.com/apps-script/guides/clasp:
     desc: Clasp is the command line tool for Google Apps Script.
-    tags: [google, apps-script, clasp]
-    links: [https://github.com/google/clasp]
+    tags:
+      - apps_script
+      - clasp
+      - google
+    links:
+      - https://github.com/google/clasp
