@@ -526,7 +526,10 @@
   "workbench.editor.enablePreviewFromCodeNavigation": true,
   "workbench.editor.enablePreviewFromQuickOpen": true,
   "workbench.editor.autoLockGroups": {
-    "repl": true
+    "repl": true,
+    "mainThreadWebview-markdown.preview": true,
+    "imagePreview.previewEditor": true,
+    "jsProfileVisualizer.heapsnapshot.table": true
   },
   "workbench.editor.closeOnFileDelete": true,
   "workbench.editorAssociations": {
@@ -1557,5 +1560,7 @@
   "markdown.marp.diagnostics.slideContentOverflow": true,
   "markdown.marp.mathTypesetting": "off",
   "markdown.preferredMdPathExtensionStyle": "auto",
-  "workbench.colorTheme": "Blueberry dark theme"
+  "workbench.colorTheme": "Bearded Theme Monokai Metallian",
+  "workbench.editor.sharedViewState": true,
+  "rainbow_csv.rbql_with_headers_by_default": true
 }
