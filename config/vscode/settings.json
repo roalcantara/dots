@@ -1356,7 +1356,9 @@
   "mssql.connections": [],
   "cursor.composer.collapsePaneInputBoxPills": true,
   "cSpell.userWords": [
+    "coverprofile",
     "devcontainers",
+    "golangci",
     "roul"
   ],
   "json.trace.server": "verbose",
@@ -1560,7 +1562,27 @@
   "markdown.marp.diagnostics.slideContentOverflow": true,
   "markdown.marp.mathTypesetting": "off",
   "markdown.preferredMdPathExtensionStyle": "auto",
-  "workbench.colorTheme": "Bearded Theme Monokai Metallian",
+  "workbench.colorTheme": "Bearded Theme Arc Reversed",
   "workbench.editor.sharedViewState": true,
-  "rainbow_csv.rbql_with_headers_by_default": true
+  "rainbow_csv.rbql_with_headers_by_default": true,
+  "aws.samcli.enableCodeLenses": true,
+  "aws.cloudformation.telemetry.enabled": true,
+  "aws.suppressPrompts": {
+    "samcliConfirmDevStack": true
+  },
+  "aws.experiments": {
+    "jsonResourceModification": true,
+    "amazonqLSP": true,
+    "amazonqLSPInline": true,
+    "amazonqChatLSP": true,
+    "amazonqLSPInlineChat": true,
+    "amazonqLSPNEP": true,
+    "cloudFormationService": true
+  },
+  "claudeCode.preferredLocation": "panel",
+  "amazonQ.suppressPrompts": {
+    "amazonQChatDisclaimer": true
+  },
+  "amazonQ.workspaceIndex": true,
+  "amazonQ.workspaceIndexUseGPU": true
 }
