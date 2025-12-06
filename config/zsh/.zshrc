@@ -128,6 +128,14 @@
   setopt hist_ignore_all_dups   # When trimming history, remove duplicates => `history -c` will remove duplicates
   setopt hist_reduce_blanks     # Remove superfluous blanks from each command line being added to the history list => `history -c` will remove superfluous blanks
   setopt hist_subst_pattern     # Perform pattern substitution on history expansion => `history -c` will perform pattern substitution on history expansion
+  # Load history file explicitly (required because NO_RCS prevents automatic loading)
+  [[ -r "$HISTFILE" ]] && fc -R "$HISTFILE"
+  # Save history on shell exit (backup to incremental saves)
+  autoload -Uz add-zsh-hook
+  zsh_history_save() {
+    fc -W "$HISTFILE"
+  }
+  add-zsh-hook zshexit zsh_history_save
   # }
 
   # INPUT OUTPUT | http://zsh.sourceforge.io/Doc/Release/Options.html#Input_002fOutput
@@ -224,7 +232,7 @@
   # If set, used to give the indentation between the right hand side of the right prompt in the line editor as given by RPS1 or RPROMPT and the right hand side of the screen. If not set, the value 1 is used. See https://superuser.com/a/726509/389767
   export ZLE_RPROMPT_INDENT=0
   # PATH; Where the shell searches for commands; set PATH so it includes user's private bin if it exists
-  declare -gaU path=(${XDG_LOCAL_BIN_DIR:-$HOME/.local}/bin ${CARGO_HOME:-$XDG_DATA_HOME/cargo}/bin ${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm}/bin ${PNPM_HOME:-$XDG_DATA_HOME/pnpm} /usr/local/{bin,sbin} $path)
+  declare -gaU path=(${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin} ${CARGO_HOME:-$XDG_DATA_HOME/cargo/bin} ${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm/bin} ${PNPM_HOME:-$XDG_DATA_HOME/pnpm} /usr/local/{bin,sbin} $path)
   # FPATH; Where the shell searches to find shell functions
   declare -gaU fpath=($ZIM_HOME/functions $fpath)
   # CDPATH; Directories that the shell searches to find the current directory when the user changes directories using the cd command

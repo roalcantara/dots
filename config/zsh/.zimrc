@@ -18,9 +18,7 @@ zmodule input       # Applies correct bindkeys for input events. (https://github
 zmodule run-help    # Figures out where to get the best help, and gets it. Type ESC-H to execute run-help for the current command. (https://github.com/zimfw/run-help)
 
 # TOOL INTEGRATION | https://zimfw.sh/docs/modules
-zmodule fzf --if-command fzf                                                                  # Fuzzy finder (https://github.com/zimfw/fzf)
 zmodule kiesman99/zim-zoxide --if-command zoxide                                              # Zoxide is a smarter cd command
-zmodule joke/zim-mise --if-command mise                                                       # Sets up mise Zsh shell integration (https://github.com/joke/zim-mise)
 zmodule joke/zim-starship --if-command starship --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'  # The minimal, blazing-fast, and infinitely customizable prompt for any shell (https://starship.rs) - Skip in Warp
 
 # COMPLETION | https://zimfw.sh/docs/install/#create-~%2F.zimrc
@@ -28,7 +26,10 @@ zmodule joke/zim-starship --if-command starship --if '[[ $TERM_PROGRAM != "WarpT
 zmodule zchee/zsh-completions --fpath src/zsh --fpath src/macOS --fpath src/go
 zmodule $HOME/.config/zsh/opt --fpath completions
 zmodule $HOME/.config/zsh/etc --fpath functions
-zmodule completion
+# Skip completion module if compinit was already initialized (e.g., by Flox)
+if ! (( ${+functions[_main_complete]} )); then
+  zmodule completion
+fi
 # Ensure that any other plugins that use compdef are loaded after zmodule completion.
 zmodule $HOME/.config/zsh/etc --autoload "$(/bin/ls $HOME/.config/zsh/etc/functions | tr '\n' ' ')"
 zmodule g-plane/pnpm-shell-completion --if-command pnpm --on-pull './zplug.zsh'
@@ -45,3 +46,5 @@ zmodule zsh-users/zsh-autosuggestions --if '[[ $TERM_PROGRAM != "WarpTerminal" ]
 for custom_plugin in aliases keybindings plugins; do
   zmodule $HOME/.config/zsh/opt"/$custom_plugin"
 done
+
+zmodule joke/zim-mise --if-command mise                                                       # Sets up mise Zsh shell integration (https://github.com/joke/zim-mise)
