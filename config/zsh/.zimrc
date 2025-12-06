@@ -18,6 +18,7 @@ zmodule input       # Applies correct bindkeys for input events. (https://github
 zmodule run-help    # Figures out where to get the best help, and gets it. Type ESC-H to execute run-help for the current command. (https://github.com/zimfw/run-help)
 
 # TOOL INTEGRATION | https://zimfw.sh/docs/modules
+zmodule fzf --if-command fzf                                                                  # Fuzzy finder (https://github.com/zimfw/fzf)
 zmodule kiesman99/zim-zoxide --if-command zoxide                                              # Zoxide is a smarter cd command
 zmodule joke/zim-starship --if-command starship --if '[[ $TERM_PROGRAM != "WarpTerminal" ]]'  # The minimal, blazing-fast, and infinitely customizable prompt for any shell (https://starship.rs) - Skip in Warp
 

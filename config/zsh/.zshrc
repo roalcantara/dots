@@ -258,7 +258,7 @@
     export HOMEBREW_BUNDLE_FILE=${HOMEBREW_BUNDLE_FILE:-$XDG_CONFIG_HOME/homebrew/Brewfile}
     eval "$("$HOMEBREW_BIN"/brew shellenv)"
     path=(
-      $HOMEBREW_PREFIX/opt/{ruby,gems,curl,rustup}/bin
+      $HOMEBREW_PREFIX/opt/{ruby,gems,curl,rustup,awscli@1}/bin
       $HOMEBREW_PREFIX/opt/gawk/libexec/gnubin
       $HOMEBREW_PREFIX/{bin,sbin}
       $path
