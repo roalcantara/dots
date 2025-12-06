@@ -1,5 +1,4 @@
 commands:
-  # revealjs
   flox install revea-md:
     desc: Install revea-md
     tags: [revealjs, presentation, cli]
@@ -10,7 +9,7 @@ commands:
       - Markdown Guide: https://markdownguide.org
       - HTML Presentation Framework (1/6): https://youtu.be/a6ioNtv2H-E
     notes:
-      - md: | #markdown
+      - md: |
           ## 🚀 QUICK START (5 minutes)
 
           ### STEP 1: Install reveal-md (via Flox)
@@ -712,64 +711,94 @@ commands:
           reveal-md FLUX-ARCHITECTURE.md --static ./flux-presentation
           reveal-md FLUX-ARCHITECTURE.md --print FLUX-ARCHITECTURE.pdf
           ```
-
-  # pokeget | A command-line utility to get Pokémon information
-  # https://github.com/talwat/pokeget-rs
   pokeget charmander:
     desc: Display the pokemon charmander
     tags: [cli, pokemon]
   pokeget charmander --hide-name:
     desc: Display the pokemon without it's name
-    tags: [cli, pokemon]
+    tags:
+      - cli
+      - pokemon
   pokeget charmander --shiny:
     desc: Display the pokemon as shiny
-    tags: [cli, pokemon]
+    tags:
+      - cli
+      - pokemon
   pokeget raichu sandslash meowth --alolan:
     desc: Display the alolan variant of the pokemon
-    tags: [cli, pokemon]
+    tags:
+      - cli
+      - pokemon
   pokeget bulbasaur pikachu random:
     desc: Display multiple pokemon
-    tags: [cli, pokemon]
+    tags:
+      - cli
+      - pokemon
   pokeget charizard --gmax:
     desc: Display the gigantamax variant of the pokemon
-    tags: [cli, pokemon]
+    tags:
+      - cli
+      - pokemon
   pokeget decidueye --hisui:
     desc: Display the hisui variant of the pokemon
-    tags: [cli, pokemon]
+    tags:
+      - cli
+      - pokemon
   pokeget lilligant --hisui --noble:
     desc: Display the noble variant of the pokemon, this option often times only works in tandom with --hisui
-    tags: [cli, pokemon]
+    tags:
+      - cli
+      - pokemon
   pokeget zigzagoon linoone --galar:
     desc: Display the galarian variant of the pokemon
-    tags: [cli, pokemon]
+    tags:
+      - cli
+      - pokemon
   pokeget meowstic --female:
     desc: Display the female variant of the pokemon if it exists. This doesn't apply to nidoran, for some reason.
-    tags: [cli, pokemon]
+    tags:
+      - cli
+      - pokemon
   pokeget charizard --mega-x:
     desc: Display the pokemon as it's mega X form
-    tags: [cli, pokemon]
+    tags:
+      - cli
+      - pokemon
   pokeget charizard --mega-y:
     desc: Display the pokemon as it's mega Y form
-    tags: [cli, pokemon]
-
-  # chafa
+    tags:
+      - cli
+      - pokemon
   chafa --scale max in.jpg:
     desc: As big as will fit
-    tags: [cli, chafa, term]
+    tags:
+      - cli
+      - chafa
+      - term
   chafa --clear --align mid,mid -d 5 *.gif:
     desc: A well-paced slideshow
-    tags: [cli, chafa, term]
+    tags:
+      - cli
+      - chafa
+      - term
   chafa -f symbols --symbols ascii -c none in.png:
     desc: Old-school ASCII art
-    tags: [cli, chafa, term]
-
+    tags:
+      - cli
+      - chafa
+      - term
   cat ./path/to/.env.local | awk -F= '/^[^#]/ {gsub(/"/, "\\\""); print $1 "=" $2 }':
     desc: Converts .env file to .env.yaml
-    tags: [.env, yaml, yml]
-
+    tags:
+      - env
+      - yaml
+      - yml
   rsvg-convert -h 256 input.svg > output.png:
     desc: Convert an SVG file to a PNG file with a height of 256 pixels
-    tags: [cli, svg, png]
+    tags:
+      - cli
+      - svg
+      - png
     notes: |
       ## Convert single file
 
@@ -782,7 +811,10 @@ commands:
       ```
   for f in *.svg; do rsvg-convert -h 256 "$f" > "${f%.svg}.png"; done:
     desc: Convert multiple SVG files to PNG files with a height of 256 pixels
-    tags: [cli, svg, png]
+    tags:
+      - cli
+      - svg
+      - png
     notes: |
       ## Convert multiple files
 
@@ -795,9 +827,12 @@ commands:
       ```
   for f in *.png; do convert "$f" "${f%.png}.svg"; done:
     desc: Convert multiple PNG files to SVG (for older ImageMagick versions)
-    tags: [cli, svg, png]
+    tags:
+      - cli
+      - svg
+      - png
     notes:
-      - md: | #markdown
+      - md: |
           ## Convert multiple PNG files to SVG files
 
           ```sh
@@ -809,9 +844,12 @@ commands:
           ```
   for f in *.png; do magick "$f" "${f%.png}.svg"; done:
     desc: Convert multiple PNG files to SVG (for ImageMagick v7)
-    tags: [cli, svg, png]
+    tags:
+      - cli
+      - svg
+      - png
     notes:
-      - md: | #markdown
+      - md: |
           ## Convert multiple PNG files to SVG files
 
           ```sh
@@ -821,22 +859,25 @@ commands:
           # Convert PNG to SVG
           for f in *.png; do magick "$f" "${f%.png}.svg"; done
           ```
-
-  # bash
   cat path/to/your/file.csv | while IFS= read -r line; do echo "$line"; done:
     desc: Read a CSV file and print each line
-    tags: [shell, term]
+    tags:
+      - shell
+      - term
   awk -F, '{print $0}' path/to/your/file.csv | sort | uniq -d | pbcopy:
     desc: Copy duplicate lines from a CSV file to the clipboard
-    tags: [shell, term]
+    tags:
+      - shell
+      - term
   cat path/to/your/file.csv | sort | uniq | pbcopy:
     desc: Copy unique lines from a CSV file to the clipboard
-    tags: [shell, term]
-
-  # JWT
+    tags:
+      - shell
+      - term
   jwt encode --secret "a-256-bit-secret-key" '{"user":"example"}':
     desc: Encode and payload into JWT token with a secret key
-    tags: [jwt]
+    tags:
+      - jwt
     notes:
       - md: |
           ## EXAMPLE
@@ -870,7 +911,8 @@ commands:
           ```
   jwt decode --secret "your-256-bit-secret" <token>:
     desc: Verify if the JWT provided has a valid signature
-    tags: [jwt]
+    tags:
+      - jwt
     notes:
       - md: |
           ## EXAMPLES
@@ -901,10 +943,11 @@ commands:
           #    "iat": 1734054540,
           #    "user": "example"
           #  }
-
   jwt decode <token>:
     desc: Decoding a JWT
-    tags: [jwt, decode]
+    tags:
+      - jwt
+      - decode
     notes:
       - md: |
           ## Example
@@ -923,103 +966,128 @@ commands:
           > {
           >   "name": "John Doe"
           > }
-
-  # hasura
   hasura init .:
     desc: Initialize a new Hasura project in the current directory - To create a new Hasura project in the current directory
-    tags: [hasura]
+    tags:
+      - hasura
   hasura update-cli:
     desc: Updates the Hasura CLI to the latest version - To ensure you are using the most up-to-date version of the Hasura CLI with all the latest bug fixes and features
-    tags: [hasura]
+    tags:
+      - hasura
   hasura metadata ic diff:
     desc: Shows the differences between the current metadata and the applied metadata - to review metadata changes before applying them.
-    tags: [hasura]
+    tags:
+      - hasura
   hasura metadata ic list:
     desc: Lists all pending metadata changes - to get an overview of metadata changes that have not yet been applied
-    tags: [hasura]
+    tags:
+      - hasura
   hasura migrate create "migration_name" --from-server:
     desc: Creates a new migration based on the current state of the server. To capture the current state of the database and create corresponding migrations.
-    tags: [hasura]
+    tags:
+      - hasura
   harusa metadata apply:
     desc: Applies the local metadata changes to the Hasura server to synchronize metadata changes (schemas, permissions, etc.) from your local project with the Hasura server.
-    tags: [hasura]
+    tags:
+      - hasura
   harusa migrate apply --database-name=default:
     desc: Applies all pending migrations to the specified database (in this case, the default database) to ensure all database schema changes are applied as configured in migrations.
-    tags: [hasura]
+    tags:
+      - hasura
   hasura seed create crate_authors_seed --from-table authors:
     desc: Creates a seed file based on the data in the author table. To generate a seed file that contains the data from the specified table.
-    tags: [hasura]
+    tags:
+      - hasura
   hasura seed apply --database-name=default:
     desc: Applies seed data to the specified database. To populate the database with initial or test data as configured in seed files.
-    tags: [hasura]
+    tags:
+      - hasura
   hasura seed apply --file 1718916648431_add_authors_seed.sql --database-name=default:
     desc: Applies seed data to the specified database. To populate the database with initial or test data as configured in seed files.
-    tags: [hasura]
+    tags:
+      - hasura
   hasura metadata reload:
     desc: Reloads metadata on the Hasura server from the current configuration (when you need to refresh or revert to the currently loaded metadata configuration on the server).
-    tags: [hasura]
+    tags:
+      - hasura
   hasura console:
     desc: Opens the Hasura Console web interface - useful for managing Hasura visually.
-    tags: [hasura]
+    tags:
+      - hasura
   hasura console --no-browser:
     desc: Starts the Hasura Console without automatically opening it in the browser. When you prefer to manually access the console through a specific URL
-    tags: [hasura]
+    tags:
+      - hasura
   hasura metada export:
     desc: Exports the current metadata configuration to a file - to save the current metadata configuration to a file for backup or version control.
-    tags: [hasura]
-
-  # hash
+    tags:
+      - hasura
   openssl rand -hex 16 | openssl dgst -md5:
     desc: Generate a random hash Using MD5 using 16 bytes
-    tags: [hash, md5]
+    tags:
+      - hash
+      - md5
   openssl rand -hex 20 | openssl dgst -sha1:
     desc: Generate a random hash Using SHA-1 using 20 bytes
-    tags: [hash, sha1]
+    tags:
+      - hash
+      - sha1
   openssl rand -hex 32 | openssl dgst -sha256:
     desc: Generate a random hash Using SHA-256 using 32 bytes
-    tags: [hash, sha256]
+    tags:
+      - hash
+      - sha256
   openssl rand -hex 64 | openssl dgst -sha512:
     desc: Generate a random hash Using SHA-512 using 64 bytes
-    tags: [hash, sha512]
-
-  # jupyter
+    tags:
+      - hash
+      - sha512
   jupyter lab:
     desc: Run Jupyter Lab
-    tags: [jupyter]
+    tags:
+      - jupyter
   jupyter notebook:
     desc: Run Jupyter Notebook
-    tags: [jupyter]
+    tags:
+      - jupyter
   jupyter notebook --no-browser:
     desc: Run Jupyter Notebook
-    tags: [jupyter]
+    tags:
+      - jupyter
   jupyter notebook --no-browser --port=8889:
     desc: Run Jupyter Notebook
-    tags: [jupyter]
-
-  # elixir
+    tags:
+      - jupyter
   brew install elixir:
     desc: Install elixir
-    tags: [elixir]
+    tags:
+      - elixir
   docker run -it --rm elixir:
     desc: Enter bash within container with installed elixir
-    tags: [elixir, docker]
+    tags:
+      - elixir
+      - docker
   docker run -it --rm elixir bash:
     desc: Enter bash within container with installed elixir
-    tags: [elixir, docker]
+    tags:
+      - elixir
+      - docker
   iex:
     desc: Start Interactive Elixir
-    tags: [elixir]
+    tags:
+      - elixir
   elixir:
     desc: Run elixir script
-    tags: [elixir]
+    tags:
+      - elixir
   elixirc:
     desc: Compile elixir script
-    tags: [elixir]
-
-  # mega-linter
+    tags:
+      - elixir
   npx mega-linter-runner --install:
     desc: Install Mega-Linter
-    tags: [mega-linter]
+    tags:
+      - mega_linter
     links:
       - Mega-Linter: https://megalinter.io/latest/install-assisted
     notes:
@@ -1097,11 +1165,12 @@ commands:
             - command: echo "This is MegaLinter POST_COMMAND on own MegaLinter ! :)"
               cwd: "workspace"
           ```
-
-  # ktlint
   ktlint:
     desc: Default validation with standard ruleset
-    tags: [ktlint, kotlin, linting]
+    tags:
+      - kotlin
+      - ktlint
+      - lint
     links:
       - https://ktlint.github.io
     notes:
@@ -1133,105 +1202,140 @@ commands:
           ```
   ktlint 'src/**/*.kt' '!src/**/*Test.kt':
     desc: Check all '.kt' files in 'src/' directory, but ignore files ending with 'Test.kt'
-    tags: [ktlint, kotlin, linting]
+    tags:
+      - kotlin
+      - ktlint
+      - lint
     links:
       - https://ktlint.github.io
   ktlint --format:
     desc: Autocorrect style violations
-    tags: [ktlint, kotlin, linting]
+    tags:
+      - kotlin
+      - ktlint
+      - lint
     links:
       - https://ktlint.github.io
   ktlint generateEditorConfig ktlint_official:
     desc: Specify the code style(ktlint_official, intellij_idea or android_studio) to be used when generating the .editorconfig
-    tags: [ktlint, kotlin, linting]
+    tags:
+      - kotlin
+      - ktlint
+      - lint
     links:
       - https://ktlint.github.io
   ktlint installGitPreCommitHook:
     desc: Install git pre-commit hook
-    tags: [ktlint, kotlin, linting]
+    tags:
+      - kotlin
+      - ktlint
+      - lint
     links:
       - https://ktlint.github.io
   ktlint installGitPrePushHook:
     desc: Install git pre-push hook
-    tags: [ktlint, kotlin, linting]
+    tags:
+      - kotlin
+      - ktlint
+      - lint
     links:
       - https://ktlint.github.io
-
-  # mas
   mas signin rogerio.alcantara@gmail.com:
     desc: Sign in to the Mac App Store (not supported in macOS 10.13 High Sierra)
-    tags: [mas, macos]
+    tags:
+      - mas
+      - macos
     links:
       - Usage: https://github.com/mas-cli/mas?tab=readme-ov-file#-sign-in
       - Known Issues: https://github.com/mas-cli/mas?tab=readme-ov-file#%EF%B8%8F-known-issues
       - When something doesn't work: https://github.com/mas-cli/mas?tab=readme-ov-file#-when-something-doesnt-work
   mas signin --dialog rogerio.alcantara@gmail.com:
     desc: Sign in to the Mac App Store with a dialog when experience issues with the default sign-in method
-    tags: [mas, macos]
+    tags:
+      - mas
+      - macos
     links:
       - Usage: https://github.com/mas-cli/mas?tab=readme-ov-file#-sign-in
       - Known Issues: https://github.com/mas-cli/mas?tab=readme-ov-file#%EF%B8%8F-known-issues
   mas signout:
     desc: Sign out of the Mac App Store
-    tags: [mas, macos]
+    tags:
+      - mas
+      - macos
     links:
       - Usage: https://github.com/mas-cli/mas?tab=readme-ov-file#-sign-in
       - Known Issues: https://github.com/mas-cli/mas?tab=readme-ov-file#%EF%B8%8F-known-issues
       - When something doesn't work: https://github.com/mas-cli/mas?tab=readme-ov-file#-when-something-doesnt-work
   mas list:
     desc: List installed apps from the Mac App Store
-    tags: [mas, macos]
+    tags:
+      - mas
+      - macos
     links:
       - Usage: https://github.com/mas-cli/mas?tab=readme-ov-file#-sign-in
       - Known Issues: https://github.com/mas-cli/mas?tab=readme-ov-file#%EF%B8%8F-known-issues
       - When something doesn't work: https://github.com/mas-cli/mas?tab=readme-ov-file#-when-something-doesnt-work
   mas search Xcode:
     desc: Search for an app in the Mac App Store
-    tags: [mas, macos]
+    tags:
+      - mas
+      - macos
     links:
       - Usage: https://github.com/mas-cli/mas?tab=readme-ov-file#-sign-in
       - Known Issues: https://github.com/mas-cli/mas?tab=readme-ov-file#%EF%B8%8F-known-issues
       - When something doesn't work: https://github.com/mas-cli/mas?tab=readme-ov-file#-when-something-doesnt-work
   mas install 497799835:
     desc: Install an app from the Mac App Store
-    tags: [mas, macos]
+    tags:
+      - mas
+      - macos
     links:
       - Usage: https://github.com/mas-cli/mas?tab=readme-ov-file#-sign-in
       - Known Issues: https://github.com/mas-cli/mas?tab=readme-ov-file#%EF%B8%8F-known-issues
       - When something doesn't work: https://github.com/mas-cli/mas?tab=readme-ov-file#-when-something-doesnt-work
   mas lucky twitter:
     desc: Install the first search result from the Mac App Store
-    tags: [mas, macos]
+    tags:
+      - mas
+      - macos
     links:
       - Usage: https://github.com/mas-cli/mas?tab=readme-ov-file#-sign-in
       - Known Issues: https://github.com/mas-cli/mas?tab=readme-ov-file#%EF%B8%8F-known-issues
       - When something doesn't work: https://github.com/mas-cli/mas?tab=readme-ov-file#-when-something-doesnt-work
   mas outdated:
     desc: List outdated apps from the Mac App Store
-    tags: [mas, macos]
+    tags:
+      - mas
+      - macos
     links:
       - Usage: https://github.com/mas-cli/mas?tab=readme-ov-file#-sign-in
       - Known Issues: https://github.com/mas-cli/mas?tab=readme-ov-file#%EF%B8%8F-known-issues
       - When something doesn't work: https://github.com/mas-cli/mas?tab=readme-ov-file#-when-something-doesnt-work
   mas upgrade:
     desc: Upgrade outdated apps from the Mac App Store
-    tags: [mas, macos]
+    tags:
+      - mas
+      - macos
     links:
       - Usage: https://github.com/mas-cli/mas?tab=readme-ov-file#-sign-in
       - Known Issues: https://github.com/mas-cli/mas?tab=readme-ov-file#%EF%B8%8F-known-issues
       - When something doesn't work: https://github.com/mas-cli/mas?tab=readme-ov-file#-when-something-doesnt-work
   mas reset:
     desc: Reset the Mac App Store
-    tags: [mas, macos]
+    tags:
+      - mas
+      - macos
     links:
       - Usage: https://github.com/mas-cli/mas?tab=readme-ov-file#-sign-in
       - Known Issues: https://github.com/mas-cli/mas?tab=readme-ov-file#%EF%B8%8F-known-issues
       - When something doesn't work: https://github.com/mas-cli/mas?tab=readme-ov-file#-when-something-doesnt-work
-
-  # macos
   airport -I:
     desc: Check if you're connected to a 2.4 GHz or 5 GHz Wi-Fi network via the command line interface (CLI) on macOS
-    tags: [macos, wifi, wireless, airport]
+    tags:
+      - macos
+      - wifi
+      - wireless
+      - airport
     notes:
       - md: |
           The `airport` command, which is a tool for configuring and querying airport wireless devices
@@ -1258,198 +1362,213 @@ commands:
             - Channels above 14 indicate a **5 GHz** network.
   softwareupdate --list:
     desc: List available software updates on macOS
-    tags: [macos, softwareupdate]
+    tags:
+      - macos
+      - softwareupdate
     links:
       - https://support.apple.com/en-us/HT201541
   softwareupdate --install -a:
     desc: Install all available software updates on macOS
-    tags: [macos, softwareupdate]
+    tags:
+      - macos
+      - softwareupdate
     links:
       - https://support.apple.com/en-us/HT201541
-
-  # wezterm
   wezterm ls-fonts:
     desc: List fonts
-    tags: [wezterm]
+    tags:
+      - wezterm
     links:
       - Troubleshooting Fonts: https://wezfurlong.org/wezterm/config/fonts.html#troubleshooting-fonts
       - Font Shaping: https://wezfurlong.org/wezterm/config/font-shaping.html
       - Fonts: https://wezfurlong.org/wezterm/config/fonts.html
   wezterm ls-fonts --list-system:
     desc: List system fonts
-    tags: [wezterm]
+    tags:
+      - wezterm
     links:
       - Troubleshooting Fonts: https://wezfurlong.org/wezterm/config/fonts.html#troubleshooting-fonts
       - Font Shaping: https://wezfurlong.org/wezterm/config/font-shaping.html
       - Fonts: https://wezfurlong.org/wezterm/config/fonts.html
-
-  # vscode
   rm -rf ~/Library/Application\ Support/Code/User/snippets && ln -s ~/.config/snippets/ ~/Library/Application\ Support/Code/User/snippets:
     desc: Symlink snippets
-    tags: [vscode]
+    tags:
+      - vscode
   rm -rf ~/Library/Application\ Support/Code/{Cache,CachedConfigurations,CachedData,CachedExtensionVSIXs,CachedProfilesData,Code\ Cache}:
     desc: Clear VSCode cache
-    tags: [vscode]
-
-  # DOTNET
+    tags:
+      - vscode
   brew install --cask dotnet-sdk:
     desc: Install dotnet sdk
-    tags: [dotnet]
-    # links:
-    #   - https://appleinsider.com/articles/23/11/29/microsofts-net-8-with-aspire-cloud-ready-tools-for-mac-is-out
-    #   - https://learn.microsoft.com/en-gb/dotnet/core/install/macos
+    tags:
+      - dotnet
   dotnet --list-sdks:
     desc: List installed SDKs
-    tags: [dotnet]
+    tags:
+      - dotnet
   dotnet --list-runtimes:
     desc: List installed runtimes
-    tags: [dotnet]
+    tags:
+      - dotnet
   dotnet new console -o <NAME>:
     desc: Create a new console app
-    tags: [dotnet]
+    tags:
+      - dotnet
   dotnet interactive --version:
     desc: Show dotnet interactive version
-    tags: [dotnet]
-
-  # node
+    tags:
+      - dotnet
   node --env-file=.env index.js:
     desc: Node.js v20.6.0 supports .env files for configuring environment variables
-    tags: [node, env]
-    # links:
-    #   - https://nodejs.org/en/blog/release/v20.6.0
-
-  # gomplate
+    tags:
+      - node
+      - env
   echo 'Hello, {{ .Env.USER }}' | gomplate:
     desc: With environment variables
     output: Hello, hairyhenderson
-    tags: [gomplate]
+    tags:
+      - gomplate
   gomplate -i 'the answer is {{ mul 6 7 }}':
     desc: With functions
     output: the answer is 42
-    tags: [gomplate]
+    tags:
+      - gomplate
   gomplate -i '{{ range seq 5 1 }}{{ . }} {{ if eq . 1 }}{{ "blastoff" | toUpper }}{{ end }}{{ end }}':
     desc: With range and if
     output: 5 4 3 2 1 BLASTOFF
-    tags: [gomplate]
-
-  # placeholders
+    tags:
+      - gomplate
   curlie https://jsonplaceholder.typicode.com/posts:
     desc: Provides fake data for testing and prototyping, including resources like posts, comments, photos, etc.
-    tags: [api, placeholder, json, rest]
+    tags:
+      - api
+      - placeholder
+      - json
+      - rest
   curlie https://jsonplaceholder.typicode.com/posts/1:
     desc: Provides fake data for testing and prototyping, including resources like posts, comments, photos, etc.
-    tags: [api, placeholder, json, rest]
+    tags:
+      - api
+      - placeholder
+      - json
+      - rest
   curlie https://reqres.in/api/users:
     desc: A hosted REST-API ready to respond to AJAX requests, useful for front-end developers who need a quick back-end for prototyping and testing.
-    tags: [api, placeholder, user, rest]
+    tags:
+      - api
+      - placeholder
+      - user
+      - rest
   curlie https://reqres.in/api/users/2:
     desc: A hosted REST-API ready to respond to AJAX requests, useful for front-end developers who need a quick back-end for prototyping and testing.
-    tags: [api, placeholder, user, rest]
+    tags:
+      - api
+      - placeholder
+      - user
+      - rest
   curlie https://cat-fact.herokuapp.com/facts/random:
     desc: Offers random facts about cats. Great for testing simple API requests and responses.
-    tags: [api, placeholder, cats, facts]
+    tags:
+      - api
+      - placeholder
+      - cats
+      - facts
   curlie https://dog.ceo/api/breeds/image/random:
     desc: Provides random pictures of dogs. Useful for applications that require image content.
-    tags: [api, placeholder, dogs, images]
+    tags:
+      - api
+      - placeholder
+      - dogs
+      - images
   curlie https://rickandmortyapi.com/api/character/?name=rick&status=alive:
     desc: List of characters from the television show "Rick and Morty." It's a RESTful and GraphQL API to access information about the characters, locations, and episodes.
-    tags: [api, placeholder, rickandmorty, tvshow]
+    tags:
+      - api
+      - placeholder
+      - rickandmorty
+      - tvshow
   curlie https://rickandmortyapi.com/api/character:
     desc: List of characters from the television show "Rick and Morty." It's a RESTful and GraphQL API to access information about the characters, locations, and episodes.
-    tags: [api, placeholder, rickandmorty, tvshow]
+    tags:
+      - api
+      - placeholder
+      - rickandmorty
+      - tvshow
   curlie https://rickandmortyapi.com/api/character/1:
     desc: Based on the television show "Rick and Morty." It's a RESTful and GraphQL API to access information about the characters, locations, and episodes.
-    tags: [api, placeholder, rickandmorty, tvshow]
+    tags:
+      - api
+      - placeholder
+      - rickandmorty
+      - tvshow
   curlie 'https://pokeapi.co/api/v2/pokemon?limit=100&offset=0':
     desc: Loads 100 Pokémon from the Pokémon API. Useful for applications that need to display Pokémon data.
-    tags: [api, placeholder, pokemon, gaming]
+    tags:
+      - api
+      - placeholder
+      - pokemon
+      - gaming
   curlie 'https://pokeapi.co/api/v2/pokemon?limit=200&offset=100':
     desc: Loads 100 more Pokémon from the Pokémon API. Useful for applications that need to display Pokémon data.
-    tags: [api, placeholder, pokemon, gaming]
+    tags:
+      - api
+      - placeholder
+      - pokemon
+      - gaming
   curlie 'https://pokeapi.co/api/v2/pokemon/1':
     desc: Provides information on Pokémon, including data on Pokémon species, abilities, and moves.
-    tags: [api, placeholder, pokemon, gaming]
+    tags:
+      - api
+      - placeholder
+      - pokemon
+      - gaming
   curl 'https://v2.jokeapi.dev/joke/Any':
     desc: A RESTful API that returns random jokes in various formats and categories, including programming jokes.
-    tags: [api, placeholder, jokes, humor]
+    tags:
+      - api
+      - placeholder
+      - jokes
+      - humor
   curlie https://restcountries.com/v3.1/name/sweden:
     desc: Provides information about countries, such as name, population, area, and more.
-    tags: [api, placeholder, countries, data]
+    tags:
+      - api
+      - placeholder
+      - countries
+      - data
   curlie https://ipinfo.io/8.8.8.8/json:
     desc: Offers details about IP addresses, including geolocation information. Useful for applications that need to understand user location.
-    tags: [api, placeholder, ip, geolocation]
-
-  # # the real fun comes when you use datasources!
-  # cat ./config.yaml
-  # foo:
-  #   bar:
-  #     baz: qux
-  # gomplate -d config=./config.yaml -i 'the value we want is: {{ (datasource "config").foo.bar.baz }}'
-  # the value we want is: qux
-
-  # # datasources are defined by URLs, and gomplate is not limited to just file-based datasources:
-  # gomplate -d ip=https://ipinfo.io -i 'country code: {{ (ds "ip").country }}'
-  # country code: CA
-
-  # # standard input can be used as a datasource too:
-  # echo '{"cities":["London", "Johannesburg", "Windhoek"]}' | gomplate -d city=stdin:///in.json -i '{{ range (ds "city").cities }}{{.}}, {{end}}'
-  # London, Johannesburg, Windhoek,
-
-  # # and here's something a little more complicated:
-  # export CITIES='city: [London, Johannesburg, Windhoek]'
-  # cat in.tmpl
-  # {{ range $i, $city := (ds "cities").city -}}
-  # {{ add 1 $i }}: {{ include "weather" (print $city "?0") }}
-  # {{ end }}
-  # gomplate -d 'cities=env:///CITIES?type=application/yaml' -d 'weather=https://wttr.in/?0' -H 'weather=User-Agent: curl' -f in.tmpl
-  # 1: Weather report: London
-
-  #     \  /       Partly cloudy
-  #   _ /"".-.     4-7 °C
-  #     \_(   ).   ↑ 20 km/h
-  #     /(___(__)  10 km
-  #               0.0 mm
-
-  # 2: Weather report: Johannesburg
-
-  #     \  /       Partly cloudy
-  #   _ /"".-.     15 °C
-  #     \_(   ).   ↘ 0 km/h
-  #     /(___(__)  10 km
-  #               2.2 mm
-
-  # 3: Weather report: Windhoek
-
-  #     \  /       Partly cloudy
-  #   _ /"".-.     20 °C
-  #     \_(   ).   ↑ 6 km/h
-  #     /(___(__)  20 km
-  #               0.0 mm
-
-  #code
+    tags:
+      - api
+      - placeholder
+      - ip
+      - geolocation
   code --list-extensions:
     desc: List installed extensions
-    tags: [code, extensions]
-
-  # fff: A simple file manager written in bash
+    tags:
+      - code
+      - extension
   fff:
     desc: A simple file manager written in bash
-    tags: [fff, filemanager]
-
-  # cal
+    tags:
+      - fff
+      - filemanager
   cal:
     desc: Show current month
-    tags: [cal]
+    tags:
+      - cal
   cal -3:
     desc: Show previous, current and next month
-    tags: [cal]
+    tags:
+      - cal
   cal -m 3:
     desc: Show month 3
-    tags: [cal]
+    tags:
+      - cal
   cal -A 4:
     desc: Show current month and next 4 months
-    tags: [cal]
-
+    tags:
+      - cal
   act -s GITHUB_TOKEN="$(gh auth token)":
     desc: Run GitHub Actions locally with GITHUB_TOKEN secret
     notes:
@@ -1505,20 +1624,24 @@ commands:
 
           # When running for the 1st time, it will ask you to choose the default image and save it to ~/.actrc
           ls ~/.actrc
-    tags: [github, actions]
+    tags:
+      - github
+      - actions
     links:
       - Docs: https://nektosact.com
       - Github: https://github.com/nektos/act
       - User Guide: https://github.com/nektos/act?tab=readme-ov-file#act-user-guide
       - How GitHub Actions 10x my productivity: https://youtu.be/yfBtjLxn_6k
-
-  # python/pip
   pip search <package>:
     desc: To search for a package
-    tags: [python, pip]
+    tags:
+      - pip
+      - py
   pip install <package>:
     desc: To install packages
-    tags: [python, pip]
+    tags:
+      - pip
+      - py
   ~/.modular/pkg/packages.modular.com_mojo/venv:
     desc: Mojo's Python virtual environment (Mac M1)
     notes:
@@ -1531,145 +1654,212 @@ commands:
       - https://developer.modular.com/download
       - https://modular.com/blog/mojo-is-now-available-on-mac
       - https://marketplace.visualstudio.com/items?itemName=modular-mojotools.vscode-mojo
-    tags: [python, pip, mojo]
+    tags:
+      - mojo
+      - pip
+      - py
   pip install --user <package>:
     desc: To install a package in user space
-    tags: [python, pip]
+    tags:
+      - pip
+      - py
   pip install --upgrade <package>:
     desc: To upgrade a package
-    tags: [python, pip]
+    tags:
+      - pip
+      - py
   pip freeze > requirements.txt:
     desc: To output and install packages in a requirement file
-    tags: [python, pip]
+    tags:
+      - pip
+      - py
   pip install -r requirements.txt:
     desc: Install packages from requirements.txt
-    tags: [python, pip]
+    tags:
+      - pip
+      - py
   pip show <package>:
     desc: To show details of a package
-    tags: [python, pip]
+    tags:
+      - pip
+      - py
   pip list --outdated:
     desc: To list outdated packages
-    tags: [python, pip]
+    tags:
+      - pip
+      - py
   pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U:
     desc: To upgrade all outdated packages
-    tags: [python, pip]
+    tags:
+      - pip
+      - py
   pip list --outdated --format=freeze | cut -d = -f 1 | xargs -n1 pip install -U:
     desc: To upgrade outdated packages on latest version of pip
-    tags: [python, pip]
+    tags:
+      - pip
+      - py
   pip install -I SomePackage1==1.1.0 'SomePackage2>=1.0.4':
     desc: To install specific version of a package
-    tags: [python, pip]
-
+    tags:
+      - pip
+      - py
   sudo lsof -i -P | grep LISTEN:
     desc: List all open ports
-    tags: [ports]
+    tags:
+      - ports
     links:
       - https://cyberciti.biz/faq/what-process-has-open-linux-port
       - https://cyberciti.biz/faq/unix-linux-check-if-port-is-in-use-command
       - https://codinhood.com/nano/macos/find-kill-proccess-port-macos/
   sudo lsof -i -P -n | grep LISTEN:
     desc: List all open ports
-    tags: [ports]
+    tags:
+      - ports
     links:
       - https://cyberciti.biz/faq/what-process-has-open-linux-port
       - https://cyberciti.biz/faq/unix-linux-check-if-port-is-in-use-command
       - https://codinhood.com/nano/macos/find-kill-proccess-port-macos/
   sudo lsof -i:
     desc: List all open ports
-    tags: [ports]
+    tags:
+      - ports
     links:
       - https://cyberciti.biz/faq/what-process-has-open-linux-port
       - https://cyberciti.biz/faq/unix-linux-check-if-port-is-in-use-command
       - https://codinhood.com/nano/macos/find-kill-proccess-port-macos
   sudo lsof -i \:5000:
     desc: Find out what is running on a particular port
-    tags: [ports]
+    tags:
+      - ports
     links:
       - https://cyberciti.biz/faq/what-process-has-open-linux-port
       - https://cyberciti.biz/faq/unix-linux-check-if-port-is-in-use-command
       - https://codinhood.com/nano/macos/find-kill-proccess-port-macos/
   kill -9 PID:
     desc: Kill a process by PID
-    tags: [ports]
+    tags:
+      - ports
     links:
       - https://cyberciti.biz/faq/what-process-has-open-linux-port
       - https://cyberciti.biz/faq/unix-linux-check-if-port-is-in-use-command
       - https://codinhood.com/nano/macos/find-kill-proccess-port-macos/
   nettop:
     desc: Display network usage
-    tags: [network]
+    tags:
+      - network
     links:
       - https://support.apple.com/guide/mac-help/monitor-network-usage-mac-mh14127/mac
       - https://www.howtogeek.com/356942/how-to-monitor-your-network-usage-in-macos
   git clone --branch <branchname> <remote-repo-url>:
     desc: Clone a Specific Branch
-    tags: [git]
+    tags:
+      - git
     links:
       - https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch
-
   /usr/libexec/java_home:
     desc: Print default JDK path
-    tags: [java, jdk]
+    tags:
+      - java
   /usr/libexec/java_home -V:
     desc: List available JDKs
-    tags: [java, jdk]
+    tags:
+      - java
   /usr/libexec/java_home -<JDK>:
     desc: Run a specified jdk
-    tags: [java, jdk]
+    tags:
+      - java
   export JAVA_HOME="$(/usr/libexec/java_home)":
     desc: Export JAVA_HOME
-    tags: [java, jdk]
+    tags:
+      - java
   mvn package:
     desc: Build project
-    tags: [maven, java, kotlin]
+    tags:
+      - maven
+      - java
+      - kotlin
   mvn clean install:
     desc: Build project
-    tags: [maven, java, kotlin]
+    tags:
+      - maven
+      - java
+      - kotlin
   mvn spring-boot:run:
     desc: Run spring boot project
-    tags: [maven, springboot, java, kotlin]
+    tags:
+      - maven
+      - springboot
+      - java
+      - kotlin
   brew install spring-io/tap/spring-boot:
     desc: Install springboot
-    tags: [maven, springboot, java, kotlin]
+    tags:
+      - maven
+      - springboot
+      - java
+      - kotlin
   spring init --format=project --build=gradle-project-kotlin --group-id=io.dev --language=kotlin --packaging=jar ~/Work/kotlin/app:
     desc: Create a spring boot project
-    tags: [maven, springboot, kotlin]
+    tags:
+      - maven
+      - springboot
+      - kotlin
   spring init --format=project --dependencies=web,jpa,h2 --build=gradle-project-kotlin --group-id=io.dev --language=kotlin --packaging=jar ~/Work/kotlin/app:
     desc: Create a spring boot project with web, jpa, h2 dependencies
-    tags: [maven, springboot, kotlin]
+    tags:
+      - maven
+      - springboot
+      - kotlin
   spring init --format=project --dependencies=web,jpa,h2 --build=gradle-project-java --group-id=io.dev --language=java --packaging=jar ~/Work/java/app:
     desc: Create a spring boot project with web, jpa, h2 dependencies
-    tags: [maven, springboot, java]
+    tags:
+      - maven
+      - springboot
+      - java
   spring init --build gradle --group-id=io.dev --language kotlin --name spring-boot-app --version 0.0.1-SNAPSHOT ~/Work/kotlin/app:
     desc: Create a spring boot project with web, jpa, h2 dependencies
-    tags: [maven, springboot, kotlin]
+    tags:
+      - maven
+      - springboot
+      - kotlin
   sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk:
     desc: Link openjdk to /Library/Java/JavaVirtualMachines
-    tags: [maven, springboot, java, jdk, openjdk]
+    tags:
+      - java
+      - maven
+      - openjdk
+      - springboot
   ktlint --android applyToIDEAProject -y:
     desc: Enforces Android Code Style (from root)
-    tags: [android, kotlin]
-
-  # Homebrew
+    tags:
+      - android
+      - kotlin
   brew list:
     desc: List all installed formulae
-    tags: [brew, list]
+    tags:
+      - brew
+      - list
     links:
       - Homebrew: https://docs.brew.sh/Manpage#list
   brew doctor:
     desc: Check your system for potential problems
-    tags: [brew, doctor]
+    tags:
+      - brew
+      - doctor
     links:
       - Homebrew: https://docs.brew.sh/Manpage#doctor
   brew --cache:
     desc: Brew cache
-    tags: [brew]
+    tags:
+      - brew
   brew --repository:
     desc: Brew repository
-    tags: [brew]
+    tags:
+      - brew
   brew config:
     desc: Brew config
-    tags: [brew]
+    tags:
+      - brew
   brew update-reset:
     desc: Brew update reset
     tags: [brew]
@@ -1678,140 +1868,185 @@ commands:
     tags: [brew]
   brew deps --tree --installed:
     desc: Show dependencies of installed formulae in a tree format
-    tags: [brew, deps]
+    tags:
+      - brew
+      - deps
     links:
       - Homebrew: https://docs.brew.sh/Manpage#deps---tree---installed
   brew deps --tree <brewformula>:
     desc: Show dependencies of a formula in a tree format
-    tags: [brew, deps]
+    tags:
+      - brew
+      - deps
   brew deps --tree -1 <brewformula>:
     desc: Show dependencies of a formula in a tree format (1 level)
-    tags: [brew, deps]
+    tags:
+      - brew
+      - deps
   brew deps --include-build --tree $(brew leaves):
     desc: Show dependencies of installed formulae in a tree format including build dependencies
-    tags: [brew, deps]
+    tags:
+      - brew
+      - deps
   brew bundle dump --file ~/.config/script/Brewfile:
     desc: Write all installed casks/formulae/images/taps into ~/.config/script/Brewfile
-    tags: [brew, brewfile]
+    tags:
+      - brew
+      - brewfile
   brew bundle --file ~/.config/script/Brewfile:
     desc: Brew bundle ~/.config/script/Brewfile
-    tags: [brew, brewfile]
+    tags:
+      - brew
+      - brewfile
   brew bundle --force cleanup --file ~/.config/script/Brewfile:
     desc: If you want your current system configuration to match your Brewfile
-    tags: [brew, brewfile]
+    tags:
+      - brew
+      - brewfile
   brew bundle --force cleanup:
     desc: If you want your current system configuration to match your Brewfile
-    tags: [brew, brewfile]
+    tags:
+      - brew
+      - brewfile
   brew bundle cleanup:
     desc: Uninstall all dependencies not listed from the Brewfile
-    tags: [brew, brewfile]
+    tags:
+      - brew
+      - brewfile
   brew bundle check:
     desc: Check if all dependencies are installed from the Brewfile (useful for scripting)
-    tags: [brew, brewfile]
+    tags:
+      - brew
+      - brewfile
   brew bundle list:
     desc: List all dependencies present in the Brewfile (only Homebrew By default)
-    tags: [brew, brewfile]
+    tags:
+      - brew
+      - brewfile
   brew bundle exec command:
     desc: Run an external command in an isolated build environment based on the Brewfile dependencies
-    tags: [brew, brewfile]
+    tags:
+      - brew
+      - brewfile
   bundle install && bundle exec rspec:
     desc: Install gems and run tests
-    tags: [brew, brewfile]
+    tags:
+      - brew
+      - brewfile
   brew style homebrew/bundle:
     desc: Syntax linting of Brewfile
-    tags: [brew, brewfile]
+    tags:
+      - brew
+      - brewfile
   brew cask zap <caskname>:
     desc: Uninstall a cask and remove all its files
-    tags: [brew, cask]
+    tags:
+      - brew
+      - cask
     links:
       - Homebrew: https://docs.brew.sh/Manpage#zap
   brew cask uninstall <caskname>:
     desc: Uninstall a cask
-    tags: [brew, cask]
+    tags:
+      - brew
+      - cask
     links:
       - Homebrew: https://docs.brew.sh/Manpage#zap
   brew list --formula | xargs -I {} brew info --formula --json=v1 {} | jq -r '.[] | "\(.name) | \(.desc) (\(.homepage))"':
     desc: List all installed formulae with description and homepage
-    tags: [brew, list]
+    tags:
+      - brew
+      - list
   brew list --cask | xargs -I {} brew info --cask --json=v2 {} | jq -r '.casks[] | "\(.name[0]) | \(.desc) (\(.homepage))"':
     desc: List all installed cask with description and homepage
-    tags: [brew, list]
-
+    tags:
+      - brew
+      - list
   find <PATH=.> -type file:
     desc: Find files
-    tags: [cli, find]
-  'command -v zsh | sudo tee -a /etc/shells && sudo chsh -s "$(command -v zsh)" "${USER}"':
+    tags:
+      - cli
+      - find
+  command -v zsh | sudo tee -a /etc/shells && sudo chsh -s "$(command -v zsh)" "${USER}":
     desc: Change the default shell to zsh
-    tags: [zsh, term]
+    tags:
+      - zsh
+      - term
   sha1sum <FILE>:
     desc: Generate SHA1 hash for file
-    tags: [sha1sum, hash]
-
+    tags:
+      - sha1sum
+      - hash
   wc -l:
     desc: Count only the number of lines
-    tags: [wc]
+    tags:
+      - wc
   wc -w:
     desc: Count only the number of words
-    tags: [wc]
+    tags:
+      - wc
   wc -c:
     desc: Count only the number of bytes
-    tags: [wc]
+    tags:
+      - wc
   ls | wc -l:
     desc: Count the number of files in a directory
-    tags: [wc]
-
-  # ssh
-  ssh-copy-id $SSH_ID:
-    desc: Copy SSH key to remote server
-    tags: [ssh]
-    links:
-      - How to Use SSH Copy ID: https://www.ssh.com/ssh/copy-id
-      - https://docs.github.com/en/github/authenticating-to-github/about-ssh
-
-  find ~/.ssh/*.pub | fzf --ansi | xargs cat | tr -d "\n" | pbcopy && echo "=> Public key copied to clipboard.":
-    desc: Copy public key to clipboard
-    tags: [ssh]
-
-  # find
+    tags:
+      - wc
   find . -iname *test*:
     desc: find files starting at current location and containing text in name
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   find . -iname *test* -d 3:
     desc: case insensitive
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   find . -size +200M:
     desc: find large files over a certain size
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
-
   du -d1:
     desc: list directories (folders)
-    tags: [cli, disk]
+    tags:
+      - cli
+      - disk
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   du -h -d1:
     desc: use human-readable sizes
-    tags: [cli, disk]
+    tags:
+      - cli
+      - disk
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   du -h -d3 -t10G:
     desc: look down 3 levels and only show folders above a threshold size
-    tags: [cli, disk]
+    tags:
+      - cli
+      - disk
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   du -h | sort -hr:
     desc: list directories and sort by size
-    tags: [cli, disk]
+    tags:
+      - cli
+      - disk
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   du -h | sort -hr | head -n10:
     desc: list top 10 directories and sort by size
-    tags: [cli, disk]
+    tags:
+      - cli
+      - disk
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   du -h -d1 -t10G | sort -hr | head -n 10:
@@ -1819,30 +2054,39 @@ commands:
     tags: [cli, disk]
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
-
   find . -size +200M -exec ls -lh {} \;:
     desc: find large files larger than a size, list with details
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   find . -size +200M -exec du -hs {} \;:
     desc: find large files and folders, list with details
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   find . -size +200M -exec du -hs {} \; | sort -hr:
     desc: find large files and folders, list with details, sort
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   find . -size +200M -exec du -hs {} \; | sort -hr | head -n 10:
     desc: find large files and folders, list with details, sort, top 10
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
     links:
       - Using Terminal to Find Large Files and Folders: https://macmost.com/using-terminal-to-find-large-files-and-folders.html
   find . -maxdepth 1 -type f -size 0:
     desc: Find empty files in the current directory
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
     notes:
       - md: |
           This command breaks down as follows:
@@ -1853,7 +2097,9 @@ commands:
           - `-size 0` finds files that are exactly 0 bytes in size.
   find . -maxdepth 1 -type f -size 0 | wc -l:
     desc: Count empty files in the current directory
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
     notes:
       - md: |
           This command breaks down as follows:
@@ -1865,73 +2111,119 @@ commands:
           - `| wc -l` counts the number of lines in the output, which corresponds to the number of empty files found.
   find <PATH=.> -daystart -mtime -7 -delete:
     desc: Find and DELETES files modified in the last 7 days
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -type f -empty -delete:
     desc: Find and DELETES empty - 0 byte - files
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -type d:
     desc: Find dirs
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -name'/**/*.<EXT>':
     desc: Find files with extension
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -name'*.<EXT>' -not -path'*/<TARGET>/*':
     desc: Find files with extension excluding paths
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -t file -maxdepth <MAX>:
     desc: Find files - W/ MAX RECURSIVE DEPTH
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -name'/**/*<TERM>*':
     desc: Find files matching TERM - CASE-SENSITIVE
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -iname'/**/*<TERM>*':
     desc: Find files matching TERM - CASE-INSENSITIVE
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -path'/**/*.<EXT>' -or -name'*<TERM>*':
     desc: Find files matching extension or name name
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -maxdepth <MAX> -size +500k -size -10M:
     desc: 'Find files which size ranges from +500k to 10M - RECURSIVE DEPTH: MAX'
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -type d -name'*<TERM>*':
     desc: Find dirs matching *TERM* - CASE-SENSITIVE
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -type d -iname'*<TERM>*':
     desc: Find dirs matching *TERM* - CASE-INSENSITIVE
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -mmin -<N> -type f:
     desc: Find files modified in the last N mins
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -mmin -5 -type f:
     desc: Find files modified in the last 5 minutes
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=.> -name'<NAME>' -type d -prune:
     desc: Find dirs at current dir
-    tags: [cli, find]
-  "find <PATH=.> -name'<DIR>' -type d -prune -exec rm -rf'{}' +;":
+    tags:
+      - cli
+      - find
+  find <PATH=.> -name'<DIR>' -type d -prune -exec rm -rf'{}' +;:
     desc: Find and delete all matching dirs
-    tags: [cli, find]
-  "find <PATH=.> -name \"*.<NAME>\" -exec rename's/\\.<NAME>$/.<EXT>/''{}' +;":
+    tags:
+      - cli
+      - find
+  find <PATH=.> -name "*.<NAME>" -exec rename's/\.<NAME>$/.<EXT>/''{}' +;:
     desc: Find files and change extensions
-    tags: [cli, find]
-  "find <PATH=.> -name'*<TERM>*' -exec <CMD=wc -l> {} \\;":
+    tags:
+      - cli
+      - find
+  find <PATH=.> -name'*<TERM>*' -exec <CMD=wc -l> {} \;:
     desc: Find files and execute CMD
-    tags: [cli, find]
-  "find <PATH=.> -name'*.<EXT>' -exec <CMD=wc -l> {} \\;":
+    tags:
+      - cli
+      - find
+  find <PATH=.> -name'*.<EXT>' -exec <CMD=wc -l> {} \;:
     desc: Execute a command for each file by extension
-    tags: [cli, find]
-  'find -L <PATH=/> -type l -exec rm -- {} +;':
+    tags:
+      - cli
+      - find
+  find -L <PATH=/> -type l -exec rm -- {} +;:
     desc: Find and DELETES broken symlinks links
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=/> -prune -o -depth +<LEVELS=6> -print:
     desc: Find all that are at least X levels deep
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=/> -user <USER=$USER> -print:
     desc: Find files owned by USER
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   find <PATH=/> (-user <USER=$USER>) -print:
     desc: Find all NOT owned by USER
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd:
     desc: List all in current dir - RECURSIVELY
     tags: [cli, find]
@@ -1946,1519 +2238,2105 @@ commands:
     tags: [cli, find]
   fd . -t directory:
     desc: Find directories
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd . -name'*.<TERM>':
     desc: List all whose name matches term
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd'^<TERM>':
     desc: List all whose name starts with term
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd'^*.<TERM>$':
     desc: List all whose name ends with term
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd -H <NAME>:
     desc: Find files or directories - including hiddens
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd --extension <EXT>:
     desc: Find files by extension
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd --hidden --no-ignore <PATTERN>:
     desc: Find files excluding .gitignore and hidden files
-    tags: [cli, find]
-  "fd . -t directory {'<PATH1>','<PATH2>'}":
+    tags:
+      - cli
+      - find
+  fd . -t directory {'<PATH1>','<PATH2>'}:
     desc: Find directories in multiple paths
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd … -X ls -lhd --color=always:
     desc: Find and show details like file permissions, owners, file sizes
-    tags: [cli, find]
-  'fd -e <EXT=moon> -x mv {} <DIR=yue>/{.}':
+    tags:
+      - cli
+      - find
+  fd -e <EXT=moon> -x mv {} <DIR=yue>/{.}:
     desc: Find and move all files by extension
-    tags: [cli, find]
-  'fd -e <EXT=moon> -x mv {} {.}.<DIR=yue> -j1':
+    tags:
+      - cli
+      - find
+  fd -e <EXT=moon> -x mv {} {.}.<DIR=yue> -j1:
     desc: Find and rename files by extension - SINGULAR THREAD
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd -g'<TERM=test_*.py>' -X <CMD=vi>:
     desc: Find all matching terms and exec command for each one
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd -e zip -x unzip:
     desc: Find all zip archives and unpack them
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd -g'<TERM=test_*.py>' -X vi:
     desc: Find all matching TERM and open them in vi
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   fd -pHIg'*<TERM>*':
     desc: Find all whose name contains TERM
-    tags: [cli, find]
+    tags:
+      - cli
+      - find
   zip -r <FILE> <DIR>:
     desc: Compress files into dir
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   unzip <FILE>:
     desc: Unpack file w/ unzip
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   tree -AC <DIR>:
     desc: Run tree - w/ ANSI, COLORED by LS_COLORS or TREE_COLORS
-    tags: [cli, tree]
+    tags:
+      - cli
+      - tree
   tree -L <DIR>:
     desc: Run tree - LONG FORMAT
-    tags: [cli, tree]
+    tags:
+      - cli
+      - tree
   tree -i <DIR>:
     desc: Run tree  - NO IDENT
-    tags: [cli, tree]
+    tags:
+      - cli
+      - tree
   tree -f <DIR>:
     desc: Run tree - ONLY FILES
-    tags: [cli, tree]
+    tags:
+      - cli
+      - tree
   tree -i -J <DIR>:
     desc: Run tree without WHITESPACES
-    tags: [cli, tree]
+    tags:
+      - cli
+      - tree
   tree -S <DIR>:
     desc: Run tree w/ GRAPHIC LINES
-    tags: [cli, tree]
+    tags:
+      - cli
+      - tree
   tree -n <DIR>:
     desc: Run tree for dir
-    tags: [cli, tree]
+    tags:
+      - cli
+      - tree
   tar -czvf <FILE>.tar.gz folder:
     desc: Compress dir into .tar.gz - w/ progress
-    tags: [zip, archive]
+    tags:
+      - zip
+      - archive
   tar -xvf <NAME>.tar.gz:
     desc: Decompress .tar.gz
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   gzip <FILE>:
     desc: Compress single file w/ gzip
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   gunzip <FILE>:
     desc: Decompress file w/ gunzip
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   gzip *.<EXT>:
     desc: Compress files by extension w/ gzip
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   tar -xvzf <FILE>.tar.gz:
     desc: Decompress tar.gz - like unzip
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   tar -tzf <FILE>.tar.gz:
     desc: List contents of tar.gz
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   tar -xvzf <FILE>.tar.gz -C <TARGET>:
     desc: Extract files from tar.gz
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   tar -xvf <FILE>.tar:
     desc: Extract files from tar
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   tar -cvzf <FILE>.tar.gz <PATH>:
     desc: Compress files into tar.gz
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   tar -cvf <FILE>.tar <PATH>:
     desc: Compress files into tar.gz
-    tags: [cli, zip]
+    tags:
+      - cli
+      - zip
   echo | openssl s_client <domain>:<port=433> 2> /dev/null | openssl x509 -dates -noout:
     desc: Show expiration date of SSL certificate
-    tags: [ssl, expired]
-  'mkdir -p /<PATH>/{<dir1>,<dir2>}':
+    tags:
+      - ssl
+      - expired
+  mkdir -p /<PATH>/{<dir1>,<dir2>}:
     desc: Create two directories at once
-    tags: [cli, dir]
+    tags:
+      - cli
+      - dir
   leave +0330:
     desc: Remind to leave in 3 hours and 30 minutes
-    tags: [leave]
+    tags:
+      - leave
   ls -al:
     desc: List files with permissions and dates
-    tags: [ls]
+    tags:
+      - ls
   echo '<CONTENT>' > <FILE>:
     desc: Create file with contents
-    tags: [echo]
+    tags:
+      - echo
   echo '<CONTENT>' >> <FILE>:
     desc: Appends to file
-    tags: [echo]
+    tags:
+      - echo
   locate <TERM>:
     desc: Quick locate files by term
-    tags: [locate]
+    tags:
+      - locate
   grep <REGEX> <FILE>:
     desc: Grep term in file
-    tags: [grep]
+    tags:
+      - grep
   grep -Iris <REGEX> <DIR>:
     desc: Grep term - RECURSIVELY
-    tags: [grep]
+    tags:
+      - grep
   sed's/<REGEX>/<TERM>/g' <FILE>:
     desc: Replace term in line at file
-    tags: [sed]
+    tags:
+      - sed
   sed -i's/<REGEX>/<TERM>/g' <FILE>:
     desc: Replace lines matching term from file - GLOBAL
-    tags: [sed]
+    tags:
+      - sed
   echo 'It is <FROM>time' | sed's/<REGEX>/<TERM>/g':
     desc: Replace term on STDIN - GLOBAL
-    tags: [sed]
+    tags:
+      - sed
   sed'/<REGEX>/d' <FILE>:
     desc: Delete lines matching term from file
-    tags: [sed]
-  "sed'<FROM>,<TO>d' <FILE>":
+    tags:
+      - sed
+  sed'<FROM>,<TO>d' <FILE>:
     desc: Delete lines from file
-    tags: [sed]
-  "sed'<N>,$d' <FILE>":
+    tags:
+      - sed
+  sed'<N>,$d' <FILE>:
     desc: Delete from nth to last line from file
-    tags: [sed]
+    tags:
+      - sed
   sed'<N>d' <FILE>:
     desc: Delete lines from file
-    tags: [sed]
+    tags:
+      - sed
   sed'$d' <FILE>:
     desc: Delete last line from file
-    tags: [sed]
-  "sed'<FROM>,<TO> s/<REGEX>/<TERM>/' <FILE>":
+    tags:
+      - sed
+  sed'<FROM>,<TO> s/<REGEX>/<TERM>/' <FILE>:
     desc: Replace term from a range in file
-    tags: [sed]
-  "sed's/<REGEX>/<TERM>/3,/g' <FILE>":
+    tags:
+      - sed
+  sed's/<REGEX>/<TERM>/3,/g' <FILE>:
     desc: Replace 3rd, 4th, 5th occurrence a term in file
-    tags: [sed]
+    tags:
+      - sed
   sed's/<REGEX>/<TERM>/2' <FILE>:
     desc: Replace 2nd occurrence of term in file
-    tags: [sed]
+    tags:
+      - sed
   sed's/<REGEX>/<TERM>/' <FILE>:
     desc: Replace term in file
-    tags: [sed]
+    tags:
+      - sed
   sed's/<REGEX>/<TERM>/1' <FILE>:
     desc: Replace 1st occurrence of term in file
-    tags: [sed]
-  "sed -E's/(<w1>|<w2>|<w3>)/,/g'":
+    tags:
+      - sed
+  sed -E's/(<w1>|<w2>|<w3>)/,/g':
     desc: Replace multiple words at once
-    tags: [sed]
-  "sed -E's/(<w1>|<w2>|<w3>)/,/gI'":
+    tags:
+      - sed
+  sed -E's/(<w1>|<w2>|<w3>)/,/gI':
     desc: Replace multiple words at once (CASE INSENSITIVE)
-    tags: [sed]
+    tags:
+      - sed
   "sed':a;N;$!ba;s/\n//g' <FILE>":
     desc: Replace newlines in multiple lines from file
-    tags: [sed]
+    tags:
+      - sed
   sed's/<REGEX>.*/<TO>/g':
     desc: Replace the whole line after matching term
-    tags: [sed]
+    tags:
+      - sed
   sed'/^$/d' <FILE>:
     desc: Remove empty lines and print results to stdout from file
-    tags: [sed]
+    tags:
+      - sed
   cut -d'<SEPARATOR=''> -f<n=1> <FILE>:
     desc: Cut nth separated by SEPARATOR from file
-    tags: [cut]
+    tags:
+      - cut
   http -v <URL>:
     desc: Show a request being sent to url
-    tags: [http]
-
-  # gems
+    tags:
+      - http
   gem update --system:
     desc: Update rubygems
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem list:
     desc: List all gems
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem install <GEM>:
     desc: Install gem
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem install rails:
     desc: Install rails
-    tags: [gem, rails]
+    tags:
+      - gem
+      - rails
   gem install bundler:
     desc: Install bundler
-    tags: [gem, bundler]
+    tags:
+      - gem
+      - bundler
   gem install bundler rails:
     desc: Install bundler and rails
-    tags: [gem, rails, bundler]
+    tags:
+      - gem
+      - rails
+      - bundler
   sudo gem uninstall <gem-name>:
     desc: NOTE | maybe you need sudo
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem info:
     desc: Show information for the given gem
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem environment:
     desc: Display information about the RubyGems environment
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem info --exact neovim:
     desc: Name of gem(s) to query on matches the provided STRING
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem cleanup <gem-name>:
     desc: remove all old versions of the gem
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem uninstall <gem-name>:
     desc: choose which ones you want to remove
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem uninstall <gem-name> --version 1.1.9:
     desc: remove version 1.1.9 only
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem uninstall <gem-name> --version '<1.3.4'`:
     desc: remove all versions less than 1.3.4
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem uninstall -a:
     desc: remove ALL INSTALLED Gems
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem uninstall -I:
     desc: I ignores dependencies
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem uninstall -x:
     desc: x includes executables
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   for x in $(gem list --no-versions); do gem uninstall $x -aIx; done:
     desc: Rubgems < 2.1.0 remove ALL INSTALLED Gems (and starting over)
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   sudo gem list --no-version | xargs sudo gem uninstall -aIx --force:
     desc: sudo remove ALL INSTALLED Gems (and starting over)
-    tags: [ruby, gems]
+    tags:
+      - gem
+      - rb
   gem list --no-version | grep "aws-sdk-" | xargs gem uninstall -aIx:
     desc: remove all gems with a certain prefix
-    tags: [ruby, gems]
-
-  # rails
+    tags:
+      - gem
+      - rb
   rails new <APP>:
     desc: Create Rails app /w SQLite3
-    tags: [rails]
+    tags:
+      - rails
   rails new <APP> && cd <APP> && bundle install:
     desc: Create Rails app /w SQLite3 with all deps
-    tags: [rails]
+    tags:
+      - rails
   rails new <APP> --database=postgresql:
     desc: Create Rails app /w Postgres
-    tags: [rails]
+    tags:
+      - rails
   rails new <APP> --database=postgresql && cd <APP> && bundle install:
     desc: Create Rails app /w Postgres with all deps
-    tags: [rails]
+    tags:
+      - rails
   rails new <APP> --database=mysql:
     desc: Create Rails app w/ MySQL
-    tags: [rails]
+    tags:
+      - rails
   rails new <APP> --database=mysql && cd <APP> && bundle install:
     desc: Create Rails app /w MySQL with all deps
-    tags: [rails]
+    tags:
+      - rails
   bundle install:
     desc: Install bundle dependencies
-    tags: [rails, bundle]
+    tags:
+      - rails
+      - bundle
   bundle exec rails server:
     desc: Run Rails server
-    tags: [rails, bundle]
+    tags:
+      - rails
+      - bundle
   bundle exec rspec:
     desc: Run Rails Rspec
-    tags: [rails, bundle]
+    tags:
+      - rails
+      - bundle
   bundle exec rails generate scaffold <MODEL=Post> <ATTR1=title:string> <ATTR2=notes:text>:
     desc: Scaffold Rails model with attributes
-    tags: [rails, bundle]
+    tags:
+      - rails
+      - bundle
   bundle exec rails generate controller <CONTROLLER=Post> index --skip-routes:
     desc: Generate Rails Controller (skipping routes)
-    tags: [rails, bundle]
+    tags:
+      - rails
+      - bundle
   bundle exec rails generate model <MODEL=Post> <ATTR1=title:string> <ATTR2=notes:text>:
     desc: Genereate Rails model with attributes
-    tags: [rails, bundle]
+    tags:
+      - rails
+      - bundle
   bundle exec rails generate model <MODEL=Post> <ATTR1=title:string> <ATTR2=notes:text> <REF=author>:links:
     desc: Generate Rails model with attributes and reference
-    tags: [rails, bundle]
-  'bundle exec rails generate model <MODEL=Post> <ATTR1=title:string> <ATTR2=notes:text> <REF=author>:references{polymorphic}':
+    tags:
+      - rails
+      - bundle
+  bundle exec rails generate model <MODEL=Post> <ATTR1=title:string> <ATTR2=notes:text> <REF=author>:references{polymorphic}:
     desc: Generate Rails model with attributes and reference by foreign key
-    tags: [rails, bundle]
+    tags:
+      - rails
+      - bundle
   grails list-profiles:
     desc: List grails-app profiles are available
-    tags: [grails]
+    tags:
+      - grails
   grails profile-info plugin:
     desc: Get detailed information about a profile plugin use the profile-info command
-    tags: [grails]
+    tags:
+      - grails
   grails create-app <PACK.AND.APP>:
     desc: Create grails io.dev.demo
-    tags: [grails]
+    tags:
+      - grails
   grails create-app helloworld --profile rest-api && cd helloworld && grails run-app -port=9500:
     desc: Create grails an example with rest-api plugin named helloworld and starts it on port 9500
-    tags: [grails]
+    tags:
+      - grails
   grails create-app <PACK.AND.APP> -profile org.grails.profiles:react:1.0.2:
     desc: Create grails io.dev.demo with react profile
-    tags: [grails]
+    tags:
+      - grails
   ./grailsw create-domain-class <PACK.AND.CLASS>:
     desc: Generate a Domain class - io.dev.demo.model
-    tags: [grails]
+    tags:
+      - grails
   grails run-app:
     desc: Run Grails App @ http://localhost:8080
-    tags: [grails]
+    tags:
+      - grails
   ./gradlew bootRun:
     desc: Run Grails App @ http://localhost:<PORT=8080> - via gradle
-    tags: [grails]
+    tags:
+      - grails
   ./grailsw test-app -unit:
     desc: Run Grails unit tests - via gradle
-    tags: [grails]
+    tags:
+      - grails
   ./grailsw test-app -integration:
     desc: Run Grails integration tests - via gradle
-    tags: [grails]
+    tags:
+      - grails
   ./grailsw test-app:
     desc: Run Grails unit and integration tests - via gradle
-    tags: [grails]
+    tags:
+      - grails
   ./grailsw war:
     desc: Build the finished project into a deployable WAR package - PROD
-    tags: [grails]
+    tags:
+      - grails
   ./grailsw war -Dgrails.env=development:
     desc: Build the finished project into a deployable WAR package - DEV
-    tags: [grails]
+    tags:
+      - grails
   ./grailsw console:
     desc: Launch the Grails Console
-    tags: [grails]
+    tags:
+      - grails
   sudo diskutil apfs addVolume <DISK=disk1> APFS <NAME> -nomount:
     desc: Create an unencrypted APFS volume on disk
-    tags: [diskutils, apfs]
+    tags:
+      - diskutils
+      - apfs
   sudo diskutil info <DISK=disk1>:
     desc: Verify a mounted volume
-    tags: [diskutils]
+    tags:
+      - diskutils
   security find-generic-password -wa "<WI-FI>":
     desc: Reveal a password of a used Wi-fi
-    tags: [password]
+    tags:
+      - password
   passwd:
     desc: Change the password for the current logged account
-    tags: [password]
+    tags:
+      - password
   security set-keychain-password:
     desc: Update the login keychain password - usually after using the passwd cmd
-    tags: [password]
+    tags:
+      - password
   sudo diskutil mount <DISK=disk1>:
     desc: Mount a volume
-    tags: [diskutils, mount]
+    tags:
+      - diskutils
+      - mount
   sudo diskutil unmount <DISK=disk1>:
     desc: Unmount a volume
-    tags: [diskutils, mount]
+    tags:
+      - diskutils
+      - mount
   diskutil list:
     desc: List mounted volumes
-    tags: [diskutils, mount]
+    tags:
+      - diskutils
+      - mount
   diskutil apfs list:
     desc: List apfs mounted volumes
-    tags: [diskutils, apfs, mount]
+    tags:
+      - diskutils
+      - apfs
+      - mount
   uname --all:
     desc: Print all information, in the following order except omit -p and -i if unknown
-    tags: [uname]
+    tags:
+      - uname
   uname --kernel-name:
     desc: Print the kernel name
-    tags: [uname]
+    tags:
+      - uname
   uname --nodename:
     desc: Print the network node hostname
-    tags: [uname]
+    tags:
+      - uname
   uname --kernel-release:
     desc: Print the kernel release
-    tags: [uname]
+    tags:
+      - uname
   uname --kernel-version:
     desc: Print the kernel version
-    tags: [uname]
+    tags:
+      - uname
   uname --machine:
     desc: Print the machine hardware name
-    tags: [uname]
+    tags:
+      - uname
   uname --processor:
     desc: Print the processor type - non-portable
-    tags: [uname]
+    tags:
+      - uname
   uname --hardware-platform:
     desc: Print the hardware platform - non-portable
-    tags: [uname]
+    tags:
+      - uname
   uname --operating-system:
     desc: Print the operating system
-    tags: [uname]
+    tags:
+      - uname
   sysctl hw.cpu64bit_capable:
     desc: Print system information
-    tags: [arch]
+    tags:
+      - arch
   arch:
     desc: Print the architecture of the current machine
-    tags: [arch]
+    tags:
+      - arch
   echo "You are on a "$(getconf LONG_BIT)"-bit architecture":
     desc: Print configuration values
-    tags: [getconf]
+    tags:
+      - getconf
   sudo chown -R $USER:
     desc: Change the ownership of files recursively to $USER
-    tags: [own]
+    tags:
+      - own
   sudo chgrp -hR admin:
     desc: Change the group of files recursively to admin
-    tags: [groups]
+    tags:
+      - groups
   sudo chgrp -hR <group>:
     desc: Change the group of files recursively to <group>
-    tags: [groups]
+    tags:
+      - groups
   cat /etc/shells:
     desc: Show list of included shells at /etc/shells
-    tags: [sheels]
+    tags:
+      - shell
   sudo vi /etc/shells:
     desc: Edit a list of included shells in /etc/shells
-    tags: [sheels]
+    tags:
+      - shell
   chsh -s /usr/local/bin/bash:
     desc: Change the default shell to /usr/local/bin/bash @ /etc/shells
-    tags: [sheels]
+    tags:
+      - shell
   echo '/usr/local/bin/zsh' | sudo tee -a /etc/shells && chsh -s /usr/local/bin/zsh:
     desc: Add /usr/local/bin/zsh' /etc/shells and change it!
-    tags: [sheels]
+    tags:
+      - shell
   chsh -s /usr/local/bin/zsh:
     desc: Change the default shell to /usr/local/bin/zsh @ /etc/shells
-    tags: [sheels]
+    tags:
+      - shell
   chsh -s /bin/zsh:
     desc: Change the default shell to /bin/zsh @ /etc/shells
-    tags: [sheels]
+    tags:
+      - shell
   col<N> “<SEP>” <FILE>:
     desc: Show nth column from file
-    tags: [col]
+    tags:
+      - col
   col2 “<SEP>” <FILE>:
     desc: Show 2nd col from file separated by SEP
-    tags: [col2]
+    tags:
+      - col2
   less <FILE>:
     desc: Paginate a file
-    tags: [less]
+    tags:
+      - less
   head -n <N> <FILE>:
     desc: Display 1st nth lines from file
-    tags: [head]
+    tags:
+      - head
   tail -f <FILE>:
     desc: Follow contents as it increases from file
-    tags: [tail]
+    tags:
+      - tail
   tail -n <N> <FILE>:
     desc: Display last nth lines from file
-    tags: [tail]
+    tags:
+      - tail
   uname -r:
     desc: Display kernel version
-    tags: [uname]
+    tags:
+      - uname
   df -h:
     desc: Get disk usage
-    tags: [df, disk]
+    tags:
+      - df
+      - disk
   cat /proc/meminfo:
     desc: Get memory usage
-    tags: [memory]
+    tags:
+      - memory
   timedatectl status:
     desc: Get system time
-    tags: [timedatectl]
+    tags:
+      - timedatectl
   timedatectl list-timezones:
     desc: List system timezone
-    tags: [timedatectl]
+    tags:
+      - timedatectl
   sudo timedatectl set-timezone <ZONE>:
     desc: Set system timezone to ZONE
-    tags: [timedatectl]
+    tags:
+      - timedatectl
   systemctl --state running:
     desc: Get running services
-    tags: [systemctl]
+    tags:
+      - systemctl
   service <SERVICE> start:
     desc: Start service SERVICE
-    tags: [service]
+    tags:
+      - service
   service <SERVICE> stop:
     desc: Stop service SERVICE
-    tags: [service]
+    tags:
+      - service
   journalctl -u <SERVICE> --since now -f:
     desc: Monitor new logs for a service
-    tags: [journalctl]
-  "echo '${<VAR>/<REGEX>/<TERM>}'":
+    tags:
+      - journalctl
+  echo '${<VAR>/<REGEX>/<TERM>}':
     desc: Replace lines 1st occurrence of term in ENV VAR
-    tags: [echo]
-  "echo '${<VAR>//<REGEX>/<TERM>}'":
+    tags:
+      - echo
+  echo '${<VAR>//<REGEX>/<TERM>}':
     desc: Replace lines matching term with term in ENV VAR
-    tags: [echo]
+    tags:
+      - echo
   chsh -s /bin/bash:
     desc: Change the default shell to /bin/bash
-    tags: [bash, shell]
+    tags:
+      - bash
+      - shell
   sudo netstat -tulpn:
     desc: List open ports and associated processes
-    tags: [ports]
+    tags:
+      - ports
   echo 'use asdf' > .envrc:
     desc: Add .envrc to the current dir
-    tags: [asdf, envrc]
+    tags:
+      - asdf
+      - envrc
   asdf local java temurin-18.0.1+10:
     desc: Add temurin-18.0.1+10 to .tool-versions
-    tags: [asdf, java]
+    tags:
+      - asdf
+      - java
   echo 'use java 18.0.1' > .envrc:
     desc: Add 'use java 18.0.1' to .envrc
-    tags: [asdf, java]
+    tags:
+      - asdf
+      - java
   speedtest-cli:
     desc: Run bandwidth tests - https://speedtest.net
-    tags: [speedtest]
+    tags:
+      - speedtest
   glances:
     desc: Alternative to top/htop
-    tags: [top]
+    tags:
+      - top
   top:
     desc: Improved top - interactive process viewer
-    tags: [top]
+    tags:
+      - top
   gopass insert <KEY>:
     desc: Insert secret
-    tags: [pass]
+    tags:
+      - pass
   gopass audit:
     desc: Scans for weak/leaked passwords
-    tags: [pass]
+    tags:
+      - pass
   gopass cat:
     desc: Print secret, or insert from stdin
-    tags: [pass]
+    tags:
+      - pass
   gopass clone:
     desc: Clone a password store
-    tags: [pass]
+    tags:
+      - pass
   gopass completion zsh > <PATH>:
     desc: Generate completions to <PATH>
-    tags: [pass]
+    tags:
+      - pass
   gopass config:
     desc: Display and edit the config file
-    tags: [pass]
+    tags:
+      - pass
   gopass cp:
     desc: Copy secrets to another location
-    tags: [pass]
+    tags:
+      - pass
   gopass new:
     desc: Create new secrets
     tags: [pass]
-  "gopass rm $(gopass ls --flat | fzf --multi --ansi --preview'gopass show {}')":
+  gopass rm $(gopass ls --flat | fzf --multi --ansi --preview'gopass show {}'):
     desc: Remove selected secrets
-    tags: [pass]
-  "gopass edit $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {})":
+    tags:
+      - pass
+  gopass edit $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {}):
     desc: Create/Edit secrets
-    tags: [pass]
+    tags:
+      - pass
   gopass find:
     desc: Search for secrets
-    tags: [pass]
+    tags:
+      - pass
   gopass fsck:
     desc: Check store integrity
-    tags: [pass]
+    tags:
+      - pass
   gopass generate:
     desc: Add password
-    tags: [pass]
+    tags:
+      - pass
   gopass grep:
     desc: Search secrets with search-string when decrypted
-    tags: [pass]
+    tags:
+      - pass
   gopass history:
     desc: Show password history
-    tags: [pass]
+    tags:
+      - pass
   gopass init:
     desc: Initialize new password store
-    tags: [pass]
+    tags:
+      - pass
   gopass ls:
     desc: List existing secrets
-    tags: [pass]
+    tags:
+      - pass
   gopass merge:
     desc: Merge multiple secrets into one
-    tags: [pass]
+    tags:
+      - pass
   gopass mounts:
     desc: Edit mounted stores
-    tags: [pass]
+    tags:
+      - pass
   gopass mv:
     desc: Move secrets to another location
-    tags: [pass]
+    tags:
+      - pass
   gopass otp:
     desc: Generate time- or hmac-based tokens
-    tags: [pass]
+    tags:
+      - pass
   gopass totp:
     desc: Generate time- or hmac-based tokens
-    tags: [pass]
+    tags:
+      - pass
   gopass hotp:
     desc: Generate time- or hmac-based tokens
-    tags: [pass]
+    tags:
+      - pass
   gopass pwgen:
     desc: Generate passwords
-    tags: [pass]
+    tags:
+      - pass
   gopass recipients:
     desc: Edit recipient permissions
-    tags: [pass]
+    tags:
+      - pass
   gopass setup:
     desc: Initialize a new password store
-    tags: [pass]
-  "gopass show $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {})":
+    tags:
+      - pass
+  gopass show $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {}):
     desc: Pick and display a secret
-    tags: [pass]
-  "gopass show --password $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {})":
+    tags:
+      - pass
+  gopass show --password $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {}):
     desc: Pick and display a secrets password
-    tags: [pass]
-  "gopass show --clip $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {})":
+    tags:
+      - pass
+  gopass show --clip $(gopass ls --flat | fzf --exact --ansi --preview'gopass show {}):
     desc: Pick and copy a secrets password to clipboard
-    tags: [pass]
+    tags:
+      - pass
   gopass sum:
     desc: Compute the SHA256 checksum
-    tags: [pass]
+    tags:
+      - pass
   gopass sha:
     desc: Compute the SHA256 checksum
-    tags: [pass]
+    tags:
+      - pass
   gopass sha256:
     desc: Compute the SHA256 checksum
-    tags: [pass]
+    tags:
+      - pass
   gopass sync:
     desc: Sync local stores with their remotes
-    tags: [pass]
+    tags:
+      - pass
   gopass templates:
     desc: Edit templates
-    tags: [pass]
+    tags:
+      - pass
   gopass --version:
     desc: Display version
-    tags: [pass]
+    tags:
+      - pass
   gopass --help:
     desc: Show help
-    tags: [pass]
+    tags:
+      - pass
   sheldon completions --shell zsh > <PATH=$ZDOTDIR/opt/completions/_sheldon>:
     desc: Generate completion to <PATH>
-    tags: [sheldon]
+    tags:
+      - sheldon
   sheldon lock:
     desc: Check plugins consistency and regenerate a lock file
-    tags: [sheldon]
+    tags:
+      - sheldon
   sheldon lock --update:
     desc: Update plugin sources
-    tags: [sheldon]
+    tags:
+      - sheldon
   sheldon lock --reinstall:
     desc: Force reinstall all plugin sources
-    tags: [sheldon]
+    tags:
+      - sheldon
   pre-commit install --hook-type commit-msg:
     desc: Install the pre-commit hook
-    tags: [pre-commit]
+    tags:
+      - pre_commit
   find . -name <.DS_Store> -print0 | xargs -0 git rm -f --ignore-unmatch:
     desc: Remove files from a Git repository
-    tags: [git]
+    tags:
+      - git
   "git add . && git commit -am 'chore(bootstrap): A new hope...'":
     desc: Add initial commit
-    tags: [git]
+    tags:
+      - git
   "echo '# tmp' >> README.md && git init && git commit -m 'chore(bootstrap): a new hope..'":
     desc: Initilize a git repo w/ README & 1st commit
-    tags: [git]
+    tags:
+      - git
   yarn add <NAME> -DW:
     desc: Add dependency globlay to yarn workspace
-    tags: [yarn, workspace]
+    tags:
+      - yarn
+      - workspace
   gradle init:
     desc: Initialize a GRADLE project
-    tags: [gradle]
+    tags:
+      - gradle
   ./gradlew wrapper --gradle-version=7.4.2:
     desc: Upgrade gradle to 7.4.2
-    tags: [gradle]
+    tags:
+      - gradle
   ./gradlew wrapper --gradle-version=7.5:
     desc: Upgrade gradle to 7.5
-    tags: [gradle]
+    tags:
+      - gradle
   bundle gem <NAME>:
     desc: Create Ruby gem project <NAME>
-    tags: [gem]
+    tags:
+      - gem
   bundle gem <NAME> --ci=github:
     desc: Create Ruby gem project <NAME> (with github CI)
-    tags: [gem]
+    tags:
+      - gem
   gen pre-commit:
     desc: Setup pre-commit to the current dir
-    tags: [pre-commit]
+    tags:
+      - pre_commit
   gen gitlint --precommit:
     desc: Add gitlint, pre-commit hook to the current dir and commit
-    tags: [gitlint, pre_commit]
+    tags:
+      - gitlint
+      - pre_commit
   rname --append-size --remove-original:
     desc: 'Rename files in current dir. e.g.: image.png -> image_1920x1080.png'
-    tags: [rename]
+    tags:
+      - rename
   converts images/logo512.png -background white ( -clone 0 -resize 16x16 -extent 16x16 ) ( -clone 0 -resize 32x32 -extent 32x32 ) ( -clone 0 -resize 48x48 -extent 48x48 ) ( -clone 0 -resize 64x64 -extent 64x64 ) -delete 0 -alpha off -colors 256 favicon.ico:
     desc: Create a favicon
-    tags: [favicon]
+    tags:
+      - favicon
   cwebp -q 50 <FROM> -o <TO>.webp:
     desc: Convert image .webp
-    tags: [convert, webp]
-  "for file in images/*; do cwebp -q 50'$file' -o'${file%.*}.webp'; done":
+    tags:
+      - convert
+      - webp
+  for file in images/*; do cwebp -q 50'$file' -o'${file%.*}.webp'; done:
     desc: Convert each images in current folder to to WebP
-    tags: [convert, webp]
+    tags:
+      - convert
+      - webp
   npm i @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/git @semantic-release/github @semantic-release/release-notes-generator semantic-release -D:
     desc: Install semantic release dependencies
-    tags: [release]
+    tags:
+      - release
   npm install express cors body-parser && npm install --save-dev @types/node @types/body-parser @types/cookie-parser @types/cors @types/express:
     desc: Add Express dependencies
-    tags: [express]
+    tags:
+      - express
   task list:
     desc: List opened tasks
-    tags: [tw]
+    tags:
+      - tw
   task list project:<PROJECT>:
     desc: List opened tasks by project
-    tags: [tw]
+    tags:
+      - tw
   task add <description>:
     desc: Add task
-    tags: [tw]
+    tags:
+      - tw
   task add <description> +<tag>:
     desc: Add task w/ tag
-    tags: [tw]
+    tags:
+      - tw
   task context list:
     desc: List contexts
-    tags: [tw]
+    tags:
+      - tw
   task context home:
     desc: Activate context home
-    tags: [tw]
+    tags:
+      - tw
   task context isolutions:
     desc: Activate context isolutions
-    tags: [tw]
+    tags:
+      - tw
   task context none:
     desc: Deactivate the current context
-    tags: [tw]
+    tags:
+      - tw
   'task project: list':
     desc: List tasks with no project
-    tags: [tw]
+    tags:
+      - tw
   task reports:
     desc: List of available reports
-    tags: [tw]
+    tags:
+      - tw
   task +<tag> count:
     desc: Count tasks by tag
-    tags: [tw]
+    tags:
+      - tw
   task project:<PROJECT> count:
     desc: Count tasks by project
-    tags: [tw]
+    tags:
+      - tw
   task project:<OLD> modify project:<NEW>:
     desc: Rename project
-    tags: [tw]
+    tags:
+      - tw
   task projects:
     desc: Filtered list of projects, with task counts
-    tags: [tw]
+    tags:
+      - tw
   task project:<PROJECT> completed:
     desc: Show tasks completed by project
-    tags: [tw]
+    tags:
+      - tw
   task +<tag> completed:
     desc: Show tasks completed by tag
-    tags: [tw]
+    tags:
+      - tw
   task end.after:today-1wk completed:
     desc: Show tasks completed in the last week
-    tags: [tw]
+    tags:
+      - tw
   task entry:yesterday list:
     desc: Show tasks added yesterday
-    tags: [tw]
+    tags:
+      - tw
   task entry.after:now-1hour list:
     desc: Show tasks added in the last hour
-    tags: [tw]
+    tags:
+      - tw
   task add <description> project:<NAME>:
     desc: Add task with project
-    tags: [tw]
+    tags:
+      - tw
   task $(task uuids all +CHILD +COMPLETED) delete:
     desc: Delete all tasks +CHILD +COMPLETED
-    tags: [tw]
+    tags:
+      - tw
   task $(task uuids due.before:now) delete:
     desc: Delete tasks due before now
-    tags: [tw]
+    tags:
+      - tw
   task $(task uuids due.before:now +CHILD +COMPLETED) delete:
     desc: Delete tasks due before now +CHILD +COMPLETED
-    tags: [tw]
+    tags:
+      - tw
   task $(task uuids all +CHILD +COMPLETED) purge:
     desc: Purge all tasks +CHILD +COMPLETED
-    tags: [tw]
+    tags:
+      - tw
   task $(task uuids due.before:now) purge:
     desc: Purge tasks due before now
-    tags: [tw]
+    tags:
+      - tw
   task $(task uuids due.before:now +CHILD +COMPLETED) purge:
     desc: Purge tasks due before now +CHILD +COMPLETED
-    tags: [tw]
+    tags:
+      - tw
   task news:
     desc: Release major highlights
-    tags: [tw]
+    tags:
+      - tw
   task burndown.daily:
     desc: Burndown chart, by day
-    tags: [tw]
+    tags:
+      - tw
   task burndown.monthly:
     desc: Burndown chart, by month
-    tags: [tw]
+    tags:
+      - tw
   task burndown.weekly:
     desc: Burndown chart, by week
-    tags: [tw]
+    tags:
+      - tw
   task calendar:
     desc: Calendar and holidays
-    tags: [tw]
+    tags:
+      - tw
   task colors:
     desc: Demonstrates all supported colors
-    tags: [tw]
+    tags:
+      - tw
   task columns:
     desc: List of report columns and supported formats
-    tags: [tw]
+    tags:
+      - tw
   task commands:
     desc: List of commands, with their behaviors
-    tags: [tw]
+    tags:
+      - tw
   task diagnostics:
     desc: Show diagnostics, for troubleshooting
-    tags: [tw]
+    tags:
+      - tw
   task ghistory.annual:
     desc: History graph, by year
-    tags: [tw]
+    tags:
+      - tw
   task ghistory.monthly:
     desc: History graph, by month
-    tags: [tw]
+    tags:
+      - tw
   task ghistory.weekly:
     desc: History graph, by week
-    tags: [tw]
+    tags:
+      - tw
   task ghistory.daily:
     desc: History graph, by day
-    tags: [tw]
+    tags:
+      - tw
   task history.annual:
     desc: History report, by year
-    tags: [tw]
+    tags:
+      - tw
   task history.monthly:
     desc: History report, by month
-    tags: [tw]
+    tags:
+      - tw
   task history.weekly:
     desc: History report, by week
-    tags: [tw]
+    tags:
+      - tw
   task history.daily:
     desc: History report, by day
-    tags: [tw]
+    tags:
+      - tw
   task ids:
     desc: Filtered list of task IDs
-    tags: [tw]
+    tags:
+      - tw
   task information:
     desc: All attributes shown
-    tags: [tw]
+    tags:
+      - tw
   task show:
     desc: Filtered list of configuration settings
-    tags: [tw]
+    tags:
+      - tw
   task show report.minimal:
     desc: 'Show definitions of report: minimal'
-    tags: [tw]
+    tags:
+      - tw
   task show context.home:
     desc: 'Show definitions of context: home'
-    tags: [tw]
+    tags:
+      - tw
   task show context.xp:
     desc: 'Show definitions of context: xp'
-    tags: [tw]
+    tags:
+      - tw
   task show context.job:
     desc: 'Show definitions of context: job'
-    tags: [tw]
+    tags:
+      - tw
   task show context.work:
     desc: 'Show definitions of context: work'
-    tags: [tw]
+    tags:
+      - tw
   task stats:
     desc: Filtered statistics
-    tags: [tw]
+    tags:
+      - tw
   task summary:
     desc: Filtered project summary
-    tags: [tw]
+    tags:
+      - tw
   task tags:
     desc: Filtered list of tags
-    tags: [tw]
+    tags:
+      - tw
   task timesheet:
     desc: Weekly timesheet report
-    tags: [tw]
+    tags:
+      - tw
   task udas:
     desc: Details of all defined UDAs
-    tags: [tw]
+    tags:
+      - tw
   task uuids:
     desc: Filtered list of UUIDs
-    tags: [tw]
+    tags:
+      - tw
   task list active:
     desc: Started tasks
-    tags: [tw]
+    tags:
+      - tw
   task list all:
     desc: Pending, completed and deleted tasks
-    tags: [tw]
+    tags:
+      - tw
   task list blocked:
     desc: Tasks that are blocked by other tasks
-    tags: [tw]
+    tags:
+      - tw
   task list blocking:
     desc: Tasks that block other tasks
-    tags: [tw]
+    tags:
+      - tw
   task list completed:
     desc: Tasks that have been completed
-    tags: [tw]
+    tags:
+      - tw
   task list list:
     desc: Pending tasks
-    tags: [tw]
+    tags:
+      - tw
   task list long:
     desc: Pending tasks, long form
-    tags: [tw]
+    tags:
+      - tw
   task list ls:
     desc: Pending tasks, short form
-    tags: [tw]
+    tags:
+      - tw
   task list minimal:
     desc: Pending tasks, minimal form
-    tags: [tw]
+    tags:
+      - tw
   task list newest:
     desc: Most recent pending tasks
-    tags: [tw]
+    tags:
+      - tw
   task list next:
     desc: Most urgent tasks
-    tags: [tw]
+    tags:
+      - tw
   task list oldest:
     desc: Oldest pending tasks
-    tags: [tw]
+    tags:
+      - tw
   task list overdue:
     desc: Overdue tasks
-    tags: [tw]
+    tags:
+      - tw
   task list ready:
     desc: Pending, unblocked, scheduled tasks
-    tags: [tw]
+    tags:
+      - tw
   task list recurring:
     desc: Pending recurring tasks
-    tags: [tw]
+    tags:
+      - tw
   task list unblocked:
     desc: Tasks that are not blocked
-    tags: [tw]
+    tags:
+      - tw
   task list waiting:
     desc: Hidden, waiting tasks
-    tags: [tw]
+    tags:
+      - tw
   touch .editorconfig:
     desc: Generate .editorconfig
-    tags: [editorconfig]
+    tags:
+      - editorconfig
   curl -sL https://rb.gy/jl5vwa | grep name | cut -d \" -f4 | cut -c2-:
     desc: Get latest LuaRocks version by default
-    tags: [luarocks]
+    tags:
+      - luarocks
   shasum -a 256 <FILE>:
     desc: Generate SHA-256 of file
-    tags: [sha, sha256]
+    tags:
+      - sha
+      - sha256
   shasum -a 256 <FILE> | cut -d'' -f1:
     desc: Generate SHA-256 of file
-    tags: [sha, sha256]
+    tags:
+      - sha
+      - sha256
   shasum -a 512 <FILE>:
     desc: Generate SHA-512 of file
-    tags: [sha, sha512]
+    tags:
+      - sha
+      - sha512
   shasum -a 512 <FILE> | cut -d'' -f1:
     desc: Generate SHA-512 of file
-    tags: [sha, sha512]
+    tags:
+      - sha
+      - sha512
   chgrp -hR <group> <DIR>:
     desc: Change the group of dir recursively
-    tags: [groups]
+    tags:
+      - groups
   launchctl setenv <KEY> "<VALUE>":
     desc: Set a launchd env var
-    tags: [launchd]
+    tags:
+      - launchd
   launchctl getenv <KEY>:
     desc: Get launchd env var KEY's value
-    tags: [launchd]
+    tags:
+      - launchd
   launchctl unsetenv <KEY>:
     desc: Unset the specified env vars for all services within the domain
-    tags: [launchd]
+    tags:
+      - launchd
   launchctl list:
     desc: List information about services
-    tags: [launchd]
+    tags:
+      - launchd
   launchctl runstats gui/$UID/<SERVICE>:
     desc: Print performance statistics for a service
-    tags: [launchd]
+    tags:
+      - launchd
   launchctl bootstrap gui/$UID/ /Library/LaunchAgents/<plist>:
     desc: Bootstrap a domain/service into /Library/LaunchAgents/
-    tags: [launchd]
+    tags:
+      - launchd
   launchctl bootout gui/$UID /Library/LaunchAgents/<plist>:
     desc: Tear down a domain or removes a service from /Library/LaunchAgents/
-    tags: [launchd]
+    tags:
+      - launchd
   launchctl enable gui/$UID/<NAME>:
     desc: Enable an existing service
-    tags: [launchd]
+    tags:
+      - launchd
   launchctl disable gui/$UID/<NAME>:
     desc: Disable an existing service
-    tags: [launchd]
+    tags:
+      - launchd
   launchctl start gui/$UID/<NAME>:
     desc: Start specified service
-    tags: [launchd]
+    tags:
+      - launchd
   launchctl stop gui/$UID/<NAME>:
     desc: Stop the specified service
-    tags: [launchd]
+    tags:
+      - launchd
   sudo launchctl bootstrap gui/$UID /Library/LaunchAgents/dev.dotfiles.setup.plist:
     desc: Bootstrap the dev.dotfiles.setup service
-    tags: [launchd]
+    tags:
+      - launchd
   sudo launchctl bootout gui/$UID /Library/LaunchAgents/dev.dotfiles.setup.plist:
     desc: Tear down dev.dotfiles.setup service
-    tags: [launchd]
+    tags:
+      - launchd
   sudo launchctl enable gui/$UID/dev.dotfiles.setup:
     desc: Enable dev.dotfiles.setup service
-    tags: [launchd]
+    tags:
+      - launchd
   sudo launchctl disable gui/$UID/dev.dotfiles.setup:
     desc: Disable dev.dotfiles.setup service
-    tags: [launchd]
+    tags:
+      - launchd
   sudo launchctl start gui/$UID/dev.dotfiles.setup:
     desc: Start dev.dotfiles.setup service
-    tags: [launchd]
+    tags:
+      - launchd
   sudo launchctl stop gui/$UID/dev.dotfiles.setup:
     desc: Stop dev.dotfiles.setup service
-    tags: [launchd]
+    tags:
+      - launchd
   sudo systemsetup -listtimezones:
     desc: List Timezones
-    tags: [timezones]
+    tags:
+      - timezones
   adb shell am kill <PACKAGE>:
     desc: Kill a running App by PACKAGE
-    tags: [android, adb]
+    tags:
+      - android
+      - adb
   yes | sdkmanager --licenses && yes | sdkmanager --licenses:
     desc: Accept all - and not previously accepted - licenses
-    tags: [android, sdkmanager]
-
+    tags:
+      - android
+      - sdkmanager
   env:
     desc: List your environment variables (detailed)
-    tags: [nu]
+    tags:
+      - nu
   $env:
     desc: List your environment variables
-    tags: [nu]
+    tags:
+      - nu
   env | where name== <ENV_VAR>:
     desc: Get a single <ENV_VAR>'s value
-    tags: [nu]
+    tags:
+      - nu
   help commands | where is_custom== false | first 10 | drop column:
     desc: See all supported commands
-    tags: [nu]
+    tags:
+      - nu
   help <COMMAND>:
     desc: Find more specific information on a <COMMAND>
-    tags: [nu]
+    tags:
+      - nu
   help <COMMAND> <SUBCOMMAND>:
     desc: Specific information on a <COMMAND> <SUBCOMMAND>
-    tags: [nu]
+    tags:
+      - nu
   ls | where type== file:
     desc: View all files in the current directory
-    tags: [nu]
+    tags:
+      - nu
   ls | where type== dir:
     desc: View all directories in the current directory
-    tags: [nu]
+    tags:
+      - nu
   ps | where cpu > 0 | sort-by cpu | reverse:
     desc: Find processes sorted by greatest cpu utilization
-    tags: [nu]
+    tags:
+      - nu
   ps | where name== Notepad2.exe:
     desc: Use 'ps' to fairly easy find the pid of a process
-    tags: [nu]
+    tags:
+      - nu
   ps | where name== Notepad2.exe | get pid.0 | kill -9 $in:
     desc: This process can be sent the kill signal in a one-liner
-    tags: [nu]
+    tags:
+      - nu
   'cargo search shells --limit 10 | lines | parse"{crate_name}= {version} #{description}" | str trim':
     desc: Parse an arbitrary pattern from a string of text into a multi-column table
-    tags: [nu]
+    tags:
+      - nu
   sys | get mem | to json | pbcopy:
     desc: Add the output of a pipeline to your clipboard - This currently needs to be string output
-    tags: [nu]
+    tags:
+      - nu
   open Cargo.toml | get package.version:
     desc: Read the file's initial contents
-    tags: [nu]
+    tags:
+      - nu
   open Cargo.toml | inc version patch | save Cargo.toml:
     desc: Editing a file and then saving the changes (a Cargo.toml, increasing the patch version of the crate using inc and then save it back to the file)
-    tags: [nu]
-  'open Cargo.toml | upsert package.version { |p| $p | get package.version | inc --patch } | save Cargo.toml':
+    tags:
+      - nu
+  open Cargo.toml | upsert package.version { |p| $p | get package.version | inc --patch } | save Cargo.toml:
     desc: Edit the version number and save it
-    tags: [nu]
+    tags:
+      - nu
   open bands.txt | lines | split column":" Band Album Year | skip 1 | sort-by Year:
     desc: Parsing a file in a non-standard format
-    tags: [nu]
-  'open bands.txt | lines | parse"{Band}:{Album}:{Year}" | skip 1 | sort-by Year':
+    tags:
+      - nu
+  open bands.txt | lines | parse"{Band}:{Album}:{Year}" | skip 1 | sort-by Year:
     desc: Parsing a file in a non-standard format using parse
-    tags: [nu]
+    tags:
+      - nu
   open bands.txt | lines | split column":" | headers | sort-by year:
     desc: Parsing a file in a non-standard format using the first row as a header row
-    tags: [nu]
+    tags:
+      - nu
   rg -c Value | lines | split column":" file line_count | into int line_count | sort-by line_count | reverse:
     desc: Count word occurrences with Ripgrep
-    tags: [nu]
-  'git branch --merged | lines | where ($it !="* master" && $it !="* main") | each {|br| git branch -D ($br | str trim) } | str trim':
+    tags:
+      - nu
+  git branch --merged | lines | where ($it !="* master" && $it !="* main") | each {|br| git branch -D ($br | str trim) } | str trim:
     desc: Hard delete the merged branches from your machine
-    tags: [nu]
+    tags:
+      - nu
   git log --pretty=%h»¦«%aN»¦«%s»¦«%aD | lines | split column"»¦«" sha1 committer desc merged_at | histogram committer merger | sort-by merger | reverse:
     desc: View git comitter activity as a histogram (histogram is not yet ported to the latest version)
-    tags: [nu]
-  'git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD -n 25 | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | where ($it.date > ((date now) - 365day))':
+    tags:
+      - nu
+  git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD -n 25 | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | where ($it.date > ((date now) - 365day)):
     desc: Parse git log showing only the records that are less than a year old.
-    tags: [nu]
-  'git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | where ($it.date > ((date now) - 365day)) | group-by name | transpose':
+    tags:
+      - nu
+  git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | where ($it.date > ((date now) - 365day)) | group-by name | transpose:
     desc: Parse git log counting commits by author in the last year
-    tags: [nu]
-  'git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | do -i { split column"»¦«" commit subject name email date } | upsert date {|d| $d.date | into datetime} | where ($it.date > ((date now) - 365day)) | group-by name | transpose':
+    tags:
+      - nu
+  git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | do -i { split column"»¦«" commit subject name email date } | upsert date {|d| $d.date | into datetime} | where ($it.date > ((date now) - 365day)) | group-by name | transpose:
     desc: Parse git log counting commits by author in the last year (ignoring errors)
-    tags: [nu]
-  'git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | group-by name | transpose | upsert column1 {|c| $c.column1 | length} | sort-by column1 | rename name commits | reverse | first 10':
+    tags:
+      - nu
+  git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | group-by name | transpose | upsert column1 {|c| $c.column1 | length} | sort-by column1 | rename name commits | reverse | first 10:
     desc: Parse git log counting (top 10) commits by author in the last year sorting by commits
-    tags: [nu]
-  'git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | group-by name | transpose | upsert column1 {|c| $c.column1 | length} | sort-by column1 | rename name commits | reverse | first 10 | table -n 1':
+    tags:
+      - nu
+  git log --pretty=%h»¦«%s»¦«%aN»¦«%aE»¦«%aD | lines | split column"»¦«" commit subject name email date | upsert date {|d| $d.date | into datetime} | group-by name | transpose | upsert column1 {|c| $c.column1 | length} | sort-by column1 | rename name commits | reverse | first 10 | table -n 1:
     desc: Parse git log counting (top 10) commits by author in the last year sorting by commits (starting by 1)
-    tags: [nu]
+    tags:
+      - nu
   fetch <URL>:
     desc: Fetch content from <URL>
-    tags: [nu]
+    tags:
+      - nu
   fetch <URL> | first 5:
     desc: Fetch first 5 contents from <URL> (JSON)
-    tags: [nu]
+    tags:
+      - nu
   fetch <URL> | first 5 | to json:
     desc: Fetch first 5 contents from <URL> as json
-    tags: [nu]
+    tags:
+      - nu
   fetch -u <USR> -p <PWD> <URL>:
     desc: Fetch content from <URL>, with <USR> and <PWD>
-    tags: [nu]
-  'fetch -H[<HEADER_KEY> <HEADER_VALUE>] <URL>':
+    tags:
+      - nu
+  fetch -H[<HEADER_KEY> <HEADER_VALUE>] <URL>:
     desc: Fetch content from <URL>, with custom header
-    tags: [nu]
-
+    tags:
+      - nu
   kubectl config view:
     desc: Show Merged kubeconfig settings
-    tags: [kube]
-  'kubectl config view -o jsonpath=''{.users[?(@.name == "<USER>")].user.password}''':
+    tags:
+      - kube
+  kubectl config view -o jsonpath='{.users[?(@.name == "<USER>")].user.password}':
     desc: Get the password for the <USER> user
-    tags: [kube]
-  "kubectl config view -o jsonpath='{.users[].name}'":
+    tags:
+      - kube
+  kubectl config view -o jsonpath='{.users[].name}':
     desc: Display the first user
-    tags: [kube]
-  "kubectl config view -o jsonpath='{.users[*].name}'":
+    tags:
+      - kube
+  kubectl config view -o jsonpath='{.users[*].name}':
     desc: Get a list of users
-    tags: [kube]
+    tags:
+      - kube
   kubectl config get-contexts:
     desc: Display list of contexts
-    tags: [kube]
+    tags:
+      - kube
   kubectl config current-context:
     desc: Display the current-context
-    tags: [kube]
+    tags:
+      - kube
   kubectl config use-context <CLUSTER_NAME>:
     desc: Set the default context to <CLUSTER_NAME>
-    tags: [kube]
+    tags:
+      - kube
   kubectl config set-cluster <CLUSTER_NAME>:
     desc: Set a cluster entry in the kubeconfig
-    tags: [kube]
+    tags:
+      - kube
   kubectl config set-cluster <CLUSTER_NAME> --proxy-url=<PROXY_URL>:
     desc: Configure the URL to a proxy server to use for requests made by this client in the kubeconfig
-    tags: [kube]
+    tags:
+      - kube
   kubectl config set-context --current --namespace=<NAMESPACE>:
     desc: Permanently save the namespace for all subsequent kubectl commands in that context
-    tags: [kube]
+    tags:
+      - kube
   kubectl config set-context gce --user=<USER> --namespace=<NAMESPACE> kubectl config use-context gce:
     desc: Set a context utilizing a specific <USER> and <NAMESPACE>
-    tags: [kube]
+    tags:
+      - kube
   kubectl config unset users.<USER>:
     desc: Delete user <USER>
-    tags: [kube]
+    tags:
+      - kube
   kubectl apply:
     desc: The recommended way of managing Kubernetes applications on production
-    tags: [kube]
+    tags:
+      - kube
   kubectl apply -f <path/to/manifest.yaml>:
     desc: Create resource(s)
-    tags: [kube]
+    tags:
+      - kube
   kubectl apply -f <path/to/my1.yaml> -f <path/to/my2.yaml>:
     desc: Create from multiple files
-    tags: [kube]
+    tags:
+      - kube
   kubectl apply -f <path/to/dir>:
     desc: Create resource(s) in all manifest files in dir
-    tags: [kube]
+    tags:
+      - kube
   kubectl apply -f <https://git.io/vPieo>:
     desc: Create resource(s) from url
-    tags: [kube]
+    tags:
+      - kube
   kubectl create deployment nginx --image=nginx:
     desc: Start a single instance of nginx
-    tags: [kube]
+    tags:
+      - kube
   kubectl create job hello --image=busybox:1.28 -- echo 'Hello World':
     desc: Create a Job which prints "Hello World"
-    tags: [kube]
+    tags:
+      - kube
   kubectl create cronjob hello --image=busybox:1.28 --schedule="*/1 * * * *" -- echo 'Hello World':
     desc: Create a CronJob that prints "Hello World" every minute
-    tags: [kube]
+    tags:
+      - kube
   kubectl explain pods:
     desc: Get the documentation for pod manifests
-    tags: [kube]
+    tags:
+      - kube
   kubectl get services:
     desc: List all services in the namespace
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods:
     desc: List all pods in the namespace
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods --all-namespaces:
     desc: List all pods in all namespaces
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -o wide:
     desc: List all pods in the current namespace, with more details
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pod <POD> -o yaml:
     desc: Get a pod's YAML
-    tags: [kube]
+    tags:
+      - kube
   kubectl get deployment <DEPLOYMENT>:
     desc: List a particular <DEPLOYMENT>
-    tags: [kube]
+    tags:
+      - kube
   kubectl describe nodes <NODE>:
     desc: Describe commands with verbose output
-    tags: [kube]
+    tags:
+      - kube
   kubectl get services --sort-by=.metadata.name:
     desc: List Services Sorted by Name
-    tags: [kube]
-  "kubectl get pods --sort-by='.status.containerStatuses[0].restartCount'":
+    tags:
+      - kube
+  kubectl get pods --sort-by='.status.containerStatuses[0].restartCount':
     desc: List pods Sorted by Restart Count
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pv --sort-by=.spec.capacity.storage:
     desc: List PersistentVolumes sorted by capacity
-    tags: [kube]
-  "kubectl get pods --selector=<app=cassandra> -o jsonpath='{.items[*].metadata.labels.version}'":
+    tags:
+      - kube
+  kubectl get pods --selector=<app=cassandra> -o jsonpath='{.items[*].metadata.labels.version}':
     desc: Get the version label of all pods with label <app=cassandra>
-    tags: [kube]
-  'kubectl get secret <SECRET> --template=''{{index .data "<KEY-NAME-WITH-DASHES>"}}''':
+    tags:
+      - kube
+  kubectl get secret <SECRET> --template='{{index .data "<KEY-NAME-WITH-DASHES>"}}':
     desc: Retrieve a base64 encoded value with dashes instead of underscores.
-    tags: [kube]
+    tags:
+      - kube
   kubectl get node --selector='!<NODE-ROLE.KUBERNETES.IO/CONTROL-PLANE>':
     desc: Get all worker nodes (use a selector to exclude results that have a label named '<NODE-ROLE.KUBERNETES.IO/CONTROL-PLANE>')
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods --field-selector=status.phase=<Running>:
     desc: Get all <Running> pods in the namespace
-    tags: [kube]
-  'kubectl get nodes -o jsonpath=''{.items[*].status.addresses[?(@.type=="<ExternalIP>")].address}''':
+    tags:
+      - kube
+  kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="<ExternalIP>")].address}':
     desc: Get <ExternalIPs> of all nodes
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods --show-labels:
     desc: Show labels for all pods (or any other Kubernetes object that supports labelling)
-    tags: [kube]
-  'JSONPATH=''{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}'' && kubectl get nodes -o jsonpath="$JSONPATH" | grep ''Ready=True''':
+    tags:
+      - kube
+  JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}' && kubectl get nodes -o jsonpath="$JSONPATH" | grep 'Ready=True':
     desc: Check which nodes are ready
-    tags: [kube]
+    tags:
+      - kube
   kubectl get events --sort-by=.metadata.creationTimestamp:
     desc: List Events sorted by timestamp
-    tags: [kube]
+    tags:
+      - kube
   kubectl diff -f <path/to/manifest.yaml>:
     desc: Compares the current state of the cluster against the state that the cluster would be in if the manifest was applied
-    tags: [kube]
+    tags:
+      - kube
   kubectl get nodes -o json:
     desc: Produce a period-delimited tree of all keys returned for nodes
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -o json:
     desc: Produce a period-delimited tree of all keys returned for pods, etc
-    tags: [kube]
+    tags:
+      - kube
   kubectl get deployment <DEPLOYMENT> --subresource=status:
     desc: Get a deployment's status subresource
-    tags: [kube]
+    tags:
+      - kube
   kubectl set image <DEPLOYMENT/FRONTEND> <www>=image:v2:
     desc: Rolling update <www> containers of <DEPLOYMENT/FRONTEND>, updating the image
-    tags: [kube]
+    tags:
+      - kube
   kubectl rollout history <DEPLOYMENT/FRONTEND>:
     desc: Check the history of deployments including the revision
-    tags: [kube]
+    tags:
+      - kube
   kubectl rollout undo <DEPLOYMENT/FRONTEND>:
     desc: Rollback to the previous deployment
-    tags: [kube]
+    tags:
+      - kube
   kubectl rollout undo <DEPLOYMENT/FRONTEND> --to-revision=<2>:
     desc: Rollback to a specific revision
-    tags: [kube]
+    tags:
+      - kube
   kubectl rollout status -w <DEPLOYMENT/FRONTEND>:
     desc: Watch rolling update status of <DEPLOYMENT/FRONTEND> until completion
-    tags: [kube]
+    tags:
+      - kube
   kubectl rollout restart <DEPLOYMENT/FRONTEND>:
     desc: Rolling restart of the <DEPLOYMENT/FRONTEND>
-    tags: [kube]
+    tags:
+      - kube
   cat <PATH/TO/pod.json> | kubectl replace -f -:
     desc: Replace a pod based on the JSON passed into stdin
-    tags: [kube]
+    tags:
+      - kube
   kubectl replace --force -f <PATH/TO/pod.json>:
     desc: Force replace, delete and then re-create the resource. Will cause a service outage.
-    tags: [kube]
+    tags:
+      - kube
   kubectl expose rc <NGINX> --port=<80> --target-port=<8000>:
     desc: Create a service for a replicated <NGINX>, which serves on port <80> and connects to the containers on port <8000>
-    tags: [kube]
-  "kubectl get pod <PODNAME> -o yaml | sed 's/\\(image: <IMAGE_NAME>\\):.*$/\\1:<v4>/' | kubectl replace -f -":
+    tags:
+      - kube
+  'kubectl get pod <PODNAME> -o yaml | sed ''s/\(image: <IMAGE_NAME>\):.*$/\1:<v4>/'' | kubectl replace -f -':
     desc: Update a single-container pod's image version (tag) to <v4>
-    tags: [kube]
+    tags:
+      - kube
   kubectl label pods <PODNAME> new-label=<LABEL>:
     desc: Add a Label `new-label=<LABEL>`
-    tags: [kube]
+    tags:
+      - kube
   kubectl annotate pods <PODNAME> <icon-url>=<http://goo.gl/XXBTWq>:
     desc: Add an annotation `<icon-url>=<http://goo.gl/XXBTWq>`
-    tags: [kube]
+    tags:
+      - kube
   kubectl autoscale deployment <foo> --min=<2> --max=<10>:
     desc: Auto scale a deployment `<foo>`
-    tags: [kube]
+    tags:
+      - kube
   kubectl edit svc/<DOCKER-REGISTRY>:
     desc: Edit the service named <DOCKER-REGISTRY>
-    tags: [kube]
+    tags:
+      - kube
   kubectl scale --replicas=<3> rs/<FOO>:
     desc: Scale a replicaset named <FOO> to <3>
-    tags: [kube]
+    tags:
+      - kube
   kubectl scale --replicas=<3> -f <PATH/TO/FOO.YAML>:
     desc: Scale a resource specified in <PATH/TO/FOO.YAML> to <3>
-    tags: [kube]
+    tags:
+      - kube
   kubectl scale --current-replicas=<2> --replicas=<3> <deployment/mysql>:
     desc: If the <deployment/mysql>'s current size is <2>, scale it to <3>
-    tags: [kube]
+    tags:
+      - kube
   kubectl scale --replicas=<5> <rc/FOO> <rc/BAR> <rc/BAZ>:
     desc: Scale multiple replication controllers
-    tags: [kube]
+    tags:
+      - kube
   kubectl delete -f <PATH/TO/POD.JSON>:
     desc: Delete a pod using the type and name specified in <PATH/TO/pod.json>
-    tags: [kube]
+    tags:
+      - kube
   kubectl delete pod unwanted --now:
     desc: Delete a pod with no grace period
-    tags: [kube]
-  'kubectl delete pod,service <BAZ> <FOO>':
+    tags:
+      - kube
+  kubectl delete pod,service <BAZ> <FOO>:
     desc: Delete pods and services with same names <BAZ> and <FOO>
-    tags: [kube]
-  'kubectl delete pods,services -l <name>=<LABEL>':
+    tags:
+      - kube
+  kubectl delete pods,services -l <name>=<LABEL>:
     desc: Delete pods and services with label <name>=<LABEL>
-    tags: [kube]
-  'kubectl -n <NAMESPACE> delete pod,svc --all':
+    tags:
+      - kube
+  kubectl -n <NAMESPACE> delete pod,svc --all:
     desc: Delete all pods and services in namespace <NAMESPACE>
-    tags: [kube]
-  "kubectl get pods -n <NAMESPACE> --no-headers=true | awk '/<PATTERN1>|<PATTERN2>/{print $1}' | xargs  kubectl delete -n <NAMESPACE> pod":
+    tags:
+      - kube
+  kubectl get pods -n <NAMESPACE> --no-headers=true | awk '/<PATTERN1>|<PATTERN2>/{print $1}' | xargs  kubectl delete -n <NAMESPACE> pod:
     desc: Delete all pods matching the awk <PATTERN1> or <PATTERN2>
-    tags: [kube]
+    tags:
+      - kube
   kubectl logs <PODNAME>:
     desc: Dump pod logs (stdout)
-    tags: [kube]
+    tags:
+      - kube
   kubectl logs -l name=<LABEL>:
     desc: Dump pod logs, with label name=<LABEL> (stdout)
-    tags: [kube]
+    tags:
+      - kube
   kubectl logs <PODNAME> --previous:
     desc: Dump pod logs (stdout) for a previous instantiation of a container
-    tags: [kube]
+    tags:
+      - kube
   kubectl logs <PODNAME> -c <CONTAINER>:
     desc: Dump pod container logs (stdout, multi-container case)
-    tags: [kube]
+    tags:
+      - kube
   kubectl logs -f <PODNAME>:
     desc: Stream pod logs (stdout)
-    tags: [kube]
+    tags:
+      - kube
   kubectl logs -f <PODNAME> -c <CONTAINER>:
     desc: Stream pod container logs (stdout, multi-container case)
-    tags: [kube]
+    tags:
+      - kube
   kubectl logs -f -l name=<LABEL> --all-containers:
     desc: Stream all pods logs with label `name=<LABEL>` (stdout)
-    tags: [kube]
+    tags:
+      - kube
   kubectl run -i --tty busybox --image=busybox:1.28 -- sh:
     desc: Run pod as interactive shell
-    tags: [kube]
+    tags:
+      - kube
   kubectl run <NGINX> --image=<NGINX> -n <NAMESPACE>:
     desc: Start a single instance of <NGINX> pod in the namespace of <NAMESPACE>
-    tags: [kube]
+    tags:
+      - kube
   kubectl run <NGINX> --image=<NGINX> --dry-run=client -o yaml > <PATH/TO/POD.YAML>:
     desc: Generate spec for running pod <NGINX> and write it into file `<PATH/TO/POD.YAML>`
-    tags: [kube]
+    tags:
+      - kube
   kubectl attach <PODNAME> -i:
     desc: Attach to Running Container
-    tags: [kube]
+    tags:
+      - kube
   kubectl port-forward <PODNAME> <5000>:<6000>:
     desc: Listen on port `<5000>` on the local machine and forward to port `<6000>` on `<PODNAME>`
-    tags: [kube]
+    tags:
+      - kube
   kubectl exec <PODNAME> -- ls /:
     desc: Run cmd in existing pod (1 container case)
-    tags: [kube]
+    tags:
+      - kube
   kubectl exec --stdin --tty <PODNAME> -- /bin/sh:
     desc: Interactive shell access to a running pod (1 container case)
-    tags: [kube]
+    tags:
+      - kube
   kubectl exec <PODNAME> -c <CONTAINER> -- ls /:
     desc: Run cmd in existing pod (multi-container case)
-    tags: [kube]
+    tags:
+      - kube
   kubectl top pod <PODNAME> --containers:
     desc: Show metrics of pod and its containers
-    tags: [kube]
+    tags:
+      - kube
   kubectl top pod <PODNAME> --sort-by=<CPU>:
     desc: Show metrics of pod and sort it by <CPU>
-    tags: [kube]
+    tags:
+      - kube
   kubectl top pod <PODNAME> --sort-by=<MEMORY>:
     desc: Show metrics of pod and sort it by <MEMORY>
-    tags: [kube]
+    tags:
+      - kube
   kubectl cp </TMP/FOO_DIR> <PODNAME>:</TMP/BAR_DIR>:
     desc: Copy `</TMP/FOO_DIR>` local directory to `</TMP/BAR_DIR>` in a remote pod in the current namespace
-    tags: [kube]
+    tags:
+      - kube
   kubectl cp </TMP/FOO> <PODNAME>:</TMP/BAR> -c <CONTAINER>:
     desc: Copy `</TMP/FOO>` local file to </TMP/BAR> in a remote pod in a specific container
-    tags: [kube]
+    tags:
+      - kube
   kubectl cp </TMP/FOO> <NAMESPACE>/<PODNAME>:</TMP/BAR>:
     desc: Copy `</TMP/FOO>` local file to </TMP/BAR> in a remote pod in namespace <NAMESPACE>
-    tags: [kube]
+    tags:
+      - kube
   kubectl cp <NAMESPACE>/<PODNAME>:</TMP/FOO> </TMP/BAR>:
     desc: Copy </TMP/FOO> from a remote pod to </TMP/BAR> locally
-    tags: [kube]
+    tags:
+      - kube
   tar cf - </TMP/FOO> | kubectl exec -i -n <NAMESPACE> <PODNAME> -- tar xf - -C </TMP/BAR>:
     desc: Copy `</TMP/FOO>` local file to </TMP/BAR> in a remote pod in namespace `<NAMESPACE>`
-    tags: [kube]
+    tags:
+      - kube
   kubectl exec -n <NAMESPACE> <PODNAME> -- tar cf - </TMP/FOO> | tar xf - -C </TMP/BAR>:
     desc: Copy `</TMP/FOO>` from a remote pod to </TMP/BAR> locally
-    tags: [kube]
+    tags:
+      - kube
   kubectl logs deploy/<DEPLOYMENT>:
     desc: Dump Pod logs for a Deployment (single-container case)
-    tags: [kube]
+    tags:
+      - kube
   kubectl logs deploy/<DEPLOYMENT> -c <CONTAINER>:
     desc: Dump Pod logs for a Deployment (multi-container case)
-    tags: [kube]
+    tags:
+      - kube
   kubectl port-forward svc/<SERVICE> <5000>:
     desc: Listen on local port <5000> and forward to port <5000> on Service backend
-    tags: [kube]
+    tags:
+      - kube
   kubectl port-forward svc/<SERVICE> <5000>:<SERVICE-PORT>:
     desc: Listen on local port <5000> and forward to Service target port with name <SERVICE-PORT>
-    tags: [kube]
+    tags:
+      - kube
   kubectl port-forward deploy/<DEPLOYMENT> <5000>:<6000>:
     desc: Listen on local port <5000> and forward to port <6000> on a Pod created by <DEPLOYMENT>
-    tags: [kube]
+    tags:
+      - kube
   kubectl exec deploy/<DEPLOYMENT> -- ls:
     desc: Run cmd in first Pod and first container in Deployment (single- Or multi-container cases)
-    tags: [kube]
+    tags:
+      - kube
   kubectl cordon <NODE_NAME>:
     desc: Mark <NODE_NAME> as unschedulable
-    tags: [kube]
+    tags:
+      - kube
   kubectl drain <NODE_NAME>:
     desc: Drain <NODE_NAME> in preparation for maintenance
-    tags: [kube]
+    tags:
+      - kube
   kubectl uncordon <NODE_NAME>:
     desc: Mark <NODE_NAME> as schedulable
-    tags: [kube]
+    tags:
+      - kube
   kubectl top node <NODE_NAME>:
     desc: Show metrics of node
-    tags: [kube]
+    tags:
+      - kube
   kubectl cluster-info:
     desc: Display addresses of the master and services
-    tags: [kube]
+    tags:
+      - kube
   kubectl cluster-info dump:
     desc: Dump current cluster state to stdout
-    tags: [kube]
+    tags:
+      - kube
   kubectl cluster-info dump --output-directory=</PATH/TO/CLUSTER-STATE>:
     desc: Dump current cluster state to </PATH/TO/CLUSTER-STATE>
-    tags: [kube]
-  "kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect'":
+    tags:
+      - kube
+  kubectl get nodes -o='custom-columns=NodeName:.metadata.name,TaintKey:.spec.taints[*].key,TaintValue:.spec.taints[*].value,TaintEffect:.spec.taints[*].effect':
     desc: View existing taints on which exist on current nodes
-    tags: [kube]
+    tags:
+      - kube
   kubectl taint nodes foo dedicated=special-user:NoSchedule:
     desc: If a taint with that key and effect already exists, its value is replaced as specified
-    tags: [kube]
+    tags:
+      - kube
   kubectl api-links:
     desc: List all supported resource types along with their shortnames API group whether they [are namespaced and Kin
-    tags: [kube]
+    tags:
+      - kube
   kubectl api-resources --namespaced=true:
     desc: All namespaced resources
-    tags: [kube]
+    tags:
+      - kube
   kubectl api-resources --namespaced=false:
     desc: All non-namespaced resources
-    tags: [kube]
+    tags:
+      - kube
   kubectl api-resources -o <name>:
     desc: All resources with simple output (only the resource <name>)
-    tags: [kube]
+    tags:
+      - kube
   kubectl api-resources -o <wide>:
     desc: All resources with expanded (aka <wide>) output
-    tags: [kube]
-  'kubectl api-resources --verbs=list,get':
+    tags:
+      - kube
+  kubectl api-resources --verbs=list,get:
     desc: All resources that support the 'list' and 'get' request verbs
-    tags: [kube]
+    tags:
+      - kube
   kubectl api-resources --api-group=<EXTENSIONS>:
     desc: All resources in the <EXTENSIONS> API group
-    tags: [kube]
+    tags:
+      - kube
   kubectl -o=custom-columns=<spec>:
     desc: Print a table using a comma separated list of custom columns
-    tags: [kube]
-  "kubectl get pods -A -o=custom-columns='DATA:spec.containers[*].image'":
+    tags:
+      - kube
+  kubectl get pods -A -o=custom-columns='DATA:spec.containers[*].image':
     desc: All images running in a cluster
-    tags: [kube]
-  'kubectl get pods --namespace default --output=custom-columns="NAME:.metadata.name,IMAGE:.spec.containers[*].image"':
+    tags:
+      - kube
+  kubectl get pods --namespace default --output=custom-columns="NAME:.metadata.name,IMAGE:.spec.containers[*].image":
     desc: "All images running in namespace: 'default', grouped by 'Pod'"
-    tags: [kube]
-  'kubectl get pods -A -o=custom-columns=''DATA:spec.containers[?(@.image!="registry.k8s.io/coredns:1.6.2")].image''':
+    tags:
+      - kube
+  kubectl get pods -A -o=custom-columns='DATA:spec.containers[?(@.image!="registry.k8s.io/coredns:1.6.2")].image':
     desc: All images excluding 'registry.k8s.io/coredns:1.6.2'
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A -o=custom-columns='DATA:metadata.*':
     desc: All fields under 'metadata' regardless of name
-    tags: [kube]
+    tags:
+      - kube
   kubectl -o=custom-columns=<SPEC>:
     desc: Print a table using a comma separated list of custom columns
-    tags: [kube]
+    tags:
+      - kube
   kubectl -o=custom-columns-file=<FILENAME>:
     desc: Print a table using the custom columns template in the <FILENAME> file
-    tags: [kube]
+    tags:
+      - kube
   kubectl -o=json:
     desc: Output a JSON formatted API object
-    tags: [kube]
+    tags:
+      - kube
   kubectl -o=jsonpath=<TEMPLATE>:
     desc: Print the fields defined in a jsonpath expression
-    tags: [kube]
+    tags:
+      - kube
   kubectl -o=jsonpath-file=<FILENAME>:
     desc: Print the fields defined by the jsonpath expression in the <FILENAME> file
-    tags: [kube]
+    tags:
+      - kube
   kubectl -o=name:
     desc: Print only the resource name and nothing else
-    tags: [kube]
+    tags:
+      - kube
   kubectl -o=wide:
     desc: Output in the plain-text format with any additional information, and for pods, the node name is included
-    tags: [kube]
+    tags:
+      - kube
   kubectl -o=yaml:
     desc: Output a YAML formatted API object
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A --v=0:
     desc: Generally useful for this to *always* be visible to a cluster operator use '--v=0'
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A --v=1:
     desc: A reasonable default log level if you don't want verbosity use '--v=1'
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A --v=2:
     desc: Useful steady state information about the service and important log messages that may correlate to significant changes in the system use '--v=2'. This is the recommended default log level for most systems
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A --v=3:
     desc: Extended information about changes use '--v=3'
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A --v=4:
     desc: Debug level verbosity use '--v=4'
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A --v=5:
     desc: Trace level verbosity use '--v=5'
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A --v=6:
     desc: Display requested resources use '--v=6'
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A --v=7:
     desc: Display HTTP request headers use '--v=7'
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A --v=8:
     desc: Display HTTP request contents use '--v=8'
-    tags: [kube]
+    tags:
+      - kube
   kubectl get pods -A --v=9:
     desc: Display HTTP request contents without truncation of contents use '--v=9'
-    tags: [kube]
+    tags:
+      - kube
   hyperfine --warmup 5 --runs 100 "$(asdf which direnv) stdlib" "asdf exec direnv stdlib":
     desc: Run hyperfine benchmark to check which asdf-direnv loads faster
-    tags: [hyperfine, benchmark]
+    tags:
+      - hyperfine
+      - benchmark
   oha -n 100 http://localhost:3001:
     desc: Sends some load to URL and show realtime tui
-    tags: [benchmark]
+    tags:
+      - benchmark
   wrk -t2 -c100 -d30s http://localhost:3001 | grep "Requests/sec" | awk '{print $2}':
     desc: Run wrk benchmark to check how fast is the server
-    tags: [benchmark]
+    tags:
+      - benchmark
   parallel < commands.txt:
     desc: Read the commands from the file `commands.txt`` and run them in parallel
-    tags: [parallel]
+    tags:
+      - parallel
   parallel -j 3 < commands.txt:
     desc: Read the commands from the file `commands.txt`` and run them in parallel with 3 jobs
-    tags: [parallel]
+    tags:
+      - parallel
   'parallel -j 3 gzip {}::: *.txt':
     desc: Compress all txt files in the current directory in parallel
-    tags: [parallel, gzip]
+    tags:
+      - parallel
+      - gzip
   'parallel -j 3 echo {} ::: 1 2 3':
     desc: Run the command echo {} on the inputs 1, 2, and 3 in parallel
-    tags: [parallel]
+    tags:
+      - parallel
   'parallel -j 3 convert {} {}.jpg ::: *.png':
     desc: Convert all of the images in a directory to JPEG format in parallel
-    tags: [parallel]
+    tags:
+      - parallel
   cat urls.txt | parallel -j 3 wget {}:
     desc: download all of the file `urls.txt` in a list of URLs in parallel
-    tags: [parallel]
+    tags:
+      - parallel

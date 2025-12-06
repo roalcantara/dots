@@ -344,6 +344,10 @@ commands:
           -- ❌ If disk space is limited
           -- VACUUM needs temporary space equal to DB size
           ````
+  sqlite3 ~/.config/kb/_database.db "SELECT COUNT(*), json_type(notes) FROM knowledges WHERE notes IS NOT NULL GROUP BY json_type(notes)":
+    desc: Count the number of notes by type @ database
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
 
 cheats:
   Top Database Types | SUMMARY:

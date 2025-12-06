@@ -1,68 +1,86 @@
 bookmarks:
   https://dotfyle.com/neovim/colorscheme/trending:
     desc: Neovim Trending Colorschemes
-    tags: [vi, colorschemes]
-
+    tags:
+      - vi
+      - colorschemes
   https://dotfyle.com/neovim/colorscheme/top:
     desc: Neovim Top Colorschemes
-    tags: [vi, colorschemes]
-
+    tags:
+      - vi
+      - colorschemes
   https://neovimcraft.com/?search={Query}:
     desc: Search engine for Neovim plugins
-    tags: [vi, plugins]
-
+    tags:
+      - plugin
+      - vi
   https://neovimcraft.com/?search=tag%3Acolorscheme:
     desc: Search engine for Neovim colorschemes
-    tags: [vi, colorschemes]
-
+    tags:
+      - vi
+      - colorschemes
   https://youtube.com/playlist?list=PLOe6AggsTaVsMfLjXeavVwzkmOfAZnfQb:
     desc: Neovim Telescope
-    tags: [vi, telescope]
-
+    tags:
+      - vi
+      - telescope
   https://neovim.io/doc/user/lua-guide.html:
     desc: Lua guide for users
-    tags: [vi, docs]
-
+    tags:
+      - vi
+      - docs
   https://neovim.io/doc/user/options.html:
     desc: List of all options
-    tags: [vi, docs]
-
+    tags:
+      - vi
+      - docs
   https://this-week-in-neovim.org/latest:
     desc: Weekly newsletter about the development of Neovim
-    tags: [vi, news]
-
+    tags:
+      - vi
+      - news
   https://youtu.be/zHTeCSVAFNY:
     desc: From 0 to IDE in NEOVIM from scratch | FREE COURSE // EP 1
-    tags: [vi, colorscheme, telescope, treesitter]
-
+    tags:
+      - vi
+      - colorscheme
+      - telescope
+      - treesitter
   https://youtu.be/4zyZ3sw_ulc:
     desc: A BEAUTIFUL neovim config with Lazy | FREE COURSE // EP 2
-    tags: [vi, lazy]
-
+    tags:
+      - vi
+      - lazy
   https://youtu.be/iXIwm4mCpuc:
     desc: Autocomplete and Snippets in Neovim | FREE COURSE // EP 5
-    tags: [vi, autocomplete, snippets]
-
+    tags:
+      - vi
+      - autocomplete
+      - snippets
   https://youtu.be/fFHlfbKVi30:
     desc: Effective Neovim setup for web development towards 2024
-    tags: [vi, lsp]
-
+    tags:
+      - vi
+      - lsp
   https://cheatsheetfactory.geekyhacker.com/linux/vim:
     desc: Vim Cheat Sheet | A collection of vim commands
-    tags: [vi, cheatsheet]
-
+    tags:
+      - vi
+      - cheatsheet
   https://vimcolorschemes.com:
     desc: Colorscheme gallery for vim
-    tags: [vi, colorschemes]
-
+    tags:
+      - vi
+      - colorschemes
 cheats:
   Neovim Providers:
     desc: Neovim Providers
-    tags: [vi]
+    tags:
+      - vi
     links:
       - Neovim Providers: https://neovim.io/doc/user/providers.html
     notes:
-      - md: | #markdown
+      - md: |
           ## NEOVIM PROVIDERS
 
           ### WHAT ARE PROVIDERS?

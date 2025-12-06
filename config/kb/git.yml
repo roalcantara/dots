@@ -2,63 +2,73 @@ workflows:
   configure git to use it for diffs and logs:
     cmds:
       - git config --global core.pager "delta" git config --global interactive.diffFilter "delta --color-only" git config --global merge.conflictstyle "merge" git config --global diff.colorMoved "default"
-    tags: [git, delta]
-
+    tags:
+      - git
+      - delta
   to handle diffs during an interactive rebase or when viewing a specific commit:
     cmds:
       - git config --global pager.diff "delta" git config --global pager.show "delta"
-    tags: [git, delta]
-
+    tags:
+      - git
+      - delta
   configure Delta to use specific colors or to enable side-by-side diffs:
     cmds:
       - git config --global delta.features "side-by-side line-numbers decorations" git config --global delta.plus-color "#012800" git config --global delta.minus-color "#340001" git config --global delta.syntax-theme "Dracula"
-    tags: [git, delta]
-
+    tags:
+      - git
+      - delta
   only want Delta to be used with certain git commands, you can specify that in your git alias:
     cmds:
       - git config --global alias.diff "git diff --color | delta" git config --global alias.show "git show --color | delta"
-    tags: [git, delta]
-
+    tags:
+      - git
+      - delta
   revert to the default git pager, you can unset DELTA configurations:
     cmds:
       - git config --global --unset core.pager git config --global --unset interactive.diffFilter git config --global --unset pager.diff git config --global --unset pager.show
-    tags: [git, delta]
-
+    tags:
+      - git
+      - delta
   Generate a new library in your Nx workspace:
-    cmd: 'npx nx g @nrwl/{{framework}}:library --name={{name}}'
-    tags: [nx, workspace]
+    cmd: npx nx g @nrwl/{{framework}}:library --name={{name}}
+    tags:
+      - nx
+      - workspace
     desc: This command generates a new library in your existing Nx workspace.
     arguments:
       - name: framework
         description: The presets you want to use when generating your library. Supported values -> angular, react, web, node, nest, next, detox, react-native, workspace, js.
-        default_value: ~
+        default_value: null
       - name: name
         description: The name you want to use for your library
-        default_value: ~
-    source_url: 'https://nx.dev/generators/using-schematics'
-
+        default_value: null
+    source_url: https://nx.dev/generators/using-schematics
 bookmarks:
   https://keepachangelog.com:
     desc: Keep a Changelog | Don't let your friends dump git logs into changelogs
-    tags: [git]
-
+    tags:
+      - git
   https://learngitbranching.js.org:
     desc: Learn Git Branching
-    tags: [git, learn]
-
+    tags:
+      - git
+      - learn
   https://cli.github.com/manual:
     desc: GitHub CLI | Manual
-    tags: [github, cli]
-
+    tags:
+      - github
+      - cli
   https://semantic-release.gitbook.io:
     desc: Fully automated version management and package publishing
-    tags: [semantic-release, docs]
+    tags:
+      - docs
+      - semantic_release
     links:
       - Configuration: https://semantic-release.gitbook.io/semantic-release/usage/configuration#configuration
       - Configuration:CI: https://semantic-release.gitbook.io/semantic-release/usage/ci-configuration
       - Github Actions: https://semantic-release.gitbook.io/semantic-release/recipes/ci-configurations/github-actions
     notes:
-      - md: | #markdown
+      - md: |
           | Commit message                                                                                                                                                                                   | Release type                                                                                                    |
           | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
           | `fix(pencil): stop graphite breaking when too much pressure applied`                                                                                                                             | ~~Patch~~ Fix Release                                                                                           |
@@ -105,435 +115,537 @@ bookmarks:
                   ${nextRelease.notes}
             - '@semantic-release/github'
           ```
-
   https://youtu.be/fqQOu2JVI1o:
     desc: Streamlining setup with GitHub Codespaces
-    tags: [github]
-
+    tags:
+      - github
   https://youtu.be/tSQJwGcHsGY:
     desc: Instant Cloud Development Environments With GitHub Codespaces
-    tags: [github]
-
+    tags:
+      - github
   https://alexhyett.com/git-flow-github-flow:
     desc: Git Flow vs GitHub Flow
-    tags: [git]
-
+    tags:
+      - git
   https://youtu.be/vCwuZfK0VG4:
     desc: Pull Requests, Code Review, and the GitHub Flow - GitHub Universe 2015
-    tags: [git, github]
-
+    tags:
+      - git
+      - github
   https://youtu.be/cP0I9w2coGU:
     desc: GitHub Actions - Supercharge your GitHub Flow
-    tags: [git, github]
-
+    tags:
+      - git
+      - github
   https://youtu.be/hG_P6IRAjNQ:
     desc: Git Flow vs GitHub Flow - What You Need to Know
-    tags: [git]
+    tags:
+      - git
     links:
       - Git Flow vs GitHub Flow: https://alexhyett.com/git-flow-github-flow
-
   https://youtu.be/juLIxo42A_s:
     desc: The GitHub Flow - GitHub Universe 2016
-    tags: [git]
-
+    tags:
+      - git
   https://youtu.be/0chZFIZLR_0:
     desc: Git MERGE vs REBASE - Everything You Need to Know
-    tags: [git]
+    tags:
+      - git
     links:
       - Git Merge vs. Rebase: https://freecodecamp.org/news/an-introduction-to-git-merge-and-rebase-what-they-are-and-how-to-use-them-131b863785f
-
   https://freecodecamp.org/news/an-introduction-to-git-merge-and-rebase-what-they-are-and-how-to-use-them-131b863785f:
     desc: An introduction to Git Merge and Rebase | what they are, and how to use them
-    tags: [git]
+    tags:
+      - git
     links:
       - Git MERGE vs REBASE - Everything You Need to Know: https://youtu.be/0chZFIZLR_0
   https://initialcommit.com/blog/git-sim:
     desc: Git Sim | Visually Simulate Git Operations In Your Own Repos
-    tags: [git]
+    tags:
+      - git
   https://github.com:
     desc: Development platform inspired by the way you work
-    tags: [git, github]
-
+    tags:
+      - git
+      - github
   https://github.com/roalcantara:
     desc: Development platform inspired by the way you work
-    tags: [git, github, profile]
-
+    tags:
+      - git
+      - github
+      - profile
   https://github.com/roalcantara?tab=repositories&q={Query}:
     desc: Search engine for Github repositories
-    tags: [git, github]
-
+    tags:
+      - git
+      - github
   https://github.com/settings/profile:
     desc: Manage Github Settings
-    tags: [git, github]
-
+    tags:
+      - git
+      - github
   https://gitlab.com:
     desc: Complete DevOps platform
-    tags: [git, gitlab]
+    tags:
+      - git
+      - gitlab
     links:
       - Profile: https://gitlab.com/roalcantara
-
   https://git-scm.com/docs/gitcredentials:
     desc: Providing usernames and passwords to Git
-    tags: [git, auth]
+    tags:
+      - git
+      - auth
   https://git-scm.com/docs/git-credential-store:
     desc: Helper to store credentials on disk
-    tags: [git, auth]
+    tags:
+      - git
+      - auth
   https://docs.github.com/en/enterprise-cloud@latest/get-started/getting-started-with-git/updating-credentials-from-the-macos-keychain:
     desc: Use OS X Keychain
-    tags: [git, macos]
+    tags:
+      - git
+      - macos
   https://medium.com/codex/git-authentication-on-macos-setting-up-ssh-to-connect-to-your-github-account-d7f5df029320:
     desc: How to set up SSH on your Github account and save credentials locally to enable git operations from terminal
-    tags: [git, github, auth]
-
+    tags:
+      - git
+      - github
+      - auth
 commands:
-  ## Git is your code time machine. It tracks every change, enables team collaboration without
-  ## conflicts, and lets you undo mistakes. These commands help manage source code versions like a professional developer.
-
-  ## BASIC COMMANDS
   git init:
     desc: Initializes a new Git repository in the current directory.
-    tags: [git]
+    tags:
+      - git
   git clone https://github.com/user/repo.git:
     desc: Copies a remote repository to the local machine.
-    tags: [git]
+    tags:
+      - git
   git status:
     desc: Displays the state of the working directory and staging area.
-    tags: [git]
+    tags:
+      - git
   git add file.txt:
     desc: Adds changes to the staging area.
-    tags: [git]
+    tags:
+      - git
   git log:
     desc: Shows the commit history.
-    tags: [git]
+    tags:
+      - git
   git show <commit-hash>:
     desc: Displays detailed information about a specific commit.
-    tags: [git]
+    tags:
+      - git
   git diff:
     desc: Shows changes between commits, the working directory, and the staging area.
-    tags: [git]
+    tags:
+      - git
   git pull --rebase --autostash:
     desc: Pull changes from the remote repository, rebase the current branch on top of the upstream branch, and automatically stash any local changes before the rebase.
-    tags: [git]
-
-  # CONFIGURING GIT
+    tags:
+      - git
   git config --global user.name "Your Name":
     desc: Configures user settings, such as name and email.
-    tags: [git]
+    tags:
+      - git
   git config --list | grep delta:
     desc: List delta config
-    tags: [git]
+    tags:
+      - git
   git config --global commit.verbose true:
     desc: Show diff in commit message
-    tags: [git]
+    tags:
+      - git
   git config pull.rebase true && git config rebase.autoStash true:
     desc: Configure Git to use rebase when pulling and automatically stash changes before rebase instead of using `git pull --rebase --autostash` (current Git repository)
-    tags: [git]
-    links: [https://git-scm.com/docs/git-pull#git-pull---autostash, https://cscheng.info/2017/01/26/git-tip-autostash-with-git-pull-rebase.html]
+    tags:
+      - git
+    links:
+      - https://git-scm.com/docs/git-pull#git-pull---autostash
+      - https://cscheng.info/2017/01/26/git-tip-autostash-with-git-pull-rebase.html
   git config --global pull.rebase true && git config --global rebase.autoStash true:
     desc: Configure Git to use rebase when pulling and automatically stash changes before rebase instead of using `git pull --rebase --autostash` (globally for every Git repository)
-    tags: [git]
-    links: [https://git-scm.com/docs/git-pull#git-pull---autostash, https://cscheng.info/2017/01/26/git-tip-autostash-with-git-pull-rebase.html]
+    tags:
+      - git
+    links:
+      - https://git-scm.com/docs/git-pull#git-pull---autostash
+      - https://cscheng.info/2017/01/26/git-tip-autostash-with-git-pull-rebase.html
   git config --global init.defaultBranch main:
     desc: Set the default branch name to use when creating new repositories
-    tags: [git]
-
-  # GPG SETTINGS
+    tags:
+      - git
   git config --global --unset gpg.format:
     desc: Unset gpg.format so the default format of openpgp will be used
-    tags: [git]
-    links: [https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key]
+    tags:
+      - git
+    links:
+      - https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key
   git config --global user.signingkey 3AA5C34371567BD2:
     desc: Configure Git to set GPG Primary Key ID that matches your committer identity and your verified email address associated with your account on GitHub.com.
-    tags: [git]
-    links: [https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key]
+    tags:
+      - git
+    links:
+      - https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key
   git config --global user.signingkey 4BB6D45482678BE3!:
     desc: Configure Git to set GPG Subkey Key ID append an exclamation mark ! to the key. Sometimes is necessary to escape it with a back slash \!. It must match your committer identity and your verified email address associated with your account on GitHub.com.
-    tags: [git]
-    links: [https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key]
+    tags:
+      - git
+    links:
+      - https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key
   git config --global commit.gpgsign true && git config --global tag.gpgSign true:
     desc: Configure Git to sign all commits and tags by default
-    tags: [git]
-    links: [https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key]
+    tags:
+      - git
+    links:
+      - https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key
   git config --global gpg.format ssh:
     desc: Configure Git to use SSH to sign commits and tags
-    tags: [git]
-    links: [https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key]
+    tags:
+      - git
+    links:
+      - https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key
   git config --global user.signingkey ~/.ssh/id_ed25519_github.pub:
     desc: Configure Git to set SSH Public Key to sign commits and tags
-    tags: [git]
-    links: [https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key]
-
-  # GIT CREDENTIAL-HELPERS
+    tags:
+      - git
+    links:
+      - https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key
   git credential-osxkeychain:
     desc: Use OS X Keychain
-    tags: [git, macos]
+    tags:
+      - git
+      - macos
   git credential-osxkeychain erase:
     desc: Erase credentials from OS X Keychain
-    tags: [git, macos]
+    tags:
+      - git
+      - macos
   git credential-osxkeychain store:
     desc: Store credentials in OS X Keychain
-    tags: [git, macos]
+    tags:
+      - git
+      - macos
   echo "protocol=https\nhost=github.com\nusername=your_username\npassword=your_token" | git credential-osxkeychain store:
     desc: Store credentials in OS X Keychain manually
-    tags: [git, macos]
+    tags:
+      - git
+      - macos
   git config --local credential.helper osxkeychain:
     desc: Use OS X local Keychain
-    tags: [git, macos]
+    tags:
+      - git
+      - macos
   git config --local credential.helper osxkeychain store:
     desc: Store credentials locally in OS X Keychain
-    tags: [git, macos]
+    tags:
+      - git
+      - macos
   git config --global credential.helper osxkeychain:
     desc: Use OS X global Keychain
-    tags: [git, macos]
+    tags:
+      - git
+      - macos
   git config --global credential.helper osxkeychain store:
     desc: Store credentials globally in OS X Keychain
-    tags: [git, macos]
-
-  # COMMITTING CHANGES
+    tags:
+      - git
+      - macos
   git commit -m "Initial commit":
     desc: Records changes to the repository.
-    tags: [git]
+    tags:
+      - git
   git commit --verbose --amend --no-verify --no-edit:
     desc: Amend last commit
-    tags: [git]
+    tags:
+      - git
   git commit --verbose --amend --no-verify:
     desc: Amend last commit
-    tags: [git]
+    tags:
+      - git
   git commit --verbose --amend --no-edit:
     desc: Amend last commit
-    tags: [git]
+    tags:
+      - git
   git commit -m "Initial commit" && git remote add origin git@github.com:roalcantara/foo.git && git branch -M main && git push -u origin main:
     desc: Create a new repository on GitHub and push an initial commit
-    tags: [git]
-
-  # RESETTING CHANGES
+    tags:
+      - git
   git reset HEAD file.txt:
     desc: Unstages changes or resets commits.
-    tags: [git]
+    tags:
+      - git
   git reset 'HEAD^' -- package.json:
     desc: Remove package.json from last commit
-    tags: [git]
+    tags:
+      - git
   git reset 'HEAD^' -- package.json && git commit --amend --no-edit:
     desc: Remove package.json from last commit and amend
-    tags: [git]
-
-  ## BRANCHING AND MERGING
+    tags:
+      - git
   git branch feature-branch:
     desc: Lists branches or creates a new branch.
-    tags: [git]
+    tags:
+      - git
   git branch -M <main> && git push -u origin <main>:
     desc: Add and push to branch <main>
-    tags: [git]
+    tags:
+      - git
   git checkout feature-branch:
     desc: Switches between branches or restores files.
-    tags: [git]
+    tags:
+      - git
   git checkout $(git main-branch):
     desc: Checkout main branch
-    tags: [git]
+    tags:
+      - git
   git checkout -b <branch>:
     desc: Create a new branch <branch>
-    tags: [git]
+    tags:
+      - git
   git switch feature-branch:
     desc: Switches branches (modern alternative to git checkout).
-    tags: [git]
+    tags:
+      - git
   git cherry-pick <commit-hash>:
     desc: Applies specific commits from one branch to another.
-    tags: [git]
-
-  ## INSPECTING FILES
+    tags:
+      - git
   git show :config/.env | head -5:
     desc: Shows the first 5 lines of the config/.env file as it exists in Git's staging area; Useful for reviewing what changes you've staged before committing them
-    tags: [git]
+    tags:
+      - git
   git show HEAD:config/.env | head -5:
     desc: Shows the first 5 lines of the config/.env file as it exists in the committed version; Useful for reviewing what changes you've committed before pushing them
-    tags: [git]
-
-  ## REMOTE REPOSITORIES
+    tags:
+      - git
   git remote -vvv:
     desc: Lists remote repositories and their URLs.
-    tags: [git]
+    tags:
+      - git
   git remote add origin <origin> && git branch -M main && git push -u origin main:
     desc: Add remote <origin> and push to branch main
-    tags: [git]
+    tags:
+      - git
   git fetch --all:
     desc: Retrieves updates for all branches and tags from all remotes configured in your local repository, including those that have been deleted.
-    notes: |
-      The git fetch --all command is used to fetch updates from all configured remote repositories.
-
-      ### Behavior
-
-        •	When you run git fetch --all, Git retrieves updates for all branches and tags from all remotes configured in your local repository.
-
-        •	It does not delete local branches that no longer exist on the remote; it only brings the latest updates to your local repository.
-
-        •	This is useful in projects with multiple remotes, as it fetches information from all of them at once.
-    tags: [git]
+    notes: "The git fetch --all command is used to fetch updates from all configured remote repositories.\n\n### Behavior\n\n  •\tWhen you run git fetch --all, Git retrieves updates for all branches and tags from all remotes configured in your local repository.\n\n  •\tIt does not delete local branches that no longer exist on the remote; it only brings the latest updates to your local repository.\n\n  •\tThis is useful in projects with multiple remotes, as it fetches information from all of them at once.\n"
+    tags:
+      - git
   git fetch --all && git remote prune origin:
     desc: Fetch all and prune origin
-    tags: [git]
+    tags:
+      - git
   git fetch --all && git remote prune origin && git checkout $(git main-branch):
     desc: Fetch all and prune origin
-    tags: [git]
+    tags:
+      - git
   git fetch --prune:
     desc: Fetch updates from all remotes and remove any remote-tracking references that no longer exist on the remote.
-    notes: |
-      The git fetch --prune command is used to fetch updates from all configured remote repositories and remove any remote-tracking references that no longer exist on the remote.
-
-      ### Behavior
-
-        •	When you run git fetch --prune, Git retrieves updates for all branches and tags from all remotes configured in your local repository.
-
-        •	It also removes any remote-tracking references that no longer exist on the remote, keeping your local repository in sync with the remote.
-
-        •	This is useful when you want to clean up your local repository and remove references to branches that have been deleted on the remote.
-    tags: [git]
-  "git fetch --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D":
+    notes: "The git fetch --prune command is used to fetch updates from all configured remote repositories and remove any remote-tracking references that no longer exist on the remote.\n\n### Behavior\n\n  •\tWhen you run git fetch --prune, Git retrieves updates for all branches and tags from all remotes configured in your local repository.\n\n  •\tIt also removes any remote-tracking references that no longer exist on the remote, keeping your local repository in sync with the remote.\n\n  •\tThis is useful when you want to clean up your local repository and remove references to branches that have been deleted on the remote.\n"
+    tags:
+      - git
+  'git fetch --prune && git branch -vv | grep '': gone]'' | awk ''{print $1}'' | xargs git branch -D':
     desc: Remove local branches that no longer exist in the remote repository
-    tags: [git]
+    tags:
+      - git
   git merge feature-branch:
     desc: Combines changes from one branch into another.
-    tags: [git]
+    tags:
+      - git
   git rebase main:
     desc: Moves or combines commits from one branch onto another.
-    tags: [git]
+    tags:
+      - git
   git rebase -i --root:
     desc: Rebase from root
-    tags: [git]
+    tags:
+      - git
   git push -v --set-upstream origin "$(git current-branch)":
     desc: Push current branch
-    tags: [git]
+    tags:
+      - git
   git push --tags:
     desc: Push tags
-    tags: [git]
-
-  # SUBMODULES
+    tags:
+      - git
   git submodule add <URL> <PATH>:
     desc: Add a submodule
-    tags: [git]
+    tags:
+      - git
   git submodule status:
     desc: List submodules
-    tags: [git]
+    tags:
+      - git
   git submodule foreach -q git config remote.origin.url:
     desc: List submodules origin urls
-    tags: [git]
+    tags:
+      - git
   git submodule deinit -- <SUBMODULE> && rm -rf .git/modules/<SUBMODULE> && git rm --cached <SUBMODULE>:
     desc: Remove SUBMODULE
-    tags: [git]
+    tags:
+      - git
   git submodule deinit -f -- <SUBMODULE> && rm -rf .git/modules/<SUBMODULE> && git rm -f --cached <SUBMODULE>:
     desc: Remove SUBMODULE - FORCED
-    tags: [git]
+    tags:
+      - git
   git submodule update --remote --merge:
     desc: Update all submodules
-    tags: [git]
+    tags:
+      - git
   git config --file .gitmodules -l:
     desc: List submodule configurations
-    tags: [git]
-
-  # MISC
+    tags:
+      - git
   git grep pattern $(git rev-list --all):
     desc: Search for a pattern among all committed files in a repository.
-    tags: [git]
-    links: [https://commands.dev/workflows/search_committed_files]
+    tags:
+      - git
+    links:
+      - https://commands.dev/workflows/search_committed_files
   git clean -fd:
     desc: Remove untracked files and directories from the working directory.
-    tags: [git]
-    links: [https://commands.dev/workflows/remove_untracked_files]
-
-  ## GH | GitHub command-line tool
-  ## https://cli.github.com
+    tags:
+      - git
+    links:
+      - https://commands.dev/workflows/remove_untracked_files
   gh auth login:
     desc: Login to GitHub
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh extension install github/gh-copilot:
     desc: Install GitHub Copilot
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh extension upgrade gh-copilot:
     desc: Upgrade GitHub Copilot
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh copilot explain "sudo apt-get":
     desc: Explain a command
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh copilot suggest "Install git":
     desc: Suggest a command
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh alias list:
     desc: List aliases
-    tags: [git, gh]
-
-  # GH REPO MANAGEMENT
+    tags:
+      - git
+      - gh
   gh repo view --web:
     desc: Open current repo in browser
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh repo view roalcantara/dots --web:
     desc: Open repo in browser
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh repo clone roalcantara/dots:
     desc: Clone repo
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh repo create <NAME>:
     desc: Create repo
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh repo create <NAME> --description='A simple app' --license=mit --gitignore=Node --private:
     desc: Create repo with description, MIT license, Node gitignore, private
-    tags: [git, gh]
-
-  # GH SECRETS MANAGEMENT
+    tags:
+      - git
+      - gh
   gh secret list:
     desc: List secrets for current repo
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh secret list -r"<OWNER>/<NAME>":
     desc: List secrets for a repo
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh secret set SECRET_NAME -b"SECRET_VALUE":
     desc: Set secret for current repo
-    tags: [git, gh]
-
-  # GH PULL-REQUEST MANAGEMENT
+    tags:
+      - git
+      - gh
   gh pr list:
     desc: List Opened Pull Requests
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh pr list --author roalcantara:
     desc: List Opened Pull Requests from roalcantara
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh pr create --title "My PR" --body "This is a PR" --base main:
     desc: Create a PR
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh pr close <NUMBER>:
     desc: Close a PR
-    tags: [git, gh]
-
-  # GH CODESPACES MANAGEMENT
+    tags:
+      - git
+      - gh
   gh codespace list:
     desc: List codespaces
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh codespace create --name <NAME> -R roalcantara/dots:
     desc: Create codespace
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh auth refresh -h github.com -s codespace:
     desc: Refresh codespace token
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh cs code -c $(gh cs list -json "name" | jq -r ".[].name" | grep -i "$1" -m 1):
     desc: Open codespace
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh cs stop -c $(gh cs list -json "name" | jq -r ".[].name" | grep -i "$1" -m 1):
     desc: Stop codespace
-    tags: [git, gh]
+    tags:
+      - git
+      - gh
   gh cs ssh -c $(gh cs list -json "name" | jq -r ".[].name" | grep -i "$1" -m 1):
     desc: SSH into codespace
-    tags: [git, gh]
-
-  ## LAZYGIT
+    tags:
+      - git
+      - gh
   lazygit:
     desc: Run lazygit
-    tags: [git, lazygit]
-
+    tags:
+      - git
+      - lazygit
 cheats:
   Conventional Commits:
     desc: Conventional Commits
-    tags: [git, commits]
-    links: [https://conventionalcommits.org, https://jorisroovers.com/gitlint, https://pre-commit.com]
+    tags:
+      - git
+      - commits
+    links:
+      - https://conventionalcommits.org
+      - https://jorisroovers.com/gitlint
+      - https://pre-commit.com
     notes:
-      - md: | #markdown
+      - md: |
           ### Commit Message Format
 
           The commit message should be structured as follows:
@@ -563,10 +675,15 @@ cheats:
           5. **Footer**: Additional information about the change, such as breaking changes or issues fixed.
   Conventional Commits Examples:
     desc: Conventional Commits Examples
-    tags: [git, commits]
-    links: [https://conventionalcommits.org, https://jorisroovers.com/gitlint, https://pre-commit.com]
+    tags:
+      - git
+      - commits
+    links:
+      - https://conventionalcommits.org
+      - https://jorisroovers.com/gitlint
+      - https://pre-commit.com
     notes:
-      - md: | #markdown
+      - md: |
           ## Examples
 
           ### Commit message with description and breaking change footer

@@ -1,13 +1,24 @@
 bookmarks:
+  https://asdf-vm.com:
+    desc: asdf is a tool for managing dev tools like node, python, cmake, terraform, and hundreds more.
+    tags: [devops, package-manager]
   https://mise.jdx.dev:
     desc: Like asdf (or nvm or pyenv but for any language) it manages dev tools like node, python, cmake, terraform, and hundreds more.
-    tags: [dev, tool]
+    tags: [devops, package-manager, mise]
+    links:
+      - https://mise.jdx.dev/dev-tools
+  https://aquaproj.github.io:
+    desc: Aqua is a tool for managing dev tools like node, python, cmake, terraform, and hundreds more.
+    tags: [devops, package-manager]
   https://reproducible-builds.org:
     desc: Reproducible Builds
-    tags: [devops, build]
-    links: [https://docker.com/blog/highlights-buildkit-v0-11-release/#3-source-date-epoch]
+    tags:
+      - devops
+      - build
+    links:
+      - https://docker.com/blog/highlights-buildkit-v0-11-release/#3-source-date-epoch
     notes:
-      - md: | #markdown
+      - md: |
           ### Which problems do Reproducible Builds Solve?
 
           Whilst anyone may inspect the source code of free and open source software for malicious flaws, most software is distributed pre-compiled with no method to confirm whether they correspond.
@@ -23,7 +34,7 @@ bookmarks:
           This ability to notice if a developer or build system has been compromised then prevents such threats or attacks occurring in the first place, as any compromise can be quickly detected. As a result, front-liners cannot be threatened/coerced into exploiting or exposing their colleagues.
 
           Several free software projects already provide reproducible builds, or will do soon.
-      - md: | #markdown
+      - md: |
           ### Why reproducible builds?
 
           Working on reproducible builds might look like a lot of effort with little gain at first. While this applies to many types of work related to security, there are already some good arguments and testimonies on why reproducible builds matter.
@@ -89,127 +100,172 @@ bookmarks:
           These practices align with the principles of DevSecOps, supporting a more agile development cycle through automated testing and CI/CD pipelines, while also improving security by isolating tasks and providing dependencies temporarily. The adoption of ephemeral environments and reproducible builds signifies a move towards more flexible, efficient, and secure software development, facilitating rapid onboarding and promoting continuous innovation within teams.
   https://runme.dev:
     desc: Runme is an interactive documentation tool that allows you to create, share, and execute code snippets directly within your documentation.
-    tags: [devops, tools]
+    tags:
+      - devops
+      - tool
 commands:
-  # MISE | The Modern Infrastructure as Code Tool
-  # https://mise.jdx.dev
+  # mise | https://mise.jdx.dev
   mise generate config > mise.toml:
     desc: Generate a mise.toml file
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/generate/config.html]
+    links:
+      - https://mise.jdx.dev/cli/generate/config.html
   mise generate devcontainer --name "$(basename "$PWD")" --image mcr.microsoft.com/devcontainers/base:debian --write:
     desc: Generate a devcontainer to execute mise and write it to .devcontainer/devcontainer.json
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/generate/devcontainer.html]
+    links:
+      - https://mise.jdx.dev/cli/generate/devcontainer.html
   mise generate devcontainer --name "$(basename "$PWD")" --image mcr.microsoft.com/devcontainers/base:ubuntu --write:
     desc: Generate a devcontainer to execute mise and write it to .devcontainer/devcontainer.json
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/generate/devcontainer.html]
+    links:
+      - https://mise.jdx.dev/cli/generate/devcontainer.html
   mise config ls:
     desc: List config files currently in use
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/config/ls.html]
+    links:
+      - https://mise.jdx.dev/cli/config/ls.html
   mise trust:
     desc: Trust mise.toml in the current or parent directory
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/trust.html]
+    links:
+      - https://mise.jdx.dev/cli/trust.html
   mise trust --all:
     desc: Trust all config files in the current directory and its parents
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/trust.html]
+    links:
+      - https://mise.jdx.dev/cli/trust.html
   mise trust --untrust:
     desc: No longer trust this config, will prompt in the future
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/trust.html]
+    links:
+      - https://mise.jdx.dev/cli/trust.html
   mise trust --show:
     desc: Show the trusted status of config files from the current directory and its parents. Does not trust or untrust any files.
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/trust.html]
+    links:
+      - https://mise.jdx.dev/cli/trust.html
+  mise exec python@3.12 -- ./myscript.py:
+    desc: Run a script with Python 3.12
+    tags: [devops, package-manager, mise]
+    links: [https://mise.jdx.dev/cli/exec.html]
+  mise x python@3.12 -- ./myscript.py:
+    desc: Run a script with Python 3.12 (alias for mise exec)
+    tags: [devops, package-manager, mise]
+    links: [https://mise.jdx.dev/cli/exec.html]
+  mise x node@20 -- node ./app.js:
+    desc: Launch app.js using node-20.x (alias for mise exec)
+    tags: [devops, package-manager, mise]
+    links: [https://mise.jdx.dev/cli/exec.html]
+  mise exec node@20 python@3.11 --command "node -v && python -V":
+    desc: Specify command as string with node-20.x and python-3.11.x
+    tags: [devops, package-manager, mise]
+    links: [https://mise.jdx.dev/cli/exec.html]
+  mise x -C /path/to/project node@20 -- node ./app.js:
+    desc: Run a command in the specified directory with node-20.x
+    tags: [devops, package-manager, mise]
+    links: [https://mise.jdx.dev/cli/exec.html]
   mise install:
     desc: Installs everything specified in mise.toml
-    tags: [mise]
-    links: [https://mise.jdx.dev]
+    tags: [devops, package-manager, mise]
   mise install node@20:
     desc: Installs a tool version to ~/.local/share/mise/installs/node/20 Installing alone will not activate the tools so they won't be in PATH - use `mise use` instead!
     tags: [mise]
-    links: [https://mise.jdx.dev]
+    links:
+      - https://mise.jdx.dev
   mise uninstall <PACKAGE>:
     desc: Uninstall a package with mise
     tags: [mise]
-    links: [https://mise.jdx.dev]
+    links:
+      - https://mise.jdx.dev
   mise ls:
     desc: List installed and active tool versions
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/ls.html]
+    links:
+      - https://mise.jdx.dev/cli/ls.html
   mise ls --current:
     desc: Only list tool versions currently specified in a mise.toml
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/ls.html]
+    links:
+      - https://mise.jdx.dev/cli/ls.html
   mise ls --local:
     desc: Only list tool versions currently specified in the local mise.toml
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/ls.html]
+    links:
+      - https://mise.jdx.dev/cli/ls.html
   mise ls --global:
     desc: Only list tool versions currently specified in the global mise.toml
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/ls.html]
+    links:
+      - https://mise.jdx.dev/cli/ls.html
   mise ls --installed:
     desc: Only list tool versions that are installed (Hides tools defined in mise.toml but not installed)
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/ls.html]
+    links:
+      - https://mise.jdx.dev/cli/ls.html
   mise ls-remote:
     desc: List all available tool versions for a plugin to install
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/ls-remote.html]
+    links:
+      - https://mise.jdx.dev/cli/ls-remote.html
   mise ls-remote node:
     desc: List all available tool versions for node to install
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/ls-remote.html]
+    links:
+      - https://mise.jdx.dev/cli/ls-remote.html
   mise ls-remote | fzf --header "Select a tool version to install":
     desc: List all available tool versions for all plugins and select one with fzf
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/ls-remote.html]
+    links:
+      - https://mise.jdx.dev/cli/ls-remote.html
   mise update:
     desc: Update a package with mise
     tags: [mise]
-    links: [https://mise.jdx.dev]
+    links:
+      - https://mise.jdx.dev
   mise upgrade:
     desc: Upgrade a package with mise
     tags: [mise]
-    links: [https://mise.jdx.dev]
+    links:
+      - https://mise.jdx.dev
   mise clean:
     desc: Clean a package with mise
     tags: [mise]
-    links: [https://mise.jdx.dev]
+    links:
+      - https://mise.jdx.dev
   mise help:
     desc: Show help for a command with mise
     tags: [mise]
-    links: [https://mise.jdx.dev]
+    links:
+      - https://mise.jdx.dev
   mise version:
     desc: Show version of mise
     tags: [mise]
-    links: [https://mise.jdx.dev]
+    links:
+      - https://mise.jdx.dev
   mise activate:
     desc: Initializes mise in the current shell session. This should go into your shell's rc file or login shell
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/activate.html]
+    links:
+      - https://mise.jdx.dev/cli/activate.html
   echo 'eval "$(mise activate zsh)"' >> ~/.zshrc:
     desc: Add mise activate to your shell's rc file
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/activate.html]
+    links:
+      - https://mise.jdx.dev/cli/activate.html
   echo 'eval "$(mise activate bash)"' >> ~/.bashrc:
     desc: Add mise activate to your shell's rc file
     tags: [mise]
-    links: [https://mise.jdx.dev/cli/activate.html]
-
-  # asdf | The Multiple Runtime Version Manager
-  # https://asdf-vm.com
+    links:
+      - https://mise.jdx.dev/cli/activate.html
   NODE_BUILD_CURL_OPTS=--ipv4 asdf install nodejs 20.12.2:
     desc: Installs nodejs 20.12.2 in MacOS arm when BUILD FAILED
-    tags: [nodejs, asdf]
-    links: [https://github.com/asdf-vm/asdf-nodejs/issues/344#issuecomment-1691812297]
+    tags:
+      - asdf
+      - node
+    links:
+      - https://github.com/asdf-vm/asdf-nodejs/issues/344#issuecomment-1691812297
 cheats:
-  # DEPLOYMENT PATTERNS
   Top Most-Used Deployment Strategies:
     desc: Rolling x Big Bang x Feature x Blue-Green x Canary
     tags: [pattern, deployment]
@@ -217,7 +273,7 @@ cheats:
       - What Are Deployment Patterns?: https://newsletter.techworld-with-milan.com/p/what-are-deployment-patterns
       - Top 5 Most-Used Deployment Strategies: https://youtu.be/AWVTKBUnoIg
     notes:
-      - md: | #markdown
+      - md: |
           | **Strategy**              | **Key Characteristics**                         | **Focus**                                             |
           | ------------------------- | ----------------------------------------------- | ----------------------------------------------------- |
           | **Rolling**               | Minimizes downtime, gradual rollout             | Stability and minimal user impact                     |
@@ -225,7 +281,7 @@ cheats:
           | **Feature Toggles/Flags** | Dynamic feature management, flexible deployment | Flexibility in feature release and rollback           |
           | **Blue-Green**            | Zero downtime, high resource requirement        | High availability and immediate rollback              |
           | **Canary**                | User feedback-oriented, phased release          | Testing in real-world conditions and gradual exposure |
-      - mermaid: | #mermaid
+      - mermaid: |
           graph TD
             A[Application Type] -->|Critical with High Availability| B[Blue-Green]
             A -->|Large Scale with Direct User Feedback| C[Canary]
@@ -239,7 +295,7 @@ cheats:
       - What Are Deployment Patterns?: https://newsletter.techworld-with-milan.com/p/what-are-deployment-patterns
       - Top 5 Most-Used Deployment Strategies: https://youtu.be/AWVTKBUnoIg
     notes:
-      - md: | #markdown
+      - md: |
           # Rolling Deployment
 
           > Focuses on stability and minimal user impact
@@ -269,7 +325,7 @@ cheats:
       - What Are Deployment Patterns?: https://newsletter.techworld-with-milan.com/p/what-are-deployment-patterns
       - Top 5 Most-Used Deployment Strategies: https://youtu.be/AWVTKBUnoIg
     notes:
-      - md: | #markdown
+      - md: |
           # Big Bang Deployment
 
           > Suited for less complex or small-scale applications
@@ -299,7 +355,7 @@ cheats:
       - Top 5 Most-Used Deployment Strategies: https://youtu.be/AWVTKBUnoIg
       - Ship faster with feature flags using Firebase Remote Config: https://youtu.be/vWJ8wDzeEg0
     notes:
-      - md: | #markdown
+      - md: |
           # Feature Toggles/Flags
 
           > Flexibility in feature release and rollback
@@ -328,7 +384,7 @@ cheats:
       - What Are Deployment Patterns?: https://newsletter.techworld-with-milan.com/p/what-are-deployment-patterns
       - Top 5 Most-Used Deployment Strategies: https://youtu.be/AWVTKBUnoIg
     notes:
-      - md: | #markdown
+      - md: |
           # Blue/Green (or Red/black) Deployment
 
           > High availability and immediate rollback
@@ -358,7 +414,7 @@ cheats:
       - What Are Deployment Patterns?: https://newsletter.techworld-with-milan.com/p/what-are-deployment-patterns
       - Top 5 Most-Used Deployment Strategies: https://youtu.be/AWVTKBUnoIg
     notes:
-      - md: | #markdown
+      - md: |
           # Canary Deployment
 
           > Spotting possible issues before they affect all consumers
@@ -385,7 +441,7 @@ cheats:
     tags: [pattern, deployment]
     links: [https://gitguardian.com/glossary/devsecops-checklist]
     notes:
-      - md: | #markdown
+      - md: |
           ### DevSecOps checklist
 
           **Know Your Dependencies**:
@@ -409,500 +465,487 @@ cheats:
           **Make Security Everyone's Job**:
             - Train developers and embed security specialists in teams
   Using BAUS to replace apt, flatpak, snap:
-      desc: Using BAUS (Unified Linux Package Manager) to replace apt, flatpak, snap
-      tags: [devops, package, manager]
-      links:
-        - https://github.com/vinifmor/bauh
-        - https://blog.crafteo.io/2025/01/10/flox-novops-development-packages-secrets-and-multi-environment-management-all-in-one
-        - https://youtu.be/-BsNc4oe3O0
-      notes:
-        - md: | #markdown
-            ### TL;DR: BAUH - Unified Linux Package Manager
-
-            > WHAT IS BAUH?
-            > Bauh is a graphical (and CLI) interface for managing Linux applications across
-            > multiple package formats. It unifies APT (Debian), Flatpak, Snap, AppImage,
-            > AUR, and Web applications under a single interface.
-
-            #### PURPOSE:
-            - Stop juggling multiple package managers (apt, flatpak, snap, etc).
-            - Install, update, remove, and manage all your packages from one place.
-
-            #### PRIMARY USERS:
-            - Linux system administrators managing mixed package sources
-            - Power users who need both native and containerized applications
-            - DevOps engineers automating system setup scripts
-            - Desktop users wanting a unified software center
-
-            #### SUPPORTED PACKAGE FORMATS:
-            - APT (Debian/Ubuntu repositories)
-            - Flatpak (containerized applications)
-            - Snap (containerized applications)
-            - AppImage (portable executables)
-            - AUR (Arch Linux User Repository - if on Arch)
-            - Web applications (Electron-based, installable as apps)
-
-            #### MAIN FEATURES
-
-            1. UNIFIED INTERFACE
-            - One command to search, install, upgrade, remove packages from any source
-            - No need to remember apt install vs snap install vs flatpak install
-
-            2. PACKAGE PRIORITY MANAGEMENT
-            - Choose which package source to prioritize (e.g., prefer native APT over Snap)
-            - Automatically resolves package conflicts and dependencies
-
-            3. TRAY MODE & NOTIFICATIONS
-            - Runs in system tray, notifies you of available updates
-            - Can auto-update packages on schedule
-
-            4. SYSTEM BACKUP INTEGRATION
-            - Integrates with Timeshift for safe snapshots before major changes
-            - Rollback capability if something breaks
-
-            5. CUSTOM THEMES & CONFIGURATION
-            - Customizable UI appearance via ~/.config/bauh/config.json
-            - Per-package-type configuration files
-
-            6. CLI MODE (bauh-cli)
-            - Command-line interface for scripting and automation
-            - Perfect for install scripts and CI/CD pipelines
-
-            #### MIGRATION FROM INDIVIDUAL PACKAGE MANAGERS
-
-            1. **OLD APPROACH - Multiple commands:**
-            - `sudo apt install vim``
-            - `flatpak install flatseal``
-            - `snap install telegram``
-
-            2. **NEW APPROACH - Single tool:**
-            - `bauh-cli install vim`              _(APT automatically)_
-            - `bauh-cli install flatseal`         _(Flatpak automatically)_
-            - `bauh-cli install telegram`         _(Snap automatically)_
-
-            3. **Or all at once:**
-            - `bauh-cli install vim flatseal telegram`
-
-            #### MAIN USES IN PRACTICE
-
-            1. INSTALL SCRIPTS / AUTOMATION
-            - Use `bauh-cli` in your setup scripts instead of multiple package managers
-            - Single point of error handling and logging
-
-            2. DESKTOP ENVIRONMENT SETUP
-            - Install mix of native and containerized apps in one go
-            - Example: native code editor + `snap` messaging app + `flatpak` video player
-
-            3. DEPENDENCY MANAGEMENT
-            - Specify dependencies without worrying about which package manager provides them
-            - **Bauh** finds the best source automatically
-
-            4. SYSTEM MAINTENANCE
-            - Single command to check for all updates across all package types
-            - Batch update everything at once
-
-            5. PACKAGE CLEANUP
-            - Remove unused dependencies across all package managers
-            - Clean caches from APT, Flatpak, and Snap simultaneously
-            - No need to remember `apt install` vs `snap install` vs `flatpak install`
-
-            #### CLI VS GUI MODE
-
-            1. **GUI MODE:** `bauh`
-              - Interactive graphical interface
-              - Best for users browsing/exploring packages
-              - Better for discovering new applications
-              - Good for one-off installs
-
-            2. **CLI MODE:** `bauh-cli`
-              - Headless, scriptable
-              - Perfect for automation and install scripts
-              - Better for CI/CD pipelines
-              - Can be piped to other commands
-              - Non-interactive (good for cron jobs)
-
-            3. **TRAY MODE:** `bauh-tray`
-              - Runs in system tray
-              - Monitors for updates
-              - Sends desktop notifications
-              - Useful for background monitoring
-
-            #### TROUBLESHOOTING
-
-            1. **ISSUE:** "Command not found: bauh-cli"
-              - **SOLUTION:** Ensure **Bauh** is installed and in `PATH`
-              - `which bauh-cli`
-              - `export PATH="$PATH:~/.local/bin"`  _(add if needed)_
-
-            2. **ISSUE:** Permission denied errors
-              - **SOLUTION:** Some operations need sudo
-              - `sudo bauh-cli update-db`
-              - `sudo bauh-cli upgrade --all`
-
-            3. **ISSUE:** Dependency conflicts between package managers
-              - **SOLUTION:** Check `~/.config/bauh/config.json` provider_order
-              - Adjust priority to prefer one source over another
-
-            4. **ISSUE:** Package not found
-              - **SOLUTION:** Make sure all package sources are enabled
-              - `nano ~/.config/bauh/config.json`
-              - Set `enable_apt`, `enable_flatpak`, `enable_snap` to true
-
-            5. **ISSUE:** Updates not detected
-              - **SOLUTION:** Manually update package databases
-              - `bauh-cli update-db`
-
-            6. **ISSUE:** Verbose output for debugging
-              - **SOLUTION:** Check logs at `~/.cache/bauh/` or `/tmp/bauh/logs`
-
-        - sh: | #shell
-            #!/bin/bash
-
-            ################################################################################
-            ## QUICKSTART - INSTALLATION
-            ################################################################################
-
-            # Option 1: Install via AppImage (universal, no dependencies)
-            mkdir -p ~/bin
-            cd ~/bin
-            wget https://github.com/vinifmor/bauh/releases/download/latest/bauh-x86_64.AppImage
-            chmod +x bauh-x86_64.AppImage
-            ./bauh-x86_64.AppImage
-
-            # Option 2: Install via APT (if available in your distro repos)
-            sudo apt install bauh
-
-            # Option 3: Install via AUR (Arch Linux)
-            yay -S bauh
-            # or
-            paru -S bauh
-
-            # Option 4: Install via Python pip
-            pip install bauh
-            # or with uv
-            uv pip install bauh
-
-            # Option 5: Install via Flox (if using Flox)
-            flox install bauh
-
-            # Verify installation
-            bauh --version
-            bauh-cli --version
-
-        - sh: | #shell
-            #!/bin/bash
-            ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
-
-            ## 1. LIST ALL AVAILABLE UPDATES ACROSS ALL SOURCES
-            # Output shows updates from APT, Flatpak, Snap, etc. all in one list
-            bauh-cli updates
-
-            ## 2. SEARCH FOR A PACKAGE (returns all available sources)
-            # Returns: Firefox from APT, Snap, Flatpak (multiple options)
-            bauh-cli search firefox
-
-        - sh: | #shell
-            #!/bin/bash
-            ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
-
-            ## 3. INSTALL PACKAGE (bauh decides best source or you can specify)
-
-            # Simple install (bauh picks the best provider)
-            bauh-cli install vlc
-
-            # Install from specific source
-            bauh-cli install --from flatpak vlc
-            bauh-cli install --from snap telegram
-            bauh-cli install --from apt vim
-
-            # Install multiple packages at once
-            bauh-cli install firefox thunderbird vlc
-
-        - sh: | #shell
-            #!/bin/bash
-            ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
-
-            ## 4. INSTALL WITH PACKAGE MANAGER PREFERENCE
-            # Configure in `~/.config/bauh/config.json` which sources to prioritize
-            # Example: prefer native APT over Snap
-            - `cat ~/.config/bauh/config.json | grep -A5 "provider_order"`
-
-        - sh: | #shell
-            #!/bin/bash
-            ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
-
-            ## 5. UPDATE/UPGRADE PACKAGES
-
-            # Update specific package
-            bauh-cli upgrade vlc
-
-            # Update all packages from all sources
-            bauh-cli upgrade --all
-
-            # Update only from specific source
-            bauh-cli upgrade --from flatpak --all
-
-        - sh: | #shell
-            #!/bin/bash
-            ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
-
-            # 6. REMOVE/UNINSTALL PACKAGE
-            bauh-cli remove vlc
-
-            # Remove with confirmation
-            bauh-cli remove --confirm vlc
-
-        - sh: | #shell
-            #!/bin/bash
-            ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
-
-            # 7. SHOW PACKAGE INFORMATION
-            # Shows: version, source (APT/Snap/Flatpak), size, description, etc.
-            bauh-cli show firefox
-
-        - sh: | #shell
-            #!/bin/bash
-            ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
-
-            # 8. LIST ALL INSTALLED PACKAGES
-            # List all installed across all sources
-            bauh-cli list
-
-            # Filter by source
-            bauh-cli list --from flatpak
-            bauh-cli list --from snap
-            bauh-cli list --from apt
-
-        - sh: | #shell
-            #!/bin/bash
-            ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
-
-            # 9. CLEAN UP & MAINTENANCE
-
-            # Clean caches from all sources
-            bauh-cli clean
-
-            # Remove unused dependencies (APT)
-            bauh-cli autoremove
-
-        - sh: | #shell
-            #!/bin/bash
-            ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
-
-            # 10. CONFIGURE PACKAGE SOURCES
-            # Edit configuration file
+    desc: Using BAUS (Unified Linux Package Manager) to replace apt, flatpak, snap
+    tags:
+      - devops
+      - package
+      - manager
+    links:
+      - https://github.com/vinifmor/bauh
+      - https://blog.crafteo.io/2025/01/10/flox-novops-development-packages-secrets-and-multi-environment-management-all-in-one
+      - https://youtu.be/-BsNc4oe3O0
+    notes:
+      - md: |
+          ### TL;DR: BAUH - Unified Linux Package Manager
+
+          > WHAT IS BAUH?
+          > Bauh is a graphical (and CLI) interface for managing Linux applications across
+          > multiple package formats. It unifies APT (Debian), Flatpak, Snap, AppImage,
+          > AUR, and Web applications under a single interface.
+
+          #### PURPOSE:
+          - Stop juggling multiple package managers (apt, flatpak, snap, etc).
+          - Install, update, remove, and manage all your packages from one place.
+
+          #### PRIMARY USERS:
+          - Linux system administrators managing mixed package sources
+          - Power users who need both native and containerized applications
+          - DevOps engineers automating system setup scripts
+          - Desktop users wanting a unified software center
+
+          #### SUPPORTED PACKAGE FORMATS:
+          - APT (Debian/Ubuntu repositories)
+          - Flatpak (containerized applications)
+          - Snap (containerized applications)
+          - AppImage (portable executables)
+          - AUR (Arch Linux User Repository - if on Arch)
+          - Web applications (Electron-based, installable as apps)
+
+          #### MAIN FEATURES
+
+          1. UNIFIED INTERFACE
+          - One command to search, install, upgrade, remove packages from any source
+          - No need to remember apt install vs snap install vs flatpak install
+
+          2. PACKAGE PRIORITY MANAGEMENT
+          - Choose which package source to prioritize (e.g., prefer native APT over Snap)
+          - Automatically resolves package conflicts and dependencies
+
+          3. TRAY MODE & NOTIFICATIONS
+          - Runs in system tray, notifies you of available updates
+          - Can auto-update packages on schedule
+
+          4. SYSTEM BACKUP INTEGRATION
+          - Integrates with Timeshift for safe snapshots before major changes
+          - Rollback capability if something breaks
+
+          5. CUSTOM THEMES & CONFIGURATION
+          - Customizable UI appearance via ~/.config/bauh/config.json
+          - Per-package-type configuration files
+
+          6. CLI MODE (bauh-cli)
+          - Command-line interface for scripting and automation
+          - Perfect for install scripts and CI/CD pipelines
+
+          #### MIGRATION FROM INDIVIDUAL PACKAGE MANAGERS
+
+          1. **OLD APPROACH - Multiple commands:**
+          - `sudo apt install vim``
+          - `flatpak install flatseal``
+          - `snap install telegram``
+
+          2. **NEW APPROACH - Single tool:**
+          - `bauh-cli install vim`              _(APT automatically)_
+          - `bauh-cli install flatseal`         _(Flatpak automatically)_
+          - `bauh-cli install telegram`         _(Snap automatically)_
+
+          3. **Or all at once:**
+          - `bauh-cli install vim flatseal telegram`
+
+          #### MAIN USES IN PRACTICE
+
+          1. INSTALL SCRIPTS / AUTOMATION
+          - Use `bauh-cli` in your setup scripts instead of multiple package managers
+          - Single point of error handling and logging
+
+          2. DESKTOP ENVIRONMENT SETUP
+          - Install mix of native and containerized apps in one go
+          - Example: native code editor + `snap` messaging app + `flatpak` video player
+
+          3. DEPENDENCY MANAGEMENT
+          - Specify dependencies without worrying about which package manager provides them
+          - **Bauh** finds the best source automatically
+
+          4. SYSTEM MAINTENANCE
+          - Single command to check for all updates across all package types
+          - Batch update everything at once
+
+          5. PACKAGE CLEANUP
+          - Remove unused dependencies across all package managers
+          - Clean caches from APT, Flatpak, and Snap simultaneously
+          - No need to remember `apt install` vs `snap install` vs `flatpak install`
+
+          #### CLI VS GUI MODE
+
+          1. **GUI MODE:** `bauh`
+            - Interactive graphical interface
+            - Best for users browsing/exploring packages
+            - Better for discovering new applications
+            - Good for one-off installs
+
+          2. **CLI MODE:** `bauh-cli`
+            - Headless, scriptable
+            - Perfect for automation and install scripts
+            - Better for CI/CD pipelines
+            - Can be piped to other commands
+            - Non-interactive (good for cron jobs)
+
+          3. **TRAY MODE:** `bauh-tray`
+            - Runs in system tray
+            - Monitors for updates
+            - Sends desktop notifications
+            - Useful for background monitoring
+
+          #### TROUBLESHOOTING
+
+          1. **ISSUE:** "Command not found: bauh-cli"
+            - **SOLUTION:** Ensure **Bauh** is installed and in `PATH`
+            - `which bauh-cli`
+            - `export PATH="$PATH:~/.local/bin"`  _(add if needed)_
+
+          2. **ISSUE:** Permission denied errors
+            - **SOLUTION:** Some operations need sudo
+            - `sudo bauh-cli update-db`
+            - `sudo bauh-cli upgrade --all`
+
+          3. **ISSUE:** Dependency conflicts between package managers
+            - **SOLUTION:** Check `~/.config/bauh/config.json` provider_order
+            - Adjust priority to prefer one source over another
+
+          4. **ISSUE:** Package not found
+            - **SOLUTION:** Make sure all package sources are enabled
             - `nano ~/.config/bauh/config.json`
+            - Set `enable_apt`, `enable_flatpak`, `enable_snap` to true
 
-            # KEY SETTINGS:
-            # - "check_interval": how often to check for updates
-            # - "suggest_uninstall_updates": prompt to remove old versions
-            # - "enable_aur": enable/disable AUR support (Arch only)
-            # - "enable_appimage": enable/disable AppImage support
-            # - "check_for_bauh_updates": check if bauh itself has updates
+          5. **ISSUE:** Updates not detected
+            - **SOLUTION:** Manually update package databases
+            - `bauh-cli update-db`
 
-        - jsonc: | #jsonc
-            // ~/.config/bauh/config.json
-            {
-              "check_interval": 3600,
-              "suggest_uninstall_updates": true,
-              "enable_aur": false,
-              "enable_appimage": true,
-              "enable_flatpak": true,
-              "enable_snap": true,
-              "enable_apt": true,
-              "provider_order": [
-                "apt",
-                "flatpak",
-                "snap",
-                "appimage"
-              ],
-              "install_dir": "/opt",
-              "logs_dir": "/tmp/bauh/logs"
-            }
+          6. **ISSUE:** Verbose output for debugging
+            - **SOLUTION:** Check logs at `~/.cache/bauh/` or `/tmp/bauh/logs`
+      - sh: |
+          #!/bin/bash
 
-        - sh: | #shell
-            #!/bin/bash
-            set -e
+          ################################################################################
+          ## QUICKSTART - INSTALLATION
+          ################################################################################
 
-            ################################################################################
-            ## SAMPLE INSTALL SCRIPT USING BAUH
-            ################################################################################
+          # Option 1: Install via AppImage (universal, no dependencies)
+          mkdir -p ~/bin
+          cd ~/bin
+          wget https://github.com/vinifmor/bauh/releases/download/latest/bauh-x86_64.AppImage
+          chmod +x bauh-x86_64.AppImage
+          ./bauh-x86_64.AppImage
 
-            echo "=== System Setup with Bauh ==="
+          # Option 2: Install via APT (if available in your distro repos)
+          sudo apt install bauh
 
-            # Step 1: Bootstrap - install bauh first (native method)
-            if ! command -v bauh-cli &> /dev/null; then
-                echo "Installing bauh bootstrap..."
-                DEBIAN_FRONTEND=noninteractive sudo apt update
-                DEBIAN_FRONTEND=noninteractive sudo apt install -y bauh
-                # or: wget AppImage and run
-            fi
+          # Option 3: Install via AUR (Arch Linux)
+          yay -S bauh
+          # or
+          paru -S bauh
 
-            # Step 2: Update package databases
-            echo "Updating package sources..."
-            bauh-cli update-db
+          # Option 4: Install via Python pip
+          pip install bauh
+          # or with uv
+          uv pip install bauh
 
-            # Step 3: Install development tools (from APT)
-            echo "Installing development packages..."
-            bauh-cli install --from apt \
-                build-essential \
-                git \
-                curl \
-                wget \
-                python3 \
-                python3-pip
+          # Option 5: Install via Flox (if using Flox)
+          flox install bauh
 
-            # Step 4: Install containerized applications (prefer Flatpak)
-            echo "Installing containerized applications..."
-            bauh-cli install --from flatpak \
-                org.gnome.gedit \
-                org.gnome.Files
+          # Verify installation
+          bauh --version
+          bauh-cli --version
+      - sh: |
+          #!/bin/bash
+          ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
 
-            # Step 5: Install communication apps (prefer Snap for these)
-            echo "Installing communication tools..."
-            bauh-cli install --from snap \
-                telegram-desktop \
-                slack
+          ## 1. LIST ALL AVAILABLE UPDATES ACROSS ALL SOURCES
+          # Output shows updates from APT, Flatpak, Snap, etc. all in one list
+          bauh-cli updates
 
-            # Step 6: Install everything else (let bauh choose best source)
-            echo "Installing remaining packages..."
-            bauh-cli install \
-                vlc \
-                firefox
+          ## 2. SEARCH FOR A PACKAGE (returns all available sources)
+          # Returns: Firefox from APT, Snap, Flatpak (multiple options)
+          bauh-cli search firefox
+      - sh: |
+          #!/bin/bash
+          ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
 
-            # Step 7: Update everything
-            echo "Updating all packages..."
-            bauh-cli upgrade --all
+          ## 3. INSTALL PACKAGE (bauh decides best source or you can specify)
 
-            # Step 8: Cleanup
-            echo "Cleaning up..."
-            bauh-cli clean
+          # Simple install (bauh picks the best provider)
+          bauh-cli install vlc
 
-            echo "=== Setup Complete ==="
+          # Install from specific source
+          bauh-cli install --from flatpak vlc
+          bauh-cli install --from snap telegram
+          bauh-cli install --from apt vim
 
-        - jsonc: | #jsonc
-            // SAMPLE CONFIGURATION - ~/.config/bauh/config.json
-            {
-              "check_interval": 3600,                    # Check for updates every hour
-              "check_for_bauh_updates": true,            # Notify when bauh updates available
-              "enable_aur": false,                       # Disable AUR (if not on Arch)
-              "enable_appimage": true,                   # Enable AppImage support
-              "enable_flatpak": true,                    # Enable Flatpak support
-              "enable_snap": true,                       # Enable Snap support
-              "enable_apt": true,                        # Enable APT support
-              "provider_order": [                        # Package source priority
-                "apt",
-                "flatpak",
-                "snap",
-                "appimage"
-              ],
-              "install_dir": "/opt",                     # Where to install AppImages
-              "suggest_uninstall_updates": true,         # Remove old versions after update
-              "logs_dir": "/tmp/bauh/logs"               # Where to store logs
-            }
+          # Install multiple packages at once
+          bauh-cli install firefox thunderbird vlc
+      - sh: |
+          #!/bin/bash
+          ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
 
-            // PER-SOURCE CONFIG FILES:
-            // ~/.config/bauh/apt.yml
-            // ~/.config/bauh/flatpak.yml
-            // ~/.config/bauh/snap.yml
+          ## 4. INSTALL WITH PACKAGE MANAGER PREFERENCE
+          # Configure in `~/.config/bauh/config.json` which sources to prioritize
+          # Example: prefer native APT over Snap
+          - `cat ~/.config/bauh/config.json | grep -A5 "provider_order"`
+      - sh: |
+          #!/bin/bash
+          ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
 
-        - sh: | #shell
-            #!/bin/bash
+          ## 5. UPDATE/UPGRADE PACKAGES
 
-            ################################################################################
-            ## PACKAGE PRIORITY / SOURCE PREFERENCE
-            ################################################################################
+          # Update specific package
+          bauh-cli upgrade vlc
 
-            # BEST PRACTICE: Define which package source to use for specific packages
+          # Update all packages from all sources
+          bauh-cli upgrade --all
 
-            # Example: Some packages work better as Flatpak (sandboxed):
-            # - Firefox
-            # - VLC
-            # - Blender
+          # Update only from specific source
+          bauh-cli upgrade --from flatpak --all
+      - sh: |
+          #!/bin/bash
+          ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
 
-            # Example: Some packages better as native APT (better integration):
-            # - Build tools (gcc, make, cmake)
-            # - System utilities (curl, wget, git)
-            # - Development libraries
+          # 6. REMOVE/UNINSTALL PACKAGE
+          bauh-cli remove vlc
 
-            # Example: Snap is useful for:
-            # - Proprietary software (Slack, Telegram)
-            # - Software with frequent updates
-            # - Isolated applications
+          # Remove with confirmation
+          bauh-cli remove --confirm vlc
+      - sh: |
+          #!/bin/bash
+          ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
 
-            # Configure this in ~/.config/bauh/config.json under "provider_order"
+          # 7. SHOW PACKAGE INFORMATION
+          # Shows: version, source (APT/Snap/Flatpak), size, description, etc.
+          bauh-cli show firefox
+      - sh: |
+          #!/bin/bash
+          ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
 
-        - sh: | #shell
-            #!/bin/bash
+          # 8. LIST ALL INSTALLED PACKAGES
+          # List all installed across all sources
+          bauh-cli list
 
-            ################################################################################
-            ## QUICK REFERENCE - COMMON COMMANDS
-            ################################################################################
+          # Filter by source
+          bauh-cli list --from flatpak
+          bauh-cli list --from snap
+          bauh-cli list --from apt
+      - sh: |
+          #!/bin/bash
+          ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
 
-            # SEARCH & INFO
-            bauh-cli search <package>              # Search for package
-            bauh-cli show <package>                # Show package info
+          # 9. CLEAN UP & MAINTENANCE
 
-            # INSTALL
-            bauh-cli install <package>             # Install with auto-detection
-            bauh-cli install --from <source> pkg   # Install from specific source
+          # Clean caches from all sources
+          bauh-cli clean
 
-            # UPDATE
-            bauh-cli upgrade <package>             # Upgrade single package
-            bauh-cli upgrade --all                 # Upgrade everything
-            bauh-cli updates                       # List available updates
+          # Remove unused dependencies (APT)
+          bauh-cli autoremove
+      - sh: |
+          #!/bin/bash
+          ## COMMON WORKFLOWS - USING BAUH-CLI FOR SCRIPTS
 
-            # REMOVE
-            bauh-cli remove <package>              # Uninstall package
-            bauh-cli autoremove                    # Remove unused dependencies
+          # 10. CONFIGURE PACKAGE SOURCES
+          # Edit configuration file
+          - `nano ~/.config/bauh/config.json`
 
-            # LIST
-            bauh-cli list                          # List all installed packages
-            bauh-cli list --from <source>          # List from specific source
+          # KEY SETTINGS:
+          # - "check_interval": how often to check for updates
+          # - "suggest_uninstall_updates": prompt to remove old versions
+          # - "enable_aur": enable/disable AUR support (Arch only)
+          # - "enable_appimage": enable/disable AppImage support
+          # - "check_for_bauh_updates": check if bauh itself has updates
+      - jsonc: |
+          // ~/.config/bauh/config.json
+          {
+            "check_interval": 3600,
+            "suggest_uninstall_updates": true,
+            "enable_aur": false,
+            "enable_appimage": true,
+            "enable_flatpak": true,
+            "enable_snap": true,
+            "enable_apt": true,
+            "provider_order": [
+              "apt",
+              "flatpak",
+              "snap",
+              "appimage"
+            ],
+            "install_dir": "/opt",
+            "logs_dir": "/tmp/bauh/logs"
+          }
+      - sh: |
+          #!/bin/bash
+          set -e
 
-            # MAINTENANCE
-            bauh-cli update-db                     # Update package databases
-            bauh-cli clean                         # Clean all caches
-            bauh-cli clean --from <source>         # Clean specific source cache
+          ################################################################################
+          ## SAMPLE INSTALL SCRIPT USING BAUH
+          ################################################################################
 
-        - sh: | #shell
-            #!/bin/bash
+          echo "=== System Setup with Bauh ==="
 
-            ################################################################################
-            ## REAL-WORLD EXAMPLE: DESKTOP DEVELOPER SETUP
-            ## Install a complete dev environment using bauh
-            ################################################################################
+          # Step 1: Bootstrap - install bauh first (native method)
+          if ! command -v bauh-cli &> /dev/null; then
+              echo "Installing bauh bootstrap..."
+              DEBIAN_FRONTEND=noninteractive sudo apt update
+              DEBIAN_FRONTEND=noninteractive sudo apt install -y bauh
+              # or: wget AppImage and run
+          fi
 
-            # Native development tools (APT)
-            bauh-cli install --from apt \
-                git \
-                python3 \
-                python3-pip \
-                nodejs \
-                npm \
-                docker.io \
-                build-essential
+          # Step 2: Update package databases
+          echo "Updating package sources..."
+          bauh-cli update-db
 
-            # Code editors & IDEs (Flatpak for sandboxing)
-            bauh-cli install --from flatpak \
-                com.visualstudio.code \
-                io.github.bragefuglseth.Frogmouth
+          # Step 3: Install development tools (from APT)
+          echo "Installing development packages..."
+          bauh-cli install --from apt \
+              build-essential \
+              git \
+              curl \
+              wget \
+              python3 \
+              python3-pip
 
-            # Communication (Snap for frequent updates)
-            bauh-cli install --from snap \
-                slack \
-                discord
+          # Step 4: Install containerized applications (prefer Flatpak)
+          echo "Installing containerized applications..."
+          bauh-cli install --from flatpak \
+              org.gnome.gedit \
+              org.gnome.Files
 
-            # Multimedia tools (best source varies)
-            bauh-cli install \
-                vlc \
-                audacity \
-                blender
+          # Step 5: Install communication apps (prefer Snap for these)
+          echo "Installing communication tools..."
+          bauh-cli install --from snap \
+              telegram-desktop \
+              slack
 
-            # Update everything
-            bauh-cli upgrade --all
+          # Step 6: Install everything else (let bauh choose best source)
+          echo "Installing remaining packages..."
+          bauh-cli install \
+              vlc \
+              firefox
 
-            # Cleanup
-            bauh-cli clean
+          # Step 7: Update everything
+          echo "Updating all packages..."
+          bauh-cli upgrade --all
 
-            echo "Developer environment ready!"
+          # Step 8: Cleanup
+          echo "Cleaning up..."
+          bauh-cli clean
+
+          echo "=== Setup Complete ==="
+      - jsonc: |
+          // SAMPLE CONFIGURATION - ~/.config/bauh/config.json
+          {
+            "check_interval": 3600,                    # Check for updates every hour
+            "check_for_bauh_updates": true,            # Notify when bauh updates available
+            "enable_aur": false,                       # Disable AUR (if not on Arch)
+            "enable_appimage": true,                   # Enable AppImage support
+            "enable_flatpak": true,                    # Enable Flatpak support
+            "enable_snap": true,                       # Enable Snap support
+            "enable_apt": true,                        # Enable APT support
+            "provider_order": [                        # Package source priority
+              "apt",
+              "flatpak",
+              "snap",
+              "appimage"
+            ],
+            "install_dir": "/opt",                     # Where to install AppImages
+            "suggest_uninstall_updates": true,         # Remove old versions after update
+            "logs_dir": "/tmp/bauh/logs"               # Where to store logs
+          }
+
+          // PER-SOURCE CONFIG FILES:
+          // ~/.config/bauh/apt.yml
+          // ~/.config/bauh/flatpak.yml
+          // ~/.config/bauh/snap.yml
+      - sh: |
+          #!/bin/bash
+
+          ################################################################################
+          ## PACKAGE PRIORITY / SOURCE PREFERENCE
+          ################################################################################
+
+          # BEST PRACTICE: Define which package source to use for specific packages
+
+          # Example: Some packages work better as Flatpak (sandboxed):
+          # - Firefox
+          # - VLC
+          # - Blender
+
+          # Example: Some packages better as native APT (better integration):
+          # - Build tools (gcc, make, cmake)
+          # - System utilities (curl, wget, git)
+          # - Development libraries
+
+          # Example: Snap is useful for:
+          # - Proprietary software (Slack, Telegram)
+          # - Software with frequent updates
+          # - Isolated applications
+
+          # Configure this in ~/.config/bauh/config.json under "provider_order"
+      - sh: |
+          #!/bin/bash
+
+          ################################################################################
+          ## QUICK REFERENCE - COMMON COMMANDS
+          ################################################################################
+
+          # SEARCH & INFO
+          bauh-cli search <package>              # Search for package
+          bauh-cli show <package>                # Show package info
+
+          # INSTALL
+          bauh-cli install <package>             # Install with auto-detection
+          bauh-cli install --from <source> pkg   # Install from specific source
+
+          # UPDATE
+          bauh-cli upgrade <package>             # Upgrade single package
+          bauh-cli upgrade --all                 # Upgrade everything
+          bauh-cli updates                       # List available updates
+
+          # REMOVE
+          bauh-cli remove <package>              # Uninstall package
+          bauh-cli autoremove                    # Remove unused dependencies
+
+          # LIST
+          bauh-cli list                          # List all installed packages
+          bauh-cli list --from <source>          # List from specific source
+
+          # MAINTENANCE
+          bauh-cli update-db                     # Update package databases
+          bauh-cli clean                         # Clean all caches
+          bauh-cli clean --from <source>         # Clean specific source cache
+      - sh: |
+          #!/bin/bash
+
+          ################################################################################
+          ## REAL-WORLD EXAMPLE: DESKTOP DEVELOPER SETUP
+          ## Install a complete dev environment using bauh
+          ################################################################################
+
+          # Native development tools (APT)
+          bauh-cli install --from apt \
+              git \
+              python3 \
+              python3-pip \
+              nodejs \
+              npm \
+              docker.io \
+              build-essential
+
+          # Code editors & IDEs (Flatpak for sandboxing)
+          bauh-cli install --from flatpak \
+              com.visualstudio.code \
+              io.github.bragefuglseth.Frogmouth
+
+          # Communication (Snap for frequent updates)
+          bauh-cli install --from snap \
+              slack \
+              discord
+
+          # Multimedia tools (best source varies)
+          bauh-cli install \
+              vlc \
+              audacity \
+              blender
+
+          # Update everything
+          bauh-cli upgrade --all
+
+          # Cleanup
+          bauh-cli clean
+
+          echo "Developer environment ready!"

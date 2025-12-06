@@ -1,9 +1,12 @@
 cheats:
   Explaining Design Patterns | Template Structure:
     desc: Template structure for explaining design patterns
-    tags: [dp, oop, structural]
+    tags:
+      - dp
+      - oop
+      - structural
     notes:
-      - md: | #markdown
+      - md: |
           ## Explaining Design Patterns | Template Structure
 
           1. **One-line description** (what it does)
@@ -12,15 +15,16 @@ cheats:
           4. **When to use** (specific scenarios)
           5. **Related patterns** (brief comparisons)
           6. **Code example** (concrete implementation)
-
-  # DESIGN PATTERNS
   Adapter or Wrapper | Structural Patterns (with example):
     desc: Convert the interface of a class into another interface clients expect
-    tags: [dp, oop, structural]
+    tags:
+      - dp
+      - oop
+      - structural
     links:
       - RefactoringGuru / Design Patterns / Structural Patterns / Adapter: https://refactoring.guru/design-patterns/adapter
     notes:
-      - md: | #markdown
+      - md: |
           ## Adapter or Wrapper | Structural Patterns
 
           > Converts incompatible interfaces so objects can work together
@@ -45,7 +49,7 @@ cheats:
           ### RELATED PATTERNS
 
           - **Decorator**: Both wrap objects, but Decorator enhances behavior while Adapter changes interface
-      - ts: | #typescript
+      - ts: |
           // GIVEN an existing XML service
           class XMLDataService {
             getXMLData(): string { return "<data>stock info</data>"; }
@@ -67,11 +71,14 @@ cheats:
           }
   Bridge | Structural Patterns (with example):
     desc: Split a large class or a set of closely related classes into two separate hierarchies
-    tags: [dp, oop, structural]
+    tags:
+      - dp
+      - oop
+      - structural
     links:
       - RefactoringGuru / Design Patterns / Structural Patterns / Bridge: https://refactoring.guru/design-patterns/bridge
     notes:
-      - md: | #markdown
+      - md: |
           ## Bridge | Structural Patterns
 
           > Separates abstraction from implementation so both can vary independently
@@ -100,7 +107,7 @@ cheats:
 
           - **Adapter**: Changes interface, while Bridge separates interface from implementation
           - **Strategy**: Similar structure, but Bridge is about structure while Strategy is about algorithms
-      - ts: | #typescript
+      - ts: |
           // GIVEN an implementation hierarchy (colors)
           interface Color {
             fill(): string;
@@ -134,12 +141,15 @@ cheats:
           const blueSquare = new Square(new Blue());
   Facade | Structural Patterns (with example):
     desc: Provides a simplified (but limited) interface to a complex system of classes, library or framework
-    tags: [dp, oop, structural]
+    tags:
+      - dp
+      - oop
+      - structural
     links:
       - RefactoringGuru | Facade: https://refactoring.guru/design-patterns/facade
       - RefactoringGuru | Facade in TypeScript: https://refactoring.guru/design-patterns/facade/typescript/example
     notes:
-      - md: | #markdown
+      - md: |
           ## Facade | Structural Patterns
 
           > Provides a simplified interface to a complex subsystem
@@ -166,7 +176,7 @@ cheats:
           - **Adapter**: Changes interface; Facade simplifies interface
           - **Mediator**: Centralizes communication; Facade just simplifies access
           - **Proxy**: Same interface as target; Facade provides different (simpler) interface
-      - ts: | #typescript
+      - ts: |
           // GIVEN a complex process with many interdependent classes
           class AudioCodec { decode() { /* complex logic */ } }
           class VideoCodec { decode() { /* complex logic */ } }
@@ -197,12 +207,15 @@ cheats:
           converter.convertVideo("movie", "mp4");
   Builder | Creational Patterns (with example):
     desc: Construct complex objects step by step. Separate the construction of a complex object from its representation
-    tags: [dp, oop, creational]
+    tags:
+      - dp
+      - oop
+      - creational
     links:
       - RefactoringGuru | Builder: https://refactoring.guru/design-patterns/builder
       - RefactoringGuru | Builder in TypeScript: https://refactoring.guru/design-patterns/builder/typescript/example
     notes:
-      - md: | #markdown
+      - md: |
           ## Builder | Creational Patterns
 
           > Constructs complex objects step by step using the same construction process
@@ -229,7 +242,7 @@ cheats:
 
           - **Factory**: Creates objects in one step; Builder creates step-by-step
           - **Composite**: Often built using Builder for complex tree structures
-      - ts: | #typescript
+      - ts: |
           // GIVEN a complex object with many optional parameters and a multi-step construction process
           class Car {
             constructor(
@@ -280,17 +293,18 @@ cheats:
             .setSeats(4)
             .addGPS()
             .build();
-
-  # SOLID
   SOLID - The 5 Principles of Object-Oriented Design | OVERVIEW:
     desc: Guidelines to create better software, making code easier to maintain, test, and extend
-    tags: [bp, oop, solid]
+    tags:
+      - bp
+      - oop
+      - solid
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
       - SOLID Principle in Programming - Understand With Real Life Examples: https://geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples
     notes:
-      - md: | #markdown
+      - md: |
           ### S.O.L.I.D.: The 5 Principles of Object-Oriented Design
 
           1. **[S]ingle Responsibility:** Classes should have only one job, which ensures only one reason to change.
@@ -300,13 +314,16 @@ cheats:
           5. **[D]ependency Inversion:** High-level modules should depend on abstractions, not low-level modules (concrete implementations).
   Single Responsibility Principle (with example):
     desc: Classes should have only one job, which ensures only one reason to change
-    tags: [bp, oop, solid]
+    tags:
+      - bp
+      - oop
+      - solid
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
       - SOLID Principle in Programming - Understand With Real Life Examples: https://geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples
     notes:
-      - ts: | #typescript
+      - ts: |
           // bad
           class UserSettings {
             constructor(user) {
@@ -323,7 +340,7 @@ cheats:
               // ...
             }
           }
-      - ts: | #typescript
+      - ts: |
           // good
           class UserAuth {
             constructor(user) {
@@ -336,21 +353,23 @@ cheats:
           }
   Open-Closed Principle (with example):
     desc: Classes should be open for extension, but closed for modification
-    tags: [bp, oop, solid]
+    tags:
+      - bp
+      - oop
+      - solid
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
       - SOLID Principle in Programming - Understand With Real Life Examples: https://geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples
     notes:
-      - ts: | #typescript
+      - ts: |
           // BAD: To add a new feature, UserSettings must be modified
           class UserSettings {
             constructor(user) {
               this.user = user;
             }
           }
-
-      - ts: | #typescript
+      - ts: |
           // GOOD: To add a new features, Shape can be extended without modifying the existing code
           class Shape {
             area() {
@@ -380,13 +399,16 @@ cheats:
           }
   Liskov Substitution Principle (with example):
     desc: Subclasses should be replaceable with their parent class
-    tags: [bp, oop, solid]
+    tags:
+      - bp
+      - oop
+      - solid
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
       - SOLID Principle in Programming - Understand With Real Life Examples: https://geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples
     notes:
-      - ts: | #typescript
+      - ts: |
           // Base class
           abstract class Shape {
             abstract area(): number;
@@ -427,13 +449,16 @@ cheats:
           shapes.forEach(shape => console.log(shape.area())); // Works perfectly
   Interface Segregation Principle (with example):
     desc: Clients should not be forced to depend on methods they do not use
-    tags: [bp, oop, solid]
+    tags:
+      - bp
+      - oop
+      - solid
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
       - SOLID Principle in Programming - Understand With Real Life Examples: https://geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples
     notes:
-      - ts: | #typescript
+      - ts: |
           // BAD: Fat interface forces unused methods
           interface Worker {
             work(): void;
@@ -475,13 +500,16 @@ cheats:
           }
   Dependency Inversion Principle (with example):
     desc: Depend on interfaces/abstractions, not concrete implementations
-    tags: [bp, oop, solid]
+    tags:
+      - bp
+      - oop
+      - solid
     links:
       - The S.O.L.I.D Principles in Pictures: https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898
       - SOLID - The First 5 Principles of O.O. Design: https://digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design
       - SOLID Principle in Programming - Understand With Real Life Examples: https://geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples
     notes:
-      - ts: | #typescript
+      - ts: |
           // BAD: High-level depends on low-level (concrete class)
           class MySQLDatabase {
             save(data: string) {
@@ -525,16 +553,16 @@ cheats:
           // Can use any database implementation
           const service1 = new OrderService(new MySQLDatabase());
           const service2 = new OrderService(new MongoDatabase());
-
-  # ARCHITECTURAL PATTERNS
   Top Client Architecture Patterns:
     desc: MVC x MVP x MVVM x MVVM-C
-    tags: [pattern, architectural]
+    tags:
+      - architecture
+      - pattern
     links:
       - Client Arch patterns: https://newsletter.techworld-with-milan.com/p/what-is-the-difference-between-mvc
       - Everything You NEED to Know About Client Architecture Patterns: https://youtu.be/I5c7fBgvkNY
     notes:
-      - md: | #markdown
+      - md: |
           ### MVC x MVP x MVVM x MVVM-C
 
           | **PATTERN** | **USE CASE**                                                    |
@@ -561,7 +589,9 @@ cheats:
             D -->|Complex Navigation| F[VIPER]
   MVC | Model-View-Controller:
     desc: Separates App logic into three interconnected components
-    tags: [pattern, architectural]
+    tags:
+      - architecture
+      - pattern
     notes:
       md: |
         # MVC: Model-View-Controller
@@ -609,7 +639,9 @@ cheats:
       - Everything You NEED to Know About Client Architecture Patterns: https://youtu.be/I5c7fBgvkNY
   MVP | Model-View-Presenter:
     desc: Enhances MVC by introducing a Presenter in event-driven environments
-    tags: [pattern, architectural]
+    tags:
+      - architecture
+      - pattern
     notes:
       md: |
         # MVP | Model-View-Presenter
@@ -656,7 +688,9 @@ cheats:
       - Everything You NEED to Know About Client Architecture Patterns: https://youtu.be/I5c7fBgvkNY
   MVI | Model-View-Intent:
     desc: Unidirectional data flow, ensuring that, given a state, the UI remains consistent
-    tags: [pattern, architectural]
+    tags:
+      - architecture
+      - pattern
     notes:
       md: |
         # MVI | Model-View-Intent
@@ -701,9 +735,11 @@ cheats:
       - Client Arch patterns: https://newsletter.techworld-with-milan.com/p/what-is-the-difference-between-mvc
   MVVM | Model-View-ViewModel:
     desc: Binds data between the view and model, with the ViewModel mediating the interaction
-    tags: [pattern, architectural]
+    tags:
+      - architecture
+      - pattern
     notes:
-      - md: | #markdown
+      - md: |
           # Model-View-ViewModel (MVVM)
 
           > Binds data between the view and model, with the ViewModel mediating the interaction
@@ -749,7 +785,9 @@ cheats:
       - Everything You NEED to Know About Client Architecture Patterns: https://youtu.be/I5c7fBgvkNY
   MVVM-C | MVVM with Coordinators:
     desc: Extends MVVM by adding coordinators for navigation and flow control.
-    tags: [pattern, architectural]
+    tags:
+      - architecture
+      - pattern
     notes:
       md: |
         # MVVM-C (MVVM with Coordinators)
@@ -798,7 +836,9 @@ cheats:
       - Everything You NEED to Know About Client Architecture Patterns: https://youtu.be/I5c7fBgvkNY
   VIPER | View-Interactor-Presenter-Entity-Router:
     desc: Emphasizes testability and Single Responsibility Principle (like Clean Architecture)
-    tags: [pattern, architectural]
+    tags:
+      - architecture
+      - pattern
     notes:
       md: |
         # VIPER
@@ -852,16 +892,16 @@ cheats:
       - Objc.io's introduction to VIPER: https://objc.io/issues/13-architecture/viper
       - Client Arch patterns: https://newsletter.techworld-with-milan.com/p/what-is-the-difference-between-mvc
       - Everything You NEED to Know About Client Architecture Patterns: https://youtu.be/I5c7fBgvkNY
-
-  # SOFTWARE ARCHITECTURE PATTERNS
   Top Software Architecture Patterns:
     desc: Monolithic x Layered x Clean x Microservices x Event-Driven x Space-based x Microkernel x Peer-to-Peer x Cloud-native x CQRS x Hexagonal
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     links:
       - Top 5 Most Used Architecture Patterns: https://youtu.be/f6zXyq4VPP8
       - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
     notes:
-      - md: | #markdown
+      - md: |
           ### Top Architecture Patterns
 
           | **ARCHITECTURE PATTERN**         | **USE CASE**                                                                                    |
@@ -877,7 +917,7 @@ cheats:
           | **Cloud-native**                 | Apps intended to leverage cloud environments, focusing on scalability and resource optimization |
           | **CQRS**                         | Complex systems where performance of read/write operations is critical                          |
           | **Hexagonal/Ports and Adapters** | Complex apps requiring integration with multiple systems                                        |
-      - mermaid: | #mermaid
+      - mermaid: |
           graph TD
             A[Project Scope] -->|Small & Simple| B[Monolithic Architecture]
             A -->|Requires Scalability| C[Layered Architecture]
@@ -896,7 +936,9 @@ cheats:
             D -->|Reactive & Event-Based| E
   EDA | Event-Driven Architecture:
     desc: System state changes are broadcasted as events
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     notes:
       md: |
         # Event-Driven Architecture
@@ -963,7 +1005,9 @@ cheats:
       - Event-Driven Architecture: https://youtube.com/watch?v=STKCRSUsyP0
   Monolithic Architecture:
     desc: Single-tiered where components are interconnected and interdependent
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     notes:
       md: |
         # Monolithic Architecture
@@ -1017,7 +1061,9 @@ cheats:
       - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
   Layered Architecture:
     desc: Organizes code into layers with specific roles
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     notes:
       md: |
         # Layered Architecture
@@ -1065,7 +1111,9 @@ cheats:
       - Layered Architecture: https://oreilly.com/library/view/software-architecture-patterns/9781491971437/ch01.html
   Microservices Architecture:
     desc: Independent, small, modular services
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     notes:
       md: |
         # Microservices Architecture
@@ -1102,7 +1150,9 @@ cheats:
       - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
   Space-based Architecture:
     desc: Eliminates the need for a relational database
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     notes:
       md: |
         # Space-based Architecture
@@ -1138,7 +1188,9 @@ cheats:
       - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
   Microkernel Architecture (Plug-in Architecture):
     desc: Core system with pluggable components/extensions
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     notes:
       md: |
         # Microkernel Architecture (Plug-in Architecture)
@@ -1173,7 +1225,9 @@ cheats:
       - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
   Peer-to-Peer Architecture:
     desc: Network of nodes sharing resources
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     notes:
       md: |
         # Peer-to-Peer Architecture
@@ -1209,7 +1263,9 @@ cheats:
       - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
   Cloud-native Architecture:
     desc: Designed for cloud scalability and flexibility
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     notes:
       md: |
         # Cloud-native Architecture
@@ -1245,7 +1301,9 @@ cheats:
       - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
   CQRS | Command-Query Responsibility Segregation Architecture:
     desc: Separates read and write operations
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     notes:
       md: |
         # Command-Query Responsibility Segregation Architecture (CQRS)
@@ -1281,7 +1339,9 @@ cheats:
       - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
   Hexagonal Architecture (Ports and Adapters):
     desc: Allows an application to be equally driven by users or programs
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
     notes:
       md: |
         # Hexagonal Architecture (Ports and Adapters)
@@ -1317,7 +1377,12 @@ cheats:
       - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
   Clean Architecture:
     desc: Focuses on separation of concerns
-    tags: [pattern, architecture]
+    tags:
+      - pattern
+      - architecture
+    links:
+      - Top 5 Most Used Architecture Patterns: https://youtu.be/f6zXyq4VPP8
+      - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
     notes:
       md: |
         # Clean Architecture
@@ -1348,6 +1413,304 @@ cheats:
           A -->|Interacts with| C[Interface]
           B -->|Interacts with| C
           C -->|Interacts with| A
-    links:
-      - Top 5 Most Used Architecture Patterns: https://youtu.be/f6zXyq4VPP8
-      - Top 10 Architectural Patterns: https://newsletter.techworld-with-milan.com/p/top-10-architectural-patterns
+  Domain-Driven Design (DDD) with Nx monorepos:
+    desc: Here is a high-level overview of Domain-Driven Design (DDD) concepts and how they can be applied when working with Nx monorepos
+    tags: [pattern, ddd, nx]
+    notes:
+      md: | #markdown
+        ### DDD in Nx monorepos
+
+        > Here is a high-level overview of Domain-Driven Design (DDD) concepts and how they can be applied when working with Nx monorepos
+
+        #### OVERVIEW
+
+        - Domain-Driven Design (DDD) is an approach to software development that focuses on understanding the business domain and modeling it in code. 
+        - It emphasizes creating a shared understanding of the domain among developers, business stakeholders, and users.
+
+        #### KEY CONCEPTS
+
+        1. **Bounded Context**: 
+          - A bounded context is a specific aspect or `"sub-domain"` within a larger system.
+          - It defines what aspects of the system are important to consider.
+
+        2. **Domain Model**: 
+          - The domain model represents the core concepts and relationships within a bounded context.
+          - It is the central hub for all business logic.
+
+        3. **Value Objects**: 
+          - Value objects represent immutable, distinct instances that have meaning in the domain (e.g., money, address).
+
+        4. **Entities**: 
+          - Entities are objects that have their own identity, state, and behavior.
+          - They can be updated or modified independently.
+
+        5. **Aggregates**: 
+          - Aggregates are groups of entities and value objects that can be treated as a single unit for transactions or queries.
+
+        #### HOW DDD RELATES TO Nx MONOREPOS
+
+        1. **Bounded Contexts as Subdirectories**: 
+          - In an Nx monorepo, each bounded context can be represented as a separate subdirectory 
+          - Example: `users`, `orders`
+
+        2. **Domain Models as Separate Modules**: 
+          - Each domain model can be implemented as a separate module within the bounded context directory 
+          - Example: `user.model.ts`, `order.model.ts`
+
+        3. **Value Objects and Entities as Separate Files**: 
+          - Value objects and entities can be represented as separate files within the domain model module 
+          - Example: `users/vo/user-id.vo.ts`, `users/entities/user.entity.ts`
+
+        4. **Aggregates as Container Modules**: 
+          - Aggregates can be implemented as container modules that wrap related entities, value objects, and business logic.
+          - Example: `users/aggregates/user.aggregate.ts`, `orders/aggregates/order.aggregate.ts`
+
+        5. **Domain Services and Repositories**: 
+          - Domain services and repositories can be used to encapsulate business logic and data access.
+          - Example: `users/services/user.service.ts`, `orders/services/order.service.ts`
+
+        #### BENEFITS OF USING DDD WITH Nx MONOREPOS
+
+        1. **Improved Modularity**: 
+          - Each bounded context is a separate module
+          - This makes it easier to maintain, test, and evolve individual parts of the system.
+
+        2. **Better Separation of Concerns**: 
+          - DDD concepts (entities, value objects, aggregates) help keep domain logic separate from infrastructure concerns (e.g., data access)
+          - This makes it easier to understand and maintain the code.
+
+        3. **Easier Collaboration**: 
+          - Shared understanding of the domain, developers can work together more effectively on different parts of the system.
+          - This makes it easier to collaborate and understand the code.
+
+        4. **More Robust Code**: 
+          - DDD concepts and Nx monorepos can lead to more robust code
+          - Each module is designed to be self-contained and reusable.
+
+        #### HUGH LEVEL STRUCTURE
+
+        > 💡 Example structure for a simple e-commerce application using DDD with Nx monorepos:
+        >
+        > - In this example, each bounded context (orders and users) is represented as a separate directory within the `domains` folder.
+        > - Each domain model has its own module, which contains value objects, entities, aggregates, services, and repositories related to that domain.
+        > - Keep in mind that this is just a high-level overview of DDD concepts applied to Nx monorepos. 
+        > - The specifics will vary depending on your project's requirements and complexity.
+
+          ```tree
+          project/
+          |
+          |-- apps/
+          |   |-- services/
+          |   |   |-- auth/
+          |   |   |   |-- auth.service.ts  
+          |   |   |-- users/
+          |   |       |-- user.service.ts
+          |   |
+          |   |-- web/
+          |       |-- admin/
+          |       |   |-- admin.controller.ts
+          |       |
+          |       |-- portal/
+          |           |-- portal.controller.ts
+          |    
+          |-- packages/
+          |   |
+          |   |-- shared/
+          |   |   |-- ui/
+          |   |      |-- button.component.ts
+          |   |      |-- input.component.ts
+          |   |
+          |   |-- utils/
+          |   |   |-- jwt/
+          |   |      |-- jwt.util.ts
+          |   |
+          |   |-- domain/
+          |       |
+          |       |-- shared/
+          |       |    |-- types/
+          |       |      |-- auth.type.ts
+          |       |
+          |       |-- auth/
+          |       |    |-- auth.domain.ts
+          |       |-- orders/
+          |       |    |-- user.entity.ts
+          |       |-- users/
+          |       |    |-- user.entity.ts
+          ```
+  Conceitos Essenciais de SCRUM:
+    desc: Papéis, eventos e artefatos do SCRUM
+    tags: [pattern, scrum, agile]
+    notes:
+      md: |
+        > Referência rápida para entender a hierarquia e propósito de cada artefato ágil. Exemplo: E-commerce de Delivery.
+
+        ---
+
+        ## 🎯 EPIC
+
+        **Propósito:** Agrupar múltiplas histórias em um objetivo estratégico maior
+
+        | Atributo | Descrição |
+        |----------|-----------|
+        | **Escopo** | Semanas a meses |
+        | **Atores** | Product Owner, Stakeholders |
+        | **Critério de Sucesso** | Alinhado com roadmap e valor de negócio |
+        | **Exemplo** | "Melhorar experiência de checkout e reduzir taxa de abandono de carrinho" |
+
+        ---
+
+        ## 🧩 FEATURE
+
+        **Propósito:** Agrupar tarefas relacionadas em um entregável coeso e testável
+
+        | Atributo | Descrição |
+        |----------|-----------|
+        | **Escopo** | Alguns dias a 2 sprints |
+        | **Atores** | Tech Lead, Dev Team, QA |
+        | **Critério de Sucesso** | DoD atendida para todas as tasks |
+        | **Exemplo** | "Pagamento com múltiplas formas de checkout (cartão, PIX, wallet)" |
+
+        ---
+
+        ## 👤 USER STORY
+
+        **Propósito:** Descrever uma funcionalidade do ponto de vista do usuário
+
+        | Atributo | Descrição |
+        |----------|-----------|
+        | **Escopo** | 2-5 dias (cabe em uma sprint) |
+        | **Atores** | Dev Team, QA, Product Owner |
+        | **Formato Padrão** | "Como [ator], quero [ação], para que [benefício]" |
+        | **Exemplo** | "Como cliente, quero pagar com PIX instantaneamente, para que meu pedido seja confirmado em segundos" |
+
+        ---
+
+        ## ✅ Definition of Ready (DoR)
+
+        **Propósito:** Garantir que a história está pronta para ser desenvolvida (entrada no sprint)
+
+        | Atributo | Descrição |
+        |----------|-----------|
+        | **Atores** | PO valida, Devs refinam dúvidas |
+        | **Timing** | Refinement/Grooming antes do sprint |
+        | **Checklist Típico** | • Critérios de aceitação definidos<br>• Mockups/designs prontos<br>• Dependências identificadas<br>• Story points estimado<br>• Perguntas respondidas |
+
+        ### Exemplo para User Story "Pagar com PIX":
+        - [x] Wireframe do fluxo PIX pronto
+        - [x] Integração com API do Banco X validada
+        - [x] Regras de timeout de transação definidas
+        - [x] Estimado em 8 story points
+
+        ---
+
+        ## 🔧 TASK
+
+        **Propósito:** Quebrar histórias em trabalho técnico tático
+
+        | Atributo | Descrição |
+        |----------|-----------|
+        | **Escopo** | Poucas horas até 1 dia |
+        | **Atores** | Desenvolvedores (criam durante sprint planning) |
+        | **Critério de Sucesso** | Código revisado, testes passando, pronto para merge |
+
+        ### Exemplos para User Story "Pagar com PIX":
+        1. **TASK:** Criar endpoint POST `/payments/pix` com validação de dados
+        2. **TASK:** Implementar polling para consultar status de transação PIX a cada 5s
+        3. **TASK:** Escrever testes unitários para lógica de timeout
+        4. **TASK:** Documentar fluxo no README
+
+        ---
+
+        ## ✔️ Definition of Done (DoD)
+
+        **Propósito:** Garantir qualidade e consistência antes de marcar como "pronto"
+
+        | Atributo | Descrição |
+        |----------|-----------|
+        | **Atores** | Dev Team, QA, Tech Lead |
+        | **Timing** | Antes de mover para "Pronto" no board |
+        | **Checklist Padrão** | • Código escrito e revisado (PR aprovado)<br>• Testes unitários com +80% cobertura<br>• Testes de integração passando<br>• Documentação atualizada<br>• Testado em staging<br>• Sem warnings de linter<br>• Pronto para deploy em produção |
+
+        ---
+
+        ## 🏗️ Hierarquia Visual
+
+        ```
+        EPIC: "Melhorar checkout e reduzir abandono"
+        │
+        ├─ FEATURE: "Múltiplas formas de pagamento"
+        │   ├─ USER STORY: "Pagar com PIX" [DoR ✓]
+        │   │   ├─ TASK: "Criar endpoint /payments/pix"
+        │   │   ├─ TASK: "Implementar polling de status"
+        │   │   └─ TASK: "Testes unitários"
+        │   │
+        │   ├─ USER STORY: "Pagar com cartão" [DoR ✓]
+        │   │   ├─ TASK: "Integrar SDK do gateway"
+        │   │   └─ TASK: "Validar dados do cartão"
+        │   │
+        │   └─ USER STORY: "Pagar com Google Pay" [DoR ✓]
+        │       └─ TASK: "Configurar wallet digital"
+        │
+        └─ FEATURE: "Recuperação de carrinho abandonado"
+            └─ USER STORY: "Receber email com carrinho salvo" [DoR ✓]
+                ├─ TASK: "Criar email template"
+                ├─ TASK: "Implementar job de envio"
+                └─ TASK: "Testes E2E"
+        ```
+
+        ---
+
+        ## 📊 Fluxo Típico de uma Sprint
+
+        ```
+        SPRINT PLANNING
+          ↓
+        Selecionar Stories com DoR atendida
+          ↓
+        Quebrar em Tasks
+          ↓
+        DESENVOLVIMENTO (Daily Standup)
+          ↓
+        CODE REVIEW + TESTES
+          ↓
+        Definition of Done atendida?
+          ├─ NÃO → Ajustar e voltar
+          └─ SIM ↓
+        SPRINT REVIEW (Demonstração)
+          ↓
+        SPRINT RETROSPECTIVE (Melhorias)
+        ```
+
+        ---
+
+        ## 🎓 Dicas Práticas
+
+        **Para Product Owner:**
+        - Mantenha EPICs e Features alinhadas com roadmap
+        - Garanta que Stories atendem DoR antes do refinement terminar
+        - Priorize por valor e dependências
+
+        **Para Dev Team:**
+        - Quebre Stories em Tasks durante planning, não durante desenvolvimento
+        - Use DoD como checklist antes de finalizar
+        - Pergunte se algo não está claro na DoR
+
+        **Para Scrum Master:**
+        - Monitore se DoR/DoD estão sendo respeitadas
+        - Facilite refinement para evitar surpresas no sprint
+        - Celebre quando o time entrega com qualidade
+
+        ---
+
+        ## 📚 Referência Rápida
+
+        | Artefato | Tamanho | Detalhamento | Quem Cria | Status Típico |
+        |----------|---------|--------------|-----------|---------------|
+        | EPIC | Meses | Alto nível | PO + Stakeholders | Roadmap |
+        | FEATURE | 1-2 sprints | Médio | PO + Tech Lead | Backlog |
+        | USER STORY | 2-5 dias | Detalhado | PO | Backlog / Sprint |
+        | TASK | <1 dia | Técnico | Dev | Sprint |
+
+      links:
+        - Guia Scrum: https://scrumguides.org/scrum-guide.html
+        - Scrum em 10 minutos: https://www.youtube.com/watch?v=9TycLR0TqFA

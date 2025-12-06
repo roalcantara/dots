@@ -1,17 +1,20 @@
 cheats:
   Conditional types | TypeScript:
     desc: Making the args argument optional based on whether T is provided
-    tags: [ts]
+    tags:
+      - ts
     notes:
-      - ts: | #typescript
+      - ts: |
           export abstract class AuthenticationService<T = undefined> {
             abstract findByLogin(login: string, args?: T extends undefined ? never : T): Promise<Patient>
           }
   Extract vs Pick | TypeScript:
     desc: Extract and Pick are two utility types in TypeScript that can be used to filter types based on certain conditions.
-    tags: [ts, utility-types]
+    tags:
+      - ts
+      - utility_types
     notes:
-      - md: | #markdown
+      - md: |
           ## Differences between Extract and Pick:
 
           ### Extract
@@ -34,7 +37,7 @@ cheats:
           2. **Extract** filters types based on assignability, **Pick** selects properties by exact names
           3. **Extract** can work with any type, **Pick** requires an object type with known properties
           4. **Extract** returns a union type, **Pick** returns an object type
-      - ts: | #typescript
+      - ts: |
           // Example 1: Basic Usage
           type Colors = 'red' | 'blue' | 'green' | 'yellow'
           interface ColorsObject {

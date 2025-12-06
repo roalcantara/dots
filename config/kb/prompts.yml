@@ -119,6 +119,51 @@ cheats:
             - **Criteria** IE: "did the AI provide a review of the pizza place?" or "did the AI provide a report on the crime scene?" or "did the AI provide an article about the latest news?"
           - **Iterate**
             **WHAT** If you evaluate your output and determine that you're not getting what you need, you can try again by adding more information or tweaking your prompt.
+  Convert Inline Links to Reference-Style Links:
+    desc: Convert Inline Links to Reference-Style Links
+    tags: [ia, gpt, prompt]
+    notes:
+      - md: | #markdown
+          Convert all inline markdown links `[text](URL)` in the provided markdown file to reference-style links format.
+
+          REFERENCE-STYLE LINK FORMAT:
+          - In document body: Replace `[text](URL)` with `[text][N]` where N is a sequential number
+          - At end of file: Add reference definitions as `[N]: URL 'Title'` (one per line)
+
+          PROCESS:
+          1. Scan entire file for inline links `[text](URL)` or `[text](URL "title")` - EXCLUDE links in code blocks (```) or inline code (`)
+          2. For each unique URL, assign sequential reference number starting from 0 (or continue from existing if file already has reference-style links)
+          3. Replace `[text](URL)` with `[text][N]` throughout document body
+          4. Add reference definitions section at end: `[N]: URL 'Title'` (use existing title if present, else generate descriptive title from URL)
+          5. Preserve all original text, formatting, structure - ONLY change link syntax
+
+          RULES:
+          - Reuse same reference number for duplicate URLs
+          - Preserve original link text exactly (including capitalization and formatting)
+          - Generate descriptive titles from URL domain/path if title missing (e.g., "AWS SAM developer guide" from aws.amazon.com URL)
+          - Order references numerically (0, 1, 2, ...)
+          - Skip links already in reference format `[text][N]`
+          - Only convert http/https URLs (not relative file paths like `./file.md`)
+          - Place reference definitions at very end of file, after all content
+
+          OUTPUT: Complete transformed markdown file with all links converted to reference-style format.
+
+          ### Example Before the Transformation (inline links)
+
+          ```md
+          See the [AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) for more information.
+          Install [Docker Desktop](https://hub.docker.com/search/?type=edition&offering=community).
+          ```
+
+          ### Example After the Transformation (reference-style links)
+
+          ```md
+          See the [AWS SAM developer guide][0] for more information.
+          Install [Docker Desktop][1].
+
+          [0]: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html 'AWS SAM developer guide'
+          [1]: https://hub.docker.com/search/?type=edition&offering=community 'Docker Desktop'
+          ```
 
 prompts:
   You are VocabularyGPT, a linguistics professor, poet, and world renowned writer:
