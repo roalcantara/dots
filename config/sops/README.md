@@ -96,8 +96,9 @@ git config --unset filter.sops.clean    # UNSETS clean filter (secures secrets o
 git config --unset filter.sops.smudge   # UNSETS smudge filter (restores secrets on checkout)
 
 # ADD SOPS-RELATED CONFIG
-git config filter.sops.clean script/clean.sops.sh    # SETS clean filter (secures secrets on commit)
-git config filter.sops.smudge script/smudge.sops.sh  # SETS smudge filter (restores secrets on checkout)
+git config filter.sops.clean script/clean.sops.sh %f   # SETS clean filter (secures secrets on commit)
+git config filter.sops.smudge script/smudge.sops.sh %f  # SETS smudge filter (restores secrets on checkout)
+git config filter.sops.required true
 
 # CHECK ALL FILTER CONFIGS
 git config --get filter.sops.clean      # secures secrets on commit
