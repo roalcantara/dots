@@ -25,6 +25,11 @@ plugin_autoupdate_last_check_duration = '1 week' # set to 0 to disable updates
 # https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
 trusted_config_paths = [
     '~/config',
+    '~/config/mise',
+    '~/Work/dots/config/mise',
+    '~/.local/share/dots',
+    '~/.local/share/dots/config',
+    '~/.local/share/dots/config/mise',
 ]
 
 verbose = false       # set to true to see full installation output, see `MISE_VERBOSE`
