@@ -1,0 +1,156 @@
+# kodexb Configuration File
+# Copy this file to your platform-specific config location:
+#   Linux:   ~/.config/kodexb/config.yaml
+#   macOS:   ~/Library/Application Support/kodexb/config.yaml
+#   Windows: %APPDATA%\kodexb\config.yaml
+#
+# See docs/CONFIGURATION.md for detailed documentation
+
+# ============================================================================
+# Database Settings (Required)
+# ============================================================================
+
+# Path to SQLite database containing your knowledge entries
+# Supports tilde (~) expansion and environment variables
+database_path: '~/.config/kodexb/knowledge.db'
+
+# ============================================================================
+# Pagination Settings
+# ============================================================================
+
+# Number of entries loaded per page (default: 20)
+# Smaller = faster initial load, more frequent fetches
+# Larger = fewer fetches, slower initial load
+page_size: 20
+
+# ============================================================================
+# Visual Theme
+# ============================================================================
+
+# Theme selection: "dark" or "light"
+# Optimizes colors for your terminal background
+theme: 'dark'
+
+# ============================================================================
+# Color Scheme
+# ============================================================================
+
+# Customize colors for entry types and UI elements
+# All colors use hex format: #RRGGBB
+colors:
+  # Entry type colors (shown in list and detail views)
+  bookmark: '#61AFEF' # Blue - for bookmark entries (🔖)
+  command: '#98C379' # Green - for command entries (💻)
+  cheat: '#E5C07B' # Yellow - for cheat entries (📝)
+
+  # UI element colors
+  selected: '#C678DD' # Purple - selected item highlight
+  border: '#5C6370' # Gray - borders and separators
+  accent: '#56B6C2' # Cyan - accents and highlights
+
+  # Status colors (for toasts and feedback)
+  success: '#98C379' # Green - success messages (✓)
+  error: '#E06C75' # Red - error messages (✗)
+  info: '#61AFEF' # Blue - info messages (ℹ)
+
+# ============================================================================
+# Cache Settings
+# ============================================================================
+
+# Configure detail cache behavior for lazy-loaded detail pane
+cache_settings:
+  # Maximum number of cached detail views (default: 10)
+  # Each cached entry: ~10-50 KB depending on content
+  max_cache_size: 10
+
+  # Eviction policy: "lru" (Least Recently Used)
+  # When cache is full, oldest accessed entry is evicted
+  eviction_policy: 'lru'
+
+# ============================================================================
+# Keybindings (Optional)
+# ============================================================================
+
+# Customize keyboard shortcuts
+# Format: "key" or "modifier+key"
+# Modifiers: ctrl, alt, shift, cmd (macOS only)
+# Special keys: enter, esc, tab, space, up, down, left, right
+keybindings:
+  # Search
+  search: '/' # Focus search input
+  search_alt: 'ctrl+f' # Alternative search focus
+
+  # Filtering
+  filter: 'ctrl+/' # Open unified filter modal
+  clear_filters: 'ctrl+shift+/' # Clear all filters
+
+  # Navigation
+  up: 'k' # Move selection up
+  down: 'j' # Move selection down
+  page_up: 'ctrl+u' # Scroll up one page
+  page_down: 'ctrl+d' # Scroll down one page
+  first: 'g' # Jump to first entry
+  last: 'G' # Jump to last entry
+
+  # View transitions
+  detail_open: 'right' # Load detail pane (lazy)
+  detail_close: 'left' # Close detail pane
+  modal_open: 'enter' # Open full-screen modal
+  modal_close: 'esc' # Close modal
+
+  # Actions
+  copy: 'ctrl+c' # Copy entry content
+  open: 'ctrl+o' # Open URL / Execute command
+  action_menu: 'ctrl+k' # Show action menu
+
+  # Global
+  palette: 'ctrl+p' # Command palette
+  help: '?' # Help screen
+  quit: 'q' # Quit application
+
+# ============================================================================
+# Performance Tuning (Optional)
+# ============================================================================
+
+performance:
+  # Database query timeout in milliseconds (default: 5000)
+  query_timeout: 5000
+
+  # Scroll trigger threshold - items from bottom to trigger next page load
+  # Lower = earlier loading, Higher = later loading (default: 3)
+  scroll_threshold: 3
+
+  # Search input debounce in milliseconds (default: 150)
+  # Delay before executing search after user stops typing
+  search_debounce: 150
+
+# ============================================================================
+# UI Behavior (Optional)
+# ============================================================================
+
+ui:
+  # Minimum terminal width for split-pane view (default: 120)
+  # Below this width, app stays in list-only view
+  min_split_width: 120
+
+  # Modal size as percentage of terminal dimensions
+  modal_width_percent: 90 # Default: 90%
+  modal_height_percent: 80 # Default: 80%
+
+  # Toast notification duration in milliseconds (default: 2000)
+  toast_duration: 2000
+
+  # Show loading indicators during operations (default: true)
+  show_loading: true
+
+# ============================================================================
+# Markdown Rendering (Optional)
+# ============================================================================
+
+markdown:
+  # Glamour style for markdown rendering
+  # Options: "dark", "light", "notty"
+  style: 'dark'
+
+  # Word wrap width for markdown content (default: 80)
+  wrap_width: 80
