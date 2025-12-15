@@ -1,3 +1,22 @@
+# [1.23.0](https://github.com/roalcantara/dots/compare/v1.22.0...v1.23.0) (2025-12-15)
+
+
+### Features
+
+* **dots/zsh:** Update ownership change to recursive ([0f63242](https://github.com/roalcantara/dots/commit/0f63242d2b43582fa15d14ab831a91cd844c04eb))
+* **env:** Add XDG environment setup for ZSH and Bash ([5a702da](https://github.com/roalcantara/dots/commit/5a702da4acc0df732bd102f137585745a3b35fa2))
+* **env:** Update manifest with new package paths ([4c9bab8](https://github.com/roalcantara/dots/commit/4c9bab8b53139b2096513a95408534e693b1a7b5))
+* **install:** Update FLOX_VERSION to 1.7.8 ([eddc3fb](https://github.com/roalcantara/dots/commit/eddc3fbeb1e6c96ac533377a767ab7858bcc7354))
+* **kb:** Add logos for tags of entries ([4f4e8a2](https://github.com/roalcantara/dots/commit/4f4e8a278b9176fd849e2965fe321c4b31189bab))
+* **kb:** Refactor YAML files for consistency and clarity ([f8bd0bc](https://github.com/roalcantara/dots/commit/f8bd0bc8c4ab494fc93534f6ea92af4fc4430208))
+* **kodexb:** Rename knowledge base folder ([e83bd01](https://github.com/roalcantara/dots/commit/e83bd017a5b793c44bdca1370e788949bb9ac29b))
+* **mise:** Add global configuration file ([896a91d](https://github.com/roalcantara/dots/commit/896a91d4fd5b8ba3cc13a96970ee2d8c0583016f))
+* **nvim:** Bump dependencies ([2f1d197](https://github.com/roalcantara/dots/commit/2f1d197833c388e6aa87981f1dcf74d474942f80))
+* **ssh:** Add SSH key management and configuration ([f028a8a](https://github.com/roalcantara/dots/commit/f028a8a2ade35f453ea3c0af99999fea13c10057))
+* **vscode:** Update settings for AWS integration and themes ([bf5f2a1](https://github.com/roalcantara/dots/commit/bf5f2a12253a4de4b0cc34d4d19e25dde863bbdd))
+* **zsh:** Add fzf module and update path for awscli ([7f155aa](https://github.com/roalcantara/dots/commit/7f155aa2ce145d52f84bc55f3ef4467db1bd13e1))
+* **zsh:** Add zsh completion script for eksctl ([1c46c44](https://github.com/roalcantara/dots/commit/1c46c44ffb6d1d94e704a5d323f5c58c20a6a987))
+
 # [1.22.0](https://github.com/roalcantara/dots/compare/v1.21.0...v1.22.0) (2025-11-05)
 
 
