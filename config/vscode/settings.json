@@ -1562,7 +1562,7 @@
   "markdown.marp.diagnostics.slideContentOverflow": true,
   "markdown.marp.mathTypesetting": "off",
   "markdown.preferredMdPathExtensionStyle": "auto",
-  "workbench.colorTheme": "Bearded Theme Arc Reversed",
+  "workbench.colorTheme": "Bearded Theme Monokai Metallian",
   "workbench.editor.sharedViewState": true,
   "rainbow_csv.rbql_with_headers_by_default": true,
   "aws.samcli.enableCodeLenses": true,
@@ -1584,5 +1584,7 @@
     "amazonQChatDisclaimer": true
   },
   "amazonQ.workspaceIndex": true,
-  "amazonQ.workspaceIndexUseGPU": true
+  "amazonQ.workspaceIndexUseGPU": true,
+  "nxConsole.disableFileWatching": true,
+  "nxConsole.enableDebugLogging": true
 }
