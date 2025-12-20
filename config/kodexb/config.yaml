@@ -12,7 +12,7 @@
 
 # Path to SQLite database containing your knowledge entries
 # Supports tilde (~) expansion and environment variables
-database_path: '~/.config/kodexb/knowledge.db'
+database_path: '~/.config/kodexb/knowledge.sqlite'
 
 # ============================================================================
 # Pagination Settings

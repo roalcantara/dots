@@ -1,0 +1,46 @@
+bookmarks:
+  https://dandypeople.com:
+    desc: Dandy People | Agile, Lean, DevOps, and UX
+    tags: [agile, scrum]
+  https://funretrospectives.com:
+    desc: A curated list of links to retrospectives ideas, books, articles, anything that could help you to organize a great retrospective session
+    tags: [agile]
+  https://funretrospectives.com/in-my-shoes:
+    desc: Team Building - In my shoes | Create strong bond between people, while exercising empathy and active listening skills.
+    tags: [agile, team_building]
+  https://funretrospectives.com/one-word:
+    desc: Check In - One Word | Simple check-in activity that allows participants to share their feelings before getting into the data and details for the meeting itself. It is a good opening for a meeting as it acknowledges people's feelings and gets them speaking from the very beginning.
+    tags: [agile, check_in, retro]
+  https://funretrospectives.com/happiness-radar-for-a-timeline:
+    desc: Check In - Happiness Radar for a Timeline | Check-in activity that allows participants to share their feelings before getting into the data and details for the meeting itself. It is a good opening for a meeting as it acknowledges people's feelings and gets them speaking from the very beginning.
+    tags: [agile, check_in, retro]
+  https://funretrospectives.com/the-roulette-asks:
+    desc: Energizer - The Roulette Asks | The roulette asks is a great activity for people to get to know more about each other. With online roulette with cool questions  there'`'s no better way to break hte ice..
+    tags: [agile, check_in, retro]
+  https://funretrospectives.com/telos-thinking:
+    desc: Futurespective - Telos thinking | Futurespective activity that helps the team to think about the future and what they want to achieve.
+    tags: [agile, retro]
+  https://funretrospectives.com/www-activity-worked-well-kinda-worked-didnt-work:
+    desc: Retrospective - WWW => Worked well, kinda Worked, didn't Work | Data gathering activity for retrospectives, guiding the discussion to team practices
+    tags: [agile]
+  https://funretrospectives.com/success-criteria:
+    desc: Retrospective - Success Criteria | Identify the criteria that will be used to determine whether the project has been successful
+    tags: [agile]
+  https://funretrospectives.com/the-good-the-bad-and-the-ugly:
+    desc: Retrospective - The Good, The Bad and The Ugly | Activity commonly used to boost conversations about improvements.
+    tags: [agile]
+  https://funretrospectives.com/three-little-pigs:
+    desc: Retrospective - Three Little Pigs | Foster a conversation about improvements for making our structures more solid
+    tags: [agile]
+  https://funretrospectives.com/anchors-and-engine:
+    desc: Retrospective - Anchors and Engine | Identify things that make them move faster and things that slow them down
+    tags: [agile]
+  https://funretrospectives.com/1-2-4-all:
+    desc: Retrospective - 1-2-4-All | Great mechanism for time management and prioritization. It combines individual reflection with teamwork towards a few selected items
+    tags: [filtering]
+  https://funretrospectives.com/the-4-ls-liked-learned-lacked-longed-for:
+    desc: Retrospective - 4L => Liked, Learned, Lacked, Longed For | Data gathering activity for recurring retrospectives
+    tags: [agile]
+  https://funretrospectives.com/dealing-with-failure-fmea:
+    desc: Retrospective - Dealing with Failure (FMEA) | Systematically analyze postulated failures and identify actions and verifications
+    tags: [agile]
