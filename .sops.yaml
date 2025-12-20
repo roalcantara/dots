@@ -18,5 +18,5 @@ creation_rules:
     age: age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4
   - path_regex: '.*ssh/keys/config$'
     age: age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4
-  - path_regex: '.*ssh/known_hosts$'
+  - path_regex: '.*ssh/keys/known_hosts$'
     age: age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4
