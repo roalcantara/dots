@@ -1,0 +1,945 @@
+bookmarks:
+  # AWS WORKSHOPS
+  https://catalog.workshops.aws:
+    desc: Find physical and virtual self-paced Workshops, GameDays, Bootcamps, Immersion Days, and other events that require hands-on access to AWS accounts.
+    tags: [aws, xp]
+  https://catalog.workshops.aws/workshops/9a27e484-7336-4ed0-8f90-f2747e4ac65c/en-US:
+    desc: AWS Serverless Developer Experience | Develop serverless skills using AWS SAM and SAM CLI. It focuses on practical, code-centric learning with real-world scenarios, covering distributed event-driven architectures, messaging patterns, orchestration, and observability
+    tags: [aws, serverless, sam]
+    links:
+      - https://aws.amazon.com/serverless/sam
+      - https://github.com/aws-cloudformation/cfn-lint
+      - https://github.com/awslabs/serverless-rules
+      - https://github.com/mhlabs/iam-policies-cli
+      - https://github.com/mhlabs/evb-cli
+      - https://powertools.aws.dev
+  https://catalog.workshops.aws/complete-aws-sam/en-US:
+    desc: Complete AWS SAM Workshop | A comprehensive workshop that covers building, testing, and deploying serverless applications using AWS SAM.
+    tags: [aws, serverless, sam]
+  https://catalog.workshops.aws/workshops/76bc5278-3f38-46e8-b306-f0bfda551f5a/en-US:
+    desc: Serverless Patterns | Learn serverless best practices by building production-ready code for an application
+    tags: [aws, serverless, sam]
+  # AWS CLI
+  https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html:
+    desc: Getting Started with AWS CLI
+    tags: [aws, cli]
+    links: [https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html]
+  # AWS SERVERLESS
+  https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/serverless-apps-run-debug-no-template.html:
+    desc: Running and Debugging Serverless Applications without a Template - Guide on how to run and debug serverless applications in Visual Studio Code without a SAM template.
+    tags: [aws, serverless, vscode]
+  https://serverlessland.com/patterns?framework=AWS+SAM:
+    desc: AWS SAM Patterns Collection - A collection of patterns for building serverless applications using AWS SAM.
+    tags: [aws, serverless]
+  https://powertools.aws.dev:
+    desc: AWS Lambda Powertools - A suite of utilities for AWS Lambda functions to ease the adoption of best practices such as structured logging, tracing, custom metrics, and more.
+    tags: [aws, serverless]
+  https://youtu.be/e2mokcAzDCY:
+    desc: Using Localstack with the AWS Toolkit for VSCode - A video tutorial on how to use Localstack with the AWS Toolkit for VSCode.
+    tags: [aws, sam]
+  https://levelup.gitconnected.com/creating-an-aws-sam-cli-project-with-typescript-and-both-types-of-layers-dependencies-and-34da5efdaec8:
+    desc: Creating an AWS SAM CLI Project with TypeScript and Both Types of Layers - A tutorial on setting up an AWS SAM project using TypeScript and layers.
+    tags: [aws, serverless, sam]
+  # AWS SAM
+  https://aws.amazon.com/serverless/sam:
+    desc: AWS Serverless Application Model (SAM) - An open-source framework for building serverless applications.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local.html:
+    desc: Using the AWS SAM CLI to build and test serverless applications locally - Guide on how to build and test serverless applications locally using the AWS SAM CLI.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local-generate-event.html:
+    desc: Generate AWS service events for local testing - Guide on how to generate AWS service events for local testing.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local-invoke.html:
+    desc: Initiate a one-time invocation of an AWS Lambda function locally - Guide on how to initiate a one-time invocation of an AWS Lambda function locally.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local-start-api.html:
+    desc: Run your Lambda functions using a local HTTP server - Guide on how to run your Lambda functions using a local HTTP server.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local-start-lambda.html:
+    desc: Run your Lambda functions using a local HTTP server for use with the AWS CLI or SDKs - Guide on how to run your Lambda functions using a local HTTP server for use with the AWS CLI or SDKs.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html:
+    desc: AWS Serverless Application Model (SAM) - An open-source framework for building serverless applications.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-api.html:
+    desc: SAM CLI Command Reference - sam local start-api - Documentation for the 'sam local start-api' command used to run a local API Gateway from a SAM template.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-invoke.html:
+    desc: SAM CLI Command Reference - sam local invoke - Documentation for the 'sam local invoke' command used to invoke a Lambda function locally.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-init.html:
+    desc: Using the SAM CLI to Initialize a New Application - Guide on how to use the SAM CLI to create a new serverless application.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html:
+    desc: Getting Started with AWS SAM - Hello World Example - A step-by-step guide to building a simple "Hello World" serverless application using AWS SAM.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-remote-invoke.html:
+    desc: Using the SAM CLI to Invoke Functions Remotely - Guide on how to use the SAM CLI to invoke Lambda functions deployed in AWS.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-remote-test-event.html:
+    desc: Using the SAM CLI to Test Events Remotely - Guide on how to use the SAM CLI to test events for Lambda functions deployed in AWS.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-invoke.html:
+    desc: Using the SAM CLI 'invoke' Command - Documentation on how to use the 'sam invoke' command to invoke Lambda functions.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-test-and-debug.html:
+    desc: Testing and Debugging Serverless Applications - Guide on how to test and debug serverless applications built with AWS SAM.
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-finch.html:
+    desc: Using Finch for testing and debugging serverless applications
+    tags: [aws, serverless, sam]
+  https://docs.aws.amazon.com/lambda/latest/dg/tenant-isolation.html:
+    desc: AWS Lambda Tenant Isolation - Documentation on how AWS Lambda implements tenant isolation.
+    tags: [aws, lambda]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html:
+    desc: AWS SAM Template Anatomy - Structure and components
+    tags: [aws, serverless, sam]
+    notes:
+      - yaml: | #yaml
+            # The following example shows a YAML-formatted template fragment.
+            Transform: AWS::Serverless-2016-10-31
+
+            # Properties that are common to all your serverless functions, APIs, and simple tables.
+            Globals:
+              set of globals
+
+            # A text string that describes the template.
+            # This section corresponds directly with the Description section of CloudFormation templates.
+            Description:
+              String
+
+            # Objects that provide additional information about the template.
+            # This section corresponds directly with the Metadata section of CloudFormation templates.
+            Metadata:
+              template metadata
+
+            # Values to pass to your template at runtime (when you create or update a stack).
+            # You can refer to parameters from the Resources and Outputs sections of the template.
+            # Objects that are declared in the Parameters section cause the sam deploy --guided command to present additional prompts to the user.
+            # Values that are passed in using the --parameter-overrides parameter of the sam deploy command—and entries in the configuration file—take precedence over entries in the AWS SAM template file.
+            Parameters:
+              set of parameters
+
+            # A mapping of keys and associated values that you can use to specify conditional parameter values, similar to a lookup table.
+            # You can match a key to a corresponding value by using the Fn::FindInMap intrinsic function in the Resources and Outputs sections.
+            # This section corresponds directly with the Mappings section of CloudFormation templates.
+            Mappings:
+              set of mappings
+
+            # Conditions that control whether certain resources are created or whether certain resource properties are assigned a value during stack creation or update.
+            # For example, you could conditionally create a resource that depends on whether the stack is for a production or test environment.
+            # This section corresponds directly with the Conditions section of CloudFormation templates.
+            Conditions:
+              set of conditions
+
+            # The stack resources and their properties, such as an Amazon Elastic Compute Cloud (Amazon EC2) instance or an Amazon Simple Storage Service (Amazon S3) bucket.
+            # You can refer to resources in the Resources and Outputs sections of the template.
+            # This section is similar to the Resources section of CloudFormation templates.
+            # In AWS SAM templates, this section can contain AWS SAM resources in addition to CloudFormation resources.
+            Resources:
+              set of resources
+
+            # The values that are returned whenever you view your stack's properties.
+            # For example, you can declare an output for an S3 bucket name, and then call the aws cloudformation describe-stacks AWS Command Line Interface (AWS CLI) command to view the name.
+            # This section corresponds directly with the Outputs section of CloudFormation templates.
+            Outputs:
+              set of outputs
+  # AWS Secrets Manager
+  https://docs.aws.amazon.com/secretsmanager/latest/userguide/best-practices.html:
+    desc: AWS Secrets Manager Best Practices
+    tags: [aws, secret]
+  # AWS TOOLS
+  https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode:
+    desc: AWS Toolkit for Visual Studio Code - An open source plug-in that makes it easier to create, debug, and deploy applications on AWS from Visual Studio Code.
+    tags: [aws, vscode]
+  https://nx.dev/docs/reference/nx-cloud/launch-templates#aws-cli:
+    desc: AWS CLI Launch Template for Nx Cloud - Documentation on how to use the AWS CLI launch template for Nx Cloud.
+    tags: [aws, lambda, nx]
+  https://flox.dev/popular-packages/building-and-debugging-aws-workflows-locally-with-flox-localstack-and-colima:
+    desc: Building and Debugging AWS Workflows Locally with Flox, LocalStack, and Colima - A guide on how to use Flox along with LocalStack and Colima for local AWS workflow development.
+    tags: [aws, localstack, flox]
+
+  https://localstack.cloud:
+    desc: LocalStack - A fully functional local AWS cloud stack that allows you to develop and test your cloud applications offline. Docker is required!
+    tags: [aws, localstack]
+    links:
+      - https://blog.localstack.cloud
+      - https://marketplace.visualstudio.com/items?itemName=LocalStack.localstack
+      - https://docs.localstack.cloud/aws/tutorials/lambda-ecr-container-images
+      - https://docs.localstack.cloud/aws/integrations/containers/devcontainers
+      - https://docs.localstack.cloud/aws/getting-started/quickstart
+      - https://blog.localstack.cloud/aws-toolkit-vscode-localstack
+  https://app.localstack.cloud/getting-started:
+    desc: LocalStack Panel
+    tags: [aws, localstack]
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          # Install LocalStack CLI using Homebrew
+          brew install localstack/tap/localstack-cli
+
+          # Open LocalStack Admin Panel
+          open https://app.localstack.cloud/getting-started
+
+          # Set LocalStack environment variables
+          export AWS_ACCESS_KEY_ID="test"
+          export AWS_SECRET_ACCESS_KEY="test"
+          export AWS_DEFAULT_REGION="us-east-1"
+          export LOCALSTACK_HOST="localhost"
+          export AWS_ENDPOINT_URL="http://$LOCALSTACK_HOST:4566"
+          export AWS_PROFILE="localstack"
+
+          # Set your token to activate your license
+          localstack auth set-token ls-00000000-1111-2222-3333-555555555
+
+          ######################################################################
+          ### Create an S3 bucket in LocalStack
+          # Using AWS_PROFILE=localstack environment variable
+          aws s3 mb s3://bucket1
+          # Using --profile localstack flag
+          aws --profile localstack s3 mb s3://bucket1
+          # Using --endpoint-url flag
+          aws --endpoint-url=http://localhost.localstack.cloud:4566 s3 mb s3://bucket1
+
+          ######################################################################
+          ### List S3 buckets in LocalStack
+          # Using AWS_PROFILE=localstack environment variable
+          aws s3 ls
+          # Using --profile localstack flag
+          aws --profile localstack s3 ls
+          # Using --endpoint-url flag
+          aws --endpoint-url=http://localhost.localstack.cloud:4566 s3 ls
+  https://app.localstack.cloud/getting-started/quickstart:
+    desc: LocalStack Quickstart Guide - A step-by-step guide to getting started with LocalStack for local AWS cloud stack development and testing.
+    tags: [aws, localstack]
+  https://docs.localstack.cloud/aws/tutorials/lambda-ecr-container-images:
+    desc: AWS Lambda with ECR Container Images - A tutorial on how to use AWS Lambda with container images stored in Amazon ECR using LocalStack.
+    tags: [aws, lambda]
+  https://docs.localstack.cloud/aws/integrations/containers/devcontainers:
+    desc: Developing AWS Applications with DevContainers in LocalStack - Guide on how to set up and use DevContainers for AWS application development with LocalStack.
+    tags: [aws, localstack]
+commands:
+  # AWS AUTH/CREDENTIALS
+  cat ~/.aws/credentials:
+    desc: Used by the AWS Command Line Interface (CLI) and SDKs to store the access key and secret access key for authenticating AWS API requests.
+    tags: [aws, config, profile]
+  aws configure list:
+    desc: List the current configuration values for AWS CLI
+    tags: [aws, profile]
+  aws configure --profile <profile_name>:
+    desc: Configure the AWS CLI with a named profile
+    tags: [aws, serverless, sam]
+  aws configure list-profiles:
+    desc: List the available profiles configured in the AWS CLI. It requires ACCESS_KEY_ID, SECRET_ACCESS_KEY and REGION
+    tags: [aws, serverless, sam]
+  # AWS IAM POLICIES
+  aws iam list-policies:
+    desc: List all IAM policies in the current account
+    tags: [aws, serverless, sam]
+  aws iam list-policies --output yaml:
+    desc: List all IAM policies in the current account in YAML format
+    tags: [aws, serverless, sam]
+  # AWS SECRETS MANAGER | https://us-east-1.console.aws.amazon.com/secretsmanager/listsecrets?region=us-east-1
+  aws secretsmanager list-secrets:
+    desc: List all secrets in the current account
+    tags: [aws, serverless, sam]
+    links:
+      - https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html
+
+      - https://us-east-1.console.aws.amazon.com/secretsmanager/listsecrets?region=us-east-1
+  aws secretsmanager list-secrets --max-results 10:
+    desc: List the first 10 secrets in the current account
+    tags: [aws, serverless, sam]
+    links:
+      - https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html
+
+      - https://us-east-1.console.aws.amazon.com/secretsmanager/listsecrets?region=us-east-1
+  aws secretsmanager list-secrets --filters Key=tag-key,Values=example-key:
+    desc: List all secrets in the current account that have a tag with the key 'example-key'
+    tags: [aws, serverless, sam]
+    links:
+      - https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html
+
+      - https://us-east-1.console.aws.amazon.com/secretsmanager/listsecrets?region=us-east-1
+  aws secretsmanager list-secrets --query "SecretList[*].Name":
+    desc: List the names of all secrets in the current account
+    tags: [aws, serverless, sam]
+    links:
+      - https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html
+
+      - https://us-east-1.console.aws.amazon.com/secretsmanager/listsecrets?region=us-east-1
+  # AWS CLOUDFORMATION
+  aws cloudformation create-stack --stack-name my-stack --template-body file://template.yaml --parameters ParameterKey=Param1,ParameterValue=Value1:
+    desc: Create a CloudFormation stack named 'my-stack' with the specified template and parameters
+    tags: [aws, serverless, sam]
+  aws cloudformation list-stacks:
+    desc: List all CloudFormation stacks in the current account
+    tags: [aws, serverless, sam]
+  aws cloudformation update-stack --stack-name my-stack --template-body file://template.yaml --parameters ParameterKey=Param1,ParameterValue=Value1:
+    desc: Update the CloudFormation stack named 'my-stack' with a new template and parameters
+    tags: [aws, serverless, sam]
+  aws cloudformation describe-stacks --stack-name my-stack:
+    desc: Describe the CloudFormation stack named 'my-stack'
+    tags: [aws, serverless, sam]
+  aws cloudformation describe-stacks --stack-name my-lambda-stack --query 'Stacks[0].Outputs':
+    desc: Describe the outputs of the CloudFormation stack named 'my-lambda-stack'
+    tags: [aws, serverless, sam]
+  aws cloudformation cancel-update-stack --stack-name my-lambda-stack:
+    desc: Cancel an ongoing update for the CloudFormation stack named 'my-lambda-stack'
+    tags: [aws, serverless, sam]
+  aws cloudformation delete-stack --stack-name my-stack:
+    desc: Delete the CloudFormation stack named 'my-stack'
+    tags: [aws, serverless, sam]
+  # AWS lambda functions
+  aws lambda list-functions:
+    desc: List Lambda functions in LocalStack using the 'localstack' profile
+    tags: [aws, lambda]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws lambda list-functions --output yaml:
+    desc: List all Lambda functions in the current account in YAML format
+    tags: [aws, lambda]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws lambda create-function --function-name my-node-function --runtime nodejs22.x --role arn:aws:iam::123456789012:role/service-role/MyTestFunction-role-tges6bf4 --handler my-function.handler --zip-file fileb://my-function.zip:
+    desc: Create a Node.js Lambda function from zip file
+    tags: [aws, lambda]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws lambda create-function --function-name my-phython-function --runtime python3.10 --role arn:aws:iam::account-id:role/lambda-ex-role --handler lambda_function.lambda_handler --zip-file fileb://function.zip:
+    desc: Create a Phython Lambda function from zip file
+    tags: [aws, lambda]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws lambda create-function --function-name my-function --runtime python3.10 --role arn:aws:iam::123456789012:role/lambda-ex --handler lambda_function.lambda_handler --zip-file fileb://my-function.zip --logging-config '{"LogFormat":"JSON", "ApplicationLogLevel":"DEBUG", "SystemLogLevel":"INFO", "LogGroup":"/aws/lambda/my-custom-log-group"}':
+    desc: Create a Python Lambda function with custom logging configuration
+    tags: [aws, lambda]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws lambda get-function --function-name address_get:
+    desc: Retrieve information about 'address_get' Lambda function in LocalStack
+    tags: [aws, lambda]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws lambda invoke --function-name address_get --cli-binary-format raw-in-base64-out --payload '{ "name":"Bob" }' response.json:
+    desc: Invoke 'address_get' Lambda function in LocalStack with a test payload
+    tags: [aws, lambda]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws lambda delete-function --function-name address_get:
+    desc: Delete 'address_get' Lambda function in LocalStack
+    tags: [aws, lambda]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws lambda list-layers --compatible-runtime python3.11:
+    desc: List layers compatible with Python 3.11 runtime in LocalStack
+    tags: [aws, lambda]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  aws lambda list-layers --compatible-runtime nodejs20.x:
+    desc: List layers compatible with Node.js 20.x runtime in LocalStack
+    tags: [aws, lambda]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html]
+  # AWS-CLI/DynamoDB
+  aws dynamodb list-tables:
+    desc: List DynamoDB tables in LocalStack
+    tags: [aws, dynamodb]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws dynamodb create-table --table-name MusicCollection --attribute-definitions AttributeName=Artist,AttributeType=S AttributeName=SongTitle,AttributeType=S --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --tags Key=Owner,Value=blueTeam:
+    desc: Create a DynamoDB table named 'MusicCollection' in LocalStack
+    tags: [aws, dynamodb]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws dynamodb describe-table --table-name MusicCollection:
+    desc: Describe the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, dynamodb]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws dynamodb put-item --table-name MusicCollection --item file://item.json --return-consumed-capacity TOTAL --return-item-collection-metrics SIZE:
+    desc: Put an item into the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, dynamodb]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws dynamodb get-item --table-name MusicCollection --key '{"Artist":"Acme Band","SongTitle":"Happy Day"}':
+    desc: Get an item from the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, dynamodb]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws dynamodb query --table-name MusicCollection --projection-expression "SongTitle" --key-condition-expression "Artist = :v1" --expression-attribute-values file://expression-attributes.json --return-consumed-capacity TOTAL:
+    desc: Query the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, dynamodb]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  aws dynamodb delete-item --table-name MusicCollection --key file://key.json --return-values ALL_OLD --return-consumed-capacity TOTAL --return-item-collection-metrics SIZE:
+    desc: Delete an item from the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, dynamodb]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html, https://awscli.amazonaws.com/v2/documentation/api/latest/reference/dynamodb/delete-item.html]
+  aws dynamodb delete-table --table-name MusicCollection:
+    desc: Delete the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, dynamodb]
+    links: [https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html]
+  # AWS-CLI/Kinesis
+  aws kinesis list-streams:
+    desc: List Kinesis streams in LocalStack
+    tags: [aws, kinesis]
+  # AWS-CLI/SQS
+  aws sqs create-queue --queue-name my-queue:
+    desc: Create an SQS queue named 'my-queue' in LocalStack
+    tags: [aws, sqs]
+    links: [https://docs.localstack.cloud/aws/capabilities/config/initialization-hooks/#example]
+  # AWS-CLI/S3
+  aws s3 ls:
+    desc: List S3 buckets in LocalStack
+    tags: [aws, s3]
+  aws s3 mb s3://bucket1:
+    desc: Create an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, s3]
+  aws s3 ls s3://bucket1:
+    desc: List objects in an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, s3]
+  aws s3 cp local.txt s3://bucket1:
+    desc: Copy a local file to an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, s3]
+  aws s3 cp s3://bucket1/local.txt local.txt:
+    desc: Copy an S3 object from S3 bucket 'bucket1' in LocalStack to a local file
+    tags: [aws, s3]
+  aws s3 rm s3://bucket1/local.txt:
+    desc: Remove an S3 object from S3 bucket 'bucket1' in LocalStack
+    tags: [aws, s3]
+  aws s3 rb s3://bucket1:
+    desc: Remove an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, s3]
+  # AWS SAM CLI
+  brew tap aws/tap && brew install aws-sam-cli:
+    desc: Install AWS SAM CLI using Homebrew
+    tags: [aws, serverless, sam]
+    notes:
+      - md: | #markdown
+          | **COMMAND**           | **WHAT IT DOES**                  |
+          | --------------------- | --------------------------------- |
+          | `sam init`            | Create new SAM project            |
+          | `sam validate`        | Check template syntax             |
+          | `sam build`           | Build & package code              |
+          | `sam local start-api` | Test HTTP locally                 |
+          | `sam local invoke`    | Test function directly            |
+          | `sam deploy --guided` | Deploy (first time, saves config) |
+          | `sam deploy`          | Deploy (quick, uses saved config) |
+          | `sam logs`            | View Lambda logs                  |
+          | `sam delete`          | Delete everything                 |
+      - yaml: | #yaml
+          # template.yaml - Common Structure
+          AWSTemplateFormatVersion: '2010-09-09'
+          Transform: AWS::Serverless-2010-05-13
+
+          Description: My Lambda Application
+
+          Globals:
+            Function:
+              Runtime: nodejs20.x
+              Timeout: 30
+              MemorySize: 256
+              Environment:
+                Variables:
+                  ENVIRONMENT: dev
+
+          Parameters:
+            Environment:
+              Type: String
+              Default: dev
+              AllowedValues: [dev, staging, prod]
+
+          Resources:
+            MyLambdaFunction:
+              Type: AWS::Serverless::Function
+              Properties:
+                FunctionName: !Sub 'my-function-${Environment}'
+                CodeUri: src/
+                Handler: handlers/index.handler
+                Runtime: nodejs20.x
+                Timeout: 30
+                MemorySize: 256
+                Environment:
+                  Variables:
+                    LOG_LEVEL: info
+                Events:
+                  ApiEvent:
+                    Type: Api
+                    Properties:
+                      RestApiId: !Ref MyApi
+                      Path: /hello
+                      Method: GET
+                  ScheduledEvent:
+                    Type: Schedule
+                    Properties:
+                      Schedule: 'rate(5 minutes)'
+
+            MyApi:
+              Type: AWS::Serverless::Api
+              Properties:
+                StageName: !Ref Environment
+                Auth:
+                  DefaultAuthorizer: MyCognitoAuth
+                Cors:
+                  AllowMethods: "'GET,POST,PUT,DELETE'"
+                  AllowHeaders: "'Content-Type'"
+                  AllowOrigin: "'*'"
+
+          Outputs:
+            ApiEndpoint:
+              Description: API Gateway endpoint
+              Value: !Sub 'https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}'
+            FunctionArn:
+              Description: Lambda function ARN
+              Value: !GetAtt MyLambdaFunction.Arn
+      - toml: | #toml
+          # Created by: sam deploy --guided
+
+          version = 0.1
+
+          [default]
+          [default.deploy]
+          [default.deploy.parameters]
+          stack_name = "my-lambda-stack"
+          s3_bucket = "my-deployment-bucket"
+          s3_prefix = "lambda/my-app"
+          region = "us-east-1"
+          confirm_changeset = true
+          capabilities = "CAPABILITY_IAM"
+          parameter_overrides = "Environment=dev"
+
+          [prod]
+          [prod.deploy]
+          [prod.deploy.parameters]
+          stack_name = "my-lambda-stack-prod"
+          s3_bucket = "my-deployment-bucket"
+          s3_prefix = "lambda/my-app-prod"
+          region = "us-east-1"
+          parameter_overrides = "Environment=prod"
+      - yaml: | #yaml
+          name: Deploy Lambda
+          on:
+            push:
+              branches: [main]
+          jobs:
+            deploy:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v3
+                - uses: aws-actions/configure-aws-credentials@v2
+                  with:
+                    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                    aws-region: us-east-1
+
+                - name: Build
+                  run: sam build
+
+                - name: Deploy
+                  run: sam deploy --no-confirm-changeset
+  flox install aws-sam-cli:
+    desc: Install AWS SAM CLI using Flox
+    tags: [aws, serverless, sam]
+  aws sts get-caller-identity:
+    desc: Verify AWS credentials by retrieving the caller identity
+    tags: [aws, serverless, sam]
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          # ============================================
+          # INSTALLATION
+          # ============================================
+
+          # Via Homebrew
+          brew tap aws/tap && brew install aws-sam-cli
+
+          # Configure AWS credentials
+          aws configure
+
+          # For LocalStack (local development)
+          export AWS_ACCESS_KEY_ID="test"
+          export AWS_SECRET_ACCESS_KEY="test"
+          export AWS_ENDPOINT_URL="http://localhost:4566"
+  sam init:
+    desc: Initialize a new AWS SAM project
+    tags: [aws, serverless, sam]
+  sam init --runtime nodejs20.x --name my-lambda-app:
+    desc: Create a new AWS SAM project with Node.js 20.x runtime
+    tags: [aws, serverless, sam]
+  sam init --runtime python3.14 --dependency-manager pip --app-template hello-world --name aws-powertools-demo:
+    desc: Initialize a new AWS SAM project with Python 3.14 runtime and pip dependency manager
+    tags: [aws, serverless, sam]
+  sam build:
+    desc: Build the AWS SAM project
+    tags: [aws, serverless, sam]
+  sam build --cached:
+    desc: Use cached dependencies
+    tags: [aws, serverless, sam]
+  sam build --parallel:
+    desc: Parallel build (faster)
+    tags: [aws, serverless, sam]
+  sam build --use-container:
+    desc: Build in Docker (for exact environment)
+    tags: [aws, serverless, sam]
+  sam local generate-event dynamodb put-record:
+    desc: Generate a DynamoDB put-record event for local testing
+    tags: [aws, serverless, sam]
+  sam local start-api:
+    desc: Start a local API Gateway to test Lambda functions locally with hot-reloading
+    tags: [aws, serverless, sam]
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          sam build
+          sam local start-api
+          curl http://localhost:3000/hello
+  sam local start-api --env-vars env.json:
+    desc: Start a local API Gateway to test Lambda functions locally with hot-reloading overriding environment variables defined in your templates
+    tags: [aws, serverless, sam]
+    links:
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-start-api.html
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-api.html
+    notes:
+      - jsonc: | #jsonc
+          // env.json
+          // Use Parameters to override environment variables globally to all resources
+          {
+              "Parameters": {
+                  "TABLE_NAME": "localtable",
+                  "BUCKET_NAME": "amzn-s3-demo-bucket",
+                  "STAGE": "dev"
+              }
+          }
+      - jsonc: | #jsonc
+          // env.json
+          // Use objects for each resource to override environment variables per function
+          {
+              "MyFunction1": {
+                  "TABLE_NAME": "localtable",
+                  "BUCKET_NAME": "amzn-s3-demo-bucket",
+              },
+              "MyFunction2": {
+                  "TABLE_NAME": "localtable",
+                  "STAGE": "dev"
+              }
+          }
+      - sh: | #shell
+          #!/bin/bash
+
+          sam build
+          sam local start-api --env-vars env.json
+          curl http://localhost:3000/hello
+  sam local start-api --port 8080:
+    desc: Start a local API Gateway on port 8080 to test Lambda functions locally
+    tags: [aws, serverless, sam]
+  sam local start-lambda:
+    desc: Builds Lambda functions in a local Docker container and outputs the local address to your HTTP server endpoint
+    tags: [aws, serverless, sam]
+    links:
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local-start-lambda.html
+      - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-lambda.html
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          sam build
+          sam local start-lambda
+          aws lambda invoke --function-name "HelloWorldFunction" --endpoint-url "http://127.0.0.1:3001" --no-verify-ssl out.txt
+  sam local invoke --event events/event.json:
+    desc: Invoke the Lambda function 'MyFunction' locally with a test event
+    tags: [aws, serverless, sam]
+  sam local invoke HelloWorldFunction --event '{"key":"value"}':
+    desc: Invoke the Lambda function 'HelloWorldFunction' locally with a JSON payload
+    tags: [aws, serverless, sam]
+  sam local invoke --debug:
+    desc: Invoke the Lambda function 'MyFunction' locally with debug output
+    tags: [aws, serverless, sam]
+  sam validate --template template.yaml:
+    desc: Validate the AWS SAM template file 'template.yaml'
+    tags: [aws, serverless, sam]
+  sam package --template-file template.yaml --s3-bucket my-bucket --output-template-file packaged.yaml:
+    desc: Package the AWS SAM application and upload artifacts to the specified S3 bucket
+    tags: [aws, serverless, sam]
+  sam package --template-file template.yaml --s3-bucket my-deployment-bucket --s3-prefix "lambda/auth-service" --output-template-file packaged.yaml:
+    desc: Package the AWS SAM application with a specific S3 prefix (to organize files) for the Lambda function artifacts
+    tags: [aws, serverless, sam]
+  sam deploy --guided:
+    desc: Deploy the AWS SAM application with guided prompts and save settings to samconfig.toml
+    tags: [aws, serverless, sam]
+  sam deploy:
+    desc: Deploy the AWS SAM application using settings to samconfig.toml
+    tags: [aws, serverless, sam]
+  sam deploy --config-env prod:
+    desc: Deploy the AWS SAM application using the 'prod' environment settings from samconfig.toml
+    tags: [aws, serverless, sam]
+  sam deploy --no-confirm-changeset:
+    desc: Deploy the AWS SAM application without confirmation prompts
+    tags: [aws, serverless, sam]
+  sam deploy --config-env prod --no-confirm-changeset:
+    desc: Deploy the AWS SAM application using the 'prod' environment settings from samconfig.toml without confirmation prompts
+    tags: [aws, serverless, sam]
+  sam deploy --parameter-overrides ParameterKey=Environment,ParameterValue=production:
+    desc: Deploy the AWS SAM application with parameter overrides (e.g., setting Environment to production)
+    tags: [aws, serverless, sam]
+  sam logs -n MyFunction --stack-name my-stack --tail:
+    desc: View real-time logs for the Lambda function 'MyFunction' in the stack 'my-stack'
+    tags: [aws, serverless, sam]
+  sam logs -n HelloWorldFunction --stack-name my-lambda-stack --start-time 10m ago:
+    desc: View logs for the Lambda function 'HelloWorldFunction' in the stack 'my-lambda-stack' starting from 10 minutes ago
+    tags: [aws, serverless, sam]
+  sam logs --filter "ERROR":
+    desc: View logs for the Lambda function 'MyFunction' filtered by the keyword "ERROR"
+    tags: [aws, serverless, sam]
+  sam delete --stack-name my-stack:
+    desc: Delete the AWS SAM application stack 'my-stack'
+    tags: [aws, serverless, sam]
+  # LocalStack with AWS
+  brew install localstack/tap/localstack-cli:
+    desc: Install the LocalStack CLI using Homebrew
+    tags: [aws, serverless, localstack]
+  localstack start:
+    desc: Start the LocalStack services
+    tags: [aws, serverless, localstack]
+  localstack start -d:
+    desc: Start LocalStack in the background
+    tags: [aws, serverless, localstack]
+  # LocalStack Useful Endpoints
+  # https://docs.localstack.cloud/aws/integrations/aws-native-tools/aws-cli/
+  curlie 'http://localhost.localstack.cloud:4566/_localstack/init' | jq:
+    desc: Initialize LocalStack services (or curl -s 'http://localhost:4566/_localstack/init' | jq)
+    tags: [aws, serverless, localstack]
+    links: [https://docs.localstack.cloud/aws/capabilities/config/initialization-hooks/#status-endpoint]
+  curlie 'http://localhost.localstack.cloud:4566/_localstack/init/ready' | jq:
+    desc: Check if LocalStack services are ready (or curl -s 'http://localhost:4566/_localstack/init/ready' | jq)
+    tags: [aws, serverless, localstack]
+    links: [https://docs.localstack.cloud/aws/capabilities/config/initialization-hooks/#querying-stages]
+  curlie 'http://localhost.localstack.cloud:4566/_localstack/init/ready' | jq .completed:
+    desc: check whether a given stage has been completed (or curl -s 'http://localhost:4566/_localstack/init/ready' | jq .completed)
+    tags: [aws, serverless, localstack]
+    links: [https://docs.localstack.cloud/aws/capabilities/config/initialization-hooks/#querying-stages]
+  curlie 'http://localhost.localstack.cloud:4566/_localstack/health' | jq:
+    desc: Check the health status of LocalStack services (or curl 'http://localhost:4566/_localstack/health' | jq)
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  curlie 'http://localhost.localstack.cloud:4566/_localstack/diagnose':
+    desc: Diagnose LocalStack issues and get a report (or curl 'http://localhost:4566/_localstack/diagnose')
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  curlie 'http://localhost.localstack.cloud:4566/_aws/lambda/runtimes?filter=supported':
+    desc: List supported Lambda runtimes in LocalStack (or curl 'http://localhost:4566/_aws/lambda/runtimes?filter=supported')
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  curlie 'http://localhost.localstack.cloud:4566/_aws/sqs/messages':
+    desc: List SQS queue messages without side effects in LocalStack (or curl 'http://localhost:4566/_aws/sqs/messages')
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  # LocalStack & AWS-CLI/Lambda
+  aws --profile localstack lambda list-functions:
+    desc: List Lambda functions in LocalStack using the 'localstack' profile
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html
+  aws --profile localstack lambda create-function --function-name address_get --runtime nodejs20.x --role arn:aws:iam::123456789012:role/lambda-ex --code S3Bucket=hot-reload,S3Key=$PWD/.dist --handler coreservices/address/functions/address/get.handler:
+    desc: Create 'address_get' Lambda function in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html
+  aws --profile localstack lambda get-function --function-name address_get:
+    desc: Retrieve information about 'address_get' Lambda function in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html
+  aws --profile localstack lambda invoke --function-name address_get --cli-binary-format raw-in-base64-out --payload '{ "name":"Bob" }' response.json:
+    desc: Invoke 'address_get' Lambda function in LocalStack with a test payload
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html
+  aws --profile localstack lambda delete-function --function-name address_get:
+    desc: Delete 'address_get' Lambda function in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html
+  aws --profile localstack lambda list-layers --compatible-runtime python3.11:
+    desc: List layers compatible with Python 3.11 runtime in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html
+  aws --profile localstack lambda list-layers --compatible-runtime nodejs20.x:
+    desc: List layers compatible with Node.js 20.x runtime in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_lambda_code_examples.html
+  # LocalStack & AWS-CLI/DynamoDB
+  aws --profile localstack dynamodb list-tables:
+    desc: List DynamoDB tables in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html
+  aws --profile localstack dynamodb create-table --table-name MusicCollection --attribute-definitions AttributeName=Artist,AttributeType=S AttributeName=SongTitle,AttributeType=S --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --tags Key=Owner,Value=blueTeam:
+    desc: Create a DynamoDB table named 'MusicCollection' in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html
+  aws --profile localstack dynamodb describe-table --table-name MusicCollection:
+    desc: Describe the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html
+  aws --profile localstack dynamodb put-item --table-name MusicCollection --item file://item.json --return-consumed-capacity TOTAL --return-item-collection-metrics SIZE:
+    desc: Put an item into the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html
+  aws --profile localstack dynamodb get-item --table-name MusicCollection --key '{"Artist":"Acme Band","SongTitle":"Happy Day"}':
+    desc: Get an item from the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html
+  aws --profile localstack dynamodb query --table-name MusicCollection --projection-expression "SongTitle" --key-condition-expression "Artist = :v1" --expression-attribute-values file://expression-attributes.json --return-consumed-capacity TOTAL:
+    desc: Query the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html
+  aws --profile localstack dynamodb delete-item --table-name MusicCollection --key file://key.json --return-values ALL_OLD --return-consumed-capacity TOTAL --return-item-collection-metrics SIZE:
+    desc: Delete an item from the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html
+
+      - https://awscli.amazonaws.com/v2/documentation/api/latest/reference/dynamodb/delete-item.html
+  aws --profile localstack dynamodb delete-table --table-name MusicCollection:
+    desc: Delete the DynamoDB table 'MusicCollection' in LocalStack
+    tags: [aws, serverless, localstack]
+    links:
+      - https://youtu.be/DFS3CnB-Z0k
+
+      - https://docs.aws.amazon.com/cli/v1/userguide/cli_dynamodb_code_examples.html
+  # LocalStack & AWS-CLI/Kinesis
+  aws --profile localstack kinesis list-streams:
+    desc: List Kinesis streams in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  # LocalStack & AWS-CLI/SQS
+  aws --profile localstack sqs create-queue --queue-name my-queue:
+    desc: Create an SQS queue named 'my-queue' in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://docs.localstack.cloud/aws/capabilities/config/initialization-hooks/#example]
+  # LocalStack & AWS-CLI/S3
+  aws --profile localstack s3 ls:
+    desc: List S3 buckets in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 mb s3://bucket1:
+    desc: Create an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 ls s3://bucket1:
+    desc: List objects in an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 cp local.txt s3://bucket1:
+    desc: Copy a local file to an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 cp s3://bucket1/local.txt local.txt:
+    desc: Copy an S3 object from S3 bucket 'bucket1' in LocalStack to a local file
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 rm s3://bucket1/local.txt:
+    desc: Remove an S3 object from S3 bucket 'bucket1' in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3 rb s3://bucket1:
+    desc: Remove an S3 bucket 'bucket1' in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  # LocalStack & AWS-SAM
+  sam build && sam deploy --profile localstack --stack-name my-stack-local --no-confirm-changeset:
+    desc: Deploy the AWS SAM application to LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+cheats:
+  Error 'Role arn:aws:iam::123456789012:role/aws-sam-cli-managed-foo--CloudFormationExecutionRo-bar is invalid or cannot be assumed' when deleting a cloudformation stack:
+    desc: This error occurs when the IAM role used by AWS SAM CLI to manage CloudFormation stacks is missing or misconfigured. To resolve this issue, you can try the following steps
+    tags: [aws, serverless, sam]
+    notes:
+      - md: | #markdown
+          ### Error on Deleting CloudFormation Stack
+
+          #### WHAT
+
+          - When attempting to delete a CloudFormation stack using AWS SAM CLI, you may encounter the following error message:
+
+            ```sh
+            sam delete --stack-name your-stack-name
+            # => An error occurred (ValidationError) when calling the DeleteStack operation: arn:aws:iam::123456789012:role/aws-sam-cli-managed-foo--CloudFormationExecutionRo-bar is invalid or cannot be assumed
+            ```
+
+          #### WHY?
+
+          > This error typically occurs when the IAM role that CloudFormation needs to delete the stack no longer exists or can't be assumed
+
+          1. Ensure that the IAM role role exists in your AWS account
+
+             ```sh
+             aws iam get-role --role-name aws-sam-cli-managed-foo--CloudFormationExecutionRo-bar
+             ```
+
+          2. If the role is missing, you can recreate it:
+
+            1. Create a JSON file named `trust-policy.json` with the following content:
+
+               ```json
+               {
+                 "Version": "2012-10-17",
+                 "Statement": [
+                   {
+                     "Effect": "Allow",
+                     "Principal": {
+                       "Service": "cloudformation.amazonaws.com"
+                     },
+                     "Action": "sts:AssumeRole"
+                   }
+                 ]
+               }
+               ```
+
+            2. Create the IAM role using the AWS CLI:
+
+               ```sh
+               aws iam create-role --role-name aws-sam-cli-managed-foo--CloudFormationExecutionRo-bar --assume-role-policy-document file://trust-policy.json
+               ```
+
+            3. Attach the necessary policies to the role:
+
+               ```sh
+               aws iam attach-role-policy --role-name aws-sam-cli-managed-foo--CloudFormationExecutionRo-bar --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+               ```
+
+            4. Verify that the role has been created and the policies are attached:
+
+               ```sh
+               aws iam get-role --role-name aws-sam-cli-managed-foo--CloudFormationExecutionRo-bar
+               aws iam list-attached-role-policies --role-name aws-sam-cli-managed-foo--CloudFormationExecutionRo-bar
+               ```
+
+            5. Run the command to delete the CloudFormation stack again:
+
+               ```sh
+               sam delete --stack-name your-stack-name --debug
+               ```

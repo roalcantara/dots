@@ -1,0 +1,407 @@
+cheats:
+  scutil --get LocalHostName:
+    desc: Check current Mac's local hostname
+    tags: [maco]
+  defaults help:
+    desc: Show help for defaults
+    tags: [maco]
+    links: [https://macos-defaults.com]
+  defaults domains:
+    desc: List all domains
+    tags: [maco]
+    links: [https://macos-defaults.com]
+  defaults write:
+    desc: Write a default value
+    tags: [maco]
+    links: [https://macos-defaults.com]
+  defaults delete:
+    desc: Delete a default value
+    tags: [maco]
+    links: [https://macos-defaults.com]
+  pwd:
+    desc: Print the current working directory
+    tags: [linux, maco]
+  touch:
+    desc: Create an empty file
+    tags: [linux, maco]
+  clear:
+    desc: Clear the terminal screen
+    tags: [linux, maco]
+  wc:
+    desc: Count lines, words, and characters in a file
+    tags: [linux, maco]
+  head:
+    desc: Display the first few lines of a file
+    tags: [linux, maco]
+  tail:
+    desc: Display the last few lines of a file
+    tags: [linux, maco]
+  sort:
+    desc: Sort the contents of a file
+    tags: [linux, maco]
+  uniq:
+    desc: Remove duplicate lines from a file
+    tags: [linux, maco]
+  diff:
+    desc: Compare two files line by line
+    tags: [linux, maco]
+  df:
+    desc: Display disk space usage
+    tags: [linux, maco]
+  du:
+    desc: Display directory size
+    tags: [linux, maco]
+  top:
+    desc: Monitor system processes in real time
+    tags: [linux, maco]
+  ps:
+    desc: Display active processes
+    tags: [linux, maco]
+  kill:
+    desc: Terminate a process by its PID
+    tags: [linux, maco]
+  ping:
+    desc: Check network connectivity
+    tags: [linux, maco]
+  cut:
+    desc: Remove sections from each line of a file
+    tags: [linux, maco]
+  tr:
+    desc: Translate or delete characters
+    tags: [linux, maco]
+  xargs:
+    desc: Build and execute command lines from standard input
+    tags: [linux, maco]
+  ln:
+    desc: Create symbolic or hard links
+    tags: [linux, maco]
+  df -h:
+    desc: Display disk usage in human-readable format
+    tags: [linux, maco]
+  free:
+    desc: Display memory usage
+    tags: [linux, maco]
+  iostat:
+    desc: Display CPU and I/O statistics
+    tags: [linux, maco]
+  netstat:
+    desc: Network statistics (use ss as modern alternative)
+    tags: [linux, maco]
+  ifconfig/ip:
+    desc: Configure network interfaces (use ip as modern alternative)
+    tags: [linux, maco]
+  iptables:
+    desc: Configure firewall rules
+    tags: [linux, maco]
+  systemctl:
+    desc: Control the systemd system and service manager
+    tags: [linux, maco]
+  journalctl:
+    desc: View system logs
+    tags: [linux, maco]
+  crontab:
+    desc: Schedule recurring tasks
+    tags: [linux, maco]
+  at:
+    desc: Schedule tasks for a specific time
+    tags: [linux, maco]
+  whoami:
+    desc: Display the current user
+    tags: [linux, maco]
+  users:
+    desc: List all users currently logged in
+    tags: [linux, maco]
+  hostname:
+    desc: Display or set the system hostname
+    tags: [linux, maco]
+  env:
+    desc: Display environment variables
+    tags: [linux, maco]
+  export:
+    desc: Set environment variables.-
+    tags: [linux, maco]
+  ip addr:
+    desc: Display or configure IP addresses
+    tags: [net]
+  ip route:
+    desc: Show or manipulate routing tables
+    tags: [net]
+  traceroute:
+    desc: Trace the route packets take to a host
+    tags: [net]
+  nslookup:
+    desc: Query DNS records
+    tags: [net]
+  dig:
+    desc: Query DNS servers
+    tags: [net]
+  ftp:
+    desc: Transfer files using the FTP protocol
+    tags: [net]
+  nmap:
+    tags: [os]
+    desc: Network scanning and discovery
+  telnet:
+    tags: [os]
+    desc: Communicate with remote hosts
+  stat:
+    tags: [os]
+    desc: Display detailed information about a file
+  tree:
+    desc: Display directories as a tree
+    tags: [file]
+  file:
+    tags: [os]
+    desc: Determine a file's type
+  basename:
+    tags: [os]
+    desc: Extract the filename from a path
+  dirname:
+    desc: Extract the directory part of a path
+    tags: [file]
+  vmstat:
+    desc: Display virtual memory statistics
+    tags: [sys]
+  htop:
+    desc: Interactive process viewer (alternative to top)
+    tags: [sys]
+  dmesg:
+    desc: Print kernel ring buffer messages
+    tags: [sys]
+  uptime:
+    tags: [os]
+    desc: Show how long the system has been running
+  iotop:
+    desc: Display real-time disk I/O by processes
+    tags: [sys]
+  apt:
+    desc: Package manager for Debian-based distributions
+    tags: [linux]
+  yum:
+    desc: Package manager for RHEL-based distributions
+    tags: [linux]
+  snap:
+    desc: Manage snap packages
+    tags: [linux, ubuntu]
+  rpm:
+    desc: Manage RPM packages
+    tags: [linux]
+  mount:
+    desc: Mount or unmount filesystems
+    tags: [disk]
+  fsck:
+    desc: Check and repair filesystems
+    tags: [disk]
+  mkfs:
+    desc: Create a new filesystem
+    tags: [disk]
+  blkid:
+    desc: Display information about block devices
+    tags: [disk]
+  parted:
+    desc: Manage partitions interactively
+    tags: [disk]
+  gcc:
+    desc: Compile C programs
+    tags: [cli, tool]
+  make:
+    desc: Build and manage projects
+    tags: [cli, tool]
+  strace:
+    desc: Trace system calls and signals
+    tags: [cli, tool]
+  gdb:
+    desc: Debug programs
+    tags: [cli, tool]
+  date:
+    desc: Display or set the system date and time
+    tags: [cli, tool]
+  cal:
+    desc: Display a calendar
+    tags: [cli, tool]
+  man:
+    desc: Display the manual for a command
+    tags: [cli, tool]
+  history:
+    desc: Show previously executed commands
+    tags: [cli, tool]
+    cheats:
+  Installing yabai (latest release) and scripting addition:
+    desc: A tiling window manager for macOS based on binary space partitioning
+    tags: [yabai, twm]
+    links:
+      - Yabai - GitHub: https://github.com/koekeishiya/yabai
+      - Installing yabai (latest release): https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Copy the example configuration into your home directory:
+          cp /opt/homebrew/opt/yabai/share/yabai/examples/yabairc ~/.yabairc
+          cp /opt/homebrew/opt/yabai/share/yabai/examples/skhdrc ~/.skhdrc
+
+          # If you want yabai to be managed by launchd (start automatically upon login):
+          yabai --start-service
+
+          # When running as a launchd service logs will be found in:
+          /tmp/yabai_<user>.[out|err].log
+
+          # If you are using the scripting-addition; remember to update your sudoers file:
+          sudo visudo -f /private/etc/sudoers.d/yabai
+
+          # Build the configuration row by running:
+          echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) | cut -d " " -f 1) $(which yabai) --load-sa"
+  useradd -m -s /bin/zsh -G users vscode:
+    desc: Add a user vscode to the system
+    tags: [debian]
+  passwd vscode:
+    desc: Set the password for the user vscode
+    tags: [debian]
+  su - vscode:
+    desc: Switch to the user vscode
+    tags: [debian]
+
+commands:
+  scutil --get LocalHostName && sudo scutil --set LocalHostName "macbook-roalcantara" && sudo dscacheutil -flushcache && sudo reboot:
+    desc: Check current Mac's local hostname, change it, flush the DNS cache to ensure the change takes effect and restart your Mac for all networking services to recognize the new hostname
+    tags: [maco]
+  sudo scutil --set LocalHostName "macbook-roalcantara":
+    desc: Change Mac's local hostname
+    tags: [maco]
+  sudo dscacheutil -flushcache:
+    desc: Flush the DNS cache to ensure the change takes effect
+    tags: [maco]
+  sudo reboot:
+    desc: Restart your Mac
+    tags: [maco]
+  sudo shutdown -r now:
+    desc: Restart your Mac
+    tags: [maco]
+  sudo rm -rf ~/Library/Caches/*.* && sudo AssetCacheManagerUtil flushCache && sudo AssetCacheManagerUtil flushSharedCache && sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder:
+    desc: Clean up cache
+    tags: [maco]
+  sudo spctl --master-disable:
+    desc: Disable Gatekeeper temporarily
+    tags: [maco]
+  sudo spctl --master-enable:
+    desc: Enable Gatekeeper
+    tags: [maco]
+  ls:
+    desc: List files and directories
+    tags: [linux, maco]
+  cd:
+    desc: Change directory
+    tags: [linux, maco]
+  mkdir:
+    desc: Create a new directory
+    tags: [linux, maco]
+  rm:
+    desc: Remove files or directories
+    tags: [linux, maco]
+  rmdir:
+    desc: Remove empty directories
+    tags: [linux, maco]
+  cp:
+    desc: Copy files or directories
+    tags: [linux, maco]
+  mv:
+    desc: Move or rename files and directories
+    tags: [linux, maco]
+  cat:
+    desc: Display the content of a file
+    tags: [linux, maco]
+  echo:
+    desc: Display a line of text
+    tags: [linux, maco]
+  chmod:
+    desc: Change file permissions
+    tags: [linux, maco]
+  chown:
+    desc: Change file ownership
+    tags: [linux, maco]
+  find:
+    desc: Search for files and directories
+    tags: [linux, maco]
+  grep:
+    desc: Search for text in a file
+    tags: [linux, maco]
+  tar:
+    desc: Archive files into a tarball
+    tags: [linux, maco]
+  zip/unzip:
+    desc: Compress and extract ZIP files
+    tags: [linux, maco]
+  wget:
+    desc: Download files from the internet
+    tags: [linux, maco]
+  curl:
+    desc: Transfer data from or to a server
+    tags: [linux, maco]
+  scp:
+    desc: Securely copy files between systems
+    tags: [linux, maco]
+  rsync:
+    desc: Synchronize files and directories
+    tags: [linux, maco]
+  awk:
+    desc: Text processing and pattern scanning
+    tags: [linux, maco]
+  sed:
+    desc: Stream editor for filtering and transforming text
+    tags: [linux, maco]
+  ssh:
+    desc: Connect to a remote server via SSH
+    tags: [net]
+  netcat (nc):
+    desc: Read/write data over networks.
+    tags: [net]
+  locate:
+    tags: [os]
+    desc: Find files quickly using a database
+  lsof:
+    desc: List open files
+    tags: [sys]
+  lsblk:
+    desc: List information about block devices
+    tags: [disk]
+  Fix permissions for global npm installs:
+    desc: Fix permissions for global npm installs
+    tags: [maco]
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Fix npm permissions
+          sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+
+          # Or use npm prefix
+          mkdir ~/.npm-global
+          npm config set prefix '~/.npm-global'
+          echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.profile
+          source ~/.profile
+
+    # Debian
+  sudo apt update && sudo apt upgrade -y:
+    desc: Update the package list and upgrade the system
+    tags: [debian]
+  usermod -aG sudo vscode:
+    desc: Add vscode:sudo (user vscode is in the sudo group)
+    tags: [debian]
+  sudo apt update && sudo apt upgrade -y && sudo apt install -y zsh git && useradd -m -s /bin/zsh -G users vscode && passwd vscode && usermod -aG sudo vscode && su - vscode:
+    desc: Update the package list and upgrade the system, install zsh and git, add a user vscode to the system, set the password for the user vscode, add vscode:sudo (user vscode is in the sudo group) and switch to the user vscode
+    tags: [debian]
+  useradd -m -s /bin/zsh -G users vscode && usermod -aG sudo vscode && echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && su - vscode:
+    desc: Add a passwordless sudo user vscode to the system, add vscode:sudo (user vscode is in the sudo group) and switch to the user vscode
+    tags: [debian]
+  sudo apt update && sudo apt upgrade -y && sudo apt install -y zsh git && useradd -m -s /bin/zsh -G users vscode && usermod -aG sudo vscode && echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && su - vscode:
+    desc: Setup Debian/Ubuntu, add zsh, git and user vscode:vscode as sudo and switch to the user vscode
+    tags: [debian]
+  useradd -m -s /bin/zsh -G users vscode && usermod -aG sudo vscode && echo "vscode ALL=(ALL) NOPASSWD:ALL" | EDITOR='tee -a' visudo && su - vscode:
+    desc: (SAFER) Add a passwordless sudo user vscode to the system, add vscode:sudo (user vscode is in the sudo group) and switch to the user vscode using VISUDO
+    tags: [debian]
+  useradd -m -s /bin/zsh -G users vscode && passwd -d vscode && usermod -aG sudo vscode && echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && su - vscode:
+    desc: (SAFER) Add a user vscode to the system, set the password for the user vscode to empty, add vscode:sudo (user vscode is in the sudo group) and switch to the user vscode
+    tags: [debian]
+  useradd -m -s /bin/zsh -G users vscode && passwd -d vscode && usermod -aG sudo vscode && echo "vscode ALL=(ALL) NOPASSWD:ALL" | EDITOR='tee -a' visudo && su - vscode:
+    desc: (SAFER) Add a user vscode to the system, set the password for the user vscode to empty, add vscode:sudo (user vscode is in the sudo group) and switch to the user vscode using VISUDO
+    tags: [debian]
