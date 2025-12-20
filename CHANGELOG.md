@@ -1,3 +1,10 @@
+## [1.23.1](https://github.com/roalcantara/dots/compare/v1.23.0...v1.23.1) (2025-12-20)
+
+
+### Bug Fixes
+
+* **kodexb:** Add knowledges and assets ([5737a42](https://github.com/roalcantara/dots/commit/5737a4259d56a1448ed6d408b7dd3d275f5644e4))
+
 # [1.23.0](https://github.com/roalcantara/dots/compare/v1.22.0...v1.23.0) (2025-12-15)
 
 
