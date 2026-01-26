@@ -14,6 +14,8 @@
 # Supports tilde (~) expansion and environment variables
 database_path: '~/.config/kodexb/knowledge.sqlite'
 
+archive_path: '~/.config/kodexb/archive/'
+
 # ============================================================================
 # Pagination Settings
 # ============================================================================
