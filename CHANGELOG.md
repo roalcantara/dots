@@ -1,3 +1,10 @@
+# [1.25.0](https://github.com/roalcantara/dots/compare/v1.24.0...v1.25.0) (2026-01-26)
+
+
+### Features
+
+* **ssh:** Stop tracking known_hosts, ignore and drop SOPS ([34cc234](https://github.com/roalcantara/dots/commit/34cc23489f6e7e5054fea2e8de5f8499db6d7f55))
+
 # [1.24.0](https://github.com/roalcantara/dots/compare/v1.23.1...v1.24.0) (2026-01-26)
 
 
