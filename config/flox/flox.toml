@@ -112,6 +112,7 @@ systems = ["aarch64-darwin", "aarch64-linux", "x86_64-linux", "x86_64-darwin"]
 
 [trusted_environments]
 "roalcantara/cockpit" = "trust"
+"roalcantara/default" = "trust"
 
 # Uncomment to disable CUDA detection.
 # cuda-detection = false
