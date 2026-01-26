@@ -1,3 +1,10 @@
+# [1.24.0](https://github.com/roalcantara/dots/compare/v1.23.1...v1.24.0) (2026-01-26)
+
+
+### Features
+
+* **install:** Dump flox ([719035f](https://github.com/roalcantara/dots/commit/719035fb4a678025818d98ab61531b34a0b8b3d2))
+
 ## [1.23.1](https://github.com/roalcantara/dots/compare/v1.23.0...v1.23.1) (2025-12-20)
 
 
