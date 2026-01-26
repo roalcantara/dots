@@ -55,6 +55,19 @@ The repository uses git clean/smudge filters to automatically:
 - **Clean (on commit)**: Encrypt `.env` files using SOPS
 - **Smudge (on checkout)**: Decrypt `.env` files automatically
 
+#### Clean filter: avoiding “always modified”
+
+SOPS (and AGE) use **non-deterministic encryption**: each encrypt run produces different ciphertext (e.g. new IV). Git treats a file as modified when `clean(working-tree)` differs from the blob in the index. If the clean filter always re-encrypts, that comparison never matches, so filtered files appear modified after every checkout.
+
+To fix this, `script/clean.sops.sh` uses a **hash-compare** approach (see [getsops/sops#1137](https://github.com/getsops/sops/issues/1137) and [FiloSottile/age#507](https://github.com/FiloSottile/age/discussions/507)):
+
+1. Decrypt the blob in the index for the given path.
+2. Hash the decrypted content and the working-tree content (stdin).
+3. If the hashes match → content unchanged → **output the existing encrypted blob** (no re-encrypt).
+4. If they differ → content changed → encrypt the working-tree content and output that.
+
+When unchanged, Git sees the same bytes as in the index, so the file is not reported as modified.
+
 ### CONFIGURATION FILES
 
 - `.sops.yaml`: SOPS configuration defining encryption rules
@@ -81,6 +94,7 @@ The repository uses git clean/smudge filters to automatically:
 1. **"AGE key file not found"**: Ensure you've copied the keys to the correct location
 2. **"sops command not found"**: Install sops via your package manager
 3. **Permission denied**: Check that the AGE key file has correct permissions (600)
+4. **Filtered files always appear modified after checkout**: SOPS uses non-deterministic encryption, so a naïve clean filter (always re-encrypt) makes Git see changes every time. This repo uses the [hash-compare fix](https://github.com/getsops/sops/issues/1137) in `script/clean.sops.sh`; ensure you use that script (see [Clean filter: avoiding “always modified”](#clean-filter-avoiding-always-modified)).
 
 ### MANUAL COMMANDS
 
@@ -198,6 +212,8 @@ __git_smudge_clean_filter() {
 ## REFERENCES
 
 - [SOPS Documentation](https://github.com/getsops/sops)
+- [SOPS #1137 — Use with git-filter (clean/smudge), “always modified”](https://github.com/getsops/sops/issues/1137)
+- [AGE #507 — Using age as a git clean/smudge filter? (hash-compare fix)](https://github.com/FiloSottile/age/discussions/507)
 - [AGE Documentation](https://github.com/FiloSottile/age)
 - [SOPS with AGE and Git](https://devops.datenkollektiv.de/using-sops-with-age-and-git-like-a-pro.html)
 - [Protect Secrets in Git with the clean/smudge filter](https://developers.redhat.com/articles/2022/02/02/protect-secrets-git-cleansmudge-filter)
