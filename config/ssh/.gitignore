@@ -4,3 +4,5 @@
 
 # Keep encrypted versions and metadata
 !keys/*
+# Exception: known_hosts is not secret, not versioned (see root .gitignore)
+keys/known_hosts
