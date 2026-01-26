@@ -1,0 +1,70 @@
+tasks:
+  Cucumber/Screenplay Demo Project:
+    desc: Finish and publish the Cucumber/Screenplay Demo Project on GitHub
+    tags: [dev, bdd]
+    priority: high
+    status: doing
+    links: [https://github.com/cucumber/cucumber-js, https://github.com/cucumber/screenplay-js]
+    notes:
+      - md: |
+          ## Cucumber/Screenplay Demo Project
+
+          - [x] Create Bun Hono Backend with SQLite database
+          - [x] Create a new SQLite database
+          - [x] Create a Cucumber/Screenplay Demo Project
+          - [ ] Write the Bun Backend features and scenarios
+          - [ ] Write the Bun Backend steps
+  Create Budget Planning for 2026:
+    desc: Create a budget planning for 2026
+    tags: [finance, budget]
+    priority: high
+    notes:
+      - md: |
+          ### Budget Planning for 2026
+
+          - [ ] Add income sources
+          - [ ] Add expenses
+          - [ ] Add Gu expenses
+          - [ ] Add Babs expenses
+          - [ ] Plan the entire year
+  Grimo Nx/Bun/SAM/Lambda Project:
+    desc: Create a new Grimo Nx/Bun/SAM/Lambda Project
+    tags: [dev, aws, lambda]
+    priority: high
+    status: doing
+    notes:
+      - md: |
+          ### Grimo Nx/Bun/SAM/Lambda Project
+
+          - [x] Create a Nx Monorepo Project
+          - [x] Apply DDD principles
+          - [x] Use Bun catalog
+          - [x] Add shared libraries
+          - [x] Add Database Port Library
+          - [x] Add AWS Adapter Database Library
+          - [x] Add AWS Powertools Lambda Library
+          - [x] (Catalog) Add Domain Layer Library
+          - [x] (Catalog) Add Application Layer Library
+          - [X] (Catalog/Serie) Add Serie List Service (Lambda Function)
+          - [x] (Catalog/Serie) Add Serie Get Service (Lambda Function)
+          - [x] Deploy Serie List Service to Localstack
+          - [x] Deploy Serie Get Service to Localstack
+          - [x] Deploy Serie List Service to AWS
+          - [x] Deploy Serie Get Service to AWS
+          - [x] Create seed DynamoDB script and run on Localstack
+          - [ ] Create seed DynamoDB script and run on AWS
+  Add Tasks to arkn:
+    desc: Add Tasks Entry Type to arkn
+    tags: [dev, tasks]
+    priority: high
+    status: doing
+    notes:
+      - md: |
+          ### Add Tasks to arkn
+
+          - [x] Add Tasks Entry Type to arkn
+          - [x] Create requirements document
+          - [x] Adjust List to display Tasks
+          - [x] Adjust Filters to filter Tasks
+          - [x] Create Edit/Create Task Form
+          - [x] Create tasks.yml file with initial tasks
