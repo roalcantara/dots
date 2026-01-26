@@ -32,7 +32,7 @@
 
 # Font size in points. I.E.: 13.5pt @ 2px/pt = 27px
 # https://ghostty.org/docs/config/reference#font-size
-font-size = 13
+font-size = 16
 # The font families to use | ghostty +list-fonts
 # https://ghostty.org/docs/config/reference#font-family
 # font-family = "Fira Code Retina"
