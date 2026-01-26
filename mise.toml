@@ -198,6 +198,59 @@
   eval "${CST_CMD[*]}"
   '''
 
+  [tasks."setup:age"]
+  description = "Setup AGE keys from Bitwarden"
+  run = '''
+  #!/bin/bash
+  set -e
+  # Check if AGE keys already exist
+  if [ ! -f "$HOME/.config/age/keys.txt" ]; then
+    IS_DARWIN=$(uname -s | grep -q "Darwin" && echo "true" || echo "false")
+    if [ "$IS_DARWIN" = "true" ] && command -v bw > /dev/null; then
+      echo "  ==> Retrieving Bitwarden secrets from Keychain.."
+      export BW_CLIENTID=$(security find-generic-password -w -a bitwarden_client_id 2>/dev/null)
+      export BW_CLIENTSECRET=$(security find-generic-password -w -a bitwarden_client_secret 2>/dev/null)
+      export BW_PASSWORD=$(security find-generic-password -w -a bitwarden_master_password 2>/dev/null)
+      if [ -z "$BW_CLIENTID" ] || [ -z "$BW_CLIENTSECRET" ] || [ -z "$BW_PASSWORD" ]; then
+        echo "Bitwarden credentials not found in Keychain."
+        echo "First time setup: store them with:"
+        echo "  security add-generic-password -a bitwarden_client_id -s Bitwarden -w <YOUR_CLIENT_ID> -U"
+        echo "  security add-generic-password -a bitwarden_client_secret -s Bitwarden -w <YOUR_CLIENT_SECRET> -U"
+        echo "  security add-generic-password -a bitwarden_master_password -s Bitwarden -w <YOUR_MASTER_PASSWORD> -U"
+        exit 1
+      fi
+      echo "  ==> Logging into Bitwarden"
+      bw login --apikey
+
+      echo "  ==> Unlocking Bitwarden vault and retrieving session ID"
+      export BW_SESSION=$(bw unlock --passwordenv BW_PASSWORD --raw)
+
+      echo "  ==> Retrieving AGE keys from Bitwarden"
+      bw get notes gopass/age > "$HOME/.config/age/keys.txt"
+      chmod 600 "$HOME/.config/age/keys.txt"
+      echo "  ==> AGE keys retrieved from Bitwarden and saved to $HOME/.config/age/keys.txt"
+      bw lock
+    fi
+  fi
+  '''
+
+  [tasks."setup:git:filters"]
+  description = "Setup Git filters for automatic encryption/decryption of .env files using SOPS"
+  depends = ["setup:age"]
+  run = '''
+  #!/bin/bash
+  set -e
+  # Only configure filters if not already done
+  if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/null; then
+    echo "  ==> Configuring Git filters for SOPS"
+    git config --local filter.sops.smudge "script/smudge.sops.sh %f"
+    git config --local filter.sops.required true
+    git config --local filter.sops.clean "script/clean.sops.sh %f"
+    git config --local diff.sops.command "script/smudge.sops.sh %f"
+    echo "✓ Git filters configured"
+  fi
+  '''
+
 # Settings
 # https://mise.jdx.dev/configuration/settings.html#settings
 [settings]
@@ -219,7 +272,7 @@
 
   # Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
   # https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
-  idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
+  # idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
 
   # Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
   # https://mise.jdx.dev/configuration/settings.html#lockfile
