@@ -238,7 +238,23 @@ commands:
     desc: List all disabled Service Agents
     tags: [macos, schedule, service]
     links: [https://launchd.info]
-
+  ### security | Keychain management
+  security add-generic-password -a bitwarden_client_id -s Bitwarden -w "$CLIENT_ID" -U:
+    desc: Add a secret on the account"bitwarden_client_id" for the service "Bitwarden" with the account "bitwarden_client_id" to the keychain. The -U flag is the key detail - without it, running the command twice creates duplicates. With it, it just updates the existing entry.
+    tags: [macos, security]
+    links: [https://bitwarden.com]
+  security add-generic-password -a bitwarden_client_secret -s Bitwarden -w "$CLIENT_SECRET" -U:
+    desc: Add a secret on the account"bitwarden_client_secret" for the service "Bitwarden" with the account "bitwarden_client_secret" to the keychain. The -U flag is the key detail - without it, running the command twice creates duplicates. With it, it just updates the existing entry.
+    tags: [macos, security]
+    links: [https://bitwarden.com]
+  security find-generic-password -w -a bitwarden_client_id -s Bitwarden:
+    desc: Find a secret on the account"bitwarden_client_id" for the service "Bitwarden" with the account "bitwarden_client_id" in the keychain
+    tags: [macos, security]
+    links: [https://bitwarden.com]
+  security find-generic-password -w -a bitwarden_client_secret -s Bitwarden:
+    desc: Find a secret on the account"bitwarden_client_secret" for the service "Bitwarden" with the account "bitwarden_client_secret" in the keychain
+    tags: [macos, security]
+    links: [https://bitwarden.com]
 cheats:
   launchctl | Services:
     desc: Tool used to control launchd services (Agents and Daemons)
@@ -246,21 +262,21 @@ cheats:
     links: [https://launchd.info]
     notes:
       - md: | #markdown
-            ### OVERVIEW
+          ### OVERVIEW
 
-            - `launchd` is the service management framework in macOS that handles the starting, stopping, and managing of system and user services.
-            - Services managed by `launchd` are defined in property list (plist) files located in specific directories.
-            - There are two main types of services managed by `launchd`:
-              1. **Agents**: Run on behalf of the logged-in user.
-              2. **Daemons**: Run on behalf of the system or specific users, regardless of user login status.
-            - Each type has its own set of directories where their plist files are stored, and they serve different purposes within the macOS ecosystem.
+          - `launchd` is the service management framework in macOS that handles the starting, stopping, and managing of system and user services.
+          - Services managed by `launchd` are defined in property list (plist) files located in specific directories.
+          - There are two main types of services managed by `launchd`:
+            1. **Agents**: Run on behalf of the logged-in user.
+            2. **Daemons**: Run on behalf of the system or specific users, regardless of user login status.
+          - Each type has its own set of directories where their plist files are stored, and they serve different purposes within the macOS ecosystem.
 
-            ### HANDLING AGENTS
+          ### HANDLING AGENTS
 
-            ```sh
-            # List all your own loaded agents
-            launchctl list
-            ```
+          ```sh
+          # List all your own loaded agents
+          launchctl list
+          ```
   launchctl | Types of services > AGENTS:
     desc: Tool used to control launchd services (Agents and Daemons)
     tags: [macos, schedule, service]

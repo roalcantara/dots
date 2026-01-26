@@ -2,6 +2,7 @@ cheats:
   Domain-Driven Design (DDD) with Nx monorepos:
     desc: Here is a high-level overview of Domain-Driven Design (DDD) concepts and how they can be applied when working with Nx monorepos
     tags: [pattern]
+    links: [https://khalilstemmler.com/articles/typescript-domain-driven-design/aggregate-design-persistence/#Takeaways]
     notes:
       - md: | #markdown
           ### DDD in Nx monorepos
@@ -31,7 +32,27 @@ cheats:
             - They can be updated or modified independently.
 
           5. **Aggregates**:
-            - Aggregates are groups of entities and value objects that can be treated as a single unit for transactions or queries.
+              - A cluster of associated objects that we treat as a unit for the purpose of data changes, transactions or queries
+              - `Entities` and `Value Objects` are clustered together into aggregates
+              - The boundary is how far fully consistuted entities are in the aggregate.
+              - **DESIGN GOALS:**
+                - Provide enough info to enforce model invariants within a boundary
+                - Execute `Use Cases`
+                - Ensure decent database performance
+                - Provide enough info to transform a `Domain Entity` to a `DTO`
+              - **AGGREGATE ROOT:**
+                - The main `Entity` that acts as the entry point to the aggregate
+                - All access to the aggregate should go through the root
+                - Dispatching `Domain Events`
+                - With all fully consistuted entities inside of the aggregate, it's possible for the aggregate root to enforce all invariants within the aggregate when it's state changes.
+              - **PERSISTENCE:**
+                - `Repositories` are responsible for handling all of the complex aggregate persistence logic.
+                  - An aggregate must always be returned fully constited from persistance.
+                    - That constraint requires us to think hard about performance constraints and what's really necessary to fully pull from the database.
+                - `Mappers` are used to map aggregates to the format required for saving it in our persistence technology.
+              - **EXAMPLE:**
+                - `users/aggregates/user.aggregate.ts`
+                - `orders/aggregates/order.aggregate.ts`
 
           #### HOW DDD RELATES TO Nx MONOREPOS
 
@@ -48,8 +69,7 @@ cheats:
             - Example: `users/vo/user-id.vo.ts`, `users/entities/user.entity.ts`
 
           4. **Aggregates as Container Modules**:
-            - Aggregates can be implemented as container modules that wrap related entities, value objects, and business logic.
-            - Example: `users/aggregates/user.aggregate.ts`, `orders/aggregates/order.aggregate.ts`
+
 
           5. **Domain Services and Repositories**:
             - Domain services and repositories can be used to encapsulate business logic and data access.
@@ -194,3 +214,77 @@ cheats:
           4. Código mais robusto:
             - Os conceitos de DDD e monorepos Nx podem levar a um código mais robusto
             - Cada módulo é projetado para ser autocontido e reutilizável.
+
+  Aggregates > DDD:
+    desc: Cluster of associated objects that we treat as a unit for the purpose of data changes - Eric Evans
+    tags: [pattern, ddd]
+    links: [https://oreilly.com/library/view/domain-driven-design-tackling/0321125215/, https://khalilstemmler.com/articles/typescript-domain-driven-design/aggregate-design-persistence, https://github.com/stemmlerjs/white-label]
+    notes:
+      - md: | #markdown
+          # AGGREGATES
+
+          - A cluster of associated objects treated as a unit for the purpose of data changes, transactions or queries
+          - `Entities` and `Value Objects` are clustered together into aggregates
+          - The boundary is how far fully consistuted entities are in the aggregate.
+
+          ## DESIGN GOALS
+
+          - Provide enough info to enforce model invariants within a boundary
+          - Execute `Use Cases`
+          - Ensure decent database performance
+          - Provide enough info to transform a `Domain Entity` to a `DTO`
+
+          ## PERSISTENCE
+
+          - `Repositories` are responsible for handling all of the complex aggregate persistence logic.
+            - An aggregate must always be returned fully constited from persistance.
+            - That constraint requires us to think hard about performance constraints and what's really necessary to fully pull from the database.
+
+          - `Mappers` are used to map aggregates to the format required for saving it in our persistence technology.
+
+          ## AGGREGATE ROOTS
+
+          - The main `Entity` that acts as the entry point to the aggregate
+          - All access to the aggregate should go through the root
+          - Dispaches `Domain Events`
+          - With all fully consistuted entities inside allows to enforce all invariants within it when changing states
+
+          ### EXAMPLE
+
+          Given a **Vinyl Aggregate** that has 3 different relationships to other entities:
+
+            - **Vinyl** `belongs to a` **Trader** _(1-1)_
+            - **Vinyl** `has a` **Artist** _(1-1)_
+            - **Vinyl** `belongs to an` **Album** _(1-1)_
+            - **Album** `has many` **Genres** _(1-m)_
+            - **Artist** `has many` **Genres** _(1-m)_
+
+          This relationship puts **Vinyl** in the middle and makes it the main entity in this clump: the **Aggregate Root**
+
+          ```mermaid
+            flowchart LR
+              subgraph "Vinyl Aggregate"
+                style Vinyl_Agg fill:#9ae6b4,stroke:#000,stroke-width:2
+                Vinyl[Vinyl]
+                Album[Album]
+                Artist[Artist]
+                TraderId[TraderId]
+                Genres[Genres]
+              end
+
+              %% Aggregate root
+              Vinyl -- "1" --> Album
+              Vinyl -- "1" --> Artist
+              Vinyl -- "1" --> TraderId
+
+              %% Relationships to Genres (one-to-many)
+              Album -- "1" -->|has| Genres
+              Album -- "m" --> Genres
+              Artist -- "1" -->|has| Genres
+              Artist -- "m" --> Genres
+
+              %% Visual hint: mark Vinyl as root
+              Vinyl:::root
+
+              classDef root fill:#6ee7b7,stroke:#000,stroke-width:2;
+          ```
