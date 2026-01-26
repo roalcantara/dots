@@ -350,3 +350,6 @@
     unsetopt XTRACE
   fi
 # }
+
+# Turso
+export PATH="$PATH:/Users/roalcantara/.turso"

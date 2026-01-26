@@ -9,8 +9,7 @@
 # for example, .nvmrc in the case of node's nvm
 # https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
 # https://mise.jdx.dev/configuration.html#idiomatic-version-files
-idiomatic_version_file_enable_tools = ['go', 'node', 'java', 'python',
-'ruby', 'yarn']
+# idiomatic_version_file_enable_tools = ['go', 'node', 'java', 'python','ruby', 'yarn']
 
 # configure `mise install` to always keep the downloaded archive
 always_keep_download = false        # deleted after install by default
@@ -49,6 +48,10 @@ yes = false           # set to true to automatically answer yes to all prompts
 # Enables experimental features
 # https://mise.jdx.dev/configuration/settings.html#experimental
 experimental = true # enable experimental features
+idiomatic_version_file_enable_tools = ["node"]
+
+# [tools]
+# node = "22"
 
 # # configure messages displayed when entering directories with config files
 # status = { missing_tools = "if_other_versions_installed", show_env = false, show_tools = false }

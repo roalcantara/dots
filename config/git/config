@@ -660,12 +660,6 @@ browser = open
 [advice]
 addEmptyPathspec = false
 
-[filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
-
 [status]
 submoduleSummary = true
 showUntrackedFiles = all
@@ -712,3 +706,8 @@ helper = manager
 credentialStore = keychain
 
 # vi: set ft=gitconfig:
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

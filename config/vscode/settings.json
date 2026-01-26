@@ -646,7 +646,6 @@
     "Brewfile": "ruby",
     "config": "shellscript",
     "ignore": "ignore",
-    "*.feature": "feature",
     ".env*": "dotenv",
     "*.toml": "toml",
     "mise.toml": "toml",
@@ -837,6 +836,7 @@
   "zenMode.hideLineNumbers": false,
   "zenMode.hideStatusBar": true,
   "zenMode.showTabs": "single",
+  "js/ts.implicitProjectConfig.checkJs": false,
   "javascript.preferences.quoteStyle": "single",
   "javascript.referencesCodeLens.enabled": true,
   "javascript.updateImportsOnPaste.enabled": true,
@@ -844,8 +844,6 @@
   "javascript.suggest.completeJSDocs": true,
   "javascript.suggest.autoImports": true,
   "typescript.autoClosingTags": true,
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.experimental.useTsgo": false,
   "typescript.format.enable": true,
   "typescript.implementationsCodeLens.enabled": true,
   "typescript.implementationsCodeLens.showOnInterfaceMethods": true,
@@ -858,7 +856,6 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.validate.enable": true,
   "typescript.workspaceSymbols.scope": "currentProject",
-  "js/ts.implicitProjectConfig.checkJs": false,
   "markdown.preview.fontSize": 13,
   "markdown.validate.enabled": true,
   "markdown.validate.fileLinks.enabled": "warning",
@@ -1002,7 +999,7 @@
     }
   },
   "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.html-language-features"
   },
   "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-containers"
@@ -1562,11 +1559,10 @@
   "markdown.marp.diagnostics.slideContentOverflow": true,
   "markdown.marp.mathTypesetting": "off",
   "markdown.preferredMdPathExtensionStyle": "auto",
-  "workbench.colorTheme": "Bearded Theme Monokai Metallian",
   "workbench.editor.sharedViewState": true,
   "rainbow_csv.rbql_with_headers_by_default": true,
   "aws.samcli.enableCodeLenses": true,
-  "aws.cloudformation.telemetry.enabled": true,
+  "aws.cloudformation.telemetry.enabled": false,
   "aws.suppressPrompts": {
     "samcliConfirmDevStack": true
   },
@@ -1586,5 +1582,6 @@
   "amazonQ.workspaceIndex": true,
   "amazonQ.workspaceIndexUseGPU": true,
   "nxConsole.disableFileWatching": true,
-  "nxConsole.enableDebugLogging": true
+  "nxConsole.enableDebugLogging": true,
+  "workbench.colorTheme": "Catppuccin Mocha"
 }
