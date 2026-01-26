@@ -1,4 +1,151 @@
 bookmarks:
+  # AWS GENERAL
+  https://us-east-1.console.aws.amazon.com/billing/home?region=us-east-1#/account:
+    desc: AWS Account | AWS Account is a service that allows you to manage your AWS account.
+    tags: [aws]
+  https://us-east-1.console.aws.amazon.com/organizations/v2/home/accounts:
+    desc: AWS Organization | AWS Organization is a service that allows you to manage your AWS accounts.
+    tags: [aws]
+  https://us-east-1.console.aws.amazon.com/costmanagement/home?region=us-east-1#/home:
+    desc: AWS Billing and Cost Management | AWS Billing and Cost Management is a service that allows you to view your AWS usage and billing history.
+    tags: [aws]
+  https://us-east-1.console.aws.amazon.com/billing/home#/bills:
+    desc: AWS Bills | AWS Bills is a service that allows you to view your AWS usage and billing history.
+    tags: [aws]
+  https://us-east-1.console.aws.amazon.com/billing/home#/paymentsoverview/payments-due:
+    desc: AWS Payments | AWS Payments is a service that allows you to pay for your AWS usage.
+    tags: [aws]
+  https://us-east-1.console.aws.amazon.com/costmanagement/home#/freetier:
+    desc: AWS Free Tier | AWS Free Tier is a program that provides free resources to AWS users.
+    tags: [aws]
+  # AWS WELL-ARCHITECTED FRAMEWORK
+  https://aws.amazon.com/architecture/well-architected:
+    desc: AWS Well-Architected Framework - A set of best practices and guidelines for designing and operating reliable, secure, efficient, and cost-effective systems in the cloud.
+    tags: [aws, best-practices]
+    links: [https://aws.amazon.com/architecture/well-architected, https://wellarchitectedlabs.com, https://aws.amazon.com/well-architected-tool, https://docs.aws.amazon.com/wellarchitected/latest/serverless-applications-lens/welcome.html]
+  https://docs.aws.amazon.com/wellarchitected/latest/serverless-applications-lens:
+    desc: AWS Well-Architected Framework - Serverless Applications Lens - A guide to applying the AWS Well-Architected Framework best practices specifically for serverless applications.
+    tags: [aws, best-practices]
+    links: [https://aws.amazon.com/architecture/well-architected]
+  https://wellarchitectedlabs.com:
+    desc: AWS Well-Architected Labs - Hands-on labs to help you learn, measure, and build using architectural best practices
+    tags: [aws, best-practices]
+    links: [https://catalog.workshops.aws/howto-wafr/en-US]
+    notes:
+      - md: | #markdown
+          ### AWS Well-Architected Framework Pillars
+
+          > The AWS Well-Architected Framework is based on six pillars that help you understand the pros and cons of decisions you make while building systems on AWS.
+
+          - **Operational:**
+             Focuses on operations in the cloud, including monitoring, incident response, and evolving procedures
+
+          - **Security:**
+             Emphasizes protecting information, systems, and assets while delivering business value through risk assessments and mitigation strategies
+
+          - **Reliability:**
+             Ensures a workload performs its intended function correctly and consistently, including recovery from failures and scaling to meet demand
+
+          - **Performance:**
+             Focuses on using IT and computing resources efficiently to meet system requirements and maintain efficiency as demand changes
+
+          - **Cost Optimization:**
+             Involves avoiding unnecessary costs by selecting the right resource types and sizes, monitoring usage, and scaling to meet actual demand
+      - md: | #markdown
+          ### The eight areas to consider when building serverless workloads
+
+          #### 1. [Compute layer](https://docs.aws.amazon.com/wellarchitected/latest/serverless-applications-lens/compute-layer.html)
+
+          Manages incoming requests with authorization and executes business logic.
+
+          **Related Tools:**
+            - **AWS Lambda:** Serverless function runtime for microservices
+            - **Amazon API Gateway:** REST API layer with authorization and traffic management
+            - **AWS Step Functions:** Workflow orchestration for multi-step and long-running processes
+
+          #### 2. [Data layer](https://docs.aws.amazon.com/wellarchitected/latest/serverless-applications-lens/data-layer.html)
+
+          Manages persistent storage, maintains application state, and enables real-time responses to data changes.
+
+          **Related Tools:**
+          - **Amazon DynamoDB:** Managed NoSQL database with Streams for real-time triggers and DAX for in-memory caching
+          - **Amazon S3:** Object storage with CDN integration for serving static assets
+          - **Amazon OpenSearch Service:** Managed search and analytics engine for logs, full-text search, and monitoring
+          - **AWS AppSync:** Managed GraphQL API with real-time, offline, and enterprise security capabilities
+
+          #### 3. [Messaging and streaming layer](https://docs.aws.amazon.com/wellarchitected/latest/serverless-applications-lens/messaging-and-streaming-layer.html)
+
+          Manages inter-component communications and enables real-time analysis and processing of streaming data.
+
+          **Related Tools:**
+          - **Amazon SNS:** Managed pub/sub messaging service for asynchronous event notifications and mobile push
+          - **Amazon Kinesis:** Collects and analyzes real-time streaming data with SQL processing capabilities
+          - **Amazon Data Firehose:** Captures, transforms, and loads streaming data to multiple destinations for near real-time analytics
+
+          #### 4. [User management and identity layer](https://docs.aws.amazon.com/wellarchitected/latest/serverless-applications-lens/user-management-and-identity-layer.html)
+
+            Provides identity, authentication, and authorization for internal and external users.
+
+            **Related Tools:**
+            - **Amazon Cognito User Pools:** User sign-up and sign-in with social provider and SAML federation
+            - **Amazon Cognito Federated Identities:** Scoped access management to AWS resources
+
+          #### 5. [Edge layer](https://docs.aws.amazon.com/wellarchitected/latest/serverless-applications-lens/edge-layer.html)
+
+          Delivers content with low latency and high transfer speeds to global users.
+
+          **Related Tools:**
+          - **Amazon CloudFront:** Global content delivery network (CDN) with edge locations for low-latency delivery
+
+          #### 6. [Systems monitoring and deployment](https://docs.aws.amazon.com/wellarchitected/latest/serverless-applications-lens/systems-monitoring-and-deployment.html)
+
+          Provides system visibility and performance insights, and manages workload changes through release processes.
+
+          **Related Tools:**
+          - **Amazon CloudWatch:** Consolidated metrics, logs, and custom KPIs with dashboards and automated alerting
+          - **AWS X-Ray:** Distributed tracing and service mapping for identifying performance bottlenecks
+          - **AWS SAM:** Packages, tests, and deploys serverless applications with local debugging support
+
+          #### 7. [Deployment approaches](https://docs.aws.amazon.com/wellarchitected/latest/serverless-applications-lens/deployment-approaches.html)
+
+          Ensures safe releases by managing consumer impact and enabling quick rollbacks through strategic deployment patterns.
+
+          **All-at-once**
+          - **Consumer Impact:** All at once
+          - **Rollback:** Redeploy older version
+          - **Best for:** Low concurrency workloads
+          - **Speed:** Immediate
+          - **Use case:** Non-critical environments (development)
+
+          **Blue/Green**
+          - **Consumer Impact:** All at once with pre-production testing
+          - **Rollback:** Revert traffic to previous environment
+          - **Best for**: Medium concurrency workloads (async and sync)
+          - **Speed:** Minutes to hours of validation, then immediate to customers
+          - **Use case**: Production changes with near zero-downtime releases
+
+          **Canary (or Linear)**
+          - **Consumer Impact:** 1-10% initial traffic shift, then phased increases
+          - **Rollback:** Revert 100% of traffic to previous deployment
+          - **Best for:** High concurrency workloads
+          - **Speed:** Minutes to hours
+          - **Use case:** Gradual, coordinated releases with rapid deployment cycles
+
+          #### 8. Lambda version control
+
+          Enables safe deployments and quick rollbacks through immutable versions and simplified alias management.
+
+          **Lambda Versioning**
+          - Creates immutable versions of Lambda functions with unique ARNs
+          - Enables visibility of previously functioning code and quick rollback capabilities
+          - Changes are auditable through AWS CloudTrail
+          - **Best practice:** Enable in production for reliable architecture
+
+          **Lambda Aliases**
+          - Points to specific Lambda versions across development workflows (development, beta, production)
+          - Simplifies deployments by keeping caller configuration static
+          - Reduces deployment risk and error by decoupling API Gateway integrations from version changes
+          - Enables safe promotions of new versions to live environments
   # AWS WORKSHOPS
   https://catalog.workshops.aws:
     desc: Find physical and virtual self-paced Workshops, GameDays, Bootcamps, Immersion Days, and other events that require hands-on access to AWS accounts.
@@ -19,6 +166,506 @@ bookmarks:
   https://catalog.workshops.aws/workshops/76bc5278-3f38-46e8-b306-f0bfda551f5a/en-US:
     desc: Serverless Patterns | Learn serverless best practices by building production-ready code for an application
     tags: [aws, serverless, sam]
+  https://catalog.workshops.aws/powertools-for-aws-lambda/en-US:
+    desc: AWS Lambda Powertools Workshop | Learn how to use AWS Lambda Powertools to build serverless applications with best practices for observability, structured logging, tracing, and custom metrics.
+    tags: [aws, serverless, powertools]
+    links:
+      - 1. Understanding the Code: https://catalog.workshops.aws/powertools-for-aws-lambda/en-US/003-workshop/002-typescript/module1/001-understanding-the-code
+      - 2. Implementing Structured Logging, Metrics, and Business Context: https://catalog.workshops.aws/powertools-for-aws-lambda/en-US/003-workshop/002-typescript/module1/002-adding-logging
+    notes:
+      - md: | #markdown
+          ### Implementing Observability with Powertools for AWS Lambda
+
+          **System Overview**
+          - Given an event-driven ride-sharing platform consisting of 5 interconnected Lambda functions
+          - that process ride requests through an API Gateway, EventBridge, and multiple DynamoDB tables.
+
+          #### KEY COMPONENTS
+
+          1. **ride-service:** API entry point that creates ride records
+            - `TRIGGER:` API Gateway HTTP requests
+            - `WHEN:` customer requests a ride through the mobile app, then:
+              1. Receives the HTTP POST request with ride details (pickup, destination, payment method)
+              2. Creates a ride record in DynamoDB
+              3. Publishes a _RideCreated_ event to EventBridge to trigger pricing
+          2. **dynamic-pricing-service:** Calculates ride pricing with surge multipliers
+            - `TRIGGER:` EventBridge _RideCreated_ events
+            - `WHEN`: a ride is created, then:
+              1. Calculates ride pricing using random base prices (5-20 range) with surge multipliers
+              2. Publishes a _PriceCalculated_ event to EventBridge
+          3. **driver-matching-service:** Assigns available drivers to rides
+            - `TRIGGER:` EventBridge _PriceCalculated_ events
+            - `WHEN:` pricing is calculated, then:
+              1. Queries DynamoDB for available drivers
+              2. Assigns the first available driver to the ride
+              3. Publishes a _DriverAssigned_ event to EventBridge
+          4. **payment-processor:** Processes payments with various payment methods
+            - `TRIGGER:` EventBridge _DriverAssigned_ events
+            - `WHEN:` a driver is assigned, then:
+              1. Processes payments with simulation (90% success rate, 10% failure rate)
+              2. Applies different latencies based on payment method:
+                - SomeCompany Pay: 5 seconds delay
+                - Other methods: 100-300ms random delay
+              3. Publishes a _PaymentCompleted_ event to EventBridge
+          5. **ride-completion-service:** Finalizes rides and updates driver availability
+            - `TRIGGER:` EventBridge _PaymentCompleted_ events
+            - `WHEN:` payment is completed, then:
+              1. Updates the ride record status to `"completed"` in DynamoDB
+              2. Sets the driver status back to `"available"` in DynamoDB
+
+          **Observability Challenges**
+
+            - No correlation across services, making it difficult to trace a single ride through the entire workflow
+            - Generic logs lacking ride IDs, customer IDs, and business context
+            - No performance metrics to identify bottlenecks or slow payment methods
+            - Silent failures from old Android devices with missing headers
+            - Manual log searching required for root cause analysis
+
+          **Objectives with Powertools**
+
+            - **Structured Logging:** Transform unstructured logs into queryable JSON for easier searchability and context
+            - **Custom Metrics:** Create operational dashboards and enable real-time monitoring of business KPIs
+            - **Business Context:** Add ride IDs, customer IDs, and payment methods to enable end-to-end customer journey tracking
+            - **Log Buffering:** Optimize log performance to reduce CloudWatch costs
+            - **Distributed Tracing:** Implement AWS X-Ray integration for complete visibility across all services
+            - **Secure Configuration:** Manage sensitive data with caching to improve performance and security
+
+          **Enable the following Business Metrics**
+
+            - **Ride Requests & Success Rate** Track incoming ride requests and your conversion rate in real-time.
+            - **Revenue Metrics** Monitor payment amounts and completed ride revenue.
+            - **Payment Processing Duration** See how long payments take to process.
+            - **Payments by Method** Distribution across credit card, somecompany pay, and cash payments.
+      - ts: | #ts
+          /**
+          *  Add Structured Logging, Metrics, and Business Context to **ride-service**:
+          *   - Add structured logging using Powertools Logger with correlation ID tracking
+          *   - Add custom metrics to track RideRequests, RideCreated, and failures
+          *   - Add business context (device_id, ride_id, rider_id, payment_method) to logs
+          *   - Use middleware for automatic log injection and metric publishing
+          **/
+          import { Logger } from '@aws-lambda-powertools/logger';
+          import { search } from '@aws-lambda-powertools/logger/correlationId';
+          import { injectLambdaContext } from '@aws-lambda-powertools/logger/middleware';
+          import { Metrics, MetricUnit } from '@aws-lambda-powertools/metrics';
+          import { logMetrics } from '@aws-lambda-powertools/metrics/middleware';
+          import middy from '@middy/core';
+          import type { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
+          import type { Ride } from './models';
+          import { RideService } from './services/RideService';
+          import { RouteHandler } from './utils/RouteHandler';
+
+          const rideService = new RideService();
+          const logger = new Logger({ correlationIdSearchFn: search });
+          const metrics = new Metrics();
+
+          const lambdaHandler = async (
+            event: APIGatewayProxyEvent,
+            context: Context
+          ): Promise<APIGatewayProxyResult> => {
+            try {
+              // Check if this is a POST /rides request
+              if (event.httpMethod !== 'POST' || event.path !== '/rides') {
+                return RouteHandler.notFound('Endpoint not found');
+              }
+
+              // Track ride request with metrics
+              metrics.addMetric('RideRequests', MetricUnit.Count, 1);
+
+              // Extract headers
+              const deviceId = getDeviceIdFromHeaders(event.headers);
+
+              // Append device info to logs
+              logger.appendKeys({
+                x_device: event.headers['x-device'],
+                x_device_id: deviceId,
+              });
+
+              // Create ride (validation happens in service)
+              const result = await rideService.createRide(event, deviceId);
+
+              if (!result.success) {
+                // Track failed ride creation with metrics and logs
+                metrics.addMetric('RideCreationFailed', MetricUnit.Count, 1);
+
+                logger.error(`Error creating ride: ${result.errorMessage}`);
+                return RouteHandler.handleError();
+              }
+
+              const ride = result.ride as Ride;
+
+              logger.appendKeys({
+                ride_id: ride.rideId,
+                rider_id: ride.riderId,
+                payment_method: ride.paymentMethod,
+              });
+
+              // Track successful ride creation with business metrics
+              metrics.addMetric('RideCreated', MetricUnit.Count, 1);
+              metrics.addDimension('PaymentMethod', ride.paymentMethod);
+
+              logger.info('Ride created successfully', { rider_id: ride.riderId });
+              return RouteHandler.created(result.ride);
+            } catch (error) {
+              metrics.addMetric('RideCreationError', MetricUnit.Count, 1);
+              logger.error('Unexpected error processing ride request', { error });
+              return RouteHandler.handleError();
+            }
+          };
+
+          function getDeviceIdFromHeaders(
+            headers: { [key: string]: string | undefined } | null
+          ): string {
+            const deviceId = Object.entries(headers ?? {}).find(
+              ([key]) => key.toLowerCase() === 'x-device-id'
+            )?.[1];
+
+            if (!deviceId) {
+              throw new Error('Header not found');
+            }
+
+            return deviceId;
+          }
+
+          export const handler = middy(lambdaHandler)
+            .use(
+              injectLambdaContext(logger, {
+                resetKeys: true,
+                correlationIdPath: 'headers."x-correlation-id"',
+              })
+            )
+            .use(logMetrics(metrics, { captureColdStartMetric: true }));
+      - ts: | #ts
+          /**
+          *  Add Structured Logging, Metrics, and Business Context to **dynamic-pricing-service**:
+          *   - Add structured logging for pricing operations with correlation ID tracking
+          *   - Add custom metrics to track PricingSuccess, FinalPrice, and failures
+          *   - Add pricing business context (ride_id, rider_id, final_price, base_price, surge_multiplier)
+          *   - Use middleware for automatic metric publishing
+          **/
+          import { Logger } from '@aws-lambda-powertools/logger';
+          import { search } from '@aws-lambda-powertools/logger/correlationId';
+          import { injectLambdaContext } from '@aws-lambda-powertools/logger/middleware';
+          import { Metrics, MetricUnit } from '@aws-lambda-powertools/metrics';
+          import { logMetrics } from '@aws-lambda-powertools/metrics/middleware';
+          import middy from '@middy/core';
+          import type { EventBridgeEvent } from 'aws-lambda';
+          import type { RideCreatedEvent } from './models';
+          import { PricingService } from './services/PricingService';
+          import { RushHourMultiplierService } from './services/RushHourMultiplierService';
+
+          const pricingService = new PricingService();
+          const rushHourMultiplierService = new RushHourMultiplierService();
+          const logger = new Logger({ correlationIdSearchFn: search });
+          const metrics = new Metrics();
+
+          const lambdaHandler = async (
+            event: EventBridgeEvent<'RideCreated', RideCreatedEvent>
+          ): Promise<void> => {
+            try {
+              // Retrieve rush hour multiplier from Secrets Manager
+              const rushHourMultiplier = await rushHourMultiplierService.getRushHourMultiplier();
+
+              logger.info('Retrieved rush hour multiplier', {
+                rush_hour_multiplier: rushHourMultiplier,
+              });
+
+              const result = await pricingService.processRideCreatedEvent(
+                event.detail, rushHourMultiplier
+              );
+
+              // Add pricing business context
+              logger.appendKeys({
+                ride_id: result.rideId,
+                rider_id: result.riderId,
+                final_price: result.finalPrice,
+                base_price: result.basePrice,
+                surge_multiplier: result.surgeMultiplier,
+              });
+
+              if (!result.success) {
+                metrics.addMetric('PricingFailed', MetricUnit.Count, 1);
+                logger.error('Pricing Failure', { error: result.errorMessage });
+                return;
+              }
+
+              // Track successful pricing
+              metrics.addMetric('PricingSuccess', MetricUnit.Count, 1);
+              metrics.addMetric('FinalPrice', MetricUnit.Count, result.finalPrice ?? 0);
+              metrics.addDimension('SurgeApplied', (result.surgeMultiplier ?? 0 > 1) ? 'Yes' : 'No');
+
+              logger.info('Successfully processed pricing', { ride_id: result.rideId });
+            } catch (error) {
+              metrics.addMetric('PricingError', MetricUnit.Count, 1);
+              logger.error('Pricing error', { error });
+              throw error;
+            }
+          };
+
+          export const handler = middy(lambdaHandler)
+            .use(
+              injectLambdaContext(logger, {
+                resetKeys: true, correlationIdPath: 'detail.correlationId',
+              })
+            ).use(logMetrics(metrics, { captureColdStartMetric: true }));
+      - ts: | #ts
+          /**
+          *  Add Structured Logging, Metrics, and Business Context to **driver-matching-service**:
+          *   - Add structured logging for driver matching operations with correlation ID tracking
+          *   - Add custom metrics to track DriverMatchingSuccess, AvailableDrivers, and failures
+          *   - Add business context (ride_id, driver_id, available_drivers_count)
+          *   - Use middleware for automatic metric flushing
+          **/
+          import { Logger } from '@aws-lambda-powertools/logger';
+          import { search } from '@aws-lambda-powertools/logger/correlationId';
+          import { injectLambdaContext } from '@aws-lambda-powertools/logger/middleware';
+          import { Metrics, MetricUnit } from '@aws-lambda-powertools/metrics';
+          import { logMetrics } from '@aws-lambda-powertools/metrics/middleware';
+          import middy from '@middy/core';
+          import type { EventBridgeEvent } from 'aws-lambda';
+          import type { PriceCalculatedEvent } from './models';
+          import { DriverMatchingService } from './services/DriverMatchingService';
+
+          const driverMatchingService = new DriverMatchingService();
+          const logger = new Logger({ correlationIdSearchFn: search });
+          const metrics = new Metrics();
+
+          const lambdaHandler = async (
+            event: EventBridgeEvent<'PriceCalculated', PriceCalculatedEvent>
+          ): Promise<void> => {
+            try {
+              const result = await driverMatchingService.processPriceCalculatedEvent(event.detail);
+
+              // Add business context for driver matching (Adds ride context (ride_id, driver_id) to all logs)
+              logger.appendKeys({ride_id: result.rideId, driver_id: result.assignedDriverId });
+
+              metrics.addMetric('AvailableDrivers', MetricUnit.Count, result.availableDriversCount ?? 0 );
+
+              if (!result.success) {
+                metrics.addMetric('DriverMatchingFailed', MetricUnit.Count, 1);
+                logger.error('No available drivers for ride', { ride_id: result.rideId });
+                return;
+              }
+
+              // Tracks driver availability and matching success rates
+              metrics.addMetric('DriverMatchingSuccess', MetricUnit.Count, 1);
+              logger.info('Successfully assigned driver to ride and sent event to payment processor', {
+                driver_id: result.assignedDriverId, ride_id: result.rideId,
+              });
+            } catch (error) {
+              metrics.addMetric('DriverMatchingError', MetricUnit.Count, 1);
+              logger.error('[ERROR] DRIVER_MATCHING_ERROR:', { error });
+              throw error;
+            }
+          };
+
+          export const handler = middy(lambdaHandler)
+            .use(
+              // Enables structured logging for driver matching with correlation ID tracking
+              injectLambdaContext(logger, {
+                resetKeys: true, correlationIdPath: 'detail.correlationId',
+              })
+            ) // Tracks driver matching KPIs (DriverMatchingSuccess, AvailableDrivers) and automatically flushes them
+            .use(logMetrics(metrics, { captureColdStartMetric: true }));
+      - ts: | #ts
+          /**
+          *  Add Structured Logging, Metrics, and Business Context to **payment-processor**:
+          *   - Add structured logging for payment processing with correlation ID tracking
+          *   - Add custom metrics to track PaymentSuccess, PaymentAmount, PaymentProcessingTime
+          *   - Add payment context (ride_id, rider_id, payment_id, payment_method)
+          *   - Use middleware for automatic metric publishing
+          **/
+          // (Similar structure as above services, focusing on payment processing)
+          import { Logger } from '@aws-lambda-powertools/logger';
+          import { search } from '@aws-lambda-powertools/logger/correlationId';
+          import { injectLambdaContext } from '@aws-lambda-powertools/logger/middleware';
+          import { Metrics, MetricUnit } from '@aws-lambda-powertools/metrics';
+          import { logMetrics } from '@aws-lambda-powertools/metrics/middleware';
+          import middy from '@middy/core';
+          import type { EventBridgeEvent } from 'aws-lambda';
+          import type { DriverAssignedEvent } from './models';
+          import { PaymentProcessor } from './PaymentProcessor';
+
+          const logger = new Logger({ correlationIdSearchFn: search, logLevel: "DEBUG" });
+          const metrics = new Metrics();
+          const paymentProcessor = new PaymentProcessor(logger);
+
+          const lambdaHandler = async (
+            event: EventBridgeEvent<'DriverAssigned', DriverAssignedEvent>
+          ): Promise<void> => {
+            try {
+              logger.debug('Processing payment for event', { event });
+
+              const result = await paymentProcessor.handlePayment(event.detail);
+
+              // Track payment requests and amounts
+              metrics.addMetric('PaymentRequests', MetricUnit.Count, 1);
+              metrics.addMetric('PaymentAmount', MetricUnit.Count, result?.payment?.amount ?? 0 );
+
+              // Add business context for payment tracking
+              logger.appendKeys({
+                ride_id: result.payment?.rideId,
+                rider_id: result.payment?.riderId,
+                payment_amount: result.payment?.amount,
+                payment_method: result.payment?.paymentMethod,
+              });
+
+              logger.debug('Payment processing result', { result });
+              logger.debug('Payment details', { payment: result.payment });
+              logger.debug('Processing time (ms)', { time: result.processingTimeMs });
+
+              if (result.success) {
+                // Track successful payment with metrics
+                metrics.addMetric('PaymentSuccess', MetricUnit.Count, 1);
+                metrics.addMetric('PaymentProcessingTime', MetricUnit.Milliseconds, result.processingTimeMs );
+                metrics.addDimension('PaymentMethod', result.payment?.paymentMethod ?? '');
+                logger.info('Payment completed successfully', { payment_id: result.payment?.paymentId, amount: result.payment?.amount });
+              } else {
+                // Track failed payment
+                metrics.addMetric('PaymentFailed', MetricUnit.Count, 1);
+                metrics.addDimension('PaymentMethod', result.payment?.paymentMethod ?? '');
+                logger.debug('Error processing payment', { error: result.errorMessage });
+                logger.error('Payment failed', { payment: result.payment });
+              }
+            } catch (error) {
+              metrics.addMetric('PaymentError', MetricUnit.Count, 1);
+              logger.error('Error in lambda_handler', { error });
+              throw error;
+            }
+          };
+
+          export const handler = middy(lambdaHandler)
+            .use(
+              injectLambdaContext(logger, {
+                resetKeys: true,
+                correlationIdPath: 'detail.correlationId',
+              })
+            )
+            .use(logMetrics(metrics, { captureColdStartMetric: true }));
+      - ts: | #ts
+          /**
+          *  Add Structured Logging, Metrics, and Business Context to **ride-completion-service**:
+          *   - Add structured logging for ride completion with correlation ID tracking
+          *   - Add custom metrics to track RideCompletionSuccess and failures
+          *   - Add completion context (ride_id, driver_id, payment_id, error_type)
+          *   - Track success rates for both ride and driver status updates
+          **/
+          import { Logger } from '@aws-lambda-powertools/logger';
+          import { search } from '@aws-lambda-powertools/logger/correlationId';
+          import { injectLambdaContext } from '@aws-lambda-powertools/logger/middleware';
+          import { Metrics, MetricUnit } from '@aws-lambda-powertools/metrics';
+          import { logMetrics } from '@aws-lambda-powertools/metrics/middleware';
+          import middy from '@middy/core';
+          import type { Context } from 'aws-lambda';
+          import type { CloudWatchEvent, PaymentCompletedEvent } from './models';
+          import { RideCompletionService } from './services/RideCompletionService';
+
+          const rideCompletionService = new RideCompletionService();
+          const logger = new Logger({ correlationIdSearchFn: search });
+          const metrics = new Metrics();
+
+          const lambdaHandler = async (
+            event: CloudWatchEvent<PaymentCompletedEvent>,
+            context: Context
+          ): Promise<void> => {
+            try {
+              const result = await rideCompletionService.processPaymentCompletedEvent(event.detail, event['detail-type']);
+
+              // Add business context for ride completion:
+              // Use logger.appendKeys() for completion context (payment_id, ride_id, driver_id)
+              logger.appendKeys({
+                ride_id: result.rideId,
+                rider_id: result.riderId,
+                driver_id: result.driverId,
+                ride_update_successful: result.rideUpdateSuccessful,
+                driver_update_successful: result.driverUpdateSuccessful,
+              });
+
+              // Track RideCompletionSuccess, RideCompletionFailed, RideUpdateSuccess, DriverUpdateSuccess metrics
+              if (!result.success) {
+                // Uses metrics.addDimension() to filter by ErrorType when failures occur
+                metrics.addMetric('RideCompletionFailed', MetricUnit.Count, 1);
+                logger.error('Failed to process payment completion', {
+                  payment_id: result.paymentId,
+                  error_type: result.errorType,
+                  error: result.errorMessage,
+                });
+                return;
+              }
+              metrics.addMetric('RideCompletionSuccess', MetricUnit.Count, 1);
+              metrics.addMetric('CompletedRideAmount', MetricUnit.Count, result.amount);
+              logger.info('Payment completion event processing completed successfully', { payment_id: result.paymentId });
+            } catch (error) {
+              // Uses metrics.addDimension() to filter by ErrorType when failures occur
+              metrics.addMetric('RideCompletionError', MetricUnit.Count, 1);
+              logger.error('Unexpected error processing payment completion', { error });
+              throw error;
+            }
+          };
+
+          export const handler = middy(lambdaHandler)
+            .use(
+              // Enables structured logging for ride completion
+              injectLambdaContext(logger, {
+                resetKeys: true, // Clears logging context between invocations to prevent data leakage
+                correlationIdPath: 'detail.correlationId' // Automatically extracts correlation ID from request headers
+              })
+            ) // Tracks ride completion KPIs (RideCompletionSuccess, CompletedRideAmount)
+            .use(logMetrics(metrics, { captureColdStartMetric: true })); // Automatically tracks Lambda cold starts as a metric
+      - md: | #markdown
+          ### The Customer Journey Problem:
+
+          In a distributed system with many microservices, a single customer action (like requesting a ride) triggers a chain of events:
+
+          1. Customer app → ride-service (creates ride)
+          2. ride-service → dynamic-pricing-service (calculates price)
+          3. dynamic-pricing-service → driver-matching-service (finds driver)
+          4. driver-matching-service → payment-processor (processes payment)
+          5. payment-processor → payment-stream-processor (handles payment events)
+          6. payment-stream-processor → ride-completion-service (completes ride)
+
+          Without **correlation IDs**, you cannot connect these logs together.
+
+          If a customer reports an issue, you would need to manually search through logs from all 6 services trying to piece together what happened.
+
+          #### How Powertools Solves This:
+
+          The correlationIdPath parameter in the injectLambdaContext middleware tells Powertools to:
+
+          1. Extract the correlation ID from the incoming event
+          2. Add it automatically to every log entry in that request
+
+          This allows viewing the complete end-to-end flow of a single customer request across all microservices,
+          demonstrating the power of correlation IDs tracking for debugging and understanding system behavior.
+
+          #### What You've Accomplished
+
+          Fully observable platform with all three pillars of observability implemented:
+
+          - ✅ Implemented structured logging with automatic correlation ID tracking across all services
+          - ✅ Added custom business metrics to track KPIs (rides, payments, revenue) in real-time
+          - ✅ Enriched logs with business context (ride_id, rider_id, payment_method) for complete journey tracking
+          - ✅ Used dashboard widgets to identify patterns in device header issues
+          - ✅ Found the exact error location using stack traces pointing to line 79
+          - ✅ Completed root cause investigation - old Android devices send x-device instead of x-device-id
+          - ✅ Resolved customer issues - old Android devices now work correctly
+          - ✅ Created metric dimensions for flexible filtering and analysis by payment method and device type
+          - ✅ Enabled end-to-end tracing with correlation IDs flowing through all 5 microservices
+
+          > **From Reactive to Proactive:**
+          >
+          > You've moved from `"What happened?"`
+          >
+          > to `"What's happening right now?"`
+          >
+          > to `"Why did it happen?"`
+
+          #### Your stakeholders can now:
+
+          - See live metrics on customer demand, revenue flow, and operational efficiency
+          - Trace individual customer journeys from mobile app through all services
+          - Analyze business patterns like surge pricing effectiveness and payment method distribution
+          - Debug issues with complete context including headers, business data, and correlation IDs
   # AWS CLI
   https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html:
     desc: Getting Started with AWS CLI
@@ -92,59 +739,103 @@ bookmarks:
   https://docs.aws.amazon.com/lambda/latest/dg/tenant-isolation.html:
     desc: AWS Lambda Tenant Isolation - Documentation on how AWS Lambda implements tenant isolation.
     tags: [aws, lambda]
+  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-build.html#building-applications-skip:
+    desc: Building functions outside of AWS SAM using SkipBuild metadata
+    tags: [aws, serverless, sam]
+    notes:
+      - md: | #markdown
+          ## Build some function resources outside of AWS SAM
+
+          - To have AWS SAM skip a function when using sam build, configure the following in your AWS SAM template:
+
+            1. Add the `SkipBuild: True` metadata property to your function.
+            2. Specify the path to your built function resources.
+
+          - Here is an example, with TestFunction configured to be skipped:
+
+            ```yaml
+            # Its built resources are located at `built-resources/TestFunction.zip`:
+            TestFunction:
+              Type: AWS::Serverless::Function
+              Properties:
+                CodeUri: built-resources/TestFunction.zip
+                Handler: TimeHandler::handleRequest
+                Runtime: java11
+              Metadata:
+                SkipBuild: True
+            ```
+
+          - Now, when you run sam build, AWS SAM will do the following:
+
+            1. AWS SAM will skip functions configured with `SkipBuild: True`.
+            2. AWS SAM will build all other function resources and cache them in the `.aws-sam` build directory.
+            3. For skipped functions, their template in the `.aws-sam` build directory will automatically be updated to reference the specified path to your built function resources.
+
+          - Here is an example of the cached template for TestFunction in the `.aws-sam` build directory:
+
+            ```yaml
+            TestFunction:
+              Type: AWS::Serverless::Function
+              Properties:
+                CodeUri: ../../built-resources/TestFunction.zip
+                Handler: TimeHandler::handleRequest
+                Runtime: java11
+              Metadata:
+                SkipBuild: True
+            ```
   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html:
     desc: AWS SAM Template Anatomy - Structure and components
     tags: [aws, serverless, sam]
     notes:
       - yaml: | #yaml
-            # The following example shows a YAML-formatted template fragment.
-            Transform: AWS::Serverless-2016-10-31
+          # The following example shows a YAML-formatted template fragment.
+          Transform: AWS::Serverless-2016-10-31
 
-            # Properties that are common to all your serverless functions, APIs, and simple tables.
-            Globals:
-              set of globals
+          # Properties that are common to all your serverless functions, APIs, and simple tables.
+          Globals:
+            set of globals
 
-            # A text string that describes the template.
-            # This section corresponds directly with the Description section of CloudFormation templates.
-            Description:
-              String
+          # A text string that describes the template.
+          # This section corresponds directly with the Description section of CloudFormation templates.
+          Description:
+            String
 
-            # Objects that provide additional information about the template.
-            # This section corresponds directly with the Metadata section of CloudFormation templates.
-            Metadata:
-              template metadata
+          # Objects that provide additional information about the template.
+          # This section corresponds directly with the Metadata section of CloudFormation templates.
+          Metadata:
+            template metadata
 
-            # Values to pass to your template at runtime (when you create or update a stack).
-            # You can refer to parameters from the Resources and Outputs sections of the template.
-            # Objects that are declared in the Parameters section cause the sam deploy --guided command to present additional prompts to the user.
-            # Values that are passed in using the --parameter-overrides parameter of the sam deploy command—and entries in the configuration file—take precedence over entries in the AWS SAM template file.
-            Parameters:
-              set of parameters
+          # Values to pass to your template at runtime (when you create or update a stack).
+          # You can refer to parameters from the Resources and Outputs sections of the template.
+          # Objects that are declared in the Parameters section cause the sam deploy --guided command to present additional prompts to the user.
+          # Values that are passed in using the --parameter-overrides parameter of the sam deploy command—and entries in the configuration file—take precedence over entries in the AWS SAM template file.
+          Parameters:
+            set of parameters
 
-            # A mapping of keys and associated values that you can use to specify conditional parameter values, similar to a lookup table.
-            # You can match a key to a corresponding value by using the Fn::FindInMap intrinsic function in the Resources and Outputs sections.
-            # This section corresponds directly with the Mappings section of CloudFormation templates.
-            Mappings:
-              set of mappings
+          # A mapping of keys and associated values that you can use to specify conditional parameter values, similar to a lookup table.
+          # You can match a key to a corresponding value by using the Fn::FindInMap intrinsic function in the Resources and Outputs sections.
+          # This section corresponds directly with the Mappings section of CloudFormation templates.
+          Mappings:
+            set of mappings
 
-            # Conditions that control whether certain resources are created or whether certain resource properties are assigned a value during stack creation or update.
-            # For example, you could conditionally create a resource that depends on whether the stack is for a production or test environment.
-            # This section corresponds directly with the Conditions section of CloudFormation templates.
-            Conditions:
-              set of conditions
+          # Conditions that control whether certain resources are created or whether certain resource properties are assigned a value during stack creation or update.
+          # For example, you could conditionally create a resource that depends on whether the stack is for a production or test environment.
+          # This section corresponds directly with the Conditions section of CloudFormation templates.
+          Conditions:
+            set of conditions
 
-            # The stack resources and their properties, such as an Amazon Elastic Compute Cloud (Amazon EC2) instance or an Amazon Simple Storage Service (Amazon S3) bucket.
-            # You can refer to resources in the Resources and Outputs sections of the template.
-            # This section is similar to the Resources section of CloudFormation templates.
-            # In AWS SAM templates, this section can contain AWS SAM resources in addition to CloudFormation resources.
-            Resources:
-              set of resources
+          # The stack resources and their properties, such as an Amazon Elastic Compute Cloud (Amazon EC2) instance or an Amazon Simple Storage Service (Amazon S3) bucket.
+          # You can refer to resources in the Resources and Outputs sections of the template.
+          # This section is similar to the Resources section of CloudFormation templates.
+          # In AWS SAM templates, this section can contain AWS SAM resources in addition to CloudFormation resources.
+          Resources:
+            set of resources
 
-            # The values that are returned whenever you view your stack's properties.
-            # For example, you can declare an output for an S3 bucket name, and then call the aws cloudformation describe-stacks AWS Command Line Interface (AWS CLI) command to view the name.
-            # This section corresponds directly with the Outputs section of CloudFormation templates.
-            Outputs:
-              set of outputs
+          # The values that are returned whenever you view your stack's properties.
+          # For example, you can declare an output for an S3 bucket name, and then call the aws cloudformation describe-stacks AWS Command Line Interface (AWS CLI) command to view the name.
+          # This section corresponds directly with the Outputs section of CloudFormation templates.
+          Outputs:
+            set of outputs
   # AWS Secrets Manager
   https://docs.aws.amazon.com/secretsmanager/latest/userguide/best-practices.html:
     desc: AWS Secrets Manager Best Practices
@@ -159,7 +850,7 @@ bookmarks:
   https://flox.dev/popular-packages/building-and-debugging-aws-workflows-locally-with-flox-localstack-and-colima:
     desc: Building and Debugging AWS Workflows Locally with Flox, LocalStack, and Colima - A guide on how to use Flox along with LocalStack and Colima for local AWS workflow development.
     tags: [aws, localstack, flox]
-
+  # LocalStack
   https://localstack.cloud:
     desc: LocalStack - A fully functional local AWS cloud stack that allows you to develop and test your cloud applications offline. Docker is required!
     tags: [aws, localstack]
@@ -221,6 +912,12 @@ bookmarks:
     desc: Developing AWS Applications with DevContainers in LocalStack - Guide on how to set up and use DevContainers for AWS application development with LocalStack.
     tags: [aws, localstack]
 commands:
+  aws sts get-caller-identity:
+    desc: Get the caller identity
+    tags: [aws, iam]
+  aws sts get-caller-identity --output yaml:
+    desc: Get the caller identity in YAML format
+    tags: [aws, iam]
   # AWS AUTH/CREDENTIALS
   cat ~/.aws/credentials:
     desc: Used by the AWS Command Line Interface (CLI) and SDKs to store the access key and secret access key for authenticating AWS API requests.
@@ -234,13 +931,19 @@ commands:
   aws configure list-profiles:
     desc: List the available profiles configured in the AWS CLI. It requires ACCESS_KEY_ID, SECRET_ACCESS_KEY and REGION
     tags: [aws, serverless, sam]
-  # AWS IAM POLICIES
+  # AWS IAM
   aws iam list-policies:
     desc: List all IAM policies in the current account
     tags: [aws, serverless, sam]
   aws iam list-policies --output yaml:
     desc: List all IAM policies in the current account in YAML format
     tags: [aws, serverless, sam]
+  aws iam attach-role-policy --user-name <username> --policy-arn arn:aws:iam::<account-id>:policy/<policy-name>:
+    desc: Attach an IAM policy to a user
+    tags: [aws, iam]
+  aws iam attach-role-policy --user-name <username> --policy-arn arn:aws:iam::<account-id>:policy/job-function/Billing:
+    desc: Attach an IAM policy to a user by job function
+    tags: [aws, iam]
   # AWS SECRETS MANAGER | https://us-east-1.console.aws.amazon.com/secretsmanager/listsecrets?region=us-east-1
   aws secretsmanager list-secrets:
     desc: List all secrets in the current account
@@ -527,34 +1230,13 @@ commands:
   flox install aws-sam-cli:
     desc: Install AWS SAM CLI using Flox
     tags: [aws, serverless, sam]
-  aws sts get-caller-identity:
-    desc: Verify AWS credentials by retrieving the caller identity
-    tags: [aws, serverless, sam]
-    notes:
-      - sh: | #shell
-          #!/bin/bash
-
-          # ============================================
-          # INSTALLATION
-          # ============================================
-
-          # Via Homebrew
-          brew tap aws/tap && brew install aws-sam-cli
-
-          # Configure AWS credentials
-          aws configure
-
-          # For LocalStack (local development)
-          export AWS_ACCESS_KEY_ID="test"
-          export AWS_SECRET_ACCESS_KEY="test"
-          export AWS_ENDPOINT_URL="http://localhost:4566"
   sam init:
     desc: Initialize a new AWS SAM project
     tags: [aws, serverless, sam]
-  sam init --runtime nodejs20.x --name my-lambda-app:
-    desc: Create a new AWS SAM project with Node.js 20.x runtime
+  sam init --runtime nodejs24.x --app-template hello-world-powertools-typescript --name aws-sam-hello-powertools --tracing --no-application-insights --structured-logging --beta-features:
+    desc: Create a new AWS SAM project with Node.js 24.x runtime
     tags: [aws, serverless, sam]
-  sam init --runtime python3.14 --dependency-manager pip --app-template hello-world --name aws-powertools-demo:
+  sam init --runtime python3.14 --dependency-manager pip --app-template hello-world --name aws-sam-hello-python:
     desc: Initialize a new AWS SAM project with Python 3.14 runtime and pip dependency manager
     tags: [aws, serverless, sam]
   sam build:
@@ -868,9 +1550,45 @@ commands:
     desc: Remove an S3 bucket 'bucket1' in LocalStack
     tags: [aws, serverless, localstack]
     links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack s3api list-buckets:
+    desc: List S3 buckets using s3api in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/Q_4e9ns50ew]
   # LocalStack & AWS-SAM
   sam build && sam deploy --profile localstack --stack-name my-stack-local --no-confirm-changeset:
     desc: Deploy the AWS SAM application to LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack cloudformation describe-stacks --stack-name serie-get-stack-localstack --output json:
+    desc: Describe the CloudFormation stack 'serie-get-stack-localstack' in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack cloudformation describe-stack-events --stack-name serie-get-stack-localstack --max-items 25 --output json:
+    desc: Describe the stack events for 'serie-get-stack-localstack' in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack lambda list-functions --max-items 50 --output json:
+    desc: List Lambda functions in LocalStack with a maximum of 50 items
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack apigateway get-rest-apis --limit 50 --output json:
+    desc: Get REST APIs from API Gateway in LocalStack with a limit of 50
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack cloudformation list-stack-resources --stack-name serie-get-stack-localstack --output json:
+    desc: List stack resources for 'serie-get-stack-localstack' in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack lambda get-function --function-name serie-get-dev --output json:
+    desc: Get the Lambda function 'serie-get-dev' in LocalStack
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack dynamodb list-tables --output json:
+    desc: List DynamoDB tables in LocalStack and output in JSON format
+    tags: [aws, serverless, localstack]
+    links: [https://youtu.be/DFS3CnB-Z0k]
+  aws --profile localstack cloudformation describe-stacks --stack-name serie-get-stack-localstack4 --output json:
+    desc: Describe the CloudFormation stack 'serie-get-stack-localstack4' in LocalStack
     tags: [aws, serverless, localstack]
     links: [https://youtu.be/DFS3CnB-Z0k]
 cheats:

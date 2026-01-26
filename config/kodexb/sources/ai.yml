@@ -783,6 +783,15 @@ bookmarks:
   https://deepmind.google/technologies/gemini/#capabilities:
     desc: Gemini | Capabilities
     tags: [ai]
+
+  https://kiro.dev:
+    desc: Kiro | The AI-first development environment
+    tags: [ai, coding]
+    links: [https://kiro.dev/docs, https://youtu.be/4qcWgPb-8Fk]
+  https://kiro.dev/docs/mcp/servers:
+    desc: Model Context Protocol (MCP) Servers | Claude Code
+    tags: [ai, mcp]
+
 cheats:
   fabric -y "https://www.youtube.com/watch?v=VIDEO_ID" --pattern summarize:
     desc: Extract a YouTube video transcript and process it with a pattern "Summarize"

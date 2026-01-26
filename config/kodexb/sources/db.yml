@@ -1,4 +1,21 @@
 bookmarks:
+  https://youtu.be/CrIkUwo8FiY:
+    desc: Turso | This SQLite Fork is SO GOOD (and it’s open source)
+    tags: [db, sqlite]
+    notes:
+      - sh: | #shell
+          ### INSTALLATION
+          brew install turso
+
+          ### USAGE
+          tursodb /path/to/db.sqlite
+
+          ### INSIDE TURSODB
+
+          .help                 # shows the tool help
+          .manual               # shows the tool manual
+          .tables               # shows the tables
+          SELECT * FROM tb_foo; # shows tha table contents in a table
   https://sqlite.org:
     desc: The most used database engine in the world
     tags: [db]

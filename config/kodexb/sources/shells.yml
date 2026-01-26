@@ -1,7 +1,109 @@
 bookmarks:
   http://zsh.sourceforge.net/Guide/zshguide05.html#l124:
     desc: Official ZSH guide section on pattern matching and case statements
-    tags: [docs, pattern_matching, reference]
+    tags: [zsh]
+  https://github.com/unixorn/awesome-zsh-plugins:
+    desc: ZSH frameworks, plugins, themes, and tutorials
+    tags: [zsh]
+  https://zimfw.sh:
+    desc: Zim | Modular, customizable, and blazing fast Zsh framework
+    tags: [zsh, zim]
+    links:
+      - Installing: https://zimfw.sh/docs/install
+      - Docs: https://zimfw.sh/docs
+      - ZModule: https://zimfw.sh/docs/commands/#zmodule
+    notes:
+      - md: |
+          ## Installation
+
+          1. `curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh`
+          2. chsh -s $(which zsh)
+          3. Set up ~/.zshrc:
+            1. Set ZIM_HOME=~/.zim to define the directory used by Zim will be located (i.e.: ${XDG_CACHE_HOME}/zim)
+            2. automatically download the zimfw plugin manager if missing
+                ```sh
+                # Download zimfw plugin manager if missing.
+                if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
+                  curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh \
+                      https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+                fi
+                ````
+            3. `source ${ZIM_HOME}/init.zsh`` to initializes your modules
+          4. Set up `~/.zimrc`:
+            1. Add ${ZDOTDIR}/.zimrc
+          5. Usage:
+            1. You can start with just:
+
+              ```zsh
+              zmodule zsh-users/zsh-syntax-highlighting
+              zmodule zsh-users/zsh-autosuggestions
+              ```
+
+            2. If you also want one of our prompt themes:
+
+              ```zsh
+              zmodule asciiship
+              zmodule zsh-users/zsh-syntax-highlighting
+              zmodule zsh-users/zsh-autosuggestions
+              ```
+
+            3. If you want to use our completion module too, instead of using compinit directly:
+
+              ``1zsh
+              zmodule asciiship
+              zmodule zsh-users/zsh-completions --fpath src
+              zmodule completion
+              zmodule zsh-users/zsh-syntax-highlighting
+              zmodule zsh-users/zsh-autosuggestions
+              ````
+
+            4. Completions:
+
+              - The completion module calls compinit for you.
+              - You should remove any compinit calls from your ~/.zshrc when you use this module.
+              - The modules will be initialized in the order they are defined, and completion must be initialized after all modules that add completion definitions, so it must come after zsh-users/zsh-completions.
+              - Check the zmodule usage for more examples on how to use it to define the modules you want to use.
+
+          ### 1. ZSH PARAMETERS:
+
+            Add param before ZIM modules are initialized:
+
+              - ALWAYS_TO_END: moves cursor to end of word if a full completion is inserted.
+              - NO_CASE_GLOB: makes globbing case insensitive (unless configured as above).
+              - NO_LIST_BEEP: doesn't beep on ambiguous completions.
+
+          ### 2. ZASH COMPLETIONS:
+
+            - 1. Initialize the completion module *after* all modules that add completion definitions, like zsh-users/zsh-completions
+            - 2. Remove any `compinit` calls from your `~/.zshrc` or other startup files when using this module
+            - 3. By default, the completion configuration can be customized with the following zstyles:
+              - zstyle ':zim:completion' dumpfile '/path/to/zsh_dumpfile': It calls `compinit` and speeds up the completions
+              - zstyle ':completion::complete:*' cache-path ${XDG_CACHE_HOME}/zsh/zcompcache: Default stored for completion cache
+              - zstyle ':completion::complete:*' cache-path ~/.cache/zsh/zcompcache: Customize it by setting this zstyle
+
+          ### 3. CASE SENSITIVITY FOR COMPLETIONS AND GLOBBING:
+
+            Add the zstyles to your `~/.zshrc` before where the modules are initialized:
+
+              - Just completions to be case sensitive: zstyle ':zim:completion' case-sensitivity sensitive
+              - Just globbing to be case sensitive: zstyle ':zim:glob' case-sensitivity sensitive
+              - Both to be case sensitive: zstyle ':zim:*' case-sensitivity sensitive
+
+          ### 4. THE ZIM PLUGIN MANAGER
+
+            - Added new modules to ~/.zimrc? Run zimfw install.
+            - Removed modules from ~/.zimrc? Run zimfw uninstall.
+            - Want to update your modules to their latest revisions? Run zimfw update.
+            - Want to upgrade zimfw to its latest version? Run zimfw upgrade.
+  https://sheldon.cli.rs:
+    desc: Sheldon | Fast, configurable, shell plugin manager
+    tags: [zsh]
+  https://starship.rs:
+    desc: Starship | The minimal, blazing-fast, and infinitely customizable prompt for any shell!
+    tags: [zsh]
+  https://youtu.be/foBLhyvhpxo:
+    desc: Fighting ticket driven development in agile/scrum?
+    tags: [zsh]
 cheats:
   zle accept-and-hold:
     desc: Executes the current command but keeps it in the prompt

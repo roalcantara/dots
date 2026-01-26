@@ -22,32 +22,6 @@ bookmarks:
       - yaml: | #yaml
           username: rogerio.alcantara
           password: $(gopass show -n --password websites/consorciei.signin.aws.amazon.com/rogerio.alcantara)
-  # ATLASSIAN/JIRA
-  https://rogerioalcantara.atlassian.net/jira/marketplace/discover/app/hiptest.jira-plugin:
-    desc: Atlassian Jira Marketplace > CucumberStudio - BDD & Test Management
-    tags: [consorciei, jira]
-    notes:
-      - md: | #markdown
-          ## CucumberStudio - BDD & Test Management
-
-          > BDD and agile test management platform integrated with Jira. Use BDD and test automation at scale
-  https://rogerioalcantara.atlassian.net/jira/projects?page=1&sortKey=recommendation&sortOrder=DESC&types=software%2Cbusiness:
-    desc: Atlassian Jira Projects
-    tags: [consorciei, jira]
-  https://rogerioalcantara.atlassian.net/jira/software/projects/SCRUM/boards/1:
-    desc: Atlassian Jira Scrum Board
-    tags: [consorciei, jira]
-  https://admin.atlassian.com/s/04057c99-c6e2-43af-a58f-b2ecdce69222/user-connected-apps/tab/installed:
-    desc: Atlassian Admin > User Connected Apps > Installed Apps
-    tags: [consorciei, jira, apps]
-  https://admin.atlassian.com/s/04057c99-c6e2-43af-a58f-b2ecdce69222/user-connected-apps/connect/jira/hiptest.jira-plugin/details:
-    desc: Atlassian Admin > User Connected Apps > CucumberStudio - BDD & Test Management
-    tags: [consorciei, jira, apps]
-  # JIRA APPS
-  https://support.smartbear.com/cucumberstudio/docs/integrations/jira/index.html:
-    desc: CucumberStudio Documentation | CucumberStudio is a comprehensive software test management tool, which provides you with the ability to plan and organize all test cases, requirements, and defects associated with your release or user stories in a single place
-    tags: [jira, apps]
-    links: [https://support.smartbear.com/cucumberstudio/docs/general-info/about.html]
 commands:
   # GIT
   git clone git@bitbucket.org:consorciei/coreservices.git ~/Work/consorciei/projects/coreservices:

@@ -9,16 +9,16 @@ cheats:
       - md: | #markdown
           ### Setup dev environment for Bitbucket SSH access
 
-          - Update environment and install required packages: 
+          - Update environment and install required packages:
             sudo apt update && sudo apt upgrade -y && sudo apt install -y openssh-client xclip
 
-          - Check OpenSSH installation: 
+          - Check OpenSSH installation:
             ssh -V
 
-          - Check if OpenSSH agent is already running: 
+          - Check if OpenSSH agent is already running:
             ps -ax | grep ssh-agent
 
-          - If not, start the OpenSSH agent: 
+          - If not, start the OpenSSH agent:
             eval $(ssh-agent)
 
           - Command to restart the SSH Agent on terminal:
@@ -29,15 +29,15 @@ cheats:
               - ~/.zshrc: echo 'eval $(ssh-agent)' >> ~/.zshrc
               - ~/.profile: echo 'eval $(ssh-agent)' >> ~/.profile
 
-          - Create SSH Key Pair to use with Bitbucket: 
+          - Create SSH Key Pair to use with Bitbucket:
               cd ~ && ssh-keygen -t ed25519 -b 4096 -C "username@consorciei.com.br" -f ~/.ssh/id_ed25519_bitbucket_work
 
-          - Add the created Private Key to the SSH agent: 
+          - Add the created Private Key to the SSH agent:
               ssh-add ~/.ssh/id_ed25519_bitbucket_work
               ssh-add --apple-use-keychain ~/.ssh/id_ed25519_bitbucket_work
 
           - Setup SSH configuration file:
-              - Create if not exists: 
+              - Create if not exists:
                 touch ~/.ssh/config
 
               - Add/Append to ~/.ssh/config: |
@@ -64,7 +64,7 @@ cheats:
 
           - A recommended naming convention for SSH key files is:
 
-            ```txt    
+            ```txt
             id_<key_algorithm>_<servername>_<purpose>.<format_information>
             ```
 
@@ -75,7 +75,7 @@ cheats:
             - At least one of the information (<purpose> or <servername>) has to be contained in the name
 
           - Examples:
-              
+
             | Key Type        | File Name Example                 | Description                                      |
             |-----------------|-----------------------------------|--------------------------------------------------|
             | Private Key     | id_ed25519_github                 | Private key for GitHub using Ed25519 algorithm   |
@@ -244,7 +244,7 @@ commands:
     desc: Add coreservices-bastion-dev.pem key to the SSH agent
     tags: [keychain, maco]
     links: [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html#AccessingInstancesLinuxSSHClient]
-  ssh-add --apple-use-keychain ~/.ssh/keys/id_ed25519_github.key && ssh-add --apple-use-keychain ~/.ssh/keys/id_ed25519_bitbucket_work.key && ssh-add --apple-use-keychain ~/.ssh/keys/coreservices-bastion-dev.pem && ssh-add -l:
+  ssh-add --apple-use-keychain ~/.ssh/keys/id_ed25519_github.key && ssh-add --apple-use-keychain ~/.ssh/keys/id_ed25519_bitbucket_work.key && ssh-add --apple-use-keychain ~/.ssh/coreservices-bastion-dev.pem && ssh-add -l:
     desc: Add multiple SSH keys to the SSH agent
     tags: [keychain, maco]
     links: [https://freecodecamp.org/news/git-clone-branch-how-to-clone-a-specific-branch, https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html#AccessingInstancesLinuxSSHClient]
@@ -265,7 +265,7 @@ commands:
       - md: | #markdown
           ### SSH Tunnel for Remote Database Access
 
-          - This command establishes an SSH tunnel to securely connect to a remote database. 
+          - This command establishes an SSH tunnel to securely connect to a remote database.
           - It forwards local port `3306` to the remote database endpoint through the specified EC2 instance.
 
           #### WHERE
@@ -283,7 +283,7 @@ commands:
           - Replace `cs-dev.cluster-czcr94cvltso.us-east-1.rds.amazonaws.com:3306` with your actual database endpoint and port.
           - Replace `ec2-user@44.200.148.49` with your actual EC2 instance user and IP address.
 
-          cs-dev.cluster-czcr94cvltso.us-east-1.rds.amazonaws.com:3306 = 
+          cs-dev.cluster-czcr94cvltso.us-east-1.rds.amazonaws.com:3306 =
           Via ec2-user@44.200.148.49 = através deste host SSH
 
           Depois de conectar, você pode usar seu cliente MariaDB localmente:
