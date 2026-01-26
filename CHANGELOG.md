@@ -1,3 +1,19 @@
+# [1.26.0](https://github.com/roalcantara/dots/compare/v1.25.0...v1.26.0) (2026-01-26)
+
+
+### Bug Fixes
+
+* **sops:** avoid 'always modified' in clean filter via hash-compare ([954c16d](https://github.com/roalcantara/dots/commit/954c16d7e90dd917fb79d15f0246710c3746199f)), closes [getsops/sops#1137](https://github.com/getsops/sops/issues/1137) [FiloSottile/age#507](https://github.com/FiloSottile/age/issues/507)
+
+
+### Features
+
+* **kodexb:** add new knowledge base sources ([34e0f6d](https://github.com/roalcantara/dots/commit/34e0f6d1905c79a00a2016b2dea6176b041dc732))
+* **kodexb:** update knowledge base sources ([825e882](https://github.com/roalcantara/dots/commit/825e882099e8b2ce38627231f3a197a673d50fec))
+* **nvim:** update configuration and dependencies ([1d1a970](https://github.com/roalcantara/dots/commit/1d1a970ec3b9ff0378401b5a1bc74aa2acdaa04a))
+* **raycast:** add node scripts for HTML to JSON conversion ([53c1f78](https://github.com/roalcantara/dots/commit/53c1f78e48f12a1ae19516a6f54fd432e616e0bd))
+* **zsh:** add new shell functions ([fcfd886](https://github.com/roalcantara/dots/commit/fcfd886eda74f3ed6a2190fec24d010262765515))
+
 # [1.25.0](https://github.com/roalcantara/dots/compare/v1.24.0...v1.25.0) (2026-01-26)
 
 
