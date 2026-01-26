@@ -1,0 +1,114 @@
+#!/usr/bin/env zsh
+# shellcheck shell=bash disable=SC2154,SC1073,SC1058,SC1072,SC1009,SC1036,SC2155,SC2034,SC2120
+
+#? yw 0.1.0
+#? License RIT (Robot Institute of Technology)
+#? This is free software: you are free to change and redistribute it.
+#? There is NO WARRANTY, to the extent permitted by law.
+#? http://docopt.org · Command-line interface description language
+
+##? List, select, and run Yarn workspace scripts
+##?
+##? Usage:
+##?      yw [return]
+
+# List, select, and run Yarn workspace scripts
+emulate -L zsh
+
+# Check if yarn is available
+if ! command -v yarn &> /dev/null; then
+  echo "Error: yarn is not installed"
+  return 1
+fi
+
+# Get workspace list
+local workspaces=$(yarn workspaces list --json 2>/dev/null)
+
+if [[ -z "$workspaces" ]]; then
+  echo "Error: No workspaces found or not in a Yarn workspace"
+  return 1
+fi
+
+# Parse and format workspaces
+local -a ws_array
+while IFS= read -r line; do
+  local name=$(echo "$line" | jq -r '.name')
+  local location=$(echo "$line" | jq -r '.location')
+  local display_loc
+
+  if [[ "$location" == "." ]]; then
+    display_loc="root"
+  else
+    display_loc="$location"
+  fi
+
+  ws_array+=("$name|$location|$display_loc")
+done < <(echo "$workspaces" | jq -c .)
+
+# Display workspace selector with fzf
+local selected_ws
+selected_ws=$(
+  printf '%s\n' "${ws_array[@]}" | \
+  sed 's/|/  (/;s/|$//' | \
+  sed 's/$//' | \
+  awk '{print $0 ")"}' | \
+  fzf \
+    --header " Pick one package from the current workspace:" \
+    --height=~50% \
+    --reverse \
+    --no-preview \
+    --bind 'tab:accept'
+)
+
+if [[ -z "$selected_ws" ]]; then
+  return 0
+fi
+
+# Extract workspace name and location from fzf output
+local ws_name=$(echo "$selected_ws" | awk '{print $1}')
+local ws_location=$(printf '%s\n' "${ws_array[@]}" | grep "^$ws_name|" | cut -d'|' -f2)
+
+# Get package.json path
+local pkg_file="$ws_location/package.json"
+if [[ ! -f "$pkg_file" ]]; then
+  echo "Error: package.json not found in $ws_location"
+  return 1
+fi
+
+# Parse scripts from package.json
+local scripts
+scripts=$(jq -r '.scripts | to_entries[] | "\(.key)|\(.value)"' "$pkg_file" 2>/dev/null)
+
+if [[ -z "$scripts" ]]; then
+  echo "No scripts found in $ws_name"
+  return 0
+fi
+
+# Display script selector with fzf
+local selected_script
+selected_script=$(
+  echo "$scripts" | \
+  sed 's/|/: "/' | \
+  sed 's/$/..."/' | \
+  fzf \
+    --header " Pick one script from $ws_name ($ws_location):" \
+    --height=~50% \
+    --reverse \
+    --no-preview \
+    --bind 'tab:accept'
+)
+
+if [[ -z "$selected_script" ]]; then
+  return 0
+fi
+
+# Extract script name
+local script_name=$(echo "$selected_script" | cut -d: -f1 | xargs)
+
+# Build and execute command
+local cmd="yarn workspace $ws_name $script_name"
+
+# Put the command in the zsh buffer for the user to see and edit
+print -z "$cmd"
+
+# vi: set ft=sh:

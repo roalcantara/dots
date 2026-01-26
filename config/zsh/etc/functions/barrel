@@ -1,0 +1,371 @@
+#!/usr/bin/env bash
+
+##############################################################################
+# barrel.sh - Automatically generate and maintain barrel (index) exports
+#
+# Usage:
+#   barrel.sh <folder> [-r|--recursive [subdirs...]] [-ts|--ts|-js|--js]
+#
+# Examples:
+#   barrel.sh ./src
+#   barrel.sh ./src -r
+#   barrel.sh ./src -r utils helpers
+#   barrel.sh ./src -r --js
+#   barrel.sh ./src --recursive validation http --ts
+#
+##############################################################################
+
+set -euo pipefail
+
+# Color codes for output (fallback)
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Configuration
+FOLDER=""
+EXTENSION="ts"
+RECURSIVE=false
+INCLUDE_SUBDIRS=()
+HAS_GUM=false
+
+##############################################################################
+# Helper Functions
+##############################################################################
+
+check_gum_availability() {
+    if command -v gum &> /dev/null; then
+        HAS_GUM=true
+    fi
+}
+
+log_info() {
+    if [[ "$HAS_GUM" == true ]]; then
+        gum log --level info "$1"
+    else
+        echo -e "${GREEN}✔${NC} [INFO] $1"
+    fi
+}
+
+log_warn() {
+    if [[ "$HAS_GUM" == true ]]; then
+        gum log --level warn "$1"
+    else
+        echo -e "${YELLOW}✔${NC} [WARN] $1"
+    fi
+}
+
+log_error() {
+    if [[ "$HAS_GUM" == true ]]; then
+        gum log --level error "$1"
+    else
+        echo -e "${RED}✗${NC} [ERROR] $1" >&2
+    fi
+}
+
+usage() {
+    cat << 'EOF'
+Usage: barrel.sh <folder> [OPTIONS]
+
+Options:
+  -r, --recursive              Include index.ts exports from all subdirectories
+                               Optionally specify subdirectories: -r subdir1 subdir2
+  -ts, --ts                    Use .ts extension for exports (default)
+  -js, --js                    Use .js extension for exports
+  -h, --help                   Show this help message
+
+Examples:
+  barrel.sh ./src
+  barrel.sh ./src -r
+  barrel.sh ./src -r utils helpers
+  barrel.sh ./src -r --js
+  barrel.sh ./src --recursive validation --ts
+EOF
+    exit 1
+}
+
+##############################################################################
+# Argument Parsing
+##############################################################################
+
+parse_arguments() {
+    if [[ $# -lt 1 ]]; then
+        usage
+    fi
+
+    FOLDER="$1"
+    shift || true
+
+    # Parse remaining arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -r | --recursive)
+                RECURSIVE=true
+                shift || true
+                # Collect subdirectory names until we hit a flag
+                while [[ $# -gt 0 ]] && [[ ! "$1" =~ ^- ]]; do
+                    INCLUDE_SUBDIRS+=("$1")
+                    shift || true
+                done
+                ;;
+            -ts | --ts)
+                EXTENSION="ts"
+                shift || true
+                ;;
+            -js | --js)
+                EXTENSION="js"
+                shift || true
+                ;;
+            -h | --help)
+                usage
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                usage
+                ;;
+        esac
+    done
+}
+
+##############################################################################
+# Validation
+##############################################################################
+
+validate_folder() {
+    if [[ ! -d "$FOLDER" ]]; then
+        log_error "Folder does not exist: $FOLDER"
+        exit 1
+    fi
+}
+
+##############################################################################
+# File Discovery
+##############################################################################
+
+find_ts_files() {
+    local folder="$1"
+    # Find all .ts files excluding index.ts and test/spec/fixture/mock/stub files
+    fd --type f '\.ts$' "$folder" \
+        --exclude 'index.ts' \
+        --exclude '*.spec.ts' \
+        --exclude '*.test.ts' \
+        --exclude '*.fixture.ts' \
+        --exclude '*.mock.ts' \
+        --exclude '*.stub.ts' \
+        --max-depth 1 \
+        2>/dev/null | sort || true
+}
+
+find_subdirs_with_index() {
+    local folder="$1"
+    # Find all subdirectories that contain an index.ts file
+    fd --type d \
+        --max-depth 1 \
+        "$folder" \
+        -x test -f "{}/index.ts" \; \
+        2>/dev/null | while read -r subdir; do
+        basename "$subdir"
+    done | sort || true
+}
+
+##############################################################################
+# Export Generation
+##############################################################################
+
+generate_export_line() {
+    local module_name="$1"
+    local ext="$2"
+    echo "export * from './$module_name.$ext'"
+}
+
+generate_exports() {
+    local folder="$1"
+    local ext="$2"
+    local recursive="$3"
+    local -a subdirs=("${@:4}")
+
+    local -a exports=()
+
+    # Collect file exports
+    while IFS= read -r file; do
+        if [[ -n "$file" ]]; then
+            local filename=$(basename "$file" .ts)
+            exports+=("export * from './$filename.$ext'")
+        fi
+    done < <(find_ts_files "$folder")
+
+    # Collect subdirectory exports if recursive is enabled
+    if [[ "$recursive" == true ]]; then
+        local -a available_subdirs=()
+        while IFS= read -r subdir; do
+            if [[ -n "$subdir" ]]; then
+                available_subdirs+=("$subdir")
+            fi
+        done < <(find_subdirs_with_index "$folder")
+
+        # If specific subdirs were provided, use only those; otherwise use all
+        if [[ ${#subdirs[@]} -gt 0 ]]; then
+            for subdir in "${subdirs[@]}"; do
+                if printf '%s\n' "${available_subdirs[@]}" | grep -q "^$subdir$"; then
+                    exports+=("export * from './$subdir.$ext'")
+                fi
+            done
+        else
+            for subdir in "${available_subdirs[@]}"; do
+                exports+=("export * from './$subdir.$ext'")
+            done
+        fi
+    fi
+
+    # Sort and deduplicate
+    printf '%s\n' "${exports[@]}" | sort | uniq
+}
+
+##############################################################################
+# Extension Detection
+##############################################################################
+
+detect_extension_from_file() {
+    local file="$1"
+
+    if [[ ! -f "$file" ]]; then
+        return 1
+    fi
+
+    # Look for export lines and extract the extension
+    local ext=$(grep -oP "export \* from '\./[^']+\.\K[a-z]+(?=')" "$file" | head -1)
+
+    if [[ -n "$ext" ]]; then
+        echo "$ext"
+        return 0
+    fi
+
+    return 1
+}
+
+##############################################################################
+# File Processing
+##############################################################################
+
+process_index_file() {
+    local folder="$1"
+    local index_file="$folder/index.ts"
+    local ext="$EXTENSION"
+
+    # Try to auto-detect extension from existing file
+    if [[ -f "$index_file" ]]; then
+        local detected_ext
+        detected_ext=$(detect_extension_from_file "$index_file") || true
+        if [[ -n "$detected_ext" ]]; then
+            ext="$detected_ext"
+        fi
+    fi
+
+    # Generate new exports
+    local new_exports
+    new_exports=$(generate_exports "$folder" "$ext" "$RECURSIVE" "${INCLUDE_SUBDIRS[@]}")
+
+    if [[ ! -f "$index_file" ]]; then
+        # File doesn't exist - create it
+        log_warn "\"index.ts\" file did not exist!"
+        log_info "\"index.ts\" file was created!"
+
+        while IFS= read -r export_line; do
+            if [[ -n "$export_line" ]]; then
+                log_info "\"$(echo "$export_line" | sed "s/'.*//; s/.*/&'/" | head -c 50)...\" added to \"index.ts\""
+            fi
+        done < <(echo "$new_exports")
+
+        echo "$new_exports" > "$index_file"
+        log_info "\"index.ts\" file was saved!"
+    else
+        # File exists - update if needed
+        log_info "\"index.ts\" file exists!"
+
+        local existing_exports
+        existing_exports=$(grep -E "^export \* from '\./.*\.(ts|js)'$" "$index_file" 2>/dev/null || true)
+
+        local -a missing_exports=()
+        while IFS= read -r export_line; do
+            if [[ -n "$export_line" ]] && ! echo "$existing_exports" | grep -q "^$(printf '%s\n' "$export_line" | sed 's/[[\.*^$/]/\\&/g')$"; then
+                missing_exports+=("$export_line")
+            fi
+        done < <(echo "$new_exports")
+
+        local -a removed_exports=()
+        while IFS= read -r export_line; do
+            if [[ -n "$export_line" ]] && ! echo "$new_exports" | grep -q "^$(printf '%s\n' "$export_line" | sed 's/[[\.*^$/]/\\&/g')$"; then
+                removed_exports+=("$export_line")
+            fi
+        done < <(echo "$existing_exports")
+
+        if [[ ${#missing_exports[@]} -eq 0 ]] && [[ ${#removed_exports[@]} -eq 0 ]]; then
+            log_info "\"index.ts\" file is already up to date!"
+        else
+            log_warn "\"index.ts\" file is not up to date!"
+
+            for export_line in "${removed_exports[@]}"; do
+                if [[ -n "$export_line" ]]; then
+                    echo "    - \`$export_line\` => REMOVED!"
+                fi
+            done
+
+            for export_line in "${missing_exports[@]}"; do
+                if [[ -n "$export_line" ]]; then
+                    echo "    - \`$export_line\` => MISSING!"
+                fi
+            done
+
+            echo "$new_exports" > "$index_file"
+            log_info "\"index.ts\" file was saved!"
+
+            for export_line in "${missing_exports[@]}"; do
+                if [[ -n "$export_line" ]]; then
+                    log_info "$export_line was added to \"index.ts\""
+                fi
+            done
+
+            for export_line in "${removed_exports[@]}"; do
+                if [[ -n "$export_line" ]]; then
+                    log_info "$export_line was removed from \"index.ts\""
+                fi
+            done
+        fi
+    fi
+}
+
+##############################################################################
+# Output
+##############################################################################
+
+display_file_contents() {
+    local folder="$1"
+    local index_file="$folder/index.ts"
+
+    log_info "executing \"cat index.ts\""
+    echo ""
+
+    if [[ "$HAS_GUM" == true ]]; then
+        gum style --border rounded --padding "1 2" --foreground 212 "$(cat "$index_file")"
+    else
+        cat "$index_file"
+    fi
+
+    echo ""
+}
+
+##############################################################################
+# Main Entry Point
+##############################################################################
+
+main() {
+    check_gum_availability
+    parse_arguments "$@"
+    validate_folder "$FOLDER"
+    process_index_file "$FOLDER"
+    display_file_contents "$FOLDER"
+}
+
+# Run main function if script is executed directly (bash) or when sourced
+main "$@"
