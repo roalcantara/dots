@@ -87,7 +87,7 @@ LUA_PATH = "./lua/?.lua;./lua/?/init.lua;;"
 
   # Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
   # https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
-  idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
+  # idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
 
   # Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
   # https://mise.jdx.dev/configuration/settings.html#lockfile

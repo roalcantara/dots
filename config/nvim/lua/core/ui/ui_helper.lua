@@ -1,5 +1,4 @@
 local devicons = require('nvim-web-devicons')
-local lspkind = require('lspkind')
 local colorfulmenu = require('colorful-menu')
 local blink_cmp = require('blink.cmp')
 local cache = {}
@@ -16,14 +15,19 @@ local get_cached_icon_and_highlight = function(ctx)
         cache[ctx.kind] = { icon = dev_icon, hl = dev_hl, icon_with_gap = dev_icon .. ctx.icon_gap }
       end
     else
-      local lspkind_icon = lspkind.symbolic(ctx.kind, nil)
-      if lspkind_icon ~= '' then
-        cache[ctx.kind] = { icon = lspkind_icon, hl = ctx.kind_hl, icon_with_gap = lspkind_icon .. ctx.icon_gap }
+      local success, lspkind = pcall(require, 'lspkind')
+      if success then
+        local lspkind_icon = lspkind.symbolic(ctx.kind, nil)
+        if lspkind_icon ~= '' then
+          cache[ctx.kind] = { icon = lspkind_icon, hl = ctx.kind_hl, icon_with_gap = lspkind_icon .. ctx.icon_gap }
+        end
+      else
+        vim.notify('Failed to require: lspkind', vim.log.levels.ERROR)
       end
     end
-    if not cache[ctx.kind] then
-      cache[ctx.kind] = { icon = ctx.kind_icon, hl = ctx.kind_hl, icon_with_gap = ctx.kind_icon .. ctx.icon_gap }
-    end
+  end
+  if not cache[ctx.kind] then
+    cache[ctx.kind] = { icon = ctx.kind_icon, hl = ctx.kind_hl, icon_with_gap = ctx.kind_icon .. ctx.icon_gap }
   end
   return cache[ctx.kind]
 end
