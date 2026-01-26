@@ -6,7 +6,7 @@
 #   ./install -u "vscode" -g "vscode" -t "America/Sao_Paulo" -p "flox" -r "https://github.com/roalcantara/dots" -b "main"
 set -eu
 declare -g -A COLORS=([E]='\033[0;31m' [F]='\033[0;31m' [S]='\033[0;32m' [W]='\033[1;33m' [I]='\033[0;34m' [MAGENTA]='\033[0;35m' [NC]='\033[0m')
-declare -g USERNAME GROUPNAME TIMEZONE="America/Sao_Paulo" REPO_URL="https://github.com/roalcantara/dots" BRANCH="main" USR_LOCAL_BIN="/usr/local/bin" PACKAGE_MANAGER="flox" FLOX_VERSION="1.7.8" CONFIGS_TO_BACKUP=".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .oh-my-zsh"
+declare -g USERNAME GROUPNAME TIMEZONE="America/Sao_Paulo" REPO_URL="https://github.com/roalcantara/dots" BRANCH="main" USR_LOCAL_BIN="/usr/local/bin" PACKAGE_MANAGER="flox" FLOX_VERSION="1.8.2" CONFIGS_TO_BACKUP=".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .oh-my-zsh"
 declare -g UNAME ARCH PLATFORM_ARCH DISTRO ENV CONTEXT HOME DOTS_SRC_DIR FLOX_PATH BACKUP_DIR
 declare -g -A PACKAGES=(
   [apt]="$HOME/.config/apt/requirements.txt"
