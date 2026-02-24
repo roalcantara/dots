@@ -335,6 +335,43 @@
   fi
 # }
 
+# XDG_RUNTIME_DIR {
+  # Fixes XDG_RUNTIME_DIR issues on macOS and Linux where it may be set to a non-existent directory or have incorrect permissions, which can cause issues with certain applications that rely on it for storing runtime files.
+  __fix_xdg_runtime_dir() {
+    local runtime_dir="${XDG_RUNTIME_DIR:-}"
+    if [[ ! -d "$runtime_dir" ]]; then
+      mkdir -p "$runtime_dir" 2>/dev/null || sudo mkdir -p "$runtime_dir"
+    fi
+
+    local perms owner
+    if stat --version &>/dev/null; then
+      # GNU stat (Linux or macOS with coreutils in PATH)
+      perms=$(stat -c "%a" "$runtime_dir" 2>/dev/null)
+      owner=$(stat -c "%u" "$runtime_dir" 2>/dev/null)
+    elif [[ -x /bin/stat ]]; then
+      # BSD stat — macOS native (bypasses PATH to avoid GNU coreutils override)
+      perms=$(/bin/stat -f "%Lp" "$runtime_dir" 2>/dev/null)
+      owner=$(/bin/stat -f "%u"  "$runtime_dir" 2>/dev/null)
+    else
+      return 0  # can't determine permissions safely, bail out
+    fi
+
+    local uid="${UID:-$(id -u)}"
+    [[ "$perms" == "700" && "$owner" == "$uid" ]] && return  # all good, fast exit
+
+    if [[ "$perms" != "700" ]]; then
+      chmod 700 "$runtime_dir" 2>/dev/null || sudo chmod 700 "$runtime_dir"
+      echo -e "\\033]9;XDG_RUNTIME_DIR $runtime_dir permissions fixed to 700 (was $perms)!\\007"
+    fi
+    if [[ "$owner" != "$uid" ]]; then
+      local username="${USERNAME:-$(id -un)}"
+      chown -R "$username" "$runtime_dir" 2>/dev/null || sudo chown -R "$username" "$runtime_dir"
+      echo -e "\\033]9;XDG_RUNTIME_DIR $runtime_dir ownership fixed to $username (was $owner)!\\007"
+    fi
+  }
+  __fix_xdg_runtime_dir
+# }
+
 # ZPROF {
   # profilling
   if [[ -n "$z_prof" ]]; then

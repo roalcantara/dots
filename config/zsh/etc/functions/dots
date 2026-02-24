@@ -122,21 +122,65 @@ dots() {
   xdg)
     case $2 in
     check_runtime_perms)
+      local runtime_dir="${XDG_RUNTIME_DIR:-}"
+      if [[ ! -d "$runtime_dir" ]]; then
+        mkdir -p "$runtime_dir" 2>/dev/null || sudo mkdir -p "$runtime_dir"
+      fi
+
       local perms owner
-      IFS=':' read -r perms owner <<< "$(__get_dir_permissions "$XDG_RUNTIME_DIR")"
-      if [[ "$perms" != "700" ]] || [[ "$owner" != "${UID:-$(id -u)}" ]]; then
-        echo "XDG_RUNTIME_DIR => '$XDG_RUNTIME_DIR' -> '$perms:$owner'! (should be 700:$UID)! Run 'dots xdg ensure_runtime_perms' to fix.."
+      if stat --version &>/dev/null; then
+        # GNU stat (Linux or macOS with coreutils in PATH)
+        perms=$(stat -c "%a" "$runtime_dir" 2>/dev/null)
+        owner=$(stat -c "%u" "$runtime_dir" 2>/dev/null)
+      elif [[ -x /bin/stat ]]; then
+        # BSD stat — macOS native (bypasses PATH to avoid GNU coreutils override)
+        perms=$(/bin/stat -f "%Lp" "$runtime_dir" 2>/dev/null)
+        owner=$(/bin/stat -f "%u"  "$runtime_dir" 2>/dev/null)
+      else
+        gum log -t Datetime -l error "==> XDG_RUNTIME_DIR '$XDG_RUNTIME_DIR' -> can't determine permissions safely, bail out.."
+        return 0
+      fi
+
+      local uid="${UID:-$(id -u)}"
+      if [[ "$perms" != "700" || "$owner" != "$uid" ]]; then
+        gum log -t Datetime -l error "==> XDG_RUNTIME_DIR '$XDG_RUNTIME_DIR' -> '$perms:$owner'! (should be 700:$UID)! Run 'dots xdg ensure_runtime_perms' to fix.."
         return 1
       fi
-      echo "XDG_RUNTIME_DIR => '$XDG_RUNTIME_DIR' -> '$perms:$owner'! ✔✔"
+      gum log -t Datetime -l info "XDG_RUNTIME_DIR => '$XDG_RUNTIME_DIR' -> '$perms:$owner'! ✔✔"
       return 0
       ;;
     ensure_runtime_perms)
       local runtime_dir="${XDG_RUNTIME_DIR:-}"
-      [[ ! -d "$runtime_dir" ]] && mkdir -p "$runtime_dir" 2>/dev/null || sudo mkdir -p "$runtime_dir"
-      IFS=':' read -r perms owner <<< "$(__get_dir_permissions "$runtime_dir")"
-      [[ "$perms" != "700" ]] && chmod 700 "$runtime_dir" 2>/dev/null || sudo chmod 700 "$runtime_dir"
-      [[ "$owner" != "${UID:-$(id -u)}" ]] && local username="${USERNAME:-$(id -un)}" && chown -R "$username" "$runtime_dir" 2>/dev/null || sudo chown -R "$username" "$runtime_dir"
+      if [[ ! -d "$runtime_dir" ]]; then
+        mkdir -p "$runtime_dir" 2>/dev/null || sudo mkdir -p "$runtime_dir"
+      fi
+
+      local perms owner
+      if stat --version &>/dev/null; then
+        # GNU stat (Linux or macOS with coreutils in PATH)
+        perms=$(stat -c "%a" "$runtime_dir" 2>/dev/null)
+        owner=$(stat -c "%u" "$runtime_dir" 2>/dev/null)
+      elif [[ -x /bin/stat ]]; then
+        # BSD stat — macOS native (bypasses PATH to avoid GNU coreutils override)
+        perms=$(/bin/stat -f "%Lp" "$runtime_dir" 2>/dev/null)
+        owner=$(/bin/stat -f "%u"  "$runtime_dir" 2>/dev/null)
+      else
+        gum log -t Datetime -l error "==> XDG_RUNTIME_DIR '$XDG_RUNTIME_DIR' -> can't determine permissions safely, bail out.."
+        return 0
+      fi
+
+      local uid="${UID:-$(id -u)}"
+      [[ "$perms" == "700" && "$owner" == "$uid" ]] && return  # all good, fast exit
+
+      if [[ "$perms" != "700" ]]; then
+        chmod 700 "$runtime_dir" 2>/dev/null || sudo chmod 700 "$runtime_dir"
+        gum log -t Datetime -l info "XDG_RUNTIME_DIR => '$XDG_RUNTIME_DIR' -> PERMISSIONS FIXED to '700' (was $perms)! ✔✔"
+      fi
+      if [[ "$owner" != "$uid" ]]; then
+        local username="${USERNAME:-$(id -un)}"
+        chown -R "$username" "$runtime_dir" 2>/dev/null || sudo chown -R "$username" "$runtime_dir"
+        gum log -t Datetime -l info "XDG_RUNTIME_DIR => '$XDG_RUNTIME_DIR' -> OWNER FIXED to '$uid' (was $owner)! ✔✔"
+      fi
       ;;
     *)
       dots xdg "$(gum filter --limit=1 'check_runtime_perms' 'ensure_runtime_perms')"

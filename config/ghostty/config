@@ -74,6 +74,7 @@ adjust-cell-height = 10
 # A theme to use. It can be a built-in theme name, a custom theme name, or an absolute path to a custom theme file.
 # Some themes are "Ayu Mirage" "Andromeda" "catppuccin-macchiato" "catppuccin-mocha" "catppuccin-frappe" "Kanagawa Wave" "tokyonight_moon"
 # https://ghostty.org/docs/config/reference#theme
+# https://ghostty.town
 theme = "TokyoNight"
 # Color palette for the 256 colors used by many terminal apps (https://ditig.com/256-colors-cheat-sheet). It is defined as N=COLOR where:
 # - N is 0-255 of the terminal color table. It can be decimal (default), binary (0b), octal (0o), or hexadecimal (0x).
@@ -150,16 +151,16 @@ window-subtitle = false
 
 # Enable URL matching. URLs are matched on hover with control (Linux) or command (macOS) pressed and open using the default system application for the linked URL.
 # https://ghostty.org/docs/config/reference#link-url
-link-url=true
+link-url = true
 # When true, link previews are shown for all matched URLs. When false, link previews are never shown.
 # https://ghostty.org/docs/config/reference#link-previews
-link-previews=true
+link-previews = true
 # Only the XDG config path ($XDG_CONFIG_HOME/ghostty/config).
 # https://ghostty.org/docs/config/reference#config-default-files
-config-default-files=true
+config-default-files = true
 # Do not confirm that a surface should be closed before closing it
 # https://ghostty.org/docs/config/reference#confirm-close-surface
-confirm-close-surface=false
+confirm-close-surface = false
 # Quit after the last surface is closed
 # https://ghostty.org/docs/config/reference#quit-after-last-window-closed
 quit-after-last-window-closed = true
@@ -195,6 +196,13 @@ quick-terminal-animation-duration = .5
 quick-terminal-autohide = true
 # https://ghostty.org/docs/config/reference#quick-terminal-space-behavior
 quick-terminal-space-behavior = remain
+# Configures the low-level API to use for async IO, eventing, etc
+# https://ghostty.org/docs/config/reference#async-backend
+async-backend = auto
+# Apps running in terminal can show desktop notifications using certain escape sequences such as OSC 9 or OSC 777
+# Test with a Command: `sleep 5; echo -e "\\033]9;my notification\\007"`
+# https://ghostty.org/docs/config/reference#desktop-notifications
+desktop-notifications = true
 
 ################################################################################
 ## MACOS SETTINGS
@@ -223,7 +231,7 @@ macos-window-shadow = true
 macos-option-as-alt = true
 # Whether macOS Shortcuts are allowed to control Ghostty
 # https://ghostty.org/docs/config/reference#macos-shortcuts
-macos-shortcuts = ask
+macos-shortcuts = allow
 # The opacity level (opposite of transparency) of the background.
 # A value of 1 is fully opaque and a value of 0 is fully transparent.
 # https://ghostty.org/docs/config/reference#background-opacity
@@ -235,7 +243,9 @@ background-opacity = 1
 #    Higher blur intensities may cause strange rendering and performance issues.
 # https://ghostty.org/docs/config/reference#background-blur
 background-blur = true
-
+# Controls the windowing behavior when dropping a file or folder onto the Ghostty icon in the macOS dock
+# https://ghostty.org/docs/config/reference#macos-dock-drop-behavior
+macos-dock-drop-behavior = window
 
 ################################################################################
 ## CLIPBOARD & MOUSE SETTINGS
@@ -263,11 +273,12 @@ mouse-shift-capture = true
 # When there are multiple split panes, the mouse selects the focused pane
 # https://ghostty.org/docs/config/reference#focus-follows-mouse
 focus-follows-mouse = true
-
 # The action to take when the user right-clicks on the terminal surface
 # https://ghostty.org/docs/config/reference#right-click-action
 right-click-action = context-menu
-
+# The focused terminal surface will run an animation loop when custom shaders are used
+# https://ghostty.org/docs/config/reference#custom-shader-animation
+custom-shader-animation = true
 
 ################################################################################
 ## KEYBINDINGS SETTINGS
