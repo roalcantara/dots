@@ -56,7 +56,7 @@ ga() {
   fi
 }
 alias gaa='g add .'
-alias gs='g stash'
+alias gss='g stash'
 
 # RESTORE
 alias grs='g fzu'   # (fuzzy) git restore [<pathspec>…​]

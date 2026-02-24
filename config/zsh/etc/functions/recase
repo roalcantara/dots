@@ -1,0 +1,355 @@
+#!/usr/bin/env zsh
+# shellcheck shell=bash disable=SC2154,SC2004
+
+##? recase - rename files/directories to a target naming convention
+##?
+##? Usage:
+##?   recase <path> [options] <convention>
+##?
+##? Arguments:
+##?   <path>  File, symlink, or directory to process
+##?
+##? Options:
+##?   -f, --files        Rename files/symlinks  (folder mode only)
+##?   -d, --dirs         Rename directories     (folder mode only)
+##?   -r, --recursive    Recurse into subdirs   (folder mode only)
+##?   -h, --help         Show this help
+##?
+##? Compound shorthands (pick one - cannot be combined):
+##?   --camel            twoWords
+##?   --pascal, --title  TwoWords
+##?   --flat             twowords
+##?
+##? Composable flags - mix one separator + one case modifier:
+##?
+##?   Separators:              Case modifiers:
+##?   --snake  → two_words     --lower  → two_words  (default when only sep given)
+##?   --kebab  → two-words     --upper  → TWO_WORDS
+##?   --dot    → two.words     --title  → Two_Words
+##?   --joined → twowords                             (--snake implied when only case given)
+##?
+##? Combination examples:
+##?   --snake              →  two_words
+##?   --snake --upper      →  TWO_WORDS
+##?   --snake --title      →  Two_Words
+##?   --kebab --upper      →  TWO-WORDS
+##?   --dot   --upper      →  TWO.WORDS
+##?   --joined --title     →  TwoWords      (= --pascal)
+##?   --upper              →  TWO_WORDS     (--snake implied)
+##?
+##? Examples:
+##?   recase src/ -f -r --snake
+##?   recase src/ -f -r --snake --upper
+##?   recase MyFile.ts --kebab
+##?   recase ./lib -d -r --pascal
+##?
+##? Installation:
+##?   mkdir -p ~/.zsh/functions
+##?   cp recase ~/.zsh/functions/recase
+##?   # in .zshrc:
+##?   fpath=(~/.zsh/functions $fpath)
+##?   autoload -Uz recase
+
+recase() {
+  emulate -L zsh
+  # Do not use err_exit: this function runs in the interactive shell; any failing
+  # command (e.g. mv, or _err returning 1) would exit the whole shell and close the terminal.
+  setopt no_unset pipe_fail extended_glob
+
+  # Ensure standard paths so mv (and optionally gum) are findable in minimal envs (e.g. CI, zsh -c).
+  for _rc_p in /usr/bin /bin; do
+    [[ ":$PATH:" == *":$_rc_p:"* ]] || PATH="$_rc_p:$PATH"
+  done
+  local RC_MV
+  RC_MV=$(command -v mv 2>/dev/null) || RC_MV=""
+  [[ -n "$RC_MV" && -x "$RC_MV" ]] || RC_MV=/bin/mv
+  [[ -x "$RC_MV" ]] || RC_MV=/usr/bin/mv
+
+  # ─── gum helpers ────────────────────────────────────────────────────────
+  local HAS_GUM=false
+  if [[ -t 1 && "${TERM:-}" != dumb ]]; then
+    ( command -v gum >/dev/null && gum --version >/dev/null 2>&1 ) && HAS_GUM=true
+  fi
+
+  _info() {   # _info OLD NEW
+    if $HAS_GUM; then
+      command gum log --level info \
+        "$(command gum style --faint "$1")" "$(command gum style --foreground 212 '→')" "$(command gum style --bold "$2")"
+    else
+      printf '  rename  %s  →  %s\n' "$1" "$2"
+    fi
+  }
+  _warn() {     # _warn PATH REASON
+    if $HAS_GUM; then
+      command gum log --level warn "skip $(command gum style --faint "$1")  ($2)"
+    else
+      printf '  skip  %s  (%s)\n' "$1" "$2" >&2
+    fi
+  }
+  _err() {      # _err MESSAGE
+    if $HAS_GUM; then
+      command gum log --level error "$*"
+    else
+      printf 'recase: error: %s\n' "$*" >&2
+    fi
+    return 1
+  }
+
+  # ─── Usage ────────────────────────────────────────────────────────────────
+  # Delegates to show_usage, which reads the ##? comments at the top of this file.
+  _rc_usage() {
+    local src="${functions_source[recase]:-}"
+    if [[ -z "$src" ]]; then
+      local dir
+      for dir in $fpath; do
+        [[ -f "$dir/recase" ]] && src="$dir/recase" && break
+      done
+    fi
+    if [[ -n "$src" ]]; then
+      show_usage "$src"
+    else
+      show_usage recase
+    fi
+    return 0   # ← help is never an error
+  }
+
+  # ─── Word splitting ──────────────────────────────────────────────────────
+  # Returns words in reply[] (zsh convention for returning arrays).
+  _rc_split() {
+    local input="$1" spaced="$1"
+    # camelCase / PascalCase → insert spaces at case boundaries
+    # With no_unset, ${match[1]} errors when pattern has no match; allow unset for this block
+    setopt local_options
+    unsetopt no_unset
+    spaced="${spaced//(#b)([a-z0-9])([A-Z])/${match[1]} ${match[2]}}"
+    spaced="${spaced//(#b)([A-Z]##)([A-Z][a-z]##)/${match[1]} ${match[2]}}"
+    setopt no_unset
+    # lowercase, split on any non-alnum run, drop empties
+    spaced="${spaced:l}"
+    reply=( ${(ps: :)${spaced//[^a-z0-9]/ }} )
+    reply=( ${reply:#} )
+    # merge single lowercase letter with next word (e.g. "console" "l" "ogger" → "console" "logger")
+    local -a new_reply
+    local i=1
+    while (( i <= ${#reply[@]} )); do
+      if (( i < ${#reply[@]} )) && [[ ${#reply[i]} -eq 1 && ${reply[i]} == [a-z] ]]; then
+        new_reply+=( "${reply[i]}${reply[i+1]}" )
+        (( i += 2 ))
+      else
+        new_reply+=( "${reply[i]}" )
+        (( i += 1 ))
+      fi
+    done
+    reply=( "${new_reply[@]}" )
+  }
+
+  # ─── Converters ─────────────────────────────────────────────────────────
+  _rc_apply_case() {    # _rc_apply_case CASEMOD WORD → stdout
+    case "$1" in
+      lower) printf '%s' "${2:l}" ;;
+      upper) printf '%s' "${2:u}" ;;
+      title) printf '%s' "${(C)2}" ;;
+    esac
+  }
+
+  _rc_camel() {         # _rc_camel STEM → stdout
+    local -a w; _rc_split "$1"; w=("$reply[@]")
+    local result="${w[1]}" word
+    for word in "${w[@]:1}"; do result+="${(C)word}"; done
+    printf '%s' "$result"
+  }
+
+  _rc_convert_stem() {  # _rc_convert_stem STEM SEP CASEMOD → stdout
+    local stem="$1" sep="$2" casemod="$3"
+    local -a w; _rc_split "$stem"; w=("$reply[@]")
+    (( ${#w} == 0 )) && { printf '%s' "$stem"; return }
+
+    local parts=() word result=""
+    for word in "${w[@]}"; do
+      parts+=( "$(_rc_apply_case "$casemod" "$word")" )
+    done
+    for word in "${parts[@]}"; do
+      [[ -n "$result" ]] && result+="$sep"
+      result+="$word"
+    done
+    printf '%s' "$result"
+  }
+
+  # ─── Filename conversion ─────────────────────────────────────────────────
+  _rc_convert() {       # _rc_convert NAME SEP CASEMOD IS_CAMEL → stdout
+    local name="$1" sep="$2" casemod="$3" is_camel="$4"
+    local stem ext dotfile_prefix=""
+
+    # Preserve leading dot of dotfiles
+    if [[ "$name" == .?* && "$name" != ..* ]]; then
+      dotfile_prefix="."; name="${name#.}"
+    fi
+
+    # Split stem + extension; compound extensions (.test.ts) kept whole
+    if   [[ "$name" == *.*.* ]]; then stem="${name%%.*}"; ext=".${name#*.}"
+    elif [[ "$name" == *.*   ]]; then stem="${name%.*}";  ext=".${name##*.}"
+    else                               stem="$name";       ext=""
+    fi
+
+    [[ -z "$stem" ]] && { printf '%s' "${dotfile_prefix}${name}"; return }
+
+    local new_stem
+    if [[ "$is_camel" == true ]]; then
+      new_stem=$(_rc_camel "$stem")
+    else
+      new_stem=$(_rc_convert_stem "$stem" "$sep" "$casemod")
+    fi
+
+    printf '%s' "${dotfile_prefix}${new_stem}${ext}"
+  }
+
+  # ─── Rename one entry ────────────────────────────────────────────────────
+  _info_entry() {  # _info_entry PATH SEP CASEMOD IS_CAMEL
+    local path="$1" sep="$2" casemod="$3" is_camel="$4"
+    local dir="${path:h}" base="${path:t}"
+    local new_base new_path
+
+    new_base=$(_rc_convert "$base" "$sep" "$casemod" "$is_camel")
+    [[ "$base" == "$new_base" ]] && return 0
+
+    new_path="${dir}/${new_base}"
+
+    if [[ -e "$new_path" && "$new_path" != "$path" ]]; then
+      # On case-insensitive FS (e.g. macOS), path and new_path are the same file;
+      # use a two-step rename so the name actually changes case.
+      if [[ "$path" -ef "$new_path" ]]; then
+        local temp_path="${dir}/.recase_$$_${new_base}"
+        _info "$path" "$new_path"
+        "$RC_MV" -- "$path" "$temp_path" && "$RC_MV" -- "$temp_path" "$new_path" || { _warn "$path" "mv failed"; return 1 }
+        return 0
+      fi
+      _warn "$path" "target exists"
+      return 0
+    fi
+
+    _info "$path" "$new_path"
+    "$RC_MV" -- "$path" "$new_path" || { _warn "$path" "mv failed"; return 1 }
+  }
+
+  # ─── Path collection ─────────────────────────────────────────────────────
+  _rc_collect() {       # _rc_collect ROOT DO_FILES DO_DIRS RECURSIVE → reply[]
+    local root="$1" do_files="$2" do_dirs="$3" recursive="$4"
+    local -a paths
+
+    if [[ "$recursive" == true ]]; then
+      if   [[ "$do_files" == true && "$do_dirs" == true ]]; then
+        paths=( "$root"/**/*(-.) "$root"/**/*(/) )
+      elif [[ "$do_files" == true ]]; then
+        paths=( "$root"/**/*(-.) )
+      else
+        paths=( "$root"/**/*(/) )
+      fi
+    else
+      if   [[ "$do_files" == true && "$do_dirs" == true ]]; then
+        paths=( "$root"/*(-.) "$root"/*(/N) )
+      elif [[ "$do_files" == true ]]; then
+        paths=( "$root"/*(-.) )
+      else
+        paths=( "$root"/*(/N) )
+      fi
+    fi
+
+    # Sort descending → deepest paths first
+    paths=( ${(On)paths} )
+    paths=( ${paths:#$root} )
+    reply=("$paths[@]")
+  }
+
+  # ─── Argument parsing ────────────────────────────────────────────────────
+  if (( $# < 1 )) || [[ "$1" == -h || "$1" == --help ]]; then
+    _rc_usage
+    return 0
+  fi
+  local target="$1"; shift
+  local do_files=false do_dirs=false recursive=false
+  local sep="" casemod="" is_camel=false sep_set=false case_set=false
+
+  while (( $# > 0 )); do
+    case "$1" in
+      -f|--files)              do_files=true ;;
+      -d|--dirs|--directories) do_dirs=true  ;;
+      -r|--recursive)          recursive=true ;;
+      --camel)
+        [[ "$sep_set" == true || "$case_set" == true ]] && { _err "--camel cannot be combined with other convention flags"; return }
+        is_camel=true; sep_set=true; case_set=true ;;
+      --pascal)
+        [[ "$sep_set" == true ]] && { _err "--pascal implies --joined; use --joined --title, or drop the separator flag"; return }
+        sep=""; casemod="title"; sep_set=true; case_set=true ;;
+      --flat)
+        [[ "$sep_set" == true ]] && { _err "--flat implies --joined; use --joined --lower, or drop the separator flag"; return }
+        sep=""; casemod="lower"; sep_set=true; case_set=true ;;
+      --snake)
+        [[ "$is_camel" == true ]] && { _err "--snake cannot be combined with --camel"; return }
+        [[ "$sep_set"  == true && "$sep" != "_" ]] && { _err "conflicting separator flags"; return }
+        sep="_"; sep_set=true ;;
+      --kebab)
+        [[ "$is_camel" == true ]] && { _err "--kebab cannot be combined with --camel"; return }
+        [[ "$sep_set"  == true && "$sep" != "-" ]] && { _err "conflicting separator flags"; return }
+        sep="-"; sep_set=true ;;
+      --dot)
+        [[ "$is_camel" == true ]] && { _err "--dot cannot be combined with --camel"; return }
+        [[ "$sep_set"  == true && "$sep" != "." ]] && { _err "conflicting separator flags"; return }
+        sep="."; sep_set=true ;;
+      --joined)
+        [[ "$is_camel" == true ]] && { _err "--joined cannot be combined with --camel"; return }
+        [[ "$sep_set"  == true && "$sep" != ""  ]] && { _err "conflicting separator flags"; return }
+        sep=""; sep_set=true ;;
+      --lower)
+        [[ "$is_camel" == true ]] && { _err "--lower cannot be combined with --camel"; return }
+        [[ "$case_set" == true && "$casemod" != "lower" ]] && { _err "conflicting case flags"; return }
+        casemod="lower"; case_set=true ;;
+      --upper)
+        [[ "$is_camel" == true ]] && { _err "--upper cannot be combined with --camel"; return }
+        [[ "$case_set" == true && "$casemod" != "upper" ]] && { _err "conflicting case flags"; return }
+        casemod="upper"; case_set=true ;;
+      --title)
+        [[ "$is_camel" == true ]] && { _err "--title cannot be combined with --camel"; return }
+        if [[ "$sep_set" == false && "$case_set" == false ]]; then
+          sep=""; casemod="title"; sep_set=true; case_set=true   # shorthand for --pascal
+        else
+          [[ "$case_set" == true && "$casemod" != "title" ]] && { _err "conflicting case flags"; return }
+          casemod="title"; case_set=true                          # pure case modifier
+        fi ;;
+      -h|--help) _rc_usage; return 0 ;;
+      *) _err "unknown option: $1"; return ;;
+    esac
+    shift
+  done
+
+  # ── Defaults for single-axis usage ──────────────────────────────────────
+  [[ "$sep_set" == false && "$case_set" == false ]] && { _err "no convention specified - try --snake, --snake --upper, or --camel"; return }
+  [[ "$sep_set"  == false && "$is_camel" == false ]] && sep="_"
+  [[ "$case_set" == false && "$is_camel" == false ]] && casemod="lower"
+  [[ -e "$target" || -L "$target" ]] || { _err "path not found: $target"; return }
+
+  # ── Single file / symlink ────────────────────────────────────────────────
+  if [[ -f "$target" || -L "$target" ]]; then
+    _info_entry "$target" "$sep" "$casemod" "$is_camel"
+    return
+  fi
+
+  # ── Directory mode ───────────────────────────────────────────────────────
+  [[ -d "$target" ]] || { _err "not a file, symlink, or directory: $target"; return }
+  [[ "$do_files" == false && "$do_dirs" == false ]] && do_files=true
+
+  local -a paths
+  _rc_collect "$target" "$do_files" "$do_dirs" "$recursive"
+  paths=("$reply[@]")
+
+  local p
+  for p in "${paths[@]}"; do
+    [[ -e "$p" || -L "$p" ]] || continue
+    _info_entry "$p" "$sep" "$casemod" "$is_camel"
+  done
+}
+
+# Allow running directly as a script (not just autoloaded)
+# Recase is invoked above when toplevel; when autoloaded, only the function body runs on recase "$@"
+[[ "$ZSH_EVAL_CONTEXT" == toplevel || "$ZSH_EVAL_CONTEXT" == *loadautofunc* ]] && recase "$@"
+
+# vi: set ft=sh:

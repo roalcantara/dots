@@ -1,0 +1,223 @@
+# Helix Configuration
+# https://docs.helix-editor.com/configuration.html
+
+# https://docs.helix-editor.com/themes.html
+theme = "andromeda"
+
+# https://docs.helix-editor.com/editor.html
+[editor]
+auto-pairs = true                                                       # Enables automatic insertion of pairs to parentheses, brackets, etc
+line-number = "relative"                                                # Line number display
+mouse = true                                                            # Enable mouse mode
+true-color = true                                                       # Override automatic detection
+end-of-line-diagnostics = "hint"                                        # Enables the new diagnostic rendering
+
+# Allows configuring the statusline at the bottom of the editor
+# https://docs.helix-editor.com/editor.html#editorstatusline-section
+[editor.statusline]
+left = ["mode", "spinner", "file-name", "file-type", "read-only-indicator", "file-modification-indicator"]
+center = []
+right = ["diagnostics", "selections", "position", "file-encoding", "file-line-ending"]
+separator = "│"
+mode.normal = "N"                                                       # The text shown in the mode element for NORMAL mode
+mode.insert = "I"                                                       # The text shown in the mode element for INSERT mode
+mode.select = "S"                                                       # The text shown in the mode element for SELECT mode
+diagnostics = ["warning", "error"]                                      # List of severities which are displayed for the current buffer
+workspace-diagnostics = ["warning", "error"]                            # List of severities which are displayed for the workspace
+
+# https://docs.helix-editor.com/lang-support.html                       # Run `hx --health` to check language support
+# https://docs.helix-editor.com/editor.html#editorlsp-section
+[editor.lsp]
+enable = true                                                           # Enables LSP integration. Setting to false will completely disable language servers regardless of language settings.
+display-messages = true                                                 # Display LSP window/showMessage messages below statusline
+display-progress-messages = true                                        # Display LSP progress messages below statusline
+auto-signature-help = true                                              # Enable automatic popup of signature help (parameter hints)
+display-inlay-hints = true                                              # Display inlay hints
+inlay-hints-length-limit = 5                                            # Maximum displayed length (non-zero number) of inlay hints
+display-color-swatches = true                                           # Show color swatches next to colors
+display-signature-help-docs = true                                      # Display docs under signature help popup
+snippets = true                                                         # Enables snippet completions. Requires a server restart (:lsp-restart) to take effect after :config-reload/:set
+goto-reference-include-declaration = true                               # Include declaration in the goto references popup
+
+# https://docs.helix-editor.com/editor.html#editorcursor-shape-section
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+# Options for rendering whitespace with visible characters
+# https://docs.helix-editor.com/editor.html#editorwhitespace-section
+[editor.whitespace]
+render = "all"                                                          # Enable visible whitespace
+
+[editor.whitespace.characters]
+space = "·"
+nbsp = "⍽"
+nnbsp = "␣"
+tab = "→"
+newline = "⏎"
+tabpad = "·"                                                            # Tabs will look like "→···" (depending on tab width)
+
+# Set options for file picker and global search.
+# Ignoring files makes them invisible in the file picker & global search.
+# https://docs.helix-editor.com/editor.html#editorfile-picker-section
+[editor.file-picker]
+hidden = true                                                           # Enables ignoring hidden files
+
+# https://docs.helix-editor.com/editor.html#editorsmart-tab-section
+# Options for navigating and editing using tab key
+[editor.smart-tab]
+enable = true
+supersede-menu = false
+
+# Options for rendering diagnostics inside the text line
+# https://docs.helix-editor.com/editor.html#editorinline-diagnostics-section
+[editor.inline-diagnostics]
+max-diagnostics = 5                                                     # Maximum number of diagnostics to render inline for a given line
+cursor-line = "warning"                                                 # show warnings and errors on the cursorline inline
+
+# https://docs.helix-editor.com/remapping.html#key-remapping
+# https://docs.helix-editor.com/remapping.html#special-keys-and-modifiers
+# Aligned with Neovim/VS Code/Cursor/Zed (macOS Cmd-centric). See README.md
+[keys.normal]
+# Command palette (same as VS Code / Cursor / Zed / Neovim)
+"Cmd-S-P" = "command_palette"
+# Editor basics
+"Cmd-a" = "select_all"
+"Cmd-c" = ":clipboard-yank"
+"Cmd-v" = ":clipboard-paste-replace"
+"Cmd-x" = ["delete_selection", ":clipboard-yank"]
+"Cmd-s" = ":write"
+"Cmd-S-s" = ":write-all"
+"Cmd-n" = ":new"
+"Cmd-z" = "undo"
+"Cmd-y" = "redo"
+"Cmd-q" = ":quit"
+"Cmd-S-q" = ":quit!"
+"Cmd-A-q" = ":quit-all"
+"Cmd-S-A-q" = ":quit-all!"
+# Moving around
+"C-a" = "goto_line_start"
+"C-e" = "goto_line_end"
+"Cmd-up" = "goto_file_start"
+"Cmd-down" = "goto_line"
+"Cmd-left" = "goto_line_start"
+"Cmd-right" = "goto_line_end"
+# Search & pickers
+"Cmd-p" = "file_picker"
+"Cmd-f" = "search"
+"Cmd-S-f" = "global_search"
+"Cmd-b" = "buffer_picker"
+"Cmd-\\" = "file_explorer"
+"Cmd-S-\\" = ":new"
+# Copy file path (Neovim Cmd+Alt+c) — macOS: expand path and pipe to pbcopy
+"Cmd-A-c" = ":run-shell-command sh -c 'echo -n \"$(pwd)/%{buffer_name}\" | pbcopy'"
+# Search word under cursor (Neovim Cmd+?) — select inner word then search
+"Cmd-S-/" = "@miw*"
+# Help (Neovim Cmd+;)
+"Cmd-;" = ":tutor"
+# Signature help (Neovim Cmd+Alt+Space)
+"Cmd-A-space" = "signature_help"
+# Selection: Shift+arrows (line), Cmd+Shift+arrows (to line/file bounds), Alt+Shift+arrows (word)
+"S-down" = "extend_line_below"
+"S-up" = "extend_visual_line_up"
+"S-left" = ["select_mode", "extend_prev_word_start"]
+"S-right" = ["select_mode", "extend_next_word_start"]
+"Cmd-S-left" = ["select_mode", "extend_to_line_start"]
+"Cmd-S-right" = ["select_mode", "extend_to_line_end"]
+"Cmd-S-up" = ["select_mode", "extend_to_file_start"]
+"Cmd-S-down" = ["select_mode", "extend_to_file_end"]
+"A-S-left" = ["select_mode", "extend_prev_word_start"]
+"A-S-right" = ["select_mode", "extend_next_word_end"]
+# Buffers
+"Cmd-A-left" = "goto_previous_buffer"
+"Cmd-A-right" = "goto_next_buffer"
+"Cmd-w" = ":buffer-close"
+"Cmd-A-w" = ":buffer-close-all"
+"Cmd-S-w" = ":buffer-close-others"
+# LSP & symbols
+"Cmd-." = "code_action"
+"Cmd-A-k" = "hover"
+"Cmd-A-f" = ":format"
+"Cmd-ret" = "rename_symbol"
+"Cmd-d" = "diagnostics_picker"
+"Cmd-S-d" = "workspace_diagnostics_picker"
+"Cmd-r" = "symbol_picker"
+"Cmd-S-r" = "workspace_symbol_picker"
+"Cmd-i" = "goto_definition"
+"Cmd-S-i" = "goto_type_definition"
+"Cmd-A-i" = "goto_implementation"
+"Cmd-A-r" = "goto_reference"
+"Cmd-A-d" = "goto_declaration"
+# Comments
+"Cmd-/" = "toggle_comments"
+# Window swap (match Neovim Cmd+Ctrl+Shift+arrows)
+"Cmd-C-S-left" = "swap_view_left"
+"Cmd-C-S-right" = "swap_view_right"
+"Cmd-C-S-up" = "swap_view_up"
+"Cmd-C-S-down" = "swap_view_down"
+
+[keys.select]
+# Selection extend (same as normal; in select mode no select_mode step)
+"S-down" = "extend_line_below"
+"S-up" = "extend_visual_line_up"
+"S-left" = "extend_prev_word_start"
+"S-right" = "extend_next_word_start"
+"Cmd-S-left" = "extend_to_line_start"
+"Cmd-S-right" = "extend_to_line_end"
+"Cmd-S-up" = "extend_to_file_start"
+"Cmd-S-down" = "extend_to_file_end"
+"A-S-left" = "extend_prev_word_start"
+"A-S-right" = "extend_next_word_end"
+# Same Cmd shortcuts for selection mode
+"Cmd-S-p" = "command_palette"
+"Cmd-a" = "select_all"
+"Cmd-c" = ":clipboard-yank"
+"Cmd-v" = ":clipboard-paste-replace"
+"Cmd-x" = ["delete_selection", ":clipboard-yank"]
+"Cmd-s" = ":write"
+"Cmd-z" = "undo"
+"Cmd-y" = "redo"
+"Cmd-left" = "goto_line_start"
+"Cmd-right" = "goto_line_end"
+"Cmd-up" = "extend_to_file_start"
+"Cmd-down" = "extend_to_line_end"
+"Cmd-p" = "file_picker"
+"Cmd-f" = "search"
+"Cmd-b" = "buffer_picker"
+"Cmd-." = "code_action"
+"Cmd-A-k" = "hover"
+"Cmd-d" = "diagnostics_picker"
+"Cmd-S-d" = "workspace_diagnostics_picker"
+"Cmd-r" = "symbol_picker"
+"Cmd-S-r" = "workspace_symbol_picker"
+"Cmd-i" = "goto_definition"
+"Cmd-S-i" = "goto_type_definition"
+"Cmd-A-i" = "goto_implementation"
+"Cmd-A-r" = "goto_reference"
+"Cmd-A-d" = "goto_declaration"
+"Cmd-/" = "toggle_comments"
+
+[keys.insert]
+# LSP completion (Neovim Ctrl+Space)
+"C-space" = "completion"
+# Signature help (Neovim Cmd+Alt+Space)
+"Cmd-A-space" = "signature_help"
+# Basic Cmd shortcuts in insert mode (enter normal then run command via macro or keep minimal)
+"Cmd-S-p" = "command_palette"
+"Cmd-s" = ":write"
+"Cmd-v" = ":clipboard-paste-replace"
+"Cmd-z" = "undo"
+"Cmd-y" = "redo"
+"Cmd-a" = "select_all"
+"Cmd-c" = ":clipboard-yank"
+"Cmd-x" = ["delete_selection", ":clipboard-yank"]
+"Cmd-p" = "file_picker"
+"Cmd-b" = "buffer_picker"
+"Cmd-f" = "search"
+"Cmd-." = "code_action"
+"Cmd-A-k" = "hover"
+"Cmd-i" = "goto_definition"
+"Cmd-r" = "symbol_picker"
+"Cmd-d" = "diagnostics_picker"
+"Cmd-/" = "toggle_comments"
