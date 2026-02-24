@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/roalcantara/dots/compare/v1.27.0...v1.28.0) (2026-02-24)
+
+
+### Features
+
+* **xdg:** Implement XDG_RUNTIME_DIR permissions check and fix ([83c5624](https://github.com/roalcantara/dots/commit/83c562444a88934e3a2ae2e434176d5644f95c0f))
+
 # [1.27.0](https://github.com/roalcantara/dots/compare/v1.26.0...v1.27.0) (2026-02-24)
 
 
