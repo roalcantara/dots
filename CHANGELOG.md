@@ -1,3 +1,15 @@
+# [1.27.0](https://github.com/roalcantara/dots/compare/v1.26.0...v1.27.0) (2026-02-24)
+
+
+### Bug Fixes
+
+* **install:** update Flox version to 1.9.0 ([4741a93](https://github.com/roalcantara/dots/commit/4741a9379cef0aee8423c85c2686fc8863a6b3ac))
+
+
+### Features
+
+* **config:** Add new theme and DocuSign source files ([bc2400b](https://github.com/roalcantara/dots/commit/bc2400b38daaf7067ee0fc25da1b99bc82947e2c))
+
 # [1.26.0](https://github.com/roalcantara/dots/compare/v1.25.0...v1.26.0) (2026-01-26)
 
 
