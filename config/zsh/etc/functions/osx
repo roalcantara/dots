@@ -1,0 +1,510 @@
+#!/usr/bin/env zsh
+# shellcheck shell=zsh disable=SC2154,SC2155,SC2207
+
+#? osx 0.2.0
+#? License RIT (Robot Institute of Technology)
+#? This is free software: you are free to change and redistribute it.
+#? There is NO WARRANTY, to the extent permitted by law.
+#? http://docopt.org · Command-line interface description language
+
+##? osx helper
+##?
+##? Usage:
+##?      osx [options]
+##?      osx wifi
+##?      osx services [start|stop|restart] --name=<service>
+##?      osx systemctl [start|stop|restart] --name=<service>
+##?      osx launchctl [start|stop|restart] --name=<service>
+##?      osx notify [--title=<title>] [--subtitle=<subtitle>] [--sound=<sound>] <message>
+##?      osx plist [ --to-xml=<path> | --to-bin=<path> ]
+##?      osx cache [--status --clear --settings --reload --isActivated --canActivate --deactivate --activate --moveTo --absorbFrom]
+##?      osx exclusions [--add | --list]
+##?      osx sleep [--enable | --disable [--until --while]]
+##?      osx groups [check | list | members | current | add | rm | delete] [ --user=<username> | --group=<groupname> ]
+##?      osx users [list | show | delete] [ --user=<username> ]
+##?      osx system_profiler
+##?      osx dock [ --static-only | --all ]
+##?      osx finder [ --show-fullpath | --hide-fullpath | --set-folders-first | --unset-folders-first ]
+##?      osx --export-defaults
+##?      osx --enable-locate
+##?
+##? Options:
+##?     --version                                                 Show version.
+##?     -h, --help                                                Show this screen.
+##?     --enable-locate                                           Create the locate database (/var/db/locate.database)
+##?     --status                                                  Get current status of cache
+##?     --clear                                                   Remove all cached content
+##?     --settings                                                Display content cache settings
+##?     --reload                                                  Reload cache settings
+##?     --isActivated                                             Find out whether content caching is on
+##?     --canActivate                                             Find out whether content caching can be turned on
+##?     --deactivate                                              Disable the cache
+##?     --activate                                                Enable the cache
+##?     --moveTo                                                  Move an existing cache to another computer
+##?     --absorbFrom                                              Import an existing cache from another computer
+##?     --user=<username>                                         Username.
+##?     --group=<groupname>                                       Groupname.
+##?     --node=<node>                                             Directory node path [default: /Local/Default].
+##?     --name=<n>                                               Service name.
+##?     --static-only                                             Show only used apps on Dock
+##?     --all                                                     Show all apps on Dock
+##?     --show-fullpath                                           Show full path on Finder.
+##?     --hide-fullpath                                           Show short path on Finder.
+##?     --set-folders-first                                       Show folders first in Finder.
+##?     --unset-folders-first                                     Does not show folders first in Finder.
+##?     --to-xml=<path>                                           Path to plist to convert to XML.
+##?     --to-bin=<path>                                           Path to plist to convert to binary.
+##?     --title=<title>                                           Notification title.
+##?     --subtitle=<subtitle>                                     Notification subtitle.
+##?     --sound=<sound>                                           Notification sound [default: Hero].
+##?
+##?   Examples:
+##?     osx users list
+##?     osx users show --user=alice
+##?     osx users delete --user=alice
+##?     osx groups list
+##?     osx groups members --group=admin
+##?     osx groups check --group=admin --user=alice
+##?     osx groups add --group=admin --user=alice
+##?     osx groups rm --group=admin --user=alice
+##?     osx wifi
+##?     osx plist --to-xml=~/Library/Preferences/com.apple.finder.plist
+##?     osx plist --to-bin=~/Library/Preferences/com.apple.finder.plist
+##?     osx exclusions --add 'Private'
+##?     osx exclusions --list
+##?     osx services restart --name='com.apple.metadata.mds'
+##?     osx system_profiler
+##?     osx --export-defaults
+##?     osx --enable-locate
+##?     osx dock --static-only
+##?     osx dock --all
+##?     osx finder --show-fullpath
+##?     osx finder --hide-fullpath
+##?     osx finder --set-folders-first
+##?     osx finder --unset-folders-first
+##?     osx sleep --enable
+##?     osx sleep --disable
+##?     osx sleep --disable --until 3600
+##?     osx sleep --disable --while 'ping google.com'
+##?     osx notify --title='Hello' --subtitle='This is a notification' --sound='Ping' 'This is the message body'
+##?     osx notify 'This is a message with default title and sound'
+##?     osx notify --title='Title only' 'This is a message with default sound'
+##?     osx cache --status
+##?     osx cache --clear
+##?     osx cache --settings
+##?     osx cache --reload
+##?     osx cache --isActivated
+##?     osx cache --canActivate
+##?     osx cache --deactivate
+##?     osx cache --activate
+##?     osx cache --moveTo '/Volumes/OtherMac/Library/Application Support/Apple/AssetCache/Data'
+##?     osx cache --absorbFrom '/Volumes/OtherMac/Library/Application Support/Apple/AssetCache/Data'
+
+osx() {
+  # ---------------------------------------------------------------------------
+  # Option parsing — single flat array + associative map
+  #
+  # zparseopts fills _raw as interleaved (flag, value) pairs, e.g.:
+  #   ( --user alice --name com.apple.metadata.mds --title Hi )
+  #
+  # We walk _raw once and fold everything into one associative array `opt`,
+  # stripping leading dashes so callers simply write:
+  #   opt[user]   opt[name]   opt[title]   opt[to-xml]   …
+  #
+  # Boolean flags (no value) are stored as:
+  #   opt[h]=1   opt[help]=1
+  #
+  # Flags with values whose next token starts with '-' are also stored as 1
+  # (this shouldn't happen in normal use, but keeps the walker safe).
+  #
+  # -D: remove parsed flags from $@
+  # -E: stop at first non-option (subcommand), leaving it in $@
+  # -F intentionally omitted — subcommands may carry their own flags.
+  # ---------------------------------------------------------------------------
+  local -a _raw=()
+
+  zparseopts -D -E -a _raw \
+    h -help \
+    -user: \
+    -group: \
+    -node: \
+    -name: \
+    -to-xml: \
+    -to-bin: \
+    -title: \
+    -subtitle: \
+    -sound: 2>/dev/null
+
+  # Build the associative map from the flat _raw array
+  local -A opt=()
+  local _i=1 _key _next
+  while (( _i <= ${#_raw} )); do
+    _key="${_raw[$_i]}"
+    _next="${_raw[$(( _i + 1 ))]}"
+    _key="${_key##--}"            # strip --
+    _key="${_key##-}"             # strip -  (e.g. -h → h)
+
+    if [[ -n "$_next" && "$_next" != -* ]]; then
+      opt[$_key]="$_next"
+      (( _i += 2 ))
+    else
+      opt[$_key]=1
+      (( _i += 1 ))
+    fi
+  done
+
+  # Apply defaults for keys that carry a default value
+  : ${opt[node]:=/Local/Default}
+  : ${opt[sound]:=Hero}
+
+  # ---------------------------------------------------------------------------
+  # Show help when -h / --help is passed or when called with no arguments
+  # ---------------------------------------------------------------------------
+  if (( ${+opt[h]} || ${+opt[help]} )) || [[ $# -eq 0 ]]; then
+    grep '^##?' "${(%):-%x}" 2>/dev/null | sed 's/^##? \{0,1\}//'
+    return 0
+  fi
+
+  # ---------------------------------------------------------------------------
+  # Subcommand dispatch — $1 is the subcommand (zparseopts -D -E consumed flags)
+  # ---------------------------------------------------------------------------
+  case "$1" in
+
+    # -------------------------------------------------------------------------
+    --export-defaults)
+      local outdir="${XDG_CACHE_HOME:-$HOME/.cache}/osx/defaults"
+      local outdirApple="${outdir}/apple"
+      local outdirUser="${outdir}/user"
+      local outdirGlobal="${outdir}/global"
+      local filecount=0 filestotal=0 globals=0
+
+      function _osx_cleanOutdirs {
+        [[ ! -d "$outdir" ]] && mkdir -p "$outdir"
+        local dir
+        for dir in "$outdirApple" "$outdirUser" "$outdirGlobal"; do
+          if [[ -d "$dir" ]]; then
+            echo "Removing all files in $dir"
+            rm -rf "${dir:?}"/*
+          else
+            mkdir -p "$dir"
+          fi
+        done
+      }
+
+      function _osx_exportDomains {
+        local filesdone=0 domain plist
+        filecount=0
+        for domain in "${domains[@]}"; do
+          plist="${domain//,/}.plist"
+          if (( globals == 0 )); then
+            if [[ $domain == com.apple.* ]]; then
+              defaults export "$domain" "$outdirApple/$plist" 2>/dev/null
+            else
+              defaults export "$domain" "$outdirUser/$plist" 2>/dev/null
+            fi
+          else
+            sudo defaults export "$domain" "$outdirGlobal/$plist" 2>/dev/null
+          fi
+          (( filecount++ ))
+          (( filesdone++ ))
+          echo -ne "[ $filesdone / ${#domains[@]} ]\r"
+        done
+      }
+
+      _osx_cleanOutdirs
+
+      local -a domains
+      domains=( $(defaults domains | tr ',' '\n' | tr -d ' ') )
+      echo "USER namespace: ${#domains[@]} domains, exporting..."
+      _osx_exportDomains
+      echo "Written $filecount files to $outdir"
+      filestotal=$(( filestotal + filecount ))
+
+      globals=1
+      domains=( $(sudo defaults domains | tr ',' '\n' | tr -d ' ') )
+      echo "GLOBAL namespace: ${#domains[@]} domains, exporting..."
+      _osx_exportDomains
+      echo "Written $filecount files to $outdir"
+      filestotal=$(( filestotal + filecount ))
+
+      sudo chown -R "$(whoami)":staff "$outdir"
+      local timed="$(( SECONDS / 3600 ))hrs $(( (SECONDS / 60) % 60 ))min $(( SECONDS % 60 ))sec"
+      echo "Exported $filestotal files in $timed"
+      ;;
+
+    # -------------------------------------------------------------------------
+    --system_profilers)
+      system_profiler -listDataTypes
+      ;;
+
+    # -------------------------------------------------------------------------
+    --enable-locate)
+      sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
+      ;;
+
+    # -------------------------------------------------------------------------
+    system_profiler)
+      local sp_dir="${XDG_CACHE_HOME:-$HOME/.cache}/osx/system_profiler"
+      mkdir -p "$sp_dir"
+      local -a sp_types=(
+        SPParallelATADataType SPUniversalAccessDataType SPSecureElementDataType
+        SPApplicationsDataType SPAudioDataType SPBluetoothDataType SPCameraDataType
+        SPCardReaderDataType SPiBridgeDataType SPDeveloperToolsDataType
+        SPDiagnosticsDataType SPDisabledSoftwareDataType SPDiscBurningDataType
+        SPEthernetDataType SPExtensionsDataType SPFibreChannelDataType
+        SPFireWireDataType SPFirewallDataType SPFontsDataType SPFrameworksDataType
+        SPDisplaysDataType SPHardwareDataType SPInstallHistoryDataType
+        SPInternationalDataType SPLegacySoftwareDataType SPNetworkLocationDataType
+        SPLogsDataType SPManagedClientDataType SPMemoryDataType SPNVMeDataType
+        SPNetworkDataType SPPCIDataType SPParallelSCSIDataType SPPowerDataType
+        SPPrefPaneDataType SPPrintersSoftwareDataType SPPrintersDataType
+        SPConfigurationProfileDataType SPRawCameraDataType SPSASDataType
+        SPSerialATADataType SPSPIDataType SPSmartCardsDataType SPSoftwareDataType
+        SPStartupItemDataType SPStorageDataType SPSyncServicesDataType
+        SPThunderboltDataType SPUSBDataType SPNetworkVolumeDataType
+        SPWWANDataType SPAirPortDataType
+      )
+      local t
+      for t in "${sp_types[@]}"; do
+        system_profiler "$t" > "$sp_dir/$t.log"
+      done
+      echo "Saved $(( ${#sp_types[@]} )) reports to $sp_dir"
+      ;;
+
+    # -------------------------------------------------------------------------
+    users)
+      case "$2" in
+        list)
+          puts "/usr/bin/dscl . -list /Users" -x ;;
+        show)
+          puts "/usr/bin/dscl . -read /Users/${opt[user]:-${USER}}" -x ;;
+        delete)
+          if [[ -z "${opt[user]}" ]]; then
+            echo "--user is required" >&2; return 1
+          fi
+          puts "sudo /usr/bin/dscl . -delete /Users/${opt[user]}" -x ;;
+        *)
+          pick --from='list show delete' -x 'osx users' ;;
+      esac
+      ;;
+
+    # -------------------------------------------------------------------------
+    groups)
+      case "$2" in
+        current)
+          puts "command id" -x ;;
+        list)
+          puts "command id -Gn" -x ;;
+        members)
+          if [[ -z "${opt[group]}" ]]; then
+            echo "--group is required" >&2; return 1
+          fi
+          if ! dscl /Search read /Groups/"${opt[group]}" 1>/dev/null 2>&1; then
+            puts "No group named '${opt[group]}'" --red; return 1
+          fi
+          local u
+          for u in $(dscl "${opt[node]}" list /Users); do
+            if dseditgroup -o checkmember -m "$u" "${opt[group]}" 1>/dev/null 2>&1; then
+              echo "$u"
+            fi
+          done
+          ;;
+        check)
+          if [[ -z "${opt[group]}" ]]; then
+            echo "--group is required" >&2; return 1
+          fi
+          puts "dseditgroup -o checkmember -m \"${opt[user]:-${USER}}\" \"${opt[group]}\"" -x ;;
+        rm|delete)
+          if [[ -z "${opt[user]}" || -z "${opt[group]}" ]]; then
+            echo "--user and --group are required" >&2; return 1
+          fi
+          puts "dseditgroup -o edit -d \"${opt[user]}\" \"${opt[group]}\"" -x ;;
+        add)
+          if [[ -z "${opt[user]}" || -z "${opt[group]}" ]]; then
+            echo "--user and --group are required" >&2; return 1
+          fi
+          puts "dseditgroup -o edit -a \"${opt[user]}\" \"${opt[group]}\"" -x ;;
+        *)
+          pick --from='current list members check add rm delete' -x 'osx groups' ;;
+      esac
+      ;;
+
+    # -------------------------------------------------------------------------
+    wifi)
+      local airport_path="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport"
+      local WIFI_NAME="" iCON ON_ICON='' OFF_ICON=''
+
+      if [[ -x "$airport_path" ]]; then
+        WIFI_NAME=$("$airport_path" -I 2>/dev/null | awk -F': ' '/ SSID/{print $2}')
+      else
+        WIFI_NAME=$(networksetup -getairportnetwork en0 2>/dev/null | awk -F': ' '{print $2}')
+      fi
+
+      [[ -z "$WIFI_NAME" ]] && iCON="$OFF_ICON" || iCON="$ON_ICON"
+      echo "${iCON}  ${WIFI_NAME:-Not connected}"
+      ;;
+
+    # -------------------------------------------------------------------------
+    plist)
+      if [[ -n "${opt[to-xml]}" ]]; then
+        puts "plutil -convert xml1 '${opt[to-xml]}'" -x
+      elif [[ -n "${opt[to-bin]}" ]]; then
+        puts "plutil -convert binary1 '${opt[to-bin]}'" -x
+      else
+        case "$2" in
+          asset-cache)
+            local OSX_ASSET_CACHE_PLIST='/Library/Preferences/com.apple.AssetCache.plist'
+            case "$3" in
+              --allow)
+                case "$4" in
+                  --delete)
+                    sudo -u _assetcache defaults write "${OSX_ASSET_CACHE_PLIST}" AllowCacheDelete "${5:-Yes}" ;;
+                  --import-max-rate)
+                    sudo -u _assetcache defaults write "${OSX_ASSET_CACHE_PLIST}" ImportMaxRate "${5:-Yes}" ;;
+                  --import-min-rate)
+                    sudo -u _assetcache defaults write "${OSX_ASSET_CACHE_PLIST}" ImportMinRate "${5:-Yes}" ;;
+                  *)
+                    pick --from='--cache-delete --import-max-rate --import-min-rate' -x 'osx plist asset-cache --allow' ;;
+                esac ;;
+              *)
+                pick --from='--allow' -x 'osx plist asset-cache' ;;
+            esac ;;
+          *)
+            pick --from='--to-xml --to-bin asset-cache' -x 'osx plist' ;;
+        esac
+      fi
+      ;;
+
+    # -------------------------------------------------------------------------
+    cache)
+      local OSX_MOVE_CACHE_TO="/Volumes/SomeVolume/Library/Application Support/Apple/AssetCache/Data"
+      local OSX_ABSORB_CACHE_FROM="/Volumes/SomeVolume/Library/Application Support/Apple/AssetCache/Data"
+      case "$2" in
+        --status)      AssetCacheManagerUtil status ;;
+        --clear)
+          sudo -v
+          sudo rm -rf ~/Library/Caches/*
+          sudo AssetCacheManagerUtil flushcache
+          sudo AssetCacheManagerUtil flushSharedCache
+          sudo AssetCacheManagerUtil flushPersonalCache
+          sudo dscacheutil -flushcache
+          sudo killall -HUP mDNSResponder
+          if command -v fd &>/dev/null; then
+            cd ~/ && sudo fd -H '^.*\.Trash$' --type d -x rm -rf && mkdir -p ~/.Trash
+          else
+            cd ~/ && sudo find ~ -maxdepth 2 -name '.Trash' -exec rm -rf {} + 2>/dev/null
+            mkdir -p ~/.Trash
+          fi
+          puts --green 'cache flushed'
+          osx cache --status
+          ;;
+        --moveTo)      puts "sudo AssetCacheManagerUtil moveCacheTo '${OSX_MOVE_CACHE_TO}'" -x ;;
+        --absorbFrom)  puts "sudo AssetCacheManagerUtil absorbCacheFrom '${OSX_ABSORB_CACHE_FROM}'" -x ;;
+        --activate)    puts "sudo AssetCacheManagerUtil activate" -x ;;
+        --deactivate)  puts "sudo AssetCacheManagerUtil deactivate" -x ;;
+        --reload)      puts "sudo AssetCacheManagerUtil reloadSettings" -x ;;
+        --settings)    puts "AssetCacheManagerUtil settings" -x ;;
+        --canActivate) puts "AssetCacheManagerUtil canActivate" -x ;;
+        --isActivated) puts "AssetCacheManagerUtil isActivated" -x ;;
+        *)
+          pick --from='--status --clear --settings --reload --isActivated --canActivate --deactivate --activate --moveTo --absorbFrom' -x 'osx cache' ;;
+      esac
+      ;;
+
+    # -------------------------------------------------------------------------
+    dock)
+      case "$2" in
+        --static-only) puts "defaults write com.apple.dock static-only -bool true; killall Dock" -x ;;
+        --all)         puts "defaults write com.apple.dock static-only -bool false; killall Dock" -x ;;
+        *)             pick --from='--static-only --all' -x 'osx dock' ;;
+      esac
+      ;;
+
+    # -------------------------------------------------------------------------
+    finder)
+      case "$2" in
+        --show-fullpath)       puts "defaults write com.apple.finder _FXShowPosixPathInTitle -bool true; killall Finder" -x ;;
+        --hide-fullpath)       puts "defaults write com.apple.finder _FXShowPosixPathInTitle -bool false; killall Finder" -x ;;
+        --set-folders-first)   puts "defaults write com.apple.finder _FXSortFoldersFirst -bool true; killall Finder" -x ;;
+        --unset-folders-first) puts "defaults write com.apple.finder _FXSortFoldersFirst -bool false; killall Finder" -x ;;
+        *)
+          pick --from='--show-fullpath --hide-fullpath --set-folders-first --unset-folders-first' -x 'osx finder' ;;
+      esac
+      ;;
+
+    # -------------------------------------------------------------------------
+    notify)
+      local message_text="${*:2}"
+      if [[ -z "$message_text" ]]; then
+        echo "Usage: osx notify [--title=<t>] [--subtitle=<s>] [--sound=<s>] <message>" >&2
+        return 1
+      fi
+      local script="display notification \"${message_text}\""
+      [[ -n "${opt[title]}" ]]    && script+=" with title \"${opt[title]}\""
+      [[ -n "${opt[subtitle]}" ]] && script+=" subtitle \"${opt[subtitle]}\""
+      script+=" sound name \"${opt[sound]}\""
+      osascript -e "$script"
+      ;;
+
+    # -------------------------------------------------------------------------
+    exclusions)
+      local OSX_VOLUME_CONFIG_LIST="/System/Volumes/Data/.Spotlight-V100/VolumeConfiguration.plist"
+      case "$2" in
+        --add)
+          local search_pattern="${*:3}"
+          if [[ -z "$search_pattern" ]]; then
+            echo "Usage: osx exclusions --add <pattern>" >&2; return 1
+          fi
+          if command -v fd &>/dev/null; then
+            puts "fd '${search_pattern}' --type d --no-ignore --absolute-path --exclude Library --exec sudo defaults write '${OSX_VOLUME_CONFIG_LIST}' Exclusions -array-add '{}'" -x
+          else
+            puts "find / -type d -name '${search_pattern}' ! -path '*/Library/*' -exec sudo defaults write '${OSX_VOLUME_CONFIG_LIST}' Exclusions -array-add '{}' \;" -x
+          fi
+          puts "osx services restart --name='com.apple.metadata.mds'" -x
+          osx exclusions --list ;;
+        --list)
+          puts "sudo /usr/libexec/PlistBuddy -c 'Print :Exclusions' '${OSX_VOLUME_CONFIG_LIST}'" -x ;;
+        *)
+          pick --from='--add --list' -x 'osx exclusions' ;;
+      esac
+      ;;
+
+    # -------------------------------------------------------------------------
+    services|systemctl|launchctl)
+      if [[ -z "${opt[name]}" ]]; then
+        echo "--name is required" >&2; return 1
+      fi
+      case "$2" in
+        stop)    puts "sudo launchctl stop '${opt[name]}'" -x ;;
+        start)   puts "sudo launchctl start '${opt[name]}'" -x ;;
+        restart) puts "sudo launchctl stop '${opt[name]}' && sudo launchctl start '${opt[name]}'" -x ;;
+        *)       pick --from='stop start restart' -x 'osx services' ;;
+      esac
+      ;;
+
+    # -------------------------------------------------------------------------
+    sleep)
+      case "$2" in
+        --enable)  puts "killall caffeinate" -x ;;
+        --disable)
+          case "$3" in
+            --until) puts "caffeinate -t '${4:-7200}' &" -x ;;
+            --while)
+              if [[ -z "$4" ]]; then
+                echo "Usage: osx sleep --disable --while <command>" >&2; return 1
+              fi
+              puts "caffeinate '${4}'" -x ;;
+            *)       puts "caffeinate &" -x ;;
+          esac ;;
+        *) pick --from='--enable --disable' -x 'osx sleep' ;;
+      esac
+      ;;
+
+    # -------------------------------------------------------------------------
+    *)
+      pick --from='cache finder plist users groups notify dock services wifi exclusions sleep system_profiler --export-defaults --system_profilers --enable-locate' -x 'osx'
+      ;;
+  esac
+}
+
+osx "$@"

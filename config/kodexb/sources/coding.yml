@@ -191,20 +191,6 @@ bookmarks:
   https://tour.gleam.run:
     tags: [gleam]
     desc: Gleam Tour | A guided tour of the Gleam programming language
-  https://studio.firebase.google.com:
-    desc: Firebase Studio - Develop and manage your Firebase apps
-    tags: [ai, angular]
-    links:
-      - Angular + AI Developer Event: https://youtube.com/live/uFdxw4Se-A8
-      - Angular AI Tutor: https://goo.gle/ng-ai-tutor
-      - Web Codegen Scorer: https://goo.gle/web-codegen-scorer
-      - Web Codegen Scorer Blog: https://goo.gle/meet-web-codegen-scorer-blog
-      - Gemini CLI: https://goo.gle/try-gemini-cli
-      - Gemini Discord Community: https://goo.gle/gemini-discord-community
-      - Send Feedback to the Gemini Canvas team: https://gemini-canvas@google.com
-      - Angular.dev MCP Server: https://goo.gle/angular-mcp-server
-      - Firebase Studio Angular Template: https://goo.gle/firebase-studio-angular-template
-      - Learn more about Angular: https://angular.dev
   # TypeScript
   https://typescriptlang.org/play:
     desc: The official TypeScript Playground

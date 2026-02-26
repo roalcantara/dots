@@ -396,9 +396,6 @@ bookmarks:
   https://wezfurlong.org/wezterm/config/files.html#configuration-files:
     desc: WezTerm Configuration Files
     tags: [terminal]
-  https://extensions.dev/extensions:
-    tags: [bookmark]
-    desc: Firebase Extensions Hub | Find extensions to build an app quickly and easily
   https://danger.systems/js:
     desc: Danger runs during your CI process, and gives teams the chance to automate common code review chores
     tags: [code_review, devop]
@@ -1703,9 +1700,6 @@ bookmarks:
   https://saurabhmisra.dev/setup-react-pwa-using-vite:
     desc: Setup React PWA using Vite
     tags: [react]
-  https://youtu.be/2u6Zb36OQjM:
-    desc: Getting started with Cloud Functions
-    tags: [cloud_function, firebase]
   https://github.com/nrwl/nx-examples:
     desc: Example repo for Nx workspace
     tags: [monorepo]
@@ -1769,71 +1763,7 @@ bookmarks:
 
           #### 6. Resilient
           The products and services we provide will function in the times and places where people need them most.
-  https://youtu.be/ORrvrVEHJz4:
-    tags: [coding]
-    desc: Firebase Predictions
-    links:
-      - Getting Started with Firebase Predictions - Firecasts: https://youtu.be/244DL0YXdhU
-      - Smarter Segmentation with Audiences and Predictions (Firebase Summit 2018): https://youtu.be/VPLkd_aqKwU
-      - Understand and Engage Your Top Users with Dynamic Audiences | Google I/O 19: https://youtu.be/ouZkadjMn94
-      - Actionable Insights with Firebase Predictions (Firebase Dev Summit 2017): https://youtu.be/PBnUyyRI-Hk
-      - Use Firebase Analytics to Build Extraordinary Apps - Google I/O 2016: https://youtu.be/yi23CLNeGaw
-      - Custom dimensions in Google Analytics 4 (2024): https://youtu.be/AX4Pp8hGYmc
-      - Confidently launch gen AI features with Firebase Remote Config Rollouts: https://youtu.be/b5c8BbV8sIw
-      - What's new in Firebase for building gen AI features: https://youtu.be/2MvV-YX1eKw
-      - Planet-scale reach for Next and Angular apps with Firebase App Hosting: https://youtu.be/qyhdKb8liEA
-  https://youtu.be/244DL0YXdhU:
-    tags: [coding]
-    desc: Getting Started with Firebase Predictions | Firecasts
-    links:
-      - Introduction to Firebase Predictions: https://youtu.be/ORrvrVEHJz4
-      - Smarter Segmentation with Audiences and Predictions (Firebase Summit 2018): https://youtu.be/VPLkd_aqKwU
-      - Actionable Insights with Firebase Predictions (Firebase Dev Summit 2017): https://youtu.be/PBnUyyRI-Hk
-  https://youtu.be/PBnUyyRI-Hk:
-    tags: [coding]
-    desc: Actionable Insights with Firebase Predictions | Firebase Dev Summit 2017
-    links:
-      - Introduction to Firebase Predictions: https://youtu.be/ORrvrVEHJz4
-      - Getting Started with Firebase Predictions - Firecasts: https://youtu.be/244DL0YXdhU
-      - Smarter Segmentation with Audiences and Predictions (Firebase Summit 2018): https://youtu.be/VPLkd_aqKwU
-  https://youtu.be/l9XXU0bYOZc:
-    desc: Getting started with Audiences | Firecasts
-    tags: [firebase]
-    links:
-      - Smarter Segmentation with Audiences and Predictions (Firebase Summit 2018): https://youtu.be/VPLkd_aqKwU
-      - Google Analytics for Firebase Audiences and User Properties: https://youtu.be/50zTCzySXEg
-      - Understand and Engage Your Top Users with Dynamic Audiences | Google I/O 19: https://youtu.be/ouZkadjMn94
-  https://youtu.be/VPLkd_aqKwU:
-    tags: [coding]
-    desc: Smarter Segmentation with Audiences and Predictions | Firebase Summit 2018
-    links:
-      - Smarter Segmentation with Audiences and Predictions (Firebase Summit 2018): https://youtu.be/VPLkd_aqKwU
-      - Google Analytics for Firebase Audiences and User Properties: https://youtu.be/50zTCzySXEg
-      - Understand and Engage Your Top Users with Dynamic Audiences | Google I/O 19: https://youtu.be/ouZkadjMn94
-  https://youtu.be/50zTCzySXEg:
-    tags: [coding]
-    desc: Google Analytics for Firebase Audiences and User Properties
-    links:
-      - Smarter Segmentation with Audiences and Predictions (Firebase Summit 2018): https://youtu.be/VPLkd_aqKwU
-      - Google Analytics for Firebase Audiences and User Properties: https://youtu.be/50zTCzySXEg
-  https://youtu.be/ouZkadjMn94:
-    desc: Understand and Engage Your Top Users with Dynamic Audiences | Google I/O 19
-    tags: [firebase]
-    links:
-      - Smarter Segmentation with Audiences and Predictions (Firebase Summit 2018): https://youtu.be/VPLkd_aqKwU
-      - Google Analytics for Firebase Audiences and User Properties: https://youtu.be/50zTCzySXEg
-  https://youtu.be/tyPvJBVkhrI:
-    tags: [coding]
-    desc: Improve User Acquisition Campaigns with Firebase Analytics - Google I/O 2016
-  https://youtu.be/q2RZOiUD5E0:
-    desc: Build an expense tracker web app with Firebase and React (1/4)
-    tags: [react]
-    links:
-      - Build an expense tracker web app with Firebase and React (1/4): https://youtu.be/q2RZOiUD5E0
-      - Implement OCR with Firebase Cloud Functions and Google Cloud Vision (2/4): https://youtu.be/bTEU10c3gds
-      - Feature flagging with Remote Config and Google Analytics (3/4): https://youtu.be/23T9SGLcDsM
-      - Engage users with Firebase Cloud Messaging (4/4): https://youtu.be/P51dI2y7QHA
-      - Reacting to Firestore changes with Cloud Functions and Eventarc: https://youtu.be/0PK53ndn3Lc
+
   https://svtplay.se:
     desc: SVT Play | Sveriges Television
     tags: [tv, sweden]
@@ -2124,12 +2054,6 @@ bookmarks:
     desc: Cosmiconfig | Find and load configuration from a package.json property, rc file, or CommonJS module
     links:
       - Getting Started: https://github.com/cosmiconfig/cosmiconfig?tab=readme-ov-file#installation
-  https://youtu.be/2F2XhgMt8Dg:
-    tags: [coding]
-    desc: The Firebase developer's guide to Google Analytics
-  https://youtube.com/watch?v=8iZpH7O6zXo&list=PLl-K7zZEsYLkV1DCmC8Vj9Wl9hjVI2AJm:
-    tags: [coding]
-    desc: The Complete Guide to Google Analytics for Firebase
   https://whatpwacando.today:
     tags: [coding]
     desc: What PWA Can Do Today | Progressive Web Apps
