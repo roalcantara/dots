@@ -260,7 +260,6 @@ cheats:
     links:
       - What Are Deployment Patterns?: https://newsletter.techworld-with-milan.com/p/what-are-deployment-patterns
       - Top 5 Most-Used Deployment Strategies: https://youtu.be/AWVTKBUnoIg
-      - Ship faster with feature flags using Firebase Remote Config: https://youtu.be/vWJ8wDzeEg0
     notes:
       - md: |
           # Feature Toggles/Flags

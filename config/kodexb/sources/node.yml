@@ -879,13 +879,6 @@ commands:
       - https://vite.dev/guide/#community-templates
       - https://github.com/vitejs/awesome-vite#templates
       - https://github.com/Rich-Harris/degit
-  npx degit TeXmeijin/vite-react-ts-tailwind-firebase-starter <app> && cd <app> && npm install && npm run dev:
-    desc: Create app 'vite-react-ts-tailwind-firebase-starter'
-    tags: [vite]
-    links:
-      - https://vite.dev/guide/#community-templates
-      - https://github.com/vitejs/awesome-vite#templates
-      - https://github.com/Rich-Harris/degit
   npx degit uchihamalolan/vite-react-ts <app> && cd <app> && npm install && npm run dev:
     desc: Create app 'vite-react-ts'
     tags: [vite]

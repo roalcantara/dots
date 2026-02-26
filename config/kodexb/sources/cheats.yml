@@ -161,37 +161,6 @@ cheats:
           Alice -> Bob: Another authentication Request
           Alice <-- Bob: another authentication Response
           @enduml
-  firestore/queries/OR:
-    desc: Firestore Query OR
-    links: [https://firebase.blog/posts/2023/05/whats-new-at-google-io]
-    tags: [coding, firebase]
-    notes:
-      - js: |
-          const carsRef = collection(db, 'cars');
-          const q = query(carsRef,
-            or (
-              where('make', '==', 'tesla'),
-              where('miles', '<=', 50_000),
-              where('ev', '==', true)
-            ) ,
-            orderBy('miles', 'desc')
-          );
-
-          const snapshot = firestore.collection("hotels").where(
-            or (
-              Filter.inArray("neighborhood", list0f("Chelsea", "SoHo"))
-              Filter.greaterThanOrEqualTo("stars", 4)
-            )
-          ).orderBy("stars", Direction.DESCENDING).get();
-  firestore/queries/IN:
-    desc: Firestore Query OR
-    tags: [coding, firebase]
-    links: [https://firebase.blog/posts/2023/05/whats-new-at-google-io]
-    notes:
-      - js: |
-          const citiesRef = db.collection("cities");
-          const cityList = ["USA", "Japan", "Argentina", "Brazil", "Chile", "Bolivia", "Paraguay", "Uruguay", "UK", "Canada", "Mexico", "Mozambique"];
-          const cities = citiesRef.where("country", whereIn: cityList);
 
   Azure DevOps:
     desc: Principais features
