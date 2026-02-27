@@ -42,7 +42,26 @@ bookmarks:
   https://vimcolorschemes.com:
     tags: [ide, vim]
     desc: Colorscheme gallery for vim
+  https://antigravity.google:
+    tags: [ide, vim]
+    desc: Antigravity IDE by Google | Evolving to agent-first, A more natural abstraction, Guidance to go from 90% to 100%
+    links:
+      - Why fullstack developers choose Google Antigravity: https://antigravity.google/use-cases/fullstack
+      - Blog: https://antigravity.google/blog
+      - Docs: https://antigravity.google/docs/get-started
+      - Changelog: https://antigravity.google/changelog
+      - Google Antigravity - From Beginner to Expert in 14 Minutes: https://youtu.be/mbxq88TOxp4
+    notes:
+      - md: | #markdown
+          # Antigravity IDE by Google
 
+          Antigravity IDE is a new way to build software. It is a more natural abstraction that allows you to build software faster and easier.
+
+          ## INSTALLATION
+
+          ```sh
+          brew install --cask antigravity
+          ```
 cheats:
   Neovim Providers:
     desc: Neovim Providers
@@ -259,7 +278,6 @@ cheats:
           | ⌘↑ / ↓      | Scroll up/down           |
           | PgUp / PgDn | Scroll page up/down      |
           | ⌘Home / End | Scroll to top/bottom     |
-
 commands:
   code --list-extensions:
     desc: Lists all installed extensions in VSCode
