@@ -234,6 +234,11 @@ task_add_flox() {
     run_cmd wget "https://downloads.flox.dev/by-env/stable/osx/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-darwin.pkg" -O "/tmp/flox.pkg"
     run_cmd sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg
   else # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.5.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version | wget https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -O /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
+    # Ensure nix multi-user build accounts exist (required if Nix uses build-users-group=nixbld)
+    run_cmd sudo groupadd -r nixbld || true
+    for i in $(seq 1 32); do
+      run_cmd sudo useradd -r -g nixbld -G nixbld -d /var/empty -s /usr/sbin/nologin "nixbld$i" 2>/dev/null || true
+    done
     run_cmd wget "https://downloads.flox.dev/by-env/stable/deb/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-linux.deb" -O "/tmp/flox.deb"
     run_cmd sudo dpkg -i /tmp/flox.deb && rm -f /tmp/flox.deb
   fi

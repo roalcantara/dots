@@ -27,6 +27,8 @@ ENV CLICOLOR=1 \
 
 # Stage for local dotfiles installation
 FROM base AS local
+# Disabling syscall filtering tells Nix (and by extension, Flox) to skip applying a seccomp profile, which fails under QEMU/Docker-arm64 emulation
+RUN mkdir -p /etc/nix && echo 'filter-syscalls = false' >> /etc/nix/nix.conf
 # Set working directory for dotfiles (MUST BE SET BEFORE COPYING THE REST OF THE DOTFILES!!)
 WORKDIR /home/$USERNAME/.local/share/dots
 # Copy the rest of the dotfiles
@@ -50,6 +52,8 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 
 # Stage for remote dotfiles installation
 FROM base AS remote
+# Disabling syscall filtering tells Nix (and by extension, Flox) to skip applying a seccomp profile, which fails under QEMU/Docker-arm64 emulation
+RUN mkdir -p /etc/nix && echo 'filter-syscalls = false' >> /etc/nix/nix.conf
 ARG CACHE_BUST=unknown
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Install with selective caching strategy

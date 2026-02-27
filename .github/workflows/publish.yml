@@ -91,4 +91,3 @@ jobs:
             type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
           github-token: ${{ secrets.GH_TOKEN }}
           secrets: github_token=${{ secrets.GH_TOKEN }}
-          build-opts: --security-opt=seccomp=unconfined
