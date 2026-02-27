@@ -1,3 +1,15 @@
+# [1.29.0](https://github.com/roalcantara/dots/compare/v1.28.2...v1.29.0) (2026-02-27)
+
+
+### Bug Fixes
+
+* **flox/ci:** Disabling syscall filtering ([bd9b607](https://github.com/roalcantara/dots/commit/bd9b607c7bc203a338216d74f5e3538db10ff205))
+
+
+### Features
+
+* **kodexb:** Add Antigravity IDE by Google to bookmarks ([aa75233](https://github.com/roalcantara/dots/commit/aa7523385135a86f19be4a231d05ff119e3de429))
+
 ## [1.28.2](https://github.com/roalcantara/dots/compare/v1.28.1...v1.28.2) (2026-02-27)
 
 
