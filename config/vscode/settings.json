@@ -1593,5 +1593,6 @@
     "https://json-schema.org/": true,
     "https://developer.microsoft.com/json-schemas/": true,
     "https://biomejs.dev": true
-  }
+  },
+  "mise.binPath": "/Users/roalcantara/.local/bin/mise"
 }
