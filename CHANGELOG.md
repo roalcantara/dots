@@ -1,3 +1,10 @@
+## [1.28.1](https://github.com/roalcantara/dots/compare/v1.28.0...v1.28.1) (2026-02-27)
+
+
+### Bug Fixes
+
+* **mise/zsh:** load zim-mise early to ensure mise paths are prepended ([a526ca1](https://github.com/roalcantara/dots/commit/a526ca1f7882aa036814177aa111cf0abd3b68f0))
+
 # [1.28.0](https://github.com/roalcantara/dots/compare/v1.27.0...v1.28.0) (2026-02-24)
 
 
