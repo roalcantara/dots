@@ -1,3 +1,10 @@
+## [1.28.2](https://github.com/roalcantara/dots/compare/v1.28.1...v1.28.2) (2026-02-27)
+
+
+### Bug Fixes
+
+* **ci/publish:** Add security option for Docker build ([56c91a3](https://github.com/roalcantara/dots/commit/56c91a36446d0cb36cac9aad3cccafaeb3cbcaf5))
+
 ## [1.28.1](https://github.com/roalcantara/dots/compare/v1.28.0...v1.28.1) (2026-02-27)
 
 
