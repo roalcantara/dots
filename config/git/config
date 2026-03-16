@@ -616,6 +616,10 @@ fzhh=!HASH=$(git log --color=always | fzf --ansi --header=' git reset --hard 
 # @example: git fzunstage
 fzunstage=!HASH=$(git staged | sed -E 's/(M|A|D)  //' | fzf --ansi --header-lines=1 --multi --ansi --header=' git rm --cached <file>...' --prompt='Files to unstage ❯ ' --preview 'bat --color=always --style=numbers {}' | git tail) && [[ -n $HASH ]] && echo $HASH | tr '\n' ' ' | xargs git rm --cached
 
+# Select the N git commit logs and format the output as YAML
+# #example git to-yaml 8 | pbcopy
+to-yaml="!f() {\n  local n=${1:-10}\n  git log --reverse -\"$n\" --pretty=format:\"%H\" | while read hash; do\n    echo \"$hash: |\"\n    git log -1 --pretty=format:\"%B\" \"$hash\" | sed \"s/^/  /\" | sed \"s/[[:space:]]*$//\"\n    echo \"\"\n  done\n}; f"
+
 [init]
 defaultBranch = main
 

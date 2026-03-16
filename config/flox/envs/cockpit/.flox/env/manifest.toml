@@ -1,12 +1,4 @@
-## Flox Environment Manifest -----------------------------------------
-##
-##   _Everything_ you need to know about the _manifest_ is here:
-##
-##   https://flox.dev/docs/reference/command-reference/manifest.toml/
-##
-## -------------------------------------------------------------------
-# Flox manifest version managed by Flox CLI
-version = 1
+schema-version = "1.10.0"
 
 
 ## Install Packages --------------------------------------------------
@@ -15,6 +7,11 @@ version = 1
 ##  $ flox show gum     <- show all versions of a package
 ## -------------------------------------------------------------------
 [install]
+# isolate mise dependencies from other packages
+mise.pkg-path = "mise"
+mise.version = "2026.3.3"
+mise.pkg-group = "mise"
+
 zoxide.pkg-path = "zoxide"
 starship.pkg-path = "starship"
 tree-sitter.pkg-path = "tree-sitter"
@@ -29,17 +26,24 @@ ripgrep.pkg-path = "ripgrep"
 
 # Core utilities
 gnugrep.pkg-path = "gnugrep"
+gnugrep.outputs = "all"
 gnumake.pkg-path = "gnumake"
+gnumake.outputs = "all"
 coreutils.pkg-path = "coreutils"
+coreutils.outputs = "all"
 findutils.pkg-path = "findutils"
+findutils.outputs = "all"
 gawk.pkg-path = "gawk"
+gawk.outputs = "all"
 less.pkg-path = "less"
 lesspipe.pkg-path = "lesspipe"
 
 # Git & pre-commit
 gitlint.pkg-path = "gitlint"
+gitlint.outputs = "all"
 gum.pkg-path = "gum"
 pre-commit.pkg-path = "pre-commit"
+pre-commit.outputs = "all"
 
 # Security & secrets
 age.pkg-path = "age"
@@ -47,9 +51,9 @@ sops.pkg-path = "sops"
 
 # Misc utilities
 sqlite.pkg-path = "sqlite"
+sqlite.outputs = "all"
 wakatime-cli.pkg-path = "wakatime-cli"
 glow.pkg-path = "glow"
-mise.pkg-path = "mise"
 
 xclip.pkg-path = "xclip"
 xclip.systems = ["aarch64-linux", "x86_64-linux"]
@@ -57,7 +61,9 @@ xclip.systems = ["aarch64-linux", "x86_64-linux"]
 xsel.pkg-path = "xsel"
 xsel.systems = ["aarch64-linux", "x86_64-linux"]
 nodejs.pkg-path = "nodejs"
+nodejs.outputs = "all"
 ruby.pkg-path = "ruby"
+ruby.outputs = "all"
 usage.pkg-path = "usage"
 yq-go.pkg-path = "yq-go"
 python314Full.pkg-path = "python314Full"
@@ -139,6 +145,6 @@ neovim.version = "0.11.4"
 [options]
 # Systems that environment is compatible with
 allow.unfree = true
-systems = ["aarch64-linux","x86_64-linux","aarch64-darwin","x86_64-darwin"]
+systems = ["aarch64-linux", "x86_64-linux", "aarch64-darwin", "x86_64-darwin"]
 # Uncomment to disable CUDA detection.
 # cuda-detection = false

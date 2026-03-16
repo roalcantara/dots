@@ -19,16 +19,15 @@
 # Tasks
 # Like make, it manages tasks used to build and test projects
 # https://mise.jdx.dev/tasks
-[tasks] # mise run
-
-  # mise run build
-  # mise run build --nocache
-  # mise run build --nocache --distro 'ubuntu'
-  # mise run build --nocache --local
-  # mise run build --nocache --local --user 'vscode' --group 'vscode' --tag 'latest'
-  [tasks.build]
-  description = "Build a Docker image for dotfiles"
-  run = '''
+[tasks]  # mise run
+# mise run build
+# mise run build --nocache
+# mise run build --nocache --distro 'ubuntu'
+# mise run build --nocache --local
+# mise run build --nocache --local --user 'vscode' --group 'vscode' --tag 'latest'
+[tasks.build]
+description = "Build a Docker image for dotfiles"
+run = '''
   #!/usr/bin/env bash
 
   # Set defaults and parse options
@@ -118,15 +117,15 @@
   eval "${DOCKER_CMD[*]}"
   '''
 
-  # mise run start
-  # mise run start --base
-  # mise run start --tag 'local'
-  # mise run start --tag 'local' --platform 'amd64'
-  # mise run start --tag 'local' --user 'vscode' --workdir '/workspaces/dots'
-  # mise run start --tag 'local' --user 'root' --workdir '/workspaces/foo'
-  [tasks.start]
-  description = "Start a container"
-  run = '''
+# mise run start
+# mise run start --base
+# mise run start --tag 'local'
+# mise run start --tag 'local' --platform 'amd64'
+# mise run start --tag 'local' --user 'vscode' --workdir '/workspaces/dots'
+# mise run start --tag 'local' --user 'root' --workdir '/workspaces/foo'
+[tasks.start]
+description = "Start a container"
+run = '''
   #!/usr/bin/env bash
 
   # Set defaults and parse options
@@ -157,12 +156,12 @@
   eval "${DOCKER_CMD[*]}"
   '''
 
-  # mise run test
-  # mise run test --distro 'ubuntu' --tag 'latest'
-  # mise run test --image 'dots:debian-amd64-latest' --config 'distros/debian/container-structure-test.yml'
-  [tasks.test]
-  description = "Run the Container Structure Tests for the Docker image"
-  run = '''
+# mise run test
+# mise run test --distro 'ubuntu' --tag 'latest'
+# mise run test --image 'dots:debian-amd64-latest' --config 'distros/debian/container-structure-test.yml'
+[tasks.test]
+description = "Run the Container Structure Tests for the Docker image"
+run = '''
   #!/usr/bin/env bash
 
   # Set defaults and parse options
@@ -198,9 +197,9 @@
   eval "${CST_CMD[*]}"
   '''
 
-  [tasks."setup:age"]
-  description = "Setup AGE keys from Bitwarden"
-  run = '''
+[tasks."setup:age"]
+description = "Setup AGE keys from Bitwarden"
+run = '''
   #!/bin/bash
   set -e
   # Check if AGE keys already exist
@@ -234,10 +233,10 @@
   fi
   '''
 
-  [tasks."setup:git:filters"]
-  description = "Setup Git filters for automatic encryption/decryption of .env files using SOPS"
-  depends = ["setup:age"]
-  run = '''
+[tasks."setup:git:filters"]
+description = "Setup Git filters for automatic encryption/decryption of .env files using SOPS"
+depends = ["setup:age"]
+run = '''
   #!/bin/bash
   set -e
   # Only configure filters if not already done
@@ -254,46 +253,38 @@
 # Settings
 # https://mise.jdx.dev/configuration/settings.html#settings
 [settings]
-  # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
-  # https://mise.jdx.dev/configuration/settings.html#activate_aggressive
-  activate_aggressive=true
+# Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
+# https://mise.jdx.dev/configuration/settings.html#activate_aggressive
+activate_aggressive = true
 
-  # Automatically install missing tools when running mise x, mise run, or as part of the 'not found' handler.
-  # https://mise.jdx.dev/configuration/settings.html#auto_install
-  auto_install=true
+# Automatically install missing tools when running mise x, mise run, or as part of the 'not found' handler.
+# https://mise.jdx.dev/configuration/settings.html#auto_install
+auto_install = true
 
-  # set to true to enable experimental features
-  # https://mise.jdx.dev/configuration/settings.html#experimental
-  experimental=true
+# set to true to enable experimental features
+# https://mise.jdx.dev/configuration/settings.html#experimental
+experimental = true
 
-  # Config files with these prefixes will be trusted by default
-  # https://mise.jdx.dev/configuration/settings.html#global_config_file
-  global_config_file="~/.local/share/mise/config.toml"
+# Config files with these prefixes will be trusted by default
+# https://mise.jdx.dev/configuration/settings.html#global_config_file
+global_config_file = "~/.local/share/mise/config.toml"
 
-  # Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
-  # https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
-  # idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
+# Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
+# https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
+# idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
 
-  # Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
-  # https://mise.jdx.dev/configuration/settings.html#lockfile
-  lockfile=true
+# Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
+# https://mise.jdx.dev/configuration/settings.html#lockfile
+lockfile = true
 
-  # Change output style when executing tasks. This controls the output of mise run.
-  # https://mise.jdx.dev/configuration/settings.html#task_output
-  task_output="interleave"
+# Config files with these prefixes will be trusted by default
+# https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
+trusted_config_paths = ["~/.local/share/dots", "~/.local/share/mise"]
 
-  # Automatically install tools that are not installed when running tasks
-  # https://mise.jdx.dev/configuration/settings.html#task_run_auto_install
-  task_run_auto_install=true
+# set to true to automatically answer yes to all prompts
+# https://mise.jdx.dev/configuration/settings.html#yes
+yes = true
 
-  # Config files with these prefixes will be trusted by default
-  # https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
-  trusted_config_paths=["~/.local/share/dots", "~/.local/share/mise"]
-
-  # set to true to automatically answer yes to all prompts
-  # https://mise.jdx.dev/configuration/settings.html#yes
-  yes=true
-
-  # set to true to see full installation output, see `MISE_VERBOSE`
-  # https://mise.jdx.dev/configuration/settings.html#verbose
-  # verbose=true
+# set to true to see full installation output, see `MISE_VERBOSE`
+# https://mise.jdx.dev/configuration/settings.html#verbose
+# verbose=true
