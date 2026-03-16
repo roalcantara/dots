@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/roalcantara/dots/compare/v1.29.0...v1.30.0) (2026-03-16)
+
+
+### Features
+
+* **deps:** Bump flox and mise ([f72dedb](https://github.com/roalcantara/dots/commit/f72dedb266c380cc64792d229e3fb51edd3e3bcb))
+
 # [1.29.0](https://github.com/roalcantara/dots/compare/v1.28.2...v1.29.0) (2026-02-27)
 
 
