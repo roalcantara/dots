@@ -9,7 +9,8 @@ Describe 'gitx'
   GITX_SCRIPT="$GITX_DIR/gitx"
 
   # Avoid "file exists" in call_after_hooks when zsh has set -o noclobber (see shellspec#321)
-  BeforeAll 'set +o noclobber 2>/dev/null; true'
+  disable_noclobber() { set +o noclobber 2>/dev/null; true; }
+  BeforeAll disable_noclobber
 
   # Load gitx (sourcing defines functions; skip entrypoint when sourced for tests)
   GITX_SOURCED_FOR_TEST=1
