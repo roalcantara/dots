@@ -663,6 +663,7 @@ browser = open
 
 [advice]
 addEmptyPathspec = false
+	skippedCherryPicks = false
 
 [status]
 submoduleSummary = true
