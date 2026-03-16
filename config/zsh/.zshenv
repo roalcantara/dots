@@ -22,28 +22,6 @@ if [[ -n "$z_trace" ]]; then
   setopt xtrace prompt_subst
 fi
 
-# To enable debugging run:
-#   z_debug=1 "$SHELL" -ilc exit
-# Check if compinit is being called at the right time
-# https://github.com/zimfw/zimfw/wiki/Troubleshooting#completion-is-not-working
-if [[ -n "$z_debug" ]]; then
-  autoload -Uz +X compinit
-  functions[compinit]=$'print -u2 \'compinit being called at \'${funcfiletrace[1]}
-  '${functions[compinit]}
-fi
-# }
-
-## 🌐 i18n {
-# The values that the environment variables may be assigned are not restricted;
-# Environment and argument space is limited by {ARG_MAX}.
-# Avoid conflicts with commonly exported environment variables.
-# https://pubs.opengroup.org/onlinepubs/7908799/xbd/envvar.html
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_COLLATE=C
-# }
-
 ## 🔒 PREVENT COMPIINIT CALLS {
 # Set these variables BEFORE any system files are sourced (e.g. NO_RCS)
 # It prevents compinit from being called by other sources
@@ -63,6 +41,28 @@ setopt NO_RCS
 setopt NO_MAILWARN
 setopt NO_MAILWARNING
 setopt NO_GLOBAL_RCS
+# }
+
+## 🌐 i18n {
+# The values that the environment variables may be assigned are not restricted;
+# Environment and argument space is limited by {ARG_MAX}.
+# Avoid conflicts with commonly exported environment variables.
+# https://pubs.opengroup.org/onlinepubs/7908799/xbd/envvar.html
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export LC_COLLATE=C
+# }
+
+# To enable debugging run:
+#   z_debug=1 "$SHELL" -ilc exit
+# Check if compinit is being called at the right time
+# https://github.com/zimfw/zimfw/wiki/Troubleshooting#completion-is-not-working
+if [[ -n "$z_debug" ]]; then
+  autoload -Uz +X compinit
+  functions[compinit]=$'print -u2 \'compinit being called at \'${funcfiletrace[1]}
+  '${functions[compinit]}
+fi
 # }
 
 # Load XDG environment variables from .profile
