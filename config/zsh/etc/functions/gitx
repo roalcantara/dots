@@ -475,6 +475,10 @@ gitx() {
   esac
 }
 
-gitx "$@"
+# Only run when executed as script (not when sourced, e.g. for ShellSpec)
+# Set GITX_SOURCED_FOR_TEST=1 in tests so Include does not run the entrypoint
+if [[ -z "${GITX_SOURCED_FOR_TEST:+x}" ]]; then
+  [[ "$0" == *'/gitx' || "$0" == 'gitx' ]] && gitx "$@"
+fi
 
 # vi: set ft=zsh:
