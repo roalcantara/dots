@@ -92,23 +92,3 @@ LUA_PATH = "./lua/?.lua;./lua/?/init.lua;;"
   # Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
   # https://mise.jdx.dev/configuration/settings.html#lockfile
   lockfile=true
-
-  # Change output style when executing tasks. This controls the output of mise run.
-  # https://mise.jdx.dev/configuration/settings.html#task_output
-  task_output="interleave"
-
-  # Automatically install tools that are not installed when running tasks
-  # https://mise.jdx.dev/configuration/settings.html#task_run_auto_install
-  task_run_auto_install=true
-
-  # Config files with these prefixes will be trusted by default
-  # https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
-  trusted_config_paths=["~/.local/share/dots", "~/.local/share/mise", "~/.local/share/dots/config/nvim", "~/.config/nvim"]
-
-  # set to true to automatically answer yes to all prompts
-  # https://mise.jdx.dev/configuration/settings.html#yes
-  yes=true
-
-  # set to true to see full installation output, see `MISE_VERBOSE`
-  # https://mise.jdx.dev/configuration/settings.html#verbose
-  # verbose=true

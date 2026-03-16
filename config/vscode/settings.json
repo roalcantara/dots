@@ -714,7 +714,8 @@
     "dist": false,
     "venv": false,
     "yarn-error.log": false,
-    "yarn.lock": false
+    "yarn.lock": false,
+    "**/dist-test": true
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
@@ -977,10 +978,13 @@
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   "[typescript][typescriptreact][javascript][javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit",
-      "source.organizeImports": "explicit",
-      "source.addMissingImports": "explicit"
+      "source.fixAll.biome": "explicit",
+      "source.organizeImports.biome": "explicit"
     }
   },
   "[rust]": {
@@ -1360,40 +1364,61 @@
   ],
   "json.trace.server": "verbose",
   "json.schemas": [
+    // {
+    //   "fileMatch": [
+    //     "*/kb/*.json",
+    //     "*/kb/*.yml",
+    //     "*/kb/*.yaml",
+    //     "*/kodexb/*.json",
+    //     "*/kodexb/*.yml",
+    //     "*/kodexb/*.yaml"
+    //   ],
+    //   "url": "https://gist.githubusercontent.com/roalcantara/46d3ac9ef6a80fa94fb239178c5dd744/raw/88a19d5a51968cb56d8333f2d863ec6ccd3071bd/knowledges.json"
+    // },
     {
       "fileMatch": [
-        "*/kb/*.json",
-        "*/kb/*.yml",
-        "*/kb/*.yaml"
+        "**/mise.toml"
       ],
-      "url": "https://gist.githubusercontent.com/roalcantara/46d3ac9ef6a80fa94fb239178c5dd744/raw/88a19d5a51968cb56d8333f2d863ec6ccd3071bd/knowledges.json"
+      "url": "https://mise.jdx.dev/schema/mise-task.json"
+    },
+    {
+      "fileMatch": [
+        "**/devcontainer.json"
+      ],
+      "url": "https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/script-library/schema/devcontainer.schema.json"
+    },
+    {
+      "fileMatch": [
+        "**/tsconfig.json"
+      ],
+      "url": "https://json.schemastore.org/tsconfig.json"
+    },
+    {
+      "fileMatch": [
+        "**/package.json"
+      ],
+      "url": "https://json.schemastore.org/package.json"
+    },
+    {
+      "fileMatch": [
+        "*.md"
+      ],
+      "url": "https://raw.githubusercontent.com/DavidAnson/markdownlint/v0.40.0/schema/markdownlint-config-schema.json"
+    },
+    {
+      "fileMatch": [
+        "**/devcontainer.json"
+      ],
+      "url": "https://raw.githubusercontent.com/devcontainers/spec/refs/heads/main/schemas/devContainer.schema.json"
     }
   ],
+  "mise.teraAutoCompletion": true,
+  "mise.enable": true,
+  "mise.enableCodeLens": true,
+  "mise.enableToolLinks": true,
   "http.proxy": "",
   "http.proxyAuthorization": null,
   "http.proxyStrictSSL": true,
-  "nebulaOni.update.restoreConfiguration": {
-    "themeSettings": {
-      "background": "Grey",
-      "main": "Bumblebee",
-      "highlight": "Ultra Violet",
-      "focusBorder": "ON",
-      "fontStyle": "Italic",
-      "syntaxBrightness": "Normal",
-      "comments": "Dark Violet",
-      "favorite": "OFF"
-    },
-    "favoriteSettings": {
-      "background": "Glacial Blue",
-      "main": "Sakura",
-      "highlight": "Ultra Violet",
-      "focusBorder": "ON",
-      "fontStyle": "Italic",
-      "syntaxBrightness": "Dimmed",
-      "comments": "Dark Magenta",
-      "favorite": "Nebula Oni (Pegasus)"
-    }
-  },
   "geminicodeassist.codeGenerationPaneViewEnabled": true,
   "geminicodeassist.chat.collapseCodeBlocksByDefault": true,
   "chat.mcp.discovery.enabled": {
@@ -1583,7 +1608,7 @@
   "amazonQ.workspaceIndexUseGPU": true,
   "nxConsole.disableFileWatching": true,
   "nxConsole.enableDebugLogging": true,
-  "workbench.colorTheme": "Catppuccin Macchiato",
+  "workbench.colorTheme": "Catppuccin Mocha",
   "json.schemaDownload.trustedDomains": {
     "https://schemastore.azurewebsites.net/": true,
     "https://raw.githubusercontent.com/microsoft/vscode/": true,
@@ -1594,5 +1619,14 @@
     "https://developer.microsoft.com/json-schemas/": true,
     "https://biomejs.dev": true
   },
-  "mise.binPath": "/Users/roalcantara/.local/bin/mise"
+  "json.schemaDownload.enable": true,
+  "mise.binPath": "/Users/roalcantara/.local/bin/mise",
+  "[toml]": {
+    "editor.defaultFormatter": "tombi-toml.tombi",
+    "editor.formatOnSave": true
+  },
+  "typescript.experimental.useTsgo": false,
+  "editor.codeActions.triggerOnFocusChange": true,
+  "javascript.referencesCodeLens.showOnAllFunctions": true,
+  "containers.orchestratorClient": "com.microsoft.visualstudio.orchestrators.dockercompose"
 }
