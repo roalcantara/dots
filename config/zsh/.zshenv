@@ -71,6 +71,8 @@ if [ -f $HOME/.profile ]; then
 fi
 
 # if .zprofile exists, source it (after XDG setup so ZDOTDIR is available)
-if [[ $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zprofile" ]]; then
+# Skip when non-interactive (e.g. `git branches` runs `zsh git-branches`) to avoid loading
+# .zshrc/starship/ZIM in subprocesses — prevents flicker and keeps alias fast
+if [[ ( -o login || -o interactive ) && $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zprofile" ]]; then
   source "$ZDOTDIR/.zprofile"
 fi
