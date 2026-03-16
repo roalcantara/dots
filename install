@@ -678,6 +678,13 @@ prepare_tools_zsh() {
     if ! run_cmd ${cmd_prefix}chsh -s "$zsh_path" "$USERNAME" 2>/dev/null; then
       warn "$1 ZSH default shell change failed..."
     fi
+    if [ ! -f "/etc/zsh/zshenv" ]; then
+      run_cmd ${cmd_prefix}touch /etc/zsh/zshenv
+    fi
+    if ! grep -q "USER_ZDOTDIR" /etc/zsh/zshenv; then
+      printf '\nexport USER_ZDOTDIR=%s/.config/zsh\n' "$HOME" | ${cmd_prefix}tee -a /etc/zsh/zshenv > /dev/null
+      ok "$1" "TOOLS/ZSH" "USER_ZDOTDIR set to '$HOME/.config/zsh' for user '$USERNAME' at '/etc/zsh/zshenv' ✔"
+    fi
   fi
   ok "$1" "TOOLS/ZSH" "ZSH default shell changed to '$zsh_path' for user '$USERNAME' ✔"
 }
