@@ -231,10 +231,6 @@ bs=show-branch
 # @example: git merged
 merged=branch --no-color --merged
 
-# List all local branches except HEAD
-# @example: git branches
-branches = "!f() { git branch -vva --color=never  | grep -v 'HEAD' | sed -E -e 's/^[[:space:]]*\\* //g' -e 's/^[[:space:]]*//g' -e 's/remotes\\/origin\\///g' -e 's/^([^[:space:]]+).*/\\1/g' | sort -u | grep -v '^origin/' | grep -v '^>' | uniq; }; f"
-
 # Get the name of the current branch
 # @example: git current-branch
 current-branch=rev-parse --abbrev-ref HEAD
@@ -242,26 +238,6 @@ current-branch=rev-parse --abbrev-ref HEAD
 # Get the default branch name (e.g., main or master)
 # @example: git main-branch
 main-branch=config init.defaultBranch
-
-# Delete branches that are merged, excluding main, master, develop and current
-# @example: git clear-merged
-clear-merged = "!git merged | grep -vE \"^\\*|$(git current-branch)$|$(git main-branch)$|main$|master$|develop$\" | xargs -r git branch -d"
-
-# Delete branches whose remote tracking is gone (branches deleted on remote but still present locally)
-# @example: git clear-gone
-clear-gone = "!git fetch --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D"
-
-# List remote branches for a specified remote (default: origin)
-# @example: git remote-branches [remote-name]
-remote-branches=!git branch -a | grep remotes/${1:-origin}/ | cut -f 3 -d '/'
-
-# Deinitialize and remove a specified submodule
-# @example: git remove-submodule [submodule-path]
-remove-submodule=!git submodule deinit -f -- ${1} && rm -rf .git/modules/${1} ${1}
-
-# Synchronize and update all submodules recursively
-# @example: git update-submodules
-update-submodules=!git submodule sync && git submodule update --recursive
 
 # Switch to a specified branch or commit
 # @example: git co [branch-name]
@@ -306,51 +282,6 @@ risq=rebase --interactive --autosquash
 # Perform an interactive rebase with autostash and show stats, defaulting to HEAD
 # @example: git autosrebase [commit]
 autosrebase=rebase --autostash --interactive --stat ${1:-HEAD}
-
-# Perform an autosrebase starting from the parent of a specified commit
-# @example: git rebase-from [commit]
-rebase-from="!f() { COMMIT=$(git rev-parse ${1:-HEAD}); git autosrebase $COMMIT^; }; f"
-
-# Begin an autosrebase, setting the latest commit to be edited
-# @example: git edit [commit]
-edit="!f() { GIT_SEQUENCE_EDITOR='sed -i -e 1s/^pick/edit/' git autosrebase ${1:-HEAD}^; }; f"
-
-# Start an autosrebase, dropping the latest commit
-# @example: git drop [commit]
-drop="!f() { GIT_SEQUENCE_EDITOR='sed -i -e 1s/^pick/drop/' git autosrebase ${1:-HEAD}^; }; f"
-
-# Begin an autosrebase, rewording the latest commit
-# @example: git reword [commit]
-reword="!f() { GIT_SEQUENCE_EDITOR='sed -i -e 1s/^pick/reword/' git autosrebase ${1:-HEAD}^; }; f"
-
-# Return the root commit hash
-# @example: git root-commit
-root-commit=!git rev-parse $(git rev-list --max-parents=0 HEAD)
-
-# Create a fixup commit for the root commit and autosquash it
-# @example: git fix-root
-fix-root="!f() { COMMIT=$(git root-commit); git commit --no-verify --fixup $COMMIT; GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i --root; }; f"
-
-# Create a fixup commit for a specified commit and autosquash it (including the root commit!)
-# @example: git fix [commit]
-# fix="!f() { COMMIT=$(git rev-parse ${1:-HEAD}); git commit --no-verify --fixup $COMMIT; GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i $COMMIT^; }; f"
-fix="!f() { COMMIT=$(git rev-parse ${1:-HEAD}); if [ $COMMIT = $(git root-commit) ]; then git fix-root; else git commit --no-verify --fixup $COMMIT; GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i $COMMIT^; fi; }; f"
-
-# Create a fixup commit for a specified commit - without autosquashing it
-# @example: git fixup [commit]
-fixup="!f() { COMMIT=$(git rev-parse ${1:-HEAD}); git commit --no-verify --fixup $COMMIT; }; f"
-
-# Create a squash commit for a specified commit
-# @example: git squash [commit]
-squash="!f() { git commit --squash ${1:-HEAD} --no-verify --no-post-rewrite; }; f"
-
-# Stage all changes and create a fixup commit for a specified commit
-# @example: git fix-all [commit]
-fix-all=!git add . && git fix ${1:-HEAD}
-
-# Stage all changes and create a squash commit for a specified commit
-# @example: git squash-all [commit]
-squash-all=!git add . && git squash ${1:-HEAD}
 
 # Cherry-pick a commit
 # @example: git cp [commit-hash]
@@ -412,10 +343,6 @@ ssw=stash show -p stash@{${1:-0}}
 # @example: git ssu
 ssu=stash save --include-untracked
 
-# Show patches for all stashes
-# @example: git patches
-patches="!f() { for s in $(git stashes); do git stash show -p $s; done; };f"
-
 # Fetch updates from the remote
 # @example: git f
 f=fetch
@@ -439,38 +366,6 @@ ur=pull --rebase
 # Pull with rebase from the origin remote for the current branch
 # @example: git up
 up=pull --rebase origin HEAD
-
-# Pull with rebase from the origin remote for the main branch
-# @example: git uu
-uu=!git pull --rebase origin $(git main-branch)
-
-# Pull with rebase from the upstream remote for the main branch
-# @example: git uup
-uup=!git pull --rebase upstream $(git main-branch)
-
-# Push the current branch to the origin remote with verbose output
-# @example: git p
-p=!git push --verbose origin $(git current-branch)
-
-# Force push (with lease) the current branch to the origin remote with verbose output
-# @example: git pf
-pf=!git push --verbose origin $(git current-branch) --force-with-lease
-
-# Push all branches to the origin remote with verbose output
-# @example: git pa
-pa=!git push --verbose origin $(git current-branch) --all
-
-# Push tags of the current branch to the origin remote with verbose output
-# @example: git pt
-pt=!git push --verbose origin $(git current-branch) --tags
-
-# Push the current branch to the origin remote and set it as upstream with verbose output
-# @example: git pc
-pc=!git push --verbose --set-upstream origin $(git current-branch)
-
-# Pull and then push the current branch to/from the origin remote with verbose output
-# @example: git pp
-pp=!git pull origin $(git current-branch) && git push --verbose origin $(git current-branch)
 
 # Show differences between commits, commit and working tree, etc.
 # @example: git d
@@ -508,17 +403,9 @@ configs=config --global --list
 # @example: git cfgs
 cfgs=config --list --show-origin
 
-# Interactively search through all configuration settings and their origins
-# @example: git cfgz
-cfgz=!git cfgs | fzf --ansi
-
 # Get the top-level directory of the Git repository
 # @example: git root-dir
 root-dir=rev-parse --show-toplevel
-
-# Remove files from the repository that match a given pattern
-# @example: git remove-files '[pattern]'
-remove-files="!f(){ find . -name $1 -print0 | xargs -0 git rm -f --ignore-unmatch; }; f"
 
 # Get the configured pager used by Git
 # @example: git pager
@@ -526,99 +413,207 @@ pager=config --get core.pager
 
 # Extract the first 7 characters of a commit hash
 # @example: git grep-commit
-grep-commit=!sh -c 'grep -o "[a-f0-9]{7}" | cut -d" " -f1 | tr -d "\n"'
+grep-commit=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" grep-commit
 
 # Get the last word in a line, often used to get the last part of a branch name
 # @example: git tail
-tail=!rev | cut -d' ' -f 1 | rev
+tail=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" tail
 
 # Extract the branch name from a string
 # @example: git grep-branch
-grep-branch=!sh -c 'sed "s/^..//g" | rev | cut -d" " -f 1 | rev'
+grep-branch=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" grep-branch
 
-# Extract the branch name from a string, removing 'remotes/origin/' prefix
+# Print current branch name (no remotes/origin/ prefix)
 # @example: git head-branch
-# head-branch=!sh -c 'sed "s/^..//g" | cut -d" " -f 1 | tr -d "\n" | sed "s@remotes/origin/@@"'
-# head-branch=!sh -c 'git branch | sed "s/^..//g" | cut -d" " -f 1 | tr -d "\n" | sed "s@remotes/origin/@@"'
-head-branch = "!f() { git rev-parse --abbrev-ref HEAD 2>/dev/null || git branches --show-current 2>/dev/null || git symbolic-ref --short HEAD 2>/dev/null | sed -E 's/^(remotes\\/origin\\/)?//'; }; f"
+head-branch=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" head-branch
 
 # Extract the file name from a string, removing the status prefix
 # @example: git strip " M  file.txt" => "file.txt"
 # @example: git strip "??  file2.txt" => "file2.txt"
-strip="!f() { cut -d ' ' -f2 <<< $1 | tee; }; f"
+strip=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" strip
 
 # Preview the diff of a modified file or the whole new file
-# preview="!f(){ FILE=$(cut -d ' ' -f3 <<<$1); tee $FILE; }; f"
-# preview="!f() { [[ $1 == ' M'* ]] && git diff $(cut -d ' ' -f3 <<<$1) --color=always -- $(cut -d ' ' -f3 <<<$1) || bat --color=always $(cut -d ' ' -f3 <<<$1); }; f"
-preview="!f() { FILE=$(cut -d ' ' -f2 <<<$1 | tee) && [[ $1 == ' M'* ]] && git diff --color=always $FILE || bat --color=always --style=numbers $FILE; }; f"
+# @example: git preview " M  file.txt"
+preview=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" preview
+
+# Remove files from the repository that match a given pattern
+# @example: git remove-files '[pattern]'
+remove-files=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" remove-files
+
+# Interactively search through all configuration settings and their origins
+# @example: git cfgz
+cfgz=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" cfgz
+
+# List all local branches except HEAD
+# @example: git branches
+branches=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" branches
+
+# Delete branches that are merged, excluding main, master, develop and current
+# @example: git clear-merged
+clear-merged=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" clear-merged
+
+# Delete branches whose remote tracking is gone (branches deleted on remote but still present locally)
+# @example: git clear-gone
+clear-gone=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" clear-gone
+
+# List remote branches for a specified remote (default: origin)
+# @example: git remote-branches [remote-name]
+remote-branches=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" remote-branches
+
+# Deinitialize and remove a specified submodule
+# @example: git remove-submodule [submodule-path]
+remove-submodule=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" remove-submodule
+
+# Synchronize and update all submodules recursively
+# @example: git update-submodules
+update-submodules=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" update-submodules
+# Perform an autosrebase starting from the parent of a specified commit
+# @example: git rebase-from [commit]
+rebase-from=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" rebase-from
+
+# Begin an autosrebase, setting the latest commit to be edited
+# @example: git edit [commit]
+edit=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" edit
+
+# Start an autosrebase, dropping the latest commit
+# @example: git drop [commit]
+drop=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" drop
+
+# Begin an autosrebase, rewording the latest commit
+# @example: git reword [commit]
+reword=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" reword
+
+# Return the root commit hash
+# @example: git root-commit
+root-commit=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" root-commit
+
+# Create a fixup commit for the root commit and autosquash it
+# @example: git fix-root
+fix-root=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fix-root
+
+# Create a fixup commit for a specified commit and autosquash it (including the root commit!)
+# @example: git fix [commit]
+fix=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fix
+
+# Create a fixup commit for a specified commit - without autosquashing it
+# @example: git fixup [commit]
+fixup=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fixup
+
+# Create a squash commit for a specified commit
+# @example: git squash [commit]
+squash=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" squash
+
+# Stage all changes and create a fixup commit for a specified commit
+# @example: git fix-all [commit]
+fix-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fix-all
+
+# Stage all changes and create a squash commit for a specified commit
+# @example: git squash-all [commit]
+squash-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" squash-all
+
+# Show patches for all stashes
+# @example: git patches
+patches=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" patches
+
+# Pull with rebase from the origin remote for the main branch
+# @example: git uu
+uu=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" uu
+
+# Pull with rebase from the upstream remote for the main branch
+# @example: git uup
+uup=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" uup
+
+# Push the current branch to the origin remote with verbose output
+# @example: git p
+p=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" p
+
+# Force push (with lease) the current branch to the origin remote with verbose output
+# @example: git pf
+pf=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pf
+
+# Push all branches to the origin remote with verbose output
+# @example: git pa
+pa=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pa
+
+# Push tags of the current branch to the origin remote with verbose output
+# @example: git pt
+pt=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pt
+
+# Push the current branch to the origin remote and set it as upstream with verbose output
+# @example: git pc
+pc=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pc
+
+# Pull and then push the current branch to/from the origin remote with verbose output
+# @example: git pp
+pp=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pp
 
 # Interactive log view using fzf to select a commit
 # @example: git fzl
-fzl=!git log --color=always | fzf --ansi | git grep-commit
+fzl=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzl
 
 # Shows the diff of the changes not staged for commit
 # @example: git fzdiff [options]
-fzdiff=!HASH=$(git diff $@ --name-only | fzf --multi --ansi --header=' git diff [ <pathspec>…​]' --preview='git preview {}')
+fzdiff=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzdiff
 
 # Interactive add using fzf to select multiple files with changes
 # @example: git fza
-fza=!HASH=$(git changes | fzf --ansi -m --header=' git add <file>' --preview='git preview {}' --bind='tab:toggle+down' --bind='ctrl-x:reload(git restore $(cut -d " " -f2 <<<{}) 1>/dev/null && git changes)' --bind='ctrl-u:reload(git restore --staged $(cut -d " " -f2 <<<{}) 1>/dev/null && git changes)' | git tail) && git add $(echo $HASH | awk '{ print $0 }') && git status
+fza=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fza
 
 # Interactive unstage using fzf to select unstaged files
 # @example: git fzu
-fzu=!HASH=$(git unstaged | fzf --ansi -m --header=' git restore [ <pathspec>…​]' --preview='git preview {}' | git tail) && git restore -- $(echo $HASH | awk '{ print $0 }') && git st -b
+fzu=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzu
 
 # Interactive unstage staged files using fzf
 # @example: git fzus
-fzus=!HASH=$(git staged | fzf --ansi -m --header=' git restore --staged [ <pathspec>…​]' --preview='git preview {}' | git tail) && git restore --staged -- $(echo $HASH | awk '{ print $0 }') && git st -b
+fzus=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzus
 
 # Interactive checkout branch using fzf
 # @example: git fzc
-fzc=!BRANCH=$(git branches | fzf --ansi --header=' git checkout --guess [ <branch>]') && [[ -n "$BRANCH" ]] && git checkout --guess $(echo $BRANCH | awk '{ print $1 }')
+fzc=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzc
 
 # Interactive delete branch using fzf
 # @example: git fzbd
-fzbd=!HASH=$(git branches | fzf --ansi -m --header=' git branch -d [ <branch>]' | git head-branch --preview='git branch -d $@ --color=always -- {-1}' | git tail) && [[ -n $HASH ]] && git branch -d $(echo $HASH | awk '{ print $1 }')
+fzbd=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzbd
 
 # Interactive force delete branch using fzf
 # @example: git fzbx
-fzbx=!HASH=$(git branches | fzf --ansi -m --header=' git branch -D [ <branch>]' | git head-branch --preview='git branch -D $@ --color=always -- {-1}' | git tail) && [[ -n $HASH ]] && git branch -D $(echo $HASH | awk '{ print $1 }')
+fzbx=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzbx
 
 # Interactive rebase using fzf to select a commit
 # @example: git fzr
-fzr=!HASH=$(git log --color=always | fzf --ansi --header=' git rebase --autostash --interactive --stat [ <options >]^\n' | git grep-commit) && [[ -n $HASH ]] && git rebase-from $(echo $HASH | awk '{ print $1 }')
+fzr=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzr
 
 # Interactive fixup using fzf to select a commit
 # @example: git fzf
-fzf=!HASH=$(git log --color=always | fzf --ansi --header=' git fixup [ <pathspec>…​]' | git grep-commit) && [[ -n $HASH ]] && git fix $(echo $HASH | awk '{ print $1 }') && git st -b
+fzf=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzf
 
 # Interactive reword using fzf to select a commit
 # @example: git fzw
-fzw=!HASH=$(git log --color=always | fzf --ansi --header=' git reword [ <options>]' | git grep-commit) && [[ -n $HASH ]] && git reword $(echo $HASH | awk '{ print $1 }')
+fzw=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzw
 
 # Interactive edit using fzf to select a commit
 # @example: git fze
-fze=!HASH=$(git log --color=always | fzf --ansi --header=' git edit [ <options>]' | git grep-commit) && [[ -n $HASH ]] && git edit $(echo $HASH | awk '{ print $1 }')
+fze=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fze
 
 # Interactive drop commit using fzf
 # @example: git fzd
-fzd=!HASH=$(git log --color=always | fzf --ansi --header=' git drop [ <options>]' | git grep-commit) && [[ -n $HASH ]] && git drop $(echo $HASH | awk '{ print $1 }')
+fzd=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzd
 
 # Interactive soft reset using fzf
 # @example: git fzhs
-fzhs=!HASH=$(git log --color=always | fzf --ansi --header=' git reset --soft [ <options>]' | git grep-commit) && [[ -n $HASH ]] && git reset --soft $(echo $HASH | awk '{ print $1\"^\" }') && git st -b
+fzhs=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzhs
 
 # Interactive hard reset using fzf
 # @example: git fzhh
-fzhh=!HASH=$(git log --color=always | fzf --ansi --header=' git reset --hard [ <options>]' | git grep-commit) && [[ -n $HASH ]] && git reset --hard $(echo $HASH | awk '{ print $1\"^\" }') && git st -b
+fzhh=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzhh
 
 # Interactive unstage files using fzf
 # @example: git fzunstage
-fzunstage=!HASH=$(git staged | sed -E 's/(M|A|D)  //' | fzf --ansi --header-lines=1 --multi --ansi --header=' git rm --cached <file>...' --prompt='Files to unstage ❯ ' --preview 'bat --color=always --style=numbers {}' | git tail) && [[ -n $HASH ]] && echo $HASH | tr '\n' ' ' | xargs git rm --cached
+fzunstage=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzunstage
 
 # Select the N git commit logs and format the output as YAML
-# #example git to-yaml 8 | pbcopy
-to-yaml="!f() {\n  local n=${1:-10}\n  git log --reverse -\"$n\" --pretty=format:\"%H\" | while read hash; do\n    echo \"$hash: |\"\n    git log -1 --pretty=format:\"%B\" \"$hash\" | sed \"s/^/  /\" | sed \"s/[[:space:]]*$//\"\n    echo \"\"\n  done\n}; f"
+# @example: git to-yaml 8 | pbcopy
+to-yaml=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" to-yaml
 
 [init]
 defaultBranch = main

@@ -1,0 +1,660 @@
+#!/usr/bin/env zsh
+# shellcheck shell=bash disable=SC2154,SC2034,SC2086
+#
+# Invocation note: When run as a script (e.g. ~/path/gitx branches), zsh parses and
+# executes this entire file and defines every function before dispatching. That makes
+# subcommands like `branches` slower than the equivalent git alias (which runs one
+# pipeline in a small subshell). For fastest branch listing use `git branches` (alias)
+# or a minimal launcher (e.g. gitx-branches) that runs only the branch pipeline.
+
+#? gitx - Git complex commands (autoloadable dispatcher)
+#? Centralizes complex git workflows as subcommands.
+#?
+#? Usage:
+#?   gitx <command> [options] [args]
+#?   gitx -h | --help
+#?
+#? Commands:
+#?   cnb <branch>        Create new branch (smart). On default branch with local
+#?                       commits, opens fzf to pick which go to the new branch.
+#?   nb <branch>         Create branch from updated origin/main.
+#?   branches            List local branches (for scripts/fzf).
+#?   clear-merged        Delete branches merged into HEAD (excl. main/develop).
+#?   clear-gone          Delete branches whose remote tracking is gone.
+#?   remote-branches [remote]  List remote branch names (default: origin).
+#?   rebase-from [commit]      Interactive rebase from parent of commit.
+#?   edit [commit]       Start rebase to edit commit.
+#?   drop [commit]       Start rebase to drop commit.
+#?   reword [commit]     Start rebase to reword commit.
+#?   fix-root            Fixup and autosquash root commit.
+#?   fix [commit]        Fixup and autosquash commit (or root).
+#?   fixup [commit]      Create fixup commit only.
+#?   squash [commit]     Create squash commit only.
+#?   fix-all [commit]    Stage all and fix.
+#?   squash-all [commit] Stage all and squash.
+#?   root-commit         Print root commit hash.
+#?   uu                  Pull --rebase origin main.
+#?   uup                 Pull --rebase upstream main.
+#?   p                   Push verbose origin current branch.
+#?   pf                  Push --force-with-lease.
+#?   pa, pt, pc          Push --all, --tags, --set-upstream.
+#?   pp                  Pull then push current branch.
+#?   remove-submodule <path>   Deinit and remove submodule.
+#?   update-submodules   Sync and update submodules.
+#?   cfgz                Config list with fzf.
+#?   remove-files <pattern>    Remove repo files matching pattern.
+#?   to-yaml [n]         Last n commits as YAML (default 10).
+#?   patches             Show patch for each stash.
+#?   fzl, fzdiff         Fzf: log (pick hash), diff files.
+#?   fza, fzu, fzus      Fzf: add, restore, restore --staged.
+#?   fzc, fzbd, fzbx     Fzf: checkout branch, branch -d, branch -D.
+#?   fzr, fzf, fzw, fze, fzd  Fzf: rebase-from, fix, reword, edit, drop.
+#?   fzhs, fzhh          Fzf: reset --soft, reset --hard.
+#?   fzunstage           Fzf: rm --cached (unstage from index).
+#?   grep-commit         Extract 7-char hash from stdin (for pipelines).
+#?   tail                Last word of line (stdin or args).
+#?   grep-branch         Extract branch name from stdin.
+#?   head-branch         Print current branch (no remotes/origin/).
+#?   strip <line>        Extract filename from status line.
+#?   preview <line>      Preview diff or file for status line.
+#?
+#? Options:
+#?   -h, --help          Show this screen.
+#?
+#? Examples:
+#?   gitx cnb feature/foo
+#?   gitx nb hotfix
+#?   gitx clear-merged
+#?   gitx fza
+
+# List local branches
+# * @returns 0 if the branches are listed, 1 if the branches are not listed.
+# * @example: gitx branches
+_gitx_branches() {
+  git branch -vva --color=never 2>/dev/null | grep -v 'HEAD' | sed -E \
+    -e 's/^[[:space:]]*\* //g' \
+    -e 's/^[[:space:]]*//g' \
+    -e 's/remotes\/origin\///g' \
+    -e 's/^([^[:space:]]+).*/\1/g' | sort -u | grep -v '^origin/' | grep -v '^>' | uniq
+}
+
+# Preview the diff of a modified file or the whole new file
+# * @param line - The line to preview.
+# * @returns The preview of the line.
+# * @example: gitx preview " M  file.txt"
+_gitx_preview_line() {
+  local line="$1"
+  local file
+  file=$(echo "$line" | cut -d' ' -f2)
+  if [[ "$line" == " M"* ]] || [[ "$line" == "M "* ]]; then
+    git diff --color=always -- "$file"
+  else
+    bat --color=always --style=numbers "$file" 2>/dev/null || cat "$file"
+  fi
+}
+
+# Grep the commit hash from the log (stdin)
+# * @returns The first 7-char hash found.
+# * @example: git log | gitx grep-commit
+_gitx_grep_commit() {
+  grep -oE '[a-f0-9]{7}' | cut -d' ' -f1 | tr -d '\n'
+}
+
+# Get the last word in a line (stdin or args)
+# * @example: echo "foo bar baz" | gitx tail
+_gitx_tail() {
+  if [[ $# -gt 0 ]]; then
+    echo "$*" | rev | cut -d' ' -f1 | rev
+  else
+    rev | cut -d' ' -f1 | rev
+  fi
+}
+
+# Extract the branch name from a string (stdin)
+# * @example: git branch -v | gitx grep-branch
+_gitx_grep_branch() {
+  sed 's/^..//g' | rev | cut -d' ' -f1 | rev
+}
+
+# Print current branch name (no remotes/origin/ prefix)
+# * @example: gitx head-branch
+_gitx_head_branch() {
+  git rev-parse --abbrev-ref HEAD 2>/dev/null || \
+  git branch --show-current 2>/dev/null || \
+  git symbolic-ref --short HEAD 2>/dev/null | sed -E 's/^(remotes\/origin\/)?//'
+}
+
+# Extract the file name from a status line (remove status prefix)
+# * @param line - e.g. " M  file.txt" or "??  file2.txt"
+# * @example: gitx strip " M  file.txt"
+_gitx_strip() {
+  [[ -n "${1:-}" ]] && echo "$1" | cut -d' ' -f2
+}
+
+# Preview: diff for modified file, or bat/cat for others (alias for _gitx_preview_line)
+# * @param line - Status line e.g. " M  file.txt"
+# * @example: gitx preview " M  file.txt"
+_gitx_preview() {
+  [[ -n "${1:-}" ]] && _gitx_preview_line "$1"
+}
+
+# Create new branch (smartly).
+# On default branch with local commits, opens fzf to pick which go to the new branch.
+# * @param name - The name of the new branch.
+# * @returns 0 if the branch is created, 1 if the branch name is missing.
+# * @example: gitx cnb feature/foo
+_gitx_cnb() {
+  local name="$1"
+  local main base current count log ordered selected h
+
+  if [[ -z "$name" ]]; then
+    echo 'Usage: gitx cnb <branch-name>'
+    return 1
+  fi
+
+  main=$(git main-branch)
+  current=$(git rev-parse --abbrev-ref HEAD)
+
+  if [[ "$current" != "$main" ]]; then
+    git checkout -b "$name"
+    return 0
+  fi
+
+  git fetch origin 2>/dev/null || true
+  base="origin/$main"
+
+  if ! git rev-parse --verify "$base" &>/dev/null; then
+    git checkout -b "$name"
+    return 0
+  fi
+
+  count=$(git rev-list "$base"..HEAD 2>/dev/null | wc -l | tr -d ' ')
+  if (( count == 0 )); then
+    git checkout -b "$name" "$base"
+    return 0
+  fi
+
+  log=$(git log "$base"..HEAD --reverse --format='%h %s')
+  ordered=$(git log "$base"..HEAD --reverse --format=%h)
+  selected=$(echo "$log" | fzf -m --ansi --bind 'load:select-all' \
+    --header="gitx cnb: pick commits for branch '$name' (Tab toggle, Enter confirm, Esc = none)" \
+    --prompt="commits ❯ " | cut -d' ' -f1)
+
+  git checkout -b "$name" "$base" || return 1
+
+  if [[ -n "$selected" ]]; then
+    for h in ${(f)ordered}; do
+      if echo "$selected" | grep -qx "$h"; then
+        git cherry-pick "$h" || { git cherry-pick --abort; return 1 }
+      fi
+    done
+  fi
+}
+
+# Create branch from updated origin/main.
+# * @param name - The name of the new branch.
+# * @returns 0 if the branch is created, 1 otherwise
+# * @example: gitx nb feature/foo
+_gitx_nb() {
+  local name="${1:?Usage: gitx nb <branch-name>}"
+  git fetch origin && git checkout -b "$name" "origin/$(git main-branch)"
+}
+
+# Delete all branches merged into HEAD (excl. main/develop)
+# * @returns 0 if the branches are deleted, 1 otherwise
+# * @example: gitx clear-merged
+_gitx_clear_merged() {
+  local list current main
+  current=$(git current-branch 2>/dev/null)
+  main=$(git main-branch 2>/dev/null)
+  list=$(git branch --no-color --merged | grep -vE "^\*|^${current}$|^${main}$|^main$|^master$|^develop$" | sed 's/^[[:space:]]*//')
+  [[ -z "$list" ]] && return 0
+  echo "$list" | xargs -n1 git branch -d
+}
+
+# Delete all branches whose remote tracking is gone.
+# * @returns 0 if the branches are deleted, 1 otherwise
+# * @example: gitx clear-gone
+_gitx_clear_gone() {
+  git fetch --prune 2>/dev/null
+  local list
+  list=$(git branch -vv | grep ': gone]' | awk '{print $1}')
+  [[ -z "$list" ]] && return 0
+  echo "$list" | xargs -n1 git branch -D
+}
+
+# List remote branch names for a given remote (default: origin).
+# * @param remote - Remote name (default: origin).
+# * @example: gitx remote-branches [remote]
+_gitx_remote_branches() {
+  local remote="${1:-origin}"
+  git branch -a | grep "remotes/${remote}/" | cut -f3 -d'/'
+}
+
+# --- Rebase / fixup ---
+# Print the root commit hash of the current branch.
+# * @example: gitx root-commit
+_gitx_root_commit() {
+  git rev-parse "$(git rev-list --max-parents=0 HEAD)"
+}
+
+# Start interactive rebase from parent of commit (with autostash and stat).
+# * @param commit - Commit to rebase from (default: HEAD).
+# * @example: gitx rebase-from [commit]
+_gitx_rebase_from() {
+  local commit="${1:-HEAD}"
+  local c
+  c=$(git rev-parse "$commit")
+  git rebase --autostash --interactive --stat "${c}^"
+}
+
+# Start rebase to edit a commit (sets first pick to edit).
+# * @param commit - Commit to edit (default: HEAD).
+# * @example: gitx edit [commit]
+_gitx_edit() {
+  local commit="${1:-HEAD}"
+  GIT_SEQUENCE_EDITOR='sed -i -e 1s/^pick/edit/' git rebase --autostash --interactive --stat "${commit}^"
+}
+
+# Start rebase to drop a commit (sets first pick to drop).
+# * @param commit - Commit to drop (default: HEAD).
+# * @example: gitx drop [commit]
+_gitx_drop() {
+  local commit="${1:-HEAD}"
+  GIT_SEQUENCE_EDITOR='sed -i -e 1s/^pick/drop/' git rebase --autostash --interactive --stat "${commit}^"
+}
+
+# Start rebase to reword a commit (sets first pick to reword).
+# * @param commit - Commit to reword (default: HEAD).
+# * @example: gitx reword [commit]
+_gitx_reword() {
+  local commit="${1:-HEAD}"
+  GIT_SEQUENCE_EDITOR='sed -i -e 1s/^pick/reword/' git rebase --autostash --interactive --stat "${commit}^"
+}
+
+# Create fixup commit for root and autosquash rebase.
+# * @example: gitx fix-root
+_gitx_fix_root() {
+  local c
+  c=$(_gitx_root_commit)
+  git commit --no-verify --fixup "$c"
+  GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i --root
+}
+
+# Create fixup commit for a commit (or root) and autosquash rebase.
+# * @param commit - Target commit (default: HEAD).
+# * @example: gitx fix [commit]
+_gitx_fix() {
+  local commit="${1:-HEAD}"
+  local c root
+  c=$(git rev-parse "$commit")
+  root=$(_gitx_root_commit)
+  if [[ "$c" == "$root" ]]; then
+    _gitx_fix_root
+  else
+    git commit --no-verify --fixup "$c"
+    GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i "${c}^"
+  fi
+}
+
+# Create fixup commit only (no autosquash).
+# * @param commit - Target commit (default: HEAD).
+# * @example: gitx fixup [commit]
+_gitx_fixup() {
+  local commit="${1:-HEAD}"
+  local c
+  c=$(git rev-parse "$commit")
+  git commit --no-verify --fixup "$c"
+}
+
+# Create squash commit for a commit (no autosquash).
+# * @param commit - Target commit (default: HEAD).
+# * @example: gitx squash [commit]
+_gitx_squash() {
+  git commit --squash "${1:-HEAD}" --no-verify --no-post-rewrite
+}
+
+# Stage all and create fixup for commit, then autosquash.
+# * @param commit - Target commit (default: HEAD).
+# * @example: gitx fix-all [commit]
+_gitx_fix_all() {
+  git add . && _gitx_fix "${1:-HEAD}"
+}
+
+# Stage all and create squash commit for commit.
+# * @param commit - Target commit (default: HEAD).
+# * @example: gitx squash-all [commit]
+_gitx_squash_all() {
+  git add . && _gitx_squash "${1:-HEAD}"
+}
+
+# --- Push / pull ---
+# Pull with rebase from origin main.
+# * @example: gitx uu
+_gitx_uu() {
+  git pull --rebase origin "$(git main-branch)"
+}
+
+# Pull with rebase from upstream main.
+# * @example: gitx uup
+_gitx_uup() {
+  git pull --rebase upstream "$(git main-branch)"
+}
+
+# Push current branch to origin (verbose).
+# * @example: gitx p
+_gitx_p() {
+  git push --verbose origin "$(git current-branch)"
+}
+
+# Force push with lease current branch to origin.
+# * @example: gitx pf
+_gitx_pf() {
+  git push --verbose origin "$(git current-branch)" --force-with-lease
+}
+
+# Push all from current branch to origin.
+# * @example: gitx pa
+_gitx_pa() {
+  git push --verbose origin "$(git current-branch)" --all
+}
+
+# Push tags from current branch to origin.
+# * @example: gitx pt
+_gitx_pt() {
+  git push --verbose origin "$(git current-branch)" --tags
+}
+
+# Push current branch and set upstream to origin.
+# * @example: gitx pc
+_gitx_pc() {
+  git push --verbose --set-upstream origin "$(git current-branch)"
+}
+
+# Pull then push current branch to/from origin.
+# * @example: gitx pp
+_gitx_pp() {
+  git pull --rebase origin "$(git current-branch)" && git push --verbose origin "$(git current-branch)"
+}
+
+# --- Misc ---
+# Deinit and remove a submodule at path.
+# * @param path - Submodule path.
+# * @example: gitx remove-submodule <path>
+_gitx_remove_submodule() {
+  local path="${1:?Usage: gitx remove-submodule <path>}"
+  git submodule deinit -f -- "$path" && rm -rf ".git/modules/$path" "$path"
+}
+
+# Sync and update all submodules recursively.
+# * @example: gitx update-submodules
+_gitx_update_submodules() {
+  git submodule sync && git submodule update --recursive
+}
+
+# Show config list with fzf (interactive).
+# * @example: gitx cfgz
+_gitx_cfgz() {
+  git config --list --show-origin | fzf --ansi
+}
+
+# Remove from repo all files matching pattern (git rm -f).
+# * @param pattern - Filename pattern (e.g. '*.log').
+# * @example: gitx remove-files <pattern>
+_gitx_remove_files() {
+  local pattern="${1:?Usage: gitx remove-files <pattern>}"
+  find . -name "$pattern" -print0 | xargs -0 git rm -f --ignore-unmatch
+}
+
+# Output last n commits as YAML (hash + message body).
+# * @param n - Number of commits (default: 10).
+# * @example: gitx to-yaml [n]
+_gitx_to_yaml() {
+  local n="${1:-10}"
+  local hash
+  git log --reverse -"$n" --pretty=format:'%H' | while read -r hash; do
+    echo "${hash}: |"
+    git log -1 --pretty=format:'%B' "$hash" | sed 's/^/  /' | sed 's/[[:space:]]*$//'
+    echo ""
+  done
+}
+
+# Show patch for each stash entry.
+# * @example: gitx patches
+_gitx_patches() {
+  local s
+  for s in $(git stash list --pretty=format:%gd); do
+    git stash show -p "$s"
+  done
+}
+
+# --- Fzf interactive ---
+# Fzf over log; output selected commit hash.
+# * @example: gitx fzl
+_gitx_fzl() {
+  local hash
+  hash=$(git log --color=always | fzf --ansi | _gitx_grep_commit)
+  [[ -n "$hash" ]] && echo "$hash"
+}
+
+# Fzf over diff --name-only; output selected files.
+# * @example: gitx fzdiff [pathspec]
+_gitx_fzdiff() {
+  local files
+  files=$(git diff "$@" --name-only | fzf --multi --ansi \
+    --header='git diff [pathspec]' \
+    --preview='git diff --color=always {}')
+  # Just open fzf; caller can use result. Original ran fzf and showed selection.
+  echo "$files"
+}
+
+# Fzf over changed files; add selected files (git add).
+# * @example: gitx fza
+_gitx_fza() {
+  local preview_cmd='FILE=$(echo {} | cut -d" " -f2); if echo "{}" | grep -q "^ M"; then git diff --color=always "$FILE"; else bat --color=always --style=numbers "$FILE" 2>/dev/null || true; fi'
+  local selected
+  selected=$(git changes | fzf --ansi -m --header='git add <file>' \
+    --preview="$preview_cmd" \
+    --bind='tab:toggle+down' \
+    --bind='ctrl-x:reload(git restore $(echo {} | cut -d" " -f2) 2>/dev/null; git changes)' \
+    --bind='ctrl-u:reload(git restore --staged $(echo {} | cut -d" " -f2) 2>/dev/null; git changes)' | while read -r line; do echo "$line" | rev | cut -d' ' -f1 | rev; done)
+  [[ -z "$selected" ]] && return 0
+  echo "$selected" | xargs git add
+  git status
+}
+
+# Fzf over unstaged files; restore selected (git restore).
+# * @example: gitx fzu
+_gitx_fzu() {
+  local selected
+  selected=$(git unstaged | fzf --ansi -m --header='git restore <file>' --preview='FILE=$(echo {} | cut -d" " -f2); git diff --color=always "$FILE"' | while read -r line; do echo "$line" | rev | cut -d' ' -f1 | rev; done)
+  [[ -z "$selected" ]] && return 0
+  echo "$selected" | xargs git restore --
+  git status --short --branch
+}
+
+# Fzf over staged files; unstage selected (git restore --staged).
+# * @example: gitx fzus
+_gitx_fzus() {
+  local selected
+  selected=$(git staged | fzf --ansi -m --header='git restore --staged <file>' --preview='FILE=$(echo {} | cut -d" " -f2); git diff --staged --color=always "$FILE"' | while read -r line; do echo "$line" | rev | cut -d' ' -f1 | rev; done)
+  [[ -z "$selected" ]] && return 0
+  echo "$selected" | xargs git restore --staged --
+  git status --short --branch
+}
+
+# Fzf over branches; checkout selected (git checkout --guess).
+# * @example: gitx fzc
+_gitx_fzc() {
+  local branch
+  branch=$(_gitx_branches | fzf --ansi --header='git checkout --guess <branch>')
+  [[ -n "$branch" ]] && git checkout --guess "${branch%% *}"
+}
+
+# Fzf over branches; delete selected (git branch -d).
+# * @example: gitx fzbd
+_gitx_fzbd() {
+  local branch
+  branch=$(_gitx_branches | fzf --ansi -m --header='git branch -d <branch>')
+  [[ -z "$branch" ]] && return 0
+  echo "$branch" | while read -r b; do git branch -d "${b%% *}"; done
+}
+
+# Fzf over branches; force-delete selected (git branch -D).
+# * @example: gitx fzbx
+_gitx_fzbx() {
+  local branch
+  branch=$(_gitx_branches | fzf --ansi -m --header='git branch -D <branch>')
+  [[ -z "$branch" ]] && return 0
+  echo "$branch" | while read -r b; do git branch -D "${b%% *}"; done
+}
+
+# Fzf over log; run rebase-from on selected commit.
+# * @example: gitx fzr
+_gitx_fzr() {
+  local hash
+  hash=$(git log --color=always | fzf --ansi --header='git rebase-from' | _gitx_grep_commit)
+  [[ -n "$hash" ]] && _gitx_rebase_from "$hash"
+}
+
+# Fzf over log; run fix on selected commit.
+# * @example: gitx fzf
+_gitx_fzf() {
+  local hash
+  hash=$(git log --color=always | fzf --ansi --header='git fixup' | _gitx_grep_commit)
+  [[ -n "$hash" ]] && _gitx_fix "$hash" && git status --short --branch
+}
+
+# Fzf over log; run reword on selected commit.
+# * @example: gitx fzw
+_gitx_fzw() {
+  local hash
+  hash=$(git log --color=always | fzf --ansi --header='git reword' | _gitx_grep_commit)
+  [[ -n "$hash" ]] && _gitx_reword "$hash"
+}
+
+# Fzf over log; run edit on selected commit.
+# * @example: gitx fze
+_gitx_fze() {
+  local hash
+  hash=$(git log --color=always | fzf --ansi --header='git edit' | _gitx_grep_commit)
+  [[ -n "$hash" ]] && _gitx_edit "$hash"
+}
+
+# Fzf over log; run drop on selected commit.
+# * @example: gitx fzd
+_gitx_fzd() {
+  local hash
+  hash=$(git log --color=always | fzf --ansi --header='git drop' | _gitx_grep_commit)
+  [[ -n "$hash" ]] && _gitx_drop "$hash"
+}
+
+# Fzf over log; reset --soft to parent of selected commit.
+# * @example: gitx fzhs
+_gitx_fzhs() {
+  local hash
+  hash=$(git log --color=always | fzf --ansi --header='git reset --soft' | _gitx_grep_commit)
+  [[ -n "$hash" ]] && git reset --soft "${hash}^" && git status --short --branch
+}
+
+# Fzf over log; reset --hard to parent of selected commit.
+# * @example: gitx fzhh
+_gitx_fzhh() {
+  local hash
+  hash=$(git log --color=always | fzf --ansi --header='git reset --hard' | _gitx_grep_commit)
+  [[ -n "$hash" ]] && git reset --hard "${hash}^"
+}
+
+# Fzf over staged files; unstage from index (git rm --cached).
+# * @example: gitx fzunstage
+_gitx_fzunstage() {
+  local selected
+  selected=$(git staged | sed -E 's/(M|A|D)  //' | fzf --ansi --header-lines=1 -m --header='git rm --cached <file>' --preview='bat --color=always --style=numbers {}' | while read -r line; do echo "$line" | rev | cut -d' ' -f1 | rev; done)
+  [[ -z "$selected" ]] && return 0
+  echo "$selected" | xargs git rm --cached
+}
+
+# --- Dispatcher ---
+gitx() {
+  local -A opts
+  zparseopts -D -F -E -A opts h=help -help=help
+
+  if (( ${+opts[-h]} )) || (( ${+opts[--help]} )); then
+    autoload -Uz show_usage
+    show_usage
+    return 0
+  fi
+
+  local cmd="${1:?Usage: gitx <command> [args]. Run gitx --help for commands.}"
+  shift
+
+  case "$cmd" in
+    cnb)              _gitx_cnb "$@" ;;
+    nb)               _gitx_nb "$@" ;;
+    branches)         _gitx_branches "$@" ;;
+    clear-merged)     _gitx_clear_merged "$@" ;;
+    clear-gone)       _gitx_clear_gone "$@" ;;
+    remote-branches)  _gitx_remote_branches "$@" ;;
+    root-commit)      _gitx_root_commit "$@" ;;
+    rebase-from)      _gitx_rebase_from "$@" ;;
+    edit)             _gitx_edit "$@" ;;
+    drop)             _gitx_drop "$@" ;;
+    reword)           _gitx_reword "$@" ;;
+    fix-root)         _gitx_fix_root "$@" ;;
+    fix)              _gitx_fix "$@" ;;
+    fixup)            _gitx_fixup "$@" ;;
+    squash)           _gitx_squash "$@" ;;
+    fix-all)          _gitx_fix_all "$@" ;;
+    squash-all)       _gitx_squash_all "$@" ;;
+    uu)               _gitx_uu "$@" ;;
+    uup)              _gitx_uup "$@" ;;
+    p)                _gitx_p "$@" ;;
+    pf)               _gitx_pf "$@" ;;
+    pa)               _gitx_pa "$@" ;;
+    pt)               _gitx_pt "$@" ;;
+    pc)               _gitx_pc "$@" ;;
+    pp)               _gitx_pp "$@" ;;
+    remove-submodule) _gitx_remove_submodule "$@" ;;
+    update-submodules) _gitx_update_submodules "$@" ;;
+    cfgz)             _gitx_cfgz "$@" ;;
+    remove-files)     _gitx_remove_files "$@" ;;
+    to-yaml)          _gitx_to_yaml "$@" ;;
+    patches)          _gitx_patches "$@" ;;
+    fzl)              _gitx_fzl "$@" ;;
+    fzdiff)           _gitx_fzdiff "$@" ;;
+    fza)              _gitx_fza "$@" ;;
+    fzu)              _gitx_fzu "$@" ;;
+    fzus)             _gitx_fzus "$@" ;;
+    fzc)              _gitx_fzc "$@" ;;
+    fzbd)             _gitx_fzbd "$@" ;;
+    fzbx)             _gitx_fzbx "$@" ;;
+    fzr)              _gitx_fzr "$@" ;;
+    fzf)              _gitx_fzf "$@" ;;
+    fzw)              _gitx_fzw "$@" ;;
+    fze)              _gitx_fze "$@" ;;
+    fzd)              _gitx_fzd "$@" ;;
+    fzhs)             _gitx_fzhs "$@" ;;
+    fzhh)             _gitx_fzhh "$@" ;;
+    fzunstage)        _gitx_fzunstage "$@" ;;
+    grep-commit)      _gitx_grep_commit "$@" ;;
+    tail)             _gitx_tail "$@" ;;
+    grep-branch)      _gitx_grep_branch "$@" ;;
+    head-branch)      _gitx_head_branch "$@" ;;
+    strip)            _gitx_strip "$@" ;;
+    preview)          _gitx_preview "$@" ;;
+    *)
+      echo "gitx: unknown command '$cmd'" >&2
+      autoload -Uz show_usage
+      show_usage
+      return 1
+      ;;
+  esac
+}
+
+# Only run when executed as script (not when sourced, e.g. for ShellSpec)
+# Set GITX_SOURCED_FOR_TEST=1 in tests so Include does not run the entrypoint
+if [[ -z "${GITX_SOURCED_FOR_TEST:+x}" ]]; then
+  [[ "$0" == *'/gitx' || "$0" == 'gitx' ]] && gitx "$@"
+fi
+
+# vi: set ft=zsh:
