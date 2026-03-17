@@ -41,16 +41,20 @@ end
 function M.generate_conventional_commit_message()
   local instructions = git.get_conventional_commits_instructions()
 
-  if not instructions or instructions == '' then
+  if not instructions or not instructions.user or instructions.user == '' then
     return error('No changes found! Skipping...')
   end
 
-  local openai = require('core/opt/openai')
+  local provider = require('core/opt/llm/commons/call.provider')
 
-  local ok, result = pcall(openai.api.responses, instructions)
+  local ok, result = pcall(provider.call, 'all', instructions)
 
-  if not ok or result == nil or result == '' then
+  if not ok or result == nil or result.response == nil or result.response == '' then
     return result
+  end
+
+  if result.error then
+    return error('Failed to generate commit message: "' .. result.error .. '"')
   end
 
   return result
@@ -66,12 +70,19 @@ function M.generate_conventional_commit()
 
   vim.schedule(function()
     local ok, result = pcall(M.generate_conventional_commit_message)
-    if not ok or result == nil or result == '' then
+    if not ok or result == nil then
       return error('Failed to generate commit message: "' .. vim.inspect(result) .. '"')
     end
+    if type(result) == 'table' and result.error then
+      return error('Failed to generate commit message: "' .. result.error .. '"')
+    end
+    local message = type(result) == 'table' and result.response or result
+    if not message or message == '' then
+      return error('Failed to generate commit message: no response')
+    end
 
-    loading.stop('Generating commit message...', 'Commit message generated successfully!')
-    fill_commit_buffer(result)
+    loading.stop('Generating commit message...', ('Commit message generated (%s).'):format((type(result) == 'table' and result.provider) or 'LLM'))
+    fill_commit_buffer(message)
   end)
 end
 
