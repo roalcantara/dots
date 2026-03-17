@@ -728,6 +728,7 @@ setup_user_home_and_dotfiles() {
   fi
   [ -d "$HOME/.local/share/dots/config" ] && backup "$HOME/.config" "$HOME/.local/share/dots/config" || fatal "Source directory '$HOME/.local/share/dots/config' not found!"
   backup "$HOME/.zshenv" "$HOME/.config/zsh/.zshenv"
+  backup "$HOME/.profile" "$HOME/.config/.profile"
   ensure_dirs_and_export_vars "$HOME/.config/zsh:ZDOTDIR" "$HOME/.config/flox:FLOX_PATH"
   is_container && run_cmd ${cmd_prefix}rm -rf "$HOME/.local/share/dots/.git"
   ok "$1" "USER/HOME/DOTS" "{XDG_CONFIG_HOME=$XDG_CONFIG_HOME, ZDOTDIR=$ZDOTDIR, FLOX_PATH=$FLOX_PATH}"
