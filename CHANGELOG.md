@@ -1,3 +1,16 @@
+# [1.31.0](https://github.com/roalcantara/dots/compare/v1.30.0...v1.31.0) (2026-03-17)
+
+
+### Bug Fixes
+
+* **git/config:** Disable skippedCherryPicks advice ([4d86efa](https://github.com/roalcantara/dots/commit/4d86efa0e5dd5fb28380eae78606e80f243e1e0e))
+* **zsh/.zshenv:** Improve conditional sourcing of .zprofile ([1ab7c60](https://github.com/roalcantara/dots/commit/1ab7c604c2fb3fdc223d88c27aaf440d4d193b0b))
+
+
+### Features
+
+* **install/zsh:** Enhance Zsh environment setup ([1d6c307](https://github.com/roalcantara/dots/commit/1d6c3070882b62a85b2bbbde487eb7d074fa9b3d))
+
 # [1.30.0](https://github.com/roalcantara/dots/compare/v1.29.0...v1.30.0) (2026-03-16)
 
 
