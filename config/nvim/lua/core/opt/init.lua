@@ -1,4 +1,1 @@
-return {
-  anthropic = require('core/opt/anthropic'),
-  openai = require('core/opt/openai'),
-}
+return require('core/opt/llm/init')

@@ -23,17 +23,25 @@ return function()
     return nil
   end
 
-  local instructions = {
-    'Generate the commit message for the following git '
-      .. change_type
-      .. ' changes:\n\n'
-      .. changes
-      .. '\n\n'
-      .. 'Use the Conventional Commits format:\n\n'
-      .. conventional_commits_format
-      .. '\n\n'
-      .. 'Return only the commit message, no other text or comments.\n\n',
-  }
+  local instructions = [[
+      Generate a commit for %s changes using the following CONVENTIONAL COMMITS format:
+      '''
+      %s
+      '''
 
-  return instructions
+      RULES:
+      - Return ONLY the commit message — no explanations, no markdown fences, no alternatives
+      - If multiple changes exist, cover the primary one in the subject and mention others in the body
+      - Omit body and footer sections if the subject line is self-explanatory
+
+      CHANGES:
+      '''
+      %s
+      '''
+    ]]
+
+  return {
+    system = 'You are a senior software engineer writing a git commit message.',
+    user = string.format(instructions, change_type, changes, conventional_commits_format)
+  }
 end
