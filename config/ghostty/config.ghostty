@@ -207,8 +207,8 @@ desktop-notifications = true
 ################################################################################
 ## MACOS SETTINGS
 ## https://ghostty.org/docs/features#macos
+## https://ghostty.org/docs/features/applescript#overview
 ################################################################################
-
 
 # Automatically enable the "Secure Input" feature when it detects that a password prompt is being displayed
 # https://ghostty.org/docs/config/reference#macos-auto-secure-input
@@ -526,5 +526,14 @@ keybind = global:unconsumed:super+ctrl+alt+p=toggle_command_palette
 
 # CLAUDE-CODE Fix
 keybind = shift+enter=text:/n
+
+###
+### SPLITTED SETTINGS AND RELOADING CONFIG
+### cmd+shift+, reloaded at runtime by pressing
+### https://ghostty.org/docs/config#splitting-into-multiple-files
+### https://ghostty.org/docs/config#reloading-the-configuration
+###
+
+config-file = ?auto/theme.ghostty
 
 # vi: set ft=ini:
