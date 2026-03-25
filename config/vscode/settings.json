@@ -1608,7 +1608,6 @@
   "amazonQ.workspaceIndexUseGPU": true,
   "nxConsole.disableFileWatching": true,
   "nxConsole.enableDebugLogging": true,
-  "workbench.colorTheme": "Catppuccin Mocha",
   "json.schemaDownload.trustedDomains": {
     "https://schemastore.azurewebsites.net/": true,
     "https://raw.githubusercontent.com/microsoft/vscode/": true,
@@ -1628,5 +1627,7 @@
   "typescript.experimental.useTsgo": false,
   "editor.codeActions.triggerOnFocusChange": true,
   "javascript.referencesCodeLens.showOnAllFunctions": true,
-  "containers.orchestratorClient": "com.microsoft.visualstudio.orchestrators.dockercompose"
+  "containers.orchestratorClient": "com.microsoft.visualstudio.orchestrators.dockercompose",
+  "githubPullRequests.pushBranch": "always",
+  "workbench.colorTheme": "Catppuccin Mocha"
 }
