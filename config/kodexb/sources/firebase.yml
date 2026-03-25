@@ -155,15 +155,53 @@ commands:
   npx firebase emulators:start --only hosting:
     desc: Start Emulator Suite (ONLY HOSTING)
     tags: [firebase]
-  npx firebase deploy --only functions:
-    desc: Deploy firebase functions
-    tags: [firebase]
-  npx firebase deploy --only hosting:
-    desc: Deploy firebase hostings
-    tags: [firebase]
   npx firebase deploy:
     desc: Deploy to Firebase
     tags: [firebase]
+  npx firebase deploy --only functions:
+    desc: Deploy Cloud Functions for Firebase
+    tags: [firebase]
+    links: [https://firebase.google.com/docs/cli]
+  npx firebase deploy --only hosting:
+    desc: Deploy Firebase Hosting content
+    tags: [firebase]
+    links: [https://firebase.google.com/docs/cli]
+  npx firebase --only database:
+    desc: Deploy Firebase Realtime Database Security Rules
+    tags: [firebase]
+    links: [https://firebase.google.com/docs/cli]
+  npx firebase --only dataconnect:
+    desc: Deploy Firebase Data Connect schemas and connectors
+    tags: [firebase]
+    links: [https://firebase.google.com/docs/cli]
+  npx firebase --only firestore:
+    desc: Deploy Cloud Firestore Security Rules and indexes for all configured databases
+    tags: [firebase]
+    links: [https://firebase.google.com/docs/cli]
+  npx firebase --only storage:
+    desc: Deploy Cloud Storage for Firebase Security Rules
+    tags: [firebase]
+    links: [https://firebase.google.com/docs/cli]
+  # FIREBASE REMOTE CONFIG
+  npx firebase remoteconfig:get --out remoteconfig.template.json:
+    desc: Get firebase remote config
+    tags: [firebase]
+  npx firebase remoteconfig:set <KEY> <VALUE>:
+    desc: Set firebase remote config
+    tags: [firebase]
+  npx firebase remoteconfig:set-multi <KEY> <VALUE>:
+    desc: Set firebase remote config
+    tags: [firebase]
+  npx firebase remoteconfig:versions:list:
+    desc: List firebase remote config versions
+    tags: [firebase]
+  npx firebase remoteconfig:rollback --version_number <version_number>:
+    desc: Rollback firebase remote config
+    tags: [firebase]
+  npx firebase deploy --only remoteconfig:
+    desc: Deploy firebase remote config
+    tags: [firebase]
+  # FIREBASE HOSTING
   npx firebase hosting:channel:list:
     desc: List channels - including 'live' - from default Hosting
     tags: [firebase]
@@ -179,7 +217,46 @@ commands:
   npx firebase hosting:channel:delete <ID>:
     desc: Delete prev channel
     tags: [firebase]
+  # FIREBASE FUNCTIONS SECRETS
+  npx firebase functions:secrets:set SECRET_NAME:
+    desc: Firebase CLI command to create a secret for use in Cloud Functions
+    tags: [firebase, secrets]
+    links: [https://firebase.google.com/docs/functions/1st-gen/config-env-1st#managing_secrets]
+    notes:
+      - sh: | #shell
+          # to make `southamerica-east1` the default region for `gcloud run services describe`, run
+          gcloud config set run/region southamerica-east1
 
+          # Get the function service account
+          gcloud run services describe requestcode \
+            --region=southamerica-east1 \
+            --project=$(gcloud config get-value project) \
+            --format="value(spec.template.spec.serviceAccountName)"
+
+          # Add IAM policy binding to the secret
+          gcloud secrets add-iam-policy-binding SENDGRID_CONSORCIEI \
+            --member="serviceAccount:829496193240-compute@developer.gserviceaccount.com" \
+            --role="roles/secretmanager.secretAccessor" \
+            --project=$(gcloud config get-value project)
+  npx firebase functions:secrets:access SECRET_NAME:
+    desc: View the value of a secret
+    tags: [firebase, secrets]
+    links: [https://firebase.google.com/docs/functions/1st-gen/config-env-1st#managing_secrets]
+  npx firebase functions:secrets:destroy SECRET_NAME:
+    desc: Destroy a secret
+    tags: [firebase, secrets]
+    links: [https://firebase.google.com/docs/functions/1st-gen/config-env-1st#managing_secrets]
+  npx firebase functions:secrets:get SECRET_NAME:
+    desc: View all secret versions and their state
+    tags: [firebase, secrets]
+    links: [https://firebase.google.com/docs/functions/1st-gen/config-env-1st#managing_secrets]
+  npx firebase functions:secrets:prune:
+    desc: Automatically clean up all secrets that aren't referenced by any of your functions
+    tags: [firebase, secrets]
+    links: [https://firebase.google.com/docs/functions/1st-gen/config-env-1st#managing_secrets]
+  npx firebase apphosting:secrets:set SECRET_NAME:
+    desc: The Firebase CLI command to create a secret for use in App Hosting
+    tags: [firebase, secrets]
   # FIREBASE EMULATOR SUITE
   curl -sL https://firebase.tools | bash:
     desc: Install Firebase CLI
@@ -266,7 +343,6 @@ commands:
   gsutil cp gs://://consorciei-p2p.appspot.com my-downloaded-file.txt:
     desc: Download a file named my-file.txt from a bucket named consorciei-p2p.appspot.com to the local machine with the name my-downloaded-file.txt
     tags: [gcloud, datastore]
-
 cheats:
   firestore/queries/OR:
     desc: Firestore Query OR

@@ -1343,9 +1343,6 @@ bookmarks:
   https://youtu.be/4CpR-_Nyd00:
     tags: [bookmark, tutorial]
     desc: Npm workspaces tutorial
-  https://youtu.be/SDa3v4Quj7Y:
-    desc: My Favorite Way To Handle Dev Environments | VS Code Devcontainers
-    tags: [devenv, vscode]
   https://youtu.be/tVUE_JiPU-k:
     tags: [bookmark, socket]
     desc: What is Socket.IO? How to use it?

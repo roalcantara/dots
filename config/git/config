@@ -120,6 +120,10 @@ caam=commit --all --message
 # @example: git wip "Temp"
 wip=!git commit --all --no-verify --message 'wip: '${1:-Temp}
 
+# Throwaway / temporary commit of all changes (same flags as wip)
+# @example: git tmp "Temp"
+tmp=!git commit --all --no-verify --message 'tmp: '${1:-Temp}
+
 # Reset HEAD softly to a specific commit
 # @example: git rh
 # @example: git rh [commit]
@@ -549,6 +553,10 @@ pp=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pp
 
 # Interactive log view using fzf to select a commit
 # @example: git fzl
+# @example: git lol
+# @example: git fzlog
+lol=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" lol
+fzlog=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzlog
 fzl=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzl
 
 # Shows the diff of the changes not staged for commit
@@ -572,12 +580,8 @@ fzus=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzus
 fzc=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzc
 
 # Interactive delete branch using fzf
-# @example: git fzbd
-fzbd=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzbd
-
-# Interactive force delete branch using fzf
-# @example: git fzbx
-fzbx=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzbx
+# @example: git fzb
+fzb=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzb
 
 # Interactive rebase using fzf to select a commit
 # @example: git fzr
