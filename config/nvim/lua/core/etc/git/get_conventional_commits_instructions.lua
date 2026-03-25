@@ -42,6 +42,6 @@ return function()
 
   return {
     system = 'You are a senior software engineer writing a git commit message.',
-    user = string.format(instructions, change_type, changes, conventional_commits_format)
+    user = string.format(instructions, change_type, conventional_commits_format, changes)
   }
 end

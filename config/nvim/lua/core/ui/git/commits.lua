@@ -37,7 +37,7 @@ local function fill_commit_buffer(message)
 end
 
 --- Generate a conventional commit message
---- @return string? result
+--- @return table|nil On success: { provider = string, response = string, ... }. On LLM failure: { error = string }. Throws via error() for invalid repo state.
 function M.generate_conventional_commit_message()
   local instructions = git.get_conventional_commits_instructions()
 
@@ -49,8 +49,14 @@ function M.generate_conventional_commit_message()
 
   local ok, result = pcall(provider.call, 'all', instructions)
 
-  if not ok or result == nil or result.response == nil or result.response == '' then
-    return result
+  if not ok then
+    return { error = tostring(result) }
+  end
+  if result == nil then
+    return { error = 'No result from provider' }
+  end
+  if result.response == nil or result.response == '' then
+    return type(result) == 'table' and result or { error = tostring(result) }
   end
 
   if result.error then
@@ -73,10 +79,13 @@ function M.generate_conventional_commit()
     if not ok or result == nil then
       return error('Failed to generate commit message: "' .. vim.inspect(result) .. '"')
     end
-    if type(result) == 'table' and result.error then
+    if type(result) ~= 'table' then
+      return error('Failed to generate commit message: unexpected ' .. type(result) .. ' — ' .. vim.inspect(result))
+    end
+    if result.error then
       return error('Failed to generate commit message: "' .. result.error .. '"')
     end
-    local message = type(result) == 'table' and result.response or result
+    local message = result.response
     if not message or message == '' then
       return error('Failed to generate commit message: no response')
     end

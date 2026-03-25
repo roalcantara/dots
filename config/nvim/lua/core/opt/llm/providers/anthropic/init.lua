@@ -1,3 +1,3 @@
 return {
-  api = require('core/opt/anthropic/api'),
+  api = require('core/opt/llm/providers/anthropic/api'),
 }

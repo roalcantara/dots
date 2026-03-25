@@ -1,3 +1,3 @@
 return {
-  api = require('core/opt/ollama/api'),
+  api = require('core/opt/llm/providers/ollama/api'),
 }

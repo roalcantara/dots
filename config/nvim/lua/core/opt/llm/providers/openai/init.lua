@@ -1,3 +1,3 @@
 return {
-  api = require('core/opt/openai/api'),
+  api = require('core/opt/llm/providers/openai/api'),
 }
