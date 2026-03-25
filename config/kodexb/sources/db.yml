@@ -313,6 +313,162 @@ bookmarks:
     links:
       - Cockroach University: https://university.cockroachlabs.com
       - Introduction to Distributed SQL and CockroachDB: https://university.cockroachlabs.com/courses/course-v1:crl+intro-to-distributed-sql-and-cockroachdb+self-paced/about
+  https://duckdb.org:
+    desc: DuckDB is an in-process SQL OLAP database management system
+    tags: [db, analytic]
+    links: [https://duckdb.org/docs/overview/overview]
+    notes:
+      - md: | #markdown
+          ## Overview
+          DuckDB is an in-process SQL OLAP database management system
+          It is a modern, open-source database management system that is designed to be fast, easy to use, and flexible.
+  https://geldata.com:
+    desc: Graph-relational database on top of Postgres with object-type schema, EdgeQL query language, built-in Auth, AI/vector extensions and managed cloud
+    tags: [database, gel, edgedb, postgres]
+    links: [https://geldata.com, https://docs.geldata.com]
+    notes:
+      - md: | #markdown
+          ### What is Gel?
+
+          Gel is a **graph-relational database** built on top of Postgres. Renamed from EdgeDB in February 2025.
+
+          Instead of tables + foreign keys, you define **object types with links** between them — the database thinks the way your code thinks.
+
+          ### Main Features
+
+          - Object-type schema with typed links (no JOIN hell)
+          - EdgeQL — composable query language designed to replace SQL
+          - Built-in migrations via CLI
+          - Built-in Auth (OAuth, magic link, passwords)
+          - Built-in AI/vector extension
+          - Gel Cloud — managed hosting
+          - Client libs for JS/TS, Python, Go, Rust, Dart
+
+          ### When to Use
+
+          - Backend services with rich domain models and nested relationships
+          - When TypeORM/Prisma boilerplate is getting in the way
+          - Projects where Auth and schema migrations need to move fast
+
+          ### When NOT to Use
+
+          - Local/offline-first CLI tools — requires a running server
+          - Simple CRUD with flat data — overkill
+          - Existing Postgres projects where switching cost outweighs gains
+
+          ### Basic Schema (SDL)
+
+          ```sdl
+            type Person {
+              required name: str;
+            }
+
+            type Movie {
+              required title: str;
+              multi actors: Person;
+            }
+            ```
+      - sh: | #shell
+
+          #!/bin/bash
+
+          # Install
+          curl --proto '=https' --tlsv1.2 -sSf https://geldata.com/sh | sh
+
+          ### Basic CLI
+          gel project init        # init project
+          gel                     # open interactive shell
+          gel migration create    # create migration
+          gel migration apply     # apply migration
+          gel-generate edgeql-ts  # generate TS client
+  https://docs.geldata.com/reference/edgeql:
+    desc: EdgeQL is Gel's query language — queries return shaped objects not flat rows, relationships are navigated with dot notation, no JOINs needed
+    tags: [database, gel, edgeql, query-language]
+    links: [https://docs.geldata.com/reference/edgeql]
+    notes:
+      - md: | #markdown
+          ### EdgeQL is Gel's built-in query language — a ground-up redesign of SQL.
+
+          EdgeQL is to SQL what TypeScript is to JavaScript — **same power**, but **structure and types are built in from the start**, not added on top.
+
+          **Core ideas:** 
+            - Queries return **shaped objects**, not flat rows. 
+            - You navigate relationships with `.` like you would in code.
+
+          ```edgeql
+            -- No JOIN needed, just follow the link
+            select Movie {
+              title,
+              actors: { name }
+            };
+            ```
+
+            ### Key Differences from SQL
+
+            - **No JOINs** — navigate links with dot notation
+            - **Composable** — use any query as an expression inside another
+            - **Structured results** — returns JSON-like objects, not flat rows
+            - **No NULLs by default** — required fields enforced at schema level
+            - **Type-safe** — generated TS client knows the exact shape of every result
+
+            ### Common Patterns
+
+            ```edgeql
+            -- filter
+            select Movie filter .title = "The Matrix";
+
+            -- insert with linked data
+            insert Movie {
+              title := "Dune",
+              actors := (select Person filter .name = "Timothée Chalamet")
+            };
+
+            -- update
+            update Movie filter .title = "Dune"
+            set { title := "Dune Part One" };
+
+            -- delete
+            delete Movie filter .year < 1950;
+
+            -- computed property inline
+            select Movie {
+              title,
+              actor_count := count(.actors)
+            };
+            ```
+      - edgeql: | #edgeql
+          -- 💡 Queries return shaped objects, not flat rows
+          -- SQL: SELECT movies.title, persons.name FROM movies JOIN ...
+          -- EdgeQL:
+          select Movie {
+            title,
+            actors: { name }
+          };
+      - edgeql: | #edgeql
+          -- 💡 A FEW KEY PATTERNS
+
+          -- filter
+          select Movie filter .title = "The Matrix";
+
+          -- insert with linked data
+          insert Movie {
+            title := "Dune",
+            actors := (select Person filter .name = "Timothée Chalamet")
+          };
+
+          -- update
+          update Movie filter .title = "Dune"
+          set { title := "Dune Part One" };
+
+          -- delete
+          delete Movie filter .year < 1950;
+
+          -- computed / subquery inline
+          select Movie {
+            title,
+            actor_count := count(.actors)
+          };
+
 cheats:
   Relational x NoSQL:
     desc: Relational x NoSQL

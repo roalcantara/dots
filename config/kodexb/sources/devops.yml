@@ -852,6 +852,129 @@ cheats:
           bauh-cli clean
 
           echo "Developer environment ready!"
+  CI/CD on GitHub Actions:
+    desc: CI/CD on GitHub Actions
+    tags: [devop, github, actions]
+    links: [https://docs.github.com/en/actions]
+    notes:
+      - md: | #markdown
+          # CI/CD on GitHub Actions
+
+          A basic CI/CD Pipeline can be done on GitHub Actions with a few steps:
+
+          1. REVIREW: 
+            - When a non-draft pull request is opened, created, or updated, the review workflow will run
+            - It will lint, test, and send a preview version to DockerHub
+          2. RELEASE: 
+            - When a the branch main is updated, the release workflow will run
+            - It will create a release and publish the code to DockerHub
+          3. PUBLISH: 
+            - When a new release is created, the publish workflow will run
+            - It will build and upload self-contained binaries (`linux-x64`, `linux-arm64`, `darwin-arm64`) to the GitHub Release,
+            - Then it will generate and upload checksums with install notes, 
+            - Then it will publish a multi-arch Docker image to DockerHub with versioned tags
+            - Then it will update the production environment URL
+            - Finallt, it will set the GitHub Release to public
+      - md: | #markdown
+          # Best practices for publishing immutable releases
+
+          We recommend you use the following workflow for publishing an immutable release.
+
+          1. Create the release as a draft.
+          2. Attach all associated assets to the draft release.
+          3. Publish the draft release.
+          This ensures that all assets are in place before the release becomes immutable, preventing the need to work around immutability restrictions.
+  Provenance, Attestations, and SLSA:
+    desc: Provenance attestation is a tamper-proof receipt, signed by GitHub's infrastructure, proving that a specific binary was built from a specific commit by a specific workflow — and anyone can verify it independently.
+    tags: [devop, github, actions]
+    links: [https://docs.github.com/en/actions/security-for-github-actions/security-provenance-for-your-workflows]
+    notes:
+      - md: | #markdown
+          # Provenance, Attestations, and SLSA
+
+          ## The core problem it solves
+
+          - When you download a binary from the internet, how do you know it actually came from the source code you can read on GitHub?
+          - How do you know it wasn't tampered with between the build and the download?
+          - This is called the supply chain problem — the chain between "source code" and "artifact you run" can be compromised at any step.
+
+          ## The three concepts
+            
+          ### Provenance
+          - is simply a record of where something came from and how it was built. 
+          - Like a certificate of origin on a product. 
+          - For a GitHub Actions build it answers: which repo, which commit, which workflow, which runner, at what time produced this artifact.
+
+          ### Attestation
+          - is a signed statement asserting that provenance is true. 
+          - The signature proves the statement was made by a specific identity (in this case, GitHub's own OIDC identity for the Actions runner) and hasn't been tampered with since. 
+          - Without the signature it's just a text file anyone could fake.
+
+          ### SLSA
+          - (Supply-chain Levels for Software Artifacts, pronounced "salsa") is a security framework that defines levels of trustworthiness for how software is built. 
+          - Provenance attestations are what gets you to SLSA Level 2 and above.
+
+          ## HOW IT WORKS
+
+          1. Collects metadata about the build — repo, commit SHA, workflow file, runner environment, timestamp
+          2. Signs that metadata using the runner's OIDC token, which is a short-lived cryptographic identity GitHub issues specifically for that job
+          3. Publishes the signed attestation to GitHub's Sigstore transparency log — a public, append-only, tamper-evident ledger
+
+          The result is a publicly verifiable record that says: 
+
+          > "This specific binary was produced by this specific workflow at this specific commit, and GitHub's infrastructure signed this statement."
+
+          And anyone can then verify it:
+
+          ```sh #shell
+          gh attestation verify dist/kb --repo roalcantara/kb
+          ```
+
+          ## WHY USE IT?
+
+          ### For users
+
+          — Can cryptographically verify that the binary they downloaded matches what was built from the public source code.
+          - No blind trust required.
+
+          ### For you
+
+          — It proves you didn't build it on your laptop and sneak something in.
+          - The build happened in a controlled, auditable environment.
+
+          ### For compliance
+
+          — Some organisations (government, finance, healthcare) are starting to require SLSA provenance for any software they run.
+          - Having it now future-proofs your project.
+
+          ### For the ecosystem
+
+          — Raises the bar for everyone.
+          - Supply chain attacks (like the famous XZ Utils attack in 2024) become much harder to pull off undetected when provenance is the norm.
+
+          ## WHEN TO AVOID IT OR SKIP IT
+
+          ### Private repos where the transparency log is a concern
+
+          — attestations are published to a public ledger.
+          - This means the fact that your repo produced a build at a given commit becomes public record, even if the repo itself is private. Usually not a problem for open source, but worth knowing.
+
+          ### Very simple personal projects
+
+          — for a tool only you use, the overhead isn't worth much.
+          - But for something you distribute to others (like kb if it grows), it starts to matter.
+
+          ### When you don't control the artifact
+
+          — if you're just re-packaging someone else's binary, attesting it is misleading because the provenance stops at your repackaging step, not at the original source.
+
+          ## HOW IT RELATES TO SBOM: TRUE AND PROVENANCE: FALSE IN DOCKERFILES?
+
+          - You already have `sbom: true` in your Docker build steps
+             — that generates a Software Bill of Materials, which is a manifest of every package and dependency inside the image. 
+             - It's related but different: SBOM tells you what's in the artifact, provenance tells you how it was built.
+          - The `provenance: false` flag in Dockerfiles is the Docker-specific provenance flag (OCI image provenance), which you may have disabled because it was causing issues with some registries. 
+            - That's separate from `actions/attest-build-provenance`, which works at the GitHub level rather than the Docker level.
 
 commands:
   # mise | https://mise.jdx.dev
