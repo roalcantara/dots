@@ -65,6 +65,13 @@ commands:
     desc: Link openjdk to /Library/Java/JavaVirtualMachines
     tags: [maven, springboot, java, jdk, openjdk]
 
+  dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}':
+    desc: Check the user's shell (as used by the current login session)
+    tags: [macos, user, shell]
+  dscl . -read /Groups/"wheel" &>/dev/null:
+    desc: Check if the wheel group exists
+    tags: [macos, user, group]
+
   ### defaults | macOS user preferences system
   defaults help:
     desc: Show help for defaults

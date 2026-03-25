@@ -17,12 +17,12 @@
 
 # MISE | https://mise.jdx.dev {
   # A polyglot tool version manager. It replaces tools like asdf, nvm, pyenv, rbenv, etc.
-  # Set the global configuration directory path
-  export MISE_GLOBAL_CONFIG_DIR=${MISE_GLOBAL_CONFIG_DIR:-$XDG_DATA_HOME/mise}
   # Set the global configuration file path
-  export MISE_GLOBAL_CONFIG_FILE=${MISE_GLOBAL_CONFIG_FILE:-$MISE_GLOBAL_CONFIG_DIR/config.toml}
+  export MISE_GLOBAL_CONFIG_FILE=${MISE_GLOBAL_CONFIG_FILE:-$XDG_CONFIG_HOME/mise/config.toml}
   # Set the cache directory path
   export MISE_CACHE_DIR=${MISE_CACHE_DIR:-$XDG_CACHE_HOME/mise}
+  # Set the data directory path
+  export MISE_DATA_HOME=${MISE_DATA_HOME:-$XDG_DATA_HOME/mise}
 # }
 
 # STARSHIP | https://starship.rs | https://starship.rs/config/#configuration {
