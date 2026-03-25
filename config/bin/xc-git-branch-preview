@@ -1,0 +1,34 @@
+#!/usr/bin/env zsh
+
+#? xc-git-branch-preview - Display branch metadata and recent commits
+#?
+#? Usage:
+#?   xc-git-branch-preview <branch>
+#?   xc-git-branch-preview -h | --help
+#?
+#? Arguments:
+#?   branch    Local branch name to preview
+#?
+#? Examples:
+#?   xc-git-branch-preview main                                         preview main branch
+#?   fzf --preview 'xc-git-branch-preview {}' | xargs git checkout      fzf, preview and checkout branches
+
+branch="${1}"
+
+case "${branch}" in
+  -h|--help) grep '^#?' "${0}" | sed 's/^#? \{0,1\}//'; exit 0 ;;
+  '')        grep '^#?' "${0}" | sed 's/^#? \{0,1\}//'; exit 1 ;;
+esac
+
+gum style --foreground 212 --bold "── Last commit ──────────────────────"
+git show --no-patch \
+  --format="%C(yellow)%h%Creset  %C(bold)%s%Creset%n%C(cyan)%an%Creset · %C(green)%ar%Creset%n%C(dim)%D%Creset" \
+  "${branch}" 2>/dev/null
+
+echo ""
+gum style --foreground 39 --bold "── Recent history ───────────────────"
+git log --oneline --graph --decorate --color=always -15 "${branch}" 2>/dev/null
+
+echo ""
+gum style --foreground 212 --bold "── Diff (last commit) ───────────────"
+git show --no-color "${branch}" | delta --pager=never --width="${FZF_PREVIEW_COLUMNS:-80}"
