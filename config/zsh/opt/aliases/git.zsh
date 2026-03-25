@@ -11,14 +11,10 @@ alias gsts='g status --short'
 
 # BRANCH
 alias gb!='g branch'
-alias gb='g branches'
-alias gbs='g show-branch'
+alias gbs='g branches'
+alias gba='g show-branch'
 alias gbv='g branch -vv'
-alias gbva='g branches'
-alias gbd='g branch --delete'
-alias gbd!='g branch --delete --force'
-alias gbx='g fzbd'  # (fuzzy) git branch -d [<branch>]
-alias gbx!='g fzbx' # (fuzzy) git branch -D [<branch>]
+alias gbb='g fzb'  # (fuzzy) git branch -d [<branch>] / -D [<branch>]
 
 # PULL
 alias gfr='g pull --rebase'
@@ -27,13 +23,13 @@ alias gprm='g pull --rebase --autostash $(git main-branch)'
 alias gprd='g pull --rebase --autostash develop'
 
 # CHECKOUT
-# alias gco='g fzc' # (fuzzy) git checkout --guess [<pathspec>…​]
+# alias gco='g fzb' # (fuzzy) git checkout --guess [<pathspec>…​]
 gco() {
   if [ $# -eq 0 ]; then
     # (fuzzy) git checkout --guess [<pathspec>…​]
-    git fzc
+    git fzb
   else
-    git checkout -b "$@"
+    git checkout "$@"
   fi
 }
 alias gco!='g fetch --all && git remote prune origin && git fzc'
@@ -100,8 +96,8 @@ alias gcpa='g cherry-pick --abort'
 
 # PUSH
 alias gp='g push -v'
-alias gpf='g push -v --force'
-alias gpu='g push -v --set-upstream origin "$(git current-branch)"'
+alias gpf='g pf'
+alias gpu='g pc'
 alias gpT='g push --tags'
 
 # REMOTE
@@ -113,4 +109,4 @@ alias gtg='g tag --format "%(color:green bold)%(objectname:short)%09%(color:yell
 
 # Copy co-authors' names to clipboard
 # https://blog.testdouble.com/posts/2020-04-07-favorite-things/
-alias gcauth='g Co-authored-by: %s" "$(git log --pretty=format:"%an <%ae>" -1000 | sort | uniq | fzf)" | pbcopy'
+alias gcauth='printf "Co-authored-by: %s\n" "$(git log --pretty=format:"%an <%ae>" -1000 | sort -u | fzf)" | pbcopy'

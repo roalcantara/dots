@@ -1,0 +1,150 @@
+#!/usr/bin/env zsh
+
+#? xc-git-log-fzf - Interactive git log (fzf); pick a commit, optional gitx actions
+#?
+#? Usage:
+#?   xc-git-log-fzf              # Enter prints short hash (for pipes)
+#?   xc-git-log-fzf <action>   # Enter runs that gitx action on picked commit
+#?   xc-git-log-fzf -h | --help
+#?
+#? Actions (first argument): rebase-from, fix, reword, edit, drop, reset-soft, reset-hard
+#?
+#? Keys (header in UI): ↵ hash/action  ^R rebase-from  ^I fix  ^W reword  ^E edit
+#?   ⌥D drop  ^S reset --soft  ⌥H reset --hard  ^O full log
+#?
+#? Examples:
+#?   xc-git-log-fzf                              pick commit, print hash
+#?   git log --color=always | fzf …                 (used internally with same binds)
+
+case "${1:-}" in
+  -h|--help)
+    grep '^#?' "${0}" | sed 's/^#? \{0,1\}//'
+    exit 0
+    ;;
+esac
+
+local_gx="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx"
+if [[ ! -f "$local_gx" ]]; then
+  echo "xc-git-log-fzf: gitx script not found at $local_gx" >&2
+  exit 127
+fi
+
+enter_action="${1:-}"
+[[ -n "$enter_action" ]] && shift
+
+# fzf execute* runs under the user's shell; keep tests POSIX ([) inside bind strings.
+preview='h=$(echo {} | grep -oE "[a-f0-9]{7}" | head -1); [ -n "$h" ] && git -c color.ui=always show --stat "$h" 2>/dev/null || true'
+
+if [[ -z "$enter_action" ]]; then
+  header='↵ hash  ^R rebase-from  ^I fix+autosquash  ^W reword  ^E edit  ⌥D drop  ^S reset --soft  ⌥H reset --hard  ^O log'
+else
+  header="↵ ${enter_action}  ^R rebase-from  ^I fix+autosquash  ^W reword  ^E edit  ⌥D drop  ^S reset --soft  ⌥H reset --hard  ^O log"
+fi
+
+_h_snippet=$'h=$(echo "{}" | grep -oE \'[a-f0-9]{7}\' | head -1); [ -z "$h" ] && exit 0'
+
+if [[ -n "$enter_action" ]]; then
+  case "$enter_action" in
+    reset-soft)
+      enter_bind="enter:execute-silent(
+            ${_h_snippet}
+            git reset --soft \"\$\{h\}^\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+          )+abort" ;;
+    reset-hard)
+      enter_bind="enter:execute-silent(
+            ${_h_snippet}
+            git reset --hard \"\$\{h\}^\" >/dev/tty 2>&1
+          )+abort" ;;
+    fix)
+      enter_bind="enter:execute-silent(
+            ${_h_snippet}
+            zsh \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+          )+abort" ;;
+    *)
+      enter_bind="enter:execute-silent(
+            ${_h_snippet}
+            zsh \"$local_gx\" $enter_action \"\$h\" >/dev/tty 2>&1
+          )+abort" ;;
+  esac
+
+  git log --color=always | fzf --ansi \
+    --header="$header" \
+    --preview="$preview" \
+    --preview-window 'right:55%:wrap' \
+    --bind 'esc:abort,q:abort' \
+    --bind "$enter_bind" \
+    --bind "ctrl-r:execute-silent(
+          ${_h_snippet}
+          zsh \"$local_gx\" rebase-from \"\$h\" >/dev/tty 2>&1
+        )+abort" \
+    --bind "ctrl-i:execute-silent(
+          ${_h_snippet}
+          zsh \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+        )+abort" \
+    --bind "ctrl-w:execute-silent(
+          ${_h_snippet}
+          zsh \"$local_gx\" reword \"\$h\" >/dev/tty 2>&1
+        )+abort" \
+    --bind "ctrl-e:execute-silent(
+          ${_h_snippet}
+          zsh \"$local_gx\" edit \"\$h\" >/dev/tty 2>&1
+        )+abort" \
+    --bind "alt-d:execute-silent(
+          ${_h_snippet}
+          zsh \"$local_gx\" drop \"\$h\" >/dev/tty 2>&1
+        )+abort" \
+    --bind "ctrl-s:execute-silent(
+          ${_h_snippet}
+          git reset --soft \"\$\{h\}^\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+        )+abort" \
+    --bind "alt-h:execute-silent(
+          ${_h_snippet}
+          git reset --hard \"\$\{h\}^\" >/dev/tty 2>&1
+        )+abort" \
+    --bind "ctrl-o:execute(
+          h=\$(echo \"{}\" | grep -oE '[a-f0-9]{7}' | head -1)
+          [ -n \"\$h\" ] && git log --oneline --graph --decorate --color=always \"\$h\" | delta --pager=never --width=\"\${FZF_PREVIEW_COLUMNS:-80}\" | less -R >/dev/tty 2>&1
+        )"
+  exit 0
+fi
+
+selected=$(git log --color=always | fzf --ansi \
+  --header="$header" \
+  --preview="$preview" \
+  --preview-window 'right:55%:wrap' \
+  --bind 'esc:abort,q:abort' \
+  --bind "ctrl-r:execute-silent(
+        ${_h_snippet}
+        zsh \"$local_gx\" rebase-from \"\$h\" >/dev/tty 2>&1
+      )+abort" \
+  --bind "ctrl-i:execute-silent(
+        ${_h_snippet}
+        zsh \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+      )+abort" \
+  --bind "ctrl-w:execute-silent(
+        ${_h_snippet}
+        zsh \"$local_gx\" reword \"\$h\" >/dev/tty 2>&1
+      )+abort" \
+  --bind "ctrl-e:execute-silent(
+        ${_h_snippet}
+        zsh \"$local_gx\" edit \"\$h\" >/dev/tty 2>&1
+      )+abort" \
+  --bind "alt-d:execute-silent(
+        ${_h_snippet}
+        zsh \"$local_gx\" drop \"\$h\" >/dev/tty 2>&1
+      )+abort" \
+  --bind "ctrl-s:execute-silent(
+        ${_h_snippet}
+        git reset --soft \"\$\{h\}^\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+      )+abort" \
+  --bind "alt-h:execute-silent(
+        ${_h_snippet}
+        git reset --hard \"\$\{h\}^\" >/dev/tty 2>&1
+      )+abort" \
+  --bind "ctrl-o:execute(
+        h=\$(echo \"{}\" | grep -oE '[a-f0-9]{7}' | head -1)
+        [ -n \"\$h\" ] && git log --oneline --graph --decorate --color=always \"\$h\" | delta --pager=never --width=\"\${FZF_PREVIEW_COLUMNS:-80}\" | less -R >/dev/tty 2>&1
+      )")
+
+[[ -z "$selected" ]] && exit 0
+echo "$selected" | zsh "$local_gx" grep-commit
