@@ -54,7 +54,7 @@ cheats:
           mkdir -p /home/vscode/.local/share
           cp -R /app /home/vscode/.local/share/dots
 
-          curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.9.1.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
+          curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.11.0.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
           flox init --name 'default' --dir /home/vscode/.config/flox
           echo 'eval "$(flox activate --dir /home/vscode/.config/flox -m run)"' >> /home/vscode/.bashrc && source /home/vscode/.bashrc
           echo 'eval "$(flox activate --dir /home/vscode/.config/flox -m run)"' >> /home/vscode/.zshrc && source /home/vscode/.zshrc
@@ -622,11 +622,11 @@ cheats:
           flox include upgrade
 
 commands:
-  curl -fL https://downloads.flox.dev/by-env/stable/osx/flox-1.9.1.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target /usr/local/bin && rm /tmp/flox.pkg && flox --version:
+  curl -fL https://downloads.flox.dev/by-env/stable/osx/flox-1.11.0.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target /usr/local/bin && rm /tmp/flox.pkg && flox --version:
     desc: Download and install/update Flox in a Mac (Arm64) using curl
     tags: [flox]
     links: [https://flox.dev/docs/install-flox/install/#__tabbed_1_3]
-  wget -O /tmp/flox.deb https://downloads.flox.dev/by-env/stable/deb/flox-1.9.1.aarch64-linux.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version:
+  wget -O /tmp/flox.deb https://downloads.flox.dev/by-env/stable/deb/flox-1.11.0.aarch64-linux.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version:
     desc: Download and install Flox in a Debian (Arm64) using wget
     tags: [flox]
     links: [https://flox.dev/docs/install-flox/install/#__tabbed_1_3]
