@@ -84,7 +84,7 @@ run_as_user() {
       XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-}" \
       XDG_DATA_HOME="${XDG_DATA_HOME:-}" \
       MISE_DATA_HOME="${MISE_DATA_HOME:-}" \
-      MISE_GLOBAL_CONFIG_DIR="${MISE_GLOBAL_CONFIG_DIR:-}" \
+      MISE_CACHE_DIR="${MISE_CACHE_DIR:-}" \
       FLOX_PATH="${FLOX_PATH:-}" \
       GITHUB_TOKEN="${GITHUB_TOKEN:-}" \
       USR_LOCAL_BIN="${USR_LOCAL_BIN:-}" \
@@ -664,8 +664,8 @@ prepare_home_and_xdg_dirs() {
     "$HOME/.local/share/npm:NPM_CONFIG_PREFIX" \
     "$HOME/.local/share/gems:GEM_HOME" \
     "$HOME/.local/share/mise:MISE_DATA_HOME" \
-    "$HOME/.local/share/mise:MISE_GLOBAL_CONFIG_DIR"
-  ok "$1" "HOME/XDG/DIRS" "{HOME=$HOME, XDG_CONFIG_HOME=$XDG_CONFIG_HOME, XDG_CACHE_HOME=$XDG_CACHE_HOME, XDG_DATA_HOME=$XDG_DATA_HOME, XDG_STATE_HOME=$XDG_STATE_HOME, ZSH_CACHE_DIR=$ZSH_CACHE_DIR, NPM_CONFIG_PREFIX=$NPM_CONFIG_PREFIX, GEM_HOME=$GEM_HOME, MISE_DATA_HOME=$MISE_DATA_HOME, MISE_GLOBAL_CONFIG_DIR=$MISE_GLOBAL_CONFIG_DIR} exported!" "✔"
+    "$HOME/.cache/mise:MISE_CACHE_DIR"
+  ok "$1" "HOME/XDG/DIRS" "{HOME=$HOME, XDG_CONFIG_HOME=$XDG_CONFIG_HOME, XDG_CACHE_HOME=$XDG_CACHE_HOME, XDG_DATA_HOME=$XDG_DATA_HOME, XDG_STATE_HOME=$XDG_STATE_HOME, ZSH_CACHE_DIR=$ZSH_CACHE_DIR, NPM_CONFIG_PREFIX=$NPM_CONFIG_PREFIX, GEM_HOME=$GEM_HOME, MISE_DATA_HOME=$MISE_DATA_HOME, MISE_CACHE_DIR=$MISE_CACHE_DIR} exported!" "✔"
 }
 prepare_tools_zsh() {
   local zsh_path="$(command -v zsh)"
@@ -733,10 +733,16 @@ setup_user_home_and_dotfiles() {
   # Create symlinks in $HOME/.local/bin for each file in $HOME/.local/share/dots/config/bin if not already present
   if [ -d "$HOME/.local/share/dots/config/bin" ]; then
     for file in "$HOME/.local/share/dots/config/bin/"*; do
+      # Only expose executable regular files as commands in ~/.local/bin.
+      [ -f "$file" ] && [ -x "$file" ] || continue
       local base_name="$(basename "$file")"
-      if [ -f "$file" && ! -L "$HOME/.local/bin/$base_name" ]; then
-        run_cmd ${cmd_prefix}ln -sf "$file" "$HOME/.local/bin/$base_name"
-        ok "$1" "USER/HOME/DOTS/BIN" "Symlink created for '$base_name'! ✔"
+      local current_target="$HOME/.local/bin/$base_name"
+      if has_cmd readlink && [ -L "$HOME/.local/bin/$base_name" ]; then
+        current_target="$(readlink "$HOME/.local/bin/$base_name" || true)"
+      fi
+      if [ ! -L "$HOME/.local/bin/$base_name" ] || [ "$current_target" != "$file" ]; then
+        run_cmd ${cmd_prefix}ln -snf "$file" "$HOME/.local/bin/$base_name"
+        ok "$1" "USER/HOME/DOTS/BIN" "Symlink set '$HOME/.local/bin/$base_name' targeting => '$file'! ✔"
       fi
     done
   fi

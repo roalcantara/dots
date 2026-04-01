@@ -21,12 +21,12 @@ globalEnvVars:
     value: /home/vscode/.config/zsh
   - key: ZIM_HOME
     value: /home/vscode/.local/state/zim
-  - key: MISE_GLOBAL_CONFIG_DIR
+  - key: MISE_DATA_HOME
     value: /home/vscode/.local/share/mise
-  - key: MISE_GLOBAL_CONFIG_FILE
-    value: /home/vscode/.local/share/mise/config.toml
   - key: MISE_CACHE_DIR
     value: /home/vscode/.cache/mise
+  - key: MISE_GLOBAL_CONFIG_FILE
+    value: /home/vscode/.config/mise/config.toml
   - key: NPM_CONFIG_USERCONFIG
     value: /home/vscode/.config/npm/.npmrc
   - key: NPM_CONFIG_PREFIX
@@ -70,7 +70,34 @@ commandTests:
   - name: Flox cockpit environment should have all minimum tools installed
     command: flox
     args: [list, --dir=/home/vscode, --name]
-    expectedOutput: ['age', 'bat', 'coreutils', 'delta', 'eza', 'fd', 'findutils', 'fzf', 'gawk', 'gitlint', 'glow', 'gnugrep', 'gnumake', 'gum', 'less', 'lesspipe', 'mise', 'neovim', 'pre-commit', 'ripgrep', 'sops', 'sqlite', 'starship', 'tree-sitter', 'zoxide']
+    expectedOutput:
+      [
+        'age',
+        'bat',
+        'coreutils',
+        'delta',
+        'eza',
+        'fd',
+        'findutils',
+        'fzf',
+        'gawk',
+        'gitlint',
+        'glow',
+        'gnugrep',
+        'gnumake',
+        'gum',
+        'less',
+        'lesspipe',
+        'mise',
+        'neovim',
+        'pre-commit',
+        'ripgrep',
+        'sops',
+        'sqlite',
+        'starship',
+        'tree-sitter',
+        'zoxide',
+      ]
 
 # HOME DIRECTORIES
 fileExistenceTests:
@@ -149,7 +176,7 @@ fileExistenceTests:
   - name: ~/.config/nvim/.venv/bin/python3 file
     path: /home/vscode/.config/nvim/.venv/bin/python3
     shouldExist: true
-    permissions: Lrwxrwxrwx    
+    permissions: Lrwxrwxrwx
   - name: ~/.config/zsh dir (ZDOTDIR)
     path: /home/vscode/.config/zsh
     shouldExist: true
