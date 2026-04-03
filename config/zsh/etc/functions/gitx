@@ -80,6 +80,24 @@
 #?   gitx clear-merged
 #?   gitx fza
 
+# Display a message to the user
+# If gum is installed, use it to display the message otherwise print one similar to gum log
+# * @param level - The level of the message. (error, warn, info, debug)
+# * @param message - The message to display.
+# * @example: __puts error "Unable to create file."
+# * => 2026-04-02 14:37:51 ERROR Unable to create file.
+__puts() {
+  if _has_command gum; then
+    gum log --time DateTime --level "$1" "$2"
+  else
+    # Format similar to gum log: timestamp level [prefix]: message
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local level_upper=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+    echo "$timestamp $level_upper: $2"
+  fi
+  return 0
+}
+
 # List local branches
 # * @returns 0 if the branches are listed, 1 if the branches are not listed.
 # * @example: gitx branches
@@ -426,6 +444,23 @@ _gitx_uup() {
   git pull --rebase upstream "$(git main-branch)"
 }
 
+# Pull from origin (git pull) each folder in the current directory that is a git repository and is NOT dirty
+# * @example: gitx pull-all
+_gitx_pull_all() {
+  local folders
+  folders=$(find . -type d -name ".git" -not -path "*/.git/*" -not -path "*/.git" -not -path "*/.git/*")
+  for folder in $folders; do
+    cd "$folder"
+    if ! git status --porcelain | grep -q "^ M"; then
+      git pull
+      __puts info "==> Repo $folder Pulled from origin ✔"
+    else
+      __puts warn "==> Repo $folder Skipped (dirty) ✗"
+    fi
+    cd ..
+  done
+}
+
 # Push current branch to origin (verbose).
 # * @example: gitx p
 _gitx_p() {
@@ -703,6 +738,7 @@ gitx() {
     uu)               _gitx_uu "$@" ;;                    #=> Pull with rebase from origin main.
     uup)              _gitx_uup "$@" ;;                   #=> Pull with rebase from upstream main.
     cnb)              _gitx_cnb "$@" ;;                   #=> Create new branch (smart). On default branch with local commits, opens fzf to pick which go to the new branch.
+    pull-all)         _gitx_pull_all "$@" ;;              #=> Pull from origin (git pull) each folder in the current directory that is a git repository and is NOT dirty.
     fix)              _gitx_fix "$@" ;;                   #=> Create fixup commit for a commit (or root) and autosquash rebase.
     fix-root)         _gitx_fix_root "$@" ;;              #=> Create fixup commit for root and autosquash rebase.
     fix-all)          _gitx_fix_all "$@" ;;               #=> Stage all and create fixup for commit, then autosquash.
@@ -730,7 +766,7 @@ gitx() {
     head-branch)      _gitx_head_branch "$@" ;;           #=> Print current branch name (no remotes/origin/ prefix).
     to-yaml)          _gitx_to_yaml "$@" ;;               #=> Output last n commits as YAML (hash + message body).
     cfgz)             _gitx_cfgz "$@" ;;                  #=> Show config list with fzf (interactive).
-    lol|fzlog)        _gitx_fzlog "$@" ;;                  #=> Fzf over log; keys for hash/rebase/fix/reword/edit/drop/resets/log.
+    lol|fzlog)        _gitx_fzlog "$@" ;;                 #=> Fzf over log; keys for hash/rebase/fix/reword/edit/drop/resets/log.
     fzl)              _gitx_fzl "$@" ;;                   #=> Fzf over log; output selected commit hash.
     fzdiff)           _gitx_fzdiff "$@" ;;                #=> Fzf over diff --name-only; output selected files.
     fza)              _gitx_fza "$@" ;;                   #=> Fzf over changed files; add selected files (git add).

@@ -519,6 +519,10 @@ squash-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" squas
 # @example: git patches
 patches=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" patches
 
+# Pull from origin (git pull) each folder in the current directory that is a git repository and is NOT dirty
+# @example: git pull-all
+pull-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pull-all
+
 # Pull with rebase from the origin remote for the main branch
 # @example: git uu
 uu=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" uu
