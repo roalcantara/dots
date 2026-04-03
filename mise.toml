@@ -1,256 +1,227 @@
-# The config file for mise
-# https://mise.jdx.dev/configuration.html
+# https://mise.jdx.dev
+# Dev tools, env, and task runner
 
-# Dev Tools
-# Manages dev tools like node, python, cmake, terraform, and hundreds more
-# https://mise.jdx.dev/dev-tools
-# [tools]
-#   age       ="1.2.1"
-#   sops      ="3.10.2"
-
-# Tasks
-# Like make, it manages tasks used to build and test projects
 # https://mise.jdx.dev/tasks
-
-# mise_bin: String - Points to the path to the current mise executable
-# https://mise.jdx.dev/templates.html#variables
-# https://mise.jdx.dev/cli/install.html#mise-install
-
-# Tasks
-# Like make, it manages tasks used to build and test projects
-# https://mise.jdx.dev/tasks
-[tasks]  # mise run
+[tasks]
 # mise run build
 # mise run build --nocache
-# mise run build --nocache --distro 'ubuntu'
+# mise run build --nocache --distro ubuntu
 # mise run build --nocache --local
-# mise run build --nocache --local --user 'vscode' --group 'vscode' --tag 'latest'
-[tasks.build]
-description = "Build a Docker image for dotfiles"
-run = '''
-  #!/usr/bin/env bash
+# mise run build --nocache --local --user vscode --group vscode --tag latest
+"build" = { description = "Build a Docker image for dotfiles", usage = '''
+  flag "--nocache" help="Disable build cache"
+  flag "--local" help="Build local target (COPY) instead of remote"
+  flag "--distro <distro>" help="debian or ubuntu" default="debian"
+  flag "--platform <platform>" {
+    help "Target platform"
+    choices "amd64" "arm64" "amd64v2" "riscv64" "ppc64le" "s390x" "386"
+    default "arm64"
+  }
+  flag "--secret <path>" help="GitHub token secret file" default="./.secrets/github_token.secret"
+  flag "--tag <tag>" help="Image tag suffix"
+  flag "--branch <branch>" help="Git branch for remote install"
+  flag "--repo <repo>" help="GitHub repo (owner/name)"
+  flag "--user <user>" help="Build arg USERNAME"
+  flag "--group <group>" help="Build arg GROUPNAME"
+  flag "--package-manager <pm>" help="Package manager" default="flox"
+  flag "--build-arg <arg>" {
+    help "Extra docker --build-arg (repeat flag)"
+    var #true
+  }
+''', run = '''
+#!/usr/bin/env bash
 
-  # Set defaults and parse options
-  USAGE_DISTRO="{{option(name="distro", default="debian")}}"
-  USAGE_PLATFORM="{{option(name="platform", default="arm64")}}"
-  USAGE_SECRET_PATH="{{option(name="secret", default="./.secrets/github_token.secret")}}"
-  USAGE_TAG="{{option(name="tag")}}"
-  USAGE_BRANCH="{{option(name="branch")}}"
-  USAGE_REPO="{{option(name="repo")}}"
-  USAGE_USERNAME="{{option(name="user")}}"
-  USAGE_GROUPNAME="{{option(name="group")}}"
-  USAGE_PACKAGE_MANAGER="{{option(name="package-manager", default="flox")}}"
-  USAGE_BUILD_ARGS="{{option(name="build-arg", var=true)}}"
+case "${usage_platform?}" in
+  amd64)    PLATFORM_VALUE="linux/amd64" ;;
+  arm64)    PLATFORM_VALUE="linux/arm64" ;;
+  amd64v2)  PLATFORM_VALUE="linux/amd64/v2" ;;
+  riscv64)  PLATFORM_VALUE="linux/riscv64" ;;
+  ppc64le)  PLATFORM_VALUE="linux/ppc64le" ;;
+  s390x)    PLATFORM_VALUE="linux/s390x" ;;
+  386)      PLATFORM_VALUE="linux/386" ;;
+  *)        PLATFORM_VALUE="linux/arm64" ;;
+esac
 
-  # Platform mapping
-  case "$USAGE_PLATFORM" in
-    amd64)    PLATFORM_VALUE="linux/amd64" ;;
-    arm64)    PLATFORM_VALUE="linux/arm64" ;;
-    amd64v2)  PLATFORM_VALUE="linux/amd64/v2" ;;
-    riscv64)  PLATFORM_VALUE="linux/riscv64" ;;
-    ppc64le)  PLATFORM_VALUE="linux/ppc64le" ;;
-    s390x)    PLATFORM_VALUE="linux/s390x" ;;
-    386)      PLATFORM_VALUE="linux/386" ;;
-    *)        PLATFORM_VALUE="linux/arm64" ;;
-  esac
+DOCKER_CMD=(
+  DOCKER_BUILDKIT=1 docker build
+  --build-arg=BUILDKIT_INLINE_CACHE=1
+)
 
-  # Compose docker build command
-  DOCKER_CMD=(
-    DOCKER_BUILDKIT=1 docker build
-    --build-arg=BUILDKIT_INLINE_CACHE=1
-  )
+if [ -n "${usage_user:-}" ]; then
+  DOCKER_CMD+=(--build-arg=USERNAME="$usage_user")
+fi
 
-  if [ -n "$USAGE_USERNAME" ]; then
-    DOCKER_CMD+=(--build-arg=USERNAME="$USAGE_USERNAME")
-  fi
+if [ -n "${usage_group:-}" ]; then
+  DOCKER_CMD+=(--build-arg=GROUPNAME="$usage_group")
+fi
 
-  if [ -n "$USAGE_GROUPNAME" ]; then
-    DOCKER_CMD+=(--build-arg=GROUPNAME="$USAGE_GROUPNAME")
-  fi
+if [ -n "${usage_branch:-}" ]; then
+  DOCKER_CMD+=(--build-arg=BRANCH="$usage_branch")
+fi
 
-  if [ -n "$USAGE_BRANCH" ]; then
-    DOCKER_CMD+=(--build-arg=BRANCH="$USAGE_BRANCH")
-  fi
+if [ -n "${usage_repo:-}" ]; then
+  DOCKER_CMD+=(--build-arg=GITHUB_REPO="$usage_repo")
+fi
 
-  if [ -n "$USAGE_REPO" ]; then
-    DOCKER_CMD+=(--build-arg=GITHUB_REPO="$USAGE_REPO")
-  fi
+if [ -n "${usage_package_manager:-}" ]; then
+  DOCKER_CMD+=(--build-arg=PACKAGE_MANAGER="$usage_package_manager")
+fi
 
-  if [ -n "$USAGE_PACKAGE_MANAGER" ]; then
-    DOCKER_CMD+=(--build-arg=PACKAGE_MANAGER="$USAGE_PACKAGE_MANAGER")
-  fi
-
-  # Add extra build-args if any
-  for arg in $USAGE_BUILD_ARGS; do
+if [ -n "${usage_build_arg:-}" ]; then
+  eval "EXTRA_BUILD_ARGS=($usage_build_arg)"
+  for arg in "${EXTRA_BUILD_ARGS[@]}"; do
     DOCKER_CMD+=(--build-arg="$arg")
   done
+fi
 
-  # Add secret if available
-  if [[ -z $GITHUB_TOKEN && -f $USAGE_SECRET_PATH ]]; then
-    DOCKER_CMD+=(--secret="id=github_token,src=$USAGE_SECRET_PATH")
-  fi
+if [[ -z ${GITHUB_TOKEN:-} && -f ${usage_secret?} ]]; then
+  DOCKER_CMD+=(--secret="id=github_token,src=$usage_secret")
+fi
 
-  if [ -n "$PLATFORM_VALUE" ]; then
-    DOCKER_CMD+=(--platform="$PLATFORM_VALUE")
-  fi
+DOCKER_CMD+=(--platform="$PLATFORM_VALUE")
 
-  # Compose tag
-  TAG_VALUE="dots:$USAGE_DISTRO"
-  [ -n "$USAGE_TAG" ] && TAG_VALUE="$TAG_VALUE-$USAGE_TAG"
-  DOCKER_CMD+=(--tag="$TAG_VALUE")
+TAG_VALUE="dots:${usage_distro?}"
+[ -n "${usage_tag:-}" ] && TAG_VALUE="$TAG_VALUE-$usage_tag"
+DOCKER_CMD+=(--tag="$TAG_VALUE")
 
-  # Add --no-cache if requested
-  if [ "{{flag(name="nocache")}}" = "true" ]; then
-    DOCKER_CMD+=(--no-cache)
-  fi
+if [ "${usage_nocache:-false}" = "true" ]; then
+  DOCKER_CMD+=(--no-cache)
+fi
 
-  # Select Dockerfile
-  DOCKER_CMD+=(--file="distros/$USAGE_DISTRO/Dockerfile")
+DOCKER_CMD+=(--file="distros/${usage_distro?}/Dockerfile")
 
-  if [ '{{flag(name="local")}}' = 'true' ]; then
-    DOCKER_CMD+=(--target=local .)
-  else
-    DOCKER_CMD+=(--target=remote .)
-  fi
+if [ "${usage_local:-false}" = "true" ]; then
+  DOCKER_CMD+=(--target=local .)
+else
+  DOCKER_CMD+=(--target=remote .)
+fi
 
-  echo "  ==> ${DOCKER_CMD[*]}"
-  eval "${DOCKER_CMD[*]}"
-  '''
+echo "  ==> ${DOCKER_CMD[*]}"
+eval "${DOCKER_CMD[*]}"
+''' }
 
 # mise run start
-# mise run start --base
-# mise run start --tag 'local'
-# mise run start --tag 'local' --platform 'amd64'
-# mise run start --tag 'local' --user 'vscode' --workdir '/workspaces/dots'
-# mise run start --tag 'local' --user 'root' --workdir '/workspaces/foo'
-[tasks.start]
-description = "Start a container"
-run = '''
-  #!/usr/bin/env bash
+# mise run start --tag local
+# mise run start --tag local
+# mise run start --tag local --user vscode --workdir /workspaces/dots
+"start" = { description = "Start a container", usage = '''
+  flag "--distro <distro>" help="debian or ubuntu" default="debian"
+  flag "--tag <tag>" help="Image tag suffix (dots:<distro>-<tag>)"
+  flag "--user <user>" help="Container user" default="vscode"
+  flag "--workdir <path>" help="Container working directory" default="/workspaces/dots"
+''', run = '''
+#!/usr/bin/env bash
 
-  # Set defaults and parse options
-  USAGE_DISTRO="{{option(name="distro", default="debian")}}"
-  USAGE_PLATFORM="{{option(name="platform")}}"
-  USAGE_TAG="{{option(name="tag")}}"
-  USAGE_USER="{{option(name="user", default="vscode")}}"
-  USAGE_WORKDIR="{{option(name="workdir", default="/workspaces/dots")}}"
+DOCKER_CMD=(
+  docker run -it --rm
+  --user="${usage_user?}"
+  --workdir="${usage_workdir?}"
+)
 
-  DOCKER_CMD=(
-    docker run -it --rm
-    --user="$USAGE_USER"
-    --workdir="$USAGE_WORKDIR"
-  )
+if [ -n "${usage_tag:-}" ]; then
+  DOCKER_CMD+=(dots:"${usage_distro?}"-"$usage_tag")
+else
+  case "${usage_distro?}" in
+    debian)   DISTRO_NAME="base:debian" ;;
+    ubuntu)   DISTRO_NAME="base:ubuntu" ;;
+    *)        DISTRO_NAME="base:debian" ;;
+  esac
+  DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/"$DISTRO_NAME")
+fi
 
-  if [ -n "$USAGE_TAG" ]; then
-    DOCKER_CMD+=(dots:$USAGE_DISTRO-$USAGE_TAG)
-  else
-    case "$USAGE_DISTRO" in
-      debian)   DISTRO_NAME="base:debian" ;;
-      ubuntu)   DISTRO_NAME="base:ubuntu" ;;
-      *)        DISTRO_NAME="base:debian" ;;
-    esac
-    DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/$DISTRO_NAME)
-  fi
-
-  echo "  ==> ${DOCKER_CMD[*]}"
-  eval "${DOCKER_CMD[*]}"
-  '''
+echo "  ==> ${DOCKER_CMD[*]}"
+eval "${DOCKER_CMD[*]}"
+''' }
 
 # mise run test
-# mise run test --distro 'ubuntu' --tag 'latest'
-# mise run test --image 'dots:debian-amd64-latest' --config 'distros/debian/container-structure-test.yml'
-[tasks.test]
-description = "Run the Container Structure Tests for the Docker image"
-run = '''
-  #!/usr/bin/env bash
+# mise run test --distro ubuntu --tag latest
+# mise run test --image dots:debian-amd64-latest --config distros/debian/container-structure-test.yml
+"test" = { description = "Run the Container Structure Tests for the Docker image", usage = '''
+  flag "--distro <distro>" help="debian or ubuntu" default="debian"
+  flag "--platform <platform>" help="Image platform segment when composing image name"
+  flag "--tag <tag>" help="Image tag segment when composing image name"
+  flag "--image <image>" help="Full image reference (overrides distro/platform/tag)"
+  flag "--config <config>" help="CST config path"
+''', run = '''
+#!/usr/bin/env bash
 
-  # Set defaults and parse options
-  USAGE_DISTRO="{{option(name="distro", default="debian")}}"
-  USAGE_PLATFORM="{{option(name="platform")}}"
-  USAGE_TAG="{{option(name="tag")}}"
-  USAGE_IMAGE="{{option(name="image")}}"
-  USAGE_CONFIG="{{option(name="config")}}"
+CST_CMD=(
+  container-structure-test test
+)
 
-  CST_CMD=(
-    container-structure-test test
-  )
+if [ -z "${usage_image:-}" ]; then
+  USAGE_IMAGE="dots:${usage_distro?}"
+  if [ -n "${usage_platform:-}" ]; then
+    USAGE_IMAGE="$USAGE_IMAGE-$usage_platform"
+  fi
+  if [ -n "${usage_tag:-}" ]; then
+    USAGE_IMAGE="$USAGE_IMAGE-$usage_tag"
+  fi
+else
+  USAGE_IMAGE="${usage_image?}"
+fi
+CST_CMD+=(--image "$USAGE_IMAGE")
 
-  if [ -z "$USAGE_IMAGE" ]; then
-    USAGE_IMAGE="dots:$USAGE_DISTRO"
-    if [ -n "$USAGE_PLATFORM" ]; then
-      USAGE_IMAGE="$USAGE_IMAGE-$USAGE_PLATFORM"
+if [ -n "${usage_config:-}" ]; then
+  CST_CMD+=(--config "$usage_config")
+else
+  CST_CMD+=(--config "distros/${usage_distro?}/container-structure-test.yml")
+fi
+
+echo "  ==> ${CST_CMD[*]}"
+eval "${CST_CMD[*]}"
+''' }
+
+"setup:age" = { description = "Setup AGE keys from Bitwarden", run = '''
+#!/usr/bin/env bash
+set -e
+# Check if AGE keys already exist
+if [ ! -f "$HOME/.config/age/keys.txt" ]; then
+  IS_DARWIN=$(uname -s | grep -q "Darwin" && echo "true" || echo "false")
+  if [ "$IS_DARWIN" = "true" ] && command -v bw > /dev/null; then
+    echo "  ==> Retrieving Bitwarden secrets from Keychain.."
+    export BW_CLIENTID=$(security find-generic-password -w -a bitwarden_client_id 2>/dev/null)
+    export BW_CLIENTSECRET=$(security find-generic-password -w -a bitwarden_client_secret 2>/dev/null)
+    export BW_PASSWORD=$(security find-generic-password -w -a bitwarden_master_password 2>/dev/null)
+    if [ -z "$BW_CLIENTID" ] || [ -z "$BW_CLIENTSECRET" ] || [ -z "$BW_PASSWORD" ]; then
+      echo "Bitwarden credentials not found in Keychain."
+      echo "First time setup: store them with:"
+      echo "  security add-generic-password -a bitwarden_client_id -s Bitwarden -w <YOUR_CLIENT_ID> -U"
+      echo "  security add-generic-password -a bitwarden_client_secret -s Bitwarden -w <YOUR_CLIENT_SECRET> -U"
+      echo "  security add-generic-password -a bitwarden_master_password -s Bitwarden -w <YOUR_MASTER_PASSWORD> -U"
+      exit 1
     fi
-    if [ -n "$USAGE_TAG" ]; then
-      USAGE_IMAGE="$USAGE_IMAGE-$USAGE_TAG"
-    fi
+    echo "  ==> Logging into Bitwarden"
+    bw login --apikey
+
+    echo "  ==> Unlocking Bitwarden vault and retrieving session ID"
+    export BW_SESSION=$(bw unlock --passwordenv BW_PASSWORD --raw)
+
+    echo "  ==> Retrieving AGE keys from Bitwarden"
+    bw get notes gopass/age > "$HOME/.config/age/keys.txt"
+    chmod 600 "$HOME/.config/age/keys.txt"
+    echo "  ==> AGE keys retrieved from Bitwarden and saved to $HOME/.config/age/keys.txt"
+    bw lock
   fi
-  CST_CMD+=(--image "$USAGE_IMAGE")
+fi
+''' }
 
-  if [ -n "$USAGE_CONFIG" ]; then
-    CST_CMD+=(--config "$USAGE_CONFIG")
-  else
-    CST_CMD+=(--config "distros/$USAGE_DISTRO/container-structure-test.yml")
-  fi
+"setup:git:filters" = { description = "Setup Git filters for automatic encryption/decryption of .env files using SOPS", depends = [
+  "setup:age",
+], run = '''
+#!/usr/bin/env bash
+set -e
+# Only configure filters if not already done
+if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/null; then
+  echo "  ==> Configuring Git filters for SOPS"
+  git config --local filter.sops.smudge "script/smudge.sops.sh %f"
+  git config --local filter.sops.required true
+  git config --local filter.sops.clean "script/clean.sops.sh %f"
+  git config --local diff.sops.command "script/smudge.sops.sh %f"
+  echo "✓ Git filters configured"
+fi
+''' }
 
-  # Run container-structure-test
-  echo "  ==> ${CST_CMD[*]}"
-  eval "${CST_CMD[*]}"
-  '''
-
-[tasks."setup:age"]
-description = "Setup AGE keys from Bitwarden"
-run = '''
-  #!/bin/bash
-  set -e
-  # Check if AGE keys already exist
-  if [ ! -f "$HOME/.config/age/keys.txt" ]; then
-    IS_DARWIN=$(uname -s | grep -q "Darwin" && echo "true" || echo "false")
-    if [ "$IS_DARWIN" = "true" ] && command -v bw > /dev/null; then
-      echo "  ==> Retrieving Bitwarden secrets from Keychain.."
-      export BW_CLIENTID=$(security find-generic-password -w -a bitwarden_client_id 2>/dev/null)
-      export BW_CLIENTSECRET=$(security find-generic-password -w -a bitwarden_client_secret 2>/dev/null)
-      export BW_PASSWORD=$(security find-generic-password -w -a bitwarden_master_password 2>/dev/null)
-      if [ -z "$BW_CLIENTID" ] || [ -z "$BW_CLIENTSECRET" ] || [ -z "$BW_PASSWORD" ]; then
-        echo "Bitwarden credentials not found in Keychain."
-        echo "First time setup: store them with:"
-        echo "  security add-generic-password -a bitwarden_client_id -s Bitwarden -w <YOUR_CLIENT_ID> -U"
-        echo "  security add-generic-password -a bitwarden_client_secret -s Bitwarden -w <YOUR_CLIENT_SECRET> -U"
-        echo "  security add-generic-password -a bitwarden_master_password -s Bitwarden -w <YOUR_MASTER_PASSWORD> -U"
-        exit 1
-      fi
-      echo "  ==> Logging into Bitwarden"
-      bw login --apikey
-
-      echo "  ==> Unlocking Bitwarden vault and retrieving session ID"
-      export BW_SESSION=$(bw unlock --passwordenv BW_PASSWORD --raw)
-
-      echo "  ==> Retrieving AGE keys from Bitwarden"
-      bw get notes gopass/age > "$HOME/.config/age/keys.txt"
-      chmod 600 "$HOME/.config/age/keys.txt"
-      echo "  ==> AGE keys retrieved from Bitwarden and saved to $HOME/.config/age/keys.txt"
-      bw lock
-    fi
-  fi
-  '''
-
-[tasks."setup:git:filters"]
-description = "Setup Git filters for automatic encryption/decryption of .env files using SOPS"
-depends = ["setup:age"]
-run = '''
-  #!/bin/bash
-  set -e
-  # Only configure filters if not already done
-  if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/null; then
-    echo "  ==> Configuring Git filters for SOPS"
-    git config --local filter.sops.smudge "script/smudge.sops.sh %f"
-    git config --local filter.sops.required true
-    git config --local filter.sops.clean "script/clean.sops.sh %f"
-    git config --local diff.sops.command "script/smudge.sops.sh %f"
-    echo "✓ Git filters configured"
-  fi
-  '''
-
-# Settings
 # https://mise.jdx.dev/configuration/settings.html#settings
 [settings]
 # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
