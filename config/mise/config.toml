@@ -96,6 +96,7 @@ task_output = "quiet"  # stream one task's output live while buffering others, p
 
 [tools]
 watchexec = "latest"
+usage = "latest"
 
 # Show the full command when executing tasks.
 # https://mise.jdx.dev/configuration/settings.html#task.show_full_cmd
