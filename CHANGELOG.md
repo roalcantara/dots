@@ -1,3 +1,10 @@
+# [1.32.0](https://github.com/roalcantara/dots/compare/v1.31.0...v1.32.0) (2026-04-03)
+
+
+### Features
+
+* **secrets:** Add Copilot Github Token ([049556b](https://github.com/roalcantara/dots/commit/049556b994fcc47ece205106aa9626d6c53d06cd))
+
 # [1.31.0](https://github.com/roalcantara/dots/compare/v1.30.0...v1.31.0) (2026-03-17)
 
 
