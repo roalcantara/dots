@@ -493,7 +493,7 @@
     "*.jsx": "${capture}.js",
     "*.tsx": "${capture}.ts",
     "tsconfig.json": "tsconfig.*.json",
-    "package.json": "package-lock.json, .babelrc, .browserslistrc, .dockerignore, .editorconfig, .eslintignore, .eslintrc.*, .gitignore, .graphqlrc.*, .nvmrc, .prettierignore, .prettierrc.*, babel.config.json, cypress.json, jest.config.ts, jest.preset.js, nx.json, package.json, tsconfig.base.json, tsconfig.json, workspace.json, yarn.lock, vercel.json, netlify.toml, pnpm-lock.yaml, webpack.config.js, .prettierrc, .npmrc, CHANGELOG.md, LICENSE, .cursorrules, mise.toml, vitest.config.ts, raycast-env.d.ts, eslint.config.mjs, eslint.config.js, .pre-commit-config.yaml, .gitlint, bun.lockb",
+    "package.json": "package-lock.json, .babelrc, .browserslistrc, .dockerignore, .editorconfig, .eslintignore, .eslintrc.*, .gitignore, .graphqlrc.*, .nvmrc, .prettierignore, .prettierrc.*, babel.config.json, cypress.json, jest.config.ts, jest.preset.js, nx.json, package.json, tsconfig.base.json, tsconfig.json, workspace.json, yarn.lock, vercel.json, netlify.toml, pnpm-lock.yaml, webpack.config.js, .prettierrc, .npmrc, CHANGELOG.md, LICENSE, .cursorrules, vitest.config.ts, raycast-env.d.ts, eslint.config.mjs, eslint.config.js, .pre-commit-config.yaml, .gitlint, bun.lockb, biome.jsonc, bun.lock, bunfig.toml, CHANGELOG.md, CLAUDE.md, Dockerfile, knip.jsonc, LICENSE, renovate.json5, .release-it.yml, .jscpd.json, .dependency-cruiser.cjs, .hadolint.yaml",
     "Gemfile": "Gemfile.*",
     ".env": ".env.*",
     ".swcrc": ".swcrc.*",
@@ -986,6 +986,11 @@
       "source.fixAll.biome": "explicit",
       "source.organizeImports.biome": "explicit"
     }
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
   },
   "[rust]": {
     "editor.semanticHighlighting.enabled": false
@@ -1579,7 +1584,6 @@
   "direnv.watchForChanges": true,
   "github.copilot.nextEditSuggestions.enabled": true,
   "biome.suggestInstallingGlobally": false,
-  "workbench.iconTheme": "material-icon-theme",
   "vikings-icon-theme.showWelcomeMessage": false,
   "markdown.marp.diagnostics.slideContentOverflow": true,
   "markdown.marp.mathTypesetting": "off",
@@ -1587,7 +1591,7 @@
   "workbench.editor.sharedViewState": true,
   "rainbow_csv.rbql_with_headers_by_default": true,
   "aws.samcli.enableCodeLenses": true,
-  "aws.cloudformation.telemetry.enabled": false,
+  "aws.cloudformation.telemetry.enabled": true,
   "aws.suppressPrompts": {
     "samcliConfirmDevStack": true
   },
@@ -1629,5 +1633,10 @@
   "javascript.referencesCodeLens.showOnAllFunctions": true,
   "containers.orchestratorClient": "com.microsoft.visualstudio.orchestrators.dockercompose",
   "githubPullRequests.pushBranch": "always",
-  "workbench.colorTheme": "Catppuccin Mocha"
+  "workbench.colorTheme": "Catppuccin Macchiato",
+  "workbench.iconTheme": "material-icon-theme",
+  "atlascode.jira.enabled": true,
+  "atlascode.bitbucket.enabled": true,
+  "atlascode.rovodev.showEntitlementNotifications": false,
+  "atlascode.jira.startWorkBranchTemplate.customTemplate": "{{{prefix}}}{{{issueKey}}}"
 }
