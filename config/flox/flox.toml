@@ -7,7 +7,6 @@
 ## -------------------------------------------------------------------
 # Flox manifest version managed by Flox CLI
 version = 1
-floxhub_token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlAxTmp1ejh3cjdnb2VRMG5sM09WSSJ9.eyJodHRwczovL2Zsb3guZGV2L2hhbmRsZSI6InJvYWxjYW50YXJhIiwiaHR0cHM6Ly9mbG94LmRldi9yb2xlcyI6e30sImlzcyI6Imh0dHBzOi8vYXV0aC5mbG94LmRldi8iLCJzdWIiOiJnaXRodWJ8MzYxMTQwIiwiYXVkIjpbImh0dHBzOi8vaHViLmZsb3guZGV2L2FwaSIsImh0dHBzOi8vZmxveC51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNzcxOTMwODY0LCJleHAiOjE3NzQ1MjI4NjQsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUiLCJhenAiOiJmR3JvdEhCZlFyOVgxUEhHYkZvaWZFV2FEUHlXWkRtYyIsInBlcm1pc3Npb25zIjpbXX0.OA7kVYWD0bmwDWjeKn44pNnDXspJ575FIyyRZj346Ilo8lHzulrocL0WoQcN3Wo1VCkMFMFJplYPWZZhQlAVKm7QbYV0x7XLjmn2O20YDYBNfCwrsddO_vpKWxlqgWZJ1RTbWvzCwbeS6IQJufNBnB0qpYLJV6EIGvLenN01SmhKojZYU2fylpmArWr3HA1MQBEwCpaAXB0WBNDuYWAJfiMetmfw8Qn_iczQg2zpFBx91JdBCpJrHVjVEC8LSWooK2oUM6ohT6yyFP1iUFKF6TViiydZFIjghsC0ntmJtN3TAcHcAHf1Is2Zl0uhstaIf8qQfcdRADPn03KeCb-J4w"
 
 ## Include ----------------------------------------------------------
 ## ... environments to create a composed environment
