@@ -228,13 +228,13 @@ commands:
           gcloud config set run/region southamerica-east1
 
           # Get the function service account
-          gcloud run services describe requestcode \
+          gcloud run services describe docusignWebhook \
             --region=southamerica-east1 \
             --project=$(gcloud config get-value project) \
             --format="value(spec.template.spec.serviceAccountName)"
 
-          # Add IAM policy binding to the secret
-          gcloud secrets add-iam-policy-binding SENDGRID_CONSORCIEI \
+          # Add IAM policy binding to the secret (name only; never paste values in repo)
+          gcloud secrets add-iam-policy-binding DOCUSIGN_CONNECT_HMAC_SECRET \
             --member="serviceAccount:829496193240-compute@developer.gserviceaccount.com" \
             --role="roles/secretmanager.secretAccessor" \
             --project=$(gcloud config get-value project)

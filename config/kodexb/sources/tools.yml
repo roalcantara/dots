@@ -58,7 +58,323 @@ bookmarks:
   https://excalidraw.com:
     tags: [chart]
     desc: Virtual whiteboard for sketching hand-drawn like diagrams
+  https://webhook.site:
+    tags: [webhook]
+    desc: Webhook.site | A simple tool for testing webhooks
+    links:
+      - GitHub: https://github.com/webhookdotsh/webhook.site
+      - Documentation: https://docs.webhook.site
+      - Custom Actions: https://docs.webhook.site/custom-actions.html
+      - Schedules: https://docs.webhook.site/schedules.html
+    notes:
+      - md: |
+          ## Overview
+          **FREEMIUM:** $0.00 - $99.00 p/m
+
+          - Webhook.site takes away the frustration of building software and solutions that interact with cloud services or connect via webhooks.
+          - Keep webhook history, share it or replay it.
+          - Make sure data does not get lost
+          - Save time and development costs by running workflows on our cloud.
+
+          ## Basic, Pro and Enterprise
+
+          |                                 | **FREE** | **BASIC**     | **PRO**        | **ENTERPRISE**|
+          | ------------------------------- | -------- | ------------- | -------------- | ------------- |
+          | URLs                            | n/a      | 1             | Unlimited      | Unlimited     |
+          | Schedules                       | n/a      | 1             | Unlimited      | Unlimited     |
+          | Max Requests per URL            | 50       | Unlimited     | Unlimited      | Unlimited     |
+          | Request History per URL         | 50       | 100002        | 10.0002        | 100.0002      |
+          | Custom Actions                  | x        | ✔             | ✔              | ✔             |
+          | Schedules                       | x        | ✔             | ✔              | ✔             |
+          | Custom Addresses                | x        | ✔             | ✔              | ✔             |
+          | Secure Data                     | x        | ✔             | ✔              | ✔             |
+          | Permanent URLs                  | x        | ✔             | ✔              | ✔             |
+          | CSV Export                      | x        | ✔             | ✔              | ✔             |
+          | Free Email Support              | x        | ✔             | ✔              | ✔             |
+          | Custom Domain                   | x        | x             | x              | ✔             |
+          | Multi-User Support & SAML SSO   | x        | x             | x              | ✔             |
+          | URL/Email Address expiry        | 7 days1  | Never expires | Never expires  | Never expires |
+          | Data storage duration           | 7 days1  | 365 days      | 365 days       | 365 days      |
+          | Pricing                         |          | $9/mo $90/yr  | $18/mo $180/yr | $69/m $699/y  |
+
+      - sh: | #shell
+          #!/bin/bash
+
+          # Install the Webhook.site CLI
+          npm install -g @webhooksite/cli
+
+          # Run the Webhook.site CLI
+          docker run -ti webhooksite/cli -- whcli help
+
+      - sh: | #shell
+          #!/bin/bash
+
+          ### USAGE
+
+          # Get all data sent to URL
+          curl 'https://webhook.site/token/00000000-0000-0000-0000-000000000000/requests?sorting=newest'
+
+          # Send a GET request to the URL
+          curl https://webhook.site/00000000-0000-0000-0000-000000000000
+
+          # Send a POST request to the URL
+          curl -X POST https://webhook.site/00000000-0000-0000-0000-000000000000
+
+          # Send a file to the URL
+          curl -F 'file=@example.png' https://webhook.site/00000000-0000-0000-0000-000000000000
+
+          # Send a form data to the URL
+          curl -F 'name=John' -F 'email=john@example.com' https://webhook.site/00000000-0000-0000-0000-000000000000
+
+          # Send a JSON payload to the URL
+          curl -H 'Content-Type: application/json' -d '{"name":"John","email":"john@example.com"}' https://webhook.site/00000000-0000-0000-0000-000000000000
+  https://pastebin.com:
+    desc: Store and share text online. Mainly used by programmers to store pieces of sources code or configuration information.
+    tags: [pastebin]
+    links:
+      - GitHub: https://github.com/pastebin/pastebin
+      - Docs: https://pastebin.com/doc
+      - API: https://pastebin.com/api
+      - API Docs: https://pastebin.com/api_docs
+      - API Examples: https://pastebin.com/api_examples
+      - API Paste Formats: https://pastebin.com/doc_api#5
+      - Profile: https://pastebin.com/u/roalcantara
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          ## USAGE
+
+          ## Create an 'api_user_key' using the API Member Login System
+          curl -X POST -d "api_dev_key=$(gopass show --password tokens/pastebin.com)" -d 'api_user_name=roalcantara' -d "api_user_password=$(gopass show --password websites/pastebin.com/roalcantara)" "https://pastebin.com/api/api_login.php"
+
+          ## Get user details
+          curl -X POST -d "api_dev_key=$(gopass show --password tokens/pastebin.com)" -d 'api_user_key=YOUR API USER KEY' -d 'api_option=userdetails' "https://pastebin.com/api/api_post.php"
+
+          ## Create a new private paste
+          curl -X POST -d "api_dev_key=$(gopass show --password tokens/pastebin.com)" -d 'api_user_key=YOUR API USER KEY' -d 'api_paste_name=test' -d 'api_paste_private=2' -d 'api_paste_format=ruby' -d 'api_paste_code="puts "Hello, World!"' -d 'api_option=paste' "https://pastebin.com/api/api_post.php"
+
+          ## Delete a paste
+          curl -X POST -d "api_dev_key=$(gopass show --password tokens/pastebin.com)" -d 'api_user_key=YOUR API USER KEY' -d 'api_option=delete' -d 'api_paste_key=API PASTE KEY' "https://pastebin.com/api/api_post.php"
+
+  ## ATLASIAN
+  https://rovodevagents-beta.atlassian.net/wiki/external/Yzc2NzI4MTk3YTBhNDdiYjkzZDhhZTc3MjE0ZmE4Y2Q:
+    desc: Rovodev | Atlassian CLI Reference | How to Use
+    tags: [atlassian, cli, jira]
+    notes:
+      - md: | #markdown
+           ## Key features
+
+           Use AI to streamline your software development process with Rovo Dev CLI.
+
+           - Perform complex development tasks using natural language without leaving your terminal like
+            - generating, reviewing, and refactoring code
+            - analyzing your codebase
+            - writing documentation
+            - debugging issues
+            - and creating unit tests
+
+            Rovo Dev is integrated with your Atlassian apps,
+            so you can also use it to action your Jira work items or create new Confluence content.
+
+            By bringing all these capabilities to a command line interface,
+            you can speed up your workflow and reduce context-switching.
+      - sh: | #shell
+          #!/bin/bash
+
+          # Install the Atlassian CLI
+          brew tap atlassian/homebrew-acli
+          brew install atlassian/acli/acli
+
+          # Run the Atlassian CLI
+          acli --help
+
+          # Rovo Dev is accessed as an extension for Atlassian Command Line Interface (ACLI). To install Rovo Dev
+          acli rovodev auth login
+
+          # Open rovodev in interactive mode
+          acli rovodev run
+      - md: | #markdown
+          ## Example prompts
+
+          ### Explore your codebase
+          > Rovo Dev reads your codebase and answers questions in clear language,
+          > helping you quickly navigate familiar codebases and decipher new ones.
+
+          - Explain this repository to me
+          - Where is the authentication logic defined?
+          - What input validation happens during user registration?
+
+          ### Work with Atlassian apps
+
+          > Rovo Dev integrates with Jira and Confluence, so you can access your team`s knowledge
+          > and manage your work without switching contexts.
+          > Specify the URL of your site in the prompt.
+
+          - Which Jira work items in site vitafleet.atlassian.net are assigned to me and in To Do status?
+          - Implement code changes for Jira work item ABC-123 in site vitafleet.atlassian.net
+          - Create a list of changes needed to implement dark mode and publish to Confluence in site vitafleet.atlassian.net
+
+          ### Ideate and plan
+
+          > Rovo Dev analyzes your codebase to help you brainstorm and plan technical solutions.
+
+          - Suggest new features to add that would improve the user experience
+          - How can I improve performance of this app?
+          - Create a coding plan for adding international currencies to the shopping cart, don't implement any changes yet
+
+          ### Generate code
+
+          >Rovo Dev generates consistent, structured code to help you build and transform your applications.
+
+          - Review this modal component and add missing ARIA attributes
+          - Migrate code in this repository from C++ to Java
+          - Add search suggestions to search bar: trigger after 3 characters, include keyboard navigation (up/down/enter), filter on a predefined list of popular products
+
+          ### Analyze and iterate on code
+
+          > Rovo Dev analyzes code, both existing code and code it has generated,
+          > and refines it based on your feedback.
+
+          - Review this repository and make suggestions to improve readability and performance
+          - I'm getting a 500 error when fetching data from the backend API using Axios - find the issue and fix it
+          - The error handling you generated for this function is too simple - add more specific error cases and retry logic
+
+          ### Write code documentation
+
+          > Rovo Dev generates documentation based on the latest changes to your codebase.
+
+          - Write detailed documentation for this REST API, including available endpoints, parameters, and expected responses - publish to Confluence space "Vitafleet"
+          - Write JSDoc-style comments for this JavaScript function that handles form validation
+          - Write a README.md file for this project - include sections "Setup", "Features", and "Deployment information"
+
+          ### Test and deploy
+
+          > Rovo Dev helps you build comprehensive test suites and configure your deployment pipelines
+
+          - Generate 100 rows of synthetic user data with: name, email, age, location, and signup date - output it as a CSV
+          - Write a test using React Testing Library to verify if the form shows appropriate error messages when trying to submit with empty mandatory fields
+          - Modify bitbucket-pipelines.yml to add a step for running Jest tests before deploying
+
+          ## Tips for working with Rovo Dev
+
+          1. **Start small** - Rovo Dev works best with small changes, about 10 or 20 lines at a time.
+          2. **Break down your tasks** - break bigger changes into smaller steps for Rovo Dev to tackle one at a time.
+          3. **Review and iterate** - treat Rovo Dev like a teammate you`re collaborating with, give feedback on the code it generates with what to change and improve.
+          4. **Change gears** - use the /sessions command to start a new session if the current approach isn`t working and you need a fresh perspective from Rovo Dev.
+          5. **Save frequently** - regularly commit changes to track your progress and avoid losing work if something goes wrong.
+          6. **Check your work** - you can ask Rovo Dev to review its own changes, compare the changes against a parent commit for linting errors, and submit draft pull requests to verify CI/CD logs.
+
+          ## Commands
+
+          > While in **interactive mode**, you can enter `/` at any time to see the list of available commands.
+
+          - `/sessions`: Switch between sessions, and view session details.
+          - `/clear`: Clear the current session's message history.
+          - `/prune`: Reduce the token size of the current session's message history while retaining context.
+          - `/instructions`: Run saved instructions.
+          - `/memory`: Memory file management.memo
+          - `# <note>`: Add a note to Rovo Dev's local memory file.
+          - `#! <note>`: Remove a note from Rovo Dev's local memory file.
+          - `/feedback`: Provide feedback or report a bug on Rovo Dev CLI.
+          - `/usage`: Show your daily LLM token usage.
+          - `/exit`: Quit Rovo Dev.
+
+          ## Instructions
+
+          - Instructions are prompts you have saved to re-use later.
+          - In interactive mode, use `/instructions` to see your collection of saved tasks.
+          - Then, select any task from the list to run it.
+
+          ### Managing Instructions
+
+          To set up and manage your instructions, edit the file `~/.rovodev/instructions.yml`.
+          Here is the file format template:
+
+          ```yaml
+          instructions:
+            - name: <name of the instruction>
+              description: <description of the instruction>
+              content_file: <filename containing the actual instructions>
+            - name: <name of the instruction #2>
+              description: <description of the instruction #2>
+              content_file: <filename containing the actual instructions #2>
+            ```
+
+          ### Example
+
+          Creates a new instruction that will generate release note for the repo,
+          The actual instructions are stored in `~/.rovodev/release_note.md`
+
+          - .rovodev/instructions.yml:
+
+              ```yaml
+              instructions:
+                - name: Generate-release-note-since-version
+                  description: Generate release note since version
+                  content_file: release_note.md
+              ```
+
+          - .rovodev/release_note.md:
+
+              ```md
+              Generate release note since the given version for external audience.
+              Add "Why it matters" for each set of changes.
+              If available, extract what's the given version to generate release note since from the additional instructions below.
+              The instruction can then be called in Interactive Mode as /instructions Generate-release-note-since-version <starting version number>.
+              ```
+  https://id.atlassian.com/manage-profile/security/api-tokens:
+    desc: Atlassian API Tokens | Generate and manage API tokens for Atlassian products
+    tags: [atlassian, api]
+    links:
+      - VSCode/Cursor Extension: https://marketplace.cursorapi.com/items/?itemName=atlassian.atlascode
+      - Rovodev: https://developer.atlassian.com/cloud/acli/reference/commands
+  https://developer.atlassian.com/cloud/acli/guides/introduction:
+    desc: Atlassian CLI | A command-line interface for interacting with Atlassian products
+    tags: [atlassian, cli, jira]
+    notes:
+      sh: | #shell
+        #!/bin/bash
+
+        # Install the Atlassian CLI
+        brew tap atlassian/homebrew-acli
+        brew install atlassian/acli/acli
+
+        # Run the Atlassian CLI
+        acli --help
 commands:
+  # https://pastebin.com
+  curl -X POST -d 'api_dev_key=$(gopass show --password tokens/pastebin.com)' -d 'api_paste_name=hello' -d 'api_paste_format=ruby' -d 'api_paste_code="puts "Hello, World!"' -d 'api_option=paste' "https://pastebin.com/api/api_post.php":
+    desc: Create a new paste using the API
+    tags: [pastebin]
+    links:
+      - API Documentation: https://pastebin.com/api_docs
+      - API Examples: https://pastebin.com/api_examples
+  curl -X POST -d "api_dev_key=$(gopass show --password tokens/pastebin.com)" -d 'api_user_name=roalcantara' -d "api_user_password=$(gopass show --password websites/pastebin.com/roalcantara)" "https://pastebin.com/api/api_login.php":
+    desc: Creating An 'api_user_key' Using The API Member Login System
+    tags: [pastebin]
+    links:
+      - API Documentation: https://pastebin.com/api_docs
+      - API Examples: https://pastebin.com/api_examples
+  curl -X POST -d 'api_dev_key=$(gopass show --password tokens/pastebin.com)' -d 'api_user_key=YOUR API USER KEY' -d 'api_option=userdetails' "https://pastebin.com/api/api_post.php":
+    desc: Get user details using the API
+    tags: [pastebin]
+    links:
+      - API Documentation: https://pastebin.com/api_docs
+      - API Examples: https://pastebin.com/api_examples
+  curl -X POST -d 'api_dev_key=$(gopass show --password tokens/pastebin.com)' -d 'api_user_key=YOUR API USER KEY' -d 'api_option=delete' -d 'api_paste_key=API PASTE KEY' "https://pastebin.com/api/api_post.php":
+    desc: Delete a paste using the API
+    tags: [pastebin]
+    links:
+      - API Documentation: https://pastebin.com/api_docs
+      - API Examples: https://pastebin.com/api_examples
+  curl -X POST -d 'api_dev_key=$(gopass show --password tokens/pastebin.com)' -d 'api_user_key=YOUR API USER KEY' -d 'api_option=list' "https://pastebin.com/api/api_post.php":
+    desc: List all pastes using the API
+    tags: [pastebin]
+    links:
+      - API Documentation: https://pastebin.com/api_docs
+      - API Examples: https://pastebin.com/api_examples
+
   cowsay:
     desc: is a program that generates ASCII art of a cow with speech or thought bubbles
     tags: [cat]
@@ -379,7 +695,7 @@ commands:
           #!/bin/bash
           curlie https://api.openai.com/v1/chat/completions \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $(gopass show --password token/openai.com)" \
+            -H "Authorization: Bearer $(gopass show --password tokens/openai.com)" \
             -d '{
               "model": "gpt-3.5-turbo",
               "messages": [ { "role": "system", "content": "You are a helpful assistant." }, { "role": "user", "content": "Hello!" } ]
@@ -388,7 +704,7 @@ commands:
           #!/bin/bash
           curlie https://api.openai.com/v1/chat/completions \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $(gopass show --password token/opencommit.openai.com)" \
+            -H "Authorization: Bearer $(gopass show --password tokens/opencommit.openai.com)" \
             -d '{
               "model": "gpt-4",
               "messages": [{ "role": "system", "content": "You are a helpful assistant." }, {"role": "user", "content": "Hello, how are you?"}],
