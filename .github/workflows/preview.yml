@@ -96,7 +96,6 @@ jobs:
           target: remote
           build-args: |
             BRANCH=${{ github.head_ref || github.ref_name }}
-            CACHE_BUST=${{ github.sha }}
           file: distros/${{ matrix.distro }}/Dockerfile
           platforms: linux/amd64
           load: true
