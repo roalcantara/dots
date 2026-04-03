@@ -5,7 +5,7 @@ on:
     types: [published]
 
 concurrency:
-  cancel-in-progress: true
+  cancel-in-progress: false
   group: 'dots-${{ github.ref }}'
 
 defaults:
@@ -21,15 +21,16 @@ env:
 
 jobs:
   publish:
+    timeout-minutes: 15
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
         distro: [debian, ubuntu]
         include:
           - distro: debian
-            runner: ubuntu-latest
+            runner: ubuntu-24.04
           - distro: ubuntu
-            runner: ubuntu-latest
+            runner: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -72,7 +73,6 @@ jobs:
           target: remote
           build-args: |
             BRANCH=${{ github.ref_name }}
-            CACHE_BUST=${{ github.sha }}
           file: distros/${{ matrix.distro }}/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

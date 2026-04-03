@@ -53,7 +53,6 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 FROM base AS remote
 # Disabling syscall filtering tells Nix (and by extension, Flox) to skip applying a seccomp profile, which fails under QEMU/Docker-arm64 emulation
 RUN mkdir -p /etc/nix && echo 'filter-syscalls = false' >> /etc/nix/nix.conf
-ARG CACHE_BUST=unknown
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Install with selective caching strategy
 RUN --mount=type=secret,id=github_token \
@@ -63,7 +62,7 @@ RUN --mount=type=secret,id=github_token \
     --mount=type=cache,target=$HOME/.cache/gem,uid=1000,gid=1000 \
     --mount=type=cache,target=$HOME/.cache/mise,uid=1000,gid=1000 \
     --mount=type=cache,target=$HOME/.cache/nvim,uid=1000,gid=1000 \
-    echo "[INFO] Using remote dotfiles installation (commit: ${CACHE_BUST})..." && \
+    echo "[INFO] Using remote dotfiles installation..." && \
     wget -qO- "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" | bash -s -- -u "$USERNAME" -g "$GROUPNAME" -t "$TZ" -p "$PACKAGE_MANAGER" -b "$BRANCH"
 
 USER $USERNAME

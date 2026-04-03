@@ -1,4 +1,7 @@
 *.env filter=sops diff=sops
+# Default text diff for this path: external diff=sops breaks some tools (e.g. Cursor
+# Agent Review) when the driver exits non-zero or returns non-standard output.
+config/.env -diff
 config/ssh/keys/*.key filter=sops diff=sops
 config/ssh/keys/*.pem filter=sops diff=sops
 config/ssh/keys/config filter=sops diff=sops

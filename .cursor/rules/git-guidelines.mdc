@@ -38,7 +38,7 @@ This file contains guidelines git usage
 
    1. Separate the subject from the body with a blank line;
    2. Limit the subject line to a maximum of 50 characters;
-   3. Start the subject line with a lowercase letter and use the present tense;
+   3. After `type(scope): `, start the **description** with a **capital** letter, use the present tense, and imperative mood;
    4. Avoid ending the subject line with a period;
    5. Use the imperative mood in the subject line;
    6. Wrap the body at a maximum of 72 characters per line;
@@ -72,7 +72,7 @@ This file contains guidelines git usage
           - feat: Introduces new features or libraries;
           - fix: Addresses bug fixes;
           - perf: Improves performance;
-          - refactor: Refactors code without adding new features;
+          - ref: Refactors code without adding new features (use **`ref`**, not `refactor` — required by `.gitlint` / pre-commit);
           - revert: Reverts previous changes;
           - style: Markup, formatting, or code style fixes and changes;
           - test: Test suite maintenance;
