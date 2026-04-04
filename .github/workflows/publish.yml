@@ -21,7 +21,7 @@ env:
 
 jobs:
   publish:
-    timeout-minutes: 15
+    timeout-minutes: 30
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
@@ -39,6 +39,8 @@ jobs:
       name: production
       url: ${{ steps.setup.outputs.REGISTRY_URL }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Setup outputs
         id: setup
         run: |
@@ -69,10 +71,9 @@ jobs:
       - name: Multi-platform Build and Push for ${{ matrix.distro }}
         uses: docker/build-push-action@v6
         with:
+          context: .
           platforms: linux/amd64,linux/arm64
-          target: remote
-          build-args: |
-            BRANCH=${{ github.ref_name }}
+          target: publish
           file: distros/${{ matrix.distro }}/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
