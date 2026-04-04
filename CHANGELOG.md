@@ -1,3 +1,11 @@
+# [1.33.0](https://github.com/roalcantara/dots/compare/v1.32.0...v1.33.0) (2026-04-04)
+
+
+### Features
+
+* **install:** Enhance embedded support and update usage instructions ([13069ba](https://github.com/roalcantara/dots/commit/13069ba4feae416604c621072fb67c63aff26c1b))
+* **mise:** Declare tasks with usage specs and usage_* vars ([86f15dc](https://github.com/roalcantara/dots/commit/86f15dcbecd54fd962fabbb9dd1f983651ece4bd))
+
 # [1.32.0](https://github.com/roalcantara/dots/compare/v1.31.0...v1.32.0) (2026-04-03)
 
 
