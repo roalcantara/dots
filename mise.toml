@@ -11,7 +11,12 @@
 "build" = { description = "Build a Docker image for dotfiles", usage = '''
   flag "--nocache" help="Disable build cache"
   flag "--local" help="Build local target (COPY) instead of remote"
-  flag "--distro <distro>" help="debian or ubuntu" default="debian"
+  flag "--publish" help="Publish image to Docker Hub"
+  flag "--distro <distro>" {
+    help "Distribution"
+    choices "debian" "ubuntu"
+    default "debian"
+  }
   flag "--platform <platform>" {
     help "Target platform"
     choices "amd64" "arm64" "amd64v2" "riscv64" "ppc64le" "s390x" "386"
@@ -90,7 +95,9 @@ fi
 
 DOCKER_CMD+=(--file="distros/${usage_distro?}/Dockerfile")
 
-if [ "${usage_local:-false}" = "true" ]; then
+if [ "${usage_publish:-false}" = "true" ]; then
+  DOCKER_CMD+=(--target=publish .)
+elif [ "${usage_local:-false}" = "true" ]; then
   DOCKER_CMD+=(--target=local .)
 else
   DOCKER_CMD+=(--target=remote .)
@@ -105,7 +112,11 @@ eval "${DOCKER_CMD[*]}"
 # mise run start --tag local
 # mise run start --tag local --user vscode --workdir /workspaces/dots
 "start" = { description = "Start a container", usage = '''
-  flag "--distro <distro>" help="debian or ubuntu" default="debian"
+  flag "--distro <distro>" {
+    help "Distribution"
+    choices "debian" "ubuntu"
+    default "debian"
+  }
   flag "--tag <tag>" help="Image tag suffix (dots:<distro>-<tag>)"
   flag "--user <user>" help="Container user" default="vscode"
   flag "--workdir <path>" help="Container working directory" default="/workspaces/dots"
@@ -137,8 +148,16 @@ eval "${DOCKER_CMD[*]}"
 # mise run test --distro ubuntu --tag latest
 # mise run test --image dots:debian-amd64-latest --config distros/debian/container-structure-test.yml
 "test" = { description = "Run the Container Structure Tests for the Docker image", usage = '''
-  flag "--distro <distro>" help="debian or ubuntu" default="debian"
-  flag "--platform <platform>" help="Image platform segment when composing image name"
+  flag "--distro <distro>" {
+    help "Distribution"
+    choices "debian" "ubuntu"
+    default "debian"
+  }
+  flag "--platform <platform>" {
+    help "Image platform segment when composing image name"
+    choices "amd64" "arm64" "amd64v2" "riscv64" "ppc64le" "s390x" "386"
+    default "arm64"
+  }
   flag "--tag <tag>" help="Image tag segment when composing image name"
   flag "--image <image>" help="Full image reference (overrides distro/platform/tag)"
   flag "--config <config>" help="CST config path"

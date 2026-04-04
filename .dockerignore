@@ -1,5 +1,4 @@
-# Git
-.git
+# Git (keep .git for image publish stage / embedded installs)
 .gitignore
 .gitattributes
 
