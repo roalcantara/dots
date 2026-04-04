@@ -32,9 +32,9 @@ jobs:
         distro: [debian, ubuntu]
         include:
           - distro: debian
-            runner: ubuntu-latest
+            runner: ubuntu-24.04
           - distro: ubuntu
-            runner: ubuntu-latest
+            runner: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
