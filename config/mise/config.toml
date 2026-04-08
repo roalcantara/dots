@@ -89,11 +89,6 @@ idiomatic_version_file_enable_tools = [
 # Instead use https://usage.jdx.dev/spec
 task.disable_spec_from_run_scripts = true
 
-# Change output style when executing tasks: keep-order | prefix | interleave | replacing | timed | quiet | silent
-# This controls the output of mise run. (see Tasks Runner for more)
-# https://mise.jdx.dev/configuration/settings.html#task_output
-task_output = "quiet"  # stream one task's output live while buffering others, printing in definition order as tasks complete
-
 [tools]
 watchexec = "latest"
 usage = "latest"
