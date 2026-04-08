@@ -1415,6 +1415,12 @@
         "**/devcontainer.json"
       ],
       "url": "https://raw.githubusercontent.com/devcontainers/spec/refs/heads/main/schemas/devContainer.schema.json"
+    },
+    {
+      "fileMatch": [
+        "**/samconfig.toml"
+      ],
+      "url": "https://raw.githubusercontent.com/aws/aws-sam-cli/master/schema/samcli.json"
     }
   ],
   "mise.teraAutoCompletion": true,
@@ -1633,10 +1639,13 @@
   "javascript.referencesCodeLens.showOnAllFunctions": true,
   "containers.orchestratorClient": "com.microsoft.visualstudio.orchestrators.dockercompose",
   "githubPullRequests.pushBranch": "always",
-  "workbench.colorTheme": "Catppuccin Macchiato",
-  "workbench.iconTheme": "material-icon-theme",
   "atlascode.jira.enabled": true,
   "atlascode.bitbucket.enabled": true,
   "atlascode.rovodev.showEntitlementNotifications": false,
-  "atlascode.jira.startWorkBranchTemplate.customTemplate": "{{{prefix}}}{{{issueKey}}}"
+  "atlascode.jira.startWorkBranchTemplate.customTemplate": "{{{prefix}}}{{{issueKey}}}",
+  "workbench.colorTheme": "Catppuccin Macchiato",
+  "workbench.iconTheme": "material-icon-theme",
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
