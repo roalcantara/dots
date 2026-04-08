@@ -623,43 +623,57 @@ _gitx_fzus() {
 # Fzf over log; Enter = rebase-from (same UI as gitx lol; keys still work).
 # * @example: gitx fzr
 _gitx_fzr() {
-  _gitx_fzlog rebase-from "$@"
+  local hash
+  hash=$(_gitx_fzlog)
+  [[ -n "$hash" ]] && _gitx_rebase_from "${hash}"
 }
 
 # Fzf over log; Enter = fix + status (same UI as gitx lol).
 # * @example: gitx fzf
 _gitx_fzf() {
-  _gitx_fzlog fix "$@"
+  local hash
+  hash=$(_gitx_fzlog)
+  [[ -n "$hash" ]] && _gitx_fix "${hash}"
 }
 
 # Fzf over log; Enter = reword (same UI as gitx lol).
 # * @example: gitx fzw
 _gitx_fzw() {
-  _gitx_fzlog reword "$@"
+  local hash
+  hash=$(_gitx_fzlog)
+  [[ -n "$hash" ]] && _gitx_reword "${hash}"
 }
 
 # Fzf over log; Enter = edit (same UI as gitx lol).
 # * @example: gitx fze
 _gitx_fze() {
-  _gitx_fzlog edit "$@"
+  local hash
+  hash=$(_gitx_fzlog)
+  [[ -n "$hash" ]] && _gitx_edit "${hash}"
 }
 
 # Fzf over log; Enter = drop (same UI as gitx lol).
 # * @example: gitx fzd
 _gitx_fzd() {
-  _gitx_fzlog drop "$@"
+  local hash
+  hash=$(_gitx_fzlog)
+  [[ -n "$hash" ]] && _gitx_drop "${hash}"
 }
 
 # Fzf over log; Enter = reset --soft to parent (same UI as gitx lol).
 # * @example: gitx fzhs
 _gitx_fzhs() {
-  _gitx_fzlog reset-soft "$@"
+  local hash
+  hash=$(_gitx_fzlog)
+  [[ -n "$hash" ]] && git reset --soft "${hash}^" && git status --short --branch
 }
 
 # Fzf over log; Enter = reset --hard to parent (same UI as gitx lol).
 # * @example: gitx fzhh
 _gitx_fzhh() {
-  _gitx_fzlog reset-hard "$@"
+  local hash
+  hash=$(_gitx_fzlog)
+  [[ -n "$hash" ]] && git reset --hard "${hash}^"
 }
 
 # Fzf over staged files; unstage from index (git rm --cached).
