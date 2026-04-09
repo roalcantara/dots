@@ -1,3 +1,16 @@
+# [1.34.0](https://github.com/roalcantara/dots/compare/v1.33.0...v1.34.0) (2026-04-09)
+
+
+### Bug Fixes
+
+* **zsh/functions:** Simplify gitx fzf functions to use hash retrieval ([b417290](https://github.com/roalcantara/dots/commit/b417290f5aac24406054dd1e578f7033471ff748))
+
+
+### Features
+
+* **config/cursor:** Add EARS and SDD skills with examples and references ([c5c8d8b](https://github.com/roalcantara/dots/commit/c5c8d8b1d17e2c028ea55f32f764e9567d40783d))
+* **mise:** Remove deprecated setting from config.toml ([cbe0ebe](https://github.com/roalcantara/dots/commit/cbe0ebe42c1ba43eb63e89442d02f33f42032c08))
+
 # [1.33.0](https://github.com/roalcantara/dots/compare/v1.32.0...v1.33.0) (2026-04-04)
 
 
