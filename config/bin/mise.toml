@@ -11,3 +11,22 @@ flag "--scenario <scenario>" {
   choices "help" "missing_gitx"
 }
 ''', run = "bunx bun test tests/xc-git-log-fzf.spec.ts" }
+
+"xc-fabric:specs" = { description = "Bun specs for xc-fabric; use --scenario <id> for one suite", dir = "{{ config_root }}", env = { XC_FABRIC = "{{ config_root }}/xc-fabric" }, usage = '''
+flag "--scenario <scenario>" {
+  help "Run only this scenario (omit to run all)"
+  choices "help" "missing_fabric" "ls_raw" "ls_table" "run_raw" "run_youtube_url" "run_youtube_pattern" "run_copy" "run_output" "run_variable" "yt_flags" "render_fallback" "clip_macos" "clip_linux" "update" "show" "strategies" "strategy_passthrough" "scrape_url" "picker_fzf_preferred" "picker_gum_fallback"
+}
+''', run = "bunx bun test tests/xc-fabric.spec.ts" }
+
+[tasks.setup]
+description = "Ensure xc-fabric deps (fabric-ai, bat, fzf; Linux: xclip)"
+dir = "{{ config_root }}"
+run = """
+command -v fabric >/dev/null 2>&1 || mise use -g fabric-ai@latest
+command -v bat    >/dev/null 2>&1 || mise use -g bat@latest
+command -v fzf    >/dev/null 2>&1 || mise use -g fzf@latest
+if [[ "$(uname -s)" == Linux ]]; then
+  command -v xclip >/dev/null 2>&1 || mise use -g xclip@latest
+fi
+"""

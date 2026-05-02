@@ -21,6 +21,7 @@ on `$PATH` without duplicating files.
 ```txt
 ~/.config/bin/xc-git-branch-preview   ← source (versioned with dotfiles)
 ~/.local/bin/xc-git-branch-preview    ← symlink → ~/.config/bin/xc-git-branch-preview
+~/.config/bin/xc-fabric               ← interactive Fabric pattern runner
 ```
 
 ## DEPENDENCIES
@@ -29,6 +30,11 @@ on `$PATH` without duplicating files.
 - [FZF][6]
 - [Gum][7]
 - [Delta][8]
+- [Fabric][20] _(required for `xc-fabric`)_
+- [fzf][21] _(optional rich pattern picker for `xc-fabric`)_
+- [Gum][22] _(optional prompts, logs, tables, and spinners for `xc-fabric`)_
+- [Glow][23] _(optional Markdown renderer for `xc-fabric`)_
+- [bat][24] _(optional `xc-fabric` rendering fallback)_
 
 ## DEVELOPMENT
 
@@ -186,6 +192,31 @@ grep '^#?' ~/.config/bin/xc-<name> | sed 's/^#? \{0,1\}//'
   mise run xc-git-log-fzf:specs --scenario help
   mise run xc-git-log-fzf:specs --scenario missing_gitx
   mise run xc-git-log-fzf:specs --help
+
+  # xc-fabric
+  mise run setup
+  mise run xc-fabric:specs
+  mise run xc-fabric:specs --scenario help
+  mise run xc-fabric:specs --scenario missing_fabric
+  mise run xc-fabric:specs --scenario ls_raw
+  mise run xc-fabric:specs --scenario ls_table
+  mise run xc-fabric:specs --scenario run_raw
+  mise run xc-fabric:specs --scenario run_youtube_url
+  mise run xc-fabric:specs --scenario run_youtube_pattern
+  mise run xc-fabric:specs --scenario run_copy
+  mise run xc-fabric:specs --scenario run_output
+  mise run xc-fabric:specs --scenario run_variable
+  mise run xc-fabric:specs --scenario yt_flags
+  mise run xc-fabric:specs --scenario render_fallback
+  mise run xc-fabric:specs --scenario clip_macos
+  mise run xc-fabric:specs --scenario clip_linux
+  mise run xc-fabric:specs --scenario update
+  mise run xc-fabric:specs --scenario show
+  mise run xc-fabric:specs --scenario strategies
+  mise run xc-fabric:specs --scenario strategy_passthrough
+  mise run xc-fabric:specs --scenario scrape_url
+  mise run xc-fabric:specs --scenario picker_fzf_preferred
+  mise run xc-fabric:specs --scenario picker_gum_fallback
   ```
 
 ##### WITHOUT MISE
@@ -197,6 +228,9 @@ grep '^#?' ~/.config/bin/xc-<name> | sed 's/^#? \{0,1\}//'
   ```sh
   # xc-git-log-fzf
   bunx bun test tests/xc-git-log-fzf.spec.ts
+
+  # xc-fabric
+  bunx bun test tests/xc-fabric.spec.ts
   ```
 
 ## REFERENCES
@@ -244,3 +278,8 @@ The project is available as open source under the terms of the [MIT][1] [License
 [17]: https://bun.com/docs/runtime/shell "Bun shell (`$`)"
 [18]: https://mise.jdx.dev/tasks/toml-tasks.html "mise TOML tasks"
 [19]: https://mise.jdx.dev/tasks/toml-tasks.html#shell-shebang "mise shell shebang"
+[20]: https://github.com/danielmiessler/Fabric "Fabric"
+[21]: https://github.com/junegunn/fzf "fzf"
+[22]: https://github.com/charmbracelet/gum "Gum"
+[23]: https://github.com/charmbracelet/glow "Glow"
+[24]: https://github.com/sharkdp/bat "bat"
