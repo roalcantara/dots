@@ -12,7 +12,7 @@
   "editor.codeLensFontFamily": "Cascadia Code PL",
   "editor.colorDecorators": true,
   "editor.colorDecoratorsLimit": 500,
-  "editor.copyWithSyntaxHighlighting": false,
+  "editor.copyWithSyntaxHighlighting": true,
   "editor.cursorBlinking": "expand",
   "editor.cursorSmoothCaretAnimation": "on",
   "editor.cursorStyle": "line",
@@ -513,7 +513,7 @@
   "workbench.editor.alwaysShowEditorActions": true,
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.languageDetection": true,
-  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.enabled": false,
   "workbench.editor.pinnedTabSizing": "compact",
   "workbench.editor.showTabs": "multiple",
   "workbench.editor.splitSizing": "auto",
@@ -1646,6 +1646,8 @@
   "workbench.colorTheme": "Catppuccin Macchiato",
   "workbench.iconTheme": "material-icon-theme",
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "cursor.rpcFileLogger.enabled": true,
+  "security.promptForLocalFileProtocolHandling": false
 }
