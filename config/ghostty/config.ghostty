@@ -281,20 +281,17 @@ right-click-action = context-menu
 custom-shader-animation = true
 
 ################################################################################
-## KEYBINDINGS SETTINGS
-## Key bindings. The format is trigger=action
-## https://ghostty.org/docs/config/reference#keybind
-## To see all available keybinds, run: ghostty +list-keybinds
-## To see all available actions, run: ghostty +list-actions
+## KEYBINDINGS
+## Format: trigger=action — https://ghostty.org/docs/config/reference#keybind
+## ghostty +list-keybinds | ghostty +list-actions
 ################################################################################
 
+# UNBINDINGS ===================================================================
+# Remove Ghostty defaults so keys pass through or free chords for custom binds.
 
-# UNBINDINGS
-# It removes previous bound action, and the key will be sent through to the child command if it is printable.
+# UNBIND: APPLICATION (SUPER) ---------------------------------------------------
 # select_all
 keybind = super+a=unbind
-# new_split:right
-keybind = super+d=unbind
 # new_window
 keybind = super+n=unbind
 # clear_screen
@@ -303,8 +300,6 @@ keybind = super+k=unbind
 keybind = super+q=unbind
 # close_surface
 keybind = super+w=unbind
-# new_tab
-keybind = super+t=unbind
 # jump_to_prompt:-1
 keybind = super+up=unbind
 # increase_font_size:1
@@ -313,20 +308,12 @@ keybind = super+plus=unbind
 keybind = super+zero=unbind
 # close_all_windows
 keybind = super+alt+w=unbind
-# new_tab
-keybind = super+alt+t=unbind
-# goto_split:up
-keybind = super+alt+up=unbind
-# goto_split:next
-keybind = super+right_bracket=unbind
 # scroll_page_up
 keybind = super+page_up=unbind
 # scroll_page_down
 keybind = super+page_down=unbind
 # decrease_font_size:1
 keybind = super+minus=unbind
-# goto_split:previous
-keybind = super+left_bracket=unbind
 # scroll_to_top
 keybind = super+home=unbind
 # increase_font_size:1
@@ -338,19 +325,15 @@ keybind = super+down=unbind
 # open_config
 keybind = super+comma=unbind
 
+# UNBIND: INSPECTOR & ALT CHORDS -----------------------------------------------
 # inspector:toggle
 keybind = super+alt+i=unbind
-# goto_split:down
-keybind = super+alt+down=unbind
-# goto_split:left
-keybind = super+alt+left=unbind
-# goto_split:right
-keybind = super+alt+right=unbind
 # close_all_windows
 keybind = super+alt+shift+w=unbind
 # write_screen_file:open
 keybind = super+alt+shift+j=unbind
 
+# UNBIND: RESIZE SPLIT (SUPER+CTRL) --------------------------------------------
 # toggle_fullscreen
 keybind = super+ctrl+f=unbind
 # resize_split:up,10
@@ -364,24 +347,21 @@ keybind = super+ctrl+right=unbind
 # equalize_splits
 keybind = super+ctrl+equal=unbind
 
-# SUPER+SHIFT+T
+# UNBIND: NEW TAB CHORDS (SUPER/CMD+SHIFT+T) -----------------------------------
 keybind = super+shift+t=unbind
 keybind = unconsumed:super+shift+t=unbind
 keybind = global:unconsumed:super+shift+t=unbind
-
-# CMD+SHIFT+T
 keybind = cmd+shift+t=unbind
 keybind = unconsumed:cmd+shift+t=unbind
 keybind = global:unconsumed:cmd+shift+t=unbind
 
+# UNBIND: SUPER+SHIFT ----------------------------------------------------------
 # close_window
 keybind = super+shift+w=unbind
 # paste_from_selection
 keybind = super+shift+v=unbind
 # write_screen_file:paste
 keybind = super+shift+j=unbind
-# new_split:down
-keybind = super+shift+d=unbind
 # jump_to_prompt:-1
 keybind = super+shift+up=unbind
 # toggle_split_zoom
@@ -390,15 +370,11 @@ keybind = super+shift+enter=unbind
 keybind = super+shift+down=unbind
 # reload_config
 keybind = super+shift+comma=unbind
-# next_tab
-keybind = super+shift+right_bracket=unbind
-# previous_tab
-keybind = super+shift+left_bracket=unbind
-
 # ghost help
 keybind = super+shift+slash=unbind
 keybind = super+?=unbind
 
+# UNBIND: SHIFT + MOVEMENT (SELECTION ADJUST) ----------------------------------
 # adjust_selection:up
 keybind = shift+up=unbind
 # adjust_selection:end
@@ -415,19 +391,29 @@ keybind = shift+right=unbind
 keybind = shift+page_up=unbind
 # adjust_selection:page_down
 keybind = shift+page_down=unbind
-# next_tab
-keybind = ctrl+tab=unbind
-# previous_tab
-keybind = ctrl+shift+tab=unbind
 
+# UNBIND: SUPER ARROW KEYS -----------------------------------------------------
 keybind = super+up=unbind
 keybind = super+down=unbind
 keybind = super+right=unbind
 keybind = super+left=unbind
-keybind = super+ctrl+alt+n=unbind
-keybind = super+ctrl+alt+t=unbind
 
-# goto_to_tab
+# UNBIND: COMMAND PALETTE (DEFAULT) --------------------------------------------
+keybind = global:unconsumed:super+shift+p=unbind
+
+# UNBIND: TAB SHORTCUTS --------------------------------------------------------
+# Prefer new windows/splits over tabs; defaults unbound
+
+# new_tab
+keybind = super+t=unbind
+keybind = super+alt+t=unbind
+# next_tab
+keybind = ctrl+tab=unbind
+keybind = super+shift+right_bracket=unbind
+# previous_tab
+keybind = ctrl+shift+tab=unbind
+keybind = super+shift+left_bracket=unbind
+# goto_tab
 keybind = super+one=unbind
 keybind = super+two=unbind
 keybind = super+three=unbind
@@ -442,57 +428,7 @@ keybind = super+shift+backslash=unbind
 keybind = global:unconsumed:shift+cmd+backslash=unbind
 keybind = global:unconsumed:shift+super+backslash=unbind
 
-##
-## HYPER KEY BINDINGS
-## The RIGHT_CMD acts as a HYPER KEY which triggers the combination `super+ctrl+alt`
-## https://ghostty.org/docs/config/reference#keybind
-## To see all available keybinds, run: ghostty +list-keybinds
-## To see all available actions, run: ghostty +list-actions
-##
-
-# General
-keybind = unconsumed:super+ctrl+alt+n=new_window
-keybind = unconsumed:super+ctrl+alt+w=close_surface
-keybind = unconsumed:super+ctrl+alt+q=quit
-keybind = unconsumed:ctrl+l=clear_screen
-keybind = unconsumed:super+ctrl+alt+i=inspector:toggle
-keybind = unconsumed:super+ctrl+alt+comma=reload_config
-keybind = unconsumed:super+ctrl+alt+enter=toggle_fullscreen
-
-# The `performable` prefix indicates that the keybind should only consume the
-# input if the action is performed. Otherwise, passed it to shell
-keybind = performable:super+ctrl+alt+v=paste_from_selection
-
-# Quick Terminal Toggle
-# Lightweight terminal that animates for instant access without interrupting work.
-# https://ghostty.org/docs/config/reference#quick-terminal-position
-keybind = global:unconsumed:super+ctrl+alt+t=toggle_quick_terminal
-
-# SPLITS
-keybind = global:unconsumed:super+ctrl+alt+up=unbind
-keybind = global:unconsumed:super+ctrl+alt+down=unbind
-keybind = global:unconsumed:super+ctrl+alt+right=unbind
-keybind = global:unconsumed:super+ctrl+alt+left=unbind
-
-# super + shift + p               toggle_command_palette
-keybind = global:unconsumed:super+shift+p=unbind
-keybind = global:unconsumed:super+ctrl+alt+p=toggle_command_palette
-
-# keybind = unconsumed:super+ctrl+alt+up=new_split:up
-# keybind = unconsumed:super+ctrl+alt+down=new_split:down
-# keybind = unconsumed:super+ctrl+alt+right=new_split:right
-# keybind = unconsumed:super+ctrl+alt+left=new_split:left
-# keybind = unconsumed:super+ctrl+alt+equal=equalize_splits
-# keybind = unconsumed:super+ctrl+alt+right_bracket=goto_split:next
-# keybind = unconsumed:super+ctrl+alt+left_bracket=goto_split:previous
-# keybind = unconsumed:super+ctrl+alt+shift+up=goto_split:up
-# keybind = unconsumed:super+ctrl+alt+shift+left=goto_split:left
-# keybind = unconsumed:super+ctrl+alt+shift+down=goto_split:down
-# keybind = unconsumed:super+ctrl+alt+shift+right=goto_split:right
-
-# TABS
-# New windows and splits are prefered over tabs
-#
+# TABS: OPTIONAL ACTIONS (L⌘ — COMMENTED; L⌘+T IS QUICK TERMINAL) --------------
 # keybind = unconsumed:super+ctrl+alt+t=new_tab
 # keybind = unconsumed:super+ctrl+alt+tab=next_tab
 # keybind = unconsumed:super+ctrl+alt+shift+tab=previous_tab
@@ -506,11 +442,92 @@ keybind = global:unconsumed:super+ctrl+alt+p=toggle_command_palette
 # keybind = unconsumed:super+ctrl+alt+eight=goto_tab:8
 # keybind = unconsumed:super+ctrl+alt+nine=goto_tab:9
 
-###
-### NEOVIM HACKS
-### Allows ⌘ to be used in Neovim
-### https://ghostty.org/docs/features/neovim
-###
+# ----- UNBIND: CHORDS RESERVED FOR L⌘ (NEW WINDOW / QUICK TERMINAL) -----
+keybind = super+ctrl+alt+n=unbind
+keybind = super+ctrl+alt+t=unbind
+
+# UNBIND: SPLITS GOTO ----------------------------------------------------------
+# DEFAULT: goto_split:up / down / left / right / previous / next
+keybind = super+alt+up=unbind
+keybind = super+alt+down=unbind
+keybind = super+alt+left=unbind
+keybind = super+alt+right=unbind
+keybind = super+right_bracket=unbind
+keybind = super+left_bracket=unbind
+
+# BIND: SPLITS: GOTO (FOCUS) ---------------------------------------------------
+keybind = super+ctrl+alt+up=unbind
+keybind = super+ctrl+alt+left=unbind
+keybind = super+ctrl+alt+down=unbind
+keybind = super+ctrl+alt+right=unbind
+
+# Ghostty layer (Karabiner F3-layer emits ctrl+alt+arrows) ---------------------
+keybind = ctrl+alt+up=goto_split:up
+keybind = ctrl+alt+left=goto_split:left
+keybind = ctrl+alt+down=goto_split:down
+keybind = ctrl+alt+right=goto_split:right
+
+# BIND: SPLITS: GOTO (ROTATE FOCUS) --------------------------------------------
+keybind = super+ctrl+alt+left_bracket=unbind
+keybind = super+ctrl+alt+right_bracket=unbind
+
+keybind = ctrl+alt+left_bracket=goto_split:previous
+keybind = ctrl+alt+right_bracket=goto_split:next
+
+# BIND: SPLITS: NEW_SPLIT ------------------------------------------------------
+keybind = super+ctrl+alt+shift+up=unbind
+keybind = super+ctrl+alt+shift+down=unbind
+keybind = super+ctrl+alt+shift+right=unbind
+keybind = super+ctrl+alt+shift+left=unbind
+
+keybind = ctrl+alt+shift+up=new_split:up
+keybind = ctrl+alt+shift+down=new_split:down
+keybind = ctrl+alt+shift+right=new_split:right
+keybind = ctrl+alt+shift+left=new_split:left
+
+# BIND: SURFACE (CURRENT SPLIT/WINDOW) -----------------------------------------
+keybind = super+ctrl+alt+w=unbind
+keybind = ctrl+alt+w=close_surface
+
+# BIND: WINDOW / SURFACE -------------------------------------------------------
+# Same modifier as splits; binds that are not pane grid operations.
+
+keybind = unconsumed:ctrl+l=clear_screen
+keybind = super+ctrl+alt+n=unbind
+keybind = super+ctrl+alt+enter=unbind
+keybind = super+ctrl+alt+q=unbind
+
+keybind = ctrl+alt+n=new_window
+keybind = ctrl+alt+enter=toggle_fullscreen
+keybind = ctrl+alt+q=quit
+
+# BIND: INSPECTOR --------------------------------------------------------------
+keybind = super+ctrl+alt+i=unbind
+keybind = ctrl+alt+i=inspector:toggle
+
+# BIND: RELOAD CONFIG ----------------------------------------------------------
+keybind = super+ctrl+alt+comma=unbind
+keybind = ctrl+alt+comma=reload_config
+
+# BIND: PASTE FROM SELECTION --------------------------------------------------
+# The `performable` prefix consumes the key only if the action runs; else passes to shell.
+# keybind = performable:super+ctrl+alt+v=paste_from_selection
+
+# QUICK TERMINAL ---------------------------------------------------------------
+# https://ghostty.org/docs/config/reference#quick-terminal-position
+keybind = super+ctrl+alt+t=unbind
+keybind = ctrl+alt+t=toggle_quick_terminal
+
+# COMMAND PALETTE --------------------------------------------------------------
+keybind = super+ctrl+alt+p=unbind
+keybind = ctrl+alt+p=toggle_command_palette
+
+################################################################################
+# INTEGRATIONS — EDITOR & MISC KEYBINDS
+################################################################################
+
+# BIND: NEOVIM: CMD PASSTHROUGH (COMMENTED; ENABLE IF NEEDED) ----------------
+# https://ghostty.org/docs/features/neovim
 
 # keybind = super+shift+physical:t=unbind
 # keybind = unconsumed:super+shift+physical:t=unbind
@@ -524,16 +541,13 @@ keybind = global:unconsumed:super+ctrl+alt+p=toggle_command_palette
 # keybind = global:unconsumed:shift+super+physical:backslash=unbind
 # keybind = cmd+physical:/=esc:/
 
-# CLAUDE-CODE Fix
+# BIND: CLAUDE CODE: SHIFT+ENTER ----------------------------------------------
 keybind = shift+enter=text:/n
 
-###
-### SPLITTED SETTINGS AND RELOADING CONFIG
-### cmd+shift+, reloaded at runtime by pressing
-### https://ghostty.org/docs/config#splitting-into-multiple-files
-### https://ghostty.org/docs/config#reloading-the-configuration
-###
+# RELOAD CONFIG ------------------------------------------------------------<delete>
+# https://ghostty.org/docs/config#reloading-the-configuration
+# cmd+shift+, reloaded at runtime by pressing
 
+# CONFIGS IN MULTIPLE FILES ----------------------------------------------------
+# https://ghostty.org/docs/config#splitting-into-multiple-files
 config-file = ?auto/theme.ghostty
-
-# vi: set ft=ini:
