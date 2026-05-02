@@ -113,7 +113,7 @@ youtube_summary/system.md  → first line: "Summarize a YouTube video transcript
 - [ ] 1.4 Add `xc-fabric:specs` and `setup` tasks to `mise.toml`
   - Follow exact same structure as `xc-git-log-fzf:specs` for `xc-fabric:specs`
   - Set `run = "bunx bun test tests/xc-fabric.spec.ts"`
-  - List all **21** scenario IDs in `usage` block `choices` (see `design.md` §10)
+  - List all **22** scenario IDs in `usage` block `choices` (see `design.md` §10)
   - Add `setup` per `design.md` §11 (`fabric-ai`, `bat`, `fzf`, Linux `xclip`)
   - **Do not** add `fabric-ai` to `[tools]` unless the repo owner chooses to — plan leaves `[tools]` unchanged
   - _Requirements: all_
@@ -329,7 +329,7 @@ youtube_summary/system.md  → first line: "Summarize a YouTube video transcript
 
 **Completion criteria:**
 
-- [ ] `mise run xc-fabric:specs` (all **21** scenarios) GREEN
+- [ ] `mise run xc-fabric:specs` (all **22** scenarios) GREEN
 - [ ] `shellcheck xc-fabric` zero errors
 - [ ] Manual smoke test passes
 - [ ] execute command `/commit-all` using the following title adding appropriate body:
@@ -340,10 +340,10 @@ youtube_summary/system.md  → first line: "Summarize a YouTube video transcript
 ## TASK 9: Update `README.md` + verify `mise.toml`
 
 - [ ] 9.1 Verify `mise.toml`
-  - `xc-fabric:specs` and `setup` present; `run` line correct; **21** `choices` in `usage`
+  - `xc-fabric:specs` and `setup` present; `run` line correct; **22** `choices` in `usage`
   - _Requirements: all_
 
-- [ ] 9.2 Update `README.md` per `design.md` §12 (OVERVIEW, DEPENDENCIES, LINKS `[20]–[24]`, RUNNING SPECS for all 21 scenarios + `setup`)
+- [ ] 9.2 Update `README.md` per `design.md` §12 (OVERVIEW, DEPENDENCIES, LINKS `[20]–[25]`, RUNNING SPECS for all 22 scenarios + `setup`)
 
 **Completion criteria:**
 

@@ -27,6 +27,7 @@
 #?   --yt-comments             Include YouTube comments
 #?   --yt-metadata             Include YouTube metadata
 #?   --yt-playlist             Process a YouTube playlist
+#?   --debug                   Log fzf preview template and a dry-run sample to stderr
 #?
 #? Subcommands:
 #?   wizard                    Guided pattern run
@@ -53,6 +54,7 @@ esac
 set -euo pipefail
 
 readonly SCRIPT_NAME="${0:t}"
+readonly XC_SCRIPT="${${(%):-%x}:a}"
 
 RAW=0
 COPY=0
@@ -66,6 +68,7 @@ MODEL=""
 OUTPUT=""
 STRATEGY=""
 COMMAND=""
+DEBUG=0
 typeset -ga VARS=()
 typeset -ga POSITIONALS=()
 
@@ -74,6 +77,15 @@ _has_gum() { command -v gum >/dev/null 2>&1; }
 _has_glow() { command -v glow >/dev/null 2>&1; }
 _has_bat() { command -v bat >/dev/null 2>&1; }
 _has_fzf() { command -v fzf >/dev/null 2>&1; }
+_has_yq() { command -v yq >/dev/null 2>&1; }
+
+_bin_config_file() {
+  if [[ -n "${XC_BIN_CONFIG:-}" ]]; then
+    printf '%s\n' "$XC_BIN_CONFIG"
+  else
+    printf '%s\n' "${XC_SCRIPT:h}/config.yml"
+  fi
+}
 
 _h_log() {
   local level="$1"
@@ -175,7 +187,6 @@ _h_filter() {
   local header=""
   local placeholder=""
   local preview=""
-  local -a gum_args=()
 
   while (( $# > 0 )); do
     case "$1" in
@@ -195,29 +206,59 @@ _h_filter() {
     shift || true
   done
 
-  [[ -n "$header" ]] && gum_args+=(--header "$header")
-  [[ -n "$placeholder" ]] && gum_args+=(--placeholder "$placeholder")
-
   if _has_fzf; then
     local pat_dir
     local edit_cmd
     local reload_cmd
+    local bin_self
+    local pprev
     pat_dir=$(_patterns_dir)
-    [[ -z "$header" ]] && header="Enter run  Ctrl-/ preview  Ctrl-O edit  Ctrl-R reload  ? help"
-    [[ -z "$preview" ]] && preview="head -50 ${pat_dir}/{}/system.md 2>/dev/null"
-    edit_cmd="${EDITOR:-vi} \"${pat_dir}/{}/system.md\" </dev/tty >/dev/tty 2>&1"
-    # fzf reload runs in a fresh shell, so this bind is intentionally self-contained.
-    reload_cmd="find \"${pat_dir}\" -mindepth 1 -maxdepth 1 -type d -exec basename {} \\; 2>/dev/null | sort"
+    [[ -z "$header" ]] && header=$(_fzf_pattern_header_body)
+    pprev="$preview"
+    # Lines are "name<TAB>display"; --delimiter is tab — use {1} (pattern), not {} (whole line).
+    [[ -z "$pprev" ]] && pprev="sed -n '1,120p' $(printf '%q' "$pat_dir")/{1}/system.md 2>/dev/null"
+    edit_cmd="${EDITOR:-vi} \"${pat_dir}/{1}/system.md\" </dev/tty >/dev/tty 2>&1"
+    bin_self="${XC_FABRIC:-$XC_SCRIPT}"
+    reload_cmd="env FABRIC_PATTERNS_DIR=${(q)pat_dir} zsh ${(q)bin_self} --xc-picker-lines"
+
+    if [[ "$DEBUG" == 1 ]]; then
+      printf '%s\n' "xc-fabric DEBUG: fzf --preview (exact string passed to fzf):" >&2
+      printf '%s\n\n' "$pprev" >&2
+      printf '%s\n' "xc-fabric DEBUG: env at picker start: GLOW_STYLE=${GLOW_STYLE:-<unset>} TERM=${TERM:-<unset>} NO_COLOR=${NO_COLOR:-<unset>} CLICOLOR_FORCE=${CLICOLOR_FORCE:-<unset>} COLORTERM=${COLORTERM:-<unset>}" >&2
+      printf '%s\n' "xc-fabric DEBUG: fzf sets FZF_PREVIEW_COLUMNS in the preview subshell only (not here)." >&2
+      local dbg_pat="" d dbg_snip
+      for d in "$pat_dir"/*(/N); do
+        dbg_pat="${d:t}"
+        break
+      done
+      if [[ -n "$dbg_pat" ]]; then
+        dbg_snip="${pprev//\{1\}/$dbg_pat}"
+        printf '%s\n' "xc-fabric DEBUG: dry-run preview with {1} → ${dbg_pat} (FZF_PREVIEW_COLUMNS=80, via /bin/sh -c):" >&2
+        FZF_PREVIEW_COLUMNS=80 /bin/sh -c "$dbg_snip" 2>&1 | head -24 | sed 's/^/xc-fabric DEBUG: | /' >&2 || true
+        printf '\n' >&2
+      else
+        printf '%s\n' "xc-fabric DEBUG: no pattern dirs under ${pat_dir}, skip dry-run." >&2
+      fi
+    fi
 
     fzf \
+      --ansi \
+      --layout=reverse \
+      --height=90% \
+      --border=rounded \
+      --delimiter=$'\t' \
+      --with-nth=2 \
       --header="$header" \
-      --preview="$preview" \
+      --preview="$pprev" \
       --preview-window 'right:60%:wrap' \
       --bind 'ctrl-/:toggle-preview' \
       --bind "ctrl-o:execute(${edit_cmd})" \
       --bind "ctrl-r:reload(${reload_cmd})" \
       --bind '?:execute(printf "%s\n" "Keys: Enter run  Ctrl-/ toggle preview  Ctrl-O editor  Ctrl-R reload  ? help  Esc cancel" | less >/dev/tty 2>&1)'
   elif _has_gum; then
+    local -a gum_args=()
+    [[ -n "$header" ]] && gum_args+=(--header "$header")
+    [[ -n "$placeholder" ]] && gum_args+=(--placeholder "$placeholder")
     gum filter "${gum_args[@]}"
   else
     local items
@@ -319,6 +360,125 @@ _list_patterns() {
   done | sort
 }
 
+_pattern_overlay_load() {
+  typeset -gA _XC_MDESC _XC_MTAGS
+  _XC_MDESC=()
+  _XC_MTAGS=()
+  local config key desc tags
+  config=$(_bin_config_file)
+  [[ -f "$config" ]] || return 1
+  _has_yq || return 1
+  while IFS=$'\t' read -r key desc tags; do
+    [[ -n "$key" ]] || continue
+    _XC_MDESC[$key]="$desc"
+    _XC_MTAGS[$key]="$tags"
+  done < <(yq -r '.scripts["xc-fabric"].patterns // {} | to_entries[] | [.key, (.value.description // ""), (.value.tags // [] | join(" "))] | @tsv' "$config" 2>/dev/null || :)
+  (( ${#_XC_MDESC[@]} > 0 )) || return 1
+  return 0
+}
+
+_truncate_picker_desc() {
+  local text="$1"
+  local max="${2:-56}"
+  local len=${#text} n
+  if (( len <= max )); then
+    printf '%s\n' "$text"
+    return 0
+  fi
+  # zsh: ${var:0:len} treats a non-numeric third part as modifiers ("max-1" → `m`).
+  # Use character subscripts [1,n] (1-based) with an arithmetic end index instead.
+  n=$(( max - 1 ))
+  (( n < 1 )) && n=1
+  printf '%s…\n' "${text[1,n]}"
+}
+
+_pattern_hashtags() {
+  local words="$1"
+  local t out=""
+  for t in ${=words}; do
+    [[ -z "$t" ]] && continue
+    t="${t##\\#}"
+    out+=" #${t}"
+  done
+  printf '%s' "${out## }"
+}
+
+_format_pattern_fzf_row() {
+  local name="$1"
+  local desc="$2"
+  local tags_sp="$3"
+  local dim=$'\e[2m' reset=$'\e[0m' tags ht
+  desc=$(_truncate_picker_desc "$desc" 56)
+  ht=$(_pattern_hashtags "$tags_sp")
+  if [[ -n "$ht" ]]; then
+    printf '%s%s  %s  %s%s' "$name" "$dim" "$desc" "$ht" "$reset"
+  else
+    printf '%s%s  %s%s' "$name" "$dim" "$desc" "$reset"
+  fi
+}
+
+_format_pattern_plain_row() {
+  local name="$1"
+  local desc="$2"
+  local tags_sp="$3"
+  local ht
+  desc=$(_truncate_picker_desc "$desc" 64)
+  ht=$(_pattern_hashtags "$tags_sp")
+  if [[ -n "$ht" ]]; then
+    printf '%s — %s %s' "$name" "$desc" "$ht"
+  else
+    printf '%s — %s' "$name" "$desc"
+  fi
+}
+
+_pattern_emit_picker_lines() {
+  local patterns_tsv="$1"
+  local line name desc tags_sp display
+  _pattern_overlay_load 2>/dev/null || true
+  while IFS= read -r line; do
+    [[ -z "$line" ]] && continue
+    name="${line%%$'\t'*}"
+    desc="${line#*$'\t'}"
+    [[ "$desc" == "$line" ]] && desc=""
+    [[ -z "$desc" ]] && desc="$name"
+    tags_sp=""
+    if [[ -n "${_XC_MDESC[$name]:-}" ]]; then
+      desc="${_XC_MDESC[$name]}"
+      tags_sp="${_XC_MTAGS[$name]:-}"
+    fi
+    if _has_fzf; then
+      display=$(_format_pattern_fzf_row "$name" "$desc" "$tags_sp")
+    else
+      display=$(_format_pattern_plain_row "$name" "$desc" "$tags_sp")
+    fi
+    printf '%s\t%s\n' "$name" "$display"
+  done <<<"$patterns_tsv"
+}
+
+_fzf_pattern_system_preview() {
+  local pat_dir="$1"
+  local q glow_p bat_p plain_p gs
+  q=$(printf '%q' "$pat_dir")
+  gs="${GLOW_STYLE:-dracula}"
+  # Color Issues: If colors look broken inside the preview, try adding CLICOLOR_FORCE=1 or COLORTERM=truecolor before the glow command
+  glow_p="export CLICOLOR_FORCE=1; export COLORTERM=truecolor; export TERM=\"\${TERM:-xterm-256color}\"; glow -s ${(q)gs} -w \"\${FZF_PREVIEW_COLUMNS:-80}\" ${q}/{1}/system.md </dev/null 2>/dev/null"
+  bat_p="bat --language=md --style=plain --color=always --paging=never ${q}/{1}/system.md 2>/dev/null"
+  plain_p="sed -n '1,120p' ${q}/{1}/system.md 2>/dev/null"
+  printf '(%s) || (%s) || (%s)' "$glow_p" "$bat_p" "$plain_p"
+}
+
+_fzf_pattern_header_body() {
+  local title line2 config
+  title="Select a pattern"
+  line2="Enter run  Ctrl-/ preview  Ctrl-O edit  Ctrl-R reload  ? help  Esc cancel"
+  config=$(_bin_config_file)
+  if [[ -f "$config" ]] && _has_yq; then
+    title=$(yq -r '.scripts["xc-fabric"].ui.picker.title // "Select a pattern"' "$config" 2>/dev/null) || title="Select a pattern"
+  fi
+  [[ -z "$title" ]] && title="Select a pattern"
+  printf '%s\n%s' "$title" "$line2"
+}
+
 _is_youtube_url() {
   [[ "${1:-}" =~ '^https://(www[.])?(youtube[.]com|youtu[.]be)' ]]
 }
@@ -343,9 +503,10 @@ _render_output() {
   local result="$1"
 
   if _has_glow; then
-    printf '%s\n' "$result" | glow
+    # Stdin must be explicit `-` for pipe input per glow CLI docs. Clear NO_COLOR for ANSI output.
+    ( unset NO_COLOR 2>/dev/null; printf '%s\n' "$result" | glow -s "${GLOW_STYLE:-dark}" - )
   elif _has_bat; then
-    printf '%s\n' "$result" | bat
+    printf '%s\n' "$result" | bat --language=md --style=plain --color=always --paging=never
   else
     printf '%s\n' "$result"
   fi
@@ -450,6 +611,8 @@ cmd_default() {
   local input
   local pat_dir
   local preview=""
+  local header_body
+  local picker_lines
 
   patterns_tsv=$(_list_patterns)
   if [[ "$RAW" == "1" ]]; then
@@ -459,14 +622,16 @@ cmd_default() {
 
   [[ -n "$patterns_tsv" ]] || return 0
   pat_dir=$(_patterns_dir)
+  header_body=$(_fzf_pattern_header_body)
+  picker_lines=$(_pattern_emit_picker_lines "$patterns_tsv")
   if [[ "$NO_PREVIEW" != "1" ]]; then
-    preview="glow -s dark ${pat_dir}/{}/system.md 2>/dev/null || bat ${pat_dir}/{}/system.md 2>/dev/null || head -50 ${pat_dir}/{}/system.md 2>/dev/null"
+    preview=$(_fzf_pattern_system_preview "$pat_dir")
   fi
 
   if [[ -n "$preview" ]]; then
-    selected=$(printf '%s\n' "$patterns_tsv" | awk -F'\t' '{print $1}' | _h_filter --header "Select a pattern" --preview "$preview" || true)
+    selected=$(printf '%s\n' "$picker_lines" | _h_filter --header "$header_body" --preview "$preview" | awk -F'\t' '{print $1}' || true)
   else
-    selected=$(printf '%s\n' "$patterns_tsv" | awk -F'\t' '{print $1}' | _h_filter --header "Select a pattern" || true)
+    selected=$(printf '%s\n' "$picker_lines" | _h_filter --header "$header_body" | awk -F'\t' '{print $1}' || true)
   fi
   [[ -n "$selected" ]] || return 0
 
@@ -483,11 +648,25 @@ cmd_wizard() {
   local name
   local value
   local input
+  local pat_dir
+  local preview=""
+  local header_body
+  local picker_lines
 
   patterns_tsv=$(_list_patterns)
   [[ -n "$patterns_tsv" ]] || return 0
 
-  selected=$(printf '%s\n' "$patterns_tsv" | awk -F'\t' '{print $1}' | _h_filter --header "Select a pattern" || true)
+  pat_dir=$(_patterns_dir)
+  header_body=$(_fzf_pattern_header_body)
+  picker_lines=$(_pattern_emit_picker_lines "$patterns_tsv")
+  if [[ "$NO_PREVIEW" != "1" ]]; then
+    preview=$(_fzf_pattern_system_preview "$pat_dir")
+  fi
+  if [[ -n "$preview" ]]; then
+    selected=$(printf '%s\n' "$picker_lines" | _h_filter --header "$header_body" --preview "$preview" | awk -F'\t' '{print $1}' || true)
+  else
+    selected=$(printf '%s\n' "$picker_lines" | _h_filter --header "$header_body" | awk -F'\t' '{print $1}' || true)
+  fi
   [[ -n "$selected" ]] || return 0
 
   system_file="$(_patterns_dir)/${selected}/system.md"
@@ -662,6 +841,9 @@ _parse_args() {
       --yt-playlist)
         YT_PLAYLIST=1
         ;;
+      --debug)
+        DEBUG=1
+        ;;
       --)
         shift
         POSITIONALS+=("$@")
@@ -686,6 +868,13 @@ _parse_args() {
 }
 
 main() {
+  if [[ "${1:-}" == "--xc-picker-lines" ]]; then
+    local patterns_tsv
+    patterns_tsv=$(_list_patterns)
+    _pattern_emit_picker_lines "$patterns_tsv"
+    exit 0
+  fi
+
   _parse_args "$@"
   _check_deps
 

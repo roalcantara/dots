@@ -112,7 +112,7 @@ so that the script works correctly whether or not `gum` is installed and I can d
     ELSE it SHALL print the header and the list to stderr, read a line from stdin as the selection and return it on stdout.
 16. GIVEN that `_h_filter [--header <header>] [--placeholder <placeholder>] [--preview <shell-cmd>]` is called
     WHEN `_has_fzf` returns 0
-    THEN it SHALL invoke `fzf` with `--header`, `--preview`, `--preview-window 'right:60%:wrap'`
+    THEN it SHALL invoke `fzf` with `--header`, `--preview`, `--preview-window 'right:60%:wrap'`, `--ansi`, `--delimiter=$'\t'`, `--with-nth=2`, `--layout=reverse`, `--height=90%`, and `--border=rounded`
     AND it SHALL use the keybindings defined in `design.md` §6.0:
 
       | Key      | Action                        |
@@ -196,7 +196,8 @@ so that I can discover, choose, and run Fabric patterns without remembering thei
    THEN script SHALL call `_h_filter` to show all available patterns with their descriptions.
 2. WHEN `--no-preview` is NOT set
    THEN script SHALL pass a `--preview` pane showing each pattern's `system.md`
-   AND it SHALL display the first 50 lines, or the full file with scroll when `fzf` is the active picker per AC-4.2 to `_h_filter`.
+   AND it SHALL prefer `glow` with `--pager=false` and width tied to `FZF_PREVIEW_COLUMNS`, else `bat` with `--paging=never`, else `sed`/`head` for plain text,
+   AND the preview SHALL be scrollable when `fzf` is the active picker per `design.md` §6.0.
 3. WHEN `--raw` is set
    THEN script SHALL print all patterns as TSV to stdout and exit 0 without opening any TUI.
 4. WHEN a pattern is selected
@@ -218,6 +219,10 @@ so that I can discover, choose, and run Fabric patterns without remembering thei
   THEN the preview pane SHALL be scrollable and toggleable via the bindings in `design.md` §6.0;
   AND WHEN only `gum filter` is active,
   THEN the preview SHALL be static (no scroll/toggle).
+- WHEN `fzf` is the active picker,
+  THEN the header SHALL include a second line listing `Enter run`, `Ctrl-/`, `Ctrl-O`, `Ctrl-R`, `?`, and `Esc cancel` (exact wording in `design.md` §6.0).
+- WHEN `config.yml` resolves and `yq` is on `PATH`,
+  THEN the picker title MAY be read from `scripts.xc-fabric.ui.picker.title` and per-pattern `description` / `tags` MAY override list descriptions for display only (tags as `#name`, at most two); `--raw` output remains plain TSV from `system.md`.
 
 ---
 
@@ -377,10 +382,10 @@ so that Markdown results are presented clearly rather than as raw text
 
 1. GIVEN that `_has_glow` returns 0
    WHEN `_render_output` is called
-   THEN script SHALL pipe the result through `glow`.
+   THEN script SHALL pipe the result through `glow --style dark --pager=false`.
 2. GIVEN that `_has_glow` returns 1 AND `_has_bat` returns 0
    WHEN `_render_output` is called
-   THEN script SHALL pipe the result through `bat`.
+   THEN script SHALL pipe the result through `bat --language=md --style=plain --color=always --paging=never`.
 3. GIVEN that `_has_glow` returns 1 AND `_has_bat` returns 1
    WHEN `_render_output` is called
    THEN script SHALL pipe the result through `cat`.

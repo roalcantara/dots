@@ -35,6 +35,7 @@ on `$PATH` without duplicating files.
 - [Gum][22] _(optional prompts, logs, tables, and spinners for `xc-fabric`)_
 - [Glow][23] _(optional Markdown renderer for `xc-fabric`)_
 - [bat][24] _(optional `xc-fabric` rendering fallback)_
+- [yq][25] _(optional; reads `config.yml` metadata for `xc-fabric` picker overlays)_
 
 ## DEVELOPMENT
 
@@ -216,6 +217,7 @@ grep '^#?' ~/.config/bin/xc-<name> | sed 's/^#? \{0,1\}//'
   mise run xc-fabric:specs --scenario strategy_passthrough
   mise run xc-fabric:specs --scenario scrape_url
   mise run xc-fabric:specs --scenario picker_fzf_preferred
+  mise run xc-fabric:specs --scenario picker_fzf_metadata
   mise run xc-fabric:specs --scenario picker_gum_fallback
   ```
 
@@ -283,3 +285,4 @@ The project is available as open source under the terms of the [MIT][1] [License
 [22]: https://github.com/charmbracelet/gum "Gum"
 [23]: https://github.com/charmbracelet/glow "Glow"
 [24]: https://github.com/sharkdp/bat "bat"
+[25]: https://github.com/mikefarah/yq "yq"

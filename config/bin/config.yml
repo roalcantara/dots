@@ -1,0 +1,19 @@
+# Shared metadata for scripts under config/bin (see xc-fabric SDD).
+# Descriptions are curated from Fabric pattern_explanations.md; extend as needed.
+# Tags: prefer one, at most two; lowercase; shown in the picker as #tag.
+
+scripts:
+  xc-fabric:
+    ui:
+      picker:
+        title: Select a Fabric pattern
+    patterns:
+      summarize:
+        description: Summarizes input into key points and short takeaways.
+        tags: [ writing ]
+      extract_wisdom:
+        description: Pulls insights and wisdom from dense text.
+        tags: [ wisdom ]
+      youtube_summary:
+        description: Condenses YouTube transcripts into readable notes.
+        tags: [ youtube, summary ]

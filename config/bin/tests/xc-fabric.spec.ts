@@ -37,12 +37,12 @@ if [ -n "$stdin" ]; then printf 'FABRIC_STDIN:%s\\n' "$stdin"; fi
 `;
 
 const minimalStubs = {
-  fabric: fabricEcho,
+  "fabric-ai": fabricEcho,
   gum: "#!/bin/sh\nexit 0\n",
 };
 
 const noGumStubs = {
-  fabric: fabricEcho,
+  "fabric-ai": fabricEcho,
 };
 
 function decode(bytes: Uint8Array): string {
@@ -146,7 +146,7 @@ describe("xc-fabric", () => {
       const gumLog = join(tmpdir(), `xc-fabric-gum-${Date.now()}`);
       const r = run(["ls"], {
         stubs: {
-          fabric: fabricEcho,
+          "fabric-ai": fabricEcho,
           gum: `#!/bin/sh\nprintf '%s\\n' "$*" >> ${gumLog}\ncat\n`,
         },
       });
@@ -198,7 +198,7 @@ describe("xc-fabric", () => {
     it("prompts for the YouTube URL", () => {
       const r = run(["run", "youtube_summary", "--raw"], {
         stubs: {
-          fabric: fabricEcho,
+          "fabric-ai": fabricEcho,
           gum: "#!/bin/sh\nif [ \"$1\" = input ]; then echo https://youtu.be/xyz; fi\n",
         },
       });
@@ -228,7 +228,7 @@ describe("xc-fabric", () => {
     it("passes --output and skips rendering", () => {
       const r = run(["run", "summarize", "--output", "/tmp/out.md"], {
         stubs: {
-          fabric: fabricEcho,
+          "fabric-ai": fabricEcho,
           gum: "#!/bin/sh\nshift; while [ \"$1\" != -- ]; do shift; done; shift; exec \"$@\"\n",
           glow: "#!/bin/sh\necho GLOW_CALLED\ncat\n",
         },
@@ -292,7 +292,7 @@ describe("xc-fabric", () => {
     it("renders through bat", () => {
       const r = run(["run", "summarize"], {
         stubs: {
-          fabric: "#!/bin/sh\necho '# rendered'\ncat >/dev/null\n",
+          "fabric-ai": "#!/bin/sh\necho '# rendered'\ncat >/dev/null\n",
           bat: "#!/bin/sh\necho BAT_CALLED\ncat\n",
         },
         input: "render",
@@ -312,7 +312,7 @@ describe("xc-fabric", () => {
       const r = run(["run", "summarize", "--raw"], {
         pty: true,
         stubs: {
-          fabric: fabricEcho,
+          "fabric-ai": fabricEcho,
           gum: "#!/bin/sh\nexit 0\n",
           uname: "#!/bin/sh\necho Darwin\n",
           pbpaste: "#!/bin/sh\necho clipboard-macos\n",
@@ -332,7 +332,7 @@ describe("xc-fabric", () => {
       const r = run(["run", "summarize", "--raw"], {
         pty: true,
         stubs: {
-          fabric: fabricEcho,
+          "fabric-ai": fabricEcho,
           gum: "#!/bin/sh\nexit 0\n",
           uname: "#!/bin/sh\necho Linux\n",
           xclip: "#!/bin/sh\necho clipboard-linux\n",
@@ -376,7 +376,7 @@ describe("xc-fabric", () => {
       const gumLog = join(tmpdir(), `xc-fabric-strategies-${Date.now()}`);
       const r = run(["strategies"], {
         stubs: {
-          fabric: fabricEcho,
+          "fabric-ai": fabricEcho,
           gum: `#!/bin/sh\nprintf '%s\\n' "$*" >> ${gumLog}\ncat\n`,
         },
       });
@@ -423,16 +423,32 @@ describe("xc-fabric", () => {
       const fzfLog = join(tmpdir(), `xc-fabric-fzf-${Date.now()}`);
       const r = run([], {
         stubs: {
-          fabric: fabricEcho,
+          "fabric-ai": fabricEcho,
           gum: "#!/bin/sh\nexit 0\n",
-          fzf: `#!/bin/sh\nprintf '%s\\n' "$*" > ${fzfLog}\nhead -n 1\n`,
+          fzf: `#!/bin/sh
+{
+  echo "===ARGS==="
+  printf '%s\\n' "$*"
+  echo "===STDIN==="
+  cat
+} > ${fzfLog}
+head -n 1
+`,
         },
       });
       try {
         expect(r.exitCode).toBe(0);
         const log = await Bun.file(fzfLog).text();
+        expect(log).toContain("===ARGS===");
         expect(log).toContain("--preview-window");
         expect(log).toContain("toggle-preview");
+        expect(log).toContain("--ansi");
+        expect(log).toContain("--delimiter");
+        expect(log).toContain("--with-nth");
+        expect(log).toContain("Ctrl-/");
+        // Preview is one `--preview=…` argument; assert tuning inside that snippet, not fzf-native flags.
+        expect(log).toContain("FZF_PREVIEW_COLUMNS");
+        expect(log).toContain("paging=never");
       } finally {
         r.cleanup();
         rmSync(fzfLog, { force: true });
@@ -440,12 +456,81 @@ describe("xc-fabric", () => {
     });
   });
 
+  describe.skipIf(skipWhenOtherScenario("picker_fzf_metadata"))(
+    "when config.yml and yq supply pattern metadata",
+    () => {
+      it("feeds fzf rows with hashtags and a config title", async () => {
+        const fzfLog = join(tmpdir(), `xc-fabric-fzf-meta-${Date.now()}`);
+        const cfgDir = mkdtempSync(join(tmpdir(), "xc-fabric-cfg-"));
+        const cfgPath = join(cfgDir, "config.yml");
+        writeFileSync(
+          cfgPath,
+          [
+            "scripts:",
+            "  xc-fabric:",
+            "    ui:",
+            "      picker:",
+            "        title: Meta picker title",
+            "    patterns:",
+            "      summarize:",
+            "        description: Curated short summary line.",
+            "        tags: [writing]",
+            "",
+          ].join("\n"),
+        );
+        const tab = "\t";
+        const yqStub = `#!/bin/sh
+if printf '%s' "$*" | grep -q 'picker.title'; then
+  printf '%s\\n' 'Meta picker title'
+  exit 0
+fi
+if printf '%s' "$*" | grep -q 'to_entries'; then
+  printf '%s\\n' 'summarize${tab}Curated short summary line.${tab}writing'
+  printf '%s\\n' 'extract_wisdom${tab}YAML wisdom line.${tab}wisdom'
+  printf '%s\\n' 'youtube_summary${tab}YAML yt line.${tab}youtube summary'
+  exit 0
+fi
+printf '%s\\n' ''
+exit 0
+`;
+        const r = run([], {
+          stubs: {
+            "fabric-ai": fabricEcho,
+            gum: "#!/bin/sh\nexit 0\n",
+            yq: yqStub,
+            fzf: `#!/bin/sh
+{
+  echo "===ARGS==="
+  printf '%s\\n' "$*"
+  echo "===STDIN==="
+  cat
+} > ${fzfLog}
+head -n 1
+`,
+          },
+          env: { XC_BIN_CONFIG: cfgPath },
+        });
+        try {
+          expect(r.exitCode).toBe(0);
+          const log = await Bun.file(fzfLog).text();
+          expect(log).toContain("Meta picker title");
+          expect(log).toContain("===STDIN===");
+          expect(log).toContain("#writing");
+        } finally {
+          r.cleanup();
+          rmSync(fzfLog, { force: true });
+          rmSync(cfgDir, { recursive: true, force: true });
+        }
+      });
+    },
+  );
+
   describe.skipIf(skipWhenOtherScenario("picker_gum_fallback"))("when fzf is absent", () => {
     it("falls back to gum filter", async () => {
       const gumLog = join(tmpdir(), `xc-fabric-filter-${Date.now()}`);
       const r = run([], {
         stubs: {
-          fabric: fabricEcho,
+          "fabric-ai": fabricEcho,
           gum: `#!/bin/sh\nprintf '%s\\n' "$*" >> ${gumLog}\nif [ "$1" = filter ]; then head -n 1; fi\n`,
         },
       });

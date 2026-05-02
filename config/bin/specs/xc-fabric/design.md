@@ -24,7 +24,7 @@ spinner → `printf` + direct exec. Non-interactive paths (`run --raw`, `ls --ra
 work without `gum` or `fzf`.
 
 **Installation vs checks:** The script **never** installs packages. Operators run
-`mise run setup` to ensure `fabric-ai`, `bat`, `fzf`, and (on Linux) `xclip`
+`mise run setup` to ensure `fabric-ai`, `bat`, `fzf`, `yq`, and (on Linux) `xclip`
 are available; the script only **checks** and warns via `_check_deps`.
 
 ---
@@ -35,6 +35,7 @@ are available; the script only **checks** and warns via `_check_deps`.
 ~/.config/bin/
   ├── LICENSE
   ├── README.md                          ← must be updated
+  ├── config.yml                         ← optional shared script metadata (`xc-fabric`)
   ├── mise.toml                          ← must be updated (tasks only; see §11)
   ├── specs/
   │   └── xc-fabric/                     ← SDD docs
@@ -245,19 +246,29 @@ previous revision; `_h_info`/`_h_warn`/`_h_error` return without exiting the scr
 **Tier 1 — `_has_fzf`:**
 
 ```zsh
-local pat_dir header preview
+local pat_dir header preview bin_self reload_cmd
 pat_dir=$(_patterns_dir)
-header='↵ run  ^/ preview  ^o edit  ^r reload  ? help'
-preview="glow -s dark ${pat_dir}/{}/system.md 2>/dev/null || head -50 ${pat_dir}/{}/system.md 2>/dev/null"
+bin_self="${XC_FABRIC:-$XC_SCRIPT}"
+header=$(_fzf_pattern_header_body)
+preview=$(_fzf_pattern_system_preview "$pat_dir")
+reload_cmd="env FABRIC_PATTERNS_DIR=${(q)pat_dir} zsh ${(q)bin_self} --xc-picker-lines"
 fzf \
+  --ansi \
+  --layout=reverse \
+  --height=90% \
+  --border=rounded \
+  --delimiter=$'\t' \
+  --with-nth=2 \
   --header="$header" \
   --preview="$preview" \
   --preview-window 'right:60%:wrap' \
   --bind 'ctrl-/:toggle-preview' \
-  --bind "ctrl-o:execute(${EDITOR:-vi} \"${pat_dir}/{}/system.md\" </dev/tty >/dev/tty 2>&1)" \
-  --bind 'ctrl-r:reload(_list_patterns | awk -F"\t" "{print \$1}")' \
+  --bind "ctrl-o:execute(${EDITOR:-vi} \"${pat_dir}/{1}/system.md\" </dev/tty >/dev/tty 2>&1)" \
+  --bind "ctrl-r:reload(${reload_cmd})" \
   --bind '?:execute(printf "%s\n" "Keys: Enter run  Ctrl-/ toggle preview  Ctrl-O editor  Ctrl-R reload  ? help  Esc cancel" | less >/dev/tty 2>&1)'
 ```
+
+Stdin to `fzf` is one line per pattern: `pattern<TAB>display`, where `display` may include ANSI dim for description and `#tag` suffixes from `config.yml` when `yq` is available. With `--delimiter=$'\t'`, preview and `ctrl-o` paths **must** use fzf `{1}` (pattern name only), not `{}` (entire line), or file paths break.
 
 **`ctrl-r:reload` note:** `reload` runs in a subshell without zsh functions. Either
 **export -f _list_patterns** (and dependencies) before `fzf`, or inline a self-contained
@@ -296,6 +307,8 @@ Emits one TSV line per pattern: `name\tdescription`.
   1. First non-empty, non-heading line of `system.md`
   2. Fallback: pattern directory name
 
+**Interactive picker overlay:** When `yq` is on `PATH` and `config.yml` resolves (`XC_BIN_CONFIG` or `${XC_SCRIPT:h}/config.yml`), descriptions and `tags` from `scripts.xc-fabric.patterns.<name>` replace the TSV description for display only. Tags render as `#tag` (at most two). `--raw` / `ls --raw` still emit the original TSV from `system.md` only.
+
 **REQUIREMENTS:** Req-4, Req-7
 
 ---
@@ -321,10 +334,11 @@ _read_input() {
 1. `_check_deps`
 2. `patterns_tsv` ← `_list_patterns`
 3. If `--raw`: print TSV and return
-4. `selected` ← `_list_patterns | awk -F'\t' '{print $1}' | _h_filter --header "Select a pattern" [--preview …]`
-5. `[[ -z "$selected" ]] && exit 0`
-6. `input` ← `_read_input`
-7. `_exec_fabric "$selected" "$input"`
+4. Build `picker_lines` ← `_pattern_emit_picker_lines` on `patterns_tsv`; `header` ← `_fzf_pattern_header_body`; `preview` ← `_fzf_pattern_system_preview` unless `--no-preview`
+5. `selected` ← `picker_lines | _h_filter --header "$header" [--preview "$preview"] | awk -F'\t' '{print $1}'`
+6. `[[ -z "$selected" ]] && exit 0`
+7. `input` ← `_read_input`
+8. `_exec_fabric "$selected" "$input"`
 
 **REQUIREMENTS:** Req-4
 
@@ -503,11 +517,11 @@ Direct `gum` invocations appear only inside these wrappers.
 
 ### Table B — Picker (`_h_filter`)
 
-| Tier | Condition           | Behaviour                                                                                            |
-| ---- | ------------------- | ---------------------------------------------------------------------------------------------------- |
-| 1    | `_has_fzf`          | `fzf` with `--preview`, `--preview-window 'right:60%:wrap'`, binds `ctrl-/`, `ctrl-o`, `ctrl-r`, `?` |
-| 2    | not fzf, `_has_gum` | `gum filter "$@"`                                                                                    |
-| 3    | neither             | header + list on stderr; `read` selection                                                            |
+| Tier | Condition           | Behaviour                                                                                                                                                                                                   |
+| ---- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | `_has_fzf`          | `fzf` with `--ansi`, `--delimiter=$'\t'`, `--with-nth=2`, `--layout=reverse`, `--height=90%`, `--border=rounded`, `--preview`, `--preview-window 'right:60%:wrap'`, binds `ctrl-/`, `ctrl-o`, `ctrl-r`, `?` |
+| 2    | not fzf, `_has_gum` | `gum filter "$@"`                                                                                                                                                                                           |
+| 3    | neither             | header + list on stderr; `read` selection                                                                                                                                                                   |
 
 **Used by:** `cmd_default`, `cmd_wizard` pattern step.
 
@@ -515,12 +529,14 @@ Direct `gum` invocations appear only inside these wrappers.
 
 ## 8. ENVIRONMENT VARIABLES (TEST SEAMS)
 
-| Variable              | Purpose                                  | Default                     |
-| --------------------- | ---------------------------------------- | --------------------------- |
-| `XC_FABRIC`           | Path to script itself (set by mise task) | `$0`                        |
-| `FABRIC_PATTERNS_DIR` | Override patterns directory              | `~/.config/fabric/patterns` |
+| Variable              | Purpose                                      | Default                     |
+| --------------------- | -------------------------------------------- | --------------------------- |
+| `XC_FABRIC`           | Path to script itself (set by mise task)     | `$0`                        |
+| `XC_SCRIPT`           | Absolute path to `xc-fabric` at parse time   | derived from `%x` expansion |
+| `XC_BIN_CONFIG`       | Override path to shared `config.yml` (tests) | `${XC_SCRIPT:h}/config.yml` |
+| `FABRIC_PATTERNS_DIR` | Override patterns directory                  | `~/.config/fabric/patterns` |
 
-No config file. No history. No persistent state.
+Optional metadata lives in `config/bin/config.yml` under `scripts.xc-fabric` (see §6.2). No history. No other persistent state.
 
 ---
 
@@ -546,8 +562,8 @@ No config file. No history. No persistent state.
 
 ### Approach
 
-`Bun.spawnSync(["zsh", script, …])` with `PATH` stubs in `mkdtempSync` dirs. Twenty-one
-automated scenario IDs (mise `usage` `choices` MUST list all 21).
+`Bun.spawnSync(["zsh", script, …])` with `PATH` stubs in `mkdtempSync` dirs. Twenty-two
+automated scenario IDs (mise `usage` `choices` MUST list all 22).
 
 ### Automated test scenarios
 
@@ -572,12 +588,17 @@ automated scenario IDs (mise `usage` `choices` MUST list all 21).
 | `strategies`           | `strategies` → `--liststrategies` + table path                                   | Req-13       |
 | `strategy_passthrough` | `run … --strategy cot --raw` → `--strategy` on fabric                            | Req-13       |
 | `scrape_url`           | `scrape https://example.com` → `-u` on fabric                                    | Req-14       |
-| `picker_fzf_preferred` | fzf stub receives `--preview-window` + `ctrl-/` bind                             | Req-2, Req-4 |
+| `picker_fzf_preferred` | fzf stub receives `--ansi`, `--delimiter`, `--with-nth`, preview tuning, binds   | Req-2, Req-4 |
+| `picker_fzf_metadata`  | `XC_BIN_CONFIG` + `yq` overlay → stdin rows include `#tags` and config title     | Req-2, Req-4 |
 | `picker_gum_fallback`  | fzf absent, gum stub receives `filter`                                           | Req-2, Req-4 |
 
 ### Manual smoke only
 
 Full interactive `_h_filter` / `cmd_wizard` / `cmd_default` on a real TTY.
+
+### Internal reload hook
+
+`xc-fabric --xc-picker-lines` (undocumented user flag) prints the same tab-separated picker lines as the default pattern picker so `fzf` `ctrl-r:reload(...)` can refresh the list without sourcing zsh functions from the parent process.
 
 ---
 
@@ -592,7 +613,7 @@ Mirror `xc-git-log-fzf:specs`:
 
 - `dir = "{{ config_root }}"`
 - `env = { XC_FABRIC = "{{ config_root }}/xc-fabric" }`
-- `usage` block with `flag "--scenario <scenario>"` and `choices` listing all **21** IDs from §10
+- `usage` block with `flag "--scenario <scenario>"` and `choices` listing all **22** IDs from §10
 - `run = "bunx bun test tests/xc-fabric.spec.ts"`
 
 ### `setup`
@@ -604,9 +625,10 @@ Idempotent install of missing CLIs (global `mise use -g` — adjust if project p
 description = "Ensure xc-fabric deps (fabric-ai, bat, fzf; Linux: xclip)"
 dir = "{{ config_root }}"
 run = """
-command -v fabric >/dev/null 2>&1 || mise use -g fabric-ai@latest
+command -v fabric-ai >/dev/null 2>&1 || mise use -g fabric-ai@latest
 command -v bat    >/dev/null 2>&1 || mise use -g bat@latest
 command -v fzf    >/dev/null 2>&1 || mise use -g fzf@latest
+command -v yq    >/dev/null 2>&1 || mise use -g yq@latest
 if [[ "$(uname -s)" == Linux ]]; then
   command -v xclip >/dev/null 2>&1 || mise use -g xclip@latest
 fi
@@ -631,7 +653,7 @@ Follow the same pattern as `xc-git-log-fzf`:
   | 23  | `https://github.com/charmbracelet/glow`    | Glow   |
   | 24  | `https://github.com/sharkdp/bat`           | bat    |
 
-- **RUNNING SPECS → WITH MISE:** `mise run setup` once; then all `mise run xc-fabric:specs --scenario <id>` for each of the 21 IDs; plus bare `mise run xc-fabric:specs`.
+- **RUNNING SPECS → WITH MISE:** `mise run setup` once; then all `mise run xc-fabric:specs --scenario <id>` for each of the 22 IDs; plus bare `mise run xc-fabric:specs`.
 - **WITHOUT MISE:** `bunx bun test tests/xc-fabric.spec.ts`
 
 ---
@@ -730,7 +752,7 @@ Follow the same pattern as `xc-git-log-fzf`:
 - [x] All REQUIREMENTS (Req-1 through Req-14) addressed in design
 - [x] All major components defined with interfaces
 - [x] Error handling covers all failure scenarios
-- [x] Testing strategy lists 21 automated scenarios + manual TUI note
+- [x] Testing strategy lists 22 automated scenarios + manual TUI note
 - [x] Graceful degradation documented for optional dependencies
 
 **Clarity:**
