@@ -1,0 +1,681 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# | Agent                                    | Project/Local PATH       | Global PATH                     |
+# | `aider-desk`                             | `.aider-desk/skills/`    | `~/.aider-desk/skills/`         |
+# | `amp`, `kimi-cli`, `replit`, `universal` | `.agents/skills/`        | `~/.config/agents/skills/`      |
+# | `antigravity`                            | `.agents/skills/`        | `~/.gemini/antigravity/skills/` |
+# | `augment`                                | `.augment/skills/`       | `~/.augment/skills/`            |
+# | `bob`                                    | `.bob/skills/`           | `~/.bob/skills/`                |
+# | `claude-code`                            | `.claude/skills/`        | `~/.claude/skills/`             |
+# | `openclaw`                               | `skills/`                | `~/.openclaw/skills/`           |
+# | `cline`, `dexto`, `warp`                 | `.agents/skills/`        | `~/.agents/skills/`             |
+# | `codearts-agent`                         | `.codeartsdoer/skills/`  | `~/.codeartsdoer/skills/`       |
+# | `codebuddy`                              | `.codebuddy/skills/`     | `~/.codebuddy/skills/`          |
+# | `codemaker`                              | `.codemaker/skills/`     | `~/.codemaker/skills/`          |
+# | `codestudio`                             | `.codestudio/skills/`    | `~/.codestudio/skills/`         |
+# | `codex`                                  | `.agents/skills/`        | `~/.codex/skills/`              |
+# | `command-code`                           | `.commandcode/skills/`   | `~/.commandcode/skills/`        |
+# | `continue`                               | `.continue/skills/`      | `~/.continue/skills/`           |
+# | `cortex`                                 | `.cortex/skills/`        | `~/.snowflake/cortex/skills/`   |
+# | `crush`                                  | `.crush/skills/`         | `~/.config/crush/skills/`       |
+# | `cursor`                                 | `.agents/skills/`        | `~/.cursor/skills/`             |
+# | `deepagents`                             | `.agents/skills/`        | `~/.deepagents/agent/skills/`   |
+# | `devin`                                  | `.devin/skills/`         | `~/.config/devin/skills/`       |
+# | `droid`                                  | `.factory/skills/`       | `~/.factory/skills/`            |
+# | `firebender`                             | `.agents/skills/`        | `~/.firebender/skills/`         |
+# | `forgecode`                              | `.forge/skills/`         | `~/.forge/skills/`              |
+# | `gemini-cli`                             | `.agents/skills/`        | `~/.gemini/skills/`             |
+# | `github-copilot`                         | `.agents/skills/`        | `~/.copilot/skills/`            |
+# | `goose`                                  | `.goose/skills/`         | `~/.config/goose/skills/`       |
+# | `hermes-agent`                           | `.hermes/skills/`        | `~/.hermes/skills/`             |
+# | `junie`                                  | `.junie/skills/`         | `~/.junie/skills/`              |
+# | `iflow-cli`                              | `.iflow/skills/`         | `~/.iflow/skills/`              |
+# | `kilo`                                   | `.kilocode/skills/`      | `~/.kilocode/skills/`           |
+# | `kiro-cli`                               | `.kiro/skills/`          | `~/.kiro/skills/`               |
+# | `kode`                                   | `.kode/skills/`          | `~/.kode/skills/`               |
+# | `mcpjam`                                 | `.mcpjam/skills/`        | `~/.mcpjam/skills/`             |
+# | `mistral-vibe`                           | `.vibe/skills/`          | `~/.vibe/skills/`               |
+# | `mux`                                    | `.mux/skills/`           | `~/.mux/skills/`                |
+# | `opencode`                               | `.agents/skills/`        | `~/.config/opencode/skills/`    |
+# | `openhands`                              | `.openhands/skills/`     | `~/.openhands/skills/`          |
+# | `pi`                                     | `.pi/skills/`            | `~/.pi/agent/skills/`           |
+# | `qoder`                                  | `.qoder/skills/`         | `~/.qoder/skills/`              |
+# | `qwen-code`                              | `.qwen/skills/`          | `~/.qwen/skills/`               |
+# | `rovodev`                                | `.rovodev/skills/`       | `~/.rovodev/skills/`            |
+# | `roo`                                    | `.roo/skills/`           | `~/.roo/skills/`                |
+# | `tabnine-cli`                            | `.tabnine/agent/skills/` | `~/.tabnine/agent/skills/`      |
+# | `trae`                                   | `.trae/skills/`          | `~/.trae/skills/`               |
+# | `trae-cn`                                | `.trae/skills/`          | `~/.trae-cn/skills/`            |
+# | `windsurf`                               | `.windsurf/skills/`      | `~/.codeium/windsurf/skills/`   |
+# | `zencoder`                               | `.zencoder/skills/`      | `~/.zencoder/skills/`           |
+# | `neovate`                                | `.neovate/skills/`       | `~/.neovate/skills/`            |
+# | `pochi`                                  | `.pochi/skills/`         | `~/.pochi/skills/`              |
+# | `adal`                                   | `.adal/skills/`          | `~/.adal/skills/`               |
+
+#? xc-skills - Synchronize skill symlinks across AI agent directories
+#?
+#? Usage:
+#?   xc-skills sync [--dry-run] [--prune] [-s|--source PATH]
+#?                  [-a|--agent <agent>]... [-t|--target <path>]... [-l|--local]
+#?   xc-skills collect [--dry-run] [-s|--source PATH]
+#?                    [-a|--agent <agent>]... [-t|--target <path>]... [-l|--local]
+#?   xc-skills -h | --help
+#?
+#? Subcommands:
+#?   sync     Mirror symlinks from source to one or more target or agent paths
+#?   collect  Bring regular files from agent dirs into source; replace with symlinks
+#?
+#? Options (sync):
+#?   --dry-run               Print actions without making filesystem changes
+#?   --prune                 Remove destination symlinks not present in source
+#?   -s, --source PATH       Source directory (default: ~/.claude/skills)
+#?   -a, --agent NAME        Agent name; resolved via lookup table (repeatable)
+#?   -t, --target PATH       Target directory path (repeatable)
+#?   -l, --local             Use project/local path instead of global path for agents
+#?   -h, --help              Show this help message
+#?
+#? Agent lookup table (project path / global path):
+#?   aider-desk          .aider-desk/skills/       ~/.aider-desk/skills/
+#?   amp, kimi-cli,
+#?    replit, universal  .agents/skills/            ~/.config/agents/skills/
+#?   antigravity         .agents/skills/            ~/.gemini/antigravity/skills/
+#?   augment             .augment/skills/           ~/.augment/skills/
+#?   bob                 .bob/skills/               ~/.bob/skills/
+#?   claude-code         .claude/skills/            ~/.claude/skills/
+#?   cline, dexto, warp  .agents/skills/            ~/.agents/skills/
+#?   cursor              .agents/skills/            ~/.cursor/skills/
+#?   ... (see script header for full table)
+#?
+#? Notes:
+#?   - -a/--agent and -t/--target can each be given multiple times
+#?   - -s/--source can only be given once
+#?   - -l/--local can only be given once; applies to all -a/--agent resolutions
+#?   - When neither -a nor -t is given, syncs to the default destination list
+#?   - When -l/--local is given without -a/--agent, it has no effect
+#?
+#? Examples:
+#?   xc-skills sync
+#?   xc-skills sync --dry-run
+#?   xc-skills sync --prune
+#?   xc-skills sync -s ~/.claude/skills -a antigravity
+#?   xc-skills sync -s ~/.claude/skills -a antigravity -l
+#?   xc-skills sync -a antigravity -a cursor -a codex
+#?   xc-skills sync -a antigravity -t ~/.custom/skills
+#?   xc-skills sync -s ~/.claude/skills -t ~/.gemini/antigravity/skills --dry-run --prune
+
+SCRIPT_NAME="${0##*/}"
+
+# ── helpers ───────────────────────────────────────────────────────────────────
+
+log() { printf '%s\n' "$*"; }
+warn() { printf 'WARN: %s\n' "$*" >&2; }
+err() { printf 'ERROR: %s\n' "$*" >&2; }
+
+usage() {
+  grep '^#?' "${BASH_SOURCE[0]}" | sed 's/^#? \{0,1\}//'
+}
+
+run_cmd() {
+  if ((dry_run)); then
+    printf '[dry-run] '
+    printf '%q ' "$@"
+    printf '\n'
+  else
+    "$@"
+  fi
+}
+
+# ── agent lookup tables ───────────────────────────────────────────────────────
+# Keys are agent names; values are paths relative to $PWD (project) or $HOME (global).
+declare -A AGENT_PROJECT_PATH=(
+  [aider-desk]=".aider-desk/skills"
+  [amp]=".agents/skills"           [kimi-cli]=".agents/skills"
+  [replit]=".agents/skills"        [universal]=".agents/skills"
+  [antigravity]=".agents/skills"
+  [augment]=".augment/skills"
+  [bob]=".bob/skills"
+  [claude-code]=".claude/skills"
+  [openclaw]="skills"
+  [cline]=".agents/skills"         [dexto]=".agents/skills"
+  [warp]=".agents/skills"
+  [codearts-agent]=".codeartsdoer/skills"
+  [codebuddy]=".codebuddy/skills"
+  [codemaker]=".codemaker/skills"
+  [codestudio]=".codestudio/skills"
+  [codex]=".agents/skills"
+  [command-code]=".commandcode/skills"
+  [continue]=".continue/skills"
+  [cortex]=".cortex/skills"
+  [crush]=".crush/skills"
+  [cursor]=".agents/skills"
+  [deepagents]=".agents/skills"
+  [devin]=".devin/skills"
+  [droid]=".factory/skills"
+  [firebender]=".agents/skills"
+  [forgecode]=".forge/skills"
+  [gemini-cli]=".agents/skills"
+  [github-copilot]=".agents/skills"
+  [goose]=".goose/skills"
+  [hermes-agent]=".hermes/skills"
+  [junie]=".junie/skills"
+  [iflow-cli]=".iflow/skills"
+  [kilo]=".kilocode/skills"
+  [kiro-cli]=".kiro/skills"
+  [kode]=".kode/skills"
+  [mcpjam]=".mcpjam/skills"
+  [mistral-vibe]=".vibe/skills"
+  [mux]=".mux/skills"
+  [opencode]=".agents/skills"
+  [openhands]=".openhands/skills"
+  [pi]=".pi/skills"
+  [qoder]=".qoder/skills"
+  [qwen-code]=".qwen/skills"
+  [rovodev]=".rovodev/skills"
+  [roo]=".roo/skills"
+  [tabnine-cli]=".tabnine/agent/skills"
+  [trae]=".trae/skills"
+  [trae-cn]=".trae/skills"
+  [windsurf]=".windsurf/skills"
+  [zencoder]=".zencoder/skills"
+  [neovate]=".neovate/skills"
+  [pochi]=".pochi/skills"
+  [adal]=".adal/skills"
+)
+
+declare -A AGENT_GLOBAL_PATH=(
+  [aider-desk]=".aider-desk/skills"
+  [amp]=".config/agents/skills"    [kimi-cli]=".config/agents/skills"
+  [replit]=".config/agents/skills" [universal]=".config/agents/skills"
+  [antigravity]=".gemini/antigravity/skills"
+  [augment]=".augment/skills"
+  [bob]=".bob/skills"
+  [claude-code]=".claude/skills"
+  [openclaw]=".openclaw/skills"
+  [cline]=".agents/skills"         [dexto]=".agents/skills"
+  [warp]=".agents/skills"
+  [codearts-agent]=".codeartsdoer/skills"
+  [codebuddy]=".codebuddy/skills"
+  [codemaker]=".codemaker/skills"
+  [codestudio]=".codestudio/skills"
+  [codex]=".codex/skills"
+  [command-code]=".commandcode/skills"
+  [continue]=".continue/skills"
+  [cortex]=".snowflake/cortex/skills"
+  [crush]=".config/crush/skills"
+  [cursor]=".cursor/skills"
+  [deepagents]=".deepagents/agent/skills"
+  [devin]=".config/devin/skills"
+  [droid]=".factory/skills"
+  [firebender]=".firebender/skills"
+  [forgecode]=".forge/skills"
+  [gemini-cli]=".gemini/skills"
+  [github-copilot]=".copilot/skills"
+  [goose]=".config/goose/skills"
+  [hermes-agent]=".hermes/skills"
+  [junie]=".junie/skills"
+  [iflow-cli]=".iflow/skills"
+  [kilo]=".kilocode/skills"
+  [kiro-cli]=".kiro/skills"
+  [kode]=".kode/skills"
+  [mcpjam]=".mcpjam/skills"
+  [mistral-vibe]=".vibe/skills"
+  [mux]=".mux/skills"
+  [opencode]=".config/opencode/skills"
+  [openhands]=".openhands/skills"
+  [pi]=".pi/agent/skills"
+  [qoder]=".qoder/skills"
+  [qwen-code]=".qwen/skills"
+  [rovodev]=".rovodev/skills"
+  [roo]=".roo/skills"
+  [tabnine-cli]=".tabnine/agent/skills"
+  [trae]=".trae/skills"
+  [trae-cn]=".trae-cn/skills"
+  [windsurf]=".codeium/windsurf/skills"
+  [zencoder]=".zencoder/skills"
+  [neovate]=".neovate/skills"
+  [pochi]=".pochi/skills"
+  [adal]=".adal/skills"
+)
+
+# ── agent path resolver ───────────────────────────────────────────────────────
+# Outputs the resolved path for a given agent name.
+# Usage: resolve_agent_path <agent> <local_flag> <pwd>
+# Prints the path to stdout; exits 1 if agent is unknown.
+resolve_agent_path() {
+  local agent="$1"
+  local local_flag="$2"
+  local base_pwd="$3"
+
+  if ((local_flag)); then
+    if [[ -z "${AGENT_PROJECT_PATH[$agent]+set}" ]]; then
+      err "Unknown agent: $agent"
+      return 1
+    fi
+    printf '%s/%s\n' "$base_pwd" "${AGENT_PROJECT_PATH[$agent]}"
+  else
+    if [[ -z "${AGENT_GLOBAL_PATH[$agent]+set}" ]]; then
+      err "Unknown agent: $agent"
+      return 1
+    fi
+    printf '%s/%s\n' "$HOME" "${AGENT_GLOBAL_PATH[$agent]}"
+  fi
+}
+
+# ── sync command ──────────────────────────────────────────────────────────────
+
+cmd_sync() {
+  local dry_run=0
+  local prune=0
+  local local_flag=0
+  local local_flag_count=0
+  local explicit_source=""
+  local explicit_source_count=0
+  local agents=()
+  local explicit_targets=()
+
+  # Parse sync-specific arguments
+  while (($# > 0)); do
+    case "$1" in
+      --dry-run)
+        dry_run=1
+        ;;
+      --prune)
+        prune=1
+        ;;
+      -s|--source)
+        shift
+        if (($# == 0)); then
+          err "--source requires a PATH argument"
+          usage >&2
+          exit 1
+        fi
+        explicit_source_count=$((explicit_source_count + 1))
+        if ((explicit_source_count > 1)); then
+          err "--source can only be given once"
+          exit 1
+        fi
+        explicit_source="$1"
+        ;;
+      -a|--agent)
+        shift
+        if (($# == 0)); then
+          err "--agent requires a NAME argument"
+          usage >&2
+          exit 1
+        fi
+        agents+=("$1")
+        ;;
+      -t|--target)
+        shift
+        if (($# == 0)); then
+          err "--target requires a PATH argument"
+          usage >&2
+          exit 1
+        fi
+        explicit_targets+=("$1")
+        ;;
+      -l|--local)
+        local_flag_count=$((local_flag_count + 1))
+        if ((local_flag_count > 1)); then
+          err "--local can only be given once"
+          exit 1
+        fi
+        local_flag=1
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      -*)
+        err "Unknown option: $1"
+        usage >&2
+        exit 1
+        ;;
+      *)
+        err "Unexpected argument: $1"
+        usage >&2
+        exit 1
+        ;;
+    esac
+    shift
+  done
+
+  # ── resolve source directory ──────────────────────────────────────────────
+
+  local source_dir=""
+  if [[ -n "$explicit_source" ]]; then
+    if [[ ! -d "$explicit_source" ]]; then
+      err "Source directory not found: $explicit_source"
+      exit 1
+    fi
+    source_dir="$explicit_source"
+  else
+    # Default: try ~/.claude/skills
+    local default_source="$HOME/.claude/skills"
+    if [[ -d "$default_source" ]]; then
+      source_dir="$default_source"
+    else
+      err "No source skills directory found. Checked: $default_source"
+      err "Use -s/--source to specify a source directory."
+      exit 1
+    fi
+  fi
+
+  # ── validate source has symlinks ─────────────────────────────────────────
+
+  shopt -s nullglob
+  local -a source_entries=("$source_dir"/*)
+  shopt -u nullglob
+
+  local source_link_count=0
+  for src in "${source_entries[@]}"; do
+    [[ -L "$src" ]] && source_link_count=$((source_link_count + 1))
+  done
+
+  if ((source_link_count == 0)); then
+    warn "No symlinks found in source directory: $source_dir"
+    exit 1
+  fi
+
+  # ── build destination list ────────────────────────────────────────────────
+
+  local dest_dirs=()
+  local base_pwd="$PWD"
+
+  # Validate agents before doing anything else
+  for agent in "${agents[@]}"; do
+    if ! resolve_agent_path "$agent" "$local_flag" "$base_pwd" >/dev/null 2>&1; then
+      err "Unknown agent: $agent"
+      exit 1
+    fi
+  done
+
+  if [[ ${#agents[@]} -eq 0 && ${#explicit_targets[@]} -eq 0 ]]; then
+    # Backward-compatible default list
+    dest_dirs=(
+      "$HOME/.gemini/antigravity/skills"
+      "$HOME/.codex/skills"
+      "$HOME/.kiro/skills"
+      "$HOME/.cursor/skills"
+      "$HOME/.gemini/skills"
+      "$HOME/.copilot/skills"
+      "$HOME/.config/opencode/skills"
+    )
+  else
+    for agent in "${agents[@]}"; do
+      local resolved
+      resolved=$(resolve_agent_path "$agent" "$local_flag" "$base_pwd")
+      dest_dirs+=("$resolved")
+    done
+    for target in "${explicit_targets[@]}"; do
+      dest_dirs+=("$target")
+    done
+  fi
+
+  # ── run sync ─────────────────────────────────────────────────────────────
+
+  log "Source: $source_dir ($source_link_count symlinks)"
+
+  local overall_errors=0
+
+  for dest in "${dest_dirs[@]}"; do
+    local created=0
+    local replaced=0
+    local unchanged=0
+    local skipped_non_symlink=0
+    local pruned=0
+    local errors=0
+
+    if [[ ! -d "$dest" ]]; then
+      if ! run_cmd /bin/mkdir -p "$dest"; then
+        warn "Cannot create destination directory (skipping): $dest"
+        continue
+      fi
+    fi
+
+    if [[ ! -w "$dest" ]] && ! ((dry_run)); then
+      warn "Destination is not writable (skipping): $dest"
+      continue
+    fi
+
+    for src in "${source_entries[@]}"; do
+      [[ -L "$src" ]] || continue
+
+      local name="${src##*/}"
+      local target
+      target="$(/usr/bin/readlink "$src")"
+      local out="$dest/$name"
+
+      if [[ -e "$out" || -L "$out" ]]; then
+        if [[ -L "$out" ]]; then
+          local existing_target
+          existing_target="$(/usr/bin/readlink "$out")"
+          if [[ "$existing_target" == "$target" ]]; then
+            unchanged=$((unchanged + 1))
+            continue
+          fi
+          if run_cmd /bin/rm -f "$out"; then
+            replaced=$((replaced + 1))
+          else
+            errors=$((errors + 1))
+            overall_errors=$((overall_errors + 1))
+            continue
+          fi
+        else
+          skipped_non_symlink=$((skipped_non_symlink + 1))
+          warn "Non-symlink exists, leaving untouched: $out"
+          continue
+        fi
+      else
+        created=$((created + 1))
+      fi
+
+      if ! run_cmd /bin/ln -s "$target" "$out"; then
+        errors=$((errors + 1))
+        overall_errors=$((overall_errors + 1))
+      fi
+    done
+
+    if ((prune)); then
+      shopt -s nullglob
+      local -a dest_entries=("$dest"/*)
+      shopt -u nullglob
+      for entry in "${dest_entries[@]}"; do
+        [[ -L "$entry" ]] || continue
+        local entry_name="${entry##*/}"
+        if [[ ! -L "$source_dir/$entry_name" ]]; then
+          if run_cmd /bin/rm -f "$entry"; then
+            pruned=$((pruned + 1))
+          else
+            errors=$((errors + 1))
+            overall_errors=$((overall_errors + 1))
+          fi
+        fi
+      done
+    fi
+
+    log "Destination: $dest | created=$created replaced=$replaced unchanged=$unchanged skipped_non_symlink=$skipped_non_symlink pruned=$pruned errors=$errors"
+  done
+
+  if ((overall_errors > 0)); then
+    warn "Completed with $overall_errors operation error(s)."
+    exit 2
+  fi
+
+  log "Synchronization completed successfully."
+}
+
+# ── collect command ────────────────────────────────────────────────────────────
+
+cmd_collect() {
+  local dry_run=0
+  local local_flag=0
+  local local_flag_count=0
+  local explicit_source=""
+  local explicit_source_count=0
+  local agents=()
+  local explicit_targets=()
+
+  while (($# > 0)); do
+    case "$1" in
+      --dry-run) dry_run=1 ;;
+      -s|--source)
+        shift
+        if (($# == 0)); then err "--source requires a PATH argument"; usage >&2; exit 1; fi
+        explicit_source_count=$((explicit_source_count + 1))
+        if ((explicit_source_count > 1)); then err "--source can only be given once"; exit 1; fi
+        explicit_source="$1"
+        ;;
+      -a|--agent)
+        shift
+        if (($# == 0)); then err "--agent requires a NAME argument"; usage >&2; exit 1; fi
+        agents+=("$1")
+        ;;
+      -t|--target)
+        shift
+        if (($# == 0)); then err "--target requires a PATH argument"; usage >&2; exit 1; fi
+        explicit_targets+=("$1")
+        ;;
+      -l|--local)
+        local_flag_count=$((local_flag_count + 1))
+        if ((local_flag_count > 1)); then err "--local can only be given once"; exit 1; fi
+        local_flag=1
+        ;;
+      -h|--help) usage; exit 0 ;;
+      -*) err "Unknown option: $1"; usage >&2; exit 1 ;;
+      *)  err "Unexpected argument: $1"; usage >&2; exit 1 ;;
+    esac
+    shift
+  done
+
+  # ── resolve source ──────────────────────────────────────────────────────────
+
+  local source_dir="${explicit_source:-$HOME/.agents/skills}"
+
+  if ! run_cmd /bin/mkdir -p "$source_dir"; then
+    err "Cannot create source directory: $source_dir"
+    exit 1
+  fi
+
+  if [[ ! -w "$source_dir" ]]; then
+    err "Source directory is not writable: $source_dir"
+    exit 1
+  fi
+
+  # ── validate agents ─────────────────────────────────────────────────────────
+
+  local base_pwd="$PWD"
+  for agent in "${agents[@]}"; do
+    if ! resolve_agent_path "$agent" "$local_flag" "$base_pwd" >/dev/null 2>&1; then
+      err "Unknown agent: $agent"
+      exit 1
+    fi
+  done
+
+  # ── build inspection list ───────────────────────────────────────────────────
+
+  local inspect_dirs=()
+
+  if [[ ${#agents[@]} -eq 0 && ${#explicit_targets[@]} -eq 0 ]]; then
+    # All known agents — global or local; skip absent dirs
+    local table_ref
+    if ((local_flag)); then
+      declare -n table_ref=AGENT_PROJECT_PATH
+    else
+      declare -n table_ref=AGENT_GLOBAL_PATH
+    fi
+    for agent in "${!table_ref[@]}"; do
+      local resolved
+      resolved=$(resolve_agent_path "$agent" "$local_flag" "$base_pwd")
+      [[ -d "$resolved" ]] && inspect_dirs+=("$resolved")
+    done
+  else
+    for agent in "${agents[@]}"; do
+      local resolved
+      resolved=$(resolve_agent_path "$agent" "$local_flag" "$base_pwd")
+      [[ -d "$resolved" ]] && inspect_dirs+=("$resolved")
+    done
+    for target in "${explicit_targets[@]}"; do
+      [[ -d "$target" ]] && inspect_dirs+=("$target")
+    done
+  fi
+
+  # ── collect ─────────────────────────────────────────────────────────────────
+
+  local overall_errors=0
+
+  for inspect_dir in "${inspect_dirs[@]}"; do
+    local copied=0 linked=0 skipped_symlink=0 skipped_other=0 errors=0
+
+    shopt -s nullglob
+    local entries=("$inspect_dir"/*)
+    shopt -u nullglob
+
+    for entry in "${entries[@]}"; do
+      local name="${entry##*/}"
+      local src_file="$source_dir/$name"
+
+      # Already a symlink — skip
+      if [[ -L "$entry" ]]; then
+        skipped_symlink=$((skipped_symlink + 1))
+        continue
+      fi
+
+      # Not a regular file — skip with warning
+      if [[ ! -f "$entry" ]]; then
+        skipped_other=$((skipped_other + 1))
+        warn "Not a regular file, skipping: $entry"
+        continue
+      fi
+
+      # Copy to source if not already there
+      if [[ ! -e "$src_file" ]]; then
+        if run_cmd /bin/cp "$entry" "$src_file"; then
+          copied=$((copied + 1))
+        else
+          errors=$((errors + 1)); overall_errors=$((overall_errors + 1))
+          continue
+        fi
+      else
+        warn "File already exists in source (skipping copy): $src_file"
+        linked=$((linked + 1))
+      fi
+
+      # Remove original and create symlink
+      if run_cmd /bin/rm -f "$entry" && run_cmd /bin/ln -s "$src_file" "$entry"; then
+        :
+      else
+        errors=$((errors + 1)); overall_errors=$((overall_errors + 1))
+      fi
+    done
+
+    log "Agent: $inspect_dir | copied=$copied linked=$linked skipped_symlink=$skipped_symlink skipped_other=$skipped_other errors=$errors"
+  done
+
+  if ((overall_errors > 0)); then
+    warn "Completed with $overall_errors operation error(s)."
+    exit 2
+  fi
+
+  log "Collection completed successfully."
+}
+
+# ── main ──────────────────────────────────────────────────────────────────────
+
+main() {
+  if (($# == 0)); then
+    usage
+    exit 1
+  fi
+
+  case "$1" in
+    sync)    shift; cmd_sync "$@" ;;
+    collect) shift; cmd_collect "$@" ;;
+    -h|--help) usage; exit 0 ;;
+    -*) err "Unknown option: $1"; usage >&2; exit 1 ;;
+    *)  err "Unknown subcommand: $1"; usage >&2; exit 1 ;;
+  esac
+}
+
+main "$@"

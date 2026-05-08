@@ -3,7 +3,7 @@ bun = "latest"
 gum = "latest"
 glow = "latest"
 shellcheck = "latest"
-yq = "latest"
+television = "latest"
 
 [tasks]
 "xc-git-log-fzf:specs" = { description = "Bun specs for xc-git-log-fzf; use --scenario help|missing_gitx for one suite", dir = "{{ config_root }}", env = { XC_GIT_LOG_FZF = "{{ config_root }}/xc-git-log-fzf" }, usage = '''
@@ -16,9 +16,16 @@ flag "--scenario <scenario>" {
 "xc-fabric:specs" = { description = "Bun specs for xc-fabric; use --scenario <id> for one suite", dir = "{{ config_root }}", env = { XC_FABRIC = "{{ config_root }}/xc-fabric" }, usage = '''
 flag "--scenario <scenario>" {
   help "Run only this scenario (omit to run all)"
-  choices "help" "missing_fabric" "ls_raw" "ls_table" "run_raw" "run_youtube_url" "run_youtube_pattern" "run_copy" "run_output" "run_variable" "yt_flags" "render_fallback" "clip_macos" "clip_linux" "update" "show" "strategies" "strategy_passthrough" "scrape_url" "picker_fzf_preferred" "picker_fzf_metadata" "picker_gum_fallback"
+  choices "help" "missing_fabric" "ls_raw" "ls_table" "run_raw" "run_youtube_url" "run_youtube_pattern" "run_copy" "run_output" "run_variable" "yt_flags" "render_fallback" "clip_macos" "clip_linux" "update" "show" "strategies" "strategy_passthrough" "scrape_url" "picker_fzf_preferred" "picker_fzf_stdin_lines" "picker_gum_fallback"
 }
 ''', run = "bunx bun test tests/xc-fabric.spec.ts" }
+
+"xc-skills:specs" = { description = "Bun specs for xc-skills sync command; use --scenario <id> for one suite", dir = "{{ config_root }}", env = { XC_SKILLS = "{{ config_root }}/xc-skills" }, usage = '''
+flag "--scenario <scenario>" {
+  help "Run only this scenario (omit to run all)"
+  choices "help" "no_args" "unknown_cmd" "sync_no_source" "sync_missing_source" "sync_empty_source" "sync_creates_symlinks" "sync_dry_run" "sync_replaces_changed" "sync_unchanged_skipped" "sync_skips_non_symlink" "sync_prune" "sync_no_prune" "sync_multi_target" "sync_agent_global" "sync_agent_local" "sync_multi_agent" "sync_agent_and_target" "sync_unknown_agent" "sync_source_once" "sync_local_once" "sync_default_targets" "sync_dest_not_writable" "collect_no_source" "collect_copies_file" "collect_conflict_links" "collect_skips_symlink" "collect_skips_missing_dir" "collect_dry_run" "collect_agent_global" "collect_agent_local" "collect_multi_agent" "collect_explicit_target" "collect_all_agents" "collect_source_once" "collect_local_once" "collect_unknown_agent" "collect_source_not_writable"
+}
+''', run = "bunx bun test tests/xc-skills.spec.ts" }
 
 [tasks.setup]
 description = "Ensure xc-fabric deps (fabric-ai, bat, fzf; Linux: xclip)"
@@ -27,7 +34,6 @@ run = """
 command -v fabric-ai >/dev/null 2>&1 || mise use -g fabric-ai@latest
 command -v bat    >/dev/null 2>&1 || mise use -g bat@latest
 command -v fzf    >/dev/null 2>&1 || mise use -g fzf@latest
-command -v yq    >/dev/null 2>&1 || mise use -g yq@latest
 if [[ "$(uname -s)" == Linux ]]; then
   command -v xclip >/dev/null 2>&1 || mise use -g xclip@latest
 fi
