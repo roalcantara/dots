@@ -1557,7 +1557,14 @@
     "\\thepage}": true,
     "**Período": true,
     "**Sistema:**": true,
-    "**Objetivo:**": true
+    "**Objetivo:**": true,
+    "/usr/bin/git": true,
+    "bun": true,
+    "git ls-tree": true,
+    "git -C /Users/roalcantara/Work/bun/kb": true,
+    "git rev-parse": true,
+    "git stash": true,
+    "printf": true
   },
   "code-runner.runInTerminal": true,
   "code-runner.executorMap": {
@@ -1643,11 +1650,15 @@
   "atlascode.bitbucket.enabled": true,
   "atlascode.rovodev.showEntitlementNotifications": false,
   "atlascode.jira.startWorkBranchTemplate.customTemplate": "{{{prefix}}}{{{issueKey}}}",
-  "workbench.colorTheme": "Catppuccin Macchiato",
   "workbench.iconTheme": "material-icon-theme",
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },
   "cursor.rpcFileLogger.enabled": true,
-  "security.promptForLocalFileProtocolHandling": false
+  "security.promptForLocalFileProtocolHandling": false,
+  "window.autoDetectColorScheme": false,
+  "workbench.colorTheme": "Catppuccin Macchiato",
+  "terminal.integrated.enablePersistentSessions": false,
+  "terminal.integrated.persistentSessionReviveProcess": "never",
+  "workbench.editor.enablePreview": false
 }
