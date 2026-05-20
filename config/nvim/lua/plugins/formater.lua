@@ -30,7 +30,10 @@ return {
         -- You can customize some of the format options for the filetype (:help conform.format)
         rust = { 'rustfmt' },
         -- Conform will run the first available formatter
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
       },
       -- formatters_by_ft = {
       --   lua = function(bufnr)

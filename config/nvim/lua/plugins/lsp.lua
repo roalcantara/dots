@@ -84,7 +84,32 @@ local ensured_installed = {
     ruby_lsp = {},
     taplo = {},
     vimls = {},
-    vtsls = {},
+    vtsls = {
+      filetypes = {
+        'javascript', 'javascriptreact', 'javascript.jsx',
+        'typescript', 'typescriptreact', 'typescript.tsx',
+      },
+      settings = vim.tbl_deep_extend('force', {
+        vtsls = {
+          autoUseWorkspaceTsdk = true,
+          experimental = {
+            completion = { enableServerSideFuzzyMatch = true },
+          },
+        },
+        typescript = {
+          updateImportsOnFileMove = { enabled = 'always' },
+          suggest = { completeFunctionCalls = true },
+          inlayHints = {
+            enumMemberValues = { enabled = true },
+            functionLikeReturnTypes = { enabled = true },
+            parameterNames = { enabled = 'literals' },
+            parameterTypes = { enabled = true },
+            propertyDeclarationTypes = { enabled = true },
+            variableTypes = { enabled = false },
+          },
+        },
+      }, vim.fn.executable('bun') == 1 and { vtsls = { packageManager = 'bun' } } or {}),
+    },
     yamlls = {},
   },
   tools = {
