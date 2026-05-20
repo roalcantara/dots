@@ -1,0 +1,296 @@
+#!/usr/bin/env zsh
+# shellcheck shell=bash disable=SC2296,SC2298
+
+#? xc 0.1.0
+#? License MIT — launcher only; each xc-* tool remains a separate executable.
+
+##? xc - Interactive launcher for xc-* tools
+##?
+##? Usage:
+##?   xc
+##?   xc list
+##?   xc -h | --help
+##?
+##? Commands:
+##?   (default)   Open fzf launcher with stacked help preview; run selection
+##?   list        Print discovered tools (name, path, summary)
+##?
+##? Options:
+##?   -h, --help  Show this screen
+##?
+##? Examples:
+##?   xc
+##?   xc list
+##?   ln -sf ~/.config/bin/xc ~/.local/bin/xc
+
+readonly XC_LAUNCHER_SELF="${${(%):-%x}:a}"
+
+_xc_bin_dir() {
+  print -r -- "${XC_BIN_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/bin}"
+}
+
+_xc_ensure_path() {
+  local bindir="$(_xc_bin_dir)"
+  [[ -d "$bindir" ]] && export PATH="${bindir}:${PATH}"
+}
+
+_xc_usage_cmd() {
+  local bindir="$(_xc_bin_dir)" cmd="${bindir}/xc-usage"
+  if [[ -x "$cmd" ]]; then
+    print -r -- "$cmd"
+    return 0
+  fi
+  whence -p xc-usage 2>/dev/null || print -r -- xc-usage
+}
+
+_xc_strip_docopt() {
+  local raw="$1"
+  local doc_line="${raw##\#\#?}"
+  doc_line="${doc_line# }"
+  REPLY="$doc_line"
+}
+
+_xc_summary() {
+  local tool_path="$1" raw=""
+  while IFS= read -r raw; do
+    [[ "$raw" == "##?"* ]] && break
+    raw=""
+  done <"$tool_path"
+  if [[ -z "$raw" || "$raw" != "##?"* ]]; then
+    print -r -- '(no ##? help)'
+    return 0
+  fi
+  _xc_strip_docopt "$raw"
+  local line="$REPLY"
+  if [[ "$line" == *" - "* ]]; then
+    line="${line#* - }"
+  fi
+  # TSV/fzf: one line per field
+  line="${line//$'\t'/ }"
+  line="${line//$'\n'/ }"
+  line="${line//$'\r'/ }"
+  print -r -- "$line"
+}
+
+_xc_self_help() {
+  local raw
+  while IFS= read -r raw; do
+    [[ "$raw" != "##?"* ]] && continue
+    _xc_strip_docopt "$raw"
+    print -r -- "$REPLY"
+  done <"$XC_LAUNCHER_SELF"
+}
+
+# Discover flat xc-* executables; print TSV rows: name<TAB>path<TAB>summary
+_xc_discover() {
+  local bindir="$(_xc_bin_dir)"
+  local -A seen_paths=()
+  local name tool_path resolved summary
+
+  [[ -d "$bindir" ]] || return 0
+
+  for tool_path in "$bindir"/xc-*(.N); do
+    [[ -f "$tool_path" ]] || continue
+    name="${tool_path:t}"
+    [[ "$name" == xc ]] && continue
+    [[ "$name" != xc-* ]] && continue
+    [[ -x "$tool_path" ]] || continue
+    [[ -r "$tool_path" ]] || continue
+
+    resolved="${tool_path:a}"
+    [[ -n "${seen_paths[$resolved]:-}" ]] && continue
+    seen_paths[$resolved]=1
+
+    summary=$(_xc_summary "$tool_path")
+    printf '%s\t%s\t%s\n' "$name" "$resolved" "$summary"
+  done
+}
+
+_xc_cmd_list() {
+  local row name tool_path summary
+  while IFS=$'\t' read -r name tool_path summary; do
+    [[ -z "$name" ]] && continue
+    printf '%-14s  %s\n' "$name" "$summary"
+    printf '              %s\n' "$tool_path"
+  done < <(_xc_discover)
+}
+
+_xc_rows_array() {
+  local -a rows=()
+  while IFS= read -r line; do
+    [[ -n "$line" ]] && rows+=("$line")
+  done < <(_xc_discover)
+  print -rl -- "${rows[@]}"
+}
+
+_xc_has_subcommands() {
+  local tool_path="$1"
+  local xc_usage="$(_xc_usage_cmd)"
+  if [[ -x "$xc_usage" ]]; then
+    local -a subs
+    subs=("${(@f)$("$xc_usage" list-subs "$tool_path" 2>/dev/null)}")
+    (( ${#subs[@]} > 0 )) && return 0
+  fi
+  grep -q '^##? Subcommands:' "$tool_path" 2>/dev/null || grep -q '^##? Commands:' "$tool_path" 2>/dev/null
+}
+
+_xc_list_subcommands() {
+  local tool_path="$1" xc_usage="$(_xc_usage_cmd)"
+  if [[ -x "$xc_usage" ]]; then
+    "$xc_usage" list-subs "$tool_path" 2>/dev/null && return 0
+  fi
+  awk '/^##\? (Subcommands|Commands):/{s=1;next} s&&/^##\? [^ ]/{s=0} s&&/^##\? /{gsub(/^##\? +/,""); print $1}' "$tool_path" 2>/dev/null
+}
+
+_xc_sub_summary() {
+  local tool_path="$1" sub="$2"
+  local line
+  line=$(grep '^##?' "$tool_path" 2>/dev/null | sed 's/^##? \{0,1\}//' | grep -E "^[^ ]+ ${sub} " | head -1)
+  if [[ -n "$line" ]]; then
+    print -r -- "${line#*${sub} }"
+  else
+    print -r -- "$sub"
+  fi
+}
+
+_xc_fzf_pick_tool() {
+  local rows="$1"
+  local xc_usage="$(_xc_usage_cmd)"
+  local preview="${(q)xc_usage} preview {2} --tool {1}"
+
+  printf '%s\n' ${(ps:\n:)rows} | command fzf --ansi \
+    --delimiter=$'\t' --with-nth=1,3 \
+    --prompt='xc ❯ ' \
+    --header='Tool — stacked help in preview (↵ run, Esc cancel)' \
+    --preview-window='right:60%:wrap' \
+    --preview="$preview" \
+    --bind='ctrl-/:toggle-preview'
+}
+
+_xc_fzf_pick_sub() {
+  local tool_path="$1" name="$2" rows="$3"
+  local xc_usage="$(_xc_usage_cmd)"
+  local preview="${(q)xc_usage} print ${(q)tool_path} --scope sub:{1}"
+
+  printf '%s\n' ${(ps:\n:)rows} | command fzf --ansi \
+    --delimiter=$'\t' --with-nth=1,2 \
+    --prompt="${name} ❯ " \
+    --header='Subcommand (↵ run, Esc skip)' \
+    --preview-window='right:60%:wrap' \
+    --preview="$preview" \
+    --bind='ctrl-/:toggle-preview'
+}
+
+_xc_prompt_extra_args() {
+  if command -v gum >/dev/null 2>&1; then
+    gum input --placeholder 'Extra args (optional, Enter for none)' --value '' 2>/dev/null || true
+  else
+    print -r -- ''
+  fi
+}
+
+_xc_run_tool() {
+  _xc_ensure_path
+  local name="" tool_path="" sub="" args="" picked subs_row
+  local -a run extra
+  local -a rows=("${(@f)$(_xc_rows_array)}")
+
+  if (( ! ${#rows[@]} )); then
+    print -u2 "xc: no xc-* tools found in $(_xc_bin_dir)"
+    exit 1
+  fi
+
+  if command -v fzf >/dev/null 2>&1; then
+    picked=$(_xc_fzf_pick_tool "${(j:\n:)rows}")
+    [[ -z "$picked" ]] && exit 0
+    IFS=$'\t' read -r name tool_path _ <<<"$picked"
+  elif command -v gum >/dev/null 2>&1; then
+    local -a names=()
+    local row n p s
+    for row in "${rows[@]}"; do
+      IFS=$'\t' read -r n p s <<<"$row"
+      names+=("$n")
+    done
+    name=$(printf '%s\n' "${names[@]}" | gum choose --header 'xc tool') || exit 0
+    for row in "${rows[@]}"; do
+      IFS=$'\t' read -r n p s <<<"$row"
+      [[ "$n" == "$name" ]] && tool_path="$p" && break
+    done
+  else
+    print -u2 "xc: install fzf (preferred) or gum for the interactive launcher"
+    print -u2 "xc: run 'xc list' to see available tools"
+    exit 1
+  fi
+
+  if _xc_has_subcommands "$tool_path"; then
+    local -a sub_rows=()
+    local sub blurp
+    while IFS= read -r sub; do
+      [[ -z "$sub" ]] && continue
+      blurp=$(_xc_sub_summary "$tool_path" "$sub")
+      sub_rows+=("${sub}"$'\t'"${blurp}")
+    done < <(_xc_list_subcommands "$tool_path")
+
+    if (( ${#sub_rows[@]} )) && command -v fzf >/dev/null 2>&1; then
+      subs_row=$(_xc_fzf_pick_sub "$tool_path" "$name" "${(j:\n:)sub_rows}")
+      [[ -n "$subs_row" ]] && IFS=$'\t' read -r sub _ <<<"$subs_row"
+    elif (( ${#sub_rows[@]} )) && command -v gum >/dev/null 2>&1; then
+      local -a sub_names=()
+      for subs_row in "${sub_rows[@]}"; do
+        IFS=$'\t' read -r sub _ <<<"$subs_row"
+        sub_names+=("$sub")
+      done
+      sub=$(printf '%s\n' "${sub_names[@]}" | gum choose --header "${name} subcommand" 2>/dev/null) || sub=""
+    fi
+  fi
+
+  args=$(_xc_prompt_extra_args)
+  run=(command "$name")
+  [[ -n "$sub" ]] && run+=("$sub")
+  [[ -n "${args//[[:space:]]/}" ]] && extra=(${=args}) && run+=("${extra[@]}")
+
+  "${run[@]}"
+  exit $?
+}
+
+_xc_main() {
+  case "${1:-}" in
+    list)
+      _xc_cmd_list
+      exit 0
+      ;;
+    -h | --help)
+      _xc_self_help
+      exit 0
+      ;;
+    '')
+      _xc_run_tool
+      ;;
+    *)
+      print -u2 "xc: unknown command: $1 (try: xc list)"
+      exit 1
+      ;;
+  esac
+}
+
+_xc_ensure_path
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  local xc_usage="$(_xc_usage_cmd)"
+  if [[ -x "$xc_usage" ]]; then
+    "$xc_usage" guard "${0:a}" "$@"
+    exit $?
+  fi
+  _xc_self_help
+  exit 0
+fi
+
+xc_usage="$(_xc_usage_cmd)"
+if [[ -x "$xc_usage" ]]; then
+  local _xc_u=2
+  "$xc_usage" guard "${0:a}" "$@"; _xc_u=$?
+  (( _xc_u == 0 )) && exit 0
+  (( _xc_u == 1 )) && exit 1
+fi
+
+_xc_main "$@"

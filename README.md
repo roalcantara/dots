@@ -87,6 +87,107 @@ At the moment, the `install` script is only handles `debian` and `ubuntu` distro
 
 ## USAGE
 
+### Terminal helpers (config/bin)
+
+Scripts live in `config/bin/` and are symlinked to `~/.local/bin` (prefix `xc-` avoids collisions with system CLIs). Help is [docopt](http://docopt.org/)-shaped: run `xc-<tool> -h` or `xc-<tool> <subcommand> -h`.
+
+| Command                             | What it does                                                                                                         |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [`xc-usage`](config/bin/xc-usage)   | Extract and print `##?` help from bin scripts (`guard`, `print`, `validate`)                                         |
+| [`xc-puts`](config/bin/xc-puts)     | Colored and prefixed messages for scripts and installers (replaces the Zsh `puts` function)                          |
+| [`xc-toast`](config/bin/xc-toast)   | Short-lived terminal toasts: `message [duration] [type]` (replaces Zsh `toast`)                                      |
+| [`xc-git`](config/bin/xc-git)       | Git workflow helpers (see subcommands below)                                                                         |
+| [`xc-fabric`](config/bin/xc-fabric) | Interactive [Fabric](https://github.com/danielmiessler/fabric) pattern runner with fzf/gum                           |
+| [`xc-skills`](config/bin/xc-skills) | Sync or collect skill symlinks across AI agent config directories                                                    |
+| `xc`                                | Interactive fzf launcher for other `xc-*` tools ([spec](assets/specs/xc-launcher/design.md); install when available) |
+
+**`xc-git` subcommands:**
+
+| Subcommand                        | What it does                                                         |
+| --------------------------------- | -------------------------------------------------------------------- |
+| `branch-preview <branch>`         | Branch tip, history, and diff preview (for `git fzb` / `gitx fzb`)   |
+| `fixup-suggest [opts] [-- paths]` | Suggest a fixup target commit or open an editor for a new commit     |
+| `log-fzf [action]`                | Interactive `git log` with gitx-style actions (`git lol`, `git fzl`) |
+
+```sh
+xc-git -h
+xc-git fixup-suggest --dry-run .
+git add file && git fix "$(xc-git fixup-suggest -q -- file)"
+git lol                    # → gitx → xc-git log-fzf
+xc-puts --green "ready"
+xc-fabric ls --raw
+xc-skills sync --dry-run
+```
+
+Install symlinks, dependencies, and authoring rules: [config/bin/README.md](config/bin/README.md).
+
+## Documentation and verification
+
+Planning docs, living documentation, and script verification live under
+[`assets/`](assets/README.md). This repository is not a Node application; the
+root has no `package.json`.
+
+| Path                                         | Purpose                                                   |
+| -------------------------------------------- | --------------------------------------------------------- |
+| [`assets/guides/`](assets/guides/)           | Canonical best practices and glossary                     |
+| [`assets/specs/`](assets/specs/)             | SDD planning — `requirements.md`, `design.md`, `tasks.md` |
+| [`assets/features/`](assets/features/)       | BDD living documentation (Gherkin), all domains           |
+| [`assets/integration/`](assets/integration/) | Subprocess and script verification                        |
+
+Verification dependencies are declared in [`assets/mise.toml`](assets/mise.toml)
+and/or [`assets/package.json`](assets/package.json): mise for CLI tools (for
+example `bun`, `node`), npm `devDependencies` for Cucumber and TypeScript
+packages. Neovim busted specs remain under [`config/nvim/specs/`](config/nvim/specs/).
+
+```sh
+mise run -C assets test all   # full verification (from repo root)
+mise run -C assets test bin   # bin domain: BDD + integration
+```
+
+Guides: [`assets/guides/GLOSSARY.md`](assets/guides/GLOSSARY.md) first, then
+[`BDD_GUIDE.md`](assets/guides/BDD_GUIDE.md) for verification layers.
+Layout and migration spec:
+[`assets/specs/project-structure/design.md`](assets/specs/project-structure/design.md).
+
+## Agent workflow
+
+Use this workflow for agent-driven features unless a prompt explicitly overrides
+it.
+
+**Planning**
+
+1. Read [`assets/guides/GLOSSARY.md`](assets/guides/GLOSSARY.md),
+   [`assets/guides/BDD_GUIDE.md`](assets/guides/BDD_GUIDE.md), and relevant guides.
+2. Use `spec-driven-development` (or `sdd`) to author SDD files under
+   `assets/specs/<feature-slug>/`.
+3. Do not write specs to `.superpowers/` or `docs/superpowers/`.
+4. Stop after `requirements.md`, `design.md`, and `tasks.md` are approved.
+5. Write or refresh `HANDOFF.md` for the implementation agent.
+
+Default: **do not implement** in the planning session.
+
+**Implementation**
+
+1. Read `assets/specs/<feature-slug>/tasks.md` and `HANDOFF.md`.
+2. Use `subagent-driven-development` per task unless the prompt requests inline work.
+3. Complete one task group (`## Task N:`) at a time; run all gates with zero
+   errors and warnings.
+4. Mark task checkboxes complete only after gates pass.
+5. Create one [conventional commit](assets/guides/GIT_COMMITS_GUIDE.md) per
+   completed task group.
+
+**Verification layers**
+
+| Layer       | Path                  | Typical gates (from repo root)                          |
+| ----------- | --------------------- | ------------------------------------------------------- |
+| BDD         | `assets/features/`    | `mise run -C assets bdd lint`, `bdd dry-run`, `bdd run` |
+| Integration | `assets/integration/` | `mise run -C assets integration bin all`                |
+| Domain      | —                     | `mise run -C assets test bin`                           |
+| Full        | —                     | `mise run -C assets test all`                           |
+
+Run verification with `mise run -C assets …` from the repository root (root
+`test` is Docker CST). Inside `assets/`, omit `-C assets`.
+
 ### BUILDING
 
 At the moment, the `build` task is only available for the `debian` and `ubuntu` distros.

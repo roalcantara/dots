@@ -1,0 +1,5 @@
+{
+  "bun.runtime": "/Users/roalcantara/.local/share/mise/shims/bun",
+  "cucumber.features": ["assets/features/**/*.feature"],
+  "cucumber.glue": ["assets/features/**/*.ts"]
+}

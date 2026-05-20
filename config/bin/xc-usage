@@ -1,0 +1,506 @@
+#!/usr/bin/env zsh
+
+##? xc-usage - Print docopt help from ##? script headers
+##?
+##? Usage:
+##?   xc-usage
+##?   xc-usage -h | --help
+##?   xc-usage guard [script] [args...]
+##?   xc-usage print [--no-help-footer] [--metadata] [--scope SCOPE] [script]
+##?   xc-usage list-subs [script]
+##?   xc-usage preview [--tool NAME] [script]
+##?   xc-usage validate [script]
+##?
+##? Commands:
+##?   guard       If args start with -h|--help, print script ##? and exit 0; else exit 2
+##?   print       Print script ##? (all lines, or one scope with --scope)
+##?   list-subs   Print subcommand names from a dispatcher script (one per line)
+##?   preview     Print stacked main + sub help for fzf (see --tool)
+##?   validate    Check script has a valid ##? docopt header; exit 0 or 1
+##?
+##? Options:
+##?   -h, --help   Show this screen
+
+# shellcheck disable=SC2296,SC2298
+readonly XC_USAGE_SELF="${${(%):-%x}:a}"
+
+typeset -g XC_USAGE_TOOL=""
+typeset -g -a XC_USAGE_MAIN_LINES=()
+typeset -g -A XC_USAGE_SUB_LINES=()
+typeset -g -a XC_USAGE_SUB_ORDER=()
+
+# ── Help extraction (legacy: all ##? lines) ────────────────────────
+
+_xc_usage_emit() {
+  local target="$1"
+  if [[ ! -f "$target" ]]; then
+    print -u2 "xc-usage: file not found: $target"
+    return 1
+  fi
+
+  if ! grep -q '^##?' "$target" 2>/dev/null; then
+    if grep -q '^#?' "$target" 2>/dev/null; then
+      print -u2 "xc-usage: found #? lines but require ##? (migrate #? → ##? per config/bin/README.md)"
+    fi
+    print -u2 "xc-usage: no ##? docopt header in: $target"
+    print -u2 "Define help using ##? comments (Usage:/Options:) — see https://docopt.org/"
+    return 1
+  fi
+
+  grep '^##?' "$target" | sed 's/^##? \{0,1\}//'
+  return 0
+}
+
+_xc_usage_strip_docopt_line() {
+  local raw="$1"
+  local doc_line="${raw##\#\#?}"
+  doc_line="${doc_line# }"
+  REPLY="$doc_line"
+}
+
+_xc_usage_sub_name_if_title() {
+  local tool="$1" doc_line="$2"
+  [[ -n "$tool" && "$doc_line" =~ "^${tool} ([^[:space:]]+) -" && "${match[1]}" != '-' ]] || return 1
+  REPLY="${match[1]}"
+  return 0
+}
+
+# ── Parse dispatcher blocks (§5.7) ───────────────────────────────
+
+_xc_usage_parse_target() {
+  local target="$1"
+  XC_USAGE_TOOL=""
+  XC_USAGE_MAIN_LINES=()
+  XC_USAGE_SUB_LINES=()
+  XC_USAGE_SUB_ORDER=()
+
+  if [[ ! -f "$target" ]]; then
+    print -u2 "xc-usage: file not found: $target"
+    return 1
+  fi
+
+  if ! grep -q '^##?' "$target" 2>/dev/null; then
+    if grep -q '^#?' "$target" 2>/dev/null; then
+      print -u2 "xc-usage: found #? lines but require ##? (migrate #? → ##? per config/bin/README.md)"
+    fi
+    print -u2 "xc-usage: no ##? docopt header in: $target"
+    print -u2 "Define help using ##? comments (Usage:/Options:) — see https://docopt.org/"
+    return 1
+  fi
+
+  local tool="" mode=main current_sub=""
+  local -a main_buf=() sub_buf=()
+  local past_marker=0
+
+  while IFS= read -r raw || [[ -n "$raw" ]]; do
+    if [[ "$raw" == "### Subcommand help blocks"* ]]; then
+      past_marker=1
+      continue
+    fi
+    [[ "$raw" != "##?"* ]] && continue
+
+    _xc_usage_strip_docopt_line "$raw"
+    local doc_line="$REPLY"
+
+    if [[ -z "$tool" && "$doc_line" =~ '^([^[:space:]]+) -' ]]; then
+      tool="${match[1]}"
+    fi
+
+    if _xc_usage_sub_name_if_title "$tool" "$doc_line"; then
+      local sub_name="$REPLY"
+      if [[ -n "$current_sub" ]]; then
+        XC_USAGE_SUB_LINES[$current_sub]="${(j:\n:)sub_buf}"
+      fi
+      current_sub="$sub_name"
+      XC_USAGE_SUB_ORDER+=("$sub_name")
+      sub_buf=("$doc_line")
+      mode=sub
+      continue
+    fi
+
+    if [[ "$mode" == main ]]; then
+      main_buf+=("$doc_line")
+    else
+      sub_buf+=("$doc_line")
+    fi
+  done <"$target"
+
+  if [[ -n "$current_sub" ]]; then
+    XC_USAGE_SUB_LINES[$current_sub]="${(j:\n:)sub_buf}"
+  fi
+
+  XC_USAGE_TOOL="$tool"
+  XC_USAGE_MAIN_LINES=("${main_buf[@]}")
+
+  return 0
+}
+
+_xc_usage_scope_main() {
+  local target="$1" doc_line
+  _xc_usage_parse_target "$target" || return 1
+  for doc_line in "${XC_USAGE_MAIN_LINES[@]}"; do
+    print -r -- "$doc_line"
+  done
+  return 0
+}
+
+_xc_usage_scope_sub() {
+  local target="$1" sub_name="$2"
+  _xc_usage_parse_target "$target" || return 1
+  if [[ -z "${XC_USAGE_SUB_LINES[$sub_name]:-}" ]]; then
+    print -u2 "xc-usage: unknown subcommand scope: sub:${sub_name}"
+    return 1
+  fi
+  print -r -- "${XC_USAGE_SUB_LINES[$sub_name]}"
+  return 0
+}
+
+_xc_usage_list_subs_from_section() {
+  local line in_section=0
+  for line in "${XC_USAGE_MAIN_LINES[@]}"; do
+    if [[ "$line" == 'Subcommands:' || "$line" == 'Commands:' ]]; then
+      in_section=1
+      continue
+    fi
+    if (( in_section )); then
+      case "$line" in
+        Options:* | Environment:* | Examples:* | Usage:*)
+          in_section=0
+          continue
+          ;;
+      esac
+      if [[ "$line" =~ '^[[:space:]]*([^[:space:]]+)' ]]; then
+        print -r -- "${match[1]}"
+      elif [[ -n "${line//[[:space:]]/}" ]]; then
+        in_section=0
+      fi
+    fi
+  done
+}
+
+_xc_usage_list_subs() {
+  local target="$1"
+  _xc_usage_parse_target "$target" || return 1
+
+  if (( ${#XC_USAGE_SUB_ORDER[@]} )); then
+    local sub
+    for sub in "${XC_USAGE_SUB_ORDER[@]}"; do
+      print -r -- "$sub"
+    done
+    return 0
+  fi
+
+  _xc_usage_list_subs_from_section
+  return 0
+}
+
+_xc_usage_preview() {
+  local target="$1" tool="${2:-}"
+
+  _xc_usage_parse_target "$target" || return 1
+  [[ -z "$tool" ]] && tool="$XC_USAGE_TOOL"
+
+  print -r -- "$tool - Main command:"
+  print ""
+  local doc_line
+  for doc_line in "${XC_USAGE_MAIN_LINES[@]}"; do
+    print -r -- "$doc_line"
+  done
+
+  if (( ! ${#XC_USAGE_SUB_ORDER[@]} )); then
+    return 0
+  fi
+
+  local sub
+  for sub in "${XC_USAGE_SUB_ORDER[@]}"; do
+    print ""
+    print -r -- "$tool $sub - Subcommand:"
+    print ""
+    print -r -- "${XC_USAGE_SUB_LINES[$sub]}"
+  done
+  return 0
+}
+
+# ── Help footer logic ────────────────────────────────────────────
+
+_xc_usage_append_footer() {
+  local target="$1"
+  local text
+  text=$(_xc_usage_emit "$target") || return 1
+
+  print -r -- "$text"
+
+  if ! print -r -- "$text" | grep -qiE -- '-h|--help'; then
+    print ""
+    print "Options:"
+    print "  -h, --help    Show this screen."
+  fi
+  return 0
+}
+
+# ── Self help ────────────────────────────────────────────────────
+
+_xc_usage_self_help() {
+  _xc_usage_emit "$XC_USAGE_SELF"
+}
+
+# ── Subcommand: guard ────────────────────────────────────────────
+
+_xc_usage_guard() {
+  local target=""
+
+  if [[ -n "${1:-}" ]]; then
+    if [[ -f "$1" ]]; then
+      target="$1"
+      shift
+    elif [[ "$1" != "-h" && "$1" != "--help" ]]; then
+      target="$1"
+      shift
+    fi
+  fi
+
+  if [[ -z "$target" ]]; then
+    target="$XC_USAGE_SELF"
+  elif [[ ! -f "$target" ]]; then
+    print -u2 "xc-usage guard: file not found: $target"
+    exit 1
+  fi
+
+  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    _xc_usage_emit "$target" || exit 1
+    exit 0
+  fi
+
+  exit 2
+}
+
+# ── Subcommand: print ────────────────────────────────────────────
+
+_xc_usage_print() {
+  local -a args=("$@")
+  local no_footer=0 metadata=0 scope="" target="" arg i=1
+
+  for arg in "${args[@]}"; do
+    [[ -z "$target" && -f "$arg" ]] && target="$arg"
+  done
+
+  while (( i <= ${#args[@]} )); do
+    arg="${args[i]}"
+    case "$arg" in
+      --no-help-footer) no_footer=1 ;;
+      --metadata) metadata=1 ;;
+      --scope=*)
+        scope="${arg#--scope=}"
+        ;;
+      --scope)
+        scope="${args[i + 1]:-}"
+        (( i++ ))
+        ;;
+    esac
+    (( i++ ))
+  done
+
+  if [[ "${XC_USAGE_NO_HELP_FOOTER:-0}" == "1" ]]; then
+    no_footer=1
+  fi
+
+  [[ -z "$target" ]] && target="$XC_USAGE_SELF"
+
+  if (( metadata )); then
+    if [[ ! -f "$target" ]]; then
+      print -u2 "xc-usage: file not found: $target"
+      exit 1
+    fi
+    grep '^#?' "$target" | sed 's/^#? \{0,1\}//' 2>/dev/null || true
+    exit 0
+  fi
+
+  if [[ -n "$scope" ]]; then
+    if [[ "$scope" == main ]]; then
+      _xc_usage_scope_main "$target" || exit 1
+      exit 0
+    fi
+    if [[ "$scope" == sub:* ]]; then
+      _xc_usage_scope_sub "$target" "${scope#sub:}" || exit 1
+      exit 0
+    fi
+    print -u2 "xc-usage: invalid --scope (use main or sub:<name>): $scope"
+    exit 1
+  fi
+
+  if (( no_footer )); then
+    _xc_usage_emit "$target" || exit 1
+  else
+    _xc_usage_append_footer "$target" || exit 1
+  fi
+  exit 0
+}
+
+# ── Subcommand: list-subs ────────────────────────────────────────
+
+_xc_usage_list_subs_cmd() {
+  local target=""
+
+  if [[ -f "${1:-}" ]]; then
+    target="$1"
+    shift
+  fi
+
+  if [[ -z "$target" ]]; then
+    print -u2 "xc-usage list-subs: script path required"
+    exit 1
+  fi
+
+  _xc_usage_list_subs "$target" || exit 1
+  exit 0
+}
+
+# ── Subcommand: preview ──────────────────────────────────────────
+
+_xc_usage_preview_cmd() {
+  local tool="" target=""
+
+  while [[ "${1:-}" == --* ]]; do
+    case "$1" in
+      --tool)
+        shift
+        tool="${1:-}"
+        shift
+        ;;
+      --tool=*)
+        tool="${1#--tool=}"
+        shift
+        ;;
+      *) break ;;
+    esac
+  done
+
+  if [[ -f "${1:-}" ]]; then
+    target="$1"
+    shift
+  fi
+
+  if [[ -z "$target" ]]; then
+    print -u2 "xc-usage preview: script path required"
+    exit 1
+  fi
+
+  _xc_usage_preview "$target" "$tool" || exit 1
+  exit 0
+}
+
+# ── Subcommand: validate ─────────────────────────────────────────
+
+_xc_usage_validate_subcommand_warnings() {
+  local target="$1"
+  _xc_usage_parse_target "$target" || return 0
+
+  local line in_section=0
+  for line in "${XC_USAGE_MAIN_LINES[@]}"; do
+    if [[ "$line" == 'Subcommands:' || "$line" == 'Commands:' ]]; then
+      in_section=1
+      continue
+    fi
+    if (( in_section )); then
+      case "$line" in
+        Options:* | Environment:* | Examples:* | Usage:*)
+          in_section=0
+          continue
+          ;;
+      esac
+      if [[ "$line" =~ '^[[:space:]]*([^[:space:]]+)' ]]; then
+        local listed="${match[1]}"
+        if [[ -z "${XC_USAGE_SUB_LINES[$listed]:-}" ]]; then
+          print -u2 "xc-usage validate: (warning) Subcommands lists '${listed}' but no ##? ${XC_USAGE_TOOL} ${listed} - block"
+        fi
+      elif [[ -n "${line//[[:space:]]/}" ]]; then
+        in_section=0
+      fi
+    fi
+  done
+}
+
+_xc_usage_validate() {
+  local target=""
+  local ec=0
+
+  if [[ -f "${1:-}" ]]; then
+    target="$1"
+    shift
+  fi
+
+  if [[ -z "$target" ]]; then
+    print -u2 "xc-usage validate: script path required"
+    exit 1
+  fi
+
+  if [[ ! -f "$target" ]]; then
+    print -u2 "xc-usage validate: file not found: $target"
+    exit 1
+  fi
+
+  if ! grep -q '^##?' "$target" 2>/dev/null; then
+    print -u2 "xc-usage validate: no ##? docopt header in: $target"
+    print -u2 "Define help using ##? comments (Usage:/Options:) — see https://docopt.org/"
+    exit 1
+  fi
+
+  local text
+  text=$(grep '^##?' "$target" | sed 's/^##? \{0,1\}//')
+
+  if ! print -r -- "$text" | grep -q 'Usage:'; then
+    print -u2 "xc-usage validate: missing 'Usage:' section in $target"
+    ec=1
+  fi
+
+  if ! print -r -- "$text" | grep -qiE -- '-h|--help'; then
+    print -u2 "xc-usage validate: help flags (-h, --help) not documented in $target"
+    ec=1
+  fi
+
+  if ! print -r -- "$text" | grep -q 'Options:'; then
+    print -u2 "xc-usage validate: (warning) no 'Options:' section in $target"
+  fi
+
+  _xc_usage_validate_subcommand_warnings "$target"
+
+  exit $ec
+}
+
+# ── Top-level dispatch ───────────────────────────────────────────
+
+case "${1:-}" in
+  "")
+    _xc_usage_self_help
+    exit 0
+    ;;
+  -h|--help)
+    _xc_usage_self_help
+    exit 0
+    ;;
+  guard)
+    shift
+    _xc_usage_guard "$@"
+    ;;
+  print)
+    shift
+    _xc_usage_print "$@"
+    ;;
+  list-subs)
+    shift
+    _xc_usage_list_subs_cmd "$@"
+    ;;
+  preview)
+    shift
+    _xc_usage_preview_cmd "$@"
+    ;;
+  validate)
+    shift
+    _xc_usage_validate "$@"
+    ;;
+  *)
+    print -u2 "xc-usage: unknown command: ${1:-}"
+    _xc_usage_emit "$XC_USAGE_SELF" >&2
+    exit 1
+    ;;
+esac

@@ -19,6 +19,7 @@
 ##?     cdpath                Shows cdpath.
 ##?     zsh                   ZSH subcommands.
 ##?     palette               Print the ANSI color palette.
+##?     git [args...]          xc-git helpers (-h or forward to xc-git).
 ##?
 ##? Options:
 ##?     --rebuild             Rebuild the ZSH environment.
@@ -32,12 +33,16 @@
 ##?     dots fpath
 ##?     dots cdpath
 ##?     dots palette
+##?     dots git
+##?     dots git fixup-suggest --dry-run .
 ##?     dots zsh --benchmark [ measure | store | logs ]
 ##?     dots zsh --prof [ exec | store | stats | avg | logs ]
 ##?     dots zsh --prof trace [ --once ]
 ##?     dots xdg check_runtime_perms
 ##?     dots xdg ensure_runtime_perms
 ##?     dots setup local_settings
+##?     dots git
+##?     dots git fixup-suggest --dry-run -- path
 
 __get_dir_permissions() {
     local dir="$1"
@@ -210,6 +215,23 @@ dots() {
     *) dots setup "$(gum filter --limit=1 'local_settings')" ;;
     esac
     ;;
+  # xc-git helpers (config/bin/xc-git)
+  git)
+    shift
+    if [[ $# -eq 0 || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+      if command -v xc-git >/dev/null 2>&1; then
+        xc-git -h
+      else
+        zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/xc-git/xc-git" -h
+      fi
+      return $?
+    fi
+    if command -v xc-git >/dev/null 2>&1; then
+      xc-git "$@"
+    else
+      zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/xc-git/xc-git" "$@"
+    fi
+    ;;
   # Print the ANSI color palette
   palette)
     local lorem="Arma virumque cano Troiae qui primus ab oris"
@@ -370,7 +392,7 @@ dots() {
         ;;
       # Prints the ZSH stats separated by USER, SYSTEM, CPU and TOTAL
       stats)
-        puts "| 0.05  |  0.05  |  95 % | 0.099 | *" --green && dots zsh --prof measure "${@:4}" | gum table --separator=$'\t' -p -c USER,SYSTEM,CPU,TOTAL
+        command xc-puts "| 0.05  |  0.05  |  95 % | 0.099 | *" --green && dots zsh --prof measure "${@:4}" | gum table --separator=$'\t' -p -c USER,SYSTEM,CPU,TOTAL
         ;;
       # Prints the average of the ZSH stats
       avg)
@@ -405,8 +427,20 @@ dots() {
 
     esac
     ;;
+  # xc-git helpers
+  git)
+    if [[ $# -lt 2 ]] || [[ "${2:-}" == "-h" || "${2:-}" == "--help" ]]; then
+      command -v xc-git >/dev/null 2>&1 && xc-git -h || {
+        echo "dots git: xc-git not on PATH" >&2; exit 127
+      }
+    else
+      command -v xc-git >/dev/null 2>&1 && xc-git "${@:2}" || {
+        echo "dots git: xc-git not on PATH" >&2; exit 127
+      }
+    fi
+    ;;
   *)
-    dots "$(gum filter --limit=1 'path' 'fpath' 'cdpath' 'env' 'zsh' 'palette' 'xdg')"
+    dots "$(gum filter --limit=1 'path' 'fpath' 'cdpath' 'env' 'zsh' 'palette' 'xdg' 'git')"
     ;;
   esac
 }

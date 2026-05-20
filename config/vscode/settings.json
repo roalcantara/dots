@@ -454,7 +454,7 @@
       }
     ]
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.tabCompletion": "on",
   "editor.acceptSuggestionOnCommitCharacter": false,
   "editor.acceptSuggestionOnEnter": "on",
@@ -648,7 +648,6 @@
     "ignore": "ignore",
     ".env*": "dotenv",
     "*.toml": "toml",
-    "mise.toml": "toml",
     "Dockerfile*": "dockerfile",
     "*.dockerfile": "dockerfile"
   },
@@ -1061,9 +1060,13 @@
   "evenBetterToml.formatter.compactArrays": true,
   "evenBetterToml.formatter.compactEntries": true,
   "evenBetterToml.formatter.compactInlineTables": true,
-  "evenBetterToml.formatter.indentEntries": true,
+  "evenBetterToml.formatter.indentEntries": false,
+  "evenBetterToml.formatter.arrayTrailingComma": false,
   "evenBetterToml.schema.links": true,
   "evenBetterToml.semanticTokens": true,
+  "evenBetterToml.schema.enabled": true,
+  "evenBetterToml.syntax.semanticTokens": true,
+  "evenBetterToml.formatter.indentString": "space",
   "git.autofetch": true,
   "git.ignoreLimitWarning": true,
   "git.openRepositoryInParentFolders": "never",
@@ -1382,6 +1385,7 @@
     // },
     {
       "fileMatch": [
+        "mise.toml",
         "**/mise.toml"
       ],
       "url": "https://mise.jdx.dev/schema/mise-task.json"
@@ -1423,7 +1427,13 @@
       "url": "https://raw.githubusercontent.com/aws/aws-sam-cli/master/schema/samcli.json"
     }
   ],
-  "mise.teraAutoCompletion": true,
+  // https://hverlin.github.io/mise-vscode/reference/settings
+  "mise.showToolVersionsDecorations": true,
+  "mise.configureExtensionsAutomatically": true,
+  "mise.configureExtensionsIncludeGlobalTools": false,
+  "mise.automaticallyTrustMiseConfigFiles": true,
+  "mise.checkForNewMiseVersion": false,
+  "mise.teraAutoCompletion": false,
   "mise.enable": true,
   "mise.enableCodeLens": true,
   "mise.enableToolLinks": true,
@@ -1638,7 +1648,7 @@
   "json.schemaDownload.enable": true,
   "mise.binPath": "/Users/roalcantara/.local/bin/mise",
   "[toml]": {
-    "editor.defaultFormatter": "tombi-toml.tombi",
+    "editor.defaultFormatter": "mitchell8092.tombi",
     "editor.formatOnSave": true
   },
   "typescript.experimental.useTsgo": false,
@@ -1650,15 +1660,25 @@
   "atlascode.bitbucket.enabled": true,
   "atlascode.rovodev.showEntitlementNotifications": false,
   "atlascode.jira.startWorkBranchTemplate.customTemplate": "{{{prefix}}}{{{issueKey}}}",
-  "workbench.iconTheme": "material-icon-theme",
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },
   "cursor.rpcFileLogger.enabled": true,
   "security.promptForLocalFileProtocolHandling": false,
   "window.autoDetectColorScheme": false,
-  "workbench.colorTheme": "Catppuccin Macchiato",
+  "workbench.colorTheme": "Andromeda Night Dusk",
   "terminal.integrated.enablePersistentSessions": false,
   "terminal.integrated.persistentSessionReviveProcess": "never",
-  "workbench.editor.enablePreview": false
+  "workbench.editor.enablePreview": false,
+  "google.cloud.project": "evo-staging-361013",
+  "workbench.iconTheme": "material-icon-theme",
+  "mise.enableTaskSymbolProvider": true,
+  "gherkinRunner.showCodeLens": true,
+  "gherkinRunner.showVisualCodeLens": true,
+  "cucumber.features": [
+    "assets/features/**/*.feature"
+  ],
+  "cucumber.glue": [
+    "assets/features/**/*.ts"
+  ]
 }

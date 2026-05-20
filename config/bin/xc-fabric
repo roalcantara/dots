@@ -1,57 +1,156 @@
 #!/usr/bin/env zsh
 
-#? xc-fabric - Interactive Fabric pattern runner with fzf/gum fallbacks
-#?
-#? Usage:
-#?   xc-fabric [options]
-#?   xc-fabric [options] run <pattern> [url]
-#?   xc-fabric [options] ls
-#?   xc-fabric [options] update
-#?   xc-fabric [options] show <pattern>
-#?   xc-fabric [options] strategies
-#?   xc-fabric [options] scrape <url> [pattern]
-#?   xc-fabric -h | --help
-#?
-#? Options:
-#?   -r, --raw                 Print raw output without TUI rendering
-#?   --model <model>           Pass a model to fabric
-#?   -c, --copy                Pass --copy to fabric
-#?   -o, --output <file>       Pass --output to fabric and skip rendering
-#?   -v <value>                Pass a fabric variable token verbatim
-#?   --variable=<value>        Pass a fabric variable token verbatim
-#?   --strategy <name>         Pass a fabric strategy to fabric
-#?   --no-preview              Disable picker previews
-#?   -y, --yes                 Skip confirmations
-#?   --yt-timestamps           Use YouTube transcript timestamps
-#?   --yt-comments             Include YouTube comments
-#?   --yt-metadata             Include YouTube metadata
-#?   --yt-playlist             Process a YouTube playlist
-#?   --debug                   Log fzf preview template and a dry-run sample to stderr
-#?
-#? Environment:
-#?   FABRIC_PATTERNS_DIR       Override Fabric patterns directory (default ~/.config/fabric/patterns)
-#?   GLOW_STYLE                Theme passed to glow in the picker preview (default dracula)
-#?
-#? Subcommands:
-#?   run <pattern> [url]       Run a named pattern against stdin, clipboard, or URL
-#?   ls                        List Fabric patterns with descriptions
-#?   update                    Refresh Fabric patterns with fabric -U
-#?   show <pattern>            Show a pattern definition
-#?   strategies                List Fabric strategies
-#?   scrape <url> [pattern]    Scrape a URL with fabric -u, optionally through a pattern
-#?
-#? Examples:
-#?   xc-fabric
-#?   xc-fabric ls --raw
-#?   echo "Hello" | xc-fabric run summarize --raw
-#?   xc-fabric run summarize https://youtu.be/example --yt-metadata
+##? xc-fabric - Interactive Fabric pattern runner with fzf/gum fallbacks
+##?
+##? Usage:
+##?   xc-fabric [options]
+##?   xc-fabric [options] run <pattern> [url]
+##?   xc-fabric [options] ls
+##?   xc-fabric [options] update
+##?   xc-fabric [options] show <pattern>
+##?   xc-fabric [options] strategies
+##?   xc-fabric [options] scrape <url> [pattern]
+##?   xc-fabric -h | --help
+##?
+##? Options:
+##?   -r, --raw                 Print raw output without TUI rendering
+##?   --model <model>           Pass a model to fabric
+##?   -c, --copy                Pass --copy to fabric
+##?   -o, --output <file>       Pass --output to fabric and skip rendering
+##?   -v <value>                Pass a fabric variable token verbatim
+##?   --variable=<value>        Pass a fabric variable token verbatim
+##?   --strategy <name>         Pass a fabric strategy to fabric
+##?   --no-preview              Disable picker previews
+##?   -y, --yes                 Skip confirmations
+##?   --yt-timestamps           Use YouTube transcript timestamps
+##?   --yt-comments             Include YouTube comments
+##?   --yt-metadata             Include YouTube metadata
+##?   --yt-playlist             Process a YouTube playlist
+##?   --debug                   Log fzf preview template and a dry-run sample to stderr
+##?
+##? Environment:
+##?   FABRIC_PATTERNS_DIR       Override Fabric patterns directory (default ~/.config/fabric/patterns)
+##?   GLOW_STYLE                Theme passed to glow in the picker preview (default dracula)
+##?
+##? Subcommands:
+##?   run <pattern> [url]       Run a named pattern against stdin, clipboard, or URL
+##?   ls                        List Fabric patterns with descriptions
+##?   update                    Refresh Fabric patterns with fabric -U
+##?   show <pattern>            Show a pattern definition
+##?   strategies                List Fabric strategies
+##?   scrape <url> [pattern]    Scrape a URL with fabric -u, optionally through a pattern
+##?
+##? Examples:
+##?   xc-fabric
+##?   xc-fabric ls --raw
+##?   echo "Hello" | xc-fabric run summarize --raw
+##?   xc-fabric run summarize https://youtu.be/example --yt-metadata
 
-case "${1:-}" in
-  -h|--help)
-    grep '^#?' "${0}" | sed 's/^#? \{0,1\}//'
-    exit 0
-    ;;
-esac
+### Subcommand help blocks (parsed by xc-usage; not shown in help output) ###
+
+##? xc-fabric run - Run a named pattern against stdin, clipboard, or URL
+##?
+##? Usage:
+##?   xc-fabric [options] run <pattern> [url]
+##?   xc-fabric run -h | --help
+##?
+##? Arguments:
+##?   pattern    Fabric pattern name
+##?   url        Optional URL; omit to use stdin or clipboard
+##?
+##? Options:
+##?   [options]  Global xc-fabric options (see xc-fabric -h)
+##?
+##? Examples:
+##?   echo "Hello" | xc-fabric run summarize --raw
+##?   xc-fabric run summarize https://youtu.be/example --yt-metadata
+
+##? xc-fabric ls - List Fabric patterns with descriptions
+##?
+##? Usage:
+##?   xc-fabric [options] ls
+##?   xc-fabric ls -h | --help
+##?
+##? Options:
+##?   [options]  Global xc-fabric options (see xc-fabric -h)
+##?
+##? Examples:
+##?   xc-fabric ls --raw
+
+##? xc-fabric update - Refresh Fabric patterns with fabric -U
+##?
+##? Usage:
+##?   xc-fabric [options] update
+##?   xc-fabric update -h | --help
+##?
+##? Options:
+##?   [options]  Global xc-fabric options (see xc-fabric -h)
+##?
+##? Examples:
+##?   xc-fabric update
+
+##? xc-fabric show - Show a pattern definition
+##?
+##? Usage:
+##?   xc-fabric [options] show <pattern>
+##?   xc-fabric show -h | --help
+##?
+##? Arguments:
+##?   pattern    Fabric pattern name
+##?
+##? Options:
+##?   [options]  Global xc-fabric options (see xc-fabric -h)
+##?
+##? Examples:
+##?   xc-fabric show summarize
+
+##? xc-fabric strategies - List Fabric strategies
+##?
+##? Usage:
+##?   xc-fabric [options] strategies
+##?   xc-fabric strategies -h | --help
+##?
+##? Options:
+##?   [options]  Global xc-fabric options (see xc-fabric -h)
+##?
+##? Examples:
+##?   xc-fabric strategies
+
+##? xc-fabric scrape - Scrape a URL with fabric -u, optionally through a pattern
+##?
+##? Usage:
+##?   xc-fabric [options] scrape <url> [pattern]
+##?   xc-fabric scrape -h | --help
+##?
+##? Arguments:
+##?   url        URL to scrape
+##?   pattern    Optional Fabric pattern to apply after scrape
+##?
+##? Options:
+##?   [options]  Global xc-fabric options (see xc-fabric -h)
+##?
+##? Examples:
+##?   xc-fabric scrape https://example.com
+
+readonly XC_FABRIC_ROOT="${${(%):-%x}:a:h}"
+
+_xc_usage_cmd() {
+  if command -v xc-usage >/dev/null 2>&1; then
+    command xc-usage "$@"
+    return $?
+  fi
+  if [[ -x "${XC_FABRIC_ROOT}/xc-usage" ]]; then
+    "${XC_FABRIC_ROOT}/xc-usage" "$@"
+    return $?
+  fi
+  print -u2 "xc-fabric: xc-usage not found on PATH or at ${XC_FABRIC_ROOT}/xc-usage"
+  return 127
+}
+
+local _xc_u=2
+_xc_usage_cmd guard "${0:a}" "$@"; _xc_u=$?
+(( _xc_u == 0 )) && exit 0
+(( _xc_u == 1 )) && exit 1
 
 set -euo pipefail
 

@@ -53,58 +53,87 @@ set -euo pipefail
 # | `pochi`                                  | `.pochi/skills/`         | `~/.pochi/skills/`              |
 # | `adal`                                   | `.adal/skills/`          | `~/.adal/skills/`               |
 
-#? xc-skills - Synchronize skill symlinks across AI agent directories
-#?
-#? Usage:
-#?   xc-skills sync [--dry-run] [--prune] [-s|--source PATH]
-#?                  [-a|--agent <agent>]... [-t|--target <path>]... [-l|--local]
-#?   xc-skills collect [--dry-run] [-s|--source PATH]
-#?                    [-a|--agent <agent>]... [-t|--target <path>]... [-l|--local]
-#?   xc-skills -h | --help
-#?
-#? Subcommands:
-#?   sync     Mirror symlinks from source to one or more target or agent paths
-#?   collect  Bring regular files from agent dirs into source; replace with symlinks
-#?
-#? Options (sync):
-#?   --dry-run               Print actions without making filesystem changes
-#?   --prune                 Remove destination symlinks not present in source
-#?   -s, --source PATH       Source directory (default: ~/.claude/skills)
-#?   -a, --agent NAME        Agent name; resolved via lookup table (repeatable)
-#?   -t, --target PATH       Target directory path (repeatable)
-#?   -l, --local             Use project/local path instead of global path for agents
-#?   -h, --help              Show this help message
-#?
-#? Agent lookup table (project path / global path):
-#?   aider-desk          .aider-desk/skills/       ~/.aider-desk/skills/
-#?   amp, kimi-cli,
-#?    replit, universal  .agents/skills/            ~/.config/agents/skills/
-#?   antigravity         .agents/skills/            ~/.gemini/antigravity/skills/
-#?   augment             .augment/skills/           ~/.augment/skills/
-#?   bob                 .bob/skills/               ~/.bob/skills/
-#?   claude-code         .claude/skills/            ~/.claude/skills/
-#?   cline, dexto, warp  .agents/skills/            ~/.agents/skills/
-#?   cursor              .agents/skills/            ~/.cursor/skills/
-#?   ... (see script header for full table)
-#?
-#? Notes:
-#?   - -a/--agent and -t/--target can each be given multiple times
-#?   - -s/--source can only be given once
-#?   - -l/--local can only be given once; applies to all -a/--agent resolutions
-#?   - When neither -a nor -t is given, syncs to the default destination list
-#?   - When -l/--local is given without -a/--agent, it has no effect
-#?
-#? Examples:
-#?   xc-skills sync
-#?   xc-skills sync --dry-run
-#?   xc-skills sync --prune
-#?   xc-skills sync -s ~/.claude/skills -a antigravity
-#?   xc-skills sync -s ~/.claude/skills -a antigravity -l
-#?   xc-skills sync -a antigravity -a cursor -a codex
-#?   xc-skills sync -a antigravity -t ~/.custom/skills
-#?   xc-skills sync -s ~/.claude/skills -t ~/.gemini/antigravity/skills --dry-run --prune
+##? xc-skills - Synchronize skill symlinks across AI agent directories
+##?
+##? Usage:
+##?   xc-skills <subcommand> [options]
+##?   xc-skills sync [--dry-run] [--prune] [-s|--source PATH] [-a|--agent <agent>]...
+##?                  [-t|--target <path>]... [-l|--local]
+##?   xc-skills collect [--dry-run] [-s|--source PATH] [-a|--agent <agent>]...
+##?                    [-t|--target <path>]... [-l|--local]
+##?   xc-skills -h | --help
+##?
+##? Subcommands:
+##?   sync     Mirror symlinks from source to one or more target or agent paths
+##?   collect  Bring regular files from agent dirs into source; replace with symlinks
+##?
+##? Notes:
+##?   - -a/--agent and -t/--target can each be given multiple times
+##?   - -s/--source can only be given once
+##?   - -l/--local can only be given once; applies to all -a/--agent resolutions
+##?   - When neither -a nor -t is given, sync uses the default destination list
+##?   - When -l/--local is given without -a/--agent, it has no effect
+##?   - Agent lookup table: see script header comments or xc-skills sync -h
+##?
+##? Examples:
+##?   xc-skills sync
+##?   xc-skills collect --dry-run
+##?   xc-skills sync -h
+##?   xc-skills sync -a cursor -a codex
+
+### Subcommand help blocks (parsed by xc-usage; not shown in help output) ###
+
+##? xc-skills sync - Mirror symlinks from source to one or more target or agent paths
+##?
+##? Usage:
+##?   xc-skills sync [--dry-run] [--prune] [-s|--source PATH]
+##?                  [-a|--agent <agent>]... [-t|--target <path>]... [-l|--local]
+##?   xc-skills sync -h | --help
+##?
+##? Options:
+##?   --dry-run               Print actions without making filesystem changes
+##?   --prune                 Remove destination symlinks not present in source
+##?   -s, --source PATH       Source directory (default: ~/.claude/skills)
+##?   -a, --agent NAME        Agent name; resolved via lookup table (repeatable)
+##?   -t, --target PATH       Target directory path (repeatable)
+##?   -l, --local             Use project/local path instead of global path for agents
+##?   -h, --help              Show this screen
+##?
+##? Notes:
+##?   Agent paths are listed in the script header (# | Agent table).
+##?
+##? Examples:
+##?   xc-skills sync
+##?   xc-skills sync --dry-run
+##?   xc-skills sync --prune
+##?   xc-skills sync -s ~/.claude/skills -a antigravity
+##?   xc-skills sync -s ~/.claude/skills -t ~/.gemini/antigravity/skills --dry-run --prune
+
+##? xc-skills collect - Bring regular files from agent dirs into source; replace with symlinks
+##?
+##? Usage:
+##?   xc-skills collect [--dry-run] [-s|--source PATH]
+##?                     [-a|--agent <agent>]... [-t|--target <path>]... [-l|--local]
+##?   xc-skills collect -h | --help
+##?
+##? Options:
+##?   --dry-run               Print actions without making filesystem changes
+##?   -s, --source PATH       Source directory (default: ~/.agents/skills)
+##?   -a, --agent NAME        Agent name; resolved via lookup table (repeatable)
+##?   -t, --target PATH       Target directory path (repeatable)
+##?   -l, --local             Use project/local path instead of global path for agents
+##?   -h, --help              Show this screen
+##?
+##? Examples:
+##?   xc-skills collect --dry-run
 
 SCRIPT_NAME="${0##*/}"
+declare SCRIPT_PATH
+if [[ -n "${BASH_SOURCE[0]:-}" ]]; then
+  SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd -P)/$(basename "${BASH_SOURCE[0]}")"
+else
+  SCRIPT_PATH="$(cd "$(dirname "$0")" 2>/dev/null && pwd -P)/$(basename "$0")"
+fi
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -113,7 +142,7 @@ warn() { printf 'WARN: %s\n' "$*" >&2; }
 err() { printf 'ERROR: %s\n' "$*" >&2; }
 
 usage() {
-  grep '^#?' "${BASH_SOURCE[0]}" | sed 's/^#? \{0,1\}//'
+  command xc-usage print "$SCRIPT_PATH"
 }
 
 run_cmd() {

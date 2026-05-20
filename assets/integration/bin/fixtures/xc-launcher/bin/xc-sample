@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+##? xc-sample - Fixture tool for xc launcher discovery tests
+##?
+##? Usage:
+##?   xc-sample -h | --help
+##?
+##? Options:
+##?   -h, --help  Show this screen
+
+true

@@ -1,0 +1,90 @@
+#!/usr/bin/env zsh
+# shellcheck shell=bash disable=SC2296,SC2298,SC1035,SC1072
+
+#? toast 0.1.0
+#? License RIT (Robot Institute of Technology)
+#? This is free software: you are free to change and redistribute it.
+#? There is NO WARRANTY, to the extent permitted by law.
+#? http://docopt.org · Command-line interface description language
+
+##? xc-toast - Display a toast message
+##?
+##? Usage:
+##?      xc-toast <message> [duration] [type]
+##?      xc-toast -h | --help
+##?
+##? Arguments:
+##?     message               The message to display.
+##?     duration              The duration of the toast in seconds (default: 3).
+##?     type                  The type of toast to display (info|success|error|warning).
+##?
+##? Options:
+##?     -h, --help   Show this screen
+##?
+##? Examples:
+##?     xc-toast "Hello, world!"
+##?     xc-toast "Hello, world!" 5
+##?     xc-toast "Hello, world!" 5 error
+
+readonly XC_TOAST_ROOT="${${(%):-%x}:a:h}"
+
+_xc_usage_find() {
+  if command -v xc-usage >/dev/null 2>&1; then
+    command xc-usage "$@"
+    return $?
+  fi
+  if [[ -x "${XC_TOAST_ROOT}/xc-usage" ]]; then
+    "${XC_TOAST_ROOT}/xc-usage" "$@"
+    return $?
+  fi
+  print -u2 "xc-toast: xc-usage not found on PATH or at ${XC_TOAST_ROOT}/xc-usage"
+  return 127
+}
+
+local _xc_u=2
+_xc_usage_find guard "${0:a}" "$@"; _xc_u=$?
+(( _xc_u == 0 )) && exit 0
+(( _xc_u == 1 )) && exit 1
+
+while [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; do
+  shift
+done
+
+local message="$1"
+local duration="${2:-3}"
+local type="${3:-info}"
+
+if [[ -z "$message" ]]; then
+  _xc_usage_find print "${0:a}" >&2
+  exit 1
+fi
+
+local bg fg icon
+case "$type" in
+  success)
+    bg="\e[42m" fg="\e[37m" icon="✓"
+    ;;
+  error)
+    bg="\e[41m" fg="\e[37m" icon="✗"
+    ;;
+  warning)
+    bg="\e[43m" fg="\e[30m" icon="!"
+    ;;
+  *)  # info
+    bg="\e[44m" fg="\e[37m" icon="i"
+    ;;
+esac
+
+local reset="\e[0m"
+tput sc
+tput cup 0 $(($(tput cols) - ${#message} - 6))
+echo -n "${bg}${fg} ${icon} ${message} ${reset}"
+tput rc
+
+(
+  sleep $duration
+  tput sc
+  tput cup 0 $(($(tput cols) - ${#message} - 6))
+  printf ' %.0s' $(seq 1 $((${#message} + 6)))
+  tput rc
+) &!

@@ -1,0 +1,92 @@
+# config/zsh — Zsh autoload functions
+
+Help conventions, command reference, and worked examples for Zsh autoload functions
+under `config/zsh/etc/functions/`.
+
+## Help conventions
+
+Every function uses docopt-shaped **`##?`** headers. Help is printed via **`show_usage`**
+which delegates to `xc-usage print`. The convention is the same as `config/bin` scripts.
+
+### Canonical `##?` template
+
+```text
+##? <tool> - One-line summary
+##?
+##? Usage:
+##?   <tool> [options] <args...>
+##?   <tool> -h | --help
+##?
+##? Arguments:
+##?   <name>    Description
+##?
+##? Options:
+##?   -h, --help    Show this screen
+##?
+##? Examples:
+##?   <tool> -h
+```
+
+See also: [config/bin/specs/xc-usage/design.md §4.2](../bin/specs/xc-usage/design.md#42-end-to-end-example-xc-foo) for a complete end-to-end example.
+
+## Three-layer help model
+
+| Layer           | Mechanism                     | When                              |
+| --------------- | ----------------------------- | --------------------------------- |
+| Script help     | `##?` + `xc-usage`/`show_usage`| `xc-fabric -h`, `gitx -h`, always |
+| CLI parsing     | `zparseopts` in the function  | real flags and positionals        |
+| Mise tasks      | `usage = '''…'''` in mise.toml| `mise run tool:specs --scenario` |
+
+**Rule:** never require `mise` to be installed for `show_usage` or `xc-usage` to work.
+
+## Command reference
+
+See [config/bin/specs/xc-usage/design.md §4.1](../bin/specs/xc-usage/design.md#41-invocation-table) for the full `xc-usage` command table.
+
+## Standalone `xc-usage`
+
+`xc-usage` is a self-contained zsh script at `config/bin/xc-usage`. It does **not** invoke mise, parse KDL, or read `#USAGE` headers. The only dependency is `zsh`, `grep`, `sed`, and the executable bit on `config/bin/xc-usage`.
+
+Symlink to `~/.local/bin/xc-usage` so it is on `$PATH`:
+```sh
+ln -sf ~/.config/bin/xc-usage ~/.local/bin/xc-usage
+```
+
+## `show_usage`
+
+`show_usage` is the Zsh-facing entrypoint. It resolves a function name to its source file and delegates to `command xc-usage print <file>`.
+
+**Usage:**
+```zsh
+show_usage              # uses funcstack[2] for the calling function
+show_usage puts         # prints help for the `puts` function
+show_usage /path/file   # prints help for any readable file
+```
+
+After `zparseopts` in a function:
+```zsh
+if (( ${+opts[-h]} )) || (( ${+opts[--help]} )); then
+  show_usage
+  return 0
+fi
+```
+
+**Bin scripts:** use `command xc-usage guard "${0:a}" "$@"` instead of `show_usage`.
+
+## Out of scope
+
+- Auto-parsing `##?` to generate `zparseopts` calls (see [design.md §13](../bin/specs/xc-usage/design.md#13-out-of-scope))
+- Inferring help from code or minimal `##?`
+- `config/zsh/opt/completions/*` (generated or third-party completion scripts)
+
+## Migrated to bin
+
+`puts` and `toast` have moved from `config/zsh/etc/functions/` to `config/bin/` as `xc-puts` and `xc-toast`. Use `command xc-puts` or `xc-toast` directly — no autoload needed.
+
+## Authoring checklist
+
+Before committing a function file:
+1. Add a `##?` docopt header (copy the template above)
+2. Wire `show_usage` on `-h`/`--help`
+3. Run `command xc-usage validate /path/to/file.zsh`
+4. Run `mise run xc-usage:specs` (for `config/bin` tests)

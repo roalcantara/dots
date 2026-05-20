@@ -1,0 +1,10 @@
+{
+  "name": "dots",
+  "private": true,
+  "devDependencies": {
+    "@cucumber/cucumber": "^10",
+    "@cucumber/screenplay": "^5.3.0",
+    "gherkin-lint": "^4.2.4",
+    "tsx": "^4.22.3"
+  }
+}

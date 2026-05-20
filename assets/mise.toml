@@ -1,0 +1,80 @@
+[tools]
+bun = "latest"
+node = "22"
+shellcheck = "latest"
+
+[tasks]
+"bdd" = { description = "BDD living documentation: lint, dry-run, or run for a domain", usage = '''
+arg "<action>" help="BDD workflow step (lint, dry-run, or run)"
+flag "--domain <domain>" help="Domain folder under features/" default="bin"
+''', run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+DOMAIN="${usage_domain:-bin}"
+FEATURE_DIR="features/${DOMAIN}"
+bun install --frozen-lockfile
+FEATURE_COUNT=$(find "$FEATURE_DIR" -name '*.feature' -type f | wc -l | tr -d ' ')
+[[ $FEATURE_COUNT -gt 0 ]] || { echo "ERROR: no .feature under $FEATURE_DIR" >&2; exit 1; }
+case "${usage_action:-}" in
+  lint)
+    bunx gherkin-lint $(find "$FEATURE_DIR" -name '*.feature' -type f | sort)
+    ;;
+  dry-run|run)
+    REQUIRE_ARGS=()
+    while IFS= read -r f; do REQUIRE_ARGS+=(--require "$f"); done \
+      < <(find features/support -name '*.ts' -type f | sort)
+    while IFS= read -r f; do REQUIRE_ARGS+=(--require "$f"); done \
+      < <(find features/step_definitions -maxdepth 1 -name '*.steps.ts' -type f | sort)
+    while IFS= read -r f; do REQUIRE_ARGS+=(--require "$f"); done \
+      < <(find "features/step_definitions/${DOMAIN}" -name '*.steps.ts' -type f | sort 2>/dev/null)
+    EXTRA=()
+    [[ "${usage_action:-}" == "dry-run" ]] && EXTRA+=(--dry-run)
+    bunx cucumber-js $(find "$FEATURE_DIR" -name '*.feature' -type f | sort) \
+      --require-module tsx/cjs \
+      "${REQUIRE_ARGS[@]}" \
+      "${EXTRA[@]}"
+    ;;
+  *)
+    echo "ERROR: unknown action ${usage_action:-}" >&2; exit 1
+    ;;
+esac
+''' }
+
+"integration" = { description = "Integration specs for a domain target", usage = '''
+arg "<domain>" help="Domain under integration/"
+arg "<target>" help="Spec stem or all" default="all"
+flag "--scenario <scenario>" help="Run one scenario when the spec supports filtering"
+flag "--bin-dir <path>" help="Override config/bin root for subprocess tests"
+''', run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+: "${usage_domain:?domain is required}"
+: "${usage_target:?target is required}"
+REPO_ROOT="$(cd .. && pwd)"
+export CONFIG_BIN="${usage_bin_dir:-$REPO_ROOT/config/bin}"
+export PATH="${CONFIG_BIN}:$PATH"
+if [[ "${usage_target}" == "all" ]]; then
+  bun test "integration/${usage_domain}/"
+else
+  bun test "integration/${usage_domain}/${usage_target}.spec.ts"
+fi
+''' }
+
+"test" = { description = "Run BDD + integration for a scope", usage = '''
+arg "<scope>" help="Verification scope (bin or all)"
+''', run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+case "${usage_scope:-}" in
+  bin)
+    mise run bdd run --domain bin
+    mise run integration bin all
+    ;;
+  all)
+    mise run test bin
+    ;;
+  *)
+    echo "ERROR: unknown scope ${usage_scope:-}" >&2; exit 1
+    ;;
+esac
+''' }

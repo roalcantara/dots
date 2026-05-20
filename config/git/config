@@ -496,6 +496,7 @@ root-commit=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" root
 fix-root=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fix-root
 
 # Create a fixup commit for a specified commit and autosquash it (including the root commit!)
+# Pair with: xc-git fixup-suggest -q to choose target safely before git fix
 # @example: git fix [commit]
 fix=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fix
 
@@ -508,8 +509,22 @@ fixup=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fixup
 squash=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" squash
 
 # Stage all changes and create a fixup commit for a specified commit
+# Pair with: xc-git fixup-suggest -q to pick the right target
 # @example: git fix-all [commit]
 fix-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fix-all
+
+# Suggest fixup target from branch history, or open commit editor (no guess commits).
+# Implementation: xc-git fixup-suggest
+# @example: git fixup-suggest
+# @example: git fixup-suggest --dry-run -- .gitattributes
+# @example: git add . && git fix "$(xc-git fixup-suggest -q -- .)"
+fixup-suggest=!xc-git fixup-suggest
+
+# Suggest fixup target from branch history, or open commit editor (no guess commits).
+# @example: git fixup-suggest
+# @example: git fixup-suggest --dry-run -- .gitattributes
+# @example: git add . && git fix "$(xc-git fixup-suggest -q -- .)"
+fixup-suggest=!xc-git fixup-suggest
 
 # Stage all changes and create a squash commit for a specified commit
 # @example: git squash-all [commit]
@@ -555,7 +570,7 @@ pc=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pc
 # @example: git pp
 pp=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pp
 
-# Interactive log view using fzf to select a commit
+# Interactive log view using fzf to select a commit (gitx → xc-git log-fzf)
 # @example: git fzl
 # @example: git lol
 # @example: git fzlog
@@ -583,7 +598,7 @@ fzus=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzus
 # @example: git fzc
 fzc=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzc
 
-# Interactive delete branch using fzf
+# Interactive delete branch using fzf (preview: xc-git branch-preview)
 # @example: git fzb
 fzb=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzb
 

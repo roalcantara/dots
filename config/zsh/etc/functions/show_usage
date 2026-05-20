@@ -1,34 +1,51 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash disable=SC2154,SC2004
 
-##? Show help information for an autoloaded function
+##? Show help information for an autoloaded function or file
 ##?
 ##? Usage:
-##?    show_usage [function_name]
+##?    show_usage [function_name | file_path]
+##?
+##? Arguments:
+##?    function_name | file_path   Name of the function to show help for,
+##?                                or a path to a readable file.
+##?                                If not provided, shows help for the calling function.
 ##?
 ##? Options:
-##?    function_name  Name of the function to show help for
-##?                  If not provided, shows help for the calling function
+##?    -h, --help    Show this screen
 ##?
 ##? Example: show_usage puts
+##?
+##? Implementation delegates to xc-usage print (standalone, see config/bin/xc-usage).
 
 show_usage() {
-  local target_func="${1:-${funcstack[2]}}"
-  local script="${functions_source[$target_func]}"
+  local target="${1:-${funcstack[2]}}"
+  local script=""
 
-  # If script path not found, try to autoload it
-  if [[ -z "$script" ]] && (($ + functions[$target_func])); then
-    autoload -Uz +X "$target_func"
-    script="${functions_source[$target_func]}"
+  if [[ -f "$target" ]]; then
+    script="$target"
+  else
+    script="${functions_source[$target]:-}"
+    if [[ -z "$script" ]] && (( $+functions[$target] )); then
+      autoload -Uz +X "$target"
+      script="${functions_source[$target]:-}"
+    fi
+    if [[ -z "$script" ]]; then
+      for dir in ${fpath[@]}; do
+        if [[ -f "$dir/$target" ]]; then
+          script="$dir/$target"
+          break
+        fi
+      done
+    fi
   fi
 
-  if [[ -f "$script" ]]; then
-    grep '^##?' "$script" | sed 's/^##?//'
-    return 0
-  else
-    print "Error: Could not find help for function '$target_func'"
+  if [[ -z "$script" || ! -f "$script" ]]; then
+    print -u2 "show_usage: could not resolve help for '$target'"
     return 1
   fi
+
+  command xc-usage print "$script"
 }
 
 show_usage "$@"

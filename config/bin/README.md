@@ -19,8 +19,8 @@ invoke them regardless of how the shell was started.
 on `$PATH` without duplicating files.
 
 ```txt
-~/.config/bin/xc-git-branch-preview   ← source (versioned with dotfiles)
-~/.local/bin/xc-git-branch-preview    ← symlink → ~/.config/bin/xc-git-branch-preview
+~/.config/bin/xc-git                    ← unified git helpers (flat executable, like xc-fabric)
+~/.local/bin/xc-git                     ← symlink → ~/.config/bin/xc-git
 ~/.config/bin/xc-fabric               ← interactive Fabric pattern runner
 ```
 
@@ -55,10 +55,99 @@ third-party CLIs.
 #### EXAMPLES
 
 ```txt
-xc-git-branch-preview
+xc-git
 xc-git-stash-preview
 xc-fzf-file-preview
 ```
+
+### xc-git
+
+Git workflow helpers are unified under a single CLI: **`xc-git`**
+
+| Subcommand       | Purpose                           | Example                                  |
+| ---------------- | --------------------------------- | ---------------------------------------- |
+| `branch-preview` | fzf branch preview (gum + delta)  | `xc-git branch-preview main`             |
+| `fixup-suggest`  | Safe fixup target or `git commit` | `xc-git fixup-suggest --dry-run -- path` |
+| `log-fzf`        | Interactive log + gitx keys       | `xc-git log-fzf fix`                     |
+
+```sh
+xc-git -h
+xc-git fixup-suggest --dry-run .
+git add file && git fix "$(xc-git fixup-suggest -q -- file)"
+git lol                # → gitx → xc-git log-fzf
+```
+
+`xc-git` lives at `config/bin/xc-git` (single flat executable, subcommands inline). Old package dir `xc-git/`, wrappers, and `lib/xc-git/` are removed.
+
+**Dependencies:** `git` · `delta` (for `branch-preview` diff) · `gum` optional (section headings; plain `printf` fallback).
+
+**Testing:**
+```sh
+mise run xc-git:specs
+```
+
+### Portable tool symlinks
+
+```sh
+ln -sf ~/.config/bin/xc-git  ~/.local/bin/xc-git
+ln -sf ~/.config/bin/xc-puts        ~/.local/bin/xc-puts
+ln -sf ~/.config/bin/xc-toast       ~/.local/bin/xc-toast
+ln -sf ~/.config/bin/xc-usage       ~/.local/bin/xc-usage
+```
+
+**Removed:** `config/zsh/etc/functions/{puts,toast}`, `config/bin/{lib/xc-git,xc-git-*}` wrappers, root `config/bin/xc-git` file.
+
+### xc (launcher)
+
+**`xc`** is the interactive entry point for all other `xc-*` tools (each tool stays its own file).
+
+```bash
+xc              # fzf menu + stacked help preview (xc-usage preview)
+xc list         # table of discovered tools
+ln -sf ~/.config/bin/xc ~/.local/bin/xc
+```
+
+Discovery scans `~/.config/bin` for executable `xc-*` files (flat layout; skips `xc` itself). Requires **fzf** (or **gum** as fallback) for the interactive picker.
+
+### xc-usage
+
+All `config/bin` scripts use **`xc-usage`** to print help from `##?` docopt headers.
+Legacy `#?` (single-hash) headers are no longer used for help extraction.
+
+**Subcommands:**
+
+| Command                                    | Purpose                                   |
+| ------------------------------------------ | ----------------------------------------- |
+| `xc-usage guard SCRIPT "$@"`               | If args include `-h`/`--help`, print help |
+| `xc-usage print SCRIPT`                    | Print all `##?` lines (legacy)            |
+| `xc-usage print SCRIPT --scope main`       | Dispatcher overview only                  |
+| `xc-usage print SCRIPT --scope sub:run`    | One subcommand block only                 |
+| `xc-usage preview SCRIPT --tool xc-fabric` | Stacked help for `xc` launcher            |
+| `xc-usage list-subs SCRIPT`                | Subcommand names from `##? Subcommands:`  |
+| `xc-usage validate SCRIPT`                 | Lint `##?` header completeness            |
+
+**`guard` exit codes:** 0 = help printed, 1 = error, 2 = not help (caller continues).
+
+**Three-layer help model:**
+
+| Layer       | Mechanism                      | When                             |
+| ----------- | ------------------------------ | -------------------------------- |
+| Script help | `##?` + `xc-usage`             | `xc-fabric -h`, always           |
+| CLI parsing | `zparseopts` in the script     | real flags and positionals       |
+| Mise tasks  | `usage = '''…'''` in mise.toml | `mise run tool:specs --scenario` |
+
+**Mise `usage` field** applies only to `mise run` tasks — never to `xc-usage`. `xc-usage` is a standalone zsh script; it does not invoke mise, parse KDL, or read `#USAGE` headers.
+
+**Dual header convention (`#?` + `##?`):**
+
+| Prefix | Purpose                      | `xc-usage print` | `xc-usage validate` |
+| ------ | ---------------------------- | ---------------- | ------------------- |
+| `#?`   | License, version, docopt URL | Ignored          | Ignored (no error)  |
+| `##?`  | Docopt help                  | Emitted          | Required            |
+
+Use `xc-usage print --metadata <file>` to print only `#?` license/metadata lines. Files with only `#?` (no `##?`) are still rejected with a docopt hint.
+
+For Zsh function conventions, see [config/zsh/README.md](../zsh/README.md).
 
 ### CONVENTIONS
 
@@ -67,35 +156,42 @@ Each script follows the same structure:
 ```zsh
 #!/usr/bin/env zsh
 
-#? xc-<name> - One-line description
-#?
-#? Usage:
-#?   xc-<name> <arg>
-#?   xc-<name> -h | --help
-#?
-#? Arguments:
-#?   arg    What it is
-#?
-#? Examples:
-#?   fzf --preview 'xc-<name> {}' | xargs <command>
+**Canonical dispatcher shape:** see `xc-fabric` `##?` (main block + sub blocks) and
+`config/bin/specs/xc-usage/design.md` §11.5 ([docopt](http://docopt.org/)).
 
-arg="${1}"
+**Flat tool** (`xc-puts`, `xc-toast`):
 
-case "${arg}" in
-  -h|--help) grep '^#?' "${0}" | sed 's/^#? \{0,1\}//'; exit 0 ;;
-  '')        grep '^#?' "${0}" | sed 's/^#? \{0,1\}//'; exit 1 ;;
-esac
+```text
+##? xc-<name> - One-line description
+##?
+##? Usage:
+##?   xc-<name> <arg>
+##?   xc-<name> -h | --help
+##?
+##? Arguments:
+##?   arg    What it is
+##?
+##? Examples:
+##?   fzf --preview 'xc-<name> {}' | xargs <command>
+
+local _xc_u=2
+command xc-usage guard "${0:a}" "$@"; _xc_u=$?
+(( _xc_u == 0 )) && exit 0
+(( _xc_u == 1 )) && exit 1
 
 # implementation
 ```
 
+For a complete worked example see [config/bin/specs/xc-usage/design.md §4.2](specs/xc-usage/design.md#42-end-to-end-example-xc-foo).
+
 #### RULES
 
 - Shebang is always `#!/usr/bin/env zsh`
-- Help lives in the `#?` header — no separate man page, no duplicated strings
-- `-h`/`--help` and missing args both print the header and exit cleanly
+- Help lives in the `##?` header — no separate man page, no duplicated strings
+- `-h`/`--help` delegated to `command xc-usage guard "${0:a}" "$@"` at the top of the script
+- For missing required args use `command xc-usage print "${0:a}" >&2`
 - Scripts are self-contained — no sourcing of `~/.zshrc` or personal config
-- All dependencies (`gum`, `delta`, `bat`, `fzf`, etc.) are assumed to be on `$PATH`
+- All dependencies (`gum`, `delta`, `bat`, `fzf`, `xc-usage`, etc.) are assumed to be on `$PATH`
 
 ### ADDING SCRIPTS
 
@@ -117,15 +213,12 @@ grep '^#?' ~/.config/bin/xc-<name> | sed 's/^#? \{0,1\}//'
 
 - Some scripts here have automated checks driven by [mise][9] and [Bun][10].
 - Specs live under [`tests/<script-name>.spec.ts`](tests/)
-  - For example: [`tests/xc-git-log-fzf.spec.ts`](tests/xc-git-log-fzf.spec.ts)
-- The mise task [`xc-git-log-fzf:specs`](mise.toml) sets:
+  - For example: [`tests/xc-git.spec.ts`](tests/xc-git.spec.ts)
+- The mise task [`xc-git:specs`](mise.toml) sets:
   - `dir` to `{{ config_root }}` which is the directory that contains this `mise.toml`
     - For example: `config/bin` inside the dotfiles repo
-    - Not the monorepo root unless your layout differs
-  - `XC_GIT_LOG_FZF` to the absolute path of the script under test
+  - `XC_GIT` to the absolute path of the script under test
 - Then runs **`bunx bun test`** on the spec file
-  - So the same command shape works whether Bun is on `PATH` via mise or via a global install
-  - For example: `bunx bun test tests/xc-git-log-fzf.spec.ts`
 
 #### GLOSSARY
 
@@ -158,7 +251,7 @@ grep '^#?' ~/.config/bin/xc-<name> | sed 's/^#? \{0,1\}//'
   - If `usage_scenario` is set:
     - Suites whose id does not match are skipped
     - So you can run one scenario at a time
-    - Example: `mise run xc-git-log-fzf:specs --scenario help` runs only the `help` suite
+    - Example: `mise run xc-git:specs --scenario help` runs only the `help` suite
 
 #### CONVENTIONS AND PATTERNS
 
@@ -189,11 +282,22 @@ grep '^#?' ~/.config/bin/xc-<name> | sed 's/^#? \{0,1\}//'
   ```sh
   # 💡 NOTE: Invalid `--scenario` values are rejected by mise before Bun starts
 
-  # xc-git-log-fzf
-  mise run xc-git-log-fzf:specs
-  mise run xc-git-log-fzf:specs --scenario help
-  mise run xc-git-log-fzf:specs --scenario missing_gitx
-  mise run xc-git-log-fzf:specs --help
+  # xc-git
+  mise run xc-git:specs
+  mise run xc-git:specs --scenario help
+  mise run xc-git:specs --scenario fixup_suggest
+
+  # xc-puts
+  mise run xc-puts:specs
+  mise run xc-puts:specs --scenario help
+
+  # xc-toast
+  mise run xc-toast:specs
+  mise run xc-toast:specs --scenario help
+
+  # xc-usage
+  mise run xc-usage:specs
+  mise run xc-usage:specs --scenario metadata
 
   # xc-fabric
   mise run setup
@@ -229,8 +333,8 @@ grep '^#?' ~/.config/bin/xc-<name> | sed 's/^#? \{0,1\}//'
 3. Run the specs:
 
   ```sh
-  # xc-git-log-fzf
-  bunx bun test tests/xc-git-log-fzf.spec.ts
+  # xc-git
+  bunx bun test tests/xc-git.spec.ts
 
   # xc-fabric
   bunx bun test tests/xc-fabric.spec.ts

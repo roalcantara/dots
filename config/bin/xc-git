@@ -1,0 +1,653 @@
+#!/usr/bin/env zsh
+# shellcheck shell=bash disable=SC2296,SC2298
+
+##? xc-git - Git helpers (branch preview, fixup suggest, log fzf)
+##?
+##? Usage:
+##?   xc-git <subcommand> [options] [args...]
+##?
+##? Subcommands:
+##?   branch-preview <branch>     fzf branch preview (gum + delta)
+##?   fixup-suggest [opts] [-- paths]   safe fixup target or new commit
+##?   log-fzf [action]            interactive git log (fzf + gitx)
+##?
+##?   xc-git -h | --help
+##?
+##? Examples:
+##?   xc-git -h
+##?   xc-git branch-preview main
+##?   xc-git fixup-suggest --dry-run config/bin/README.md
+##?   xc-git log-fzf fix
+##?
+##? Run 'xc-git <subcommand> -h' for subcommand help.
+
+### Subcommand help blocks (parsed by xc-usage; not shown in help output) ###
+
+##? xc-git branch-preview - Display branch metadata and recent commits
+##?
+##? Usage:
+##?   xc-git branch-preview <branch>
+##?   xc-git branch-preview -h | --help
+##?
+##? Arguments:
+##?   branch    Local branch name to preview
+##?
+##? Examples:
+##?   xc-git branch-preview main
+##?   fzf --preview 'xc-git branch-preview {}'
+
+##? xc-git fixup-suggest - Fixup into latest branch commit that touched a path
+##?
+##? Usage:
+##?   xc-git fixup-suggest [options] [--] [path...]
+##?   xc-git fixup-suggest -h | --help
+##?
+##? Options:
+##?   -b, --base <ref>   Upstream integrated branch (default: origin/main)
+##?   -n, --top <count>  Show at most N ranked commits (default: 10)
+##?   -q, --best         Print only the top commit short hash (for scripts)
+##?   --dry-run          Do not run git commit when no fixup target exists
+##?   -h, --help         Show this screen
+##?
+##? Examples:
+##?   xc-git fixup-suggest --dry-run config/bin/README.md
+##?   git add paths && git fix "$(xc-git fixup-suggest -q -- paths)"
+
+##? xc-git log-fzf - Interactive git log (fzf); pick a commit, optional gitx actions
+##?
+##? Usage:
+##?   xc-git log-fzf [action]
+##?   xc-git log-fzf -h | --help
+##?
+##? Arguments:
+##?   action    Optional gitx action: rebase-from, fix, reword, edit, drop, reset-soft, reset-hard
+##?
+##? Examples:
+##?   xc-git log-fzf fix
+
+# ── Self-resolve ──────────────────────────────────────────────────
+
+_xc_git_resolve_self() {
+  local local_bin="${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin}/xc-git"
+  if [[ -f "$local_bin" && -x "$local_bin" ]]; then
+    REPLY="${local_bin:a}"
+    return 0
+  fi
+  local config_bin="${XDG_CONFIG_HOME:-$HOME/.config}/bin/xc-git"
+  if [[ -f "$config_bin" && -x "$config_bin" ]]; then
+    REPLY="${config_bin:a}"
+    return 0
+  fi
+  REPLY="${${(%):-%x}:a}"
+}
+
+# ── xc-usage helper ──────────────────────────────────────────────
+
+_xc_git_xc_usage() {
+  if command -v xc-usage >/dev/null 2>&1; then
+    command xc-usage "$@"
+    return $?
+  fi
+  _xc_git_resolve_self
+  local bin_dir="${REPLY:a:h:h}"  # parent of xc-git/ dir
+  if [[ -x "${bin_dir}/xc-usage" ]]; then
+    "${bin_dir}/xc-usage" "$@"
+    return $?
+  fi
+  echo "xc-git: xc-usage not found on PATH or at ${bin_dir}/xc-usage" >&2
+  return 127
+}
+
+# ── Subcommand help extraction ────────────────────────────────────
+
+_xc_git_subhelp() {
+  local sub="$1"
+  _xc_git_resolve_self
+  grep '^##?' "$REPLY" | sed 's/^##? \{0,1\}//' | awk -v s="$sub" '
+    /^xc-git '"$sub"'/ { on=1 }
+    on && /^$/ { exit }
+    on { print }
+  '
+}
+
+# ── Optional gum styling ─────────────────────────────────────────
+
+typeset -g _XC_GIT_HAS_GUM=-1
+
+_xc_git_has_gum() {
+  if ((_XC_GIT_HAS_GUM >= 0)); then
+    return "$_XC_GIT_HAS_GUM"
+  fi
+  if command -v gum >/dev/null 2>&1; then
+    _XC_GIT_HAS_GUM=0
+  else
+    _XC_GIT_HAS_GUM=1
+  fi
+  return "$_XC_GIT_HAS_GUM"
+}
+
+_xc_git_emit() {
+  local fg="$1" text="$2"
+  if _xc_git_has_gum && [[ -t 1 ]]; then
+    gum style --foreground "$fg" --bold "$text" 2>/dev/null || printf '%s\n' "$text"
+  else
+    printf '%s\n' "$text"
+  fi
+}
+
+# ── Subcommand: branch-preview ────────────────────────────────────
+
+_xc_git_branch_preview() {
+  _xc_git_resolve_self
+  _xc_git_xc_usage guard "$REPLY" "$@"; local _xc_u=$?
+  (( _xc_u == 0 )) && return 0
+  (( _xc_u == 1 )) && return 1
+
+  # Subcommand-specific help (guard printed full ##?; override with subhelp)
+  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    _xc_git_subhelp branch-preview
+    return 0
+  fi
+
+  branch="${1}"
+  if [[ -z "${branch}" ]]; then
+    _xc_git_subhelp branch-preview >&2
+    return 1
+  fi
+
+  _xc_git_emit 212 "── Last commit ──────────────────────"
+  git show --no-patch \
+    --format="%C(yellow)%h%Creset  %C(bold)%s%Creset%n%C(cyan)%an%Creset · %C(green)%ar%Creset%n%C(dim)%D%Creset" \
+    "${branch}" 2>/dev/null
+
+  echo ""
+  _xc_git_emit 39 "── Recent history ───────────────────"
+  git log --oneline --graph --decorate --color=always -15 "${branch}" 2>/dev/null
+
+  echo ""
+  _xc_git_emit 212 "── Diff (last commit) ───────────────"
+  git show --no-color "${branch}" | delta --pager=never --width="${FZF_PREVIEW_COLUMNS:-80}"
+}
+
+# ── Subcommand: fixup-suggest ─────────────────────────────────────
+
+_xc_git_fixup_suggest() {
+  set -euo pipefail
+
+  _xc_git_resolve_self
+  set +e; _xc_git_xc_usage guard "$REPLY" "$@"; local _xc_u=$?; set -e
+  (( _xc_u == 0 )) && return 0
+  (( _xc_u == 1 )) && return 1
+
+  _base_ref="origin/main"
+  _top_n=10
+  _quiet=0
+  _dry_run=0
+
+  _xc_git_fixup_usage() {
+    _xc_git_subhelp fixup-suggest
+  }
+
+  while (($#)); do
+    case "$1" in
+      -h|--help)
+        _xc_git_fixup_usage
+        return 0
+        ;;
+      -b|--base)
+        [[ $# -ge 2 ]] || { _xc_git_fixup_usage >&2; exit 1; }
+        _base_ref="$2"
+        shift 2
+        ;;
+      -n|--top)
+        [[ $# -ge 2 ]] || { _xc_git_fixup_usage >&2; exit 1; }
+        _top_n="$2"
+        shift 2
+        ;;
+      -q|--best)
+        _quiet=1
+        shift
+        ;;
+      --dry-run)
+        _dry_run=1
+        shift
+        ;;
+      --)
+        shift
+        break
+        ;;
+      -*)
+        echo "xc-git fixup-suggest: unknown option: $1" >&2
+        _xc_git_fixup_usage >&2
+        exit 1
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  typeset -a _path_args=("$@")
+
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "xc-git fixup-suggest: not inside a git repository" >&2
+    exit 1
+  fi
+
+  if ! git rev-parse --verify "${_base_ref}" >/dev/null 2>&1; then
+    echo "xc-git fixup-suggest: base ref not found: ${_base_ref}" >&2
+    exit 1
+  fi
+
+  _range="${_base_ref}..HEAD"
+  if ! git rev-list --count "${_range}" >/dev/null 2>&1; then
+    echo "xc-git fixup-suggest: cannot list commits for ${_range}" >&2
+    exit 1
+  fi
+
+  _branch_count=$(git rev-list --count "${_range}")
+  if [[ "${_branch_count}" -eq 0 ]]; then
+    echo "xc-git fixup-suggest: no commits on HEAD that are not in ${_base_ref}" >&2
+    exit 1
+  fi
+
+  _repo_root=$(git rev-parse --show-toplevel)
+  _paths_source="uncommitted"
+
+  _resolve_path() {
+    local arg="$1" abs rel
+    if [[ "$arg" = /* ]]; then
+      abs="$arg"
+    else
+      abs="${_repo_root}/${arg}"
+      if [[ ! -e "$abs" ]] && [[ -e "$arg" ]]; then
+        abs="$(cd "${arg:h}" 2>/dev/null && pwd -P)/${arg:t}"
+      fi
+    fi
+    if [[ ! -e "$abs" ]]; then
+      echo "xc-git fixup-suggest: path not found: $arg" >&2
+      return 1
+    fi
+    rel="${abs#"${_repo_root}"/}"
+    [[ -n "$rel" && "$rel" != "$abs" ]] || rel="$arg"
+    print -r -- "$rel"
+  }
+
+  _collect_uncommitted_paths() {
+    while IFS= read -r p; do
+      [[ -n "$p" ]] && _paths+=("$p")
+    done < <(
+      {
+        git diff --name-only 2>/dev/null
+        git diff --cached --name-only 2>/dev/null
+        git ls-files --others --exclude-standard 2>/dev/null
+      } | awk 'NF && !seen[$0]++'
+    )
+  }
+
+  typeset -a _paths=()
+  if [[ ${#_path_args[@]} -gt 0 ]]; then
+    _paths_source="arguments"
+    typeset -A _path_seen=()
+    for arg in "${_path_args[@]}"; do
+      if ! rel=$(_resolve_path "$arg"); then
+        exit 1
+      fi
+      if [[ -d "${_repo_root}/${rel}" ]]; then
+        while IFS= read -r p; do
+          [[ -n "$p" && -z "${_path_seen[$p]:-}" ]] && _path_seen[$p]=1 && _paths+=("$p")
+        done < <(git -C "${_repo_root}" ls-files "${rel}" 2>/dev/null)
+        continue
+      fi
+      [[ -z "${_path_seen[$rel]:-}" ]] || continue
+      _path_seen[$rel]=1
+      _paths+=("$rel")
+    done
+  else
+    _collect_uncommitted_paths
+  fi
+
+  if [[ ${#_paths[@]} -eq 0 ]]; then
+    if [[ $_paths_source == arguments ]]; then
+      echo "xc-git fixup-suggest: no files resolved from path arguments" >&2
+      exit 1
+    fi
+    echo "xc-git fixup-suggest: no uncommitted local changes" >&2
+    exit 0
+  fi
+
+  _suggest_fixup_for_path() {
+    local p="$1" hash pdir
+    hash=$(git log "${_range}" --format=%H -n 1 -- "$p" 2>/dev/null)
+    if [[ -n "$hash" ]]; then
+      print -r -- "${hash}	direct	${p}"
+      return 0
+    fi
+    pdir="${p:h}"
+    if [[ -n "$pdir" && "$pdir" != "." ]]; then
+      hash=$(git log "${_range}" --format=%H -n 1 -- "$pdir" 2>/dev/null)
+      if [[ -n "$hash" ]]; then
+        print -r -- "${hash}	via-directory	${pdir}"
+        return 0
+      fi
+    fi
+    return 1
+  }
+
+  typeset -A _scores=()
+  typeset -A _subjects=()
+  typeset -A _path_lines=()
+  typeset -A _path_suggest=()
+  typeset -A _path_via=()
+  typeset -a _new_commit_paths=()
+
+  for p in "${_paths[@]}"; do
+    _plog=$(git log "${_range}" --oneline --format='  %h %s' -n 5 -- "$p" 2>/dev/null)
+    if [[ -n "$_plog" ]]; then
+      _path_lines[$p]="$_plog"
+    else
+      _pdir="${p:h}"
+      if [[ -n "$_pdir" && "$_pdir" != "." ]]; then
+        _plog=$(git log "${_range}" --oneline --format="  %h %s (via ${_pdir}/)" -n 3 -- "$_pdir" 2>/dev/null)
+        [[ -n "$_plog" ]] && _path_lines[$p]="$_plog"
+      fi
+      [[ -n "${_path_lines[$p]:-}" ]] || _path_lines[$p]="  (no commit on this branch touched this path)"
+    fi
+
+    if suggestion=$(_suggest_fixup_for_path "$p"); then
+      hash="${suggestion%%$'\t'*}"
+      rest="${suggestion#*$'\t'}"
+      reason="${rest%%$'\t'*}"
+      via="${rest#*$'\t'}"
+      _path_suggest[$p]="$hash"
+      _path_via[$p]="${reason}:${via}"
+      _scores[$hash]=$(( ${_scores[$hash]:-0} + 1 ))
+    else
+      _new_commit_paths+=("$p")
+    fi
+  done
+
+  typeset -a _ranked=()
+  if (( ${#_scores} )); then
+    while IFS= read -r line || [[ -n "${line:-}" ]]; do
+      [[ -n "$line" ]] && _ranked+=("$line")
+    done < <(
+      # shellcheck disable=SC2068,SC2296
+      for hash in ${(k)_scores[@]}; do
+        _cts=$(git log -1 --format='%ct' "$hash")
+        printf '%s\t%s\t%s\n' "${_scores[$hash]}" "$_cts" "$hash"
+      done | sort -t $'\t' -k1,1nr -k2,2nr
+    )
+  fi
+
+  _start_new_commit() {
+    local p
+    if [[ $_dry_run -eq 1 ]]; then
+      echo "xc-git fixup-suggest: no branch commit touched these paths; would run: git commit" >&2
+      for p in "${_new_commit_paths[@]}"; do
+        printf '  %s\n' "$p" >&2
+      done
+      return 0
+    fi
+    echo "xc-git fixup-suggest: no branch commit touched these paths; opening commit editor" >&2
+    for p in "${_new_commit_paths[@]}"; do
+      printf '  %s\n' "$p" >&2
+    done
+    git add -- "${_new_commit_paths[@]}"
+    exec git commit
+  }
+
+  if [[ ${#_new_commit_paths[@]} -gt 0 && $_quiet -eq 1 ]]; then
+    echo "xc-git fixup-suggest: no fixup target for given paths; run without -q to open the commit editor" >&2
+    exit 1
+  fi
+
+  if [[ $_quiet -eq 1 ]]; then
+    if (( ${#_ranked[@]} == 0 )); then
+      echo "xc-git fixup-suggest: no fixup target found for given paths" >&2
+      exit 1
+    fi
+    best=${_ranked[1]##*$'\t'}
+    best=${best##*$'\t'}
+    git rev-parse --short "$best"
+    exit 0
+  fi
+
+  if [[ ${#_new_commit_paths[@]} -eq ${#_paths[@]} ]]; then
+    _start_new_commit
+    exit 0
+  fi
+
+  if [[ $_paths_source == arguments ]]; then
+    _paths_heading="── Target paths (arguments) ─────────"
+  else
+    _paths_heading="── Uncommitted paths ─────────────────"
+  fi
+  _xc_git_emit 212 "$_paths_heading"
+  for p in "${_paths[@]}"; do
+    printf '  %s\n' "$p"
+  done
+
+  echo ""
+  _xc_git_emit 39 "── Per-path fixup suggestion (${_range}) ─"
+  for p in "${_paths[@]}"; do
+    printf '\n%s\n' "$p"
+    if [[ -n "${_path_suggest[$p]:-}" ]]; then
+      short=$(git rev-parse --short "${_path_suggest[$p]}")
+      subj=$(git log -1 --format='%s' "${_path_suggest[$p]}")
+      via_note="${_path_via[$p]#*:}"
+      case "${_path_via[$p]%%:*}" in
+        direct) via_label="latest branch commit that touched this path" ;;
+        via-directory) via_label="latest branch commit that touched ${via_note}/" ;;
+        *) via_label="${_path_via[$p]}" ;;
+      esac
+      printf '  → fixup %s  %s\n' "$short" "$subj"
+      printf '    (%s)\n' "$via_label"
+    else
+      printf '  → new commit (no branch history for this path)\n'
+    fi
+    if [[ -n "${_path_lines[$p]:-}" ]]; then
+      print -r -- "${_path_lines[$p]}"
+    fi
+  done
+
+  if [[ ${#_ranked[@]} -gt 0 ]]; then
+    echo ""
+    _xc_git_emit 212 "── Ranked fixup targets (path votes) ─"
+    shown=0
+    for entry in "${_ranked[@]}"; do
+      if (( shown >= _top_n )); then
+        break
+      fi
+      score="${entry%%$'\t'*}"
+      rest="${entry#*$'\t'}"
+      hash="${rest##*$'\t'}"
+      if [[ -z "${_subjects[$hash]:-}" ]]; then
+        _subjects[$hash]=$(git log -1 --format='%s' "$hash")
+      fi
+      subj="${_subjects[$hash]}"
+      short=$(git rev-parse --short "$hash")
+      printf '  %2s  %s  %s\n' "$score" "$short" "$subj"
+      shown=$(( shown + 1 ))
+    done
+
+    echo ""
+    _xc_git_emit 39 "── Next steps ─────────────────────────"
+    # shellcheck disable=SC2016
+    printf '%s\n' \
+      '  git add <paths>' \
+      '  git fix <hash>       # fixup + autosquash rebase' \
+      '  git add <paths> && git fix $(xc-git fixup-suggest -q -- path...)'
+  fi
+
+  if [[ ${#_new_commit_paths[@]} -gt 0 ]]; then
+    echo ""
+    _start_new_commit
+  fi
+}
+
+# ── Subcommand: log-fzf ──────────────────────────────────────────
+
+_xc_git_log_fzf() {
+  _xc_git_resolve_self
+  _xc_git_xc_usage guard "$REPLY" "$@"; local _xc_u=$?
+  (( _xc_u == 0 )) && return 0
+  (( _xc_u == 1 )) && return 1
+
+  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    _xc_git_subhelp log-fzf
+    return 0
+  fi
+
+  local_gx="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx"
+  if [[ ! -f "$local_gx" ]]; then
+    echo "xc-git log-fzf: gitx script not found at $local_gx" >&2
+    exit 127
+  fi
+
+  enter_action="${1:-}"
+  [[ -n "$enter_action" ]] && shift
+
+  # shellcheck disable=SC2016
+  preview='h=$(echo {} | grep -oE "[a-f0-9]{7}" | head -1); [ -n "$h" ] && git -c color.ui=always show --stat "$h" 2>/dev/null || true'
+
+  if [[ -z "$enter_action" ]]; then
+    header='↵ hash  ^R rebase-from  ^I fix+autosquash  ^W reword  ^E edit  ⌥D drop  ^S reset --soft  ⌥H reset --hard  ^O log'
+  else
+    header="↵ ${enter_action}  ^R rebase-from  ^I fix+autosquash  ^W reword  ^E edit  ⌥D drop  ^S reset --soft  ⌥H reset --hard  ^O log"
+  fi
+
+  _h_snippet=$'h=$(echo "{}" | grep -oE \'[a-f0-9]{7}\' | head -1); [ -z "$h" ] && exit 0'
+
+  if [[ -n "$enter_action" ]]; then
+    case "$enter_action" in
+      reset-soft)
+        enter_bind="enter:execute-silent(
+              ${_h_snippet}
+              git reset --soft \"\$\{h\}^\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+            )+abort" ;;
+      reset-hard)
+        enter_bind="enter:execute-silent(
+              ${_h_snippet}
+              git reset --hard \"\$\{h\}^\" >/dev/tty 2>&1
+            )+abort" ;;
+      fix)
+        enter_bind="enter:execute-silent(
+              ${_h_snippet}
+              zsh \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+            )+abort" ;;
+      *)
+        enter_bind="enter:execute-silent(
+              ${_h_snippet}
+              zsh \"$local_gx\" $enter_action \"\$h\" >/dev/tty 2>&1
+            )+abort" ;;
+    esac
+
+    git log --color=always | fzf --ansi \
+      --header="$header" \
+      --preview="$preview" \
+      --preview-window 'right:55%:wrap' \
+      --bind 'esc:abort,q:abort' \
+      --bind "$enter_bind" \
+      --bind "ctrl-r:execute-silent(
+            ${_h_snippet}
+            zsh \"$local_gx\" rebase-from \"\$h\" >/dev/tty 2>&1
+          )+abort" \
+      --bind "ctrl-i:execute-silent(
+            ${_h_snippet}
+            zsh \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+          )+abort" \
+      --bind "ctrl-w:execute-silent(
+            ${_h_snippet}
+            zsh \"$local_gx\" reword \"\$h\" >/dev/tty 2>&1
+          )+abort" \
+      --bind "ctrl-e:execute-silent(
+            ${_h_snippet}
+            zsh \"$local_gx\" edit \"\$h\" >/dev/tty 2>&1
+          )+abort" \
+      --bind "alt-d:execute-silent(
+            ${_h_snippet}
+            zsh \"$local_gx\" drop \"\$h\" >/dev/tty 2>&1
+          )+abort" \
+      --bind "ctrl-s:execute-silent(
+            ${_h_snippet}
+            git reset --soft \"\$\{h\}^\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+          )+abort" \
+      --bind "alt-h:execute-silent(
+            ${_h_snippet}
+            git reset --hard \"\$\{h\}^\" >/dev/tty 2>&1
+          )+abort" \
+      --bind "ctrl-o:execute(
+            h=\$(echo \"{}\" | grep -oE '[a-f0-9]{7}' | head -1)
+            [ -n \"\$h\" ] && git log --oneline --graph --decorate --color=always \"\$h\" | delta --pager=never --width=\"\${FZF_PREVIEW_COLUMNS:-80}\" | less -R >/dev/tty 2>&1
+          )"
+    exit 0
+  fi
+
+  selected=$(git log --color=always | fzf --ansi \
+    --header="$header" \
+    --preview="$preview" \
+    --preview-window 'right:55%:wrap' \
+    --bind 'esc:abort,q:abort' \
+    --bind "ctrl-r:execute-silent(
+          ${_h_snippet}
+          zsh \"$local_gx\" rebase-from \"\$h\" >/dev/tty 2>&1
+        )+abort" \
+    --bind "ctrl-i:execute-silent(
+          ${_h_snippet}
+          zsh \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+        )+abort" \
+    --bind "ctrl-w:execute-silent(
+          ${_h_snippet}
+          zsh \"$local_gx\" reword \"\$h\" >/dev/tty 2>&1
+        )+abort" \
+    --bind "ctrl-e:execute-silent(
+          ${_h_snippet}
+          zsh \"$local_gx\" edit \"\$h\" >/dev/tty 2>&1
+        )+abort" \
+    --bind "alt-d:execute-silent(
+          ${_h_snippet}
+          zsh \"$local_gx\" drop \"\$h\" >/dev/tty 2>&1
+        )+abort" \
+    --bind "ctrl-s:execute-silent(
+          ${_h_snippet}
+          git reset --soft \"\$\{h\}^\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+        )+abort" \
+    --bind "alt-h:execute-silent(
+          ${_h_snippet}
+          git reset --hard \"\$\{h\}^\" >/dev/tty 2>&1
+        )+abort" \
+    --bind "ctrl-o:execute(
+          h=\$(echo \"{}\" | grep -oE '[a-f0-9]{7}' | head -1)
+          [ -n \"\$h\" ] && git log --oneline --graph --decorate --color=always \"\$h\" | delta --pager=never --width=\"\${FZF_PREVIEW_COLUMNS:-80}\" | less -R >/dev/tty 2>&1
+        )")
+
+  [[ -z "$selected" ]] && exit 0
+  echo "$selected" | zsh "$local_gx" grep-commit
+}
+
+# ── Top-level dispatch ───────────────────────────────────────────
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  _xc_git_xc_usage guard "${${(%):-%x}:a}" "$@" || _xc_git_xc_usage print "${${(%):-%x}:a}"
+  exit 0
+fi
+
+if [[ -z "${1:-}" ]]; then
+  _xc_git_xc_usage print "${${(%):-%x}:a}"
+  exit 1
+fi
+
+subcommand="$1"
+shift
+
+case "$subcommand" in
+  branch-preview) _xc_git_branch_preview "$@" ;;
+  fixup-suggest)  _xc_git_fixup_suggest "$@" ;;
+  log-fzf)        _xc_git_log_fzf "$@" ;;
+  *)
+    echo "xc-git: unknown subcommand: ${subcommand}" >&2
+    _xc_git_xc_usage print "${${(%):-%x}:a}" >&2
+    exit 1
+    ;;
+esac

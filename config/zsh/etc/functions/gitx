@@ -55,7 +55,8 @@
 #?   fzu                        Fzf: restore
 #?   fzus                       Fzf: restore --staged
 #?   fzc                        Fzf: checkout branch
-#?   fzb                        Fzf: branch -d/-D (soft/hard delete)
+#?   fzb                        Fzf: branch -d/-D (soft/hard delete); preview → xc-git branch-preview
+#?   (implementation) lol/fzl/fzlog → xc-git log-fzf; fixup-suggest → xc-git or git fixup-suggest
 #?   fzr                        Fzf: rebase-from
 #?   fzf                        Fzf: fix
 #?   fzw                        Fzf: reword
@@ -120,7 +121,7 @@ _gitx_branches() {
 _gitx_fzb() {
   _gitx_branches | fzf --ansi --multi \
     --header='↵ checkout  ⇥ toggle select  ^D delete  ^X force-delete  ^F fetch  ^P push  ⌥P push-force  ^O log' \
-    --preview 'xc-git-branch-preview {}' \
+    --preview 'command xc-git branch-preview {}' \
     --preview-window 'right:60%:wrap' \
     --bind 'tab:toggle+down' \
     --bind 'esc:abort,q:abort' \
@@ -549,20 +550,24 @@ _gitx_patches() {
 }
 
 # --- Fzf interactive (git log) ---
-# Implementation lives in PATH: xc-git-log-fzf (config/bin), so fzf --bind can call zsh gitx reliably.
+# Implementation lives in PATH: xc-git (config/bin). Legacy xc-git-log-fzf wrapper also supported.
 # @param $1 optional "enter" mode: empty = Enter prints short hash; else run that gitx subcommand (or reset-soft / reset-hard).
 # * @example: gitx lol
 # * @example: gitx fzl
 # * @example: gitx fzr   # same as gitx lol rebase-from
 _gitx_fzlog() {
   local helper
-  if command -v xc-git-log-fzf >/dev/null 2>&1; then
-    helper=$(command -v xc-git-log-fzf)
-  else
-    helper="${XDG_CONFIG_HOME:-$HOME/.config}/bin/xc-git-log-fzf"
+  if command -v xc-git >/dev/null 2>&1; then
+    xc-git log-fzf "$@"
+    return $?
   fi
+  if command -v xc-git-log-fzf >/dev/null 2>&1; then
+    command xc-git-log-fzf "$@"
+    return $?
+  fi
+  helper="${XDG_CONFIG_HOME:-$HOME/.config}/bin/xc-git-log-fzf"
   if [[ ! -x "$helper" ]]; then
-    echo "gitx: install xc-git-log-fzf on PATH (symlink from config/bin) — missing: $helper" >&2
+    echo "gitx: install xc-git on PATH (symlink from config/bin) — missing log-fzf helper" >&2
     return 127
   fi
   command "$helper" "$@"
