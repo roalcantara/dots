@@ -4,7 +4,6 @@
 #?
 #? Usage:
 #?   xc-fabric [options]
-#?   xc-fabric [options] wizard
 #?   xc-fabric [options] run <pattern> [url]
 #?   xc-fabric [options] ls
 #?   xc-fabric [options] update
@@ -29,8 +28,11 @@
 #?   --yt-playlist             Process a YouTube playlist
 #?   --debug                   Log fzf preview template and a dry-run sample to stderr
 #?
+#? Environment:
+#?   FABRIC_PATTERNS_DIR       Override Fabric patterns directory (default ~/.config/fabric/patterns)
+#?   GLOW_STYLE                Theme passed to glow in the picker preview (default dracula)
+#?
 #? Subcommands:
-#?   wizard                    Guided pattern run
 #?   run <pattern> [url]       Run a named pattern against stdin, clipboard, or URL
 #?   ls                        List Fabric patterns with descriptions
 #?   update                    Refresh Fabric patterns with fabric -U
@@ -53,7 +55,6 @@ esac
 
 set -euo pipefail
 
-readonly SCRIPT_NAME="${0:t}"
 readonly XC_SCRIPT="${${(%):-%x}:a}"
 
 RAW=0
@@ -72,118 +73,122 @@ DEBUG=0
 typeset -ga VARS=()
 typeset -ga POSITIONALS=()
 
-_has_fabric() { command -v fabric-ai >/dev/null 2>&1; }
-_has_gum() { command -v gum >/dev/null 2>&1; }
-_has_glow() { command -v glow >/dev/null 2>&1; }
-_has_bat() { command -v bat >/dev/null 2>&1; }
-_has_fzf() { command -v fzf >/dev/null 2>&1; }
-_has_yq() { command -v yq >/dev/null 2>&1; }
+typeset -gA _CAPS=()
+typeset -ga _CLIP_CMD=()
+typeset -ga _fabric_common_argv_tail=()
+_PATTERNS_DIR=""
+_PREVIEW_CMD=""
 
-_bin_config_file() {
-  if [[ -n "${XC_BIN_CONFIG:-}" ]]; then
-    printf '%s\n' "$XC_BIN_CONFIG"
-  else
-    printf '%s\n' "${XC_SCRIPT:h}/config.yml"
+# bootstrapping helpers
+_boot_caps() {
+  command -v fabric-ai >/dev/null 2>&1 && _CAPS[fabric]=1 || _CAPS[fabric]=0
+  command -v gum      >/dev/null 2>&1 && _CAPS[gum]=1    || _CAPS[gum]=0
+  command -v glow     >/dev/null 2>&1 && _CAPS[glow]=1   || _CAPS[glow]=0
+  command -v bat      >/dev/null 2>&1 && _CAPS[bat]=1    || _CAPS[bat]=0
+  command -v fzf      >/dev/null 2>&1 && _CAPS[fzf]=1    || _CAPS[fzf]=0
+}
+_boot_clip() {
+  _CLIP_CMD=()
+  case "$(uname)" in
+    Darwin)
+      command -v pbpaste >/dev/null 2>&1 && _CLIP_CMD=(pbpaste) ;;
+    Linux)
+      if   command -v wl-paste >/dev/null 2>&1; then _CLIP_CMD=(wl-paste --no-newline)
+      elif command -v xclip    >/dev/null 2>&1; then _CLIP_CMD=(xclip -selection clipboard -o)
+      elif command -v xsel     >/dev/null 2>&1; then _CLIP_CMD=(xsel --clipboard --output)
+      fi ;;
+  esac
+}
+_boot_paths() {
+  _PATTERNS_DIR="${FABRIC_PATTERNS_DIR:-${HOME}/.config/fabric/patterns}"
+}
+_boot_preview_cmd() {
+  [[ -n "$_PREVIEW_CMD" ]] && { _ui_print_line "$_PREVIEW_CMD"; return 0; }
+  local q gs
+  q=$(printf '%q' "$_PATTERNS_DIR")
+  gs="${GLOW_STYLE:-dracula}"
+  _PREVIEW_CMD="(export CLICOLOR_FORCE=1; export COLORTERM=truecolor; export TERM=\"\${TERM:-xterm-256color}\"; glow -s ${(q)gs} -w \"\${FZF_PREVIEW_COLUMNS:-80}\" ${q}/{1}/system.md </dev/null 2>/dev/null) || (bat --language=md --style=plain --color=always --paging=never ${q}/{1}/system.md 2>/dev/null) || (sed -n '1,120p' ${q}/{1}/system.md 2>/dev/null)"
+  _ui_print_line "$_PREVIEW_CMD"
+}
+_boot_check_deps() {
+  (( _CAPS[fabric] )) || _ui_log_fatal "fabric-ai not found!"
+
+  (( _CAPS[gum] )) || _ui_log_warn "gum not found! Interactive features disabled."
+
+  if ! (( _CAPS[glow] )); then
+    if (( _CAPS[bat] )); then
+      _ui_log_warn "glow not found! Falling back to bat."
+    else
+      _ui_log_warn "glow not found! Falling back to cat."
+    fi
   fi
 }
 
-_h_log() {
+# ui helpers
+_ui_log() {
   local level="$1"
   shift
   local message="$*"
 
-  if _has_gum; then
+  if (( _CAPS[gum] )); then
     gum log --time DateTime --level "$level" "$message"
   else
     printf '%s %s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$level" "$message" >&2
   fi
 }
-
-_h_info() {
-  _h_log "info" "$@"
-  return 0
-}
-
-_h_warn() {
-  _h_log "warn" "$@"
-  return 0
-}
-
-_h_error() {
-  _h_log "error" "$@"
-  return 0
-}
-
-_h_fatal() {
-  _h_log "fatal" "$@"
-  exit 1
-}
-
-_h_prompt() {
+_ui_log_info() { _ui_log "info" "$@"; return 0; }             # info log
+_ui_log_warn() { _ui_log "warn" "$@"; return 0; }             # warn log
+_ui_log_error() { _ui_log "error" "$@"; return 0; }           # error log
+_ui_log_fatal() { _ui_log "fatal" "$@"; exit 1; }             # fatal log, exits 1.
+_ui_print_line() { printf '%s\n' "$1"; }                      # same as printf '%s\n' "$1" (portable; no echo -n / ECHOCTL surprises).
+_ui_print_line_err() { printf '%s\n' "$1" >&2; }              # for fallback UI and debug traces.
+# Prompt for input (gum → read fallback)
+_ui_prompt() {
   local text="$1"
   local answer=""
 
-  if _has_gum; then
+  if (( _CAPS[gum] )); then
     gum input --prompt="$text"
   else
     read -r "?$text" answer
-    printf '%s\n' "$answer"
+    _ui_print_line "$answer"
   fi
 }
-
-_h_confirm() {
+# Confirmation prompt (gum → read fallback)
+_ui_confirm() {
   local question="$1"
   local answer=""
 
-  if _has_gum; then
+  if (( _CAPS[gum] )); then
     gum confirm "$question"
   else
     read -r "?$question [y/N] " answer
     [[ "$answer" == "y" ]]
   fi
 }
-
-_h_spinner() {
+# Spinner
+_ui_spinner() {
   local title="$1"
   shift
   [[ "${1:-}" == "--" ]] && shift
 
-  if _has_gum; then
+  if (( _CAPS[gum] )); then
     gum spin --spinner dot --title "${title}..." -- "$@"
   else
     printf '%s...\n' "$title" >&2
     "$@"
   fi
 }
-
-_h_table() {
-  if _has_gum; then
+# Table output
+_ui_table() {
+  if (( _CAPS[gum] )); then
     gum table --separator $'\t' --columns "PATTERN,DESCRIPTION" --widths "30,60"
   else
     cat
   fi
 }
-
-_h_choose() {
-  local header="$1"
-  local items
-  local answer=""
-  items=$(cat)
-
-  if _has_gum; then
-    printf '%s\n' "$items" | gum choose --header "$header"
-  else
-    printf '%s\n%s\n' "$header" "$items" >&2
-    if [[ -r /dev/tty ]]; then
-      read -r answer </dev/tty
-      printf '%s\n' "$answer"
-    else
-      printf '%s\n' "$items" | head -n 1
-    fi
-  fi
-}
-
-_h_filter() {
+# Fuzzy search picker (fzf → gum → read fallback)
+_ui_filter() {
   local header=""
   local placeholder=""
   local preview=""
@@ -206,56 +211,72 @@ _h_filter() {
     shift || true
   done
 
-  if _has_fzf; then
-    local pat_dir
+  if (( _CAPS[fzf] )); then
     local edit_cmd
     local reload_cmd
     local bin_self
     local pprev
-    pat_dir=$(_patterns_dir)
-    [[ -z "$header" ]] && header=$(_fzf_pattern_header_body)
-    pprev="$preview"
-    # Lines are "name<TAB>display"; --delimiter is tab — use {1} (pattern), not {} (whole line).
-    [[ -z "$pprev" ]] && pprev="sed -n '1,120p' $(printf '%q' "$pat_dir")/{1}/system.md 2>/dev/null"
-    edit_cmd="${EDITOR:-vi} \"${pat_dir}/{1}/system.md\" </dev/tty >/dev/tty 2>&1"
+    [[ -z "$header" ]] && header=$(_pattern_list_header)
+    if [[ -n "$preview" ]]; then
+      pprev="$preview"
+    elif [[ "$NO_PREVIEW" == "1" ]]; then
+      pprev="sed -n '1,120p' $(printf '%q' "$_PATTERNS_DIR")/{1}/system.md 2>/dev/null"
+    else
+      pprev=$(_boot_preview_cmd)
+    fi
+    edit_cmd="${EDITOR:-vi} \"${_PATTERNS_DIR}/{1}/system.md\" </dev/tty >/dev/tty 2>&1"
     bin_self="${XC_FABRIC:-$XC_SCRIPT}"
-    reload_cmd="env FABRIC_PATTERNS_DIR=${(q)pat_dir} zsh ${(q)bin_self} --xc-picker-lines"
+    reload_cmd="env FABRIC_PATTERNS_DIR=${(q)_PATTERNS_DIR} zsh ${(q)bin_self} --reload-list"
 
     if [[ "$DEBUG" == 1 ]]; then
-      printf '%s\n' "xc-fabric DEBUG: fzf --preview (exact string passed to fzf):" >&2
+      _ui_print_line_err "xc-fabric DEBUG: fzf --preview (exact string passed to fzf):"
       printf '%s\n\n' "$pprev" >&2
-      printf '%s\n' "xc-fabric DEBUG: env at picker start: GLOW_STYLE=${GLOW_STYLE:-<unset>} TERM=${TERM:-<unset>} NO_COLOR=${NO_COLOR:-<unset>} CLICOLOR_FORCE=${CLICOLOR_FORCE:-<unset>} COLORTERM=${COLORTERM:-<unset>}" >&2
-      printf '%s\n' "xc-fabric DEBUG: fzf sets FZF_PREVIEW_COLUMNS in the preview subshell only (not here)." >&2
+      _ui_print_line_err "xc-fabric DEBUG: env at picker start: GLOW_STYLE=${GLOW_STYLE:-<unset>} TERM=${TERM:-<unset>} NO_COLOR=${NO_COLOR:-<unset>} CLICOLOR_FORCE=${CLICOLOR_FORCE:-<unset>} COLORTERM=${COLORTERM:-<unset>}"
+      _ui_print_line_err "xc-fabric DEBUG: fzf sets FZF_PREVIEW_COLUMNS in the preview subshell only (not here)."
       local dbg_pat="" d dbg_snip
-      for d in "$pat_dir"/*(/N); do
+      for d in "$_PATTERNS_DIR"/*(/N); do
         dbg_pat="${d:t}"
         break
       done
       if [[ -n "$dbg_pat" ]]; then
         dbg_snip="${pprev//\{1\}/$dbg_pat}"
-        printf '%s\n' "xc-fabric DEBUG: dry-run preview with {1} → ${dbg_pat} (FZF_PREVIEW_COLUMNS=80, via /bin/sh -c):" >&2
+        _ui_print_line_err "xc-fabric DEBUG: dry-run preview with {1} → ${dbg_pat} (FZF_PREVIEW_COLUMNS=80, via /bin/sh -c):"
         FZF_PREVIEW_COLUMNS=80 /bin/sh -c "$dbg_snip" 2>&1 | head -24 | sed 's/^/xc-fabric DEBUG: | /' >&2 || true
         printf '\n' >&2
       else
-        printf '%s\n' "xc-fabric DEBUG: no pattern dirs under ${pat_dir}, skip dry-run." >&2
+        _ui_print_line_err "xc-fabric DEBUG: no pattern dirs under ${_PATTERNS_DIR}, skip dry-run."
       fi
     fi
 
+    # fzf 0.27+ preview-bg / header-bg (see `fzf --help` COLSPEC). GLOW_STYLE still tunes glow inside preview.
     fzf \
+      --cycle \
       --ansi \
-      --layout=reverse \
-      --height=90% \
+      --inline-info \
+      --keep-right \
+      --layout=default \
+      --height=75% \
       --border=rounded \
       --delimiter=$'\t' \
       --with-nth=2 \
+      --margin=1,2 \
+      --prompt="❯ " \
       --header="$header" \
+      --tiebreak='chunk' \
+      --color='bg:-1,fg:#f8f8f2' \
+      --color='bg+:#44475a,fg+:#f8f8f2' \
+      --color='hl:#bd93f9,hl+:#ff79c6' \
+      --color='info:#6272a4,border:#6272a4' \
+      --color='prompt:#50fa7b,pointer:#ff79c6' \
+      --color='marker:#ff79c6,spinner:#ffb86c' \
+      --color='header-bg:#21222c,header-fg:#f8f8f2,header-border:#6272a4' \
+      --color='preview-bg:#181825,preview-fg:#cdd6f4,preview-border:#45475a' \
       --preview="$pprev" \
-      --preview-window 'right:60%:wrap' \
+      --preview-window 'right:42%:wrap,border-rounded' \
       --bind 'ctrl-/:toggle-preview' \
       --bind "ctrl-o:execute(${edit_cmd})" \
-      --bind "ctrl-r:reload(${reload_cmd})" \
-      --bind '?:execute(printf "%s\n" "Keys: Enter run  Ctrl-/ toggle preview  Ctrl-O editor  Ctrl-R reload  ? help  Esc cancel" | less >/dev/tty 2>&1)'
-  elif _has_gum; then
+      --bind "ctrl-r:reload(${reload_cmd})"
+  elif (( _CAPS[gum] )); then
     local -a gum_args=()
     [[ -n "$header" ]] && gum_args+=(--header "$header")
     [[ -n "$placeholder" ]] && gum_args+=(--placeholder "$placeholder")
@@ -264,70 +285,25 @@ _h_filter() {
     local items
     local answer=""
     items=$(cat)
-    [[ -n "$header" ]] && printf '%s\n' "$header" >&2
-    printf '%s\n' "$items" >&2
+    [[ -n "$header" ]] && _ui_print_line_err "$header"
+    _ui_print_line_err "$items"
     if [[ -r /dev/tty ]]; then
       read -r answer </dev/tty
-      printf '%s\n' "$answer"
+      _ui_print_line "$answer"
     else
-      printf '%s\n' "$items" | head -n 1
+      _ui_print_line "$items" | head -n 1
     fi
   fi
 }
-
-_h_write() {
-  local placeholder="${1:-}"
-
-  if _has_gum; then
-    gum write --placeholder "$placeholder"
-  else
-    [[ -n "$placeholder" ]] && printf '%s\n' "$placeholder" >&2
-    cat
-  fi
+# Read from clipboard
+_ui_clip() {
+  (( ${#_CLIP_CMD[@]} )) || return 1
+  "${_CLIP_CMD[@]}"
 }
 
-_h_clip() {
-  case "$(uname)" in
-    Darwin)
-      command -v pbpaste >/dev/null 2>&1 || return 1
-      pbpaste
-      ;;
-    Linux)
-      if command -v wl-paste >/dev/null 2>&1; then
-        wl-paste --no-newline
-      elif command -v xclip >/dev/null 2>&1; then
-        xclip -selection clipboard -o
-      elif command -v xsel >/dev/null 2>&1; then
-        xsel --clipboard --output
-      else
-        return 1
-      fi
-      ;;
-    *)
-      return 1
-      ;;
-  esac
-}
-
-_check_deps() {
-  _has_fabric || _h_fatal "fabric-ai not found!"
-
-  _has_gum || _h_warn "gum not found! Interactive features disabled."
-
-  if ! _has_glow; then
-    if _has_bat; then
-      _h_warn "glow not found! Falling back to bat."
-    else
-      _h_warn "glow not found! Falling back to cat."
-    fi
-  fi
-}
-
-_patterns_dir() {
-  printf '%s\n' "${FABRIC_PATTERNS_DIR:-${HOME}/.config/fabric/patterns}"
-}
-
-_pattern_description() {
+# ── pattern helpers ────────────────────────────────────────────────────────---
+# Extract the description from a pattern system file
+_pattern_file_extract_desc() {
   local system_file="$1"
   local fallback="$2"
   local line
@@ -343,367 +319,263 @@ _pattern_description() {
 
   printf '%s\n' "$fallback"
 }
-
-_list_patterns() {
+# List patterns
+_pattern_list() {
   local pat_dir
   local dir
   local name
   local desc
-  pat_dir=$(_patterns_dir)
+  [[ -d "$_PATTERNS_DIR" ]] || return 0
 
-  [[ -d "$pat_dir" ]] || return 0
-
-  for dir in "$pat_dir"/*(/N); do
+  for dir in "$_PATTERNS_DIR"/*(/N); do
     name="${dir:t}"
-    desc=$(_pattern_description "$dir/system.md" "$name")
+    desc=$(_pattern_file_extract_desc "$dir/system.md" "$name")
     printf '%s\t%s\n' "$name" "$desc"
   done | sort
 }
-
-_pattern_overlay_load() {
-  typeset -gA _XC_MDESC _XC_MTAGS
-  _XC_MDESC=()
-  _XC_MTAGS=()
-  local config key desc tags
-  config=$(_bin_config_file)
-  [[ -f "$config" ]] || return 1
-  _has_yq || return 1
-  while IFS=$'\t' read -r key desc tags; do
-    [[ -n "$key" ]] || continue
-    _XC_MDESC[$key]="$desc"
-    _XC_MTAGS[$key]="$tags"
-  done < <(yq -r '.scripts["xc-fabric"].patterns // {} | to_entries[] | [.key, (.value.description // ""), (.value.tags // [] | join(" "))] | @tsv' "$config" 2>/dev/null || :)
-  (( ${#_XC_MDESC[@]} > 0 )) || return 1
+# Collapse whitespace; strip tabs and newlines so fzf --delimiter TAB never splits a row.
+_pattern_list_sanitize_desc() {
+  local s="$1"
+  s="${s//$'\t'/ }"
+  s="${s//$'\n'/ }"
+  s="${s//$'\r'/}"
+  s="${s//$'\f'/ }"
+  s="${s//$'\v'/ }"
+  while [[ "$s" == *'  '* ]]; do
+    s="${s//  / }"
+  done
+  while [[ "$s" == ' '* ]]; do
+    s="${s# }"
+  done
+  while [[ "$s" == *' ' ]]; do
+    s="${s% }"
+  done
+  printf '%s' "$s"
   return 0
 }
-
-_truncate_picker_desc() {
+# Truncate a description for the fzf pattern picker
+_pattern_list_item_truncate_desc() {
   local text="$1"
   local max="${2:-56}"
   local len=${#text} n
   if (( len <= max )); then
-    printf '%s\n' "$text"
+    printf '%s' "$text"
     return 0
   fi
   # zsh: ${var:0:len} treats a non-numeric third part as modifiers ("max-1" → `m`).
   # Use character subscripts [1,n] (1-based) with an arithmetic end index instead.
   n=$(( max - 1 ))
   (( n < 1 )) && n=1
-  printf '%s…\n' "${text[1,n]}"
+  printf '%s…' "${text[1,n]}"
 }
-
-_pattern_hashtags() {
-  local words="$1"
-  local t out=""
-  for t in ${=words}; do
-    [[ -z "$t" ]] && continue
-    t="${t##\\#}"
-    out+=" #${t}"
-  done
-  printf '%s' "${out## }"
-}
-
-_format_pattern_fzf_row() {
+# Format a pattern row for fzf or plain display
+_pattern_list_item_format() {
   local name="$1"
   local desc="$2"
-  local tags_sp="$3"
-  local dim=$'\e[2m' reset=$'\e[0m' tags ht
-  desc=$(_truncate_picker_desc "$desc" 56)
-  ht=$(_pattern_hashtags "$tags_sp")
-  if [[ -n "$ht" ]]; then
-    printf '%s%s  %s  %s%s' "$name" "$dim" "$desc" "$ht" "$reset"
+  local mode="${3:-plain}"
+  if [[ "$mode" == fzf ]]; then
+    local dim=$'\e[2m' reset=$'\e[0m'
+    desc=$(_pattern_list_item_truncate_desc "$desc" 56)
+    printf '%s%s    %s%s' "$name" "$dim" "$desc" "$reset"
   else
-    printf '%s%s  %s%s' "$name" "$dim" "$desc" "$reset"
-  fi
-}
-
-_format_pattern_plain_row() {
-  local name="$1"
-  local desc="$2"
-  local tags_sp="$3"
-  local ht
-  desc=$(_truncate_picker_desc "$desc" 64)
-  ht=$(_pattern_hashtags "$tags_sp")
-  if [[ -n "$ht" ]]; then
-    printf '%s — %s %s' "$name" "$desc" "$ht"
-  else
+    desc=$(_pattern_list_item_truncate_desc "$desc" 64)
     printf '%s — %s' "$name" "$desc"
   fi
 }
-
-_pattern_emit_picker_lines() {
+# Emit picker lines for fzf or plain display
+_pattern_list_lines() {
   local patterns_tsv="$1"
-  local line name desc tags_sp display
-  _pattern_overlay_load 2>/dev/null || true
+  local line name desc display picker_mode
+  local use_fzf=$(( _CAPS[fzf] ))
   while IFS= read -r line; do
     [[ -z "$line" ]] && continue
     name="${line%%$'\t'*}"
     desc="${line#*$'\t'}"
     [[ "$desc" == "$line" ]] && desc=""
     [[ -z "$desc" ]] && desc="$name"
-    tags_sp=""
-    if [[ -n "${_XC_MDESC[$name]:-}" ]]; then
-      desc="${_XC_MDESC[$name]}"
-      tags_sp="${_XC_MTAGS[$name]:-}"
-    fi
-    if _has_fzf; then
-      display=$(_format_pattern_fzf_row "$name" "$desc" "$tags_sp")
-    else
-      display=$(_format_pattern_plain_row "$name" "$desc" "$tags_sp")
-    fi
+    desc=$(_pattern_list_sanitize_desc "$desc")
+    picker_mode=plain
+    (( use_fzf )) && picker_mode=fzf
+    display=$(_pattern_list_item_format "$name" "$desc" "$picker_mode")
     printf '%s\t%s\n' "$name" "$display"
   done <<<"$patterns_tsv"
 }
-
-_fzf_pattern_system_preview() {
-  local pat_dir="$1"
-  local q glow_p bat_p plain_p gs
-  q=$(printf '%q' "$pat_dir")
-  gs="${GLOW_STYLE:-dracula}"
-  # Color Issues: If colors look broken inside the preview, try adding CLICOLOR_FORCE=1 or COLORTERM=truecolor before the glow command
-  glow_p="export CLICOLOR_FORCE=1; export COLORTERM=truecolor; export TERM=\"\${TERM:-xterm-256color}\"; glow -s ${(q)gs} -w \"\${FZF_PREVIEW_COLUMNS:-80}\" ${q}/{1}/system.md </dev/null 2>/dev/null"
-  bat_p="bat --language=md --style=plain --color=always --paging=never ${q}/{1}/system.md 2>/dev/null"
-  plain_p="sed -n '1,120p' ${q}/{1}/system.md 2>/dev/null"
-  printf '(%s) || (%s) || (%s)' "$glow_p" "$bat_p" "$plain_p"
-}
-
-_fzf_pattern_header_body() {
-  local title line2 config
+# Build the header body for the fzf pattern picker (passed to fzf --header; gum filter uses same text).
+_pattern_list_header() {
+  local title line2
   title="Select a pattern"
   line2="Enter run  Ctrl-/ preview  Ctrl-O edit  Ctrl-R reload  ? help  Esc cancel"
-  config=$(_bin_config_file)
-  if [[ -f "$config" ]] && _has_yq; then
-    title=$(yq -r '.scripts["xc-fabric"].ui.picker.title // "Select a pattern"' "$config" 2>/dev/null) || title="Select a pattern"
-  fi
-  [[ -z "$title" ]] && title="Select a pattern"
   printf '%s\n%s' "$title" "$line2"
 }
 
-_is_youtube_url() {
-  [[ "${1:-}" =~ '^https://(www[.])?(youtube[.]com|youtu[.]be)' ]]
-}
-
-_is_youtube_pattern() {
+# Check if a URL is a YouTube URL
+_url_is_youtube() { [[ "${1:-}" =~ '^https://(www[.])?(youtube[.]com|youtu[.]be)' ]]; }
+# Check if a pattern is a YouTube pattern (exit status of [[ is the function result).
+_url_pattern_implies_yt() {
   local pattern="${1:l}"
   [[ "$pattern" == *youtube* || "$pattern" == *yt* ]]
 }
 
-_read_input() {
+# Read input from clipboard or stdin
+_ui_input_read() {
   if [[ ! -t 0 ]]; then
     cat -
   else
     local clip
-    clip=$(_h_clip) || _h_fatal "no input available (clipboard empty or unsupported on $(uname))"
-    [[ -n "$clip" ]] || _h_fatal "no input available (clipboard empty or unsupported on $(uname))"
+    clip=$(_ui_clip) || _ui_log_fatal "no input available (clipboard empty or unsupported)"
+    [[ -n "$clip" ]] || _ui_log_fatal "no input available (clipboard empty or unsupported)"
     printf '%s' "$clip"
   fi
 }
-
-_render_output() {
+# Render output via glow, bat, or cat.
+_ui_render_markdown() {
   local result="$1"
-
-  if _has_glow; then
+  if (( _CAPS[glow] )); then
     # Stdin must be explicit `-` for pipe input per glow CLI docs. Clear NO_COLOR for ANSI output.
     ( unset NO_COLOR 2>/dev/null; printf '%s\n' "$result" | glow -s "${GLOW_STYLE:-dark}" - )
-  elif _has_bat; then
+  elif (( _CAPS[bat] )); then
     printf '%s\n' "$result" | bat --language=md --style=plain --color=always --paging=never
   else
     printf '%s\n' "$result"
   fi
 }
 
-_build_yt_args() {
-  if [[ "$YT_TIMESTAMPS" == "1" ]]; then
-    printf '%s\n' "--transcript-with-timestamps"
-  fi
-  if [[ "$YT_COMMENTS" == "1" ]]; then
-    printf '%s\n' "--comments"
-  fi
-  if [[ "$YT_METADATA" == "1" ]]; then
-    printf '%s\n' "--metadata"
-  fi
-  if [[ "$YT_PLAYLIST" == "1" ]]; then
-    printf '%s\n' "--playlist"
-  fi
+# Fills _fabric_common_argv_tail from globals MODEL, OUTPUT, COPY, STRATEGY, VARS (fabric-ai repeated flags).
+_fabric_merge_common_flags() {
+  _fabric_common_argv_tail=()
+  [[ -n "$MODEL" ]] && _fabric_common_argv_tail+=(--model "$MODEL")
+  [[ -n "$OUTPUT" ]] && _fabric_common_argv_tail+=(--output "$OUTPUT")
+  [[ "$COPY" == "1" ]] && _fabric_common_argv_tail+=(--copy)
+  [[ -n "$STRATEGY" ]] && _fabric_common_argv_tail+=(--strategy "$STRATEGY")
+  (( ${#VARS[@]} > 0 )) && _fabric_common_argv_tail+=("${VARS[@]}")
   return 0
 }
 
-_exec_fabric() {
-  local pattern="$1"
-  local input="$2"
+# Run a Fabric pattern with a spinner
+_fabric_run_tui() {
+  local msg="$1" pipe_stdin="$2" stdin="$3" result
+  shift 3
+  if [[ "$RAW" == "1" ]]; then
+    if [[ "$pipe_stdin" == "1" ]]; then
+      printf '%s' "$stdin" | fabric-ai "$@"
+    else
+      fabric-ai "$@"
+    fi
+  elif [[ -n "$OUTPUT" ]]; then
+    if [[ "$pipe_stdin" == "1" ]]; then
+      printf '%s' "$stdin" | _ui_spinner "$msg" -- fabric-ai "$@"
+    else
+      _ui_spinner "$msg" -- fabric-ai "$@"
+    fi
+  else
+    if [[ "$pipe_stdin" == "1" ]]; then
+      result=$(printf '%s' "$stdin" | _ui_spinner "$msg" -- fabric-ai "$@")
+    else
+      result=$(_ui_spinner "$msg" -- fabric-ai "$@")
+    fi
+    _ui_render_markdown "$result"
+  fi
+}
+# RAW: run fabric-ai as-is; else capture stdout and render (no spinner) — e.g. show --readpattern.
+_fabric_plain_capture_render() {
   local result
+  if [[ "$RAW" == "1" ]]; then
+    fabric-ai "$@"
+  else
+    result=$(fabric-ai "$@")
+    _ui_render_markdown "$result"
+  fi
+}
+# Run a command with a spinner
+_fabric_spinner_run() {
+  local title="$1"; shift
+  if [[ "$RAW" == "1" ]]; then
+    "$@"
+  else
+    _ui_spinner "$title" -- "$@"
+  fi
+}
+# RAW: run producer; else producer | _ui_table (TSV listing commands).
+_ui_table_show() {
+  if [[ "$RAW" == "1" ]]; then
+    "$@"
+  else
+    "$@" | _ui_table
+  fi
+}
+
+# Build YouTube arguments
+_fabric_build_yt_args() {
+  [[ "$YT_TIMESTAMPS" == "1" ]] && _ui_print_line "--transcript-with-timestamps"
+  [[ "$YT_COMMENTS"     == "1" ]] && _ui_print_line "--comments"
+  [[ "$YT_METADATA"     == "1" ]] && _ui_print_line "--metadata"
+  [[ "$YT_PLAYLIST"     == "1" ]] && _ui_print_line "--playlist"
+  return 0
+}
+# Run a Fabric pattern
+_fabric_exec_stdin() {
+  local pattern="$1" input="$2"
   local -a args=(--pattern "$pattern")
-
-  [[ -n "$MODEL" ]] && args+=(--model "$MODEL")
-  [[ -n "$OUTPUT" ]] && args+=(--output "$OUTPUT")
-  [[ "$COPY" == "1" ]] && args+=(--copy)
-  [[ -n "$STRATEGY" ]] && args+=(--strategy "$STRATEGY")
-  (( ${#VARS[@]} > 0 )) && args+=("${VARS[@]}")
-
-  if [[ "$RAW" == "1" ]]; then
-    printf '%s' "$input" | fabric-ai "${args[@]}"
-  elif [[ -n "$OUTPUT" ]]; then
-    printf '%s' "$input" | _h_spinner "Running ${pattern}" -- fabric-ai "${args[@]}"
-  else
-    result=$(printf '%s' "$input" | _h_spinner "Running ${pattern}" -- fabric-ai "${args[@]}")
-    _render_output "$result"
-  fi
+  _fabric_merge_common_flags
+  args+=("${_fabric_common_argv_tail[@]}")
+  _fabric_run_tui "Running ${pattern}" 1 "$input" "${args[@]}"
 }
+# Run a Fabric pattern on a YouTube URL
+_fabric_exec_youtube() {
+  local pattern="${1:-}" url="${2:-}" built
+  local -a yt_args=() args
 
-_exec_fabric_youtube() {
-  local pattern="${1:-}"
-  local url="${2:-}"
-  local result
-  local built_yt_args
-  local -a yt_args=()
-  local -a args
-
-  [[ -n "$pattern" && -n "$url" ]] || _h_fatal "pattern and URL are required"
-
-  built_yt_args=$(_build_yt_args)
-  if [[ -n "$built_yt_args" ]]; then
-    yt_args=("${(@f)built_yt_args}")
-  fi
+  [[ -n "$pattern" && -n "$url" ]] || _ui_log_fatal "pattern and URL are required"
+  built=$(_fabric_build_yt_args)
+  [[ -n "$built" ]] && yt_args=("${(@f)built}")
   args=(-y "$url" --pattern "$pattern" "${yt_args[@]}")
-
-  [[ -n "$MODEL" ]] && args+=(--model "$MODEL")
-  [[ -n "$OUTPUT" ]] && args+=(--output "$OUTPUT")
-  [[ "$COPY" == "1" ]] && args+=(--copy)
-  [[ -n "$STRATEGY" ]] && args+=(--strategy "$STRATEGY")
-  (( ${#VARS[@]} > 0 )) && args+=("${VARS[@]}")
-
-  if [[ "$RAW" == "1" ]]; then
-    fabric-ai "${args[@]}"
-  elif [[ -n "$OUTPUT" ]]; then
-    _h_spinner "Running ${pattern} on YouTube URL" -- fabric-ai "${args[@]}"
-  else
-    result=$(_h_spinner "Running ${pattern} on YouTube URL" -- fabric-ai "${args[@]}")
-    _render_output "$result"
-  fi
+  _fabric_merge_common_flags
+  args+=("${_fabric_common_argv_tail[@]}")
+  _fabric_run_tui "Running ${pattern} on YouTube URL" 0 "" "${args[@]}"
 }
-
-_exec_fabric_scrape() {
-  local url="$1"
-  local pattern="${2:-}"
-  local result
+# Run a Fabric pattern on a scrape URL
+_fabric_exec_scrape() {
+  local url="$1" pattern="${2:-}"
   local -a args=(-u "$url")
-
   [[ -n "$pattern" ]] && args+=(--pattern "$pattern")
-  [[ -n "$MODEL" ]] && args+=(--model "$MODEL")
-  [[ -n "$OUTPUT" ]] && args+=(--output "$OUTPUT")
-  [[ "$COPY" == "1" ]] && args+=(--copy)
-  [[ -n "$STRATEGY" ]] && args+=(--strategy "$STRATEGY")
-  (( ${#VARS[@]} > 0 )) && args+=("${VARS[@]}")
-
-  if [[ "$RAW" == "1" ]]; then
-    fabric-ai "${args[@]}"
-  elif [[ -n "$OUTPUT" ]]; then
-    _h_spinner "Scraping ${url}" -- fabric-ai "${args[@]}"
-  else
-    result=$(_h_spinner "Scraping ${url}" -- fabric-ai "${args[@]}")
-    _render_output "$result"
-  fi
+  _fabric_merge_common_flags
+  args+=("${_fabric_common_argv_tail[@]}")
+  _fabric_run_tui "Scraping ${url}" 0 "" "${args[@]}"
 }
 
+# Default command: run the interactive picker
 cmd_default() {
   local patterns_tsv
   local selected
   local input
-  local pat_dir
-  local preview=""
   local header_body
   local picker_lines
 
-  patterns_tsv=$(_list_patterns)
+  patterns_tsv=$(_pattern_list)
   if [[ "$RAW" == "1" ]]; then
     [[ -n "$patterns_tsv" ]] && printf '%s\n' "$patterns_tsv"
     return 0
   fi
 
   [[ -n "$patterns_tsv" ]] || return 0
-  pat_dir=$(_patterns_dir)
-  header_body=$(_fzf_pattern_header_body)
-  picker_lines=$(_pattern_emit_picker_lines "$patterns_tsv")
-  if [[ "$NO_PREVIEW" != "1" ]]; then
-    preview=$(_fzf_pattern_system_preview "$pat_dir")
-  fi
-
-  if [[ -n "$preview" ]]; then
-    selected=$(printf '%s\n' "$picker_lines" | _h_filter --header "$header_body" --preview "$preview" | awk -F'\t' '{print $1}' || true)
-  else
-    selected=$(printf '%s\n' "$picker_lines" | _h_filter --header "$header_body" | awk -F'\t' '{print $1}' || true)
-  fi
+  header_body=$(_pattern_list_header)
+  picker_lines=$(_pattern_list_lines "$patterns_tsv")
+  selected=$(printf '%s\n' "$picker_lines" | _ui_filter --header "$header_body" | awk -F'\t' '{print $1}' || true)
   [[ -n "$selected" ]] || return 0
 
-  input=$(_read_input)
-  _exec_fabric "$selected" "$input"
+  input=$(_ui_input_read)
+  _fabric_exec_stdin "$selected" "$input"
 }
-
-cmd_wizard() {
-  local patterns_tsv
-  local selected
-  local system_file
-  local placeholders
-  local placeholder
-  local name
-  local value
-  local input
-  local pat_dir
-  local preview=""
-  local header_body
-  local picker_lines
-
-  patterns_tsv=$(_list_patterns)
-  [[ -n "$patterns_tsv" ]] || return 0
-
-  pat_dir=$(_patterns_dir)
-  header_body=$(_fzf_pattern_header_body)
-  picker_lines=$(_pattern_emit_picker_lines "$patterns_tsv")
-  if [[ "$NO_PREVIEW" != "1" ]]; then
-    preview=$(_fzf_pattern_system_preview "$pat_dir")
-  fi
-  if [[ -n "$preview" ]]; then
-    selected=$(printf '%s\n' "$picker_lines" | _h_filter --header "$header_body" --preview "$preview" | awk -F'\t' '{print $1}' || true)
-  else
-    selected=$(printf '%s\n' "$picker_lines" | _h_filter --header "$header_body" | awk -F'\t' '{print $1}' || true)
-  fi
-  [[ -n "$selected" ]] || return 0
-
-  system_file="$(_patterns_dir)/${selected}/system.md"
-  if [[ -f "$system_file" ]]; then
-    placeholders=$(grep -oE '<[A-Z0-9_ -]+>' "$system_file" 2>/dev/null | sort -u || true)
-    while IFS= read -r placeholder; do
-      [[ -n "$placeholder" ]] || continue
-      name="${placeholder#<}"
-      name="${name%>}"
-      while true; do
-        value=$(_h_prompt "  ${name} > " || true)
-        if [[ -n "$value" ]]; then
-          VARS+=(-v "${name}:${value}")
-          break
-        fi
-        _h_confirm "Leave ${name} empty?" && break
-      done
-    done <<<"$placeholders"
-  fi
-
-  if [[ "$YES" != "1" ]]; then
-    _h_confirm "Run ${selected}?" || return 0
-  fi
-
-  input=$(_read_input)
-  _exec_fabric "$selected" "$input"
-}
-
+# Run a Fabric pattern
 cmd_run() {
   local pattern="${1:-}"
   local url=""
   local input
 
-  [[ -n "$pattern" ]] || _h_fatal "pattern is required"
+  [[ -n "$pattern" ]] || _ui_log_fatal "pattern is required"
   shift || true
 
-  if [[ -n "${1:-}" ]] && _is_youtube_url "$1"; then
+  if [[ -n "${1:-}" ]] && _url_is_youtube "$1"; then
     url="$1"
     shift || true
   elif [[ -n "${1:-}" && "$1" =~ '^https?://' ]]; then
@@ -711,70 +583,46 @@ cmd_run() {
     shift || true
   fi
 
-  if [[ -n "$url" ]] && _is_youtube_url "$url"; then
-    _h_info "YouTube URL detected - using -y mode"
-    _exec_fabric_youtube "$pattern" "$url"
+  if [[ -n "$url" ]] && _url_is_youtube "$url"; then
+    _ui_log_info "YouTube URL detected - using -y mode"
+    _fabric_exec_youtube "$pattern" "$url"
   elif [[ -n "$url" ]]; then
-    _exec_fabric_scrape "$url" "$pattern"
-  elif _is_youtube_pattern "$pattern"; then
-    url=$(_h_prompt "YouTube URL: ")
+    _fabric_exec_scrape "$url" "$pattern"
+  elif _url_pattern_implies_yt "$pattern"; then
+    url=$(_ui_prompt "YouTube URL: ")
     [[ -n "$url" ]] || return 0
-    _exec_fabric_youtube "$pattern" "$url"
+    _fabric_exec_youtube "$pattern" "$url"
   else
-    input=$(_read_input)
-    _exec_fabric "$pattern" "$input"
+    input=$(_ui_input_read)
+    _fabric_exec_stdin "$pattern" "$input"
   fi
 }
-
-cmd_ls() {
-  if [[ "$RAW" == "1" ]]; then
-    _list_patterns
-  else
-    _list_patterns | _h_table
-  fi
-}
-
-cmd_update() {
-  if [[ "$RAW" == "1" ]]; then
-    fabric-ai -U
-  else
-    _h_spinner "Updating patterns" -- fabric-ai -U
-  fi
-}
-
+# List patterns
+cmd_ls() { _ui_table_show _pattern_list; }
+# Update patterns
+cmd_update() { _fabric_spinner_run "Updating patterns" fabric-ai -U; }
+# Show a pattern
 cmd_show() {
   local pattern="${1:-}"
-  local result
-  [[ -n "$pattern" ]] || _h_fatal "pattern is required"
-
-  if [[ "$RAW" == "1" ]]; then
-    fabric-ai --readpattern "$pattern"
-  else
-    result=$(fabric-ai --readpattern "$pattern")
-    _render_output "$result"
-  fi
+  [[ -n "$pattern" ]] || _ui_log_fatal "pattern is required"
+  _fabric_plain_capture_render --readpattern "$pattern"
 }
-
-cmd_strategies() {
-  if [[ "$RAW" == "1" ]]; then
-    fabric-ai --liststrategies
-  else
-    fabric-ai --liststrategies | _h_table
-  fi
-}
-
+# List strategies
+cmd_strategies() { _ui_table_show fabric-ai --liststrategies; }
+# Scrape a URL
 cmd_scrape() {
   local url="${1:-}"
   local pattern="${2:-}"
-  [[ -n "$url" ]] || _h_fatal "url is required"
+  [[ -n "$url" ]] || _ui_log_fatal "url is required"
 
-  if _is_youtube_url "$url"; then
-    _exec_fabric_youtube "${pattern:-extract_wisdom}" "$url"
+  if _url_is_youtube "$url"; then
+    _fabric_exec_youtube "${pattern:-extract_wisdom}" "$url"
   else
-    _exec_fabric_scrape "$url" "$pattern"
+    _fabric_exec_scrape "$url" "$pattern"
   fi
 }
 
+# Parse arguments
 _parse_args() {
   local arg
 
@@ -791,7 +639,7 @@ _parse_args() {
       --model)
         shift
         MODEL="${1:-}"
-        [[ -n "$MODEL" ]] || _h_fatal "model is required"
+        [[ -n "$MODEL" ]] || _ui_log_fatal "model is required"
         ;;
       --model=*)
         MODEL="${arg#--model=}"
@@ -802,14 +650,14 @@ _parse_args() {
       -o|--output)
         shift
         OUTPUT="${1:-}"
-        [[ -n "$OUTPUT" ]] || _h_fatal "output path is required"
+        [[ -n "$OUTPUT" ]] || _ui_log_fatal "output path is required"
         ;;
       --output=*)
         OUTPUT="${arg#--output=}"
         ;;
       -v)
         shift
-        [[ -n "${1:-}" ]] || _h_fatal "variable value is required"
+        [[ -n "${1:-}" ]] || _ui_log_fatal "variable value is required"
         VARS+=(-v "$1")
         ;;
       --variable=*)
@@ -818,7 +666,7 @@ _parse_args() {
       --strategy)
         shift
         STRATEGY="${1:-}"
-        [[ -n "$STRATEGY" ]] || _h_fatal "strategy is required"
+        [[ -n "$STRATEGY" ]] || _ui_log_fatal "strategy is required"
         ;;
       --strategy=*)
         STRATEGY="${arg#--strategy=}"
@@ -849,7 +697,7 @@ _parse_args() {
         POSITIONALS+=("$@")
         break
         ;;
-      wizard|run|ls|update|show|strategies|scrape)
+      run|ls|update|show|strategies|scrape)
         if [[ -z "$COMMAND" ]]; then
           COMMAND="$arg"
         else
@@ -857,7 +705,7 @@ _parse_args() {
         fi
         ;;
       --*)
-        _h_fatal "unknown option: $arg"
+        _ui_log_fatal "unknown option: $arg"
         ;;
       *)
         POSITIONALS+=("$arg")
@@ -867,48 +715,35 @@ _parse_args() {
   done
 }
 
+# Main entrypoint
 main() {
-  if [[ "${1:-}" == "--xc-picker-lines" ]]; then
+  if [[ "${1:-}" == "--reload-list" ]]; then
+    _boot_paths
+    _boot_caps
     local patterns_tsv
-    patterns_tsv=$(_list_patterns)
-    _pattern_emit_picker_lines "$patterns_tsv"
+    patterns_tsv=$(_pattern_list)
+    _pattern_list_lines "$patterns_tsv"
     exit 0
   fi
 
   _parse_args "$@"
-  _check_deps
+  _boot_paths
+  _boot_caps
+  _boot_clip
+  _boot_check_deps
 
   case "$COMMAND" in
-    "")
-      cmd_default
-      ;;
-    wizard)
-      cmd_wizard "${POSITIONALS[@]}"
-      ;;
-    run)
-      cmd_run "${POSITIONALS[@]}"
-      ;;
-    ls)
-      cmd_ls "${POSITIONALS[@]}"
-      ;;
-    update)
-      cmd_update "${POSITIONALS[@]}"
-      ;;
-    show)
-      cmd_show "${POSITIONALS[@]}"
-      ;;
-    strategies)
-      cmd_strategies "${POSITIONALS[@]}"
-      ;;
-    scrape)
-      cmd_scrape "${POSITIONALS[@]}"
-      ;;
-    *)
-      _h_fatal "unknown command: $COMMAND"
-      ;;
+    "") cmd_default ;;
+    run) cmd_run "${POSITIONALS[@]}" ;;
+    ls) cmd_ls "${POSITIONALS[@]}" ;;
+    update) cmd_update "${POSITIONALS[@]}" ;;
+    show) cmd_show "${POSITIONALS[@]}" ;;
+    strategies) cmd_strategies "${POSITIONALS[@]}" ;;
+    scrape) cmd_scrape "${POSITIONALS[@]}" ;;
+    *) _ui_log_fatal "unknown command: $COMMAND" ;;
   esac
 }
 
-trap '_h_error "xc-fabric: failed at line $LINENO"' ERR
+trap '_ui_log_error "xc-fabric: failed at line $LINENO"' ERR
 
 main "$@"

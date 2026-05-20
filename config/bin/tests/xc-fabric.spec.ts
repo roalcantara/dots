@@ -446,6 +446,9 @@ head -n 1
         expect(log).toContain("--delimiter");
         expect(log).toContain("--with-nth");
         expect(log).toContain("Ctrl-/");
+        expect(log).toContain("--layout=default");
+        expect(log).toContain("preview-bg:");
+        expect(log).toContain("header-bg:");
         // Preview is one `--preview=…` argument; assert tuning inside that snippet, not fzf-native flags.
         expect(log).toContain("FZF_PREVIEW_COLUMNS");
         expect(log).toContain("paging=never");
@@ -456,48 +459,15 @@ head -n 1
     });
   });
 
-  describe.skipIf(skipWhenOtherScenario("picker_fzf_metadata"))(
-    "when config.yml and yq supply pattern metadata",
+  describe.skipIf(skipWhenOtherScenario("picker_fzf_stdin_lines"))(
+    "when fzf receives pattern stdin",
     () => {
-      it("feeds fzf rows with hashtags and a config title", async () => {
-        const fzfLog = join(tmpdir(), `xc-fabric-fzf-meta-${Date.now()}`);
-        const cfgDir = mkdtempSync(join(tmpdir(), "xc-fabric-cfg-"));
-        const cfgPath = join(cfgDir, "config.yml");
-        writeFileSync(
-          cfgPath,
-          [
-            "scripts:",
-            "  xc-fabric:",
-            "    ui:",
-            "      picker:",
-            "        title: Meta picker title",
-            "    patterns:",
-            "      summarize:",
-            "        description: Curated short summary line.",
-            "        tags: [writing]",
-            "",
-          ].join("\n"),
-        );
-        const tab = "\t";
-        const yqStub = `#!/bin/sh
-if printf '%s' "$*" | grep -q 'picker.title'; then
-  printf '%s\\n' 'Meta picker title'
-  exit 0
-fi
-if printf '%s' "$*" | grep -q 'to_entries'; then
-  printf '%s\\n' 'summarize${tab}Curated short summary line.${tab}writing'
-  printf '%s\\n' 'extract_wisdom${tab}YAML wisdom line.${tab}wisdom'
-  printf '%s\\n' 'youtube_summary${tab}YAML yt line.${tab}youtube summary'
-  exit 0
-fi
-printf '%s\\n' ''
-exit 0
-`;
+      it("sends one physical line per pattern without embedded newlines in a row", async () => {
+        const fzfLog = join(tmpdir(), `xc-fabric-fzf-stdin-${Date.now()}`);
         const r = run([], {
           stubs: {
             "fabric-ai": fabricEcho,
             gum: "#!/bin/sh\nexit 0\n",
-            yq: yqStub,
             fzf: `#!/bin/sh
 {
   echo "===ARGS==="
@@ -508,18 +478,23 @@ exit 0
 head -n 1
 `,
           },
-          env: { XC_BIN_CONFIG: cfgPath },
         });
         try {
           expect(r.exitCode).toBe(0);
           const log = await Bun.file(fzfLog).text();
-          expect(log).toContain("Meta picker title");
-          expect(log).toContain("===STDIN===");
-          expect(log).toContain("#writing");
+          const stdinPart = log.split("===STDIN===\n")[1] ?? "";
+          const lines = stdinPart
+            .replace(/\n$/, "")
+            .split("\n")
+            .filter((l) => l.includes("\t"));
+          expect(lines.length).toBe(3);
+          for (const line of lines) {
+            expect((line.match(/\t/g) ?? []).length).toBe(1);
+            expect(line).not.toMatch(/\n/);
+          }
         } finally {
           r.cleanup();
           rmSync(fzfLog, { force: true });
-          rmSync(cfgDir, { recursive: true, force: true });
         }
       });
     },

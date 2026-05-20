@@ -24,7 +24,7 @@ Apply during implementation; keep this list in sync with `design.md` §11–§12
 
 ## `config/bin/README.md`
 
-1. **OVERVIEW** — mention `xc-fabric` alongside other `xc-*` scripts; subcommands: default, `wizard`, `run`, `ls`, `update`, `show`, `strategies`, `scrape`.
+1. **OVERVIEW** — mention `xc-fabric` alongside other `xc-*` scripts; subcommands: default, `run`, `ls`, `update`, `show`, `strategies`, `scrape`.
 
 2. **DEPENDENCIES** — Fabric required; FZF, Gum, Glow, Bat, yq optional (roles per `design.md`). Note `config.yml` metadata is optional: without `yq` or the file, `xc-fabric` uses `system.md` descriptions only.
 

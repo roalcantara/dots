@@ -35,7 +35,8 @@ on `$PATH` without duplicating files.
 - [Gum][22] _(optional prompts, logs, tables, and spinners for `xc-fabric`)_
 - [Glow][23] _(optional Markdown renderer for `xc-fabric`)_
 - [bat][24] _(optional `xc-fabric` rendering fallback)_
-- [yq][25] _(optional; reads `config.yml` metadata for `xc-fabric` picker overlays)_
+
+**`xc-fabric` picker:** When `fzf` is installed (**0.27+** for `preview-bg` / `header-bg` in COLSPEC; tested on **0.71**), the default pattern UI uses `--layout=default`, rounded borders, and a darker preview panel. Override Markdown preview styling with `GLOW_STYLE` (see `_boot_preview_cmd` in the script; default theme for that path is `dracula`). Result rendering after a run uses `glow -s "${GLOW_STYLE:-dark}"`.
 
 ## DEVELOPMENT
 
@@ -217,7 +218,7 @@ grep '^#?' ~/.config/bin/xc-<name> | sed 's/^#? \{0,1\}//'
   mise run xc-fabric:specs --scenario strategy_passthrough
   mise run xc-fabric:specs --scenario scrape_url
   mise run xc-fabric:specs --scenario picker_fzf_preferred
-  mise run xc-fabric:specs --scenario picker_fzf_metadata
+  mise run xc-fabric:specs --scenario picker_fzf_stdin_lines
   mise run xc-fabric:specs --scenario picker_gum_fallback
   ```
 
@@ -285,4 +286,3 @@ The project is available as open source under the terms of the [MIT][1] [License
 [22]: https://github.com/charmbracelet/gum "Gum"
 [23]: https://github.com/charmbracelet/glow "Glow"
 [24]: https://github.com/sharkdp/bat "bat"
-[25]: https://github.com/mikefarah/yq "yq"
