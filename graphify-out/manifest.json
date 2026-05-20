@@ -1,0 +1,2174 @@
+{
+  "/Users/roalcantara/Work/dots/install": {
+    "mtime": 1777809260.2797713,
+    "hash": "303518df5db14550bac455d6b9efe99c"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/xc-fabric": {
+    "mtime": 1777820516.5230598,
+    "hash": "afb3a35de985a26a8051ff1701fff799"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/xc-skills": {
+    "mtime": 1778240713.2961912,
+    "hash": "437f0937fcd3ca486b69920be383e3b1"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/xc-git-log-fzf": {
+    "mtime": 1777809259.3961697,
+    "hash": "d78c019c23706bf49c20b3a8dceba886"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/xc-git-branch-preview": {
+    "mtime": 1777809259.3958945,
+    "hash": "d2e8d79520cef219c8a2e99c723b8d5b"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/tests/xc-skills.spec.ts": {
+    "mtime": 1778243076.8030715,
+    "hash": "53b6453f346ac28d23e51a4236a98c94"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/tests/xc-git-log-fzf.spec.ts": {
+    "mtime": 1777809261.4208229,
+    "hash": "25ce53ea1b3a9dbeec705615f69e26a5"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/tests/xc-fabric.spec.ts": {
+    "mtime": 1777820516.5528798,
+    "hash": "06563bbc1f8c4831dd15c49b4ee57f3f"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/init.lua": {
+    "mtime": 1777739790.6049442,
+    "hash": "016eba71a5d4b93bdf391de29475bcf6"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/test_commit_gen.lua": {
+    "mtime": 1777809259.3455799,
+    "hash": "7b7b0edcb017b575770c9b9ec9a6226d"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/busted.lua": {
+    "mtime": 1771930557.3588862,
+    "hash": "3e877c29f7d738cc00f7f03aa85e33ee"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/specs/tools/spec_helper.lua": {
+    "mtime": 1771930557.3605433,
+    "hash": "7716bee4c080b98eecb71ba41e60b7b5"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/specs/core/tables_spec.lua": {
+    "mtime": 1769625264.6767588,
+    "hash": "bb6b344fdd02a3bd6a2a97c6e7b9c350"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/specs/core/parths_spec.lua": {
+    "mtime": 1769833136.236202,
+    "hash": "54e3804794087b94c8505ba8b1d0bcf0"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/specs/core/vi/paths_spec.lua": {
+    "mtime": 1766370100.310011,
+    "hash": "53ab17a92d60f4e9c366745b8698d882"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/specs/core/vi/maps/parse_mappings_spec.lua": {
+    "mtime": 1766370100.3101301,
+    "hash": "9afc8dad034a826ba1188eb39e88bc6f"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/specs/core/vi/fn/paths_spec.lua": {
+    "mtime": 1771930557.3603613,
+    "hash": "53ab17a92d60f4e9c366745b8698d882"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/init.lua": {
+    "mtime": 1766370100.3059804,
+    "hash": "e4b1245758c58bbe59dfcbeab165925b"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/statusline.lua": {
+    "mtime": 1777739790.6059077,
+    "hash": "1de57ca5dae1c120271c8a374bdac35a"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/ui_helper.lua": {
+    "mtime": 1769457328.713286,
+    "hash": "864da8529c22c08862e49559b411049b"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/auto_dismiss.lua": {
+    "mtime": 1766370100.3054516,
+    "hash": "5a438572b73410baa91c6f5fb7b302a2"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/loading.lua": {
+    "mtime": 1766370100.306039,
+    "hash": "2343ce38c3e89484c385c6fb987c285e"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/formatters/init.lua": {
+    "mtime": 1766370100.3055315,
+    "hash": "6b5d44450c454e63b6cfab61f76eedfd"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/formatters/status.lua": {
+    "mtime": 1766370100.3056467,
+    "hash": "87a4d58b1b22313ecb9f1112ddc8552f"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/formatters/modal.lua": {
+    "mtime": 1766370100.305592,
+    "hash": "04627a38e8ea4e5034dc673a54f7e125"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/noice/init.lua": {
+    "mtime": 1766370100.306133,
+    "hash": "32f4677ad26b67dcb780b0dac8754a1a"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/icons/init.lua": {
+    "mtime": 1766370100.3059268,
+    "hash": "1b2b969f60ad925da0e609391dd0b4f7"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/icons/icons_list.lua": {
+    "mtime": 1766370100.30588,
+    "hash": "6c388d49291095c73c12ac8692c4d5dd"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/init.lua": {
+    "mtime": 1766370100.3063054,
+    "hash": "828cdbf858332088f4ac34dde5ef02c3"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/dashboard.lua": {
+    "mtime": 1766370100.3062096,
+    "hash": "5ec4135e737030091ab33fbf6845d209"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/scratch.lua": {
+    "mtime": 1766370100.3069105,
+    "hash": "f81dfa5d710350525403a58e3da5ee39"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/defaults.lua": {
+    "mtime": 1766370100.3062606,
+    "hash": "2a91ea130dac3719308e9e57bf9253ab"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/pickers/init.lua": {
+    "mtime": 1766370100.3064318,
+    "hash": "f0aa0e89525dd2bb39d7cd89892c73f5"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/pickers/lua_path_items.lua": {
+    "mtime": 1766370100.306485,
+    "hash": "4389929f1a0f97ef5e39d9129dfd1e15"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/pickers/show_history.lua": {
+    "mtime": 1766370100.3066826,
+    "hash": "be2c9c3a97a7a409a9d11c81e737f846"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/pickers/show_history_searches.lua": {
+    "mtime": 1766370100.3068194,
+    "hash": "79122b9ef37bb62e43fd6eba99573420"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/pickers/move_buffer_split.lua": {
+    "mtime": 1766370100.306538,
+    "hash": "f44211978535e4e0fe07b5c9ed03f8bd"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/pickers/runtimepath_items.lua": {
+    "mtime": 1766370100.3066363,
+    "hash": "b90b983c2bc65b7a125b5cc8f51fe627"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/pickers/filetypes.lua": {
+    "mtime": 1766370100.3063848,
+    "hash": "4e553ad8e0be48e474c7921ab87114a1"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/pickers/show_history_messages.lua": {
+    "mtime": 1766370100.306774,
+    "hash": "0157ca4e7767ce8f9892c78b23108692"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/pickers/options.lua": {
+    "mtime": 1766370100.30659,
+    "hash": "a5ec7ea1cb92feb1f87cb891b95ced06"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/snacks/pickers/show_history_commands.lua": {
+    "mtime": 1766370100.306729,
+    "hash": "20d90c3e9eb054b48a450395b201abc4"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/git/init.lua": {
+    "mtime": 1766370100.3057833,
+    "hash": "82f905734c02b73f0931b46c74a7f7db"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/ui/git/commits.lua": {
+    "mtime": 1777809259.4048345,
+    "hash": "d20846a2408fd52b280e1eea8220652d"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/init.lua": {
+    "mtime": 1766370100.3076181,
+    "hash": "242f42934a2f128e5ccc83e4beeacecd"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/paths.lua": {
+    "mtime": 1771930557.3596647,
+    "hash": "c612a777109e00198b33a1b247208794"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/buffers.lua": {
+    "mtime": 1766370100.3074899,
+    "hash": "71acfaca4fcd4a72c2824d7cde3e286e"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/plugins.lua": {
+    "mtime": 1777739790.6061416,
+    "hash": "9ab87bc9e09312d7c169322e8a313bf1"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/commands.lua": {
+    "mtime": 1766370100.3075752,
+    "hash": "6567cb8c19c078985be6c6ffc296d9d3"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/strings.lua": {
+    "mtime": 1766370100.3089144,
+    "hash": "bff74581588916cca5a67e80b84fc547"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/tables.lua": {
+    "mtime": 1771930557.3600948,
+    "hash": "ae6c9024004dc843bbafea7450c6781f"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/maps/user_command.lua": {
+    "mtime": 1766370100.3087316,
+    "hash": "7d4cb81c17d7459c9b925208a6127652"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/maps/init.lua": {
+    "mtime": 1766370100.308539,
+    "hash": "9e6f17bdf416ef76ee83ba463f09e0fc"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/maps/set_keymaps.lua": {
+    "mtime": 1766370100.3086877,
+    "hash": "142c1c946041768bcf77bb7f3b409b96"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/maps/parse_mappings.lua": {
+    "mtime": 1766370100.308596,
+    "hash": "85b3105554e0848462c5ce91f82805b7"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/maps/execute_on_esc.lua": {
+    "mtime": 1766370100.3084936,
+    "hash": "ed02a5850285b549d8a8f53118a82e91"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/buf/init.lua": {
+    "mtime": 1766370100.3074443,
+    "hash": "0f98dbda2e32d50b6110e2cedff2f2bd"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/buf/get_buf_name.lua": {
+    "mtime": 1766370100.307401,
+    "hash": "68609b951ccf785225088d0f05b44dd8"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/init.lua": {
+    "mtime": 1766370100.3082514,
+    "hash": "f02c1ba0bb8efbdb2259920012d4d9fc"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/features/init.lua": {
+    "mtime": 1766370100.3077242,
+    "hash": "bf0e583e195ad5593d431e1317f334d6"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/features/setup_capabilities.lua": {
+    "mtime": 1766370100.307772,
+    "hash": "eab9a15262f5ccde6e2baaebf5e744a2"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/features/text_document/init.lua": {
+    "mtime": 1766370100.308063,
+    "hash": "046184d75039dcd65e652b00b71b9332"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/features/text_document/formatting.lua": {
+    "mtime": 1766370100.3079517,
+    "hash": "a442d2242323b4ae2258193083af810b"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/features/text_document/signature_help.lua": {
+    "mtime": 1766370100.3082056,
+    "hash": "1e53fc3b5bd643abce1738057f78f706"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/features/text_document/inlay_hints.lua": {
+    "mtime": 1766370100.3081093,
+    "hash": "6c74484ccd85b1cf971bce8c68eaec9a"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/features/text_document/document_highlight.lua": {
+    "mtime": 1766370100.3079069,
+    "hash": "fc9d2fea8f016520d5574160d8c9391d"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/features/text_document/inline_completion.lua": {
+    "mtime": 1766370100.3081565,
+    "hash": "71f251fa699cd6350e36fb30182628be"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/features/text_document/hover.lua": {
+    "mtime": 1766370100.3080108,
+    "hash": "22eece5bf57d81901f3e8e75cc74f163"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/features/text_document/completion.lua": {
+    "mtime": 1766370100.3078537,
+    "hash": "bd75951db3bd48c82b01c3461b0e58a0"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/utils/init.lua": {
+    "mtime": 1766370100.3084178,
+    "hash": "11ecfe6ecd5e23da7aa135acb1a2ba95"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/utils/hover_filter.lua": {
+    "mtime": 1766370100.308379,
+    "hash": "a6e781c9ceb303dee8887d39899b7b49"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/lsp/utils/get_clients.lua": {
+    "mtime": 1766370100.308325,
+    "hash": "050a1874c22dd95e34c6c9977c033ca1"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/au/setup_com_async.lua": {
+    "mtime": 1766370100.3073232,
+    "hash": "5fb6d7fe062d5c41ffd334406865edc4"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/au/init.lua": {
+    "mtime": 1766370100.3072226,
+    "hash": "6de28d4eef4bc878e9b6af664dc96cb3"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/au/au.lua": {
+    "mtime": 1766370100.3071337,
+    "hash": "8b461814b8fc3211e5de454574d9eb28"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/au/aug.lua": {
+    "mtime": 1766370100.3071806,
+    "hash": "8865d080c49ac50af81d904e60fab6ff"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/vi/au/setup_au_async.lua": {
+    "mtime": 1766370100.3072715,
+    "hash": "2c0d9e1b0508fdc3ebd7abdb64168ac2"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/neo/logger.lua": {
+    "mtime": 1766370100.3048997,
+    "hash": "b47986f3cf4e3cc976c7400306411a61"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/neo/init.lua": {
+    "mtime": 1766370100.3048406,
+    "hash": "dc281d13f75eb07ac225f2e01bfd12f4"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/neo/storage.lua": {
+    "mtime": 1771930557.3591855,
+    "hash": "d1aa89c4662fb5b12fb3a0c714586214"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/neo/mini.lua": {
+    "mtime": 1769845224.1896007,
+    "hash": "68abdcb2fd407ce84b956bf2180cc06c"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/init.lua": {
+    "mtime": 1766370100.3045819,
+    "hash": "c23fd3cfffd9bef1f62e6d1c4a192ca0"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/sys/init.lua": {
+    "mtime": 1766370100.3047116,
+    "hash": "bd2e82179c33c532923e06f8fa863627"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/sys/os.lua": {
+    "mtime": 1766370100.3047674,
+    "hash": "cd0e5a4f73e3897b38f96e38999479cf"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/sys/exec_cmd.lua": {
+    "mtime": 1766370100.304666,
+    "hash": "2207da0e67549b15166c001e6d2c586f"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/fn/init.lua": {
+    "mtime": 1766370100.3041291,
+    "hash": "8fbc82ec596231859d2180e6c0133386"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/fn/safe_require.lua": {
+    "mtime": 1766370100.3041832,
+    "hash": "1861ec9b24b215128afb7c95ab56944a"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/git/init.lua": {
+    "mtime": 1766370100.3044572,
+    "hash": "0f25e4c7344a2019de464c1ef56fa258"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/git/get_unstaged_changes.lua": {
+    "mtime": 1766370100.3044128,
+    "hash": "0a936e2ff7f09948915b581eaca41e4c"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/git/get_changes.lua": {
+    "mtime": 1766370100.3042617,
+    "hash": "a7e4297dee9786e849b3e4407a9a39aa"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/git/is_git_repo.lua": {
+    "mtime": 1766370100.3045323,
+    "hash": "9d91a272ae80f20a6cf1b1e1cd432b21"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/git/get_staged_changes.lua": {
+    "mtime": 1766370100.304371,
+    "hash": "8157fd5e285cbaf746519af54547251c"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/etc/git/get_conventional_commits_instructions.lua": {
+    "mtime": 1777809259.403591,
+    "hash": "eda40aa8cea61437672629aca63afe5a"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/init.lua": {
+    "mtime": 1777809259.342245,
+    "hash": "4d11b1782ecd2c0ee37f4ed38ce5bdf6"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/llm/init.lua": {
+    "mtime": 1777809259.3434253,
+    "hash": "1550999a4c7734602ac3835c0e57238b"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/llm/commons/handle_provider.lua": {
+    "mtime": 1777809259.3431282,
+    "hash": "6060954bf90191897735fbe901e34340"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/llm/commons/call/provider.lua": {
+    "mtime": 1777809259.3428042,
+    "hash": "abdef4a4608a4dee7a29dd7bfa6a5f55"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/llm/providers/init.lua": {
+    "mtime": 1777809259.3440459,
+    "hash": "12f616d5f29efb8b18331e8376165bfe"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/llm/providers/anthropic/init.lua": {
+    "mtime": 1777809259.4039474,
+    "hash": "91803108395129eb2163fbf7e2b3b56d"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/llm/providers/anthropic/api.lua": {
+    "mtime": 1777809259.3437064,
+    "hash": "9e3f697326ce802f2e185f77864e685e"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/llm/providers/ollama/init.lua": {
+    "mtime": 1777809259.4042451,
+    "hash": "c95e2bd6be34eb4dac0779056cf9206f"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/llm/providers/ollama/api.lua": {
+    "mtime": 1777809259.3445284,
+    "hash": "b3b1ddabf31a98035ac267398c86de1c"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/llm/providers/openai/init.lua": {
+    "mtime": 1777809259.404484,
+    "hash": "be06c931949711d57883a49e1e1a0cd7"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/core/opt/llm/providers/openai/api.lua": {
+    "mtime": 1777809259.3449645,
+    "hash": "d998c3a838252b8fd9fa3b49353e00fd"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/config/init.lua": {
+    "mtime": 1777739790.605398,
+    "hash": "20e1723e2c0c155a322df377e3b2eea7"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/config/autocmds.lua": {
+    "mtime": 1766370100.3035917,
+    "hash": "5980be09f840ccc409311c593c0b63b8"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/config/keymaps.lua": {
+    "mtime": 1766370100.3037417,
+    "hash": "529e9f4aa7bfb140324edd5269a1d860"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/config/usercmds.lua": {
+    "mtime": 1766370100.3039765,
+    "hash": "9f5fe0424f5e9d5939916c1f199a5521"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/config/options.lua": {
+    "mtime": 1777739790.605771,
+    "hash": "dd982172dd5952fad9c0ea489434c5e6"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/config/lazy.lua": {
+    "mtime": 1777739790.6054757,
+    "hash": "5382eeb2d51ba1c3e76a3c0d53937789"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/plugins/markdown.lua": {
+    "mtime": 1777739790.6071908,
+    "hash": "aeca409e13a3c068aa5359ae91855c4c"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/plugins/lsp.lua": {
+    "mtime": 1777739790.6070218,
+    "hash": "47a161472f22f7d30b17d867fb663dd6"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/plugins/completion.lua": {
+    "mtime": 1777739790.60661,
+    "hash": "0ed6c6dabebf3f3d06f66ce04fa7db96"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/plugins/ui.lua": {
+    "mtime": 1777739790.6073337,
+    "hash": "e4e0e0bb7e69bff3b451d6790d6c6814"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/plugins/ai.lua": {
+    "mtime": 1777739790.6062195,
+    "hash": "eae1454ec576f440f5daf7ef4d6e3ce0"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/plugins/formater.lua": {
+    "mtime": 1777739790.6068125,
+    "hash": "d2ba09ed0e2344a5bb0af7ba11b4f1b0"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/plugins/kickstarter.lua": {
+    "mtime": 1777739790.6068966,
+    "hash": "4d5aab74d6da01a743e5b62559b2c829"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/lua/plugins/coding.lua": {
+    "mtime": 1777739790.606376,
+    "hash": "62587418029b2cde86f417ca70d90d79"
+  },
+  "/Users/roalcantara/Work/dots/config/homebrew/Makefile": {
+    "mtime": 1766370100.2026305,
+    "hash": "7e9abb0665b5c7f8b2fa559cad2eac80"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/generate-status-report/scripts/jql_builder.py": {
+    "mtime": 1777809259.5143979,
+    "hash": "5c9786c03f633c73ff07d938aa796f3b"
+  },
+  "/Users/roalcantara/Work/dots/config/raycast/scripts/templates/script-command.template.py": {
+    "mtime": 1766370100.3111854,
+    "hash": "3cce5c76b06726c26811b6cf1dd23ace"
+  },
+  "/Users/roalcantara/Work/dots/config/raycast/scripts/templates/script-command.template.js": {
+    "mtime": 1766370100.3107994,
+    "hash": "7656076500bff9ee4c9b6dc151d16e4a"
+  },
+  "/Users/roalcantara/Work/dots/config/raycast/scripts/templates/script-command.template.php": {
+    "mtime": 1766370100.311126,
+    "hash": "7ee8fe85c8eb5c2efdb8175f3478aebf"
+  },
+  "/Users/roalcantara/Work/dots/config/raycast/scripts/templates/script-command.template.rb": {
+    "mtime": 1766370100.3112366,
+    "hash": "e92d3bcf2b08eee8fe4eb23e12c57ce0"
+  },
+  "/Users/roalcantara/Work/dots/config/raycast/scripts/node/src/html_list_to_json.ts": {
+    "mtime": 1769457343.100157,
+    "hash": "9809fecbf621968a80b012854cc6d368"
+  },
+  "/Users/roalcantara/Work/dots/config/raycast/scripts/node/src/index.ts": {
+    "mtime": 1769457343.1002264,
+    "hash": "30dc1c8733140d067c74eedf5f32fe87"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/raycast/extract_primary_problem": {
+    "mtime": 1766370100.1935546,
+    "hash": "f901506fea0074d4caa11e4d2809809a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/raycast/create_story_explanation": {
+    "mtime": 1766370100.193507,
+    "hash": "ab4cd0cc762d9e96eea0ca0ef5d98af1"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/raycast/capture_thinkers_work": {
+    "mtime": 1766370100.1934562,
+    "hash": "f2dd2f88f940a89b4ea0b5b762844a23"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/raycast/extract_wisdom": {
+    "mtime": 1766370100.1935992,
+    "hash": "9b7051b4ba4c9ad1195a3eb14e05c7e2"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/raycast/yt": {
+    "mtime": 1766370100.1936529,
+    "hash": "55dc51cae37df93b23040fee80577fe9"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/yw": {
+    "mtime": 1769457350.9223967,
+    "hash": "16b0565f6b1e0eed9907b4c2fae01f61"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/gitx": {
+    "mtime": 1777809260.2589138,
+    "hash": "e5048d1fe4663b44b8cd944ac374d0f9"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/osx": {
+    "mtime": 1772177423.7129884,
+    "hash": "45d85005302aa05532c287e6db74dce1"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/psc": {
+    "mtime": 1766370100.3187244,
+    "hash": "0534514da338469a896a85755188d768"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/barrel": {
+    "mtime": 1769457350.9222422,
+    "hash": "0d6521553d1a31ef05325819a2fb247f"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/toast": {
+    "mtime": 1766370100.3190906,
+    "hash": "780c51f3fe71351a3bbdb2a4c3e7520c"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/zsys": {
+    "mtime": 1766370100.3191535,
+    "hash": "00266eef385293a0bf0b937ba767967c"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/gen": {
+    "mtime": 1766370100.318615,
+    "hash": "4653408632223ad3c7091faf56279a16"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/keyring": {
+    "mtime": 1771930557.3616333,
+    "hash": "0941506a1d20c015d26ca9c7edabb937"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/dots": {
+    "mtime": 1771934822.1922204,
+    "hash": "d4b1b05d533041cb50e5b15adc841946"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/pss": {
+    "mtime": 1766370100.3187778,
+    "hash": "4a850aa221d7d89725c2383f0e8b03ff"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/recase": {
+    "mtime": 1771302022.5414612,
+    "hash": "e390fac72fc1fadfdd279426f5b22698"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/show_usage": {
+    "mtime": 1771930557.361933,
+    "hash": "999b4e0a5594c320b07eb7600d6553a7"
+  },
+  "/Users/roalcantara/Work/dots/config/zsh/etc/functions/puts": {
+    "mtime": 1766370100.318838,
+    "hash": "f59803f403cca98840636ba5ec9f553c"
+  },
+  "/Users/roalcantara/Work/dots/CHANGELOG.md": {
+    "mtime": 1777809260.362341,
+    "hash": "80efd150800aa7bf1c62a2dae36ad27e"
+  },
+  "/Users/roalcantara/Work/dots/README.md": {
+    "mtime": 1774408601.5252688,
+    "hash": "bf8d33b134a62565761561136e0263c8"
+  },
+  "/Users/roalcantara/Work/dots/config/kodexb/config.yaml": {
+    "mtime": 1777809261.1878045,
+    "hash": "8e713815ef794d211eb4dd0e0a4b23e0"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/README.md": {
+    "mtime": 1777820516.556864,
+    "hash": "d9aafae2d5b031d40dfb77b3225e860f"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/specs/xc-fabric/requirements.md": {
+    "mtime": 1777820516.5528731,
+    "hash": "e0e22aa2685c4bb38159341b0a096e1c"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/specs/xc-fabric/REFACTOR-REPORT.md": {
+    "mtime": 1777795329.04797,
+    "hash": "a342a74dcba24a226f7664409ba31294"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/specs/xc-fabric/EXTERNAL-DELTAS.md": {
+    "mtime": 1777809261.563818,
+    "hash": "1efef44ecaea61414de9999d42e21a55"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/specs/xc-fabric/tasks.md": {
+    "mtime": 1777820516.5490675,
+    "hash": "101ec28f9d356661897d17d3513b5e24"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/specs/xc-fabric/design.md": {
+    "mtime": 1777820516.8157263,
+    "hash": "fcdd1a3ac8fcb506e5e6ededc117333d"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/specs/xc-skills/collect-design.md": {
+    "mtime": 1778241717.4832613,
+    "hash": "5ad791d6239485ad5c5c260cbf1f51a9"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/specs/xc-skills/design.md": {
+    "mtime": 1778240714.7444649,
+    "hash": "8247b274f11bf03bb5dcea31a50bb1bb"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/specs/xc-skills/collect-plan.md": {
+    "mtime": 1778241877.0824356,
+    "hash": "2c7556c12af3ee43d5b5975f99cf060c"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/tests/fixtures/xc-fabric/patterns/extract_wisdom/system.md": {
+    "mtime": 1777809261.4783242,
+    "hash": "d5e2ff31fdf43e3f6aaf0cc62a48a4af"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/tests/fixtures/xc-fabric/patterns/summarize/system.md": {
+    "mtime": 1777809261.4786162,
+    "hash": "6372d25dedc91da2cb86ab9515899951"
+  },
+  "/Users/roalcantara/Work/dots/config/bin/tests/fixtures/xc-fabric/patterns/youtube_summary/system.md": {
+    "mtime": 1777809261.4789162,
+    "hash": "1b9582edcdf3dbb88ac86078271a2579"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/opsx-new.md": {
+    "mtime": 1777809259.5239117,
+    "hash": "d284b692b622e2b55a4f07c170f8323b"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/opsx-sync.md": {
+    "mtime": 1777809259.5242515,
+    "hash": "7c5f761d697d2d97d57c42d54c2d96c5"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/opsx-verify.md": {
+    "mtime": 1777809259.524414,
+    "hash": "ae61184a1482d60bc94b563dbd1c571c"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/pr.md": {
+    "mtime": 1777809259.5245507,
+    "hash": "ac4772be7ee1a342cf3ba401c56df968"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/opsx-continue.md": {
+    "mtime": 1777809259.5234284,
+    "hash": "69f2911846a33db8d41efcf35696c5d4"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/opsx-propose.md": {
+    "mtime": 1777809259.5240839,
+    "hash": "cdbf9f615d2d2960ceb43382bb0a1943"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/opsx-apply.md": {
+    "mtime": 1777809259.5228035,
+    "hash": "13ee8c6593aba8594d2540758ba0d86d"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/commit-all.md": {
+    "mtime": 1777809259.522419,
+    "hash": "ba1de668547cacfae815a4a703c988b9"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/opsx-bulk-archive.md": {
+    "mtime": 1777809259.5232525,
+    "hash": "79a32e16c5c9a75454321bbe959d80a2"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/opsx-archive.md": {
+    "mtime": 1777809259.5229714,
+    "hash": "2ef5f1343efee2fc1da9b6261f0a93a8"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/opsx-explore.md": {
+    "mtime": 1777809259.5235956,
+    "hash": "145891a784ce93b1c23c1ec2db54af4d"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/opsx-ff.md": {
+    "mtime": 1777809259.5237613,
+    "hash": "b7f1ac7cc650d6ad5571ddbc350f1ff1"
+  },
+  "/Users/roalcantara/Work/dots/config/cursor/commands/commit-staged.md": {
+    "mtime": 1777809259.5226347,
+    "hash": "54c6851199c054f7e8ec2aaa51d3f692"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/neovim.yml": {
+    "mtime": 1766370100.3098037,
+    "hash": "646ebf72174aae6421fcc0456880200a"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/README.md": {
+    "mtime": 1766370100.303034,
+    "hash": "ba72c622e56129bac970a42d3afd957e"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/tools/README.md": {
+    "mtime": 1766370100.3103712,
+    "hash": "eef918eef8f403df0121269b1b652d03"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/tools/docker-compose.yml": {
+    "mtime": 1769624679.2644947,
+    "hash": "d06e473277230c357dfb64476c3cfeaf"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/tools/docker-compose.test.yml": {
+    "mtime": 1766370100.3104258,
+    "hash": "314ec7348d61d996f465f9766784bc05"
+  },
+  "/Users/roalcantara/Work/dots/config/nvim/doc/kickstart.txt": {
+    "mtime": 1766370100.3031716,
+    "hash": "6c72ce75a2f1c2b43ca9ac1c39b8b784"
+  },
+  "/Users/roalcantara/Work/dots/config/claude/commands/opsx/explore.md": {
+    "mtime": 1777809259.5184987,
+    "hash": "d389dc81cc0bcc21a637999bc90a7872"
+  },
+  "/Users/roalcantara/Work/dots/config/claude/commands/opsx/new.md": {
+    "mtime": 1777809259.518904,
+    "hash": "bbbbe6ea179c2284e340103f8698386b"
+  },
+  "/Users/roalcantara/Work/dots/config/claude/commands/opsx/archive.md": {
+    "mtime": 1777809259.5176036,
+    "hash": "622fed432675ead218192e24f3343e19"
+  },
+  "/Users/roalcantara/Work/dots/config/claude/commands/opsx/bulk-archive.md": {
+    "mtime": 1777809259.5179734,
+    "hash": "87dcd0e6a3d48795b6b688a64f18b981"
+  },
+  "/Users/roalcantara/Work/dots/config/claude/commands/opsx/continue.md": {
+    "mtime": 1777809259.5182273,
+    "hash": "a6f91568d2827a0356c52667125ebce3"
+  },
+  "/Users/roalcantara/Work/dots/config/claude/commands/opsx/apply.md": {
+    "mtime": 1777809259.5174243,
+    "hash": "c10506ad8a4f9b5f9ad4ac887140f697"
+  },
+  "/Users/roalcantara/Work/dots/config/claude/commands/opsx/verify.md": {
+    "mtime": 1777809259.5194802,
+    "hash": "63e004fd7b527f9a03a6a01da0a52ff8"
+  },
+  "/Users/roalcantara/Work/dots/config/claude/commands/opsx/sync.md": {
+    "mtime": 1777809259.519301,
+    "hash": "8e42a153892b156ea6ca5cbe0d9f5819"
+  },
+  "/Users/roalcantara/Work/dots/config/claude/commands/opsx/ff.md": {
+    "mtime": 1777809259.5186758,
+    "hash": "b4161ffdc985ea83741e7fe6ba543ba7"
+  },
+  "/Users/roalcantara/Work/dots/config/claude/commands/opsx/propose.md": {
+    "mtime": 1777809259.519133,
+    "hash": "0997adc1ed0af0a068544bc87a177770"
+  },
+  "/Users/roalcantara/Work/dots/config/flatpak/requirements.txt": {
+    "mtime": 1766370100.2011817,
+    "hash": "881a26069c69baa6373443373af5da95"
+  },
+  "/Users/roalcantara/Work/dots/config/ssh/README.md": {
+    "mtime": 1766370100.3149703,
+    "hash": "b1eea6f7a0340bb0d95a72d95d852422"
+  },
+  "/Users/roalcantara/Work/dots/config/github/prompts/opsx-verify.prompt.md": {
+    "mtime": 1777809259.529074,
+    "hash": "bd84543ce612ffe98a71c13e9186bfeb"
+  },
+  "/Users/roalcantara/Work/dots/config/github/prompts/opsx-ff.prompt.md": {
+    "mtime": 1777809259.52833,
+    "hash": "68e1f9edaa7487d714bc7b889f53733d"
+  },
+  "/Users/roalcantara/Work/dots/config/github/prompts/opsx-continue.prompt.md": {
+    "mtime": 1777809259.527953,
+    "hash": "6bfdbcf06eefc7c0bfb01e20522d09a4"
+  },
+  "/Users/roalcantara/Work/dots/config/github/prompts/opsx-bulk-archive.prompt.md": {
+    "mtime": 1777809259.5277672,
+    "hash": "a3af61b0e0eea7113a9e9827a23ea83e"
+  },
+  "/Users/roalcantara/Work/dots/config/github/prompts/opsx-propose.prompt.md": {
+    "mtime": 1777809259.5286803,
+    "hash": "54c8d81441a57671450d903206978447"
+  },
+  "/Users/roalcantara/Work/dots/config/github/prompts/opsx-sync.prompt.md": {
+    "mtime": 1777809259.5288763,
+    "hash": "ff37c63c11efaf5ba6982a083d692714"
+  },
+  "/Users/roalcantara/Work/dots/config/github/prompts/opsx-new.prompt.md": {
+    "mtime": 1777809259.5284886,
+    "hash": "b544e23ac69eb702b67b0641f9a32396"
+  },
+  "/Users/roalcantara/Work/dots/config/github/prompts/opsx-apply.prompt.md": {
+    "mtime": 1777809259.527385,
+    "hash": "bcfe85835bb9c8bf29ddffa5a12111ba"
+  },
+  "/Users/roalcantara/Work/dots/config/github/prompts/opsx-explore.prompt.md": {
+    "mtime": 1777809259.5281441,
+    "hash": "8ba1b9da90ec17e3607a8811eec1e02c"
+  },
+  "/Users/roalcantara/Work/dots/config/github/prompts/opsx-archive.prompt.md": {
+    "mtime": 1777809259.5275779,
+    "hash": "ff9017090a9eb3643dd810c32915d03b"
+  },
+  "/Users/roalcantara/Work/dots/config/github/skills/openspec-apply-change/SKILL.md": {
+    "mtime": 1777809259.5293365,
+    "hash": "ce2a0a9a06d2faca1811abfbb536e6cb"
+  },
+  "/Users/roalcantara/Work/dots/config/github/skills/openspec-explore/SKILL.md": {
+    "mtime": 1777809259.5302637,
+    "hash": "15a31009cb6ff1ed750527f0b9641d26"
+  },
+  "/Users/roalcantara/Work/dots/config/github/skills/openspec-verify-change/SKILL.md": {
+    "mtime": 1777809259.5313065,
+    "hash": "f4a3b280b54e93996b104994b3b0623b"
+  },
+  "/Users/roalcantara/Work/dots/config/github/skills/openspec-new-change/SKILL.md": {
+    "mtime": 1777809259.5306666,
+    "hash": "d58e1121e42266dc50adc6c7529f06c3"
+  },
+  "/Users/roalcantara/Work/dots/config/github/skills/openspec-archive-change/SKILL.md": {
+    "mtime": 1777809259.5295613,
+    "hash": "8debef1d1f6d9ac2cbe1126493d02c6f"
+  },
+  "/Users/roalcantara/Work/dots/config/github/skills/openspec-propose/SKILL.md": {
+    "mtime": 1777809259.530886,
+    "hash": "3148e0c377bfb264cebc72dc5bf2fd95"
+  },
+  "/Users/roalcantara/Work/dots/config/github/skills/openspec-bulk-archive-change/SKILL.md": {
+    "mtime": 1777809259.5297813,
+    "hash": "1035290839602f818f63b957b9262dd7"
+  },
+  "/Users/roalcantara/Work/dots/config/github/skills/openspec-continue-change/SKILL.md": {
+    "mtime": 1777809259.5300279,
+    "hash": "b1cbf33ff4c4952b207bb9edcf31bc99"
+  },
+  "/Users/roalcantara/Work/dots/config/github/skills/openspec-sync-specs/SKILL.md": {
+    "mtime": 1777809259.531109,
+    "hash": "97ab235cf821bfe172a618f1f6160d09"
+  },
+  "/Users/roalcantara/Work/dots/config/github/skills/openspec-ff-change/SKILL.md": {
+    "mtime": 1777809259.530477,
+    "hash": "d027d7a0ddee79d79a5b589cabb5e88f"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/triage-issue/SKILL.md": {
+    "mtime": 1777809259.5164294,
+    "hash": "b2ca073c5a4408a1e4604a12107e7bdf"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/triage-issue/references/search-patterns.md": {
+    "mtime": 1777809259.5170293,
+    "hash": "309669c5c7e3175ff8dc31e24b0c3cf6"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/triage-issue/references/bug-report-templates.md": {
+    "mtime": 1777809259.5167418,
+    "hash": "e93e5694a50990ae02ce20268d2bf6a4"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/capture-tasks-from-meeting-notes/SKILL.md": {
+    "mtime": 1777809259.512607,
+    "hash": "9b77ace0138bfbc0c752c6dd7304ec78"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/capture-tasks-from-meeting-notes/references/action-item-patterns.md": {
+    "mtime": 1777809259.5129838,
+    "hash": "05fc48e4ee7fdf9b7ea4fca31c5a2b41"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/generate-status-report/SKILL.md": {
+    "mtime": 1777809259.5134346,
+    "hash": "e97e80af8b1fe9a0a87e21c226a2580b"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/generate-status-report/references/jql-patterns.md": {
+    "mtime": 1777809259.5138402,
+    "hash": "19abf5d2c003580c56e8925f99c05bb7"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/generate-status-report/references/report-templates.md": {
+    "mtime": 1777809259.5140438,
+    "hash": "b2830a3d1e1d527e7ffb82438546899f"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/search-company-knowledge/SKILL.md": {
+    "mtime": 1777809259.5147555,
+    "hash": "3ada7edb52d96a9531d00eed07103183"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/spec-to-backlog/SKILL.md": {
+    "mtime": 1777809259.5151193,
+    "hash": "7fe1677fa9014be9ae078cab28e98ab9"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/spec-to-backlog/references/epic-templates.md": {
+    "mtime": 1777809259.5158265,
+    "hash": "2c0a17458cbfa514ba3ca16be372968d"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/spec-to-backlog/references/ticket-writing-guide.md": {
+    "mtime": 1777809259.5161524,
+    "hash": "c3bdfeee92dfa12705d3b03ef915cedb"
+  },
+  "/Users/roalcantara/Work/dots/config/atlassian/skills/spec-to-backlog/references/breakdown-examples.md": {
+    "mtime": 1777809259.515496,
+    "hash": "e553e06d77454d8b167a02f57cfe712d"
+  },
+  "/Users/roalcantara/Work/dots/config/age/recipient.txt": {
+    "mtime": 1766370100.1724646,
+    "hash": "cd1a8647eab6058a77e70d04a44965cb"
+  },
+  "/Users/roalcantara/Work/dots/config/age/keys.txt": {
+    "mtime": 1766370152.99327,
+    "hash": "71a1728aa17d46815c53072fb7a00029"
+  },
+  "/Users/roalcantara/Work/dots/config/apt/requirements.txt": {
+    "mtime": 1766370100.1725743,
+    "hash": "bc2e620859e27eff168dd5da528f721c"
+  },
+  "/Users/roalcantara/Work/dots/config/raycast/scripts/node/README.md": {
+    "mtime": 1769457343.0989368,
+    "hash": "5258325caa252ad3b9d93f33aeac6d64"
+  },
+  "/Users/roalcantara/Work/dots/config/raycast/scripts/node/CLAUDE.md": {
+    "mtime": 1769457343.098769,
+    "hash": "c2b3b4177aab5cec0c8996f6e20bcc08"
+  },
+  "/Users/roalcantara/Work/dots/config/raycast/scripts/node/src/assets/fixtures/comicvine.html": {
+    "mtime": 1769457343.0995736,
+    "hash": "a68ee55fad4b25da2fce149ead932aed"
+  },
+  "/Users/roalcantara/Work/dots/config/raycast/scripts/node/src/assets/fixtures/marvel.html": {
+    "mtime": 1769457343.0998642,
+    "hash": "215da32d37a1dc7ffe96e0cbf0f85e6a"
+  },
+  "/Users/roalcantara/Work/dots/config/snap/requirements.txt": {
+    "mtime": 1766370100.3114724,
+    "hash": "fa5cf2129870e4b41cd155cf5af2df82"
+  },
+  "/Users/roalcantara/Work/dots/config/bat/README.md": {
+    "mtime": 1766370100.1731431,
+    "hash": "bef665315774b9d84d9008228bf79d2d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/unique_patterns.txt": {
+    "mtime": 1766370100.2010968,
+    "hash": "6ae1361b2e5c3bed7e1a54821b48132a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/config.yaml": {
+    "mtime": 1777809261.2814333,
+    "hash": "53fea23dda46821ec224bcdbee25cc3d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/pattern_explanations.md": {
+    "mtime": 1766370100.1926904,
+    "hash": "91c454a6579eb881b8798c5f29a26e97"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/answer_interview_question/system.md": {
+    "mtime": 1766370100.1778872,
+    "hash": "021b4c212fc1114a46b533075365e08f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_primary_problem/system.md": {
+    "mtime": 1766370100.1878855,
+    "hash": "ac9be9fd377bd5b5a975a6c17d3ed55a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_debate/system.md": {
+    "mtime": 1766370100.1954613,
+    "hash": "28e686a7370b92eaa12bb89e4b9780a8"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_main_activities/system.md": {
+    "mtime": 1766370100.1872988,
+    "hash": "bd6bb3f2f496314fae6285e6a9c16de8"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_investigation_visualization/system.md": {
+    "mtime": 1766370100.1809943,
+    "hash": "b3f7699ed1e4ac25f8e8404162c50057"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/official_pattern_template/system.md": {
+    "mtime": 1766370100.1924748,
+    "hash": "b0d02acbef05d1fe4cafbe8d97ff0301"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_extraordinary_claims/system.md": {
+    "mtime": 1766370100.186377,
+    "hash": "fd2b781def7ab67c9ab8d5069bdcdb69"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/check_agreement/system.md": {
+    "mtime": 1766370100.178322,
+    "hash": "b0e2f6e1158ac9fa946a4dfd70df2cbc"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/check_agreement/user.md": {
+    "mtime": 1766370100.1783452,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/identify_job_stories/system.md": {
+    "mtime": 1766370100.191389,
+    "hash": "9589dd30c4d005def1f4307cfbfe89f3"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_malware/system.md": {
+    "mtime": 1766370100.1754684,
+    "hash": "56166a326be5184376a10f7ccea7fbf4"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/identify_dsrp_distinctions/system.md": {
+    "mtime": 1766370100.1907108,
+    "hash": "943e4a405a572307319000174ce95785"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_threat_model_plans/system.md": {
+    "mtime": 1766370100.1986089,
+    "hash": "d7aa5465f6e0d727d54dab89d4cd8426"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_sigma_rules/system.md": {
+    "mtime": 1766370100.1833463,
+    "hash": "7087d787e60e6b3f042bde520e5b562d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/suggest_pattern/system.md": {
+    "mtime": 1766370100.194741,
+    "hash": "00dbf6b0f628a99dda239bc5b0667535"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/suggest_pattern/user.md": {
+    "mtime": 1766370100.194818,
+    "hash": "a8168845298881bc36e70465ffc6ca62"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/recommend_talkpanel_topics/system.md": {
+    "mtime": 1766370100.193925,
+    "hash": "ee55c6c9d57b25ddc1be7ee375e194dc"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_network_threat_landscape/system.md": {
+    "mtime": 1766370100.1818926,
+    "hash": "1c072289ed7839c54e062a74a11b053f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_network_threat_landscape/user.md": {
+    "mtime": 1766370100.1819472,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/label_and_rate/system.md": {
+    "mtime": 1766370100.1922174,
+    "hash": "4d0db40112fe34b5a9cf9ebae78bba5d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/tweet/system.md": {
+    "mtime": 1766370100.1992662,
+    "hash": "1d17b671ccd6ebffa579a7986b57843b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/judge_output/system.md": {
+    "mtime": 1766370100.19209,
+    "hash": "0e06ff513f43a8c9dcb5826129703663"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/recommend_artists/system.md": {
+    "mtime": 1766370100.193743,
+    "hash": "5d82deca9f31227a8f1afce21dd22d03"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/explain_terms/system.md": {
+    "mtime": 1766370100.1850805,
+    "hash": "84a97214df99f00413fd6b2a6b61bb14"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_wisdom_dm/system.md": {
+    "mtime": 1766370100.1895843,
+    "hash": "6c7f71c07f485d242e8d8dacff7e928a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_loe_document/system.md": {
+    "mtime": 1766370100.181177,
+    "hash": "b74f17f05e6f27920689c6a51f302b0f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_comments/system.md": {
+    "mtime": 1766370100.174892,
+    "hash": "f7c061a96b3bd82b25277997bd2eab55"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_create_opening_sentences/system.md": {
+    "mtime": 1766370100.1978748,
+    "hash": "b4a5e4454407a92b3ca5e0e36d6e4e91"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_create_h3_career/system.md": {
+    "mtime": 1766370100.197796,
+    "hash": "338edae1c8283b00c14aa8e17d33056c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_recursive_outline/system.md": {
+    "mtime": 1766370100.18278,
+    "hash": "4671d899cea71eb904aa518643047945"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/rate_ai_response/system.md": {
+    "mtime": 1766370100.1929674,
+    "hash": "6019e2446453b7e36f35d41f4f81df1a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_military_strategy/system.md": {
+    "mtime": 1766370100.1755555,
+    "hash": "77d1e8f5ed8f289536c3c54d7c9c096f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_ideas/system.md": {
+    "mtime": 1766370100.1864514,
+    "hash": "e9589480022d39d5f184d7d02f0eb94c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/get_wow_per_minute/system.md": {
+    "mtime": 1766370100.1901345,
+    "hash": "6482ee3e9b45cf312b00c0d098e2922c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_threat_report/system.md": {
+    "mtime": 1766370100.1775224,
+    "hash": "bee1c9faa86b725cc29e2d0dd2c21ab9"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_threat_report/user.md": {
+    "mtime": 1766370100.1775708,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_skills/system.md": {
+    "mtime": 1766370100.1887405,
+    "hash": "40fab1eed6109f820d7c801ee5ce2b60"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_npc/system.md": {
+    "mtime": 1766370100.1821585,
+    "hash": "7640773a58477247c7bc2c51cdc571a0"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_npc/user.md": {
+    "mtime": 1766370100.1821845,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_quiz/README.md": {
+    "mtime": 1766370100.1825416,
+    "hash": "0053b1bb86bfcbe4fa7b24a5ec9e0e6c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_quiz/system.md": {
+    "mtime": 1766370100.1825953,
+    "hash": "64a978a303568a871650ff44ad44acc4"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_story_explanation/system.md": {
+    "mtime": 1766370100.1834373,
+    "hash": "87e1f854e2c8b548754fe7acda991c17"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_jokes/system.md": {
+    "mtime": 1766370100.1871524,
+    "hash": "702d1a338c7f0ddc19e621cd74174275"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_year_in_review/system.md": {
+    "mtime": 1766370100.1987565,
+    "hash": "807a930da3c046b60ec67ba9efb3859b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_domains/system.md": {
+    "mtime": 1766370100.1863,
+    "hash": "00bf85298f096f9005a1a77c72134622"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_prose/system.md": {
+    "mtime": 1766370100.1765294,
+    "hash": "a0d129c94d10c9368777b03e6f8487ba"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_prose/user.md": {
+    "mtime": 1766370100.1765566,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_logs/system.md": {
+    "mtime": 1766370100.175383,
+    "hash": "8d0969148dd31209e1bad58ed8ae0c95"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/enrich_blog_post/system.md": {
+    "mtime": 1766370100.1845493,
+    "hash": "38f8ab9b737ce6c6a84baad392f1faf0"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_alpha/system.md": {
+    "mtime": 1766370100.18535,
+    "hash": "2f924dabee4b3c6ea3c0e860f6174f5d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_algorithm_update_recommendations/system.md": {
+    "mtime": 1766370100.1852462,
+    "hash": "8598bb83fb5c1411d0e3272e61bc6071"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_algorithm_update_recommendations/user.md": {
+    "mtime": 1766370100.185271,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_aphorisms/system.md": {
+    "mtime": 1766370100.179098,
+    "hash": "82f6b7fb7634d56a15035ff8edc8b542"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_aphorisms/user.md": {
+    "mtime": 1766370100.179121,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_markmap_visualization/system.md": {
+    "mtime": 1766370100.1813898,
+    "hash": "86011bdc319c87133533a59bf9d95c63"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/raw_query/system.md": {
+    "mtime": 1766370100.193366,
+    "hash": "ff2bbed8fce721ab60b54e55078954c2"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/export_data_as_csv/system.md": {
+    "mtime": 1766370100.1851642,
+    "hash": "0da0f990fe2eeb5ba0c0d04049393d32"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_paper/README.md": {
+    "mtime": 1766370100.1969814,
+    "hash": "472d49fbc0a6f5502f1928bef1f3b999"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_paper/system.md": {
+    "mtime": 1766370100.1970692,
+    "hash": "b0028c8a842fb058b0f5b439dede92d5"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_paper/user.md": {
+    "mtime": 1766370100.1970952,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_git_diff/system.md": {
+    "mtime": 1766370100.1956048,
+    "hash": "0720cbc98e74b20a38ea0135eb646d6f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_presentation/system.md": {
+    "mtime": 1766370100.1761925,
+    "hash": "fdfad6e1fa94e174cf3a1a9ce8a7bd39"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_prose_json/system.md": {
+    "mtime": 1766370100.1767018,
+    "hash": "e41d428a24dac410121e0ebebc62a66c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_prose_json/user.md": {
+    "mtime": 1766370100.176729,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_proposition/system.md": {
+    "mtime": 1766370100.1763647,
+    "hash": "99dca9b16ed548907844c71cd5177147"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_proposition/user.md": {
+    "mtime": 1766370100.1763918,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_design_document/system.md": {
+    "mtime": 1766370100.1799831,
+    "hash": "6c4c8c3289c6c5f72811d08aef5bfa10"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_questions/system.md": {
+    "mtime": 1766370100.1883376,
+    "hash": "3d8c667a40025da8c93b5a6fe95bf65a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_wisdom_nometa/system.md": {
+    "mtime": 1766370100.1896644,
+    "hash": "13ea11ee8eacedc9031abfd13509070f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_controversial_ideas/system.md": {
+    "mtime": 1766370100.186031,
+    "hash": "de8bc7ee2fa6ce6ac82521a64d81a685"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_micro/system.md": {
+    "mtime": 1766370100.1959465,
+    "hash": "c7e2080cfa99600d7585193804b943a6"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_micro/user.md": {
+    "mtime": 1766370100.1959698,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/capture_thinkers_work/system.md": {
+    "mtime": 1766370100.178249,
+    "hash": "0847fbef34cf7c5da7e34645831d2282"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_candidates/system.md": {
+    "mtime": 1766370100.1745288,
+    "hash": "157cbe96ca00abbfbff7b31d09155e0e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_candidates/user.md": {
+    "mtime": 1766370100.1745558,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/translate/system.md": {
+    "mtime": 1766370100.199007,
+    "hash": "a9706c6e57b22a3d15c5fa767c90ec30"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_better_frame/system.md": {
+    "mtime": 1766370100.1793394,
+    "hash": "913ffb6a15b986e3a1e343271627c0eb"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_better_frame/user.md": {
+    "mtime": 1766370100.1793635,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_give_encouragement/system.md": {
+    "mtime": 1766370100.1984677,
+    "hash": "7e836d034bd2b8e42de5de7deda8b353"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_prd/system.md": {
+    "mtime": 1766370100.1823647,
+    "hash": "f17567937119bd0b173e7ba8f1de491c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_interviewer_techniques/system.md": {
+    "mtime": 1766370100.1753025,
+    "hash": "8e74a8116eeb5f6508f7e8f47c1dbd39"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_sponsors/system.md": {
+    "mtime": 1766370100.1888855,
+    "hash": "c5a203fb134706ce06037f119b074280"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/apply_ul_tags/system.md": {
+    "mtime": 1766370100.177966,
+    "hash": "73dfe96c736c7fe139069b83695be9e1"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_essay_pg/system.md": {
+    "mtime": 1766370100.1995249,
+    "hash": "87de0eb959c87cf0a492a075e256e22b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_micro_summary/system.md": {
+    "mtime": 1766370100.1816576,
+    "hash": "c7e2080cfa99600d7585193804b943a6"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_article_wisdom/README.md": {
+    "mtime": 1766370100.1854796,
+    "hash": "b28ca76c882e2ec42bd1c423480e6bf7"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_article_wisdom/system.md": {
+    "mtime": 1766370100.1856854,
+    "hash": "20ad80f448e2dc4c6cdc6137b1a322b1"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_article_wisdom/user.md": {
+    "mtime": 1766370100.1857276,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_article_wisdom/dmiessler/extract_wisdom-1.0.0/system.md": {
+    "mtime": 1766370100.1855884,
+    "hash": "e4ef1aded8f45bea92b6ae32fe58d60b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_article_wisdom/dmiessler/extract_wisdom-1.0.0/user.md": {
+    "mtime": 1766370100.1856315,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/identify_dsrp_systems/system.md": {
+    "mtime": 1766370100.191262,
+    "hash": "71c05d47737d94bcbc1824109c6c51fb"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_security_update/system.md": {
+    "mtime": 1766370100.1831417,
+    "hash": "dfb686983ca7aec7c1430e748bb84a61"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_security_update/user.md": {
+    "mtime": 1766370100.1831703,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_micro_essay/system.md": {
+    "mtime": 1766370100.2001064,
+    "hash": "56cbd98ec00539df329f3864058ca21f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_academic_paper/system.md": {
+    "mtime": 1766370100.1789534,
+    "hash": "89dc1e9cb95addcfc76053a198b81d2c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_wisdom/README.md": {
+    "mtime": 1766370100.1891031,
+    "hash": "daffe56b93fe8e425a6ccd4f8a2e42da"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_wisdom/system.md": {
+    "mtime": 1766370100.189328,
+    "hash": "3e34f3364a0afd83ae2a894aad10e716"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_wisdom/dmiessler/extract_wisdom-1.0.0/system.md": {
+    "mtime": 1766370100.1892204,
+    "hash": "27be6a9f16d0ae42426f9157780164e7"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_wisdom/dmiessler/extract_wisdom-1.0.0/user.md": {
+    "mtime": 1766370100.1892748,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_wisdom_agents/system.md": {
+    "mtime": 1766370100.1894596,
+    "hash": "717009118ab44be06cc4ad5d7bf5be3d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_claims/system.md": {
+    "mtime": 1766370100.174783,
+    "hash": "dc4b9c0dc2374c238223c9b0391c968b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_claims/user.md": {
+    "mtime": 1766370100.1748068,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_nuclei_template_rule/system.md": {
+    "mtime": 1766370100.2003186,
+    "hash": "4ed7fb86c314f32de9d15da2562c8202"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_nuclei_template_rule/user.md": {
+    "mtime": 1766370100.200353,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_answers/README.md": {
+    "mtime": 1766370100.1741538,
+    "hash": "1440aeb98d2fd7055ead2a4fb5e2e214"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_answers/system.md": {
+    "mtime": 1766370100.1742969,
+    "hash": "c70ecdfdb5daddfc3888ca91047069f4"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_stride_threat_model/system.md": {
+    "mtime": 1766370100.183533,
+    "hash": "e036a332cb7fc458ecd903c35a486562"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_risk/system.md": {
+    "mtime": 1766370100.1770117,
+    "hash": "76b1f57f7fb1774e091aec752a4b4b8b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_lecture/system.md": {
+    "mtime": 1766370100.1957157,
+    "hash": "13cd944b1210c15e179ffc6101442829"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/review_code/system.md": {
+    "mtime": 1766370100.1941411,
+    "hash": "34bbda660dae361123cdc0125d34fa32"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_hormozi_offer/system.md": {
+    "mtime": 1766370100.1807876,
+    "hash": "2c6a5d889c1f32a1c666ee1ecd25b25d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_check_metrics/system.md": {
+    "mtime": 1766370100.1977108,
+    "hash": "26a68a4a130b94d42e0ac05eec42e3f6"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_excalidraw_visualization/system.md": {
+    "mtime": 1766370100.1802576,
+    "hash": "32f265797fd23d0f026461878d0eb9c8"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_ttrc_narrative/system.md": {
+    "mtime": 1766370100.1839983,
+    "hash": "8976a1ea43982dc0900ff328301d29a8"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_flash_cards/system.md": {
+    "mtime": 1766370100.180337,
+    "hash": "6794701a46bff3a7423f74ab99bd1e0b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_semgrep_rule/system.md": {
+    "mtime": 1766370100.2007687,
+    "hash": "dddd70664c151d0e1b5ffec1fb684c70"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_semgrep_rule/user.md": {
+    "mtime": 1766370100.2008004,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_analyze_challenge_handling/system.md": {
+    "mtime": 1766370100.1975317,
+    "hash": "c1a3c524e94096a14eb1108ff8dd1563"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/compare_and_contrast/system.md": {
+    "mtime": 1766370100.1786363,
+    "hash": "5b2a33902b51d8076f9b83ea0d65934e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/compare_and_contrast/user.md": {
+    "mtime": 1766370100.1786597,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_book_recommendations/system.md": {
+    "mtime": 1766370100.185882,
+    "hash": "39ea2729fca0481f9ce5524d607a3dd1"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize/system.md": {
+    "mtime": 1766370100.195034,
+    "hash": "c177d055de4c205da273c7b50756aa2d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize/user.md": {
+    "mtime": 1766370100.1950536,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize/dmiessler/summarize/system.md": {
+    "mtime": 1766370100.19495,
+    "hash": "0d60f86ded60d08e24d21cf5d205a431"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize/dmiessler/summarize/user.md": {
+    "mtime": 1766370100.1949928,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_latest_video/system.md": {
+    "mtime": 1766370100.1872253,
+    "hash": "3c6034b029800c17ff30f74fd4b1caef"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_mermaid_visualization/system.md": {
+    "mtime": 1766370100.1814919,
+    "hash": "02fb069bec63d5b32acecfe862a6d1fe"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_email_headers/system.md": {
+    "mtime": 1766370100.1750581,
+    "hash": "6497bfcc09e1f303818344ff01210b96"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_email_headers/user.md": {
+    "mtime": 1766370100.1750863,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_videoid/system.md": {
+    "mtime": 1766370100.1889565,
+    "hash": "7968b1a062309a2631afa9c142dee47c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_videoid/user.md": {
+    "mtime": 1766370100.1889813,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_pull-request/system.md": {
+    "mtime": 1766370100.2006357,
+    "hash": "88c626069c6e57db720b7b33d5469252"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/improve_academic_writing/system.md": {
+    "mtime": 1766370100.1915119,
+    "hash": "65c9bfb56e7c9f07147e7a6eb60efc73"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/improve_academic_writing/user.md": {
+    "mtime": 1766370100.191539,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_essay/system.md": {
+    "mtime": 1766370100.1993399,
+    "hash": "e55685a5c1ef4fa8c5cd72cb91f64732"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_find_neglected_goals/system.md": {
+    "mtime": 1766370100.1983926,
+    "hash": "d3fb523ef07f4508308193540b8e785e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/ask_secure_by_design_questions/system.md": {
+    "mtime": 1766370100.1780438,
+    "hash": "1034317d2060d39dda8e5834cae6c220"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_extract_panel_topics/system.md": {
+    "mtime": 1766370100.1981246,
+    "hash": "07507b603cec50511cb27cac65fac935"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_keynote/system.md": {
+    "mtime": 1766370100.181083,
+    "hash": "fa06db792c093a0f71ca226c1a97608a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_mistakes/system.md": {
+    "mtime": 1766370100.1756377,
+    "hash": "ff8bf12c4487ac39b53a2df3afeafe8f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_most_redeeming_thing/system.md": {
+    "mtime": 1766370100.187536,
+    "hash": "acb601033c2e63a049b99a13ad1bed29"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_primary_solution/system.md": {
+    "mtime": 1766370100.187966,
+    "hash": "0b178ac0064623ea0ed9d68abb2e92c8"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_bill_short/system.md": {
+    "mtime": 1766370100.1744485,
+    "hash": "cb3e144a8e77d45ff2a0fbcf26014fa3"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/md_callout/system.md": {
+    "mtime": 1766370100.192339,
+    "hash": "6024e1c7e306e8a6a047eab284e2744f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/generate_code_rules/system.md": {
+    "mtime": 1766370100.190048,
+    "hash": "0b59d82ba65e7cad97de38e44c76500a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_user_story/system.md": {
+    "mtime": 1766370100.184169,
+    "hash": "22331b90ac10984ba141cda98e3f2b5d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/rate_content/system.md": {
+    "mtime": 1766370100.1930525,
+    "hash": "7dfa0b0f5f763533b64e6cd946ee6149"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/rate_content/user.md": {
+    "mtime": 1766370100.1931002,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_threat_report_cmds/system.md": {
+    "mtime": 1766370100.1776564,
+    "hash": "aa82c81d41b18ff895e285dcdaf1d183"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_visualize_mission_goals_projects/system.md": {
+    "mtime": 1766370100.1986866,
+    "hash": "b65427afe88d8b03381e24311a5699e3"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_video_chapters/system.md": {
+    "mtime": 1766370100.1842484,
+    "hash": "4e65184c5e76509be61ad004f282b4b3"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_video_chapters/user.md": {
+    "mtime": 1766370100.184272,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/get_youtube_rss/system.md": {
+    "mtime": 1766370100.1902208,
+    "hash": "98def223a4c5b00a97c770aee051e4b3"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/to_flashcards/system.md": {
+    "mtime": 1766370100.198834,
+    "hash": "9d7d2373777adb9fe882c674ab06af5c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/find_logical_fallacies/system.md": {
+    "mtime": 1766370100.189959,
+    "hash": "22543d85255c8c713db5876c758640b8"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_rpg_session/system.md": {
+    "mtime": 1766370100.1974416,
+    "hash": "071b77f9815f1fc38a1a7983c024966b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_mcp_servers/system.md": {
+    "mtime": 1766370100.1874573,
+    "hash": "38087732e2be5bc8cbde1a7ec0aff31f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_ai_jobs_analysis/system.md": {
+    "mtime": 1766370100.1790268,
+    "hash": "1cb85251f765dcd0f43053ace2f07732"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_business_ideas/system.md": {
+    "mtime": 1766370100.1859562,
+    "hash": "958a2b0e53b19dbc42fe63235ce4c1f8"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_board_meeting/system.md": {
+    "mtime": 1766370100.1953835,
+    "hash": "acf9eb59c0eeab07d0b57e54c5cba9b5"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_graph_from_input/system.md": {
+    "mtime": 1766370100.1806536,
+    "hash": "1c035a7ed27ebe0b9371f0786df02e08"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_recipe/README.md": {
+    "mtime": 1766370100.1884134,
+    "hash": "cd89f510672996ff18c830ca5ede924f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_recipe/system.md": {
+    "mtime": 1766370100.1884594,
+    "hash": "7a857c897eead6f7ee2d61f55889c22a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/solve_with_cot/system.md": {
+    "mtime": 1766370100.1946218,
+    "hash": "8f7228415a4a55e89232f9a9c0596024"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/explain_project/system.md": {
+    "mtime": 1766370100.185006,
+    "hash": "d9d05d105b4a49330f025330c6a2026e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_show_intro/system.md": {
+    "mtime": 1766370100.1832607,
+    "hash": "b6ee6a350bf5f5964f5a4932bf09850c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_report_finding/system.md": {
+    "mtime": 1766370100.1828713,
+    "hash": "90e95f166e30db3bdfac5ca9b4ba8b88"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_report_finding/user.md": {
+    "mtime": 1766370100.1829197,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_bill/system.md": {
+    "mtime": 1766370100.174372,
+    "hash": "c58be8e704daf9e7dad7d596fa8ba0f3"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_book_ideas/system.md": {
+    "mtime": 1766370100.1858037,
+    "hash": "da4bb0835cab8a483b70869e686f86a5"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_cfp_submission/system.md": {
+    "mtime": 1766370100.174703,
+    "hash": "052956474c9e77ac95832d11286d2471"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_legislation/system.md": {
+    "mtime": 1766370100.1957905,
+    "hash": "b7ac7fb5d434bb2d62bebaf2659ff00a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_rpg_summary/system.md": {
+    "mtime": 1766370100.183055,
+    "hash": "a1c223e0510fea5b18589ccf01f1475c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_visualization/system.md": {
+    "mtime": 1766370100.1843529,
+    "hash": "64651b9d5910b6097af3027dbec2a3de"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/ai/system.md": {
+    "mtime": 1766370100.1740751,
+    "hash": "0e49911f03d2ee5f580f358fb7bfdcfd"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_references/system.md": {
+    "mtime": 1766370100.1886287,
+    "hash": "ac5214aef53bc559310b109028058a62"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_references/user.md": {
+    "mtime": 1766370100.1886523,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/identify_dsrp_perspectives/system.md": {
+    "mtime": 1766370100.1908433,
+    "hash": "fcfd34549237978474ad58d3e1239f26"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_5_sentence_summary/system.md": {
+    "mtime": 1766370100.1788802,
+    "hash": "32b277419b8c1166a54d9f55547adf9d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/sanitize_broken_html_to_markdown/system.md": {
+    "mtime": 1766370100.1944199,
+    "hash": "22660467351b00a81aeb4e8062153838"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_pull-requests/system.md": {
+    "mtime": 1766370100.1972795,
+    "hash": "af1367e644526291854ccc7cf60a4b5d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_pull-requests/user.md": {
+    "mtime": 1766370100.1973093,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_cyber_summary/system.md": {
+    "mtime": 1766370100.1798596,
+    "hash": "ad37fd1331b3acb8c52f6a1a396be146"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_poc/system.md": {
+    "mtime": 1766370100.1876993,
+    "hash": "e70f1935a5660cda72094400b8447512"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_poc/user.md": {
+    "mtime": 1766370100.187723,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/refine_design_document/system.md": {
+    "mtime": 1766370100.1940184,
+    "hash": "e683b177ac8470962697093f00e1057d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_mnemonic_phrases/readme.md": {
+    "mtime": 1766370100.1817448,
+    "hash": "eb5f7459f2381e83f2280d2d02a5ba97"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_mnemonic_phrases/system.md": {
+    "mtime": 1766370100.181799,
+    "hash": "3e00462d521186bb7d62926ab2cec180"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_song_meaning/system.md": {
+    "mtime": 1766370100.1888134,
+    "hash": "1f06aeb995f3807bdda9cf285948afc6"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/humanize/README.md": {
+    "mtime": 1766370100.1904771,
+    "hash": "55106c39a2d9f13d0b3e116097dc002a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/humanize/system.md": {
+    "mtime": 1766370100.1905904,
+    "hash": "42034cb50369b602a6d43fed8cf51580"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/improve_writing/system.md": {
+    "mtime": 1766370100.191969,
+    "hash": "f5c2a9736f5bff21f1670acff6e1e06e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/improve_writing/user.md": {
+    "mtime": 1766370100.1919968,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_tech_impact/system.md": {
+    "mtime": 1766370100.1773124,
+    "hash": "67cf41c9e11f07764f3b31988b4e4813"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_tech_impact/user.md": {
+    "mtime": 1766370100.177339,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_ctf_writeup/README.md": {
+    "mtime": 1766370100.186177,
+    "hash": "6c2c1690b791073f0132360ba0e821f7"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_ctf_writeup/system.md": {
+    "mtime": 1766370100.186226,
+    "hash": "3078afe1b014c0af3892bd756c835c68"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_check_dunning_kruger/system.md": {
+    "mtime": 1766370100.1976233,
+    "hash": "9693e1ddd9056e4dc576b30250465c98"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_formal_email/system.md": {
+    "mtime": 1766370100.180428,
+    "hash": "70798366d7bb2e786fe1a84900cea840"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/coding_master/system.md": {
+    "mtime": 1766370100.1785622,
+    "hash": "62bcb5684e892f0cb32fa3baaf99cfeb"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_core_message/system.md": {
+    "mtime": 1766370100.1861043,
+    "hash": "55eb9df4bb2e494509c07dd70ed4698b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/dialog_with_socrates/system.md": {
+    "mtime": 1766370100.184473,
+    "hash": "878630abba2895e34733876479d245bf"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_find_negative_thinking/system.md": {
+    "mtime": 1766370100.1982982,
+    "hash": "290fb9289238a8970c2831a0c69c84e9"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_coding_feature/README.md": {
+    "mtime": 1766370100.1794498,
+    "hash": "cb4cb3220277ef6770d02cdef43e54b3"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_coding_feature/system.md": {
+    "mtime": 1766370100.1795037,
+    "hash": "9dd941218862a4213bc8100f6afe893e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/prepare_7s_strategy/system.md": {
+    "mtime": 1766370100.192795,
+    "hash": "ba4a56c7b1ea45e65a1e17811bbc7b89"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/find_hidden_message/system.md": {
+    "mtime": 1766370100.1898289,
+    "hash": "1b1085db91248aca531e8d492ebbe30c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_git_changes/system.md": {
+    "mtime": 1766370100.1955347,
+    "hash": "0feb907ccb32d7ebc4a128717c9d6f9a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_recommendations/system.md": {
+    "mtime": 1766370100.1885297,
+    "hash": "72c4ce04dfa16971ecc4646f60aead6b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_recommendations/user.md": {
+    "mtime": 1766370100.188551,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_idea_compass/system.md": {
+    "mtime": 1766370100.1808982,
+    "hash": "54a724c06124cb4fe5ddf014d8a80381"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/rate_value/README.md": {
+    "mtime": 1766370100.193187,
+    "hash": "082106efb77f64b0a54089e7b878cca2"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/rate_value/system.md": {
+    "mtime": 1766370100.1932411,
+    "hash": "6005a7c803291887c02ab4785cd4a908"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/rate_value/user.md": {
+    "mtime": 1766370100.1932657,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/identify_dsrp_relationships/system.md": {
+    "mtime": 1766370100.1909764,
+    "hash": "41f8924da2a373f4813fb2d86783dc6e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_paper/system.md": {
+    "mtime": 1766370100.1757631,
+    "hash": "6c57e19b2cf28f060e1a0457ed0293b7"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_paper/user.md": {
+    "mtime": 1766370100.1757874,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_red_team_thinking/system.md": {
+    "mtime": 1766370100.1985402,
+    "hash": "f0a62d9cedf3651bd15403c346cb2f06"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_threat_scenarios/system.md": {
+    "mtime": 1766370100.1838183,
+    "hash": "57350794eba356de61762e09b0dbc197"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_diy/system.md": {
+    "mtime": 1766370100.1800597,
+    "hash": "7268afc00076796f7662eb372d442270"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_ttrc_graph/system.md": {
+    "mtime": 1766370100.1839128,
+    "hash": "c2966c3225cb00d056f586c4b3d9d5a7"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_insights/system.md": {
+    "mtime": 1766370100.18653,
+    "hash": "c96c88c596a05c4e71791d33e3ce20e2"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_debate/system.md": {
+    "mtime": 1766370100.174978,
+    "hash": "a15275020164bbd11d9ecd9aa9a9105e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/transcribe_minutes/README.md": {
+    "mtime": 1766370100.1988833,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/transcribe_minutes/system.md": {
+    "mtime": 1766370100.1989374,
+    "hash": "d22628e721117f79d97057d0d7f28e74"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_prediction_block/system.md": {
+    "mtime": 1766370100.1824563,
+    "hash": "8d0ed296aba84aa3d8b0edce00d3a071"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_pattern/system.md": {
+    "mtime": 1766370100.1822758,
+    "hash": "50b711b4b864323d3a9284a34480d30c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_latex/system.md": {
+    "mtime": 1766370100.1999419,
+    "hash": "7a4bd2a4f082246d59766ea21a17885c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_meeting/system.md": {
+    "mtime": 1766370100.1958723,
+    "hash": "01547d8d4b91c9dade4e6f4d1d2b1a35"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/explain_code/system.md": {
+    "mtime": 1766370100.1846225,
+    "hash": "fac1d56c1b8429c33660428738c24c11"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/explain_code/user.md": {
+    "mtime": 1766370100.1846635,
+    "hash": "d784fa8b6d98d27699781bd9a7cf19f0"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_personality/system.md": {
+    "mtime": 1766370100.176112,
+    "hash": "04448c0ec7c8053d39c33ce9271411e9"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_product_features/README.md": {
+    "mtime": 1766370100.1880684,
+    "hash": "daffe56b93fe8e425a6ccd4f8a2e42da"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_product_features/system.md": {
+    "mtime": 1766370100.1882625,
+    "hash": "651af9e9e30ce911318a1ed0a7ff400e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_product_features/dmiessler/extract_wisdom-1.0.0/system.md": {
+    "mtime": 1766370100.1881673,
+    "hash": "27be6a9f16d0ae42426f9157780164e7"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_product_features/dmiessler/extract_wisdom-1.0.0/user.md": {
+    "mtime": 1766370100.1882129,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/show_fabric_options_markmap/system.md": {
+    "mtime": 1766370100.1945415,
+    "hash": "f58621eecf433360bd58348e850335da"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_sales_call/system.md": {
+    "mtime": 1766370100.1771061,
+    "hash": "dbb0c8d7bd974a5b01d22b330c371af9"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_patent/system.md": {
+    "mtime": 1766370100.176016,
+    "hash": "c95168e53f9f27b904d4665e70df990c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_predictions/system.md": {
+    "mtime": 1766370100.1878064,
+    "hash": "ce63a93484f0c26e6aa8d889304dd167"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_threat_report_trends/system.md": {
+    "mtime": 1766370100.1777458,
+    "hash": "0b97e11f3a2c087f389f7af7a60805d2"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_threat_report_trends/user.md": {
+    "mtime": 1766370100.1777952,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_instructions/system.md": {
+    "mtime": 1766370100.1870797,
+    "hash": "cbced1d2b92d265dcd4c871f04b43435"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_product_feedback/system.md": {
+    "mtime": 1766370100.1762784,
+    "hash": "0eacf8331ce8bc29c3ed9f15aeb06d87"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/provide_guidance/system.md": {
+    "mtime": 1766370100.1928792,
+    "hash": "1d53495a91827df23611885a986c5417"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/explain_math/README.md": {
+    "mtime": 1766370100.1848836,
+    "hash": "29d49dd64d7f87aea0354d4610931870"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/explain_math/system.md": {
+    "mtime": 1766370100.1849294,
+    "hash": "618194319e7cf10ae67bd45931658d21"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_command/README.md": {
+    "mtime": 1766370100.1797066,
+    "hash": "4619709a8b704c12cd0124b0d50c0915"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_command/system.md": {
+    "mtime": 1766370100.1797547,
+    "hash": "8e509ad577a2dc1a67342fde1140093f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_command/user.md": {
+    "mtime": 1766370100.179777,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_terraform_plan/system.md": {
+    "mtime": 1766370100.1774352,
+    "hash": "53bfa6f0dd3d19b3daee7d4dffd050bf"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/review_design/system.md": {
+    "mtime": 1766370100.194228,
+    "hash": "f0c52260fc97f818440b307c2ee35bac"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/clean_text/system.md": {
+    "mtime": 1766370100.1784234,
+    "hash": "e20e5d51520dc8c9255107ce20767a2b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/clean_text/user.md": {
+    "mtime": 1766370100.1784463,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/improve_prompt/system.md": {
+    "mtime": 1766370100.1917298,
+    "hash": "6db30448ec63d5c4892c26f61ab650c8"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_art_prompt/system.md": {
+    "mtime": 1766370100.1792014,
+    "hash": "df6d9f7be7bf0234666a4beddb66d344"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_incident/system.md": {
+    "mtime": 1766370100.1751814,
+    "hash": "49ccf9186c9392ee88651fbf0acfedf3"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_incident/user.md": {
+    "mtime": 1766370100.175205,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_find_blindspots/system.md": {
+    "mtime": 1766370100.1982057,
+    "hash": "e63bb66eacb8c0b4ab8bf7da5b605e5b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_git_diff_commit/README.md": {
+    "mtime": 1766370100.1805108,
+    "hash": "2c5311f09525176d59156772ceffc1a1"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_git_diff_commit/system.md": {
+    "mtime": 1766370100.1805677,
+    "hash": "04c5c992478ed49fcbb4e5a3abbdab63"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/explain_docs/system.md": {
+    "mtime": 1766370100.1847374,
+    "hash": "f2bc8491a2949fe6fa90ee6a696688bf"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/explain_docs/user.md": {
+    "mtime": 1766370100.184762,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/ask_uncle_duke/system.md": {
+    "mtime": 1766370100.1781688,
+    "hash": "c246f45b4c6c0d502169a1c414c4a0e9"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_prompt/system.md": {
+    "mtime": 1766370100.1971893,
+    "hash": "cf537eaa6977f80ef28aa756d383a745"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_logo/system.md": {
+    "mtime": 1766370100.1812532,
+    "hash": "899dbbb0ab2a5bbaa53f8dec3ca948f3"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_logo/user.md": {
+    "mtime": 1766370100.1812785,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_prose_pinker/system.md": {
+    "mtime": 1766370100.1768796,
+    "hash": "2118afea821c1f11411d9fe37a9ee484"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_newsletter_entry/system.md": {
+    "mtime": 1766370100.1820354,
+    "hash": "30011641a2d55931762b41370de51aec"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_newsletter_entry/user.md": {
+    "mtime": 1766370100.1820636,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_hackerone_report/README.md": {
+    "mtime": 1766370100.1996276,
+    "hash": "4920bf202d0eb4014a86bde0f59202e2"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/write_hackerone_report/system.md": {
+    "mtime": 1766370100.1998582,
+    "hash": "e108c319def0768480397177b3484bc4"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/recommend_pipeline_upgrades/system.md": {
+    "mtime": 1766370100.1938345,
+    "hash": "69b02b4e4aca09ed3fd4c6a8d16fcada"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_newsletter/system.md": {
+    "mtime": 1766370100.1960676,
+    "hash": "29dcbdc7b93b2cc338f27d6ca5372509"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/summarize_newsletter/user.md": {
+    "mtime": 1766370100.1960914,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_reading_plan/system.md": {
+    "mtime": 1766370100.182685,
+    "hash": "eaf1cb865d444f7c14519b3a4e2040b8"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_summary/system.md": {
+    "mtime": 1766370100.1836224,
+    "hash": "c177d055de4c205da273c7b50756aa2d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_main_idea/system.md": {
+    "mtime": 1766370100.1873775,
+    "hash": "491c0a4c744549429488b794dcc43ed4"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_mermaid_visualization_for_github/system.md": {
+    "mtime": 1766370100.1815765,
+    "hash": "71243e09853c40f469378c5749807513"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_paper_simple/system.md": {
+    "mtime": 1766370100.1759167,
+    "hash": "97c9dcf818fe4bf394cbe7091c222652"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_patterns/system.md": {
+    "mtime": 1766370100.1876204,
+    "hash": "c83f5c33cc919e7b3799594e551b6c2b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/youtube_summary/system.md": {
+    "mtime": 1766370100.20089,
+    "hash": "96ae2a55947e6735a0ae02a860102dc6"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/improve_report_finding/system.md": {
+    "mtime": 1766370100.1918397,
+    "hash": "f301415571c8d3f130579c1ad4d86f7a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/improve_report_finding/user.md": {
+    "mtime": 1766370100.1918864,
+    "hash": "6eaab6b894baa9e11de7a25e2b28760d"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_extract_intro_sentences/system.md": {
+    "mtime": 1766370100.1980422,
+    "hash": "273708e95461accc99fb6c5d94e40285"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/agility_story/system.md": {
+    "mtime": 1766370100.173959,
+    "hash": "b364004100825fbb9aa35991a09ccc70"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/agility_story/user.md": {
+    "mtime": 1766370100.1739879,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/convert_to_markdown/system.md": {
+    "mtime": 1766370100.1787405,
+    "hash": "a004a8ac8539bb63d2e8b68042d7be9b"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/find_female_life_partner/system.md": {
+    "mtime": 1766370100.1897442,
+    "hash": "81188c32341b39ae122af7f178f148b5"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_tags/system.md": {
+    "mtime": 1766370100.1837022,
+    "hash": "79aa88db611bfd3411e12103f61cb1de"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/t_describe_life_outlook/system.md": {
+    "mtime": 1766370100.197952,
+    "hash": "f1165b479d985864c817b72e745597a5"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/extract_insights_dm/system.md": {
+    "mtime": 1766370100.1869829,
+    "hash": "af0bd5d834087676568ad312a7847a3a"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_coding_project/README.md": {
+    "mtime": 1766370100.1795819,
+    "hash": "2ccb4d4bf8517b209885172f1122004f"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_coding_project/system.md": {
+    "mtime": 1766370100.1796303,
+    "hash": "ceda2d7057b25740e86eb539cc8dc984"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/create_upgrade_pack/system.md": {
+    "mtime": 1766370100.1840844,
+    "hash": "fad2e03dcd635aa449a53102e03eaa8c"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_spiritual_text/system.md": {
+    "mtime": 1766370100.1771922,
+    "hash": "bca638ef1ad01a64bacf195aafd9eeac"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/patterns/analyze_spiritual_text/user.md": {
+    "mtime": 1766370100.177218,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/custom/clear_job_post/system.md": {
+    "mtime": 1766370100.173414,
+    "hash": "f05643ed29c679b16719be48f01d39c0"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/custom/cover_letter_full_stack_pt_br/system.md": {
+    "mtime": 1766370100.1738482,
+    "hash": "b7a68ac8d6b6c4ac421340f78ec3fba1"
+  },
+  "/Users/roalcantara/Work/dots/config/fabric/custom/cover_letter_devops_pt_br/system.md": {
+    "mtime": 1766370100.1737027,
+    "hash": "4d6e21d20adf13b966b3e12e74e3a242"
+  },
+  "/Users/roalcantara/Work/dots/config/glow/glow.yml": {
+    "mtime": 1769752428.4073386,
+    "hash": "05984e89faf443d9287be83907c26533"
+  },
+  "/Users/roalcantara/Work/dots/config/helix/README.md": {
+    "mtime": 1769844080.0709946,
+    "hash": "26ba75af0851492db8decb2588be5b56"
+  },
+  "/Users/roalcantara/Work/dots/config/sops/config.yaml": {
+    "mtime": 1777809260.3896184,
+    "hash": "98760fd175c4b8ca16ccaefed30e9704"
+  },
+  "/Users/roalcantara/Work/dots/config/sops/README.md": {
+    "mtime": 1769459330.964708,
+    "hash": "89e299683da06f978ca5a094543a61d7"
+  },
+  "/Users/roalcantara/Work/dots/config/git/README.md": {
+    "mtime": 1766370100.2020965,
+    "hash": "e6752d9077b2afee8963c985067dd8c5"
+  },
+  "/Users/roalcantara/Work/dots/distros/debian/container-structure-test.yml": {
+    "mtime": 1777809259.4292278,
+    "hash": "a3938ac60b04209d407bfb71c68a5e8e"
+  },
+  "/Users/roalcantara/Work/dots/distros/ubuntu/container-structure-test.yml": {
+    "mtime": 1777809259.4296103,
+    "hash": "590b05bd1f02dd4bd945f2400f13b913"
+  }
+}
