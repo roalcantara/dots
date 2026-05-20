@@ -1,2 +1,4 @@
 # Ignore everything
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal
