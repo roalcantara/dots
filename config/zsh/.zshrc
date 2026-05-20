@@ -6,6 +6,15 @@
 # http://zsh.sourceforge.net/Intro/intro_3.html
 # https://zsh.sourceforge.io/Contrib/startup/std/zshrc
 
+term_prog=${(L)TERM_PROGRAM}
+if [[ -n "$ZSH_MINIMAL_TERMINAL" || "$term_prog" == "warp" || "$term_prog" == "warpterminal" || "$term_prog" == "vscode" || "$term_prog" == "vscode-insider" || -n "$VSCODE_INJECTION" || -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_GIT_IPC_HANDLE" ]]; then
+  export ZSH_MINIMAL_TERMINAL=1
+  export _FLOX_SET_PROMPT=false
+else
+  unset ZSH_MINIMAL_TERMINAL
+fi
+setopt prompt_subst
+
 # HELPERS {
   # Redirects stdout (file descriptor 1) to /dev/null
   # Then redirects stderr (file descriptor 2) to wherever stdout is going (which is now /dev/null)
@@ -182,6 +191,8 @@
   setopt list_ambiguous   # Completion Navigation | Show unambiguous prefix first
   # }
 
+  # setopt prompt_subst
+
   # https://no-color.org
   unset NO_COLOR
   # }
@@ -270,6 +281,11 @@
   # Activate the Default Environment
   if _has_command flox; then
     eval "$(FLOX_SHELL=/usr/bin/zsh flox activate --dir $( [[ -e ~/.flox ]] && echo ~ || echo ~/.config/flox ) -m run)"
+  fi
+
+  # Flox activation may rewrite prompt control flags; enforce minimal prompt mode again.
+  if [[ -n "$ZSH_MINIMAL_TERMINAL" ]]; then
+    export _FLOX_SET_PROMPT=false
   fi
 # }
 
@@ -390,3 +406,13 @@
 
 # Turso
 export PATH="$PATH:/Users/roalcantara/.turso"
+
+# FINAL PROMPT GUARD
+# Keep VS Code/Warp terminals on a plain prompt even if prior hooks injected prompt code.
+if [[ -n "$ZSH_MINIMAL_TERMINAL" ]]; then
+  export _FLOX_SET_PROMPT=false
+  setopt prompt_subst
+  PROMPT='❯ '
+  RPROMPT=''
+  PS1="$PROMPT"
+fi

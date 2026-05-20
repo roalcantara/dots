@@ -129,7 +129,6 @@ zstyle ':fzf-tab:*' fzf-flags --bind=tab:accept --bind=right:accept --bind=enter
     --keep-right \
     --marker '✔' \
     --pointer '▶' \
-    --margin 1,1 \
     --prompt '❯ ' \
     --height=40% \
     --tiebreak='chunk' \

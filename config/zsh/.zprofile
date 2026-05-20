@@ -144,6 +144,14 @@
   # fi
 # }
 
+term_prog=${(L)TERM_PROGRAM}
+if [[ -n "$ZSH_MINIMAL_TERMINAL" || "$term_prog" == "warp" || "$term_prog" == "warpterminal" || "$term_prog" == "vscode" || "$term_prog" == "vscode-insider" || -n "$VSCODE_INJECTION" || -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_GIT_IPC_HANDLE" ]]; then
+  export ZSH_MINIMAL_TERMINAL=1
+  export _FLOX_SET_PROMPT=false
+else
+  unset ZSH_MINIMAL_TERMINAL
+fi
+
 # if .zshrc exists, source it
 if [[ $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zshrc" ]]; then
   source "$ZDOTDIR/.zshrc"
