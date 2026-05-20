@@ -1,0 +1,47 @@
+########################################################################
+# Television | https://alexpasmantier.github.io/television
+# A fast, portable and hackable fuzzy finder for the terminal in RUST
+########################################################################
+# 📺 CHANNNELS: TOML configuration file that tells tv
+#             ➡ What to search (the source command)
+#             ➡ How to preview results (optional)
+#             ➡ Custom keybindings and actions (optional)
+# https://alexpasmantier.github.io/television/getting-started
+########################################################################
+# DEFAULT CHANNELS -----------------------------------------------------
+# tv files         # Browse files (default)
+# tv text          # Search file contents with ripgrep
+# tv git-repos     # Find git repositories
+# tv env           # Search environment variables
+########################################################################
+
+# CUSTOM CHANNEL for channels ------------------------------------------
+# https://youtu.be/wwJA9mDqIVc
+[metadata]
+name = "channels"
+description = "Fins and select channels"
+requirements = ["tv"]
+
+# The shell command that produces searchable entries
+[source]
+command = "tv list-channels"
+
+# Add a preview so you can see the content before selecting
+[preview]
+command = "bat -n --color=always ~/.config/television/cable/'{}'.toml"
+
+# Customize the UI
+[ui]
+preview_panel = { size = 60 }  # 60% width for preview
+
+# Add a Custom Action
+[keybindings]
+enter = "actions:zap"
+
+# Defines a custom action with a command
+[actions.zap]
+description = "Switch to the channel"
+command = "tv '{}'"
+# fork: Run command, return to tv afterward
+# execute: Replace tv with the command (doesn't return)
+mode = "execute"

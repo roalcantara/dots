@@ -1,0 +1,42 @@
+########################################################################
+# Television | https://alexpasmantier.github.io/television
+# A fast, portable and hackable fuzzy finder for the terminal in RUST
+########################################################################
+# 📺 CHANNNELS: TOML configuration file that tells tv
+#             ➡ What to search (the source command)
+#             ➡ How to preview results (optional)
+#             ➡ Custom keybindings and actions (optional)
+# https://alexpasmantier.github.io/television/getting-started
+########################################################################
+# DEFAULT CHANNELS -----------------------------------------------------
+# tv files         # Browse files (default)
+# tv text          # Search file contents with ripgrep
+# tv git-repos     # Find git repositories
+# tv env           # Search environment variables
+########################################################################
+
+# CUSTOM CHANNEL for fabric patterns -------------------------------------------
+# https://youtu.be/wwJA9mDqIVc
+
+[metadata]
+name = "fabric"
+description = "A channel to select fabric patterns"
+requirements = ["fabric-ai", "glow"]
+
+[source]
+command = ["fabric-ai --listpatterns"]
+
+[preview]
+command = "glow -s dracula '{}'"
+env = { BAT_THEME = "dracula" }
+
+[keybindings]
+enter = "actions:run_pattern"
+
+[actions.run_pattern]
+description = "Runs the selected pattern"
+command = "fabric-ai -p '{}'"
+mode = "execute"
+
+[ui.preview_panel]
+hidden = false

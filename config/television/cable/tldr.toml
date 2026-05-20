@@ -1,0 +1,50 @@
+########################################################################
+# Television | https://alexpasmantier.github.io/television
+# A fast, portable and hackable fuzzy finder for the terminal in RUST
+########################################################################
+# 📺 CHANNNELS: TOML configuration file that tells tv
+#             ➡ What to search (the source command)
+#             ➡ How to preview results (optional)
+#             ➡ Custom keybindings and actions (optional)
+########################################################################
+# DEFAULT CHANNELS -----------------------------------------------------
+# tv files         # Browse files (default)
+# tv text          # Search file contents with ripgrep
+# tv git-repos     # Find git repositories
+# tv env           # Search environment variables
+########################################################################
+
+# CUSTOM CHANNEL for TL;DR ---------------------------------------------
+# https://alexpasmantier.github.io/television/getting-started/first-channel
+[metadata]
+name = "tldr"
+description = "Browse TLDR pages"
+requirements = ["tldr"]
+
+# The shell command that produces searchable entries
+# https://alexpasmantier.github.io/television/getting-started/first-channel#step-2-add-basic-configuration
+[source]
+command = "tldr --list"
+
+# Add a preview so you can see the content before selecting
+# https://alexpasmantier.github.io/television/getting-started/first-channel#step-3-add-preview
+[preview]
+command = "tldr '{}'"
+
+# Customize the UI
+# https://alexpasmantier.github.io/television/getting-started/first-channel#step-5-customize-the-ui
+[ui]
+preview_panel = { size = 60 }  # 60% width for preview
+
+# Add a Custom Action
+# https://alexpasmantier.github.io/television/getting-started/first-channel#step-4-add-a-custom-action
+[keybindings]
+# Maps Ctrl+E to trigger the "open" action
+ctrl-e = "actions:open"
+
+# Defines a custom action with a command
+[actions.open]
+command = "tldr '{}'"
+# fork: Run command, return to tv afterward
+# execute: Replace tv with the command (doesn't return)
+mode = "fork"
