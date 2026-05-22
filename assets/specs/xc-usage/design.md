@@ -102,26 +102,29 @@ All behavior is implemented in one file: `config/bin/xc-usage` (Zsh). No subcomm
 
 ### 4.1 Invocation table
 
-| Invocation                               | Subcommand / mode | Action                              | Stdout                             | Stderr                    | Exit           |
-| ---------------------------------------- | ----------------- | ----------------------------------- | ---------------------------------- | ------------------------- | -------------- |
-| `xc-usage`                               | (none)            | Print self `##?`                    | help text                          | —                         | **0**          |
-| `xc-usage -h`                            | (none)            | Print self `##?`                    | help text                          | —                         | **0**          |
-| `xc-usage --help`                        | (none)            | Print self `##?`                    | help text                          | —                         | **0**          |
-| `xc-usage guard SCRIPT -h`               | `guard`           | Print **SCRIPT** `##?`              | help text                          | —                         | **0**          |
-| `xc-usage guard SCRIPT --help`           | `guard`           | Print **SCRIPT** `##?`              | help text                          | —                         | **0**          |
-| `xc-usage guard SCRIPT ARG…`             | `guard`           | Not help; caller continues          | (empty)                            | —                         | **2**          |
-| `xc-usage guard` (no path, no `-h`)      | `guard`           | Not help (path = `xc-usage` itself) | (empty)                            | —                         | **2**          |
-| `xc-usage guard MISSING -h`              | `guard`           | Error                               | —                                  | file / header error       | **1**          |
-| `xc-usage guard LEGACY -h`               | `guard`           | `#?` only, no `##?`                 | —                                  | migrate hint + docopt URL | **1**          |
-| `xc-usage print SCRIPT`                  | `print`           | Emit **all** `##?` lines (legacy)   | help text (+ optional footer §5.4) | —                         | **0**          |
-| `xc-usage print SCRIPT --scope main`     | `print`           | Main docopt block only (§5.7)       | scoped help                        | —                         | **0**          |
-| `xc-usage print SCRIPT --scope sub:run`  | `print`           | Sub block `run` only                | scoped help                        | —                         | **0** or **1** |
-| `xc-usage list-subs SCRIPT`              | `list-subs`       | Subcommand names, one per line      | names                              | —                         | **0**          |
-| `xc-usage preview SCRIPT --tool T`       | `preview`         | Stacked main + all subs (§5.8)      | launcher preview                   | —                         | **0**          |
-| `xc-usage print SCRIPT --no-help-footer` | `print`           | Emit per `--scope` (no auto `-h`)   | help text                          | —                         | **0**          |
-| `xc-usage print MISSING`                 | `print`           | Error                               | —                                  | file / header error       | **1**          |
-| `xc-usage validate SCRIPT`               | `validate`        | Lint `##?` metadata                 | warnings (optional)                | errors on failure         | **0** or **1** |
-| `xc-usage foo …`                         | (unknown)         | Self usage + error                  | self `##?`                         | `Unknown command`         | **1**          |
+Target-first API (Tasks 9–10). Resolves `<target>` via PATH → fpath → file.
+
+| Invocation                               | Mode / flag   | Action                              | Stdout                             | Stderr                    | Exit           |
+| ---------------------------------------- | ------------- | ----------------------------------- | ---------------------------------- | ------------------------- | -------------- |
+| `xc-usage`                               | (none)        | Print self `##?`                    | help text                          | —                         | **0**          |
+| `xc-usage -h`                            | (none)        | Print self `##?`                    | help text                          | —                         | **0**          |
+| `xc-usage --help`                        | (none)        | Print self `##?`                    | help text                          | —                         | **0**          |
+| `xc-usage <target>`                      | (default)     | Print all `##?` lines               | help text (+ footer)               | —                         | **0** / **1**  |
+| `xc-usage <target> --md`                 | `--md`        | Help via `xc-md` (glow → bat → plain) | rendered help                    | —                         | **0**          |
+| `xc-usage <target> --metadata`           | `--metadata`  | Print only `#?` lines               | metadata                           | —                         | **0**          |
+| `xc-usage <target> --no-help-footer`     | flag          | Emit without auto `-h` footer       | help text                          | —                         | **0**          |
+| `xc-usage <target> --scope main`         | `--scope`     | Main docopt block only              | scoped help                        | —                         | **0** or **1** |
+| `xc-usage <target> --scope sub:run`      | `--scope`     | Sub block `run` only                | scoped help                        | —                         | **0** or **1** |
+| `xc-usage <target> --list-subs`          | `--list-subs` | Subcommand names, one per line      | names                              | —                         | **0**          |
+| `xc-usage <target> --preview --tool T`   | `--preview`   | Stacked main + all subs             | launcher preview                   | —                         | **0**          |
+| `xc-usage <target> --validate`           | `--validate`  | Lint `##?` header                   | —                                  | errors on failure         | **0** or **1** |
+| `xc-usage MISSING`                       | (default)     | Target not resolvable               | —                                  | error message             | **1**          |
+
+**Removed from public CLI** (never typed by users; drop or replace in bin/Zsh):
+
+- `xc-usage guard …` → bin scripts use explicit `-h` check + `command xc-usage "${0:a}"`
+- `xc-usage print …` → `xc-usage <target>` or path
+- `xc-usage validate …` → `xc-usage <target> --validate` (flag, not subcommand)
 
 **Environment (optional):**
 
@@ -260,6 +263,28 @@ Usage:
 
 **Layers:** (1) `##?` + `xc-usage` = help text · (2) `zparseopts` = flags · (3) mise `usage` =
 `mise run` tasks only. §11.1 is the empty template; this section is the filled-in example.
+
+### 4.3 xc-md contract
+
+`xc-md` is a composable markdown renderer (`glow` → `bat` → plain `cat`) that reads
+from stdin. Exit **0** on success; no stderr warnings when a renderer is absent.
+
+**File:** `config/bin/xc-md` (Zsh, same `#?` / `##?` conventions as siblings).
+
+| Step | Condition              | Action                                      |
+| ---- | ---------------------- | ------------------------------------------- |
+| 1    | `command -v glow`      | `glow` (stdin → stdout)                     |
+| 2    | else `command -v bat`  | `bat -l md --paging=never` (stdin → stdout) |
+| 3    | else                   | `cat` (passthrough)                         |
+
+**Standalone:**
+```bash
+xc-usage gen --md         # rendered help via xc-md
+xc-usage gen | xc-md      # equivalent composition
+echo '# Title' | xc-md    # standalone stdin → rendered output
+```
+
+**Symlink:** `ln -sf ~/.config/bin/xc-md ~/.local/bin/xc-md`
 
 ---
 

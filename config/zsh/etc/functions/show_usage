@@ -1,24 +1,20 @@
-#!/usr/bin/env bash
-# shellcheck shell=bash disable=SC2154,SC2004
+#!/usr/bin/env zsh
+# shellcheck disable=SC2296
 
-##? Show help information for an autoloaded function or file
+##? show_usage - Print ##? help for a Zsh function or script file
 ##?
 ##? Usage:
-##?    show_usage [function_name | file_path]
-##?
-##? Arguments:
-##?    function_name | file_path   Name of the function to show help for,
-##?                                or a path to a readable file.
-##?                                If not provided, shows help for the calling function.
+##?   show_usage [function|path]
 ##?
 ##? Options:
-##?    -h, --help    Show this screen
+##?   -h, --help   Show this screen
 ##?
-##? Example: show_usage puts
-##?
-##? Implementation delegates to xc-usage print (standalone, see config/bin/xc-usage).
+##? When [function|path] is omitted, uses the calling function name.
+##? Delegates to xc-usage print after resolving the source file.
 
 show_usage() {
+  emulate -L zsh
+
   local target="${1:-${funcstack[2]}}"
   local script=""
 
@@ -31,6 +27,7 @@ show_usage() {
       script="${functions_source[$target]:-}"
     fi
     if [[ -z "$script" ]]; then
+      local dir
       for dir in ${fpath[@]}; do
         if [[ -f "$dir/$target" ]]; then
           script="$dir/$target"
@@ -41,13 +38,13 @@ show_usage() {
   fi
 
   if [[ -z "$script" || ! -f "$script" ]]; then
-    print -u2 "show_usage: could not resolve help for '$target'"
+    print -u2 "show_usage: could not resolve help for '${target}'"
     return 1
   fi
 
-  command xc-usage print "$script"
+  command xc-usage "$script"
 }
 
-show_usage "$@"
+[[ "$ZSH_EVAL_CONTEXT" == toplevel* ]] && [[ "${(%):-%N}" == */show_usage ]] && show_usage "$@"
 
-# vi: set ft=sh:
+# vi: set ft=zsh:

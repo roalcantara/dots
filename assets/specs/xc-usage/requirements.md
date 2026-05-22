@@ -23,7 +23,7 @@ Normative CLI contracts, exit codes, migration from `#?` → `##?`, adoption pat
 | Req-1–6, 6a, 8 (core)     | **Done**     | `config/bin/xc-usage`; `mise run xc-usage:specs`                     |
 | Req-12 (`xc-usage`)       | **Done**     | `--scope`, `list-subs`, `preview`; bin `-h` wiring in Tasks 3–5      |
 | Req-7 (full bin adoption) | **Partial**  | `xc-puts`/`xc-toast` use `guard`; fabric/skills/git lack scoped `-h` |
-| Req-9–11                  | **Not done** | Phase 2: `show_usage`, Zsh inventory, `config/zsh/README.md`         |
+| Req-9–11                  | **Done**     | Task 9–11: `show_usage` delegates; Zsh inventory; docs updated   |
 
 Normative contracts for **pending** work remain in [design.md](./design.md) and [tasks.md](./tasks.md).
 

@@ -142,7 +142,7 @@ warn() { printf 'WARN: %s\n' "$*" >&2; }
 err() { printf 'ERROR: %s\n' "$*" >&2; }
 
 usage() {
-  command xc-usage print "$SCRIPT_PATH"
+  command xc-usage "$SCRIPT_PATH"
 }
 
 run_cmd() {

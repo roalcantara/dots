@@ -1,0 +1,30 @@
+#!/usr/bin/env zsh
+#? dots 0.1.0
+#? License RIT (Robot Institute of Technology)
+#? This is free software: you are free to change and redistribute it.
+#? There is NO WARRANTY, to the extent permitted by law.
+
+##? xc-md - Render markdown from stdin: glow → bat → plain
+##?
+##? Usage:
+##?   xc-md < input.md
+##?   echo '# Title' | xc-md
+##?   xc-usage <target> --md
+##?
+##? Options:
+##?   -h, --help    Show this screen
+
+emulate -L zsh
+
+case "${1:-}" in
+  -h|--help) command xc-usage "${0:a}"; exit $? ;;
+esac
+
+if command -v glow >/dev/null 2>&1; then
+  glow - 2>/dev/null || cat
+elif command -v bat >/dev/null 2>&1; then
+  bat -l md --paging=never 2>/dev/null || cat
+else
+  cat
+fi
+exit 0

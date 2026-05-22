@@ -2,7 +2,7 @@
 # xc-usage — Tasks
 
 **Date:** 2026-05-20
-**Status:** Tasks **1** and **1b** done; **Tasks 3–5** (scoped `-h` on bins) open
+**Status:** Tasks **1**, **1b**, **7**, **9** done; **Task 10** (simplified xc-usage + xc-md) done; Tasks 3–5, 6, 8, 10, 11 open
 **Requires:** [design.md](./design.md), [requirements.md](./requirements.md)
 
 **Orchestration:** [HANDOFF.md](./HANDOFF.md) — generic implementer prompt per task; one subagent at a time.
@@ -180,13 +180,13 @@
 
 ---
 
-## Task 7 — `show_usage` → `xc-usage print`
+## Task 7 — `show_usage` → `xc-usage`
 
 **Covers:** Req-9
 
-- [ ] Rewrite `config/zsh/etc/functions/show_usage` per [design.md §10.2](./design.md#102-show_usage-implementation-normative)
-- [ ] Remove inline `grep '^##?'` from `show_usage`
-- [ ] Manual: `show_usage psc` / `show_usage /path/to/psc` work
+- [x] Rewrite `config/zsh/etc/functions/show_usage` per [design.md §10.2](./design.md#102-show_usage-implementation-normative)
+- [x] Remove inline `grep '^##?'` from `show_usage`
+- [x] Manual: `show_usage psc` / `show_usage /path/to/psc` work
 
 ### ACCEPTANCE CRITERIA
 
@@ -213,9 +213,10 @@
 
 **Covers:** Req-5, Req-11
 
-- [ ] Create `config/zsh/README.md` per design §11
-- [ ] `config/bin/README.md` cross-links `config/zsh/README.md`
-- [ ] `assets/specs/xc-git/design.md` help convention updated
+- [x] Create `config/zsh/README.md` per design §11
+- [x] `config/bin/README.md` cross-links `config/zsh/README.md`
+- [x] Docs updated with xc-md and target-first xc-usage
+- [x] `assets/specs/xc-git/design.md` help convention updated
 
 ### ACCEPTANCE CRITERIA
 

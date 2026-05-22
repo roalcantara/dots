@@ -156,7 +156,7 @@ _xc_sub_summary() {
 _xc_fzf_pick_tool() {
   local rows="$1"
   local xc_usage="$(_xc_usage_cmd)"
-  local preview="${(q)xc_usage} preview {2} --tool {1}"
+  local preview="${(q)xc_usage} {2} --preview --tool {1}"
 
   printf '%s\n' ${(ps:\n:)rows} | command fzf --ansi \
     --delimiter=$'\t' --with-nth=1,3 \
@@ -170,7 +170,7 @@ _xc_fzf_pick_tool() {
 _xc_fzf_pick_sub() {
   local tool_path="$1" name="$2" rows="$3"
   local xc_usage="$(_xc_usage_cmd)"
-  local preview="${(q)xc_usage} print ${(q)tool_path} --scope sub:{1}"
+  local preview="${(q)xc_usage} ${(q)tool_path} --scope sub:{1}"
 
   printf '%s\n' ${(ps:\n:)rows} | command fzf --ansi \
     --delimiter=$'\t' --with-nth=1,2 \

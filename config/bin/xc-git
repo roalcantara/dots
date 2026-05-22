@@ -139,11 +139,12 @@ _xc_git_emit() {
 
 _xc_git_branch_preview() {
   _xc_git_resolve_self
-  _xc_git_xc_usage guard "$REPLY" "$@"; local _xc_u=$?
-  (( _xc_u == 0 )) && return 0
-  (( _xc_u == 1 )) && return 1
+  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    _xc_git_xc_usage "$REPLY" --scope sub:branch-preview
+    return 0
+  fi
 
-  # Subcommand-specific help (guard printed full ##?; override with subhelp)
+  # Subcommand-specific help
   if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
     _xc_git_subhelp branch-preview
     return 0
@@ -175,9 +176,10 @@ _xc_git_fixup_suggest() {
   set -euo pipefail
 
   _xc_git_resolve_self
-  set +e; _xc_git_xc_usage guard "$REPLY" "$@"; local _xc_u=$?; set -e
-  (( _xc_u == 0 )) && return 0
-  (( _xc_u == 1 )) && return 1
+  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    _xc_git_xc_usage "$REPLY" --scope sub:fixup-suggest
+    return 0
+  fi
 
   _base_ref="origin/main"
   _top_n=10
@@ -490,9 +492,10 @@ _xc_git_fixup_suggest() {
 
 _xc_git_log_fzf() {
   _xc_git_resolve_self
-  _xc_git_xc_usage guard "$REPLY" "$@"; local _xc_u=$?
-  (( _xc_u == 0 )) && return 0
-  (( _xc_u == 1 )) && return 1
+  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    _xc_git_xc_usage "$REPLY" --scope sub:log-fzf
+    return 0
+  fi
 
   if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
     _xc_git_subhelp log-fzf
@@ -629,12 +632,12 @@ _xc_git_log_fzf() {
 # ── Top-level dispatch ───────────────────────────────────────────
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-  _xc_git_xc_usage guard "${${(%):-%x}:a}" "$@" || _xc_git_xc_usage print "${${(%):-%x}:a}"
+  _xc_git_xc_usage "${${(%):-%x}:a}"
   exit 0
 fi
 
 if [[ -z "${1:-}" ]]; then
-  _xc_git_xc_usage print "${${(%):-%x}:a}"
+  _xc_git_xc_usage "${${(%):-%x}:a}"
   exit 1
 fi
 
@@ -647,7 +650,9 @@ case "$subcommand" in
   log-fzf)        _xc_git_log_fzf "$@" ;;
   *)
     echo "xc-git: unknown subcommand: ${subcommand}" >&2
-    _xc_git_xc_usage print "${${(%):-%x}:a}" >&2
+    _xc_git_xc_usage "${${(%):-%x}:a}" >&2
     exit 1
     ;;
 esac
+
+# vi: set ft=zsh:
