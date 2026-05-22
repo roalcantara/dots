@@ -3,10 +3,23 @@
 Help conventions, command reference, and worked examples for Zsh autoload functions
 under `config/zsh/etc/functions/`.
 
+## Zsh-only vs migrated
+
+Some functions belong exclusively on `$fpath`; others have moved to `config/bin/`.
+See [config/bin/README.md](../bin/README.md) for the PATH helpers.
+
+| Status        | Examples           | Notes                                          |
+| ------------- | ------------------ | ---------------------------------------------- |
+| **Zsh-only**  | `gen`, `gitx`, `psc`, `osx` | Autoloaded from `$fpath`; never migrate to bin |
+| **Migrated**  | `puts` → `xc-puts`, `toast` → `xc-toast` | Live in `config/bin/`; fpath copies deleted    |
+
+**`gen`** stays on `$fpath` forever — it generates completions from external
+commands and is not a candidate for `config/bin`.
+
 ## Help conventions
 
 Every function uses docopt-shaped **`##?`** headers. Help is printed via **`show_usage`**
-which delegates to `xc-usage print`. The convention is the same as `config/bin` scripts.
+or `command xc-usage <name>`. The convention is the same as `config/bin` scripts.
 
 ### Canonical `##?` template
 
@@ -27,7 +40,7 @@ which delegates to `xc-usage print`. The convention is the same as `config/bin` 
 ##?   <tool> -h
 ```
 
-See also: [config/bin/specs/xc-usage/design.md §4.2](../bin/specs/xc-usage/design.md#42-end-to-end-example-xc-foo) for a complete end-to-end example.
+See also: [assets/specs/xc-usage/design.md §4.2](../../assets/specs/xc-usage/design.md#42-end-to-end-example-xc-foo) for a complete end-to-end example.
 
 ## Three-layer help model
 
@@ -41,7 +54,7 @@ See also: [config/bin/specs/xc-usage/design.md §4.2](../bin/specs/xc-usage/desi
 
 ## Command reference
 
-See [config/bin/specs/xc-usage/design.md §4.1](../bin/specs/xc-usage/design.md#41-invocation-table) for the full `xc-usage` command table.
+See [assets/specs/xc-usage/design.md §4.1](../../assets/specs/xc-usage/design.md#41-invocation-table) for the full `xc-usage` command table.
 
 ## Standalone `xc-usage`
 
@@ -54,12 +67,14 @@ ln -sf ~/.config/bin/xc-usage ~/.local/bin/xc-usage
 
 ## `show_usage`
 
-`show_usage` is the Zsh-facing entrypoint. It resolves a function name to its source file and delegates to `command xc-usage print <file>`.
+`show_usage` is the Zsh-facing entrypoint. It resolves a function name to its source
+file and delegates to `command xc-usage <target>` (target-first API — no `print`
+subcommand).
 
 **Usage:**
 ```zsh
 show_usage              # uses funcstack[2] for the calling function
-show_usage puts         # prints help for the `puts` function
+show_usage gen          # prints help for the `gen` function
 show_usage /path/file   # prints help for any readable file
 ```
 
@@ -71,22 +86,33 @@ if (( ${+opts[-h]} )) || (( ${+opts[--help]} )); then
 fi
 ```
 
-**Bin scripts:** use `command xc-usage guard "${0:a}" "$@"` instead of `show_usage`.
+**Or use `xc-usage` directly:**
+```zsh
+if [[ -n $help ]]; then
+  command xc-usage gen
+  return $?
+fi
+```
+
+**Bin scripts:** use `case -h|--help` + `command xc-usage "${0:a}"` (see
+`config/bin/README.md`).
 
 ## Out of scope
 
-- Auto-parsing `##?` to generate `zparseopts` calls (see [design.md §13](../bin/specs/xc-usage/design.md#13-out-of-scope))
+- Auto-parsing `##?` to generate `zparseopts` calls (see [design.md §13](../../assets/specs/xc-usage/design.md#13-out-of-scope))
 - Inferring help from code or minimal `##?`
 - `config/zsh/opt/completions/*` (generated or third-party completion scripts)
 
 ## Migrated to bin
 
-`puts` and `toast` have moved from `config/zsh/etc/functions/` to `config/bin/` as `xc-puts` and `xc-toast`. Use `command xc-puts` or `xc-toast` directly — no autoload needed.
+`puts` and `toast` have moved from `config/zsh/etc/functions/` to `config/bin/` as
+`xc-puts` and `xc-toast`. Use `command xc-puts` or `xc-toast` directly — no autoload
+needed. `gen` is **not** migrated and stays on `$fpath`.
 
 ## Authoring checklist
 
 Before committing a function file:
 1. Add a `##?` docopt header (copy the template above)
-2. Wire `show_usage` on `-h`/`--help`
-3. Run `command xc-usage validate /path/to/file.zsh`
-4. Run `mise run xc-usage:specs` (for `config/bin` tests)
+2. Wire `show_usage` or `command xc-usage` on `-h`/`--help`
+3. Run `command xc-usage <function-name>` to verify help extraction
+4. Run `mise run -C assets integration bin xc-usage` for integration checks

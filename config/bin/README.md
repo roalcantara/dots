@@ -114,19 +114,27 @@ Discovery scans `~/.config/bin` for executable `xc-*` files (flat layout; skips 
 All `config/bin` scripts use **`xc-usage`** to print help from `##?` docopt headers.
 Legacy `#?` (single-hash) headers are no longer used for help extraction.
 
-**Subcommands:**
+**Target-first API** — `xc-usage` resolves any `<target>` to its source file and
+prints the `##?` block:
 
-| Command                                    | Purpose                                   |
-| ------------------------------------------ | ----------------------------------------- |
-| `xc-usage guard SCRIPT "$@"`               | If args include `-h`/`--help`, print help |
-| `xc-usage print SCRIPT`                    | Print all `##?` lines (legacy)            |
-| `xc-usage print SCRIPT --scope main`       | Dispatcher overview only                  |
-| `xc-usage print SCRIPT --scope sub:run`    | One subcommand block only                 |
-| `xc-usage preview SCRIPT --tool xc-fabric` | Stacked help for `xc` launcher            |
-| `xc-usage list-subs SCRIPT`                | Subcommand names from `##? Subcommands:`  |
-| `xc-usage validate SCRIPT`                 | Lint `##?` header completeness            |
+```bash
+xc-usage gen           # Zsh function on $fpath → ##? from source file
+xc-usage xc-git        # bin script on $PATH → ##? from config/bin/xc-git
+xc-usage ./my-script   # explicit file path
+```
 
-**`guard` exit codes:** 0 = help printed, 1 = error, 2 = not help (caller continues).
+Optional modifiers:
+
+| Flag                      | Purpose                                               |
+| ------------------------- | ----------------------------------------------------- |
+| `--md`                    | Pipe help through `xc-md` (glow → bat → plain)        |
+| `--scope main\|sub:NAME`  | Scoped docopt block in multi-section dispatchers only |
+| `--preview [--tool NAME]` | Stacked help for `xc` launcher fzf preview            |
+| `--list-subs`             | Subcommand names from `##? Subcommands:`              |
+| `--no-help-footer`        | Suppress auto `-h` footer in scoped output            |
+
+Scoped flags (`--scope`, `--preview`, `--list-subs`) are **dispatcher helpers only**
+and do not apply to flat tools.
 
 **Three-layer help model:**
 
@@ -140,14 +148,33 @@ Legacy `#?` (single-hash) headers are no longer used for help extraction.
 
 **Dual header convention (`#?` + `##?`):**
 
-| Prefix | Purpose                      | `xc-usage print` | `xc-usage validate` |
-| ------ | ---------------------------- | ---------------- | ------------------- |
-| `#?`   | License, version, docopt URL | Ignored          | Ignored (no error)  |
-| `##?`  | Docopt help                  | Emitted          | Required            |
+| Prefix | Purpose                      |
+| ------ | ---------------------------- |
+| `#?`   | License, version, docopt URL |
+| `##?`  | Docopt help                  |
 
-Use `xc-usage print --metadata <file>` to print only `#?` license/metadata lines. Files with only `#?` (no `##?`) are still rejected with a docopt hint.
+Use `xc-usage --metadata <file>` to print only `#?` license/metadata lines. Files with only `#?` (no `##?`) are rejected with a docopt hint.
 
 For Zsh function conventions, see [config/zsh/README.md](../zsh/README.md).
+
+### xc-md
+
+`xc-md` renders markdown from stdin with graceful fallback: **glow → bat → plain**.
+Exit **0** on success; no stderr warnings when a renderer is absent.
+
+```bash
+xc-usage gen --md         # rendered help via xc-md
+xc-usage gen | xc-md      # equivalent composition
+echo '# Title' | xc-md    # standalone stdin → rendered output
+```
+
+| Tier | Condition            | Action                                      |
+| ---- | -------------------- | ------------------------------------------- |
+| 1    | `command -v glow`    | `glow` (stdin → stdout)                     |
+| 2    | else `command -v bat` | `bat -l md --paging=never` (stdin → stdout) |
+| 3    | else                 | `cat` (passthrough)                         |
+
+**Symlink:** `ln -sf ~/.config/bin/xc-md ~/.local/bin/xc-md`
 
 ### CONVENTIONS
 
@@ -157,9 +184,9 @@ Each script follows the same structure:
 #!/usr/bin/env zsh
 
 **Canonical dispatcher shape:** see `xc-fabric` `##?` (main block + sub blocks) and
-`config/bin/specs/xc-usage/design.md` §11.5 ([docopt](http://docopt.org/)).
+`assets/specs/xc-usage/design.md` §11.5 ([docopt](http://docopt.org/)).
 
-**Flat tool** (`xc-puts`, `xc-toast`):
+**Flat tool** (`xc-puts`, `xc-toast`, `xc-md`):
 
 ```text
 ##? xc-<name> - One-line description
@@ -172,24 +199,23 @@ Each script follows the same structure:
 ##?   arg    What it is
 ##?
 ##? Examples:
-##?   fzf --preview 'xc-<name> {}' | xargs <command>
+##?   fzf --preview 'xc-<name> {}' | xargs meld
 
-local _xc_u=2
-command xc-usage guard "${0:a}" "$@"; _xc_u=$?
-(( _xc_u == 0 )) && exit 0
-(( _xc_u == 1 )) && exit 1
+case "${1:-}" in
+  -h|--help) command xc-usage "${0:a}"; exit $? ;;
+esac
 
 # implementation
 ```
 
-For a complete worked example see [config/bin/specs/xc-usage/design.md §4.2](specs/xc-usage/design.md#42-end-to-end-example-xc-foo).
+For a complete worked example see [assets/specs/xc-usage/design.md §4.2](../../assets/specs/xc-usage/design.md#42-end-to-end-example-xc-foo).
 
 #### RULES
 
 - Shebang is always `#!/usr/bin/env zsh`
 - Help lives in the `##?` header — no separate man page, no duplicated strings
-- `-h`/`--help` delegated to `command xc-usage guard "${0:a}" "$@"` at the top of the script
-- For missing required args use `command xc-usage print "${0:a}" >&2`
+- `-h`/`--help` handled with `case -h|--help` + `command xc-usage "${0:a}"` at the top of the script
+- For missing required args use `command xc-usage "${0:a}" >&2`
 - Scripts are self-contained — no sourcing of `~/.zshrc` or personal config
 - All dependencies (`gum`, `delta`, `bat`, `fzf`, `xc-usage`, etc.) are assumed to be on `$PATH`
 
@@ -205,8 +231,10 @@ ln -s ~/.config/bin/xc-<name> ~/.local/bin/xc-<name>
 
 ```zsh
 xc-<name> --help
-# or
-grep '^#?' ~/.config/bin/xc-<name> | sed 's/^#? \{0,1\}//'
+# or (target-first API):
+xc-usage xc-<name>
+# with markdown rendering:
+xc-usage xc-<name> --md
 ```
 
 ### TESTING (BUN + MISE)
