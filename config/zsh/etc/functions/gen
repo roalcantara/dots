@@ -25,13 +25,8 @@ setopt extended_glob
 zparseopts -D -E h=help c:=completions
 
 if [[ -n $help ]]; then
-  echo "Usage: gen [-h] [--c|-completions <toolname>]"
-  echo "  -c    Generate ZSH completions"
-  echo "  -h    Show this help message"
-  echo ""
-  echo "Available functions:"
-  echo "  completions - Generate ZSH completions"
-  return 0
+  command xc-usage gen
+  return $?
 fi
 
 if [[ -n $completions ]]; then

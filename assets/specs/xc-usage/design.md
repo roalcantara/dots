@@ -663,7 +663,7 @@ or keep only when file executed directly.
 
 | File         | Current help                   | Phase 2 action                                                     |
 | ------------ | ------------------------------ | ------------------------------------------------------------------ |
-| `show_usage` | inline `grep '^##?'`           | Delegate to `xc-usage print`; update `##?` header                  |
+| `show_usage` | inline `grep '^##?'`           | **Done** - delegates to `command xc-usage "$script"` (target-first)   |
 | `psc`        | `show_usage`                   | Verify `##?`; keep `show_usage` on `-h`                            |
 | `pss`        | `show_usage`                   | Same                                                               |
 | `puts`       | `show_usage`                   | Same                                                               |
@@ -671,7 +671,7 @@ or keep only when file executed directly.
 | `recase`     | `show_usage "$src"` / `recase` | Same; relies on §10.2 file-path branch                             |
 | `dots`       | `##?`; no global `-h`          | Add `-h`/`--help` → `show_usage` or `xc-usage print` at case entry |
 | `keyring`    | `_keyring_show_usage` echo     | Expand top `##?`; replace helper with `show_usage keyring`         |
-| `gen`        | `##?` + inline echo on `-h`    | On `-h`, call `show_usage gen`; remove duplicate echo help         |
+| `gen`        | `##?` + inline echo on `-h` | **Done** - calls `command xc-usage gen`; no duplicate echo help       |
 | `osx`        | `##?` only                     | Add `-h`/`--help` → `show_usage osx` in dispatcher                 |
 | `yw`         | `##?` only                     | Add help branch if missing                                         |
 | `toast`      | `##?`                          | Audit; wire `show_usage` if `-h` exists                            |

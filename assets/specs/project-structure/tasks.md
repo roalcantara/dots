@@ -152,25 +152,102 @@ Deliverable: bins pilot Task 5+ can resume under new layout.
 
 **Gate:** `assets/specs/bin/tasks.md` lists only new paths and mise tasks.
 
+## Task 9: Document bin ↔ Zsh architecture
+
+Deliverable: READMEs and guides state the helper model; no `xc-gen` mention anywhere.
+
+- [x] Update `config/bin/README.md` § xc-usage: target-first API; bin `-h` pattern;
+  document `xc-md` (glow → bat → plain) and `--md` composition; note scoped flags
+  for dispatchers only; remove guard/print/validate from the public subcommand table.
+- [x] Update `config/zsh/README.md`: Zsh-only vs migrated; `gen` stays on fpath;
+  `show_usage` → `xc-usage <target>`; example replacing inline `echo` help.
+- [x] Add a short § to `assets/guides/BDD_GUIDE.md` or `assets/guides/GLOSSARY.md`
+  (one paragraph + table) pointing to this design § `config/bin` and Zsh functions.
+- [x] Run `! rg -n "xc-gen|xc-usage guard|xc-usage print" assets/specs/project-structure config/bin/README.md config/zsh/README.md`.
+- [x] Run `git diff --check`.
+- [x] Commit Task 9 with message `docs: Document bin helpers and xc-usage model`.
+
+**Gate:** architecture docs match Requirements 10–12; no `xc-gen` references.
+
+## Task 10: Simplify `xc-usage` and add `xc-md`
+
+Deliverable: target-first `xc-usage`; new `config/bin/xc-md`; aligned
+`assets/specs/xc-usage/` trio; green integration tests.
+
+- [x] Add `config/bin/xc-md` per [design.md § xc-md contract](design.md#xc-md-contract):
+  stdin markdown; **glow → bat → plain**; exit **0** on success.
+- [x] Refactor `config/bin/xc-usage` per [design.md § xc-usage contract](design.md#xc-usage-contract):
+  top-level `<target>` resolves PATH → fpath → file; `--md` pipes help to
+  `command xc-md` (no inline glow/bat logic).
+- [x] Remove or internalize public subcommands `guard`, `print`, `validate`; update
+  all `config/bin/xc-*` callers to explicit `-h` + `xc-usage "${0:a}"` (scoped flags
+  as `--scope`, not `print --scope`).
+- [x] Update `assets/specs/xc-usage/requirements.md`, `design.md`, and `tasks.md` to
+  match the simplified contract and document `xc-md`.
+- [x] Update `assets/integration/bin/xc-usage.spec.ts`: assert `xc-usage gen` (with
+  `FPATH`), PATH fixture, `--md` delegation to `xc-md`; add `xc-md` scenarios for
+  glow/bat/plain tiers.
+- [x] Run `mise run -C assets integration bin xc-usage` (27 pass, 0 fail).
+- [x] Run `git diff --check`.
+- [x] Commit Task 10 with message `ref(bin): Add xc-md and simplify xc-usage`.
+
+**Gate:** `mise run -C assets integration bin xc-usage` exits **0**; `xc-usage gen`
+and `echo x | xc-md` succeed; `--md` never errors solely because `glow` is absent.
+
+## Task 11: Zsh function help delegation
+
+Deliverable: fpath functions use `##?` + `xc-usage`; no duplicate inline help blocks.
+
+- [x] Replace `gen` lines 27–35 with `command xc-usage gen` (or `funcstack` equivalent).
+- [x] Update `config/zsh/etc/functions/show_usage` to call `command xc-usage "$target"`
+  (drop `print` subcommand).
+- [x] Migrate remaining inventory in `assets/specs/xc-usage/design.md` §10.3 that still
+  use inline `echo` help — marked gen and show_usage as done.
+- [x] Run `gen -h` and `xc-usage gen` smoke checks (output matches).
+- [x] Run `git diff --check`.
+- [x] Commit Task 11 with message `ref(zsh): Delegate function help to xc-usage`.
+
+**Gate:** `gen -h` output matches `xc-usage gen`; no hand-written Usage echo in `gen`.
+
 ## Execution rule
 
 Planning agents stop after Task 1 approval and emit handoff. Implementation
 agents use `subagent-driven-development` unless the user prompt requests
 inline execution.
 
-## Handoff prompt (implementation agent)
+## Handoff prompt (implementation agent — Tasks 9–11)
 
 ```markdown
-Implement `assets/specs/project-structure/tasks.md` starting at Task 2.
+You are taking over `assets/specs/project-structure/tasks.md` starting at **Task 9**.
+
+Goal: Document and implement the bin ↔ Zsh helper model, target-first
+`xc-usage`, and composable `xc-md` (glow → bat → plain) so `xc-usage gen`,
+`xc-usage brew` (when ##? exists), and `xc-usage <target> --md` work.
+Remove public guard/print/validate subcommands.
+Do **not** create `xc-gen` — `gen` stays on $fpath.
 
 Read first:
-- assets/specs/project-structure/design.md
-- assets/guides/GLOSSARY.md
-- assets/guides/MISE_GUIDE.md
+- assets/specs/project-structure/HANDOFF.md
+- assets/specs/project-structure/requirements.md (Requirements 10–12)
+- assets/specs/project-structure/design.md (§ Purpose of xc-* helpers, § xc-md contract, § xc-usage contract)
+- assets/specs/project-structure/tasks.md (Tasks 9–11)
+- assets/specs/xc-usage/ (update in Task 10 to match design)
+- config/bin/xc-usage, config/zsh/etc/functions/gen, config/zsh/etc/functions/show_usage
+- assets/guides/GIT_COMMITS_GUIDE.md, assets/guides/TESTING_GUIDE.md, assets/guides/DoD.md
 
-Rules:
-- Complete one task group at a time; run all gates; one commit per group.
-- Use subagent-driven-development for individual checklist items.
-- Do not recreate root package.json.
-- Stop and report if a gate fails after a fix attempt.
+Skills (load before coding):
+- subagent-driven-development — execute task groups
+- test-driven-development — integration spec changes in Task 10
+- systematic-debugging — if xc-usage resolution fails for fpath/PATH cases
+
+Workflow:
+1. Complete Task 9 (docs only); run gate; one commit.
+2. Complete Task 10 (`xc-md` + xc-usage refactor + xc-usage spec trio + integration tests); run gates; one commit.
+3. Complete Task 11 (gen + show_usage + inventory); run gates; one commit.
+4. Report: summary, commits, commands run (exit 0), follow-ups.
+
+Stop and report when:
+- A gate fails after one fix attempt
+- xc-usage scoped flags break xc-git or xc launcher preview (document minimal fix)
+- Requirements contradict xc-portable-tools or xc-launcher specs — ask user which wins
 ```
