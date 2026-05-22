@@ -7,79 +7,79 @@
 # pipeline in a small subshell). For fastest branch listing use `git branches` (alias)
 # or a minimal launcher (e.g. gitx-branches) that runs only the branch pipeline.
 
-#? gitx - Git complex commands (autoloadable dispatcher)
-#? Centralizes complex git workflows as subcommands.
-#?
-#? Usage:
-#?   gitx <command> [options] [args]
-#?   gitx -h | --help
-#?
-#? Commands:
-#?   cnb <branch>               Create new branch (smart). On default branch with local
-#?                              commits, opens fzf to pick which go to the new branch.
-#?   nb <branch>                Create branch from updated origin/main.
-#?   branches                   List local branches (for scripts/fzf).
-#?   clear-merged               Delete branches merged into HEAD (excl. main/develop).
-#?   clear-gone                 Delete branches whose remote tracking is gone.
-#?   remote-branches [remote]   List remote branch names (default: origin).
-#?   rebase-from [commit]       Interactive rebase from parent of commit.
-#?   edit [commit]              Start rebase to edit commit.
-#?   drop [commit]              Start rebase to drop commit.
-#?   reword [commit]            Start rebase to reword commit.
-#?   fix-root                   Fixup and autosquash root commit.
-#?   fix [commit]               Fixup and autosquash commit (or root).
-#?   fixup [commit]             Create fixup commit only.
-#?   squash [commit]            Create squash commit only.
-#?   fix-all [commit]           Stage all and fix.
-#?   squash-all [commit]        Stage all and squash.
-#?   root-commit                Print root commit hash.
-#?   uu                         Pull --rebase origin main.
-#?   uup                        Pull --rebase upstream main.
-#?   p                          Push verbose origin current branch.
-#?   pf                         Push --force-with-lease.
-#?   pa                         Push --all
-#?   pt                         Push --tags
-#?   pc                         Push --set-upstream
-#?   pp                         Pull then push current branch.
-#?   remove-submodule <path>    Deinit and remove submodule.
-#?   update-submodules          Sync and update submodules.
-#?   cfgz                       Config list with fzf.
-#?   remove-files <pattern>     Remove repo files matching pattern.
-#?   to-yaml [n]                Last n commits as YAML (default 10).
-#?   patches                    Show patch for each stash.
-#?   lol [action]               Fzf: log; keys hash/rebase/fix/reword/edit/drop/resets/log.
-#?   fzlog                      Same as lol (alias).
-#?   fzl                        Fzf: log (pick hash); same UI as lol, Enter prints hash.
-#?   fzdiff                     Fzf: diff files.
-#?   fza                        Fzf: add
-#?   fzu                        Fzf: restore
-#?   fzus                       Fzf: restore --staged
-#?   fzc                        Fzf: checkout branch
-#?   fzb                        Fzf: branch -d/-D (soft/hard delete); preview → xc-git branch-preview
-#?   (implementation) lol/fzl/fzlog → xc-git log-fzf; fixup-suggest → xc-git or git fixup-suggest
-#?   fzr                        Fzf: rebase-from
-#?   fzf                        Fzf: fix
-#?   fzw                        Fzf: reword
-#?   fze                        Fzf: edit
-#?   fzd                        Fzf: drop
-#?   fzhs                       Fzf: reset --soft
-#?   fzhh                       Fzf: reset --hard.
-#?   fzunstage                  Fzf: rm --cached (unstage from index).
-#?   grep-commit                Extract 7-char hash from stdin (for pipelines).
-#?   tail                       Last word of line (stdin or args).
-#?   grep-branch                Extract branch name from stdin.
-#?   head-branch                Print current branch (no remotes/origin/).
-#?   strip <line>               Extract filename from status line.
-#?   preview <line>             Preview diff or file for status line.
-#?
-#? Options:
-#?   -h, --help          Show this screen.
-#?
-#? Examples:
-#?   gitx cnb feature/foo
-#?   gitx nb hotfix
-#?   gitx clear-merged
-#?   gitx fza
+##? gitx - Git complex commands (autoloadable dispatcher)
+##? Centralizes complex git workflows as subcommands.
+##?
+##? Usage:
+##?   gitx <command> [options] [args]
+##?   gitx -h | --help
+##?
+##? Commands:
+##?   cnb <branch>               Create new branch (smart). On default branch with local
+##?                              commits, opens fzf to pick which go to the new branch.
+##?   nb <branch>                Create branch from updated origin/main.
+##?   branches                   List local branches (for scripts/fzf).
+##?   clear-merged               Delete branches merged into HEAD (excl. main/develop).
+##?   clear-gone                 Delete branches whose remote tracking is gone.
+##?   remote-branches [remote]   List remote branch names (default: origin).
+##?   rebase-from [commit]       Interactive rebase from parent of commit.
+##?   edit [commit]              Start rebase to edit commit.
+##?   drop [commit]              Start rebase to drop commit.
+##?   reword [commit]            Start rebase to reword commit.
+##?   fix-root                   Fixup and autosquash root commit.
+##?   fix [commit]               Fixup and autosquash commit (or root).
+##?   fixup [commit]             Create fixup commit only.
+##?   squash [commit]            Create squash commit only.
+##?   fix-all [commit]           Stage all and fix.
+##?   squash-all [commit]        Stage all and squash.
+##?   root-commit                Print root commit hash.
+##?   uu                         Pull --rebase origin main.
+##?   uup                        Pull --rebase upstream main.
+##?   p                          Push verbose origin current branch.
+##?   pf                         Push --force-with-lease.
+##?   pa                         Push --all
+##?   pt                         Push --tags
+##?   pc                         Push --set-upstream
+##?   pp                         Pull then push current branch.
+##?   remove-submodule <path>    Deinit and remove submodule.
+##?   update-submodules          Sync and update submodules.
+##?   cfgz                       Config list with fzf.
+##?   remove-files <pattern>     Remove repo files matching pattern.
+##?   to-yaml [n]                Last n commits as YAML (default 10).
+##?   patches                    Show patch for each stash.
+##?   lol [action]               Fzf: log; keys hash/rebase/fix/reword/edit/drop/resets/log.
+##?   fzlog                      Same as lol (alias).
+##?   fzl                        Fzf: log (pick hash); same UI as lol, Enter prints hash.
+##?   fzdiff                     Fzf: diff files.
+##?   fza                        Fzf: add
+##?   fzu                        Fzf: restore
+##?   fzus                       Fzf: restore --staged
+##?   fzc                        Fzf: checkout branch
+##?   fzb                        Fzf: branch -d/-D (soft/hard delete); preview → xc-git branch-preview
+##?   (implementation) lol/fzl/fzlog → xc-git log-fzf; fixup-suggest → xc-git or git fixup-suggest
+##?   fzr                        Fzf: rebase-from
+##?   fzf                        Fzf: fix
+##?   fzw                        Fzf: reword
+##?   fze                        Fzf: edit
+##?   fzd                        Fzf: drop
+##?   fzhs                       Fzf: reset --soft
+##?   fzhh                       Fzf: reset --hard.
+##?   fzunstage                  Fzf: rm --cached (unstage from index).
+##?   grep-commit                Extract 7-char hash from stdin (for pipelines).
+##?   tail                       Last word of line (stdin or args).
+##?   grep-branch                Extract branch name from stdin.
+##?   head-branch                Print current branch (no remotes/origin/).
+##?   strip <line>               Extract filename from status line.
+##?   preview <line>             Preview diff or file for status line.
+##?
+##? Options:
+##?   -h, --help          Show this screen.
+##?
+##? Examples:
+##?   gitx cnb feature/foo
+##?   gitx nb hotfix
+##?   gitx clear-merged
+##?   gitx fza
 
 # Display a message to the user
 # If gum is installed, use it to display the message otherwise print one similar to gum log
@@ -717,7 +717,7 @@ _gitx_launcher() {
             --layout=reverse)
   else
     # fallback: just show --help
-    autoload -Uz show_usage && show_usage
+    command xc-usage gitx
     return 0
   fi
 
@@ -732,9 +732,8 @@ gitx() {
   zparseopts -D -F -E -A opts h=help -help=help
 
   if (( ${+opts[-h]} )) || (( ${+opts[--help]} )); then
-    autoload -Uz show_usage
-    show_usage
-    return 0
+    command xc-usage gitx
+    return $?
   fi
 
   # No subcommand → interactive launcher
@@ -803,8 +802,7 @@ gitx() {
     fzunstage)        _gitx_fzunstage "$@" ;;             #=> Fzf over staged files; unstage from index (git rm --cached).
     *)
       echo "gitx: unknown command '$cmd'" >&2
-      autoload -Uz show_usage
-      show_usage
+      command xc-usage gitx
       return 1
       ;;
   esac

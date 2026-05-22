@@ -39,9 +39,8 @@ pss() {
 
   # Example usage of parsed options
   if (( ${+opts[-h]} )) || (( ${+opts[--help]} )); then
-    autoload -Uz show_usage
-    show_usage
-    return 0
+    command xc-usage pss
+    return $?
   fi
 
   local export="${opts[-e]:-${opts[--export]}}"

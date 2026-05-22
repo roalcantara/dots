@@ -37,21 +37,6 @@ set -euo pipefail
 
 keyring() {
   local KEYRING_SERVICE="dots-keyring"
-  _keyring_show_usage() {
-    echo "Usage: keyring <command> [arguments]"
-    echo ""
-    echo "Commands:"
-    echo "  get <key>         Get the value of a key"
-    echo "  set <key> <value> Set the value of a key"
-    echo "  rm <key>          Remove a key"
-    echo "  list              List all keys, if possible"
-    echo ""
-    echo "Examples:"
-    echo "  keyring get tools/bitly.com/token"
-    echo "  keyring set tools/bitly.com/token <value>"
-    echo "  keyring rm tools/bitly.com/token"
-    echo "  keyring list"
-  }
   _has_command() {
     local cmd="$1"
     command -v "$cmd" &>/dev/null
@@ -59,7 +44,7 @@ keyring() {
   _keyring_show_error() {
     local message="$1"
     echo "Error: $message" >&2
-    _keyring_show_usage
+    command xc-usage "${funcstack[1]}"
     return 1
   }
 
@@ -149,7 +134,7 @@ keyring() {
     fi
     ;;
   -h | --help | help)
-    _keyring_show_usage
+    command xc-usage "${funcstack[1]}"
     ;;
   *)
     _keyring_show_error "Unknown command '$command'. Available commands are: get, set, rm, list."

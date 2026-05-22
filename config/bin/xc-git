@@ -103,11 +103,7 @@ _xc_git_xc_usage() {
 _xc_git_subhelp() {
   local sub="$1"
   _xc_git_resolve_self
-  grep '^##?' "$REPLY" | sed 's/^##? \{0,1\}//' | awk -v s="$sub" '
-    /^xc-git '"$sub"'/ { on=1 }
-    on && /^$/ { exit }
-    on { print }
-  '
+  _xc_git_xc_usage "$REPLY" --scope "sub:${sub}"
 }
 
 # ── Optional gum styling ─────────────────────────────────────────
@@ -141,12 +137,6 @@ _xc_git_branch_preview() {
   _xc_git_resolve_self
   if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
     _xc_git_xc_usage "$REPLY" --scope sub:branch-preview
-    return 0
-  fi
-
-  # Subcommand-specific help
-  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-    _xc_git_subhelp branch-preview
     return 0
   fi
 

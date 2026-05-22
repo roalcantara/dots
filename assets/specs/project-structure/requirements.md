@@ -15,7 +15,8 @@ and document the agent workflow that replaces default superpowers paths.
   without ambiguity.
 - **Agentic worker:** follows SDD artifacts, task groups, handoff prompts, and
   mise gates.
-- **Terminal user:** unaffected; continues using `config/bin` scripts.
+- **Terminal user:** uses `config/bin` helpers on PATH and Zsh functions on
+  `$fpath`; help via `xc-usage <name>` and `-h` on each entry point.
 
 ## Requirement 1: Canonical guides
 
@@ -184,3 +185,84 @@ test execution so each guide stays focused.
    copied across files with cross-links replacing the source section.
 5. WHEN reading `assets/guides/README.md` THEN it SHALL list all guides with a
    one-line scope for each.
+
+## Requirement 10: `config/bin` as Zsh helpers
+
+**User story:** As a maintainer, I want a clear split between PATH helpers under
+`config/bin/` and Zsh-only autoload functions so duplication and help drift
+stop.
+
+**Acceptance criteria:**
+
+1. WHEN reading project architecture docs THEN they SHALL state that every
+   `config/bin/xc-*` executable **except `xc-skills`** is a **helper for**
+   Zsh autoload functions in `config/zsh/etc/functions/` — not a replacement
+   for those functions unless explicitly migrated per a feature spec.
+2. WHEN a function has been migrated to a `config/bin/xc-*` helper AND verified
+   on PATH THEN its duplicate under `config/zsh/etc/functions/` SHALL be
+   deleted.
+3. WHEN a function is documented as Zsh-only (for example `gitx`, `psc`) THEN
+   it SHALL remain under `config/zsh/etc/functions/` only and SHALL NOT gain a
+   `config/bin/xc-*` copy.
+4. WHEN reading architecture docs THEN `gen` SHALL be listed as a **Zsh-only**
+   function (help via `##?` + `xc-usage`); there SHALL be **no** `xc-gen` or
+   `gen` → `config/bin` migration.
+5. WHEN a Zsh function implements `-h` / `--help` THEN it SHALL NOT duplicate
+   help text with inline `echo` blocks when a `##?` header exists in the same
+   file; it SHALL delegate to `xc-usage` per
+   [design.md § config/bin and Zsh functions](design.md#configbin-and-zsh-functions).
+
+## Requirement 11: Universal `xc-usage`
+
+**User story:** As a terminal user, I want one command that prints docopt help
+from any script or autoload function that declares `##?` headers — on PATH or
+on `$fpath`.
+
+**Acceptance criteria:**
+
+1. WHEN `xc-usage <target>` is invoked and `<target>` is not a reserved flag
+   THEN output SHALL be all `##?` lines from the resolved source (strip `##? `
+   prefix), whether `<target>` is a file path, a PATH executable, or a Zsh
+   function name on `$fpath`.
+2. WHEN `<target>` resolves to `/opt/homebrew/bin/brew` (or any PATH binary)
+   and that file contains `##?` headers THEN `xc-usage brew` SHALL print them;
+   WHEN no `##?` header exists THEN `xc-usage` SHALL exit non-zero with a clear
+   error (not “unknown command”).
+3. WHEN `xc-usage gen` is invoked THEN output SHALL match the `##?` block in
+   `config/zsh/etc/functions/gen` (Zsh-only; no `xc-gen`).
+4. WHEN `xc-usage <target> --md` is invoked THEN help text SHALL be passed to
+   `xc-md` (see Requirement 12); exit code SHALL match plain `xc-usage <target>`
+   on success.
+5. WHEN reading normative `xc-usage` docs after simplification THEN public
+   subcommands `guard`, `print`, and `validate` SHALL NOT be documented as
+   user-facing entry points; bin and Zsh callers SHALL use `xc-usage <target>`
+   or flags documented in [design.md § xc-usage contract](design.md#xc-usage-contract).
+6. WHEN `show_usage` is used from Zsh THEN it SHALL remain a thin wrapper that
+   defaults the target to the calling function and delegates to
+   `command xc-usage <resolved-target>` (not ad-hoc `grep '^##?'`).
+7. WHEN integration specs cover `xc-usage` THEN they SHALL assert
+   `xc-usage gen`, PATH resolution, and `--md` behavior per design — not only
+   legacy subcommand forms.
+
+## Requirement 12: `xc-md` renderer helper
+
+**User story:** As a terminal user, I want markdown help rendered nicely when
+optional tools exist, without failing when they do not.
+
+**Acceptance criteria:**
+
+1. WHEN `config/bin/xc-md` exists THEN it SHALL read markdown from **stdin** and
+   write rendered output to stdout.
+2. WHEN `glow` is on PATH THEN `xc-md` SHALL pipe stdin through `glow`.
+3. WHEN `glow` is absent and `bat` is on PATH THEN `xc-md` SHALL pipe stdin
+   through `bat` with markdown language and no pager (`--paging=never` or
+   equivalent).
+4. WHEN neither `glow` nor `bat` is on PATH THEN `xc-md` SHALL print stdin
+   unchanged to stdout.
+5. WHEN `xc-md` receives input THEN it SHALL exit **0** on success regardless
+   of which renderer tier ran (no error merely because `glow` is missing).
+6. WHEN `xc-usage <target> --md` is implemented THEN it SHALL delegate rendering
+   to `command xc-md` (composition: extract then render — not inline `glow`).
+7. WHEN listing PATH helpers THEN `xc-md` SHALL be documented alongside
+   `xc-usage` as a single-purpose composable helper per
+   [design.md § Purpose of `xc-*` helpers](design.md#purpose-of-xc-helpers).

@@ -123,18 +123,17 @@ xc-usage xc-git        # bin script on $PATH → ##? from config/bin/xc-git
 xc-usage ./my-script   # explicit file path
 ```
 
-Optional modifiers:
+Optional modifiers (dispatchers / `xc` launcher only):
 
-| Flag                      | Purpose                                               |
-| ------------------------- | ----------------------------------------------------- |
-| `--md`                    | Pipe help through `xc-md` (glow → bat → plain)        |
-| `--scope main\|sub:NAME`  | Scoped docopt block in multi-section dispatchers only |
-| `--preview [--tool NAME]` | Stacked help for `xc` launcher fzf preview            |
-| `--list-subs`             | Subcommand names from `##? Subcommands:`              |
-| `--no-help-footer`        | Suppress auto `-h` footer in scoped output            |
+| Flag                     | Purpose                                        |
+| ------------------------ | ---------------------------------------------- |
+| `--md`                   | Pipe help through `xc-md` (glow → bat → plain) |
+| `--scope main\|sub:NAME` | Scoped docopt block in multi-section scripts   |
+| `--preview [NAME]`       | Stacked help for `xc` fzf preview              |
+| `--list-subs`            | Subcommand names from `##? Subcommands:`       |
+| `--metadata`             | Print `#?` license lines only                  |
 
-Scoped flags (`--scope`, `--preview`, `--list-subs`) are **dispatcher helpers only**
-and do not apply to flat tools.
+Flat tools and Zsh functions use `xc-usage <target>` only.
 
 **Three-layer help model:**
 
@@ -168,11 +167,11 @@ xc-usage gen | xc-md      # equivalent composition
 echo '# Title' | xc-md    # standalone stdin → rendered output
 ```
 
-| Tier | Condition            | Action                                      |
-| ---- | -------------------- | ------------------------------------------- |
-| 1    | `command -v glow`    | `glow` (stdin → stdout)                     |
+| Tier | Condition             | Action                                      |
+| ---- | --------------------- | ------------------------------------------- |
+| 1    | `command -v glow`     | `glow` (stdin → stdout)                     |
 | 2    | else `command -v bat` | `bat -l md --paging=never` (stdin → stdout) |
-| 3    | else                 | `cat` (passthrough)                         |
+| 3    | else                  | `cat` (passthrough)                         |
 
 **Symlink:** `ln -sf ~/.config/bin/xc-md ~/.local/bin/xc-md`
 

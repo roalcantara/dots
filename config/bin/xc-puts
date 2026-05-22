@@ -52,15 +52,10 @@ _xc_usage_find() {
   return 127
 }
 
-local _xc_u=2
-_xc_usage_find guard "${0:a}" "$@"; _xc_u=$?
-(( _xc_u == 0 )) && exit 0
-(( _xc_u == 1 )) && exit 1
-
-# Consume any lingering -h/--help that guard may have missed (e.g. xc-usage not on PATH)
-while [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; do
-  shift
-done
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  _xc_usage_find "${0:a}"
+  exit $?
+fi
 
 _has_command() {
   command -v "$1" >/dev/null 2>&1
@@ -88,7 +83,7 @@ zparseopts -D -E -F \
 message="$1"
 
 if [[ -z "$message" ]]; then
-  _xc_usage_find print "${0:a}" >&2
+  _xc_usage_find "${0:a}" >&2
   exit 1
 fi
 

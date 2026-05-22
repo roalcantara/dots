@@ -8,17 +8,222 @@ tasks, and agent workflow. Implements
 
 ## Scope
 
-This spec covers repository layout polish after the BDD pilot commit. It does
-not change `config/bin` script behavior. It relocates documentation,
-verification, and task entry points.
+This spec covers repository layout polish after the BDD pilot commit and the
+follow-up **bin ↔ Zsh helper** contract (Tasks 9–11). Tasks 1–8 relocated
+documentation, verification, and mise entry points without changing help
+behavior; Tasks 9–11 normatively change how `xc-usage` and Zsh `-h` work.
 
 ## Non-goals
 
-- Rewriting `install`, Neovim Lua, or zsh beyond path reference updates.
+- Rewriting `install` or Neovim Lua beyond path reference updates.
 - Replacing Bun or Cucumber with another runner in this pass.
 - Merging unrelated legacy guides without Dots adaptation.
+- Migrating `gen` or other Zsh-only functions to `config/bin/` (no `xc-gen`).
 - Running implementation in the same agent session that authors this spec
   unless the user explicitly requests inline execution.
+
+## Follow-up scope (Tasks 9–11)
+
+Tasks 1–8 delivered the `assets/` layout. Tasks 9–11 document and implement the
+**bin ↔ Zsh helper model** and **simplified `xc-usage`** without reopening the
+directory migration.
+
+| Task | Delivers                                         |
+| ---- | ------------------------------------------------ |
+| 9    | Architecture prose in READMEs and guides         |
+| 10   | `xc-usage` + `xc-md` rewrite + integration tests |
+| 11   | Zsh function help delegation (`gen`, inventory)  |
+
+Normative detail for Task 10 also updates `assets/specs/xc-usage/` in the same
+change set so specs stay aligned.
+
+## `config/bin` and Zsh functions
+
+### Roles
+
+```text
+~/.local/bin/xc-*     →  config/bin/xc-*     →  helpers (subprocess, shared logic)
+config/zsh/etc/functions/*                  →  user-facing Zsh autoload API
+```
+
+| Layer       | Location                    | Examples                                             | Help                              |
+| ----------- | --------------------------- | ---------------------------------------------------- | --------------------------------- |
+| PATH helper | `config/bin/xc-*`           | `xc-usage`, `xc-md`, `xc-puts`, `xc-toast`, `xc-git` | `xc-usage <name>` or `<name> -h`  |
+| Zsh-only    | `config/zsh/etc/functions/` | `gitx`, `gen`, `psc`                                 | `xc-usage <name>` or `show_usage` |
+| Exception   | `config/bin/xc-skills`      | Standalone CLI, not a Zsh wrapper                    | Same as PATH helper               |
+
+**`xc-skills`** is the only `config/bin/xc-*` tool that is **not** primarily a
+helper for a Zsh function.
+
+**`gen`** stays on `$fpath` forever. It generates completions from external
+commands; it is not migrated to `config/bin`. Help lives in its `##?` header;
+`-h` must not re-print a hand-written duplicate block.
+
+### Migration hygiene
+
+| State                     | `config/bin/xc-*`  | `config/zsh/etc/functions/`          |
+| ------------------------- | ------------------ | ------------------------------------ |
+| Migrated (puts, toast, …) | Required on PATH   | **Delete** duplicate                 |
+| Zsh-only forever          | **Must not exist** | Keep                                 |
+| In progress               | Land bin first     | Remove fpath copy in same task group |
+
+Portable-tools specs (`assets/specs/xc-portable-tools/`) govern which functions
+already moved; this design adds the global rule only.
+
+### Purpose of `xc-*` helpers
+
+Each `config/bin/xc-*` script (except `xc-skills`) is a **small, composable
+building block**. Zsh autoload functions stay the ergonomic entry point; they
+call helpers instead of reimplementing the same logic or help formatting.
+
+```text
+User types          Zsh function              PATH helpers (compose)
+──────────          ────────────              ──────────────────────
+gen -h         →    gen                       xc-usage gen
+gen -h --md    →    gen (or user)             xc-usage gen --md  →  xc-md
+toast "hi"     →    toast → xc-toast          xc-toast
+gitx …         →    gitx (Zsh-only)           (may call xc-git internally)
+```
+
+| Helper     | One job                                              |
+| ---------- | ---------------------------------------------------- |
+| `xc-usage` | Extract `##?` docopt text from any resolvable target |
+| `xc-md`    | Render markdown on stdin: **glow → bat → plain**     |
+| `xc-puts`  | Formatted terminal output                            |
+| `xc-toast` | macOS notification toast                             |
+| `xc-git`   | Git subprocess orchestration                         |
+
+**Composition over duplication:** `xc-usage` never embeds renderer logic;
+`xc-usage foo --md` is equivalent to `xc-usage foo | xc-md`. Other tools can
+pipe arbitrary markdown to `xc-md` without going through `xc-usage`.
+
+### Zsh help pattern (replaces inline `echo`)
+
+**Before** (redundant — docopt header ignored at runtime):
+
+```zsh
+if [[ -n $help ]]; then
+  echo "Usage: gen [-h] ..."
+  return 0
+fi
+```
+
+**After** (single source of truth — `##?` block at top of file):
+
+```zsh
+if [[ -n $help ]]; then
+  command xc-usage "${funcstack[1]:-${(%):-%N:t}}"
+  return $?
+fi
+```
+
+`show_usage` remains optional sugar when the caller name must be inferred from
+`funcstack[2]` (wrapper functions). Direct `-h` handling may call `xc-usage`
+with the function basename.
+
+## xc-md contract
+
+**File:** `config/bin/xc-md` (Zsh, same `#?` / `##?` conventions as siblings).
+
+| Step | Condition             | Action                                      |
+| ---- | --------------------- | ------------------------------------------- |
+| 1    | `command -v glow`     | `glow` (stdin → stdout)                     |
+| 2    | else `command -v bat` | `bat -l md --paging=never` (stdin → stdout) |
+| 3    | else                  | `cat` (passthrough)                         |
+
+Exit **0** when input is consumed successfully. No stderr warning when
+falling back — plain output is intentional.
+
+**Standalone:**
+
+```bash
+xc-usage gen | xc-md
+echo '# Title' | xc-md
+```
+
+**Symlink:** `~/.local/bin/xc-md` → `config/bin/xc-md` (same as other `xc-*`).
+
+## xc-usage contract
+
+`xc-usage` is a **universal `##?` extractor**. It is not limited to
+`config/bin` or to `$fpath`; any resolvable target with `##?` headers qualifies
+(including hypothetical `/opt/homebrew/bin/brew` if that script used `##?`).
+
+### Public surface (target Tasks 9–10)
+
+| Invocation                 | Behavior                                      | Exit          |
+| -------------------------- | --------------------------------------------- | ------------- |
+| `xc-usage` / `xc-usage -h` | Self `##?` help                               | **0**         |
+| `xc-usage <target>`        | Print all `##?` lines for resolved `<target>` | **0** / **1** |
+| `xc-usage <target> --md`   | Help text via `xc-md` (glow → bat → plain)    | **0**         |
+
+**Removed from public CLI** (never typed by users; drop or replace in bin/Zsh):
+
+- `xc-usage guard …` → bin scripts use explicit `-h` check + `command xc-usage "${0:a}"`
+- `xc-usage print …` → `xc-usage <target>` or path
+- `xc-usage validate …` → integration tests / optional maintainer script only
+
+**Advanced flags** (implementation detail for dispatchers / `xc` launcher — not
+primary subcommands):
+
+| Flag                      | Purpose                                          |
+| ------------------------- | ------------------------------------------------ |
+| `--scope main\|sub:NAME`  | Scoped docopt block in multi-section bin scripts |
+| `--preview [--tool NAME]` | Stacked help for `xc` fzf preview                |
+| `--list-subs`             | Subcommand names from `##? Subcommands:`         |
+| `--no-help-footer`        | Suppress auto `-h` footer in scoped output       |
+
+### Resolution order
+
+When `<target>` is not an existing file path:
+
+1. `whence -p <target>` (PATH executable)
+2. `functions_source[<target>]` with autoload `+X` if needed
+3. Walk `$fpath` for `<target>` file
+4. Optional: try `xc-<target>` on PATH when `<target>` has no `xc-` prefix
+
+Failure: stderr names the target and suggests `##?` / docopt.org; exit **1**.
+
+### Bin script `-h` pattern
+
+```zsh
+case "${1:-}" in
+  -h|--help) command xc-usage "${0:a}"; exit $? ;;
+esac
+```
+
+Multi-subcommand dispatchers may add scoped help:
+
+```zsh
+  run)
+    shift
+    [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]] && {
+      command xc-usage "${0:a}" --scope sub:run
+      exit $?
+    }
+    …
+```
+
+### Approaches considered (xc-usage simplification)
+
+| Approach                                 | Pros                                       | Cons                                      |
+| ---------------------------------------- | ------------------------------------------ | ----------------------------------------- |
+| **A. Target-first CLI** (recommended)    | Matches mental model; `xc-usage gen` works | Requires dispatch refactor + test updates |
+| B. Keep subcommands, add target fallback | Smaller diff                               | Two parallel APIs forever                 |
+| C. Target-only, drop scoped flags        | Smallest tool                              | Breaks `xc-git`, `xc` launcher preview    |
+
+**Recommendation:** Approach **A** — target-first public API; retain scoped
+flags as optional modifiers on `xc-usage <path-or-name>`, not as `print` /
+`guard` subcommands.
+
+### Cross-spec ownership
+
+| Topic                                                 | Owner spec                                       |
+| ----------------------------------------------------- | ------------------------------------------------ |
+| Universal resolver, `--md`, drop guard/print/validate | `assets/specs/xc-usage/` (updated in Task 10)    |
+| `xc-md` renderer (glow → bat → plain)                 | `assets/specs/xc-usage/` or Task 10 in this spec |
+| Bin ↔ Zsh roles, gen stays fpath                      | This spec (Requirements 10–11)                   |
+| puts/toast deletion from fpath                        | `assets/specs/xc-portable-tools/`                |
 
 ## Target directory tree
 
@@ -79,11 +284,11 @@ application.
 
 | Source                                            | Destination                             |
 | ------------------------------------------------- | --------------------------------------- |
-| `assets/guides/*`                            | Merge into `assets/guides/`             |
+| `assets/guides/*`                                 | Merge into `assets/guides/`             |
 | `assets/guides/*` (legacy)                        | Merge; dedupe; drop unrelated           |
-| `assets/specs/bin/`                         | `assets/specs/bin/`                     |
-| `assets/specs/xc-*`                           | `assets/specs/xc-*`                     |
-| `assets/features/bin/*.feature`             | `assets/features/bin/`                  |
+| `assets/specs/bin/`                               | `assets/specs/bin/`                     |
+| `assets/specs/xc-*`                               | `assets/specs/xc-*`                     |
+| `assets/features/bin/*.feature`                   | `assets/features/bin/`                  |
 | `assets/features/bin/step_definitions/support/*`  | `assets/features/support/`              |
 | `assets/features/bin/step_definitions/*.steps.ts` | `assets/features/step_definitions/bin/` |
 | `config/bin/tests/*`                              | `assets/integration/bin/`               |
@@ -490,7 +695,7 @@ sources; do not invent parallel sections.
 | `# Dots BDD guide`       | One paragraph: living documentation for user-visible behavior.                                                                               |
 | `## Verification layers` | Table: `assets/specs/` (SDD), `assets/features/` (Gherkin), `assets/integration/` (subprocess specs). One sentence per layer.                |
 | `## Folder layout`       | Bullet list of canonical paths under `assets/` (from this design).                                                                           |
-| `## Screenplay in Dots`  | Actors, tasks, interactions, questions — **moved from** pilot `assets/guides/TESTING_GUIDE.md` § Screenplay; no step examples.          |
+| `## Screenplay in Dots`  | Actors, tasks, interactions, questions — **moved from** pilot `assets/guides/TESTING_GUIDE.md` § Screenplay; no step examples.               |
 | `## When to add what`    | Short decision list: new user-visible behavior → feature scenario; CLI contract / exit codes → integration spec; normative API → SDD design. |
 | `## Related guides`      | One line each pointing to `BDD_GHERKIN_GUIDE.md` (writing features) and `TESTING_GUIDE.md` (running gates). No duplicated checklists.        |
 
@@ -500,21 +705,21 @@ sources; do not invent parallel sections.
 
 #### `assets/guides/BDD_GHERKIN_GUIDE.md`
 
-| Section       | Content                                                                                                                                                                                   |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Section       | Content                                                                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Full document | Copy from `assets/guides/BDD_GHERKIN_GUIDE.md` with path rewrites only: `assets/docs/features/` → `assets/features/`, `step_definitions` → `support` + `step_definitions` per this design. |
-| Do not add    | Layer tables, Screenplay theory, mise command tables.                                                                                                                                     |
+| Do not add    | Layer tables, Screenplay theory, mise command tables.                                                                                                                                      |
 
 **Gate:** paths in examples use `assets/features/` only.
 
 #### `assets/guides/TESTING_GUIDE.md`
 
-| Section                 | Content                                                                                                                                                                                                                                                                             |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Keep                    | Legacy `assets/guides/TESTING_GUIDE.md` Bun/`describe`/`it`/table-driven/FCIS sections (update examples if paths change).                                                                                                                                                           |
+| Section                 | Content                                                                                                                                                                                                                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Keep                    | Legacy `assets/guides/TESTING_GUIDE.md` Bun/`describe`/`it`/table-driven/FCIS sections (update examples if paths change).                                                                                                                                                      |
 | `## Verification gates` | Table from pilot `assets/guides/TESTING_GUIDE.md` § Gates with **updated** commands: `mise run bdd …`, `mise run integration …`, `mise run test bin`, `mise run test all` (from `assets/` or `mise run -C assets …` at repo root), `zsh -n`, `shellcheck`, `git diff --check`. |
-| Remove                  | Pilot § Cucumber/Screenplay/BDD philosophy; pilot dependency install prose (keep a single line: “devDeps in `assets/package.json`; run via mise — see `MISE_GUIDE.md`”).                                                                                                            |
-| Do not add              | Gherkin checklist or templates.                                                                                                                                                                                                                                                     |
+| Remove                  | Pilot § Cucumber/Screenplay/BDD philosophy; pilot dependency install prose (keep a single line: “devDeps in `assets/package.json`; run via mise — see `MISE_GUIDE.md`”).                                                                                                       |
+| Do not add              | Gherkin checklist or templates.                                                                                                                                                                                                                                                |
 
 **Gate:** `rg -n "Screenplay model|Writing checklist|Feature template" assets/guides/TESTING_GUIDE.md` returns no matches.
 

@@ -96,21 +96,9 @@ recase() {
   }
 
   # ─── Usage ────────────────────────────────────────────────────────────────
-  # Delegates to show_usage, which reads the ##? comments at the top of this file.
   _rc_usage() {
-    local src="${functions_source[recase]:-}"
-    if [[ -z "$src" ]]; then
-      local dir
-      for dir in $fpath; do
-        [[ -f "$dir/recase" ]] && src="$dir/recase" && break
-      done
-    fi
-    if [[ -n "$src" ]]; then
-      show_usage "$src"
-    else
-      show_usage recase
-    fi
-    return 0   # ← help is never an error
+    command xc-usage recase
+    return 0
   }
 
   # ─── Word splitting ──────────────────────────────────────────────────────
