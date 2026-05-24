@@ -703,6 +703,28 @@ prepare_tools_nvim() {
   has_cmd nvim && timeout 600 nvim --headless "+Lazy! sync" "+TSUpdateSync" "+MasonToolsUpdateSync" "+qa" 2>/dev/null || warn "$1 NEOVIM/MASON plugins failed => non-fatal, continue the setup..."
   ok "$1" "TOOLS/NEOVIM/PROVIDERS/RUBY"
 }
+prepare_tools_hk() {
+  info "$1 Preparing hk config and installing hooks..."
+  local cmd_prefix=""
+  if needs_sudo || is_container || is_devcontainer; then
+    cmd_prefix="sudo "
+  fi
+  # Symlink config.pkl to hkrc.pkl in ~/.config/hk/
+  ensure_dir "$HOME/.config/hk"
+  backup "$HOME/.config/hk/config.pkl" "hkrc.pkl"
+
+  # Install git hooks globally via hk
+  if has_cmd mise; then
+    info "$1 Installing hk git hooks globally via mise..."
+    run_as_target_user "mise run setup:hooks"
+  elif has_cmd hk; then
+    info "$1 Installing hk git hooks globally..."
+    run_as_target_user "hk install --global"
+  else
+    warn "$1 hk not found on PATH! Hook installation skipped."
+  fi
+  ok "$1" "TOOLS/HK" "hk git hooks and config prepared! ✔"
+}
 # CORE functions
 setup_ownership() {
   run_cmd chown -R "$USERNAME:$GROUPNAME" "$HOME" 2>/dev/null || sudo chown -R "$USERNAME:$GROUPNAME" "$HOME" || {
@@ -785,6 +807,7 @@ setup_packages() {
 setup_tools() {
   prepare_tools_zsh "$1"
   prepare_tools_nvim "$1"
+  prepare_tools_hk "$1"
   ok "$1" "TOOLS/SOPS"
 }
 setup_operation_system() {

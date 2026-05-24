@@ -56,7 +56,6 @@ At the moment, the `install` script is only handles `debian` and `ubuntu` distro
     | :---------: | ----------- | ---------------------------------------------------------------------- |
     |   DISTRO    | Ruby        | Powerful, clean, object-oriented scripting language                    |
     |   DISTRO    | Git         | Distributed version control system                                     |
-    |   DISTRO    | GitLint     | Git commit message linter                                              |
     |   DISTRO    | ZSH         | UNIX shell (command interpreter)                                       |
     |    MISE     | Bat         | cat(1)'s clone with syntax highlighting and Git integration            |
     |    MISE     | Delta       | Syntax-highlighter and pager for git and diff output                   |
@@ -65,11 +64,11 @@ At the moment, the `install` script is only handles `debian` and `ubuntu` distro
     |    MISE     | Fzf         | Command-line fuzzy finder written in Go                                |
     |    MISE     | Gh          | GitHub command-line tool                                               |
     |    MISE     | Gum         | Tool for glamorous shell scripts                                       |
+    |    MISE     | hk          | High-performance Rust-native git hook manager                          |
     |    MISE     | Node        | JavaScript runtime built on Chrome's V8 JavaScript engine              |
     |    MISE     | Npm         | Package manager for JavaScript                                         |
     |    MISE     | Npx         | Execute JavaScript packages                                            |
     |    MISE     | Nvim        | Highly configurable text editor                                        |
-    |    MISE     | Pre-Commit  | Manage multi-language pre-commit hooks                                 |
     |    MISE     | Python3     | A programming language                                                 |
     |    MISE     | Rg          | A tool for searching text with regex                                   |
     |    MISE     | Starship    | Minimal, blazing-fast, and extremely customizable prompt for any shell |
@@ -81,11 +80,27 @@ At the moment, the `install` script is only handles `debian` and `ubuntu` distro
 
 - [Git][5]
 - [Mise][6]
-- [Pre-Commit][7]
-- [Gitlint][8]
+- [hk][7]
 - [Docker][11]
 
 ## USAGE
+
+### Git Hooks
+
+This project uses [hk][7] to manage and run git hooks. Hooks are configured in `hk.pkl` at the root and are installed automatically by the `install` script.
+
+To install or update hooks manually:
+
+```sh
+mise run setup:hooks
+```
+
+Once installed, the hooks will validate your commit messages against Conventional Commits rules on `commit-msg` and automatically run linters (`shellcheck`, `shfmt`, `markdownlint`, `hadolint`, `yamllint`, `taplo`) on staged files during `pre-commit`.
+
+You can also run hook commands manually:
+
+- `hk check` (or `mise x hk -- hk check`): Standalone manual check to lint staged files.
+- `hk fix` (or `mise x hk -- hk fix`): Auto-format and fix staged files before committing.
 
 ### Terminal helpers (config/bin)
 
@@ -346,8 +361,7 @@ The project is available as open source under the terms of the [MIT][1] [License
 [4]: https://github.com/RichardLitt/standard-readme 'Standard Readme'
 [5]: https://git-scm.com 'Distributed version control system'
 [6]: https://mise.jdx.dev 'Manages dev tools like node, python, cmake, terraform, and hundreds more'
-[7]: https://pre-commit.com 'Framework for managing and maintaining multi-language pre-commit hooks'
-[8]: https://jorisroovers.com/gitlint 'Git commit message linter'
+[7]: https://hk.jdx.dev 'High-performance Rust-native git hook manager'
 [9]: https://conventionalcommits.org 'Conventional Commits'
 [10]: https://dotfiles.github.io 'Your unofficial guide to dotfiles on GitHub'
 [11]: https://docker.com 'Docker'

@@ -57,6 +57,10 @@ Confirm that you have set the Git username correctly:
   > John Doe
 ```
 
+### Hooks and Validation
+
+This project uses [hk](https://hk.jdx.dev) to manage git hooks and run commit message validation (Conventional Commits formatting) and staged-file linting automatically on commit. See [hk.pkl](../../hk.pkl) and the [hk configuration guide](../hk/README.md) for more details.
+
 ### Direnv
 
 ## References

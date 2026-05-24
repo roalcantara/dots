@@ -1,0 +1,75 @@
+amends "package://github.com/jdx/hk/releases/download/v1.45.0/hk@1.45.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.45.0/hk@1.45.0#/Builtins.pkl"
+
+local stagingLinters = new Mapping<String, Step> {
+  ["shellcheck"] {
+    glob  = List("*.sh", "*.bash", "*.zsh", "install", "script/*.sh")
+    check = "shellcheck --rcfile .shellcheckrc {{files}}"
+  }
+  ["shfmt"] {
+    glob  = List("*.sh", "*.bash", "*.zsh")
+    check = "shfmt -d {{files}}"
+    fix   = "shfmt -w {{files}}"
+  }
+  ["markdownlint"] = (Builtins.markdown_lint) {
+    glob = List("**/*.md")
+    exclude = List("README.md", "config/git/README.md", "assets/specs/update-hooks/tasks.md")
+  }
+  ["hadolint"] = (Builtins.hadolint) {
+    glob = List("**/Dockerfile", "**/Dockerfile.*")
+  }
+  ["yamllint"] {
+    glob  = List("**/*.yml", "**/*.yaml")
+    check = "yamllint {{files}}"
+  }
+  ["taplo"] {
+    glob  = List("**/*.toml")
+    check = "taplo fmt --check {{files}}"
+    fix   = "taplo fmt {{files}}"
+  }
+}
+
+hooks {
+  ["pre-commit"] {
+    fix   = true
+    stash = "git"
+    steps = stagingLinters
+  }
+  ["commit-msg"] {
+    steps {
+      ["conventional-commits"] {
+        check = """
+msg=$(head -1 "{{commit_msg_file}}")
+if echo "$msg" | grep -qiE "^(Merge |Revert |fixup! |squash! )"; then exit 0; fi
+if echo "$msg" | grep -qiE "release"; then exit 0; fi
+pattern='^(feat|fix|docs|style|ref|test|revert|chore|ci|build|perf|git)(\([a-zA-Z0-9/_-]+\))?!?: .{1,}'
+if ! echo "$msg" | grep -qE "$pattern"; then
+  echo "❌ Commit message does not follow Conventional Commits:"
+  echo "   $msg"
+  echo ""
+  echo "   Expected: <type>(<scope>): <subject>"
+  echo "   Types: feat|fix|docs|style|ref|test|revert|chore|ci|build|perf|git"
+  exit 1
+fi
+len=$(echo -n "$msg" | wc -m | tr -d ' ')
+if [ "$len" -gt 80 ]; then
+  echo "❌ Title too long ($len chars, max 80): $msg"
+  exit 1
+fi
+if echo "$msg" | grep -qiE "^wip[: ]"; then
+  echo "❌ WIP commit not allowed: $msg"
+  exit 1
+fi
+echo "✅ Commit message OK"
+"""
+      }
+    }
+  }
+  ["fix"] {
+    fix   = true
+    steps = stagingLinters
+  }
+  ["check"] {
+    steps = stagingLinters
+  }
+}

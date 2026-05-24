@@ -241,6 +241,18 @@ if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/
 fi
 ''' }
 
+"setup:hooks" = { description = "Install hk git hooks (globally if git >= 2.54, otherwise locally)", run = '''
+#!/usr/bin/env bash
+set -e
+if hk install --global 2>/dev/null; then
+  echo "✓ hk hooks installed globally"
+else
+  echo "⚠️ git version < 2.54, falling back to local hook installation"
+  hk install
+  echo "✓ hk hooks installed locally for this repository"
+fi
+''' }
+
 "ci:publish:package" = { description = "Bun specs for scripts", usage = '''
   arg "<target>" {
    help "target to execute"
@@ -303,6 +315,12 @@ yes = true
 
 [tools]
 hk = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+"npm:markdownlint-cli" = "latest"
+hadolint = "latest"
+yamllint = "latest"
+taplo = "latest"
 
 # set to true to see full installation output, see `MISE_VERBOSE`
 # https://mise.jdx.dev/configuration/settings.html#verbose
