@@ -8,55 +8,57 @@ LUA_PATH = "./lua/?.lua;./lua/?/init.lua;;"
 # Like make, it manages tasks used to build and test projects
 # https://mise.jdx.dev/tasks
 [tasks]
-  [tasks."busted:build"]
-  description = "Direct Docker commands for the multi-stage build"
-  run = "docker build -f tools/Dockerfile -t nvim:busted --target busted ."
+[tasks."busted:build"]
+description = "Direct Docker commands for the multi-stage build"
+run = "docker build -f tools/Dockerfile -t nvim:busted --target busted ."
 
-  [tasks.tests]
-  depends = ["busted:build"]
-  description = "Run commands with built images"
-  run = "docker run --rm -v $(pwd)/specs:/app/spec -v $(pwd)/lua:/app/src nvim:busted --helper spec/tools/spec_helper.lua --output=utfTerminal spec/"
+[tasks.tests]
+depends = ["busted:build"]
+description = "Run commands with built images"
+run = "docker run --rm -v $(pwd)/specs:/app/spec -v $(pwd)/lua:/app/src nvim:busted --helper spec/tools/spec_helper.lua --output=utfTerminal spec/"
 
-  [tasks."startuptime"]
-  description = "Run startuptime"
-  run = '''
+[tasks."startuptime"]
+description = "Run startuptime"
+usage = '''
+  flag "--logdir <path>" help="Log directory" default="./.tmp/logs"
+  flag "--log" help="Save startup log to file"
+  '''
+run = '''
   #!/usr/bin/env bash
-    LOGFILE=$(date '+%Y-%m-%d_%H:%M:%S')_startuptime.log
-    USE_LOGDIR={{option(name='logdir', default='./.tmp/logs')}}
-    mkdir -p $USE_LOGDIR
+  set -euo pipefail
+  LOGFILE=$(date '+%Y-%m-%d_%H:%M:%S')_startuptime.log
+  mkdir -p "${usage_logdir?}"
 
-  if [ "{{flag(name="log")}}" = "true" ]; then
-    echo "  ==> nvim --headless --startuptime $USE_LOGDIR/$LOGFILE +qa 2>&1 | tee $USE_LOGDIR/$LOGFILE"
-    nvim --headless --startuptime $USE_LOGDIR/$LOGFILE +qa 2>&1 | tee $USE_LOGDIR/$LOGFILE
+  if [[ "${usage_log:-false}" == "true" ]]; then
+    echo "  ==> nvim --headless --startuptime ${usage_logdir?}/$LOGFILE +qa 2>&1 | tee ${usage_logdir?}/$LOGFILE"
+    nvim --headless --startuptime "${usage_logdir?}/$LOGFILE" +qa 2>&1 | tee "${usage_logdir?}/$LOGFILE"
   else
-    echo "  ==> nvim --headless --startuptime +qa 2>&1 | tee $USE_LOGDIR/$LOGFILE"
-    nvim --headless --startuptime +qa 2>&1 | tee $USE_LOGDIR/$LOGFILE
+    echo "  ==> nvim --headless --startuptime +qa 2>&1 | tee ${usage_logdir?}/$LOGFILE"
+    nvim --headless --startuptime +qa 2>&1 | tee "${usage_logdir?}/$LOGFILE"
   fi
   '''
-
-  # mise run setup
-  # mise run setup --lazy
-  # mise run setup --treesitter
-  # mise run setup --lsp
-  # mise run setup --lazy --treesitter --lsp
-  [tasks.setup]
-  description = "Setup the neovim plugins and tools"
-  run = '''
+[tasks.setup]
+description = "Setup the neovim plugins and tools"
+usage = '''
+  flag "--lazy" help="Run Lazy sync"
+  flag "--treesitter" help="Run TSUpdateSync"
+  flag "--lsp" help="Install Mason LSP servers"
+  '''
+run = '''
   #!/usr/bin/env bash
+  set -euo pipefail
 
-  # Build command
   CMD=(nvim --headless)
 
-  # Add --no-cache if requested
-  if [ "{{flag(name="lazy")}}" = "true" ]; then
+  if [[ "${usage_lazy:-false}" == "true" ]]; then
     CMD+=(+Lazy! sync)
   fi
 
-  if [ "{{flag(name="treesitter")}}" = "true" ]; then
+  if [[ "${usage_treesitter:-false}" == "true" ]]; then
     CMD+=(+TSUpdateSync)
   fi
 
-  if [ "{{flag(name="lsp")}}" = "true" ]; then
+  if [[ "${usage_lsp:-false}" == "true" ]]; then
     CMD+=(-c 'lua require("lazy").load({plugins = {"mason.nvim"}})' -c 'MasonInstall bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksman ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server')
   fi
 
@@ -65,30 +67,27 @@ LUA_PATH = "./lua/?.lua;./lua/?/init.lua;;"
   echo "  ==> ${CMD[*]}"
   eval "${CMD[*]}"
   '''
-
-# Settings
-# https://mise.jdx.dev/configuration/settings.html#settings
 [settings]
-  # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
-  # https://mise.jdx.dev/configuration/settings.html#activate_aggressive
-  activate_aggressive=true
+# Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
+# https://mise.jdx.dev/configuration/settings.html#activate_aggressive
+activate_aggressive = true
 
-  # Automatically install missing tools when running mise x, mise run, or as part of the 'not found' handler.
-  # https://mise.jdx.dev/configuration/settings.html#auto_install
-  auto_install=true
+# Automatically install missing tools when running mise x, mise run, or as part of the 'not found' handler.
+# https://mise.jdx.dev/configuration/settings.html#auto_install
+auto_install = true
 
-  # set to true to enable experimental features
-  # https://mise.jdx.dev/configuration/settings.html#experimental
-  experimental=true
+# set to true to enable experimental features
+# https://mise.jdx.dev/configuration/settings.html#experimental
+experimental = true
 
-  # Config files with these prefixes will be trusted by default
-  # https://mise.jdx.dev/configuration/settings.html#global_config_file
-  global_config_file="~/.local/share/mise/config.toml"
+# Config files with these prefixes will be trusted by default
+# https://mise.jdx.dev/configuration/settings.html#global_config_file
+global_config_file = "~/.local/share/mise/config.toml"
 
-  # Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
-  # https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
-  # idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
+# Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
+# https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
+# idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
 
-  # Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
-  # https://mise.jdx.dev/configuration/settings.html#lockfile
-  lockfile=true
+# Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
+# https://mise.jdx.dev/configuration/settings.html#lockfile
+lockfile = true
