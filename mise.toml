@@ -31,80 +31,79 @@
   flag "--package-manager <pm>" help="Package manager" default="flox"
   flag "--build-arg <arg>" {
     help "Extra docker --build-arg (repeat flag)"
-    var #true
-  }
-''', run = '''
-#!/usr/bin/env bash
+    var #true } 
+  ''', run = '''
+  #!/usr/bin/env bash
 
-case "${usage_platform?}" in
-  amd64)    PLATFORM_VALUE="linux/amd64" ;;
-  arm64)    PLATFORM_VALUE="linux/arm64" ;;
-  amd64v2)  PLATFORM_VALUE="linux/amd64/v2" ;;
-  riscv64)  PLATFORM_VALUE="linux/riscv64" ;;
-  ppc64le)  PLATFORM_VALUE="linux/ppc64le" ;;
-  s390x)    PLATFORM_VALUE="linux/s390x" ;;
-  386)      PLATFORM_VALUE="linux/386" ;;
-  *)        PLATFORM_VALUE="linux/arm64" ;;
-esac
+  case "${usage_platform?}" in
+    amd64)    PLATFORM_VALUE="linux/amd64" ;;
+    arm64)    PLATFORM_VALUE="linux/arm64" ;;
+    amd64v2)  PLATFORM_VALUE="linux/amd64/v2" ;;
+    riscv64)  PLATFORM_VALUE="linux/riscv64" ;;
+    ppc64le)  PLATFORM_VALUE="linux/ppc64le" ;;
+    s390x)    PLATFORM_VALUE="linux/s390x" ;;
+    386)      PLATFORM_VALUE="linux/386" ;;
+    *)        PLATFORM_VALUE="linux/arm64" ;;
+  esac
 
-DOCKER_CMD=(
-  DOCKER_BUILDKIT=1 docker build
-  --build-arg=BUILDKIT_INLINE_CACHE=1
-)
+  DOCKER_CMD=(
+    DOCKER_BUILDKIT=1 docker build
+    --build-arg=BUILDKIT_INLINE_CACHE=1
+  )
 
-if [ -n "${usage_user:-}" ]; then
-  DOCKER_CMD+=(--build-arg=USERNAME="$usage_user")
-fi
+  if [ -n "${usage_user:-}" ]; then
+    DOCKER_CMD+=(--build-arg=USERNAME="$usage_user")
+  fi
 
-if [ -n "${usage_group:-}" ]; then
-  DOCKER_CMD+=(--build-arg=GROUPNAME="$usage_group")
-fi
+  if [ -n "${usage_group:-}" ]; then
+    DOCKER_CMD+=(--build-arg=GROUPNAME="$usage_group")
+  fi
 
-if [ -n "${usage_branch:-}" ]; then
-  DOCKER_CMD+=(--build-arg=BRANCH="$usage_branch")
-fi
+  if [ -n "${usage_branch:-}" ]; then
+    DOCKER_CMD+=(--build-arg=BRANCH="$usage_branch")
+  fi
 
-if [ -n "${usage_repo:-}" ]; then
-  DOCKER_CMD+=(--build-arg=GITHUB_REPO="$usage_repo")
-fi
+  if [ -n "${usage_repo:-}" ]; then
+    DOCKER_CMD+=(--build-arg=GITHUB_REPO="$usage_repo")
+  fi
 
-if [ -n "${usage_package_manager:-}" ]; then
-  DOCKER_CMD+=(--build-arg=PACKAGE_MANAGER="$usage_package_manager")
-fi
+  if [ -n "${usage_package_manager:-}" ]; then
+    DOCKER_CMD+=(--build-arg=PACKAGE_MANAGER="$usage_package_manager")
+  fi
 
-if [ -n "${usage_build_arg:-}" ]; then
-  eval "EXTRA_BUILD_ARGS=($usage_build_arg)"
-  for arg in "${EXTRA_BUILD_ARGS[@]}"; do
-    DOCKER_CMD+=(--build-arg="$arg")
-  done
-fi
+  if [ -n "${usage_build_arg:-}" ]; then
+    eval "EXTRA_BUILD_ARGS=($usage_build_arg)"
+    for arg in "${EXTRA_BUILD_ARGS[@]}"; do
+      DOCKER_CMD+=(--build-arg="$arg")
+    done
+  fi
 
-if [[ -z ${GITHUB_TOKEN:-} && -f ${usage_secret?} ]]; then
-  DOCKER_CMD+=(--secret="id=github_token,src=$usage_secret")
-fi
+  if [[ -z ${GITHUB_TOKEN:-} && -f ${usage_secret?} ]]; then
+    DOCKER_CMD+=(--secret="id=github_token,src=$usage_secret")
+  fi
 
-DOCKER_CMD+=(--platform="$PLATFORM_VALUE")
+  DOCKER_CMD+=(--platform="$PLATFORM_VALUE")
 
-TAG_VALUE="dots:${usage_distro?}"
-[ -n "${usage_tag:-}" ] && TAG_VALUE="$TAG_VALUE-$usage_tag"
-DOCKER_CMD+=(--tag="$TAG_VALUE")
+  TAG_VALUE="dots:${usage_distro?}"
+  [ -n "${usage_tag:-}" ] && TAG_VALUE="$TAG_VALUE-$usage_tag"
+  DOCKER_CMD+=(--tag="$TAG_VALUE")
 
-if [ "${usage_nocache:-false}" = "true" ]; then
-  DOCKER_CMD+=(--no-cache)
-fi
+  if [ "${usage_nocache:-false}" = "true" ]; then
+    DOCKER_CMD+=(--no-cache)
+  fi
 
-DOCKER_CMD+=(--file="distros/${usage_distro?}/Dockerfile")
+  DOCKER_CMD+=(--file="distros/${usage_distro?}/Dockerfile")
 
-if [ "${usage_publish:-false}" = "true" ]; then
-  DOCKER_CMD+=(--target=publish .)
-elif [ "${usage_local:-false}" = "true" ]; then
-  DOCKER_CMD+=(--target=local .)
-else
-  DOCKER_CMD+=(--target=remote .)
-fi
+  if [ "${usage_publish:-false}" = "true" ]; then
+    DOCKER_CMD+=(--target=publish .)
+  elif [ "${usage_local:-false}" = "true" ]; then
+    DOCKER_CMD+=(--target=local .)
+  else
+    DOCKER_CMD+=(--target=remote .)
+  fi
 
-echo "  ==> ${DOCKER_CMD[*]}"
-eval "${DOCKER_CMD[*]}"
+  echo "  ==> ${DOCKER_CMD[*]}"
+  eval "${DOCKER_CMD[*]}"
 ''' }
 
 # mise run start
@@ -252,32 +251,6 @@ else
   echo "✓ hk hooks installed locally for this repository"
 fi
 ''' }
-
-"ci:publish:package" = { description = "Bun specs for scripts", usage = '''
-  arg "<target>" {
-   help "target to execute"
-   choices "puts"
-  }
-  flag "--target <target>" help="Build target" required
-''' }
-
-# "xc" = { description = "Bun specs for scripts", dir = "{{ config_root }}",
-#   usage = '''
-#   arg "<target>" {
-#     help "target to execute"
-#     choices "puts"
-#   }
-#   flag "--scenario <scenario>" {
-#     help "Scenario to run"
-#     choices "puts"
-#   }
-#   '''
-#   run = '''
-#     if [[ "$usage_spec" == "puts" ]]; then
-#       bunx bun test bin/tests/xc-puts.spec.ts
-#     fi
-#   '''
-# }
 
 # https://mise.jdx.dev/configuration/settings.html#settings
 [settings]

@@ -1,273 +1,226 @@
 ---
 title: Mise task guidelines
-description: When to use mise tasks vs bun run; no ad-hoc project scripts
+description: Task runner layout, usage args, and verification gates for Dots
 ---
 <!-- markdownlint-disable-file -->
 
-# Mise Task Preference Guidelines
+# Mise Guide
 
-Cursor rule (summary): load `mise-tasks` / `mise-expert` skills before editing
-tasks; see **Skills for Task Work** below.
+Cursor rule (summary): load **mise-tasks** / **mise-expert** skills before editing
+tasks; see **Skills for task work** below.
 
-## Overview
-
-This project uses Mise as the primary task runner for all complex workflows.
-Always prefer `mise run <task>` over direct shell commands for complex tasks.
-
-## Why Mise Tasks?
-
-1. **Consistency** - same execution across all environments
-2. **Documentation** - tasks are self-documenting
-3. **Dependencies** - tasks can define complex workflows
-4. **Environment Management** - Mise handles tool versions via `mise.toml` at the repo root
-5. **Cross-platform** - works consistently across macOS and Linux
-
-## Guidelines
-
-### ❌ Avoid: Direct Shell Commands
+## Quick start
 
 ```bash
-# Avoid
-bun build apps/kb/src/index.ts --compile --outfile dist/kb
-bun test
-biome check --write .
-bun tsc --noEmit
-```
+# Docker build and container tests (root mise.toml)
+mise run build
+mise run test
 
-### ✅ Prefer: Mise tasks
-
-```bash
-# Prefer
+# Shell verification (assets/mise.toml — use -C assets from repo root)
 mise run -C assets test bin
-mise run bdd lint
-mise run integration bin xc-git --scenario help
+mise run -C assets bdd lint --domain bin
+mise run -C assets integration bin xc-git
+mise run -C assets skill validate
 ```
 
-### When Direct Commands Are Acceptable
+List tasks: `mise tasks` or `mise run --help`. Inspect args: `mise run <task> --help`.
 
-Only use direct commands when:
+## Root vs assets split
 
-1. No equivalent mise task exists
-2. You need custom parameters not supported by existing tasks
-3. You are debugging or exploring new functionality
+Dots uses two mise configs:
 
-### No Standalone Scripts
+| File | Scope | Examples |
+| --- | --- | --- |
+| [`mise.toml`](../../mise.toml) (repo root) | Toolchain pins, Docker, setup, CI | `build`, `start`, `test`, `setup:*`, `ci:*` |
+| [`assets/mise.toml`](../mise.toml) | BDD, integration specs, skill registry | `bdd`, `integration`, `test`, `skill` |
 
-Do not add ad-hoc shell scripts to the repository. If automation is needed,
-add a Mise task to `mise.toml` (tasks can run bash, Bun, etc. *But not ad-hoc scripts*!).
+**Important:** root `test` runs Container Structure Tests against Docker images.
+Assets `test` runs BDD + integration for shell helpers. Always pass `-C assets` when
+invoking verification tasks from the repo root.
 
-**Exception:** Scripts used exclusively by Cursor and living under `.cursor/` (e.g. hook scripts like `.cursor/hooks/dod-check.ts`) are allowed. The “no scripts” rule applies to **project** automation and tasks (e.g. build, test, release); Cursor-specific hooks are editor integration, not project tasks.
+Root `[tools]` pins lint and hook tooling (`shellcheck`, `hadolint`, `hk`, …).
+Assets `[tools]` pins `bun` and `node` for Cucumber and integration specs.
 
-### Adding New Mise Tasks
+## Why mise tasks?
 
-If you need functionality not covered by existing tasks:
+1. **Consistency** — same execution across macOS and Linux
+2. **Documentation** — `description` and `usage` blocks are self-describing
+3. **Dependencies** — `depends` chains setup before dependent work
+4. **Tool versions** — `[tools]` ensures the right Bun, ShellCheck, etc.
+5. **No ad-hoc scripts** — automation belongs in `[tasks]`, not loose shell files
 
-1. **Before editing:** load the `mise-tasks` skill (always) and `mise-expert`
-   (when changing `[tools]`, `[env]`, or tool versions). Read
-   [MISE_GUIDE.md](MISE_GUIDE.md) and the links in **REFERENCES** below.
-2. Add the task under the existing `[tasks]` section using **inline task
-   objects** (`"name" = { description = …, usage = …, run = … }`), matching
-   root `mise.toml` — not separate `[tasks.name]` sections.
-3. Include a `description` field and a `usage` field when the task takes args.
-4. Follow naming conventions (`verb` or `noun:verb` style).
-5. Define task dependencies with `depends` when needed.
-6. **After editing:** run `mise run <task> --help`, `mise tasks validate
-   <task>`, then a smoke run (e.g. `mise run -C assets test bin` from repo
-   root).
+**Exception:** Cursor hook scripts under `.cursor/` are editor integration, not
+project tasks.
 
-### TOML layout (normative)
+## Dots tasks reference
 
-All tasks live under one `[tasks]` section as inline objects, like root
-`mise.toml` and [kodexb `mise.toml`][kodexb-mise]:
+### Root (`mise.toml`)
+
+| Task | Purpose |
+| --- | --- |
+| `build` | Build a Docker image for dotfiles (`--distro`, `--platform`, `--local`, …) |
+| `start` | Start a dev container |
+| `test` | Container Structure Tests for built images |
+| `setup:age` | Retrieve AGE keys (Bitwarden on macOS) |
+| `setup:git:filters` | Configure SOPS git filters |
+| `setup:hooks` | Install hk git hooks |
+
+### Assets (`assets/mise.toml`)
+
+| Task | Purpose |
+| --- | --- |
+| `bdd <action>` | Gherkin lint, dry-run, or run (`--domain`, default `bin`) |
+| `integration <domain> [target]` | Bun subprocess specs (`--scenario`, `--bin-dir`) |
+| `test <scope>` | Aggregate gate: `bin` → bdd + integration; `all` → full assets scope |
+| `skill <cmd>` | Skill registry: `validate`, `sync`, `install`, `all`, `report` |
+
+Examples:
+
+```bash
+mise run -C assets bdd lint --domain bin
+mise run -C assets bdd run --domain bin
+mise run -C assets integration bin all
+mise run -C assets integration bin xc-git --scenario help
+mise run -C assets test bin
+mise run -C assets skill sync --dry-run
+```
+
+## Task inputs: `usage` and `${usage_*?}`
+
+Parameterized tasks **must** declare CLI inputs in a `usage` field (KDL inside
+TOML). Do not hide operator-facing flags in undocumented `env` blocks.
+
+References:
+
+- [Usage specification](https://usage.jdx.dev/)
+- [Mise task arguments](https://mise.jdx.dev/tasks/task-arguments.html)
+
+Inside bash task bodies, read values as `${usage_var?}` (required) or
+`${usage_var:-default}` (optional). Boolean flags appear as `$usage_flag` (test with
+`[[ "${usage_flag:-false}" = "true" ]]`).
 
 ```toml
 [tasks]
-"prepare" = { description = "Install dependencies and hooks", usage = '''
-  flag "--ci" help="Install dependencies for CI"
+"integration" = { description = "Integration specs for a domain target", usage = '''
+arg "<domain>" help="Domain under integration/"
+arg "<target>" help="Spec stem or all" default="all"
+flag "--scenario <scenario>" help="Run one scenario when the spec supports filtering"
+flag "--bin-dir <path>" help="Override config/bin root for subprocess tests"
 ''', run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-bun install $($usage_ci && echo '--frozen-lockfile')
-$usage_ci || pre-commit install --hook-type commit-msg
-''' }
-```
-
-Use quoted keys for names with `:` only when an existing root task already
-uses that shape (e.g. Docker `setup:*`, `ci:*`). New verification tasks in
-`assets/mise.toml` use merged names (`bdd`, `integration`, `test`) with
-`usage` args — not `verify:bin` or `bdd:lint`.
-
-### Task inputs: `usage` args and flags (required)
-
-Parameterized tasks **must** declare inputs in a `usage` field. Do not use
-per-task `env = { … }` blocks or undocumented shell exports for values that
-operators pass on the command line (scenario filters, target selection, paths,
-dry-run toggles, and similar).
-
-The [mise task arguments](https://mise.jdx.dev/tasks/task-arguments.html)
-guide is the reference. Inside task bodies, read `usage_*` variables (for
-example `${usage_scenario?}`, `${usage_target?}`) or the Tera `usage` map in
-templates.
-
-```toml
-[tasks]
-"integration" = { description = "Run integration specs for a domain target", dir = "{{ config_root }}", usage = '''
-  arg "<domain>" {
-    help "Domain under integration/"
-    choices "bin"
-  }
-  arg "<target>" {
-    help "Spec stem or all"
-    choices "all" "xc" "xc-git"
-    default "all"
-  }
-  flag "--scenario <scenario>" {
-    help "Run one scenario when the spec supports filtering"
-  }
-  flag "--bin-dir <path>" {
-    help "Override config/bin root for subprocess tests"
-  }
-''', run = '''
-#!/usr/bin/env bash
-set -euo pipefail
+: "${usage_domain:?domain is required}"
+: "${usage_target:?target is required}"
 REPO_ROOT="$(cd .. && pwd)"
 export CONFIG_BIN="${usage_bin_dir:-$REPO_ROOT/config/bin}"
-bun test "integration/${usage_domain?}/${usage_target?}.spec.ts"
+export PATH="${CONFIG_BIN}:$PATH"
+if [[ "${usage_target}" == "all" ]]; then
+  bun test "integration/${usage_domain}/"
+else
+  bun test "integration/${usage_domain}/${usage_target}.spec.ts"
+fi
 ''' }
 ```
 
-**Discouraged — task parameters disguised as env:**
+In Bun shebang bodies, the same values appear as `process.env.usage_*`.
 
-```toml
-# Do not use env blocks to fake CLI parameters
-"xc-git:specs" = { env = { XC_GIT = "{{ config_root }}/xc-git" }, usage = '''…''', run = "…" }
-```
+Use `${usage_var?}` so [ShellCheck](https://www.shellcheck.net/) understands usage
+variables. See [bash variable expansion](https://mise.jdx.dev/tasks/task-arguments.html#bash-variable-expansion).
 
-Prefer one merged task (`integration`) with `target` and `scenario` args. Let
-specs resolve script paths from a shared helper; reserve `XC_*` names for
-optional subprocess overrides inside tests, not mise configuration.
+**Allowed `[env]` uses:** real environment policy (toolchain paths, CI flags) — not
+per-invocation task arguments. Prefer `[tools]` for runtime versions.
 
-**Allowed `[env]` uses:** real environment policy (toolchain paths, `NODE_ENV`,
-non-interactive CI flags) that is not a per-invocation task argument. Prefer
-`[tools]` for runtime versions.
+## TOML layout
 
-In bash task bodies, use `${usage_var?}` or `${usage_var:-default}` so
-[shellcheck](https://www.shellcheck.net/) understands usage variables. See
-[mise bash variable expansion](https://mise.jdx.dev/tasks/task-arguments.html#bash-variable-expansion).
-Bun bodies read the same values from `process.env.usage_*` (see **Task body
-style** below).
-
-### Merging Similar Tasks
-
-Near-duplicate tasks that share the same domain and implementation surface
-should merge into one task with an `arg` for the action when merging improves
-clarity without hiding meaningful safety distinctions. Prefer a single
-`mise run <noun> <action>` over `mise run <noun>:<action1>`, `mise run
-<noun>:<action2>` when the actions are low-risk administrative or query
-operations.
-
-Keep separate tasks when:
-
-- the actions have significantly different safety profiles,
-- one action is destructive and the other is read-only,
-- the actions target different execution environments (local vs CI),
-- separate tasks improve CI step readability and debugging.
-
-### Task body style (normative)
-
-Follow the same pattern as [kodexb `mise.toml`][kodexb-mise]: declare inputs in
-`usage`, then implement the task.
-
-| Shape          | When                                                              | Example                                               |
-| -------------- | ----------------------------------------------------------------- | ----------------------------------------------------- |
-| One-line `run` | Trivial delegation to another command or task                     | `run = "bun run lint"` or `run = "mise run test bin"` |
-| Bash shebang   | Shelling out, `find`, env exports, branching on `usage_*`         | BDD Cucumber tasks, CI glue, packaging                |
-| Bun shebang    | Shared TS helpers, structured spawn logic, or logic already in TS | Optional for integration orchestration                |
-
-**Required for multi-line bodies:**
-
-1. Start with `#!/usr/bin/env bash` or `#!/usr/bin/env bun` (not bare comments).
-2. Bash: `set -euo pipefail` (or at least `set -e`).
-3. Required args: `${usage_var?}` or `: "${usage_var:?message}"`.
-4. Optional flags: `${usage_flag:-default}`; boolean flags: `$usage_ci && echo …`.
-5. No placeholder stubs — task bodies must be runnable as written.
-
-**Bash example** (inline `[tasks]` entry, same style as kodexb `prepare`):
+All tasks live under one `[tasks]` section as **inline objects**:
 
 ```toml
 [tasks]
-"prepare" = { description = "Install dependencies and hooks", usage = '''
-  flag "--ci" help="Install dependencies for CI"
-''', run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-bun install $($usage_ci && echo '--frozen-lockfile')
-$usage_ci || pre-commit install --hook-type commit-msg
-''' }
+"build" = { description = "…", usage = '''…''', run = '''…''' }
+"setup:hooks" = { description = "…", run = '''…''' }
 ```
 
-**Bun example** (when TS is clearer than bash):
+Use quoted keys. Colon names (`setup:age`) are reserved for root infrastructure
+tasks. Assets verification uses merged names (`bdd`, `integration`, `test`,
+`skill`) with `usage` args — not `verify:bin` or `bdd:lint`.
 
-```toml
-run = '''
-#!/usr/bin/env bun
-const action = process.env.usage_action
-if (!action) throw new Error("usage_action is required")
-// …
-'''
-```
+### Task body style
 
-Prefer **bash** for Dots verification tasks (Cucumber, `bun test`, path setup).
-Use **Bun** only when the body reuses TS modules or needs non-trivial structured
-logic. From repo root, invoke assets tasks with `mise run -C assets …` (root
-`test` is reserved for Docker container structure tests).
+| Shape | When | Example |
+| --- | --- | --- |
+| One-line `run` | Trivial delegation | `run = "bun run scripts/skill-registry.ts"` |
+| Bash shebang | Shelling out, env exports, `usage_*` branching | `bdd`, `integration`, `build` |
+| Bun shebang | Structured TS logic already in repo | Optional for complex orchestration |
 
-[kodexb-mise]: https://github.com/roalcantara/kodexb/blob/feat-add-sync-ui/mise.toml
+**Required for multi-line bash bodies:**
 
-### Skills for Task Work (required workflow)
+1. Start with `#!/usr/bin/env bash` (not bare comments)
+2. `set -euo pipefail` (or at least `set -e`)
+3. Required args: `${usage_var?}` or `: "${usage_var:?message}"`
+4. No placeholder stubs — bodies must be runnable as written
 
-Whenever you **write or update** a mise task:
+## File tasks vs TOML tasks
 
-| Phase      | Action                                                                                                     |
-| ---------- | ---------------------------------------------------------------------------------------------------------- |
-| **Before** | Load the `mise-tasks` skill (always). Load `mise-expert` when editing `[tools]`, `[env]`, or version pins. |
-| **During** | Follow this guide: inline `[tasks]` layout, `usage` args, bash/bun shebang bodies.                         |
-| **After**  | `mise run <task> --help` → `mise tasks validate <task>` → smoke-run the task or its gate.                  |
+Mise supports two task shapes:
 
-If something fails, use the mise docs in **REFERENCES** (tasks, TOML tasks,
-task arguments, architecture, CLI).
+| Style | Definition | Dots usage |
+| --- | --- | --- |
+| **TOML tasks** | Inline `run = '''…'''` or one-line `run = "…"` in `mise.toml` | Primary — all Dots tasks today |
+| **File tasks** | Executable scripts under `mise-tasks/` or paths referenced by `file =` | Not used in this repo |
 
-## Implementation Notes
+Prefer TOML tasks for Dots so `usage`, `description`, and `depends` stay next to
+the implementation. File tasks are appropriate when a script is long-lived and
+shared outside mise; if you add one, document it here.
 
-- Project-wide tasks live in root `mise.toml` (Docker, setup, CI).
-- Verification tasks live in `assets/mise.toml` (BDD, integration, aggregates).
-- From repo root: `mise run -C assets test bin|all` (root `test` is Docker CST).
-- Run `mise tasks` or `mise run --list` to see available tasks.
-- Run `mise run <task> --help` to inspect `usage` args for merged tasks.
-- Tasks handle environment setup and proper error output.
+Docs: [TOML-based tasks](https://mise.jdx.dev/tasks/toml-tasks.html),
+[file tasks](https://mise.jdx.dev/tasks/file-tasks.html).
 
-## REFERENCES
+## Completions (`_mise`)
 
-- [Mise documentation][0]
-- [Tasks overview][5]
-- [Task system architecture][6]
-- [TOML-based tasks][7]
-- [Task arguments (`usage`)][3]
-- [Glossary][8]
-- [Tips & tricks][9]
-- [Mise architecture][10]
-- [Mise CLI][11]
-- [Usage specification][4]
-- [Bun CLI][1]
+Mise completions come from the [Usage](https://usage.jdx.dev/) spec embedded in
+task definitions. Generated completion lives at
+[`config/zsh/opt/completions/_mise`](../../config/zsh/opt/completions/_mise).
 
-[0]: https://mise.jdx.dev/ 'Mise — dependency management and task runner'
-[1]: https://bun.com/docs 'Bun — runtime, package manager, bundler, test runner'
-[3]: https://mise.jdx.dev/tasks/task-arguments.html 'Task arguments'
-[4]: https://usage.jdx.dev/spec/ 'Usage specification reference'
-[5]: https://mise.jdx.dev/tasks/ 'Tasks'
-[6]: https://mise.jdx.dev/tasks/architecture.html 'Task system architecture'
-[7]: https://mise.jdx.dev/tasks/toml-tasks.html 'TOML-based tasks'
-[8]: https://mise.jdx.dev/glossary.html 'Glossary'
-[9]: https://mise.jdx.dev/tips-and-tricks.html 'Tips & tricks'
-[10]: https://mise.jdx.dev/architecture.html 'Mise architecture'
-[11]: https://mise.jdx.dev/cli/ 'Mise CLI'
+After changing `usage` blocks, regenerate completions if your workflow requires it
+(`usage generate completion` for the mise CLI — see mise docs). Completions expose
+task names, flags, and `choices` from `usage` without hand-maintaining `_arguments`
+stanzas per task.
+
+## Adding or changing tasks
+
+1. **Before editing:** load **mise-tasks** (always). Load **mise-expert** when
+   changing `[tools]`, `[env]`, or version pins.
+2. Add the task under the correct `mise.toml` using inline `[tasks]` objects.
+3. Include `description` and `usage` when the task takes args.
+4. Use `depends` when a task requires setup first.
+5. **After editing:**
+   - `mise run <task> --help`
+   - `mise tasks validate <task>` (when available)
+   - Smoke-run the task (e.g. `mise run -C assets test bin`)
+
+### When direct commands are acceptable
+
+Use bare `bun test`, `docker build`, etc. only when:
+
+1. No equivalent mise task exists yet
+2. You need one-off debugging with custom parameters
+3. You are exploring before promoting a workflow to a task
+
+## Skills for task work
+
+| Phase | Action |
+| --- | --- |
+| **Before** | Load **mise-tasks**. Load **mise-expert** for `[tools]` / `[env]`. |
+| **During** | Inline `[tasks]` layout, `usage` args, bash shebang bodies. |
+| **After** | `--help` → validate → smoke-run the gate affected by your change. |
+
+## References
+
+- [Mise documentation](https://mise.jdx.dev/)
+- [Tasks overview](https://mise.jdx.dev/tasks/)
+- [Task system architecture](https://mise.jdx.dev/tasks/architecture.html)
+- [TOML-based tasks](https://mise.jdx.dev/tasks/toml-tasks.html)
+- [Task arguments (`usage`)](https://mise.jdx.dev/tasks/task-arguments.html)
+- [Usage specification](https://usage.jdx.dev/spec/)
+- [Mise CLI](https://mise.jdx.dev/cli/)
+- [Bun CLI](https://bun.com/docs)
