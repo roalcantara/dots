@@ -3,12 +3,16 @@
 
 # https://mise.jdx.dev/tasks
 [tasks]
+
 # mise run build
 # mise run build --nocache
 # mise run build --nocache --distro ubuntu
 # mise run build --nocache --local
 # mise run build --nocache --local --user vscode --group vscode --tag latest
-"build" = { description = "Build a Docker image for dotfiles", usage = '''
+
+[tasks."build"]
+description = "Build a Docker image for dotfiles"
+usage = '''
   flag "--nocache" help="Disable build cache"
   flag "--local" help="Build local target (COPY) instead of remote"
   flag "--publish" help="Publish image to Docker Hub"
@@ -31,86 +35,90 @@
   flag "--package-manager <pm>" help="Package manager" default="flox"
   flag "--build-arg <arg>" {
     help "Extra docker --build-arg (repeat flag)"
-    var #true } 
-  ''', run = '''
-  #!/usr/bin/env bash
+    var #true
+  }
+'''
+run = '''
+#!/usr/bin/env bash
 
-  case "${usage_platform?}" in
-    amd64)    PLATFORM_VALUE="linux/amd64" ;;
-    arm64)    PLATFORM_VALUE="linux/arm64" ;;
-    amd64v2)  PLATFORM_VALUE="linux/amd64/v2" ;;
-    riscv64)  PLATFORM_VALUE="linux/riscv64" ;;
-    ppc64le)  PLATFORM_VALUE="linux/ppc64le" ;;
-    s390x)    PLATFORM_VALUE="linux/s390x" ;;
-    386)      PLATFORM_VALUE="linux/386" ;;
-    *)        PLATFORM_VALUE="linux/arm64" ;;
-  esac
+case "${usage_platform?}" in
+  amd64)    PLATFORM_VALUE="linux/amd64" ;;
+  arm64)    PLATFORM_VALUE="linux/arm64" ;;
+  amd64v2)  PLATFORM_VALUE="linux/amd64/v2" ;;
+  riscv64)  PLATFORM_VALUE="linux/riscv64" ;;
+  ppc64le)  PLATFORM_VALUE="linux/ppc64le" ;;
+  s390x)    PLATFORM_VALUE="linux/s390x" ;;
+  386)      PLATFORM_VALUE="linux/386" ;;
+  *)        PLATFORM_VALUE="linux/arm64" ;;
+esac
 
-  DOCKER_CMD=(
-    DOCKER_BUILDKIT=1 docker build
-    --build-arg=BUILDKIT_INLINE_CACHE=1
-  )
+DOCKER_CMD=(
+  DOCKER_BUILDKIT=1 docker build
+  --build-arg=BUILDKIT_INLINE_CACHE=1
+)
 
-  if [ -n "${usage_user:-}" ]; then
-    DOCKER_CMD+=(--build-arg=USERNAME="$usage_user")
-  fi
+if [ -n "${usage_user:-}" ]; then
+  DOCKER_CMD+=(--build-arg=USERNAME="$usage_user")
+fi
 
-  if [ -n "${usage_group:-}" ]; then
-    DOCKER_CMD+=(--build-arg=GROUPNAME="$usage_group")
-  fi
+if [ -n "${usage_group:-}" ]; then
+  DOCKER_CMD+=(--build-arg=GROUPNAME="$usage_group")
+fi
 
-  if [ -n "${usage_branch:-}" ]; then
-    DOCKER_CMD+=(--build-arg=BRANCH="$usage_branch")
-  fi
+if [ -n "${usage_branch:-}" ]; then
+  DOCKER_CMD+=(--build-arg=BRANCH="$usage_branch")
+fi
 
-  if [ -n "${usage_repo:-}" ]; then
-    DOCKER_CMD+=(--build-arg=GITHUB_REPO="$usage_repo")
-  fi
+if [ -n "${usage_repo:-}" ]; then
+  DOCKER_CMD+=(--build-arg=GITHUB_REPO="$usage_repo")
+fi
 
-  if [ -n "${usage_package_manager:-}" ]; then
-    DOCKER_CMD+=(--build-arg=PACKAGE_MANAGER="$usage_package_manager")
-  fi
+if [ -n "${usage_package_manager:-}" ]; then
+  DOCKER_CMD+=(--build-arg=PACKAGE_MANAGER="$usage_package_manager")
+fi
 
-  if [ -n "${usage_build_arg:-}" ]; then
-    eval "EXTRA_BUILD_ARGS=($usage_build_arg)"
-    for arg in "${EXTRA_BUILD_ARGS[@]}"; do
-      DOCKER_CMD+=(--build-arg="$arg")
-    done
-  fi
+if [ -n "${usage_build_arg:-}" ]; then
+  eval "EXTRA_BUILD_ARGS=($usage_build_arg)"
+  for arg in "${EXTRA_BUILD_ARGS[@]}"; do
+    DOCKER_CMD+=(--build-arg="$arg")
+  done
+fi
 
-  if [[ -z ${GITHUB_TOKEN:-} && -f ${usage_secret?} ]]; then
-    DOCKER_CMD+=(--secret="id=github_token,src=$usage_secret")
-  fi
+if [[ -z ${GITHUB_TOKEN:-} && -f ${usage_secret?} ]]; then
+  DOCKER_CMD+=(--secret="id=github_token,src=$usage_secret")
+fi
 
-  DOCKER_CMD+=(--platform="$PLATFORM_VALUE")
+DOCKER_CMD+=(--platform="$PLATFORM_VALUE")
 
-  TAG_VALUE="dots:${usage_distro?}"
-  [ -n "${usage_tag:-}" ] && TAG_VALUE="$TAG_VALUE-$usage_tag"
-  DOCKER_CMD+=(--tag="$TAG_VALUE")
+TAG_VALUE="dots:${usage_distro?}"
+[ -n "${usage_tag:-}" ] && TAG_VALUE="$TAG_VALUE-$usage_tag"
+DOCKER_CMD+=(--tag="$TAG_VALUE")
 
-  if [ "${usage_nocache:-false}" = "true" ]; then
-    DOCKER_CMD+=(--no-cache)
-  fi
+if [ "${usage_nocache:-false}" = "true" ]; then
+  DOCKER_CMD+=(--no-cache)
+fi
 
-  DOCKER_CMD+=(--file="distros/${usage_distro?}/Dockerfile")
+DOCKER_CMD+=(--file="distros/${usage_distro?}/Dockerfile")
 
-  if [ "${usage_publish:-false}" = "true" ]; then
-    DOCKER_CMD+=(--target=publish .)
-  elif [ "${usage_local:-false}" = "true" ]; then
-    DOCKER_CMD+=(--target=local .)
-  else
-    DOCKER_CMD+=(--target=remote .)
-  fi
+if [ "${usage_publish:-false}" = "true" ]; then
+  DOCKER_CMD+=(--target=publish .)
+elif [ "${usage_local:-false}" = "true" ]; then
+  DOCKER_CMD+=(--target=local .)
+else
+  DOCKER_CMD+=(--target=remote .)
+fi
 
-  echo "  ==> ${DOCKER_CMD[*]}"
-  eval "${DOCKER_CMD[*]}"
-''' }
+echo "  ==> ${DOCKER_CMD[*]}"
+eval "${DOCKER_CMD[*]}"
+'''
 
 # mise run start
 # mise run start --tag local
-# mise run start --tag local
 # mise run start --tag local --user vscode --workdir /workspaces/dots
-"start" = { description = "Start a container", usage = '''
+
+[tasks."start"]
+description = "Start a container"
+usage = '''
   flag "--distro <distro>" {
     help "Distribution"
     choices "debian" "ubuntu"
@@ -119,7 +127,8 @@
   flag "--tag <tag>" help="Image tag suffix (dots:<distro>-<tag>)"
   flag "--user <user>" help="Container user" default="vscode"
   flag "--workdir <path>" help="Container working directory" default="/workspaces/dots"
-''', run = '''
+'''
+run = '''
 #!/usr/bin/env bash
 
 DOCKER_CMD=(
@@ -141,12 +150,15 @@ fi
 
 echo "  ==> ${DOCKER_CMD[*]}"
 eval "${DOCKER_CMD[*]}"
-''' }
+'''
 
 # mise run test
 # mise run test --distro ubuntu --tag latest
 # mise run test --image dots:debian-amd64-latest --config distros/debian/container-structure-test.yml
-"test" = { description = "Run the Container Structure Tests for the Docker image", usage = '''
+
+[tasks."test"]
+description = "Run the Container Structure Tests for the Docker image"
+usage = '''
   flag "--distro <distro>" {
     help "Distribution"
     choices "debian" "ubuntu"
@@ -160,7 +172,8 @@ eval "${DOCKER_CMD[*]}"
   flag "--tag <tag>" help="Image tag segment when composing image name"
   flag "--image <image>" help="Full image reference (overrides distro/platform/tag)"
   flag "--config <config>" help="CST config path"
-''', run = '''
+'''
+run = '''
 #!/usr/bin/env bash
 
 CST_CMD=(
@@ -188,9 +201,11 @@ fi
 
 echo "  ==> ${CST_CMD[*]}"
 eval "${CST_CMD[*]}"
-''' }
+'''
 
-"setup:age" = { description = "Setup AGE keys from Bitwarden", run = '''
+[tasks."setup:age"]
+description = "Setup AGE keys from Bitwarden"
+run = '''
 #!/usr/bin/env bash
 set -e
 # Check if AGE keys already exist
@@ -222,11 +237,12 @@ if [ ! -f "$HOME/.config/age/keys.txt" ]; then
     bw lock
   fi
 fi
-''' }
+'''
 
-"setup:git:filters" = { description = "Setup Git filters for automatic encryption/decryption of .env files using SOPS", depends = [
-  "setup:age",
-], run = '''
+[tasks."setup:git:filters"]
+description = "Setup Git filters for automatic encryption/decryption of .env files using SOPS"
+depends = ["setup:age"]
+run = '''
 #!/usr/bin/env bash
 set -e
 # Only configure filters if not already done
@@ -238,9 +254,11 @@ if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/
   git config --local diff.sops.command "script/smudge.sops.sh %f"
   echo "✓ Git filters configured"
 fi
-''' }
+'''
 
-"setup:hooks" = { description = "Install hk git hooks (globally if git >= 2.54, otherwise locally)", run = '''
+[tasks."setup:hooks"]
+description = "Install hk git hooks (globally if git >= 2.54, otherwise locally)"
+run = '''
 #!/usr/bin/env bash
 set -e
 if hk install --global 2>/dev/null; then
@@ -250,9 +268,7 @@ else
   hk install
   echo "✓ hk hooks installed locally for this repository"
 fi
-''' }
-
-# https://mise.jdx.dev/configuration/settings.html#settings
+'''
 [settings]
 # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
 # https://mise.jdx.dev/configuration/settings.html#activate_aggressive
