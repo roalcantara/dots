@@ -64,11 +64,11 @@ grm() {
 }
 
 # COMMIT
-alias gc='g commit --verbose'
-alias gca='g commit --verbose --amend'
-alias gcan='g commit --verbose --amend --no-verify'
-alias gcane='g commit --verbose --amend --no-edit'
-alias gcaa='g commit --verbose --amend --no-verify --no-edit'
+alias gc='g commit'
+alias gca='g commit --amend'
+alias gcan='g commit --amend --no-verify'
+alias gcane='g commit --amend --no-edit'
+alias gcaa='g commit --amend --no-verify --no-edit'
 alias gcw='g wip'
 alias gct='g tmp'
 

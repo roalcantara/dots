@@ -1,0 +1,11 @@
+{
+  "trustedtaps": [
+    "oven-sh/bun"
+  ],
+  "trustedformulae": [
+    "can1357/tap/omp"
+  ],
+  "trustedcasks": [
+    "zzet/tap/gortex"
+  ]
+}

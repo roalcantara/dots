@@ -9,7 +9,9 @@ bindkey "^[[B" down-line-or-beginning-search # Down
 
 # Load terminfo module
 zmodload -F zsh/terminfo +p:terminfo
-# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
-for key ('^P' ${terminfo[kcuu1]}) bindkey ${key} history-substring-search-up
-for key ('^N' ${terminfo[kcud1]}) bindkey ${key} history-substring-search-down
+# Plugin is skipped in ZSH_MINIMAL_TERMINAL; only bind when widgets exist.
+if (( ${+widgets[history-substring-search-up]} )); then
+  for key ('^P' ${terminfo[kcuu1]}) bindkey ${key} history-substring-search-up
+  for key ('^N' ${terminfo[kcud1]}) bindkey ${key} history-substring-search-down
+fi
 unset key

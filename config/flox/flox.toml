@@ -7,6 +7,7 @@
 ## -------------------------------------------------------------------
 # Flox manifest version managed by Flox CLI
 version = 1
+floxhub_token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlAxTmp1ejh3cjdnb2VRMG5sM09WSSJ9.eyJodHRwczovL2Zsb3guZGV2L2hhbmRsZSI6InJvYWxjYW50YXJhIiwiaHR0cHM6Ly9mbG94LmRldi9yb2xlcyI6e30sImlzcyI6Imh0dHBzOi8vYXV0aC5mbG94LmRldi8iLCJzdWIiOiJnaXRodWJ8MzYxMTQwIiwiYXVkIjpbImh0dHBzOi8vaHViLmZsb3guZGV2L2FwaSIsImh0dHBzOi8vZmxveC51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNzgyNzI5OTMxLCJleHAiOjE3ODUzMjE5MzEsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUiLCJhenAiOiJmR3JvdEhCZlFyOVgxUEhHYkZvaWZFV2FEUHlXWkRtYyIsInBlcm1pc3Npb25zIjpbXX0.zaapGcZk50Snu_x1C_BGxMdMU6h9ARjTsNNuXxQ07-nK9vp0jclJch8RJZPX-2ShFtH2oy5ix-2VkXkPGyw-lWYUGuFRHWwH2nRWAXyvC2JdeL3nUo6tannZcUdcpWz_74eIbvsq-zLVODo7zn1UZ1wLYQLhuMnM6iqMd4NbYgX3TXtW4-OIh8LS0uiLWO1Ri0kFz-ORHe6RCap9o8qdNwnbpxN16U6mqNUocw1F-8zI4Ecw5ylfZciFq4wLk8Z-i1x6-NXyimFmUtgVgCnJ4_Zg4YXqNYCQDlwPJhLfjGOnOkkb_SJVEE2TDhiEy9RzxLR-ujLY7e2-OcTKOhsPjQ"
 
 ## Include ----------------------------------------------------------
 ## ... environments to create a composed environment
@@ -14,7 +15,7 @@ version = 1
 [include]
 environments = [
   #  { dir = ".config/flox/envs/cockpit" }
-  { remote = "roalcantara/cockpit" }
+  { remote = "roalcantara/cockpit" },
 ]
 
 ## Install Packages --------------------------------------------------
