@@ -224,7 +224,7 @@ require('core/vi/au').setup_autocommands_async({
           -- When the LSP client starts Nvim sets various default options, mappings, and diagnostics
           -- https://neovim.io/doc/user/lsp.html#lsp-defaults | https://neovim.io/doc/user/diagnostic.html#diagnostic-defaults | https://gpanders.com/blog/whats-new-in-neovim-0-11
           local client = vim.lsp.get_client_by_id(ev.data.client_id)
-          if type(client) ~= nil and vim.api.nvim_buf_is_valid(ev.buf) then
+          if client ~= nil and vim.api.nvim_buf_is_valid(ev.buf) then
             lsp_features.setup_capabilities(client, ev.buf, ev)
           end
         end,
