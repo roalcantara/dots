@@ -52,7 +52,9 @@ return {
   {
     'isak102/ghostty.nvim',
     ft = 'ghostty',
-    cond = vim.fn.executable('ghostty') == 1,
+    cond = function()
+      return vim.fn.executable('ghostty') == 1
+    end,
     opts = {
       -- The autocmd pattern matched against the filename of the buffer. If this pattern
       -- matches, ghostty.nvim will run on save in that buffer. This pattern is passed to

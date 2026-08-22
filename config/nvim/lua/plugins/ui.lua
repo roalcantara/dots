@@ -1026,12 +1026,10 @@ return {
   -- https://youtu.be/E4qXZv34NQQ?si=612rj4bmIUpgnsDw&t=203
   {
     'nvzone/showkeys',
+    -- Load only when explicitly toggled. An `init` hook calling
+    -- ShowkeysToggle force-loads the plugin at startup via lazy.nvim's
+    -- command stub, defeating this `cmd` entirely.
     cmd = 'ShowkeysToggle',
-    event = 'VeryLazy',
-    -- Called during startup, plugins' configurations typically is set in an init function
-    init = function()
-      vim.cmd('ShowkeysToggle')
-    end,
     opts = function(_, opts)
       return vim.tbl_deep_extend('force', opts, {
         winhl = 'FloatBorder:Comment,Normal:Normal',
