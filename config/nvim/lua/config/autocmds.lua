@@ -15,24 +15,22 @@ require('core/vi/au').setup_autocommands_async({
   -- checktime / highlight_yank / resize_splits / last_loc / man_unlisted /
   -- wrap_spell / json_conceal / auto_create_dir are all registered by
   -- lazyvim/config/autocmds.lua — do not re-add them.
-  close_with_q_or_esc = {
+  -- LazyVim's `lazyvim_close_with_q` group already binds `q` (with
+  -- vim.schedule + silent) for its own filetype list. We only add the
+  -- filetypes it does not cover, and the extra <Esc> binding.
+  close_with_esc = {
     {
       event = 'FileType',
       opts = {
         pattern = {
           'aerial',
-          'checkhealth',
-          'dbout',
           'DressingSelect',
           'floaterm',
-          'gitsigns-blame',
-          'grug-far',
           'help',
           'Jaq',
           'lazy',
           'lir',
           'lsp-installer',
-          'lspinfo',
           'LspsagaCodeAction',
           'LspsagaDiagnostic',
           'LspsagaFinder',
@@ -43,45 +41,34 @@ require('core/vi/au').setup_autocommands_async({
           'LspSignatureHelp',
           'man',
           'markdown',
-          'neotest-output-panel',
-          'neotest-output',
-          'neotest-summary',
           'noice',
-          'notify',
           'null-ls-info',
-          'PlenaryTestPopup',
-          'qf',
           'snacks_notif_history',
           'snacks_notif_log',
           'snacks_notif',
           'snacks_picker_list',
           'snacks_win',
-          'spectre_panel',
-          'startuptime',
-          'trouble',
           'Trouble',
+          'trouble',
           'TroubleToggle',
-          'tsplayground',
           'unix',
         },
         callback = function(event)
           vim.bo[event.buf].buflisted = false
-          vim.keymap.set('n', 'q', function()
-            vim.cmd('close')
-            pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
-          end, {
-            buffer = event.buf,
-            desc = 'Quit buffer (q)',
-          })
-          vim.keymap.set('n', '<Esc>', function()
-            vim.cmd('close')
-            pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
-          end, {
-            buffer = event.buf,
-            desc = 'Quit buffer (<Esc>)',
-          })
+          vim.schedule(function()
+            for _, lhs in ipairs({ 'q', '<Esc>' }) do
+              vim.keymap.set('n', lhs, function()
+                vim.cmd('close')
+                pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+              end, {
+                buffer = event.buf,
+                silent = true,
+                desc = 'Quit buffer',
+              })
+            end
+          end)
         end,
-        desc = 'Close buffer with <Esc>',
+        desc = 'Close extra filetypes with q or <Esc>',
       },
     },
   },
