@@ -252,16 +252,15 @@ indent_style = space
 # Shell
 # shfmt | https://github.com/mvdan/sh
 # Shell Style Guide | https://google.github.io/styleguide/shell.xml#Indentation
-[*.{bash,sh,zsh}]
+[*.{bash,sh}]
 indent_size = 2
 indent_style = space
-shell_variant             = auto       # --language-dialect
+shell_variant             = bash       # --language-dialect
 switch_case_indent        = true       # --case-indent
 function_next_line        = true       # function opening braces are placed on a separate line
 binary_next_line          = true       # binary ops like && and | may start a line
 space_redirects           = true       # redirect operators will be followed by a space
 keep_padding              = true       # keep column alignment paddings
-
 # Svelte
 # https://github.com/sveltejs/svelte/blob/master/.editorconfig
 [*.svelte]

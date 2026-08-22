@@ -1,18 +1,34 @@
-amends "package://github.com/jdx/hk/releases/download/v1.45.0/hk@1.45.0#/Config.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.45.0/hk@1.45.0#/Builtins.pkl"
+/// Repository linters. Commit-message rules are inherited from the global
+/// config at ~/.config/hk/config.pkl (source: config/hk/config.pkl) and can be
+/// overridden here - see config/hk/README.md.
+amends "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Builtins.pkl"
+
+exclude = List("graphify-out", "node_modules", ".git")
+
+display_skip_reasons = List()
 
 local stagingLinters = new Mapping<String, Step> {
+  // shfmt and shellcheck cannot parse zsh. shfmt panics outright, so *.zsh must
+  // never reach it. hk's own Builtins.shfmt glob includes **/*.zsh and so
+  // cannot be used here.
   ["shellcheck"] {
-    glob  = List("*.sh", "*.bash", "*.zsh", "install", "script/*.sh")
+    batch = true
+    glob  = List("**/*.sh", "**/*.bash")
     check = "shellcheck --rcfile .shellcheckrc {{files}}"
   }
   ["shfmt"] {
-    glob  = List("*.sh", "*.bash", "*.zsh")
+    batch = true
+    glob  = List("**/*.sh", "**/*.bash", "**/*.bats")
     check = "shfmt -d {{files}}"
     fix   = "shfmt -w {{files}}"
   }
+  // zsh -n is the only parser that understands zsh syntax.
+  ["zsh-syntax"] {
+    glob  = List("**/*.zsh", "config/zsh/.z*")
+    check = "zsh -n {{files}}"
+  }
   ["markdownlint"] = (Builtins.markdown_lint) {
-    glob = List("**/*.md")
     exclude = List("README.md", "config/git/README.md", "assets/specs/update-hooks/tasks.md")
   }
   ["hadolint"] = (Builtins.hadolint) {
@@ -23,9 +39,12 @@ local stagingLinters = new Mapping<String, Step> {
     check = "yamllint {{files}}"
   }
   ["taplo"] {
-    glob  = List("**/*.toml")
-    check = "taplo fmt --check {{files}}"
-    fix   = "taplo fmt {{files}}"
+    glob    = List("**/*.toml")
+    // config/tombi/config.toml declares toml-version = "v1.1.0" and uses a
+    // multi-line inline table, which taplo (TOML 1.0) cannot parse.
+    exclude = List("config/tombi/config.toml")
+    check   = "taplo fmt --check {{files}}"
+    fix     = "taplo fmt {{files}}"
   }
 }
 
@@ -34,36 +53,6 @@ hooks {
     fix   = true
     stash = "git"
     steps = stagingLinters
-  }
-  ["commit-msg"] {
-    steps {
-      ["conventional-commits"] {
-        check = """
-msg=$(head -1 "{{commit_msg_file}}")
-if echo "$msg" | grep -qiE "^(Merge |Revert |fixup! |squash! )"; then exit 0; fi
-if echo "$msg" | grep -qiE "release"; then exit 0; fi
-pattern='^(feat|fix|docs|style|ref|test|revert|chore|ci|build|perf|git)(\([a-zA-Z0-9/_-]+\))?!?: .{1,}'
-if ! echo "$msg" | grep -qE "$pattern"; then
-  echo "❌ Commit message does not follow Conventional Commits:"
-  echo "   $msg"
-  echo ""
-  echo "   Expected: <type>(<scope>): <subject>"
-  echo "   Types: feat|fix|docs|style|ref|test|revert|chore|ci|build|perf|git"
-  exit 1
-fi
-len=$(echo -n "$msg" | wc -m | tr -d ' ')
-if [ "$len" -gt 80 ]; then
-  echo "❌ Title too long ($len chars, max 80): $msg"
-  exit 1
-fi
-if echo "$msg" | grep -qiE "^wip[: ]"; then
-  echo "❌ WIP commit not allowed: $msg"
-  exit 1
-fi
-echo "✅ Commit message OK"
-"""
-      }
-    }
   }
   ["fix"] {
     fix   = true

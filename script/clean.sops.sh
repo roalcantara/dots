@@ -17,7 +17,7 @@
 set -euo pipefail
 
 # Get script directory and change to repository root
-scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}")"  > /dev/null 2>&1 && pwd)"
 cd "${scriptDir}/.." || exit 1
 
 # Validate AGE key exists
@@ -29,7 +29,7 @@ if [ ! -f "$AGE_KEY_FILE" ]; then
 fi
 
 # Check if age command is available
-if ! command -v age >/dev/null 2>&1; then
+if ! command -v age > /dev/null 2>&1; then
     echo "ERROR: age command not found. Please install age." >&2
     exit 1
 fi
@@ -41,7 +41,7 @@ if [ ! -f ".sops.yaml" ]; then
 fi
 
 # Check if sops command is available
-if ! command -v sops >/dev/null 2>&1; then
+if ! command -v sops > /dev/null 2>&1; then
     echo "ERROR: sops command not found. Please install sops." >&2
     exit 1
 fi
@@ -52,7 +52,8 @@ wt_file=""
 enc_file=""
 dec_file=""
 
-cleanup() {
+cleanup()
+          {
     [ -n "$tmpdir" ] && [ -d "$tmpdir" ] && rm -rf "$tmpdir"
 }
 trap cleanup EXIT
@@ -66,20 +67,20 @@ dec_file="${tmpdir}/dec"
 cat > "$wt_file"
 
 # New file: not in index → encrypt and output
-if ! git show ":$path" > "$enc_file" 2>/dev/null; then
+if ! git show ":$path" > "$enc_file" 2> /dev/null; then
     sops --encrypt --filename-override "$path" "$wt_file"
     exit 0
 fi
 
 # Decrypt index blob for comparison
-if ! sops --decrypt --filename-override "$path" "$enc_file" > "$dec_file" 2>/dev/null; then
+if ! sops --decrypt --filename-override "$path" "$enc_file" > "$dec_file" 2> /dev/null; then
     echo "ERROR: Could not decrypt index blob for $path; re-encrypting" >&2
     sops --encrypt --filename-override "$path" "$wt_file"
     exit 0
 fi
 
 # Hash both plaintexts
-if command -v sha256sum >/dev/null 2>&1; then
+if command -v sha256sum > /dev/null 2>&1; then
     hash_index="$(sha256sum < "$dec_file" | cut -d' ' -f1)"
     hash_wt="$(sha256sum < "$wt_file" | cut -d' ' -f1)"
 else

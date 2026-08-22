@@ -14,7 +14,7 @@
 set -euo pipefail
 
 # Get script directory and change to repository root
-scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}")"  > /dev/null 2>&1 && pwd)"
 cd "${scriptDir}/.." || exit 1
 
 # Validate AGE key exists
@@ -26,7 +26,7 @@ if [ ! -f "$AGE_KEY_FILE" ]; then
 fi
 
 # Check if age command is available
-if ! command -v age >/dev/null 2>&1; then
+if ! command -v age > /dev/null 2>&1; then
     echo "ERROR: age command not found. Please install age." >&2
     exit 1
 fi
@@ -38,7 +38,7 @@ if [ ! -f ".sops.yaml" ]; then
 fi
 
 # Check if sops command is available
-if ! command -v sops >/dev/null 2>&1; then
+if ! command -v sops > /dev/null 2>&1; then
     echo "ERROR: sops command not found. Please install sops." >&2
     exit 1
 fi
