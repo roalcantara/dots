@@ -26,7 +26,6 @@ return {
     -- :checkhealth livepreview         Run |checkhealth| for `live-preview.nvim`
     'brianhuster/live-preview.nvim',
     dependencies = {
-      'ibhagwan/fzf-lua',
       'folke/snacks.nvim',
     },
   },
@@ -39,6 +38,11 @@ return {
     --- @type render.md.UserConfig
     opts = {
       render_modes = { 'n', 'c', 't' },
+      latex = { enabled = false },
+      completions = {
+        blink = { enabled = true },
+        lsp = { enabled = true },
+      },
     },
   },
 }

@@ -353,7 +353,7 @@ return {
   -- https://github.com/OXY2DEV/helpview.nvim
   {
     'OXY2DEV/helpview.nvim',
-    lazy = false,
+    ft = 'help',
     opts = {},
   },
 
@@ -773,9 +773,6 @@ return {
   {
     'folke/noice.nvim',
     event = 'VeryLazy',
-    dependencies = {
-      'MunifTanjim/nui.nvim',
-    },
     opts = function(_, opts)
       return vim.tbl_deep_extend('force', opts or {}, {
         -- https://github.com/folke/noice.nvim/wiki/A-Guide-to-Messages#lsp-messages
@@ -1023,23 +1020,7 @@ return {
             statusline.sessions.lualine_z.time,
           },
         },
-        extensions = { 'neo-tree', 'lazy', 'fzf' },
-      })
-    end,
-  },
-
-  -- Improve viewing Markdown files in Neovim
-  -- https://github.com/MeanderingProgrammer/render-markdown.nvim?tab=readme-ov-file | https://youtu.be/AAkrmfkC1L4?t=167
-  {
-    'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' }, -- if you use standalone mini plugins
-    opts = function(_, opts)
-      return vim.tbl_deep_extend('force', opts or {}, {
-        latex = { enabled = false },
-        completions = {
-          blink = { enabled = true },
-          lsp = { enabled = true },
-        },
+        extensions = { 'lazy' },
       })
     end,
   },

@@ -1,15 +1,6 @@
 local neo = require('core/neo')
 
 return {
-  -- Fzf-Lua | Improved fzf.vim written in lua
-  -- https://github.com/ibhagwan/fzf-lua | https://lazyvim.org/extras/editor/fzf
-  {
-    'ibhagwan/fzf-lua',
-    event = 'VeryLazy',
-    cmd = 'FzfLua',
-    dependencies = { 'nvim-mini/mini.icons' },
-  },
-
   -- Mini Pairs | Autopair
   -- Auto pairs Automatically inserts a matching closing character when you type an opening character like ", [, or (.
   -- https://github.com/nvim-mini/mini.pairs | https://lazyvim.org/plugins/coding#minipairs
