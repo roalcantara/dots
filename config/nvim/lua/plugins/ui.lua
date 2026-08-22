@@ -333,6 +333,17 @@ return {
     },
   },
 
+  -- Treesitter context (sticky header) - required for <leader>ut toggle in keymaps
+  -- https://github.com/nvim-treesitter/nvim-treesitter-context
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    event = 'VeryLazy',
+    opts = {
+      mode = 'cursor',
+      max_lines = 3,
+    },
+  },
+
   -- Helpview | A modern UI for Neovim's help system
   -- The plugin should be loaded after your colorscheme to ensure the correct highlight groups are used
   -- https://github.com/OXY2DEV/helpview.nvim
