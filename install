@@ -709,17 +709,19 @@ prepare_tools_hk() {
   if needs_sudo || is_container || is_devcontainer; then
     cmd_prefix="sudo "
   fi
-  # Symlink config.pkl to hkrc.pkl in ~/.config/hk/
-  ensure_dir "$HOME/.config/hk"
-  backup "$HOME/.config/hk/config.pkl" "hkrc.pkl"
+  # hk reads ~/.config/hk/config.pkl and cog reads ~/.config/cog/cog.toml.
+  # Link the directories; the repo already names the files correctly.
+  for hk_cfg_dir in hk cog; do
+    backup "$HOME/.config/$hk_cfg_dir" "$HOME/.local/share/dots/config/$hk_cfg_dir"
+  done
 
-  # Install git hooks globally via hk
+  # Install git hooks for this repository via hk
   if has_cmd mise; then
     info "$1 Installing hk git hooks globally via mise..."
     run_as_target_user "mise run setup:hooks"
   elif has_cmd hk; then
-    info "$1 Installing hk git hooks globally..."
-    run_as_target_user "hk install --global"
+    info "$1 Installing hk git hooks for this repository..."
+    run_as_target_user "hk install --mise --legacy --force-local"
   else
     warn "$1 hk not found on PATH! Hook installation skipped."
   fi

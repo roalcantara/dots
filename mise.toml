@@ -257,17 +257,35 @@ fi
 '''
 
 [tasks."setup:hooks"]
-description = "Install hk git hooks (globally if git >= 2.54, otherwise locally)"
+description = "Link the global hk/cog config and install this repo's git hooks"
 run = '''
 #!/usr/bin/env bash
-set -e
-if hk install --global 2>/dev/null; then
-  echo "✓ hk hooks installed globally"
-else
-  echo "⚠️ git version < 2.54, falling back to local hook installation"
-  hk install
-  echo "✓ hk hooks installed locally for this repository"
-fi
+set -euo pipefail
+DOTS="${DOTS_DIR:-$HOME/.local/share/dots}"
+CFG="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+# hk reads ~/.config/hk/config.pkl and cog reads ~/.config/cog/cog.toml.
+# Link the directories so edits in the repo take effect immediately.
+for d in hk cog; do
+  if [ ! -e "$CFG/$d" ]; then
+    ln -snf "$DOTS/config/$d" "$CFG/$d"
+    echo "linked $CFG/$d -> $DOTS/config/$d"
+  fi
+done
+
+# --legacy: script shims run on every git version. Apple's /usr/bin/git (2.50.1)
+#           silently ignores config-based hooks, so the default is unsafe here.
+# --mise:   hooks resolve hk through `mise x`, so mise need not be activated.
+hk install --mise --legacy --force-local
+
+# Quiet on success; a failing step still prints its full diagnostics.
+hooks_dir="$(git rev-parse --git-path hooks)"
+for h in "$hooks_dir"/*; do
+  case "$h" in *.sample) continue ;; esac
+  [ -f "$h" ] || continue
+  sd '(hk run [a-z-]+)( --from-hook)' '$1 -q$2' "$h"
+done
+echo "hk hooks installed for $(git rev-parse --show-toplevel)"
 '''
 [settings]
 # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
