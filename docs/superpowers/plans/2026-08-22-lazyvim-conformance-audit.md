@@ -81,16 +81,16 @@ If `git commit` fails with `exec: hk: not found`, you forgot the
 **Modify:**
 
 - `config/nvim/lua/plugins/formater.lua` — Task 2
-- `config/nvim/lua/config/options.lua` — Tasks 3, 8
-- `config/nvim/lua/config/keymaps.lua` — Tasks 4, 12, 14
-- `config/nvim/lua/plugins/ui.lua` — Tasks 4, 5, 6, 7, 9, 10, 11, 13
-- `config/nvim/lua/config/autocmds.lua` — Tasks 7, 11
-- `config/nvim/lua/config/lazy.lua` — Task 9
-- `config/nvim/lazyvim.json` — Task 9
-- `config/nvim/lua/plugins/markdown.lua` — Task 10
-- `config/nvim/lua/plugins/coding.lua` — Task 10, 13
-- `config/nvim/lua/config/usercmds.lua` — Task 13
-- `config/nvim/lua/plugins/lsp.lua` — Task 15
+- `config/nvim/lua/config/options.lua` — Tasks 2, 3, 10, 14
+- `config/nvim/lua/config/keymaps.lua` — Tasks 4, 12, 16
+- `config/nvim/lua/plugins/ui.lua` — Tasks 4, 5, 6, 11, 12, 13, 14, 15
+- `config/nvim/lua/config/autocmds.lua` — Tasks 7, 8, 9, 12
+- `config/nvim/lua/config/lazy.lua` — Task 11
+- `config/nvim/lazyvim.json` — Task 11
+- `config/nvim/lua/plugins/markdown.lua` — Task 13
+- `config/nvim/lua/plugins/coding.lua` — Tasks 13, 15
+- `config/nvim/lua/config/usercmds.lua` — Task 14
+- `config/nvim/lua/plugins/lsp.lua` — Task 17
 - `config/nvim/.gitignore` — Task 1
 
 **Deliberately not touched:** everything under `config/nvim/lua/core/`
@@ -108,8 +108,8 @@ That cannot work: busted runs in Docker (`tools/Dockerfile`) against a
 APIs.
 
 That assertion is therefore implemented as a **headless nvim check** in
-`tools/baseline.sh` (Task 1) and asserted in Task 13, not as a busted spec.
-The busted work in Task 16 covers only pure-Lua helpers, which is what the
+`tools/baseline.sh` (Task 1) and asserted in Task 14, not as a busted spec.
+The busted work in Task 18 covers only pure-Lua helpers, which is what the
 harness can actually run.
 
 ---
@@ -299,8 +299,8 @@ mise exec -- mise run tests 2>&1 | tail -20
 
 Record the result. The suite may already be failing — the `tests` task
 mounts `lua/` at `/app/src` while `LUA_PATH` is `lua/?.lua`, which looks
-inconsistent. **Do not fix it here.** Task 16 depends on knowing the
-starting state; if it is red now, Task 16's first step is repairing the
+inconsistent. **Do not fix it here.** Task 18 depends on knowing the
+starting state; if it is red now, Task 18's first step is repairing the
 harness.
 
 - [ ] **Step 8: Commit**
@@ -762,7 +762,7 @@ values: `checktime`, `highlight_yank`, `resize_splits`, `last_loc`,
 `man_unlisted`, `wrap_spell`, `json_conceal`, `auto_create_dir`.
 
 Keep: `filetypedetect` (Task 8 decides its fate), `close_with_q_or_esc`
-(Task 11 rewrites it), `on_open_term`, `on_lsp_attach`, and
+(Task 9 rewrites it), `on_open_term`, `on_lsp_attach`, and
 `on_vim_enter_or_color_scheme` (Task 12 removes it with url-open).
 
 Add this comment above the remaining table:
@@ -864,20 +864,154 @@ rm -f /tmp/probe.yml
 
 Expected: `ft=[yaml]`. This must hold whichever branch you took.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 4: Snapshot, diff, commit**
 
 ```bash
+cd /Users/roalcantara/Work/dots/config/nvim
+./tools/baseline.sh capture task08 && ./tools/baseline.sh diff task07 task08
 cd /Users/roalcantara/Work/dots
 git add config/nvim/lua/config/autocmds.lua
 mise exec -- git commit -m "refactor(nvim): resolve .yml filetype autocmd against builtin detection"
 ```
+
+Expected diff: if you deleted `filetypedetect`, `autocmds.tsv` loses its
+BufRead/BufNewFile rows and nothing else. If you kept it, no diff at all.
 
 If Step 2 took the "keep it" branch the only change is a comment — that is
 still worth committing, because it records the evidence.
 
 ---
 
-### Task 9: Strip redundant options and annotate the deliberate divergences
+### Task 9: Rewrite close_with_q_or_esc as an extension, not a rival
+
+This is the one genuine behaviour change in an otherwise-cosmetic area, so
+it gets its own task and its own commit. Both your group and LazyVim's
+`close_with_q` bind `q` on overlapping filetypes with different bodies:
+LazyVim wraps the mapping in `vim.schedule` and sets `silent = true`;
+yours does not, and additionally binds `<Esc>`.
+
+**Files:**
+
+- Modify: `config/nvim/lua/config/autocmds.lua`
+
+- [ ] **Step 1: Observe the double binding**
+
+```bash
+nvim --headless -c 'help help' -c 'verbose nmap q' -c 'qa!' 2>&1 | tail -8
+```
+
+Expected: evidence of a mapping set from your `autocmds.lua`, having
+overwritten LazyVim's.
+
+- [ ] **Step 2: Replace the group with an Esc-only extension**
+
+In `config/nvim/lua/config/autocmds.lua`, replace the whole
+`close_with_q_or_esc` entry with:
+
+```lua
+  -- LazyVim's `lazyvim_close_with_q` group already binds `q` (with
+  -- vim.schedule + silent) for its own filetype list. We only add the
+  -- filetypes it does not cover, and the extra <Esc> binding.
+  close_with_esc = {
+    {
+      event = 'FileType',
+      opts = {
+        pattern = {
+          'aerial',
+          'DressingSelect',
+          'floaterm',
+          'help',
+          'Jaq',
+          'lazy',
+          'lir',
+          'lsp-installer',
+          'LspsagaCodeAction',
+          'LspsagaDiagnostic',
+          'LspsagaFinder',
+          'LspsagaFloaterm',
+          'LspsagaHover',
+          'LspsagaRename',
+          'LspsagaSignatureHelp',
+          'LspSignatureHelp',
+          'man',
+          'markdown',
+          'noice',
+          'null-ls-info',
+          'snacks_notif_history',
+          'snacks_notif_log',
+          'snacks_notif',
+          'snacks_picker_list',
+          'snacks_win',
+          'Trouble',
+          'trouble',
+          'TroubleToggle',
+          'unix',
+        },
+        callback = function(event)
+          vim.bo[event.buf].buflisted = false
+          vim.schedule(function()
+            for _, lhs in ipairs({ 'q', '<Esc>' }) do
+              vim.keymap.set('n', lhs, function()
+                vim.cmd('close')
+                pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+              end, {
+                buffer = event.buf,
+                silent = true,
+                desc = 'Quit buffer',
+              })
+            end
+          end)
+        end,
+        desc = 'Close extra filetypes with q or <Esc>',
+      },
+    },
+  },
+```
+
+The filetypes LazyVim already covers — `checkhealth`, `dbout`,
+`gitsigns-blame`, `grug-far`, `lspinfo`, `neotest-*`, `notify`,
+`PlenaryTestPopup`, `qf`, `spectre_panel`, `startuptime`, `tsplayground` —
+are removed from the pattern list, because LazyVim binds `q` for them
+already. They lose the `<Esc>` binding as a result.
+
+- [ ] **Step 3: Decide whether losing `<Esc>` on those filetypes matters**
+
+```bash
+nvim --headless -c 'checkhealth lazy' -c 'verbose nmap <Esc>' -c 'qa!' 2>&1 | tail -5
+```
+
+If you want `<Esc>` on LazyVim's filetypes too, add them back to the
+pattern list above — the callback is idempotent, so both groups binding `q`
+with equivalent bodies is harmless. Note the choice in the commit message.
+
+- [ ] **Step 4: Verify both keys still close a help buffer**
+
+```bash
+nvim --headless -c 'help help' -c 'lua vim.schedule(function()
+  local ok = pcall(vim.api.nvim_buf_get_keymap, 0, "n")
+  local maps = vim.api.nvim_buf_get_keymap(0, "n")
+  local found = {}
+  for _, m in ipairs(maps) do found[m.lhs] = true end
+  print("q=" .. tostring(found["q"] ~= nil) .. " esc=" .. tostring(found["<Esc>"] ~= nil))
+  vim.cmd("qa!")
+end)' 2>&1 | tail -1
+```
+
+Expected: `q=true esc=true`.
+
+- [ ] **Step 5: Snapshot, diff, commit**
+
+```bash
+cd /Users/roalcantara/Work/dots/config/nvim
+./tools/baseline.sh capture task09 && ./tools/baseline.sh diff task08 task09
+cd /Users/roalcantara/Work/dots
+git add config/nvim/lua/config/autocmds.lua
+mise exec -- git commit -m "refactor(nvim): extend LazyVim close_with_q instead of shadowing it"
+```
+
+---
+
+### Task 10: Strip redundant options and annotate the deliberate divergences
 
 Roughly 37 lines in `options.lua` restate LazyVim defaults verbatim, and
 12 more are Neovim defaults or no-ops. Deleting a line that restates a
@@ -966,7 +1100,7 @@ deleted a line that was not actually a duplicate — restore it.
 
 ```bash
 cd /Users/roalcantara/Work/dots/config/nvim
-./tools/baseline.sh capture task09 && ./tools/baseline.sh diff task07 task09
+./tools/baseline.sh capture task10 && ./tools/baseline.sh diff task09 task10
 cd /Users/roalcantara/Work/dots
 git add config/nvim/lua/config/options.lua
 mise exec -- git commit -m "refactor(nvim): remove options duplicating LazyVim and Neovim defaults"
@@ -979,7 +1113,7 @@ slightly.
 
 ## Phase 3 — Extras and spec hygiene
 
-### Task 10: Adopt the aerial and treesitter-context extras
+### Task 11: Adopt the aerial and treesitter-context extras
 
 The local aerial `opts` block (`ui.lua:981-1063`) is a near-verbatim copy
 of `lazyvim/plugins/extras/editor/aerial.lua`. Import the extra and keep
@@ -1108,7 +1242,7 @@ toggle in `keymaps.lua:56-63` calls this exact API.
 
 ```bash
 cd /Users/roalcantara/Work/dots/config/nvim
-./tools/baseline.sh capture task10 && ./tools/baseline.sh diff task09 task10
+./tools/baseline.sh capture task11 && ./tools/baseline.sh diff task10 task11
 cd /Users/roalcantara/Work/dots
 git add config/nvim/lua/config/lazy.lua config/nvim/lazyvim.json config/nvim/lua/plugins/ui.lua
 mise exec -- git commit -m "refactor(nvim): adopt aerial and treesitter-context LazyVim extras"
@@ -1117,135 +1251,6 @@ mise exec -- git commit -m "refactor(nvim): adopt aerial and treesitter-context 
 Expected diff: `keymaps.tsv` *gains* the extras' keymaps (aerial's
 `<leader>cs`, treesitter-context's `<leader>ut`). That is the point — you
 are inheriting maintained defaults.
-
----
-
-### Task 11: Rewrite close_with_q_or_esc as an extension, not a rival
-
-This is the one genuine behaviour change in an otherwise-cosmetic area, so
-it gets its own task and its own commit. Both your group and LazyVim's
-`close_with_q` bind `q` on overlapping filetypes with different bodies:
-LazyVim wraps the mapping in `vim.schedule` and sets `silent = true`;
-yours does not, and additionally binds `<Esc>`.
-
-**Files:**
-
-- Modify: `config/nvim/lua/config/autocmds.lua`
-
-- [ ] **Step 1: Observe the double binding**
-
-```bash
-nvim --headless -c 'help help' -c 'verbose nmap q' -c 'qa!' 2>&1 | tail -8
-```
-
-Expected: evidence of a mapping set from your `autocmds.lua`, having
-overwritten LazyVim's.
-
-- [ ] **Step 2: Replace the group with an Esc-only extension**
-
-In `config/nvim/lua/config/autocmds.lua`, replace the whole
-`close_with_q_or_esc` entry with:
-
-```lua
-  -- LazyVim's `lazyvim_close_with_q` group already binds `q` (with
-  -- vim.schedule + silent) for its own filetype list. We only add the
-  -- filetypes it does not cover, and the extra <Esc> binding.
-  close_with_esc = {
-    {
-      event = 'FileType',
-      opts = {
-        pattern = {
-          'aerial',
-          'DressingSelect',
-          'floaterm',
-          'help',
-          'Jaq',
-          'lazy',
-          'lir',
-          'lsp-installer',
-          'LspsagaCodeAction',
-          'LspsagaDiagnostic',
-          'LspsagaFinder',
-          'LspsagaFloaterm',
-          'LspsagaHover',
-          'LspsagaRename',
-          'LspsagaSignatureHelp',
-          'LspSignatureHelp',
-          'man',
-          'markdown',
-          'noice',
-          'null-ls-info',
-          'snacks_notif_history',
-          'snacks_notif_log',
-          'snacks_notif',
-          'snacks_picker_list',
-          'snacks_win',
-          'Trouble',
-          'trouble',
-          'TroubleToggle',
-          'unix',
-        },
-        callback = function(event)
-          vim.bo[event.buf].buflisted = false
-          vim.schedule(function()
-            for _, lhs in ipairs({ 'q', '<Esc>' }) do
-              vim.keymap.set('n', lhs, function()
-                vim.cmd('close')
-                pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
-              end, {
-                buffer = event.buf,
-                silent = true,
-                desc = 'Quit buffer',
-              })
-            end
-          end)
-        end,
-        desc = 'Close extra filetypes with q or <Esc>',
-      },
-    },
-  },
-```
-
-The filetypes LazyVim already covers — `checkhealth`, `dbout`,
-`gitsigns-blame`, `grug-far`, `lspinfo`, `neotest-*`, `notify`,
-`PlenaryTestPopup`, `qf`, `spectre_panel`, `startuptime`, `tsplayground` —
-are removed from the pattern list, because LazyVim binds `q` for them
-already. They lose the `<Esc>` binding as a result.
-
-- [ ] **Step 3: Decide whether losing `<Esc>` on those filetypes matters**
-
-```bash
-nvim --headless -c 'checkhealth lazy' -c 'verbose nmap <Esc>' -c 'qa!' 2>&1 | tail -5
-```
-
-If you want `<Esc>` on LazyVim's filetypes too, add them back to the
-pattern list above — the callback is idempotent, so both groups binding `q`
-with equivalent bodies is harmless. Note the choice in the commit message.
-
-- [ ] **Step 4: Verify both keys still close a help buffer**
-
-```bash
-nvim --headless -c 'help help' -c 'lua vim.schedule(function()
-  local ok = pcall(vim.api.nvim_buf_get_keymap, 0, "n")
-  local maps = vim.api.nvim_buf_get_keymap(0, "n")
-  local found = {}
-  for _, m in ipairs(maps) do found[m.lhs] = true end
-  print("q=" .. tostring(found["q"] ~= nil) .. " esc=" .. tostring(found["<Esc>"] ~= nil))
-  vim.cmd("qa!")
-end)' 2>&1 | tail -1
-```
-
-Expected: `q=true esc=true`.
-
-- [ ] **Step 5: Snapshot, diff, commit**
-
-```bash
-cd /Users/roalcantara/Work/dots/config/nvim
-./tools/baseline.sh capture task11 && ./tools/baseline.sh diff task10 task11
-cd /Users/roalcantara/Work/dots
-git add config/nvim/lua/config/autocmds.lua
-mise exec -- git commit -m "refactor(nvim): extend LazyVim close_with_q instead of shadowing it"
-```
 
 ---
 
@@ -1406,7 +1411,7 @@ settings into the `markdown.lua` one so it reads:
 
 - [ ] **Step 5: Drop the nvim-web-devicons dependency**
 
-The aerial spec you wrote in Task 10 no longer declares dependencies, so
+The aerial spec you wrote in Task 11 no longer declares dependencies, so
 `nvim-tree/nvim-web-devicons` should already be gone. Confirm:
 
 ```bash
