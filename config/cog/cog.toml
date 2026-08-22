@@ -1,0 +1,13 @@
+# Conventional Commits policy for all dots-managed repositories.
+# Surfaced at ~/.config/cog/cog.toml; a repo-local cog.toml overrides it.
+# Type set matches assets/guides/GIT_GUIDE.md section 5.1.
+
+ignore_merge_commits = true
+ignore_fixup_commits = true
+
+[commit_types]
+# `ref` is this project's refactoring type - shorter than `refactor`,
+# leaving more of the 50-character subject budget for the description.
+ref = { changelog_title = "Refactoring" }
+# Disable cocogitto's built-in `refactor`. An empty config disables a type.
+refactor = {}
