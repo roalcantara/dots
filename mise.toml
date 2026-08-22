@@ -284,7 +284,7 @@ experimental = true
 
 # Config files with these prefixes will be trusted by default
 # https://mise.jdx.dev/configuration/settings.html#global_config_file
-global_config_file = "~/.local/share/mise/config.toml"
+# global_config_file = "~/.local/share/mise/config.toml"
 
 # Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
 # https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
@@ -296,14 +296,17 @@ lockfile = true
 
 # Config files with these prefixes will be trusted by default
 # https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
-trusted_config_paths = ["~/.local/share/dots", "~/.local/share/mise"]
+# trusted_config_paths = ["~/.local/share/dots", "~/.local/share/mise"]
 
 # set to true to automatically answer yes to all prompts
 # https://mise.jdx.dev/configuration/settings.html#yes
-yes = true
+# yes = true
 
 [tools]
-hk = "latest"
+hk = "1.56.0"
+cocogitto = "7.0.0"
+pkl = "latest"
+sd = "latest"
 shellcheck = "latest"
 shfmt = "latest"
 "npm:markdownlint-cli" = "latest"
