@@ -482,7 +482,7 @@ return {
         scroll = { enabled = false },
         -- Pretty status column
         -- https://github.com/folke/snacks.nvim/blob/main/docs/statuscolumn.md
-        statuscolumn = { enabled = false }, -- we set this in options.lua
+        statuscolumn = { enabled = false }, -- LazyVim sets vim.o.statuscolumn to LazyVim.statuscolumn()
         -- Create and toggle floating/split terminals
         -- https://github.com/folke/snacks.nvim/blob/main/docs/terminal.md
         terminal = { enabled = true },
