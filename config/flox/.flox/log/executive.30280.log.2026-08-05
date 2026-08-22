@@ -1,0 +1,9 @@
+2026-08-05T00:31:21.655502Z  INFO flox_activations::cli::executive::log_gc: still watching, woof woof
+2026-08-05T01:31:21.648157Z  INFO flox_activations::cli::executive::log_gc: still watching, woof woof
+2026-08-05T02:34:29.442447Z  INFO flox_activations::cli::executive::log_gc: still watching, woof woof
+2026-08-05T02:43:10.783827Z  INFO monitoring: flox_core::activations: detaching terminated PID pid=30222
+2026-08-05T02:43:10.784376Z  INFO monitoring: flox_activations::cli::executive: running cleanup after all PIDs terminated
+2026-08-05T02:43:10.784393Z  INFO monitoring: flox_activations::cli::executive: running cleanup
+2026-08-05T02:43:10.784415Z  INFO monitoring: flox_activations::cli::executive: did not shut down process-compose reason="no socket"
+2026-08-05T02:43:10.785377Z  INFO monitoring: flox_activations::cli::executive: finished cleanup
+2026-08-05T02:43:10.786110Z  INFO flox_activations::cli::executive: executive exiting: Ok(())

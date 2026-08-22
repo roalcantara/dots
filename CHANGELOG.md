@@ -1,10 +1,8 @@
 # [1.34.0](https://github.com/roalcantara/dots/compare/v1.33.0...v1.34.0) (2026-04-09)
 
-
 ### Bug Fixes
 
 * **zsh/functions:** Simplify gitx fzf functions to use hash retrieval ([b417290](https://github.com/roalcantara/dots/commit/b417290f5aac24406054dd1e578f7033471ff748))
-
 
 ### Features
 
@@ -13,7 +11,6 @@
 
 # [1.33.0](https://github.com/roalcantara/dots/compare/v1.32.0...v1.33.0) (2026-04-04)
 
-
 ### Features
 
 * **install:** Enhance embedded support and update usage instructions ([13069ba](https://github.com/roalcantara/dots/commit/13069ba4feae416604c621072fb67c63aff26c1b))
@@ -21,19 +18,16 @@
 
 # [1.32.0](https://github.com/roalcantara/dots/compare/v1.31.0...v1.32.0) (2026-04-03)
 
-
 ### Features
 
 * **secrets:** Add Copilot Github Token ([049556b](https://github.com/roalcantara/dots/commit/049556b994fcc47ece205106aa9626d6c53d06cd))
 
 # [1.31.0](https://github.com/roalcantara/dots/compare/v1.30.0...v1.31.0) (2026-03-17)
 
-
 ### Bug Fixes
 
 * **git/config:** Disable skippedCherryPicks advice ([4d86efa](https://github.com/roalcantara/dots/commit/4d86efa0e5dd5fb28380eae78606e80f243e1e0e))
 * **zsh/.zshenv:** Improve conditional sourcing of .zprofile ([1ab7c60](https://github.com/roalcantara/dots/commit/1ab7c604c2fb3fdc223d88c27aaf440d4d193b0b))
-
 
 ### Features
 
@@ -41,18 +35,15 @@
 
 # [1.30.0](https://github.com/roalcantara/dots/compare/v1.29.0...v1.30.0) (2026-03-16)
 
-
 ### Features
 
 * **deps:** Bump flox and mise ([f72dedb](https://github.com/roalcantara/dots/commit/f72dedb266c380cc64792d229e3fb51edd3e3bcb))
 
 # [1.29.0](https://github.com/roalcantara/dots/compare/v1.28.2...v1.29.0) (2026-02-27)
 
-
 ### Bug Fixes
 
 * **flox/ci:** Disabling syscall filtering ([bd9b607](https://github.com/roalcantara/dots/commit/bd9b607c7bc203a338216d74f5e3538db10ff205))
-
 
 ### Features
 
@@ -60,13 +51,11 @@
 
 ## [1.28.2](https://github.com/roalcantara/dots/compare/v1.28.1...v1.28.2) (2026-02-27)
 
-
 ### Bug Fixes
 
 * **ci/publish:** Add security option for Docker build ([56c91a3](https://github.com/roalcantara/dots/commit/56c91a36446d0cb36cac9aad3cccafaeb3cbcaf5))
 
 ## [1.28.1](https://github.com/roalcantara/dots/compare/v1.28.0...v1.28.1) (2026-02-27)
-
 
 ### Bug Fixes
 
@@ -74,18 +63,15 @@
 
 # [1.28.0](https://github.com/roalcantara/dots/compare/v1.27.0...v1.28.0) (2026-02-24)
 
-
 ### Features
 
 * **xdg:** Implement XDG_RUNTIME_DIR permissions check and fix ([83c5624](https://github.com/roalcantara/dots/commit/83c562444a88934e3a2ae2e434176d5644f95c0f))
 
 # [1.27.0](https://github.com/roalcantara/dots/compare/v1.26.0...v1.27.0) (2026-02-24)
 
-
 ### Bug Fixes
 
 * **install:** update Flox version to 1.9.0 ([4741a93](https://github.com/roalcantara/dots/commit/4741a9379cef0aee8423c85c2686fc8863a6b3ac))
-
 
 ### Features
 
@@ -93,11 +79,9 @@
 
 # [1.26.0](https://github.com/roalcantara/dots/compare/v1.25.0...v1.26.0) (2026-01-26)
 
-
 ### Bug Fixes
 
 * **sops:** avoid 'always modified' in clean filter via hash-compare ([954c16d](https://github.com/roalcantara/dots/commit/954c16d7e90dd917fb79d15f0246710c3746199f)), closes [getsops/sops#1137](https://github.com/getsops/sops/issues/1137) [FiloSottile/age#507](https://github.com/FiloSottile/age/issues/507)
-
 
 ### Features
 
@@ -109,13 +93,11 @@
 
 # [1.25.0](https://github.com/roalcantara/dots/compare/v1.24.0...v1.25.0) (2026-01-26)
 
-
 ### Features
 
 * **ssh:** Stop tracking known_hosts, ignore and drop SOPS ([34cc234](https://github.com/roalcantara/dots/commit/34cc23489f6e7e5054fea2e8de5f8499db6d7f55))
 
 # [1.24.0](https://github.com/roalcantara/dots/compare/v1.23.1...v1.24.0) (2026-01-26)
-
 
 ### Features
 
@@ -123,13 +105,11 @@
 
 ## [1.23.1](https://github.com/roalcantara/dots/compare/v1.23.0...v1.23.1) (2025-12-20)
 
-
 ### Bug Fixes
 
 * **kodexb:** Add knowledges and assets ([5737a42](https://github.com/roalcantara/dots/commit/5737a4259d56a1448ed6d408b7dd3d275f5644e4))
 
 # [1.23.0](https://github.com/roalcantara/dots/compare/v1.22.0...v1.23.0) (2025-12-15)
-
 
 ### Features
 
@@ -149,12 +129,10 @@
 
 # [1.22.0](https://github.com/roalcantara/dots/compare/v1.21.0...v1.22.0) (2025-11-05)
 
-
 ### Bug Fixes
 
 * **ghostty:** Update font feature and theme ([b1f48b5](https://github.com/roalcantara/dots/commit/b1f48b52ac286724759baed5d20a87817aa62b90))
 * **install:** export DEBIAN_FRONTEND=noninteractive ([52fc97c](https://github.com/roalcantara/dots/commit/52fc97c56b58a9d348469cfbb6612da7a7fdcefb))
-
 
 ### Features
 
@@ -164,18 +142,15 @@
 
 # [1.21.0](https://github.com/roalcantara/dots/compare/v1.20.0...v1.21.0) (2025-10-28)
 
-
 ### Features
 
 * **kb:** Add AWS entries ([998d423](https://github.com/roalcantara/dots/commit/998d423e9d380f7ea2ff15c4ad89bc91db3ab115))
 
 # [1.20.0](https://github.com/roalcantara/dots/compare/v1.19.2...v1.20.0) (2025-10-26)
 
-
 ### Bug Fixes
 
 * **nvim:** Adjust LSP installation and initialization manually ([94a22a5](https://github.com/roalcantara/dots/commit/94a22a546441c58c2401cadcbd2de168d1abbcea))
-
 
 ### Features
 
@@ -186,14 +161,12 @@
 
 ## [1.19.2](https://github.com/roalcantara/dots/compare/v1.19.1...v1.19.2) (2025-10-23)
 
-
 ### Bug Fixes
 
 * **install:** Update APT commands for non-interactive installation ([019027e](https://github.com/roalcantara/dots/commit/019027e9291aa112613b627cc753dcdd3dd06f3a))
 * **install:** Update FLOX_VERSION to 1.7.5 ([50d708c](https://github.com/roalcantara/dots/commit/50d708c6b59ecd4aaf6aa943a1d1e866426b2651))
 
 ## [1.19.1](https://github.com/roalcantara/dots/compare/v1.19.0...v1.19.1) (2025-10-23)
-
 
 ### Bug Fixes
 
@@ -202,11 +175,9 @@
 
 # [1.19.0](https://github.com/roalcantara/dots/compare/v1.18.0...v1.19.0) (2025-10-23)
 
-
 ### Bug Fixes
 
 * **install:** Remove Firefox from Flatpak requirements ([126d3c5](https://github.com/roalcantara/dots/commit/126d3c5382438d6df3523965f438229be626ecc2))
-
 
 ### Features
 
@@ -216,13 +187,11 @@
 
 # [1.18.0](https://github.com/roalcantara/dots/compare/v1.17.0...v1.18.0) (2025-10-23)
 
-
 ### Features
 
 * **snaps:** Refine requirements ([4b3b138](https://github.com/roalcantara/dots/commit/4b3b13855da5cefddd47ccd28078baa555f4593c))
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-23)
-
 
 ### Bug Fixes
 
@@ -248,7 +217,6 @@
 * **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
 * **zsh:** Update zimfw installation condition to check for .zimrc existence ([bd730dd](https://github.com/roalcantara/dots/commit/bd730dd8636f188ff67c120f24754c22e516d6c8))
 
-
 ### Features
 
 * **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
@@ -268,7 +236,6 @@
 * **snaps:** Add ghostty to Snap development tools ([af56473](https://github.com/roalcantara/dots/commit/af564731d7ee9aefee7b7828685a94220cab6f9a))
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-22)
-
 
 ### Bug Fixes
 
@@ -293,7 +260,6 @@
 * **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
 * **zsh:** Update zimfw installation condition to check for .zimrc existence ([bd730dd](https://github.com/roalcantara/dots/commit/bd730dd8636f188ff67c120f24754c22e516d6c8))
 
-
 ### Features
 
 * **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
@@ -312,7 +278,6 @@
 * **nvim:** Highlight links ([fdc3a64](https://github.com/roalcantara/dots/commit/fdc3a64ba2808bbcdafd7fe7d9cc1e6ad71922ed))
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-22)
-
 
 ### Bug Fixes
 
@@ -336,7 +301,6 @@
 * **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
 * **zsh:** Update zimfw installation condition to check for .zimrc existence ([bd730dd](https://github.com/roalcantara/dots/commit/bd730dd8636f188ff67c120f24754c22e516d6c8))
 
-
 ### Features
 
 * **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
@@ -355,7 +319,6 @@
 * **nvim:** Highlight links ([fdc3a64](https://github.com/roalcantara/dots/commit/fdc3a64ba2808bbcdafd7fe7d9cc1e6ad71922ed))
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-22)
-
 
 ### Bug Fixes
 
@@ -377,7 +340,6 @@
 * **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
 * **zsh:** Update zimfw installation condition to check for .zimrc existence ([bd730dd](https://github.com/roalcantara/dots/commit/bd730dd8636f188ff67c120f24754c22e516d6c8))
 
-
 ### Features
 
 * **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
@@ -396,7 +358,6 @@
 * **nvim:** Highlight links ([fdc3a64](https://github.com/roalcantara/dots/commit/fdc3a64ba2808bbcdafd7fe7d9cc1e6ad71922ed))
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-22)
-
 
 ### Bug Fixes
 
@@ -417,7 +378,6 @@
 * **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
 * **zsh:** Update zimfw installation condition to check for .zimrc existence ([bd730dd](https://github.com/roalcantara/dots/commit/bd730dd8636f188ff67c120f24754c22e516d6c8))
 
-
 ### Features
 
 * **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
@@ -436,7 +396,6 @@
 * **nvim:** Highlight links ([fdc3a64](https://github.com/roalcantara/dots/commit/fdc3a64ba2808bbcdafd7fe7d9cc1e6ad71922ed))
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-22)
-
 
 ### Bug Fixes
 
@@ -456,7 +415,6 @@
 * **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
 * **zsh:** Update zimfw installation condition to check for .zimrc existence ([bd730dd](https://github.com/roalcantara/dots/commit/bd730dd8636f188ff67c120f24754c22e516d6c8))
 
-
 ### Features
 
 * **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
@@ -475,7 +433,6 @@
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-22)
 
-
 ### Bug Fixes
 
 * **env:** Update encrypted API keys in .env file ([3a06d80](https://github.com/roalcantara/dots/commit/3a06d80c8cb00b3cdb61e0f4f7a55c910e7fc2df))
@@ -493,7 +450,6 @@
 * **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
 * **zsh:** Update zimfw installation condition to check for .zimrc existence ([bd730dd](https://github.com/roalcantara/dots/commit/bd730dd8636f188ff67c120f24754c22e516d6c8))
 
-
 ### Features
 
 * **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
@@ -512,7 +468,6 @@
 * **nvim:** Highlight links ([fdc3a64](https://github.com/roalcantara/dots/commit/fdc3a64ba2808bbcdafd7fe7d9cc1e6ad71922ed))
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-20)
-
 
 ### Bug Fixes
 
@@ -529,7 +484,6 @@
 * **vscode/keybindings:** Remove and update keybindings ([ff1a884](https://github.com/roalcantara/dots/commit/ff1a8841b29bf05286c30387f0e8eac230a0eae7))
 * **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
 
-
 ### Features
 
 * **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
@@ -548,7 +502,6 @@
 * **nvim:** Highlight links ([fdc3a64](https://github.com/roalcantara/dots/commit/fdc3a64ba2808bbcdafd7fe7d9cc1e6ad71922ed))
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-20)
-
 
 ### Bug Fixes
 
@@ -564,7 +517,6 @@
 * **vscode/keybindings:** Remove and update keybindings ([ff1a884](https://github.com/roalcantara/dots/commit/ff1a8841b29bf05286c30387f0e8eac230a0eae7))
 * **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
 
-
 ### Features
 
 * **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
@@ -583,7 +535,6 @@
 * **nvim:** Highlight links ([fdc3a64](https://github.com/roalcantara/dots/commit/fdc3a64ba2808bbcdafd7fe7d9cc1e6ad71922ed))
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-20)
-
 
 ### Bug Fixes
 
@@ -598,7 +549,6 @@
 * **vscode/keybindings:** Remove and update keybindings ([ff1a884](https://github.com/roalcantara/dots/commit/ff1a8841b29bf05286c30387f0e8eac230a0eae7))
 * **zsh:** Ensure zimfw installation only occurs if .zimrc is missing ([783157f](https://github.com/roalcantara/dots/commit/783157f108d12de33e7c3566eaf4bbfe0f35d45b))
 
-
 ### Features
 
 * **env:** Add usage package path to Flox manifest ([2538890](https://github.com/roalcantara/dots/commit/25388902e3474a721929aecee00dbe9924bc3aca))
@@ -618,7 +568,6 @@
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-20)
 
-
 ### Bug Fixes
 
 * **env:** Update encrypted API keys in .env file ([3a06d80](https://github.com/roalcantara/dots/commit/3a06d80c8cb00b3cdb61e0f4f7a55c910e7fc2df))
@@ -628,7 +577,6 @@
 * **nvim/ui:** Update background color and theme style ([9477e40](https://github.com/roalcantara/dots/commit/9477e40cf1ff9895f806adf73f394ac026924b70))
 * **nvim:** Enhance completions ([8687176](https://github.com/roalcantara/dots/commit/8687176b7e36db467558925d38303923ea4926d7))
 * **vscode/keybindings:** Remove and update keybindings ([ff1a884](https://github.com/roalcantara/dots/commit/ff1a8841b29bf05286c30387f0e8eac230a0eae7))
-
 
 ### Features
 
@@ -648,7 +596,6 @@
 
 # [1.17.0](https://github.com/roalcantara/dots/compare/v1.16.2...v1.17.0) (2025-10-19)
 
-
 ### Bug Fixes
 
 * **env:** Update encrypted API keys in .env file ([3a06d80](https://github.com/roalcantara/dots/commit/3a06d80c8cb00b3cdb61e0f4f7a55c910e7fc2df))
@@ -658,7 +605,6 @@
 * **nvim/ui:** Update background color and theme style ([9477e40](https://github.com/roalcantara/dots/commit/9477e40cf1ff9895f806adf73f394ac026924b70))
 * **nvim:** Enhance completions ([8687176](https://github.com/roalcantara/dots/commit/8687176b7e36db467558925d38303923ea4926d7))
 * **vscode/keybindings:** Remove and update keybindings ([ff1a884](https://github.com/roalcantara/dots/commit/ff1a8841b29bf05286c30387f0e8eac230a0eae7))
-
 
 ### Features
 
@@ -674,20 +620,17 @@
 
 ## [1.16.2](https://github.com/roalcantara/dots/compare/v1.16.1...v1.16.2) (2025-10-15)
 
-
 ### Bug Fixes
 
 * **install:** Improve Nix/Flox permissions handling ([1e57d4c](https://github.com/roalcantara/dots/commit/1e57d4cde7cee13acd8c54ae8a9ddf3e6a2d947d))
 
 ## [1.16.1](https://github.com/roalcantara/dots/compare/v1.16.0...v1.16.1) (2025-10-15)
 
-
 ### Bug Fixes
 
 * **install:** Use sudo for package manager commands ([4058fd4](https://github.com/roalcantara/dots/commit/4058fd437033a140431f39b605c556bf6e96f066))
 
 # [1.16.0](https://github.com/roalcantara/dots/compare/v1.15.0...v1.16.0) (2025-10-15)
-
 
 ### Bug Fixes
 
@@ -696,7 +639,6 @@
 * **install:** Update expected output for Flox command ([a4b07e2](https://github.com/roalcantara/dots/commit/a4b07e29c50bcb6c6a63501ff4bd31142f696218))
 * **nvim:** Update lualine.nvim commit hash ([ec01f56](https://github.com/roalcantara/dots/commit/ec01f56f6f26694f1cddd0029e7527e2973cfd6e))
 
-
 ### Features
 
 * **homebrew:** Update Brewfile with new macOS-specific casks ([c651b5d](https://github.com/roalcantara/dots/commit/c651b5d33619a07ed2f1a13948bacde928c7ea86))
@@ -704,11 +646,9 @@
 
 # [1.15.0](https://github.com/roalcantara/dots/compare/v1.14.13...v1.15.0) (2025-10-11)
 
-
 ### Bug Fixes
 
 * **install/nvim:** Enhance Python venv instructions ([375d54d](https://github.com/roalcantara/dots/commit/375d54ddc9464e0ecd08d3478b5624c525bbecb7))
-
 
 ### Features
 
@@ -716,13 +656,11 @@
 
 ## [1.14.13](https://github.com/roalcantara/dots/compare/v1.14.12...v1.14.13) (2025-10-08)
 
-
 ### Bug Fixes
 
 * **install:** Simplify tool prep by removing user context handling ([30cbb62](https://github.com/roalcantara/dots/commit/30cbb62e7ed14314b4a3d1dfdd5208b88df49223))
 
 ## [1.14.12](https://github.com/roalcantara/dots/compare/v1.14.11...v1.14.12) (2025-10-08)
-
 
 ### Bug Fixes
 
@@ -730,13 +668,11 @@
 
 ## [1.14.11](https://github.com/roalcantara/dots/compare/v1.14.10...v1.14.11) (2025-10-08)
 
-
 ### Bug Fixes
 
 * **install/flox:** Add sudo to chown user directories ([eba110a](https://github.com/roalcantara/dots/commit/eba110ad5b884152c5aedc18052d085c444853c7))
 
 ## [1.14.10](https://github.com/roalcantara/dots/compare/v1.14.9...v1.14.10) (2025-10-08)
-
 
 ### Bug Fixes
 
@@ -744,13 +680,11 @@
 
 ## [1.14.9](https://github.com/roalcantara/dots/compare/v1.14.8...v1.14.9) (2025-10-08)
 
-
 ### Bug Fixes
 
 * **install:** Add sudo support and permission for containers ([ab955e1](https://github.com/roalcantara/dots/commit/ab955e1504e452976059b056318d02b6bed304b0))
 
 ## [1.14.8](https://github.com/roalcantara/dots/compare/v1.14.7...v1.14.8) (2025-10-08)
-
 
 ### Bug Fixes
 
@@ -759,13 +693,11 @@
 
 ## [1.14.7](https://github.com/roalcantara/dots/compare/v1.14.6...v1.14.7) (2025-10-08)
 
-
 ### Bug Fixes
 
 * **install:** Remove mise package manager option ([6e54d9c](https://github.com/roalcantara/dots/commit/6e54d9cf54697514786a86ebebb30918b7977eb4))
 
 ## [1.14.6](https://github.com/roalcantara/dots/compare/v1.14.5...v1.14.6) (2025-10-08)
-
 
 ### Bug Fixes
 
@@ -773,13 +705,11 @@
 
 ## [1.14.5](https://github.com/roalcantara/dots/compare/v1.14.4...v1.14.5) (2025-10-08)
 
-
 ### Bug Fixes
 
 * **install:** Improve Flox's permissions and packages installation ([5348355](https://github.com/roalcantara/dots/commit/53483559471a8b3dc8df1a2afe092d84dd0c0554))
 
 ## [1.14.4](https://github.com/roalcantara/dots/compare/v1.14.3...v1.14.4) (2025-10-08)
-
 
 ### Bug Fixes
 
@@ -787,20 +717,17 @@
 
 ## [1.14.3](https://github.com/roalcantara/dots/compare/v1.14.2...v1.14.3) (2025-10-08)
 
-
 ### Bug Fixes
 
 * **install:** Enhance container detection and user context handling ([b20ea4c](https://github.com/roalcantara/dots/commit/b20ea4cea35b4d08fdc7a9ce9ec5c8f0f58717a4))
 
 ## [1.14.2](https://github.com/roalcantara/dots/compare/v1.14.1...v1.14.2) (2025-10-07)
 
-
 ### Bug Fixes
 
 * **install:** Replace UNAME checks with is_darwin function ([4867906](https://github.com/roalcantara/dots/commit/4867906be87db9d403fbbb75cfcb1fa47b9c37c9))
 
 ## [1.14.1](https://github.com/roalcantara/dots/compare/v1.14.0...v1.14.1) (2025-10-07)
-
 
 ### Bug Fixes
 
@@ -809,13 +736,11 @@
 
 # [1.14.0](https://github.com/roalcantara/dots/compare/v1.13.0...v1.14.0) (2025-10-07)
 
-
 ### Features
 
 * **dots:** Add runtime permissions management for XDG environment ([2ea4dc7](https://github.com/roalcantara/dots/commit/2ea4dc7cee2d3f3e2fe97bded70ec7e9a3858867))
 
 # [1.13.0](https://github.com/roalcantara/dots/compare/v1.12.0...v1.13.0) (2025-10-07)
-
 
 ### Features
 
@@ -825,7 +750,6 @@
 * **kb:** Reorganize devops and prep entries ([689a391](https://github.com/roalcantara/dots/commit/689a39143a0576aac2b7c0dcc43124ef446f3f4b))
 
 # [1.12.0](https://github.com/roalcantara/dots/compare/v1.11.0...v1.12.0) (2025-10-01)
-
 
 ### Bug Fixes
 
@@ -839,7 +763,6 @@
 * **secrets:** Correct secret version ([141ebdb](https://github.com/roalcantara/dots/commit/141ebdb0b143c86728c26a127c086f92eea6f894))
 * **secrets:** Correct SOPS scripts ([c7f582c](https://github.com/roalcantara/dots/commit/c7f582c3f98b1c4752afa4a11a29bd5ff0693b57))
 * **secrets:** Enhance SOPS/AGE execution and validation ([1ba570b](https://github.com/roalcantara/dots/commit/1ba570b036fff500f9ea63d58e358fe237f79197))
-
 
 ### Features
 
@@ -858,14 +781,12 @@
 * **zsh:** Enable flox loading in ZSH bootstrap ([e42f2ac](https://github.com/roalcantara/dots/commit/e42f2ac920068920a277324ccd5bebeaf337b3b0))
 * **zsh:** Setup Flox Default Environment on Startup ([917d8fc](https://github.com/roalcantara/dots/commit/917d8fce391631b2599757741b2aa4813a6af7bc))
 
-
 ### Performance Improvements
 
 * **nvim:** Add standard caching logic ([9c60897](https://github.com/roalcantara/dots/commit/9c608977385f92073eeef97c56415e646969ae6e))
 * **zsh:** Improve shell startup ([a024137](https://github.com/roalcantara/dots/commit/a024137de22be535ef5aa75e030108d852dfd62b))
 
 # [1.11.0](https://github.com/roalcantara/dots/compare/v1.10.0...v1.11.0) (2025-09-18)
-
 
 ### Features
 
@@ -883,11 +804,9 @@
 
 # [1.10.0](https://github.com/roalcantara/dots/compare/v1.9.0...v1.10.0) (2025-08-25)
 
-
 ### Bug Fixes
 
 * **install:** Add tree-sitter to mise package list ([cd33e36](https://github.com/roalcantara/dots/commit/cd33e3616128544c5d5ccbb0725ee3d872e0e9f3))
-
 
 ### Features
 

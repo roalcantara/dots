@@ -30,6 +30,7 @@ Migrate the `dots` project from `pre-commit` + `gitlint` to `hk` — the high-pe
 Content: Full Pkl config as defined in [design.md § Architecture](./design.md).
 
 Key points:
+
 - `amends` the versioned hk Config.pkl package
 - Imports `Builtins.pkl` for `markdownlint` and `hadolint`
 - Defines `stagingLinters` mapping (shellcheck, shfmt, markdownlint, hadolint, yamllint, taplo)
@@ -38,6 +39,7 @@ Key points:
 - Defines `fix` and `check` hooks for manual/CI use
 
 **Validation rules to encode from current `.gitlint`:**
+
 - Types: `feat|fix|docs|style|ref|test|revert|chore|ci|build|perf|git`
 - Title max-length: 80 chars
 - Block WIP: no `wip:` prefix
@@ -54,6 +56,7 @@ Key points:
 This file is distributed as part of the dotfiles and will be symlinked to `~/.config/hk/config.pkl` by the install script.
 
 Content:
+
 ```pkl
 amends "package://github.com/jdx/hk/releases/download/v1.45.0/hk@1.45.0#/Config.pkl"
 
@@ -87,6 +90,7 @@ This integrates hk installation into the existing `mise run` workflow alongside 
 ### 2.2 Update `install` script
 
 The `install` shell script sets up the dotfiles environment. Add:
+
 1. Symlink `config/hk/hkrc.pkl` → `~/.config/hk/config.pkl`
 2. Call `mise run setup:hooks` (or `hk install --global` directly)
 
@@ -212,7 +216,7 @@ which gitlint || echo "gitlint not found — OK"
 ### New Files
 
 | File | Purpose |
-|------|---------|
+| ------ | --------- |
 | `hk.pkl` | Primary hk project configuration |
 | `config/hk/hkrc.pkl` | User-level hk defaults (distributed dotfile) |
 | `config/hk/README.md` | Documentation for hk config |
@@ -220,7 +224,7 @@ which gitlint || echo "gitlint not found — OK"
 ### Modified Files
 
 | File | Change |
-|------|--------|
+| ------ | -------- |
 | `mise.toml` | Add `setup:hooks` task |
 | `install` | Add hkrc symlink + `hk install --global` |
 | `README.md` | Update setup section |
@@ -229,7 +233,7 @@ which gitlint || echo "gitlint not found — OK"
 ### Deleted Files
 
 | File | Reason |
-|------|--------|
+| ------ | -------- |
 | `.pre-commit-config.yaml` | Replaced by `hk.pkl` |
 | `.gitlint` | Replaced by commit-msg step in `hk.pkl` |
 | `config/gitlint/gitlint.cfg` | Replaced |
@@ -242,7 +246,7 @@ which gitlint || echo "gitlint not found — OK"
 ## Risks & Mitigations
 
 | Risk | Likelihood | Mitigation |
-|------|------------|------------|
+| ------ | ------------ | ------------ |
 | `pklr` (built-in evaluator) is experimental | Medium | Test thoroughly; fall back to `HK_PKL_BACKEND=pkl` if needed |
 | Global hook install affects all repos | Low | hk is a no-op in repos without `hk.pkl` |
 | `shfmt` not in mise.toml | Low | Add to `[tools]` section if missing |

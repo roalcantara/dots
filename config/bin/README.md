@@ -82,6 +82,7 @@ git lol                # → gitx → xc-git log-fzf
 **Dependencies:** `git` · `delta` (for `branch-preview` diff) · `gum` optional (section headings; plain `printf` fallback).
 
 **Testing:**
+
 ```sh
 mise run xc-git:specs
 ```

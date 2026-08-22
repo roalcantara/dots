@@ -1,0 +1,7 @@
+node_modules/
+graphify-out/
+.agent/
+.agents/
+.claude/
+config/fabric/patterns/
+docs/superpowers/

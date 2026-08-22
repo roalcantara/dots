@@ -36,19 +36,23 @@ Body explaining what and why. Wrap for readability; keep each
 line within gitlint body limits.
 
 Changes:
+
 - High-level intent bullet
 EOF
 )"` or equivalent.
-4. **Verify with pre-commit gitlint** (same as a real `git commit` with hooks): from the **repository root**, run:
+
+1. **Verify with pre-commit gitlint** (same as a real `git commit` with hooks): from the **repository root**, run:
+
    ```bash
    _f=$(mktemp)
    git log -1 --format=%B > "$_f"
    pre-commit run gitlint --hook-stage commit-msg --commit-msg-filename "$_f"
    rm -f "$_f"
    ```
+
    If this **fails**, fix the message and **`git commit --amend`** (or `git reset --soft HEAD~1` and recommit) until it **passes**.  
    *Optional:* If pre-commit’s unstaged-file stash is disruptive mid-batch, the same message can be checked with `gitlint --msg-filename "$_f"` from the repo root (uses `.gitlint`).
-5. Repeat until **no** unstaged or uncommitted changes remain for the intended scope of this command.
+2. Repeat until **no** unstaged or uncommitted changes remain for the intended scope of this command.
 
 ## Safety
 

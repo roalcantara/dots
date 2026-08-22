@@ -61,6 +61,7 @@ See [assets/specs/xc-usage/design.md §4.1](../../assets/specs/xc-usage/design.m
 `xc-usage` is a self-contained zsh script at `config/bin/xc-usage`. It does **not** invoke mise, parse KDL, or read `#USAGE` headers. The only dependency is `zsh`, `grep`, `sed`, and the executable bit on `config/bin/xc-usage`.
 
 Symlink to `~/.local/bin/xc-usage` so it is on `$PATH`:
+
 ```sh
 ln -sf ~/.config/bin/xc-usage ~/.local/bin/xc-usage
 ```
@@ -72,6 +73,7 @@ file and delegates to `command xc-usage <target>` (target-first API — no `prin
 subcommand).
 
 **Usage:**
+
 ```zsh
 show_usage              # uses funcstack[2] for the calling function
 show_usage gen          # prints help for the `gen` function
@@ -79,6 +81,7 @@ show_usage /path/file   # prints help for any readable file
 ```
 
 After `zparseopts` in a function:
+
 ```zsh
 if (( ${+opts[-h]} )) || (( ${+opts[--help]} )); then
   show_usage
@@ -87,6 +90,7 @@ fi
 ```
 
 **Or use `xc-usage` directly:**
+
 ```zsh
 if [[ -n $help ]]; then
   command xc-usage gen
@@ -112,6 +116,7 @@ needed. `gen` is **not** migrated and stays on `$fpath`.
 ## Authoring checklist
 
 Before committing a function file:
+
 1. Add a `##?` docopt header (copy the template above)
 2. Wire `show_usage` or `command xc-usage` on `-h`/`--help`
 3. Run `command xc-usage <function-name>` to verify help extraction

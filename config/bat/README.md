@@ -14,11 +14,11 @@ A cat(1) clone with syntax highlighting and Git integration.
 
   Generate a config file
 
-    $ bat --generate-config-file
+    bat --generate-config-file
 
   Edit the config file
 
-    $ vi $(bat --config-file)
+    vi $(bat --config-file)
 
   Config file example
 
@@ -38,35 +38,35 @@ A cat(1) clone with syntax highlighting and Git integration.
 
   Display a single file on the terminal
 `
-      $ bat README.md`
+$ bat README.md`
 
   Display multiple files at once
 
-      $ bat src/*.rs
+      bat src/*.rs
 
   Print the contents of a file to the standard output:
 
-      $ bat file
+      bat file
 
   Concatenate several files into the target file:
 
-      $ bat file1 file2 > target_file
+      bat file1 file2 > target_file
 
   Append several files into the target file:
 
-      $ bat file1 file2 >> target_file
+      bat file1 file2 >> target_file
 
   Number all output lines:
 
-      $ bat -n file
+      bat -n file
 
   Syntax highlight a JSON file:
 
-      $ bat --language json file.json
+      bat --language json file.json
 
   Display all supported languages:
 
-      $ bat --list-languages
+      bat --list-languages
 
 ### Adding new syntaxes / language definitions
 
@@ -80,11 +80,11 @@ A cat(1) clone with syntax highlighting and Git integration.
 
   Update the cache
 
-    $ bat cache --build
+    bat cache --build
 
   Check the new languages
 
-    $ bat --list-languages
+    bat --list-languages
 
 ### Adding new themes
 
@@ -98,11 +98,11 @@ A cat(1) clone with syntax highlighting and Git integration.
 
   Update the cache
 
-    $ bat cache --build
+    bat cache --build
 
   Check the new themes
 
-    $ bat --list-themes
+    bat --list-themes
 
 ## Resources
 

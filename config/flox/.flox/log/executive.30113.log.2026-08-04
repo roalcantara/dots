@@ -1,0 +1,10 @@
+2026-08-04T20:01:00.338362Z  INFO flox_activations::cli::executive: ExecutiveArgs { dot_flox_path: "/Users/roalcantara/Work/dots/config/flox/.flox", executive_ctx: "/tmp/runtime-501/activations/46a95584-flox/3mzmp4zamdpm2x9vbxan1y5i70ar2aql-environment-run.1785873660334/executive_ctx_G95cdr" }
+2026-08-04T20:01:00.340026Z  INFO flox_activations::cli::executive: sending SIGUSR1 to parent 30065
+2026-08-04T20:01:00.340060Z  INFO flox_activations::cli::executive: starting monitoring loop
+2026-08-04T20:01:00.340098Z  INFO flox_activations::cli::executive::log_gc: still watching, woof woof
+2026-08-04T20:01:08.457095Z  INFO monitoring: flox_core::activations: detaching terminated PID pid=30053
+2026-08-04T20:01:08.457232Z  INFO monitoring: flox_activations::cli::executive: running cleanup after all PIDs terminated
+2026-08-04T20:01:08.457254Z  INFO monitoring: flox_activations::cli::executive: running cleanup
+2026-08-04T20:01:08.457297Z  INFO monitoring: flox_activations::cli::executive: did not shut down process-compose reason="no socket"
+2026-08-04T20:01:08.458595Z  INFO monitoring: flox_activations::cli::executive: finished cleanup
+2026-08-04T20:01:08.458894Z  INFO flox_activations::cli::executive: executive exiting: Ok(())

@@ -8,10 +8,7 @@ default: true
 # Path to configuration file to extend
 extends: null
 
-# MD001/heading-increment : Heading levels should only increment by one level at a time
-# https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md001.md
-MD001: true
-
+MD001: false
 # MD003/heading-style : Heading style
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md003.md
 MD003:
@@ -68,26 +65,7 @@ MD012:
   # Consecutive blank lines
   maximum: 1
 
-# MD013/line-length : Line length
-# https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md013.md
-MD013:
-  # Number of characters
-  line_length: 140
-  # Number of characters for headings
-  heading_line_length: 140
-  # Number of characters for code blocks
-  code_block_line_length: 140
-  # Include code blocks
-  code_blocks: true
-  # Include tables
-  tables: true
-  # Include headings
-  headings: true
-  # Strict length checking
-  strict: false
-  # Stern length checking
-  stern: false
-
+MD013: false
 # MD014/commands-show-output : Dollar signs used before commands without showing output
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md014.md
 MD014: true
@@ -122,20 +100,9 @@ MD023: true
 
 # MD024/no-duplicate-heading : Multiple headings with the same content
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md024.md
-MD024:
-  # Only check sibling headings
-  # allow_different_nesting: false
-  # Only check sibling headings
-  siblings_only: false
+MD024: false
 
-# MD025/single-title/single-h1 : Multiple top-level headings in the same document
-# https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md025.md
-MD025:
-  # Heading level
-  level: 1
-  # RegExp for matching title in front matter
-  front_matter_title: "^\\s*title\\s*[:=]"
-
+MD025: false
 # MD026/no-trailing-punctuation : Trailing punctuation in heading
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md026.md
 MD026:
@@ -178,12 +145,7 @@ MD031:
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md032.md
 MD032: true
 
-# MD033/no-inline-html : Inline HTML
-# https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md033.md
-MD033:
-  # Allowed elements
-  allowed_elements: []
-
+MD033: false
 # MD034/no-bare-urls : Bare URL used
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md034.md
 MD034: true
@@ -194,12 +156,7 @@ MD035:
   # Horizontal rule style
   style: 'consistent'
 
-# MD036/no-emphasis-as-heading : Emphasis used instead of a heading
-# https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md036.md
-MD036:
-  # Punctuation characters
-  punctuation: '.,;:!?。，；：！？'
-
+MD036: false
 # MD037/no-space-in-emphasis : Spaces inside emphasis markers
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md037.md
 MD037: true
@@ -212,22 +169,8 @@ MD038: true
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md039.md
 MD039: true
 
-# MD040/fenced-code-language : Fenced code blocks should have a language specified
-# https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md040.md
-MD040:
-  # List of languages
-  allowed_languages: []
-  # Require language only
-  language_only: false
-
-# MD041/first-line-heading/first-line-h1 : First line in a file should be a top-level heading
-# https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md041.md
-MD041:
-  # Heading level
-  level: 1
-  # RegExp for matching title in front matter
-  front_matter_title: "^\\s*title\\s*[:=]"
-
+MD040: false
+MD041: false
 # MD042/no-empty-links : No empty links
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md042.md
 MD042: true
@@ -288,9 +231,7 @@ MD051: true
 
 # MD052/reference-links-images : Reference links and images should use a label that is defined
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md052.md
-MD052:
-  # Include shortcut syntax
-  shortcut_syntax: false
+MD052: false
 
 # MD053/link-image-reference-definitions : Link and image reference definitions should be needed
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md053.md
@@ -298,7 +239,6 @@ MD053:
   # Ignored definitions
   ignored_definitions:
     - '//'
-
 # MD054/link-image-style : Link and image style
 # https://github.com/DavidAnson/markdownlint/blob/v0.32.1/doc/md054.md
 MD054:
@@ -314,6 +254,8 @@ MD054:
   shortcut: true
   # Allow URLs as inline links
   url_inline: true
+MD056: false
+MD060: false
 #
 # ignores:
 #   - CHANGELOG.md

@@ -11,7 +11,7 @@ You are continuing the **Harbor** thread: flux greenfield CI/CD, HK, Bun workspa
    - `~/Work/bun/bootstrap/patterns/starters/workspace/docs/authority/adr/0001-bun-workspace-monorepo.md`
    - `~/Work/bun/flux/docs/context/prism/tooling-ci-cd.md`
    - `~/Work/bun/flux/docs/spike/ci-rewrite-design.md` (§ L11)
-3. Confirm repo state: branch `feat/greenfield-day0-conform` or `main` post-merge; PR https://github.com/roalcantara/flux/pull/1
+3. Confirm repo state: branch `feat/greenfield-day0-conform` or `main` post-merge; PR <https://github.com/roalcantara/flux/pull/1>
 
 ## Harbor invariants (do not regress)
 
@@ -23,9 +23,9 @@ You are continuing the **Harbor** thread: flux greenfield CI/CD, HK, Bun workspa
 
 ## Shipped milestones
 
-- Preview: https://github.com/roalcantara/flux/deployments/preview
-- Release: https://github.com/roalcantara/flux/releases/tag/v0.0.1
-- Production: https://github.com/roalcantara/flux/deployments/production
+- Preview: <https://github.com/roalcantara/flux/deployments/preview>
+- Release: <https://github.com/roalcantara/flux/releases/tag/v0.0.1>
+- Production: <https://github.com/roalcantara/flux/deployments/production>
 
 ## Tone
 

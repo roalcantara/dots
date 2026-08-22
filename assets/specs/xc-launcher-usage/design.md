@@ -5,6 +5,7 @@
 Migrate **`config/bin/xc`** (the interactive launcher and dispatcher for `xc-*` tools) from legacy docopt `##?` headers and `xc-usage` parsing to the **`usage` CLI shebang pattern** (`#!/usr/bin/env -S usage zsh`).
 
 ### Goals
+
 1. **Usage CLI Integration**: Shebang `#!/usr/bin/env -S usage zsh` with `#USAGE` annotations for metadata (`version`, `about`), commands (`list`, `up`), and usage examples.
 2. **Pure Usage Tool Inspection**: Replace `xc-usage` calls with native `usage` CLI commands (`usage generate json -f <tool>` and `usage zsh <tool> --help`).
 3. **Structured Metadata Extraction**: Use `usage generate json -f <tool>` and `jq` for robust tool summary and subcommand extraction without regex parsing.
@@ -33,6 +34,7 @@ Migrate **`config/bin/xc`** (the interactive launcher and dispatcher for `xc-*` 
 ```
 
 ### Components
+
 - **`config/bin/xc`**: The executable launcher script written in zsh with `usage` shebang.
 - **`usage` CLI**: Installed binary handling arg parsing, formatted help text, and JSON spec generation.
 - **`jq`**: Lightweight JSON processor used by `xc` to parse `.about` and `.cmd.subcommands` from `usage generate json`.
@@ -62,6 +64,7 @@ Migrate **`config/bin/xc`** (the interactive launcher and dispatcher for `xc-*` 
 ```
 
 ### Dispatch Logic
+
 - `xc --help`: Handled natively by `usage zsh` (stdout, exit 0).
 - `xc list`: Outputs TSV table of discovered `xc-*` tools, paths, and descriptions.
 - `xc up`: Runs system and package maintenance commands (`brew update`, `brew upgrade --greedy`, etc.) and exits 0.
@@ -72,6 +75,7 @@ Migrate **`config/bin/xc`** (the interactive launcher and dispatcher for `xc-*` 
 ## 4. Tool Discovery & Subcommand Resolution
 
 ### 4.1 Discovery (`_xc_discover`)
+
 - Scans `XC_BIN_DIR` for executables matching `xc-*` (skipping `xc` itself).
 - For each tool path:
   - Runs `usage generate json -f "$tool_path" 2>/dev/null`.
@@ -79,6 +83,7 @@ Migrate **`config/bin/xc`** (the interactive launcher and dispatcher for `xc-*` 
   - Formats TSV row: `name <TAB> resolved_path <TAB> summary`.
 
 ### 4.2 Subcommand Detection & Listing
+
 - **`_xc_has_subcommands`**:
   - Runs `usage generate json -f "$tool_path" 2>/dev/null`.
   - Returns 0 if `jq -e '.cmd.subcommands | length > 0'` succeeds.
@@ -86,7 +91,9 @@ Migrate **`config/bin/xc`** (the interactive launcher and dispatcher for `xc-*` 
   - Extracts subcommands and summaries via `jq -r '.cmd.subcommands | to_entries[] | "\(.key)\t\(.value.help // .key)"'`.
 
 ### 4.3 `fzf` Interactive Picker & Execution
+
 - **Tool Picker**:
+
   ```zsh
   fzf --delimiter=$'\t' --with-nth=1,3 \
       --prompt='xc ❯ ' \
@@ -94,7 +101,9 @@ Migrate **`config/bin/xc`** (the interactive launcher and dispatcher for `xc-*` 
       --preview-window='right:60%:wrap' \
       --preview='usage zsh {2} --help'
   ```
+
 - **Subcommand Picker**:
+
   ```zsh
   fzf --delimiter=$'\t' --with-nth=1,2 \
       --prompt="${name} ❯ " \
@@ -102,6 +111,7 @@ Migrate **`config/bin/xc`** (the interactive launcher and dispatcher for `xc-*` 
       --preview-window='right:60%:wrap' \
       --preview="usage zsh ${(q)tool_path} {1} --help"
   ```
+
 - **Execution**: Runs selected binary directly in foreground: `command <name> [subcommand] [extra_args]`.
 
 ---
@@ -109,10 +119,12 @@ Migrate **`config/bin/xc`** (the interactive launcher and dispatcher for `xc-*` 
 ## 5. Test Plan & Acceptance Criteria
 
 ### Static Checks
+
 1. `usage lint config/bin/xc`: Exit code 0.
 2. `shellcheck config/bin/xc`: Passes cleanly.
 
 ### Integration Testing (`assets/integration/bin/xc.spec.ts`)
+
 1. Direct script execution tests (`Bun.spawnSync([xc, ...])`).
 2. Verification of `xc --help` output (exit code 0, contains Usage and subcommands).
 3. Verification of `xc list` output (exit code 0, lists `xc-*` tools, excludes `xc` launcher itself).

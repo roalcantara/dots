@@ -1,0 +1,693 @@
+---
+schema_version: 3
+description: Project skill registry for Dots. Drives validation, sync targets, and consistency checks against skills-lock.json.
+locations:
+  owned: Project-authored skill committed under .agents/skills/<skill-id>.
+  project: External skill managed by the Skills CLI, recorded in skills-lock.json, and restored into .agents/skills/<skill-id>.
+  global: Global-only companion used from $HOME/.agents/skills/<skill-id> when available.
+skills:
+  dots-context:
+    location: owned
+    rationale: Mandatory project orientation. Defines the Dots stack, paths, SDD location, guide routing, and optional companion matrix.
+    policy:
+      type: required
+      usage:
+        summary: Always load at the start of any Dots task.
+        when:
+          load:
+            - any Dots task
+          avoid: []
+  dots-testing:
+    location: owned
+    rationale: Canonical verification workflow for shell specs, BDD features, integration tests, and mise gates.
+    policy:
+      type: required
+      usage:
+        summary: Load when writing or changing tests or verification gates.
+        when:
+          load:
+            - adding or changing specs
+            - assets/features or assets/integration tests
+            - mise test tasks
+          avoid:
+            - documentation-only edits with no test impact
+  dots-quality-gate:
+    location: owned
+    rationale: Executable completion gate. Prefer this over generic verification checklists when declaring work complete or preparing commits.
+    policy:
+      type: required
+      usage:
+        summary: Load before declaring work complete or preparing commits.
+        when:
+          load:
+            - final verification
+            - commit preparation
+            - quality gate failures
+          avoid:
+            - exploratory reading with no change yet
+  bun-development:
+    location: project
+    rationale: Bun implementation details for assets/ TypeScript while Dots guides remain authoritative.
+    policy:
+      type: optional
+      usage:
+        summary: Bun APIs, scripts, and table-driven tests under assets/.
+        when:
+          load:
+            - assets/integration TypeScript
+            - assets/features TypeScript
+            - bun test under assets/
+          avoid:
+            - replacing assets/guides/CODESTYLE_GUIDE.md
+            - shell or Docker work with no Bun code
+      surfaces:
+        claude_optional: for Bun TypeScript under assets/integration or assets/features
+        dots_context_optional: Implementing or testing Bun TypeScript under assets/.
+      routing:
+        domain:
+          - order: 10
+            triggers:
+              - assets/integration
+              - assets/features TypeScript
+              - bun test under assets/
+  bun-runtime:
+    location: project
+    rationale: Bun runtime, package manager, and test-runner behavior while project guides remain authoritative.
+    policy:
+      type: optional
+      usage:
+        summary: Bun runtime, package manager, and test-runner behavior.
+        when:
+          load:
+            - runtime-specific Bun behavior
+            - package manager behavior under assets/
+            - test-runner behavior under assets/
+          avoid:
+            - replacing assets/guides/CODESTYLE_GUIDE.md
+      surfaces:
+        claude_optional: for Bun runtime or package-manager questions under assets/
+        dots_context_optional: Bun runtime, package manager, or test-runner behavior under assets/.
+  systematic-debugging:
+    location: global
+    rationale: Disciplined debugging loop for failures without weakening the project quality gate.
+    policy:
+      type: optional
+      usage:
+        summary: Debug failing tests, gate failures, regressions, or unexpected behavior.
+        when:
+          load:
+            - failing tests
+            - quality gate failures
+            - regressions
+            - unclear behavior
+          avoid:
+            - straightforward edits with no failure mode
+      surfaces:
+        claude_optional: before fixing failing tests, gate failures, or unexpected behavior
+        dots_context_optional: Investigating failing tests, gate failures, regressions, or unexpected behavior.
+  mise-expert:
+    location: global
+    rationale: Tool versions and environment setup questions broader than task orchestration alone.
+    policy:
+      type: optional
+      usage:
+        summary: Mise tool versions and environment setup.
+        when:
+          load:
+            - mise tool versions
+            - mise environment setup
+            - mise settings
+          avoid:
+            - ordinary task wiring covered by mise-tasks
+      surfaces:
+        claude_optional: when editing mise tool versions or environment setup
+        dots_context_optional: Editing mise tool versions or environment setup.
+      routing:
+        domain:
+          - order: 10
+            triggers:
+              - mise.toml
+              - usage field
+              - task arguments
+              - ${usage_*?}
+  mise-tasks:
+    location: global
+    rationale: Mise task definitions, dependencies, aliases, arguments, and multi-step workflow orchestration.
+    policy:
+      type: optional
+      usage:
+        summary: Mise task orchestration.
+        when:
+          load:
+            - editing mise.toml
+            - task dependencies
+            - task usage arguments
+            - multi-step project workflows
+          avoid:
+            - runtime feature implementation with no task changes
+      surfaces:
+        claude_optional: when editing mise.toml or task orchestration
+        dots_context_optional: Editing mise.toml, task dependencies, or multi-step project workflows.
+  bash-scripting:
+    location: global
+    rationale: Shell-heavy work in config/bin and install scripts while preferring mise tasks over ad-hoc scripts.
+    policy:
+      type: optional
+      usage:
+        summary: Shell scripts, install helpers, and embedded mise commands.
+        when:
+          load:
+            - config/bin
+            - install scripts
+            - shell-heavy hooks
+            - embedded mise script commands
+          avoid:
+            - replacing mise tasks with standalone scripts
+      surfaces:
+        claude_optional: when editing config/bin, install scripts, or shell hooks
+        dots_context_optional: Editing config/bin, install scripts, or shell-heavy hooks.
+      routing:
+        domain:
+          - order: 10
+            triggers:
+              - config/bin
+              - install
+              - shell scripts
+              - ShellCheck
+  bash-linux:
+    location: global
+    rationale: Bash and Linux terminal patterns for macOS and Linux dotfiles work.
+    policy:
+      type: optional
+      usage:
+        summary: Bash/Linux terminal patterns and piping.
+        when:
+          load:
+            - bash terminal patterns
+            - piping and error handling in shell
+            - cross-platform shell commands
+          avoid:
+            - zsh-specific configuration covered by configuring-zsh
+      surfaces:
+        claude_optional: for bash terminal patterns on macOS or Linux
+        dots_context_optional: Bash/Linux terminal patterns during shell work.
+  configuring-zsh:
+    location: global
+    rationale: Zsh configuration for config/zsh, completions, plugins, and shell startup.
+    policy:
+      type: optional
+      usage:
+        summary: Zsh startup files, plugins, completions, and PATH.
+        when:
+          load:
+            - config/zsh
+            - .zshenv or .zshrc patterns
+            - zsh completions or plugins
+          avoid:
+            - bash-only scripts under config/bin
+      surfaces:
+        claude_optional: when editing config/zsh or zsh startup behavior
+        dots_context_optional: Editing config/zsh, plugins, completions, or shell startup.
+  github-actions-docs:
+    location: global
+    rationale: Official GitHub Actions documentation for workflow authoring and CI troubleshooting.
+    policy:
+      type: optional
+      usage:
+        summary: GitHub Actions workflows and CI configuration.
+        when:
+          load:
+            - GitHub Actions
+            - .github/workflows
+            - CI workflow changes
+          avoid:
+            - local-only mise tasks with no CI impact
+      surfaces:
+        claude_optional: when editing GitHub Actions workflows or CI
+        dots_context_optional: Editing GitHub Actions workflows or CI configuration.
+      routing:
+        domain:
+          - order: 10
+            triggers:
+              - GitHub Actions
+              - workflows
+              - CI
+              - .github/workflows
+  docker-expert:
+    location: global
+    rationale: Docker containerization for distros/, Dockerfiles, and CST verification.
+    policy:
+      type: optional
+      usage:
+        summary: Dockerfiles, images, and container build behavior.
+        when:
+          load:
+            - Docker
+            - Dockerfile
+            - distros/
+            - container builds
+          avoid:
+            - Flox-only environment questions with no Docker change
+      surfaces:
+        claude_optional: for Docker, Dockerfile, or distro image work
+        dots_context_optional: Docker, Dockerfile, distros/, or container build work.
+      routing:
+        domain:
+          - order: 10
+            triggers:
+              - Docker
+              - Dockerfile
+              - distros
+              - CST
+              - Hadolint
+              - container-structure-test
+  docker-patterns:
+    location: global
+    rationale: Docker patterns for local development, security, and multi-stage builds alongside DOCKER_GUIDE.md.
+    policy:
+      type: optional
+      usage:
+        summary: Docker Compose, security, and orchestration patterns.
+        when:
+          load:
+            - Docker Compose patterns
+            - container security hardening
+            - multi-service orchestration
+          avoid:
+            - replacing assets/guides/DOCKER_GUIDE.md
+      surfaces:
+        claude_optional: for Docker Compose or container security patterns
+        dots_context_optional: Docker Compose, security, or orchestration patterns.
+  bdd-gherkin-specification:
+    location: global
+    rationale: Gherkin acceptance specifications for assets/features while BDD guides remain authoritative.
+    policy:
+      type: optional
+      usage:
+        summary: Gherkin feature files and acceptance-language discovery.
+        when:
+          load:
+            - Gherkin
+            - assets/features
+            - acceptance specifications
+          avoid:
+            - converting shell specs to Gherkin by default
+      surfaces:
+        claude_optional: when writing Gherkin under assets/features
+        dots_context_optional: Writing Gherkin feature files or acceptance specifications.
+      routing:
+        domain:
+          - order: 10
+            triggers:
+              - Gherkin
+              - Cucumber
+              - assets/features
+              - .feature files
+  bdd-patterns:
+    location: global
+    rationale: BDD patterns for scenario organization and acceptance criteria without replacing project test workflow.
+    policy:
+      type: optional
+      usage:
+        summary: BDD pattern reference for feature work.
+        when:
+          load:
+            - BDD pattern questions
+            - scenario organization
+            - acceptance criteria design
+          avoid:
+            - default shell or integration test workflow
+      surfaces:
+        claude_optional: for BDD pattern questions during feature work
+        dots_context_optional: BDD pattern questions during assets/features work.
+  bdd-principles:
+    location: global
+    rationale: BDD philosophy and Three Amigos practice as conceptual background for acceptance testing.
+    policy:
+      type: optional
+      usage:
+        summary: BDD concept and philosophy reference.
+        when:
+          load:
+            - BDD concept questions
+            - acceptance-test phrasing philosophy
+            - Three Amigos practice
+          avoid:
+            - replacing project specs or tests
+      surfaces:
+        claude_optional: for BDD philosophy or acceptance-test phrasing
+        dots_context_optional: BDD concept or philosophy questions.
+  bdd-scenarios:
+    location: global
+    rationale: Scenario phrasing and edge-case organization for Gherkin features.
+    policy:
+      type: optional
+      usage:
+        summary: Scenario phrasing and edge-case design.
+        when:
+          load:
+            - scenario phrasing
+            - edge cases in Gherkin
+            - explicit BDD examples
+          avoid:
+            - converting existing shell specs to Gherkin by default
+      surfaces:
+        claude_optional: when designing Gherkin scenarios or edge cases
+        dots_context_optional: Designing Gherkin scenarios or edge cases.
+  cucumber-gherkin:
+    location: global
+    rationale: Cucumber and Gherkin syntax for executable BDD features under assets/.
+    policy:
+      type: optional
+      usage:
+        summary: Cucumber expressions, Gherkin syntax, and feature structure.
+        when:
+          load:
+            - Cucumber
+            - Gherkin syntax
+            - feature file structure
+          avoid:
+            - shellspec or shell-only verification
+      surfaces:
+        claude_optional: for Cucumber/Gherkin syntax under assets/features
+        dots_context_optional: Cucumber or Gherkin syntax for assets/features.
+  spec-driven-development:
+    location: global
+    rationale: Three-phase SDD workflow for requirements, design, and tasks under assets/specs/. Pair with using-superpowers when starting spec work.
+    policy:
+      type: optional
+      usage:
+        summary: Requirements, design, and tasks workflow under assets/specs/.
+        when:
+          load:
+            - SDD workflow
+            - assets/specs planning
+            - requirements or design documents
+            - writing or updating specs under assets/specs/
+          avoid:
+            - docs/superpowers/ output paths
+            - OpenSpec change workflow skills
+      surfaces:
+        claude_optional: when planning SDD artifacts under assets/specs/ (with using-superpowers)
+        dots_context_optional: Planning SDD artifacts under assets/specs/; load with using-superpowers.
+  using-superpowers:
+    location: global
+    rationale: Establishes how to find and invoke skills at conversation start; required companion when driving SDD with spec-driven-development (map outputs to assets/specs/, not docs/superpowers/).
+    policy:
+      type: optional
+      usage:
+        summary: Discover and invoke applicable skills; workflow discipline at task start.
+        when:
+          load:
+            - starting any Dots task
+            - SDD or spec writing alongside spec-driven-development
+            - unsure which skill or guide applies
+          avoid:
+            - replacing dots-context project orientation
+            - OpenSpec change workflow instead of SDD
+      surfaces:
+        claude_optional: at conversation start and when selecting skills for SDD work
+        dots_context_optional: Starting work; pair with spec-driven-development for assets/specs/ SDD.
+  writing-plans:
+    location: global
+    rationale: Implementation planning before multi-step changes across guides, scripts, or verification layers.
+    policy:
+      type: optional
+      usage:
+        summary: Implementation plans for multi-step work.
+        when:
+          load:
+            - multi-step implementation planning
+            - spec or task breakdown before coding
+          avoid:
+            - trivial one-file edits
+      surfaces:
+        claude_optional: before multi-step implementation work
+        dots_context_optional: Multi-step implementation planning before coding.
+  receiving-code-review:
+    location: global
+    rationale: Apply review feedback carefully when comments are ambiguous or broad.
+    policy:
+      type: optional
+      usage:
+        summary: Apply review feedback carefully.
+        when:
+          load:
+            - applying review feedback
+            - broad or ambiguous review comments
+          avoid:
+            - self-contained edits with no review context
+      surfaces:
+        claude_optional: when applying review feedback
+        dots_context_optional: Applying review feedback, especially when feedback is ambiguous or broad.
+  requesting-code-review:
+    location: global
+    rationale: Prepare reviewable summaries and surface residual risks before handoff.
+    policy:
+      type: optional
+      usage:
+        summary: Prepare review handoffs and PR summaries.
+        when:
+          load:
+            - preparing a review handoff
+            - preparing a PR summary
+            - surfacing residual risks
+          avoid:
+            - private scratch work with no review recipient
+      surfaces:
+        claude_optional: when preparing a review handoff or PR
+        dots_context_optional: Preparing a review handoff, PR, or larger completed change for scrutiny.
+  docs-writer:
+    location: global
+    rationale: Writing and reviewing Markdown guides under assets/guides/ with consistent structure.
+    policy:
+      type: optional
+      usage:
+        summary: Author or review project guides and specs in Markdown.
+        when:
+          load:
+            - writing assets/guides
+            - writing assets/specs
+            - reviewing project documentation
+          avoid:
+            - code-only changes with no doc impact
+      surfaces:
+        claude_optional: when writing or reviewing assets/guides or assets/specs
+        dots_context_optional: Writing or reviewing guides and specs under assets/.
+  ast-grep:
+    location: global
+    rationale: Structural search and rewrite rules when text search is insufficient.
+    policy:
+      type: optional
+      usage:
+        summary: Structural search and rewrite rules.
+        when:
+          load:
+            - authoring ast-grep rules
+            - debugging ast-grep findings
+            - structural rewrites
+          avoid:
+            - text-only searches where rg is enough
+      surfaces:
+        claude_optional: for structural search or rewrite rules
+        dots_context_optional: Authoring or debugging structural search and rewrite rules.
+  verification-before-completion:
+    location: global
+    rationale: Final verification reminder; dots-quality-gate remains the executable authority.
+    policy:
+      type: optional
+      usage:
+        summary: Final verification reminder before claiming completion.
+        when:
+          load:
+            - final verification reminders
+            - completion claims
+          avoid:
+            - replacing dots-quality-gate
+      surfaces:
+        claude_optional: as a reminder; dots-quality-gate remains the executable authority
+        dots_context_optional: Final reminder only; dots-quality-gate is the executable authority.
+  flox-environments:
+    location: global
+    rationale: Reproducible cross-platform environments via config/flox/ and Flox manifests.
+    policy:
+      type: optional
+      usage:
+        summary: Flox manifest and environment setup.
+        when:
+          load:
+            - config/flox
+            - flox.toml
+            - reproducible dev environments
+          avoid:
+            - Docker-only distro work with no Flox change
+      surfaces:
+        claude_optional: when editing config/flox or Flox environments
+        dots_context_optional: Editing config/flox or Flox environment manifests.
+  neovim-best-practices:
+    location: global
+    rationale: Neovim configuration patterns for config/nvim while project Lua conventions apply.
+    policy:
+      type: optional
+      usage:
+        summary: Neovim config, LSP, plugins, and keymaps under config/nvim.
+        when:
+          load:
+            - config/nvim
+            - Neovim Lua configuration
+            - LSP or plugin setup
+          avoid:
+            - replacing project Lua style without reading CODESTYLE_GUIDE.md
+      surfaces:
+        claude_optional: when editing config/nvim or Neovim Lua
+        dots_context_optional: Editing config/nvim, LSP, plugins, or keymaps.
+  lua:
+    location: global
+    rationale: Lua idioms for Neovim configuration and Busted tests where applicable.
+    policy:
+      type: optional
+      usage:
+        summary: Lua modules, metatables, and Neovim Lua patterns.
+        when:
+          load:
+            - Lua under config/nvim
+            - Busted Lua tests
+            - metatables or error handling in Lua
+          avoid:
+            - shell or TypeScript work with no Lua code
+      surfaces:
+        claude_optional: for Lua under config/nvim or Busted tests
+        dots_context_optional: Lua under config/nvim or Busted test work.
+  find-skills:
+    location: global
+    rationale: Discover installable agent skills when extending capabilities beyond this registry.
+    policy:
+      type: reference
+      usage:
+        summary: Discover and evaluate installable skills.
+        when:
+          load:
+            - finding new skills to install
+            - evaluating skill packages
+          avoid:
+            - replacing dots-context or SKILLS.yml routing
+  using-git-worktrees:
+    location: global
+    rationale: Isolated parallel work when explicitly requested; do not create worktrees automatically.
+    policy:
+      type: reference
+      usage:
+        summary: Git worktrees for isolated parallel work.
+        when:
+          load:
+            - user requests a worktree
+            - isolated parallel work is approved
+          avoid:
+            - normal single-worktree tasks
+  quality-assurance:
+    location: global
+    rationale: Broad QA thinking; project authorities are dots-quality-gate, DoD.md, and TESTING_GUIDE.md.
+    policy:
+      type: reference
+      usage:
+        summary: Broad QA reference.
+        when:
+          load:
+            - broad QA planning
+            - supplemental QA thinking
+          avoid:
+            - replacing dots-quality-gate, DoD.md, or TESTING_GUIDE.md
+  functional-core-imperative-shell:
+    location: global
+    rationale: Looks relevant for shell scripts and testable boundaries, but Dots does not use FCIS architecture or mandatory purity comments in source.
+    policy:
+      type: blocked
+      reason: misleading_architecture_pattern
+      redirect_to:
+        - assets/guides/TESTING_GUIDE.md
+        - .agents/skills/dots-testing/SKILL.md
+  elysia:
+    location: global
+    rationale: Looks relevant because Dots uses Bun under assets/, but Dots does not build Elysia HTTP applications or RPC servers.
+    policy:
+      type: blocked
+      reason: misleading_bun_stack
+      redirect_to:
+        - assets/guides/CODESTYLE_GUIDE.md
+        - bun-development
+  elysiajs:
+    location: global
+    rationale: Looks relevant for Bun backend work, but its scaffolding, ORMs, and deployment patterns conflict with Dots dotfiles conventions.
+    policy:
+      type: blocked
+      reason: misleading_bun_stack
+      redirect_to:
+        - assets/guides/CODESTYLE_GUIDE.md
+        - bun-development
+  webapp-testing:
+    location: global
+    rationale: Looks relevant for testing tasks, but Dots verifies CLI behavior with subprocess specs and Cucumber—not browser automation.
+    policy:
+      type: blocked
+      reason: misleading_test_layer
+      redirect_to:
+        - .agents/skills/dots-testing/SKILL.md
+        - assets/guides/TESTING_GUIDE.md
+        - assets/guides/BDD_GUIDE.md
+  stitch-loop:
+    location: global
+    rationale: Looks relevant for iterative design work, but its autonomous website loop bypasses Dots SDD, task gates, and DoD.
+    policy:
+      type: blocked
+      reason: incompatible_workflow
+      redirect_to:
+        - spec-driven-development
+        - assets/guides/DoD.md
+  deploy-to-vercel:
+    location: global
+    rationale: Looks relevant when a task mentions publish or deploy, but Dots ships Docker images to Docker Hub—not Vercel web apps.
+    policy:
+      type: blocked
+      reason: misleading_deploy_target
+      redirect_to:
+        - assets/guides/DOCKER_GUIDE.md
+        - assets/guides/CI_GUIDE.md
+  tdd-workflow:
+    location: global
+    rationale: Looks relevant for test-first work, but its coverage and layering assumptions target application code—not Dots shell and subprocess verification.
+    policy:
+      type: blocked
+      reason: misleading_test_workflow
+      redirect_to:
+        - .agents/skills/dots-testing/SKILL.md
+        - assets/guides/TESTING_GUIDE.md
+  openspec-propose:
+    location: global
+    rationale: Looks relevant for spec-driven planning, but OpenSpec uses its own change and artifact workflow—not Dots SDD under assets/specs/.
+    policy:
+      type: blocked
+      reason: misleading_sdd_workflow
+      redirect_to:
+        - spec-driven-development
+        - using-superpowers
+        - .agents/skills/dots-context/SKILL.md
+  openspec-new-change:
+    location: global
+    rationale: Looks relevant for starting structured spec work, but OpenSpec change folders conflict with assets/specs/<slug>/ layout.
+    policy:
+      type: blocked
+      reason: misleading_sdd_workflow
+      redirect_to:
+        - spec-driven-development
+        - using-superpowers
+        - .agents/skills/dots-context/SKILL.md
+  openspec-ff-change:
+    location: global
+    rationale: Looks relevant for fast-forwarding requirements, design, and tasks, but OpenSpec artifacts are not Dots SDD under assets/specs/.
+    policy:
+      type: blocked
+      reason: misleading_sdd_workflow
+      redirect_to:
+        - spec-driven-development
+        - using-superpowers
+        - .agents/skills/dots-context/SKILL.md

@@ -175,7 +175,7 @@ Cmd+p → file picker, Cmd+f → search, Cmd+Shift+f → global search, Cmd+b �
 Your Neovim keymaps have been checked against Helix’s Keymap and Commands docs. Summary:
 
 | Neovim shortcut | Action | In Helix config? | Can add? |
-|-----------------|--------|------------------|----------|
+| ----------------- | -------- | ------------------ | ---------- |
 | Cmd+Shift+P, Cmd+a/c/v/x/s/z/y/q, Cmd+Shift+s, Cmd+n, Cmd+Alt+q, Cmd+Shift+Alt+q | Editor basics | ✅ Yes | — |
 | Ctrl+a/e, Cmd+arrows | Movement | ✅ Yes | — |
 | Cmd+p, Cmd+f, Cmd+Shift+f, Cmd+b, Cmd+\\ | Search & pickers | ✅ Yes | — |

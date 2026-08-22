@@ -29,6 +29,7 @@
 ### Task 1: Update shebang and `#USAGE` header in `config/bin/xc-fabric`
 
 **Files:**
+
 - Modify: `config/bin/xc-fabric:1-135`
 
 - [ ] **Step 1: Replace legacy docopt headers with `usage zsh` shebang and `#USAGE` spec**
@@ -94,6 +95,7 @@ Expected output: No issues found, exit code 0.
 ### Task 2: Refactor argument parsing and subcommand dispatch in `config/bin/xc-fabric`
 
 **Files:**
+
 - Modify: `config/bin/xc-fabric`
 
 - [ ] **Step 1: Replace `zparseopts` and manual flag parsing with `$usage_*` variables**
@@ -172,6 +174,7 @@ Expected output: Formatted usage help displayed.
 ### Task 3: Update Integration Test Suite (`assets/integration/bin/xc-fabric.spec.ts`)
 
 **Files:**
+
 - Modify: `assets/integration/bin/xc-fabric.spec.ts`
 
 - [ ] **Step 1: Ensure direct script execution in tests**
@@ -188,11 +191,13 @@ Expected output: All 30+ tests pass with 0 failures.
 ### Task 4: Final Verification & Progress Documentation
 
 **Files:**
+
 - Modify: `config/bin/HANDOFF-USAGE-MIGRATION.md`
 
 - [ ] **Step 1: Run Full Verification Suite**
 
 Run:
+
 1. `usage lint config/bin/xc-fabric`
 2. `shellcheck config/bin/xc-fabric`
 3. `bun test assets/integration/bin/xc-fabric.spec.ts`

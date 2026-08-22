@@ -215,7 +215,7 @@ src/shell/
 
 ### `src/shell/app/` — Business logic layer
 
-*Rails analogy: `app/models/` + `app/services/`*
+_Rails analogy: `app/models/` + `app/services/`_
 
 Owns all business logic, data access, and config. Has no knowledge of UI or window management.
 Accessed exclusively through the RPC interface.
@@ -230,7 +230,7 @@ Accessed exclusively through the RPC interface.
 
 ### `src/shell/main/` — Process bootstrap layer
 
-*Rails analogy: `config/initializers/` + `config/routes.rb`*
+_Rails analogy: `config/initializers/` + `config/routes.rb`_
 
 Owns Electrobun lifecycle: creates the window, starts the RPC host, handles OS dialogs and
 window state. Has no business logic — delegates everything to `AppService`.
@@ -248,7 +248,7 @@ Grouped into concern sub-folders — the folder provides context so prefixes dro
 
 ### `src/shell/renderer/` — UI layer
 
-*Rails analogy: `app/views/` + `app/controllers/` combined (each page = controller + view)*
+_Rails analogy: `app/views/` + `app/controllers/` combined (each page = controller + view)_
 
 Owns all React UI. Communicates with `main/` exclusively via the typed RPC client (`rpc.client.ts`).
 Never imports from `shell/app/` or `shell/main/` directly.
@@ -288,6 +288,7 @@ two or more pages, it moves to `shared/`. New pages always get a new sub-folder 
 a flat file at the `pages/` root.
 
 **`pages/<feature>/` may contain:**
+
 - The page component itself (`.page.tsx`)
 - Its spec (`.page.spec.tsx`)
 - Page-local types (`.types.ts`) — only if the type is used nowhere else
@@ -326,7 +327,7 @@ The `testing.` prefix is a convention for files that only make sense in a test c
 | ------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | **spec**      | Written `.md` document describing UI layout, component anatomy, and interaction model. The implementor's source of truth. |
 | **reference** | Read-only screenshot from an existing product (or design tool output) used as a visual benchmark. Never modified.         |
-| **prototype** | Numbered iteration screenshot of *kb's own UI*, generated during design phases. Sequence-ordered.                         |
+| **prototype** | Numbered iteration screenshot of _kb's own UI_, generated during design phases. Sequence-ordered.                         |
 
 ### `assets/wireframe/` structure
 

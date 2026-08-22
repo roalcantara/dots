@@ -1,0 +1,5 @@
+2026-08-05T02:43:17.379839Z  INFO flox_activations::cli::executive: ExecutiveArgs { dot_flox_path: "/Users/roalcantara/Work/dots/config/flox/.flox", executive_ctx: "/tmp/runtime-501/activations/46a95584-flox/3mzmp4zamdpm2x9vbxan1y5i70ar2aql-environment-run.1785897797376/executive_ctx_roln9Z" }
+2026-08-05T02:43:17.382151Z  INFO flox_activations::cli::executive: sending SIGUSR1 to parent 40577
+2026-08-05T02:43:17.382182Z  INFO flox_activations::cli::executive::log_gc: still watching, woof woof
+2026-08-05T02:43:17.382188Z  INFO flox_activations::cli::executive: starting monitoring loop
+2026-08-05T03:43:17.406117Z  INFO flox_activations::cli::executive::log_gc: still watching, woof woof

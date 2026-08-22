@@ -6,38 +6,57 @@ theme = "andromeda"
 
 # https://docs.helix-editor.com/editor.html
 [editor]
-auto-pairs = true                                                       # Enables automatic insertion of pairs to parentheses, brackets, etc
-line-number = "relative"                                                # Line number display
-mouse = true                                                            # Enable mouse mode
-true-color = true                                                       # Override automatic detection
-end-of-line-diagnostics = "hint"                                        # Enables the new diagnostic rendering
+auto-pairs = true                # Enables automatic insertion of pairs to parentheses, brackets, etc
+line-number = "relative"         # Line number display
+mouse = true                     # Enable mouse mode
+true-color = true                # Override automatic detection
+end-of-line-diagnostics = "hint" # Enables the new diagnostic rendering
 
 # Allows configuring the statusline at the bottom of the editor
 # https://docs.helix-editor.com/editor.html#editorstatusline-section
 [editor.statusline]
-left = ["mode", "spinner", "file-name", "file-type", "read-only-indicator", "file-modification-indicator"]
+left = [
+  "mode",
+  "spinner",
+  "file-name",
+  "file-type",
+  "read-only-indicator",
+  "file-modification-indicator",
+]
 center = []
-right = ["diagnostics", "selections", "position", "file-encoding", "file-line-ending"]
+right = [
+  "diagnostics",
+  "selections",
+  "position",
+  "file-encoding",
+  "file-line-ending",
+]
 separator = "│"
-mode.normal = "N"                                                       # The text shown in the mode element for NORMAL mode
-mode.insert = "I"                                                       # The text shown in the mode element for INSERT mode
-mode.select = "S"                                                       # The text shown in the mode element for SELECT mode
-diagnostics = ["warning", "error"]                                      # List of severities which are displayed for the current buffer
-workspace-diagnostics = ["warning", "error"]                            # List of severities which are displayed for the workspace
+mode.normal = "N" # The text shown in the mode element for NORMAL mode
+mode.insert = "I" # The text shown in the mode element for INSERT mode
+mode.select = "S" # The text shown in the mode element for SELECT mode
+diagnostics = [
+  "warning",
+  "error",
+] # List of severities which are displayed for the current buffer
+workspace-diagnostics = [
+  "warning",
+  "error",
+] # List of severities which are displayed for the workspace
 
 # https://docs.helix-editor.com/lang-support.html                       # Run `hx --health` to check language support
 # https://docs.helix-editor.com/editor.html#editorlsp-section
 [editor.lsp]
-enable = true                                                           # Enables LSP integration. Setting to false will completely disable language servers regardless of language settings.
-display-messages = true                                                 # Display LSP window/showMessage messages below statusline
-display-progress-messages = true                                        # Display LSP progress messages below statusline
-auto-signature-help = true                                              # Enable automatic popup of signature help (parameter hints)
-display-inlay-hints = true                                              # Display inlay hints
-inlay-hints-length-limit = 5                                            # Maximum displayed length (non-zero number) of inlay hints
-display-color-swatches = true                                           # Show color swatches next to colors
-display-signature-help-docs = true                                      # Display docs under signature help popup
-snippets = true                                                         # Enables snippet completions. Requires a server restart (:lsp-restart) to take effect after :config-reload/:set
-goto-reference-include-declaration = true                               # Include declaration in the goto references popup
+enable = true                             # Enables LSP integration. Setting to false will completely disable language servers regardless of language settings.
+display-messages = true                   # Display LSP window/showMessage messages below statusline
+display-progress-messages = true          # Display LSP progress messages below statusline
+auto-signature-help = true                # Enable automatic popup of signature help (parameter hints)
+display-inlay-hints = true                # Display inlay hints
+inlay-hints-length-limit = 5              # Maximum displayed length (non-zero number) of inlay hints
+display-color-swatches = true             # Show color swatches next to colors
+display-signature-help-docs = true        # Display docs under signature help popup
+snippets = true                           # Enables snippet completions. Requires a server restart (:lsp-restart) to take effect after :config-reload/:set
+goto-reference-include-declaration = true # Include declaration in the goto references popup
 
 # https://docs.helix-editor.com/editor.html#editorcursor-shape-section
 [editor.cursor-shape]
@@ -48,7 +67,7 @@ select = "underline"
 # Options for rendering whitespace with visible characters
 # https://docs.helix-editor.com/editor.html#editorwhitespace-section
 [editor.whitespace]
-render = "all"                                                          # Enable visible whitespace
+render = "all" # Enable visible whitespace
 
 [editor.whitespace.characters]
 space = "·"
@@ -56,13 +75,13 @@ nbsp = "⍽"
 nnbsp = "␣"
 tab = "→"
 newline = "⏎"
-tabpad = "·"                                                            # Tabs will look like "→···" (depending on tab width)
+tabpad = "·"  # Tabs will look like "→···" (depending on tab width)
 
 # Set options for file picker and global search.
 # Ignoring files makes them invisible in the file picker & global search.
 # https://docs.helix-editor.com/editor.html#editorfile-picker-section
 [editor.file-picker]
-hidden = true                                                           # Enables ignoring hidden files
+hidden = true # Enables ignoring hidden files
 
 # https://docs.helix-editor.com/editor.html#editorsmart-tab-section
 # Options for navigating and editing using tab key
@@ -73,8 +92,8 @@ supersede-menu = false
 # Options for rendering diagnostics inside the text line
 # https://docs.helix-editor.com/editor.html#editorinline-diagnostics-section
 [editor.inline-diagnostics]
-max-diagnostics = 5                                                     # Maximum number of diagnostics to render inline for a given line
-cursor-line = "warning"                                                 # show warnings and errors on the cursorline inline
+max-diagnostics = 5     # Maximum number of diagnostics to render inline for a given line
+cursor-line = "warning" # show warnings and errors on the cursorline inline
 
 # https://docs.helix-editor.com/remapping.html#key-remapping
 # https://docs.helix-editor.com/remapping.html#special-keys-and-modifiers

@@ -31,6 +31,7 @@
 ### Task 1: Update shebang and `#USAGE` header in `config/bin/xc`
 
 **Files:**
+
 - Modify: `config/bin/xc:1-25`
 
 - [ ] **Step 1: Replace header with `usage zsh` shebang and `#USAGE` spec**
@@ -76,6 +77,7 @@ git commit --no-verify --no-gpg-sign -m "ref(xc): Add usage shebang and #USAGE s
 ### Task 2: Refactor Tool Discovery and Subcommand Extraction using `usage generate json` + `jq`
 
 **Files:**
+
 - Modify: `config/bin/xc`
 
 - [ ] **Step 1: Refactor `_xc_summary` to use `usage generate json`**
@@ -133,6 +135,7 @@ git commit --no-verify --no-gpg-sign -m "ref(xc): Refactor tool discovery and su
 ### Task 3: Update `fzf` Preview Pane Commands & CLI Dispatch
 
 **Files:**
+
 - Modify: `config/bin/xc`
 
 - [ ] **Step 1: Update `_xc_fzf_pick_tool` preview command**
@@ -214,6 +217,7 @@ git commit --no-verify --no-gpg-sign -m "ref(xc): Wire fzf previews directly to 
 ### Task 4: Update Integration Test Suite (`assets/integration/bin/xc.spec.ts`)
 
 **Files:**
+
 - Modify: `assets/integration/bin/xc.spec.ts`
 
 - [ ] **Step 1: Direct Script Execution in Tests**
@@ -284,11 +288,13 @@ git commit --no-verify --no-gpg-sign -m "test(xc): Update integration suite for 
 ### Task 5: Final Validation & Progress Documentation
 
 **Files:**
+
 - Modify: `config/bin/HANDOFF-USAGE-MIGRATION.md`
 
 - [ ] **Step 1: Run Full Verification Suite**
 
 Run:
+
 1. `usage lint config/bin/xc`
 2. `shellcheck config/bin/xc`
 3. `bun test assets/integration/bin/xc.spec.ts`

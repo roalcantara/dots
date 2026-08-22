@@ -14,7 +14,7 @@ The goal is to **replace both tools with [hk](https://hk.jdx.dev)** — a Rust-n
 A complete SDD (Spec-Driven Development) artefact set has been prepared under `docs/specs/update-hooks/`:
 
 | File | Purpose |
-|------|---------|
+| ------ | --------- |
 | [design.md](./design.md) | Approved design: architecture, `hk.pkl` structure, decisions |
 | [implementation-plan.md](./implementation-plan.md) | Phased plan with file changeset |
 | [tasks.md](./tasks.md) | Checkbox task list to track progress |
@@ -31,6 +31,7 @@ Execute the implementation described in the SDD artefacts above, **using `tasks.
 ## Key Facts to Know
 
 ### Current State
+
 - `hk = "latest"` is already declared in `mise.toml [tools]`
 - `mise.toml` has `settings.experimental = true` and `settings.auto_install = true`
 - The project has extensive `mise.toml` tasks (`build`, `start`, `test`, `setup:age`, `setup:git:filters`)
@@ -150,6 +151,7 @@ which gitlint || echo "gitlint not found — OK"
 ## Files to Read First
 
 Before starting, read:
+
 1. `docs/specs/update-hooks/design.md` — full architecture and hk.pkl source
 2. `docs/specs/update-hooks/implementation-plan.md` — detailed plan
 3. `docs/specs/update-hooks/tasks.md` — your progress tracker

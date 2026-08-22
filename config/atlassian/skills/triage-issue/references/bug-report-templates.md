@@ -7,25 +7,30 @@ High-quality bug report templates for different types of issues.
 ## Template 1: Backend Error
 
 **Summary Format:**
+
 ```
 [Service/Component]: [Error Type] in [Functionality]
 ```
 
 **Examples:**
+
 - Payment API: NullPointerException in refund processing
 - Auth Service: TimeoutError during token validation
 - Database: Connection pool exhausted in user queries
 
 **Description Template:**
+
 ```markdown
 ## Issue Description
 [Brief 1-2 sentence description]
 
 ## Error Details
 ```
+
 [Error message or exception]
 Stack trace:
 [Stack trace if available]
+
 ```
 
 ## Environment
@@ -52,7 +57,9 @@ Stack trace:
 
 ## Logs
 ```
+
 [Relevant log excerpts]
+
 ```
 
 ## Related Issues
@@ -67,16 +74,19 @@ Stack trace:
 ## Template 2: Frontend/UI Issue
 
 **Summary Format:**
+
 ```
 [Platform] [Component]: [Symptom]
 ```
 
 **Examples:**
+
 - iOS App Login: Screen remains blank after successful auth
 - Web Dashboard: Infinite loading spinner on reports
 - Android App: Crash when uploading photos
 
 **Description Template:**
+
 ```markdown
 ## Issue Description
 [Brief description of the visible problem]
@@ -108,7 +118,9 @@ Stack trace:
 
 ## Console Errors
 ```
+
 [Browser console errors if applicable]
+
 ```
 
 ## Additional Context
@@ -126,16 +138,19 @@ Stack trace:
 ## Template 3: Performance Issue
 
 **Summary Format:**
+
 ```
 [Component]: [Performance Problem] - [Context]
 ```
 
 **Examples:**
+
 - Dashboard: Slow page load (15+ seconds) on reports
 - API: Response time degradation under load
 - Database: Query timeout on user search
 
 **Description Template:**
+
 ```markdown
 ## Issue Description
 [Brief description of the performance problem]
@@ -158,7 +173,9 @@ Stack trace:
 
 ## Performance Data
 ```
+
 [Response times, profiling data, slow query logs]
+
 ```
 
 ## Impact
@@ -181,16 +198,19 @@ Stack trace:
 ## Template 4: Data Issue
 
 **Summary Format:**
+
 ```
 [Component]: [Data Problem] - [Scope]
 ```
 
 **Examples:**
+
 - User Profile: Data not persisting after save
 - Orders: Missing order items in history
 - Reports: Incorrect calculations in revenue report
 
 **Description Template:**
+
 ```markdown
 ## Issue Description
 [Brief description of the data problem]
@@ -227,10 +247,12 @@ Stack trace:
 ```
 
 ## Related Issues
+
 [Any similar past data issues]
 
 ---
 *Reported via automated triage*
+
 ```
 
 ---
@@ -239,7 +261,9 @@ Stack trace:
 
 **Summary Format:**
 ```
+
 [Integration]: [Error] - [External Service]
+
 ```
 
 **Examples:**
@@ -259,9 +283,11 @@ Stack trace:
 
 ## Error Response
 ```
+
 HTTP Status: [e.g., 429, 500]
 Response Body:
 [Error response from external service]
+
 ```
 
 ## Environment
@@ -290,7 +316,9 @@ Response Body:
 
 ## Logs
 ```
+
 [Our logs showing the integration failure]
+
 ```
 
 ## Related Issues
@@ -305,15 +333,18 @@ Response Body:
 ## Template 6: Regression (Previously Fixed)
 
 **Summary Format:**
+
 ```
 [Component]: [Issue] - Regression of PROJ-XXX
 ```
 
 **Examples:**
+
 - Login: Session timeout after 15min - Regression of PROJ-234
 - Upload: File size limit error - Regression of PROJ-567
 
 **Description Template:**
+
 ```markdown
 ## Issue Description
 [Brief description - note this was previously fixed]
@@ -374,29 +405,35 @@ Response Body:
 ### Good Summaries
 
 ✅ **Specific and actionable:**
+
 - "Payment API: NullPointerException in refund processing"
 - "iOS App: Crash when uploading photos >5MB"
 - "Dashboard: 15s load time on revenue report"
 
 ✅ **Includes component:**
+
 - Start with the affected component/system
 - Makes it easy to filter and assign
 
 ✅ **Describes the problem:**
+
 - Use clear, technical language
 - Avoid vague terms
 
 ### Bad Summaries
 
 ❌ **Too vague:**
+
 - "Error in production"
 - "App crashes sometimes"
 - "Something is slow"
 
 ❌ **Too long:**
+
 - "Users are reporting that when they try to login on the mobile app using their email and password, the app shows a connection timeout error and they cannot proceed"
 
 ❌ **Missing component:**
+
 - "NullPointerException in refund" (what component?)
 - "Page won't load" (which page?)
 
@@ -437,6 +474,7 @@ Response Body:
 ### Component Selection
 
 Always specify the affected component if the project uses components:
+
 - Makes routing to correct team easier
 - Helps with duplicate detection
 - Improves searchability
@@ -444,6 +482,7 @@ Always specify the affected component if the project uses components:
 ### Labels (If Available)
 
 Consider adding labels:
+
 - `regression` - Previously fixed issue
 - `production` - Occurring in production
 - `data-loss` - Involves data loss/corruption

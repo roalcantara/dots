@@ -1,0 +1,98 @@
+---
+layouts:
+  - tall
+  - wide
+  - fullscreen
+  - column
+
+# KEYBOARD SHORTCUTS
+# ~/.config/kodexb/sources/shortcuts.yml
+# Amethyst shortcuts are based on HYPER KEY => ✦⇧ ← ↑ ↓ [ ] . ,
+
+# ✦: ⌘ ⌃ ⌥
+mod1:
+  - command
+  - control
+  - option
+
+# ✦: ⌘ ⌃ ⌥ ⇧
+mod2:
+  - command
+  - control
+  - option
+  - shift
+
+# ✦ [: cycle-layout-backward
+cycle-layout:
+  mod: mod1
+  key: bracketright
+
+# ✦ ]: cycle-layout-forward
+cycle-layout-backward:
+  mod: mod1
+  key: bracketleft
+
+# ✦ ←: focus-next-window-clockwise
+focus-cw:
+  mod: mod1
+  key: left
+
+# ✦ →: focus-previous-window-counter-clockwise
+focus-ccw:
+  mod: mod1
+  key: right
+
+# ✦ ↑: focus-previous-screen
+focus-screen-ccw:
+  mod: mod1
+  key: up
+
+# ✦ ↓: focus-next-screen
+focus-screen-cw:
+  mod: mod1
+  key: down
+
+# ✦ ⇧ ←: swap-with-previous-window
+swap-ccw:
+  mod: mod2
+  key: left
+
+# ✦ ⇧ →: swap-with-next-window
+swap-cw:
+  mod: mod2
+  key: right
+
+# ✦ ⏎: swap-focused-window-with-main
+swap-main:
+  mod: mod1
+  key: enter
+
+# ✦ ⇧ ↑: focus-main-window
+focus-main:
+  mod: mod2
+  key: up
+
+# ✦ ⇧ ↓: reevaluate-windows
+reevaluate-windows:
+  mod: mod2
+  key: down
+
+# ✦ ⇧ ,: throw-focused-window-to-space-left
+throw-space-left:
+  mod: mod2
+  key: comma
+
+# ✦ ⇧.: throw-focused-window-to-space-right
+throw-space-right:
+  mod: mod2
+  key: period
+
+# ✦ ⇧ [: move-focused-window-to-previous-screen
+swap-screen-ccw:
+  mod: mod2
+  key: open_bracket
+
+# ✦ ⇧ ]: move-focused-window-to-next-screen
+swap-screen-cw:
+  mod: mod2
+  key: close_bracket

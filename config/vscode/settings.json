@@ -1646,7 +1646,7 @@
     "https://biomejs.dev": true
   },
   "json.schemaDownload.enable": true,
-  "mise.binPath": "/Users/roalcantara/.local/bin/mise",
+  "mise.binPath": "/opt/homebrew/bin/mise",
   "[toml]": {
     "editor.defaultFormatter": "mitchell8092.tombi",
     "editor.formatOnSave": true

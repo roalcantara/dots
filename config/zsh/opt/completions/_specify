@@ -1,0 +1,7 @@
+#compdef specify
+
+_specify_completion() {
+  eval $(env _TYPER_COMPLETE_ARGS="${words[1,$CURRENT]}" _SPECIFY_COMPLETE=complete_zsh specify)
+}
+
+compdef _specify_completion specify

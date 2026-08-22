@@ -34,7 +34,7 @@ command = "tldr '{}'"
 # Customize the UI
 # https://alexpasmantier.github.io/television/getting-started/first-channel#step-5-customize-the-ui
 [ui]
-preview_panel = { size = 60 }  # 60% width for preview
+preview_panel = { size = 60 } # 60% width for preview
 
 # Add a Custom Action
 # https://alexpasmantier.github.io/television/getting-started/first-channel#step-4-add-a-custom-action
