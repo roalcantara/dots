@@ -1,0 +1,280 @@
+/// User-level hk configuration.
+///
+/// hk merges this file into every project's hk.pkl, so every repository on this
+/// machine inherits the commit-message policy with no per-repo configuration.
+/// A repo may add, override, or disable any step below from its own hk.pkl -
+/// see config/hk/README.md.
+///
+/// Surfaced at ~/.config/hk/config.pkl via the ~/.config/hk directory symlink.
+amends "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Config.pkl"
+
+jobs = 4
+
+// Suppress the OSC terminal-progress escape sequences.
+terminal_progress = false
+
+hooks {
+  ["commit-msg"] {
+    steps {
+      // Conventional Commits grammar and allowed types.
+      // Policy lives in cog.toml: a repo-local one wins, else the shared default.
+      ["conventional-commit"] {
+        check = #"""
+          {% raw %}
+          f="{% endraw %}{{ commit_msg_file | default(value=files) }}{% raw %}"
+          subject=$(grep -v '^#' "$f" | sed -e '/./,$!d' | head -1)
+
+          # cog.toml handles Merge and fixup!/squash!/amend! via its ignore_*
+          # options. It has no revert equivalent, so guard those here.
+          case "$subject" in
+            Revert\ *|Reapply\ *) exit 0 ;;
+          esac
+
+          cfg="cog.toml"
+          [ -f "$cfg" ] || cfg="${XDG_CONFIG_HOME:-$HOME/.config}/cog/cog.toml"
+          [ -f "$cfg" ] || { echo "No cog.toml found (repo or $cfg)" >&2; exit 1; }
+          exec cog --config "$cfg" --quiet verify --file "$f"
+          {% endraw %}
+          """#
+
+        tests {
+          ["accepts ref"] {
+            write { ["c1.txt"] = "ref(nvim): Simplify keymap scheduling\n" }
+            files = List("c1.txt")
+            expect { code = 0 }
+          }
+          ["rejects refactor"] {
+            write { ["c2.txt"] = "refactor(nvim): Simplify keymaps\n" }
+            files = List("c2.txt")
+            expect { code = 1 }
+          }
+          ["rejects an unlisted type"] {
+            write { ["c3.txt"] = "git(config): Update the settings\n" }
+            files = List("c3.txt")
+            expect { code = 1 }
+          }
+          ["accepts a breaking marker"] {
+            write { ["c4.txt"] = "feat(cli)!: Change the output format\n" }
+            files = List("c4.txt")
+            expect { code = 0 }
+          }
+          ["accepts a nested scope"] {
+            write { ["c5.txt"] = "chore(core/domain): Extract constants\n" }
+            files = List("c5.txt")
+            expect { code = 0 }
+          }
+          ["rejects an unparseable message"] {
+            write { ["c6.txt"] = "just some words\n" }
+            files = List("c6.txt")
+            expect { code = 1 }
+          }
+          ["skips merge commits"] {
+            write { ["c7.txt"] = "Merge branch 'side' into main\n" }
+            files = List("c7.txt")
+            expect { code = 0 }
+          }
+          ["skips revert commits"] {
+            write { ["c8.txt"] = "Revert \"feat(cli): Add search command\"\n" }
+            files = List("c8.txt")
+            expect { code = 0 }
+          }
+          ["skips fixup commits"] {
+            write { ["c9.txt"] = "fixup! feat(cli): Add search command\n" }
+            files = List("c9.txt")
+            expect { code = 0 }
+          }
+        }
+      }
+
+      // Subject and body rules from assets/guides/GIT_COMMITS_GUIDE.md
+      // that `cog verify` does not cover.
+      ["commit-style"] {
+        check = #"""
+          {% raw %}
+          f="{% endraw %}{{ commit_msg_file | default(value=files) }}{% raw %}"
+          msg=$(grep -v '^#' "$f" | sed -e '/./,$!d')
+          subject=$(printf '%s\n' "$msg" | head -1)
+
+          case "$subject" in
+            Merge\ *|Revert\ *|Reapply\ *|fixup!\ *|squash!\ *|amend!\ *) exit 0 ;;
+          esac
+
+          fail=0
+          err() { printf '  %s\n' "$*" >&2; fail=1; }
+
+          if [ ${#subject} -gt 50 ]; then
+            err "Subject is ${#subject} chars, max 50: $subject"
+          fi
+          desc=${subject#*: }
+          if [ ${#desc} -lt 5 ]; then
+            err "Description is ${#desc} chars, min 5: $desc"
+          fi
+          case "$desc" in
+            [A-Z]*) ;;
+            *) err "Description must be capitalized: $desc" ;;
+          esac
+          case "$subject" in
+            *.) err "Subject must not end with a period: $subject" ;;
+          esac
+          if printf '%s' "$subject" | grep -qiE '(^|[^a-z])wip([^a-z]|$)'; then
+            err "WIP commits are not allowed: $subject"
+          fi
+
+          body=$(printf '%s\n' "$msg" | tail -n +2)
+          if [ -n "$(printf '%s' "$body" | tr -d '[:space:]')" ]; then
+            if [ -n "$(printf '%s\n' "$msg" | sed -n '2p')" ]; then
+              err "Subject and body must be separated by a blank line"
+            fi
+            trailers=$(git interpret-trailers --parse <"$f" 2>/dev/null)
+            fence=0
+            n=1
+            while IFS= read -r line; do
+              n=$((n + 1))
+              case "$line" in '```'*) fence=$((1 - fence)); continue ;; esac
+              [ "$fence" -eq 1 ] && continue
+              [ ${#line} -le 72 ] && continue
+              if [ -n "$trailers" ] && printf '%s\n' "$trailers" | grep -qxF "$line"; then
+                continue
+              fi
+              case "$line" in "BREAKING CHANGE: "*) continue ;; esac
+              case "$line" in *" "*) ;; *) continue ;; esac
+              err "Body line $n is ${#line} chars, max 72: $line"
+            done <<EOF
+          $body
+          EOF
+          fi
+
+          exit $fail
+          {% endraw %}
+          """#
+
+        tests {
+          ["accepts a 50-char subject"] {
+            write { ["t01.txt"] = "feat(cli): Add search command with FTS filters\n" }
+            files = List("t01.txt")
+            expect { code = 0 }
+          }
+          ["rejects a 51-char subject"] {
+            write { ["t02.txt"] = "feat(cli): Add search command with FTS and filterss\n" }
+            files = List("t02.txt")
+            expect { code = 1; stderr = "max 50" }
+          }
+          ["rejects a lowercase description"] {
+            write { ["t03.txt"] = "feat(cli): add search command\n" }
+            files = List("t03.txt")
+            expect { code = 1; stderr = "capitalized" }
+          }
+          ["rejects a trailing period"] {
+            write { ["t04.txt"] = "feat(cli): Add search command.\n" }
+            files = List("t04.txt")
+            expect { code = 1; stderr = "period" }
+          }
+          ["rejects a too-short description"] {
+            write { ["t05.txt"] = "feat(cli): Add\n" }
+            files = List("t05.txt")
+            expect { code = 1; stderr = "min 5" }
+          }
+          ["rejects wip"] {
+            write { ["t06.txt"] = "feat(cli): WIP search\n" }
+            files = List("t06.txt")
+            expect { code = 1; stderr = "WIP" }
+          }
+          ["skips merge commits"] {
+            write { ["t07.txt"] = "Merge branch 'feature/x' into main with a long tail\n" }
+            files = List("t07.txt")
+            expect { code = 0 }
+          }
+          ["skips revert commits"] {
+            write { ["t08.txt"] = "Revert \"feat(cli): Add search command\"\n" }
+            files = List("t08.txt")
+            expect { code = 0 }
+          }
+          ["skips fixup commits"] {
+            write { ["t09.txt"] = "fixup! feat(cli): Add search command\n" }
+            files = List("t09.txt")
+            expect { code = 0 }
+          }
+          ["accepts a wrapped body"] {
+            write {
+              ["t10.txt"] = """
+                feat(cli): Add search command with filters
+
+                Enable fast full-text search across all entry types using
+                SQLite FTS5, supporting type and tag filter combinations.
+
+                """
+            }
+            files = List("t10.txt")
+            expect { code = 0 }
+          }
+          ["rejects an over-long body line"] {
+            write {
+              ["t11.txt"] = """
+                feat(cli): Add search command with filters
+
+                xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx and more
+
+                """
+            }
+            files = List("t11.txt")
+            expect { code = 1; stderr = "max 72" }
+          }
+          ["rejects a missing blank line"] {
+            write {
+              ["t12.txt"] = """
+                feat(cli): Add search command with filters
+                Body immediately after subject with no separator.
+
+                """
+            }
+            files = List("t12.txt")
+            expect { code = 1; stderr = "blank line" }
+          }
+          ["exempts long trailers"] {
+            write {
+              ["t13.txt"] = """
+                feat(cli): Add search command with filters
+
+                Enable fast full-text search.
+
+                Reference: https://www.sqlite.org/fts5.html#the_highlight_function_and_more
+                Co-authored-by: Somebody With A Rather Long Name <somebody@example.com>
+
+                """
+            }
+            files = List("t13.txt")
+            expect { code = 0 }
+          }
+          ["exempts BREAKING CHANGE"] {
+            write {
+              ["t14.txt"] = """
+                feat(cli)!: Change default output format
+
+                Switch the default renderer.
+
+                BREAKING CHANGE: scripts relying on default table output must now pass --format table
+
+                """
+            }
+            files = List("t14.txt")
+            expect { code = 0 }
+          }
+          ["exempts bare long URLs"] {
+            write {
+              ["t15.txt"] = """
+                docs(guides): Add reference links
+
+                See below.
+
+                https://www.example.com/a/very/long/url/that/cannot/be/wrapped/at/all/ever/okay
+
+                """
+            }
+            files = List("t15.txt")
+            expect { code = 0 }
+          }
+        }
+      }
+    }
+  }
+}
