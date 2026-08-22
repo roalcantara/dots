@@ -1,6 +1,31 @@
 # The config file for mise
 # https://mise.jdx.dev/configuration.html
 
+[settings]
+# Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
+# https://mise.jdx.dev/configuration/settings.html#activate_aggressive
+activate_aggressive = true
+
+# Automatically install missing tools when running mise x, mise run, or as part of the 'not found' handler.
+# https://mise.jdx.dev/configuration/settings.html#auto_install
+auto_install = true
+
+# set to true to enable experimental features
+# https://mise.jdx.dev/configuration/settings.html#experimental
+experimental = true
+
+# Config files with these prefixes will be trusted by default
+# https://mise.jdx.dev/configuration/settings.html#global_config_file
+# global_config_file = "~/.local/share/mise/config.toml"
+
+# Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
+# https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
+# idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
+
+# Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
+# https://mise.jdx.dev/configuration/settings.html#lockfile
+lockfile = true
+
 [env]
 LUA_PATH = "./lua/?.lua;./lua/?/init.lua;;"
 
@@ -37,12 +62,34 @@ run = '''
     nvim --headless --startuptime +qa 2>&1 | tee "${usage_logdir?}/$LOGFILE"
   fi
   '''
+
+[tasks.prepare]
+description = "Create neovim environment (cache, local plugins, logs, etc.) folders"
+run = '''
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo "  ==> Creating neovim environment"
+  mkdir -p ~/.local/share/nvim ~/.cache/nvim
+'''
+
+[tasks.reset]
+description = "Reset neovim environment (cleanup cache, local plugins, logs, etc.)"
+depends_post = ["prepare"]
+run = '''
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo "  ==> Cleaning up neovim environment"
+  rm -rf ~/.local/share/nvim ~/.cache/nvim ~/.config/nvim/lazy-lock.json*
+'''
+
 [tasks.setup]
+depends = ["prepare"]
 description = "Setup the neovim plugins and tools"
 usage = '''
   flag "--lazy" help="Run Lazy sync"
   flag "--treesitter" help="Run TSUpdateSync"
   flag "--lsp" help="Install Mason LSP servers"
+  flag "--verbose" help="Enable verbose output"
   '''
 run = '''
   #!/usr/bin/env bash
@@ -50,44 +97,83 @@ run = '''
 
   CMD=(nvim --headless)
 
+  if [[ "${usage_verbose:-false}" == "true" ]]; then
+    CMD+=(-V)
+  fi
+
+  # Install LSPs first, so they're available for other steps (like Lazy sync)
+  if [[ "${usage_lsp:-false}" == "true" ]]; then
+    LSP_LIST=(
+      bash-language-server
+      diagnostic-languageserver
+      docker-compose-language-service
+      dockerfile-language-server
+      lua-language-server
+      marksman
+      ruby-lsp
+      shfmt
+      stylua
+      taplo
+      vim-language-server
+      vtsls
+      yaml-language-server
+    )
+
+    if [[ -t 0 ]]; then
+      echo "  ==> Select LSP servers to install (Space to toggle, Enter to confirm):"
+      SELECTED_LSP=$(gum choose --no-limit --selected="*" "${LSP_LIST[@]}")
+    else
+      echo "  ==> Non-interactive shell detected, installing all LSPs."
+      SELECTED_LSP=$(printf "%s\n" "${LSP_LIST[@]}")
+    fi
+
+    if [[ -n "$SELECTED_LSP" ]]; then
+      readarray -t TO_INSTALL <<< "$SELECTED_LSP"
+      INSTALL_LIST=()
+      for lsp in "${TO_INSTALL[@]}"; do
+        if [[ ! -d "$HOME/.local/share/nvim/mason/packages/$lsp" ]]; then
+          INSTALL_LIST+=("$lsp")
+          # Clean up any stale symlinks for this package in mason/bin
+          if [[ -d "$HOME/.local/share/nvim/mason/bin" ]]; then
+            for symlink in "$HOME/.local/share/nvim/mason/bin"/*; do
+              if [[ -L "$symlink" ]]; then
+                target=$(readlink "$symlink")
+                if [[ "$target" == *"packages/$lsp/"* ]]; then
+                  rm -f "$symlink"
+                fi
+              fi
+            done
+          fi
+        else
+          echo "  ==> $lsp is already installed (skipping)"
+        fi
+      done
+
+      if [[ -n "${INSTALL_LIST[*]:-}" ]]; then
+        echo "  ==> Installing selected LSPs with Mason: ${INSTALL_LIST[*]}"
+        nvim --headless -c "lua require('lazy').load({plugins = {'mason.nvim'}})" +"MasonInstall ${INSTALL_LIST[*]}" +qa
+      else
+        echo "  ==> All selected LSPs are already installed!"
+      fi
+    else
+      echo "  ==> No LSP servers selected for installation."
+    fi
+  fi
+
+  RUN_MAIN=false
   if [[ "${usage_lazy:-false}" == "true" ]]; then
     CMD+=(+Lazy! sync)
+    RUN_MAIN=true
   fi
 
   if [[ "${usage_treesitter:-false}" == "true" ]]; then
-    CMD+=(+TSUpdateSync)
+    CMD+=(+TSUpdate)
+    RUN_MAIN=true
   fi
 
-  if [[ "${usage_lsp:-false}" == "true" ]]; then
-    CMD+=(-c 'lua require("lazy").load({plugins = {"mason.nvim"}})' -c 'MasonInstall bash-language-server diagnostic-languageserver docker-compose-language-service dockerfile-language-server lua-language-server marksman ruby-lsp shfmt stylua taplo vim-language-server vtsls yaml-language-server')
+  if [[ "$RUN_MAIN" == "true" ]]; then
+    CMD+=(+qa)
+    echo "  ==> Running Neovim updates..."
+    "${CMD[@]}"
   fi
-
-  CMD+=(+qa)
-
-  echo "  ==> ${CMD[*]}"
-  eval "${CMD[*]}"
   '''
-[settings]
-# Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
-# https://mise.jdx.dev/configuration/settings.html#activate_aggressive
-activate_aggressive = true
-
-# Automatically install missing tools when running mise x, mise run, or as part of the 'not found' handler.
-# https://mise.jdx.dev/configuration/settings.html#auto_install
-auto_install = true
-
-# set to true to enable experimental features
-# https://mise.jdx.dev/configuration/settings.html#experimental
-experimental = true
-
-# Config files with these prefixes will be trusted by default
-# https://mise.jdx.dev/configuration/settings.html#global_config_file
-global_config_file = "~/.local/share/mise/config.toml"
-
-# Specific tools to enable idiomatic version files for like .node-version, .ruby-version, etc.
-# https://mise.jdx.dev/configuration/settings.html#idiomatic_version_file_enable_tools
-# idiomatic_version_file_enable_tools=["go", "node", "python", "ruby", "yarn"]
-
-# Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
-# https://mise.jdx.dev/configuration/settings.html#lockfile
-lockfile = true
