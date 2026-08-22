@@ -337,11 +337,11 @@ return {
     },
   },
 
-  -- Treesitter context (sticky header) - required for <leader>ut toggle in keymaps
-  -- https://github.com/nvim-treesitter/nvim-treesitter-context
+  -- Treesitter context (sticky header) - required for <leader>ut toggle in
+  -- keymaps. Base spec comes from
+  -- lazyvim.plugins.extras.ui.treesitter-context.
   {
     'nvim-treesitter/nvim-treesitter-context',
-    event = 'VeryLazy',
     opts = {
       mode = 'cursor',
       max_lines = 3,
@@ -924,88 +924,16 @@ return {
     end,
   },
 
-  -- Aerial | A fast and lightweight alternative to the built-in LSP symbols
-  -- https://github.com/stevearc/aerial.nvim
+  -- Aerial | overrides on top of lazyvim.plugins.extras.editor.aerial,
+  -- which already provides attach_mode, backends, show_guides, layout,
+  -- icons, filter_kind and guides.
   {
     'stevearc/aerial.nvim',
-    event = 'VeryLazy',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'nvim-tree/nvim-web-devicons',
+    opts = {
+      layout = {
+        resize_to_content = false,
+      },
     },
-    opts = function(_, opts)
-      local kind_filter = {
-        default = {
-          'Class',
-          'Constructor',
-          'Enum',
-          'Field',
-          'Function',
-          'Interface',
-          'Method',
-          'Module',
-          'Namespace',
-          'Package',
-          'Property',
-          'Struct',
-          'Trait',
-        },
-        markdown = false,
-        help = false,
-        -- you can specify a different filter for each filetype
-        lua = {
-          'Class',
-          'Constructor',
-          'Enum',
-          'Field',
-          'Function',
-          'Interface',
-          'Method',
-          'Module',
-          'Namespace',
-          -- 'Package', -- remove package since luals uses it for control flow structures
-          'Property',
-          'Struct',
-          'Trait',
-        },
-      }
-      local icons = vim.deepcopy(icons.kinds)
-
-      -- HACK: fix lua's weird choice for `Package` for control
-      -- structures like if/else/for/etc.
-      icons.lua = { Package = icons.Control }
-
-      --- @type table<string, string[]>|false
-      local filter_kind = false
-      if kind_filter then
-        filter_kind = assert(vim.deepcopy(kind_filter))
-        filter_kind._ = filter_kind.default
-        filter_kind.default = nil
-      end
-
-      return vim.tbl_deep_extend('force', opts or {}, {
-        attach_mode = 'global',
-        backends = { 'lsp', 'treesitter', 'markdown', 'man' },
-        show_guides = true,
-        layout = {
-          resize_to_content = false,
-          win_opts = {
-            winhl = 'Normal:NormalFloat,FloatBorder:NormalFloat,SignColumn:SignColumnSB',
-            signcolumn = 'yes',
-            statuscolumn = ' ',
-          },
-        },
-        icons = icons,
-        filter_kind = filter_kind,
-        -- stylua: ignore
-        guides = {
-          mid_item   = '├╴',
-          last_item  = '└╴',
-          nested_top = '│ ',
-          whitespace = '  ',
-        },
-      })
-    end,
   },
 
   -- Lualine | Blazing fast and easy to configure statusline written in pure lua

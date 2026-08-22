@@ -18,6 +18,10 @@ require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    -- LazyVim extras. These MUST sit between the LazyVim import and the
+    -- local `plugins` import, so local overrides merge on top of them.
+    { import = "lazyvim.plugins.extras.editor.aerial" },
+    { import = "lazyvim.plugins.extras.ui.treesitter-context" },
     -- import your plugins/overrides
     { import = "plugins" },
   },
