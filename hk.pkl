@@ -1,3 +1,5 @@
+/// 
+/// https://hk.jdx.dev/configuration.html#hk-pkl
 /// Repository linters. Commit-message rules are inherited from the global
 /// config at ~/.config/hk/config.pkl (source: config/hk/config.pkl) and can be
 /// overridden here - see config/hk/README.md.
@@ -25,7 +27,7 @@ local stagingLinters = new Mapping<String, Step> {
   }
   // zsh -n is the only parser that understands zsh syntax.
   ["zsh-syntax"] {
-    glob  = List("**/*.zsh", "config/zsh/.z*")
+    glob  = List("**/*.zsh", "config/zsh/.z*", "\(read("env:HOME"))/.config/zsh/.z*")
     check = "zsh -n {{files}}"
   }
   ["markdownlint"] = (Builtins.markdown_lint) {
@@ -42,7 +44,7 @@ local stagingLinters = new Mapping<String, Step> {
     glob    = List("**/*.toml")
     // config/tombi/config.toml declares toml-version = "v1.1.0" and uses a
     // multi-line inline table, which taplo (TOML 1.0) cannot parse.
-    exclude = List("config/tombi/config.toml")
+    exclude = List("config/tombi/config.toml", "\(read("env:HOME"))/.config/tombi/config.toml")
     check   = "taplo fmt --check {{files}}"
     fix     = "taplo fmt {{files}}"
   }

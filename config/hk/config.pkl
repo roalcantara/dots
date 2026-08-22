@@ -1,4 +1,5 @@
 /// User-level hk configuration.
+/// https://hk.jdx.dev/configuration.html#hkrc
 ///
 /// hk merges this file into every project's hk.pkl, so every repository on this
 /// machine inherits the commit-message policy with no per-repo configuration.
