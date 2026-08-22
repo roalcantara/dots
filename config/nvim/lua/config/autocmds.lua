@@ -15,16 +15,6 @@ require('core/vi/au').setup_autocommands_async({
   -- checktime / highlight_yank / resize_splits / last_loc / man_unlisted /
   -- wrap_spell / json_conceal / auto_create_dir are all registered by
   -- lazyvim/config/autocmds.lua — do not re-add them.
-  filetypedetect = {
-    {
-      event = { 'BufRead', 'BufNewFile' },
-      opts = {
-        pattern = { '*.yml' },
-        command = 'set filetype=yaml',
-        desc = 'Setup filetype=yaml for files ended with .yml',
-      },
-    },
-  },
   close_with_q_or_esc = {
     {
       event = 'FileType',
