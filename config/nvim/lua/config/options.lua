@@ -192,6 +192,7 @@ vim.g.lsp_hover_mouse_delay = 1000 -- [go] Mouse hover delay in milliseconds for
 
 -- GLOBAL GENERAL SETTINGS
 vim.g.deprecation_warnings = false              -- Disable deprecation warnings | https://lazyvim.org/news#11x
+vim.g.autoformat = true -- LazyVim's format-on-save switch; replaces conform's opts.format_on_save
 vim.g.have_nerd_fonts = true                    -- [go] Whether the system has Nerd Fonts installed
 vim.g.snacks_animate = false                    -- Disable snacks animation
 vim.g.suffixes = '.bak,~,.o,.h,.info,.swp,.obj' -- [go] List of file suffixes to add to the 'wildignore' list
