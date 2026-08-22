@@ -71,8 +71,7 @@ Changes:
 - High-level capability or intent (what it enables)
 - Another capability (avoid low-level implementation details)
 
-References:
-- Relevant link if applicable
+Reference: <url>
 ```
 
 ## Body Guidelines
@@ -99,6 +98,22 @@ Changes:
 - Support --type and --tag filters combined with FTS queries
 ```
 
+## Footers and long links
+
+Long URLs and references belong in **git trailers** - one `Token: value` per
+line, in the final paragraph, separated from the body by a blank line:
+
+```gitcommit
+Reference: https://www.sqlite.org/fts5.html
+Refs: #42
+Co-authored-by: Name <email@example.com>
+```
+
+Trailer lines are exempt from the 72-character body limit because
+`git interpret-trailers --parse` identifies them. `BREAKING CHANGE:` is exempt
+too: its token contains a space so git does not treat it as a trailer, but
+Conventional Commits names it as the one exception.
+
 ## Complete Example
 
 ```
@@ -112,8 +127,7 @@ Changes:
 - Combine FTS with --type and --tag filters
 - Paginate results with --page and --page-size
 
-References:
-- SQLite FTS5: https://www.sqlite.org/fts5.html
+Reference: https://www.sqlite.org/fts5.html
 ```
 
 ## Breaking Changes
