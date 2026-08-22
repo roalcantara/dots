@@ -1,4 +1,13 @@
-_G.Neo = require('core/neo')
+-- `Neo` is a convenience global used from autocmd and plugin callbacks.
+-- Resolve it on first access rather than at startup: eagerly requiring
+-- core/neo here costs ~12ms before any plugin loads.
+_G.Neo = setmetatable({}, {
+  __index = function(_, key)
+    local neo = require('core/neo')
+    _G.Neo = neo
+    return neo[key]
+  end,
+})
 
 local paths = require('core/vi/paths')
 

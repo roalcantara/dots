@@ -1,9 +1,3 @@
-local icons = require('core/ui/icons/icons_list')
-local paths = require('core/vi/paths')
-local statusline = require('core/ui/statusline')
-local snacks_default_exclusions = require('core/ui/snacks/defaults').default_exclusions
-local snacks_dashboard = require('core/ui/snacks/dashboard')
-
 --- @diagnostic disable: codestyle-check
 return {
   -- Bufferline is disabled: options.lua sets showtabline = 0, so it never
@@ -394,6 +388,8 @@ return {
     priority = 1000,
     lazy = false,
     opts = function(_, opts)
+      local snacks_default_exclusions = require('core/ui/snacks/defaults').default_exclusions
+      local snacks_dashboard = require('core/ui/snacks/dashboard')
       return vim.tbl_deep_extend('force', opts or {}, {
         dashboard = {
           enabled = true,
@@ -939,6 +935,7 @@ return {
     'nvim-lualine/lualine.nvim',
     event = 'VeryLazy',
     opts = function(_, opts)
+      local statusline = require('core/ui/statusline')
       -- Lualine has the following sections. Each section has components.
       -- +-------------------------------------------------+
       -- | A | B | C                             X | Y | Z |
