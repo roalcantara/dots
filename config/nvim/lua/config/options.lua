@@ -108,8 +108,10 @@ vim.opt.smartindent = true                                         -- Insert ind
 vim.opt.smarttab = true                                            -- [go] Use 'shiftwidth' when inserting <Tab>
 vim.opt.softtabstop = 2                                            -- [bo] uses 'shiftwidth' counts for while performing editing operations
 vim.opt.tabstop = 2                                                -- Tab width
-vim.opt.indentexpr =
-"v:lua.require'nvim-treesitter'.indentexpr()"                      -- Use treesitter for indentation (https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file)
+-- foldmethod / foldexpr / indentexpr are deliberately NOT set here.
+-- LazyVim sets them per-FileType via LazyVim.set_default, guarded by
+-- LazyVim.treesitter.have(ft, query), so buffers with no parser fall back
+-- cleanly. Setting them globally defeats that guard.
 
 -- FOLDING SETTINGS
 vim.opt.foldcolumn =
@@ -119,9 +121,7 @@ vim.opt.foldlevel = 99                               -- Keep all folds open by d
 vim.opt.foldlevelstart = 99                          -- Start unfolded
 vim.opt.foldminlines = 1                             -- Minimum number of lines for a fold
 vim.opt.foldnestmax = 3                              -- Maximum fold depth
-vim.opt.foldmethod = 'expr'                          -- Use expression for folding
-vim.opt.foldexpr =
-'v:lua.vim.treesitter.foldexpr()'                    -- Use treesitter for folding (https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#folding)
+-- foldmethod / foldexpr set per-FileType by LazyVim (see comment above).
 
 -- SEARCH/FIND/REPLACE/GREP/SELECTION SETTINGS
 vim.opt.hlsearch = true            -- When there is a previous search pattern, highlight all its matches
