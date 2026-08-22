@@ -1,6 +1,7 @@
 # The Config File
 # https://github.com/charmbracelet/glow?tab=readme-ov-file#the-config-file
 
+---
 # style name or JSON path (default "auto")
 style: 'auto'
 

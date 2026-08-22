@@ -1,0 +1,16 @@
+---
+# yamllint configuration.
+# line-length and truthy are relaxed because GitHub Actions workflows require
+# `on:` as a key and embed long shell commands in `run:` blocks that cannot be
+# wrapped without changing behaviour.
+extends: default
+
+rules:
+  line-length: disable
+  truthy:
+    allowed-values: ["true", "false"]
+    check-keys: false
+  comments:
+    min-spaces-from-content: 1
+  document-start:
+    present: true

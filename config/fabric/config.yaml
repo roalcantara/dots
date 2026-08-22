@@ -1,6 +1,7 @@
 # Example Fabric configuration with notification support
 # Save this to ~/.config/fabric/config.yaml to use as defaults
 
+---
 # Enable notifications by default for all commands
 notification: true
 

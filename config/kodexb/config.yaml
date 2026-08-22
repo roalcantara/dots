@@ -9,6 +9,7 @@
 # Base Settings (required)
 # ============================================================================
 
+---
 # Path to SQLite database containing your knowledge entries
 # Supports tilde (~) expansion and environment variables
 database:

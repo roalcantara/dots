@@ -11,6 +11,7 @@
 #   API_SECRET=sk-1234567890abcdef   => WILL BE ENCRYPTED!
 #   BW_CLIENTSECRET=abc123           => WILL BE ENCRYPTED!
 #   DEBUG_MODE=true                  => WILL NOT BE ENCRYPTED!
+---
 creation_rules:
   - path_regex: '.*\.env$'
     age: age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4
