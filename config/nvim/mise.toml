@@ -40,7 +40,7 @@ run = "docker build -f tools/Dockerfile -t nvim:busted --target busted ."
 [tasks.tests]
 depends = ["busted:build"]
 description = "Run commands with built images"
-run = "docker run --rm -v $(pwd)/specs:/app/spec -v $(pwd)/lua:/app/src nvim:busted --helper spec/tools/spec_helper.lua --output=utfTerminal spec/"
+run = "docker run --rm -e LUA_PATH='./lua/?.lua;./lua/?/init.lua;;' -v $(pwd)/specs:/app/spec -v $(pwd)/lua:/app/lua nvim:busted --helper spec/tools/spec_helper.lua --output=utfTerminal spec/"
 
 [tasks."startuptime"]
 description = "Run startuptime"
