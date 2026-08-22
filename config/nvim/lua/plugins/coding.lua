@@ -7,7 +7,7 @@ return {
     'ibhagwan/fzf-lua',
     event = 'VeryLazy',
     cmd = 'FzfLua',
-    dependencies = { 'echasnovski/mini.icons' },
+    dependencies = { 'nvim-mini/mini.icons' },
   },
 
   -- Mini Pairs | Autopair
@@ -30,16 +30,6 @@ return {
     },
     config = neo.mini.pairs,
   },
-
-  -- TS Comments | Comments for Treesitter
-  -- Improves comment syntax, lets Neovim handle multiple types of comments for a single language, and relaxes rules for uncommenting.
-  -- https://github.com/folke/ts-comments.nvim | https://www.lazyvim.org/plugins/coding#ts-commentsnvim
-  {
-    'folke/ts-comments.nvim',
-    event = 'VeryLazy',
-    opts = {},
-  },
-
   -- Visual Multi | Multiple cursors
   -- https://github.com/mg979/vim-visual-multi
   {

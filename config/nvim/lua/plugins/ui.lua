@@ -212,80 +212,6 @@ return {
   -- https://github.com/nvim-treesitter/nvim-treesitter | https://lazyvim.org/plugins/treesitter#nvim-treesitter
   {
     'nvim-treesitter/nvim-treesitter',
-    version = false, -- last release is way too old and doesn't work on Windows
-    build = ':TSUpdate',
-    event = 'VeryLazy',
-    lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
-    init = function(plugin)
-      -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
-      -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
-      -- no longer trigger the **nvim-treesitter** module to be loaded in time.
-      -- Luckily, the only things that those plugins need are the custom queries, which we make available
-      -- during startup.
-      require('lazy.core.loader').add_to_rtp(plugin)
-      -- require('nvim-treesitter.query_predicates')
-    end,
-    cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
-    opts_extend = { 'ensure_installed' },
-    dependencies = {
-      -- Text Objects for Treesitter
-      -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects | https://lazyvim.org/plugins/treesitter#nvim-treesitter-textobjects
-      {
-        'nvim-treesitter/nvim-treesitter-textobjects',
-        branch = 'main',
-        event = 'VeryLazy',
-        opts = {},
-        keys = function()
-          local moves = {
-            goto_next_start = { [']f'] = '@function.outer', [']c'] = '@class.outer', [']a'] = '@parameter.inner' },
-            goto_next_end = { [']F'] = '@function.outer', [']C'] = '@class.outer', [']A'] = '@parameter.inner' },
-            goto_previous_start = { ['[f'] = '@function.outer', ['[c'] = '@class.outer', ['[a'] = '@parameter.inner' },
-            goto_previous_end = { ['[F'] = '@function.outer', ['[C'] = '@class.outer', ['[A'] = '@parameter.inner' },
-          }
-          local ret = {} --- @type LazyKeysSpec[]
-          for method, keymaps in pairs(moves) do
-            for key, query in pairs(keymaps) do
-              local desc = query:gsub('@', ''):gsub('%..*', '')
-              desc = desc:sub(1, 1):upper() .. desc:sub(2)
-              desc = (key:sub(1, 1) == '[' and 'Prev ' or 'Next ') .. desc
-              desc = desc .. (key:sub(2, 2) == key:sub(2, 2):upper() and ' End' or ' Start')
-              ret[#ret + 1] = {
-                key,
-                function()
-                  -- don't use treesitter if in diff mode and the key is one of the c/C keys
-                  if vim.wo.diff and key:find('[cC]') then
-                    return vim.cmd('normal! ' .. key)
-                  end
-                  require('nvim-treesitter-textobjects.move')[method](query, 'textobjects')
-                end,
-                desc = desc,
-                mode = { 'n', 'x', 'o' },
-                silent = true,
-              }
-            end
-          end
-          return ret
-        end,
-        config = function(_, opts)
-          local TS = require('nvim-treesitter-textobjects')
-          if not TS.setup then
-            Neo.error('Please use `:Lazy` and update `nvim-treesitter`')
-            return
-          end
-          TS.setup(opts)
-        end,
-      },
-      -- Treesitter Context | A plugin for displaying the context of the current cursor position
-      -- https://github.com/nvim-treesitter/nvim-treesitter-context | https://lazyvim.org/extras/ui/treesitter-context#nvim-treesitter-context
-      {
-        'nvim-treesitter/nvim-treesitter-context',
-        event = 'VeryLazy',
-        opts = {
-          mode = 'cursor',
-          max_lines = 3,
-        },
-      },
-    },
     opts = {
       ensure_installed = {
         'bash',
@@ -357,7 +283,6 @@ return {
         select = {
           enable = true,
           lookahead = true,
-
           keymaps = {
             -- You can use the capture groups defined in textobjects.scm
             ['af'] = { query = '@function.outer', desc = 'around a function' },
@@ -406,16 +331,6 @@ return {
         },
       },
     },
-    config = function(_, opts)
-      vim.api.nvim_create_autocmd('FileType', {
-        group = vim.api.nvim_create_augroup('neovim_custom_treesitter_start_highlighting', { clear = true }),
-        callback = function(ev)
-          -- highlighting
-          pcall(vim.treesitter.start)
-        end,
-      })
-      require('nvim-treesitter.config').setup(opts)
-    end,
   },
 
   -- Helpview | A modern UI for Neovim's help system
@@ -1233,7 +1148,7 @@ return {
   -- https://github.com/MeanderingProgrammer/render-markdown.nvim?tab=readme-ov-file | https://youtu.be/AAkrmfkC1L4?t=167
   {
     'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' }, -- if you use standalone mini plugins
     opts = function(_, opts)
       return vim.tbl_deep_extend('force', opts or {}, {
         latex = { enabled = false },
