@@ -6,6 +6,10 @@ local snacks_dashboard = require('core/ui/snacks/dashboard')
 
 --- @diagnostic disable: codestyle-check
 return {
+  -- Bufferline is disabled: options.lua sets showtabline = 0, so it never
+  -- renders, and the two buffer-cycle keymaps now use builtin bprevious/bnext.
+  { 'akinsho/bufferline.nvim', enabled = false },
+
   -- TokyoNight colorscheme
   -- https://github.com/folke/tokyonight.nvim
   {

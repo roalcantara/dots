@@ -148,8 +148,8 @@ vim.schedule_wrap(function()
       -- =============================================================================
       -- BUFFERS
       -- =============================================================================
-      ['<D-M-Left>'] = { { n = '<CMD>BufferLineCyclePrev<CR>', i = '<C-O><CMD>BufferLineCyclePrev<CR>', v = '<ESC><CMD>BufferLineCyclePrev<CR>' }, 'Go to Previous Buffer (Left)' },
-      ['<D-M-Right>'] = { { n = '<CMD>BufferLineCycleNext<CR>', i = '<C-O><CMD>BufferLineCycleNext<CR>', v = '<ESC><CMD>BufferLineCycleNext<CR>' }, 'Go to Next Buffer (Right)' },
+      ['<D-M-Left>'] = { { n = '<CMD>bprevious<CR>', i = '<C-O><CMD>bprevious<CR>', v = '<ESC><CMD>bprevious<CR>' }, 'Go to Previous Buffer (Left)' },
+      ['<D-M-Right>'] = { { n = '<CMD>bnext<CR>', i = '<C-O><CMD>bnext<CR>', v = '<ESC><CMD>bnext<CR>' }, 'Go to Next Buffer (Right)' },
       ['<D-M-C-Right>'] = { { n = '<CMD>buffer #<CR>', i = '<C-O><CMD>buffer #<CR>', v = '<ESC><CMD>buffer #<CR>' }, 'Go to Last Buffer (Right)' }, -- https://github.com/folke/snacks.nvim/blob/main/docs/buf.md#snacksbuflast
       ['<D-w>'] = { { n = buf.close, i = buf.close, v = buf.close }, 'Close Buffer' },
       ['<D-M-w>'] = { { n = buf.close_all, i = buf.close_all, v = buf.close_all }, 'Close All Buffer' },
