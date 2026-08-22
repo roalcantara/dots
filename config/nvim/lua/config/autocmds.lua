@@ -101,22 +101,4 @@ require('core/vi/au').setup_autocommands_async({
       },
     },
   },
-  on_vim_enter_or_color_scheme = {
-    {
-      -- URL detection and opening functionality
-      -- https://github.com/sontungexpt/url-open
-      event = { 'VimEnter', 'ColorScheme' },
-      opts = {
-        callback = function()
-          local colors = require('tokyonight.colors').setup()
-          vim.api.nvim_set_hl(0, 'UrlOpenHighlight', {
-            fg = colors.orange,
-            underline = true,
-            bold = true,
-          })
-        end,
-        desc = 'Set up custom highlight group for URLs',
-      },
-    },
-  },
 })

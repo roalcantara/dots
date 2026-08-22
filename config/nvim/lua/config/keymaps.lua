@@ -213,4 +213,12 @@ vim.schedule_wrap(function()
   end)
 end)()
 
+-- Remove LazyVim's Snacks.gitbrowse keymaps. Builtin `gx` is the only
+-- URL-opening path in this config; see the conformance audit design doc.
+for _, lhs in ipairs({ '<leader>gB', '<leader>gY' }) do
+  for _, mode in ipairs({ 'n', 'x' }) do
+    pcall(vim.keymap.del, mode, lhs)
+  end
+end
+
 require('config/usercmds')
