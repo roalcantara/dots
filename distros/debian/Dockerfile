@@ -8,6 +8,7 @@ FROM mcr.microsoft.com/devcontainers/base:debian AS base
 ARG TZ=America/Sao_Paulo
 ARG TERM=xterm-256color
 ARG BRANCH=main
+# hadolint ignore=DL3064
 ARG USERNAME=vscode
 ARG GROUPNAME=vscode
 ARG GITHUB_REPO=roalcantara/dots

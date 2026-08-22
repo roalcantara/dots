@@ -35,15 +35,14 @@ RUN apk add --no-cache \
       bash
 
 # Install LuaRocks
+WORKDIR /tmp/luarocks-build
 RUN wget --progress=dot:giga https://luarocks.org/releases/luarocks-${LUAROCKS_VERSION}.tar.gz \
-      && tar -xzf luarocks-${LUAROCKS_VERSION}.tar.gz \
-      && cd luarocks-${LUAROCKS_VERSION} \
+      && tar -xzf luarocks-${LUAROCKS_VERSION}.tar.gz --strip-components=1 \
       && ./configure --with-lua=/usr \
       && make build \
       && make install \
-      && cd .. \
-      && rm -rf luarocks-${LUAROCKS_VERSION}*
-
+      && rm -rf /tmp/luarocks-build
+WORKDIR /app
 # Install Busted
 RUN luarocks install busted
 

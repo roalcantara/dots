@@ -6,6 +6,7 @@ FROM mcr.microsoft.com/devcontainers/base:alpine-3.18
 ARG TZ=America/Sao_Paulo
 ARG TERM=xterm-256color
 ARG BRANCH=main
+# hadolint ignore=DL3064
 ARG USERNAME=vscode
 ARG GROUPNAME=vscode
 ARG GITHUB_REPO=roalcantara/dots
@@ -30,7 +31,7 @@ RUN --mount=type=secret,id=GITHUB_TOKEN,target=/tmp/github_token,required=false 
 
 # Health check to ensure the container is running correctly
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD zsh -c 'echo "Container health check passed"' || exit 1
+    CMD ["zsh", "-c", "echo \"Container health check passed\" || exit 1"]
 
 USER $USERNAME
 WORKDIR $HOME
