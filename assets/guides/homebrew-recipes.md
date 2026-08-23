@@ -1,9 +1,10 @@
 # Homebrew configuration recipes
 
-Use this guide as a cookbook for declaring various dependency types inside your
-`Brewfile`. These examples demonstrate the correct syntax for taps, core
-formulae, casks, fonts, Mac App Store apps, npm packages, VS Code extensions, Go
-packages, Cargo packages, uv tools, Krew plugins, and Flatpak packages.
+Use this guide as a cookbook for declaring various dependency types inside
+your `Brewfile`. These examples demonstrate the correct syntax for taps,
+core formulae, casks, fonts, Mac App Store apps, npm packages, VS Code
+extensions, Go packages, Cargo packages, uv tools, Krew plugins, and
+Flatpak packages.
 
 ## Homebrew taps
 
