@@ -182,6 +182,12 @@ case "${CMD}" in
     if grep -qE "${pattern}" "${BREW_FILE}" 2>/dev/null; then
       echo "${type} '${name}' already exists in Brewfile."
     else
+      # Ensure Brewfile ends with a newline before appending
+      if [[ -f "${BREW_FILE}" ]] && [[ -n "$(tail -c1 "${BREW_FILE}" 2>/dev/null)" ]]; then
+        echo "" >> "${BREW_FILE}"
+      fi
+
+      # Append to Brewfile
       mkdir -p "$(dirname "${BREW_FILE}")"
       echo "${line}" >> "${BREW_FILE}"
       echo "Added ${line} to Brewfile."
