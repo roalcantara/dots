@@ -176,7 +176,8 @@ case "${CMD}" in
       fi
     fi
 
-    pattern="^[[:space:]]*${keyword}[[:space:]]+['\"]${name}['\"]"
+    escaped_name=$(printf "%s" "${name}" | perl -pe 's/([^a-zA-Z0-9_\@\-\/])/\\$1/g')
+    pattern="^[[:space:]]*${keyword}[[:space:]]+['\"]${escaped_name}['\"]"
     if grep -qE "${pattern}" "${BREW_FILE}" 2>/dev/null; then
       echo "${type} '${name}' already exists in Brewfile."
     else
@@ -198,11 +199,24 @@ case "${CMD}" in
       *) keyword="${type}" ;;
     esac
 
-    pattern="^[[:space:]]*${keyword}[[:space:]]+['\"]${name}['\"]"
+    escaped_name=$(printf "%s" "${name}" | perl -pe 's/([^a-zA-Z0-9_\@\-\/])/\\$1/g')
+    pattern="^[[:space:]]*${keyword}[[:space:]]+['\"]${escaped_name}['\"]"
     if grep -qE "${pattern}" "${BREW_FILE}" 2>/dev/null; then
-      grep -vE "${pattern}" "${BREW_FILE}" > "${BREW_FILE}.tmp" || true
-      mv "${BREW_FILE}.tmp" "${BREW_FILE}"
-      echo "Removed ${type} '${name}' from Brewfile."
+      set +e
+      grep -vE "${pattern}" "${BREW_FILE}" > "${BREW_FILE}.tmp"
+      grep_status=$?
+      set -e
+
+      if [[ ${grep_status} -eq 0 ]] || [[ ${grep_status} -eq 1 ]]; then
+        if [[ -f "${BREW_FILE}.tmp" ]]; then
+          mv "${BREW_FILE}.tmp" "${BREW_FILE}"
+          echo "Removed ${type} '${name}' from Brewfile."
+        fi
+      else
+        echo "Error: grep failed with status ${grep_status} while processing ${BREW_FILE}" >&2
+        rm -f "${BREW_FILE}.tmp"
+        exit 1
+      fi
     else
       echo "${type} '${name}' not found in Brewfile."
     fi
