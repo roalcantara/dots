@@ -1,8 +1,8 @@
-# HOMEBREW
+# Homebrew
 
 Homebrew [Bundle][5] is the right place for the installed state, but it is not a good place for the cookbook. Detailed command examples, historical notes, and workflow instructions were being mixed into the package list and making it hard to scan.
 
-## OVERVIEW
+## Overview
 
 - [Brewfile](./Brewfile) is the declarative package catalog.
 - [mise.toml](./mise.toml) owns the operational workflow and task recipes.
@@ -10,7 +10,7 @@ Homebrew [Bundle][5] is the right place for the installed state, but it is not a
 
 The long-form comments and historical notes have been moved out of the active package catalog so the file stays readable and stable.
 
-## USAGE
+## Usage
 
 ```sh
 # or mise -C config/homebrew [task]
@@ -49,7 +49,7 @@ mise run bundle add mas Xcode 497799835
 mise run bundle rm cask firefox
 ```
 
-## CONVENTIONS
+## Conventions
 
 Keep dependencies and the file organized by category and order the sections consistently:
 
@@ -59,22 +59,18 @@ Keep dependencies and the file organized by category and order the sections cons
 4. `cask` for fonts in their own font section
 5. optional or temporarily disabled items stay out of the active catalog
 
-### RULES
+### Rules
 
 - Keep only active package state here.
 - Prefer short, section-level comments over long narrative blocks.
 - Do not keep procedural steps or command examples in the package catalog.
 - If a package is temporarily disabled, keep it in the task history or a PR description instead of in the live catalog.
 
-## HOMEBREW CONFIGURATION
+## Homebrew configuration
 
-A cookbook of Homebrew configuration recipes can be found in the guides
-directory. For examples demonstrating the correct syntax for taps, core
-formulae, casks, fonts, Mac App Store apps, npm packages, VS Code extensions,
-and more, refer to the
-[Homebrew Recipes guide](../../assets/guides/homebrew-recipes.md).
+A cookbook of Homebrew configuration recipes can be found in the guides directory. For examples demonstrating the correct syntax for taps, core formulae, casks, fonts, Mac App Store apps, npm packages, VS Code extensions, and more, refer to the [Homebrew Recipes guide](../../assets/guides/homebrew-recipes.md).
 
-## DEPENDENCIES / ACKNOWLEDGEMENTS
+## Dependencies and acknowledgements
 
 - [Standard Readme][1]
 - [Git][2]

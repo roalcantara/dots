@@ -8,7 +8,7 @@ Flatpak packages.
 
 ## Homebrew taps
 
-Use `tap` to register external formulas repositories.
+Use **`tap`** to register external formulas repositories.
 
 ```ruby
 tap "apple/apple"
@@ -17,7 +17,7 @@ tap "user/tap-repository", "https://user@bitbucket.org/user/homebrew-tap-reposit
 
 ## Core formulae
 
-Use `brew` to register command-line tools and libraries.
+Use **`brew`** to register command-line tools and libraries.
 
 ```ruby
 brew "apple/apple/game-porting-toolkit"
@@ -26,7 +26,7 @@ brew "postgresql@16", restart_service: true
 
 ## Homebrew casks
 
-Use `cask` to register graphical applications.
+Use **`cask`** to register graphical applications.
 
 ```ruby
 cask "firefox"
@@ -34,7 +34,7 @@ cask "firefox"
 
 ## Mac App Store apps
 
-Use `mas` to register Mac App Store applications (requires `mas` CLI installed).
+Use **`mas`** to register Mac App Store applications (requires `mas` CLI installed).
 
 ```ruby
 mas "Refined GitHub", id: 1519867270
@@ -42,7 +42,7 @@ mas "Refined GitHub", id: 1519867270
 
 ## npm packages
 
-Use `npm` to declare global JavaScript/TypeScript packages.
+Use **`npm`** to declare global JavaScript/TypeScript packages.
 
 ```ruby
 npm "create-react-app"
@@ -50,7 +50,7 @@ npm "create-react-app"
 
 ## VS Code extensions
 
-Use `vscode` to declare extensions.
+Use **`vscode`** to declare extensions.
 
 ```ruby
 vscode "editorconfig.editorconfig"
@@ -58,7 +58,7 @@ vscode "editorconfig.editorconfig"
 
 ## Go packages
 
-Use `go` to declare Go command binaries.
+Use **`go`** to declare Go command binaries.
 
 ```ruby
 go "github.com/charmbracelet/crush"
@@ -66,7 +66,7 @@ go "github.com/charmbracelet/crush"
 
 ## Cargo packages
 
-Use `cargo` to declare Rust packages.
+Use **`cargo`** to declare Rust packages.
 
 ```ruby
 cargo "ripgrep"
@@ -74,7 +74,7 @@ cargo "ripgrep"
 
 ## uv tools
 
-Use `uv` to declare Python packages.
+Use **`uv`** to declare Python packages.
 
 ```ruby
 uv "mkdocs"
@@ -83,7 +83,7 @@ uv "ruff", source: "git+https://github.com/astral-sh/ruff.git"
 
 ## Krew plugins
 
-Use `krew` to declare Kubernetes CLI plugins.
+Use **`krew`** to declare Kubernetes CLI plugins.
 
 ```ruby
 krew "ctx"
@@ -91,7 +91,7 @@ krew "ctx"
 
 ## Flatpak packages
 
-Use `flatpak` to declare Linux Flatpak packages.
+Use **`flatpak`** to declare Linux Flatpak packages.
 
 ```ruby
 flatpak "com.visualstudio.code"
