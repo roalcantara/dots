@@ -35,13 +35,14 @@ eval "$(brew shellenv)"
 '''
 
 [tasks.bundle]
+dir = "{{cwd}}"
 description = "Homebrew bundle manager"
 depends = ["brew:load"]
 usage = '''
-flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
 
 cmd "list" help="List all dependencies present in the Brewfile" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
   flag "--all" help="List all dependencies"
   flag "--formula" help="List Homebrew formula dependencies"
   flag "--cask" help="List Homebrew cask dependencies"
@@ -57,26 +58,27 @@ cmd "list" help="List all dependencies present in the Brewfile" {
 }
 
 cmd "install" help="Install all dependencies from the active Brewfile" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
 }
 
 cmd "dump" help="Generate a new Brewfile from currently installed packages" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
 }
 
 cmd "check" help="Check local install state against the Brewfile" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
 }
 
 cmd "update" help="Update Homebrew, upgrade packages, and reconcile bundle" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
 }
 
 cmd "clean" help="Clean up Homebrew, prune old packages, and run doctor" {
 }
 
 cmd "add" help="Add a dependency to the Brewfile" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
+
   arg "<type>" help="Type of dependency" {
     choices "formulae" "cask" "tap" "mas" "uv" "go" "cargo" "npm" "krew" "vscode" "flatpak"
   }
@@ -85,7 +87,8 @@ cmd "add" help="Add a dependency to the Brewfile" {
 }
 
 cmd "rm" help="Remove a dependency from the Brewfile" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
+
   arg "<type>" help="Type of dependency" {
     choices "formulae" "cask" "tap" "mas" "uv" "go" "cargo" "npm" "krew" "vscode" "flatpak"
   }
@@ -95,7 +98,6 @@ cmd "rm" help="Remove a dependency from the Brewfile" {
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-
 CMD="${usage_cmd:-list}"
 BREW_FILE="${usage_file:-${HOME}/.config/homebrew/Brewfile}"
 
@@ -120,7 +122,6 @@ case "${CMD}" in
 
   install)
     if [[ ! -f "${BREW_FILE}" ]]; then
-      echo "Brewfile not found at ${BREW_FILE}" >&2
       exit 1
     fi
     brew bundle --file="${BREW_FILE}"
