@@ -1,0 +1,216 @@
+[tasks."brew:setup"]
+description = "Install Homebrew if it is not already available"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+HOMEBREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+if command -v brew >/dev/null 2>&1; then
+  echo "Homebrew is already installed"
+  exit 0
+fi
+
+NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL "${HOMEBREW_URL}")"
+if command -v brew >/dev/null 2>&1; then
+  echo "Homebrew installed successfully"
+else
+  echo "Homebrew installation failed" >&2
+  exit 1
+fi
+'''
+
+[tasks."brew:load"]
+description = "Load the Homebrew environment into the current shell session"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Homebrew is not installed; run 'mise -C config/homebrew run brew:setup' first" >&2
+  exit 1
+fi
+
+# shellcheck disable=SC1090
+eval "$(brew shellenv)"
+'''
+
+[tasks.bundle]
+description = "Homebrew bundle manager"
+depends = ["brew:load"]
+usage = '''
+flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+
+cmd "list" help="List all dependencies present in the Brewfile" {
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+  flag "--all" help="List all dependencies"
+  flag "--formula" help="List Homebrew formula dependencies"
+  flag "--cask" help="List Homebrew cask dependencies"
+  flag "--tap" help="List Homebrew tap dependencies"
+  flag "--mas" help="List Mac App Store dependencies"
+  flag "--vscode" help="List VSCode extensions"
+  flag "--go" help="List Go packages"
+  flag "--cargo" help="List Cargo packages"
+  flag "--uv" help="List uv tools"
+  flag "--krew" help="List Krew plugins"
+  flag "--npm" help="List npm packages"
+  flag "--flatpak" help="List Flatpak packages"
+}
+
+cmd "install" help="Install all dependencies from the active Brewfile" {
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+}
+
+cmd "dump" help="Generate a new Brewfile from currently installed packages" {
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+}
+
+cmd "check" help="Check local install state against the Brewfile" {
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+}
+
+cmd "update" help="Update Homebrew, upgrade packages, and reconcile bundle" {
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+}
+
+cmd "clean" help="Clean up Homebrew, prune old packages, and run doctor" {
+}
+
+cmd "add" help="Add a dependency to the Brewfile" {
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+  arg "<type>" help="Type of dependency" {
+    choices "formulae" "cask" "tap" "mas" "uv" "go" "cargo" "npm" "krew" "vscode" "flatpak"
+  }
+  arg "<name>" help="Name of the dependency"
+  arg "[args...]" help="Additional arguments (e.g. mas ID or options)"
+}
+
+cmd "rm" help="Remove a dependency from the Brewfile" {
+  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile"
+  arg "<type>" help="Type of dependency" {
+    choices "formulae" "cask" "tap" "mas" "uv" "go" "cargo" "npm" "krew" "vscode" "flatpak"
+  }
+  arg "<name>" help="Name of the dependency"
+}
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+CMD="${usage_cmd:-list}"
+BREW_FILE="${usage_file:-${HOME}/.config/homebrew/Brewfile}"
+
+case "${CMD}" in
+  list)
+    opts=()
+    [[ "${usage_all:-false}" == "true" ]] && opts+=(--all)
+    [[ "${usage_formula:-false}" == "true" ]] && opts+=(--formula)
+    [[ "${usage_cask:-false}" == "true" ]] && opts+=(--cask)
+    [[ "${usage_tap:-false}" == "true" ]] && opts+=(--tap)
+    [[ "${usage_mas:-false}" == "true" ]] && opts+=(--mas)
+    [[ "${usage_vscode:-false}" == "true" ]] && opts+=(--vscode)
+    [[ "${usage_go:-false}" == "true" ]] && opts+=(--go)
+    [[ "${usage_cargo:-false}" == "true" ]] && opts+=(--cargo)
+    [[ "${usage_uv:-false}" == "true" ]] && opts+=(--uv)
+    [[ "${usage_krew:-false}" == "true" ]] && opts+=(--krew)
+    [[ "${usage_npm:-false}" == "true" ]] && opts+=(--npm)
+    [[ "${usage_flatpak:-false}" == "true" ]] && opts+=(--flatpak)
+
+    brew bundle list --file="${BREW_FILE}" "${opts[@]}"
+    ;;
+
+  install)
+    if [[ ! -f "${BREW_FILE}" ]]; then
+      echo "Brewfile not found at ${BREW_FILE}" >&2
+      exit 1
+    fi
+    brew bundle --file="${BREW_FILE}"
+    ;;
+
+  dump)
+    brew bundle dump --file="${BREW_FILE}" --force
+    ;;
+
+  check)
+    if [[ ! -f "${BREW_FILE}" ]]; then
+      echo "Brewfile not found at ${BREW_FILE}" >&2
+      exit 1
+    fi
+    brew bundle check --file="${BREW_FILE}"
+    ;;
+
+  update)
+    brew update
+    brew upgrade
+    if [[ -f "${BREW_FILE}" ]]; then
+      brew bundle --file="${BREW_FILE}"
+    fi
+    ;;
+
+  clean)
+    brew autoremove
+    brew update
+    brew upgrade
+    brew upgrade --cask
+    brew cleanup --prune=all
+    brew doctor
+    ;;
+
+  add)
+    type="${usage_type}"
+    name="${usage_name}"
+
+    case "${type}" in
+      formulae) keyword="brew" ;;
+      cask) keyword="cask" ;;
+      tap) keyword="tap" ;;
+      mas) keyword="mas" ;;
+      *) keyword="${type}" ;;
+    esac
+
+    line="${keyword} \"${name}\""
+    if [[ -n "${usage_args:-}" ]]; then
+      if [[ "${type}" == "mas" && "${usage_args}" =~ ^[0-9]+$ ]]; then
+        line="${line}, id: ${usage_args}"
+      else
+        line="${line}, ${usage_args}"
+      fi
+    fi
+
+    pattern="^[[:space:]]*${keyword}[[:space:]]+['\"]${name}['\"]"
+    if grep -qE "${pattern}" "${BREW_FILE}" 2>/dev/null; then
+      echo "${type} '${name}' already exists in Brewfile."
+    else
+      mkdir -p "$(dirname "${BREW_FILE}")"
+      echo "${line}" >> "${BREW_FILE}"
+      echo "Added ${line} to Brewfile."
+    fi
+    ;;
+
+  rm)
+    type="${usage_type}"
+    name="${usage_name}"
+
+    case "${type}" in
+      formulae) keyword="brew" ;;
+      cask) keyword="cask" ;;
+      tap) keyword="tap" ;;
+      mas) keyword="mas" ;;
+      *) keyword="${type}" ;;
+    esac
+
+    pattern="^[[:space:]]*${keyword}[[:space:]]+['\"]${name}['\"]"
+    if grep -qE "${pattern}" "${BREW_FILE}" 2>/dev/null; then
+      grep -vE "${pattern}" "${BREW_FILE}" > "${BREW_FILE}.tmp" || true
+      mv "${BREW_FILE}.tmp" "${BREW_FILE}"
+      echo "Removed ${type} '${name}' from Brewfile."
+    else
+      echo "${type} '${name}' not found in Brewfile."
+    fi
+    ;;
+
+  *)
+    echo "Unknown subcommand: ${CMD}" >&2
+    exit 1
+    ;;
+esac
+'''
