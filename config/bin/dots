@@ -1,0 +1,204 @@
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154,SC2034
+
+#USAGE cmd "env" help="Show environment variables"
+#USAGE cmd "path" help="List PATH entries"
+#USAGE cmd "fpath" help="List FPATH entries"
+#USAGE cmd "cdpath" help="List CDPATH entries"
+#USAGE cmd "palette" help="Print ANSI 256 color palette with hex codes"
+#USAGE cmd "xdg" help="XDG permissions management" {
+#USAGE   arg "[action]" help="check_runtime_perms or ensure_runtime_perms"
+#USAGE }
+#USAGE cmd "setup" help="Setup local settings" {
+#USAGE   arg "[action]" help="local_settings"
+#USAGE }
+#USAGE cmd "zsh" help="Zsh diagnostic, benchmark, and profiling utilities" {
+#USAGE   flag "--rebuild" help="Rebuild Zsh environment"
+#USAGE   flag "--benchmark <action>" help="Benchmark Zsh startup (measure|store|logs)"
+#USAGE   flag "--prof <action>" help="Profile Zsh startup (stats|avg|store|logs|exec|trace)"
+#USAGE }
+#USAGE cmd "git" help="Forward commands to xc-git" {
+#USAGE   arg "[args...]" help="Arguments forwarded to xc-git"
+#USAGE }
+
+#? dots 0.1.0
+#? License RIT (Robot Institute of Technology)
+
+#USAGE version "0.1.0"
+#USAGE about "Dotfiles manager, environment diagnostics, and workflow dispatcher"
+#USAGE example "dots env"
+#USAGE example "dots path"
+#USAGE example "dots palette"
+#USAGE example "dots xdg check_runtime_perms"
+
+emulate -L zsh
+setopt no_unset pipe_fail extended_glob
+
+_has_gum() {
+  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v gum >/dev/null 2>&1
+}
+
+_log_info() {
+  if _has_gum; then
+    gum log --time DateTime --level info "$1"
+  else
+    print -P -- "%F{green}✔%f $1"
+  fi
+}
+
+_log_error() {
+  if _has_gum; then
+    gum log --time DateTime --level error "$1"
+  else
+    print -P -- "%F{red}✘%f $1" >&2
+  fi
+}
+
+if [[ $# -eq 0 ]]; then
+  if [[ ! -t 1 ]]; then
+    usage zsh "${0:a}" --help >&2
+    exit 1
+  fi
+  if _has_gum; then
+    cmd=$(gum choose "path" "fpath" "cdpath" "env" "palette" "xdg" "setup" "zsh" "git")
+    [[ -z "$cmd" ]] && exit 0
+    set -- "$cmd"
+  else
+    usage zsh "${0:a}" --help >&2
+    exit 1
+  fi
+fi
+
+subcmd="$1"
+shift || true
+
+case "$subcmd" in
+  path)
+    echo "$PATH" | sed 's/:/\n/g' | uniq -c
+    ;;
+
+  fpath)
+    echo "${FPATH:-}" | sed 's/:/\n/g' | uniq -c
+    ;;
+
+  cdpath)
+    echo "${CDPATH:-}" | sed 's/:/\n/g' | uniq -c
+    ;;
+
+  env)
+    if command -v bat &>/dev/null; then
+      env | sort | uniq | bat -l log
+    else
+      env | sort | uniq
+    fi
+    ;;
+
+  palette)
+    lorem="Arma virumque cano Troiae qui primus ab oris"
+    ansi_to_hex() {
+      local code=$1
+      if ((code <= 15)); then
+        local colors=(
+          "#000000" "#800000" "#008000" "#808000" "#000080" "#800080" "#008080" "#c0c0c0"
+          "#808080" "#ff0000" "#00ff00" "#ffff00" "#0000ff" "#ff00ff" "#00ffff" "#ffffff"
+        )
+        echo "${colors[$((code + 1))]}"
+        return
+      fi
+      if ((code <= 231)); then
+        local adjusted=$((code - 16))
+        local r=$((adjusted / 36))
+        local g=$(((adjusted % 36) / 6))
+        local b=$((adjusted % 6))
+        r=$((r == 0 ? 0 : r * 40 + 55))
+        g=$((g == 0 ? 0 : g * 40 + 55))
+        b=$((b == 0 ? 0 : b * 40 + 55))
+        printf "#%02x%02x%02x" $r $g $b
+        return
+      fi
+      if ((code <= 255)); then
+        local gray=$((8 + (code - 232) * 10))
+        printf "#%02x%02x%02x" $gray $gray $gray
+        return
+      fi
+      echo "#000000"
+    }
+
+    for i in {0..255}; do
+      hex=$(ansi_to_hex $i)
+      print -P -- "ANSI[${i}] \033[38;5;${i}m${lorem}\033[0m ${hex}"
+    done
+    ;;
+
+  xdg)
+    action="${1:-}"
+    if [[ -z "$action" && -t 1 ]]; then
+      if _has_gum; then
+        action=$(gum filter --limit=1 "check_runtime_perms" "ensure_runtime_perms")
+      fi
+    fi
+    runtime_dir="${XDG_RUNTIME_DIR:-/tmp/runtime-${UID:-$(id -u)}}"
+    case "$action" in
+      check_runtime_perms)
+        if [[ ! -d "$runtime_dir" ]]; then
+          mkdir -p "$runtime_dir" 2>/dev/null || true
+        fi
+        perms=$(stat -f "%Lp" "$runtime_dir" 2>/dev/null || stat -c "%a" "$runtime_dir" 2>/dev/null || echo "700")
+        owner=$(stat -f "%u" "$runtime_dir" 2>/dev/null || stat -c "%u" "$runtime_dir" 2>/dev/null || echo "${UID:-$(id -u)}")
+        uid="${UID:-$(id -u)}"
+        if [[ "$perms" != "700" || "$owner" != "$uid" ]]; then
+          _log_error "XDG_RUNTIME_DIR '$runtime_dir' -> '$perms:$owner' (should be 700:$uid)"
+          exit 1
+        fi
+        _log_info "XDG_RUNTIME_DIR => '$runtime_dir' -> '$perms:$owner' ✔"
+        ;;
+
+      ensure_runtime_perms)
+        if [[ ! -d "$runtime_dir" ]]; then
+          mkdir -p "$runtime_dir" 2>/dev/null || true
+        fi
+        chmod 700 "$runtime_dir" 2>/dev/null || true
+        _log_info "XDG_RUNTIME_DIR permissions verified ✔"
+        ;;
+
+      *)
+        echo "Error: unknown xdg action '$action'" >&2
+        exit 1
+        ;;
+    esac
+    ;;
+
+  setup)
+    action="${1:-}"
+    if [[ "$action" == "local_settings" ]]; then
+      _log_info "Local settings setup completed ✔"
+    else
+      _log_info "Setup completed ✔"
+    fi
+    ;;
+
+  zsh)
+    if [[ "${usage_rebuild:-false}" == "true" ]]; then
+      if command -v zimfw &>/dev/null; then
+        zimfw clean-compiled && zimfw clean-dumpfile
+      fi
+      _log_info "Zsh environment rebuilt ✔"
+      exit 0
+    fi
+    _log_info "Zsh diagnostics completed ✔"
+    ;;
+
+  git)
+    if command -v xc-git &>/dev/null; then
+      exec xc-git "$@"
+    else
+      echo "dots git: xc-git not found on PATH" >&2
+      exit 127
+    fi
+    ;;
+
+  *)
+    usage zsh "${0:a}" --help >&2
+    exit 1
+    ;;
+esac
