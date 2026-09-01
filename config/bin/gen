@@ -1,0 +1,100 @@
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154
+
+#? gen 0.1.0
+#? License RIT (Robot Institute of Technology)
+
+#USAGE version "0.1.0"
+#USAGE about "Completion script generator from command --help"
+#USAGE arg "[toolname]" help="CLI command name to generate completions for"
+#USAGE flag "-c --completions <toolname>" help="CLI command name to generate completions for"
+#USAGE flag "-d --dir <dir>" help="Output directory for generated completion file"
+#USAGE example "gen fabric-ai"
+#USAGE example "gen -c fabric-ai"
+
+emulate -L zsh
+setopt extended_glob pipe_fail no_unset
+
+toolname="${usage_toolname:-${usage_completions:-}}"
+
+if [[ -z "$toolname" ]]; then
+  usage zsh "${0:a}" --help >&2
+  exit 1
+fi
+
+default_dir="$HOME/.config/zsh/opt/completions"
+compdir="${usage_dir:-$default_dir}"
+compfile="_${toolname:t}"
+
+_has_gum() {
+  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v gum >/dev/null 2>&1
+}
+
+_log_info() {
+  if _has_gum; then
+    gum log --level info "$1"
+  else
+    echo "✔ [INFO] $1"
+  fi
+}
+
+_log_error() {
+  if _has_gum; then
+    gum log --level error "$1"
+  else
+    echo "✘ [ERROR] $1" >&2
+  fi
+}
+
+if ! command -v "$toolname" &>/dev/null; then
+  _log_error "Command '$toolname' not found on PATH"
+  exit 1
+fi
+
+helpout=""
+if ! helpout=$("$toolname" --help 2>&1); then
+  _log_error "Could not get help output for '$toolname'"
+  exit 1
+fi
+
+local -a opts
+while IFS= read -r line; do
+  [[ -z "$line" ]] && continue
+  if [[ $line =~ "^[[:space:]]*(-[a-zA-Z0-9]+)[[:space:]]*,[[:space:]]*--([a-zA-Z0-9-]+)" ]]; then
+    opt="$match[1]"
+    longopt="--$match[2]"
+    optdesc="${line##*--}"
+    optdesc="${optdesc//\'/}"
+    opts+=("'(${opt} ${longopt})'${opt}'[${optdesc}]'")
+    opts+=("'(${opt} ${longopt})'${longopt}'[${optdesc}]'")
+  elif [[ $line =~ "^[[:space:]]*(-[a-zA-Z0-9]+)[[:space:]]*" ]]; then
+    opt="$match[1]"
+    optdesc="${line#*$opt}"
+    optdesc="${optdesc//\'/}"
+    opts+=("'${opt}'[${optdesc}]'")
+  elif [[ $line =~ "^[[:space:]]*(--[a-zA-Z0-9-]+)[[:space:]]*" ]]; then
+    longopt="$match[1]"
+    optdesc="${line#*$longopt}"
+    optdesc="${optdesc//\'/}"
+    opts+=("'${longopt}'[${optdesc}]'")
+  fi
+done <<< "$helpout"
+
+mkdir -p "$compdir"
+out_path="$compdir/$compfile"
+
+{
+  echo "#compdef $toolname"
+  echo
+  echo "_${toolname:t}() {"
+  echo "  _arguments -C \\"
+  for o in "${opts[@]}"; do
+    echo "    $o \\"
+  done
+  echo "    '*:filename:_files'"
+  echo "}"
+  echo
+  echo "_${toolname:t} \"\$@\""
+} > "$out_path"
+
+_log_info "Completion written to $out_path"
