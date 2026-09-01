@@ -1,0 +1,350 @@
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154,SC2034,SC2086
+
+#USAGE cmd "cnb" help="Smart create branch with commit picker" {
+#USAGE   arg "[branch]" help="Branch name"
+#USAGE }
+#USAGE cmd "nb" help="Create branch from updated origin/main" {
+#USAGE   arg "[branch]" help="Branch name"
+#USAGE }
+#USAGE cmd "branches" help="List local branch names"
+#USAGE cmd "clear-merged" help="Delete merged branches"
+#USAGE cmd "clear-gone" help="Delete branches whose remote tracking is gone"
+#USAGE cmd "remote-branches" help="List remote branch names" {
+#USAGE   arg "[remote]" help="Remote name" default="origin"
+#USAGE }
+#USAGE cmd "rebase-from" help="Interactive rebase from parent of commit" {
+#USAGE   arg "[commit]" help="Target commit" default="HEAD"
+#USAGE }
+#USAGE cmd "edit" help="Rebase edit commit" {
+#USAGE   arg "[commit]" help="Target commit" default="HEAD"
+#USAGE }
+#USAGE cmd "drop" help="Rebase drop commit" {
+#USAGE   arg "[commit]" help="Target commit" default="HEAD"
+#USAGE }
+#USAGE cmd "reword" help="Rebase reword commit" {
+#USAGE   arg "[commit]" help="Target commit" default="HEAD"
+#USAGE }
+#USAGE cmd "fix-root" help="Fixup and autosquash root commit"
+#USAGE cmd "fix" help="Fixup and autosquash commit" {
+#USAGE   arg "[commit]" help="Target commit" default="HEAD"
+#USAGE }
+#USAGE cmd "fixup" help="Create fixup commit only" {
+#USAGE   arg "[commit]" help="Target commit" default="HEAD"
+#USAGE }
+#USAGE cmd "squash" help="Create squash commit" {
+#USAGE   arg "[commit]" help="Target commit" default="HEAD"
+#USAGE }
+#USAGE cmd "fix-all" help="Stage all and fix" {
+#USAGE   arg "[commit]" help="Target commit" default="HEAD"
+#USAGE }
+#USAGE cmd "squash-all" help="Stage all and squash" {
+#USAGE   arg "[commit]" help="Target commit" default="HEAD"
+#USAGE }
+#USAGE cmd "root-commit" help="Print root commit hash"
+#USAGE cmd "uu" help="Pull rebase origin main"
+#USAGE cmd "uup" help="Pull rebase upstream main"
+#USAGE cmd "p" help="Push verbose origin current branch"
+#USAGE cmd "pf" help="Push --force-with-lease"
+#USAGE cmd "pa" help="Push --all"
+#USAGE cmd "pt" help="Push --tags"
+#USAGE cmd "pc" help="Push --set-upstream"
+#USAGE cmd "pp" help="Pull then push current branch"
+#USAGE cmd "lol" help="Fzf commit log viewer"
+#USAGE cmd "fzl" help="Fzf commit hash picker"
+#USAGE cmd "fzlog" help="Alias for lol"
+#USAGE cmd "fzdiff" help="Fzf diff viewer"
+#USAGE cmd "fza" help="Fzf git add"
+#USAGE cmd "fzu" help="Fzf git restore"
+#USAGE cmd "fzus" help="Fzf git restore --staged"
+#USAGE cmd "fzc" help="Fzf branch checkout"
+#USAGE cmd "fzb" help="Fzf branch deletion/management"
+#USAGE cmd "fzr" help="Fzf rebase-from"
+#USAGE cmd "fzf" help="Fzf fix"
+#USAGE cmd "fzw" help="Fzf reword"
+#USAGE cmd "fze" help="Fzf edit"
+#USAGE cmd "fzd" help="Fzf drop"
+#USAGE cmd "fzhs" help="Fzf reset --soft"
+#USAGE cmd "fzhh" help="Fzf reset --hard"
+#USAGE cmd "fzunstage" help="Fzf rm --cached"
+#USAGE cmd "grep-commit" help="Extract commit hash from stdin"
+#USAGE cmd "tail" help="Extract last word"
+#USAGE cmd "grep-branch" help="Extract branch name"
+#USAGE cmd "head-branch" help="Print current branch"
+#USAGE cmd "strip" help="Strip status prefix"
+#USAGE cmd "preview" help="Preview status line"
+
+#? gitx 0.1.0
+#? License RIT (Robot Institute of Technology)
+
+#USAGE version "0.1.0"
+#USAGE about "Git workflow dispatcher and interactive fzf rebase helper"
+#USAGE example "gitx cnb feature/foo"
+#USAGE example "gitx branches"
+#USAGE example "gitx head-branch"
+#USAGE example "gitx clear-merged"
+
+emulate -L zsh
+setopt no_unset pipe_fail extended_glob
+
+_has_gum() {
+  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v gum >/dev/null 2>&1
+}
+
+_log_info() {
+  if _has_gum; then
+    gum log --time DateTime --level info "$1"
+  else
+    print -P -- "%F{green}✔%f $1"
+  fi
+}
+
+_log_error() {
+  if _has_gum; then
+    gum log --time DateTime --level error "$1"
+  else
+    print -P -- "%F{red}✘%f $1" >&2
+  fi
+}
+
+_gitx_branches() {
+  git branch -vva --color=never 2>/dev/null \
+    | grep -v 'HEAD' \
+    | sed -E \
+        -e 's/^[[:space:]]*\* //g' \
+        -e 's/^[[:space:]]*//g' \
+        -e 's/remotes\/origin\///g' \
+        -e 's/^([^[:space:]]+).*/\1/g' \
+    | sort -u \
+    | grep -v '^origin/' \
+    | grep -v '^>' \
+    | uniq
+}
+
+_gitx_head_branch() {
+  git rev-parse --abbrev-ref HEAD 2>/dev/null || \
+  git branch --show-current 2>/dev/null || echo "main"
+}
+
+_gitx_root_commit() {
+  git rev-parse "$(git rev-list --max-parents=0 HEAD 2>/dev/null || echo "HEAD")" 2>/dev/null || echo ""
+}
+
+if [[ $# -eq 0 ]]; then
+  if [[ ! -t 1 ]]; then
+    usage zsh "${0:a}" --help >&2
+    exit 1
+  fi
+  if command -v fzf &>/dev/null; then
+    subcmd=$(printf '%s\n' "branches" "head-branch" "cnb" "nb" "clear-merged" "clear-gone" "lol" "fzb" "fza" "fzu" | fzf --header="Pick gitx subcommand:")
+    [[ -z "$subcmd" ]] && exit 0
+    set -- "$subcmd"
+  else
+    usage zsh "${0:a}" --help >&2
+    exit 1
+  fi
+fi
+
+subcmd="$1"
+shift || true
+
+case "$subcmd" in
+  branches)
+    _gitx_branches
+    ;;
+
+  head-branch)
+    _gitx_head_branch
+    ;;
+
+  cnb)
+    branch="${usage_branch:-${1:-}}"
+    if [[ -z "$branch" ]]; then
+      echo "Usage: gitx cnb <branch-name>" >&2
+      exit 1
+    fi
+    git checkout -b "$branch"
+    ;;
+
+  nb)
+    branch="${usage_branch:-${1:-}}"
+    if [[ -z "$branch" ]]; then
+      echo "Usage: gitx nb <branch-name>" >&2
+      exit 1
+    fi
+    git fetch origin 2>/dev/null || true
+    main_b=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@' || echo "main")
+    git checkout -b "$branch" "origin/$main_b" 2>/dev/null || git checkout -b "$branch"
+    ;;
+
+  clear-merged)
+    current=$(_gitx_head_branch)
+    list=$(git branch --no-color --merged 2>/dev/null | grep -vE "^\*|^${current}$|^main$|^master$|^develop$" | sed 's/^[[:space:]]*//' || true)
+    if [[ -n "$list" ]]; then
+      echo "$list" | xargs -n1 git branch -d 2>/dev/null || true
+      _log_info "Cleared merged branches"
+    fi
+    ;;
+
+  clear-gone)
+    git fetch --prune 2>/dev/null || true
+    list=$(git branch -vv 2>/dev/null | grep ': gone]' | awk '{print $1}' || true)
+    if [[ -n "$list" ]]; then
+      echo "$list" | xargs -n1 git branch -D 2>/dev/null || true
+      _log_info "Cleared gone branches"
+    fi
+    ;;
+
+  remote-branches)
+    remote="${usage_remote:-${1:-origin}}"
+    git branch -a 2>/dev/null | grep "remotes/${remote}/" | cut -f3 -d'/' || true
+    ;;
+
+  root-commit)
+    _gitx_root_commit
+    ;;
+
+  uu)
+    git pull --rebase origin main 2>/dev/null || true
+    ;;
+
+  uup)
+    git pull --rebase upstream main 2>/dev/null || true
+    ;;
+
+  p)
+    current=$(_gitx_head_branch)
+    git push -v origin "$current" 2>/dev/null || true
+    ;;
+
+  pf)
+    git push --force-with-lease 2>/dev/null || true
+    ;;
+
+  pa)
+    git push --all 2>/dev/null || true
+    ;;
+
+  pt)
+    git push --tags 2>/dev/null || true
+    ;;
+
+  pc)
+    current=$(_gitx_head_branch)
+    git push --set-upstream origin "$current" 2>/dev/null || true
+    ;;
+
+  pp)
+    current=$(_gitx_head_branch)
+    git pull origin "$current" && git push origin "$current"
+    ;;
+
+  rebase-from)
+    commit="${usage_commit:-${1:-HEAD}}"
+    git rebase --autostash --interactive --stat "${commit}^"
+    ;;
+
+  edit)
+    commit="${usage_commit:-${1:-HEAD}}"
+    GIT_SEQUENCE_EDITOR='sed -i -e 1s/^pick/edit/' git rebase --autostash --interactive --stat "${commit}^"
+    ;;
+
+  drop)
+    commit="${usage_commit:-${1:-HEAD}}"
+    GIT_SEQUENCE_EDITOR='sed -i -e 1s/^pick/drop/' git rebase --autostash --interactive --stat "${commit}^"
+    ;;
+
+  reword)
+    commit="${usage_commit:-${1:-HEAD}}"
+    GIT_SEQUENCE_EDITOR='sed -i -e 1s/^pick/reword/' git rebase --autostash --interactive --stat "${commit}^"
+    ;;
+
+  fix-root)
+    c=$(_gitx_root_commit)
+    git commit --no-verify --fixup "$c" && GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i --root
+    ;;
+
+  fix)
+    commit="${usage_commit:-${1:-HEAD}}"
+    c=$(git rev-parse "$commit" 2>/dev/null || echo "HEAD")
+    git commit --no-verify --fixup "$c" && GIT_SEQUENCE_EDITOR=: git rebase --autosquash -i "${c}^"
+    ;;
+
+  fixup)
+    commit="${usage_commit:-${1:-HEAD}}"
+    git commit --no-verify --fixup "$commit"
+    ;;
+
+  squash)
+    commit="${usage_commit:-${1:-HEAD}}"
+    git commit --squash "$commit" --no-verify
+    ;;
+
+  fix-all)
+    commit="${usage_commit:-${1:-HEAD}}"
+    git add . && git commit --no-verify --fixup "$commit"
+    ;;
+
+  squash-all)
+    commit="${usage_commit:-${1:-HEAD}}"
+    git add . && git commit --squash "$commit" --no-verify
+    ;;
+
+  lol|fzl|fzlog)
+    if command -v xc-git &>/dev/null; then
+      exec xc-git log-fzf "$@"
+    else
+      git log --oneline --graph --color=always
+    fi
+    ;;
+
+  fzb)
+    _gitx_branches | fzf --ansi --header="Pick branch:"
+    ;;
+
+  fza)
+    git status -s | fzf -m | awk '{print $2}' | xargs git add
+    ;;
+
+  fzu)
+    git status -s | fzf -m | awk '{print $2}' | xargs git restore
+    ;;
+
+  fzus)
+    git status -s | fzf -m | awk '{print $2}' | xargs git restore --staged
+    ;;
+
+  fzc)
+    branch=$(_gitx_branches | fzf)
+    [[ -n "$branch" ]] && git checkout "$branch"
+    ;;
+
+  grep-commit)
+    grep -oE '[a-f0-9]{7}' | cut -d' ' -f1 | tr -d '\n'
+    ;;
+
+  tail)
+    if [[ $# -gt 0 ]]; then
+      echo "$*" | rev | cut -d' ' -f1 | rev
+    else
+      rev | cut -d' ' -f1 | rev
+    fi
+    ;;
+
+  grep-branch)
+    sed 's/^..//g' | rev | cut -d' ' -f1 | rev
+    ;;
+
+  strip)
+    [[ -n "${1:-}" ]] && echo "$1" | cut -d' ' -f2
+    ;;
+
+  preview)
+    [[ -n "${1:-}" ]] && git diff --color=always -- "$(echo "$1" | cut -d' ' -f2)" 2>/dev/null || cat "$(echo "$1" | cut -d' ' -f2)" 2>/dev/null
+    ;;
+
+  *)
+    usage zsh "${0:a}" --help >&2
+    exit 1
+    ;;
+esac
