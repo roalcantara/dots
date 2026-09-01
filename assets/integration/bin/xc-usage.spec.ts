@@ -66,16 +66,16 @@ describe("xc-usage", () => {
       expect(out).toContain("-h, --help");
     });
 
-    it("resolves a Zsh function name (gen) when FPATH is set", () => {
-      const r = Bun.spawnSync(["zsh", xcUsage, "gen"], {
+    it("resolves a Zsh function name when FPATH is set", () => {
+      const r = Bun.spawnSync(["zsh", xcUsage, "dummy-func"], {
         stdout: "pipe",
         stderr: "pipe",
-        env: { ...process.env, FPATH: zshFunctionsDir },
+        env: { ...process.env, FPATH: fixtures },
       });
       expect(r.exitCode).toBe(0);
       const out = new TextDecoder().decode(r.stdout);
-      expect(out).toContain("Manage gen");
-      expect(out).toContain("gen [options]");
+      expect(out).toContain("dummy-func");
+      expect(out).toContain("dummy-func [options]");
     });
 
     it("exits 1 for unresolvable target", () => {

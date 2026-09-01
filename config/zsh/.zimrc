@@ -27,13 +27,18 @@ zmodule joke/zim-starship --if-command starship --if '[[ -z "$ZSH_MINIMAL_TERMIN
 # Completions should be configured before compinit, as stated in the zsh-completions manual installation guide.
 zmodule zchee/zsh-completions --fpath src/zsh --fpath src/macOS --fpath src/go
 zmodule $HOME/.config/zsh/opt --fpath completions
-zmodule $HOME/.config/zsh/etc --fpath functions
+# Zsh functions (guarded if non-empty)
+if [[ -d "$HOME/.config/zsh/etc/functions" ]] && [[ -n "$(/bin/ls -A "$HOME/.config/zsh/etc/functions" 2>/dev/null)" ]]; then
+  zmodule $HOME/.config/zsh/etc --fpath functions
+fi
 # Skip completion module if compinit was already initialized (e.g., by Flox)
 if ! (( ${+functions[_main_complete]} )); then
   zmodule completion
 fi
 # Ensure that any other plugins that use compdef are loaded after zmodule completion.
-zmodule $HOME/.config/zsh/etc --autoload "$(/bin/ls $HOME/.config/zsh/etc/functions | tr '\n' ' ')"
+if [[ -d "$HOME/.config/zsh/etc/functions" ]] && [[ -n "$(/bin/ls -A "$HOME/.config/zsh/etc/functions" 2>/dev/null)" ]]; then
+  zmodule $HOME/.config/zsh/etc --autoload "$(/bin/ls $HOME/.config/zsh/etc/functions | tr '\n' ' ')"
+fi
 zmodule g-plane/pnpm-shell-completion --if-command pnpm --on-pull './zplug.zsh'
 zmodule MenkeTechnologies/zsh-cargo-completion --if-command cargo
 zmodule lukechilds/zsh-better-npm-completion --if-command npm

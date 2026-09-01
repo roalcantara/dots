@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+#? License RIT (Robot Institute of Technology)
+
+##? dummy-func - Test fixture Zsh function
+##?
+##? Usage:
+##?   dummy-func [options] <args...>
+##?   dummy-func -h | --help
+##?
+##? Arguments:
+##?   args    Positional arguments
+##?
+##? Options:
+##?   -h, --help    Show this screen
+##?
+##? Examples:
+##?   dummy-func -h

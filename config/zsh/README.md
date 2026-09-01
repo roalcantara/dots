@@ -8,13 +8,11 @@ under `config/zsh/etc/functions/`.
 Some functions belong exclusively on `$fpath`; others have moved to `config/bin/`.
 See [config/bin/README.md](../bin/README.md) for the PATH helpers.
 
-| Status        | Examples           | Notes                                          |
-| ------------- | ------------------ | ---------------------------------------------- |
-| **Zsh-only**  | `gen`, `gitx`, `psc`, `osx` | Autoloaded from `$fpath`; never migrate to bin |
-| **Migrated**  | `puts` → `xc-puts`, `toast` → `xc-toast` | Live in `config/bin/`; fpath copies deleted    |
+| Status        | Examples                                                                              | Notes                                       |
+| ------------- | ------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Migrated**  | `barrel`, `recase`, `toast`, `yw`, `keyring`, `psc`, `pss`, `gen`, `zsys`, `dots`, `osx`, `gitx` | Ported to `config/bin/` with Usage CLI & Gum |
 
-**`gen`** stays on `$fpath` forever — it generates completions from external
-commands and is not a candidate for `config/bin`.
+All 12 legacy shell functions (`barrel`, `recase`, `toast`, `yw`, `keyring`, `psc`, `pss`, `gen`, `zsys`, `dots`, `osx`, `gitx`) have been migrated to standalone executable tools in `config/bin/` with `#USAGE` headers and `gum` UX primitives.
 
 ## Help conventions
 
@@ -109,9 +107,7 @@ fi
 
 ## Migrated to bin
 
-`puts` and `toast` have moved from `config/zsh/etc/functions/` to `config/bin/` as
-`xc-puts` and `xc-toast`. Use `command xc-puts` or `xc-toast` directly — no autoload
-needed. `gen` is **not** migrated and stays on `$fpath`.
+All legacy shell functions (`barrel`, `recase`, `toast`, `yw`, `keyring`, `psc`, `pss`, `gen`, `zsys`, `dots`, `osx`, `gitx`, `puts`) have been ported to `config/bin/` as standalone scripts using the Usage CLI shebang and Charm Gum UX primitives. Legacy files under `config/zsh/etc/functions/` have been removed.
 
 ## Authoring checklist
 
