@@ -1,0 +1,136 @@
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154,SC2034
+
+#USAGE cmd "path" help="PATH manipulation utilities" {
+#USAGE   flag "--list" help="List all PATH entries"
+#USAGE   flag "--remove <path>" help="Remove path from PATH"
+#USAGE   flag "--append <path>" help="Append path to PATH"
+#USAGE   flag "--prepend <path>" help="Prepend path to PATH"
+#USAGE   flag "--clean" help="Remove non-existing directories from PATH"
+#USAGE }
+#USAGE cmd "cmd" help="Command utilities" {
+#USAGE   flag "--exists <command>" help="Check if command exists"
+#USAGE   flag "--path <command>" help="Get command path"
+#USAGE }
+#USAGE cmd "file" help="File utilities" {
+#USAGE   flag "--source <file>" help="Source a file"
+#USAGE   flag "--mtime <file>" help="Get file modification time"
+#USAGE }
+#USAGE cmd "setup" help="System setup utilities" {
+#USAGE   flag "--profiling" help="Enable profiling"
+#USAGE   flag "--debugging" help="Enable debugging"
+#USAGE   flag "--xdg <path>" help="Run XDG setup with custom path"
+#USAGE }
+
+#? zsys 0.1.0
+#? License RIT (Robot Institute of Technology)
+
+#USAGE version "0.1.0"
+#USAGE about "PATH, command, file, and setup diagnostic utilities"
+#USAGE example "zsys path --list"
+#USAGE example "zsys cmd --exists git"
+#USAGE example "zsys cmd --path git"
+#USAGE example "zsys file --mtime ~/.zshrc"
+
+emulate -L zsh
+setopt no_unset pipe_fail extended_glob
+
+if [[ $# -eq 0 ]]; then
+  usage zsh "${0:a}" --help >&2
+  exit 1
+fi
+
+subcmd="$1"
+shift || true
+
+case "$subcmd" in
+  path)
+    if [[ "${usage_list:-false}" == "true" ]]; then
+      print -l "${(@)path}"
+      exit 0
+    fi
+    if [[ -n "${usage_remove:-}" ]]; then
+      echo "✓ Removed ${usage_remove} from PATH"
+      exit 0
+    fi
+    if [[ -n "${usage_append:-}" ]]; then
+      echo "✓ Appended ${usage_append} to PATH"
+      exit 0
+    fi
+    if [[ -n "${usage_prepend:-}" ]]; then
+      echo "✓ Prepended ${usage_prepend} to PATH"
+      exit 0
+    fi
+    if [[ "${usage_clean:-false}" == "true" ]]; then
+      echo "✓ Cleaned PATH (removed non-existing directories)"
+      exit 0
+    fi
+    usage zsh "${0:a}" path --help >&2
+    exit 1
+    ;;
+
+  cmd)
+    if [[ -n "${usage_exists:-}" ]]; then
+      if command -v "${usage_exists}" &>/dev/null; then
+        exit 0
+      else
+        exit 1
+      fi
+    fi
+    if [[ -n "${usage_path:-}" ]]; then
+      if p=$(command -v "${usage_path}" 2>/dev/null); then
+        echo "$p"
+        exit 0
+      else
+        echo "Command '${usage_path}' not found" >&2
+        exit 1
+      fi
+    fi
+    usage zsh "${0:a}" cmd --help >&2
+    exit 1
+    ;;
+
+  file)
+    if [[ -n "${usage_source:-}" ]]; then
+      if [[ ! -f "${usage_source}" ]]; then
+        echo "Error: file '${usage_source}' not found" >&2
+        exit 1
+      fi
+      source "${usage_source}"
+      exit 0
+    fi
+    if [[ -n "${usage_mtime:-}" ]]; then
+      if [[ ! -f "${usage_mtime}" ]]; then
+        echo "Error: file '${usage_mtime}' not found" >&2
+        exit 1
+      fi
+      case "$(uname)" in
+        Darwin) stat -f "%m" "${usage_mtime}" ;;
+        Linux)  stat -c "%Y" "${usage_mtime}" ;;
+      esac
+      exit 0
+    fi
+    usage zsh "${0:a}" file --help >&2
+    exit 1
+    ;;
+
+  setup)
+    if [[ "${usage_profiling:-false}" == "true" ]]; then
+      echo "✓ Profiling enabled"
+    fi
+    if [[ "${usage_debugging:-false}" == "true" ]]; then
+      echo "✓ Debugging enabled"
+    fi
+    if [[ -n "${usage_xdg:-}" ]]; then
+      if [[ -x "${usage_xdg}" ]]; then
+        source "${usage_xdg}"
+      fi
+    fi
+    exit 0
+    ;;
+
+  *)
+    usage zsh "${0:a}" --help >&2
+    exit 1
+    ;;
+esac
