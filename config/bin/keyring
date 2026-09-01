@@ -1,0 +1,137 @@
+#!/usr/bin/env -S usage bash
+# shellcheck shell=bash disable=SC2154,SC2034
+
+#USAGE cmd "get" help="Get the value of specified key" {
+#USAGE   arg "<key>" help="Key name"
+#USAGE }
+#USAGE cmd "set" help="Set key value" {
+#USAGE   arg "<key>" help="Key name"
+#USAGE   arg "[value]" help="Secret value (prompts if omitted)"
+#USAGE }
+#USAGE cmd "rm" help="Delete specified key" {
+#USAGE   arg "<key>" help="Key name"
+#USAGE }
+#USAGE cmd "list" help="List all keys stored in the keyring"
+
+#? keyring 0.1.0
+#? License RIT (Robot Institute of Technology)
+
+#USAGE version "0.1.0"
+#USAGE about "System keyring manager wrapping macOS security and Linux secret-tool"
+#USAGE example "keyring get my-key"
+#USAGE example "keyring set my-key secret"
+#USAGE example "keyring rm my-key"
+#USAGE example "keyring list"
+
+set -euo pipefail
+
+KEYRING_SERVICE="dots-keyring"
+
+_has_cmd() {
+  command -v "$1" &>/dev/null
+}
+
+if [[ $# -eq 0 ]]; then
+  usage bash "${BASH_SOURCE[0]}" --help >&2
+  exit 1
+fi
+
+cmd="$1"
+shift || true
+
+case "$cmd" in
+  get)
+    key="${usage_key:-${1:-}}"
+    if [[ -z "$key" ]]; then
+      echo "Error: 'get' command requires a key" >&2
+      exit 1
+    fi
+    if _has_cmd security; then
+      security find-generic-password -s "$KEYRING_SERVICE" -a "$key" -w 2>/dev/null || {
+        echo "Error: Key '$key' not found" >&2
+        exit 1
+      }
+    elif _has_cmd secret-tool; then
+      secret-tool lookup service "$KEYRING_SERVICE" account "$key" 2>/dev/null || {
+        echo "Error: Key '$key' not found" >&2
+        exit 1
+      }
+    else
+      echo "Error: No keyring backend available" >&2
+      exit 1
+    fi
+    ;;
+
+  set)
+    key="${usage_key:-${1:-}}"
+    value="${usage_value:-${2:-}}"
+    if [[ -z "$key" ]]; then
+      echo "Error: 'set' command requires a key" >&2
+      exit 1
+    fi
+    if [[ -z "$value" ]]; then
+      if command -v gum &>/dev/null && [[ -t 0 && -t 1 ]]; then
+        value=$(gum input --password --placeholder "Enter secret value for $key")
+      elif [[ -t 0 ]]; then
+        read -r -s -p "Enter secret value for $key: " value
+        echo
+      fi
+      if [[ -z "$value" ]]; then
+        echo "Error: Secret value cannot be empty" >&2
+        exit 1
+      fi
+    fi
+    if _has_cmd security; then
+      security delete-generic-password -s "$KEYRING_SERVICE" -a "$key" 2>/dev/null || true
+      security add-generic-password -s "$KEYRING_SERVICE" -a "$key" -w "$value"
+      echo "Key '$key' set successfully"
+    elif _has_cmd secret-tool; then
+      echo "$value" | secret-tool store --label="$key" service "$KEYRING_SERVICE" account "$key"
+      echo "Key '$key' set successfully"
+    else
+      echo "Error: No keyring backend available" >&2
+      exit 1
+    fi
+    ;;
+
+  rm)
+    key="${usage_key:-${1:-}}"
+    if [[ -z "$key" ]]; then
+      echo "Error: 'rm' command requires a key" >&2
+      exit 1
+    fi
+    if _has_cmd security; then
+      security delete-generic-password -s "$KEYRING_SERVICE" -a "$key" 2>/dev/null || {
+        echo "Error: Key '$key' not found" >&2
+        exit 1
+      }
+      echo "Key '$key' removed successfully"
+    elif _has_cmd secret-tool; then
+      secret-tool clear service "$KEYRING_SERVICE" account "$key" 2>/dev/null || {
+        echo "Error: Key '$key' not found" >&2
+        exit 1
+      }
+      echo "Key '$key' removed successfully"
+    else
+      echo "Error: No keyring backend available" >&2
+      exit 1
+    fi
+    ;;
+
+  list)
+    if _has_cmd security; then
+      security dump-keychain | grep -A 1 "svce.*$KEYRING_SERVICE" | grep "acct" | sed 's/.*"acct"<blob>="\(.*\)".*/\1/' | sort
+    elif _has_cmd secret-tool; then
+      echo "Warning: Listing keys on Linux requires iteration through possible keys" >&2
+      exit 1
+    else
+      echo "Error: No keyring backend available" >&2
+      exit 1
+    fi
+    ;;
+
+  *)
+    usage bash "${BASH_SOURCE[0]}" --help >&2
+    exit 1
+    ;;
+esac
