@@ -1,0 +1,68 @@
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154
+
+#? toast 0.1.0
+#? License RIT (Robot Institute of Technology)
+
+#USAGE version "0.1.0"
+#USAGE about "Display a terminal toast notification overlay"
+#USAGE arg "[message]" help="The message to display"
+#USAGE arg "[duration_pos]" help="The duration of the toast in seconds"
+#USAGE arg "[type_pos]" help="The type of toast to display (info|success|error|warning)"
+#USAGE flag "-d --duration <duration>" help="Duration in seconds" default="3"
+#USAGE flag "-t --type <type>" help="Type of toast (info|success|error|warning)" default="info"
+#USAGE example "toast 'Hello, world!'"
+#USAGE example "toast 'Hello, world!' 5"
+#USAGE example "toast 'Hello, world!' 5 error"
+#USAGE example "toast 'Process started' -d 3 -t info"
+
+emulate -L zsh
+setopt no_unset pipe_fail
+
+message="${usage_message:-}"
+
+if [[ -z "$message" ]]; then
+  usage zsh "${0:a}" --help >&2
+  exit 1
+fi
+
+duration="${usage_duration_pos:-${usage_duration:-3}}"
+type="${usage_type_pos:-${usage_type:-info}}"
+
+bg=""
+fg=""
+icon=""
+case "$type" in
+  success)
+    bg="\e[42m" fg="\e[37m" icon="✓"
+    ;;
+  error)
+    bg="\e[41m" fg="\e[37m" icon="✗"
+    ;;
+  warning)
+    bg="\e[43m" fg="\e[30m" icon="!"
+    ;;
+  *) # info
+    bg="\e[44m" fg="\e[37m" icon="i"
+    ;;
+esac
+
+reset="\e[0m"
+
+if [[ ! -t 1 || "${TERM:-}" == "dumb" ]]; then
+  print -r -- "${message}"
+  exit 0
+fi
+
+tput sc 2>/dev/null || true
+tput cup 0 $(($(tput cols 2>/dev/null || echo 80) - ${#message} - 6)) 2>/dev/null || true
+echo -n "${bg}${fg} ${icon} ${message} ${reset}"
+tput rc 2>/dev/null || true
+
+(
+  sleep "$duration"
+  tput sc 2>/dev/null || true
+  tput cup 0 $(($(tput cols 2>/dev/null || echo 80) - ${#message} - 6)) 2>/dev/null || true
+  printf ' %.0s' $(seq 1 $((${#message} + 6)))
+  tput rc 2>/dev/null || true
+) &!
