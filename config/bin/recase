@@ -1,0 +1,277 @@
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154,SC2004
+
+#? recase 0.1.0
+#? License RIT (Robot Institute of Technology)
+
+#USAGE version "0.1.0"
+#USAGE about "Rename files/directories to a target naming convention"
+#USAGE arg "[path]" help="File, symlink, or directory to process"
+#USAGE flag "-f --files" help="Rename files/symlinks (folder mode only)"
+#USAGE flag "-d --dirs" help="Rename directories (folder mode only)"
+#USAGE flag "-r --recursive" help="Recurse into subdirs (folder mode only)"
+#USAGE flag "--camel" help="twoWords"
+#USAGE flag "--pascal" help="TwoWords"
+#USAGE flag "--flat" help="twowords"
+#USAGE flag "--snake" help="two_words"
+#USAGE flag "--kebab" help="two-words"
+#USAGE flag "--dot" help="two.words"
+#USAGE flag "--joined" help="twowords"
+#USAGE flag "--lower" help="two_words"
+#USAGE flag "--upper" help="TWO_WORDS"
+#USAGE flag "--title" help="Two_Words"
+#USAGE example "recase MyFile.ts --kebab"
+#USAGE example "recase src/ -f -r --snake"
+
+emulate -L zsh
+setopt no_unset pipe_fail extended_glob
+
+target="${usage_path:-}"
+
+if [[ -z "$target" ]]; then
+  usage zsh "${0:a}" --help >&2
+  exit 1
+fi
+
+for _rc_p in /usr/bin /bin; do
+  [[ ":$PATH:" == *":$_rc_p:"* ]] || PATH="$_rc_p:$PATH"
+done
+RC_MV=$(command -v mv 2>/dev/null) || RC_MV=""
+[[ -n "$RC_MV" && -x "$RC_MV" ]] || RC_MV=/bin/mv
+[[ -x "$RC_MV" ]] || RC_MV=/usr/bin/mv
+
+HAS_GUM=false
+if [[ -t 1 && "${TERM:-}" != "dumb" ]]; then
+  ( command -v gum >/dev/null && gum --version >/dev/null 2>&1 ) && HAS_GUM=true
+fi
+
+_info() {
+  if $HAS_GUM; then
+    command gum log --level info \
+      "$(command gum style --faint "$1")" "$(command gum style --foreground 212 '→')" "$(command gum style --bold "$2")"
+  else
+    printf '  rename  %s  →  %s\n' "$1" "$2"
+  fi
+}
+_warn() {
+  if $HAS_GUM; then
+    command gum log --level warn "skip $(command gum style --faint "$1")  ($2)"
+  else
+    printf '  skip  %s  (%s)\n' "$1" "$2" >&2
+  fi
+}
+_err() {
+  if $HAS_GUM; then
+    command gum log --level error "$*"
+  else
+    printf 'recase: error: %s\n' "$*" >&2
+  fi
+  exit 1
+}
+
+_rc_split() {
+  local input="$1" spaced="$1"
+  setopt local_options
+  unsetopt no_unset
+  spaced="${spaced//(#b)([a-z0-9])([A-Z])/${match[1]} ${match[2]}}"
+  spaced="${spaced//(#b)([A-Z]##)([A-Z][a-z]##)/${match[1]} ${match[2]}}"
+  setopt no_unset
+  spaced="${spaced:l}"
+  reply=( ${(ps: :)${spaced//[^a-z0-9]/ }} )
+  reply=( ${reply:#} )
+  local -a new_reply
+  local i=1
+  while (( i <= ${#reply[@]} )); do
+    if (( i < ${#reply[@]} )) && [[ ${#reply[i]} -eq 1 && ${reply[i]} == [a-z] ]]; then
+      new_reply+=( "${reply[i]}${reply[i+1]}" )
+      (( i += 2 ))
+    else
+      new_reply+=( "${reply[i]}" )
+      (( i += 1 ))
+    fi
+  done
+  reply=( "${new_reply[@]}" )
+}
+
+_rc_apply_case() {
+  case "$1" in
+    lower) printf '%s' "${2:l}" ;;
+    upper) printf '%s' "${2:u}" ;;
+    title) printf '%s' "${(C)2}" ;;
+  esac
+}
+
+_rc_camel() {
+  local -a w; _rc_split "$1"; w=("$reply[@]")
+  local result="${w[1]}" word
+  for word in "${w[@]:1}"; do result+="${(C)word}"; done
+  printf '%s' "$result"
+}
+
+_rc_convert_stem() {
+  local stem="$1" sep="$2" casemod="$3"
+  local -a w; _rc_split "$stem"; w=("$reply[@]")
+  (( ${#w} == 0 )) && { printf '%s' "$stem"; return }
+
+  local parts=() word result=""
+  for word in "${w[@]}"; do
+    parts+=( "$(_rc_apply_case "$casemod" "$word")" )
+  done
+  for word in "${parts[@]}"; do
+    [[ -n "$result" ]] && result+="$sep"
+    result+="$word"
+  done
+  printf '%s' "$result"
+}
+
+_rc_convert() {
+  local name="$1" sep="$2" casemod="$3" is_camel="$4"
+  local stem ext dotfile_prefix=""
+
+  if [[ "$name" == .?* && "$name" != ..* ]]; then
+    dotfile_prefix="."; name="${name#.}"
+  fi
+
+  if   [[ "$name" == *.*.* ]]; then stem="${name%%.*}"; ext=".${name#*.}"
+  elif [[ "$name" == *.*   ]]; then stem="${name%.*}";  ext=".${name##*.}"
+  else                               stem="$name";       ext=""
+  fi
+
+  [[ -z "$stem" ]] && { printf '%s' "${dotfile_prefix}${name}"; return }
+
+  local new_stem
+  if [[ "$is_camel" == true ]]; then
+    new_stem=$(_rc_camel "$stem")
+  else
+    new_stem=$(_rc_convert_stem "$stem" "$sep" "$casemod")
+  fi
+
+  printf '%s' "${dotfile_prefix}${new_stem}${ext}"
+}
+
+_info_entry() {
+  local path="$1" sep="$2" casemod="$3" is_camel="$4"
+  local dir="${path:h}" base="${path:t}"
+  local new_base new_path
+
+  new_base=$(_rc_convert "$base" "$sep" "$casemod" "$is_camel")
+  [[ "$base" == "$new_base" ]] && return 0
+
+  new_path="${dir}/${new_base}"
+
+  if [[ -e "$new_path" && "$new_path" != "$path" ]]; then
+    if [[ "$path" -ef "$new_path" ]]; then
+      local temp_path="${dir}/.recase_$$_${new_base}"
+      _info "$path" "$new_path"
+      "$RC_MV" -- "$path" "$temp_path" && "$RC_MV" -- "$temp_path" "$new_path" || { _warn "$path" "mv failed"; return 1 }
+      return 0
+    fi
+    _warn "$path" "target exists"
+    return 0
+  fi
+
+  _info "$path" "$new_path"
+  "$RC_MV" -- "$path" "$new_path" || { _warn "$path" "mv failed"; return 1 }
+}
+
+_rc_collect() {
+  local root="$1" do_files="$2" do_dirs="$3" recursive="$4"
+  local -a paths
+
+  if [[ "$recursive" == true ]]; then
+    if   [[ "$do_files" == true && "$do_dirs" == true ]]; then
+      paths=( "$root"/**/*(-.) "$root"/**/*(/) )
+    elif [[ "$do_files" == true ]]; then
+      paths=( "$root"/**/*(-.) )
+    else
+      paths=( "$root"/**/*(/) )
+    fi
+  else
+    if   [[ "$do_files" == true && "$do_dirs" == true ]]; then
+      paths=( "$root"/*(-.) "$root"/*(/N) )
+    elif [[ "$do_files" == true ]]; then
+      paths=( "$root"/*(-.) )
+    else
+      paths=( "$root"/*(/N) )
+    fi
+  fi
+
+  paths=( ${(On)paths} )
+  paths=( ${paths:#$root} )
+  reply=("$paths[@]")
+}
+
+do_files="${usage_files:-false}"
+do_dirs="${usage_dirs:-false}"
+recursive="${usage_recursive:-false}"
+sep=""
+casemod=""
+is_camel=false
+sep_set=false
+case_set=false
+
+if [[ "${usage_camel:-false}" == "true" ]]; then
+  is_camel=true; sep_set=true; case_set=true
+fi
+if [[ "${usage_pascal:-false}" == "true" ]]; then
+  sep=""; casemod="title"; sep_set=true; case_set=true
+fi
+if [[ "${usage_flat:-false}" == "true" ]]; then
+  sep=""; casemod="lower"; sep_set=true; case_set=true
+fi
+if [[ "${usage_snake:-false}" == "true" ]]; then
+  sep="_"; sep_set=true
+fi
+if [[ "${usage_kebab:-false}" == "true" ]]; then
+  sep="-"; sep_set=true
+fi
+if [[ "${usage_dot:-false}" == "true" ]]; then
+  sep="."; sep_set=true
+fi
+if [[ "${usage_joined:-false}" == "true" ]]; then
+  sep=""; sep_set=true
+fi
+if [[ "${usage_lower:-false}" == "true" ]]; then
+  casemod="lower"; case_set=true
+fi
+if [[ "${usage_upper:-false}" == "true" ]]; then
+  casemod="upper"; case_set=true
+fi
+if [[ "${usage_title:-false}" == "true" ]]; then
+  if [[ "$sep_set" == false && "$case_set" == false ]]; then
+    sep=""; casemod="title"; sep_set=true; case_set=true
+  else
+    casemod="title"; case_set=true
+  fi
+fi
+
+if [[ "$sep_set" == false && "$case_set" == false ]]; then
+  _err "no convention specified - try --snake, --snake --upper, or --camel"
+fi
+[[ "$sep_set"  == false && "$is_camel" == false ]] && sep="_"
+[[ "$case_set" == false && "$is_camel" == false ]] && casemod="lower"
+
+if [[ ! -e "$target" && ! -L "$target" ]]; then
+  _err "path not found: $target"
+fi
+
+if [[ -f "$target" || -L "$target" ]]; then
+  _info_entry "$target" "$sep" "$casemod" "$is_camel"
+  exit 0
+fi
+
+if [[ ! -d "$target" ]]; then
+  _err "not a file, symlink, or directory: $target"
+fi
+
+[[ "$do_files" == false && "$do_dirs" == false ]] && do_files=true
+
+local -a paths
+_rc_collect "$target" "$do_files" "$do_dirs" "$recursive"
+paths=("$reply[@]")
+
+local p
+for p in "${paths[@]}"; do
+  [[ -e "$p" || -L "$p" ]] || continue
+  _info_entry "$p" "$sep" "$casemod" "$is_camel"
+done
