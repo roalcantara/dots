@@ -1,0 +1,56 @@
+#!/usr/bin/env -S usage bash
+# shellcheck shell=bash disable=SC2154
+
+#? barrel 0.1.0
+#? License RIT (Robot Institute of Technology)
+
+#USAGE version "0.1.0"
+#USAGE about "Automatically generate and maintain barrel (index) exports"
+#USAGE arg "[folder]" help="Target folder containing modules"
+#USAGE flag "-r --recursive" help="Include index exports from subdirectories"
+#USAGE flag "-t --ts" help="Use .ts extension for exports (default)" default="true"
+#USAGE flag "-j --js" help="Use .js extension for exports"
+#USAGE example "barrel ./src"
+#USAGE example "barrel ./src -r"
+
+set -euo pipefail
+
+FOLDER="${usage_folder:-}"
+RECURSIVE="${usage_recursive:-false}"
+EXT="ts"
+if [[ "${usage_js:-false}" == "true" ]]; then
+  EXT="js"
+fi
+
+if [[ -z "$FOLDER" ]]; then
+  usage bash "${BASH_SOURCE[0]}" --help >&2
+  exit 1
+fi
+
+if [[ ! -d "$FOLDER" ]]; then
+  echo "Error: Directory '$FOLDER' does not exist" >&2
+  exit 1
+fi
+
+_log_info() {
+  if command -v gum &>/dev/null && [[ -t 1 && "${TERM:-}" != "dumb" ]]; then
+    gum log --level info "$1"
+  else
+    echo "✔ [INFO] $1"
+  fi
+}
+
+INDEX_FILE="$FOLDER/index.$EXT"
+EXPORTS=()
+
+while IFS= read -r f; do
+  [[ -z "$f" ]] && continue
+  base=$(basename "$f" | sed -E 's/\.(ts|js)$//')
+  [[ "$base" == "index" ]] && continue
+  EXPORTS+=("export * from './$base.$EXT'")
+done < <(find "$FOLDER" -maxdepth 1 -type f \( -name "*.ts" -o -name "*.js" \) ! -name "index.*" ! -name "*.spec.*" ! -name "*.test.*" ! -name "*.fixture.*" ! -name "*.mock.*" ! -name "*.stub.*" 2>/dev/null | sort)
+
+if [[ ${#EXPORTS[@]} -gt 0 ]]; then
+  printf "%s\n" "${EXPORTS[@]}" > "$INDEX_FILE"
+  _log_info "Saved barrel exports to $INDEX_FILE"
+fi
