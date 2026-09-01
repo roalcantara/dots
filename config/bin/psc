@@ -1,0 +1,52 @@
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154
+
+#? psc 0.1.0
+#? License RIT (Robot Institute of Technology)
+
+#USAGE version "0.1.0"
+#USAGE about "Copies the pass|gopass key value to clipboard"
+#USAGE arg "[key]" help="Secret path in gopass"
+#USAGE example "psc"
+#USAGE example "psc tools/bitly.com/token"
+
+emulate -L zsh
+setopt no_unset pipe_fail
+
+key="${usage_key:-}"
+
+_has_gum() {
+  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v gum >/dev/null 2>&1
+}
+
+_has_fzf() {
+  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v fzf >/dev/null 2>&1
+}
+
+if ! command -v gopass &>/dev/null; then
+  echo "Error: gopass is not installed" >&2
+  exit 1
+fi
+
+if [[ -z "$key" ]]; then
+  if [[ ! -t 1 ]]; then
+    echo "Error: key argument required in non-interactive environment" >&2
+    exit 1
+  fi
+  items=$(gopass ls --flat 2>/dev/null || true)
+  if [[ -z "$items" ]]; then
+    echo "No secrets found in gopass" >&2
+    exit 0
+  fi
+  if _has_gum; then
+    key=$(echo "$items" | gum filter --limit=1)
+  elif _has_fzf; then
+    key=$(echo "$items" | fzf)
+  else
+    echo "Error: interactive selection requires gum or fzf" >&2
+    exit 1
+  fi
+  [[ -z "$key" ]] && exit 0
+fi
+
+exec gopass show --clip "$key"
