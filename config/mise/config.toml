@@ -94,6 +94,16 @@ watchexec = "latest"
 usage = "latest"
 go = "1.25.6"
 "ubi:hadolint/hadolint" = "2.12.0"
+"pipx:commit-check" = "2.15.1"
+dprint = "0.56.1"
+hk = "1.51.0"
+biome = "2.5.5"
+ls-lint = "2.3.1"
+"aqua:jackchuka/mdschema" = "0.15.1"
+"aqua:fallow-rs/fallow" = "3.17.0"
+node = "26.7.0"
+bun = "1.4.0"
+cocogitto = "7.0.0"
 
 # Show the full command when executing tasks.
 # https://mise.jdx.dev/configuration/settings.html#task.show_full_cmd

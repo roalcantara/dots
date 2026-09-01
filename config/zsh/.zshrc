@@ -311,8 +311,10 @@ setopt prompt_subst
 
 # TERM {
   if [ "$TERM_PROGRAM" = "ghostty" ]; then
-    if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
+    if [[ -e GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration" ]]; then
       source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
+    elif [[ -e /Applications/Ghostty.app/Contents/Resources/ghostty/shell-integration/zsh/ghostty-integration ]]; then
+      source /Applications/Ghostty.app/Contents/Resources/ghostty/shell-integration/zsh/ghostty-integration
     fi
     export SNACKS_GHOSTTY=true
   elif [[ "$TERM_PROGRAM" == "vscode" ]] && _has_command code; then

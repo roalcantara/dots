@@ -493,7 +493,11 @@
     "*.jsx": "${capture}.js",
     "*.tsx": "${capture}.ts",
     "tsconfig.json": "tsconfig.*.json",
-    "package.json": "package-lock.json, .babelrc, .browserslistrc, .dockerignore, .editorconfig, .eslintignore, .eslintrc.*, .gitignore, .graphqlrc.*, .nvmrc, .prettierignore, .prettierrc.*, babel.config.json, cypress.json, jest.config.ts, jest.preset.js, nx.json, package.json, tsconfig.base.json, tsconfig.json, workspace.json, yarn.lock, vercel.json, netlify.toml, pnpm-lock.yaml, webpack.config.js, .prettierrc, .npmrc, CHANGELOG.md, LICENSE, .cursorrules, vitest.config.ts, raycast-env.d.ts, eslint.config.mjs, eslint.config.js, .pre-commit-config.yaml, .gitlint, bun.lockb, biome.jsonc, bun.lock, bunfig.toml, CHANGELOG.md, CLAUDE.md, Dockerfile, knip.jsonc, LICENSE, renovate.json5, .release-it.yml, .jscpd.json, .dependency-cruiser.cjs, .hadolint.yaml",
+    "package.json": "package-lock.json, .babelrc, .browserslistrc, .dockerignore, .editorconfig, .eslintignore, .eslintrc.*, .gitignore, .graphqlrc.*, .nvmrc, .prettierignore, .prettierrc.*, babel.config.json, cypress.json, jest.config.ts, jest.preset.js, nx.json, package.json, tsconfig.base.json, tsconfig.json, workspace.json, yarn.lock, vercel.json, netlify.toml, pnpm-lock.yaml, webpack.config.js, .prettierrc, .npmrc, CHANGELOG.md, LICENSE, .cursorrules, vitest.config.ts, raycast-env.d.ts, eslint.config.mjs, eslint.config.js, .pre-commit-config.yaml, .gitlint, bun.lockb, biome.jsonc, bun.lock, bunfig.toml, CHANGELOG.md, Dockerfile, knip.jsonc, LICENSE, renovate.json5, .release-it.yml, .jscpd.json, .dependency-cruiser.cjs, .hadolint.yaml",
+    "AGENTS.md": "CLAUDE.md, .mcp.json",
+    "mise.toml": "mise.*.toml, mise.lock",
+    "fallow.toml": "fallow-*.toml",
+    "hk.pkl": ".gitleaks.toml, .ls-lint.yml, .mdschema.yml, cog.toml, cchk.toml, dprint.jsonc, fallow.toml, biome.json, biome.jsonc",
     "Gemfile": "Gemfile.*",
     ".env": ".env.*",
     ".swcrc": ".swcrc.*",
@@ -872,7 +876,7 @@
   "markdown.copyFiles.destination": {
     "/assets/**/*": "images/${documentBaseName/(.).*/$1/}/"
   },
-  "extensions.autoUpdate": "onlyEnabledExtensions",
+  "extensions.autoUpdate": "on",
   "extensions.ignoreRecommendations": true,
   "extensions.supportNodeGlobalNavigator": true,
   "github.copilot.chat.editor.temporalContext.enabled": true,
@@ -987,7 +991,7 @@
     }
   },
   "[shellscript]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format",
+    "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file"
   },
@@ -1636,19 +1640,22 @@
   "nxConsole.disableFileWatching": true,
   "nxConsole.enableDebugLogging": true,
   "json.schemaDownload.trustedDomains": {
-    "https://schemastore.azurewebsites.net/": true,
-    "https://raw.githubusercontent.com/microsoft/vscode/": true,
-    "https://raw.githubusercontent.com/devcontainers/spec/": true,
-    "https://www.schemastore.org/": true,
-    "https://json.schemastore.org/": true,
-    "https://json-schema.org/": true,
+    "https://biomejs.dev": true,
     "https://developer.microsoft.com/json-schemas/": true,
-    "https://biomejs.dev": true
+    "https://dprint.dev/schemas/v0.json": true,
+    "https://json-schema.org/": true,
+    "https://json.schemastore.org/": true,
+    "https://raw.githubusercontent.com/devcontainers/spec/": true,
+    "https://raw.githubusercontent.com/microsoft/vscode/": true,
+    "https://react.doctor": true,
+    "https://schemastore.azurewebsites.net/": true,
+    "https://www.raycast.com/schemas/extension.json": true,
+    "https://www.schemastore.org/": true
   },
   "json.schemaDownload.enable": true,
   "mise.binPath": "/opt/homebrew/bin/mise",
   "[toml]": {
-    "editor.defaultFormatter": "mitchell8092.tombi",
+    "editor.defaultFormatter": "tombi-toml.tombi",
     "editor.formatOnSave": true
   },
   "typescript.experimental.useTsgo": false,
@@ -1666,7 +1673,7 @@
   "cursor.rpcFileLogger.enabled": true,
   "security.promptForLocalFileProtocolHandling": false,
   "window.autoDetectColorScheme": false,
-  "workbench.colorTheme": "Andromeda Night Dusk",
+  "workbench.colorTheme": "Bearded Theme Arc EolStorm",
   "terminal.integrated.enablePersistentSessions": false,
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "workbench.editor.enablePreview": false,
@@ -1680,5 +1687,8 @@
   ],
   "cucumber.glue": [
     "assets/features/**/*.ts"
-  ]
+  ],
+  "[pkl]": {
+    "editor.defaultFormatter": "Pkl.pkl-vscode"
+  }
 }

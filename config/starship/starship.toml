@@ -40,6 +40,7 @@ $git_state\
 $docker_context\
 $container\
 $package\
+$bun\
 $golang\
 $java\
 $kotlin\
@@ -80,7 +81,9 @@ style = "bold fg:#1a1b26 bg:#cba6f7"
 disabled = false
 
 [package]
-symbol = ' '
+# Shown when the current directory is the repository for a package, and shows its current version.
+# https://starship.rs/config/#package-version
+disabled = false
 
 [fill]
 symbol = ' '
@@ -129,6 +132,11 @@ disabled = false
 [kotlin]
 disabled = false
 symbol = '🅺 '
+
+[bun]
+# Shows the currently installed version of the bun JavaScript runtime
+# https://starship.rs/config/#bun
+disabled = false
 
 [shell]
 disabled = false
@@ -199,35 +207,6 @@ truncation_symbol = ''
 use_logical_path = true
 use_os_path_sep = true                                    # '/' for Linux/MacOS or other UNIX based systems; '\' for Windows
 
-# [directory.substitutions]
-# '.config'  ='󱜚'
-# 'Documents'=''
-# 'Downloads'=''
-# 'Music'    =''
-# 'Pictures' =''
-# '~'        =''
-# '/etc' =
-# '/tmp' =
-# '/var' =
-# '/root' =
-# '/mnt' =
-# '/usr' =
-# '/home' =
-# '/bin' =
-# '/boot' =
-# '/dev' =
-# '/init' =
-# '/lib' =
-# '/lib64' =
-# '/lost+found' =
-# '/media' =
-# '/opt' =
-# '/proc' =
-# '/run' =
-# '/sbin' =
-# '/srv' =
-# '/sys' =
-
 [time]
 disabled = false
 format = '[$time ]($style)'
@@ -243,11 +222,12 @@ symbol = ' '
 disabled = false
 force_display = false
 
+# The mise module shows the current mise health as reported by running mise doctor.
+# https://starship.rs/config/#mise
 [mise]
 disabled = false
 healthy_symbol = '󰕥'
 unhealthy_symbol = '󰒙'
-symbol = ''
 
 [jobs]
 disabled = false
@@ -257,7 +237,9 @@ symbol_threshold = 1
 style = 'bold bright-yellow dimmed blink'
 format = '[$number$symbol]($style) '
 
-# # Disables the custom module
-# # https://docs.warp.dev/terminal/appearance/prompt#starship-settings
-# [custom]
-# disabled = false
+# [custom.foo]
+# https://starship.rs/config/#example-86
+# command = 'echo foo' # shows output of command
+# detect_files = ['foo'] # can specify filters but wildcards are not supported
+# when = ''' test "$HOME" = "$PWD" '''
+# format = ' transcending [$output]($style)'

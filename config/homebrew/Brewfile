@@ -1,90 +1,162 @@
-#########################################################################
-# macOS GUI Applications via Homebrew                                   #
-# --------------------------------------------------------------------- #
-# This Brewfile works together with ~/.config/apps/gui-apps.conf       #
-# to provide cross-platform GUI app installation:                      #
-#   - macOS: Uses this Brewfile via `brew bundle`                      #
-#   - Linux: Reads gui-apps.conf and installs via flatpak/snap/apt     #
-# --------------------------------------------------------------------- #
-# Usage:                                                                #
-# $ brew bundle install --file ~/.config/homebrew/Brewfile             #
-# $ brew bundle check --file ~/.config/homebrew/Brewfile               #
-# $ brew bundle cleanup --force --file ~/.config/homebrew/Brewfile     #
-# --------------------------------------------------------------------- #
-# When adding new apps:                                                 #
-# 1. Add cask to this file                                              #
-# 2. Add mapping to ~/.config/apps/gui-apps.conf                        #
-# 3. Test on both macOS and Linux                                       #
-# --------------------------------------------------------------------- #
-# https://docs.brew.sh/Manpage#bundle-subcommand                        #
-#########################################################################
+# HOMEBREW BUNDLE CATALOG FOR DOTFILES.
+# Keep this file limited to the package state.
+# Historically disabled items intentionally stay out of the active catalog.
+# SEE: config/homebrew/mise.toml / config/homebrew/README.md.
 
-def is_ci?
-  ENV.has_key?('CI')
-end
+# TAPS
+tap "can1357/tap", trusted: true
+tap "olaproeis/ferrite", trusted: true
+tap "oven-sh/bun", trusted: true
+tap "zzet/tap", trusted: { casks: ["gortex"] }
+tap  "stablyai/orca", trusted: { casks: ["orca"] }
 
-def is_container?
-  return true if ENV.has_key?('DOCKER_CONTAINER') || ENV.has_key?('container') || File.exist?('/.dockerenv') || File.exist?('/var/run/docker.sock') || File.exist?('/run/.containerenv')
+# CORE FORMULAE
+brew "act" # Run your GitHub Actions locally
+brew "age" # Simple, modern, secure file encryption
+brew "aqua" # Declarative CLI version manager
+brew "ast-grep" # Code searching, linting, rewriting
+brew "bash" # Bourne-Again shell
+brew "bash-language-server" # Language server for Bash
+brew "bat" # Clone of cat(1) with syntax highlighting and Git integration
+brew "bat-extras" # Extra tools that integrate bat with the shell
+brew "can1357/tap/omp", trusted: true # Coding agent with the IDE wired in
+brew "cairo" # Vector graphics library with cross-device output support
+brew "coreutils" # GNU file, shell, and text utilities
+brew "curlie" # Power of curl, ease of use of HTTPie
+brew "delta" # Syntax-highlighting pager for git and diff output
+brew "devcontainer" # Development Containers reference implementation
+brew "docker-language-server" # LSP for Dockerfiles and Compose files
+brew "eza" # Modern replacement for ls
+brew "fabric-ai" # Open-source framework for augmenting humans using AI
+brew "fd" # Fast file search utility
+brew "findutils" # GNU find, xargs, and locate
+brew "fzf" # Command-line fuzzy finder
+brew "gawk" # GNU awk utility
+brew "gh" # GitHub CLI
+brew "git" # Distributed revision control system
+brew "git-extras" # Small git utilities
+brew "git-lfs" # Git extension for versioning large files
+brew "glow" # Render Markdown in the terminal
+brew "gmp" # GNU multiple precision arithmetic library
+brew "gnu-sed" # GNU sed implementation
+brew "gopass" # Secrets management tool
+brew "gopls" # Go language server
+brew "gum" # Tool for glamorous shell scripts
+brew "hadolint" # Dockerfile linter
+brew "hyperfine" # Command-line benchmarking tool
+brew "jaq" # JQ clone focused on correctness and speed
+brew "jq" # Lightweight JSON processor
+brew "less" # Pager program similar to more
+brew "lesspipe" # Input filter for less
+brew "libyaml" # YAML parser
+brew "lua-language-server" # Language server for Lua
+brew "mermaid-cli" # CLI for Mermaid
+brew "mise" # Polyglot runtime manager
+brew "neovim" # Text editor focused on extensibility
+brew "nodejs" # JavaScript runtime and package manager support
+brew "opencode" # Terminal AI coding agent
+brew "openjdk" # Java development kit
+brew "openssl@3" # Cryptography and TLS toolkit
+brew "oven-sh/bun/bun" # JavaScript runtime, bundler, and package manager
+brew "pinentry-mac" # Pinentry for GPG on macOS
+brew "pkl" # Pkl language CLI
+brew "pkl-lsp" # Pkl language server
+brew "pnpm" # Fast, disk space efficient package manager
+brew "posting" # Modern API client for the terminal
+brew "pup" # CLI companion for Datadog and internal tooling
+brew "pyright" # Python static type checker
+brew "python@3.14" # Python runtime
+brew "ripgrep" # Search tool like grep
+brew "ruby" # Ruby runtime
+brew "ruby-lsp" # Ruby language server
+brew "rust" # Rust toolchain
+brew "sd" # Intuitive find and replace CLI
+brew "shellspec" # BDD framework for shells
+brew "skills" # Open agent skills ecosystem
+brew "solargraph" # Ruby language server
+brew "sops" # Secrets file encryption and management
+brew "sqlite" # SQLite command-line interface
+brew "starship" # Cross-shell prompt
+brew "tealdeer" # Fast tldr client
+brew "tombi" # TOML formatter, linter, and language server
+brew "tree" # Display directories as trees
+brew "tree-sitter" # Incremental parsing library
+brew "tree-sitter-cli" # Parser generator tool
+brew "typescript-language-server" # LSP for TypeScript
+brew "usage" # Tool for working with usage-spec CLIs
+brew "uv" # Fast Python package installer and resolver
+brew "wakatime-cli" # WakaTime CLI
+brew "zoxide" # Smart directory navigation for the shell
+brew "zsh" # UNIX shell
 
-  # Additional checks to enhance the container detection
-  return true if File.exist?('/proc/1/cgroup') && File.read('/proc/1/cgroup').include?('docker')
+# DESKTOP AND BROWSER APPS
+cask_args appdir: "/Applications"
+cask "amethyst" # Tiling window manager for macOS
+cask "antigravity" # Agent orchestration platform
+cask "antigravity-cli" # Terminal interface for Antigravity agents
+cask "antigravity-ide" # AI coding agent IDE
+cask "bitwarden" # Password manager
+cask "brave-browser" # Privacy-focused browser
+cask "chatgpt" # ChatGPT desktop app
+cask "claude" # Anthropic Claude app
+cask "claude-code" # Claude for code editing
+cask "claude-devtools" # Claude session analysis tools
+cask "codex" # OpenAI coding agent
+cask "copilot-cli@prerelease" # Copilot coding agent CLI
+cask "cursor" # AI-first code editor
+cask "docker-desktop" # Container tooling
+cask "firefox" # Firefox browser
+cask "gcloud-cli" # Google Cloud SDK
+cask "ghostty" # GPU-accelerated terminal emulator
+cask "github" # GitHub desktop app
+cask "github-copilot-app" # GitHub Copilot app
+cask "google-chrome" # Chrome browser
+cask "google-drive" # Google Drive client
+cask "google-gemini" # Google Gemini app
+cask "karabiner-elements" # Keyboard remapping tool
+cask "raycast" # Command launcher and automation hub
+cask "supacode" # Terminal coding agents command center
+cask "visual-studio-code" # VS Code editor
+cask "vlc" # VLC media player
+cask "warp" # Terminal with AI features
+cask "whatsapp" # WhatsApp desktop app
+cask "zed" # Multiplayer code editor
 
-  # Check for simplified cgroup pattern that appears in some containers
-  return true if File.exist?('/proc/1/cgroup') && File.read('/proc/1/cgroup').strip == "0::/"
+# FONTS
+cask "font-cascadia-code"
+cask "font-cascadia-code-pl"
+cask "font-caskaydia-mono-nerd-font"
+cask "font-fira-code"
+cask "font-fira-code-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
 
-  # It's not a container
-  false
-end
+# GO PACKAGES
+go "github.com/brutski/go-code-graph/cmd/analyze"
+go "cmd/go"
+go "go-code-graph-wrapper"
+go "cmd/gofmt"
+go "mvdan.cc/gofumpt"
+go "golang.org/x/tools/gopls"
+go "github.com/brutski/go-code-graph/cmd/import-neo4j"
+go "github.com/brutski/go-code-graph/cmd/mcp-server"
+go "github.com/brutski/go-code-graph/cmd/server"
 
-def has_systemd?
-  File.exist?('/run/systemd/system') && File.directory?('/run/systemd/system')
-end
+npm "bun-dap-x"
+npm "@vscode/js-debug-browsers"
+npm "react-devtools"
 
-def can_run_containers_desktops_apps?
-  OS.mac? || (!is_container? && has_systemd?)
-end
+uv "debugpy"
+uv "code-review-graph"
+uv "graphifyy"
 
-# Platform-specific packages
-if OS.mac? && !is_container? && !is_ci? then
-  brew "aqua" # Declarative CLI version manager (https://aquaproj.github.io)
-  brew "bat-extras" # Bash scripts that integrate bat with various command-line tools (https://github.com/eth-p/bat-extras)
-
-  cask_args appdir: "/Applications"
-  cask "amethyst" # Tiling window manager for macOS (https://ianyh.com/amethyst)
-
-  cask "docker-desktop" # App to build and share containerised applications and microservices (https://docker.com/products/docker-desktop)
-  cask "firefox" # Web browser (https://mozilla.org/firefox)
-  cask "font-cascadia-code-pl" # Version of Cascadia Code with embedded Powerline symbols (https://github.com/microsoft/cascadia-code)
-  cask "font-cascadia-code" # Monospaced font that includes programming ligatures (https://github.com/microsoft/cascadia-code)
-  cask "font-caskaydia-mono-nerd-font" # Nerd Font for Caskaydia Mono (https://github.com/ryanoasis/nerd-fonts)
-  cask "font-fira-code-nerd-font" # Fira Code with Nerd Fonts (https://github.com/ryanoasis/nerd-fonts)
-  cask "font-fira-code" # Free monospaced font with programming ligatures (https://github.com/tonsky/FiraCode)
-  cask "font-hack-nerd-font" # Hack font with Nerd Fonts (https://github.com/ryanoasis/nerd-fonts)
-  cask "font-jetbrains-mono-nerd-font" # JetBrains Mono with Nerd Fonts (https://github.com/ryanoasis/nerd-fonts)
-  cask "karabiner-elements" # Custom keyboard remapping (https://karabiner-elements.pqrs.org)
-  cask "raycast" # Control your tools with a few keystrokes (https://raycast.com)
-  cask "bitwarden" # Secure and free password manager for all of your devices (https://bitwarden.com)
-  cask "brave-browser" # Web browser focusing on privacy (https://brave.com)
-  cask "chatgpt" # AI-powered productivity tool for the command-line (https://openai.com)
-  cask "claude-code" # Claude for code editing (https://claude.ai)
-  cask "claude" # Anthropic's official Claude AI desktop app (https://claude.ai/download)
-  cask "cursor" # A modern, open-source cursor editor (https://cursor.run)
-  cask "discord" # Voice and text chat software (https://discord.com)
-  cask "ghostty" # GPU-accelerated cross-platform terminal emulator and multiplexer (https://ghostty.org)
-  cask "github" # Desktop client for GitHub repositories (https://desktop.github.com)
-  cask "google-chrome" # Web browser (https://google.com/chrome)
-  cask "google-cloud-sdk" # Set of tools to manage resources and applications hosted on Google Cloud (https://cloud.google.com/sdk)
-  cask "google-drive" # Client for the Google Drive storage service (https://google.com/drive)
-  cask "grammarly-desktop" # Grammarly desktop app (https://grammarly.com)
-  cask "ollama-app" # Local AI model runner (https://ollama.com)
-  cask "postman" # Collaboration platform for API development (https://postman.com)
-  cask "slack" # Slack desktop app (https://slack.com)
-  cask "visual-studio-code" # Open-source code editor (https://code.visualstudio.com)
-  cask "visual-studio-code@insiders" # Open-source code editor (https://code.visualstudio.com/insiders)
-  cask "vlc" # Multimedia player (https://videolan.org/vlc)
-  cask "warp" # Modern terminal with AI features (https://warp.dev)
-  cask "whatsapp" # Native desktop client for WhatsApp (https://whatsapp.com)
-  cask "zed" # Multiplayer code editor (https://zed.dev)
-end
-
-# vi: set ft=rb
+# vi: set ft=rb# General purpose fuzzy finder TUI
+brew "television"
+# AI coding agent desktop client
+cask "opencode-desktop"
+# Terminal for orchestrating agents
+# cask "superset"
+# Native macOS terminal on libghostty with a workspace/session sidebar
+# cask "umputun/apps/agterm"
+# IDE for orchestrating AI coding agents across terminals and worktrees
+cask "stablyai/orca/orca"

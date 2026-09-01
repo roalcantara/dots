@@ -1,175 +1,141 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2296,SC2298,SC2178,SC2206,SC2076
 
-##? xc-fabric - Interactive Fabric pattern runner with fzf/gum fallbacks
-##?
-##? Usage:
-##?   xc-fabric [options]
-##?   xc-fabric [options] run <pattern> [url]
-##?   xc-fabric [options] ls
-##?   xc-fabric [options] update
-##?   xc-fabric [options] show <pattern>
-##?   xc-fabric [options] strategies
-##?   xc-fabric [options] scrape <url> [pattern]
-##?   xc-fabric -h | --help
-##?
-##? Options:
-##?   -r, --raw                 Print raw output without TUI rendering
-##?   --model <model>           Pass a model to fabric
-##?   -c, --copy                Pass --copy to fabric
-##?   -o, --output <file>       Pass --output to fabric and skip rendering
-##?   -v <value>                Pass a fabric variable token verbatim
-##?   --variable=<value>        Pass a fabric variable token verbatim
-##?   --strategy <name>         Pass a fabric strategy to fabric
-##?   --no-preview              Disable picker previews
-##?   -y, --yes                 Skip confirmations
-##?   --yt-timestamps           Use YouTube transcript timestamps
-##?   --yt-comments             Include YouTube comments
-##?   --yt-metadata             Include YouTube metadata
-##?   --yt-playlist             Process a YouTube playlist
-##?   --debug                   Log fzf preview template and a dry-run sample to stderr
-##?
-##? Environment:
-##?   FABRIC_PATTERNS_DIR       Override Fabric patterns directory (default ~/.config/fabric/patterns)
-##?   GLOW_STYLE                Theme passed to glow in the picker preview (default dracula)
-##?
-##? Subcommands:
-##?   run <pattern> [url]       Run a named pattern against stdin, clipboard, or URL
-##?   ls                        List Fabric patterns with descriptions
-##?   update                    Refresh Fabric patterns with fabric -U
-##?   show <pattern>            Show a pattern definition
-##?   strategies                List Fabric strategies
-##?   scrape <url> [pattern]    Scrape a URL with fabric -u, optionally through a pattern
-##?
-##? Examples:
-##?   xc-fabric
-##?   xc-fabric ls --raw
-##?   echo "Hello" | xc-fabric run summarize --raw
-##?   xc-fabric run summarize https://youtu.be/example --yt-metadata
-
-### Subcommand help blocks (parsed by xc-usage; not shown in help output) ###
-
-##? xc-fabric run - Run a named pattern against stdin, clipboard, or URL
-##?
-##? Usage:
-##?   xc-fabric [options] run <pattern> [url]
-##?   xc-fabric run -h | --help
-##?
-##? Arguments:
-##?   pattern    Fabric pattern name
-##?   url        Optional URL; omit to use stdin or clipboard
-##?
-##? Options:
-##?   [options]  Global xc-fabric options (see xc-fabric -h)
-##?
-##? Examples:
-##?   echo "Hello" | xc-fabric run summarize --raw
-##?   xc-fabric run summarize https://youtu.be/example --yt-metadata
-
-##? xc-fabric ls - List Fabric patterns with descriptions
-##?
-##? Usage:
-##?   xc-fabric [options] ls
-##?   xc-fabric ls -h | --help
-##?
-##? Options:
-##?   [options]  Global xc-fabric options (see xc-fabric -h)
-##?
-##? Examples:
-##?   xc-fabric ls --raw
-
-##? xc-fabric update - Refresh Fabric patterns with fabric -U
-##?
-##? Usage:
-##?   xc-fabric [options] update
-##?   xc-fabric update -h | --help
-##?
-##? Options:
-##?   [options]  Global xc-fabric options (see xc-fabric -h)
-##?
-##? Examples:
-##?   xc-fabric update
-
-##? xc-fabric show - Show a pattern definition
-##?
-##? Usage:
-##?   xc-fabric [options] show <pattern>
-##?   xc-fabric show -h | --help
-##?
-##? Arguments:
-##?   pattern    Fabric pattern name
-##?
-##? Options:
-##?   [options]  Global xc-fabric options (see xc-fabric -h)
-##?
-##? Examples:
-##?   xc-fabric show summarize
-
-##? xc-fabric strategies - List Fabric strategies
-##?
-##? Usage:
-##?   xc-fabric [options] strategies
-##?   xc-fabric strategies -h | --help
-##?
-##? Options:
-##?   [options]  Global xc-fabric options (see xc-fabric -h)
-##?
-##? Examples:
-##?   xc-fabric strategies
-
-##? xc-fabric scrape - Scrape a URL with fabric -u, optionally through a pattern
-##?
-##? Usage:
-##?   xc-fabric [options] scrape <url> [pattern]
-##?   xc-fabric scrape -h | --help
-##?
-##? Arguments:
-##?   url        URL to scrape
-##?   pattern    Optional Fabric pattern to apply after scrape
-##?
-##? Options:
-##?   [options]  Global xc-fabric options (see xc-fabric -h)
-##?
-##? Examples:
-##?   xc-fabric scrape https://example.com
-
-readonly XC_FABRIC_ROOT="${${(%):-%x}:a:h}"
-
-_xc_usage_cmd() {
-  if command -v xc-usage >/dev/null 2>&1; then
-    command xc-usage "$@"
-    return $?
-  fi
-  if [[ -x "${XC_FABRIC_ROOT}/xc-usage" ]]; then
-    "${XC_FABRIC_ROOT}/xc-usage" "$@"
-    return $?
-  fi
-  print -u2 "xc-fabric: xc-usage not found on PATH or at ${XC_FABRIC_ROOT}/xc-usage"
-  return 127
-}
-
-case "${1:-}" in
-  -h|--help) _xc_usage_cmd "${0:a}"; exit 0 ;;
-esac
+#USAGE cmd "run" help="Run a named pattern against stdin, clipboard, or URL" {
+#USAGE   arg "[pattern]" help="Fabric pattern name"
+#USAGE   arg "[url]" help="Optional URL; omit to use stdin or clipboard"
+#USAGE   flag "-r --raw" help="Print raw output without TUI rendering"
+#USAGE   flag "--model <model>" help="Pass a model to fabric"
+#USAGE   flag "-c --copy" help="Pass --copy to fabric"
+#USAGE   flag "-o --output <file>" help="Pass --output to fabric and skip rendering"
+#USAGE   flag "-v <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--variable <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--strategy <name>" help="Pass a fabric strategy to fabric"
+#USAGE   flag "--no-preview" help="Disable picker previews"
+#USAGE   flag "-y --yes" help="Skip confirmations"
+#USAGE   flag "--yt-timestamps" help="Use YouTube transcript timestamps"
+#USAGE   flag "--yt-comments" help="Include YouTube comments"
+#USAGE   flag "--yt-metadata" help="Include YouTube metadata"
+#USAGE   flag "--yt-playlist" help="Process a YouTube playlist"
+#USAGE   flag "--debug" help="Log fzf preview template and a dry-run sample to stderr"
+#USAGE   example "echo \"Hello\" | xc-fabric run summarize --raw"
+#USAGE   example "xc-fabric run summarize https://youtu.be/example --yt-metadata"
+#USAGE }
+#USAGE cmd "ls" help="List Fabric patterns with descriptions" {
+#USAGE   flag "-r --raw" help="Print raw output without TUI rendering"
+#USAGE   flag "--model <model>" help="Pass a model to fabric"
+#USAGE   flag "-c --copy" help="Pass --copy to fabric"
+#USAGE   flag "-o --output <file>" help="Pass --output to fabric and skip rendering"
+#USAGE   flag "-v <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--variable <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--strategy <name>" help="Pass a fabric strategy to fabric"
+#USAGE   flag "--no-preview" help="Disable picker previews"
+#USAGE   flag "-y --yes" help="Skip confirmations"
+#USAGE   flag "--yt-timestamps" help="Use YouTube transcript timestamps"
+#USAGE   flag "--yt-comments" help="Include YouTube comments"
+#USAGE   flag "--yt-metadata" help="Include YouTube metadata"
+#USAGE   flag "--yt-playlist" help="Process a YouTube playlist"
+#USAGE   flag "--debug" help="Log fzf preview template and a dry-run sample to stderr"
+#USAGE   example "xc-fabric ls --raw"
+#USAGE }
+#USAGE cmd "update" help="Refresh Fabric patterns with fabric -U" {
+#USAGE   flag "-r --raw" help="Print raw output without TUI rendering"
+#USAGE   flag "--model <model>" help="Pass a model to fabric"
+#USAGE   flag "-c --copy" help="Pass --copy to fabric"
+#USAGE   flag "-o --output <file>" help="Pass --output to fabric and skip rendering"
+#USAGE   flag "-v <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--variable <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--strategy <name>" help="Pass a fabric strategy to fabric"
+#USAGE   flag "--no-preview" help="Disable picker previews"
+#USAGE   flag "-y --yes" help="Skip confirmations"
+#USAGE   flag "--yt-timestamps" help="Use YouTube transcript timestamps"
+#USAGE   flag "--yt-comments" help="Include YouTube comments"
+#USAGE   flag "--yt-metadata" help="Include YouTube metadata"
+#USAGE   flag "--yt-playlist" help="Process a YouTube playlist"
+#USAGE   flag "--debug" help="Log fzf preview template and a dry-run sample to stderr"
+#USAGE   example "xc-fabric update"
+#USAGE }
+#USAGE cmd "show" help="Show a pattern definition" {
+#USAGE   arg "<pattern>" help="Fabric pattern name"
+#USAGE   flag "-r --raw" help="Print raw output without TUI rendering"
+#USAGE   flag "--model <model>" help="Pass a model to fabric"
+#USAGE   flag "-c --copy" help="Pass --copy to fabric"
+#USAGE   flag "-o --output <file>" help="Pass --output to fabric and skip rendering"
+#USAGE   flag "-v <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--variable <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--strategy <name>" help="Pass a fabric strategy to fabric"
+#USAGE   flag "--no-preview" help="Disable picker previews"
+#USAGE   flag "-y --yes" help="Skip confirmations"
+#USAGE   flag "--yt-timestamps" help="Use YouTube transcript timestamps"
+#USAGE   flag "--yt-comments" help="Include YouTube comments"
+#USAGE   flag "--yt-metadata" help="Include YouTube metadata"
+#USAGE   flag "--yt-playlist" help="Process a YouTube playlist"
+#USAGE   flag "--debug" help="Log fzf preview template and a dry-run sample to stderr"
+#USAGE   example "xc-fabric show summarize"
+#USAGE }
+#USAGE cmd "strategies" help="List Fabric strategies" {
+#USAGE   flag "-r --raw" help="Print raw output without TUI rendering"
+#USAGE   flag "--model <model>" help="Pass a model to fabric"
+#USAGE   flag "-c --copy" help="Pass --copy to fabric"
+#USAGE   flag "-o --output <file>" help="Pass --output to fabric and skip rendering"
+#USAGE   flag "-v <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--variable <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--strategy <name>" help="Pass a fabric strategy to fabric"
+#USAGE   flag "--no-preview" help="Disable picker previews"
+#USAGE   flag "-y --yes" help="Skip confirmations"
+#USAGE   flag "--yt-timestamps" help="Use YouTube transcript timestamps"
+#USAGE   flag "--yt-comments" help="Include YouTube comments"
+#USAGE   flag "--yt-metadata" help="Include YouTube metadata"
+#USAGE   flag "--yt-playlist" help="Process a YouTube playlist"
+#USAGE   flag "--debug" help="Log fzf preview template and a dry-run sample to stderr"
+#USAGE   example "xc-fabric strategies"
+#USAGE }
+#USAGE cmd "scrape" help="Scrape a URL with fabric -u, optionally through a pattern" {
+#USAGE   arg "<url>" help="URL to scrape"
+#USAGE   arg "[pattern]" help="Optional Fabric pattern to apply after scrape"
+#USAGE   flag "-r --raw" help="Print raw output without TUI rendering"
+#USAGE   flag "--model <model>" help="Pass a model to fabric"
+#USAGE   flag "-c --copy" help="Pass --copy to fabric"
+#USAGE   flag "-o --output <file>" help="Pass --output to fabric and skip rendering"
+#USAGE   flag "-v <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--variable <value>" help="Pass a fabric variable token verbatim"
+#USAGE   flag "--strategy <name>" help="Pass a fabric strategy to fabric"
+#USAGE   flag "--no-preview" help="Disable picker previews"
+#USAGE   flag "-y --yes" help="Skip confirmations"
+#USAGE   flag "--yt-timestamps" help="Use YouTube transcript timestamps"
+#USAGE   flag "--yt-comments" help="Include YouTube comments"
+#USAGE   flag "--yt-metadata" help="Include YouTube metadata"
+#USAGE   flag "--yt-playlist" help="Process a YouTube playlist"
+#USAGE   flag "--debug" help="Log fzf preview template and a dry-run sample to stderr"
+#USAGE   example "xc-fabric scrape https://example.com"
+#USAGE }
+#USAGE version "0.1.0"
+#USAGE about "Interactive Fabric pattern runner with fzf/gum fallbacks"
+#USAGE example "xc-fabric"
+#USAGE example "xc-fabric ls --raw"
+#USAGE example "echo \"Hello\" | xc-fabric run summarize --raw"
+#USAGE example "xc-fabric run summarize https://youtu.be/example --yt-metadata"
 
 set -euo pipefail
 
 readonly XC_SCRIPT="${${(%):-%x}:a}"
 
-RAW=0
-COPY=0
-YES=0
-NO_PREVIEW=0
-YT_TIMESTAMPS=0
-YT_COMMENTS=0
-YT_METADATA=0
-YT_PLAYLIST=0
-MODEL=""
-OUTPUT=""
-STRATEGY=""
-COMMAND=""
-DEBUG=0
+RAW=0;           [[ "${usage_raw:-false}" == "true" ]]           && RAW=1
+COPY=0;          [[ "${usage_copy:-false}" == "true" ]]          && COPY=1
+YES=0;           [[ "${usage_yes:-false}" == "true" ]]           && YES=1
+NO_PREVIEW=0;    [[ "${usage_no_preview:-false}" == "true" ]]    && NO_PREVIEW=1
+YT_TIMESTAMPS=0; [[ "${usage_yt_timestamps:-false}" == "true" ]] && YT_TIMESTAMPS=1
+YT_COMMENTS=0;   [[ "${usage_yt_comments:-false}" == "true" ]]   && YT_COMMENTS=1
+YT_METADATA=0;   [[ "${usage_yt_metadata:-false}" == "true" ]]   && YT_METADATA=1
+YT_PLAYLIST=0;   [[ "${usage_yt_playlist:-false}" == "true" ]]   && YT_PLAYLIST=1
+DEBUG=0;         [[ "${usage_debug:-false}" == "true" ]]         && DEBUG=1
+MODEL="${usage_model:-}"
+OUTPUT="${usage_output:-}"
+VAR="${usage_v:-}"
+STRATEGY="${usage_strategy:-}"
 typeset -ga VARS=()
-typeset -ga POSITIONALS=()
+[[ -n "$VAR" ]] && VARS+=(-v "$VAR")
+[[ -n "${usage_variable:-}" ]] && VARS+=("--variable=$usage_variable")
 
 typeset -gA _CAPS=()
 typeset -ga _CLIP_CMD=()
@@ -642,7 +608,7 @@ _fabric_exec_scrape() {
 }
 
 # Default command: run the interactive picker
-cmd_default() {
+_xc_fabric_interactive() {
   local patterns_tsv
   local selected
   local input
@@ -665,7 +631,7 @@ cmd_default() {
   _fabric_exec_stdin "$selected" "$input"
 }
 # Run a Fabric pattern
-cmd_run() {
+_xc_fabric_cmd_run() {
   local pattern="${1:-}"
   local url=""
   local input
@@ -696,19 +662,19 @@ cmd_run() {
   fi
 }
 # List patterns
-cmd_ls() { _ui_table_show _pattern_list; }
+_xc_fabric_cmd_ls() { _ui_table_show _pattern_list; }
 # Update patterns
-cmd_update() { _fabric_spinner_run "Updating patterns" fabric-ai -U; }
+_xc_fabric_cmd_update() { _fabric_spinner_run "Updating patterns" fabric-ai -U; }
 # Show a pattern
-cmd_show() {
+_xc_fabric_cmd_show() {
   local pattern="${1:-}"
   [[ -n "$pattern" ]] || _ui_log_fatal "pattern is required"
   _fabric_plain_capture_render --readpattern "$pattern"
 }
 # List strategies
-cmd_strategies() { _ui_table_show fabric-ai --liststrategies; }
+_xc_fabric_cmd_strategies() { _ui_table_show fabric-ai --liststrategies; }
 # Scrape a URL
-cmd_scrape() {
+_xc_fabric_cmd_scrape() {
   local url="${1:-}"
   local pattern="${2:-}"
   [[ -n "$url" ]] || _ui_log_fatal "url is required"
@@ -718,99 +684,6 @@ cmd_scrape() {
   else
     _fabric_exec_scrape "$url" "$pattern"
   fi
-}
-
-# Parse arguments
-_parse_args() {
-  local arg
-
-  while (( $# > 0 )); do
-    arg="$1"
-    case "$arg" in
-      -h|--help)
-        grep '^#?' "${0}" | sed 's/^#? \{0,1\}//'
-        exit 0
-        ;;
-      -r|--raw)
-        RAW=1
-        ;;
-      --model)
-        shift
-        MODEL="${1:-}"
-        [[ -n "$MODEL" ]] || _ui_log_fatal "model is required"
-        ;;
-      --model=*)
-        MODEL="${arg#--model=}"
-        ;;
-      -c|--copy)
-        COPY=1
-        ;;
-      -o|--output)
-        shift
-        OUTPUT="${1:-}"
-        [[ -n "$OUTPUT" ]] || _ui_log_fatal "output path is required"
-        ;;
-      --output=*)
-        OUTPUT="${arg#--output=}"
-        ;;
-      -v)
-        shift
-        [[ -n "${1:-}" ]] || _ui_log_fatal "variable value is required"
-        VARS+=(-v "$1")
-        ;;
-      --variable=*)
-        VARS+=("$arg")
-        ;;
-      --strategy)
-        shift
-        STRATEGY="${1:-}"
-        [[ -n "$STRATEGY" ]] || _ui_log_fatal "strategy is required"
-        ;;
-      --strategy=*)
-        STRATEGY="${arg#--strategy=}"
-        ;;
-      --no-preview)
-        NO_PREVIEW=1
-        ;;
-      -y|--yes)
-        YES=1
-        ;;
-      --yt-timestamps)
-        YT_TIMESTAMPS=1
-        ;;
-      --yt-comments)
-        YT_COMMENTS=1
-        ;;
-      --yt-metadata)
-        YT_METADATA=1
-        ;;
-      --yt-playlist)
-        YT_PLAYLIST=1
-        ;;
-      --debug)
-        DEBUG=1
-        ;;
-      --)
-        shift
-        POSITIONALS+=("$@")
-        break
-        ;;
-      run|ls|update|show|strategies|scrape)
-        if [[ -z "$COMMAND" ]]; then
-          COMMAND="$arg"
-        else
-          POSITIONALS+=("$arg")
-        fi
-        ;;
-      --*)
-        _ui_log_fatal "unknown option: $arg"
-        ;;
-      *)
-        POSITIONALS+=("$arg")
-        ;;
-    esac
-    shift || true
-  done
 }
 
 # Main entrypoint
@@ -824,21 +697,45 @@ main() {
     exit 0
   fi
 
-  _parse_args "$@"
   _boot_paths
   _boot_caps
   _boot_clip
   _boot_check_deps
 
-  case "$COMMAND" in
-    "") cmd_default ;;
-    run) cmd_run "${POSITIONALS[@]}" ;;
-    ls) cmd_ls "${POSITIONALS[@]}" ;;
-    update) cmd_update "${POSITIONALS[@]}" ;;
-    show) cmd_show "${POSITIONALS[@]}" ;;
-    strategies) cmd_strategies "${POSITIONALS[@]}" ;;
-    scrape) cmd_scrape "${POSITIONALS[@]}" ;;
-    *) _ui_log_fatal "unknown command: $COMMAND" ;;
+  case "${1:-}" in
+    run)
+      _xc_fabric_cmd_run "${usage_pattern:-}" "${usage_url:-}"
+      ;;
+    ls)
+      _xc_fabric_cmd_ls
+      ;;
+    update)
+      _xc_fabric_cmd_update
+      ;;
+    show)
+      if [[ -z "${usage_pattern:-}" ]]; then
+        usage zsh "${0:a}" show --help >&2
+        exit 1
+      fi
+      _xc_fabric_cmd_show "${usage_pattern:-}"
+      ;;
+    strategies)
+      _xc_fabric_cmd_strategies
+      ;;
+    scrape)
+      if [[ -z "${usage_url:-}" ]]; then
+        usage zsh "${0:a}" scrape --help >&2
+        exit 1
+      fi
+      _xc_fabric_cmd_scrape "${usage_url:-}" "${usage_pattern:-}"
+      ;;
+    '')
+      _xc_fabric_interactive
+      ;;
+    *)
+      usage zsh "${0:a}" --help >&2
+      exit 1
+      ;;
   esac
 }
 

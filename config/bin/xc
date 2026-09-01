@@ -1,28 +1,23 @@
-#!/usr/bin/env zsh
-# shellcheck shell=bash disable=SC2296,SC2298
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2296,SC2298,SC2178,SC2206
 
-#? xc 0.1.0
-#? License MIT — launcher only; each xc-* tool remains a separate executable.
-
-##? xc - Interactive launcher for xc-* tools
-##?
-##? Usage:
-##?   xc
-##?   xc list
-##?   xc -h | --help
-##?
-##? Commands:
-##?   (default)   Open fzf launcher with stacked help preview; run selection
-##?   list        Print discovered tools (name, path, summary)
-##?
-##? Options:
-##?   -h, --help  Show this screen
-##?
-##? Examples:
-##?   xc
-##?   xc list
-##?   ln -sf ~/.config/bin/xc ~/.local/bin/xc
-
+#USAGE cmd "list" help="Print discovered tools (name, path, summary)" {
+#USAGE   example "xc list"
+#USAGE }
+#USAGE cmd "up" help="Run system and package maintenance updates" {
+#USAGE   example "xc up"
+#USAGE }
+#USAGE cmd "treeify" help="Convert text into a valid tree output" {
+#USAGE   arg "[text]" help="Text to convert into a tree"
+#USAGE   example "xc treeify '--- src/\n----- components/\n------- app/\n--------- index.js'"
+#USAGE   example "pbpaste | xc treeify"
+#USAGE }
+#USAGE version "0.1.0"
+#USAGE about "Interactive launcher for xc-* tools"
+#USAGE example "xc"
+#USAGE example "xc list"
+#USAGE example "xc up"
+#USAGE example "pbpaste | xc treeify"
 readonly XC_LAUNCHER_SELF="${${(%):-%x}:a}"
 
 _xc_bin_dir() {
@@ -34,51 +29,14 @@ _xc_ensure_path() {
   [[ -d "$bindir" ]] && export PATH="${bindir}:${PATH}"
 }
 
-_xc_usage_cmd() {
-  local bindir="$(_xc_bin_dir)" cmd="${bindir}/xc-usage"
-  if [[ -x "$cmd" ]]; then
-    print -r -- "$cmd"
-    return 0
-  fi
-  whence -p xc-usage 2>/dev/null || print -r -- xc-usage
-}
-
-_xc_strip_docopt() {
-  local raw="$1"
-  local doc_line="${raw##\#\#?}"
-  doc_line="${doc_line# }"
-  REPLY="$doc_line"
-}
-
 _xc_summary() {
-  local tool_path="$1" raw=""
-  while IFS= read -r raw; do
-    [[ "$raw" == "##?"* ]] && break
-    raw=""
-  done <"$tool_path"
-  if [[ -z "$raw" || "$raw" != "##?"* ]]; then
-    print -r -- '(no ##? help)'
+  local tool_path="$1" json about
+  json=$(usage generate json -f "$tool_path" 2>/dev/null) || {
+    print -r -- '(no usage spec)'
     return 0
-  fi
-  _xc_strip_docopt "$raw"
-  local line="$REPLY"
-  if [[ "$line" == *" - "* ]]; then
-    line="${line#* - }"
-  fi
-  # TSV/fzf: one line per field
-  line="${line//$'\t'/ }"
-  line="${line//$'\n'/ }"
-  line="${line//$'\r'/ }"
-  print -r -- "$line"
-}
-
-_xc_self_help() {
-  local raw
-  while IFS= read -r raw; do
-    [[ "$raw" != "##?"* ]] && continue
-    _xc_strip_docopt "$raw"
-    print -r -- "$REPLY"
-  done <"$XC_LAUNCHER_SELF"
+  }
+  about=$(print -r -- "$json" | jq -r '.about // "(no description)"' 2>/dev/null)
+  print -r -- "${about:-(no description)}"
 }
 
 # Discover flat xc-* executables; print TSV rows: name<TAB>path<TAB>summary
@@ -124,44 +82,24 @@ _xc_rows_array() {
 }
 
 _xc_has_subcommands() {
-  local tool_path="$1"
-  local xc_usage="$(_xc_usage_cmd)"
-  if [[ -x "$xc_usage" ]]; then
-    local -a subs
-    subs=("${(@f)$("$xc_usage" "$tool_path" --list-subs 2>/dev/null)}")
-    (( ${#subs[@]} > 0 )) && return 0
-  fi
-  grep -q '^##? Subcommands:' "$tool_path" 2>/dev/null || grep -q '^##? Commands:' "$tool_path" 2>/dev/null
+  local tool_path="$1" json
+  json=$(usage generate json -f "$tool_path" 2>/dev/null) || return 1
+  print -r -- "$json" | jq -e '.cmd.subcommands | length > 0' >/dev/null 2>&1
 }
 
 _xc_list_subcommands() {
-  local tool_path="$1" xc_usage="$(_xc_usage_cmd)"
-  if [[ -x "$xc_usage" ]]; then
-    "$xc_usage" "$tool_path" --list-subs 2>/dev/null && return 0
-  fi
-  awk '/^##\? (Subcommands|Commands):/{s=1;next} s&&/^##\? [^ ]/{s=0} s&&/^##\? /{gsub(/^##\? +/,""); print $1}' "$tool_path" 2>/dev/null
+  local tool_path="$1" json
+  json=$(usage generate json -f "$tool_path" 2>/dev/null) || return 1
+  print -r -- "$json" | jq -r '.cmd.subcommands | to_entries[] | "\(.key)\t\(.value.help // .key)"' 2>/dev/null
 }
-
-_xc_sub_summary() {
-  local tool_path="$1" sub="$2"
-  local line
-  line=$(grep '^##?' "$tool_path" 2>/dev/null | sed 's/^##? \{0,1\}//' | grep -E "^[^ ]+ ${sub} " | head -1)
-  if [[ -n "$line" ]]; then
-    print -r -- "${line#*${sub} }"
-  else
-    print -r -- "$sub"
-  fi
-}
-
 _xc_fzf_pick_tool() {
   local rows="$1"
-  local xc_usage="$(_xc_usage_cmd)"
-  local preview="${(q)xc_usage} {2} --preview {1}"
+  local preview="usage zsh {2} --help"
 
   printf '%s\n' ${(ps:\n:)rows} | command fzf --ansi \
     --delimiter=$'\t' --with-nth=1,3 \
     --prompt='xc ❯ ' \
-    --header='Tool — stacked help in preview (↵ run, Esc cancel)' \
+    --header='Tool — usage help in preview (↵ run, Esc cancel)' \
     --preview-window='right:60%:wrap' \
     --preview="$preview" \
     --bind='ctrl-/:toggle-preview'
@@ -169,8 +107,7 @@ _xc_fzf_pick_tool() {
 
 _xc_fzf_pick_sub() {
   local tool_path="$1" name="$2" rows="$3"
-  local xc_usage="$(_xc_usage_cmd)"
-  local preview="${(q)xc_usage} ${(q)tool_path} --scope sub:{1}"
+  local preview="usage zsh ${(q)tool_path} {1} --help"
 
   printf '%s\n' ${(ps:\n:)rows} | command fzf --ansi \
     --delimiter=$'\t' --with-nth=1,2 \
@@ -224,11 +161,10 @@ _xc_run_tool() {
 
   if _xc_has_subcommands "$tool_path"; then
     local -a sub_rows=()
-    local sub blurp
-    while IFS= read -r sub; do
-      [[ -z "$sub" ]] && continue
-      blurp=$(_xc_sub_summary "$tool_path" "$sub")
-      sub_rows+=("${sub}"$'\t'"${blurp}")
+    local sub_name sub_help
+    while IFS=$'\t' read -r sub_name sub_help; do
+      [[ -z "$sub_name" ]] && continue
+      sub_rows+=("${sub_name}"$'\t'"${sub_help}")
     done < <(_xc_list_subcommands "$tool_path")
 
     if (( ${#sub_rows[@]} )) && command -v fzf >/dev/null 2>&1; then
@@ -253,14 +189,114 @@ _xc_run_tool() {
   exit $?
 }
 
+_xc_cmd_treeify() {
+  if [ -n "$usage_text" ]; then
+    if command -v pbpaste >/dev/null 2>&1; then
+      input="$(pbpaste)"
+    else
+      echo "No clipboard utility found (pbpaste). Pass input via stdin instead." >&2
+      exit 1
+    fi
+  else
+    input="$(cat)"
+  fi
+
+  python3 - <<'PY' "$input"
+import re
+import sys
+
+raw = sys.argv[1]
+
+lines = []
+for line in raw.splitlines():
+    s = line.rstrip()
+    if not s.strip():
+        continue
+    lines.append(s)
+
+# Convert pseudo-tree markers like:
+#   - src/
+#   --- components/
+#   ----- app/
+#   ------- index.js
+#
+# into a structured tree with connectors.
+# This supports both the '---' style and normal indented lines.
+
+class Node:
+    def __init__(self, name):
+        self.name = name
+        self.children = []
+
+root = Node("")
+stack = [root]
+
+for line in lines:
+    # preserve indentation from the incoming pseudo-list
+    stripped = line.lstrip(" ")
+    indent = len(line) - len(stripped)
+
+    # detect pseudo marker depth
+    match = re.match(r"^(-+)\s*(.*)$", stripped)
+    if match:
+        marker = match.group(1)
+        name = match.group(2).strip()
+        depth = max(0, len(marker) // 3)
+    else:
+        # plain root or nested item
+        name = stripped.strip()
+        depth = indent // 2
+
+    if not name:
+        continue
+
+    # normalize a single root item like "src/" to a node
+    if depth == 0 and not root.children:
+        node = Node(name)
+        root.children.append(node)
+        stack = [root, node]
+        continue
+
+    # walk up stack by effective depth
+    while len(stack) > 1 and depth <= (len(stack) - 1):
+        stack.pop()
+
+    node = Node(name)
+    stack[-1].children.append(node)
+    stack.append(node)
+
+def render(nodes, prefix=""):
+    out = []
+    for i, node in enumerate(nodes):
+        is_last = i == len(nodes) - 1
+        connector = "└── " if is_last else "├── "
+        out.append(f"{prefix}{connector}{node.name}")
+        child_prefix = prefix + ("    " if is_last else "│   ")
+        if node.children:
+            out.extend(render(node.children, child_prefix))
+    return out
+
+result = render(root.children)
+if result:
+    print("\n".join(result))
+else:
+    print(raw.strip())
+PY
+}
+
 _xc_main() {
   case "${1:-}" in
+    up)
+      gum log --time Datetime --level info "brew autoremove && brew update --auto-update --force --verbose && brew upgrade --cask --force --yes && brew bundle check --install --verbose && brew cleanup --prune=all && brew doctor..."
+      brew autoremove && brew update --auto-update --force --verbose && brew upgrade --cask --force --yes && brew bundle check --install --verbose && brew cleanup --prune=all && brew doctor
+      exit 0
+      ;;
     list)
       _xc_cmd_list
       exit 0
       ;;
-    -h | --help)
-      _xc_self_help
+    treeify)
+      _xc_cmd_treeify
       exit 0
       ;;
     '')
@@ -274,18 +310,4 @@ _xc_main() {
 }
 
 _xc_ensure_path
-
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-  command xc-usage "${0:a}"
-  exit $?
-fi
-
-xc_usage="$(_xc_usage_cmd)"
-if [[ -x "$xc_usage" ]]; then
-  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-    "$xc_usage" "${0:a}"
-    exit $?
-  fi
-fi
-
 _xc_main "$@"

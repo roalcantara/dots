@@ -1,3 +1,6 @@
+[tools]
+gum = "latest"
+
 [tasks."brew:setup"]
 description = "Install Homebrew if it is not already available"
 run = '''
@@ -20,6 +23,8 @@ fi
 '''
 
 [tasks."brew:load"]
+quiet = true
+silent = true
 description = "Load the Homebrew environment into the current shell session"
 run = '''
 #!/usr/bin/env bash
@@ -35,203 +40,139 @@ eval "$(brew shellenv)"
 '''
 
 [tasks.bundle]
+quiet = true
 dir = "{{cwd}}"
 description = "Homebrew bundle manager"
 depends = ["brew:load"]
 usage = '''
-flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
+flag "-f --file <path>" help="Path to the Brewfile" default="{{env.HOME}}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE" global=#true
+flag "--debug" help="Display any debugging information" global=#true
+flag "--verbose" help="Make some output more verbose" default=#true global=#true
+flag "--quiet" help="Make some output more quiet" global=#true
 
 cmd "list" help="List all dependencies present in the Brewfile" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
-  flag "--all" help="List all dependencies"
-  flag "--formula" help="List Homebrew formula dependencies"
-  flag "--cask" help="List Homebrew cask dependencies"
-  flag "--tap" help="List Homebrew tap dependencies"
-  flag "--mas" help="List Mac App Store dependencies"
-  flag "--vscode" help="List VSCode extensions"
-  flag "--go" help="List Go packages"
-  flag "--cargo" help="List Cargo packages"
-  flag "--uv" help="List uv tools"
-  flag "--krew" help="List Krew plugins"
-  flag "--npm" help="List npm packages"
-  flag "--flatpak" help="List Flatpak packages"
+  arg "[command]" help="brew bundle list" default="list" hide=#true
+  flag "--formulae" help="Affects Homebrew formula dependencies"
+  flag "--cask" help="Affects Homebrew cask dependencies"
+  flag "--tap" help="Affects Homebrew tap dependencies"
+  flag "--vscode" help="Affects VSCode extensions"
+  flag "--go" help="Affects Go packages"
+  flag "--cargo" help="Affects Cargo packages"
+  flag "--uv" help="Affects uv tools"
+  flag "--krew" help="Affects Krew plugins"
+  flag "--npm" help="Affects npm packages"
+  flag "--flatpak" help="Affects Flatpak packages"  
+  flag "--mas" help="Affects Mac App Store dependencies"
+  flag "--install" help="Run install before listing dependencies"
+  flag "--all" help="Affects all dependencies"
 }
 
-cmd "install" help="Install all dependencies from the active Brewfile" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
-}
-
-cmd "dump" help="Generate a new Brewfile from currently installed packages" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
+cmd "install" help="Install and upgrade (by default) all dependencies from the Brewfile" {
+  arg "[command]" help="brew bundle install" default="install" hide=#true
+  flag "--force" help="Run with --force/--overwrite"
+  flag "--no-upgrade" help="Do not run brew upgrade on outdated dependencies. Note they may still be upgraded"
+  flag "--upgrade" help="Run brew upgrade on outdated dependencies, even if $HOMEBREW_BUNDLE_NO_UPGRADE is set"
+  flag "--upgrade-formulae" help="Run brew upgrade on any of these comma-separated formulae, even if $HOMEBREW_BUNDLE_NO_UPGRADE is set"
+  flag "--force-cleanup" help="Perform cleanup after installing dependencies without asking. Enabled by default if $HOMEBREW_BUNDLE_FORCE_INSTALL_CLEANUP is set and --global is passed."   
 }
 
 cmd "check" help="Check local install state against the Brewfile" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
+  arg "[command]" help="brew bundle check" default="check" hide=#true
+  flag "--install" help="Run install before checking dependencies."
+  flag "--no-upgrade" help="Do not run brew upgrade on outdated dependencies. Note they may still be upgraded"
 }
 
-cmd "update" help="Update Homebrew, upgrade packages, and reconcile bundle" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
+cmd "update" help="Update and check local install state against the Brewfile" {
+  arg "[command]" help="brew bundle check" default="check" hide=#true
+  flag "--install" help="Run install before checking dependencies." default=#true
+  flag "--no-upgrade" help="Do not run brew upgrade on outdated dependencies. Note they may still be upgraded"
 }
 
-cmd "clean" help="Clean up Homebrew, prune old packages, and run doctor" {
+cmd "cleanup" help="Clean up Homebrew, prune old packages, and run doctor" {
+  arg "[command]" help="brew bundle cleanup" default="cleanup" hide=#true
+  flag "--formulae" negate="--no-formulae" help="Affects Homebrew formula dependencies"
+  flag "--cask" negate="--no-cask" help="Affects Homebrew cask dependencies"
+  flag "--tap" negate="--no-tap" help="Affects Homebrew tap dependencies"
+  flag "--vscode" negate="--no-vscode" help="Affects VSCode extensions"
+  flag "--go" negate="--no-go" help="Affects Go packages"
+  flag "--cargo" negate="--no-cargo" help="Affects Cargo packages"
+  flag "--uv" negate="--no-uv" help="Affects uv tools"
+  flag "--krew" negate="--no-krew" help="Affects Krew plugins"
+  flag "--npm" negate="--no-npm" help="Affects npm packages"
+  flag "--flatpak" negate="--no-flatpak" help="Affects Flatpak packages"  
+  flag "--mas" negate="--no-mas" help="Affects Mac App Store dependencies"
+  flag "--install" help="Run install before cleaning up dependencies."
+  flag "--force" help="Actually perform cleanup operations and reset Homebrew's global trust store to the Brewfile values."
+  flag "--all" help="Clean up all supported dependencies."
 }
 
 cmd "add" help="Add a dependency to the Brewfile" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
-
-  arg "<type>" help="Type of dependency" {
-    choices "formulae" "cask" "tap" "mas" "uv" "go" "cargo" "npm" "krew" "vscode" "flatpak"
+  arg "[command]" help="brew bundle add name [...]" default="add" hide=#true
+  arg "<scope>" help="Type of dependency" {
+    choices "formulae" "cask" "tap" "uv" "go" "cargo" "npm" "krew" "vscode" "flatpak"
   }
   arg "<name>" help="Name of the dependency"
-  arg "[args...]" help="Additional arguments (e.g. mas ID or options)"
 }
 
-cmd "rm" help="Remove a dependency from the Brewfile" {
-  flag "-f --file <path>" help="Path to the Brewfile" default="${HOME}/.config/homebrew/Brewfile" env="HOMEBREW_BUNDLE_FILE"
-
-  arg "<type>" help="Type of dependency" {
-    choices "formulae" "cask" "tap" "mas" "uv" "go" "cargo" "npm" "krew" "vscode" "flatpak"
+cmd "remove" help="Remove entries that match name from your Brewfile" {
+  arg "[command]" help="brew bundle remove name [...]" default="remove" hide=#true
+  arg "<scope>" help="Type of dependency" {
+    choices "formulae" "cask" "tap" "uv" "go" "cargo" "npm" "krew" "vscode" "flatpak" "mas"
   }
   arg "<name>" help="Name of the dependency"
+  flag "--install" help="Run install before removing entries."  
+}
+
+cmd "dump" help="Write all installed casks/formulae/images/taps into a Brewfile" {
+  arg "[command]" help="brew bundle dump" default="dump" hide=#true
+  flag "--formulae" negate="--no-formulae" help="Affects Homebrew formula dependencies"
+  flag "--cask" negate="--no-cask" help="Affects Homebrew cask dependencies"
+  flag "--tap" negate="--no-tap" help="Affects Homebrew tap dependencies"
+  flag "--vscode" negate="--no-vscode" help="Affects VSCode extensions"
+  flag "--go" negate="--no-go" help="Affects Go packages"
+  flag "--cargo" negate="--no-cargo" help="Affects Cargo packages"
+  flag "--uv" negate="--no-uv" help="Affects uv tools"
+  flag "--krew" negate="--no-krew" help="Affects Krew plugins"
+  flag "--npm" negate="--no-npm" help="Affects npm packages"
+  flag "--flatpak" negate="--no-flatpak" help="Affects Flatpak packages"  
+  flag "--mas" negate="--no-mas" help="Affects Mac App Store dependencies"
+  flag "--install" help="Run install before dumping dependencies."  
+  flag "--force" help="Overwrite an existing Brewfile."
 }
 '''
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-CMD="${usage_cmd:-list}"
-BREW_FILE="${usage_file:-${HOME}/.config/homebrew/Brewfile}"
+BREW_FILE="${usage_file:-Brewfile}"
 
-case "${CMD}" in
-  list)
-    opts=()
-    [[ "${usage_all:-false}" == "true" ]] && opts+=(--all)
-    [[ "${usage_formula:-false}" == "true" ]] && opts+=(--formula)
-    [[ "${usage_cask:-false}" == "true" ]] && opts+=(--cask)
-    [[ "${usage_tap:-false}" == "true" ]] && opts+=(--tap)
-    [[ "${usage_mas:-false}" == "true" ]] && opts+=(--mas)
-    [[ "${usage_vscode:-false}" == "true" ]] && opts+=(--vscode)
-    [[ "${usage_go:-false}" == "true" ]] && opts+=(--go)
-    [[ "${usage_cargo:-false}" == "true" ]] && opts+=(--cargo)
-    [[ "${usage_uv:-false}" == "true" ]] && opts+=(--uv)
-    [[ "${usage_krew:-false}" == "true" ]] && opts+=(--krew)
-    [[ "${usage_npm:-false}" == "true" ]] && opts+=(--npm)
-    [[ "${usage_flatpak:-false}" == "true" ]] && opts+=(--flatpak)
+[[ -n "$BREW_FILE" ]] && opts+=(--file="$BREW_FILE")
+opts=($usage_command)
+[[ -n "${usage_name:-}" ]] && opts+=("${usage_name:-}")
 
-    brew bundle list --file="${BREW_FILE}" "${opts[@]}"
-    ;;
+[[ -n "${usage_scope:-}" ]] && opts+=("--${usage_scope:-}")
+[[ "${usage_formula:-false}" == "true" ]] && opts+=(--formulae)
+[[ "${usage_cask:-false}" == "true" ]] && opts+=(--cask)
+[[ "${usage_tap:-false}" == "true" ]] && opts+=(--tap)
+[[ "${usage_mas:-false}" == "true" ]] && opts+=(--mas)
+[[ "${usage_vscode:-false}" == "true" ]] && opts+=(--vscode)
+[[ "${usage_go:-false}" == "true" ]] && opts+=(--go)
+[[ "${usage_cargo:-false}" == "true" ]] && opts+=(--cargo)
+[[ "${usage_uv:-false}" == "true" ]] && opts+=(--uv)
+[[ "${usage_flatpak:-false}" == "true" ]] && opts+=(--flatpak)
+[[ "${usage_krew:-false}" == "true" ]] && opts+=(--krew)
+[[ "${usage_npm:-false}" == "true" ]] && opts+=(--npm)
 
-  install)
-    if [[ ! -f "${BREW_FILE}" ]]; then
-      exit 1
-    fi
-    brew bundle --file="${BREW_FILE}"
-    ;;
+[[ "${usage_no-upgrade:-false}" == "true" ]] && opts+=(--no-upgrade)
+[[ "${usage_upgrade:-false}" == "true" ]] && opts+=(--upgrade)
+[[ "${usage_upgrade-formulae:-false}" == "true" ]] && opts+=(--upgrade-formulae)
+[[ "${usage_force-cleanup:-false}" == "true" ]] && opts+=(--force-cleanup)
 
-  dump)
-    brew bundle dump --file="${BREW_FILE}" --force
-    ;;
-
-  check)
-    if [[ ! -f "${BREW_FILE}" ]]; then
-      echo "Brewfile not found at ${BREW_FILE}" >&2
-      exit 1
-    fi
-    brew bundle check --file="${BREW_FILE}"
-    ;;
-
-  update)
-    brew update
-    brew upgrade
-    if [[ -f "${BREW_FILE}" ]]; then
-      brew bundle --file="${BREW_FILE}"
-    fi
-    ;;
-
-  clean)
-    brew autoremove
-    brew update
-    brew upgrade
-    brew upgrade --cask
-    brew cleanup --prune=all
-    brew doctor
-    ;;
-
-  add)
-    type="${usage_type}"
-    name="${usage_name}"
-
-    case "${type}" in
-      formulae) keyword="brew" ;;
-      cask) keyword="cask" ;;
-      tap) keyword="tap" ;;
-      mas) keyword="mas" ;;
-      *) keyword="${type}" ;;
-    esac
-
-    line="${keyword} \"${name}\""
-    if [[ -n "${usage_args:-}" ]]; then
-      if [[ "${type}" == "mas" && "${usage_args}" =~ ^[0-9]+$ ]]; then
-        line="${line}, id: ${usage_args}"
-      else
-        line="${line}, ${usage_args}"
-      fi
-    fi
-
-    escaped_name=$(printf "%s" "${name}" | perl -pe 's/([^a-zA-Z0-9_\@\-\/])/\\$1/g')
-    pattern="^[[:space:]]*${keyword}[[:space:]]+['\"]${escaped_name}['\"]"
-    if grep -qE "${pattern}" "${BREW_FILE}" 2>/dev/null; then
-      echo "${type} '${name}' already exists in Brewfile."
-    else
-      # Ensure Brewfile ends with a newline before appending
-      if [[ -f "${BREW_FILE}" ]] && [[ -n "$(tail -c1 "${BREW_FILE}" 2>/dev/null)" ]]; then
-        echo "" >> "${BREW_FILE}"
-      fi
-
-      # Append to Brewfile
-      mkdir -p "$(dirname "${BREW_FILE}")"
-      echo "${line}" >> "${BREW_FILE}"
-      echo "Added ${line} to Brewfile."
-    fi
-    ;;
-
-  rm)
-    type="${usage_type}"
-    name="${usage_name}"
-
-    case "${type}" in
-      formulae) keyword="brew" ;;
-      cask) keyword="cask" ;;
-      tap) keyword="tap" ;;
-      mas) keyword="mas" ;;
-      *) keyword="${type}" ;;
-    esac
-
-    escaped_name=$(printf "%s" "${name}" | perl -pe 's/([^a-zA-Z0-9_\@\-\/])/\\$1/g')
-    pattern="^[[:space:]]*${keyword}[[:space:]]+['\"]${escaped_name}['\"]"
-    if grep -qE "${pattern}" "${BREW_FILE}" 2>/dev/null; then
-      set +e
-      grep -vE "${pattern}" "${BREW_FILE}" > "${BREW_FILE}.tmp"
-      grep_status=$?
-      set -e
-
-      if [[ ${grep_status} -eq 0 ]] || [[ ${grep_status} -eq 1 ]]; then
-        if [[ -f "${BREW_FILE}.tmp" ]]; then
-          mv "${BREW_FILE}.tmp" "${BREW_FILE}"
-          echo "Removed ${type} '${name}' from Brewfile."
-        fi
-      else
-        echo "Error: grep failed with status ${grep_status} while processing ${BREW_FILE}" >&2
-        rm -f "${BREW_FILE}.tmp"
-        exit 1
-      fi
-    else
-      echo "${type} '${name}' not found in Brewfile."
-    fi
-    ;;
-
-  *)
-    echo "Unknown subcommand: ${CMD}" >&2
-    exit 1
-    ;;
-esac
+[[ "${usage_force:-false}" == "true" ]] && opts+=(--force)
+[[ "${usage_install:-false}" == "true" ]] && opts+=(--install)
+[[ "${usage_all:-false}" == "true" ]] && opts+=(--all)
+[[ "${usage_debug:-false}" == "true" ]] && opts+=(--debug)
+[[ "${usage_verbose:-false}" == "true" ]] && opts+=(--verbose)
+[[ "${usage_quiet:-false}" == "true" ]] && opts+=(--quiet)
+gum log --time Datetime --level info "brew bundle ${opts[*]}"
+brew bundle "${opts[@]}"
 '''

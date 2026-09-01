@@ -32,11 +32,12 @@
 
 # Font size in points. I.E.: 13.5pt @ 2px/pt = 27px
 # https://ghostty.org/docs/config/reference#font-size
-font-size = 16
+font-size = 15
 # The font families to use | ghostty +list-fonts
 # https://ghostty.org/docs/config/reference#font-family
 # font-family = "Fira Code Retina"
-font-family = Cascadia Code PL
+# font-family = Cascadia Code PL
+font-family = JetBrainsMonoNL NFM Thin
 # https://ghostty.org/docs/config/reference#font-style
 # font-style = Regular
 # https://ghostty.org/docs/config/reference#font-style-bold
@@ -75,7 +76,7 @@ adjust-cell-height = 10
 # Some themes are "Ayu Mirage" "Andromeda" "catppuccin-macchiato" "catppuccin-mocha" "catppuccin-frappe" "Kanagawa Wave" "tokyonight_moon"
 # https://ghostty.org/docs/config/reference#theme
 # https://ghostty.town
-theme = "TokyoNight"
+theme = TokyoNight Storm
 # Color palette for the 256 colors used by many terminal apps (https://ditig.com/256-colors-cheat-sheet). It is defined as N=COLOR where:
 # - N is 0-255 of the terminal color table. It can be decimal (default), binary (0b), octal (0o), or hexadecimal (0x).
 # - COLOR is a typical RGB color code such as #AABBCC or AABBCC, or a named X11 color
@@ -235,7 +236,7 @@ macos-shortcuts = allow
 # The opacity level (opposite of transparency) of the background.
 # A value of 1 is fully opaque and a value of 0 is fully transparent.
 # https://ghostty.org/docs/config/reference#background-opacity
-background-opacity = 1
+background-opacity = 0.99
 # Whether to blur the background when background-opacity is less than 1.
 #    a nonnegative integer specifying the blur intensity
 #    false, equivalent to a blur intensity of 0

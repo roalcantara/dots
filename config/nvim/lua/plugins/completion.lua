@@ -9,6 +9,7 @@ return {
         dependencies = { 'nvim-lua/plenary.nvim' },
       },
       'xzbdmw/colorful-menu.nvim',
+      'onsails/lspkind.nvim',
     },
     opts = function(_, opts)
       local ui_helper = require('core/ui/ui_helper')
@@ -68,7 +69,7 @@ return {
             end,
           },
           ghost_text = { enabled = true },
-        }
+        },
       }
 
       -- Configure custom sources integration
@@ -139,7 +140,7 @@ return {
             },
           },
           cmdline = {
-            module = 'blink.cmp.sources.cmdline'
+            module = 'blink.cmp.sources.cmdline',
           },
           omni = {
             module = 'blink.cmp.sources.complete_func',
@@ -204,7 +205,9 @@ return {
               kind = {
                 ellipsis = false,
                 width = { fill = true },
-                text = function(ctx) return ctx.kind end,
+                text = function(ctx)
+                  return ctx.kind
+                end,
                 highlight = ui_helper.get_kind_highlight,
               },
               kind_icon = {
@@ -217,17 +220,23 @@ return {
               },
               label_description = {
                 width = { max = 30 },
-                text = function(ctx) return ctx.label_description end,
+                text = function(ctx)
+                  return ctx.label_description
+                end,
                 highlight = 'BlinkCmpLabelDescription',
               },
               source_name = {
                 width = { max = 30 },
-                text = function(ctx) return ctx.source_name end,
+                text = function(ctx)
+                  return ctx.source_name
+                end,
                 highlight = 'BlinkCmpSource',
               },
               source_id = {
                 width = { max = 30 },
-                text = function(ctx) return ctx.source_id end,
+                text = function(ctx)
+                  return ctx.source_id
+                end,
                 highlight = 'BlinkCmpSource',
               },
             },
@@ -269,8 +278,8 @@ return {
           show_without_selection = false,
           show_with_menu = true,
           show_without_menu = true,
-          },
-        }
+        },
+      }
 
       opts.signature = {
         enabled = false,

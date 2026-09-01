@@ -1,11 +1,14 @@
 {
   "trustedtaps": [
+    "can1357/tap",
+    "olaproeis/ferrite",
     "oven-sh/bun"
+  ],
+  "trustedcasks": [
+    "stablyai/orca/orca",
+    "zzet/tap/gortex"
   ],
   "trustedformulae": [
     "can1357/tap/omp"
-  ],
-  "trustedcasks": [
-    "zzet/tap/gortex"
   ]
 }
