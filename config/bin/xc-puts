@@ -1,133 +1,81 @@
-#!/usr/bin/env zsh
-# shellcheck shell=bash disable=SC2296,SC2298,SC2168,SC2154
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154,SC2168
 
 #? puts 0.1.0
 #? Copyright (C) 200X Thomas Light
 #? License RIT (Robot Institute of Technology)
 #? This is free software: you are free to change and redistribute it.
 #? There is NO WARRANTY, to the extent permitted by law.
-#? http://docopt.org · Command-line interface description language
 
-##? xc-puts - Formats and prints a message
-##?
-##? Usage:
-##?    xc-puts [-g|--green] [-r|--red] [-y|--yellow] [-b|--blue] [-d|--debug] [-e|--error] [-f|--fatal] [-i|--info] [-w|--warn] [-p|--prefix] <message>
-##?    xc-puts -h | --help
-##?
-##? Arguments:
-##?    message       The text message to print
-##?
-##? Options:
-##?    -p, --prefix  Print message with prefix
-##?    -g, --green   Print message in green
-##?    -r, --red     Print message in red
-##?    -y, --yellow  Print message in yellow
-##?    -b, --blue    Print message in blue
-##?    -d, --debug   Print log message in debug
-##?    -e, --error   Print log message in error
-##?    -f, --fatal   Print log message in fatal
-##?    -i, --info    Print log message in info
-##?    -w, --warn    Print log message in warn
-##?    -h, --help    Show this screen
-##?
-##? Examples:
-##?    xc-puts --green 'Success!'
-##?    xc-puts --red 'Error!'
-##?    xc-puts --yellow 'Warning!'
-##?    xc-puts --prefix 'SETUP' 'Message!'
-##?    xc-puts --prefix 'SETUP' --warn 'Message!'
+#USAGE version "0.1.0"
+#USAGE about "Formats and prints a message"
+#USAGE arg "[message]" help="The text message to print"
+#USAGE flag "-p --prefix <prefix>" help="Print message with prefix"
+#USAGE flag "-g --green" help="Print message in green"
+#USAGE flag "-r --red" help="Print message in red"
+#USAGE flag "-y --yellow" help="Print message in yellow"
+#USAGE flag "-b --blue" help="Print message in blue"
+#USAGE flag "-d --debug" help="Print log message in debug"
+#USAGE flag "-e --error" help="Print log message in error"
+#USAGE flag "-f --fatal" help="Print log message in fatal"
+#USAGE flag "-i --info" help="Print log message in info"
+#USAGE flag "-w --warn" help="Print log message in warn"
+#USAGE example "xc-puts --green 'Success!'"
+#USAGE example "xc-puts --red 'Error!'"
+#USAGE example "xc-puts --yellow 'Warning!'"
+#USAGE example "xc-puts --prefix 'SETUP' 'Message!'"
+#USAGE example "xc-puts --prefix 'SETUP' --warn 'Message!'"
 
-readonly XC_PUTS_ROOT="${${(%):-%x}:a:h}"
+emulate -L zsh
+setopt no_unset pipe_fail
 
-_xc_usage_find() {
-  if command -v xc-usage >/dev/null 2>&1; then
-    command xc-usage "$@"
-    return $?
-  fi
-  if [[ -x "${XC_PUTS_ROOT}/xc-usage" ]]; then
-    "${XC_PUTS_ROOT}/xc-usage" "$@"
-    return $?
-  fi
-  print -u2 "xc-puts: xc-usage not found on PATH or at ${XC_PUTS_ROOT}/xc-usage"
-  return 127
-}
-
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-  _xc_usage_find "${0:a}"
-  exit $?
-fi
-
-_has_command() {
-  command -v "$1" >/dev/null 2>&1
-}
-
-local message
-local color=""
-local level=""
-local prefix_val=""
-local zsh_color=""
-
-zparseopts -D -E -F \
-  p:=prefix_val -prefix:=prefix_val \
-  g=green -green=green \
-  r=red -red=red \
-  y=yellow -yellow=yellow \
-  b=blue -blue=blue \
-  d=debug -debug=debug \
-  e=error -error=error \
-  f=fatal -fatal=fatal \
-  i=info -info=info \
-  w=warn -warn=warn ||
-  return 1
-
-message="$1"
-
-if [[ -z "$message" ]]; then
-  _xc_usage_find "${0:a}" >&2
+if [[ -z "${usage_message:-}" ]]; then
+  usage zsh "${0:a}" --help >&2
   exit 1
 fi
 
-local prefix_value=""
-if (( ${#prefix_val} )); then
-  prefix_value="${prefix_val[2]}"
-fi
+local message="$usage_message"
+local prefix_value="${usage_prefix:-}"
+local level=""
+local color=""
+local zsh_color=""
 
-if (( ${#debug} )); then
+if [[ -n "${usage_debug:-}" ]]; then
   level="debug"
-elif (( ${#error} )); then
+elif [[ -n "${usage_error:-}" ]]; then
   level="error"
-elif (( ${#fatal} )); then
+elif [[ -n "${usage_fatal:-}" ]]; then
   level="fatal"
-elif (( ${#info} )); then
+elif [[ -n "${usage_info:-}" ]]; then
   level="info"
-elif (( ${#warn} )); then
+elif [[ -n "${usage_warn:-}" ]]; then
   level="warn"
 fi
 
-if (( ${#green} || ${#debug} )); then
+if [[ -n "${usage_green:-}" || -n "${usage_debug:-}" ]]; then
   color="#04B575"
   zsh_color="%F{green}"
-elif (( ${#red} || ${#error} || ${#fatal} )); then
+elif [[ -n "${usage_red:-}" || -n "${usage_error:-}" || -n "${usage_fatal:-}" ]]; then
   color="#F44336"
   zsh_color="%F{red}"
-elif (( ${#yellow} || ${#warn} )); then
+elif [[ -n "${usage_yellow:-}" || -n "${usage_warn:-}" ]]; then
   color="#F4AC45"
   zsh_color="%F{yellow}"
-elif (( ${#blue} || ${#info} )); then
+elif [[ -n "${usage_blue:-}" || -n "${usage_info:-}" ]]; then
   color="#2196F3"
   zsh_color="%F{blue}"
 fi
 
-if _has_command gum; then
+if command -v gum >/dev/null 2>&1; then
   if [[ -n "$level" ]]; then
-    if (( ${#prefix_val} )); then
+    if [[ -n "$prefix_value" ]]; then
       gum log --time DateTime --level "$level" --prefix="$prefix_value" "$message"
     else
       gum log --time DateTime --level "$level" "$message"
     fi
   else
-    if (( ${#prefix_val} )); then
-      gum style --foreground "$color" --prefix "$prefix_value" "$message"
+    if [[ -n "$prefix_value" ]]; then
+      gum style --foreground "$color" "$prefix_value: $message"
     else
       gum style --foreground "$color" "$message"
     fi
@@ -136,17 +84,27 @@ if _has_command gum; then
 fi
 
 if [[ -n "$level" ]]; then
-  local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-  local level_upper=$(echo "$level" | tr '[:lower:]' '[:upper:]')
-  if (( ${#prefix_val} )); then
+  local timestamp
+  timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+  local level_upper
+  level_upper=$(echo "$level" | tr '[:lower:]' '[:upper:]')
+  if [[ -n "$prefix_value" ]]; then
     print -P "%F{white}${timestamp}%f ${zsh_color}${level_upper}%f %F{gray}${prefix_value}:%f ${message}"
   else
     print -P "%F{white}${timestamp}%f ${zsh_color}${level_upper}%f ${message}"
   fi
 else
-  if [[ -n "$zsh_color" ]]; then
-    print -P "${zsh_color}${message}%f"
+  if [[ -n "$prefix_value" ]]; then
+    if [[ -n "$zsh_color" ]]; then
+      print -P "%F{gray}${prefix_value}:%f ${zsh_color}${message}%f"
+    else
+      print "${prefix_value}: ${message}"
+    fi
   else
-    print "$message"
+    if [[ -n "$zsh_color" ]]; then
+      print -P "${zsh_color}${message}%f"
+    else
+      print "$message"
+    fi
   fi
 fi
