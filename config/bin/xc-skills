@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env -S usage bash
+# shellcheck shell=bash
 set -euo pipefail
 
 # | Agent                                    | Project/Local PATH       | Global PATH                     |
@@ -53,79 +54,33 @@ set -euo pipefail
 # | `pochi`                                  | `.pochi/skills/`         | `~/.pochi/skills/`              |
 # | `adal`                                   | `.adal/skills/`          | `~/.adal/skills/`               |
 
-##? xc-skills - Synchronize skill symlinks across AI agent directories
-##?
-##? Usage:
-##?   xc-skills <subcommand> [options]
-##?   xc-skills sync [--dry-run] [--prune] [-s|--source PATH] [-a|--agent <agent>]...
-##?                  [-t|--target <path>]... [-l|--local]
-##?   xc-skills collect [--dry-run] [-s|--source PATH] [-a|--agent <agent>]...
-##?                    [-t|--target <path>]... [-l|--local]
-##?   xc-skills -h | --help
-##?
-##? Subcommands:
-##?   sync     Mirror symlinks from source to one or more target or agent paths
-##?   collect  Bring regular files from agent dirs into source; replace with symlinks
-##?
-##? Notes:
-##?   - -a/--agent and -t/--target can each be given multiple times
-##?   - -s/--source can only be given once
-##?   - -l/--local can only be given once; applies to all -a/--agent resolutions
-##?   - When neither -a nor -t is given, sync uses the default destination list
-##?   - When -l/--local is given without -a/--agent, it has no effect
-##?   - Agent lookup table: see script header comments or xc-skills sync -h
-##?
-##? Examples:
-##?   xc-skills sync
-##?   xc-skills collect --dry-run
-##?   xc-skills sync -h
-##?   xc-skills sync -a cursor -a codex
+#USAGE cmd "sync" help="Mirror symlinks from source to one or more target or agent paths" {
+#USAGE   flag "--dry-run" help="Print actions without making filesystem changes"
+#USAGE   flag "--prune" help="Remove destination symlinks not present in source"
+#USAGE   flag "-s --source <PATH>" help="Source directory (default: ~/.claude/skills)"
+#USAGE   flag "-a --agent <agent>..." help="Agent name; resolved via lookup table (repeatable)"
+#USAGE   flag "-t --target <path>..." help="Target directory path (repeatable)"
+#USAGE   flag "-l --local" help="Use project/local path instead of global path for agents"
+#USAGE   example "xc-skills sync"
+#USAGE   example "xc-skills sync --dry-run"
+#USAGE   example "xc-skills sync --prune"
+#USAGE   example "xc-skills sync -s ~/.claude/skills -a antigravity"
+#USAGE   example "xc-skills sync -s ~/.claude/skills -t ~/.gemini/antigravity/skills --dry-run --prune"
+#USAGE }
+#USAGE cmd "collect" help="Bring regular files from agent dirs into source; replace with symlinks" {
+#USAGE   flag "--dry-run" help="Print actions without making filesystem changes"
+#USAGE   flag "-s --source <PATH>" help="Source directory (default: ~/.agents/skills)"
+#USAGE   flag "-a --agent <agent>..." help="Agent name; resolved via lookup table (repeatable)"
+#USAGE   flag "-t --target <path>..." help="Target directory path (repeatable)"
+#USAGE   flag "-l --local" help="Use project/local path instead of global path for agents"
+#USAGE   example "xc-skills collect --dry-run"
+#USAGE }
 
-### Subcommand help blocks (parsed by xc-usage; not shown in help output) ###
+#? skills 0.1.0
+#? License RIT (Robot Institute of Technology)
 
-##? xc-skills sync - Mirror symlinks from source to one or more target or agent paths
-##?
-##? Usage:
-##?   xc-skills sync [--dry-run] [--prune] [-s|--source PATH]
-##?                  [-a|--agent <agent>]... [-t|--target <path>]... [-l|--local]
-##?   xc-skills sync -h | --help
-##?
-##? Options:
-##?   --dry-run               Print actions without making filesystem changes
-##?   --prune                 Remove destination symlinks not present in source
-##?   -s, --source PATH       Source directory (default: ~/.claude/skills)
-##?   -a, --agent NAME        Agent name; resolved via lookup table (repeatable)
-##?   -t, --target PATH       Target directory path (repeatable)
-##?   -l, --local             Use project/local path instead of global path for agents
-##?   -h, --help              Show this screen
-##?
-##? Notes:
-##?   Agent paths are listed in the script header (# | Agent table).
-##?
-##? Examples:
-##?   xc-skills sync
-##?   xc-skills sync --dry-run
-##?   xc-skills sync --prune
-##?   xc-skills sync -s ~/.claude/skills -a antigravity
-##?   xc-skills sync -s ~/.claude/skills -t ~/.gemini/antigravity/skills --dry-run --prune
-
-##? xc-skills collect - Bring regular files from agent dirs into source; replace with symlinks
-##?
-##? Usage:
-##?   xc-skills collect [--dry-run] [-s|--source PATH]
-##?                     [-a|--agent <agent>]... [-t|--target <path>]... [-l|--local]
-##?   xc-skills collect -h | --help
-##?
-##? Options:
-##?   --dry-run               Print actions without making filesystem changes
-##?   -s, --source PATH       Source directory (default: ~/.agents/skills)
-##?   -a, --agent NAME        Agent name; resolved via lookup table (repeatable)
-##?   -t, --target PATH       Target directory path (repeatable)
-##?   -l, --local             Use project/local path instead of global path for agents
-##?   -h, --help              Show this screen
-##?
-##? Examples:
-##?   xc-skills collect --dry-run
+#USAGE version "0.1.0"
+#USAGE about "Synchronize skill symlinks across AI agent directories"
 
 SCRIPT_NAME="${0##*/}"
 declare SCRIPT_PATH
@@ -142,7 +97,7 @@ warn() { printf 'WARN: %s\n' "$*" >&2; }
 err() { printf 'ERROR: %s\n' "$*" >&2; }
 
 usage() {
-  command xc-usage "$SCRIPT_PATH"
+  command usage bash "$SCRIPT_PATH" --help
 }
 
 run_cmd() {
@@ -358,10 +313,6 @@ cmd_sync() {
         fi
         local_flag=1
         ;;
-      -h|--help)
-        usage
-        exit 0
-        ;;
       -*)
         err "Unknown option: $1"
         usage >&2
@@ -403,22 +354,27 @@ cmd_sync() {
   local -a source_entries=("$source_dir"/*)
   shopt -u nullglob
 
-  local source_link_count=0
-  for src in "${source_entries[@]}"; do
-    [[ -L "$src" ]] && source_link_count=$((source_link_count + 1))
-  done
-
-  if ((source_link_count == 0)); then
-    warn "No symlinks found in source directory: $source_dir"
+  if [[ ${#source_entries[@]} -eq 0 ]]; then
+    err "Source directory has no symlinks to sync: $source_dir"
     exit 1
   fi
 
-  # ── build destination list ────────────────────────────────────────────────
+  local has_symlinks=0
+  for entry in "${source_entries[@]}"; do
+    if [[ -L "$entry" ]]; then
+      has_symlinks=1
+      break
+    fi
+  done
 
-  local dest_dirs=()
+  if ((!has_symlinks)); then
+    err "Source directory has no symlinks to sync: $source_dir"
+    exit 1
+  fi
+
+  # ── validate agent names if given ─────────────────────────────────────────
+
   local base_pwd="$PWD"
-
-  # Validate agents before doing anything else
   for agent in "${agents[@]}"; do
     if ! resolve_agent_path "$agent" "$local_flag" "$base_pwd" >/dev/null 2>&1; then
       err "Unknown agent: $agent"
@@ -426,54 +382,70 @@ cmd_sync() {
     fi
   done
 
+  # ── build destination list ────────────────────────────────────────────────
+
+  local -a destinations=()
+
   if [[ ${#agents[@]} -eq 0 && ${#explicit_targets[@]} -eq 0 ]]; then
-    # Backward-compatible default list
-    dest_dirs=(
-      "$HOME/.gemini/antigravity/skills"
-      "$HOME/.codex/skills"
-      "$HOME/.kiro/skills"
-      "$HOME/.cursor/skills"
-      "$HOME/.gemini/skills"
-      "$HOME/.copilot/skills"
-      "$HOME/.config/opencode/skills"
-    )
+    # Default destinations: all known agents (global or local based on -l)
+    local table_ref
+    if ((local_flag)); then
+      declare -n table_ref=AGENT_PROJECT_PATH
+    else
+      declare -n table_ref=AGENT_GLOBAL_PATH
+    fi
+    for agent in "${!table_ref[@]}"; do
+      local resolved
+      resolved=$(resolve_agent_path "$agent" "$local_flag" "$base_pwd")
+      destinations+=("$resolved")
+    done
   else
+    # Explicit destinations
     for agent in "${agents[@]}"; do
       local resolved
       resolved=$(resolve_agent_path "$agent" "$local_flag" "$base_pwd")
-      dest_dirs+=("$resolved")
+      destinations+=("$resolved")
     done
     for target in "${explicit_targets[@]}"; do
-      dest_dirs+=("$target")
+      destinations+=("$target")
     done
   fi
 
-  # ── run sync ─────────────────────────────────────────────────────────────
+  # Deduplicate destinations
+  local -A seen_dests=()
+  local -a unique_destinations=()
+  for dest in "${destinations[@]}"; do
+    if [[ -z "${seen_dests[$dest]+set}" ]]; then
+      seen_dests[$dest]=1
+      unique_destinations+=("$dest")
+    fi
+  done
 
-  log "Source: $source_dir ($source_link_count symlinks)"
+  # ── perform synchronization ───────────────────────────────────────────────
 
   local overall_errors=0
 
-  for dest in "${dest_dirs[@]}"; do
-    local created=0
-    local replaced=0
-    local unchanged=0
-    local skipped_non_symlink=0
-    local pruned=0
-    local errors=0
+  for dest in "${unique_destinations[@]}"; do
+    local created=0 replaced=0 unchanged=0 skipped_non_symlink=0 pruned=0 errors=0
 
+    # Ensure destination directory exists
     if [[ ! -d "$dest" ]]; then
       if ! run_cmd /bin/mkdir -p "$dest"; then
-        warn "Cannot create destination directory (skipping): $dest"
+        err "Cannot create destination directory: $dest"
+        errors=$((errors + 1))
+        overall_errors=$((overall_errors + 1))
+        log "Destination: $dest | created=$created replaced=$replaced unchanged=$unchanged skipped_non_symlink=$skipped_non_symlink pruned=$pruned errors=$errors"
         continue
       fi
     fi
 
-    if [[ ! -w "$dest" ]] && ! ((dry_run)); then
-      warn "Destination is not writable (skipping): $dest"
+    # Ensure destination directory is writable
+    if [[ ! -w "$dest" ]]; then
+      warn "Destination directory is not writable, skipping: $dest"
       continue
     fi
 
+    # Sync each symlink from source
     for src in "${source_entries[@]}"; do
       [[ -L "$src" ]] || continue
 
@@ -577,7 +549,6 @@ cmd_collect() {
         if ((local_flag_count > 1)); then err "--local can only be given once"; exit 1; fi
         local_flag=1
         ;;
-      -h|--help) usage; exit 0 ;;
       -*) err "Unknown option: $1"; usage >&2; exit 1 ;;
       *)  err "Unexpected argument: $1"; usage >&2; exit 1 ;;
     esac
@@ -707,7 +678,6 @@ main() {
   case "$1" in
     sync)    shift; cmd_sync "$@" ;;
     collect) shift; cmd_collect "$@" ;;
-    -h|--help) usage; exit 0 ;;
     -*) err "Unknown option: $1"; usage >&2; exit 1 ;;
     *)  err "Unknown subcommand: $1"; usage >&2; exit 1 ;;
   esac

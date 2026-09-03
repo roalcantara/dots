@@ -18,7 +18,7 @@ const skipWhenOtherScenario = (id: string) =>
   selected !== "" && selected !== id;
 const script = scriptPath("xc-skills");
 
-const basePath = `${binRoot}:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin`;
+const basePath = `${binRoot}:${Bun.env.PATH ?? ""}:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin`;
 
 function decode(bytes: Uint8Array): string {
   return new TextDecoder().decode(bytes);
