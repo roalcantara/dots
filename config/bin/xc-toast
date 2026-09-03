@@ -1,59 +1,34 @@
-#!/usr/bin/env zsh
-# shellcheck shell=bash disable=SC2296,SC2298,SC1035,SC1072
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154,SC2168,SC2046
 
 #? toast 0.1.0
 #? License RIT (Robot Institute of Technology)
 #? This is free software: you are free to change and redistribute it.
 #? There is NO WARRANTY, to the extent permitted by law.
-#? http://docopt.org · Command-line interface description language
 
-##? xc-toast - Display a toast message
-##?
-##? Usage:
-##?      xc-toast <message> [duration] [type]
-##?      xc-toast -h | --help
-##?
-##? Arguments:
-##?     message               The message to display.
-##?     duration              The duration of the toast in seconds (default: 3).
-##?     type                  The type of toast to display (info|success|error|warning).
-##?
-##? Options:
-##?     -h, --help   Show this screen
-##?
-##? Examples:
-##?     xc-toast "Hello, world!"
-##?     xc-toast "Hello, world!" 5
-##?     xc-toast "Hello, world!" 5 error
+#USAGE version "0.1.0"
+#USAGE about "Display a terminal toast notification overlay"
+#USAGE arg "[message]" help="The message to display"
+#USAGE arg "[duration_pos]" help="The duration of the toast in seconds"
+#USAGE arg "[type_pos]" help="The type of toast to display (info|success|error|warning)"
+#USAGE flag "-d --duration <duration>" help="Duration in seconds" default="3"
+#USAGE flag "-t --type <type>" help="Type of toast (info|success|error|warning)" default="info"
+#USAGE example "xc-toast 'Hello, world!'"
+#USAGE example "xc-toast 'Hello, world!' 5"
+#USAGE example "xc-toast 'Hello, world!' 5 error"
+#USAGE example "xc-toast 'Process started' -d 3 -t info"
 
-readonly XC_TOAST_ROOT="${${(%):-%x}:a:h}"
+emulate -L zsh
+setopt no_unset pipe_fail
 
-_xc_usage_find() {
-  if command -v xc-usage >/dev/null 2>&1; then
-    command xc-usage "$@"
-    return $?
-  fi
-  if [[ -x "${XC_TOAST_ROOT}/xc-usage" ]]; then
-    "${XC_TOAST_ROOT}/xc-usage" "$@"
-    return $?
-  fi
-  print -u2 "xc-toast: xc-usage not found on PATH or at ${XC_TOAST_ROOT}/xc-usage"
-  return 127
-}
-
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-  _xc_usage_find "${0:a}"
-  exit $?
-fi
-
-local message="$1"
-local duration="${2:-3}"
-local type="${3:-info}"
-
-if [[ -z "$message" ]]; then
-  _xc_usage_find "${0:a}" >&2
+if [[ -z "${usage_message:-}" ]]; then
+  usage zsh "${0:a}" --help >&2
   exit 1
 fi
+
+local message="$usage_message"
+local duration="${usage_duration_pos:-${usage_duration:-3}}"
+local type="${usage_type_pos:-${usage_type:-info}}"
 
 local bg fg icon
 case "$type" in
@@ -78,9 +53,9 @@ echo -n "${bg}${fg} ${icon} ${message} ${reset}"
 tput rc
 
 (
-  sleep $duration
+  sleep "$duration"
   tput sc
   tput cup 0 $(($(tput cols) - ${#message} - 6))
   printf ' %.0s' $(seq 1 $((${#message} + 6)))
   tput rc
-) &!
+) & disown
