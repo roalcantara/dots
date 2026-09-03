@@ -417,101 +417,101 @@ pager=config --get core.pager
 
 # Extract the first 7 characters of a commit hash
 # @example: git grep-commit
-grep-commit=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" grep-commit
+grep-commit=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" grep-commit
 
 # Get the last word in a line, often used to get the last part of a branch name
 # @example: git tail
-tail=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" tail
+tail=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" tail
 
 # Extract the branch name from a string
 # @example: git grep-branch
-grep-branch=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" grep-branch
+grep-branch=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" grep-branch
 
 # Print current branch name (no remotes/origin/ prefix)
 # @example: git head-branch
-head-branch=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" head-branch
+head-branch=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" head-branch
 
 # Extract the file name from a string, removing the status prefix
 # @example: git strip " M  file.txt" => "file.txt"
 # @example: git strip "??  file2.txt" => "file2.txt"
-strip=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" strip
+strip=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" strip
 
 # Preview the diff of a modified file or the whole new file
 # @example: git preview " M  file.txt"
-preview=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" preview
+preview=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" preview
 
 # Remove files from the repository that match a given pattern
 # @example: git remove-files '[pattern]'
-remove-files=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" remove-files
+remove-files=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" remove-files
 
 # Interactively search through all configuration settings and their origins
 # @example: git cfgz
-cfgz=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" cfgz
+cfgz=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" cfgz
 
 # List all local branches except HEAD
 # @example: git branches
-branches=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" branches
+branches=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" branches
 
 # Delete branches that are merged, excluding main, master, develop and current
 # @example: git clear-merged
-clear-merged=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" clear-merged
+clear-merged=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" clear-merged
 
 # Delete branches whose remote tracking is gone (branches deleted on remote but still present locally)
 # @example: git clear-gone
-clear-gone=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" clear-gone
+clear-gone=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" clear-gone
 
 # List remote branches for a specified remote (default: origin)
 # @example: git remote-branches [remote-name]
-remote-branches=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" remote-branches
+remote-branches=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" remote-branches
 
 # Deinitialize and remove a specified submodule
 # @example: git remove-submodule [submodule-path]
-remove-submodule=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" remove-submodule
+remove-submodule=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" remove-submodule
 
 # Synchronize and update all submodules recursively
 # @example: git update-submodules
-update-submodules=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" update-submodules
+update-submodules=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" update-submodules
 # Perform an autosrebase starting from the parent of a specified commit
 # @example: git rebase-from [commit]
-rebase-from=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" rebase-from
+rebase-from=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" rebase-from
 
 # Begin an autosrebase, setting the latest commit to be edited
 # @example: git edit [commit]
-edit=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" edit
+edit=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" edit
 
 # Start an autosrebase, dropping the latest commit
 # @example: git drop [commit]
-drop=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" drop
+drop=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" drop
 
 # Begin an autosrebase, rewording the latest commit
 # @example: git reword [commit]
-reword=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" reword
+reword=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" reword
 
 # Return the root commit hash
 # @example: git root-commit
-root-commit=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" root-commit
+root-commit=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" root-commit
 
 # Create a fixup commit for the root commit and autosquash it
 # @example: git fix-root
-fix-root=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fix-root
+fix-root=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fix-root
 
 # Create a fixup commit for a specified commit and autosquash it (including the root commit!)
 # Pair with: xc-git fixup-suggest -q to choose target safely before git fix
 # @example: git fix [commit]
-fix=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fix
+fix=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fix
 
 # Create a fixup commit for a specified commit - without autosquashing it
 # @example: git fixup [commit]
-fixup=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fixup
+fixup=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fixup
 
 # Create a squash commit for a specified commit
 # @example: git squash [commit]
-squash=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" squash
+squash=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" squash
 
 # Stage all changes and create a fixup commit for a specified commit
 # Pair with: xc-git fixup-suggest -q to pick the right target
 # @example: git fix-all [commit]
-fix-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fix-all
+fix-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fix-all
 
 # Suggest fixup target from branch history, or open commit editor (no guess commits).
 # Implementation: xc-git fixup-suggest
@@ -528,115 +528,115 @@ fixup-suggest=!xc-git fixup-suggest
 
 # Stage all changes and create a squash commit for a specified commit
 # @example: git squash-all [commit]
-squash-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" squash-all
+squash-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" squash-all
 
 # Show patches for all stashes
 # @example: git patches
-patches=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" patches
+patches=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" patches
 
 # Pull from origin (git pull) each folder in the current directory that is a git repository and is NOT dirty
 # @example: git pull-all
-pull-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pull-all
+pull-all=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" pull-all
 
 # Pull with rebase from the origin remote for the main branch
 # @example: git uu
-uu=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" uu
+uu=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" uu
 
 # Pull with rebase from the upstream remote for the main branch
 # @example: git uup
-uup=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" uup
+uup=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" uup
 
 # Push the current branch to the origin remote with verbose output
 # @example: git p
-p=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" p
+p=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" p
 
 # Force push (with lease) the current branch to the origin remote with verbose output
 # @example: git pf
-pf=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pf
+pf=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" pf
 
 # Push all branches to the origin remote with verbose output
 # @example: git pa
-pa=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pa
+pa=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" pa
 
 # Push tags of the current branch to the origin remote with verbose output
 # @example: git pt
-pt=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pt
+pt=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" pt
 
 # Push the current branch to the origin remote and set it as upstream with verbose output
 # @example: git pc
-pc=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pc
+pc=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" pc
 
 # Pull and then push the current branch to/from the origin remote with verbose output
 # @example: git pp
-pp=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" pp
+pp=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" pp
 
 # Interactive log view using fzf to select a commit (gitx → xc-git log-fzf)
 # @example: git fzl
 # @example: git lol
 # @example: git fzlog
-lol=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" lol
-fzlog=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzlog
-fzl=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzl
+lol=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" lol
+fzlog=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzlog
+fzl=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzl
 
 # Shows the diff of the changes not staged for commit
 # @example: git fzdiff [options]
-fzdiff=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzdiff
+fzdiff=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzdiff
 
 # Interactive add using fzf to select multiple files with changes
 # @example: git fza
-fza=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fza
+fza=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fza
 
 # Interactive unstage using fzf to select unstaged files
 # @example: git fzu
-fzu=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzu
+fzu=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzu
 
 # Interactive unstage staged files using fzf
 # @example: git fzus
-fzus=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzus
+fzus=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzus
 
 # Interactive checkout branch using fzf
 # @example: git fzc
-fzc=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzc
+fzc=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzc
 
 # Interactive delete branch using fzf (preview: xc-git branch-preview)
 # @example: git fzb
-fzb=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzb
+fzb=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzb
 
 # Interactive rebase using fzf to select a commit
 # @example: git fzr
-fzr=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzr
+fzr=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzr
 
 # Interactive fixup using fzf to select a commit
 # @example: git fzf
-fzf=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzf
+fzf=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzf
 
 # Interactive reword using fzf to select a commit
 # @example: git fzw
-fzw=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzw
+fzw=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzw
 
 # Interactive edit using fzf to select a commit
 # @example: git fze
-fze=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fze
+fze=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fze
 
 # Interactive drop commit using fzf
 # @example: git fzd
-fzd=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzd
+fzd=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzd
 
 # Interactive soft reset using fzf
 # @example: git fzhs
-fzhs=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzhs
+fzhs=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzhs
 
 # Interactive hard reset using fzf
 # @example: git fzhh
-fzhh=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzhh
+fzhh=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzhh
 
 # Interactive unstage files using fzf
 # @example: git fzunstage
-fzunstage=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" fzunstage
+fzunstage=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" fzunstage
 
 # Select the N git commit logs and format the output as YAML
 # @example: git to-yaml 8 | pbcopy
-to-yaml=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx" to-yaml
+to-yaml=!zsh "${XDG_CONFIG_HOME:-$HOME/.config}/bin/gitx" to-yaml
 
 [init]
 defaultBranch = main

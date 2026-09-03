@@ -4,11 +4,8 @@
 # SEE: config/homebrew/mise.toml / config/homebrew/README.md.
 
 # TAPS
-tap "can1357/tap", trusted: true
 tap "olaproeis/ferrite", trusted: true
-tap "oven-sh/bun", trusted: true
 tap "zzet/tap", trusted: { casks: ["gortex"] }
-tap  "stablyai/orca", trusted: { casks: ["orca"] }
 
 # CORE FORMULAE
 brew "act" # Run your GitHub Actions locally
@@ -52,12 +49,13 @@ brew "libyaml" # YAML parser
 brew "lua-language-server" # Language server for Lua
 brew "mermaid-cli" # CLI for Mermaid
 brew "mise" # Polyglot runtime manager
+brew "mole" # Deep clean and optimize your Mac
 brew "neovim" # Text editor focused on extensibility
 brew "nodejs" # JavaScript runtime and package manager support
-brew "opencode" # Terminal AI coding agent
+# brew "opencode" # Terminal AI coding agent
 brew "openjdk" # Java development kit
 brew "openssl@3" # Cryptography and TLS toolkit
-brew "oven-sh/bun/bun" # JavaScript runtime, bundler, and package manager
+brew "oven-sh/bun/bun", trusted: true # JavaScript runtime, bundler, and package manager
 brew "pinentry-mac" # Pinentry for GPG on macOS
 brew "pkl" # Pkl language CLI
 brew "pkl-lsp" # Pkl language server
@@ -78,6 +76,7 @@ brew "sops" # Secrets file encryption and management
 brew "sqlite" # SQLite command-line interface
 brew "starship" # Cross-shell prompt
 brew "tealdeer" # Fast tldr client
+brew "television" # General purpose fuzzy finder TUI
 brew "tombi" # TOML formatter, linter, and language server
 brew "tree" # Display directories as trees
 brew "tree-sitter" # Incremental parsing library
@@ -92,15 +91,16 @@ brew "zsh" # UNIX shell
 # DESKTOP AND BROWSER APPS
 cask_args appdir: "/Applications"
 cask "amethyst" # Tiling window manager for macOS
-cask "antigravity" # Agent orchestration platform
 cask "antigravity-cli" # Terminal interface for Antigravity agents
 cask "antigravity-ide" # AI coding agent IDE
+cask "antigravity" # Agent orchestration platform
 cask "bitwarden" # Password manager
 cask "brave-browser" # Privacy-focused browser
+cask "c0desurfer/tap/swift-salamander", trusted: true # Dual-pane file manager for local folders and network storage
 cask "chatgpt" # ChatGPT desktop app
-cask "claude" # Anthropic Claude app
 cask "claude-code" # Claude for code editing
-cask "claude-devtools" # Claude session analysis tools
+# cask "claude-devtools" # Claude session analysis tools
+cask "claude" # Anthropic Claude app
 cask "codex" # OpenAI coding agent
 cask "copilot-cli@prerelease" # Copilot coding agent CLI
 cask "cursor" # AI-first code editor
@@ -108,18 +108,23 @@ cask "docker-desktop" # Container tooling
 cask "firefox" # Firefox browser
 cask "gcloud-cli" # Google Cloud SDK
 cask "ghostty" # GPU-accelerated terminal emulator
-cask "github" # GitHub desktop app
 cask "github-copilot-app" # GitHub Copilot app
+cask "github" # GitHub desktop app
 cask "google-chrome" # Chrome browser
 cask "google-drive" # Google Drive client
 cask "google-gemini" # Google Gemini app
-cask "karabiner-elements" # Keyboard remapping tool
+# cask "karabiner-elements" # Keyboard remapping tool
+# cask "opencode-desktop" # AI coding agent desktop client
 cask "raycast" # Command launcher and automation hub
-cask "supacode" # Terminal coding agents command center
+cask "simple-comic" # Comic viewer/reader
+# cask "stablyai/orca/orca", trusted: true # IDE for orchestrating AI coding agents across terminals and worktrees
+# cask "supacode" # Terminal coding agents command center
 cask "visual-studio-code" # VS Code editor
 cask "vlc" # VLC media player
-cask "warp" # Terminal with AI features
+cask "vorssaint" # Menu bar toolkit with keep-awake, system monitor and volume mixer
+# cask "warp" # Terminal with AI features
 cask "whatsapp" # WhatsApp desktop app
+cask "yacreader" # Comic reader
 cask "zed" # Multiplayer code editor
 
 # FONTS
@@ -150,13 +155,4 @@ uv "debugpy"
 uv "code-review-graph"
 uv "graphifyy"
 
-# vi: set ft=rb# General purpose fuzzy finder TUI
-brew "television"
-# AI coding agent desktop client
-cask "opencode-desktop"
-# Terminal for orchestrating agents
-# cask "superset"
-# Native macOS terminal on libghostty with a workspace/session sidebar
-# cask "umputun/apps/agterm"
-# IDE for orchestrating AI coding agents across terminals and worktrees
-cask "stablyai/orca/orca"
+# vi: set ft=rb

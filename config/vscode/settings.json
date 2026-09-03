@@ -485,14 +485,14 @@
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "explorer.confirmPasteNative": false,
-  "explorer.excludeGitIgnore": false,
+  "explorer.excludeGitIgnore": true,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "*.ts": "${capture}.js",
     "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
     "*.jsx": "${capture}.js",
     "*.tsx": "${capture}.ts",
-    "tsconfig.json": "tsconfig.*.json",
+    "tsconfig.json": "tsconfig.*.json, tsconfig.tsbuildinfo, tsconfig.*.tsbuildinfo",
     "package.json": "package-lock.json, .babelrc, .browserslistrc, .dockerignore, .editorconfig, .eslintignore, .eslintrc.*, .gitignore, .graphqlrc.*, .nvmrc, .prettierignore, .prettierrc.*, babel.config.json, cypress.json, jest.config.ts, jest.preset.js, nx.json, package.json, tsconfig.base.json, tsconfig.json, workspace.json, yarn.lock, vercel.json, netlify.toml, pnpm-lock.yaml, webpack.config.js, .prettierrc, .npmrc, CHANGELOG.md, LICENSE, .cursorrules, vitest.config.ts, raycast-env.d.ts, eslint.config.mjs, eslint.config.js, .pre-commit-config.yaml, .gitlint, bun.lockb, biome.jsonc, bun.lock, bunfig.toml, CHANGELOG.md, Dockerfile, knip.jsonc, LICENSE, renovate.json5, .release-it.yml, .jscpd.json, .dependency-cruiser.cjs, .hadolint.yaml",
     "AGENTS.md": "CLAUDE.md, .mcp.json",
     "mise.toml": "mise.*.toml, mise.lock",
@@ -1690,5 +1690,11 @@
   ],
   "[pkl]": {
     "editor.defaultFormatter": "Pkl.pkl-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "dprint.dprint"
   }
 }

@@ -1,6 +1,8 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2296,SC2298,SC2178,SC2206
 
+#USAGE version "0.1.0"
+#USAGE about "Interactive launcher for xc-* tools"
 #USAGE cmd "list" help="Print discovered tools (name, path, summary)" {
 #USAGE   example "xc list"
 #USAGE }
@@ -12,8 +14,6 @@
 #USAGE   example "xc treeify '--- src/\n----- components/\n------- app/\n--------- index.js'"
 #USAGE   example "pbpaste | xc treeify"
 #USAGE }
-#USAGE version "0.1.0"
-#USAGE about "Interactive launcher for xc-* tools"
 #USAGE example "xc"
 #USAGE example "xc list"
 #USAGE example "xc up"
