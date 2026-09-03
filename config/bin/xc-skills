@@ -54,6 +54,15 @@ set -euo pipefail
 # | `pochi`                                  | `.pochi/skills/`         | `~/.pochi/skills/`              |
 # | `adal`                                   | `.adal/skills/`          | `~/.adal/skills/`               |
 
+#USAGE cmd "ls" help="List, preview, and manage installed skills via fzf" {
+#USAGE   flag "-s --source <PATH>" help="Source directory containing skills (default: ~/.agents/skills)"
+#USAGE   flag "-l --local" help="Use project-local skills directory ($PWD/.agents/skills)"
+#USAGE   flag "-r --raw" help="Print skill folder paths to stdout without launching fzf"
+#USAGE   example "xc-skills ls"
+#USAGE   example "xc-skills ls -l"
+#USAGE   example "xc-skills ls -s ~/.config/agents/skills"
+#USAGE   example "xc-skills ls --raw"
+#USAGE }
 #USAGE cmd "sync" help="Mirror symlinks from source to one or more target or agent paths" {
 #USAGE   flag "--dry-run" help="Print actions without making filesystem changes"
 #USAGE   flag "--prune" help="Remove destination symlinks not present in source"
@@ -98,6 +107,22 @@ err() { printf 'ERROR: %s\n' "$*" >&2; }
 
 usage() {
   command usage bash "$SCRIPT_PATH" --help
+}
+
+_copy_to_clipboard() {
+  if command -v pbcopy >/dev/null 2>&1; then
+    pbcopy
+  elif [[ -n "${WAYLAND_DISPLAY:-}" ]] && command -v wl-copy >/dev/null 2>&1; then
+    wl-copy
+  elif [[ -n "${DISPLAY:-}" ]] && command -v xclip >/dev/null 2>&1; then
+    xclip -selection clipboard
+  elif [[ -n "${DISPLAY:-}" ]] && command -v xsel >/dev/null 2>&1; then
+    xsel --clipboard --input
+  else
+    local data
+    data="$(base64 | tr -d '\n')"
+    printf '\e]52;c;%s\a' "$data" >/dev/tty
+  fi
 }
 
 run_cmd() {
