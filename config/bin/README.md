@@ -87,6 +87,28 @@ git lol                # → gitx → xc-git log-fzf
 mise run xc-git:specs
 ```
 
+### xc-skills
+
+Multi-agent AI skill manager and interactive browser: **`xc-skills`**
+
+| Subcommand | Purpose | Example |
+| ---------- | ------- | ------- |
+| `ls` | Interactive fzf skill browser + markdown preview + keybindings | `xc-skills ls` |
+| `sync` | Mirror skill symlinks from source to target/agent directories | `xc-skills sync` |
+| `collect` | Harvest regular skill files from agent dirs into source | `xc-skills collect --dry-run` |
+
+**Interactive `xc-skills ls` Keybindings:**
+
+- `↵`: Output selected skill path(s)
+- `Tab` / `Shift-Tab`: Multi-select toggle
+- `Ctrl-O`: Open selected `SKILL.md` in `$EDITOR` (`nvim`)
+- `Ctrl-N`: Copy skill folder name(s) to system clipboard
+- `Ctrl-P`: Copy skill path(s) (`~/.agents/skills/...`) to system clipboard
+- `Ctrl-U`: Update selected skill(s) via `skills update`
+- `Esc`: Exit
+
+**Symlink:** `ln -sf ~/.config/bin/xc-skills ~/.local/bin/xc-skills`
+
 ### Portable tool symlinks
 
 ```sh

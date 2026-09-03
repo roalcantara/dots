@@ -1,6 +1,8 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2296,SC2298,SC2178,SC2206,SC2076
 
+#USAGE version "0.1.0"
+#USAGE about "Interactive Fabric pattern runner with fzf/gum fallbacks"
 #USAGE cmd "run" help="Run a named pattern against stdin, clipboard, or URL" {
 #USAGE   arg "[pattern]" help="Fabric pattern name"
 #USAGE   arg "[url]" help="Optional URL; omit to use stdin or clipboard"
@@ -109,8 +111,6 @@
 #USAGE   flag "--debug" help="Log fzf preview template and a dry-run sample to stderr"
 #USAGE   example "xc-fabric scrape https://example.com"
 #USAGE }
-#USAGE version "0.1.0"
-#USAGE about "Interactive Fabric pattern runner with fzf/gum fallbacks"
 #USAGE example "xc-fabric"
 #USAGE example "xc-fabric ls --raw"
 #USAGE example "echo \"Hello\" | xc-fabric run summarize --raw"

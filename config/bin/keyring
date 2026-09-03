@@ -1,6 +1,8 @@
 #!/usr/bin/env -S usage bash
 # shellcheck shell=bash disable=SC2154,SC2034
 
+#USAGE version "0.1.0"
+#USAGE about "System keyring manager wrapping macOS security and Linux secret-tool"
 #USAGE cmd "get" help="Get the value of specified key" {
 #USAGE   arg "<key>" help="Key name"
 #USAGE }
@@ -12,12 +14,6 @@
 #USAGE   arg "<key>" help="Key name"
 #USAGE }
 #USAGE cmd "list" help="List all keys stored in the keyring"
-
-#? keyring 0.1.0
-#? License RIT (Robot Institute of Technology)
-
-#USAGE version "0.1.0"
-#USAGE about "System keyring manager wrapping macOS security and Linux secret-tool"
 #USAGE example "keyring get my-key"
 #USAGE example "keyring set my-key secret"
 #USAGE example "keyring rm my-key"

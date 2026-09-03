@@ -1,6 +1,10 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154,SC2034
 
+#USAGE version "0.2.0"
+#USAGE about "macOS system maintenance and workflow utility"
+#USAGE flag "--export-defaults" help="Export defaults to cache directory"
+#USAGE flag "--enable-locate" help="Create/enable locate database"
 #USAGE cmd "wifi" help="Display current Wi-Fi status and SSID"
 #USAGE cmd "services" help="Manage macOS services" {
 #USAGE   arg "[action]" help="start|stop|restart"
@@ -57,14 +61,6 @@
 #USAGE   flag "--set-folders-first" help="Show folders first"
 #USAGE   flag "--unset-folders-first" help="Do not show folders first"
 #USAGE }
-
-#? osx 0.2.0
-#? License RIT (Robot Institute of Technology)
-
-#USAGE version "0.2.0"
-#USAGE about "macOS system maintenance and workflow utility"
-#USAGE flag "--export-defaults" help="Export defaults to cache directory"
-#USAGE flag "--enable-locate" help="Create/enable locate database"
 #USAGE example "osx wifi"
 #USAGE example "osx users list"
 #USAGE example "osx dock --static-only"

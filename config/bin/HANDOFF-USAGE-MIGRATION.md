@@ -168,7 +168,7 @@ unless fixing broken ones.
 | 1 | `xc-md` | ✅ Done | 3/3 |
 | 1 | `xc-puts` | ✅ Done | 8/8 |
 | 2 | `xc-toast` | ✅ Done | 7/7 |
-| 3 | `xc-skills` | ✅ Done | 38/38 |
+| 3 | `xc-skills` | ✅ Done | 44/44 |
 | 3 | `xc-git` | ✅ Done | 13/13 |
 | 4 | `xc-fabric` | ✅ Done | 22/22 |
 | 5 | `xc` (launcher) | ✅ Done | 6/6 |

@@ -23,7 +23,6 @@
 ##?   --preview [NAME]        Stacked help for xc launcher (NAME defaults from ##?)
 
 readonly XC_USAGE_SELF="${${(%):-%x}:a}"
-
 typeset -g XC_USAGE_TOOL=""
 typeset -g -a XC_USAGE_MAIN_LINES=()
 typeset -g -A XC_USAGE_SUB_LINES=()

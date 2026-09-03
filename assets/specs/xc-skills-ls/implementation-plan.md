@@ -16,7 +16,7 @@
 
 - Modify: `config/bin/xc-skills`
 
-- [ ] **Step 1: Add `#USAGE cmd "ls"` block and `__clip` helper**
+- [x] **Step 1: Add `#USAGE cmd "ls"` block and `__clip` helper**
 
 In `config/bin/xc-skills`:
 
@@ -54,12 +54,12 @@ _copy_to_clipboard() {
 }
 ```
 
-- [ ] **Step 2: Verify USAGE lint**
+- [x] **Step 2: Verify USAGE lint**
 
 Run: `usage lint config/bin/xc-skills`
 Expected: `No issues found.`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add config/bin/xc-skills
@@ -74,7 +74,7 @@ git commit -m "feat(xc-skills): Add ls command usage spec and clipboard helper"
 
 - Modify: `config/bin/xc-skills`
 
-- [ ] **Step 1: Implement `cmd_ls` function**
+- [x] **Step 1: Implement `cmd_ls` function**
 
 Implement `cmd_ls` in `config/bin/xc-skills`:
 
@@ -167,7 +167,7 @@ cmd_ls() {
 }
 ```
 
-- [ ] **Step 2: Wire `main` dispatch for `ls` and `__clip`**
+- [x] **Step 2: Wire `main` dispatch for `ls` and `__clip`**
 
 In `main()`:
 
@@ -182,7 +182,7 @@ In `main()`:
   esac
 ```
 
-- [ ] **Step 3: Run shellcheck and usage lint**
+- [x] **Step 3: Run shellcheck and usage lint**
 
 Run:
 
@@ -193,7 +193,7 @@ shellcheck config/bin/xc-skills
 
 Expected: PASS with zero errors/warnings.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add config/bin/xc-skills
@@ -208,7 +208,7 @@ git commit -m "feat(xc-skills): Implement ls command with fzf and preview"
 
 - Modify: `assets/integration/bin/xc-skills.spec.ts`
 
-- [ ] **Step 1: Write integration tests for `ls`**
+- [x] **Step 1: Write integration tests for `ls`**
 
 Add tests to `assets/integration/bin/xc-skills.spec.ts`:
 
@@ -219,12 +219,12 @@ Add tests to `assets/integration/bin/xc-skills.spec.ts`:
 - Missing directory error handling test (exits 1).
 - Empty directory handling test (exits 0 with `No skills found in <dir>`).
 
-- [ ] **Step 2: Run tests**
+- [x] **Step 2: Run tests**
 
 Run: `bun test assets/integration/bin/xc-skills.spec.ts`
 Expected: PASS (all tests pass).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add assets/integration/bin/xc-skills.spec.ts
@@ -240,11 +240,11 @@ git commit -m "test(xc-skills): Add integration tests for ls subcommand"
 - Modify: `config/bin/README.md`
 - Modify: `config/bin/HANDOFF-USAGE-MIGRATION.md`
 
-- [ ] **Step 1: Update documentation**
+- [x] **Step 1: Update documentation**
 
 Document `xc-skills ls` subcommand and keybindings in `config/bin/README.md` and `config/bin/HANDOFF-USAGE-MIGRATION.md`.
 
-- [ ] **Step 2: Run whole-suite quality checks**
+- [x] **Step 2: Run whole-suite quality checks**
 
 Run:
 
@@ -258,7 +258,7 @@ bun test assets/integration/bin/xc-md.spec.ts assets/integration/bin/xc-puts.spe
 
 Expected: All checks pass.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add config/bin/README.md config/bin/HANDOFF-USAGE-MIGRATION.md

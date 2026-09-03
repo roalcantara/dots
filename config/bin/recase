@@ -1,9 +1,6 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154,SC2004
 
-#? recase 0.1.0
-#? License RIT (Robot Institute of Technology)
-
 #USAGE version "0.1.0"
 #USAGE about "Rename files/directories to a target naming convention"
 #USAGE arg "[path]" help="File, symlink, or directory to process"

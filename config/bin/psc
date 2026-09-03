@@ -1,9 +1,6 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154
 
-#? psc 0.1.0
-#? License RIT (Robot Institute of Technology)
-
 #USAGE version "0.1.0"
 #USAGE about "Copies the pass|gopass key value to clipboard"
 #USAGE arg "[key]" help="Secret path in gopass"

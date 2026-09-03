@@ -1,6 +1,8 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154,SC2034
 
+#USAGE version "0.1.0"
+#USAGE about "PATH, command, file, and setup diagnostic utilities"
 #USAGE cmd "path" help="PATH manipulation utilities" {
 #USAGE   flag "--list" help="List all PATH entries"
 #USAGE   flag "--remove <path>" help="Remove path from PATH"
@@ -21,12 +23,6 @@
 #USAGE   flag "--debugging" help="Enable debugging"
 #USAGE   flag "--xdg <path>" help="Run XDG setup with custom path"
 #USAGE }
-
-#? zsys 0.1.0
-#? License RIT (Robot Institute of Technology)
-
-#USAGE version "0.1.0"
-#USAGE about "PATH, command, file, and setup diagnostic utilities"
 #USAGE example "zsys path --list"
 #USAGE example "zsys cmd --exists git"
 #USAGE example "zsys cmd --path git"

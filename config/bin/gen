@@ -1,9 +1,6 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154
 
-#? gen 0.1.0
-#? License RIT (Robot Institute of Technology)
-
 #USAGE version "0.1.0"
 #USAGE about "Completion script generator from command --help"
 #USAGE arg "[toolname]" help="CLI command name to generate completions for"

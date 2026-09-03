@@ -1,6 +1,8 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154,SC2034
 
+#USAGE version "0.1.0"
+#USAGE about "Dotfiles manager, environment diagnostics, and workflow dispatcher"
 #USAGE cmd "env" help="Show environment variables"
 #USAGE cmd "path" help="List PATH entries"
 #USAGE cmd "fpath" help="List FPATH entries"
@@ -20,12 +22,6 @@
 #USAGE cmd "git" help="Forward commands to xc-git" {
 #USAGE   arg "[args...]" help="Arguments forwarded to xc-git"
 #USAGE }
-
-#? dots 0.1.0
-#? License RIT (Robot Institute of Technology)
-
-#USAGE version "0.1.0"
-#USAGE about "Dotfiles manager, environment diagnostics, and workflow dispatcher"
 #USAGE example "dots env"
 #USAGE example "dots path"
 #USAGE example "dots palette"

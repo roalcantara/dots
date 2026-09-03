@@ -1,6 +1,8 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2296,SC2298,SC2168,SC2154,SC2016
 
+#USAGE version "0.1.0"
+#USAGE about "Git helpers (branch preview, fixup suggest, log fzf)"
 #USAGE cmd "branch-preview" help="fzf branch preview (gum + delta)" {
 #USAGE   arg "<branch>" help="Local branch name to preview"
 #USAGE   example "xc-git branch-preview main"
@@ -17,12 +19,6 @@
 #USAGE   arg "[action]" help="Optional gitx action: rebase-from, fix, reword, edit, drop, reset-soft, reset-hard"
 #USAGE   example "xc-git log-fzf fix"
 #USAGE }
-
-#? git 0.1.0
-#? License RIT (Robot Institute of Technology)
-
-#USAGE version "0.1.0"
-#USAGE about "Git helpers (branch preview, fixup suggest, log fzf)"
 
 # ── Optional gum styling ─────────────────────────────────────────
 

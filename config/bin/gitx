@@ -1,6 +1,8 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154,SC2034,SC2086
 
+#USAGE version "0.1.0"
+#USAGE about "Git workflow dispatcher and interactive fzf rebase helper"
 #USAGE cmd "cnb" help="Smart create branch with commit picker" {
 #USAGE   arg "[branch]" help="Branch name"
 #USAGE }
@@ -73,12 +75,6 @@
 #USAGE cmd "head-branch" help="Print current branch"
 #USAGE cmd "strip" help="Strip status prefix"
 #USAGE cmd "preview" help="Preview status line"
-
-#? gitx 0.1.0
-#? License RIT (Robot Institute of Technology)
-
-#USAGE version "0.1.0"
-#USAGE about "Git workflow dispatcher and interactive fzf rebase helper"
 #USAGE example "gitx cnb feature/foo"
 #USAGE example "gitx branches"
 #USAGE example "gitx head-branch"

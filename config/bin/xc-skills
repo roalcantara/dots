@@ -54,6 +54,8 @@ set -euo pipefail
 # | `pochi`                                  | `.pochi/skills/`         | `~/.pochi/skills/`              |
 # | `adal`                                   | `.adal/skills/`          | `~/.adal/skills/`               |
 
+#USAGE version "0.1.0"
+#USAGE about "Manage skills"
 #USAGE cmd "ls" help="List, preview, and manage installed skills via fzf" {
 #USAGE   flag "-s --source <PATH>" help="Source directory containing skills (default: ~/.agents/skills)"
 #USAGE   flag "-l --local" help="Use project-local skills directory ($PWD/.agents/skills)"
@@ -84,12 +86,6 @@ set -euo pipefail
 #USAGE   flag "-l --local" help="Use project/local path instead of global path for agents"
 #USAGE   example "xc-skills collect --dry-run"
 #USAGE }
-
-#? skills 0.1.0
-#? License RIT (Robot Institute of Technology)
-
-#USAGE version "0.1.0"
-#USAGE about "Synchronize skill symlinks across AI agent directories"
 
 SCRIPT_NAME="${0##*/}"
 declare SCRIPT_PATH

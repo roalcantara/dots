@@ -1,9 +1,6 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154
 
-#? yw 0.1.0
-#? License RIT (Robot Institute of Technology)
-
 #USAGE version "0.1.0"
 #USAGE about "List, select, and run Yarn workspace scripts"
 #USAGE arg "[package]" help="Target Yarn workspace package name"
