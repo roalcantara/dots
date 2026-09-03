@@ -1,24 +1,19 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154
+
 #? dots 0.1.0
 #? License RIT (Robot Institute of Technology)
 #? This is free software: you are free to change and redistribute it.
 #? There is NO WARRANTY, to the extent permitted by law.
 
-##? xc-md - Render markdown from stdin: glow → bat → plain
-##?
-##? Usage:
-##?   xc-md < input.md
-##?   echo '# Title' | xc-md
-##?   xc-usage <target> --md
-##?
-##? Options:
-##?   -h, --help    Show this screen
+#USAGE version "0.1.0"
+#USAGE about "Render markdown from stdin: glow → bat → plain"
+#USAGE example "xc-md < input.md"
+#USAGE example "echo '# Title' | xc-md"
+#USAGE example "xc-usage <target> --md"
 
 emulate -L zsh
-
-case "${1:-}" in
-  -h|--help) command xc-usage "${0:a}"; exit $? ;;
-esac
+setopt no_unset pipe_fail
 
 if command -v glow >/dev/null 2>&1; then
   glow - 2>/dev/null || cat

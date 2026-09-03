@@ -16,7 +16,7 @@ describe("xc-md", () => {
       });
       expect(r.exitCode).toBe(0);
       const out = new TextDecoder().decode(r.stdout);
-      expect(out).toContain("Usage");
+      expect(out).toContain("Usage:");
       expect(out).toContain("xc-md");
     });
 
@@ -26,6 +26,9 @@ describe("xc-md", () => {
         stderr: "pipe",
       });
       expect(r.exitCode).toBe(0);
+      const out = new TextDecoder().decode(r.stdout);
+      expect(out).toContain("Usage:");
+      expect(out).toContain("xc-md");
     });
   });
 
