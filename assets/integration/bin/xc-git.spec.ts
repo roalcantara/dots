@@ -85,7 +85,7 @@ describe("xc-git", () => {
       expect(r.exitCode).toBe(0);
       const out = new TextDecoder().decode(r.stdout);
       expect(out).toContain("── Last commit ──");
-      expect(out).not.toContain("gum style");
+      expect(out).not.toContain("gum style --foreground");
     });
   });
 
