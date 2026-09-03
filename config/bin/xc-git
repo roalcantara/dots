@@ -1,110 +1,28 @@
-#!/usr/bin/env zsh
-# shellcheck shell=bash disable=SC2296,SC2298
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2296,SC2298,SC2168,SC2154,SC2016
 
-##? xc-git - Git helpers (branch preview, fixup suggest, log fzf)
-##?
-##? Usage:
-##?   xc-git <subcommand> [options] [args...]
-##?
-##? Subcommands:
-##?   branch-preview <branch>     fzf branch preview (gum + delta)
-##?   fixup-suggest [opts] [-- paths]   safe fixup target or new commit
-##?   log-fzf [action]            interactive git log (fzf + gitx)
-##?
-##?   xc-git -h | --help
-##?
-##? Examples:
-##?   xc-git -h
-##?   xc-git branch-preview main
-##?   xc-git fixup-suggest --dry-run config/bin/README.md
-##?   xc-git log-fzf fix
-##?
-##? Run 'xc-git <subcommand> -h' for subcommand help.
+#USAGE cmd "branch-preview" help="fzf branch preview (gum + delta)" {
+#USAGE   arg "<branch>" help="Local branch name to preview"
+#USAGE   example "xc-git branch-preview main"
+#USAGE }
+#USAGE cmd "fixup-suggest" help="Safe fixup target or new commit" {
+#USAGE   flag "-b --base <ref>" help="Upstream integrated branch (default: origin/main)" default="origin/main"
+#USAGE   flag "-n --top <count>" help="Show at most N ranked commits (default: 10)" default="10"
+#USAGE   flag "-q --best" help="Print only the top commit short hash (for scripts)"
+#USAGE   flag "--dry-run" help="Do not run git commit when no fixup target exists"
+#USAGE   arg "[paths...]" help="Paths to inspect for commit history"
+#USAGE   example "xc-git fixup-suggest --dry-run config/bin/README.md"
+#USAGE }
+#USAGE cmd "log-fzf" help="Interactive git log (fzf + gitx)" {
+#USAGE   arg "[action]" help="Optional gitx action: rebase-from, fix, reword, edit, drop, reset-soft, reset-hard"
+#USAGE   example "xc-git log-fzf fix"
+#USAGE }
 
-### Subcommand help blocks (parsed by xc-usage; not shown in help output) ###
+#? git 0.1.0
+#? License RIT (Robot Institute of Technology)
 
-##? xc-git branch-preview - Display branch metadata and recent commits
-##?
-##? Usage:
-##?   xc-git branch-preview <branch>
-##?   xc-git branch-preview -h | --help
-##?
-##? Arguments:
-##?   branch    Local branch name to preview
-##?
-##? Examples:
-##?   xc-git branch-preview main
-##?   fzf --preview 'xc-git branch-preview {}'
-
-##? xc-git fixup-suggest - Fixup into latest branch commit that touched a path
-##?
-##? Usage:
-##?   xc-git fixup-suggest [options] [--] [path...]
-##?   xc-git fixup-suggest -h | --help
-##?
-##? Options:
-##?   -b, --base <ref>   Upstream integrated branch (default: origin/main)
-##?   -n, --top <count>  Show at most N ranked commits (default: 10)
-##?   -q, --best         Print only the top commit short hash (for scripts)
-##?   --dry-run          Do not run git commit when no fixup target exists
-##?   -h, --help         Show this screen
-##?
-##? Examples:
-##?   xc-git fixup-suggest --dry-run config/bin/README.md
-##?   git add paths && git fix "$(xc-git fixup-suggest -q -- paths)"
-
-##? xc-git log-fzf - Interactive git log (fzf); pick a commit, optional gitx actions
-##?
-##? Usage:
-##?   xc-git log-fzf [action]
-##?   xc-git log-fzf -h | --help
-##?
-##? Arguments:
-##?   action    Optional gitx action: rebase-from, fix, reword, edit, drop, reset-soft, reset-hard
-##?
-##? Examples:
-##?   xc-git log-fzf fix
-
-# ── Self-resolve ──────────────────────────────────────────────────
-
-_xc_git_resolve_self() {
-  local local_bin="${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin}/xc-git"
-  if [[ -f "$local_bin" && -x "$local_bin" ]]; then
-    REPLY="${local_bin:a}"
-    return 0
-  fi
-  local config_bin="${XDG_CONFIG_HOME:-$HOME/.config}/bin/xc-git"
-  if [[ -f "$config_bin" && -x "$config_bin" ]]; then
-    REPLY="${config_bin:a}"
-    return 0
-  fi
-  REPLY="${${(%):-%x}:a}"
-}
-
-# ── xc-usage helper ──────────────────────────────────────────────
-
-_xc_git_xc_usage() {
-  if command -v xc-usage >/dev/null 2>&1; then
-    command xc-usage "$@"
-    return $?
-  fi
-  _xc_git_resolve_self
-  local bin_dir="${REPLY:a:h:h}"  # parent of xc-git/ dir
-  if [[ -x "${bin_dir}/xc-usage" ]]; then
-    "${bin_dir}/xc-usage" "$@"
-    return $?
-  fi
-  echo "xc-git: xc-usage not found on PATH or at ${bin_dir}/xc-usage" >&2
-  return 127
-}
-
-# ── Subcommand help extraction ────────────────────────────────────
-
-_xc_git_subhelp() {
-  local sub="$1"
-  _xc_git_resolve_self
-  _xc_git_xc_usage "$REPLY" --scope "sub:${sub}"
-}
+#USAGE version "0.1.0"
+#USAGE about "Git helpers (branch preview, fixup suggest, log fzf)"
 
 # ── Optional gum styling ─────────────────────────────────────────
 
@@ -130,22 +48,14 @@ _xc_git_emit() {
     printf '%s\n' "$text"
   fi
 }
-
 # ── Subcommand: branch-preview ────────────────────────────────────
 
 _xc_git_branch_preview() {
-  _xc_git_resolve_self
-  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-    _xc_git_xc_usage "$REPLY" --scope sub:branch-preview
-    return 0
-  fi
-
-  branch="${1}"
+  local branch="${1:-}"
   if [[ -z "${branch}" ]]; then
-    _xc_git_subhelp branch-preview >&2
+    usage zsh "${0:a}" branch-preview --help >&2
     return 1
   fi
-
   _xc_git_emit 212 "── Last commit ──────────────────────"
   git show --no-patch \
     --format="%C(yellow)%h%Creset  %C(bold)%s%Creset%n%C(cyan)%an%Creset · %C(green)%ar%Creset%n%C(dim)%D%Creset" \
@@ -165,27 +75,18 @@ _xc_git_branch_preview() {
 _xc_git_fixup_suggest() {
   set -euo pipefail
 
-  _xc_git_resolve_self
-  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-    _xc_git_xc_usage "$REPLY" --scope sub:fixup-suggest
-    return 0
-  fi
 
-  _base_ref="origin/main"
-  _top_n=10
-  _quiet=0
-  _dry_run=0
+  local _base_ref="origin/main"
+  local _top_n=10
+  local _quiet=0
+  local _dry_run=0
 
   _xc_git_fixup_usage() {
-    _xc_git_subhelp fixup-suggest
+    usage zsh "${0:a}" fixup-suggest --help
   }
 
   while (($#)); do
     case "$1" in
-      -h|--help)
-        _xc_git_fixup_usage
-        return 0
-        ;;
       -b|--base)
         [[ $# -ge 2 ]] || { _xc_git_fixup_usage >&2; exit 1; }
         _base_ref="$2"
@@ -481,22 +382,12 @@ _xc_git_fixup_suggest() {
 # ── Subcommand: log-fzf ──────────────────────────────────────────
 
 _xc_git_log_fzf() {
-  _xc_git_resolve_self
-  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-    _xc_git_xc_usage "$REPLY" --scope sub:log-fzf
-    return 0
-  fi
-
-  if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-    _xc_git_subhelp log-fzf
-    return 0
-  fi
-
-  local_gx="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx"
+  local local_gx="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx"
   if [[ ! -f "$local_gx" ]]; then
     echo "xc-git log-fzf: gitx script not found at $local_gx" >&2
     exit 127
   fi
+
 
   enter_action="${1:-}"
   [[ -n "$enter_action" ]] && shift
@@ -621,17 +512,12 @@ _xc_git_log_fzf() {
 
 # ── Top-level dispatch ───────────────────────────────────────────
 
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-  _xc_git_xc_usage "${${(%):-%x}:a}"
-  exit 0
-fi
-
 if [[ -z "${1:-}" ]]; then
-  _xc_git_xc_usage "${${(%):-%x}:a}"
+  usage zsh "${0:a}" --help
   exit 1
 fi
 
-subcommand="$1"
+local subcommand="$1"
 shift
 
 case "$subcommand" in
@@ -640,7 +526,7 @@ case "$subcommand" in
   log-fzf)        _xc_git_log_fzf "$@" ;;
   *)
     echo "xc-git: unknown subcommand: ${subcommand}" >&2
-    _xc_git_xc_usage "${${(%):-%x}:a}" >&2
+    usage zsh "${0:a}" --help >&2
     exit 1
     ;;
 esac
