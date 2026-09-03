@@ -922,4 +922,89 @@ describe("xc-skills", () => {
       });
     },
   );
+
+  // ── ls subcommand tests ────────────────────────────────────────────────────
+
+  describe.skipIf(skipWhenOtherScenario("ls_help"))("ls: when help is requested", () => {
+    it("prints subcommand help with -h and --help, exits 1", () => {
+      for (const flag of ["-h", "--help"]) {
+        const r = run(["ls", flag]);
+        expect(r.exitCode).toBe(1);
+        const out = r.stdout + r.stderr;
+        expect(out).toContain("xc-skills ls");
+        expect(out).toContain("--source");
+        expect(out).toContain("--raw");
+      }
+    });
+  });
+
+  describe.skipIf(skipWhenOtherScenario("ls_raw"))("ls: when --raw is called with populated skills directory", () => {
+    it("lists discovered skill paths", () => {
+      const dir = makeTmpDir("xc-skills-ls-");
+      mkdirSync(join(dir, "skill-a"));
+      writeFileSync(join(dir, "skill-a", "SKILL.md"), "# Skill A\n");
+      mkdirSync(join(dir, "skill-b"));
+      writeFileSync(join(dir, "skill-b", "SKILL.md"), "# Skill B\n");
+      try {
+        const r = run(["ls", "--raw", "-s", dir]);
+        expect(r.exitCode).toBe(0);
+        expect(r.stdout).toContain("skill-a");
+        expect(r.stdout).toContain("skill-b");
+      } finally {
+        rmSync(dir, { recursive: true, force: true });
+      }
+    });
+  });
+
+  describe.skipIf(skipWhenOtherScenario("ls_local"))("ls: when -l is called for project-local directory", () => {
+    it("lists project-local skills", () => {
+      const projectDir = makeTmpDir("xc-skills-proj-");
+      const localSkills = join(projectDir, ".agents", "skills", "local-skill");
+      mkdirSync(localSkills, { recursive: true });
+      writeFileSync(join(localSkills, "SKILL.md"), "# Local Skill\n");
+      try {
+        const r = run(["ls", "-l", "--raw"], { cwd: projectDir });
+        expect(r.exitCode).toBe(0);
+        expect(r.stdout).toContain("local-skill");
+      } finally {
+        rmSync(projectDir, { recursive: true, force: true });
+      }
+    });
+  });
+
+  describe.skipIf(skipWhenOtherScenario("ls_missing_dir"))("ls: when target directory does not exist", () => {
+    it("exits with error mentioning missing path", () => {
+      const r = run(["ls", "-s", "/nonexistent/path/for/skills"]);
+      expect(r.exitCode).toBe(1);
+      expect(r.stderr).toContain("/nonexistent/path/for/skills");
+    });
+  });
+
+  describe.skipIf(skipWhenOtherScenario("ls_empty_dir"))("ls: when target directory is empty", () => {
+    it("prints no skills found message and exits 0", () => {
+      const emptyDir = makeTmpDir("xc-skills-empty-");
+      try {
+        const r = run(["ls", "-s", emptyDir]);
+        expect(r.exitCode).toBe(0);
+        expect(r.stdout).toContain("No skills found");
+      } finally {
+        rmSync(emptyDir, { recursive: true, force: true });
+      }
+    });
+  });
+
+  describe.skipIf(skipWhenOtherScenario("ls_non_interactive"))("ls: when invoked in non-interactive environment without --raw", () => {
+    it("gracefully falls back to raw listing", () => {
+      const dir = makeTmpDir("xc-skills-ls-fallback-");
+      mkdirSync(join(dir, "skill-c"));
+      writeFileSync(join(dir, "skill-c", "SKILL.md"), "# Skill C\n");
+      try {
+        const r = run(["ls", "-s", dir]);
+        expect(r.exitCode).toBe(0);
+        expect(r.stdout).toContain("skill-c");
+      } finally {
+        rmSync(dir, { recursive: true, force: true });
+      }
+    });
+  });
 });
