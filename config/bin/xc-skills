@@ -65,6 +65,10 @@ set -euo pipefail
 #USAGE   example "xc-skills ls -s ~/.config/agents/skills"
 #USAGE   example "xc-skills ls --raw"
 #USAGE }
+#USAGE cmd "__preview" hide=#true help="Internal preview helper" {
+#USAGE   arg "[target]" help="Target path to preview"
+#USAGE }
+#USAGE cmd "__clip" hide=#true help="Internal clipboard helper"
 #USAGE cmd "sync" help="Mirror symlinks from source to one or more target or agent paths" {
 #USAGE   flag "--dry-run" help="Print actions without making filesystem changes"
 #USAGE   flag "--prune" help="Remove destination symlinks not present in source"
@@ -118,6 +122,38 @@ _copy_to_clipboard() {
     local data
     data="$(base64 | tr -d '\n')"
     printf '\e]52;c;%s\a' "$data" >/dev/tty
+  fi
+}
+
+_preview_skill() {
+  local target="${1:-}"
+  if [[ -z "$target" ]]; then
+    return 0
+  fi
+
+  local file=""
+  if [[ -f "$target/SKILL.md" ]]; then
+    file="$target/SKILL.md"
+  elif [[ -f "$target" ]]; then
+    file="$target"
+  elif [[ -f "$target/README.md" ]]; then
+    file="$target/README.md"
+  fi
+
+  if [[ -n "$file" && -f "$file" ]]; then
+    if command -v glow >/dev/null 2>&1; then
+      glow -s dracula "$file" </dev/null
+    elif command -v bat >/dev/null 2>&1; then
+      bat --color=always -l md --paging=never "$file"
+    else
+      cat "$file"
+    fi
+  elif [[ -d "$target" ]]; then
+    echo "No SKILL.md found in $target"
+    echo ""
+    ls -la "$target"
+  else
+    echo "Target not found: $target"
   fi
 }
 
@@ -337,7 +373,7 @@ cmd_ls() {
     exit 1
   fi
 
-  local preview_cmd='file="{}/SKILL.md"; [ ! -f "$file" ] && file="{}"; if command -v glow >/dev/null 2>&1; then glow -s dracula "$file"; elif command -v bat >/dev/null 2>&1; then bat --color=always -l md --paging=never "$file"; else cat "$file"; fi'
+  local preview_cmd="\"$SCRIPT_PATH\" __preview {}"
   local header="↵ select  Tab multi  ^O edit  ^N copy-name  ^P copy-path  ^U update  Esc exit"
 
   local scope_flag="-g"
@@ -789,7 +825,8 @@ main() {
     ls)      shift; cmd_ls "$@" ;;
     sync)    shift; cmd_sync "$@" ;;
     collect) shift; cmd_collect "$@" ;;
-    __clip)  _copy_to_clipboard; exit 0 ;;
+    __clip)    _copy_to_clipboard; exit 0 ;;
+    __preview) shift; _preview_skill "$@"; exit 0 ;;
     -*) err "Unknown option: $1"; usage >&2; exit 1 ;;
     *)  err "Unknown subcommand: $1"; usage >&2; exit 1 ;;
   esac
