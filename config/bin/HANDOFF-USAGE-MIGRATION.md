@@ -109,9 +109,9 @@ No per-script `_xc-*` completion files needed for usage-shebang scripts.
 
 | Tier | Script                   | Shell | Complexity                     | Integration spec                                                      |
 | ---- | ------------------------ | ----- | ------------------------------ | --------------------------------------------------------------------- |
-| 1    | [`xc-md`](xc-md)         | zsh   | Minimal (stdin pipe)           | none yet                                                              |
+| 1    | [`xc-md`](xc-md)         | zsh   | Minimal (stdin pipe)           | [`xc-md.spec.ts`](../../assets/integration/bin/xc-md.spec.ts)         |
 | 1    | [`xc-puts`](xc-puts)     | zsh   | Flat + many flags              | [`xc-puts.spec.ts`](../../assets/integration/bin/xc-puts.spec.ts)     |
-| 2    | [`xc-toast`](xc-toast)   | zsh   | **Done** — reference only      | [`xc-toast.spec.ts`](../../assets/integration/bin/xc-toast.spec.ts)   |
+| 2    | [`xc-toast`](xc-toast)   | zsh   | Positional & flags overlay     | [`xc-toast.spec.ts`](../../assets/integration/bin/xc-toast.spec.ts)   |
 | 3    | [`xc-skills`](xc-skills) | bash  | Dispatcher (`sync`, `collect`) | [`xc-skills.spec.ts`](../../assets/integration/bin/xc-skills.spec.ts) |
 | 3    | [`xc-git`](xc-git)       | zsh   | Large dispatcher + subcommands | [`xc-git.spec.ts`](../../assets/integration/bin/xc-git.spec.ts)       |
 | 4    | [`xc-fabric`](xc-fabric) | zsh   | Largest dispatcher             | [`xc-fabric.spec.ts`](../../assets/integration/bin/xc-fabric.spec.ts) |
@@ -167,7 +167,7 @@ unless fixing broken ones.
 | ---- | ------ | ------ | ----- |
 | 1 | `xc-md` | ✅ Done | 3/3 |
 | 1 | `xc-puts` | ✅ Done | 8/8 |
-| 2 | `xc-toast` | ✅ Done | 6/6 |
+| 2 | `xc-toast` | ✅ Done | 7/7 |
 | 3 | `xc-skills` | ✅ Done | 38/38 |
 | 3 | `xc-git` | ✅ Done | 13/13 |
 | 4 | `xc-fabric` | ✅ Done | 22/22 |

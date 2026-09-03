@@ -178,46 +178,59 @@ echo '# Title' | xc-md    # standalone stdin → rendered output
 
 ### CONVENTIONS
 
-Each script follows the same structure:
+Each script follows the USAGE CLI specification and shebang convention:
 
 ```zsh
-#!/usr/bin/env zsh
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154,SC2168
 
-**Canonical dispatcher shape:** see `xc-fabric` `##?` (main block + sub blocks) and
-`assets/specs/xc-usage/design.md` §11.5 ([docopt](http://docopt.org/)).
+#? <name> 0.1.0
+#? License RIT (Robot Institute of Technology)
 
-**Flat tool** (`xc-puts`, `xc-toast`, `xc-md`):
+#USAGE version "0.1.0"
+#USAGE about "One-line description of the script"
+#USAGE arg "[message]" help="The text message to print"
+#USAGE flag "-p --prefix <prefix>" help="Print message with prefix"
+#USAGE example "xc-<name> 'Hello, world!'"
 
-```text
-##? xc-<name> - One-line description
-##?
-##? Usage:
-##?   xc-<name> <arg>
-##?   xc-<name> -h | --help
-##?
-##? Arguments:
-##?   arg    What it is
-##?
-##? Examples:
-##?   fzf --preview 'xc-<name> {}' | xargs meld
+emulate -L zsh
+setopt no_unset pipe_fail
 
-case "${1:-}" in
-  -h|--help) command xc-usage "${0:a}"; exit $? ;;
-esac
+if [[ -z "${usage_message:-}" ]]; then
+  usage zsh "${0:a}" --help >&2
+  exit 1
+fi
 
 # implementation
 ```
 
-For a complete worked example see [assets/specs/xc-usage/design.md §4.2](../../assets/specs/xc-usage/design.md#42-end-to-end-example-xc-foo).
+**Multi-command dispatcher shape:** (see `xc-git` / `xc-skills` / `xc-fabric`):
+
+```zsh
+#!/usr/bin/env -S usage zsh
+
+#USAGE cmd "subcommand" help="Subcommand description" {
+#USAGE   arg "<name>" help="Positional argument"
+#USAGE   flag "-f --flag" help="Flag description"
+#USAGE   example "xc-<tool> subcommand target"
+#USAGE }
+
+#? <tool> 0.1.0
+#? License RIT (Robot Institute of Technology)
+
+#USAGE version "0.1.0"
+#USAGE about "Tool description"
+```
 
 #### RULES
 
-- Shebang is always `#!/usr/bin/env zsh`
-- Help lives in the `##?` header — no separate man page, no duplicated strings
-- `-h`/`--help` handled with `case -h|--help` + `command xc-usage "${0:a}"` at the top of the script
-- For missing required args use `command xc-usage "${0:a}" >&2`
+- Shebang is `#!/usr/bin/env -S usage zsh` or `#!/usr/bin/env -S usage bash`
+- Metadata and arguments are declared via `#USAGE` comments
+- Subcommands use `#USAGE cmd "name" { ... }` blocks
+- Top-level `-h`/`--help` is handled natively by `usage`
+- For missing required inputs, invoke `usage zsh "${0:a}" --help >&2` (or `command usage bash "$SCRIPT_PATH" --help >&2`) and exit 1
 - Scripts are self-contained — no sourcing of `~/.zshrc` or personal config
-- All dependencies (`gum`, `delta`, `bat`, `fzf`, `xc-usage`, etc.) are assumed to be on `$PATH`
+- All dependencies (`gum`, `delta`, `bat`, `fzf`, `usage`, etc.) are assumed to be on `$PATH`
 
 ### ADDING SCRIPTS
 
