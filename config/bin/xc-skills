@@ -1,5 +1,5 @@
 #!/usr/bin/env -S usage bash
-# shellcheck shell=bash
+# shellcheck shell=bash disable=SC2016
 set -euo pipefail
 
 # | Agent                                    | Project/Local PATH       | Global PATH                     |
@@ -274,6 +274,95 @@ resolve_agent_path() {
       return 1
     fi
     printf '%s/%s\n' "$HOME" "${AGENT_GLOBAL_PATH[$agent]}"
+  fi
+}
+
+# ── ls command ────────────────────────────────────────────────────────────────
+
+cmd_ls() {
+  local local_flag=0
+  local raw=0
+  local explicit_source=""
+
+  while (($# > 0)); do
+    case "$1" in
+      -l|--local) local_flag=1 ;;
+      -r|--raw) raw=1 ;;
+      -s|--source)
+        shift
+        if (($# == 0)); then err "--source requires a PATH argument"; usage >&2; exit 1; fi
+        explicit_source="$1"
+        ;;
+      -*) err "Unknown option: $1"; usage >&2; exit 1 ;;
+      *)  err "Unexpected argument: $1"; usage >&2; exit 1 ;;
+    esac
+    shift
+  done
+
+  local source_dir=""
+  if [[ -n "$explicit_source" ]]; then
+    source_dir="$explicit_source"
+  elif ((local_flag)); then
+    source_dir="$PWD/.agents/skills"
+  else
+    source_dir="$HOME/.agents/skills"
+  fi
+
+  if [[ ! -d "$source_dir" ]]; then
+    err "Skills directory not found: $source_dir"
+    exit 1
+  fi
+
+  shopt -s nullglob
+  local -a entries=("$source_dir"/*)
+  shopt -u nullglob
+
+  local -a skills=()
+  for entry in "${entries[@]}"; do
+    local base="${entry##*/}"
+    [[ "$base" == .* ]] && continue
+    if [[ -d "$entry" || -f "$entry" ]]; then
+      skills+=("$entry")
+    fi
+  done
+
+  if [[ ${#skills[@]} -eq 0 ]]; then
+    log "No skills found in $source_dir"
+    exit 0
+  fi
+
+  if ((raw)) || [[ ! -t 1 || ! -t 0 ]]; then
+    printf '%s\n' "${skills[@]}"
+    exit 0
+  fi
+
+  if ! command -v fzf >/dev/null 2>&1; then
+    err "fzf is required for interactive mode. Use --raw for script output."
+    exit 1
+  fi
+
+  local preview_cmd='file="{}/SKILL.md"; [ ! -f "$file" ] && file="{}"; if command -v glow >/dev/null 2>&1; then glow -s dracula "$file"; elif command -v bat >/dev/null 2>&1; then bat --color=always -l md --paging=never "$file"; else cat "$file"; fi'
+  local header="↵ select  Tab multi  ^O edit  ^N copy-name  ^P copy-path  ^U update  Esc exit"
+
+  local scope_flag="-g"
+  ((local_flag)) && scope_flag="-p"
+
+  local selected
+  selected=$(printf '%s\n' "${skills[@]}" | fzf \
+    --multi \
+    --height="100%" \
+    --header="$header" \
+    --preview="$preview_cmd" \
+    --preview-window="right:60%:wrap:border-rounded" \
+    --bind="tab:toggle+down,btab:toggle+up" \
+    --bind="ctrl-o:execute(sh -c 'files=(); for p in {+}; do [ -f \"\$p/SKILL.md\" ] && files+=(\"\$p/SKILL.md\") || files+=(\"\$p\"); done; \${EDITOR:-nvim} \"\${files[@]}\"' >/dev/tty)" \
+    --bind="ctrl-n:execute-silent(sh -c 'for p in {+}; do basename \"\$p\"; done | \"$SCRIPT_PATH\" __clip')" \
+    --bind="ctrl-p:execute-silent(sh -c 'for p in {+}; do echo \"\$p\" | sed \"s|^$HOME|~|\"; done | \"$SCRIPT_PATH\" __clip')" \
+    --bind="ctrl-u:execute(sh -c 'names=(); for p in {+}; do names+=(\"\$(basename \"\$p\")\"); done; if command -v skills >/dev/null 2>&1; then echo \"Updating skills: \${names[*]}\"; command skills update $scope_flag \"\${names[@]}\"; else echo \"ERROR: skills CLI not found on PATH\"; fi; read -n1 -r -p \"Press any key to continue...\"' >/dev/tty)" \
+  ) || true
+
+  if [[ -n "$selected" ]]; then
+    printf '%s\n' "$selected"
   fi
 }
 
@@ -701,8 +790,10 @@ main() {
   fi
 
   case "$1" in
+    ls)      shift; cmd_ls "$@" ;;
     sync)    shift; cmd_sync "$@" ;;
     collect) shift; cmd_collect "$@" ;;
+    __clip)  _copy_to_clipboard; exit 0 ;;
     -*) err "Unknown option: $1"; usage >&2; exit 1 ;;
     *)  err "Unknown subcommand: $1"; usage >&2; exit 1 ;;
   esac
