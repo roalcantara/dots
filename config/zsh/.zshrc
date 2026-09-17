@@ -10,8 +10,13 @@
   # Redirects stdout (file descriptor 1) to /dev/null
   # Then redirects stderr (file descriptor 2) to wherever stdout is going (which is now /dev/null)
   # Works in all POSIX-compliant shells (sh, dash, bash, zsh, etc.)
+  # True only when every named command exists.
   _has_command() {
-    command -v "$1" >/dev/null 2>&1
+    local _c
+    for _c in "$@"; do
+      command -v "$_c" >/dev/null 2>&1 || return 1
+    done
+    return 0
   }
 # }
 
@@ -145,14 +150,10 @@
   setopt rc_quotes   # Easier string handling | Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'
   setopt short_loops # Shorter one-line loops | Enable shortened loop syntax => It allows `for i in *; echo $i` to be used instead of `for i in *; do echo $i; done`
 
-  # [SET BY ZIM!!] Reduces notification noise | Do not print a warning message if a mail file has been accessed => `mail` will not print a warning message if a mail file has been accessed
-  setopt no_mail_warning
-  setopt no_mailwarn
-  setopt no_mailwarning
   # }
 
   # PROMPTING | http://zsh.sourceforge.io/Doc/Release/Options.html#Prompting
-  setopt transient_rprompt # Reduces notification noise | Do not print a warning message if a mail file has been accessed => `mail` will not print a warning message if a mail file has been accessed
+  setopt transient_rprompt # Remove the right prompt from previous lines, keeping scrollback clean when copying commands
   # }
 
   # SCRIPTS AND FUNCTIONS | http://zsh.sourceforge.io/Doc/Release/Options.html#Scripts-and-Functions

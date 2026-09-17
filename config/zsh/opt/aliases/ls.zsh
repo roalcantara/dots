@@ -9,12 +9,12 @@ if (( $+commands[eza] )); then
   alias la='ll -a --git'                                                                       # List all files in columns
   alias lam='la --sort=modified'                                                                 # List all files, sorted by modified date
   alias lac='la --sort=created'                                                                  # List all files, sorted by created date
-  alias lal='lal -Sa@ --color-scale'                                                            # List all files in columns (extended)
+  alias lal='la -Sa@ --color-scale'                                                             # List all files in columns (extended)
 
   alias llr='ll -R'                                                                             # Lists human readable sizes, recursively.
   alias lap='la | "$PAGER"'                                                                     # Lists human readable sizes, hidden files through pager.
-  alias lax='lla --sort=Extension'                                                               # Lists sorted by extension (GNU only).
-  alias lls='lla --sort=size -r'                                                                 # Lists sorted by size, largest last.
+  alias lax='la --sort=extension'                                                                # Lists sorted by extension
+  alias lls='la --sort=size -r'                                                                  # Lists sorted by size, largest last
   alias ltm='la --sort=modified -r'                                                             # Lists sorted by date, most recent last.
   alias llc='ltm -m'                                                                             # Lists sorted by date, most recent last, shows change time.
   alias llv='ltm -u'                                                                             # Lists sorted by date, most recent last, shows access time.

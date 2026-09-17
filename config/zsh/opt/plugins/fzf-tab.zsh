@@ -5,14 +5,6 @@
 # https://github.com/lincheney/fzf-tab-completion
 # https://zimfw.sh/docs/cheatsheet/#tab-completionhttps://zimfw.sh/docs/cheatsheet/#tab-completion
 
-# HELPERS {
-  # Redirects stdout (file descriptor 1) to /dev/null
-  # Then redirects stderr (file descriptor 2) to wherever stdout is going (which is now /dev/null)
-  # Works in all POSIX-compliant shells (sh, dash, bash, zsh, etc.)
-  _has_command() {
-    command -v "$1" >/dev/null 2>&1
-  }
-# }
 
 ## INSTALLATIONS
 # `brew install zsh zsh-completions fzf`
