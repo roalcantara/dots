@@ -4,9 +4,11 @@
   ],
   "trustedcasks": [
     "c0desurfer/tap/swift-salamander",
+    "thdxg/tap/macterm",
     "zzet/tap/gortex"
   ],
   "trustedformulae": [
+    "asmvik/formulae/yabai",
     "can1357/tap/omp",
     "oven-sh/bun/bun"
   ]

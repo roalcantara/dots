@@ -13,6 +13,7 @@ brew "age" # Simple, modern, secure file encryption
 brew "aqua" # Declarative CLI version manager
 brew "ast-grep" # Code searching, linting, rewriting
 brew "bash" # Bourne-Again shell
+brew "bbrew" # TUI for managing Homebrew, Flatpak, and Mac App Store packages
 brew "bash-language-server" # Language server for Bash
 brew "bat" # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat-extras" # Extra tools that integrate bat with the shell
@@ -52,7 +53,6 @@ brew "mise" # Polyglot runtime manager
 brew "mole" # Deep clean and optimize your Mac
 brew "neovim" # Text editor focused on extensibility
 brew "nodejs" # JavaScript runtime and package manager support
-# brew "opencode" # Terminal AI coding agent
 brew "openjdk" # Java development kit
 brew "openssl@3" # Cryptography and TLS toolkit
 brew "oven-sh/bun/bun", trusted: true # JavaScript runtime, bundler, and package manager
@@ -87,10 +87,14 @@ brew "uv" # Fast Python package installer and resolver
 brew "wakatime-cli" # WakaTime CLI
 brew "zoxide" # Smart directory navigation for the shell
 brew "zsh" # UNIX shell
+brew "asmvik/formulae/yabai", trusted: true # A tiling window manager for macos
+# brew "opencode" # Terminal AI coding agent
+# brew "asmvik/formulae/skhd", trusted: true # A tiling window manager for macos
+# brew "typester/ranma/ranma", trusted: true # A programmable macOS status bar overlay
+# brew "acsandmann/tap/rift", trusted: true # A tiling window manager for macos
 
 # DESKTOP AND BROWSER APPS
 cask_args appdir: "/Applications"
-cask "amethyst" # Tiling window manager for macOS
 cask "antigravity-cli" # Terminal interface for Antigravity agents
 cask "antigravity-ide" # AI coding agent IDE
 cask "antigravity" # Agent orchestration platform
@@ -99,12 +103,12 @@ cask "brave-browser" # Privacy-focused browser
 cask "c0desurfer/tap/swift-salamander", trusted: true # Dual-pane file manager for local folders and network storage
 cask "chatgpt" # ChatGPT desktop app
 cask "claude-code" # Claude for code editing
-# cask "claude-devtools" # Claude session analysis tools
 cask "claude" # Anthropic Claude app
 cask "codex" # OpenAI coding agent
 cask "copilot-cli@prerelease" # Copilot coding agent CLI
 cask "cursor" # AI-first code editor
 cask "docker-desktop" # Container tooling
+cask "discord" # Container tooling
 cask "firefox" # Firefox browser
 cask "gcloud-cli" # Google Cloud SDK
 cask "ghostty" # GPU-accelerated terminal emulator
@@ -113,19 +117,22 @@ cask "github" # GitHub desktop app
 cask "google-chrome" # Chrome browser
 cask "google-drive" # Google Drive client
 cask "google-gemini" # Google Gemini app
-# cask "karabiner-elements" # Keyboard remapping tool
-# cask "opencode-desktop" # AI coding agent desktop client
 cask "raycast" # Command launcher and automation hub
 cask "simple-comic" # Comic viewer/reader
-# cask "stablyai/orca/orca", trusted: true # IDE for orchestrating AI coding agents across terminals and worktrees
-# cask "supacode" # Terminal coding agents command center
 cask "visual-studio-code" # VS Code editor
 cask "vlc" # VLC media player
 cask "vorssaint" # Menu bar toolkit with keep-awake, system monitor and volume mixer
-# cask "warp" # Terminal with AI features
 cask "whatsapp" # WhatsApp desktop app
 cask "yacreader" # Comic reader
 cask "zed" # Multiplayer code editor
+cask "mark-text" # Markdown editor
+# cask "amethyst" # Tiling window manager for macOS
+# cask "claude-devtools" # Claude session analysis tools
+# cask "karabiner-elements" # Keyboard remapping tool
+# cask "opencode-desktop" # AI coding agent desktop client
+# cask "stablyai/orca/orca", trusted: true # IDE for orchestrating AI coding agents across terminals and worktrees
+# cask "supacode" # Terminal coding agents command center
+# cask "warp" # Terminal with AI features
 
 # FONTS
 cask "font-cascadia-code"
@@ -137,22 +144,22 @@ cask "font-hack-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
 
 # GO PACKAGES
-go "github.com/brutski/go-code-graph/cmd/analyze"
 go "cmd/go"
-go "go-code-graph-wrapper"
 go "cmd/gofmt"
 go "mvdan.cc/gofumpt"
+go "go-code-graph-wrapper"
 go "golang.org/x/tools/gopls"
 go "github.com/brutski/go-code-graph/cmd/import-neo4j"
 go "github.com/brutski/go-code-graph/cmd/mcp-server"
+go "github.com/brutski/go-code-graph/cmd/analyze"
 go "github.com/brutski/go-code-graph/cmd/server"
 
 npm "bun-dap-x"
-npm "@vscode/js-debug-browsers"
 npm "react-devtools"
+npm "@vscode/js-debug-browsers"
 
 uv "debugpy"
-uv "code-review-graph"
 uv "graphifyy"
+uv "code-review-graph"
 
 # vi: set ft=rb

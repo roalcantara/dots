@@ -29,7 +29,9 @@ command = "tldr --list"
 # Add a preview so you can see the content before selecting
 # https://alexpasmantier.github.io/television/getting-started/first-channel#step-3-add-preview
 [preview]
-command = "tldr '{}'"
+command = "tldr '{}' --pager --show-paths --long-options --color=always"
+# command = "tldr '{}' | glow -s dracula"
+# env = { BAT_THEME = "dracula" }
 
 # Customize the UI
 # https://alexpasmantier.github.io/television/getting-started/first-channel#step-5-customize-the-ui

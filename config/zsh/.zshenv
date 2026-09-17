@@ -65,16 +65,6 @@ if [[ -n "$z_debug" ]]; then
 fi
 # }
 
-## TERMINAL CLASSIFICATION {
-# Detect minimal terminals early so downstream startup respects this mode.
-_term_prog_l=${(L)TERM_PROGRAM}
-if [[ "$_term_prog_l" == "warp" || "$_term_prog_l" == "warpterminal" || "$_term_prog_l" == "vscode" || "$_term_prog_l" == "vscode-insider" || -n "$VSCODE_INJECTION" || -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_GIT_IPC_HANDLE" ]]; then
-  export ZSH_MINIMAL_TERMINAL=1
-  export _FLOX_SET_PROMPT=false
-fi
-unset _term_prog_l
-# }
-
 # Load XDG environment variables from .profile
 if [ -f $HOME/.profile ]; then
   source $HOME/.profile
@@ -83,6 +73,6 @@ fi
 # if .zprofile exists, source it (after XDG setup so ZDOTDIR is available)
 # Skip when non-interactive (e.g. `git branches` runs `zsh git-branches`) to avoid loading
 # .zshrc/starship/ZIM in subprocesses — prevents flicker and keeps alias fast
-if [[ ( -o login || -o interactive ) && $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zprofile" ]]; then
+if [[ (-o login || -o interactive) && $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zprofile" ]]; then
   source "$ZDOTDIR/.zprofile"
 fi

@@ -497,7 +497,7 @@
     "AGENTS.md": "CLAUDE.md, .mcp.json",
     "mise.toml": "mise.*.toml, mise.lock",
     "fallow.toml": "fallow-*.toml",
-    "hk.pkl": ".gitleaks.toml, .ls-lint.yml, .mdschema.yml, cog.toml, cchk.toml, dprint.jsonc, fallow.toml, biome.json, biome.jsonc",
+    "hk.pkl": ".gitleaks.toml, .ls-lint.yml, .mdschema.yml, cog.toml, cchk.toml, dprint.jsonc, fallow.toml, biome.json, biome.jsonc, committed.toml, doctor.config.json",
     "Gemfile": "Gemfile.*",
     ".env": ".env.*",
     ".swcrc": ".swcrc.*",
@@ -981,14 +981,15 @@
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   "[typescript][typescriptreact][javascript][javascriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome",
+    // "editor.defaultFormatter": "biomejs.biome",
+    "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
-    "editor.codeActionsOnSave": {
-      "source.fixAll": "explicit",
-      "source.fixAll.biome": "explicit",
-      "source.organizeImports.biome": "explicit"
-    }
+    // "editor.codeActionsOnSave": {
+    //   "source.fixAll": "explicit",
+    //   "source.fixAll.biome": "explicit",
+    //   "source.organizeImports.biome": "explicit"
+    // }
   },
   "[shellscript]": {
     "editor.defaultFormatter": "dprint.dprint",
@@ -1655,7 +1656,7 @@
   "json.schemaDownload.enable": true,
   "mise.binPath": "/opt/homebrew/bin/mise",
   "[toml]": {
-    "editor.defaultFormatter": "tombi-toml.tombi",
+    "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true
   },
   "typescript.experimental.useTsgo": false,
@@ -1678,7 +1679,7 @@
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "workbench.editor.enablePreview": false,
   "google.cloud.project": "evo-staging-361013",
-  "workbench.iconTheme": "material-icon-theme",
+  "workbench.iconTheme": "catppuccin-latte",
   "mise.enableTaskSymbolProvider": true,
   "gherkinRunner.showCodeLens": true,
   "gherkinRunner.showVisualCodeLens": true,
@@ -1689,12 +1690,28 @@
     "assets/features/**/*.ts"
   ],
   "[pkl]": {
-    "editor.defaultFormatter": "Pkl.pkl-vscode"
+    "editor.defaultFormatter": "dprint.dprint"
   },
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "[xml]": {
     "editor.defaultFormatter": "dprint.dprint"
+  },
+  // Files with the language type `typescriptreact` will have the `typescript-react` icon.
+  "catppuccin-icons.associations.languages": {
+    "typescriptreact": "typescript-react"
+  },
+  // Files with the `spec.ts` extension will have the `typescript-test` icon.
+  "catppuccin-icons.associations.extensions": {
+    "spec.ts": "typescript-test"
+  },
+  // Files with the name `vite.config.ts` will have the `vite` icon.
+  "catppuccin-icons.associations.files": {
+    "vite.config.ts": "vite"
+  },
+  // Folders with the name `typings/` will have the `folder_types` icon.
+  "catppuccin-icons.associations.folders": {
+    "typings": "folder_types"
   }
 }

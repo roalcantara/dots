@@ -43,7 +43,7 @@ zmodule g-plane/pnpm-shell-completion --if-command pnpm --on-pull './zplug.zsh'
 zmodule MenkeTechnologies/zsh-cargo-completion --if-command cargo
 zmodule lukechilds/zsh-better-npm-completion --if-command npm
 zmodule chrisands/zsh-yarn-completions --if-command yarn
-zmodule Aloxaf/fzf-tab --source fzf-tab.zsh --if-command fzf                                      # MUST be sourced after compinit but before other plugins
+zmodule Aloxaf/fzf-tab --source fzf-tab.zsh --if-command fzf                                 # MUST be sourced after compinit but before other plugins
 
 zmodule zdharma-continuum/fast-syntax-highlighting --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'   # MUST be sourced after completion. Skip in Warp Terminal as it has native syntax highlighting
 zmodule zsh-users/zsh-history-substring-search --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'       # MUST be sourced after syntax-highlighting. Skip in Warp Terminal as it has enhanced history search

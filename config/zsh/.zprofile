@@ -136,20 +136,9 @@
   export PUPPETEER_TIMEOUT=30000
 # }
 
-# GOPASS | https://gopass.pw {
-  # The missing password manager for teams | Load API keys from gopass if available
-  # WITHOUT ==> dots zsh --prof avg => │ USER:40ms  │ SYSTEM:20ms │ CPU:91% │ TOTAL:69ms │
-  # if _has_command gopass; then
-  #   WITH => dots zsh --prof avg => │ USER:765ms  │ SYSTEM:88ms │ CPU:92% │ TOTAL:921ms │
-  #   export ANTHROPIC_API_KEY=$(gopass show -n --password tokens/anthropic.com)
-  #   export GEMINI_API_KEY=$(gopass show -n --password tokens/gemini.google.com)
-  # fi
-# }
-
 term_prog=${(L)TERM_PROGRAM}
 if [[ -n "$ZSH_MINIMAL_TERMINAL" || "$term_prog" == "warp" || "$term_prog" == "warpterminal" || "$term_prog" == "vscode" || "$term_prog" == "vscode-insider" || -n "$VSCODE_INJECTION" || -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_GIT_IPC_HANDLE" ]]; then
   export ZSH_MINIMAL_TERMINAL=1
-  export _FLOX_SET_PROMPT=false
   if [[ "$term_prog" == "vscode" || "$term_prog" == "vscode-insider" ]]; then
     # IDEs work better with shims than they do environment variable modifications. The simplest way is to add the mise shim directory to PATH.
     # https://mise.jdx.dev/ide-integration.html#adding-shims-to-path-default-shell
@@ -158,6 +147,8 @@ if [[ -n "$ZSH_MINIMAL_TERMINAL" || "$term_prog" == "warp" || "$term_prog" == "w
 else
   unset ZSH_MINIMAL_TERMINAL
 fi
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 
 # if .zshrc exists, source it
 if [[ $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zshrc" ]]; then
