@@ -243,15 +243,23 @@ Additionally: `zsh -n` on every changed file, and one interactive smoke test per
 (VSCode, ghostty, Warp) covering prompt render, tab completion, history substring search,
 autosuggestion and `>` redirection over an existing file.
 
-**Projected VSCode result: ~115 ms**, from 181 ms, with four plugins added rather than
-removed. Derived from measured parts: 181.3 - 78.0 (lookup removed) + 11.3 (plugins
-re-enabled) = 114.6 ms on the `VSCODE_INJECTION=1` path, or ~118 ms on the cached-path
-fallback (+3.2 ms). Sanity check: a full-featured plain tty measures 101.5 ms, so a VSCode
-shell landing slightly above it is consistent.
+### Measured result (post-implementation)
 
-This is a projection composed from independently measured parts; it has not been measured
-end to end and must be confirmed during implementation. If the real figure differs, the real
-figure is reported.
+| Context | Before | After | Change |
+| --- | --- | --- | --- |
+| `zsh -c` | 5.9 ms | 7.6 ms | +1.7 ms |
+| `zsh -lic` plain | 207.9 ms | 232.1 ms | +24.2 ms |
+| `zsh -lic` ghostty | 203.5 ms | 235.2 ms | +31.7 ms |
+| `zsh -lic` vscode | 284.2 ms | 237.2 ms | -47.0 ms |
+| `zsh -lic` vscode+inject | 290.7 ms | 232.7 ms | -58.0 ms |
+| `zsh -lic` warp | 8.5 ms | 216.0 ms | +207.5 ms |
+
+Notes: Warp rose deliberately — it previously skipped the entire
+configuration and now loads everything except the four conflicting
+plugins. VSCode startup dropped by ~47–58 ms (from ~284–291 ms down to ~233–237 ms),
+bringing VSCode in line with plain interactive startup (~232 ms) and ghostty (~235 ms).
+The ~115 ms projection reflected an unloaded machine where plain startup was ~101 ms;
+on this machine where plain sits at ~232 ms, VSCode matches plain startup within margin of error.
 
 ## Risks
 
