@@ -47,12 +47,12 @@ describe("xc-git", () => {
   });
 
   describe.skipIf(skipWhenOtherScenario("branch_preview_help"))("branch-preview subcommand", () => {
-    it("prints subcommand help with -h and exits 1", () => {
+    it("prints subcommand help with -h and exits 0", () => {
       const r = Bun.spawnSync([script, "branch-preview", "-h"], {
         stdout: "pipe",
         stderr: "pipe",
       });
-      expect(r.exitCode).toBe(1);
+      expect(r.exitCode).toBe(0);
       const out = new TextDecoder().decode(r.stdout) + new TextDecoder().decode(r.stderr);
       expect(out).toContain("branch");
       expect(out).toContain("branch-preview");
@@ -91,12 +91,12 @@ describe("xc-git", () => {
   });
 
   describe.skipIf(skipWhenOtherScenario("fixup_suggest"))("fixup-suggest subcommand", () => {
-    it("prints subcommand help with --help and exits 1", () => {
+    it("prints subcommand help with --help and exits 0", () => {
       const r = Bun.spawnSync([script, "fixup-suggest", "--help"], {
         stdout: "pipe",
         stderr: "pipe",
       });
-      expect(r.exitCode).toBe(1);
+      expect(r.exitCode).toBe(0);
       const out = new TextDecoder().decode(r.stdout) + new TextDecoder().decode(r.stderr);
       expect(out).toContain("fixup-suggest");
       expect(out).toContain("--best");
@@ -167,12 +167,12 @@ describe("xc-git", () => {
   });
 
   describe.skipIf(skipWhenOtherScenario("log_fzf"))("log-fzf subcommand", () => {
-    it("prints subcommand help with -h and exits 1", () => {
+    it("prints subcommand help with -h and exits 0", () => {
       const r = Bun.spawnSync([script, "log-fzf", "-h"], {
         stdout: "pipe",
         stderr: "pipe",
       });
-      expect(r.exitCode).toBe(1);
+      expect(r.exitCode).toBe(0);
       const out = new TextDecoder().decode(r.stdout) + new TextDecoder().decode(r.stderr);
       expect(out).toContain("log-fzf");
     });
@@ -181,7 +181,12 @@ describe("xc-git", () => {
       const xdg = mkdtempSync(join(tmpdir(), "xc-git-spec-"));
       try {
         const r = Bun.spawnSync([script, "log-fzf"], {
-          env: { ...Bun.env, XDG_CONFIG_HOME: xdg, HOME: xdg },
+          env: {
+            ...Bun.env,
+            XDG_CONFIG_HOME: xdg,
+            HOME: xdg,
+            GITX_BIN: join(xdg, "missing-gitx"),
+          },
           stdout: "pipe",
           stderr: "pipe",
         });

@@ -378,9 +378,17 @@ _xc_git_fixup_suggest() {
 # ── Subcommand: log-fzf ──────────────────────────────────────────
 
 _xc_git_log_fzf() {
-  local local_gx="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/etc/functions/gitx"
-  if [[ ! -f "$local_gx" ]]; then
-    echo "xc-git log-fzf: gitx script not found at $local_gx" >&2
+  local local_gx="${GITX_BIN:-}"
+  if [[ -z "$local_gx" ]]; then
+    if command -v gitx >/dev/null 2>&1; then
+      local_gx="gitx"
+    elif [[ -x "${0:a:h}/gitx" ]]; then
+      local_gx="${0:a:h}/gitx"
+    fi
+  fi
+
+  if [[ -z "$local_gx" ]] || { ! command -v "$local_gx" >/dev/null 2>&1 && [[ ! -x "$local_gx" ]]; }; then
+    echo "xc-git log-fzf: gitx executable not found" >&2
     exit 127
   fi
 
@@ -414,12 +422,12 @@ _xc_git_log_fzf() {
       fix)
         enter_bind="enter:execute-silent(
               ${_h_snippet}
-              zsh \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+              \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
             )+abort" ;;
       *)
         enter_bind="enter:execute-silent(
               ${_h_snippet}
-              zsh \"$local_gx\" $enter_action \"\$h\" >/dev/tty 2>&1
+              \"$local_gx\" $enter_action \"\$h\" >/dev/tty 2>&1
             )+abort" ;;
     esac
 
@@ -431,23 +439,23 @@ _xc_git_log_fzf() {
       --bind "$enter_bind" \
       --bind "ctrl-r:execute-silent(
             ${_h_snippet}
-            zsh \"$local_gx\" rebase-from \"\$h\" >/dev/tty 2>&1
+            \"$local_gx\" rebase-from \"\$h\" >/dev/tty 2>&1
           )+abort" \
       --bind "ctrl-i:execute-silent(
             ${_h_snippet}
-            zsh \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+            \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
           )+abort" \
       --bind "ctrl-w:execute-silent(
             ${_h_snippet}
-            zsh \"$local_gx\" reword \"\$h\" >/dev/tty 2>&1
+            \"$local_gx\" reword \"\$h\" >/dev/tty 2>&1
           )+abort" \
       --bind "ctrl-e:execute-silent(
             ${_h_snippet}
-            zsh \"$local_gx\" edit \"\$h\" >/dev/tty 2>&1
+            \"$local_gx\" edit \"\$h\" >/dev/tty 2>&1
           )+abort" \
       --bind "alt-d:execute-silent(
             ${_h_snippet}
-            zsh \"$local_gx\" drop \"\$h\" >/dev/tty 2>&1
+            \"$local_gx\" drop \"\$h\" >/dev/tty 2>&1
           )+abort" \
       --bind "ctrl-s:execute-silent(
             ${_h_snippet}
@@ -471,23 +479,23 @@ _xc_git_log_fzf() {
     --bind 'esc:abort,q:abort' \
     --bind "ctrl-r:execute-silent(
           ${_h_snippet}
-          zsh \"$local_gx\" rebase-from \"\$h\" >/dev/tty 2>&1
+          \"$local_gx\" rebase-from \"\$h\" >/dev/tty 2>&1
         )+abort" \
     --bind "ctrl-i:execute-silent(
           ${_h_snippet}
-          zsh \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
+          \"$local_gx\" fix \"\$h\" >/dev/tty 2>&1 && git status --short --branch >/dev/tty
         )+abort" \
     --bind "ctrl-w:execute-silent(
           ${_h_snippet}
-          zsh \"$local_gx\" reword \"\$h\" >/dev/tty 2>&1
+          \"$local_gx\" reword \"\$h\" >/dev/tty 2>&1
         )+abort" \
     --bind "ctrl-e:execute-silent(
           ${_h_snippet}
-          zsh \"$local_gx\" edit \"\$h\" >/dev/tty 2>&1
+          \"$local_gx\" edit \"\$h\" >/dev/tty 2>&1
         )+abort" \
     --bind "alt-d:execute-silent(
           ${_h_snippet}
-          zsh \"$local_gx\" drop \"\$h\" >/dev/tty 2>&1
+          \"$local_gx\" drop \"\$h\" >/dev/tty 2>&1
         )+abort" \
     --bind "ctrl-s:execute-silent(
           ${_h_snippet}
@@ -503,7 +511,7 @@ _xc_git_log_fzf() {
         )")
 
   [[ -z "$selected" ]] && exit 0
-  echo "$selected" | zsh "$local_gx" grep-commit
+  echo "$selected" | "$local_gx" grep-commit
 }
 
 # ── Top-level dispatch ───────────────────────────────────────────

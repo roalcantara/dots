@@ -1,7 +1,7 @@
 # config/zsh — Zsh autoload functions
 
-Help conventions, command reference, and worked examples for Zsh autoload functions
-under `config/zsh/etc/functions/`.
+Help conventions, command reference, and worked examples for Zsh functions.
+All legacy autoload functions previously in `config/zsh/etc/functions/` have migrated to `config/bin/`.
 
 ## Zsh-only vs migrated
 
@@ -107,7 +107,7 @@ fi
 
 ## Migrated to bin
 
-All legacy shell functions (`barrel`, `recase`, `toast`, `yw`, `keyring`, `psc`, `pss`, `gen`, `zsys`, `dots`, `osx`, `gitx`, `puts`) have been ported to `config/bin/` as standalone scripts using the Usage CLI shebang and Charm Gum UX primitives. Legacy files under `config/zsh/etc/functions/` have been removed.
+All legacy shell functions (`barrel`, `recase`, `toast`, `yw`, `keyring`, `psc`, `pss`, `gen`, `zsys`, `dots`, `osx`, `gitx`, `puts`) have been ported to `config/bin/` as standalone scripts using the Usage CLI shebang and Charm Gum UX primitives. The legacy `config/zsh/etc/` directory and its functions have been removed.
 
 ## Authoring checklist
 
