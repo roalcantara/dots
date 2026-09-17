@@ -278,6 +278,40 @@ Plain and ghostty are unchanged within noise, as Phase A predicted.
 > "before" of 5.9 ms was also not a baseline at all but this plan's *predicted* post-Task-3
 > value.
 
+### User-visible latency (zsh-bench)
+
+Everything above measures *process* startup (`zsh -lic exit`). That is not what a human
+feels, and it is structurally blind to recurring per-command cost. Re-measured with
+[zsh-bench](https://github.com/romkatv/zsh-bench), 10 iterations, plain terminal:
+
+| Metric | Before | After | Perceptual threshold |
+| --- | --- | --- | --- |
+| `first_prompt_lag_ms` | 178.6 | 176.6 | — |
+| `first_command_lag_ms` | 182.6 | 180.7 | — |
+| `command_lag_ms` | 67.2 | **65.6** | **10 ms** |
+| `input_lag_ms` | 3.7 | 3.9 | 20 ms |
+| `exit_time_ms` | 94.9 | 94.4 | — |
+
+The restructure is neutral on all five in a plain terminal, as expected: its wins are in
+VS Code, which zsh-bench does not simulate.
+
+**The significant finding is pre-existing and was not addressed by this work.**
+`command_lag_ms` of ~66 ms is roughly 6.5x zsh-bench's calibrated threshold of 10 ms, and it
+is paid on *every* command, not once at startup. Cause is the per-prompt subprocess set:
+
+| `precmd` hook | Standalone cost |
+| --- | --- |
+| `prompt_starship_precmd` (`starship prompt`) | 78.5 ms ± 0.5 |
+| `_mise_hook_precmd` (`mise hook-env -s zsh`) | 24.5 ms ± 0.2 |
+
+`exit_time_ms` of ~94 ms (the `zshexit` `fc -W` history write) is also worth a look.
+
+This is a larger and more user-visible win than anything in this spec, and it is deliberately
+left as follow-up rather than folded in here. Note the tension with Phase B: that phase
+removed mise's `--shims` activation as redundant with the hook. Shims mode has no `precmd`
+hook at all, so reversing that specific choice is the obvious lead for the ~24 ms share —
+but shims and `hook-env` have different semantics and the swap needs its own evaluation.
+
 ## Risks
 
 | Risk | Mitigation |
