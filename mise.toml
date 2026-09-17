@@ -287,6 +287,18 @@ for h in "$hooks_dir"/*; do
 done
 echo "hk hooks installed for $(git rev-parse --show-toplevel)"
 '''
+
+[tasks."zsh:baseline"]
+description = "Capture the pre-change zsh parity baseline"
+run = "./script/zsh-verify.sh baseline"
+
+[tasks."zsh:verify"]
+description = "Check zsh syntax and parity against the captured baseline"
+run = ["./script/zsh-verify.sh syntax", "./script/zsh-verify.sh parity"]
+
+[tasks."zsh:bench"]
+description = "Benchmark zsh startup across terminal contexts"
+run = "./script/zsh-verify.sh bench"
 [settings]
 # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
 # https://mise.jdx.dev/configuration/settings.html#activate_aggressive
