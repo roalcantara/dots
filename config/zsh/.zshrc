@@ -328,7 +328,24 @@
       export SNACKS_GHOSTTY=true
       ;;
     vscode|vscode-insider)
-      : # shell integration wired up in the next task
+      # VSCODE_INJECTION=1 means VS Code already sourced its integration
+      # (shellIntegration-rc.zsh branches on it), so there is nothing to do.
+      if [[ "$VSCODE_INJECTION" != 1 ]] && _has_command code; then
+        # `code --locate-shell-integration-path zsh` boots the Electron CLI
+        # (~78ms) to return a constant path. Cache it against the app bundle.
+        typeset -g _zsh_vsc_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/vscode-shell-integration"
+        typeset -g _zsh_vsc_path=''
+        [[ -r "$_zsh_vsc_cache" ]] && _zsh_vsc_path="$(<"$_zsh_vsc_cache")"
+        if [[ ! -r "$_zsh_vsc_path" ]]; then
+          _zsh_vsc_path="$(code --locate-shell-integration-path zsh 2>/dev/null)"
+          if [[ -r "$_zsh_vsc_path" ]]; then
+            mkdir -p "${_zsh_vsc_cache:h}"
+            print -r -- "$_zsh_vsc_path" > "$_zsh_vsc_cache"
+          fi
+        fi
+        [[ -r "$_zsh_vsc_path" ]] && source "$_zsh_vsc_path"
+        unset _zsh_vsc_cache _zsh_vsc_path
+      fi
       ;;
     kiro)
       _has_command kiro && source "$(kiro --locate-shell-integration-path zsh)"
