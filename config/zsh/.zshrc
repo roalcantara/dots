@@ -284,7 +284,6 @@
   export LAUNCH_EDITOR=${LAUNCH_EDITOR:-$EDITOR}
 # }
 
-
 # SHELL {
   export SHELL=${SHELL:-"$(which zsh)"}
 # }
@@ -398,7 +397,6 @@
   # deliberately NOT exported: zim-starship assigns a command substitution
   # into it, which would then leak into every child process.
   if [[ -n "$ZSH_MINIMAL_TERMINAL" ]]; then
-    export _FLOX_SET_PROMPT=false
     setopt prompt_subst
     PROMPT='❯ '
     RPROMPT=''
@@ -467,5 +465,3 @@
     unsetopt XTRACE
   fi
 # }
-
-
