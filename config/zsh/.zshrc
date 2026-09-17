@@ -288,19 +288,6 @@
   export LAUNCH_EDITOR=${LAUNCH_EDITOR:-$EDITOR}
 # }
 
-# TERM {
-  if [ "$TERM_PROGRAM" = "ghostty" ]; then
-    if [[ -e GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration" ]]; then
-      source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
-    elif [[ -e /Applications/Ghostty.app/Contents/Resources/ghostty/shell-integration/zsh/ghostty-integration ]]; then
-      source /Applications/Ghostty.app/Contents/Resources/ghostty/shell-integration/zsh/ghostty-integration
-    fi
-    export SNACKS_GHOSTTY=true
-  elif [[ "$TERM_PROGRAM" == "vscode" ]] && _has_command code; then
-    source "$(code --locate-shell-integration-path zsh)"
-  fi
-  export TERM="${TERM:-xterm-256color}"
-# }
 
 # SHELL {
   export SHELL=${SHELL:-"$(which zsh)"}
@@ -310,6 +297,44 @@
   # gpg pinentry needs the controlling terminal. Interactive shells only:
   # $(tty) is a subprocess and is meaningless without a terminal.
   [[ -t 0 ]] && export GPG_TTY=${GPG_TTY:-"$(tty)"}
+# }
+
+# TERMINAL PROFILE {
+  # Single source of truth for terminal detection. Everything downstream
+  # (ZIM module conditions, prompt, shell integration) reads from here.
+  #
+  # ZSH_MINIMAL_TERMINAL marks a terminal that provides its own prompt,
+  # syntax highlighting and suggestions, and therefore conflicts with ours.
+  # It is NOT a general "IDE" flag: VS Code has none of those and gets the
+  # full experience. Set it yourself to force any terminal down.
+  export TERM="${TERM:-xterm-256color}"
+  typeset -g _zsh_term=${(L)TERM_PROGRAM}
+
+  if [[ -n "$ZSH_MINIMAL_TERMINAL" || "$_zsh_term" == warp(|terminal) ]]; then
+    export ZSH_MINIMAL_TERMINAL=1
+  else
+    unset ZSH_MINIMAL_TERMINAL
+  fi
+
+  case "$_zsh_term" in
+    ghostty)
+      for _zsh_ghostty in \
+        "$GHOSTTY_RESOURCES_DIR/shell-integration/zsh/ghostty-integration" \
+        /Applications/Ghostty.app/Contents/Resources/ghostty/shell-integration/zsh/ghostty-integration
+      do
+        if [[ -r "$_zsh_ghostty" ]]; then source "$_zsh_ghostty"; break; fi
+      done
+      unset _zsh_ghostty
+      export SNACKS_GHOSTTY=true
+      ;;
+    vscode|vscode-insider)
+      : # shell integration wired up in the next task
+      ;;
+    kiro)
+      _has_command kiro && source "$(kiro --locate-shell-integration-path zsh)"
+      ;;
+  esac
+  unset _zsh_term
 # }
 
 # ZIM | https://zimfw.sh {
@@ -391,12 +416,4 @@
   fi
 # }
 
-# FINAL PROMPT GUARD
-# Keep VS Code/Warp terminals on a plain prompt even if prior hooks injected prompt code.
-if [[ -n "$ZSH_MINIMAL_TERMINAL" ]]; then
-  export _FLOX_SET_PROMPT=false
-  setopt prompt_subst
-  PROMPT='❯ '
-  RPROMPT=''
-  PS1="$PROMPT"
-fi
+
