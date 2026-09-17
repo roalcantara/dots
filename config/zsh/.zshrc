@@ -306,6 +306,12 @@
   export SHELL=${SHELL:-"$(which zsh)"}
 # }
 
+# GNUPG TTY {
+  # gpg pinentry needs the controlling terminal. Interactive shells only:
+  # $(tty) is a subprocess and is meaningless without a terminal.
+  [[ -t 0 ]] && export GPG_TTY=${GPG_TTY:-"$(tty)"}
+# }
+
 # ZIM | https://zimfw.sh {
   if [[ -e $ZDOTDIR/.zimrc ]]; then
     # The Zsh configuration framework with blazing speed and modular extensions.
