@@ -19,7 +19,4 @@ fi
 
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 
-# if .zshrc exists, source it
-if [[ $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zshrc" ]]; then
-  source "$ZDOTDIR/.zshrc"
-fi
+

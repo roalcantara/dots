@@ -26,21 +26,19 @@ fi
 # Set these variables BEFORE any system files are sourced (e.g. NO_RCS)
 # It prevents compinit from being called by other sources
 export skip_global_compinit=1
-export NO_GLOBAL_RCS=1
 export MAILCHECK=0
-export ZIM_DISABLE_AUTOLOAD=1
 export DEBIAN_PREVENT_KEYBOARD_CHANGES=1
 export NVM_LAZY_LOAD=1
 export NVM_COMPLETION=true
 # }
 
 ## 🔒 PREVENT SYSTEM-WIDE RCS FILES FROM BEING SOURCED {
-# 💡 compinit override removed; NO_RCS prevents system-wide files from loading
-# It ensures only our user config is loaded, preventing compinit conflicts
-setopt NO_RCS
-setopt NO_MAILWARN
-setopt NO_MAILWARNING
+# NO_GLOBAL_RCS blocks /etc/zprofile, /etc/zshrc and /etc/zlogin without
+# blocking our own files. NO_RCS would additionally suppress .zprofile,
+# .zshrc, .zlogin and .zlogout, which is why they used to be hand-sourced.
 setopt NO_GLOBAL_RCS
+# NO_MAILWARN and NO_MAILWARNING are aliases of the same option; set once
+# in .zshrc alongside the other interactive options.
 # }
 
 ## 🌐 i18n {
@@ -205,9 +203,4 @@ fi
 # }
 # }
 
-# if .zprofile exists, source it (after XDG setup so ZDOTDIR is available)
-# Skip when non-interactive (e.g. `git branches` runs `zsh git-branches`) to avoid loading
-# .zshrc/starship/ZIM in subprocesses — prevents flicker and keeps alias fast
-if [[ (-o login || -o interactive) && $TERM_PROGRAM != "WarpTerminal" && -r "$ZDOTDIR/.zprofile" ]]; then
-  source "$ZDOTDIR/.zprofile"
-fi
+
