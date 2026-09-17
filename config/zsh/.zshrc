@@ -194,14 +194,10 @@
   zstyle ':completion:*' completer _expand _complete _correct _approximate _expand_alias _extensions _match    # Completers
   zstyle ':completion:*' format 'Completing %d'                                                                # Format
   zstyle ':completion:*' group-name ''                                                                         # Group name
-  zstyle ':completion:*' menu select=2                                                                         # Menu select
   zstyle ':completion:*' list-prompt '%S%M matches%s'                                                          # List prompt
-  zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'                                                    # Case insensitive tab completion
-  zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'                # Case senstive correction and complete partial words
   zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s                           # Select prompt
   zstyle ':completion:*' use-compctl false                                                                     # Disable compctl
   zstyle ':completion:*' complete yes                                                                          # Enable completion
-  zstyle ':completion:*' verbose true                                                                          # Verbose completion
   zstyle ':completion:*' case-sensitive no                                                                     # Case-sensitive completion
   zstyle ':completion:*' file-list all                                                                         # List all files
   zstyle ':completion:*' file-sort name                                                                        # Sort files by name
@@ -211,7 +207,6 @@
   zstyle ':completion:*' list-suffixes yes                                                                     # Show suffixes
   zstyle ':completion:*' strip-comments yes                                                                    # Strip comments
   zstyle ':completion:*' list-dirs-first yes                                                                   # List directories first
-  zstyle ':completion:*' squeeze-slashes no                                                                    # Don't squeeze slashes
   zstyle ':completion:*' fzf-search-display true                                                               # Enable fzf search display
   zstyle ':completion:*' preserve-prefix '//[^/]##/'                                                           # Preserve prefix
   zstyle ':completion:*' use-cache on                                                                          # Use cache
@@ -230,7 +225,7 @@
 
 # ZSH PARAMETERS | http://zsh.sourceforge.io/Doc/Release/Parameters.html {
   # General ZSH's parameters related to prompt
-  export PROMPT='❯ '
+  PROMPT='❯ '
   # If set, used to give the indentation between the right hand side of the right prompt in the line editor as given by RPS1 or RPROMPT and the right hand side of the screen. If not set, the value 1 is used. See https://superuser.com/a/726509/389767
   export ZLE_RPROMPT_INDENT=0
   # PATH; Where the shell searches for commands; set PATH so it includes user's private bin if it exists
@@ -354,6 +349,12 @@
   unset _zsh_term
 # }
 
+# ZIM COMPLETION DUMP {
+  # Read at runtime by ZIM's completion module, so it must be set here and
+  # not in .zimrc (which only executes when ZIM rebuilds init.zsh).
+  zstyle ':zim:completion' dumpfile "${zdumpfile:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compcache/.zcompdump}"
+# }
+
 # ZIM | https://zimfw.sh {
   if [[ -e $ZDOTDIR/.zimrc ]]; then
     # The Zsh configuration framework with blazing speed and modular extensions.
@@ -368,6 +369,39 @@
     if [[ -f $ZIM_HOME/init.zsh ]]; then
       source $ZIM_HOME/init.zsh
     fi
+  fi
+# }
+
+# POST-ZIM OVERRIDES {
+  # ZIM's modules set options and completion styles as they load. Anything
+  # we want to outrank them must run here, after init.zsh. Keep this block
+  # as the single place where ZIM defaults are overridden.
+
+  # ZIM's environment module sets NO_CLOBBER. It breaks `>` over an existing
+  # file for every script and tool that assumes zsh's default, including
+  # Claude Code. Scripts wanting protection opt in with `set -o noclobber`.
+  setopt CLOBBER
+
+  # Set once here; .zshenv previously set the same option three times.
+  setopt no_mail_warning
+
+  # Completion styles ZIM's completion module would otherwise win.
+  zstyle ':completion:*' menu select=2
+  zstyle ':completion:*' squeeze-slashes no
+  zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+  # zim-starship sets this to 1; we want the right prompt flush to the edge.
+  export ZLE_RPROMPT_INDENT=0
+
+  # Terminals that draw their own prompt get a plain one. PROMPT is
+  # deliberately NOT exported: zim-starship assigns a command substitution
+  # into it, which would then leak into every child process.
+  if [[ -n "$ZSH_MINIMAL_TERMINAL" ]]; then
+    export _FLOX_SET_PROMPT=false
+    setopt prompt_subst
+    PROMPT='❯ '
+    RPROMPT=''
+    PS1="$PROMPT"
   fi
 # }
 
