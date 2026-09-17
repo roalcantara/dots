@@ -15,11 +15,6 @@ alias -s {tar,TAR}='tar -xvf'
 
 # Similar to opt-shellAliases, but are substituted anywhere on a line.;
 # These do not have to be at the beginning of the command line
-alias -g G="| grep";
-alias -g M="| more";
-alias -g H="| head";
-alias -g T="| tail";
-alias -g L="| less";
 alias -g LTrim="sed -e 's/^[[:space:]]*//'";
 alias -g RTrim="sed -e 's/ *$//g'";
 alias -g Trim="sed -e 's/^[[:space:]]*//' -e 's/ *$//g'";

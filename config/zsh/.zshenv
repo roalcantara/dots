@@ -101,13 +101,6 @@ fi
   export HK_PKL_BACKEND=pklr
 # }
 
-# STARSHIP | https://starship.rs | https://starship.rs/config/#configuration {
-  # The minimal, blazing-fast, and infinitely customizable prompt for any shell
-  export STARSHIP_CONFIG_HOME=${STARSHIP_CONFIG_HOME:-$XDG_CONFIG_HOME/starship}
-  export STARSHIP_CONFIG=${STARSHIP_CONFIG:-$STARSHIP_CONFIG_HOME/starship.toml}
-  export STARSHIP_CACHE=${STARSHIP_CACHE:-$XDG_CACHE_HOME/starship}
-# }
-
 # GNUPG | https://gnupg.org {
   # The GNU Privacy Guard; Needed for git PGP-signed commits also needed for sops
   # https://gnupg.org/documentation/manuals/gnupg/GPG-Configuration.html

@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 #!/usr/bin/env zsh
 
 # ~/.zshrc
@@ -152,10 +159,6 @@
 
   # }
 
-  # PROMPTING | http://zsh.sourceforge.io/Doc/Release/Options.html#Prompting
-  setopt transient_rprompt # Remove the right prompt from previous lines, keeping scrollback clean when copying commands
-  # }
-
   # SCRIPTS AND FUNCTIONS | http://zsh.sourceforge.io/Doc/Release/Options.html#Scripts-and-Functions
   setopt alias_func_def    # Advanced shell customization | Allows alias and function with same name => `alias ls='ls --color=auto'` and `function ls() { command ls --color=auto "$@" }` will work
   setopt bsd_echo          # Cross-platform scripts | Makes echo behave like BSD echo => `echo "Hello\nWorld"` prints literal `\n` whereas `echo -e "Hello\nWorld"` prints on two lines
@@ -182,8 +185,6 @@
   setopt glob_dots        # Globbing | Include dotfiles in globbing
   setopt list_ambiguous   # Completion Navigation | Show unambiguous prefix first
   # }
-
-  # setopt prompt_subst
 
   # https://no-color.org
   unset NO_COLOR
@@ -225,10 +226,6 @@
 # }
 
 # ZSH PARAMETERS | http://zsh.sourceforge.io/Doc/Release/Parameters.html {
-  # General ZSH's parameters related to prompt
-  PROMPT='❯ '
-  # If set, used to give the indentation between the right hand side of the right prompt in the line editor as given by RPS1 or RPROMPT and the right hand side of the screen. If not set, the value 1 is used. See https://superuser.com/a/726509/389767
-  export ZLE_RPROMPT_INDENT=0
   # PATH; Where the shell searches for commands; set PATH so it includes user's private bin if it exists
   declare -gaU path=(${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin} ${CARGO_HOME:-$XDG_DATA_HOME/cargo/bin} ${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm/bin} ${PNPM_HOME:-$XDG_DATA_HOME/pnpm} /usr/local/{bin,sbin} $HOME/.turso $path)
   # FPATH; Where the shell searches to find shell functions
@@ -353,12 +350,30 @@
   if [[ -e $ZDOTDIR/.zimrc ]]; then
     # The Zsh configuration framework with blazing speed and modular extensions.
     if [[ ! -e $ZIM_HOME/zimfw.zsh ]]; then   # Download zimfw plugin manager if missing QUIETLY
-      mkdir -p $ZIM_HOME && wget -q -O $ZIM_HOME/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+      # Download zimfw script if missing.
+      curl -fsSLo $ZIM_HOME/zimfw.zsh --create-dirs \
+        https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
     fi
+
     # Install missing modules, and update $ZIM_HOME/init.zsh if missing or outdated
     if [[ ! $ZIM_HOME/init.zsh -nt $ZDOTDIR/.zimrc ]]; then
       source $ZIM_HOME/zimfw.zsh init -q
     fi
+
+    # ZSH PROMPTING | http://zsh.sourceforge.io/Doc/Release/Options.html#Prompting
+      setopt transient_rprompt # Remove the right prompt from previous lines, keeping scrollback clean when copying commands
+      # General ZSH's parameters related to prompt
+      PROMPT='❯ '
+      [[ -n "$ZSH_MINIMAL_TERMINAL" ]] && return
+      # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+      # Initialization code that may require console input (password prompts, [y/n]
+      # confirmations, etc.) must go above this block; everything else may go below.
+      # https://github.com/romkatv/powerlevel10k/tree/master#how-do-i-configure-instant-prompt
+      if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+        source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+      fi
+    # }
+
     # Initialize modules
     if [[ -f $ZIM_HOME/init.zsh ]]; then
       source $ZIM_HOME/init.zsh
@@ -370,6 +385,19 @@
   # ZIM's modules set options and completion styles as they load. Anything
   # we want to outrank them must run here, after init.zsh. Keep this block
   # as the single place where ZIM defaults are overridden.
+
+  # mise re-runs `mise hook-env` on EVERY prompt (measured 8.3ms steady-state).
+  # Its chpwd hook already covers directory changes, which is what actually
+  # invalidates the environment in practice, so drop the precmd hook and keep
+  # chpwd. This preserves the env vars mise exports (GOROOT, GOBIN, per-project
+  # [env] such as LUA_PATH) that `mise activate --shims` would NOT set.
+  # Trade-off: editing a mise config without changing directory needs a manual
+  # refresh -> use `mise-refresh`.
+  if (( ${+functions[_mise_hook_precmd]} )); then
+    autoload -Uz add-zsh-hook
+    add-zsh-hook -d precmd _mise_hook_precmd
+    mise-refresh() { _mise_hook --force }
+  fi
 
   # ZIM's environment module sets NO_CLOBBER. It breaks `>` over an existing
   # file for every script and tool that assumes zsh's default, including
@@ -408,7 +436,9 @@
 # }
 
 # XDG_RUNTIME_DIR {
-  # Fixes XDG_RUNTIME_DIR issues on macOS and Linux where it may be set to a non-existent directory or have incorrect permissions, which can cause issues with certain applications that rely on it for storing runtime files.
+  # Fixes XDG_RUNTIME_DIR issues on macOS and Linux where
+  # it may be set to a non-existent directory or have incorrect permissions
+  # which can cause issues with certain applications that rely on it for storing runtime files.
   __fix_xdg_runtime_dir() {
     local runtime_dir="${XDG_RUNTIME_DIR:-}"
     if [[ ! -d "$runtime_dir" ]]; then
@@ -443,6 +473,9 @@
   }
   __fix_xdg_runtime_dir
 # }
+
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
 # ZPROF {
   # profilling
