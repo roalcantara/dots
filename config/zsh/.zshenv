@@ -68,6 +68,13 @@ if [ -f $HOME/.profile ]; then
   source $HOME/.profile
 fi
 
+## 🔑 GNUPG TTY {
+# gpg pinentry needs the controlling terminal. $TTY is a native zsh parameter
+# identical to tty(1) but with no subprocess, so this is free and can live here
+# where every shell kind sees it: -lc, -lic and -ic all need it.
+[[ -n $TTY ]] && export GPG_TTY=${GPG_TTY:-$TTY}
+# }
+
 ## 📦 TOOL ENVIRONMENT {
 # Pure environment: no output, no tty access, no subprocesses.
 # Lives here (not .zprofile) so non-login shells inherit it too.

@@ -288,12 +288,6 @@
   export SHELL=${SHELL:-"$(which zsh)"}
 # }
 
-# GNUPG TTY {
-  # gpg pinentry needs the controlling terminal. Interactive shells only:
-  # $(tty) is a subprocess and is meaningless without a terminal.
-  [[ -t 0 ]] && export GPG_TTY=${GPG_TTY:-"$(tty)"}
-# }
-
 # TERMINAL PROFILE {
   # Single source of truth for terminal detection. Everything downstream
   # (ZIM module conditions, prompt, shell integration) reads from here.
