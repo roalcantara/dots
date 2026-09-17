@@ -72,7 +72,8 @@ fi
 # https://github.com/ajeetdsouza/zoxide
 # https://youtu.be/-2Nz8rn05bk
 if (( $+commands[zoxide] )); then
-  alias cd="z"
-  alias cdi="zi"
-  alias 'cd!'='builtin cd'
+  # zim-zoxide initialises zoxide with `--cmd cd`, so zoxide already defines
+  # cd() and cdi() directly. Aliasing cd->z would shadow those functions with
+  # a command that does not exist under this init mode.
+  alias 'cd!'='builtin cd'   # escape hatch to the real builtin
 fi
