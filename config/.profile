@@ -25,7 +25,5 @@ export ZSH_COMPCACHE=$HOME/.cache/zsh/compcache
 export ZSH_COMPDUMP=$HOME/.cache/zsh/compcache/.zcompdump
 export ZIM_HOME=$HOME/.local/state/zim
 export zdumpfile=$HOME/.cache/zsh/compcache/.zcompdump
-export ZDOTDIR_ETC=$HOME/.config/zsh/etc
-export ZDOTDIR_OPT=$HOME/.config/zsh/opt
 mkdir -p $ZSH_DATA_DIR $ZSH_COMPCACHE $ZIM_HOME
 # }
