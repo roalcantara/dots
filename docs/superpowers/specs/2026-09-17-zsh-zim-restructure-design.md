@@ -245,21 +245,38 @@ autosuggestion and `>` redirection over an existing file.
 
 ### Measured result (post-implementation)
 
+Measured as a **paired A/B in a single `hyperfine` invocation**: the pre-change
+configuration was reconstructed from commit `3fc2c8f` into a temporary `ZDOTDIR` and
+benchmarked interleaved with the current one. Both arms therefore see identical machine
+state, which is the only way the deltas mean anything. 25 runs, 5 warmup.
+
 | Context | Before | After | Change |
 | --- | --- | --- | --- |
-| `zsh -c` | 5.9 ms | 7.6 ms | +1.7 ms |
-| `zsh -lic` plain | 207.9 ms | 232.1 ms | +24.2 ms |
-| `zsh -lic` ghostty | 203.5 ms | 235.2 ms | +31.7 ms |
-| `zsh -lic` vscode | 284.2 ms | 237.2 ms | -47.0 ms |
-| `zsh -lic` vscode+inject | 290.7 ms | 232.7 ms | -58.0 ms |
-| `zsh -lic` warp | 8.5 ms | 216.0 ms | +207.5 ms |
+| `zsh -lic` plain | 102.0 ms ± 1.2 | 103.6 ms ± 2.2 | +1.6 ms (noise) |
+| `zsh -lic` ghostty | 103.4 ms ± 2.2 | 104.0 ms ± 6.8 | +0.6 ms (noise) |
+| `zsh -lic` vscode | 182.0 ms ± 3.2 | **106.7 ms ± 1.0** | **-75.3 ms** |
+| `zsh -lic` vscode+inject | 183.5 ms ± 2.4 | **109.7 ms ± 6.3** | **-73.8 ms** |
+| `zsh -lic` warp | 7.8 ms ± 0.2 | 94.4 ms ± 8.7 | +86.6 ms (by design) |
+| `zsh -c` | 4.8 ms ± 0.2 | 5.9 ms ± 0.2 | +1.1 ms |
 
-Notes: Warp rose deliberately — it previously skipped the entire
-configuration and now loads everything except the four conflicting
-plugins. VSCode startup dropped by ~47–58 ms (from ~284–291 ms down to ~233–237 ms),
-bringing VSCode in line with plain interactive startup (~232 ms) and ghostty (~235 ms).
-The ~115 ms projection reflected an unloaded machine where plain startup was ~101 ms;
-on this machine where plain sits at ~232 ms, VSCode matches plain startup within margin of error.
+**Goal met and beaten.** VS Code came in at 106.7 ms against a ~115 ms projection, because
+the cached-path branch costs less than the 3.2 ms budgeted. VS Code now sits ~3 ms above a
+plain terminal while running four plugins it previously had switched off.
+
+**Only one context got slower, and it was planned:** Warp previously short-circuited the
+entire configuration (7.8 ms) and so had no aliases, functions or completions at all. It now
+loads everything except the four plugins that conflict with its native UI. This is the
+documented deviation in the plan, not a regression.
+
+Plain and ghostty are unchanged within noise, as Phase A predicted.
+
+> **Superseded measurement.** An earlier revision of this section reported plain at
+> +24.2 ms and ghostty at +31.7 ms. Those figures came from two *separate* hyperfine runs
+> taken at different times under different machine load — the "before" run measured plain at
+> 207.9 ms where an unloaded machine measures 102 ms. Deltas across non-simultaneous runs on
+> a contended machine are not comparable. The paired A/B above replaces them. Its `zsh -c`
+> "before" of 5.9 ms was also not a baseline at all but this plan's *predicted* post-Task-3
+> value.
 
 ## Risks
 
