@@ -15,7 +15,7 @@ sys::dotenv() {
 
 #ABOUT Ensure XDG_RUNTIME_DIR exists and is private (0700).
 #ORDER Anywhere before first use. Uses zsh/stat, so no subprocess on the happy path.
-sys::runtime_dir() {
+sys::fix_xdg_runtime_dir() {
   emulate -L zsh
   local dir=${XDG_RUNTIME_DIR:-}
   [[ -n $dir ]] || return 0

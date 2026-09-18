@@ -35,26 +35,13 @@ term::profile                # terminal detection and shell integration
 
 source $zrc/sys.zsh          # declares: sys::dotenv, sys::runtime_dir, sys::profiling, sys::bench, sys::purge
 sys::dotenv                  # secrets from ~/.config/.env
-sys::runtime_dir             # private XDG_RUNTIME_DIR
+sys::fix_xdg_runtime_dir     # private XDG_RUNTIME_DIR
 
-source $zrc/zim.zsh          # declares: zim::dumpfile, zim::overrides
+source $zrc/zim.zsh          # declares: zim::dumpfile, zim::load, zim::overrides
 zim::dumpfile                # where ZIM writes .zcompdump
-
-# --- the framework ----------------------------------------------------------
-# ZIM | https://zimfw.sh
-if [[ -e ${ZDOTDIR:-$HOME/.config/zsh}/.zimrc ]]; then
-  if [[ ! -e $ZIM_HOME/zimfw.zsh ]]; then
-    mkdir -p $ZIM_HOME && wget -q -O $ZIM_HOME/zimfw.zsh \
-      https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
-  fi
-  if [[ ! $ZIM_HOME/init.zsh -nt ${ZDOTDIR:-$HOME/.config/zsh}/.zimrc ]]; then
-    source $ZIM_HOME/zimfw.zsh init -q
-  fi
-  [[ -f $ZIM_HOME/init.zsh ]] && source $ZIM_HOME/init.zsh
-fi
-
-# --- after the framework ----------------------------------------------------
+zim::load                    # bootstrap zimfw and source its generated init.zsh
 zim::overrides               # settings that must outrank ZIM's modules
+
 term::prompt                 # powerlevel10k configuration
 sys::profiling               # zprof teardown (no-op unless z_prof is set)
 sys::purge                   # drop the one-shot setup functions

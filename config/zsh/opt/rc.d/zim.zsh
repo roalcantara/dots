@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 # ZIM lifecycle: what it needs beforehand, and what must outrank it afterwards.
 # Loaded by .zshrc; defines functions only — nothing runs at load time.
-#DECLARES zim::dumpfile  zim::overrides
+#DECLARES zim::dumpfile  zim::load  zim::overrides
 
 #ABOUT Tell ZIM where to write the completion dump.
 #ORDER Before ZIM sources init.zsh.
@@ -56,4 +56,20 @@ zim::overrides() {
     RPROMPT=''
     PS1="$PROMPT"
   fi
+}
+
+#ABOUT Bootstrap zimfw and source the generated init.zsh.
+#ORDER After zim::dumpfile, before zim::overrides.
+zim::load() {
+  local zdot=${ZDOTDIR:-$HOME/.config/zsh}
+  [[ -e $zdot/.zimrc ]] || return 0
+  if [[ ! -e $ZIM_HOME/zimfw.zsh ]]; then
+    command mkdir -p $ZIM_HOME && command wget -q -O $ZIM_HOME/zimfw.zsh \
+      https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+  fi
+  if [[ ! $ZIM_HOME/init.zsh -nt $zdot/.zimrc ]]; then
+    source $ZIM_HOME/zimfw.zsh init -q
+  fi
+  [[ -f $ZIM_HOME/init.zsh ]] && source $ZIM_HOME/init.zsh
+  return 0
 }
