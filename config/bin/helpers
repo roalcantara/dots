@@ -1,0 +1,64 @@
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2154,SC2034
+
+#USAGE version "0.2.0"
+#USAGE about "General helper utilities"
+#USAGE cmd "puts" help="Prints messages" {
+#USAGE   arg "<level>" {
+#USAGE     choices ignore_case=#true {
+#USAGE       choice "info" help="Informational message"
+#USAGE       choice "error" help="Error message"
+#USAGE     }
+#USAGE   }
+#USAGE   arg "<message>" help="The message to print"
+#USAGE }
+#USAGE cmd "has" help="Alias for services" {
+#USAGE   arg "<command>" {
+#USAGE     choices ignore_case=#true {
+#USAGE       choice "gum" help="Checks if gum is installed"
+#USAGE       choice "fzf" help="Checks if fzf is installed"
+#USAGE     }
+#USAGE   }
+#USAGE }
+#USAGE example "helpers puts info 'This is an informational message'"
+#USAGE example "helpers puts error 'This is an error message'"
+#USAGE example "helpers has gum"
+#USAGE example "helpers has fzf"
+
+emulate -L zsh
+setopt no_unset pipe_fail extended_glob
+
+_has() {
+  case "$1" in
+    gum) [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v gum >/dev/null 2>&1 ;;
+    fzf) [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v fzf >/dev/null 2>&1 ;;
+    *) command -v "$1" >/dev/null 2>&1 ;;
+  esac
+}
+
+_puts() {
+  case "$1" in
+    info)
+      if _has gum; then
+        gum log --time DateTime --level info "$2"
+      else
+        print -P -- "%F{green}✔%f $2"
+      fi
+      ;;
+    error)
+      if _has gum; then
+        gum log --time DateTime --level error "$2"
+      else
+        print -P -- "%F{red}✘%f $2" >&2
+      fi
+      ;;
+  esac
+}
+
+if $usage_puts; then
+  _puts "$usage_level" "$usage_message"
+fi
+
+if $usage_has; then
+  _has "$usage_command"
+fi

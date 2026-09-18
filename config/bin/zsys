@@ -31,11 +31,6 @@
 emulate -L zsh
 setopt no_unset pipe_fail extended_glob
 
-if [[ $# -eq 0 ]]; then
-  usage zsh "${0:a}" --help >&2
-  exit 1
-fi
-
 subcmd="$1"
 shift || true
 

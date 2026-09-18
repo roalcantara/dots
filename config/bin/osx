@@ -7,15 +7,13 @@
 #USAGE flag "--enable-locate" help="Create/enable locate database"
 #USAGE cmd "wifi" help="Display current Wi-Fi status and SSID"
 #USAGE cmd "services" help="Manage macOS services" {
-#USAGE   arg "[action]" help="start|stop|restart"
-#USAGE   flag "--name <name>" help="Service name"
-#USAGE }
-#USAGE cmd "systemctl" help="Alias for services" {
-#USAGE   arg "[action]" help="start|stop|restart"
-#USAGE   flag "--name <name>" help="Service name"
-#USAGE }
-#USAGE cmd "launchctl" help="Alias for services" {
-#USAGE   arg "[action]" help="start|stop|restart"
+#USAGE   arg "<action>" {
+#USAGE     choices ignore_case=#true {
+#USAGE       choice "start" help="Start the service"
+#USAGE       choice "stop" help="Stop the service"
+#USAGE       choice "restart" help="Restart the service"
+#USAGE     }
+#USAGE   }
 #USAGE   flag "--name <name>" help="Service name"
 #USAGE }
 #USAGE cmd "notify" help="Display macOS desktop notification" {
@@ -69,25 +67,7 @@
 emulate -L zsh
 setopt no_unset pipe_fail extended_glob
 
-_has_gum() {
-  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v gum >/dev/null 2>&1
-}
-
-_log_info() {
-  if _has_gum; then
-    gum log --time DateTime --level info "$1"
-  else
-    print -P -- "%F{green}✔%f $1"
-  fi
-}
-
-_log_error() {
-  if _has_gum; then
-    gum log --time DateTime --level error "$1"
-  else
-    print -P -- "%F{red}✘%f $1" >&2
-  fi
-}
+source ${HOME}/Work/dots/config/bin/helpers
 
 if [[ "${usage_export_defaults:-false}" == "true" ]]; then
   echo "Exporting macOS defaults..."
@@ -99,23 +79,13 @@ if [[ "${usage_enable_locate:-false}" == "true" ]]; then
   exit 0
 fi
 
-if [[ $# -eq 0 ]]; then
-  if [[ ! -t 1 ]]; then
-    usage zsh "${0:a}" --help >&2
-    exit 1
-  fi
-  if _has_gum; then
-    subcmd=$(gum choose "wifi" "dock" "finder" "cache" "users" "groups" "sleep" "notify" "services" "system_profiler")
-    [[ -z "$subcmd" ]] && exit 0
-    set -- "$subcmd"
-  else
-    usage zsh "${0:a}" --help >&2
-    exit 1
-  fi
+if [[ "${usage_services:-false}" == "true" ]]; then
+  case "$usage_action" in
+    stop)    sudo launchctl stop "$usage_name" 2>/dev/null || true ;;
+    start)   sudo launchctl start "$usage_name" 2>/dev/null || true ;;
+    restart) sudo launchctl stop "$usage_name" 2>/dev/null || true; sudo launchctl start "$usage_name" 2>/dev/null || true ;;
+  esac
 fi
-
-subcmd="$1"
-shift || true
 
 case "$subcmd" in
   wifi)
@@ -128,28 +98,8 @@ case "$subcmd" in
     fi
     echo "${wifi_name:-Not connected}"
     ;;
-
-  services|systemctl|launchctl)
-    action="${1:-}"
-    srv_name="${usage_name:-}"
-    if [[ -z "$srv_name" ]]; then
-      echo "Error: --name is required for services" >&2
-      exit 1
-    fi
-    case "$action" in
-      stop)    sudo launchctl stop "$srv_name" 2>/dev/null || true ;;
-      start)   sudo launchctl start "$srv_name" 2>/dev/null || true ;;
-      restart) sudo launchctl stop "$srv_name" 2>/dev/null || true; sudo launchctl start "$srv_name" 2>/dev/null || true ;;
-      *)       echo "Usage: osx services [start|stop|restart] --name=<name>" >&2; exit 1 ;;
-    esac
-    ;;
-
   notify)
     msg="${1:-}"
-    if [[ -z "$msg" ]]; then
-      echo "Error: Notification message required" >&2
-      exit 1
-    fi
     title="${usage_title:-}"
     subtitle="${usage_subtitle:-}"
     sound="${usage_sound:-Hero}"
@@ -159,7 +109,6 @@ case "$subcmd" in
     script_str+=" sound name \"${sound}\""
     osascript -e "$script_str" 2>/dev/null || echo "$msg"
     ;;
-
   dock)
     if [[ "${usage_static_only:-false}" == "true" ]]; then
       defaults write com.apple.dock static-only -bool true 2>/dev/null || true
@@ -168,7 +117,7 @@ case "$subcmd" in
       defaults write com.apple.dock static-only -bool false 2>/dev/null || true
       killall Dock 2>/dev/null || true
     fi
-    _log_info "Dock configuration updated"
+    helpers puts info "Dock configuration updated"
     ;;
 
   finder)
@@ -179,7 +128,7 @@ case "$subcmd" in
       defaults write com.apple.finder _FXShowPosixPathInTitle -bool false 2>/dev/null || true
       killall Finder 2>/dev/null || true
     fi
-    _log_info "Finder configuration updated"
+    helpers puts info "Finder configuration updated"
     ;;
 
   users)
@@ -204,23 +153,23 @@ case "$subcmd" in
 
   cache)
     if command -v AssetCacheManagerUtil &>/dev/null; then
-      AssetCacheManagerUtil status 2>/dev/null || echo "Content caching status checked"
+      AssetCacheManagerUtil status 2>/dev/null || helpers puts info "Content caching status checked"
     else
-      echo "Content cache status checked"
+      helpers puts info "Content cache status checked"
     fi
     ;;
 
   system_profiler)
-    system_profiler SPHardwareDataType 2>/dev/null || echo "Hardware report generated"
+    system_profiler SPHardwareDataType 2>/dev/null || helpers puts info "Hardware report generated"
     ;;
 
   sleep)
     if [[ "${usage_enable:-false}" == "true" ]]; then
       killall caffeinate 2>/dev/null || true
-      _log_info "Sleep enabled"
+      helpers puts info "Sleep enabled"
     elif [[ "${usage_disable:-false}" == "true" ]]; then
       caffeinate -u -t 3600 &
-      _log_info "Sleep disabled for 1 hour"
+      helpers puts info "Sleep disabled for 1 hour"
     fi
     ;;
 
