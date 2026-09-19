@@ -6,12 +6,12 @@
 # tools can read the versions files used by other version managers
 
 # configure `mise install` to always keep the downloaded archive
-always_keep_download = false # deleted after install by default
+always_keep_download = false  # deleted after install by default
 always_keep_install = false  # deleted on failure by default
 
 # Enable color output in the terminal
 # https://mise.jdx.dev/configuration/settings.html#color
-color = true # set to true to enable color output
+color = true  # set to true to enable color output
 
 # Set the color theme for the terminal output: default |charm | base16 | catppuccin | dracula
 # https://mise.jdx.dev/configuration/settings.html#color_theme
@@ -29,7 +29,7 @@ color_theme = "dracula"
 # configure how frequently (in minutes) to fetch updated plugin repository changes
 # this is updated whenever a new runtime is installed
 # (note: this isn't currently implemented but there are plans to add it: https://github.com/jdx/mise/discussions/6735)
-plugin_autoupdate_last_check_duration = "1 week" # set to 0 to disable updates
+plugin_autoupdate_last_check_duration = "1 week"  # set to 0 to disable updates
 
 # config files with these prefixes will be trusted by default
 # https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
@@ -42,11 +42,11 @@ trusted_config_paths = [
   "~/.local/share/dots/config/mise",
 ]
 
-verbose = false      # set to true to see full installation output, see `MISE_VERBOSE`
-http_timeout = "30s" # set the timeout for http requests as duration string, see `MISE_HTTP_TIMEOUT`
-jobs = 4             # number of plugins or runtimes to install in parallel. The default is `4`.
-raw = false          # set to true to directly pipe plugins to stdin/stdout/stderr
-yes = false          # set to true to automatically answer yes to all prompts
+verbose = false  # set to true to see full installation output, see `MISE_VERBOSE`
+http_timeout = "30s"  # set the timeout for http requests as duration string, see `MISE_HTTP_TIMEOUT`
+jobs = 4  # number of plugins or runtimes to install in parallel. The default is `4`.
+raw = false  # set to true to directly pipe plugins to stdin/stdout/stderr
+yes = false  # set to true to automatically answer yes to all prompts
 
 # Automatically install missing tools when running mise x, mise run, or as part of the 'not found' handler.
 # https://mise.jdx.dev/configuration/settings.html#auto_install
@@ -90,22 +90,10 @@ idiomatic_version_file_enable_tools = [
 task.disable_spec_from_run_scripts = true
 
 [tools]
-watchexec = "latest"
 usage = "latest"
-go = "1.25.6"
-"ubi:hadolint/hadolint" = "2.12.0"
-"pipx:commit-check" = "2.15.1"
-dprint = "0.56.1"
-hk = "1.57.0"
-biome = "2.5.5"
-ls-lint = "2.3.1"
-"aqua:jackchuka/mdschema" = "0.15.1"
-"aqua:fallow-rs/fallow" = "3.17.0"
-node = "26.7.0"
-bun = "1.4.0"
-cocogitto = "7.0.0"
+hk = "2.0.1"
 uv = "latest"
-pkl = "0.32.1"
+go = "latest"
 
 # Show the full command when executing tasks.
 # https://mise.jdx.dev/configuration/settings.html#task.show_full_cmd

@@ -31,6 +31,7 @@ zmodule zdharma-continuum/fast-syntax-highlighting --if '[[ -z "$ZSH_MINIMAL_TER
 zmodule zsh-users/zsh-history-substring-search --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'       # MUST be sourced after syntax-highlighting. Skip in Warp Terminal as it has enhanced history search
 zmodule zsh-users/zsh-autosuggestions --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'                # MUST be sourced after syntax-highlighting. Skip in Warp Terminal as it has AI-powered suggestions
 zmodule romkatv/powerlevel10k --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'
+zmodule MichaelAquilina/zsh-history-filter
 
 # ZSH PLUGIN LOADING
 for custom_plugin in aliases keybindings plugins; do

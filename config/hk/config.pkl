@@ -7,7 +7,7 @@
 /// see config/hk/README.md.
 ///
 /// Surfaced at ~/.config/hk/config.pkl via the ~/.config/hk directory symlink.
-amends "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl"
 
 jobs = 4
 

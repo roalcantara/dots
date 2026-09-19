@@ -709,7 +709,6 @@ gpgSign = true
 
 [commit]
 color = always
-verbose = true
 gpgsign = true
 
 [gpg]

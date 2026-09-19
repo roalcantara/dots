@@ -271,7 +271,7 @@ Scripts live in `config/bin/` and are symlinked to `~/.local/bin` during install
 | [`dots`](config/bin/dots)                                       | Dotfiles manager, runtime permissions, theme palette, and diagnostics        | `dots doctor`                      |
 | [`osx`](config/bin/osx)                                         | macOS maintenance, system defaults, and services management CLI              | `osx clean`                        |
 | [`gitx`](config/bin/gitx)                                       | Interactive Git rebase, history, and branch workflow dispatcher              | `gitx fzl`                         |
-| [`zsys`](config/bin/zsys)                                       | Shell environment, path auditor, and system diagnostic utility               | `zsys env`                         |
+| [`xcz`](config/bin/xcz)                                         | Shell environment, path auditor, and system diagnostic utility               | `xcz env`                          |
 | [`yw`](config/bin/yw)                                           | Interactive Yarn/NPM workspace package and script runner                     | `yw`                               |
 | [`keyring`](config/bin/keyring)                                 | Agnostic macOS Keychain and Linux keyring secret manager                     | `keyring get api_key`              |
 | [`psc`](config/bin/psc) / [`pss`](config/bin/pss)               | Gopass secret clipboard copier (`psc`) and secret revealer (`pss`)           | `psc github/token`                 |

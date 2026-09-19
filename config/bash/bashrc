@@ -101,13 +101,6 @@ if ! command -v brew >/dev/null && [ -d "$HOMEBREW_PREFIX/bin" ]; then
   eval "$("$HOMEBREW_PREFIX"/bin/brew shellenv)"
 fi
 
-# FLOX | https://flox.dev/docs/tutorials/default-environment {
-  # Activate the Default Environment
-  if ! command -v flox >/dev/null; then
-    eval "$(FLOX_SHELL=bin/bash flox activate --dir $( [[ -e ~/.flox ]] && echo ~ || echo ~/.config/flox ) -m run)"
-  fi
-# }
-
 # MISE | https://mise.jdx.dev/ {
   if ! command -v mise >/dev/null; then
     eval "$(mise activate bash)"
@@ -137,7 +130,7 @@ fi
 # TERM {
   if [ "$TERM_PROGRAM" = "ghostty" ]; then
     if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
-      builtin source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
+      builtin source "$GHOSTTY_RESOURCES_DIR"/shell-integration/bash/ghostty.bash
     fi
     export SNACKS_GHOSTTY=true
   elif [[ "$TERM_PROGRAM" == "vscode" ]] && _has_command code; then

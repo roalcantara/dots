@@ -3,7 +3,6 @@
 
 # https://mise.jdx.dev/tasks
 [tasks]
-
 # mise run build
 # mise run build --nocache
 # mise run build --nocache --distro ubuntu
@@ -299,6 +298,7 @@ run = ["./script/zsh-verify.sh syntax", "./script/zsh-verify.sh parity"]
 [tasks."zsh:bench"]
 description = "Benchmark zsh startup across terminal contexts"
 run = "./script/zsh-verify.sh bench"
+
 [settings]
 # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
 # https://mise.jdx.dev/configuration/settings.html#activate_aggressive
@@ -333,16 +333,17 @@ lockfile = true
 # yes = true
 
 [tools]
-hk = "1.56.0"
+hk = "2.0.1"
 cocogitto = "7.0.0"
 pkl = "latest"
 sd = "latest"
 shellcheck = "latest"
 shfmt = "latest"
-"npm:markdownlint-cli" = "latest"
+"npm:markdownlint-cli" = "0.49.1"
 hadolint = "latest"
-yamllint = "latest"
+"pipx:yamllint" = "1.38.0"
 taplo = "latest"
+"pipx:commit-check" = "2.18.0"
 
 # set to true to see full installation output, see `MISE_VERBOSE`
 # https://mise.jdx.dev/configuration/settings.html#verbose
