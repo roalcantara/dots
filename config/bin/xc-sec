@@ -1,0 +1,81 @@
+#!/usr/bin/env -S usage zsh
+# shellcheck shell=bash disable=SC2296,SC2298,SC2178,SC2206
+# Redaction script for sensitive information in files
+# Redaction rewrites files in-place. The script creates timestamped backups
+# > (`.bak.<timestamp>`) first, but you should still review diffs before deleting backups.
+
+MODE="${1:-scan}"          # scan | redact
+PROFILE="${2:-balanced}"   # balanced | strict
+shift 2 || true
+
+STAMP="$(date +%Y%m%d%H%M%S)"
+TMP_PATTERNS="$(mktemp)"
+trap 'rm -f "$TMP_PATTERNS"' EXIT
+
+cat >"$TMP_PATTERNS" <<'EOF'
+gh[pours]_[A-Za-z0-9_]{20,}
+github_pat_[A-Za-z0-9_]{20,}
+Authorization:\s*Bearer\s+[A-Za-z0-9._-]+
+\bBearer\s+[A-Za-z0-9._-]{16,}
+\b(GITHUB_TOKEN|GH_TOKEN|OPENAI_API_KEY|ANTHROPIC_API_KEY|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|DATABASE_URL)\s*=\s*[^[:space:]]+
+-----BEGIN [A-Z ]*PRIVATE KEY-----
+EOF
+
+if [[ "$PROFILE" == "strict" ]]; then
+  cat >>"$TMP_PATTERNS" <<'EOF'
+\b(TOKEN|SECRET|PASSWORD|PASSWD|PRIVATE_KEY|API_KEY)\s*=\s*[^[:space:]]+
+sk-(ant-|proj-)?[A-Za-z0-9_-]{16,}
+xox[baprs]-[A-Za-z0-9-]{10,}
+AKIA[0-9A-Z]{16}
+EOF
+fi
+
+TARGETS=(
+  "$HOME/.zsh_history"
+  "$HOME/.bash_history"
+  "$HOME/.config/fish/fish_history"
+  "$HOME/.python_history"
+  "$HOME/.node_repl_history"
+  "$HOME/.psql_history"
+  "$HOME/.mysql_history"
+  "$HOME/.lesshst"
+)
+
+# allow extra paths as args
+for p in "$@"; do TARGETS+=("$p"); done
+
+scan_file() {
+  local f="$1"
+  [[ -f "$f" ]] || return 0
+  rg --pcre2 -n -i -f "$TMP_PATTERNS" "$f" || true
+}
+
+redact_file() {
+  local f="$1"
+  [[ -f "$f" ]] || return 0
+  cp "$f" "$f.bak.$STAMP"
+  python3 - "$f" "$TMP_PATTERNS" <<'PY'
+import re, sys, pathlib
+file_path = pathlib.Path(sys.argv[1])
+pat_path = pathlib.Path(sys.argv[2])
+text = file_path.read_text(errors="ignore")
+patterns = [p.strip() for p in pat_path.read_text().splitlines() if p.strip()]
+for p in patterns:
+    text = re.sub(p, "[REDACTED]", text, flags=re.IGNORECASE)
+file_path.write_text(text)
+PY
+}
+
+case "$MODE" in
+  scan)
+    for f in "${TARGETS[@]}"; do scan_file "$f"; done
+    ;;
+  redact)
+    for f in "${TARGETS[@]}"; do redact_file "$f"; done
+    echo "Redaction done. Backups: *.bak.$STAMP"
+    ;;
+  *)
+    echo "Usage: $0 <scan|redact> <balanced|strict> [extra paths...]"
+    exit 1
+    ;;
+esac
