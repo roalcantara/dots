@@ -120,7 +120,33 @@ xcg::list() {
   esac
 }
 
-xcg::ui() { h::puts fatal "fzf UI not implemented yet"; }
+xcg::ui() {
+  h::needs_command fzf
+
+  export XCG_STATE="${XCG_STATE:-$(mktemp -t xcg-state)}"
+  trap 'rm -f "${XCG_STATE}"' EXIT INT TERM
+  print -r -- local > "${XCG_STATE}"
+
+  local self="${0:a}"
+  local keys='^l local  ^r remote  ^m merged  ^g gone  |  ^x del  M-x del!  ^o checkout  ^y copy'
+
+  command fzf --ansi --multi \
+    --delimiter=$'\t' --with-nth=3.. \
+    --header-first --header="LOCAL — $keys" \
+    --prompt='branch ❯ ' \
+    --preview="$self __preview {1} {2}" \
+    --preview-window='right,55%,border-left,wrap' \
+    --bind="start:reload($self __list local)" \
+    --bind="ctrl-l:change-header(LOCAL — $keys)+reload($self __list local)" \
+    --bind="ctrl-r:change-header(REMOTE — $keys)+reload($self __list remote)" \
+    --bind="ctrl-m:change-header(MERGED — $keys)+reload($self __list merged)" \
+    --bind="ctrl-g:change-header(GONE — $keys)+reload($self __list gone)" \
+    --bind="ctrl-x:execute($self __delete safe {+})+reload($self __list)" \
+    --bind="alt-x:execute($self __delete force {+})+reload($self __list)" \
+    --bind="ctrl-o:become($self __checkout {1} {2})" \
+    --bind="ctrl-y:execute-silent($self __copy {+})" \
+    --bind='ctrl-/:toggle-preview'
+}
 
 xcg::confirm() {
   local prompt="$1"
