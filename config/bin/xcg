@@ -122,6 +122,77 @@ xcg::list() {
 
 xcg::ui() { h::puts fatal "fzf UI not implemented yet"; }
 
+xcg::confirm() {
+  local prompt="$1"
+  [[ -n "${XCG_YES:-}" ]] && return 0
+  if h::has_bin gum; then
+    gum confirm "$prompt"
+  else
+    local reply
+    print -n -- "$prompt [y/N] "
+    read -k1 reply
+    print
+    [[ "$reply" == [yY] ]]
+  fi
+}
+
+xcg::delete() {
+  local mode="${1:-safe}"
+  shift || true
+  (( $# )) || return 0
+
+  local -a protected; protected=(${(f)"$(xcg::protected)"})
+  local -a skipped=() locals=() remotes=()
+  local line kind ref
+
+  for line in "$@"; do
+    IFS=$'\t' read -r kind ref _ <<< "$line"
+    [[ -n "$ref" ]] || continue
+    if [[ "$kind" == local ]] && (( ${protected[(Ie)$ref]} )); then
+      skipped+=("$ref")
+      continue
+    fi
+    if [[ "$kind" == remote ]]; then
+      remotes+=("$ref")
+    else
+      locals+=("$ref")
+    fi
+  done
+
+  (( ${#skipped} )) && h::puts warn "Skipped protected: ${(j:, :)skipped}"
+  (( ${#locals} + ${#remotes} )) || return 0
+
+  local flag=-d
+  [[ "$mode" == force ]] && flag=-D
+
+  print -r -- "About to delete:"
+  (( ${#locals} ))  && print -r -- "  local  (git branch $flag): ${(j:, :)locals}"
+  (( ${#remotes} )) && print -r -- "  remote (git push --delete): ${(j:, :)remotes}"
+
+  xcg::confirm "Proceed?" || { h::puts info "Aborted"; return 0; }
+
+  local rc=0
+  (( ${#locals} )) && { git branch "$flag" "${locals[@]}" || rc=$? }
+
+  local remote branch
+  for ref in "${remotes[@]}"; do
+    remote="${ref%%/*}"
+    branch="${ref#*/}"
+    git push --delete "$remote" "$branch" || rc=$?
+  done
+
+  if (( rc != 0 )); then
+    # Pause so the error survives fzf's redraw; skipped when non-interactive.
+    if [[ -t 0 && -z "${XCG_YES:-}" ]]; then
+      print -n -- "Press any key to continue..."
+      read -k1
+      print
+    fi
+    return $rc
+  fi
+  return 0
+}
+
 main() {
   local subcmd="${1:-}"
   [[ $# -gt 0 ]] && shift
@@ -151,6 +222,7 @@ main() {
     clear-gone)      xcg::clear_gone ;;
     __list)      xcg::list "${1:-}" ;;
     __protected) xcg::protected ;;
+    __delete)    xcg::delete "$@" ;;
     *)
       h::puts error "unknown subcommand: $subcmd"
       xcg::help >&2

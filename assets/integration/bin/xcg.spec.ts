@@ -154,3 +154,93 @@ describe("xcg __protected", () => {
     expect(out).toContain("main");
   });
 });
+
+function row(cwd: string, view: string, ref: string): string {
+  const r = Bun.spawnSync([script, "__list", view], { cwd, stdout: "pipe", stderr: "pipe" });
+  const line = new TextDecoder().decode(r.stdout).split("\n").find((l) => l.split("\t")[1] === ref);
+  if (!line) throw new Error(`no ${ref} row in ${view} view`);
+  return line;
+}
+
+function localBranches(cwd: string): string[] {
+  const r = Bun.spawnSync(["git", "branch", "--format=%(refname:short)"], {
+    cwd, stdout: "pipe", stderr: "pipe",
+  });
+  return new TextDecoder().decode(r.stdout).trim().split("\n").filter(Boolean);
+}
+
+describe("xcg __delete", () => {
+  it("deletes a merged branch under XCG_YES", () => {
+    const f = makeGitFixture();
+    try {
+      const r = Bun.spawnSync([script, "__delete", "safe", row(f.work, "merged", "merged-branch")], {
+        cwd: f.work, env: { ...Bun.env, XCG_YES: "1" }, stdout: "pipe", stderr: "pipe",
+      });
+      expect(r.exitCode).toBe(0);
+      expect(localBranches(f.work)).not.toContain("merged-branch");
+    } finally { f.cleanup(); }
+  });
+
+  it("refuses an unmerged branch in safe mode and keeps it", () => {
+    const f = makeGitFixture();
+    try {
+      const r = Bun.spawnSync([script, "__delete", "safe", row(f.work, "local", "unmerged-branch")], {
+        cwd: f.work, env: { ...Bun.env, XCG_YES: "1" }, stdout: "pipe", stderr: "pipe",
+      });
+      expect(r.exitCode).not.toBe(0);
+      expect(localBranches(f.work)).toContain("unmerged-branch");
+    } finally { f.cleanup(); }
+  });
+
+  it("deletes an unmerged branch in force mode", () => {
+    const f = makeGitFixture();
+    try {
+      const r = Bun.spawnSync([script, "__delete", "force", row(f.work, "local", "unmerged-branch")], {
+        cwd: f.work, env: { ...Bun.env, XCG_YES: "1" }, stdout: "pipe", stderr: "pipe",
+      });
+      expect(r.exitCode).toBe(0);
+      expect(localBranches(f.work)).not.toContain("unmerged-branch");
+    } finally { f.cleanup(); }
+  });
+
+  it("refuses a protected branch and names it", () => {
+    const f = makeGitFixture();
+    try {
+      const r = Bun.spawnSync([script, "__delete", "force", row(f.work, "local", "main")], {
+        cwd: f.work, env: { ...Bun.env, XCG_YES: "1" }, stdout: "pipe", stderr: "pipe",
+      });
+      const combined = new TextDecoder().decode(r.stdout) + new TextDecoder().decode(r.stderr);
+      expect(combined).toContain("main");
+      expect(localBranches(f.work)).toContain("main");
+    } finally { f.cleanup(); }
+  });
+
+  it("deletes several branches in one call", () => {
+    const f = makeGitFixture();
+    try {
+      const r = Bun.spawnSync([
+        script, "__delete", "force",
+        row(f.work, "local", "merged-branch"),
+        row(f.work, "local", "unmerged-branch"),
+      ], { cwd: f.work, env: { ...Bun.env, XCG_YES: "1" }, stdout: "pipe", stderr: "pipe" });
+      expect(r.exitCode).toBe(0);
+      const left = localBranches(f.work);
+      expect(left).not.toContain("merged-branch");
+      expect(left).not.toContain("unmerged-branch");
+    } finally { f.cleanup(); }
+  });
+
+  it("deletes a remote branch under XCG_YES", () => {
+    const f = makeGitFixture();
+    try {
+      const r = Bun.spawnSync([script, "__delete", "safe", row(f.work, "remote", "origin/remote-only")], {
+        cwd: f.work, env: { ...Bun.env, XCG_YES: "1" }, stdout: "pipe", stderr: "pipe",
+      });
+      expect(r.exitCode).toBe(0);
+      const refs = Bun.spawnSync(["git", "ls-remote", "--heads", "origin"], {
+        cwd: f.work, stdout: "pipe", stderr: "pipe",
+      });
+      expect(new TextDecoder().decode(refs.stdout)).not.toContain("remote-only");
+    } finally { f.cleanup(); }
+  });
+});
