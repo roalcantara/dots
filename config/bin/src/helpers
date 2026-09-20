@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+# Does this binary exist? No TTY check - use for capability detection.
+h::has_bin() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+# Is this binary usable for interactive/pretty output? TTY-gated by design.
+h::has_command() {
+  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v "$1" >/dev/null 2>&1
+}
+
+h::needs_command() {
+  if ! h::has_bin "$1"; then
+    echo "Error: $1 is not installed" >&2
+    exit 1
+  fi
+}
+
+h::filter() {
+  if h::has_command gum; then
+    echo "$1" | gum filter --limit=1
+  elif h::has_command fzf; then
+    echo "$1" | fzf
+  else
+    echo "Error: interactive selection requires gum or fzf" >&2
+    return 1
+  fi
+}
+
+h::puts() {
+  case "$1" in
+    info)
+      if h::has_command gum; then
+        gum log --time DateTime --level info "$2"
+      else
+        print -P -- "%F{green}✔%f $2"
+      fi
+      ;;
+    warn)
+      if h::has_command gum; then
+        gum log --time DateTime --level warn "$2"
+      else
+        print -P -- "%F{yellow}✘%f $2" >&2
+      fi
+      ;;
+    err|error)
+      if h::has_command gum; then
+        gum log --time DateTime --level error "$2"
+      else
+        print -P -- "%F{red}✘%f $2" >&2
+      fi
+      ;;
+    fatal)
+      h::puts error "$2"
+      exit 1
+      ;;
+  esac
+}
+
+h::copy_to_clipboard() {
+  if h::has_bin pbcopy; then
+    printf '%s' "$1" | pbcopy
+  elif [[ -n "${WAYLAND_DISPLAY:-}" ]] && h::has_bin wl-copy; then
+    printf '%s' "$1" | wl-copy
+  elif h::has_bin xclip; then
+    printf '%s' "$1" | xclip -selection clipboard
+  elif h::has_bin xsel; then
+    printf '%s' "$1" | xsel --clipboard --input
+  else
+    h::puts error "No clipboard utility found (pbcopy, xclip, xsel)"
+    return 1
+  fi
+}
