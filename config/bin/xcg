@@ -1,8 +1,8 @@
 #!/usr/bin/env zsh
 # xcg - fzf-driven git branch manager
 
-emulate -L zsh
-setopt no_unset pipe_fail
+emulate -L zsh          # Pin zsh-native behavior regardless of invoking environment
+setopt no_unset         # Enforce explicit ${VAR:-} guards for environment variables
 source /Users/roalcantara/Work/dots/config/bin/src/helpers
 
 xcg::help() {
