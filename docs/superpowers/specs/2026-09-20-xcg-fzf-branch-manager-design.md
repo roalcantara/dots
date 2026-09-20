@@ -182,6 +182,31 @@ would otherwise leak).
 `--multi` is on. `{+}` passes each marked row verbatim as one shell-quoted
 argument, tabs intact, so `__delete` and `__copy` re-split on tab.
 
+### Keymap visibility
+
+The full keymap is a two-line `--footer`, so no binding has to be memorised:
+
+```text
+╭─ view ─────────────────────────────────────────────────────────╮
+│ LOCAL                                                          │
+╰────────────────────────────────────────────────────────────────╯
+  branch ❯ …
+╭─ keys ─────────────────────────────────────────────────────────╮
+│ views    ^l local   ^r remote   ^m merged   ^g gone             │
+│ actions  ^x delete  M-x delete!  ^o checkout  ^y copy  …  ? help│
+╰────────────────────────────────────────────────────────────────╯
+```
+
+`--header` carries only the active view name, which keeps every
+`change-header(...)` binding short.
+
+A label renders **only when its section has a border**, so `--header-label` and
+`--footer-label` must be paired with `--header-border` and `--footer-border`; a
+label passed on its own silently does nothing.
+
+`?` is bound to the full `--help` page in a pager. Git forbids `?` in ref names
+(`git check-ref-format` rejects it), so binding it costs nothing in the query.
+
 `alt-x` rather than `ctrl-X` for force delete: terminals send the same byte for
 `ctrl-x` and `ctrl-shift-x`, and fzf treats `ctrl-x` and `ctrl-X` as the same
 binding, so the two cannot be distinguished.
