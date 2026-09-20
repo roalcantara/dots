@@ -105,9 +105,13 @@ kind <TAB> ref <TAB> display
 - `display` — pre-padded, pre-coloured columns: branch, relative date, author,
   track status
 
-fzf receives `--delimiter=$'\t' --with-nth=3.. --nth=3..`, so fields 1 and 2 are
-neither displayed nor searchable, but remain available to actions as `{1}` and
-`{2}`.
+fzf receives `--delimiter=$'\t' --with-nth=3..`, so fields 1 and 2 are neither
+displayed nor searchable, but remain available to actions as `{1}` and `{2}`.
+
+No `--nth` is passed. fzf applies `--nth` to the string *after* `--with-nth` has
+transformed it, so a `--nth=3..` would index into a line that no longer has three
+fields and would match nothing — verified against fzf 0.74.4. `--with-nth=3..`
+alone already removes fields 1 and 2 from the search string.
 
 **Each row carries its own kind.** This is the central simplification: `__delete`
 reads the row to decide between `git branch -d` and `git push --delete`, so no
