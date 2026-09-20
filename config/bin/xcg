@@ -1,0 +1,140 @@
+#!/usr/bin/env zsh
+# xcg - fzf-driven git branch manager
+
+emulate -L zsh
+setopt no_unset pipe_fail
+source /Users/roalcantara/Work/dots/config/bin/src/helpers
+
+xcg::help() {
+  cat <<'EOF'
+xcg - git branch manager
+
+Usage:
+  xcg                      Open the fzf branch manager (local branches)
+  xcg branches             List local branch names
+  xcg remote-branches [r]  List remote branch names (default remote: origin)
+  xcg head-branch          Print the current branch
+  xcg cnb <branch>         Create and check out a branch
+  xcg clear-merged         Delete merged branches
+  xcg clear-gone           Delete branches whose upstream is gone
+  xcg -h | --help          Show this help
+
+fzf keys:
+  ctrl-l   local branches (default view)
+  ctrl-r   remote branches
+  ctrl-m   merged branches
+  ctrl-g   branches whose upstream is gone
+  ctrl-x   delete selected (safe, confirms)
+  alt-x    delete selected (force, confirms)
+  ctrl-o   check out the branch under the cursor
+  ctrl-y   copy selected branch names to the clipboard
+
+Without a TTY, `xcg` with no arguments behaves as `xcg branches`.
+EOF
+}
+
+xcg::in_repo() {
+  git rev-parse --git-dir >/dev/null 2>&1 || h::puts fatal "not a git repository"
+}
+
+xcg::head_branch() {
+  git rev-parse --abbrev-ref HEAD 2>/dev/null || print -r -- main
+}
+
+xcg::default_branch() {
+  local d
+  if d=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null); then
+    print -r -- "${d#origin/}"
+    return 0
+  fi
+  local b
+  for b in main master develop; do
+    if git show-ref --verify --quiet "refs/heads/$b"; then
+      print -r -- "$b"
+      return 0
+    fi
+  done
+  xcg::head_branch
+}
+
+xcg::protected() {
+  print -rl -- "$(xcg::default_branch)" main master develop "$(xcg::head_branch)" | sort -u
+}
+
+xcg::ui() { h::puts fatal "fzf UI not implemented yet"; }
+
+main() {
+  local subcmd="${1:-}"
+  [[ $# -gt 0 ]] && shift
+
+  case "$subcmd" in
+    -h|--help) xcg::help; return 0 ;;
+  esac
+
+  xcg::in_repo
+
+  case "$subcmd" in
+    "")
+      if [[ -t 1 ]] && h::has_bin fzf; then
+        xcg::ui
+      else
+        xcg::branches
+      fi
+      ;;
+    branches)        xcg::branches ;;
+    remote-branches) xcg::remote_branches "${1:-origin}" ;;
+    head-branch)     xcg::head_branch ;;
+    cnb)
+      [[ -n "${1:-}" ]] || h::puts fatal "cnb requires a branch name"
+      git checkout -b "$1"
+      ;;
+    clear-merged)    xcg::clear_merged ;;
+    clear-gone)      xcg::clear_gone ;;
+    *)
+      h::puts error "unknown subcommand: $subcmd"
+      xcg::help >&2
+      return 1
+      ;;
+  esac
+}
+
+xcg::branches() {
+  git for-each-ref --format='%(refname:short)' refs/heads 2>/dev/null
+}
+
+xcg::remote_branches() {
+  local remote="${1:-origin}"
+  git for-each-ref --exclude="refs/remotes/*/HEAD" \
+    --format='%(refname:short)' "refs/remotes/$remote" 2>/dev/null \
+    | sed "s|^$remote/||"
+}
+
+xcg::clear_merged() {
+  local -a protected; protected=(${(f)"$(xcg::protected)"})
+  local -a doomed=()
+  local ref
+  while IFS= read -r ref; do
+    (( ${protected[(Ie)$ref]} )) && continue
+    doomed+=("$ref")
+  done < <(git for-each-ref --merged "$(xcg::default_branch)" --format='%(refname:short)' refs/heads 2>/dev/null)
+  (( ${#doomed} )) || return 0
+  git branch -d "${doomed[@]}"
+  h::puts info "Cleared merged branches"
+}
+
+xcg::clear_gone() {
+  git fetch --prune 2>/dev/null || true
+  local -a protected; protected=(${(f)"$(xcg::protected)"})
+  local -a doomed=()
+  local ref track
+  while IFS='|' read -r ref track; do
+    [[ "$track" == gone ]] || continue
+    (( ${protected[(Ie)$ref]} )) && continue
+    doomed+=("$ref")
+  done < <(git for-each-ref --format='%(refname:short)|%(upstream:track,nobracket)' refs/heads 2>/dev/null)
+  (( ${#doomed} )) || return 0
+  git branch -D "${doomed[@]}"
+  h::puts info "Cleared gone branches"
+}
+
+main "$@"
