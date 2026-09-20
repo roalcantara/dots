@@ -244,3 +244,43 @@ describe("xcg __delete", () => {
     } finally { f.cleanup(); }
   });
 });
+
+describe("xcg __preview", () => {
+  it("shows the ref name and metadata for a local branch", () => {
+    const out = xcg(["__preview", "local", "unmerged-branch"]).out;
+    expect(out).toContain("unmerged-branch");
+    expect(out).toContain("last:");
+    expect(out).toContain("Test User");
+  });
+
+  it("reports an unmerged branch as not merged", () => {
+    expect(xcg(["__preview", "local", "unmerged-branch"]).out).toContain("not merged");
+  });
+
+  it("reports a merged branch as merged", () => {
+    const out = xcg(["__preview", "local", "merged-branch"]).out;
+    expect(out).toMatch(/status:\s+merged into main/);
+  });
+
+  it("reports a gone upstream", () => {
+    expect(xcg(["__preview", "local", "gone-branch"]).out).toContain("gone");
+  });
+
+  it("shows commits for an unmerged branch", () => {
+    expect(xcg(["__preview", "local", "unmerged-branch"]).out).toContain("unmerged work");
+  });
+
+  it("falls back to plain log when the range is empty", () => {
+    expect(xcg(["__preview", "local", "merged-branch"]).out).toContain("merged work");
+  });
+
+  it("previews a remote branch", () => {
+    const out = xcg(["__preview", "remote", "origin/remote-only"]).out;
+    expect(out).toContain("origin/remote-only");
+    expect(out).toContain("remote only");
+  });
+
+  it("exits 0 for a ref that no longer exists", () => {
+    expect(xcg(["__preview", "local", "no-such-branch"]).code).toBe(0);
+  });
+});

@@ -193,6 +193,56 @@ xcg::delete() {
   return 0
 }
 
+xcg::full_ref() {
+  local kind="$1" ref="$2"
+  [[ "$kind" == remote ]] && print -r -- "refs/remotes/$ref" || print -r -- "refs/heads/$ref"
+}
+
+xcg::preview() {
+  local kind="${1:-local}" ref="${2:-}"
+  [[ -n "$ref" ]] || return 0
+
+  local full; full=$(xcg::full_ref "$kind" "$ref")
+  git show-ref --verify --quiet "$full" || { print -r -- "$ref (no longer exists)"; return 0 }
+
+  local default_branch base
+  default_branch=$(xcg::default_branch)
+  if [[ "$kind" == remote ]]; then
+    base="origin/$default_branch"
+  else
+    base="$default_branch"
+  fi
+
+  local upstream track date author
+  IFS='|' read -r upstream track date author <<< \
+    "$(git for-each-ref --format='%(upstream:short)|%(upstream:track,nobracket)|%(committerdate:relative)|%(authorname)' "$full")"
+
+  local mark
+  if [[ "$track" == gone ]]; then
+    mark="gone"
+  elif [[ -n "$track" ]]; then
+    mark="$track"
+  else
+    mark="up to date"
+  fi
+
+  print -r -- $'\e[1m'"$ref"$'\e[0m'
+  print -r -- "upstream: ${upstream:-none}  ${mark}"
+  print -r -- "last:     ${date} · ${author}"
+  if git rev-parse --verify --quiet "$base" >/dev/null 2>&1 \
+     && git merge-base --is-ancestor "$ref" "$base" 2>/dev/null; then
+    print -r -- "status:   merged into ${default_branch}"
+  else
+    print -r -- "status:   not merged into ${default_branch}"
+  fi
+  print -r -- "────────────────────────────────────────"
+
+  local log
+  log=$(git log --oneline --graph --color=always -n 20 "${base}..${ref}" 2>/dev/null)
+  [[ -z "$log" ]] && log=$(git log --oneline --graph --color=always -n 20 "$ref" 2>/dev/null)
+  print -r -- "$log"
+}
+
 main() {
   local subcmd="${1:-}"
   [[ $# -gt 0 ]] && shift
@@ -223,6 +273,7 @@ main() {
     __list)      xcg::list "${1:-}" ;;
     __protected) xcg::protected ;;
     __delete)    xcg::delete "$@" ;;
+    __preview)   xcg::preview "${1:-local}" "${2:-}" ;;
     *)
       h::puts error "unknown subcommand: $subcmd"
       xcg::help >&2
