@@ -368,3 +368,38 @@ describe("xcg __copy", () => {
     );
   });
 });
+
+describe("xcg __diag", () => {
+  // Regression: `${0:a}` inside a zsh function resolves the FUNCTION name, not
+  // the script, so every fzf binding pointed at a non-existent path.
+  it("reports the real script path, not a function name", () => {
+    const out = xcg(["__diag"]).out;
+    expect(out).toContain(`script:   ${script}`);
+    expect(out).not.toContain("xcg::");
+  });
+
+  it("reports the resolved git dir", () => {
+    expect(xcg(["__diag"]).out).toMatch(/git dir:\s+\S+/);
+  });
+
+  it("says so when no errors were recorded", () => {
+    expect(xcg(["__diag"]).out).toContain("(no errors recorded)");
+  });
+
+  it("includes captured stderr from the log", () => {
+    const logFile = join(fx.root, "diag-log");
+    Bun.write(logFile, "boom: something broke\n");
+    const r = Bun.spawnSync([script, "__diag"], {
+      cwd: fx.work, env: { ...Bun.env, XCG_LOG: logFile }, stdout: "pipe", stderr: "pipe",
+    });
+    expect(new TextDecoder().decode(r.stdout)).toContain("boom: something broke");
+  });
+
+  it("copies diagnostics as a single payload", () => {
+    const r = Bun.spawnSync([script, "__copy-diag"], {
+      cwd: fx.work, env: { ...Bun.env, XCG_COPY_STDOUT: "1" }, stdout: "pipe", stderr: "pipe",
+    });
+    expect(r.exitCode).toBe(0);
+    expect(new TextDecoder().decode(r.stdout)).toContain("xcg diagnostics");
+  });
+});

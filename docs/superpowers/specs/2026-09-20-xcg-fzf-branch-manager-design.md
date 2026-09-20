@@ -148,8 +148,36 @@ ctrl-x  → execute(xcg __delete safe  {+})+reload(xcg __list)
 alt-x   → execute(xcg __delete force {+})+reload(xcg __list)
 ctrl-o  → become(xcg __checkout {1} {2})
 ctrl-y  → execute-silent(xcg __copy {+})
+alt-e   → execute(xcg __diag | less -R)
+alt-c   → execute-silent(xcg __copy-diag)
 preview → xcg __preview {1} {2}
 ```
+
+### Script self-reference
+
+The path the bindings call back into **must be captured at top level**:
+
+```zsh
+XCG_SELF="${${(%):-%x}:a}"
+```
+
+zsh sets `FUNCTION_ARGZERO` by default, so inside a function `$0` is the
+function's own name. A `${0:a}` written inside `xcg::ui` resolves to
+`$PWD/xcg::ui`, and every binding silently points at a file that does not exist
+— fzf reports only a truncated `[Command failed: …]`. `%x` is the file being
+executed and is correct in any scope. Same idiom as `config/bin/xc`.
+
+### Diagnostics
+
+`reload` and `preview` run without a terminal, so their stderr is otherwise
+lost. Both are invoked with `2>>$XCG_LOG`, a `mktemp` file created alongside
+`$XCG_STATE` and removed by the same `trap` (and by `__checkout`, which `become`
+would otherwise leak).
+
+- `__diag` prints the script path, cwd, resolved git dir, fzf version, active
+  view, and the captured log
+- `alt-e` pages that output; `alt-c` copies it to the clipboard
+- `__copy-diag` honours `XCG_COPY_STDOUT` so it is testable without a clipboard
 
 `--multi` is on. `{+}` passes each marked row verbatim as one shell-quoted
 argument, tabs intact, so `__delete` and `__copy` re-split on tab.

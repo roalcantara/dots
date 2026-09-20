@@ -5,6 +5,11 @@ emulate -L zsh          # Pin zsh-native behavior regardless of invoking environ
 setopt no_unset         # Enforce explicit ${VAR:-} guards for environment variables
 source /Users/roalcantara/Work/dots/config/bin/src/helpers
 
+# Must be captured at top level: zsh sets FUNCTION_ARGZERO by default, so inside
+# a function $0 is the function's own name, not this file. %x is the file being
+# executed and is correct anywhere. Same idiom as config/bin/xc.
+XCG_SELF="${${(%):-%x}:a}"
+
 xcg::help() {
   cat <<'EOF'
 xcg - git branch manager
@@ -28,6 +33,8 @@ fzf keys:
   alt-x    delete selected (force, confirms)
   ctrl-o   check out the branch under the cursor
   ctrl-y   copy selected branch names to the clipboard
+  alt-e    show diagnostics and captured errors
+  alt-c    copy diagnostics and captured errors to the clipboard
 
 Without a TTY, `xcg` with no arguments behaves as `xcg branches`.
 EOF
@@ -124,28 +131,64 @@ xcg::ui() {
   h::needs_command fzf
 
   export XCG_STATE="${XCG_STATE:-$(mktemp -t xcg-state)}"
-  trap 'rm -f "${XCG_STATE}"' EXIT INT TERM
+  export XCG_LOG="${XCG_LOG:-$(mktemp -t xcg-log)}"
+  trap 'rm -f "${XCG_STATE}" "${XCG_LOG}"' EXIT INT TERM
   print -r -- local > "${XCG_STATE}"
 
-  local self="${0:a}"
-  local keys='^l local  ^r remote  ^m merged  ^g gone  |  ^x del  M-x del!  ^o checkout  ^y copy'
+  local self="$XCG_SELF"
+  # Non-interactive actions write stderr here instead of into the void, so a
+  # failing reload or preview can be read back with M-e / M-c.
+  local log="2>>${XCG_LOG}"
+  local keys='^l/^r/^m/^g views · ^x del · M-x del! · ^o checkout · ^y copy · M-e errors · M-c diag'
 
   command fzf --ansi --multi \
     --delimiter=$'\t' --with-nth=3.. \
     --header-first --header="LOCAL — $keys" \
     --prompt='branch ❯ ' \
-    --preview="$self __preview {1} {2}" \
+    --preview="$self __preview {1} {2} $log" \
     --preview-window='right,55%,border-left,wrap' \
-    --bind="start:reload($self __list local)" \
-    --bind="ctrl-l:change-header(LOCAL — $keys)+reload($self __list local)" \
-    --bind="ctrl-r:change-header(REMOTE — $keys)+reload($self __list remote)" \
-    --bind="ctrl-m:change-header(MERGED — $keys)+reload($self __list merged)" \
-    --bind="ctrl-g:change-header(GONE — $keys)+reload($self __list gone)" \
-    --bind="ctrl-x:execute($self __delete safe {+})+reload($self __list)" \
-    --bind="alt-x:execute($self __delete force {+})+reload($self __list)" \
+    --bind="start:reload($self __list local $log)" \
+    --bind="ctrl-l:change-header(LOCAL — $keys)+reload($self __list local $log)" \
+    --bind="ctrl-r:change-header(REMOTE — $keys)+reload($self __list remote $log)" \
+    --bind="ctrl-m:change-header(MERGED — $keys)+reload($self __list merged $log)" \
+    --bind="ctrl-g:change-header(GONE — $keys)+reload($self __list gone $log)" \
+    --bind="ctrl-x:execute($self __delete safe {+})+reload($self __list $log)" \
+    --bind="alt-x:execute($self __delete force {+})+reload($self __list $log)" \
     --bind="ctrl-o:become($self __checkout {1} {2})" \
     --bind="ctrl-y:execute-silent($self __copy {+})" \
+    --bind="alt-e:execute($self __diag | less -R)" \
+    --bind="alt-c:execute-silent($self __copy-diag)" \
     --bind='ctrl-/:toggle-preview'
+}
+
+# Everything needed to explain a failure, including the captured stderr log.
+xcg::diag() {
+  local view="unknown"
+  [[ -n "${XCG_STATE:-}" && -s "${XCG_STATE}" ]] && view=$(<"${XCG_STATE}")
+
+  print -r -- "xcg diagnostics"
+  print -r -- "script:   ${XCG_SELF}"
+  print -r -- "cwd:      ${PWD}"
+  print -r -- "git dir:  $(git rev-parse --git-dir 2>&1)"
+  print -r -- "fzf:      $(command -v fzf 2>/dev/null || print -r -- 'not found') ($(fzf --version 2>/dev/null || print -r -- 'n/a'))"
+  print -r -- "view:     ${view}"
+  print -r -- "state:    ${XCG_STATE:-none}"
+  print -r -- "log:      ${XCG_LOG:-none}"
+  print -r -- "────────────────────────────────────────"
+  if [[ -n "${XCG_LOG:-}" && -s "${XCG_LOG}" ]]; then
+    cat "${XCG_LOG}"
+  else
+    print -r -- "(no errors recorded)"
+  fi
+}
+
+xcg::copy_diag() {
+  local payload; payload=$(xcg::diag)
+  if [[ -n "${XCG_COPY_STDOUT:-}" ]]; then
+    print -r -- "$payload"
+    return 0
+  fi
+  h::copy_to_clipboard "$payload"
 }
 
 xcg::confirm() {
@@ -274,6 +317,7 @@ xcg::checkout() {
   [[ -n "$ref" ]] || return 1
   # become() replaces the process, so traps never fire - clean up here.
   [[ -n "${XCG_STATE:-}" ]] && rm -f "${XCG_STATE}"
+  [[ -n "${XCG_LOG:-}" ]] && rm -f "${XCG_LOG}"
 
   if [[ "$kind" == remote ]]; then
     local short="${ref#*/}"
@@ -340,6 +384,8 @@ main() {
     __preview)   xcg::preview "${1:-local}" "${2:-}" ;;
     __checkout)  xcg::checkout "${1:-local}" "${2:-}" ;;
     __copy)      xcg::copy "$@" ;;
+    __diag)      xcg::diag ;;
+    __copy-diag) xcg::copy_diag ;;
     *)
       h::puts error "unknown subcommand: $subcmd"
       xcg::help >&2
