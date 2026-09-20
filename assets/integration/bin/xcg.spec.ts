@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
+import { join } from "node:path";
 import { type GitFixture, makeGitFixture } from "./support/git-fixture";
 import { scriptPath } from "./support/paths";
 
@@ -81,5 +82,75 @@ describe("xcg help and public subcommands", () => {
 
   it("exits non-zero for an unknown subcommand", () => {
     expect(xcg(["no-such-subcommand"]).code).not.toBe(0);
+  });
+});
+
+interface Row { kind: string; ref: string; display: string }
+
+function rows(view: string): Row[] {
+  const r = xcg(["__list", view]);
+  expect(r.code).toBe(0);
+  return r.out.trim().split("\n").filter(Boolean).map((line) => {
+    const [kind, ref, display] = line.split("\t");
+    return { kind, ref, display };
+  });
+}
+
+describe("xcg __list", () => {
+  it("lists every local branch in the local view", () => {
+    expect(rows("local").map((r) => r.ref).sort()).toEqual(
+      ["gone-branch", "main", "merged-branch", "unmerged-branch"],
+    );
+  });
+
+  it("tags local rows with kind local", () => {
+    expect(rows("local").every((r) => r.kind === "local")).toBe(true);
+  });
+
+  it("excludes origin/HEAD from the remote view", () => {
+    const refs = rows("remote").map((r) => r.ref);
+    expect(refs).toContain("origin/remote-only");
+    expect(refs).toContain("origin/main");
+    expect(refs).not.toContain("origin");
+  });
+
+  it("tags remote rows with kind remote", () => {
+    expect(rows("remote").every((r) => r.kind === "remote")).toBe(true);
+  });
+
+  it("excludes protected branches from the merged view", () => {
+    expect(rows("merged").map((r) => r.ref)).toEqual(["merged-branch"]);
+  });
+
+  it("lists only gone branches in the gone view", () => {
+    expect(rows("gone").map((r) => r.ref)).toEqual(["gone-branch"]);
+  });
+
+  it("puts the branch name in the display field", () => {
+    const row = rows("local").find((r) => r.ref === "main");
+    expect(row?.display).toContain("main");
+  });
+
+  it("defaults to the local view when no view is given", () => {
+    const r = xcg(["__list"]);
+    expect(r.code).toBe(0);
+    expect(r.out).toContain("merged-branch");
+  });
+
+  it("remembers the last view in XCG_STATE", () => {
+    const stateFile = join(fx.root, "state");
+    const env = { ...Bun.env, XCG_STATE: stateFile };
+    Bun.spawnSync([script, "__list", "gone"], { cwd: fx.work, env, stdout: "pipe", stderr: "pipe" });
+    const r = Bun.spawnSync([script, "__list"], { cwd: fx.work, env, stdout: "pipe", stderr: "pipe" });
+    const out = new TextDecoder().decode(r.stdout);
+    expect(out).toContain("gone-branch");
+    expect(out).not.toContain("unmerged-branch");
+  });
+});
+
+describe("xcg __protected", () => {
+  it("includes the default branch and HEAD", () => {
+    const out = xcg(["__protected"]).out.trim().split("\n");
+    expect(out).toContain("main");
   });
 });

@@ -58,7 +58,66 @@ xcg::default_branch() {
 }
 
 xcg::protected() {
-  print -rl -- "$(xcg::default_branch)" main master develop "$(xcg::head_branch)" | sort -u
+  local -a p
+  p=("$(xcg::default_branch)" main master develop "$(xcg::head_branch)")
+  print -rl -- "${p[@]}" | sort -u
+}
+
+# kind<TAB>ref<TAB>display  - fields 1-2 are hidden from fzf by --with-nth=3..
+xcg::row() {
+  local kind="$1" ref="$2" track="$3" date="$4" author="$5"
+  local mark=""   # NOTE: `status` is read-only in zsh - do not use that name
+  case "$track" in
+    gone) mark=$'\e[31mgone\e[0m' ;;
+    "")   mark="" ;;
+    *)    mark="$track" ;;
+  esac
+  printf '%s\t%s\t%-40s %-16s %-14s %s\n' \
+    "$kind" "$ref" "$ref" "$date" "$author" "$mark"
+}
+
+xcg::list() {
+  local view="${1:-}"
+
+  if [[ -z "$view" ]]; then
+    if [[ -n "${XCG_STATE:-}" && -s "${XCG_STATE}" ]]; then
+      view=$(<"${XCG_STATE}")
+    else
+      view=local
+    fi
+  elif [[ -n "${XCG_STATE:-}" ]]; then
+    print -r -- "$view" > "${XCG_STATE}"
+  fi
+
+  local fmt='%(refname:short)|%(upstream:track,nobracket)|%(committerdate:relative)|%(authorname)'
+  local ref track date author
+  local -a protected; protected=(${(f)"$(xcg::protected)"})
+
+  case "$view" in
+    remote)
+      while IFS='|' read -r ref track date author; do
+        xcg::row remote "$ref" "$track" "$date" "$author"
+      done < <(git for-each-ref --exclude='refs/remotes/*/HEAD' --format="$fmt" refs/remotes 2>/dev/null)
+      ;;
+    merged)
+      while IFS='|' read -r ref track date author; do
+        (( ${protected[(Ie)$ref]} )) && continue
+        xcg::row local "$ref" "$track" "$date" "$author"
+      done < <(git for-each-ref --merged "$(xcg::default_branch)" --format="$fmt" refs/heads 2>/dev/null)
+      ;;
+    gone)
+      while IFS='|' read -r ref track date author; do
+        [[ "$track" == gone ]] || continue
+        (( ${protected[(Ie)$ref]} )) && continue
+        xcg::row local "$ref" "$track" "$date" "$author"
+      done < <(git for-each-ref --format="$fmt" refs/heads 2>/dev/null)
+      ;;
+    local|*)
+      while IFS='|' read -r ref track date author; do
+        xcg::row local "$ref" "$track" "$date" "$author"
+      done < <(git for-each-ref --format="$fmt" refs/heads 2>/dev/null)
+      ;;
+  esac
 }
 
 xcg::ui() { h::puts fatal "fzf UI not implemented yet"; }
@@ -90,6 +149,8 @@ main() {
       ;;
     clear-merged)    xcg::clear_merged ;;
     clear-gone)      xcg::clear_gone ;;
+    __list)      xcg::list "${1:-}" ;;
+    __protected) xcg::protected ;;
     *)
       h::puts error "unknown subcommand: $subcmd"
       xcg::help >&2
