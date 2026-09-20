@@ -284,3 +284,87 @@ describe("xcg __preview", () => {
     expect(xcg(["__preview", "local", "no-such-branch"]).code).toBe(0);
   });
 });
+
+function currentBranch(cwd: string): string {
+  const r = Bun.spawnSync(["git", "rev-parse", "--abbrev-ref", "HEAD"], {
+    cwd, stdout: "pipe", stderr: "pipe",
+  });
+  return new TextDecoder().decode(r.stdout).trim();
+}
+
+describe("xcg __checkout", () => {
+  it("switches to a local branch", () => {
+    const f = makeGitFixture();
+    try {
+      const r = Bun.spawnSync([script, "__checkout", "local", "unmerged-branch"], {
+        cwd: f.work, stdout: "pipe", stderr: "pipe",
+      });
+      expect(r.exitCode).toBe(0);
+      expect(currentBranch(f.work)).toBe("unmerged-branch");
+    } finally { f.cleanup(); }
+  });
+
+  it("creates a tracking branch for a remote-only ref", () => {
+    const f = makeGitFixture();
+    try {
+      const r = Bun.spawnSync([script, "__checkout", "remote", "origin/remote-only"], {
+        cwd: f.work, stdout: "pipe", stderr: "pipe",
+      });
+      expect(r.exitCode).toBe(0);
+      expect(currentBranch(f.work)).toBe("remote-only");
+      const up = Bun.spawnSync(["git", "rev-parse", "--abbrev-ref", "remote-only@{upstream}"], {
+        cwd: f.work, stdout: "pipe", stderr: "pipe",
+      });
+      expect(new TextDecoder().decode(up.stdout).trim()).toBe("origin/remote-only");
+    } finally { f.cleanup(); }
+  });
+
+  it("switches to the existing local branch when the remote ref already has one", () => {
+    const f = makeGitFixture();
+    try {
+      const r = Bun.spawnSync([script, "__checkout", "remote", "origin/main"], {
+        cwd: f.work, stdout: "pipe", stderr: "pipe",
+      });
+      expect(r.exitCode).toBe(0);
+      expect(currentBranch(f.work)).toBe("main");
+    } finally { f.cleanup(); }
+  });
+
+  it("exits non-zero for a ref that does not exist", () => {
+    const f = makeGitFixture();
+    try {
+      const r = Bun.spawnSync([script, "__checkout", "local", "no-such-branch"], {
+        cwd: f.work, stdout: "pipe", stderr: "pipe",
+      });
+      expect(r.exitCode).not.toBe(0);
+    } finally { f.cleanup(); }
+  });
+});
+
+describe("xcg __copy", () => {
+  it("prints the branch name when XCG_COPY_STDOUT is set", () => {
+    const r = Bun.spawnSync([script, "__copy", row(fx.work, "local", "unmerged-branch")], {
+      cwd: fx.work, env: { ...Bun.env, XCG_COPY_STDOUT: "1" }, stdout: "pipe", stderr: "pipe",
+    });
+    expect(r.exitCode).toBe(0);
+    expect(new TextDecoder().decode(r.stdout).trim()).toBe("unmerged-branch");
+  });
+
+  it("strips the remote prefix", () => {
+    const r = Bun.spawnSync([script, "__copy", row(fx.work, "remote", "origin/remote-only")], {
+      cwd: fx.work, env: { ...Bun.env, XCG_COPY_STDOUT: "1" }, stdout: "pipe", stderr: "pipe",
+    });
+    expect(new TextDecoder().decode(r.stdout).trim()).toBe("remote-only");
+  });
+
+  it("joins several selections with newlines", () => {
+    const r = Bun.spawnSync([
+      script, "__copy",
+      row(fx.work, "local", "merged-branch"),
+      row(fx.work, "local", "unmerged-branch"),
+    ], { cwd: fx.work, env: { ...Bun.env, XCG_COPY_STDOUT: "1" }, stdout: "pipe", stderr: "pipe" });
+    expect(new TextDecoder().decode(r.stdout).trim().split("\n")).toEqual(
+      ["merged-branch", "unmerged-branch"],
+    );
+  });
+});

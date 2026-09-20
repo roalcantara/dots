@@ -243,6 +243,44 @@ xcg::preview() {
   print -r -- "$log"
 }
 
+xcg::checkout() {
+  local kind="${1:-local}" ref="${2:-}"
+  [[ -n "$ref" ]] || return 1
+  # become() replaces the process, so traps never fire - clean up here.
+  [[ -n "${XCG_STATE:-}" ]] && rm -f "${XCG_STATE}"
+
+  if [[ "$kind" == remote ]]; then
+    local short="${ref#*/}"
+    if git show-ref --verify --quiet "refs/heads/$short"; then
+      git switch "$short"
+    else
+      git switch --track "$ref"
+    fi
+  else
+    git switch "$ref"
+  fi
+}
+
+xcg::copy() {
+  (( $# )) || return 0
+  local -a names=()
+  local line kind ref
+  for line in "$@"; do
+    IFS=$'\t' read -r kind ref _ <<< "$line"
+    [[ -n "$ref" ]] || continue
+    [[ "$kind" == remote ]] && ref="${ref#*/}"
+    names+=("$ref")
+  done
+  (( ${#names} )) || return 0
+
+  local payload="${(pj:\n:)names}"
+  if [[ -n "${XCG_COPY_STDOUT:-}" ]]; then
+    print -r -- "$payload"
+    return 0
+  fi
+  h::copy_to_clipboard "$payload"
+}
+
 main() {
   local subcmd="${1:-}"
   [[ $# -gt 0 ]] && shift
@@ -274,6 +312,8 @@ main() {
     __protected) xcg::protected ;;
     __delete)    xcg::delete "$@" ;;
     __preview)   xcg::preview "${1:-local}" "${2:-}" ;;
+    __checkout)  xcg::checkout "${1:-local}" "${2:-}" ;;
+    __copy)      xcg::copy "$@" ;;
     *)
       h::puts error "unknown subcommand: $subcmd"
       xcg::help >&2
