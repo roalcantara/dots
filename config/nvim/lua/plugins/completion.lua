@@ -16,7 +16,7 @@ return {
       local paths = require('core/vi/paths')
 
       -- Configure native snippets
-      opts.snippets = {
+      opts.snippets = vim.tbl_deep_extend('force', opts.snippets or {}, {
         expand = function(snippet)
           vim.snippet.expand(snippet)
         end,
@@ -29,10 +29,10 @@ return {
         jump = function(direction)
           vim.snippet.jump(direction)
         end,
-      }
+      })
 
       -- Configure custom appearance kind icons
-      opts.appearance = {
+      opts.appearance = vim.tbl_deep_extend('force', opts.appearance or {}, {
         use_nvim_cmp_as_default = false,
         nerd_font_variant = 'mono',
         kind_icons = {
@@ -46,10 +46,10 @@ return {
           ['Llama.cpp'] = '󰳆',
           Deepseek = '',
         },
-      }
+      })
 
       -- Configure cmdline completion
-      opts.cmdline = {
+      opts.cmdline = vim.tbl_deep_extend('force', opts.cmdline or {}, {
         enabled = true,
         keymap = { preset = 'cmdline' },
         completion = {
@@ -70,10 +70,10 @@ return {
           },
           ghost_text = { enabled = true },
         },
-      }
+      })
 
       -- Configure custom sources integration
-      opts.sources = {
+      opts.sources = vim.tbl_deep_extend('force', opts.sources or {}, {
         default = function(ctx)
           local success, node = pcall(vim.treesitter.get_node)
           if success and node and vim.tbl_contains({ 'comment', 'line_comment', 'block_comment' }, node:type()) then
@@ -154,10 +154,10 @@ return {
             },
           },
         },
-      }
+      })
 
       -- Configure custom keymaps
-      opts.keymap = {
+      opts.keymap = vim.tbl_deep_extend('force', opts.keymap or {}, {
         ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
         ['<C-e>'] = { 'hide', 'fallback' },
         ['<Tab>'] = {
@@ -182,10 +182,11 @@ return {
         ['<Up>'] = { 'select_prev', 'fallback' },
         ['<Down>'] = { 'select_next', 'fallback' },
         ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback_to_mappings', 'fallback' },
-      }
+      })
 
       -- Configure custom drawing columns for colorful-menu
-      opts.completion = {
+      opts.completion = vim.tbl_deep_extend('force', opts.completion or {}, {
+        -- Configuration for the completion menu
         menu = {
           enabled = true,
           border = nil,
@@ -194,7 +195,7 @@ return {
           winblend = 0,
           scrolloff = 2,
           scrollbar = false,
-          auto_show = true,
+          auto_show = false,
           draw = {
             align_to = 'label',
             padding = { 1, 1 },
@@ -279,10 +280,10 @@ return {
           show_with_menu = true,
           show_without_menu = true,
         },
-      }
+      })
 
-      opts.signature = {
-        enabled = false,
+      opts.signature = vim.tbl_deep_extend('force', opts.signature or {}, {
+        enabled = vim.g.ai_cmp,
         trigger = {
           enabled = false,
           show_on_keyword = false,
@@ -304,9 +305,9 @@ return {
           treesitter_highlighting = true,
           show_documentation = false,
         },
-      }
+      })
 
-      opts.fuzzy = { implementation = 'prefer_rust_with_warning' }
+      opts.fuzzy = vim.tbl_deep_extend('force', opts.fuzzy or {}, { implementation = 'prefer_rust_with_warning' })
     end,
   },
 }

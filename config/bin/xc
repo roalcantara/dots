@@ -289,7 +289,7 @@ _xc_main() {
   case "${1:-}" in
     up)
       gum log --time Datetime --level info "brew autoremove && brew update --auto-update --force --verbose && brew upgrade --cask --force --yes && brew bundle check --install --verbose && brew cleanup --prune=all && brew doctor..."
-      brew autoremove && brew update --auto-update --force --verbose && brew upgrade --cask --force --yes && brew bundle check --install --verbose && brew cleanup --prune=all && brew doctor
+      brew autoremove && brew update --auto-update --force --verbose && brew upgrade --greedy --greedy-latest --greedy-auto-updates --yes --force && brew upgrade --greedy --greedy-latest --greedy-auto-updates --force --yes --cask && brew bundle check --install --verbose && brew cleanup --prune=all && brew doctor
       exit 0
       ;;
     list)

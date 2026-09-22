@@ -497,7 +497,7 @@
     "README.md": "TODO.md, AGENTS.md, .mcp.json, CLAUDE.md, CONTEXT.md",
     "mise.toml": "mise.*.toml, mise.lock",
     "fallow.toml": "fallow-*.toml",
-    "hk.pkl": ".gitleaks.toml, .ls-lint.yml, .mdschema.yml, cog.toml, cchk.toml, dprint.jsonc, fallow.toml, biome.json, biome.jsonc, committed.toml, doctor.config.json, .quick-commitlint.json, .fnox.toml",
+    "hk.pkl": ".gitleaks.toml, .ls-lint.yml, .mdschema.yml, cog.toml, cchk.toml, dprint.jsonc, fallow.toml, biome.json, biome.jsonc, committed.toml, doctor.config.json, .quick-commitlint.json, .fnox.toml, sgconfig.yml",
     "Gemfile": "Gemfile.*",
     ".env": ".env.*",
     ".swcrc": ".swcrc.*",
@@ -1651,7 +1651,8 @@
     "https://react.doctor": true,
     "https://schemastore.azurewebsites.net/": true,
     "https://www.raycast.com/schemas/extension.json": true,
-    "https://www.schemastore.org/": true
+    "https://www.schemastore.org/": true,
+    "https://plugins.dprint.dev/": true,
   },
   "json.schemaDownload.enable": true,
   "mise.binPath": "/opt/homebrew/bin/mise",

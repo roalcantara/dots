@@ -87,6 +87,7 @@ brew "uv" # Fast Python package installer and resolver
 brew "wakatime-cli" # WakaTime CLI
 brew "zoxide" # Smart directory navigation for the shell
 brew "zsh" # UNIX shell
+brew "defaultbrowser" # Command-line tool for getting & setting the default browser
 brew "asmvik/formulae/yabai", trusted: true # A tiling window manager for macos
 # brew "opencode" # Terminal AI coding agent
 # brew "asmvik/formulae/skhd", trusted: true # A tiling window manager for macos

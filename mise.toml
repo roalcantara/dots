@@ -334,7 +334,6 @@ lockfile = true
 
 [tools]
 hk = "2.0.1"
-cocogitto = "7.0.0"
 pkl = "latest"
 sd = "latest"
 shellcheck = "latest"

@@ -72,6 +72,185 @@
       "EOF"
     ]
   },
+  "Redirect standard output to a file": {
+    "prefix": [
+      "redir:out",
+      "redir-out",
+      "stdout>"
+    ],
+    "body": [
+      "echo \"${1:Enable Sysadmin}\" > ${2:myfile}",
+      "cat ${2}"
+    ],
+    "description": "Handy to save a command's result for logs, reports, or later processing without printing it to the terminal."
+  },
+  "Append output to an existing file instead of overwriting it": {
+    "prefix": [
+      "redir:append",
+      "redir-append-out",
+      "stdout>>"
+    ],
+    "body": [
+      "echo \"${1:First line}\" > ${2:myfile}",
+      "echo \"${3:Second line}\" >> ${2}",
+      "cat ${2}"
+    ],
+    "description": "Handy for logs, incremental reports, and collecting multiple command results over time."
+  },
+  "Redirect stderr to file": {
+    "prefix": [
+      "redir:err",
+      "redir-err",
+      "stderr>"
+    ],
+    "body": [
+      "ls ${1:/root} 2> ${2:error.log}",
+      "cat ${2}"
+    ],
+    "description": "Handy to capture command failures without mixing them with normal output."
+  },
+  "Append stderr output to a file": {
+    "prefix": [
+      "redir:append-err",
+      "redir-append-err",
+      "stderr>>"
+    ],
+    "body": [
+      "ls ${1:/root} 2>> ${2:error.log}",
+      "ls ${3:/etc} 2>> ${2}",
+      "cat ${2}"
+    ],
+    "description": "Handy for logging repeated failures or preserving a running error history across multiple command runs."
+  },
+  "Write both standard output and standard error to the same file": {
+    "prefix": [
+      "redir:stdboth",
+      "redir-stdboth",
+      "out+err>"
+    ],
+    "body": [
+      "{ echo \"${1:ok}\"; ls ${2:/root}; } > ${3:myfile} 2>&1",
+      "cat ${3}"
+    ],
+    "description": "Useful when a script should keep all status messages and errors together in one log."
+  },
+  "Redirect both stdout and stderr in one expression": {
+    "prefix": [
+      "redir:all",
+      "redir-all",
+      "&>"
+    ],
+    "body": [
+      "{ echo \"${1:success}\"; ls ${2:/root}; } &> ${3:myfile}",
+      "cat ${3}"
+    ],
+    "description": "Concise way to capture all output from a command in shell scripts and logs."
+  },
+  "Read input from file into a command as standard input": {
+    "prefix": [
+      "redir:in",
+      "redir-in",
+      "stdin<"
+    ],
+    "body": [
+      "cat < ${1:myfile}",
+      "tr '[:lower:]' '[:upper:]' < ${1}"
+    ],
+    "description": "Use this when you want a command to process data from a file instead of typing it interactively"
+  },
+  "Use a here-document to pass multi-line input to a command": {
+    "prefix": [
+      "heredoc",
+      "<<EOF"
+    ],
+    "body": [
+      "cat <<'EOF'",
+      "${1:Hello from stdin}",
+      "EOF"
+    ],
+    "description": "Common in shell scripts when embedding configuration, text blocks, or generated content."
+  },
+  "Use a Here string to pass a single string directly to a command as standard input": {
+    "prefix": [
+      "herestring",
+      "<<<"
+    ],
+    "body": [
+      "grep -i \"${1:sysadmin}\" <<< \"${2:Enable Sysadmin}\""
+    ],
+    "description": "Useful for one-off text processing without creating a temporary file."
+  },
+  "Tee output to terminal and file": {
+    "prefix": [
+      "tee",
+      "pipe-tee"
+    ],
+    "body": [
+      "echo \"${1:Enable Sysadmin}\" | tee ${2:myfile}",
+      "cat ${2}"
+    ],
+    "description": "Send command output both to the terminal and a file. Use tee in scripts to display progress while still saving the result for auditing or later use."
+  },
+  "Discard stdout to /dev/null": {
+    "prefix": [
+      "redir:null-out",
+      ">/dev/null",
+      "null-out"
+    ],
+    "body": [
+      "echo \"${1:Enable Sysadmin}\" > /dev/null",
+      "ls ${2:/tmp} > /dev/null"
+    ],
+    "description": "Use this when you want to ignore the normal output of a command, such as quiet installs, clean logs, or scripts where only the exit status matters."
+  },
+  "Discard stderr to /dev/null": {
+    "prefix": [
+      "redir:null-err",
+      "2>/dev/null",
+      "null-err"
+    ],
+    "body": [
+      "ls ${1:/root} 2> /dev/null",
+      "grep \"${2:missing}\" ${3:config.txt} 2> /dev/null"
+    ],
+    "description": "Use this when you intentionally want to hide errors and warnings, such as ignoring permission issues or optional checks in a script."
+  },
+  "Discard stdout and stderr to /dev/null": {
+    "prefix": [
+      "redir:null-both",
+      ">/dev/null 2>&1",
+      "null-both"
+    ],
+    "body": [
+      "{ echo \"${1:ok}\"; ls ${2:/root}; } > /dev/null 2>&1",
+      "command >/dev/null 2>&1"
+    ],
+    "description": "Use this in cron jobs, installers, or silent scripts where you want no output at all and only care about whether the command succeeded."
+  },
+  "Discard both streams with &> /dev/null": {
+    "prefix": [
+      "redir:null-all",
+      "&>/dev/null",
+      "null-all"
+    ],
+    "body": [
+      "{ echo \"${1:success}\"; ls ${2:/root}; } &> /dev/null",
+      "some_script.sh &> /dev/null"
+    ],
+    "description": "A compact shorthand for sending both stdout and stderr to /dev/null. Useful for quiet background tasks and scripts that should stay completely silent."
+  },
+  "Discard stderr from a pipeline": {
+    "prefix": [
+      "redir:null-pipe",
+      "2>/dev/null |",
+      "null-pipe"
+    ],
+    "body": [
+      "grep \"${1:error}\" ${2:logfile.txt} 2>/dev/null | tail -n 20",
+      "find ${3:/tmp} -name '*.log' 2>/dev/null | head"
+    ],
+    "description": "Keep useful pipeline output while hiding noisy errors from commands that are expected to fail or produce warnings."
+  },
   "Function": {
     "prefix": "function",
     "body": [
