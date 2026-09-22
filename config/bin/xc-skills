@@ -2,58 +2,6 @@
 # shellcheck shell=bash disable=SC2016
 set -euo pipefail
 
-# | Agent                                    | Project/Local PATH       | Global PATH                     |
-# | `aider-desk`                             | `.aider-desk/skills/`    | `~/.aider-desk/skills/`         |
-# | `amp`, `kimi-cli`, `replit`, `universal` | `.agents/skills/`        | `~/.config/agents/skills/`      |
-# | `antigravity`                            | `.agents/skills/`        | `~/.gemini/antigravity/skills/` |
-# | `augment`                                | `.augment/skills/`       | `~/.augment/skills/`            |
-# | `bob`                                    | `.bob/skills/`           | `~/.bob/skills/`                |
-# | `claude-code`                            | `.claude/skills/`        | `~/.claude/skills/`             |
-# | `openclaw`                               | `skills/`                | `~/.openclaw/skills/`           |
-# | `cline`, `dexto`, `warp`                 | `.agents/skills/`        | `~/.agents/skills/`             |
-# | `codearts-agent`                         | `.codeartsdoer/skills/`  | `~/.codeartsdoer/skills/`       |
-# | `codebuddy`                              | `.codebuddy/skills/`     | `~/.codebuddy/skills/`          |
-# | `codemaker`                              | `.codemaker/skills/`     | `~/.codemaker/skills/`          |
-# | `codestudio`                             | `.codestudio/skills/`    | `~/.codestudio/skills/`         |
-# | `codex`                                  | `.agents/skills/`        | `~/.codex/skills/`              |
-# | `command-code`                           | `.commandcode/skills/`   | `~/.commandcode/skills/`        |
-# | `continue`                               | `.continue/skills/`      | `~/.continue/skills/`           |
-# | `cortex`                                 | `.cortex/skills/`        | `~/.snowflake/cortex/skills/`   |
-# | `crush`                                  | `.crush/skills/`         | `~/.config/crush/skills/`       |
-# | `cursor`                                 | `.agents/skills/`        | `~/.cursor/skills/`             |
-# | `deepagents`                             | `.agents/skills/`        | `~/.deepagents/agent/skills/`   |
-# | `devin`                                  | `.devin/skills/`         | `~/.config/devin/skills/`       |
-# | `droid`                                  | `.factory/skills/`       | `~/.factory/skills/`            |
-# | `firebender`                             | `.agents/skills/`        | `~/.firebender/skills/`         |
-# | `forgecode`                              | `.forge/skills/`         | `~/.forge/skills/`              |
-# | `gemini-cli`                             | `.agents/skills/`        | `~/.gemini/skills/`             |
-# | `github-copilot`                         | `.agents/skills/`        | `~/.copilot/skills/`            |
-# | `goose`                                  | `.goose/skills/`         | `~/.config/goose/skills/`       |
-# | `hermes-agent`                           | `.hermes/skills/`        | `~/.hermes/skills/`             |
-# | `junie`                                  | `.junie/skills/`         | `~/.junie/skills/`              |
-# | `iflow-cli`                              | `.iflow/skills/`         | `~/.iflow/skills/`              |
-# | `kilo`                                   | `.kilocode/skills/`      | `~/.kilocode/skills/`           |
-# | `kiro-cli`                               | `.kiro/skills/`          | `~/.kiro/skills/`               |
-# | `kode`                                   | `.kode/skills/`          | `~/.kode/skills/`               |
-# | `mcpjam`                                 | `.mcpjam/skills/`        | `~/.mcpjam/skills/`             |
-# | `mistral-vibe`                           | `.vibe/skills/`          | `~/.vibe/skills/`               |
-# | `mux`                                    | `.mux/skills/`           | `~/.mux/skills/`                |
-# | `opencode`                               | `.agents/skills/`        | `~/.config/opencode/skills/`    |
-# | `openhands`                              | `.openhands/skills/`     | `~/.openhands/skills/`          |
-# | `pi`                                     | `.pi/skills/`            | `~/.pi/agent/skills/`           |
-# | `qoder`                                  | `.qoder/skills/`         | `~/.qoder/skills/`              |
-# | `qwen-code`                              | `.qwen/skills/`          | `~/.qwen/skills/`               |
-# | `rovodev`                                | `.rovodev/skills/`       | `~/.rovodev/skills/`            |
-# | `roo`                                    | `.roo/skills/`           | `~/.roo/skills/`                |
-# | `tabnine-cli`                            | `.tabnine/agent/skills/` | `~/.tabnine/agent/skills/`      |
-# | `trae`                                   | `.trae/skills/`          | `~/.trae/skills/`               |
-# | `trae-cn`                                | `.trae/skills/`          | `~/.trae-cn/skills/`            |
-# | `windsurf`                               | `.windsurf/skills/`      | `~/.codeium/windsurf/skills/`   |
-# | `zencoder`                               | `.zencoder/skills/`      | `~/.zencoder/skills/`           |
-# | `neovate`                                | `.neovate/skills/`       | `~/.neovate/skills/`            |
-# | `pochi`                                  | `.pochi/skills/`         | `~/.pochi/skills/`              |
-# | `adal`                                   | `.adal/skills/`          | `~/.adal/skills/`               |
-
 #USAGE version "0.1.0"
 #USAGE about "Manage skills"
 #USAGE cmd "ls" help="List, preview, and manage installed skills via fzf" {
@@ -90,6 +38,7 @@ set -euo pipefail
 #USAGE   flag "-l --local" help="Use project/local path instead of global path for agents"
 #USAGE   example "xc-skills collect --dry-run"
 #USAGE }
+source /Users/roalcantara/Work/dots/config/bin/src/helpers
 
 SCRIPT_NAME="${0##*/}"
 declare SCRIPT_PATH
@@ -98,74 +47,6 @@ if [[ -n "${BASH_SOURCE[0]:-}" ]]; then
 else
   SCRIPT_PATH="$(cd "$(dirname "$0")" 2>/dev/null && pwd -P)/$(basename "$0")"
 fi
-
-# ── helpers ───────────────────────────────────────────────────────────────────
-
-log() { printf '%s\n' "$*"; }
-warn() { printf 'WARN: %s\n' "$*" >&2; }
-err() { printf 'ERROR: %s\n' "$*" >&2; }
-
-usage() {
-  command usage bash "$SCRIPT_PATH" --help
-}
-
-_copy_to_clipboard() {
-  if command -v pbcopy >/dev/null 2>&1; then
-    pbcopy
-  elif [[ -n "${WAYLAND_DISPLAY:-}" ]] && command -v wl-copy >/dev/null 2>&1; then
-    wl-copy
-  elif [[ -n "${DISPLAY:-}" ]] && command -v xclip >/dev/null 2>&1; then
-    xclip -selection clipboard
-  elif [[ -n "${DISPLAY:-}" ]] && command -v xsel >/dev/null 2>&1; then
-    xsel --clipboard --input
-  else
-    local data
-    data="$(base64 | tr -d '\n')"
-    printf '\e]52;c;%s\a' "$data" >/dev/tty
-  fi
-}
-
-_preview_skill() {
-  local target="${1:-}"
-  if [[ -z "$target" ]]; then
-    return 0
-  fi
-
-  local file=""
-  if [[ -f "$target/SKILL.md" ]]; then
-    file="$target/SKILL.md"
-  elif [[ -f "$target" ]]; then
-    file="$target"
-  elif [[ -f "$target/README.md" ]]; then
-    file="$target/README.md"
-  fi
-
-  if [[ -n "$file" && -f "$file" ]]; then
-    if command -v glow >/dev/null 2>&1; then
-      glow -s dracula "$file" </dev/null
-    elif command -v bat >/dev/null 2>&1; then
-      bat --color=always -l md --paging=never "$file"
-    else
-      cat "$file"
-    fi
-  elif [[ -d "$target" ]]; then
-    echo "No SKILL.md found in $target"
-    echo ""
-    ls -la "$target"
-  else
-    echo "Target not found: $target"
-  fi
-}
-
-run_cmd() {
-  if ((dry_run)); then
-    printf '[dry-run] '
-    printf '%q ' "$@"
-    printf '\n'
-  else
-    "$@"
-  fi
-}
 
 # ── agent lookup tables ───────────────────────────────────────────────────────
 # Keys are agent names; values are paths relative to $PWD (project) or $HOME (global).
@@ -226,7 +107,6 @@ declare -A AGENT_PROJECT_PATH=(
   [pochi]=".pochi/skills"
   [adal]=".adal/skills"
 )
-
 declare -A AGENT_GLOBAL_PATH=(
   [aider-desk]=".aider-desk/skills"
   [amp]=".config/agents/skills"
@@ -285,6 +165,22 @@ declare -A AGENT_GLOBAL_PATH=(
   [adal]=".adal/skills"
 )
 
+# ── helpers ───────────────────────────────────────────────────────────────────
+usage() {
+  command usage bash "$SCRIPT_PATH" --help
+}
+
+run_cmd() {
+  if ((dry_run)); then
+    printf '[dry-run] '
+    printf '%q ' "$@"
+    printf '\n'
+  else
+    "$@"
+  fi
+}
+
+
 # ── agent path resolver ───────────────────────────────────────────────────────
 # Outputs the resolved path for a given agent name.
 # Usage: resolve_agent_path <agent> <local_flag> <pwd>
@@ -296,21 +192,18 @@ resolve_agent_path() {
 
   if ((local_flag)); then
     if [[ -z "${AGENT_PROJECT_PATH[$agent]+set}" ]]; then
-      err "Unknown agent: $agent"
-      return 1
+      h::puts fatal "Unknown agent: $agent"
     fi
     printf '%s/%s\n' "$base_pwd" "${AGENT_PROJECT_PATH[$agent]}"
   else
     if [[ -z "${AGENT_GLOBAL_PATH[$agent]+set}" ]]; then
-      err "Unknown agent: $agent"
-      return 1
+      h::puts fatal "Unknown agent: $agent"
     fi
     printf '%s/%s\n' "$HOME" "${AGENT_GLOBAL_PATH[$agent]}"
   fi
 }
 
 # ── ls command ────────────────────────────────────────────────────────────────
-
 cmd_ls() {
   local local_flag=0
   local raw=0
@@ -322,11 +215,11 @@ cmd_ls() {
       -r|--raw) raw=1 ;;
       -s|--source)
         shift
-        if (($# == 0)); then err "--source requires a PATH argument"; usage >&2; exit 1; fi
+        if (($# == 0)); then h::puts error "--source requires a PATH argument"; usage >&2; exit 1; fi
         explicit_source="$1"
         ;;
-      -*) err "Unknown option: $1"; usage >&2; exit 1 ;;
-      *)  err "Unexpected argument: $1"; usage >&2; exit 1 ;;
+      -*) h::puts error "Unknown option: $1"; usage >&2; exit 1 ;;
+      *)  h::puts error "Unexpected argument: $1"; usage >&2; exit 1 ;;
     esac
     shift
   done
@@ -341,7 +234,7 @@ cmd_ls() {
   fi
 
   if [[ ! -d "$source_dir" ]]; then
-    err "Skills directory not found: $source_dir"
+    h::puts error "Skills directory not found: $source_dir"
     exit 1
   fi
 
@@ -359,8 +252,7 @@ cmd_ls() {
   done
 
   if [[ ${#skills[@]} -eq 0 ]]; then
-    log "No skills found in $source_dir"
-    exit 0
+    h::puts fatal "No skills found in $source_dir"
   fi
 
   if ((raw)) || [[ ! -t 1 || ! -t 0 ]]; then
@@ -369,8 +261,7 @@ cmd_ls() {
   fi
 
   if ! command -v fzf >/dev/null 2>&1; then
-    err "fzf is required for interactive mode. Use --raw for script output."
-    exit 1
+    h::puts fatal "fzf is required for interactive mode. Use --raw for script output."
   fi
 
   local preview_cmd="\"$SCRIPT_PATH\" __preview {}"
@@ -399,7 +290,6 @@ cmd_ls() {
 }
 
 # ── sync command ──────────────────────────────────────────────────────────────
-
 cmd_sync() {
   local dry_run=0
   local prune=0
@@ -422,13 +312,13 @@ cmd_sync() {
       -s|--source)
         shift
         if (($# == 0)); then
-          err "--source requires a PATH argument"
+          h::puts error "--source requires a PATH argument"
           usage >&2
           exit 1
         fi
         explicit_source_count=$((explicit_source_count + 1))
         if ((explicit_source_count > 1)); then
-          err "--source can only be given once"
+          h::puts error "--source can only be given once"
           exit 1
         fi
         explicit_source="$1"
@@ -436,7 +326,7 @@ cmd_sync() {
       -a|--agent)
         shift
         if (($# == 0)); then
-          err "--agent requires a NAME argument"
+          h::puts error "--agent requires a NAME argument"
           usage >&2
           exit 1
         fi
@@ -445,7 +335,7 @@ cmd_sync() {
       -t|--target)
         shift
         if (($# == 0)); then
-          err "--target requires a PATH argument"
+          h::puts error "--target requires a PATH argument"
           usage >&2
           exit 1
         fi
@@ -454,32 +344,21 @@ cmd_sync() {
       -l|--local)
         local_flag_count=$((local_flag_count + 1))
         if ((local_flag_count > 1)); then
-          err "--local can only be given once"
+          h::puts error "--local can only be given once"
           exit 1
         fi
         local_flag=1
         ;;
-      -*)
-        err "Unknown option: $1"
-        usage >&2
-        exit 1
-        ;;
       *)
-        err "Unexpected argument: $1"
-        usage >&2
-        exit 1
-        ;;
     esac
     shift
   done
 
   # ── resolve source directory ──────────────────────────────────────────────
-
   local source_dir=""
   if [[ -n "$explicit_source" ]]; then
     if [[ ! -d "$explicit_source" ]]; then
-      err "Source directory not found: $explicit_source"
-      exit 1
+      h::puts fatal "Source directory not found: $explicit_source"
     fi
     source_dir="$explicit_source"
   else
@@ -488,9 +367,8 @@ cmd_sync() {
     if [[ -d "$default_source" ]]; then
       source_dir="$default_source"
     else
-      err "No source skills directory found. Checked: $default_source"
-      err "Use -s/--source to specify a source directory."
-      exit 1
+      h::puts error "No source skills directory found. Checked: $default_source"
+      h::puts fatal "Use -s/--source to specify a source directory."
     fi
   fi
 
@@ -501,8 +379,7 @@ cmd_sync() {
   shopt -u nullglob
 
   if [[ ${#source_entries[@]} -eq 0 ]]; then
-    err "Source directory has no symlinks to sync: $source_dir"
-    exit 1
+    h::puts fatal "Source directory has no symlinks to sync: $source_dir"
   fi
 
   local has_symlinks=0
@@ -514,8 +391,7 @@ cmd_sync() {
   done
 
   if ((!has_symlinks)); then
-    err "Source directory has no symlinks to sync: $source_dir"
-    exit 1
+    h::puts fatal "Source directory has no symlinks to sync: $source_dir"
   fi
 
   # ── validate agent names if given ─────────────────────────────────────────
@@ -523,8 +399,7 @@ cmd_sync() {
   local base_pwd="$PWD"
   for agent in "${agents[@]}"; do
     if ! resolve_agent_path "$agent" "$local_flag" "$base_pwd" >/dev/null 2>&1; then
-      err "Unknown agent: $agent"
-      exit 1
+      h::puts fatal "Unknown agent: $agent"
     fi
   done
 
@@ -577,17 +452,17 @@ cmd_sync() {
     # Ensure destination directory exists
     if [[ ! -d "$dest" ]]; then
       if ! run_cmd /bin/mkdir -p "$dest"; then
-        err "Cannot create destination directory: $dest"
+        h::puts error "Cannot create destination directory: $dest"
         errors=$((errors + 1))
         overall_errors=$((overall_errors + 1))
-        log "Destination: $dest | created=$created replaced=$replaced unchanged=$unchanged skipped_non_symlink=$skipped_non_symlink pruned=$pruned errors=$errors"
+        h::puts info "Destination: $dest | created=$created replaced=$replaced unchanged=$unchanged skipped_non_symlink=$skipped_non_symlink pruned=$pruned errors=$errors"
         continue
       fi
     fi
 
     # Ensure destination directory is writable
     if [[ ! -w "$dest" ]]; then
-      warn "Destination directory is not writable, skipping: $dest"
+      h::puts warn "Destination directory is not writable, skipping: $dest"
       continue
     fi
 
@@ -617,7 +492,7 @@ cmd_sync() {
           fi
         else
           skipped_non_symlink=$((skipped_non_symlink + 1))
-          warn "Non-symlink exists, leaving untouched: $out"
+          h::puts warn "Non-symlink exists, leaving untouched: $out"
           continue
         fi
       else
@@ -647,20 +522,18 @@ cmd_sync() {
         fi
       done
     fi
-
-    log "Destination: $dest | created=$created replaced=$replaced unchanged=$unchanged skipped_non_symlink=$skipped_non_symlink pruned=$pruned errors=$errors"
+    h::puts info "Destination: $dest | created=$created replaced=$replaced unchanged=$unchanged skipped_non_symlink=$skipped_non_symlink pruned=$pruned errors=$errors"
   done
 
   if ((overall_errors > 0)); then
-    warn "Completed with $overall_errors operation error(s)."
+    h::puts warn "Completed with $overall_errors operation error(s)."
     exit 2
   fi
 
-  log "Synchronization completed successfully."
+  h::puts info "Synchronization completed successfully."
 }
 
 # ── collect command ────────────────────────────────────────────────────────────
-
 cmd_collect() {
   local dry_run=0
   local local_flag=0
@@ -675,28 +548,28 @@ cmd_collect() {
       --dry-run) dry_run=1 ;;
       -s|--source)
         shift
-        if (($# == 0)); then err "--source requires a PATH argument"; usage >&2; exit 1; fi
+        if (($# == 0)); then h::puts error "--source requires a PATH argument"; usage >&2; exit 1; fi
         explicit_source_count=$((explicit_source_count + 1))
-        if ((explicit_source_count > 1)); then err "--source can only be given once"; exit 1; fi
+        if ((explicit_source_count > 1)); then h::puts error "--source can only be given once"; exit 1; fi
         explicit_source="$1"
         ;;
       -a|--agent)
         shift
-        if (($# == 0)); then err "--agent requires a NAME argument"; usage >&2; exit 1; fi
+        if (($# == 0)); then h::puts error "--agent requires a NAME argument"; usage >&2; exit 1; fi
         agents+=("$1")
         ;;
       -t|--target)
         shift
-        if (($# == 0)); then err "--target requires a PATH argument"; usage >&2; exit 1; fi
+        if (($# == 0)); then h::puts error "--target requires a PATH argument"; usage >&2; exit 1; fi
         explicit_targets+=("$1")
         ;;
       -l|--local)
         local_flag_count=$((local_flag_count + 1))
-        if ((local_flag_count > 1)); then err "--local can only be given once"; exit 1; fi
+        if ((local_flag_count > 1)); then h::puts error "--local can only be given once"; exit 1; fi
         local_flag=1
         ;;
-      -*) err "Unknown option: $1"; usage >&2; exit 1 ;;
-      *)  err "Unexpected argument: $1"; usage >&2; exit 1 ;;
+      -*) h::puts error "Unknown option: $1"; usage >&2; exit 1 ;;
+      *)  h::puts error "Unexpected argument: $1"; usage >&2; exit 1 ;;
     esac
     shift
   done
@@ -706,13 +579,11 @@ cmd_collect() {
   local source_dir="${explicit_source:-$HOME/.agents/skills}"
 
   if ! run_cmd /bin/mkdir -p "$source_dir"; then
-    err "Cannot create source directory: $source_dir"
-    exit 1
+    h::puts fatal "Cannot create source directory: $source_dir"
   fi
 
   if [[ ! -w "$source_dir" ]]; then
-    err "Source directory is not writable: $source_dir"
-    exit 1
+    h::puts fatal "Source directory is not writable: $source_dir"
   fi
 
   # ── validate agents ─────────────────────────────────────────────────────────
@@ -720,8 +591,7 @@ cmd_collect() {
   local base_pwd="$PWD"
   for agent in "${agents[@]}"; do
     if ! resolve_agent_path "$agent" "$local_flag" "$base_pwd" >/dev/null 2>&1; then
-      err "Unknown agent: $agent"
-      exit 1
+      h::puts fatal "Unknown agent: $agent"
     fi
   done
 
@@ -777,7 +647,7 @@ cmd_collect() {
       # Not a regular file — skip with warning
       if [[ ! -f "$entry" ]]; then
         skipped_other=$((skipped_other + 1))
-        warn "Not a regular file, skipping: $entry"
+        h::puts warn "Not a regular file, skipping: $entry"
         continue
       fi
 
@@ -790,7 +660,7 @@ cmd_collect() {
           continue
         fi
       else
-        warn "File already exists in source (skipping copy): $src_file"
+        h::puts warn "File already exists in source (skipping copy): $src_file"
         linked=$((linked + 1))
       fi
 
@@ -802,19 +672,18 @@ cmd_collect() {
       fi
     done
 
-    log "Agent: $inspect_dir | copied=$copied linked=$linked skipped_symlink=$skipped_symlink skipped_other=$skipped_other errors=$errors"
+    h::puts info "Agent: $inspect_dir | copied=$copied linked=$linked skipped_symlink=$skipped_symlink skipped_other=$skipped_other errors=$errors"
   done
 
   if ((overall_errors > 0)); then
-    warn "Completed with $overall_errors operation error(s)."
+    h::puts warn "Completed with $overall_errors operation error(s)."
     exit 2
   fi
 
-  log "Collection completed successfully."
+  h::puts info "Collection completed successfully."
 }
 
 # ── main ──────────────────────────────────────────────────────────────────────
-
 main() {
   if (($# == 0)); then
     usage
@@ -825,10 +694,55 @@ main() {
     ls)      shift; cmd_ls "$@" ;;
     sync)    shift; cmd_sync "$@" ;;
     collect) shift; cmd_collect "$@" ;;
-    __clip)    _copy_to_clipboard; exit 0 ;;
-    __preview) shift; _preview_skill "$@"; exit 0 ;;
-    -*) err "Unknown option: $1"; usage >&2; exit 1 ;;
-    *)  err "Unknown subcommand: $1"; usage >&2; exit 1 ;;
+    __clip)
+      if command -v pbcopy >/dev/null 2>&1; then
+        pbcopy
+      elif [[ -n "${WAYLAND_DISPLAY:-}" ]] && command -v wl-copy >/dev/null 2>&1; then
+        wl-copy
+      elif [[ -n "${DISPLAY:-}" ]] && command -v xclip >/dev/null 2>&1; then
+        xclip -selection clipboard
+      elif [[ -n "${DISPLAY:-}" ]] && command -v xsel >/dev/null 2>&1; then
+        xsel --clipboard --input
+      else
+        local data
+        data="$(base64 | tr -d '\n')"
+        printf '\e]52;c;%s\a' "$data" >/dev/tty
+      fi
+      exit 0 ;;
+    __preview)
+      shift;
+      local target="$@"
+      if [[ -z "$target" ]]; then
+        return 0
+      fi
+
+      local file=""
+      if [[ -f "$target/SKILL.md" ]]; then
+        file="$target/SKILL.md"
+      elif [[ -f "$target" ]]; then
+        file="$target"
+      elif [[ -f "$target/README.md" ]]; then
+        file="$target/README.md"
+      fi
+
+      if [[ -n "$file" && -f "$file" ]]; then
+        if command -v glow >/dev/null 2>&1; then
+          glow -s dracula "$file" </dev/null
+        elif command -v bat >/dev/null 2>&1; then
+          bat --color=always -l md --paging=never "$file"
+        else
+          cat "$file"
+        fi
+      elif [[ -d "$target" ]]; then
+        echo "No SKILL.md found in $target"
+        echo ""
+        ls -la "$target"
+      else
+        echo "Target not found: $target"
+      fi
+      exit 0 ;;
+    -*) h::puts err "Unknown option: $1"; usage >&2; exit 1 ;;
+    *)  h::puts err "Unknown subcommand: $1"; usage >&2; exit 1 ;;
   esac
 }
 

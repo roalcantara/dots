@@ -16,16 +16,27 @@ zmodule environment # Sets sane Zsh built-in environment options. (https://githu
 zmodule input       # Applies correct bindkeys for input events. (https://github.com/zimfw/input)
 zmodule run-help    # Figures out where to get the best help, and gets it. Type ESC-H to execute run-help for the current command. (https://github.com/zimfw/run-help)
 
-# TOOL INTEGRATION | https://zimfw.sh/docs/modules
-zmodule joke/zim-mise --if-command mise                                                       # Sets up mise Zsh shell integration (https://github.com/joke/zim-mise) - Load early to ensure mise paths are prepended
-zmodule fzf --if-command fzf                                                                  # Fuzzy finder (https://github.com/zimfw/fzf)
-
 # COMPLETION | https://zimfw.sh/docs/install/#create-~%2F.zimrc
 # Completions should be configured before compinit, as stated in the zsh-completions manual installation guide.
+# These two only contribute to fpath; they run no code.
 zmodule zchee/zsh-completions --fpath src/zsh --fpath src/macOS --fpath src/go
 zmodule $HOME/.config/zsh/opt --fpath completions
+
+# compinit runs HERE, and must run before any module that calls compdef.
+# `mise hook-env` emits per-tool completions wrapped in
+#   if ! (( $+functions[compdef] )); then autoload -Uz compinit; compinit -i; fi
+# so with zim-mise loaded first, mise ran compinit itself against the default
+# dumpfile. This module then printed "completion was already initialized before
+# completion module", which is console output after the p10k instant prompt
+# preamble and therefore also triggered p10k's instant-prompt warning.
 zmodule completion
-zmodule Aloxaf/fzf-tab --source fzf-tab.zsh --if-command fzf                                 # MUST be sourced after compinit but before other plugins
+
+# TOOL INTEGRATION | https://zimfw.sh/docs/modules
+# After `completion`: compdef already exists, so mise skips its own compinit.
+# Their fpath entries are emitted at the top of init.zsh regardless of order.
+zmodule joke/zim-mise --if-command mise                                                       # Sets up mise Zsh shell integration (https://github.com/joke/zim-mise)
+zmodule fzf --if-command fzf                                                                  # Fuzzy finder (https://github.com/zimfw/fzf)
+zmodule Aloxaf/fzf-tab --source fzf-tab.zsh --if-command fzf                                  # MUST be sourced after compinit but before other plugins
 
 zmodule zdharma-continuum/fast-syntax-highlighting --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'   # MUST be sourced after completion. Skip in Warp Terminal as it has native syntax highlighting
 zmodule zsh-users/zsh-history-substring-search --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'       # MUST be sourced after syntax-highlighting. Skip in Warp Terminal as it has enhanced history search

@@ -63,12 +63,31 @@ zim::overrides() {
 zim::load() {
   local zdot=${ZDOTDIR:-$HOME/.config/zsh}
   [[ -e $zdot/.zimrc ]] || return 0
+
+  # This function runs after .zshrc's instant-prompt preamble, so anything it
+  # writes to the console makes p10k warn about "console output during zsh
+  # initialization" on the next start. Neither step below is silent when it
+  # actually runs: wget reports download failures, and `zimfw init` prints
+  # clone/build progress whenever .zimrc gained a module. Both are rare, both
+  # are uninteresting when they succeed -- so their output goes to a log, and
+  # only a real failure is allowed to reach the terminal.
+  local zlog=$zdot/tmp/zim-bootstrap.log
+
   if [[ ! -e $ZIM_HOME/zimfw.zsh ]]; then
-    command mkdir -p $ZIM_HOME && command wget -q -O $ZIM_HOME/zimfw.zsh \
-      https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+    command mkdir -p $ZIM_HOME ${zlog:h}
+    # >| overrides NO_CLOBBER: zim::overrides has not run yet to turn it off.
+    if ! command wget -q -O $ZIM_HOME/zimfw.zsh \
+      https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh >|$zlog 2>&1; then
+      print -u2 "zim::load: could not download zimfw.zsh - see $zlog"
+      return 1
+    fi
   fi
   if [[ ! $ZIM_HOME/init.zsh -nt $zdot/.zimrc ]]; then
-    source $ZIM_HOME/zimfw.zsh init -q
+    command mkdir -p ${zlog:h}
+    if ! source $ZIM_HOME/zimfw.zsh init -q >|$zlog 2>&1; then
+      print -u2 "zim::load: zimfw init failed - see $zlog"
+      return 1
+    fi
   fi
   [[ -f $ZIM_HOME/init.zsh ]] && source $ZIM_HOME/init.zsh
   return 0

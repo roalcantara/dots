@@ -7,43 +7,22 @@
 #USAGE example "psc"
 #USAGE example "psc tools/bitly.com/token"
 
-emulate -L zsh
-setopt no_unset pipe_fail
+source /Users/roalcantara/Work/dots/config/bin/src/helpers
+h::needs_command gopass
 
-key="${usage_key:-}"
-
-_has_gum() {
-  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v gum >/dev/null 2>&1
-}
-
-_has_fzf() {
-  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v fzf >/dev/null 2>&1
-}
-
-if ! command -v gopass &>/dev/null; then
-  echo "Error: gopass is not installed" >&2
-  exit 1
-fi
-
-if [[ -z "$key" ]]; then
+if [[ -z "${usage_key:-}" ]]; then
   if [[ ! -t 1 ]]; then
-    echo "Error: key argument required in non-interactive environment" >&2
-    exit 1
+    h::puts fatal "key argument required in non-interactive environment"
   fi
   items=$(gopass ls --flat 2>/dev/null || true)
-  if [[ -z "$items" ]]; then
-    echo "No secrets found in gopass" >&2
-    exit 0
-  fi
-  if _has_gum; then
-    key=$(echo "$items" | gum filter --limit=1)
-  elif _has_fzf; then
-    key=$(echo "$items" | fzf)
+  if h::has_command gum; then
+    usage_key=$(echo "$items" | gum filter --limit=1)
+  elif h::has_command fzf; then
+    usage_key=$(echo "$items" | fzf)
   else
-    echo "Error: interactive selection requires gum or fzf" >&2
-    exit 1
+    h::puts fatal "Interactive selection requires gum or fzf"
   fi
-  [[ -z "$key" ]] && exit 0
 fi
+[[ -z "${usage_key:-}" ]] && exit 0
 
-exec gopass show --clip "$key"
+exec gopass show --clip "$usage_key"

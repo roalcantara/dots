@@ -82,26 +82,7 @@
 
 emulate -L zsh
 setopt no_unset pipe_fail extended_glob
-
-_has_gum() {
-  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v gum >/dev/null 2>&1
-}
-
-_log_info() {
-  if _has_gum; then
-    gum log --time DateTime --level info "$1"
-  else
-    print -P -- "%F{green}✔%f $1"
-  fi
-}
-
-_log_error() {
-  if _has_gum; then
-    gum log --time DateTime --level error "$1"
-  else
-    print -P -- "%F{red}✘%f $1" >&2
-  fi
-}
+source /Users/roalcantara/Work/dots/config/bin/src/helpers
 
 _gitx_branches() {
   git branch -vva --color=never 2>/dev/null \
@@ -116,29 +97,24 @@ _gitx_branches() {
     | grep -v '^>' \
     | uniq
 }
-
 _gitx_head_branch() {
   git rev-parse --abbrev-ref HEAD 2>/dev/null || \
   git branch --show-current 2>/dev/null || echo "main"
 }
-
 _gitx_root_commit() {
   git rev-parse "$(git rev-list --max-parents=0 HEAD 2>/dev/null || echo "HEAD")" 2>/dev/null || echo ""
 }
 
 if [[ $# -eq 0 ]]; then
-  if [[ ! -t 1 ]]; then
-    usage zsh "${0:a}" --help >&2
-    exit 1
+  if [[ -t 1 ]]; then
+    if command -v fzf &>/dev/null; then
+      subcmd=$(printf '%s\n' "branches" "head-branch" "cnb" "nb" "clear-merged" "clear-gone" "lol" "fzb" "fza" "fzu" | fzf --header="Pick gitx subcommand:")
+      [[ -z "$subcmd" ]] && exit 0
+      set -- "$subcmd"
+    fi
   fi
-  if command -v fzf &>/dev/null; then
-    subcmd=$(printf '%s\n' "branches" "head-branch" "cnb" "nb" "clear-merged" "clear-gone" "lol" "fzb" "fza" "fzu" | fzf --header="Pick gitx subcommand:")
-    [[ -z "$subcmd" ]] && exit 0
-    set -- "$subcmd"
-  else
-    usage zsh "${0:a}" --help >&2
-    exit 1
-  fi
+  usage zsh "${0:a}" --help >&2
+  exit 1
 fi
 
 subcmd="$1"
@@ -178,7 +154,7 @@ case "$subcmd" in
     list=$(git branch --no-color --merged 2>/dev/null | grep -vE "^\*|^${current}$|^main$|^master$|^develop$" | sed 's/^[[:space:]]*//' || true)
     if [[ -n "$list" ]]; then
       echo "$list" | xargs -n1 git branch -d 2>/dev/null || true
-      _log_info "Cleared merged branches"
+      h::puts info "Cleared merged branches"
     fi
     ;;
 
@@ -187,7 +163,7 @@ case "$subcmd" in
     list=$(git branch -vv 2>/dev/null | grep ': gone]' | awk '{print $1}' || true)
     if [[ -n "$list" ]]; then
       echo "$list" | xargs -n1 git branch -D 2>/dev/null || true
-      _log_info "Cleared gone branches"
+      h::puts info "Cleared gone branches"
     fi
     ;;
 
