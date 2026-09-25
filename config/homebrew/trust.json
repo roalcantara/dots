@@ -10,6 +10,7 @@
   "trustedformulae": [
     "asmvik/formulae/yabai",
     "can1357/tap/omp",
+    "giammarco-ferranti/deja/deja",
     "oven-sh/bun/bun"
   ]
 }

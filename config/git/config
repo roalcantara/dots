@@ -681,7 +681,7 @@ browser = open
 
 [advice]
 addEmptyPathspec = false
-	skippedCherryPicks = false
+skippedCherryPicks = false
 
 [status]
 submoduleSummary = true
@@ -706,6 +706,10 @@ compactionheuristic = true # Use new diff algorithm to make e.g. function diffs 
 [tag]
 forceSignAnnotated = true
 gpgSign = true
+
+[rerere]            # https://git-scm.com/docs/git-rerere
+enabled = true      # Reuse recorded resolution of conflicted merges
+autoupdate = true   # Automatically update the recorded resolutions
 
 [commit]
 color = always

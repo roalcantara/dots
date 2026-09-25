@@ -164,3 +164,9 @@ uv "graphifyy"
 uv "code-review-graph"
 
 # vi: set ft=rb
+# Predictive inline shell autosuggestions for zsh.
+brew "Giammarco-Ferranti/deja/deja"
+# Blazingly fast Zsh syntax highlighter
+brew "zsh-patina"
+# Post-modern modal text editor
+brew "helix"
