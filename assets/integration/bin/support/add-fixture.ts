@@ -9,7 +9,7 @@ export interface AddFixture {
 
 export const gitEnv = { ...Bun.env, GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_SYSTEM: "/dev/null" };
 
-export function git(cwd: string, ...args: string[]): string {
+function git(cwd: string, ...args: string[]): string {
   const r = Bun.spawnSync(["git", ...args], { cwd, stdout: "pipe", stderr: "pipe", env: gitEnv });
   if (r.exitCode !== 0) {
     throw new Error(`git ${args.join(" ")} failed: ${new TextDecoder().decode(r.stderr)}`);

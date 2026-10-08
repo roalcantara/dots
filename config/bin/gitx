@@ -56,7 +56,7 @@
 #USAGE cmd "fzl" help="Fzf commit hash picker"
 #USAGE cmd "fzlog" help="Alias for lol"
 #USAGE cmd "fzdiff" help="Fzf diff viewer"
-#USAGE cmd "fza" help="Fzf git add"
+#USAGE cmd "fza" help="Fzf picker: tab-toggle unstaged/untracked files to git add (keys shown in header)"
 #USAGE cmd "fzu" help="Fzf git restore"
 #USAGE cmd "fzus" help="Fzf git restore --staged"
 #USAGE cmd "fzc" help="Fzf branch checkout"
