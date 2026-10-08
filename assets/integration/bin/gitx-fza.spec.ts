@@ -3,7 +3,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { type AddFixture, gitEnv, makeAddFixture } from "./support/add-fixture";
+import { type AddFixture, gitEnv, makeAddFixture, stagedFiles } from "./support/add-fixture";
 import { scriptPath } from "./support/paths";
 
 const script = scriptPath("gitx");
@@ -94,6 +94,67 @@ describe("gitx fza", () => {
 
     it("excludes fully staged files", () => {
       expect(runFza(fx.work).stdin).not.toContain("staged.txt");
+    });
+  });
+
+  describe("picker", () => {
+    it("multi-selects and returns only the path field", () => {
+      const { args } = runFza(fx.work);
+      expect(args).toContain("--multi\n");
+      expect(args).toContain("--delimiter=\t\n");
+      expect(args).toContain("--accept-nth=2\n");
+    });
+
+    it("shows every shortcut in a bordered keys header", () => {
+      const { args } = runFza(fx.work);
+      expect(args).toContain("--header-border=rounded\n");
+      expect(args).toContain("--header-label= keys \n");
+      for (const key of ["tab toggle", "⇧tab toggle↑", "^a all", "^d none", "enter add", "^p patch", "^/ preview", "esc cancel"]) {
+        expect(args).toContain(key);
+      }
+    });
+
+    it("opens the diff preview on start", () => {
+      const { args } = runFza(fx.work);
+      expect(args).toContain("--preview-window=right,60%,border-left,nohidden\n");
+      expect(args).toContain("git diff --no-index --color=always -- /dev/null {2}");
+      expect(args).toContain("git diff --color=always -- {2}");
+    });
+
+    it("binds select-all, deselect-all, preview toggle and patch mode", () => {
+      const { args } = runFza(fx.work);
+      expect(args).toContain("--bind=ctrl-a:select-all,ctrl-d:deselect-all,ctrl-/:toggle-preview\n");
+      expect(args).toContain("--bind=ctrl-p:become(git add -p -- {+2})\n");
+    });
+  });
+
+  describe("staging", () => {
+    it("stages the selected paths, including spaces and untracked files", () => {
+      const r = runFza(fx.work, { select: ["with space.txt", "newdir/sub/n.txt"] });
+      expect(r.exitCode).toBe(0);
+      const staged = stagedFiles(fx.work);
+      expect(staged).toContain("with space.txt");
+      expect(staged).toContain("newdir/sub/n.txt");
+      expect(staged).not.toContain("modified.txt");
+    });
+
+    it("prints git status after staging", () => {
+      const r = runFza(fx.work, { select: ["modified.txt"] });
+      expect(r.output).toContain("M  modified.txt");
+    });
+
+    it("stages nothing when fzf is cancelled", () => {
+      const before = stagedFiles(fx.work);
+      const r = runFza(fx.work, { exit: 130 });
+      expect(r.exitCode).toBe(0);
+      expect(stagedFiles(fx.work)).toEqual(before);
+    });
+
+    it("stages nothing on an empty selection", () => {
+      const before = stagedFiles(fx.work);
+      const r = runFza(fx.work, { select: [] });
+      expect(r.exitCode).toBe(0);
+      expect(stagedFiles(fx.work)).toEqual(before);
     });
   });
 });
