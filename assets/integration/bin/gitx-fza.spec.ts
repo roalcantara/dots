@@ -121,8 +121,9 @@ describe("gitx fza", () => {
       expect(args).toContain("git diff --color=always -- {2}");
     });
 
-    it("binds select-all, deselect-all, preview toggle and patch mode", () => {
+    it("binds tab toggle, select-all, deselect-all, preview toggle and patch mode", () => {
       const { args } = runFza(fx.work);
+      expect(args).toContain("--bind=tab:toggle+down,btab:toggle+up\n");
       expect(args).toContain("--bind=ctrl-a:select-all,ctrl-d:deselect-all,ctrl-/:toggle-preview\n");
       expect(args).toContain("--bind=ctrl-p:become(git add -p -- {+2})\n");
     });

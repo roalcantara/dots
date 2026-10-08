@@ -308,6 +308,7 @@ case "$subcmd" in
       --prompt='add ❯ ' \
       --preview="$preview" \
       --preview-window='right,60%,border-left,nohidden' \
+      --bind='tab:toggle+down,btab:toggle+up' \
       --bind='ctrl-a:select-all,ctrl-d:deselect-all,ctrl-/:toggle-preview' \
       --bind='ctrl-p:become(git add -p -- {+2})') || exit 0
 
