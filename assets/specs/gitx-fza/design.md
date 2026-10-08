@@ -71,7 +71,7 @@ fza)
     --color='header:bold,header-border:dim' \
     --prompt='add ❯ ' \
     --preview='[[ {1} == "??" ]] && git diff --no-index --color=always -- /dev/null {2}; git diff --color=always -- {2}' \
-    --preview-window='right,60%,border-left' \
+    --preview-window='right,60%,border-left,nohidden' \
     --bind='ctrl-a:select-all,ctrl-d:deselect-all,ctrl-/:toggle-preview' \
     --bind='ctrl-p:become(git add -p -- {+2})') || exit 0
 
@@ -81,7 +81,7 @@ fza)
 ```
 
 This needs fzf 0.60 or newer for `--accept-nth`; the installed version is 0.74.4. The snippet shows the intended shape. During implementation, check the quoting of `{1}` / `{2}`
-and the preview command, which fzf runs under `$SHELL`.
+and the preview command, which fzf runs under `$SHELL`. The preview MUST be visible when fzf opens: `nohidden` pins this even if `FZF_DEFAULT_OPTS` sets `hidden`.
 
 ### 3.3 Keymap
 
@@ -93,7 +93,7 @@ and the preview command, which fzf runs under `$SHELL`.
 | `Ctrl-D`   | Deselect all                                      |
 | `Enter`    | `git add --` the selection, then print `git status -s` |
 | `Ctrl-P`   | Replace fzf with `git add -p -- <selection>`      |
-| `Ctrl-/`   | Toggle the preview                                |
+| `Ctrl-/`   | Toggle the preview (open on start)                |
 | `Esc`      | Cancel without staging anything                   |
 
 The `keys` header box lists every binding, following the `xcg` pattern.
