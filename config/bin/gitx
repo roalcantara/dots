@@ -289,6 +289,11 @@ case "$subcmd" in
     ;;
 
   fza)
+    h::needs_command fzf
+    git rev-parse --git-dir &>/dev/null || { h::puts error "Not a git repository"; exit 1; }
+    candidates=$(_gitx_add_candidates)
+    [[ -z "$candidates" ]] && { h::puts info "Nothing to add"; exit 0; }
+
     # The keymap lives in a bordered header so every binding is visible.
     keys='select  tab toggle  ⇧tab toggle↑  ^a all  ^d none'$'\n'
     keys+='act     enter add  ^p patch  ^/ preview  esc cancel'
@@ -296,7 +301,7 @@ case "$subcmd" in
     # Untracked files have no index entry, so diff them against /dev/null.
     preview='[[ {1} == "??" ]] && git diff --no-index --color=always -- /dev/null {2}; git diff --color=always -- {2}'
 
-    selected=$(_gitx_add_candidates | fzf --multi --ansi \
+    selected=$(print -r -- "$candidates" | fzf --multi --ansi \
       --delimiter=$'\t' --accept-nth=2 \
       --header="$keys" --header-border=rounded --header-label=' keys ' \
       --color='header:bold,header-border:dim' \

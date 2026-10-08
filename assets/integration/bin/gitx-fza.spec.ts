@@ -3,7 +3,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { type AddFixture, gitEnv, makeAddFixture, stagedFiles } from "./support/add-fixture";
+import { type AddFixture, gitEnv, makeAddFixture, makeCleanRepo, makeNonRepo, stagedFiles } from "./support/add-fixture";
 import { scriptPath } from "./support/paths";
 
 const script = scriptPath("gitx");
@@ -156,5 +156,31 @@ describe("gitx fza", () => {
       expect(r.exitCode).toBe(0);
       expect(stagedFiles(fx.work)).toEqual(before);
     });
+  });
+});
+
+describe("gitx fza guards", () => {
+  it("says there is nothing to add in a clean repo without opening fzf", () => {
+    const fx = makeCleanRepo();
+    try {
+      const r = runFza(fx.work);
+      expect(r.exitCode).toBe(0);
+      expect(r.output).toContain("Nothing to add");
+      expect(r.args).toBe("");
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  it("fails outside a git repository", () => {
+    const fx = makeNonRepo();
+    try {
+      const r = runFza(fx.work);
+      expect(r.exitCode).toBe(1);
+      expect(r.output).toContain("Not a git repository");
+      expect(r.args).toBe("");
+    } finally {
+      fx.cleanup();
+    }
   });
 });
