@@ -2,7 +2,7 @@
 # https://docs.helix-editor.com/configuration.html
 
 # https://docs.helix-editor.com/themes.html
-theme = "andromeda"
+theme = "aura-dark"
 
 # https://docs.helix-editor.com/editor.html
 [editor]

@@ -110,6 +110,6 @@ echo "yabai configuration loaded.."
 # # AEGIS_INTEGRATION_END
 
 # Yabai Indicator Extension Integration
-KB="nohup open -g 'raycast://extensions/roalcantara/kb/yabai?launchType=background' >/dev/null 2>&1 &"
+KB="nohup open -g 'raycast://extensions/roalcantara/kb/yabai.screen?launchType=background' >/dev/null 2>&1 &"
 yabai -m signal --add event=space_changed label=kb_space action="$KB"
 yabai -m signal --add event=display_changed label=kb_display action="$KB"

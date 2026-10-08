@@ -497,7 +497,7 @@
     "README.md": "TODO.md, AGENTS.md, .mcp.json, CLAUDE.md, CONTEXT.md",
     "mise.toml": "mise.*.toml, mise.lock",
     "fallow.toml": "fallow-*.toml",
-    "hk.pkl": ".gitleaks.toml, .ls-lint.yml, .mdschema.yml, cog.toml, cchk.toml, dprint.jsonc, fallow.toml, biome.json, biome.jsonc, committed.toml, doctor.config.json, .quick-commitlint.json, .fnox.toml, sgconfig.yml",
+    "hk.pkl": ".gitleaks.toml, .ls-lint.yml, .mdschema.yml, cog.toml, cchk.toml, dprint.jsonc, fallow.toml, biome.json, biome.jsonc, committed.toml, doctor.config.json, .quick-commitlint.json, .fnox.toml, sgconfig.yml, fallow-plugin-*.jsonc",
     "Gemfile": "Gemfile.*",
     ".env": ".env.*",
     ".swcrc": ".swcrc.*",
@@ -1714,5 +1714,10 @@
   // Folders with the name `typings/` will have the `folder_types` icon.
   "catppuccin-icons.associations.folders": {
     "typings": "folder_types"
-  }
+  },
+  "fallow.audit.statusBar.enabled": true,
+  "fallow.diagnostics.statusBar": true,
+  "fallow.health.enabled": true,
+  "fallow.health.statusBar": true,
+  "fallow.typeAware.enabled": true
 }
