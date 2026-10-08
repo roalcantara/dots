@@ -101,6 +101,20 @@ _gitx_head_branch() {
   git rev-parse --abbrev-ref HEAD 2>/dev/null || \
   git branch --show-current 2>/dev/null || echo "main"
 }
+# Files `git add` would change, one "XY<TAB>path" per line: entries whose
+# worktree column (Y) is not blank. Renames/copies carry the original path in
+# the next NUL field, which is skipped.
+_gitx_add_candidates() {
+  local -a entries=(${(0)"$(git status --porcelain=v1 -z --untracked-files=all 2>/dev/null)"})
+  local i=1 xy file
+  while (( i <= ${#entries} )); do
+    xy=${entries[i][1,2]} file=${entries[i][4,-1]}
+    (( i++ ))
+    [[ $xy == ([RC]?|?[RC]) ]] && (( i++ ))
+    [[ ${xy[2]} == ' ' ]] && continue
+    print -r -- "${xy}"$'\t'"${file}"
+  done
+}
 _gitx_root_commit() {
   git rev-parse "$(git rev-list --max-parents=0 HEAD 2>/dev/null || echo "HEAD")" 2>/dev/null || echo ""
 }
@@ -275,7 +289,9 @@ case "$subcmd" in
     ;;
 
   fza)
-    git status -s | fzf -m | awk '{print $2}' | xargs git add
+    selected=$(_gitx_add_candidates | fzf --multi --delimiter=$'\t' --accept-nth=2) || exit 0
+    [[ -z "$selected" ]] && exit 0
+    git add -- "${(@f)selected}"
     ;;
 
   fzu)
