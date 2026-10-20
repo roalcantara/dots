@@ -1,18 +1,1 @@
-# kodexb Configuration File
-# Copy this file to your platform-specific config location:
-#   Linux:   ~/.config/kodexb/config.yaml
-#   macOS:   ~/.config/kodexb/config.yaml
-#
-# See docs/CONFIGURATION.md for detailed documentation
-
-# ============================================================================
-# Base Settings (required)
-# ============================================================================
-
----
-# Path to SQLite database containing your knowledge entries
-# Supports tilde (~) expansion and environment variables
-database:
-  path: '~/.config/kodexb/knowledge.sqlite'
-sources:
-  path: '~/.config/kodexb/sources/'
+{database: {path: ~/.config/kb/knowledge.sqlite},sources: {path: ~/.config/kb/sources/},display: {}}

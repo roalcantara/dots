@@ -1,0 +1,100 @@
+bookmarks:
+  https://github.com/ai-boost/awesome-harness-engineering:
+    desc: Awesome list for AI agent harness engineering - tools, patterns, evals, memory, MCP, permissions, observability, and orchestration.
+    tags: [term, ai, harness]
+  https://tryhamster.com/research/taskmaster:
+    desc: Taskmaster gives them a structured task list with dependencies, context, and acceptance criteria — so they build what you actually need.
+    tags: [term, ai, harness]
+  https://pixtuoid.dev:
+    desc: Terminal pixel-art office for AI coding agents
+    tags: [term, ai, harness]
+  https://yetanotherorchestrator.app:
+    desc: Maybe have a look at what already exists first. Every app for running Claude Code, Codex & friends in parallel — compared, filtered, screenshotted.
+    tags: [term, ai, harness]
+  https://tuiboard.nazzareno.xyz:
+    desc: Keyboard-first kanban on plain CommonMark files — with an opt-in day planner, a calendar-aware agenda you can write back to, and a live view of your Claude Code sessions. No database. No lock-in. Your files stay yours.
+    tags: [term, tui]
+  https://pensar.dev:
+    desc: Continuously discover, provably exploit, and patch real vulnerabilities. Hook into your own agent workflows to start securing your systems from AI-enabled threats today.
+    tags: [term]
+  https://x-cmd.com:
+    desc: X-CMD is a modern toolkit for POSIX shell (bash, zsh, ash, dash) — designed to make shell as powerful as Python's standard library
+    tags: [term]
+  https://terminaltrove.com:
+    desc: A curated collection of terminal tools, resources, and articles.
+    tags: [term]
+  https://hunk.dev:
+    desc: Hunk is a review-first diff viewer that plays nice with agents. It's fast, it looks good, and it works everywhere.
+    tags: [term, ai, harness]
+  https://dolthub.com:
+    desc: Dolt is a SQL database that you can fork, clone, branch, merge, push and pull just like a git repository.
+    tags: [term, ai, harness]
+  https://beads.gascity.com:
+    desc: A memory upgrade for your coding agent
+    tags: [term, ai, memory]
+  https://getsilo.dev:
+    desc: Terminals, agents, and layout stay intact — switch between them instantly. 100% open source, free forever.
+    tags: [ai, harness]
+    links:
+      - Extensions: https://extensions.getsilo.dev
+  https://delta.dev:
+    desc: Agents write code faster than teams can review it. Delta preserves the work behind every change, so review starts with context instead of a cold diff.
+    tags: [ai, zed]
+  http://todotxt.org:
+    desc: A simple format for managing your todo list in a text file.
+    tags: [term, todo]
+    links:
+      - CLI: https://github.com/todotxt/todo.txt-cli
+      - Tips and Tricks: https://github.com/todotxt/todo.txt-cli/wiki/Tips-and-Tricks
+      - Complete primer on the whys and hows of todo.txt: https://github.com/todotxt/todo.txt
+  https://github.com/jolleyDesign/tudo:
+    desc: Fast, local, keyboard driven todo list & notebook TUI
+    tags: [tui, todo]
+  https://rayanbo.github.io/todo:
+    desc: A single binary that reads and writes your project`s TODO.md — add tasks, track status, assign actors, attach comments, then open a web dashboard when you need visuals. No database. No cloud. Just a file.
+    tags: [term, ai, todo]
+  https://zentty.org:
+    desc: Native macOS terminal for agent-driven development, built on Ghostty; Run Claude Code, Codex, and your shells. Each thread of work gets its own worklane - your agents and dev servers stay together.
+    tags: [term, ai, harness, ghostty]
+  https://bigthumb.digital/lab/blink:
+    desc: Native macOS terminal workspace with GPU-accelerated rendering, Niri-style column layout, tmux persistence, and built-in AI workflows.
+    tags: [ai, harness, ghostty]
+  https://agterm.com:
+    desc: Organizes sessions into named workspaces. The bundled agtermctl drives all of it over a local socket - build layouts, type into any pane and read its text back, open overlays, dashboards, and native pickers. Running many AI coding agents at once is the obvious use, and far from the only one.
+    tags: [term, ai, harness, ghostty]
+  https://onorca.dev:
+    desc: Run Claude Code, Codex, and any other coding agent in parallel, each in its own worktree. Terminals, diffs, a browser, and a CLI, in one app built for agents.
+    tags: [ai, harness]
+  https://superset.sh:
+    desc: Agentic IDE to orchestrate 100+ coding agents in parallel. Run any agent with your own subscription.
+    tags: [term, ai, harness]
+  https://aoagents.dev:
+    desc: Agent IDE that enables you to manage fleets of coding agents. It comes with an agentic orchestrator that plans tasks, spawns agents, and autonomously handles CI fixes, merge conflicts, and code reviews.
+    tags: [ai, harness]
+  https://herdr.dev:
+    desc: Herdr is a terminal-based tool that allows you to manage your bookmarks and notes in a simple and efficient way.
+    tags: [term, ai, harness]
+  https://github.com/Uzaaft/awesome-libghostty:
+    desc: A curated list of awesome projects, tools, and resources built with or for libghostty
+    tags: [term, ai]
+  https://github.com/bradagi/awesome-cli-coding-agents:
+    desc: A curated list of 120+ CLI coding agents
+    tags: [term, ai]
+  https://mahdiarfrm.github.io/conterm:
+    desc: A native macOS terminal built on Ghostty's engine
+    tags: [term, ai]
+  https://driangle.github.io/taskmd:
+    desc: Markdown-based task management designed for both humans and AI coding assistants.
+    tags: [term, ai]
+  https://agents.md:
+    desc: A simple, open format for guiding coding agents, used by over 60k open-source projects.
+    tags: [term, ai]
+    notes:
+      - md: |
+          Think of AGENTS.md as a README for agents: a dedicated, predictable place to provide the context and instructions to help AI coding agents work on your project.
+  https://tasksmd.github.io/tasks.md:
+    desc: A lightweight spec for AI agent task queues — the companion to AGENTS.md
+    tags: [term, ai]
+    notes:
+      - md: |
+          Think of TASKS.md as a README for agents: a dedicated, predictable place to provide the context and instructions to help AI coding agents work on your project.

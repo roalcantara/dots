@@ -1,0 +1,118 @@
+commands:
+  /wip:resume [notes]:
+    title: Start sessions
+    desc: Start a session with a short current-state brief — recent history, uncommitted work, the next ready task and the last handoff (to implement a plan, use /wip:run) — as pointers, not contents
+    cmd: cat ~/.agents/commands/wip/resume.md
+    tags: [wip, agents]
+
+  /wip:handoff to=<session> [notes]:
+    title: End a session by writing the handoff note the next session reads
+    desc: Conclude the current work-in-progress session by documenting the state for the next session to pick up.
+    cmd: cat ~/.agents/commands/wip/handoff.md
+    tags: [wip, agents]
+
+  /wip:run plan=<path> [to=<session>] [notes]:
+    title: Execute a plan
+    desc: Run a specified plan, optionally directing the output to a particular session and including notes.
+    cmd: cat ~/.agents/commands/wip/run.md
+    tags: [wip, agents]
+
+  /wip:review <plan> [base=<sha>] [pasted report]:
+    title: Review a plan
+    desc: Review the specified plan, optionally comparing it against a base commit and including a pasted report.
+    cmd: cat ~/.agents/commands/wip/review.md
+    tags: [wip, agents]
+
+  # Single binary that reads and writes your project’s TODO.md
+  # https://rayanbo.github.io/todo
+
+  /todo-init [--force, --yaml, --md, --both]:
+    title: Create TODO file
+    desc: Create a new TODO file (md or yaml)
+    cmd: todo --init
+    tags: [todo]
+    links: [https://rayanbo.github.io/todo/documentation/#getting-started]
+
+  /todo-add [task|actor|comment]:
+    title: Add a TODO item
+    desc: Add a task, actor, or comment to a TODO file.
+    cmd: todo add
+    tags: [todo]
+
+  /todo-list [tasks|actors|comments]:
+    title: List TODO entries
+    desc: List tasks, actors, or comments from the current TODO store.
+    cmd: todo list
+    tags: [todo]
+
+  /todo-update <id> [field=value]:
+    title: Update a TODO item
+    desc: Update fields on an existing task, actor, or comment by ID.
+    cmd: todo update
+    tags: [todo]
+
+  /todo-delete <id>:
+    title: Delete a TODO item
+    desc: Delete a task, actor, or comment by ID.
+    cmd: todo delete
+    tags: [todo]
+
+  /todo-install [--force]:
+    title: Install the todo binary
+    desc: Install the todo CLI into PATH so it is available globally.
+    cmd: todo install
+    tags: [todo]
+
+  /todo-completion [bash|zsh|fish]:
+    title: Generate shell completions
+    desc: Generate shell completion scripts for the current shell.
+    cmd: todo completion
+    tags: [todo]
+
+  /todo-dashboard:
+    title: Start the web dashboard
+    desc: Launch the local TODO dashboard in the browser.
+    cmd: todo dashboard
+    tags: [todo]
+
+  /todo-tags:
+    title: List tags and counts
+    desc: Show all tags and how many tasks each tag contains.
+    cmd: todo tags
+    tags: [todo]
+
+  /todo-search <query>:
+    title: Search TODO content
+    desc: Search tasks by query across the TODO data.
+    cmd: todo search
+    tags: [todo]
+
+  /todo-status <id> [done|pending]:
+    title: Change task status
+    desc: Update the status of a task or item.
+    cmd: todo status
+    tags: [todo]
+
+  /todo-upgrade:
+    title: Upgrade todo
+    desc: Check for updates and upgrade the todo CLI to the latest version.
+    cmd: todo upgrade
+    tags: [todo]
+
+  /todo-cwi [md|yaml]:
+    title: Set current working file format
+    desc: Set the current working file format to Markdown or YAML.
+    cmd: todo cwi
+    tags: [todo]
+
+  /todo-scan [path ...]:
+    title: Scan files for TODO comments
+    desc: Scan source files for TODO markers and add them as tasks.
+    cmd: todo scan
+    tags: [todo]
+
+  /todo-help [subcommand]:
+    title: Show todo help
+    desc: Print help for todo or a specific subcommand.
+    cmd: todo help
+    tags: [todo]

@@ -1,0 +1,359 @@
+# One-off semantic judgements for `mise run tags:suggest` (kb: docs/doctrine/tag-conventions.doctrine.md).
+# Written by an LLM pass on 2026-10-11 toward the fewest, shortest tags, one concept each. They are suggestions:
+# tags:suggest lists them commented in tags.proposed.toml, and nothing changes until you uncomment and apply them.
+# Format: ["<tag as it is today>"] preferred = [<tags it becomes>; empty drops it], reason = "<why>".
+
+# ---- Patterns, practices, standards: one tag (owner's example)
+["design_pattern"]
+preferred = ["patterns"]
+reason = "a design pattern is a pattern"
+["best-practices"]
+preferred = ["patterns"]
+reason = "owner: best practices, standards and conventions are patterns"
+["best practices"]
+preferred = ["patterns"]
+reason = "spelling of best-practices"
+["best_practice"]
+preferred = ["patterns"]
+reason = "spelling of best-practices"
+["bp"]
+preferred = ["patterns"]
+reason = "bp abbreviates best practices"
+["creational"]
+preferred = ["patterns"]
+reason = "a design-pattern category (GoF)"
+["structural"]
+preferred = ["patterns"]
+reason = "a design-pattern category (GoF)"
+["solid"]
+preferred = ["patterns"]
+reason = "SOLID design principles"
+["coding_pattern"]
+preferred = ["coding", "patterns"]
+reason = "owner: a coding pattern is coding + patterns"
+
+# ---- One concept, the shortest established name
+["ia"]
+preferred = ["ai"]
+reason = "Portuguese for AI (inteligência artificial)"
+["kube"]
+preferred = ["k8s"]
+reason = "kubernetes; k8s is its established short name"
+["kubernetes"]
+preferred = ["k8s"]
+reason = "k8s is its established short name"
+["kubernete"]
+preferred = ["k8s"]
+reason = "stripped spelling of kubernetes"
+["gcloud"]
+preferred = ["gcp"]
+reason = "Google Cloud's CLI; gcp names the platform, shorter"
+["google"]
+preferred = ["gcp"]
+reason = "used for Google Cloud entries; check if some are other Google products"
+["amazon"]
+preferred = ["aws"]
+reason = "used for AWS entries; check if some are the shop"
+["postgresql"]
+preferred = ["postgres"]
+reason = "postgres is the common short name"
+["postgre"]
+preferred = ["postgres"]
+reason = "stripped spelling of postgres"
+["database"]
+preferred = ["db"]
+reason = "db is the established abbreviation"
+["rdbms"]
+preferred = ["db"]
+reason = "a relational database"
+["ripgrep"]
+preferred = ["rg"]
+reason = "rg is ripgrep's command"
+["nodejs"]
+preferred = ["node"]
+reason = "the same runtime; node is shorter"
+["ruby"]
+preferred = ["rb"]
+reason = "rb is the established short form (and the existing tag)"
+["rail"]
+preferred = ["rails"]
+reason = "stripped spelling of rails"
+["neovim"]
+preferred = ["vim"]
+reason = "a vim"
+["vi"]
+preferred = ["vim"]
+reason = "a vim"
+["terminal"]
+preferred = ["term"]
+reason = "term is the existing, shorter tag"
+["documentation"]
+preferred = ["doc"]
+reason = "doc is the existing, shorter tag"
+["configuration"]
+preferred = ["config"]
+reason = "config is the existing, shorter tag"
+["formatter"]
+preferred = ["format"]
+reason = "one concept"
+["formatting"]
+preferred = ["format"]
+reason = "one concept"
+["linter"]
+preferred = ["lint"]
+reason = "one concept"
+["megalinter"]
+preferred = ["lint"]
+reason = "a linter"
+["filtering"]
+preferred = ["filter"]
+reason = "one concept"
+["testing"]
+preferred = ["test"]
+reason = "one concept"
+["performance"]
+preferred = ["perf"]
+reason = "perf is the existing, shorter tag"
+["devop"]
+preferred = ["devops"]
+reason = "stripped spelling of devops"
+["gitop"]
+preferred = ["gitops"]
+reason = "stripped spelling of gitops"
+["azure_devop"]
+preferred = ["azure", "devops"]
+reason = "Azure DevOps: azure + devops"
+["eventbu"]
+preferred = ["eda"]
+reason = "stripped spelling of eventbus; event-driven architecture is eda"
+["event"]
+preferred = ["eda"]
+reason = "event-driven architecture"
+["pub-sub"]
+preferred = ["pubsub"]
+reason = "one spelling"
+["aws_lambda"]
+preferred = ["lambda"]
+reason = "lambda is the existing tag"
+["math_geometry"]
+preferred = ["math"]
+reason = "geometry is math"
+["geometry"]
+preferred = ["math"]
+reason = "geometry is math"
+["pattern_matching"]
+preferred = ["regex"]
+reason = "pattern matching here means regular expressions"
+["cheatsheet"]
+preferred = ["cheat"]
+reason = "shorter, same meaning"
+["sheet"]
+preferred = ["cheat"]
+reason = "a cheat sheet"
+["tool"]
+preferred = ["tools"]
+reason = "one concept"
+["tooling"]
+preferred = ["tools"]
+reason = "one concept"
+["devtool"]
+preferred = ["tools"]
+reason = "one concept"
+["developer"]
+preferred = ["dev"]
+reason = "dev is the existing, shorter tag"
+["devexp"]
+preferred = ["dev"]
+reason = "developer experience"
+["diskutil"]
+preferred = ["disk"]
+reason = "macOS's disk utility"
+["sha1sum"]
+preferred = ["sha"]
+reason = "a sha command"
+["crypt"]
+preferred = ["crypto"]
+reason = "one concept"
+["shells"]
+preferred = ["shell"]
+reason = "the Unix shell: keep the name, not a plural"
+["window-manager"]
+preferred = ["twm"]
+reason = "a tiling window manager; twm is the existing short tag"
+["tiling"]
+preferred = ["twm"]
+reason = "tiling window managers"
+["virtual-desktops"]
+preferred = ["twm"]
+reason = "window management"
+
+# ---- Learning, career, communication
+["tutorial"]
+preferred = ["learn"]
+reason = "learning material"
+["codelab"]
+preferred = ["learn"]
+reason = "learning material"
+["guide"]
+preferred = ["learn"]
+reason = "learning material"
+["quickstart"]
+preferred = ["learn"]
+reason = "learning material"
+["prep"]
+preferred = ["interview"]
+reason = "interview preparation"
+["resume"]
+preferred = ["career"]
+reason = "career"
+["cover letter"]
+preferred = ["career"]
+reason = "career"
+["job application"]
+preferred = ["career"]
+reason = "career"
+["vocabulary"]
+preferred = ["english"]
+reason = "English learning"
+["cefr"]
+preferred = ["english"]
+reason = "English level framework"
+["personality"]
+preferred = ["psy"]
+reason = "psychology"
+["dsm_5"]
+preferred = ["psy"]
+reason = "psychology"
+["wisdom"]
+preferred = ["quote"]
+reason = "quotes"
+["scrum"]
+preferred = ["agile"]
+reason = "an agile framework"
+["retro"]
+preferred = ["agile"]
+reason = "an agile ceremony"
+["team_building"]
+preferred = ["agile"]
+reason = "team practice"
+["acompanhamento"]
+preferred = ["tracking"]
+reason = "Portuguese for tracking"
+["tracker"]
+preferred = ["tracking"]
+reason = "one concept"
+["budget"]
+preferred = ["finance"]
+reason = "finance"
+["timezones"]
+preferred = ["time"]
+reason = "time"
+["utc"]
+preferred = ["time"]
+reason = "time"
+["gmt"]
+preferred = ["time"]
+reason = "time"
+["timedatectl"]
+preferred = ["time"]
+reason = "time command"
+["visualization"]
+preferred = ["charts"]
+reason = "charts"
+["visualizer"]
+preferred = ["charts"]
+reason = "charts"
+["photo"]
+preferred = ["image"]
+reason = "an image"
+["pixelart"]
+preferred = ["art"]
+reason = "art"
+["popart"]
+preferred = ["art"]
+reason = "art"
+["digitalart"]
+preferred = ["art"]
+reason = "art"
+["yoututbe"]
+preferred = ["youtube"]
+reason = "misspelling"
+["scrapping"]
+preferred = ["scraping"]
+reason = "misspelling"
+["wireles"]
+preferred = ["wireless"]
+reason = "stripped spelling"
+["customer_succes"]
+preferred = ["support"]
+reason = "customer success is support"
+["trick"]
+preferred = ["hacks"]
+reason = "one concept"
+["choose"]
+preferred = ["gum"]
+reason = "a gum subcommand"
+["confirm"]
+preferred = ["gum"]
+reason = "a gum subcommand"
+["specify"]
+preferred = ["speckit"]
+reason = "a speckit command"
+["constitution"]
+preferred = ["speckit"]
+reason = "a speckit command"
+["taskstoissues"]
+preferred = ["speckit"]
+reason = "a speckit command"
+["agentic governance"]
+preferred = ["agent"]
+reason = "agents"
+["architect"]
+preferred = ["architecture"]
+reason = "one concept"
+["software_architect"]
+preferred = ["architecture"]
+reason = "one concept"
+
+# ---- LeetCode / NeetCode categories: short names
+["1d_dynamic_programming"]
+preferred = ["dp"]
+reason = "dynamic programming; dp is the existing tag"
+["2d_dynamic_programming"]
+preferred = ["dp"]
+reason = "dynamic programming; dp is the existing tag"
+["advanced_graph"]
+preferred = ["graph"]
+reason = "graph is the existing tag"
+["neetcode"]
+preferred = ["leetcode"]
+reason = "NeetCode's list is LeetCode problems"
+["heap_priority_queue"]
+preferred = ["heap"]
+reason = "shorter name of the category"
+["bit_manipulation"]
+preferred = ["bits"]
+reason = "shorter name of the category"
+["arrays_hashing"]
+preferred = ["arrays"]
+reason = "shorter name of the category"
+
+# ---- Says nothing on its own: drop
+["general"]
+preferred = []
+reason = "says nothing"
+["common"]
+preferred = []
+reason = "says nothing"
+["overview"]
+preferred = []
+reason = "says nothing"
+["info"]
+preferred = []
+reason = "says nothing"
+["definition"]
+preferred = []
+reason = "says nothing"
+["help"]
+preferred = []
+reason = "says nothing"

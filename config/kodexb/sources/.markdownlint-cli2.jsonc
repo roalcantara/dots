@@ -1,0 +1,71 @@
+{
+  // markdownlint-cli2 configuration
+  // Distilled from a mature monorepo; trim for greenfield adoption.
+  //
+  // Place this file at the repository root. cli2 does NOT merge parent configs,
+  // so one config per repo. Per-directory overrides require separate --config flags.
+  //
+  // Schema: https://raw.githubusercontent.com/DavidAnson/markdownlint-cli2/main/schema/markdownlint-cli2-config-schema.json
+  "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint-cli2/main/schema/markdownlint-cli2-config-schema.json",
+  // Enable all rules by default; disable or tune individual ones below.
+  "config": {
+    "default": true,
+    // MD013 — line length
+    // Relax for prose-heavy documentation. Prefer soft-wrapping at 80–100 chars
+    // but do not enforce it mechanically.
+    "MD013": false,
+    // MD024 — duplicate headings
+    // Allow the same heading text at different nesting levels (e.g., "## Overview"
+    // and "### Overview" are both valid).
+    "MD024": { "allow_different_nesting": true, "siblings_only": true },
+    // MD029 — ordered list item prefix
+    // Numbered runbooks often use explicit step numbers (1. … 2. …) across sections.
+    "MD029": false,
+    // MD001 — heading increment
+    // Legacy doctrine extracts may open with metadata before first h2.
+    "MD001": false,
+    // MD033 — inline HTML
+    // Allow inline HTML for badges, MCP schema URLs, and conditional content
+    // that Markdown cannot express.
+    "MD033": false,
+    // MD036 — emphasis used instead of a heading
+    // Allow **bold text** as a visual separator in non-normative prose sections.
+    "MD036": false,
+    // MD041 — first line in a file must be a top-level heading
+    // Not required for fragment files, changelogs, or generated documents.
+    "MD041": false,
+    // MD040 — fenced code blocks should have a language
+    // Doctrine and migrated reference docs use bare fences for trees and placeholders.
+    "MD040": false,
+    // MD045 — images should have alternate text
+    // Allow decorative screenshots where alt text would be noise.
+    "MD045": false,
+    // MD007 — ul-indent — mirrors .editorconfig [*.md] indent_size = 4
+    "MD007": { "indent": 4 }
+  },
+  // Auto-fix formatting where possible.
+  // Fixable rules: MD007, MD009, MD012, MD022, MD030, MD031, MD032, MD034,
+  // MD037–MD047.
+  "fix": true,
+  // Paths to ignore. Globs are relative to this config file's directory.
+  "ignores": [
+    "node_modules",
+    "**/node_modules/**",
+    ".git",
+    "tmp",
+    "dist",
+    "coverage",
+    "CHANGELOG.md",
+    "LICENSE.md",
+    "vendor",
+    ".claude",
+    ".omp",
+    ".kiro",
+    ".specify",
+    "tools/core/**",
+    ".agents/**",
+    "specs/**",
+    ".cursor/**",
+    "docs/superpowers"
+  ]
+}

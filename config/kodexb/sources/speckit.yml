@@ -1,0 +1,329 @@
+cheats:
+  # Create a constitution with principles, constraints, and standards
+  # https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file
+  /speckit.constitution Setting ground rules:
+    desc: Establishes the project's guiding principles, which every later step is evaluated against
+    tags: [speckit, prompt, production, domain-specific]
+    links: [https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file]
+    notes:
+      - md: | #markdown
+          '/speckit.constitution Taskify is a "Security-First" application. All user inputs must be validated. We use a microservices architecture. Code must be fully documented.'
+  /speckit.constitution Minimum static web app:
+    desc: A prompt designed for creating a minimum static web app.
+    tags: [speckit, prompt, production, domain-specific]
+    links: [https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file]
+    notes:
+      - md: | #markdown
+          '/speckit.constitution bare minimum requirements for a static web app'
+  /speckit.constitution Simple Demo:
+    desc: A prompt designed for creating a simple demo application.
+    tags: [speckit, prompt, production, domain-specific]
+    links: [https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file]
+    notes:
+      - md: | #markdown
+          '/speckit.constitution Define the project principles by prioritizing four points:
+          (1) Business rule validation must always occur on the server, never solely on the frontend.
+          (2) No screen goes into production without loading and error states.
+          (3) All pricing and limit rules must be covered by automated tests.
+          (4) The database—not the screen state—is the source of truth for ticket availability.'
+  /speckit.constitution Production-Grade / Domain-Specific Prompt:
+    desc: A prompt designed for production-grade, domain-specific applications.
+    tags: [speckit, prompt, production, domain-specific]
+    links: [https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file]
+    notes:
+      - md: | #markdown
+          > /speckit.constitution Establish non-negotiable rules for a high-reliability backend service:
+          > (1) Zero silent failures—every exception must be explicitly logged and handled with a typed error contract.
+          > (2) Strict immutability for all domain state models.
+          > (3) Zero external runtime dependencies outside the core framework.
+          > (4) All database interactions must use parameterized queries with explicit migration scripts.
+          > Apply these constraints universally to all future specs and implementation plans.
+  /speckit.constitution The Frontend / UX & Accessibility Prompt:
+    desc: The Frontend / UX & Accessibility Prompt.
+    tags: [speckit, prompt, production, domain-specific]
+    links: [https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file]
+    notes:
+      - md: | #markdown
+          > /speckit.constitution Set core project principles focused on UI/UX and client performance:
+          > (1) Accessibility is mandatory—every interactive element must be fully keyboard-navigable and pass WCAG AA standards.
+          > (2) Client-side data must persist locally via IndexedDB/LocalStore fallback.
+          > (3) Avoid unnecessary component abstractions or third-party UI libraries unless approved.
+          > (4) Bundle size budget per feature must not exceed 50kb gzipped.
+  /speckit.constitution The Minimalist / "Stop Vibe Coding" Prompt:
+    desc: The Minimalist / "Stop Vibe Coding" Prompt.
+    tags: [speckit, prompt, production, domain-specific]
+    links: [https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file]
+    notes:
+      - md: | #markdown
+          > /speckit.constitution Define strict guardrails to prevent AI scope creep:
+          > (1) Keep architecture as simple as possible—favor vanilla patterns over complex frameworks.
+          > (2) Do not introduce mock data layers or abstraction helpers unless explicitly requested in the feature spec.
+          > (3) Every data contract defined in /specify must have an explicit validation schema before task generation.
+  /speckit.constitution Raycast Extension:
+    desc: The Raycast Extension Prompt.
+    tags: [speckit, prompt, production, domain-specific]
+    links: [https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file]
+    notes:
+      - md: | #markdown
+          > /speckit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements for Raycast Extension Project:
+          > (1) Core UI/UX Requirements:
+          >  - Keyboard-First Design: Focus on ensuring that all interactive elements are fully accessible via keyboard navigation and comply with Raycast Best Practices and Conventions.
+          >  - Component Selection: Leverage Raycast's built-in Raycast components for consistent UI and performance instead of custom implementations.
+          >  - User Feedback: Provide immediate visual feedback for user actions, such as button clicks or form submissions, to enhance the interactive experience.
+          >  - Performance Optimization: Ensure that UI components are optimized for performance, minimizing unnecessary re-renders and leveraging Raycast's efficient rendering mechanisms.
+          > (2) Code & Architecture:
+          >  - Boundaries: Respect monorepo layer boundaries to maintain clear separation and modularity.
+          >  - Functional Programming: Embrace functional programming principles where appropriate to enhance code predictability and maintainability - never FCIS!
+          >  - Separation of Concerns: Maintain a clear separation between UI components, business logic, and data access layers to improve code maintainability and readability.
+          >  - Modular Architecture: Organize code into well-defined modules with clear responsibilities to enhance maintainability and scalability.
+          >  - Type Safety: Utilize TypeScript's type system to enforce type safety and reduce runtime errors.
+          >  - Testing: Implement unit and integration tests to ensure code reliability and facilitate refactoring applying BDD principles inspired by https://betterspecs.org
+          >  - React: Prefer Raycast's native React components/hooks over custom implementations to maintain consistency and leverage built-in optimizations.
+          > (3) Conventions and Standards:
+          >  - Thin Entry Point: Raycast command entry files remain page-layer composition; reusable domain logic moves to features/shared modules.
+          >  - Naming Conventions: Follow consistent naming conventions for files, components, and variables preserving the naming and file-shape doctrine: one-word concept files, no barrel `index.ts`, flat feature layout until real boundary exists.
+          >  - BUY over BUILD: Prefer using existing solutions and libraries over building custom implementations to save development time and leverage community-tested tools.
+          >  - Quality over Quantity: Keep quality gates green at merge time, prioritizing well-tested and maintainable code over rapid feature development.
+          >  - Git Practices: Follow Conventional Commits for consistent commit messages and maintain a clear project history.
+          >  - Tooling: Weakening rules are only allowed upon explicit approval and must be documented with a clear rationale.
+          >  - Product First: Specs for internal tooling/infrastructure only when absolutely necessary - never at the expense of product features or development efficiency: internal tooling are tested on the fly.
+          > (4) Governance: Establish clear governance for how principles should guide technical decisions and implementation choices.
+  /speckit.constitution principles focused on code quality, testing standards, UX consistency, and performance:
+    desc: Basic principles for clean code, simple UX, responsive design, and minimal dependencies, with no testing.
+    tags: [speckit, prompt, production, domain-specific]
+    links: [https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file]
+    notes:
+      - md: | #markdown
+          > /speckit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements.
+          > Include governance for how these principles should guide technical decisions and implementation choices.
+  /speckit.constitution Basic with No Testing:
+    desc: Basic principles for clean code, simple UX, responsive design, and minimal dependencies, with no testing.
+    tags: [speckit, prompt, production, domain-specific]
+    links: [https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file]
+    notes:
+      - md: | #markdown
+          > /speckit.constitution declare principles for clean code, simple UX, responsive design and minimal dependencies.
+          > Absolutely no testing (no unit tests, no integration tests, no e2e tests) - this must supersede any other guidance.
+          > The project must use the next.js, react and tailwind versions as per the package.json file.
+  /speckit.constitution Captured Project Guardrails:
+    desc: Guardrails and constraints captured for the project to ensure adherence to established principles and standards.
+    tags: [speckit, guardrails, domain-specific]
+    links: [https://github.github.io/spec-kit/guides/existing-projects.html#2-capture-project-guardrails]
+    notes:
+      - md: | #markdown
+          > /speckit.constitution Preserve public API compatibility. Follow the existing
+          > service boundaries. Every database migration must include a rollback plan.
+          > Run the repository's established unit and integration test suites.
+  Enterprise-specific constitution considerations:
+    desc: Guidelines and principles tailored for enterprise-level projects, focusing on governance, compliance, and scalability.
+    tags: [speckit, enterprise, domain-specific]
+    links: [https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/4-establish-project-principles-constitution-file]
+    notes:
+      - md: | #markdown
+          ## When creating constitutions for enterprise internal projects, incorporate these common requirements:
+
+          ### Azure-first architecture:
+          - Mandate Azure services for hosting, storage, databases, and supporting infrastructure.
+          - This requirement aligns with corporate cloud strategy and available tooling.
+
+          ### Enterprise authentication:
+          - Require Microsoft Entra ID for authentication and RBAC for authorization.
+          - Most enterprise internal apps integrate with corporate identity systems.
+
+          ### Security and compliance:
+          - Reference enterprise security policies, TrustWorthy Computing principles, and applicable compliance frameworks.
+
+          ### Monitoring and observability:
+          - Mandate Azure Application Insights or equivalent monitoring solutions.
+          - Enterprise applications need comprehensive telemetry for production support.
+
+          ### Developer tooling standards:
+          - Specify approved frameworks, libraries, and development practices.
+          - For example, require use of approved NuGet packages from internal feeds.
+
+          ### Accessibility:
+          - Include WCAG 2.1 Level AA compliance requirements.
+          - Enterprise internal tools must be accessible to employees with disabilities.
+      - md: | #markdown
+          # Employee Portal Constitution
+
+          ## Azure Platform Standards
+          - Host all services on Azure App Service or Azure Container Apps.
+          - Use Azure Blob Storage for document storage.
+          - Database: Azure SQL Database or Cosmos DB.
+          - Secrets stored exclusively in Azure Key Vault.
+          - Use Azure Front Door for global distribution.
+
+          ## Identity Integration
+          - Authenticate via Microsoft Entra ID using OAuth 2.0 / OpenID Connect.
+          - Implement role-based access control using Microsoft Entra ID groups.
+          - Support multi-factor authentication (MFA).
+          - No custom authentication or local user databases.
+
+          ## Corporate Compliance
+          - Follow enterprise Security Development Lifecycle (SDL) practices.
+          - Scan all dependencies for known vulnerabilities.
+          - Implement audit logging per enterprise retention policies.
+          - Support data residency requirements for EU users.
+          - Accessibility: WCAG 2.1 Level AA minimum.
+
+          ## Development Standards
+          - Back end: .NET 10 following coding conventions adopted by the organization.
+          - Use approved packages from internal NuGet feed.
+          - Minimum 80% code coverage with unit tests.
+          - All APIs documented with OpenAPI/Swagger.
+          - Structured logging using ILogger interface.
+
+  /speckit-specify Simple demo:
+    desc: A prompt designed for specifying a simple demo application.
+    tags: [speckit, production, domain-specific]
+    notes:
+      - md: | #markdown
+          '/speckit-specify Build a ticket-selling platform for in-person events called "tix"
+          Organizers register an event—including the date, location, description, and cover image—and create ticket batches, each with a name, price, quantity, and price-change date.
+          Attendees visit the event page, select a batch, specify the quantity, and complete the purchase by providing their name, email, and ID number, receiving a confirmation code on the screen.
+          Tickets can be either full-price or half-price; half-price tickets cost half the batch price and require the buyer to provide proof of eligibility.
+          Organizers use a dashboard to track tickets sold per batch, total revenue, and the list of buyers.
+          Focus on the product's functionality and target audience, without specifying the technology stack.'
+  /speckit-plan Simple demo:
+    desc: A prompt designed for planning a simple demo application.
+    tags: [speckit, plan, production, domain-specific]
+    notes:
+      - md: | #markdown
+          '/speckit-plan Use Next.js with App Router and TypeScript, Tailwind for style and SQLite for the database.
+          Maintain the reading and writing of the entry on the server, with the availability check and half-entry
+          limit made at the time of purchase, within the same operation that records the sale. Avoid extra libraries
+          beyond what is necessary.'
+  /speckit-taskstoissues:
+    desc: A prompt designed for converting tasks into issues.
+    tags: [speckit, production, domain-specific]
+
+  /speckit.assess.intake "Let users work offline and sync when they reconnect." slug=offline-mode:
+    desc: Use this process to decide whether an idea deserves investment before committing to a solution. It works for software ideas and non-software decisions alike. No existing source code is required.
+    links: [https://github.github.io/spec-kit/guides/assessment.html, https://github.github.io/spec-kit/reference/agentic-assessment.html]
+    tags: [speckit, idea, assessment, quickstart, domain-specific]
+    notes:
+      - md: | #markdown
+          ## Idea Assessment Quickstart
+
+          > 💡 Use this process to decide whether an idea deserves investment before committing to a solution.
+          > It works for software ideas and non-software decisions alike.
+          > No existing source code is required.
+
+          - The bundled, opt-in `assess` extension provides five stages:
+            `intake → research → define → shape → decide`.
+          - The result is an evidence-backed go, needs-clarification, or kill decision, not an implementation.
+
+          ### Commands and Artifacts
+
+          - `/speckit.assess.intake`: Capture an idea from text, a URL, a ticket, or a codebase pointer	intake.md
+          - `/speckit.assess.research`: Gather evidence for and against the idea, with sources and confidence	research.md
+          - `/speckit.assess.define`: Define users, the problem, goals, non-goals, metrics, and cost of inaction	problem.md
+          - `/speckit.assess.shape`: Compare concept-level options, appetite, and trade-offs	concept.md
+          - `/speckit.assess.decide`: Record a scorecard, verdict, rationale, and optional SDD handoff	decision.md
+
+          ### USAGE
+
+          1. Install SpecKit and initialize a project
+
+            ```sh
+            npm install -g spec-kit
+            spec-kit init
+            ```
+
+          2. In a terminal at the initialized project root, install the extension:
+
+            ```sh
+            specify extension add assess
+            ```
+
+          3. Then launch your coding agent in that directory.
+
+            - Invoke each `/speckit-assess-*` skill separately in your agent's chat, reviewing the artifact before moving on.
+            - These are agent skills, not terminal commands;
+
+          4. Capture the idea
+
+            ```sh
+            /speckit-assess-intake "Let users work offline and sync when they reconnect." slug=offline-mode
+            # The agent captures the input in .specify/assessments/offline-mode/intake.md.
+            # The slug is the shared handle for all five stages.
+            ```
+
+          5. Conduct research
+
+            ```sh
+            /speckit-assess-research offline-mode
+            ```
+
+            - The agent captures the research in `.specify/assessments/offline-mode/research.md`.
+            - Review sources and confidence levels: uncited assumptions are not established facts.
+            - This stage should challenge the idea, not just build a case for it.
+
+          6. Define the problem
+
+            ```sh
+            /speckit-assess-define slug=offline-mode
+            ```
+
+            - The agent captures the definition in `.specify/assessments/offline-mode/problem.md` describing
+              the affected users, problem, goals, non-goals, success metrics, and cost of doing nothing.
+
+            - Clearly articulate the problem you are trying to solve and the criteria for success.
+
+          7. Shape the solution
+
+            ```sh
+            /speckit-assess-shape slug=offline-mode
+            ```
+
+            - The agent compares concept-level options, constraints, appetite, and trade-offs in `.specify/assessments/offline-mode/concept.md`.
+            - Detailed architecture, implementation tasks, and source changes are deliberately outside this process.
+
+          8. Make the decision
+
+            ```sh
+            /speckit-assess-decide slug=offline-mode
+            ```
+
+            - The agent records the scorecard, rationale, and verdict in `.specify/assessments/offline-mode/decision.md`:
+
+              **GO:**
+                **What it means:** The problem and evidence are adequate and a concept is recommended.
+                **What to do:** Decide whether to act; optionally hand a software idea to SDD.
+                **Example:** If the concept is a new offline mode for an app, a "GO" verdict means the research and problem definition support moving forward with designing and implementing this feature.
+
+              **NEEDS-CLARIFICATION:**
+                **What it means:** Specific unknowns still block a defensible decision.
+                **What to do:** Refine the affected artifacts with the missing information.
+                **Example:** If there are unresolved questions about the feasibility of an offline mode, a "NEEDS-CLARIFICATION" verdict indicates that further research or analysis is required before making a decision.
+
+              **KILL:**
+                **What it means:** The idea is not worth pursuing now.
+                **What to do:** Keep the recorded rationale; stopping is a successful outcome.
+                **Example:** If the offline mode is deemed unnecessary or too costly, a "KILL" verdict indicates that the idea should not be pursued at this time.
+
+          9. Resolve unknowns by refining the artifacts
+
+            - The usual flow runs each command once.
+            - When an artifact contains `[NEEDS CLARIFICATION: ...]`, Edit that Markdown file directly or ask the agent in free-form chat to incorporate the missing information:
+
+              ```sh
+              Update .specify/assessments/offline-mode/problem.md with these confirmed success metrics: <your metrics>.
+              Update any dependent wording and revise decision.md if this resolves the blocker.
+              Preserve source and confidence tags.
+              ```
+
+            - Do not automatically regenerate the entire stage.
+            - Ask the agent to review whether the new facts clear the blocker and revise the downstream scorecard, verdict, or handoff accordingly.
+            - Rerunning a command is an exception, such as replacing a discarded draft,
+              and existing artifacts must not be overwritten without confirmation.
+
+          10. Optional handoff to SDD
+
+            - Assessment is standalone: it does not automatically invoke SDD or insert itself into the specification process.
+            - If you choose to build a software idea with a `go` verdict, establish your project constitution if needed, then pass the decision's handoff summary to the specification command:
+
+                ```sh
+                /speckit-specify Use the handoff summary in .specify/assessments/offline-mode/decision.md to specify the approved offline-mode concept.
+                ```

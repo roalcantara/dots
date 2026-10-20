@@ -1,0 +1,2370 @@
+bookmarks:
+  https://youtu.be/CrIkUwo8FiY:
+    desc: Turso | This SQLite Fork is SO GOOD (and it’s open source)
+    tags: [db, sqlite]
+    notes:
+      - sh: | #shell
+          ### INSTALLATION
+          brew install turso
+
+          ### USAGE
+          tursodb /path/to/db.sqlite
+
+          ### INSIDE TURSODB
+
+          .help                 # shows the tool help
+          .manual               # shows the tool manual
+          .tables               # shows the tables
+          SELECT * FROM tb_foo; # shows tha table contents in a table
+  https://sqlite.org:
+    desc: The most used database engine in the world
+    tags: [db]
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+          # Install SQLite
+          brew install sqlite
+  https://rqlite.io:
+    desc: The lightweight, distributed relational database built on SQLite
+    tags: [db, sqlite]
+  https://turso.tech/libsql:
+    desc: libsql | SQLite-compatible modern fork
+    tags: [db, sqlite]
+    notes:
+      - md: | #markdown
+          ## What is libsql?
+
+          libsql is a modern, SQLite-compatible database engine designed for high performance, scalability, and ease of use. It is built as a fork of SQLite with enhancements to support distributed and cloud-native applications.
+
+          ## Key Features
+
+          - **SQLite Compatibility**: libsql maintains compatibility with SQLite, allowing you to use existing SQLite tools and libraries.
+          - **High Performance**: Optimized for speed and efficiency, making it suitable for high-throughput applications.
+          - **Scalability**: Designed to scale horizontally across multiple nodes, making it ideal for distributed systems.
+          - **Cloud-Native**: Built with cloud environments in mind, supporting modern deployment practices.
+
+          ### Feature Comparison
+
+          | **Feature**           | **sqlite3**                | **libsql**                 |
+          |-----------------------|----------------------------|----------------------------|
+          | Base                  | Original SQLite            | Fork of SQLite             |
+          | Compatibility         | 100% SQLite                | 99%+ SQLite compatible     |
+          | Extensions            | Standard SQLite            | + libSQL extensions        |
+          | WASM Functions        | ❌ No                       | ✅ Yes                     |
+          | Vector Search         | ❌ No                       | ✅ Yes (via extension)     |
+          | Randomized ROWID      | ❌ No                       | ✅ Yes                     |
+          | CLI Experience        | Traditional                | Same + new features        |
+          | File Format           | SQLite format              | Compatible SQLite format   |
+
+          ## Getting Started
+
+          To get started with libsql, you can follow these steps:
+
+          1. **Install libsql**: You can install libsql using package managers or by building from source. For example, using Homebrew:
+             ```sh
+             brew tap tursodatabase/tap
+             brew install libsql
+             ```
+
+          2. **Create a Database**: You can create a new database using the `libsql` command-line tool:
+             ```sh
+             libsql mydatabase.db
+             ```
+
+          3. **Use libsql in Your Application**: You can connect to libsql using standard SQLite libraries in your programming language of choice.
+
+          ## Example Usage
+
+          Here is a simple example of how to use libsql in a Node.js application:
+
+          ```javascript
+          const sqlite3 = require('sqlite3').verbose();
+          const db = new sqlite3.Database('mydatabase.db');
+
+          db.serialize(() => {
+            db.run("CREATE TABLE user (id INT, name TEXT)");
+
+            const stmt = db.prepare("INSERT INTO user VALUES (?, ?)");
+            stmt.run(1, "Alice");
+            stmt.run(2, "Bob");
+            stmt.finalize();
+
+            db.each("SELECT id, name FROM user", (err, row) => {
+              console.log(row.id + ": " + row.name);
+            });
+          });
+
+          db.close();
+          ```
+  https://github.com/tursodatabase/turso:
+    desc: Turso is an in-process SQL database, compatible with SQLite
+    tags: [db, sqlite]
+    links: [https://turso.tech/blog/introducing-limbo-a-complete-rewrite-of-sqlite-in-rust]
+  https://min.io:
+    desc: Exascale object store for AI data, agentic computing, and analytics
+    tags: [db, analytics, storage]
+  https://qlik.com:
+    desc: Seamless data integration and powerful Al-driven analytics to drive better business decisions
+    tags: [db, analytics, ai]
+  https://starburst.io:
+    desc: Bring Your AI to Your Data, Lakeside (FREMIUM) | STARBURST GALAXY
+    tags: [analytics]
+  https://trino.io:
+    desc: Ludicrous fast, open source, distributed, massively parallel processing, SQL query engine to query large data sets
+    tags: [db, analytics]
+    links: [
+      https://trino.io/docs/current/client/cli.html,
+      https://trino.io/docs/current/glossary.html,
+      https://youtu.be/SnvSBYhRZLg,
+      https://starburst.io
+    ]
+    notes:
+      - md: | #markdown
+          ### OVERVIEW
+          Trino is a ludicrous fast, open source, distributed, massively parallel processing, SQL query engine to query large data sets across one or more heterogeneous data sources.
+      - sh: | #shell
+          #!/bin/bash
+          brew install trino
+      - md: | #markdown
+          ### Glossary
+          The glossary contains a list of key Trino terms and definitions
+
+          - **Catalog:**
+            - Catalogs define and name a configuration for connecting to a data source, allowing users to query the connected data.
+            - Each catalog's configuration specifies a connector to define which data source the catalog connects to.
+            - For more information about catalogs, see [Catalog](https://trino.io/docs/current/overview/concepts.html#trino-concept-catalog).
+
+          - **Certificate:**
+            - A public key certificate issued by a CA, sometimes abbreviated as cert, that verifies the ownership of a server's private keys.
+            - Certificate format is specified in the [X.509](https://wikipedia.org/wiki/X.509) standard.
+
+          - **Certificate Authority (CA):**
+            - A trusted organization that signs and issues certificates.
+            - Its signatures can be used to verify the validity of [certificates](https://trino.io/docs/current/glossary.html#glosscert).
+
+          - **Cluster:**
+            - A Trino cluster provides the resources to run queries against numerous data sources.
+            - Clusters define the number of nodes, the configuration for the JVM runtime, configured data sources, and others aspects.
+            - For more information, see [Cluster](https://trino.io/docs/current/overview/concepts.html#trino-concept-cluster).
+
+          - **Connector:**
+            - Translates data from a data source into Trino schemas, tables, columns, rows, and data types.
+            - A connector is specific to a data source, and is used in catalog configurations to define what data source the catalog connects to.
+            - A connector is one of many types of [plugins](https://trino.io/docs/current/glossary.html#glossplugin)
+
+          - **Container:**
+            - A lightweight virtual package of software that contains libraries, binaries, code, configuration files, and other dependencies needed to deploy an application.
+            - A running container does not include an operating system, instead using the operating system of the host machine.
+            - To learn more, read about [containers](https://kubernetes.io/docs/concepts/containers) in the Kubernetes documentation.
+
+          - **Data source:**
+            - A system from which data is retrieved - for example, PostgreSQL or Iceberg on S3 data.
+            - In Trino, users query data sources with catalogs that connect to each source.
+            - See [Data source](https://trino.io/docs/current/overview/concepts.html#trino-concept-data-source) for more information.
+
+          - **Data virtualization:**
+            - [Data virtualization](https://wikipedia.org/wiki/Data_virtualization) is a method of abstracting an interaction with multiple heterogeneous data sources, without needing to know the distributed nature of the data, its format, or any other technical details involved in presenting the data.
+
+          - **gzip:**
+            - [gzip](https://wikipedia.org/wiki/Gzip) is a compression format and software that compresses and decompresses files.
+            - This format is used several ways in Trino, including deployment and compressing files in object storage.
+            - The most common extension for gzip-compressed files is .gz.
+
+          - **HDFS:**
+            - [Hadoop Distributed Filesystem (HDFS)](https://wikipedia.org/wiki/Apache_Hadoop#HDFS) is a scalable open source filesystem that was one of the earliest distributed big data systems created to store large amounts of data for the Hadoop ecosystem.
+
+          - **Java KeyStore (JKS):**
+            - The system of public key cryptography supported as one part of the Java security APIs.
+            - The legacy JKS system recognizes keys and certificates stored in keystore files, typically with the .jks extension, and by default relies on a system-level list of CAs in truststore files installed as part of the current Java installation.
+
+          - **Key:**
+            - A cryptographic key specified as a pair of public and private strings generally used in the context of TLS to secure public network traffic.
+
+          - **Load Balancer (LB):**
+            - Software or a hardware device that sits on a network edge and accepts network connections on behalf of servers behind that wall, distributing traffic across network and server infrastructure to balance the load on networked services.
+
+          - **Object storage:**
+            - [Object storage](https://en.wikipedia.org/wiki/Object_storage) is a file storage mechanism.
+            - Examples of compatible object stores include the following:
+              - [Amazon S3](https://aws.amazon.com/s3)
+              - [Google Cloud Storage](https://cloud.google.com/storage)
+              - [Azure Blob Storage](https://azure.microsoft.com/en-us/products/storage/blobs)
+              - [MinIO](https://min.io) and other S3-compatible stores
+              - [HDFS](https://trino.io/docs/current/glossary.html#glosshdfs)
+
+          - **Open-source:**
+            - Typically refers to open-source software. which is software that has the source code made available for others to see, use, and contribute to.
+            - Allowed usage varies depending on the license that the software is licensed under.
+            - Trino is licensed under the Apache license, and is therefore maintained by a community of contributors from all across the globe.
+
+          - **PEM file format:**
+            - A format for storing and sending cryptographic keys and certificates.
+            - PEM format can contain both a key and its certificate, plus the chain of certificates from authorities back to the root CA, or back to a CA vendor's intermediate CA.
+
+          - **PKCS #12:**
+            - A binary archive used to store keys and certificates or certificate chains that validate a key.
+            - PKCS #12 files have .p12 or .pfx extensions.
+            - This format is a less popular alternative to PEM.
+
+          - **Plugin:**
+            - A bundle of code implementing the Trino Service Provider Interface (SPI). that is used to add new functionality.
+            - More information is available in [Plugins](https://trino.io/docs/current/installation/plugins.html).
+
+          - **Presto and PrestoSQL:**
+            The old name for Trino. To learn more about the name change to Trino, read the history.
+
+          - **Query federation:**
+            - A type of data virtualization that provides a common access point and data model across two or more heterogeneous data sources.
+            - A popular data model used by many query federation engines is translating different data sources to SQL tables.
+
+          - **Secure Sockets Layer (SSL):**
+            - Now superseded by [TLS](https://trino.io/docs/current/glossary.html#glosstls), but still recognized as the term for what TLS does.
+
+          - **Structured Query Language (SQL):**
+            - The standard language used with relational databases.
+            - For more information, see SQL.
+
+          - **Tarball:**
+            - A common abbreviation for [TAR file](https://wikipedia.org/wiki/Tar_(computing)), which is a common software distribution mechanism.
+            - This file format is a collection of multiple files distributed as a single file, commonly compressed using gzip compression.
+
+          - **Transport Layer Security (TLS):**
+            - TLS is a security protocol designed to provide secure communications over a network.
+            - It is the successor to SSL, and used in many applications like HTTPS, email, and Trino.
+            - These security topics use the term TLS to refer to both TLS and SSL.
+  https://surrealdb.com:
+    desc: Native, open-source, multi-model database that lets you store and manage data across relational, document, graph, time-series, vector & search, and geospatial models—all in one place.
+    tags: [db, nosql, graph, timeseries, vector, geospatial]
+    links: [https://youtu.be/TyX45cyZ-W0]
+    notes:
+      - md: | #markdown
+          ## Overview
+
+          - Native, open-source, multi-model database within a single database system
+          - Store and manage data across various models including;
+            - relational
+            - document
+            - graph
+            - time-series
+            - vector & search
+            - geospatial
+
+          ### Key Features
+
+          - **Native multi-model:**
+
+            - combines document, graph, time-series, relational,
+            - geospatial and key-value data models natively into SurrealQL,
+            - without workarounds or added complexity.
+
+          - **AI native data layer:**
+
+            - purpose-built for AI and context-aware applications
+            - with integrated search and retrieval (vector, full-text, hybrid)
+            - blending semantic, graph, and relational intelligence.
+
+          - **Real-time and event-driven:**
+
+            - built-in real-time subscriptions, event triggers, and streaming updates power reactive, real-time experiences
+            - no need for Kafka, WebSockets, or extra layers.
+
+          - **Powerful developer experience:**
+
+            - SurrealQL is intuitive and combines the best ideas from SQL,
+            - NoSQL and graph within a single native syntax.
+            - Start schemaless and go schemafull.
+
+          - **Rust-powered performance:**
+
+            - high efficiency, memory safety
+            - compliance with government security standards
+            - with a single Rust binary.
+
+          - **Native ACID compliance:**
+
+            - guarantees strong data consistency natively
+            - without additional workarounds.
+
+          - **Deployment flexibility:**
+
+              - Single Rust binary and storage/compute separation allow SurrealDB to run in a single node or in a highly-scalable distributed cluster:
+                - embedded (in-app),
+                - in the browser (via WebAssembly)
+                - as a traditional back-end.
+
+          - **Secure by design:**
+
+              - keep data protected by default:
+                - built-in security with RBAC
+                - record-level permissions,
+                - fine-grained access controls,
+                - JWT authentication,
+                - multi-tenant isolation built-in compliance (SOC 2, ISO 27001)
+      - sh: | #shell
+          #!/bin/bash
+          # Install both the command-line tools, and the SurrealDB server as a single executable.
+          brew install surrealdb/tap/surreal
+      - sh: | #shell
+          #!/bin/bash
+          # Install on Linux
+          curl -sSf https://install.surrealdb.com | sh
+      - sh: | #shell
+          #!/bin/bash
+          # Install on Docker
+          docker run --rm --pull always -p 8000:8000 surrealdb/surrealdb:latest start
+  https://cockroachlabs.com:
+    desc: Distributed SQL database, delivers the reliability, robust consistency and ACID transactions of RDBMS, while offering the horizontal scaling and distributed architecture of NoSQL
+    tags: [db, nosql]
+    links:
+      - Cockroach University: https://university.cockroachlabs.com
+      - Introduction to Distributed SQL and CockroachDB: https://university.cockroachlabs.com/courses/course-v1:crl+intro-to-distributed-sql-and-cockroachdb+self-paced/about
+  https://duckdb.org:
+    desc: DuckDB is an in-process SQL OLAP database management system
+    tags: [db, analytics]
+    links: [https://duckdb.org/docs/overview/overview]
+    notes:
+      - md: | #markdown
+          ## Overview
+          DuckDB is an in-process SQL OLAP database management system
+          It is a modern, open-source database management system that is designed to be fast, easy to use, and flexible.
+  https://geldata.com:
+    desc: Graph-relational database on top of Postgres with object-type schema, EdgeQL query language, built-in Auth, AI/vector extensions and managed cloud
+    tags: [db, gel, edgedb, postgres]
+    links: [https://geldata.com, https://docs.geldata.com]
+    notes:
+      - md: | #markdown
+          ### What is Gel?
+
+          Gel is a **graph-relational database** built on top of Postgres. Renamed from EdgeDB in February 2025.
+
+          Instead of tables + foreign keys, you define **object types with links** between them — the database thinks the way your code thinks.
+
+          ### Main Features
+
+          - Object-type schema with typed links (no JOIN hell)
+          - EdgeQL — composable query language designed to replace SQL
+          - Built-in migrations via CLI
+          - Built-in Auth (OAuth, magic link, passwords)
+          - Built-in AI/vector extension
+          - Gel Cloud — managed hosting
+          - Client libs for JS/TS, Python, Go, Rust, Dart
+
+          ### When to Use
+
+          - Backend services with rich domain models and nested relationships
+          - When TypeORM/Prisma boilerplate is getting in the way
+          - Projects where Auth and schema migrations need to move fast
+
+          ### When NOT to Use
+
+          - Local/offline-first CLI tools — requires a running server
+          - Simple CRUD with flat data — overkill
+          - Existing Postgres projects where switching cost outweighs gains
+
+          ### Basic Schema (SDL)
+
+          ```sdl
+            type Person {
+              required name: str;
+            }
+
+            type Movie {
+              required title: str;
+              multi actors: Person;
+            }
+            ```
+      - sh: | #shell
+
+          #!/bin/bash
+
+          # Install
+          curl --proto '=https' --tlsv1.2 -sSf https://geldata.com/sh | sh
+
+          ### Basic CLI
+          gel project init        # init project
+          gel                     # open interactive shell
+          gel migration create    # create migration
+          gel migration apply     # apply migration
+          gel-generate edgeql-ts  # generate TS client
+  https://docs.geldata.com/reference/edgeql:
+    desc: EdgeQL is Gel's query language — queries return shaped objects not flat rows, relationships are navigated with dot notation, no JOINs needed
+    tags: [db, gel, edgeql, query-language]
+    links: [https://docs.geldata.com/reference/edgeql]
+    notes:
+      - md: | #markdown
+          ### EdgeQL is Gel's built-in query language — a ground-up redesign of SQL.
+
+          EdgeQL is to SQL what TypeScript is to JavaScript — **same power**, but **structure and types are built in from the start**, not added on top.
+
+          **Core ideas:**
+            - Queries return **shaped objects**, not flat rows.
+            - You navigate relationships with `.` like you would in code.
+
+          ```edgeql
+            -- No JOIN needed, just follow the link
+            select Movie {
+              title,
+              actors: { name }
+            };
+            ```
+
+            ### Key Differences from SQL
+
+            - **No JOINs** — navigate links with dot notation
+            - **Composable** — use any query as an expression inside another
+            - **Structured results** — returns JSON-like objects, not flat rows
+            - **No NULLs by default** — required fields enforced at schema level
+            - **Type-safe** — generated TS client knows the exact shape of every result
+
+            ### Common Patterns
+
+            ```edgeql
+            -- filter
+            select Movie filter .title = "The Matrix";
+
+            -- insert with linked data
+            insert Movie {
+              title := "Dune",
+              actors := (select Person filter .name = "Timothée Chalamet")
+            };
+
+            -- update
+            update Movie filter .title = "Dune"
+            set { title := "Dune Part One" };
+
+            -- delete
+            delete Movie filter .year < 1950;
+
+            -- computed property inline
+            select Movie {
+              title,
+              actor_count := count(.actors)
+            };
+            ```
+      - edgeql: | #edgeql
+          -- 💡 Queries return shaped objects, not flat rows
+          -- SQL: SELECT movies.title, persons.name FROM movies JOIN ...
+          -- EdgeQL:
+          select Movie {
+            title,
+            actors: { name }
+          };
+      - edgeql: | #edgeql
+          -- 💡 A FEW KEY PATTERNS
+
+          -- filter
+          select Movie filter .title = "The Matrix";
+
+          -- insert with linked data
+          insert Movie {
+            title := "Dune",
+            actors := (select Person filter .name = "Timothée Chalamet")
+          };
+
+          -- update
+          update Movie filter .title = "Dune"
+          set { title := "Dune Part One" };
+
+          -- delete
+          delete Movie filter .year < 1950;
+
+          -- computed / subquery inline
+          select Movie {
+            title,
+            actor_count := count(.actors)
+          };
+
+cheats:
+  Relational x NoSQL:
+    desc: Relational x NoSQL
+    tags: [db]
+    notes:
+      - md: | #markdown
+          ## Data Structure:
+
+          - **Relational Database:** Uses tables with rows and columns. Each row represents a record and each column represents a property of the record.
+          - **Document Database:** Stores data in documents (often JSON, BSON), which are more flexible and can contain nested structures.
+
+          ## Schema:
+
+          - **Relational Database:** Requires a predefined schema with structured data. Alterations to the schema can be complex.
+          - **Document Database:** Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ## Query Language:
+
+          - **Relational Database:** Typically uses SQL (Structured Query Language) for querying and manipulating data.
+          - **Document Database:** Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ## Scaling:
+
+          - **Relational Database:** Generally scales vertically (requires more powerful server hardware).
+          - **Document Database:** Often designed for horizontal scaling (distribution across multiple servers).
+
+          ## Relationships:
+
+          - **Relational Database:** Strong support for relationships between entities using foreign keys, facilitating complex joins.
+          - **Document Database:** Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ## ACID Properties:
+
+          - **Relational Database:** Strong emphasis on ACID (Atomicity, Consistency, Isolation, Durability) properties for transactions.
+          - **Document Database:** May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ## Use Cases:
+
+          - **Relational Database:** Ideal for complex queries and data integrity in structured data scenarios, like financial systems.
+          - **Document Database:** Better suited for applications requiring agile development, flexible schema, and working with JSON data, like content management systems and mobile apps.
+  Relational Databases:
+    desc: Traditional applications, ERP, CRM, e-commerce.
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Relational
+
+          > Traditional applications, ERP, CRM, e-commerce.
+
+          ### Use Cases
+          Ideal for complex queries and data integrity in structured data scenarios, like financial systems.
+
+          ### Data Structure
+          Uses tables with rows and columns. Each row represents a record and each column represents a property of the record.
+
+          ### Schema
+          Requires a predefined schema with structured data. Alterations to the schema can be complex.
+
+          ### Query Language
+          Typically uses SQL (Structured Query Language) for querying and manipulating data.
+
+          ### Scaling
+          Generally scales vertically (requires more powerful server hardware).
+
+          ### Relationships
+          Strong support for relationships between entities using foreign keys, facilitating complex joins.
+
+          ### ACID Properties
+          Strong emphasis on ACID (Atomicity, Consistency, Isolation, Durability) properties for transactions.
+
+          ### Examples
+
+            - Amazon Relational Database Service (RDS)
+            - Amazon Aurora:
+            - Amazon Redshift
+            - Amazon ElastiCache
+            - Amazon Neptune
+            - Amazon DocumentDB
+  Key-Value Databases:
+    desc: High-traffic web applications, e-commerce systems, and gaming applications.
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Key-Value
+
+          > High-traffic web applications, e-commerce systems, and gaming applications.
+
+          ### Use Cases
+          Ideal for simple data models and high scalability.
+
+          ### Data Structure
+          Stores data as key-value pairs, with a unique key that acts as an identifier.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon DynamoDB
+            - Amazon ElastiCache
+            - Redis
+            - Memcached
+  In-memory Databases:
+    desc: Caching, session management, gaming leaderboards, geospatial applications.
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## In-memory
+
+          > Caching, session management, gaming leaderboards, geospatial applications.
+
+          ### Use Cases
+          Ideal for applications requiring high performance and low latency.
+
+          ### Data Structure
+          Stores data in memory, allowing for fast retrieval.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon ElastiCache
+            - Redis
+            - Memcached
+  Wide-column Databases:
+    desc: High-scale industrial applications for equipment maintenance, fleet management, and route optimization.
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Wide-column
+
+          > High-scale industrial applications for equipment maintenance, fleet management, and route optimization.
+
+          ### Use Cases
+          Ideal for applications requiring high scalability and low latency.
+
+          ### Data Structure
+          Stores data in tables with rows and columns, similar to relational databases. However, each row can have a different set of columns, allowing for more flexibility.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon DynamoDB
+            - Amazon ElastiCache
+            - Redis
+            - Memcached
+  Graph Databases:
+    desc: Social networking, fraud detection, recommendation engines, knowledge graphs
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Graph
+
+          > Fraud detection, social networking, recommendation engines
+
+          ### Use Cases
+          Ideal for applications requiring complex relationships and traversals.
+
+          ### Data Structure
+          Stores data in nodes and edges, with nodes representing entities and edges representing relationships between nodes.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon Neptune
+            - Neo4j
+            - Amazon DynamoDB
+            - Amazon ElastiCache
+            - Redis
+            - Memcached
+  Time-series Databases:
+    desc: Internet of Things (IoT) applications, DevOps, industrial telemetry
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Time-series
+
+          > Internet of Things (IoT) applications, DevOps, industrial telemetry
+
+          ### Use Cases
+          Ideal for applications requiring high ingest rates and time-series analysis
+
+          ### Data Structure
+          Stores data in tables with rows and columns, similar to relational databases. However, each row can have a different set of columns, allowing for more flexibility.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon Timestream
+            - Amazon DynamoDB
+            - Amazon ElastiCache
+            - Redis
+            - Memcached
+  libsql CLI vs sqlite3 CLI:
+    desc: Differences between libsql CLI and sqlite3 CLI
+    tags: [db]
+    links: [https://turso.tech/libsql, https://sqlite.org]
+    notes:
+      - md: | #markdown
+          ## libSQL Advantages for Development
+
+          ### 1. Feature Parity with Production
+
+          If you deploy to Turso, using libsql locally ensures exact same behavior:
+
+          ```sh
+          # Local development with libsql
+          libsql moviedb.sqlite
+
+          # Production with Turso
+          # Same SQL dialect, same features, same behavior
+          ```
+
+          ### 2. WebAssembly User-Defined Functions
+
+          1. Only works with libsql, not sqlite3
+
+              ```sql
+              CREATE FUNCTION hello(name TEXT)
+              LANGUAGE wasm
+              AS '/path/to/hello.wasm';
+
+              SELECT hello('World'); -- Returns: Hello, World!
+              ```
+
+          2. Example WASM function (Rust):
+
+              ```rust
+              // hello.rs
+              #[no_mangle]
+              pub extern "C" fn hello(name: *const u8, len: usize) -> *const u8 {
+                  // Custom logic
+                  format!("Hello, {}!", name).as_ptr()
+              }
+              ```
+
+          ### 3. Randomized ROWID
+
+          ```sql
+          -- libsql: ROWIDs are randomized by default
+          -- Better security (no sequential ID guessing)
+          CREATE TABLE users (
+            id INTEGER PRIMARY KEY, -- Random instead of sequential
+            name TEXT
+          );
+
+          -- sqlite3: ROWIDs are sequential (1, 2, 3...)
+          -- Potential security issue if exposed
+          ```
+
+          ### 4. Vector Search Extensions
+
+          ```sql
+          -- libsql supports vector embeddings (useful for AI features)
+          CREATE VIRTUAL TABLE movie_embeddings USING vec0(
+            embedding FLOAT[384]
+          );
+
+          -- Search for similar movies
+          SELECT * FROM movie_embeddings
+          WHERE embedding MATCH vector('[0.1, 0.2, ...]')
+          ORDER BY distance
+          LIMIT 10;
+          ```
+
+          ### 5. Better JSON Support
+
+          ```sql
+          -- libsql has enhanced JSON functions
+          -- Same as SQLite but with additional operators:
+
+          --- Example: Extracting data from JSON
+          CREATE TABLE movies (id INTEGER PRIMARY KEY, metadata JSON);
+          INSERT INTO movies (metadata) VALUES ('{"title": "Inception", "director": "Nolan"}');
+          SELECT json_extract(metadata, '$.director') FROM movies;
+
+          -- More JSON functions available in libsql
+          SELECT json_set(metadata, '$.year', 2010) FROM movies;
+          ```
+
+          ### 6. Improved CLI Experience
+
+          ```sh
+          # libsql CLI has additional features
+          libsql mydb.sqlite
+          .help  -- More commands available
+          .mode json  -- Output results as JSON
+          .schema  -- View database schema
+          .exit  -- Exit the CLI
+          ```
+      - md: | #markdown
+          ### Practical Comparison
+
+          #### Using sqlite3 CLI
+
+          ```sh
+          $ sqlite3 moviedb.sqlite
+
+          SQLite version 3.43.0
+          sqlite> .tables
+          movies  cast  crew
+
+          sqlite> SELECT title FROM movies LIMIT 3;
+          Inception
+          The Dark Knight
+          Interstellar
+
+          sqlite> .exit
+          ```
+
+          #### Using libsql CLI
+
+          ```sh
+          $ libsql moviedb.sqlite
+
+          libSQL version 0.2.1 (based on SQLite 3.43.0)
+          libsql> .tables
+          movies  cast  crew
+
+          libsql> SELECT title FROM movies LIMIT 3;
+          Inception
+          The Dark Knight
+          Interstellar
+
+          # Same commands, same experience
+          libsql> .exit
+          ```
+  Trino, a query engine that runs at ludicrous speed:
+    desc: Distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources
+    tags: [db, sql]
+    links: [
+      https://trino.io/docs/current/client/cli.html,
+      https://trino.io/docs/current/glossary.html,
+      https://youtu.be/SnvSBYhRZLg,
+      https://starburst.io
+    ]
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          # TRINO's CHEATSHEET
+          # Distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources
+
+          # 1. Run trinodb container with a default configuration (containing some catalogs to explore) mounted at /etc/trino
+          docker run --rm -i --name trino -d -p 8080:8080 trinodb/trino
+
+          # 2. The default server URL in the CLI matches the port used in the command to start the container (-p 8080:8080)
+          open http://localhost:8080
+
+          # 3. Execute queries in the existing Trino server container
+          docker exec -it trino trino
+
+          # 4. After starting the client, type and execute a query example data
+          # trino>
+          select count(*) from tpch.sf1.nation;
+          # _col0
+          # -------
+          #     25
+          # (1 row)
+          #
+          # Query 20250908_195801_00000_3enfm, FINISHED, 1 node
+          # Splits: 13 total, 13 done (100.00%)
+          # 1.27 [25 rows, 0B] [19 rows/s, 0B/s]
+
+          # 5. When you are done with your exploration enter the quit command
+          # trino>
+          quit;
+
+          # CONTAINER CONFIGURATIONS
+
+          # 6. To customise the configuration files (rather than using the image's defaults) mounts /etc/trino
+          docker run --name trino -d -p 8080:8080 --volume $PWD/etc:/etc/trino trinodb/trino
+
+          # 7. To keep the default configuration and only configure catalogs, mounts /etc/trino/catalog - or individual catalog property files in it
+          docker run --name trino -d -p 8080:8080 --volume $PWD/etc/catalog:/etc/trino/catalog trinodb/trino
+
+          # 8. To use additional plugins mounts /usr/lib/trino/plugin
+          docker run --name trino -d -p 8080:8080 --volume $PWD/plugins:/usr/lib/trino/plugin trinodb/trino
+
+          # 14. Stop the trinodb container
+          docker stop trino
+
+          # 15. To start trinodb container
+          docker start trino
+
+          # 16. To remove a stopped trinodb container
+          docker rm trino
+      - sh: | #shell
+          #!/bin/bash
+
+          # TRINO's DYNAMIC CATALOG CHEATSHEET
+          # Distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources
+
+          # 1. To avoid having to create catalog files and mount them in the container enable dynamic catalog management
+          docker run --name trino -d -p 8080:8080 -e CATALOG_MANAGEMENT=dynamic trinodb/trino
+
+          # 2. To make dynamic catalog changes persistent across container restarts mounts /etc/trino/catalog
+          docker run --name trino -d -p 8080:8080 -e CATALOG_MANAGEMENT=dynamic --volume $PWD/etc/catalog:/etc/trino/catalog trinodb/trino
+
+          # 3. Execute queries in the existing Trino server container
+          docker exec -it trino trino
+
+          # 4. To create dynamic catalogs run
+          # trino>
+          CREATE CATALOG my_catalog WITH (
+              connector = 'hive',
+              hive.metastore.uri = 'thrift://localhost:9083'
+          );
+
+          # 5. After creating the dynamic catalog, you can use it in your queries
+          # trino>
+          SELECT * FROM my_catalog.my_table;
+
+          # 6. To drop dynamic catalogs run
+          # trino>
+          DROP CATALOG my_catalog;
+
+          # 7. When you are done with your exploration enter the quit command
+          # trino>
+          quit;
+
+          # 8. Stop the trinodb container
+          docker stop trino
+
+          # 8. To remove a stopped trinodb container
+          docker rm trino
+  MongoDB:
+    desc: General-purpose, document-based, distributed database built for modern application developers and for the cloud era.
+    tags: [AVN, mongodb, macos]
+    links:
+      - Install On OSX: https://mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x
+      - The MongoDB Database Tools Documentation: https://mongodb.com/docs/database-tools
+      - Install mongoDB and MongoDB Compass on Mac: https://youtu.be/MyIiM7z_j_Y
+      - How to build a REST API with TypeScript & MongoDB: https://youtu.be/sYWhyjy1IKc
+    notes:
+      - md: |
+          # Overview
+
+          MongoDB is a general-purpose, document-based, distributed database built for modern application developers and for the cloud era.
+
+          ## What is MongoDB?
+
+          MongoDB is a document database, which means it stores data in JSON-like documents.
+
+          These documents are flexible, allowing fields to vary from document to document and data structure to be changed over time.
+
+          ## Key Features
+
+          - **Document-Oriented Storage:** JSON-like documents with dynamic schemas offer simplicity and power.
+          - **Full Index Support:** Index on any attribute, just like you're used to.
+          - **Replication & High Availability:** Mirror across LANs and WANs for scale and peace of mind.
+          - **Auto-Sharding:** Scale horizontally without compromising functionality.
+          - **Querying:** Rich, document-based queries.
+          - **Fast In-Place Updates:** Atomic modifiers for contention-free performance.
+          - **Map/Reduce:** Flexible aggregation and data processing.
+          - **GridFS:** Store files of any size without complicating your stack.
+          - **Professional Support:** Enterprise class support, training, and consulting available.
+      - md: |
+          # Installation & Setup
+
+          ### Tap the MongoDB Homebrew Tap to download the official Homebrew formula for MongoDB and the Database Tools
+
+          > brew tap mongodb/brew
+
+          ### update Homebrew and all existing formulae
+
+          > brew update
+
+          ### Install MongoDB
+
+          > brew install mongodb-community
+          > brew install --cask mongodb-compass
+
+          The installation includes the following binaries:
+
+          - `mongod` the server
+          - `mongos` the sharded cluster query router
+          - `mongosh` the MongoDB Shell
+
+          In addition, the installation creates the following files and directories at the location specified below, depending on your Apple hardware:
+
+          | **Desc**           | **Intel Processor**        | **Apple Silicon Processor**   |
+          | ------------------ | -------------------------- | ----------------------------- |
+          | configuration file | /usr/local/etc/mongod.conf | /opt/homebrew/etc/mongod.conf |
+          | log directory      | /usr/local/var/log/mongodb | /opt/homebrew/var/log/mongodb |
+          | data directory     | /usr/local/var/mongodb     | /opt/homebrew/var/mongodb     |
+
+          ### Run MongoDB Community Edition
+
+          To run MongoDB (i.e. the mongod process) as a macOS service, run:
+
+          > brew services start mongodb/brew/mongodb-community
+
+          To stop a mongod running as a macOS service, use the following command as needed:
+
+          > brew services stop mongodb/brew/mongodb-community
+
+          To run mongod manually as a background process using a config file, run:
+
+          > mongod --config /usr/local/etc/mongod.conf --fork
+
+          For macOS running on Apple Silicon processors:
+
+          > mongod --config /opt/homebrew/etc/mongod.conf --fork
+
+          To run mongod manually as a background process specifying --dbpath and --logpath on the command line, run:
+
+          > mongod --dbpath /path/to/dbdir --logpath /path/to/mongodb.log --fork
+
+          To stop a mongod running as a background process, connect to the mongod using mongosh, and issue the shutdown command as needed.
+
+          ### To verify that MongoDB is running, perform one of the following
+
+          - If you started MongoDB as a macOS service:
+
+          > brew services list
+
+          You should see the service mongodb-community listed as started.
+
+          - Check the MongoDB version:
+
+            > mongod --version
+
+          If you started MongoDB manually as a background process:
+
+          > ps aux | grep -v grep | grep mongod
+
+          You should see your mongod process in the output.
+
+          You can also view the log file to see the current status of your mongod process:
+
+          > /usr/local/var/log/mongodb/mongo.log
+
+          #### Connect and Use MongoDB
+
+          To begin using MongoDB, connect `mongosh` to the running instance. From a new terminal, issue the following:
+
+          > mongosh
+
+          #### Using the MongoDB Database Tools
+
+          The MongoDB Database Tools are a collection of command-line utilities for working with a MongoDB deployment,
+          including data backup and import/export tools like `mongoimport` and `mongodump` as well as monitoring tools like `mongotop`.
+
+          Run `mongotop` against your running MongoDB instance by invoking it in your macOS Terminal like so
+
+          > mongotop
+
+          ## Localhost Binding by Default
+
+          By default, MongoDB launches with bindIp set to `127.0.0.1`, which binds to the localhost network interface.
+
+          This means that the mongod can only accept connections from clients that are running on the same machine.
+
+          Remote clients will not be able to connect to the mongod, and the mongod will not be able to initialize a replica set unless this value is set to a valid network interface which is accessible from the remote clients.
+
+          This value can be configured either:
+
+          - in the MongoDB configuration file with `bindIp`, or
+          - via the command-line argument `--bind_ip`
+
+          ### Install MongoDB Community with Docker
+
+          #### 1. Pull the MongoDB Docker Image
+
+          > docker pull mongodb/mongodb-community-server:latest
+
+          #### 2. Run the Image as a Container
+
+          > docker run --name mongodb -p 27017:27017 -d mongodb/mongodb-community-server:latest
+
+          The `-p 27017:27017` in this command maps the container port to the host port.
+
+          This allows you to connect to MongoDB with a `localhost:27017` connection string.
+
+          To install a specific version of MongoDB, specify the version after the : in the Docker run command. Docker pulls and runs the specified version.
+
+          > docker run --name mongodb -p 27017:27017 -d mongodb/mongodb-community-server:5.0-ubuntu2004
+
+          #### 3. Check that the Container is Running
+
+          > docker container ls
+
+          #### 4. Connect to the MongoDB Deployment with mongosh
+
+          > mongosh mongodb://localhost:27017
+          > mongosh --port 27017
+
+          #### 5. Validate Your Deployment
+
+          To confirm your MongoDB instance is running, run the `Hello` command:
+
+          ```mongodb
+          db.runCommand(
+            {
+                hello: 1
+            }
+          )
+          ```
+
+          The result of this command returns a document describing your mongod deployment:
+
+          ```json
+          {
+            isWritablePrimary: true,
+            topologyVersion: {
+                processId: ObjectId("63c00e27195285e827d48908"),
+                counter: Long("0")
+          },
+            maxBsonObjectSize: 16777216,
+            maxMessageSizeBytes: 48000000,
+            maxWriteBatchSize: 100000,
+            localTime: ISODate("2023-01-12T16:51:10.132Z"),
+            logicalSessionTimeoutMinutes: 30,
+            connectionId: 18,
+            minWireVersion: 0,
+            maxWireVersion: 20,
+            readOnly: false,
+            ok: 1
+          }
+          ```
+      - md: |
+          ## MongoDB Auth
+
+          Setting up a username and password for a MongoDB database involves creating a user with authentication credentials within the MongoDB instance
+
+          ### Step 1: Start MongoDB Without Access Control
+
+          Start the MongoDB server without access control enabled. This is the default behavior when you first install MongoDB.
+
+          ### Step 2: Connect to the MongoDB Instance
+
+          Use the MongoDB shell or a MongoDB client to connect to your MongoDB instance.
+
+          If you're using the MongoDB shell, you can simply run mongo to connect to your local MongoDB server.
+
+          ### Step 3: Switch to the admin Database
+
+          Authentication and user management are done in the context of a database.
+
+          The admin database is typically used for creating users who have privileges across all databases.
+
+          Switch to the admin database using the following command:
+
+          > use admin
+
+          ### Step 4: Create the User
+
+          You can create a new user with a username and password and assign roles to this user.
+          The roles determine what actions the user can perform.
+
+          For example, to create a user with the ability to read and write to any database and also manage users:
+
+          ```mongodb
+          db.createUser({
+            user: "root",
+            pwd: "root..",
+            roles: [
+              { role: "readWriteAnyDatabase", db: "admin" },
+              { role: "userAdminAnyDatabase", db: "admin" }
+            ]
+          })
+          ```
+
+          #### Step. 4.1: Create a User with Specific Roles
+
+          Switch to the database you want the user to have access to. If the database doesn't exist yet, MongoDB will create it when you first store data in it.
+
+          > use mydatabase
+
+          Use the db.createUser command to create a new user with read and write permissions specifically for the "customer-db" database.
+          You will assign the readWrite role on the "customer-db" database to the user.
+
+          ```mongodb
+          db.createUser({
+              user: "root",
+              pwd: "root..",
+              roles: [
+                  { role: "readWrite", db: "customer-db" }
+              ]
+          })
+          ```
+
+          #### Notes
+
+          - The readWrite role allows the user to perform read and write operations on all non-system collections and on the system.js collection in the specified database.
+          - If you have access control enabled (which you should for production environments), you'll need to authenticate as an administrative user before you can create or modify other users.
+          - You can authenticate using the mongo command with -u (username), -p (password), and --authenticationDatabase options if you're connecting through the shell.
+          - To enforce these access controls, ensure that the MongoDB server is restarted with access control enabled (security.authorization set to enabled in the mongod.conf file).
+          - Security best practices recommend granting users the least privileges they need to perform their tasks.
+          - This approach limits the potential damage in case the user's credentials are compromised.
+
+          ### Step 5: Enable Access Control
+
+          Stop the MongoDB server and restart it with access control enabled.
+
+          This usually involves modifying the MongoDB configuration file (typically named `mongod.conf`) to include the security option with authorization enabled:
+
+          ```yaml
+          security:
+            authorization
+          ```
+
+          Then, restart the MongoDB service. The method to do this can vary depending on your operating system.
+
+          For example, on many Linux distributions, you might use:
+
+          > sudo systemctl restart mongod
+
+          On macOS, you might use:
+
+          > brew services restart mongodb/brew/mongodb-community
+
+          ### Step 6: Connect with Authentication
+
+          After enabling access control, you must authenticate to perform any actions on the MongoDB instance.
+
+          To authenticate, connect to the MongoDB instance and provide the username and password you created:
+
+          > mongo -u root -p root.. --authenticationDatabase admin
+
+          ### Step 7: Create Additional Users
+
+          You can create additional users with different roles and permissions as needed.
+
+          ### Step 8: Verify Authentication
+
+          To verify that authentication is working, try to perform an action that requires authentication, such as listing the databases:
+
+          > show dbs
+
+          If you're able to list the databases, authentication is working correctly.
+
+          ### Step 9: Secure Your MongoDB Deployment
+
+          Ensure that your MongoDB deployment is secure by following best practices for security, such as:
+
+          - Regularly updating MongoDB to the latest version
+          - Enabling SSL/TLS encryption
+          - Configuring network security settings
+          - Monitoring and auditing user activity
+          - Backing up your data regularly
+  mongosh | MongoDB:
+    desc: A shell-centric CLI for MongoDB with syntax highlighting, intelligent autocomplete, and more.
+    tags: [AVN, mongodb, shell, cli]
+    notes:
+      - sh: |
+          # enter the MongoDB Shell
+          mongosh
+
+          # show databases
+          test> show dbs;
+
+          # use/create a database
+          test> use mydatabase;
+
+          # show collections
+          mydatabase> show collections;
+
+          # create collection
+          mydatabase> db.createCollection('myCollection');
+          # { ok: 1 }
+
+          # insert a document into a collection
+          mydatabase> db.myCollection.insertOne({ field: "foo" });
+          # {
+          #   acknowledged: true,
+          #   insertedId: ObjectId('660b6607f034a39c80c93426')
+          # }
+
+          # find all documents in a collection
+          mydatabase> db.myCollection.find();
+          # > [ { _id: ObjectId('660b6607f034a39c80c93426'), field: 'foo' } ]
+
+          # find documents with a specific field value
+          mydatabase> db.myCollection.find({ field: "foo" });
+          # > [ { _id: ObjectId('660b6607f034a39c80c93426'), field: 'foo' } ]
+
+          # find documents with a specific field value and return only specific fields
+          mydatabase> db.myCollection.find({ field: "foo" }, { field: 1, _id: 0 });
+          # > { "field": "foo" }
+
+          # find documents with a specific field value and sort the results
+          mydatabase> db.myCollection.find({ field: "foo" }).sort({ field: 1 });
+
+          # find documents with a specific field value and limit the results
+          mydatabase> db.myCollection.find({ field: "foo" }).limit(5);
+
+          # find documents with a specific field value and skip the first 5 results
+          mydatabase> db.myCollection.find({ field: "foo" }).skip(5);
+
+          # find documents with a specific field value and return only specific fields, sort the results, and limit the results
+          mydatabase> db.myCollection.find({ field: "foo" }, { field: 1, _id: 0 }).sort({ field: 1 }).limit(5);
+
+          # update a document in a collection
+          mydatabase> db.myCollection.updateOne({ field: "foo" }, { $set: { field: "bar" } });
+          # {
+          #   acknowledged: true,
+          #   insertedId: null,
+          #   matchedCount: 1,
+          #   modifiedCount: 1,
+          #   upsertedCount: 0
+          # }
+
+          # delete a document from a collection
+          mydatabase> db.myCollection.deleteOne({ field : "bar" });
+
+          # count the number of documents in a collection
+          mydatabase> db.myCollection.countDocuments();
+
+          # count the number of documents in a collection that match a query
+          mydatabase> db.myCollection.countDocuments({ field: "foo" });
+
+          # exit the MongoDB Shell
+          mydatabase> exit;
+  Modeling | MongoDB:
+    desc: Estratégias para modelar dados em MongoDB para grandes volumes de dados
+    tags: [AVN, mongodb, db]
+    notes: |
+      ## Modelagem de Dados para grande volume
+
+      Estratégias para modelar dados em MongoDB para grandes volumes de dados.
+
+      ### 1. Denormalização
+
+      Incorporar dados relacionados em um único documento para reduzir a necessidade de joins.
+
+      ### 2. Indexação
+
+      Indexar campos frequentemente consultados para melhorar o desempenho das consultas.
+
+      ### 3. Sharding
+
+      Distribuir dados em vários servidores para lidar com grandes volumes de dados.
+
+      ### 4. Preaggregation
+
+      Pré-calcular e armazenar resultados de consultas frequentes para reduzir o tempo de resposta.
+
+      ### 5. TTL Indexes
+
+      Expirar documentos automaticamente após um período de tempo.
+  Denormalization | MongoDB:
+    desc: Incorporate related data into a single document to reduce the need for joins
+    tags: [AVN, mongodb]
+    notes: |
+      ## Denormalization
+
+      In a normalized schema, data is divided into multiple collections, which can lead to complex queries with multiple joins.
+
+      💡 Denormalization is the process of incorporating related data into a single document to reduce the need for joins.
+
+      ### Example
+
+      ```js
+      // Denormalized schema
+      {
+        _id: ObjectId('60b6607f034a39c80c93426'),
+        name: 'John Doe',
+        email: 'john@doe.com',
+        address: {
+          street: '123 Main St',
+          city: 'Anytown',
+          state: 'CA',
+          zip: '12345'
+        },
+        orders: [
+          {
+            _id: ObjectId('60b6607f034a39c80c93427'),
+            date: ISODate('2023-01-01T00:00:00Z'),
+            total: 100.00
+          },
+          {
+            _id: ObjectId('60b6607f034a39c80c93428'),
+            date: ISODate('2023-01-02T00:00:00Z'),
+            total: 150.00
+          }
+        ]
+      }
+      ```
+
+      ### Use Cases
+
+      - E-commerce
+      - Social networks
+      - Content management systems
+  Sharding | MongoDB:
+    desc: Distribute data across multiple servers to handle large data volumes
+    tags: [AVN, mongodb]
+    notes: |
+      ## Sharding
+
+      As data volumes grow, a single MongoDB instance may not be able to handle the load.
+
+      💡 Sharding is the process of distributing data across multiple servers to handle large data volumes.
+
+      ### Example
+
+      ```js
+      // Enable sharding for a database
+      sh.enableSharding('mydatabase');
+
+      // Create a sharded collection
+      sh.shardCollection('mydatabase.myCollection', { _id: 'hashed' });
+      ```
+
+      ### Key Components
+
+      - **Shard:** Single MongoDB instance that holds a data's subset.
+      - **Shard Key:** The field used to distribute data across shards.
+      - **Config Server:** Stores metadata about the sharded cluster.
+      - **Router:** Routes queries to the appropriate shard.
+  TTL | MongoDB:
+    desc: Automatically expire documents after a specified period of time
+    tags: [AVN, mongodb]
+    notes: |
+      ## TTL Indexes
+
+      Some data is only relevant for a limited time and should be automatically deleted after a certain period.
+
+      💡 TTL (Time-To-Live) indexes automatically expire documents after a specified period of time.
+
+      ### Example
+
+      ```js
+      // Create a TTL index on the createdAt field
+      // This index will automatically delete documents where the `createdAt` field is older than 1 hour.
+      db.customers.createIndex({ createdAt: 1 }, { expireAfterSeconds: 3600 });
+      ```
+
+      ### Use Cases
+
+      - Session data
+      - Cache data
+      - Log data
+
+      ### Considerations
+
+      - TTL indexes are not suitable for all use cases.
+      - The expiration process runs every 60 seconds.
+      - The TTL index does not guarantee that expired data will be deleted immediately.
+  Preaggregation | MongoDB:
+    desc: Pre-calculate and store results of frequent queries to reduce response time
+    tags: [AVN, mongodb]
+    notes: |
+      ## Preaggregation
+
+      Aggregating data in real-time can be resource-intensive and slow.
+
+      💡 Preaggregation is the process of pre-calculating and storing the results of frequent queries to reduce response time.
+
+      ### Example
+
+      ```js
+      // Create an aggregation pipeline to calculate the total sales by product
+
+      db.sales.aggregate([
+        { $group: { _id: '$product', totalSales: { $sum: '$amount' } } }
+      ]);
+      ```
+
+      ### Use Cases
+
+      - Reporting
+      - Analytics
+      - Dashboards
+
+      ### Considerations
+
+      - Store the results of this aggregation in a separate collection for faster access.
+      - Preaggregation can improve query performance but may require additional storage.
+      - Update the preaggregated data periodically to keep it up-to-date.
+  Indexes | MongoDB:
+    desc: Crie índices em campos frequentemente consultados para melhorar o desempenho das consultas
+    tags: [AVN, mongodb, perf]
+    notes: |
+      > Indices podem ser criados em qualquer campo de um documento, incluindo campos dentro de arrays e subdocumentos, tornando as consultas mais rápidas e eficientes.
+
+      ## 1. Initialize mongosh
+
+      > mongosh "mongodb://root:root..@localhost:27017/customer-db"
+
+      ## 2. Mock data
+
+      ```js
+      // insert documents
+      for (let i = 0; i < 100000; i++) {
+        db.customers.insertMany([
+          {
+            nome: 'Customer ' + i,
+            email: 'customer' + i + '@exemplo.com',
+            createdAt: new Date() - Math.floor(Math.random() * 10000000000),
+          },
+        ]);
+      }
+      ```
+
+      ## 3. Count documents
+
+      > db.customers.countDocuments()
+
+      ## 4. Search without index
+
+      > db.customers.find({ email: 'customer99999@exemplo.com' });
+
+      ## 5. Explain the query (totalDocsExamined and executionTimeMillis)
+
+      > db.customers.find({ email: 'customer99999@exemplo.com' }).explain('executionStats');
+
+      ## 6. Create an index
+
+      > db.customers.createIndex({ email: 1 });
+
+      ## 7. Drop the index
+
+      > db.customers.dropIndex('email_1');
+
+      ## 8. Create compound index
+
+      > db.customers.createIndex({ email: 1, createdAt: 1 });
+  Aggregations | MongoDB:
+    desc: Use pipelines de agregação para processar e transformar dados
+    tags: [AVN, mongodb]
+    notes: |
+      ### Aggregations
+
+      Use pipelines de agregação para processar e transformar dados.
+
+      ```js
+      // match documents with status 'A' and group by cust_id
+      db.sales.aggregate([
+        { $match: { status: 'A' } },
+        { $group: { _id: '$cust_id', total: { $sum: '$amount' } } }
+      ]);
+      ```
+  Aggregation Pipelines | MongoDB:
+    desc: Transforming and combining data in collections through a multi-stage pipeline
+    tags: [AVN, mongodb]
+    notes:
+      - md: |
+          ## Aggregation Pipelines
+
+          Complex aggregation pipelines in MongoDB are powerful tools for transforming and combining data in collections through a multi-stage pipeline.
+
+          These pipelines allow for a variety of operations such as filtering, grouping, sorting, and joining data across documents.
+      - md: |
+          ### EXAMPLE 1. User Activity Summary
+
+          Suppose you have a collection of user activity logs with fields such as userId, activityType, timestamp, and details.
+
+          You want to generate a summary of each user's activity, including the count of each activity type and the last activity timestamp.
+
+          ```js
+          [
+            {
+              "$match": {
+                "timestamp": {
+                  "$gte": ISODate("2023-01-01"),
+                  "$lt": ISODate("2023-12-31")
+                }
+              }
+            },
+            {
+              "$group": {
+                "_id": "$userId",
+                "activityCounts": {
+                  "$sum": 1
+                },
+                "activities": {
+                  "$push": {
+                    "type": "$activityType",
+                    "details": "$details"
+                  }
+                },
+                "lastActivity": {
+                  "$max": "$timestamp"
+                }
+              }
+            },
+            {
+              "$sort": {
+                "lastActivity": -1
+              }
+            }
+          ]
+          ```
+      - md: |
+          ### EXAMPLE 2. Joining Collections and Aggregating Results
+
+          Imagine you have two collections: orders with fields orderId, customerId, orderDate, total, and items, and customers with customerId, name, and location.
+
+          You want to find the total spent per customer in a certain location and their latest order date.
+
+          ```js
+          [
+            {
+              "$lookup": {
+                "from": "customers",
+                "localField": "customerId",
+                "foreignField": "customerId",
+                "as": "customerInfo"
+              }
+            },
+            {
+              "$match": {
+                "customerInfo.location": "New York"
+              }
+            },
+            {
+              "$group": {
+                "_id": "$customerId",
+                "totalSpent": {
+                  "$sum": "$total"
+                },
+                "latestOrder": {
+                  "$max": "$orderDate"
+                }
+              }
+            },
+            {
+              "$sort": {
+                "totalSpent": -1
+              }
+            }
+          ]
+          ```
+      - md: |
+          ### EXAMPLE 3. Time Series Data Analysis
+
+          For a collection of time-series data such as stock prices with fields symbol, price, timestamp,
+
+          To calculate the moving average and maximum price of each stock symbol within a specified time window:
+
+          ```js
+          [
+            {
+              "$match": {
+                "symbol": "AAPL",
+                "timestamp": {
+                  "$gte": ISODate("2023-01-01"),
+                  "$lt": ISODate("2023-01-31")
+                }
+              }
+            },
+            {
+              "$sort": {
+                "timestamp": 1
+              }
+            },
+            {
+              "$group": {
+                "_id": "$symbol",
+                "avgPrice": {
+                  "$avg": "$price"
+                },
+                "maxPrice": {
+                  "$max": "$price"
+                }
+              }
+            }
+          ]
+          ```
+      - md: |
+          ### EXAMPLE 4. Complex Filtering and Projection
+
+          You want to filter documents based on complex criteria and transform the output to include calculated fields.
+
+          Suppose you have a collection of products with fields productId, name, category, price, and ratings.
+
+          You aim to find products in a specific category with a minimum average rating and include a new field indicating a price range.
+
+          ```js
+          [
+            {
+              "$match": {
+                "category": "Electronics",
+                "ratings": {
+                  "$gte": 4
+                }
+              }
+            },
+            {
+              "$project": {
+                "name": 1,
+                "price": 1,
+                "priceRange": {
+                  "$cond": {
+                    "if": {
+                      "$lt": ["$price", 100]
+                    },
+                    "then": "Under $100",
+                    "else": "Over $100"
+                  }
+                }
+              }
+            }
+          ]
+          ```
+  Joins | MongoDB:
+    desc: Use operações de junção para combinar dados de várias coleções
+    tags: [AVN, mongodb]
+    notes: |
+      ### Joins
+
+      Use operações de junção para combinar dados de várias coleções.
+
+      ```js
+      // join orders with products
+      db.orders.aggregate([
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'product_id',
+            foreignField: '_id',
+            as: 'product'
+          }
+        }
+      ]);
+      ```
+  Text Search | MongoDB:
+    desc: Use índices de texto para pesquisar texto em campos de string
+    tags: [AVN, mongodb]
+    notes: |
+      ### Text Search
+
+      Use índices de texto para pesquisar texto em campos de string.
+
+      ```js
+      // create text index
+      db.articles.createIndex({ content: 'text' });
+
+      // search for 'mongodb'
+      db.articles.find({ $text: { $search: 'mongodb' } });
+      ```
+  Geospatial Queries | MongoDB:
+    desc: Use índices de texto para pesquisar texto em campos de string
+    tags: [AVN, mongodb]
+    notes: |
+      ### Geospatial Queries
+
+      Use índices geoespaciais para consultar dados baseados em localização.
+
+      ```js
+      // create 2dsphere index
+      db.places.createIndex({ location: '2dsphere' });
+
+      // find places near a location
+      db.places.find({
+        location: {
+          $near: {
+            $geometry: { type: 'Point', coordinates: [longitude, latitude] },
+            $maxDistance: 1000
+          }
+        }
+      });
+      ```
+  Transactions | MongoDB:
+    desc: Use transações para garantir a consistência dos dados
+    tags: [AVN, mongodb]
+    notes: |
+      ### Transactions
+
+      Use transações para garantir a consistência dos dados.
+
+      ```js
+      const session = db.getMongo().startSession();
+      session.startTransaction();
+
+      try {
+        db.collection1.insertOne({ name: 'Alice' }, { session });
+        db.collection2.insertOne({ name: 'Bob' }, { session });
+
+        session.commitTransaction();
+      } catch (error) {
+        session.abortTransaction();
+      } finally {
+        session.endSession();
+      }
+      ```
+  Change Streams | MongoDB:
+    desc: Use streams de alterações para monitorar alterações em coleções
+    tags: [AVN, mongodb]
+    notes: |
+      ### Change Streams
+
+      Use streams de alterações para monitorar alterações em coleções.
+
+      ```js
+      const changeStream = db.collection.watch();
+
+      changeStream.on('change', (change) => {
+        console.log(change);
+      });
+      ```
+  Atlas | MongoDB:
+    desc: MongoDB Atlas é um serviço de banco de dados gerenciado na nuvem
+    tags: [AVN, mongodb, db]
+    notes: |
+      ## MongoDB Atlas
+
+      MongoDB Atlas é um serviço de banco de dados gerenciado na nuvem.
+
+      ### Vantagens
+
+      - Escalabilidade automática
+      - Segurança avançada
+      - Backup e recuperação
+      - Monitoramento em tempo real
+      - Integração com AWS, Azure e Google Cloud
+  Realm | MongoDB:
+    desc: MongoDB Realm é uma plataforma de desenvolvimento de aplicativos móveis e web
+    tags: [AVN, mongodb, db]
+    notes: |
+      ## MongoDB Realm
+
+      MongoDB Realm é uma plataforma de desenvolvimento de aplicativos móveis e web.
+
+      ### Recursos
+
+      - Banco de dados local
+      - Sincronização em tempo real
+      - Funções serverless
+      - Autenticação e autorização
+      - Notificações push
+  Best Practices | MongoDB:
+    desc: Melhores práticas para modelagem de dados, consultas eficientes e segurança em MongoDB
+    tags: [AVN, mongodb, perf]
+    notes: |
+      ## Melhores Práticas
+
+      Algumas melhores práticas para modelagem de dados, consultas eficientes e segurança em MongoDB.
+
+      ### 1. Modelagem de Dados
+
+      - **Denormalização:** Incorporar dados relacionados em um único documento para reduzir a necessidade de joins.
+      - **Indexação:** Criar índices em campos frequentemente consultados para melhorar o desempenho das consultas.
+      - **Sharding:** Distribuir dados em vários servidores para lidar com grandes volumes de dados.
+      - **Preaggregation:** Pré-calcular e armazenar resultados de consultas frequentes para reduzir o tempo de resposta.
+      - **TTL Indexes:** Expirar documentos automaticamente após um período de tempo.
+
+      ### 2. Consultas Eficientes
+
+      - **Aggregation Pipelines:** Use pipelines de agregação para processar e transformar dados.
+      - **Índices:** Crie índices em campos frequentemente consultados para melhorar o desempenho das consultas.
+      - **Joins:** Use operações de junção para combinar dados de várias coleções.
+      - **Text Search:** Use índices de texto para pesquisar texto em campos de string.
+      - **Geospatial Queries:** Use índices geoespaciais para consultar dados baseados em localização.
+
+      ### 3. Segurança
+
+      - **Autenticação e Autorização:** Implemente autenticação e autorização para proteger os dados.
+      - **Criptografia:** Use criptografia para proteger os dados em repouso e em trânsito.
+      - **Auditoria:** Monitore e audite o acesso e as atividades dos usuários.
+      - **Backup e Recuperação:** Configure backups regulares e procedimentos de recuperação de desastres.
+
+      ### 4. Escalabilidade
+
+      - **Sharding:** Distribua dados em vários servidores para lidar com grandes volumes de dados.
+      - **Replicação:** Configure réplicas para garantir disponibilidade e desempenho
+  Potenciais issues de grande volume de dados | MongoDB:
+    desc: Problemas comuns ao lidar com grandes volumes de dados em MongoDB
+    tags: [AVN, mongodb, perf]
+    notes: |
+
+      ## 1. Desempenho Lento
+
+      Consultas lentas devido à falta de índices ou consultas complexas.
+
+      **Solução:** Criar índices em campos frequentemente consultados e otimizar consultas.
+
+      ## 2. Fragmentação de Disco
+
+      Fragmentação de disco devido a inserções e exclusões frequentes.
+
+      **Solução:** Compactar o banco de dados regularmente para reduzir a fragmentação.
+
+      ## 3. Memória Insuficiente
+
+      Memória insuficiente para armazenar índices e dados em cache.
+
+      **Solução:** Aumentar a memória disponível para o MongoDB e otimizar consultas.
+
+      ## 4. Escalabilidade
+
+      Dificuldade em escalar horizontalmente para lidar com o aumento do volume de dados.
+
+      **Solução:** Usar sharding para distribuir dados em vários servidores.
+
+      ## 5. Segurança
+
+      Questões de segurança ao lidar com dados confidenciais ou sensíveis.
+
+      **Solução:** Implementar autenticação, autorização e criptografia para proteger os dados.
+
+      ## 6. Backup e Recuperação
+
+      Backup e recuperação de dados em caso de falha ou perda de dados.
+
+      **Solução:** Configurar backups regulares e testar procedimentos de recuperação.
+
+      ## 7. Monitoramento
+
+      Monitoramento em tempo real do desempenho do banco de dados e das consultas.
+
+      **Solução:** Usar ferramentas de monitoramento para identificar gargalos de desempenho e otimizar consultas.
+  Principais desafios e soluções em ambientes de Big Data | MongoDB:
+    desc: Desafios e soluções para gerenciar grandes volumes de dados em ambientes como o MongoDB
+    tags: [AVN, mongodb, perf]
+    notes: |
+
+      ## 1. Problemas de Performance e Escalabilidade
+
+      ### Desafio
+
+      Com milhões de registros sendo adicionados mensalmente, as consultas podem se tornar lentas, e a base de dados pode enfrentar dificuldades em escalar eficientemente.
+
+      ### Solução
+
+      Utilizar técnicas de indexação eficazes para acelerar as consultas, sharding para distribuir os dados entre múltiplos servidores, e replicação para garantir disponibilidade e desempenho.
+
+      ## 2. Integridade e Consistência dos Dados
+
+      ### Desafio
+
+      Dados provenientes de diferentes fontes podem ser inconsistentes ou incompletos, levando a análises imprecisas.
+
+      ### Solução
+
+      Implementar processos de ETL (Extract, Transform, Load) robustos para limpeza, normalização e validação dos dados antes de serem inseridos na base central.
+
+      ## 3. Segurança dos Dados
+
+      ### Desafio
+      Dados clínicos são altamente sensíveis e requerem proteção rigorosa para cumprir com regulamentações como o HIPAA (nos EUA) ou a LGPD (no Brasil).
+
+      ### Solução
+      Adotar políticas de segurança rigorosas, incluindo criptografia de dados em repouso e em trânsito, autenticação forte e controle de acesso baseado em funções.
+
+      ## 4. Compliance e Privacidade
+
+      ### Desafio
+      Garantir que o armazenamento e processamento dos dados estejam em conformidade com as leis e regulamentações locais e internacionais.
+
+      ### Solução
+      Realizar auditorias regulares, manter registros de acesso e processamento de dados, e garantir que os dados sejam anonimizados ou pseudonimizados quando necessário.
+
+      ## 5. Gerenciamento de Big Data
+
+      ### Desafio
+      O volume, variedade e velocidade dos dados clínicos podem sobrecarregar sistemas tradicionais de gerenciamento de dados.
+
+      ### Solução
+      Adotar tecnologias e práticas de Big Data, como o uso de plataformas de processamento de dados em paralelo (por exemplo, Apache Spark) e técnicas de análise de dados avançadas para extrair insights em tempo real.
+
+      ## 6. Backup e Recuperação de Desastres
+
+      ### Desafio
+      O risco de perda de dados devido a falhas de hardware, software ou desastres naturais.
+
+      ### Solução
+      Implementar uma estratégia de backup e recuperação de desastres robusta, incluindo backups regulares e armazenamento em locais geograficamente distribuídos.
+
+      ## 7. Qualidade dos Dados
+
+      ### Desafio
+      Dados de baixa qualidade podem levar a insights imprecisos e tomadas de decisão inadequadas.
+
+      ### Solução
+      Desenvolver um framework de governança de dados para monitorar continuamente a qualidade dos dados, incluindo a identificação e correção de dados incorretos ou duplicados.
+
+      ## 8. Conclusão
+
+      A gestão eficaz de grandes volumes de dados clínicos em ambientes como o MongoDB exige uma abordagem multifacetada, considerando aspectos de performance, segurança, privacidade, e qualidade dos dados.
+
+      Empregar as melhores práticas em arquitetura de sistemas, segurança da informação e gerenciamento de dados é crucial para superar esses desafios e aproveitar ao máximo os insights oferecidos por esses dados valiosos.
+  Questions | MongoDB:
+    desc: Perguntas para tentar entender os desafios enfrentados com grandes volumes de dados
+    tags: [AVN, mongodb]
+    notes: |
+      ## Perguntas sobre MongoDB e Big Data
+
+      1. Qual é o volume de dados atualmente armazenado e processado?
+      2. Quais são os principais desafios ao lidar com grandes volumes de dados?
+      3. Quais as estratégias para lidar com escalabilidade e o desempenho do banco de dados?
+      4. Quais são as preocupações em relação à segurança e privacidade dos dados?
+      5. Como a integridade e a consistência dos dados em ambientes de Big Data são garantidas?
+      6. Quais são as estratégias de backup e recuperação de desastres?
+      7. Como a conformidade com as regulamentações locais e internacionais é assegurada?
+      8. Quais são os processos de governança de dados e qualidade dos dados?
+      9. Como a análise e extração de insights de grandes volumes de dados são realizadas?
+      10. Quais são os planos futuros para lidar com o crescimento dos dados e a evolução das necessidades de análise?
+
+      ## Perguntas sobre Data Analytics
+
+      1. Quais são os principais objetivos de análise de dados da organização?
+      2. Quais são as fontes de dados utilizadas para análise?
+      3. Quais são os principais KPIs (Key Performance Indicators) monitorados?
+      4. Quais são as ferramentas e tecnologias utilizadas para análise de dados?
+      5. Como os insights gerados a partir dos dados são utilizados para tomada de decisão?
+      6. Quais são os desafios enfrentados na análise de grandes volumes de dados?
+      7. Como a qualidade e a integridade dos dados são garantidas durante o processo de análise?
+      8. Quais são os processos de validação e verificação dos resultados da análise?
+      9. Como a análise de dados contribui para a inovação e o crescimento da organização?
+      10. Quais são os planos futuros para aprimorar a análise de dados e a geração de insights?
+
+      ## Perguntas sobre indicadores e insights para tomadas de decisão
+
+      1. Quais são os principais indicadores de desempenho monitorados atualmente?
+      2. Como esses indicadores são medidos e avaliados?
+      3. Quais são os insights mais relevantes gerados a partir dos dados?
+      4. Como esses insights são utilizados para tomada de decisão?
+      5. Quais são os desafios enfrentados na geração e interpretação de insights?
+      6. Como a confiabilidade e a precisão dos insights são garantidas?
+      7. Quais são os processos de validação e verificação dos insights gerados?
+      8. Como os insights contribuem para a melhoria contínua e a inovação na organização?
+      9. Quais são os planos futuros para aprimorar a geração e utilização de insights?
+      10. Como a cultura de dados e a tomada de decisão baseada em dados são promovidas na organização?
+  Top Database Types | SUMMARY:
+    desc: Relational x NoSQL x Key-Value x In-memory x Wide-column x Graph x Time-series
+    tags: [db]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ![Database Types](https://github.com/milanm/Cloud-Product-Mapping/blob/main/Cloud-Databases.png?raw=true?raycast-height=250)
+
+          | **Database Type** | **Use Cases/Ideal for**                                                                        |
+          | ----------------- | ---------------------------------------------------------------------------------------------- |
+          | **Relational**    | Complex queries and data integrity in structured data scenarios (financial systems)            |
+          | **NoSQL**         | Apps requiring agile development, flexible schema, and working with JSON, (CMS, mobile apps)   |
+          | **Key-Value**     | Simple data models and high scalability                                                        |
+          | **In-memory**     | Caching, session management, gaming leaderboards, geospatial apps                              |
+          | **Wide-column**   | High-scale industrial apps for equipment maintenance, fleet management, and route optimization |
+          | **Graph**         | Social networking, fraud detection, recommendation engines, knowledge graphs                   |
+          | **Time-series**   | Apps requiring high ingest rates and time-series analysis                                      |
+  NoSQL | Document Databases:
+    desc: Content management, catalogs, user profiles.
+    tags: [db, nosql]
+    links:
+      - Cloud Databases Cheat Sheet: https://github.com/milanm/Cloud-Product-Mapping?tab=readme-ov-file#bonus-2-cloud-databases
+    notes:
+      - md: | #markdown
+          ## Document
+
+          > Content management, catalogs, user profiles.
+
+          ### Use Cases
+          Ideal for applications requiring agile development, flexible schema, and working with JSON data, like content management systems and mobile apps.
+
+          ### Data Structure
+          Stores data in documents (often JSON, BSON), which are more flexible and can contain nested structures.
+
+          ### Schema
+          Schema-less, allowing for varied and dynamic data structures within documents. Easier to evolve with changing data requirements.
+
+          ### Query Language
+          Uses JSON-based query languages or JavaScript-like syntax, depending on the specific database.
+
+          ### Scaling
+          Often designed for horizontal scaling (distribution across multiple servers).
+
+          ### Relationships
+          Relationships are not as inherent. Often uses embedded documents and arrays to represent relationships.
+
+          ### ACID Properties
+          May prioritize performance and scalability over strict adherence to ACID properties, though some modern document databases also support ACID transactions.
+
+          ### Examples
+            - Amazon DocumentDB
+            - MongoDB
+            - Amazon DynamoDB
+            - Amazon ElastiCache
+            - Amazon Neptune
+commands:
+  # sqlite3 | Command-line interface for SQLite
+  brew install sqlite3:
+    desc: Install sqlite3
+    tags: [db]
+    links: [https://sqlite.org]
+  sqlite3 /path/to/db.sqlite:
+    desc: Create database and launch interactive shell
+    tags: [db]
+    links: [https://sqlite.org]
+  sqlite3 /path/to/db.sqlite'create table <TABLE>(id INTEGER PRIMARY KEY AUTOINCREMENT, <FIELD>);':
+    desc: Create a TABLE with FIELD and Primary key
+    tags: [db]
+    links: [https://sqlite.org]
+  sqlite3 /path/to/db.sqlite'INSERT into TABLE values(<VALUE>);':
+    desc: Insert data into a table
+    tags: [db]
+    links: [https://sqlite.org]
+  sqlite3 /path/to/db.sqlite'.tables':
+    desc: List tables @ database
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 /path/to/db.sqlite'.schema TABLE':
+    desc: Describe a table
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 /path/to/db.sqlite'select * from'<TABLE>'':
+    desc: View records from <TABLE> @ <DATABASE>
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 /path/to/db.sqlite'select * from TABLE where <FIELD>=VALUE;':
+    desc: View records from a table conditionally
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 /path/to/db.sqlite'select * from TABLE where <FIELD>= like VALUE>%;':
+    desc: Select from table
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+  sqlite3 /path/to/database.sqlite < /path/to/file.sql:
+    desc: Execute SQL file against a SQLite database. Creates the database file if it does not exist.
+    tags: [db]
+    links: [https://sqlite.org]
+  sqlite3 /path/to/database.sqlite "VACUUM;":
+    desc: Creating database file with VACUUM - repacking it into a minimal amount of disk space
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+    notes:
+      - md: | #markdown
+          ### What is VACUUM?
+
+          `VACUUM` is a SQLite command that rebuilds the database file, repacking it into a minimal amount of disk space.
+
+          ### What VACUUM Does?
+
+          1. **Defragments the database** - Removes fragmented free space
+          2. **Reclaims unused space** - Shrinks the file size after deletions
+          3. **Rebuilds the entire database** - Creates a fresh, optimized copy
+          4. **Reorders data** - Reorganizes tables for better performance
+
+          ### When is VACUUM Useful?
+
+          ```sql
+          -- After deleting lots of data
+          DELETE FROM large_table WHERE condition;
+          VACUUM;  -- Reclaim the freed space
+
+          -- Database file is 100MB but only has 20MB of actual data
+          VACUUM;  -- Shrinks file from 100MB to ~20MB
+
+          -- Database has become fragmented over time
+          VACUUM;  -- Defragments and optimizes
+          ```
+
+          ### Why We Use It to Create Empty Database?
+
+          When run `sqlite3 demo.sqlite "VACUUM;"`:
+
+          1. Creates a valid SQLite database file (if it doesn't exist)
+          2. Initializes the proper SQLite file header
+          3. Compacts it to minimal size (since it's empty)
+
+          ```sh
+          # What happens:
+          sqlite3 new.db "VACUUM;"
+
+          # Creates a valid, minimal SQLite file:
+          # - Proper SQLite header (100 bytes)
+          # - Database schema page
+          # - Properly formatted and ready to use
+          ```
+
+          ### Performance Considerations
+
+          ```sh
+          -- VACUUM can be slow on large databases
+          -- It creates a complete copy of the database
+
+          -- On a 1GB database:
+          VACUUM;  -- Might take 10-30 seconds
+
+          -- On a 10GB database:
+          VACUUM;  -- Might take several minutes
+
+          -- Requires 2x the disk space temporarily
+          -- (original + copy during rebuild)
+          ```
+
+          ### When to VACUUM?
+
+          ```sql
+          -- ✅ After bulk deletes
+          DELETE FROM logs WHERE created_at < '2020-01-01';
+          VACUUM;
+
+          -- ✅ During maintenance windows
+          -- Schedule weekly VACUUM on production databases
+
+          -- ✅ After schema changes
+          ALTER TABLE users ADD COLUMN new_field TEXT;
+          VACUUM;
+          ```
+
+          ### When NOT to VACUUM?
+
+          ```sql
+          -- ❌ On every DELETE (too expensive)
+          DELETE FROM items WHERE id = 1;
+          VACUUM;  -- Don't do this!
+
+          -- ❌ On active production databases during peak hours
+          -- Wait for low-traffic period
+
+          -- ❌ If disk space is limited
+          -- VACUUM needs temporary space equal to DB size
+          ````
+  sqlite3 ~/.config/kodexb/knowledge.sqlite "SELECT COUNT(*), json_type(notes) FROM knowledges WHERE notes IS NOT NULL GROUP BY json_type(notes)":
+    desc: Count the number of notes by type @ sqlite database
+    tags: [db, sqlite]
+    links: [https://sqlite.org]
+
+  # SQL
+  CREATE TABLE employees (employee_id INT PRIMARY KEY, first_name VARCHAR(50), last_name VARCHAR(50), job_title VARCHAR(100)):
+    desc: Create tables in the database
+    tags: [sql]
+    notes:
+      - sql: | #sql
+          CREATE TABLE employees (
+            employee_id INT PRIMARY KEY,
+            first_name VARCHAR(50),
+            last_name VARCHAR(50),
+            job_title VARCHAR(100)
+          );
+  INSERT INTO employees (employee_id, first_name, last_name, job_title) VALUES (1, 'John', 'Doe', 'Frontend Developer'):
+    desc: Used to insert new records in a table
+    tags: [sql]
+    notes:
+      - sql: | # sql
+          INSERT INTO employees (employee_id, first_name, last_name, job_title)
+          VALUES (1, 'John', 'Doe', 'Frontend Developer');
+  UPDATE employees SET job_title = 'Senior Frontend Developer' WHERE employee_id = 1:
+    desc: Modify the existing records in a table
+    tags: [sql]
+    notes:
+      - sql: | #sql
+          UPDATE employees SET job_title = 'Senior Frontend Developer' WHERE employee_id = 1;
+  DELETE FROM employees WHERE employee_id = 1:
+    desc: Delete existing records in a table
+    tags: [sql]
+    notes:
+      - sql: | #sql
+          DELETE FROM employees WHERE employee_id = 1;
+  SELECT with INNER and LEFT JOIN:
+    desc: Use INNER JOIN and LEFT JOIN to combine rows from two or more tables based on a related column between them
+    tags: [sql]
+    notes:
+      - sql: | #sql
+          SELECT
+              t1.id AS customer_id,
+              t2.document_owner AS customer_card_document_owner,
+              t2.id AS customer_card_id,
+              t2.last4 AS customer_card_last4,
+              t2.kind AS customer_card_kind,
+              t2.flag AS customer_card_flag,
+              t2.iin AS customer_card_iin,
+              t2.default AS customer_card_default,
+              t3.credential_key AS ingenico_card_credential_key,
+              t3.token AS ingenico_card_token,
+              t2.created_at AS customer_card_created_at,
+              t2.updated_at AS customer_card_updated_at
+
+          FROM `customer` t1
+
+          -- INNER JOIN ensures to retrieve only customer_cards associated with customers and ingenico_card entries
+          INNER JOIN `customer_card` t2 ON t2.customer_id = t1.id
+          INNER JOIN `ingenico_card` t3 ON t3.customer_card_id = t2.id
+
+          -- LEFT JOIN to identify customer_cards not present in cybersource_card
+          LEFT JOIN `cybersource_card` t4 ON t4.customer_card_id = t2.id
+
+          WHERE t2.cancelled_at IS NULL
+          -- Filters for customer_cards that are not present in cybersource_card
+          AND t4.customer_card_id IS NULL
+
+          ORDER BY t1.id, t2.last4;
+
+  # libsql | https://turso.tech/libsql
+  brew install libsql:
+    desc: Fork of SQLite that is both Open Source, and Open Contributions
+    tags: [db, sqlite]
+    links:
+      - https://turso.tech/libsql
+      - TypeScript/JavaScript client API for libSQL: https://github.com/tursodatabase/libsql-client-ts
+  docker run --name libsql -v $(HOME)/.local/state/sqld:/var/lib/sqld -p 8080:8080 -ti -e SQLD_NODE=primary --platform linux/amd64 ghcr.io/tursodatabase/libsql-server:latest-arm:latest:
+    desc: Run libsql server in a Docker container
+    tags: [db, sqlite]
+    links: [
+      https://github.com/tursodatabase/libsql/blob/main/docs/DOCKER.md,
+      https://github.com/tursodatabase/libsql/blob/main/docs/DOCKER.md#docker-compose
+    ]
+    notes:
+      - dockercompose: | #dockercompose
+          services:
+            db:
+              image: ghcr.io/tursodatabase/libsql-server:latest-arm:latest
+              platform: linux/amd64
+              ports:
+                - "8080:8080"
+                - "5001:5001"
+              # environment:
+              #   - SQLD_NODE=primary
+              volumes:
+                - $(HOME)/.local/state/sqld:/var/lib/sqld
+              restart: unless-stopped
+
+  # https://surrealdb.com | Native, open-source, multi-model database
+  brew install surrealdb/tap/surreal:
+    desc: Install SurrealDB via Homebrew
+    tags: [db, nosql]
+    links: [https://surrealdb.com/install]
+  curl -sSf https://install.surrealdb.com | sh:
+    desc: Install SurrealDB on Linux
+    tags: [db, nosql]
+    links: [https://surrealdb.com/install]
+  docker run --rm --pull always -p 8000:8000 surrealdb/surrealdb:latest start:
+    desc: Run SurrealDB via Docker
+    tags: [db, nosql]
+    links: [https://surrealdb.com/install]

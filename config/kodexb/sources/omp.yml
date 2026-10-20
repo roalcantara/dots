@@ -1,0 +1,174 @@
+bookmarks:
+  omp.sh:
+    desc: OMP - Oh My Pi - Free Terminal Agent
+    tags: [omp, ai, harness, agent]
+    links:
+      - This Free Terminal Agent Made Me Delete Claude Code: https://youtu.be/wNw9fKErhdg
+      - Is This The Best Agent Harness?!: https://youtu.be/jcCPUcS4yzs
+    notes:
+      - yml: | #yaml
+          setup:
+            mcp:
+              autodetect:
+                sources:
+                  - ~/.claude.json
+                  - ~/.codex/config.toml
+          mcp:
+            Project level (~/Work/bun/flux/.omp/mcp.json): gortex ● connected [stdio]
+            Claude Code Marketplace Omp: (~/.omp/plugins/cache/plugins/claude-plugins-official
+            OpenAI Codex (~/Work/bun/flux/.codex/config.toml): code-review-graph ● connected
+            Claude Code Marketplace: (~/.claude/plugins/cache/claude-plugins-official
+            Claude Code (~/.claude.json): MCP_DOCKER ○ not connected | stitch ● connected
+            OpenAI Codex (~/.codex/config.toml): node_repl ● connected
+          plugins:
+            command:
+              - omp plugin install|uninstall|list|link|doctor|features|config|enable|disable|marketplace|discover|upgrade
+              - omp plugin list
+              - omp plugin install superpowers@claude-plugins-official
+              - omp plugin doctor superpowers@claude-plugins-official
+              - omp plugin features superpowers@claude-plugins-official
+              - omp plugin enable superpowers@claude-plugins-official
+              - omp plugin disable superpowers@claude-plugins-official
+              - omp plugin uninstall superpowers@claude-plugins-official
+            active:
+              - omp plugin uninstall superpowers@claude-plugins-official && omp plugin uninstall gopls-lsp@claude-plugins-official && omp plugin uninstall lua-lsp@claude-plugins-official && omp plugin uninstall pr-review-toolkit@claude-plugins-official && omp plugin uninstall ruby-lsp@claude-plugins-official && omp plugin uninstall semgrep@claude-plugins-official && omp plugin uninstall skill-creator@claude-plugins-official && omp plugin uninstall typescript-lsp@claude-plugins-official
+            more:
+              - apollo-skills@claude-plugins-official
+              - atomic-agents@claude-plugins-official
+              - aws-serverless@claude-plugins-official
+              - aws-startup-advisor@claude-plugins-official
+              - claude-code-setup@claude-plugins-official
+              - claude-md-management@claude-plugins-official
+              - code-simplifier@claude-plugins-official
+              - codspeed@claude-plugins-official
+              - databases-on-aws@claude-plugins-official
+              - deploy-on-aws@claude-plugins-official
+              - desktop-commander@claude-plugins-official
+              - firebase@claude-plugins-official
+              - firestore-native@claude-plugins-official
+              - migration-to-aws@claude-plugins-official
+              - mongodb@claude-plugins-official
+              - playwright@claude-plugins-official
+              - ralph-loop@claude-plugins-official
+      - md: | #markdown
+          # Oh My Pi (OM) - Free Terminal Agent
+
+          > *Oh My Pi* (*OM*) is an open-source terminal coding agent that functions as a fork of *Pi*.
+          > It focuses on performance and workflow integration, offering several distinct advantages over other coding agents.
+
+          ### KEY FEATURES AND HIGHLIGHTS
+
+          - **Native Multi-Platform Support:**
+            - Works natively on *macOS*, *Linux*, and *Windows* without requiring *WSL*.
+
+          - **Unified Configuration:**
+            - Automatically detects and imports rules, skills, and *MCP* server definitions from other tools like *Claude Code*, *Cursor*, *Copilot*, *Gemini*, and more without manual conversion.
+
+          - **Subscription Reuse:**
+            - Allows sign-in with existing coding plan subscriptions (e.g., *Claude*) to bill against the plan rather than individual per-token API pricing.
+
+          - **Flexible Model Roles:**
+            - Users can assign different models to specific roles and cycle through them mid-session
+            - *default* (Sonic) for general coding
+            - *small* for subagent fan-out (DeepSeek)
+            - *slow* for heavy reasoning (Opus)
+            - *plan* mode (Opus)
+
+          - **Rotate Keys, Fall Back:**
+            - Multiple API keys for one provider
+            - Omp rotates through them automatically
+            - 429 errors are handled with built-in back-off and fallback chains - the rest of the turn hands off your backup model automatically.
+            - Multiple API keys can be stacked and rotated automatically, with built-in back-off and fallback chains to handle *429* errors.
+
+          - **Advanced Editing System:**
+            - Hashline: Uses content hashes for code edits rather than retyping full files, which significantly reduces token usage and prevents formatting errors.
+
+          - **LSP Integration:**
+            - Includes 14 language server operations for refactoring, symbol tracking, and diagnostics, allowing the agent to understand code as an IDE does.
+
+          - **Native Debugger Support:**
+            - Supports 28 debug adapter protocol operations, allowing it to attach to running processes (e.g., *Delve*, *Debuggy*, *LLDB*) to resolve deadlocks and inspect memory.
+
+          - **Advanced Workflow Tools:**
+            - Time-traveling stream rules
+            - Advisor mode for oversight
+            - `/review` - reviewer sub-agents with veredict
+            - `/collab` - live collaboration
+            - Hindsight: local memory layer
+
+          ### TECHNICAL ADVANTAGES
+
+          - **Rust Internals:**
+            - Unlike other agents that shell out to external binaries, *OM* uses a 55,000-line *Rust* core.
+            - Tools like *Ripgrep*, file walking, and a vendored shell (*Brush*) are compiled directly into the binary, resulting in faster performance and no dependency on external Unix binaries.
+
+          - **Context Efficiency:**
+            - Uses a *Tree-sitter* powered summarizer to pull structural snippets instead of dumping entire file contents into the context window.
+
+          - **Resilient Fallbacks:**
+            - Automatically rotates through multiple stacked API keys and handles *429* errors with built-in back-off and fallback chains.
+      - md: | #markdown
+          ### NEXT STEPS
+
+          - [ ] Study/Learn/Extract https://youtu.be/wNw9fKErhdg
+          - [ ] Study/Learn/Extract Next omp video
+          - [ ] Plan `~/Work/bun/flux`
+      - md: | #markdown
+          ### SETTINGS
+
+          - `/settings`:
+              - Apparence
+              - Model
+              - Interaction
+                - Input
+                - Approvals
+                - Notifications
+                - Speech
+                - Collab
+                - Magic Keywords
+                - Startup & Updates
+                - Power (MacOs)
+                - Agent
+                - Git
+              - Context
+              - Memory
+              - Files
+                - Editing
+                - Reading
+                - Read Summaries
+                - LSP: true
+                  - Lazy LSP Startup: true
+                  - Format on Write: false
+                  - Diagnostics on Write: true
+                  - Diagnostics on Edit: false
+                  - Deduplicate Diagnostics: true
+              - Shell
+              - Tools
+              - Tasks
+              - Providers
+              - Plugins
+      - md: | #markdown
+          # IS THIS THE BEST AGENT HARNESS?
+
+          > *Oh My Pi* (OM) is a feature-rich, "batteries-included" coding agent harness built upon the minimal *Pi* harness.
+          > It is designed to be a complete, opinionated coding environment with an IDE "wired in."
+
+          ### KEY FEATURES AND HIGHLIGHTS
+          - **Config**:
+              - Automatically detects and imports rules, skills, and *MCP* server definitions from other tools like *Claude Code*, *Cursor*, *Copilot*, *Gemini*, and more without manual conversion.
+          - **Hashline Editing:** A robust editing approach that uses unique hash identifiers for lines of code rather than simple string matching, leading to better accuracy and token efficiency.
+          - **Built-in LSP:** Supports workspace-wide refactoring (renaming variables, functions, or files) by understanding imports and project structure, rather than just performing superficial text replacements.
+          - **Native Debugger:** Utilizes *debugpy* to inject into processes, allowing the agent to set breakpoints, inspect variables, and step through code to diagnose runtime issues like the "zero division error" mentioned.
+          - **Collaboration & Remote Control:** Generates QR codes or links to open a session in a browser, enabling cross-device coding or collaborative sessions.
+          - **Voice Interaction:**
+              - **Real-time Voice Mode:** Uses *Codeex* for back-and-forth conversational coding.
+              - **Voice Input:** Supports speech-to-text (using local models like Nvidia) and text-to-speech (via *Kakoro*).
+          - **Browser Tool:** Can launch a headless browser instance to scrape the web or perform complex web-based tasks instead of relying solely on standard web search.
+          - **Advanced Logic Features:**
+              - **Time-Traveling Stream Rules:** Triggers rules based on regex matches, avoiding the need to clutter the LLM context window.
+              - **Advisor Models:** Allows a secondary model to oversee or check the work of the primary agent.
+              - **Built-in Binaries:** Includes native tools like *ripgrep*, *grep*, and *find* directly in the binary, improving cross-platform compatibility (including Windows).
+          - **Plugin Ecosystem:** Inherits the plugin ecosystem of the base *Pi* harness, allowing users to install or uninstall extensions via simple commands (e.g., `om install`).
+          - **User Experience:**
+              - **Configuration:** Offers extensive settings, including an "always ask" mode for tool approval to prevent autonomous agent errors.
+              - **Persistence:** Automatically detects and respects existing project configuration files (e.g., *claud.md* or other IDE configs) in the workspace.

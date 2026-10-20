@@ -1,0 +1,525 @@
+# | Modifier     | Keys produced                                             | Level |
+# | ------------ | --------------------------------------------------------- | :---: |
+# | None         | Lowercase letters, numbers, etc                           |   1   |
+# | Shift        | Uppercase letters, symbols printed on keyboard, etc       |   2   |
+# | AltGr        | Extra symbols not printed on the keyboard, some dead keys |   3   |
+# | AltGr-Shift  | Even more symbols, more dead keys                         |   4   |
+# | Shift+Ctrl+U | Unicode composition                                       |   5   |
+
+# | SYMBOL | UNICODE | COMMAND         | TYPE            |
+# | :----: | :-----: | --------------- | --------------- |
+# |   ^    | U+005E  | Control         | Modifier keys   |
+# |   ⇧    | U+21E7  | Shift           | Modifier keys   |
+# |   ❖    | U+2726  | Super           | Modifier keys   |
+# |   ⌘    | U+2318  | Command         | Modifier keys   |
+# |   ❖    | U+229E  | Win             | Modifier keys   |
+# |   ⎇   | U+2387  | Alt             | Modifier keys   |
+# |   ⌥    | U+2325  | AltGr           | Modifier keys   |
+# |   ⌥    | U+2325  | Option          | Modifier keys   |
+# |   ✦    | U+2726  | Hyper           | Modifier keys   |
+# |   ◆    | U+25C6  | Meta            | Modifier keys   |
+# |   ⇪    | U+21EA  | Caps lock       | Lock key        |
+# |   ↵    | U+21B5  | Enter           | Editing         |
+# |   ⌫    | U+232B  | Backspace       | Editing         |
+# |   ⌦    | U+2326  | Delete          | Editing         |
+# |   ⇥    | U+21E5  | Tab             | Editing         |
+# |   ⎀    | U+2380  | Insert          | Editing         |
+# |   ␣    | U+2423  | Space bar       | Editing         |
+# |   ⇱    | U+21F1  | Home            | Navigation keys |
+# |   ⇲    | U+21F2  | End             | Navigation keys |
+# |   ←    | U+2190  | Arrow key left  | Navigation keys |
+# |   ↑    | U+2191  | Arrow key up    | Navigation keys |
+# |   ↓    | U+2193  | Arrow key down  | Navigation keys |
+# |   →    | U+2192  | Arrow key right | Navigation keys |
+# |   ⎋    | U+238B  | Escape          | Navigation keys |
+# |   ⎋    | U+238B  | Escape          | Navigation keys |
+# |   ⎋    | U+238B  | Escape          | Navigation keys |
+# |   ⎋    | U+238B  | Escape          | Navigation keys |
+# |   ⇞    | U+21DE  | Page Up         | Navigation keys |
+# |   ⇟    | U+21DF  | Page Down       | Navigation keys |
+
+legacy:
+  zsh:
+    ⌥ c:
+      desc: Fuzzy find directory
+      tags: [search, file, fzf]
+    ⌃ r:
+      desc: Reverse search history
+      tags: [search, history, fzf]
+    ⌃ t:
+      desc: Fuzzy find file
+      tags: [search, file, fzf]
+    ⌥ f:
+      desc: Move cursor to next word (forward)
+      tags: [navigation]
+    ⌥ b:
+      desc: Move cursor to previous word (backwards)
+      tags: [navigation]
+    ⌃ xx:
+      desc: Toggle between the start of the line and the current cursor position
+      tags: [navigation]
+    ⌃ x,e:
+      desc: Open the current command line in your default editor
+      tags: [editing, command]
+    ⌃ k:
+      desc: Cut (delete) text from the current cursor position until the end of the line
+      tags: [editing, delete]
+    ⌃ u:
+      desc: delete whole line
+      tags: [editing, delete]
+    ⌥ w:
+      desc: Delete text from the current cursor position to the beginning of the word
+      tags: [editing, delete]
+    ⌥ l:
+      desc: Lowercase word
+      tags: [editing, transform]
+    ⌥ u:
+      desc: Uppercase word
+      tags: [editing, transform]
+    ⌃ w:
+      desc: Cut the previous word, starting from the current cursor position
+      tags: [editing, delete]
+    ⌥ ⌫:
+      desc: Delete previous word, preceding the current cursor position
+      tags: [editing, delete]
+    ⌥ d:
+      desc: delete next word, following the current cursor position
+      tags: [editing, delete]
+    ⌥ .:
+      desc: Previous command's last argument
+      tags: [history, command, term]
+    \!$:
+      desc: retrieves the last argument from the previous command
+      tags: [history, command, term]
+    \!*:
+      desc: retrieves all arguments from the previous command
+      tags: [history, command, term]
+    ⌥ t:
+      desc: Swap the last two characters before the cursor (typo)
+      tags: [editing, text]
+    ⌥ r:
+      desc: Undo all changes made to the current command line
+      tags: [editing, undo, term]
+    ⌃ l:
+      desc: Clear screen
+      tags: [term, ui]
+    ⌃ c:
+      desc: Send an Interrupt/Kill signal to the currently running command
+      tags: [process, term, control]
+    ⌃ d:
+      desc: Close Current Shell
+      tags: [term, process, control]
+    ⌃ z:
+      desc: Suspends the currently running foreground job and moves it to the background
+      tags: [process, term, control]
+    fg:
+      desc: Bring the most recent background job to the foreground
+      tags: [process, term, control]
+    ⌃ s:
+      desc: Retrieves the next most recent command from your history
+      tags: [history, command, term]
+    ^abc^def:
+      desc: Replaces the first occurrence of "abc" in the previous command with "def"
+      tags: [history, command, substitution]
+    ⌃ x,v:
+      desc: Switch to vi mode in Zsh
+      tags: [vi-mode, term]
+    set -o vi:
+      desc: Enables the vi mode for the current session
+      tags: [vi-mode, term]
+    cd ↵:
+      desc: Go to HOME
+      tags: [navigation, directory]
+    cd ⇥:
+      desc: Fuzzy find directory
+      tags: [search, directory, fzf]
+  neovim:
+    ⌘ p:
+      desc: Search files by name
+      tags: [search, file, navigation]
+    ⇧ ⌘ p:
+      desc: Show command palette
+      tags: [command, ui, palette]
+    ⌘ \:
+      desc: Toggle left side bar
+      tags: [ui, view, sidebar]
+    ⌥ ⌘ ←:
+      desc: Move to buffer at left
+      tags: [navigation, buffer, window]
+    ⌥ ⌘ →:
+      desc: Move to buffer at right
+      tags: [navigation, buffer, window]
+    ⌘ a:
+      desc: Select All
+      tags: [selection, text]
+    ⌘ n:
+      desc: New File
+      tags: [file, create]
+    ⌘ ↑:
+      desc: Go to the top of the file
+      tags: [navigation, file]
+    ⌘ ↓:
+      desc: Go to the bottom of the file
+      tags: [navigation, file]
+    ⌃ a:
+      desc: Move to beginning of line
+      tags: [navigation]
+    ⌃ e:
+      desc: Move to end of line
+      tags: [navigation]
+    ⌘ x:
+      desc: Cut selection to clipboard
+      tags: [editing, clipboard, text]
+    ⌘ c:
+      desc: Copy selection to clipboard
+      tags: [editing, clipboard, text]
+    ⌘ v:
+      desc: Paste the contents from Clipboard
+      tags: [editing, clipboard, text]
+    ⌘ z:
+      desc: Undo the previous command
+      tags: [editing, undo]
+    ⌘ y:
+      desc: Redo the previous command
+      tags: [editing, redo]
+    ⌥ ↓:
+      desc: Move Line Down
+      tags: [editing, move]
+    ⌥ ↑:
+      desc: Move Line Up
+      tags: [editing, move]
+    ⌘ ←:
+      desc: Move to BOL
+      tags: [navigation]
+    ⌘ →:
+      desc: Move to EOL
+      tags: [navigation]
+    ⌘ f:
+      desc: Find in files
+      tags: [search, file]
+    ⌘ ⇧ f:
+      desc: Find in project
+      tags: [search, project]
+    ⌘ .:
+      desc: Code actions
+      tags: [lsp, code, actions]
+    ⌘ d:
+      desc: Toggle Diagnostics
+      tags: [lsp, diagnostics, ui]
+    ⇧ ⌘ e:
+      desc: Toggle Errors
+      tags: [lsp, diagnostics, ui]
+    ⌘ i:
+      desc: Go to Definition
+      tags: [lsp, navigation, code]
+    ⌘ ⌥ i:
+      desc: Go to Implementation
+      tags: [lsp, navigation, code]
+    ⌘ ⌥ d:
+      desc: Go to Declaration
+      tags: [lsp, navigation, code]
+    ⌘ ⌥ t:
+      desc: Go to Type Definition
+      tags: [lsp, navigation, code]
+    ⌘ ⌥ w:
+      desc: Go to Workspace Symbols
+      tags: [lsp, navigation, symbol]
+    ⌘ T:
+      desc: Go to Symbol in File
+      tags: [lsp, navigation, symbol]
+    ⌘ ⇧ K:
+      desc: Show Hover Information
+      tags: [lsp, ui]
+    ⌘ ⇧ ␣:
+      desc: Trigger Parameter Hints
+      tags: [lsp, hint, ui]
+    ⌘ ⌥ r:
+      desc: Find References
+      tags: [lsp, search, code]
+    ⌘ ⌥ ↵:
+      desc: Rename Symbol
+      tags: [lsp, editing, code]
+    ⌘ ⌃ f:
+      desc: Format Document
+      tags: [editing, format, code]
+    ⌘ ⇧ ]:
+      desc: Next Diagnostic
+      tags: [lsp, navigation, diagnostics]
+    ⌘ ⇧ [:
+      desc: Previous Diagnostic
+      tags: [lsp, navigation, diagnostics]
+    ⌘ [:
+      desc: Fold
+      tags: [view, folding, code]
+    ⌥ ⌘ [:
+      desc: Fold All
+      tags: [view, folding, code]
+    ⌘ ]:
+      desc: Unfold
+      tags: [view, folding, code]
+    ⌥ ⌘ ]:
+      desc: Unfold All
+      tags: [view, folding, code]
+    ⌘ /:
+      desc: Toggle comment line
+      tags: [editing, comment, code]
+    ⌘ w:
+      desc: Close Editor
+      tags: [window, ui]
+  vscode:
+    ⌥ m:
+      desc: Toggle Main Menu
+      tags: [ui, menu]
+    ⇧ ⌘ p:
+      desc: Show command palette
+      tags: [command, ui, palette]
+    ⌘ \:
+      desc: Toggle left side bar
+      tags: [ui, view, sidebar]
+    ⌥ ⌘ ←:
+      desc: Go to tab at left
+      tags: [navigation, tab, window]
+    ⌥ ⌘ →:
+      desc: Go to tab at right
+      tags: [navigation, tab, window]
+    ⌘ p:
+      desc: Search files by name
+      tags: [search, file, navigation]
+    ⌘ a:
+      desc: Select all
+      tags: [selection, text]
+    ⌘ n:
+      desc: New File
+      tags: [file, create]
+    ⌘ ↑:
+      desc: Go to the top of the file
+      tags: [navigation, file]
+    ⌘ ↓:
+      desc: Go to the bottom of the file
+      tags: [navigation, file]
+    ⌃ a:
+      desc: Move to beginning of line
+      tags: [navigation]
+    ⌃ e:
+      desc: Move to end of line
+      tags: [navigation]
+    ⌘ x:
+      desc: Cut selection to clipboard
+      tags: [editing, clipboard, text]
+    ⌘ c:
+      desc: Copy selection to clipboard
+      tags: [editing, clipboard, text]
+    ⌘ v:
+      desc: Paste
+      tags: [editing, clipboard, text]
+    ⌘ z:
+      desc: Undo
+      tags: [editing, undo]
+    ⌘ y:
+      desc: Redo
+      tags: [editing, redo]
+    ⌥ ↓:
+      desc: Move Line Down
+      tags: [editing, move]
+    ⌥ ↑:
+      desc: Move Line Up
+      tags: [editing, move]
+    ⌘ ←:
+      desc: Move to BOL
+      tags: [navigation]
+    ⌘ →:
+      desc: Move to EOL
+      tags: [navigation]
+    ⌘ f:
+      desc: Find in files
+      tags: [search, file]
+    ⌘ ⇧ f:
+      desc: Search in files
+      tags: [search, file]
+    ⌘ .:
+      desc: Code actions
+      tags: [lsp, code, actions]
+    ⌘ d:
+      desc: Toggle Problems
+      tags: [lsp, diagnostics, ui]
+    ⌘ i:
+      desc: Go to Definition
+      tags: [lsp, navigation, code]
+    ⌘ ⌥ i:
+      desc: Go to Implementation
+      tags: [lsp, navigation, code]
+    ⌘ ⌥ d:
+      desc: Go to Declaration
+      tags: [lsp, navigation, code]
+    ⌘ ⌥ t:
+      desc: Go to Type Definition
+      tags: [lsp, navigation, code]
+    ⌘ ⌥ w:
+      desc: Go to Workspace Symbols
+      tags: [lsp, navigation, symbol]
+    ⌘ T:
+      desc: Go to Symbol in File
+      tags: [lsp, navigation, symbol]
+    ⌘ ⇧ K:
+      desc: Show Hover Information
+      tags: [lsp, ui]
+    ⌘ ⇧ ␣:
+      desc: Trigger Parameter Hints
+      tags: [lsp, hint, ui]
+    ⌘ ⌥ r:
+      desc: Find References
+      tags: [lsp, search, code]
+    ⌘ ⌥ ↵:
+      desc: Rename Symbol
+      tags: [lsp, editing, code]
+    ⌘ ⌃ f:
+      desc: Format Document
+      tags: [editing, format, code]
+    ⌘ ⇧ ]:
+      desc: Next Diagnostic Problem
+      tags: [lsp, navigation, diagnostics]
+    ⌘ ⇧ [:
+      desc: Previous Diagnostic Problem
+      tags: [lsp, navigation, diagnostics]
+    ⌘ [:
+      desc: Fold
+      tags: [view, folding, code]
+    ⌥ ⌘ [:
+      desc: Fold All
+      tags: [view, folding, code]
+    ⌘ ]:
+      desc: Unfold
+      tags: [view, folding, code]
+    ⌥ ⌘ ]:
+      desc: Unfold All
+      tags: [view, folding, code]
+    ⌘ ⌃ g:
+      desc: Replace All Occurrences
+      tags: [editing, search, text]
+    ⌘ ⌃ i:
+      desc: Copilot | Inline Chat
+      tags: [ai, assistant, code]
+    ⌘ ⌃ z:
+      desc: Toggle Zen Mode
+      tags: [view, ui, zen]
+    ⌘ /:
+      desc: Toggle comment line
+      tags: [editing, comment, code]
+    ⌘ w:
+      desc: Close Editor
+      tags: [window, ui]
+  ghostty:
+    # Ghostty Hyper2 layer (Karabiner): hold F3
+    'F3 ←': 'Change focus to pane left'
+    'F3 →': 'Change focus to pane right'
+    'F3 ↑': 'Change focus to pane up'
+    'F3 ↓': 'Change focus to pane down'
+    'F3 ⇧ ←': 'Split pane to left'
+    'F3 ⇧ →': 'Split pane to right'
+    'F3 ⇧ ↑': 'Split pane to up'
+    'F3 ⇧ ↓': 'Split pane to down'
+    'F3 [': 'Change focus to pane previous'
+    'F3 ]': 'Change focus to pane next'
+    'F3 w': 'Close current pane'
+    'F3 q': 'Quit Ghostty (all windows)'
+    'F3 ,': 'Reload Ghostty config'
+    'F3 i': 'Toggle inspector'
+    'F3 t': 'Toggle quick terminal'
+    'F3 p': 'Toggle command palette'
+    'F3 n': 'New window'
+    'F3 ⏎': 'Toggle fullscreen'
+  amethyst:
+    # Raycast Hyper on Right Command: ⌘⌃⌥
+    'R⌘ ←': 'Focus next window (clockwise)'
+    'R⌘ →': 'Focus previous window (counter-clockwise)'
+    'R⌘ ↑': 'Focus previous screen'
+    'R⌘ ↓': 'Focus next screen'
+    'R⌘ [': 'Cycle layout backward'
+    'R⌘ ]': 'Cycle layout forward'
+    'R⌘ ⏎': 'Swap focused window with main'
+    'R⌘ ⇧ ←': 'Swap with previous window'
+    'R⌘ ⇧ →': 'Swap with next window'
+    'R⌘ ⇧ ↑': 'Focus main window'
+    'R⌘ ⇧ ↓': 'Reevaluate windows'
+    'R⌘ ⇧ ,': 'Throw focused window to space left'
+    'R⌘ ⇧ .': 'Throw focused window to space right'
+    'R⌘ ⇧ [': 'Move focused window to previous screen'
+    'R⌘ ⇧ ]': 'Move focused window to next screen'
+
+shortcuts:
+  cursor: # ← entry.key AND app slug for all bindings inside
+    desc: 'Cursor keymap'
+    platform: any # default for all bindings
+    tags: [editor, ide]
+    links:
+      - VS Code Keybindings docs: https://code.visualstudio.com/docs/getstarted/keybindings
+    bindings:
+      - id: go-to-file
+        chord: '⌘P' # accepts glyphs, words, or '+'-joined
+        scope: local
+        action: 'Go to File'
+        group: Navigation
+      - id: command-palette
+        chord: '⌘⇧P'
+        scope: local
+        action: 'Show All Commands'
+        group: Navigation
+      - id: open-keymap
+        chord:
+          macos: '⌘K ⌘S' # per-platform override (sequence)
+          linux: 'ctrl+k ctrl+s'
+        scope: local
+        action: 'Open Keyboard Shortcuts'
+
+cheats:
+  List of keyboard unicode symbols:
+    desc: List of keyboard unicode symbols
+    tags: [keyboard, unicode]
+    notes:
+      - md: |
+          | Modifier     | Keys produced                                             | Level |
+          | ------------ | --------------------------------------------------------- | :---: |
+          | None         | Lowercase letters, numbers, etc                           |   1   |
+          | Shift        | Uppercase letters, symbols printed on keyboard, etc       |   2   |
+          | AltGr        | Extra symbols not printed on the keyboard, some dead keys |   3   |
+          | AltGr-Shift  | Even more symbols, more dead keys                         |   4   |
+          | Shift+Ctrl+U | Unicode composition                                       |   5   |
+      - md: |
+          | SYMBOL | UNICODE | COMMAND         | TYPE            |
+          | :----: | :-----: | --------------- | --------------- |
+          |   ^    | U+005E  | Control         | Modifier keys   |
+          |   ⇧    | U+21E7  | Shift           | Modifier keys   |
+          |   ❖    | U+2726  | Super           | Modifier keys   |
+          |   ⌘    | U+2318  | Command         | Modifier keys   |
+          |   ❖    | U+229E  | Win             | Modifier keys   |
+          |   ⎇   | U+2387  | Alt             | Modifier keys   |
+          |   ⌥    | U+2325  | AltGr           | Modifier keys   |
+          |   ⌥    | U+2325  | Option          | Modifier keys   |
+          |   ✦    | U+2726  | Hyper           | Modifier keys   |
+          |   ◆    | U+25C6  | Meta            | Modifier keys   |
+          |   ⇪    | U+21EA  | Caps lock       | Lock key        |
+          |   ↵    | U+21B5  | Enter           | Editing         |
+          |   ⌫    | U+232B  | Backspace       | Editing         |
+          |   ⌦    | U+2326  | Delete          | Editing         |
+          |   ⇥    | U+21E5  | Tab             | Editing         |
+          |   ⎀    | U+2380  | Insert          | Editing         |
+          |   ␣    | U+2423  | Space bar       | Editing         |
+          |   ⇱    | U+21F1  | Home            | Navigation keys |
+          |   ⇲    | U+21F2  | End             | Navigation keys |
+          |   ←    | U+2190  | Arrow key left  | Navigation keys |
+          |   ↑    | U+2191  | Arrow key up    | Navigation keys |
+          |   ↓    | U+2193  | Arrow key down  | Navigation keys |
+          |   →    | U+2192  | Arrow key right | Navigation keys |
+          |   ⎋    | U+238B  | Escape          | Navigation keys |
+          |   ⎋    | U+238B  | Escape          | Navigation keys |
+          |   ⎋    | U+238B  | Escape          | Navigation keys |
+          |   ⎋    | U+238B  | Escape          | Navigation keys |
+          |   ⇞    | U+21DE  | Page Up         | Navigation keys |
+          |   ⇟    | U+21DF  | Page Down       | Navigation keys |
+    links:
+      - List of keyboard unicode symbols: https://cheatsheetfactory.geekyhacker.com/others/keyboard-symbols
+      - ISO/IEC 9995: https://en.wikipedia.org/wiki/ISO/IEC_9995
+      - Compose key: https://en.wikipedia.org/wiki/Compose_key
+      - Modifier key: https://en.wikipedia.org/wiki/Modifier_key
+      - U+2387 - Alternative Key Symbol: https://unicode-table.com/en/2387
+      - U+2325 - Option Key: https://unicode-table.com/en/2325

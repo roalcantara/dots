@@ -1,0 +1,141 @@
+bookmarks:
+  https://mise.jdx.dev:
+    desc: Like asdf (or nvm or pyenv but for any language) it manages dev tools like node, python, cmake, terraform, and hundreds more.
+    tags: [devops, package-manager, mise]
+    links: [https://mise.jdx.dev/dev-tools]
+commands:
+  # TOOLS | https://mise.jdx.dev/dev-tools
+  # Installs development tools and selects their versions for each project
+  mise use:
+    desc: Select or change the versions of tools for the current project with interactive selector
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/use.html]
+  mise use node@24 python@3.13:
+    desc: Add or change a project's tool version
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/use.html]
+  mise use --global node@24:
+    desc: Set the global version of Node.js
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/use.html]
+  mise use --postinstall "mbx setup --defaults" mr-boxington:
+    desc: Run a post-install command after setting the tool versions
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/use.html]
+  mise use --tool-option mr_boxington=true rust mr-boxington:
+    desc: enable a Rust tool option while installing Rust and mbx
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/use.html]
+  mise use -g --pin node@20:
+    desc: Pin the global version of Node.js to 20
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/use.html]
+  mise use --env local node@20:
+    desc: writes mise.local.toml (preserving .mise.local.toml if it already exists)
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/use.html]
+  mise use --env staging node@20:
+    desc: writes mise.staging.toml (loaded with MISE_ENV=staging)
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/use.html]
+  mise ls --current:
+    desc: Show tools selected by the current configuration
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/ls.html]
+  mise install:
+    desc: Installs everything specified in mise.toml
+    tags: [devops, package-manager, mise]
+    links: [https://mise.jdx.dev/dev-tools]
+  mise update:
+    desc: Update a package with mise
+    tags: [devops, package-manager, mise]
+    links: [https://mise.jdx.dev/dev-tools]
+  mise upgrade:
+    desc: Upgrade a package with mise
+    tags: [devops, package-manager, mise]
+    links: [https://mise.jdx.dev/dev-tools]
+  mise exec -- node --version:
+    desc: Execute a command using the specified versions of tools managed by mise
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/exec.html]
+  mise exec node@24 -- node --version:
+    desc: Try a version without saving it
+    tags: [mise]
+    links: [https://mise.jdx.dev/dev-tools, https://mise.jdx.dev/cli/exec.html]
+
+  mise trust:
+    desc: Trust mise.toml in the current or parent directory
+    tags: [mise]
+    links: [https://mise.jdx.dev/cli/trust.html]
+  mise trust --all:
+    desc: Trust all config files in the current directory and its parents
+    tags: [mise]
+    links: [https://mise.jdx.dev/cli/trust.html]
+  mise trust --untrust:
+    desc: No longer trust this config, will prompt in the future
+    tags: [mise]
+    links: [https://mise.jdx.dev/cli/trust.html]
+  mise trust --show:
+    desc: Show the trusted status of config files from the current directory and its parents. Does not trust or untrust any files.
+    tags: [mise]
+    links: [https://mise.jdx.dev/cli/trust.html]
+  mise clean:
+    desc: Clean a package with mise
+    tags: [mise]
+    links: [https://mise.jdx.dev]
+  mise help:
+    desc: Show help for a command with mise
+    tags: [mise]
+    links: [https://mise.jdx.dev]
+  mise version:
+    desc: Show version of mise
+    tags: [mise]
+    links: [https://mise.jdx.dev]
+  mise activate:
+    desc: Initializes mise in the current shell session. This should go into your shell's rc file or login shell
+    tags: [mise]
+    links: [https://mise.jdx.dev/cli/activate.html]
+
+  mise doctor project:
+    desc: Run the project's diagnostic checks
+    tags: [mise]
+    links: [https://mise.jdx.dev/cli/doctor/project.html#mise-doctor-project, https://mise.jdx.dev/configuration/project-diagnostics.html]
+    notes:
+      - md: | #markdown
+          ## Project diagnostics
+
+          `mise doctor project` runs named checks from your project's configuration and reports every result.
+
+          Use it to check requirements that tool versions alone cannot establish, such as
+          whether a compiler can discover a native library or
+          whether a database accepts connections.
+
+          ```toml
+          [doctor.checks.openssl]
+          description = "OpenSSL development files are discoverable"
+          run = "pkg-config --exists openssl"
+          hint = "Run `mise bootstrap packages apply` to install the declared build dependencies."
+          timeout = "5s"
+          os = ["linux", "macos"]
+
+          [doctor.checks.database]
+          description = "PostgreSQL accepts connections"
+          run = "pg_isready --quiet"
+          hint = "Start the project's services with pitchfork."
+          timeout = "5s"
+          ```
+
+          ```sh
+          mise doctor project
+          mise doctor project --json
+          ```
+
+          Example output:
+
+          ```text
+          PASS database: PostgreSQL accepts connections
+          FAIL openssl: OpenSSL development files are discoverable
+            Command exited with exit status: 1
+            Run `mise bootstrap packages apply` to install the declared build dependencies.
+          Ordinary mise doctor continues to diagnose mise itself; it does not run these checks. Checks do not run automatically when entering a directory or running a task. There are no implicit project checks: declare the requirements you need.
+          ```

@@ -1,0 +1,690 @@
+cheats:
+  useContext | React.js:
+    desc: Acesse o contexto React em componentes funcionais
+    tags: [AVN, react, hooks]
+    notes:
+      - md: | #markdown
+            # TL;DR
+            ## useContext
+
+            > React's createContext provides a way to pass data down the component tree
+            > without having to manually pass props through every level
+            > — a problem commonly known as prop drilling.
+
+            ```jsx
+            import React, { useContext } from 'react';
+
+            const MyContext = React.createContext();
+
+            function MyComponent() {
+              const value = useContext(MyContext);
+              return <p>{value}</p>;
+            }
+            ```
+
+            ## KEY TAKEAWAYS
+
+            - **Solves Prop Drilling**:
+              - Eliminates the need to pass unnecessary props through intermediate layout components.
+            - **Use when**:
+              - Use context for global or structural data such as theme, auth, locale, or app-wide UI state.
+            - **Avoid when**:
+              - Avoid context for local state or frequently changing values in large trees, because consumers re-render when the context value changes.
+      - md: | #markdown
+            # How `createContext` Works
+
+            `createContext` creates a Context object that acts as a global data bus
+             for a specific branch of your React tree. It consists of two main components:
+
+            1. `Provider Component`:
+              - Wraps a group of components and accepts a value prop.
+              - Any child component inside this tree can access this value.
+            2. `useContext Hook (or Consumer)`:
+              - Used inside child components to read the current context value from
+                the nearest matching Provider above it in the tree.
+
+            Whenever the value passed to the Provider changes, React automatically
+            re-renders all child components that consume that context.
+
+            ## THE PROBLEM: Prop Drilling (Without Context)
+
+            Given a simple app where a UserGreeting component needs the user's name,
+            but it is deeply nested inside App, Header, and Nav.
+
+            ```jsx
+            // Without Context: Passing `username` down through every level
+
+            function App() {
+              const username = "Alex";
+              return <Header username={username} />;
+            }
+
+            // Header doesn't use `username`, but has to receive and forward it
+            function Header({ username }) {
+              return (
+                <header>
+                  <Nav username={username} />
+                </header>
+              );
+            }
+
+            // Nav doesn't use `username` either, but forwards it again
+            function Nav({ username }) {
+              return (
+                <nav>
+                  <UserGreeting username={username} />
+                </nav>
+              );
+            }
+
+            // UserGreeting finally uses the data
+            function UserGreeting({ username }) {
+              return <h1>Hello, {username}!</h1>;
+            }
+            ```
+
+            ## THE ISSUE
+
+            Header and Nav are forced to handle username strictly as messengers.
+            This clutter makes components harder to reuse, refactor, and maintain.
+
+            ## THE SOLUTION: Using `createContext`
+
+            > With createContext, intermediate components like Header and
+            > Nav do not need to know about username at all.
+
+            ```jsx
+            import { createContext, useContext } from "react";
+
+            // 1. Create the Context
+            const UserContext = createContext(null);
+
+            function App() {
+              const username = "Alex";
+
+              // 2. Wrap the tree with the Provider and supply the value
+              return (
+                <UserContext.Provider value={username}>
+                  <Header />
+                </UserContext.Provider>
+              );
+            }
+
+            // Header no longer needs `username` props
+            function Header() {
+              return (
+                <header>
+                  <Nav />
+                </header>
+              );
+            }
+
+            // Nav no longer needs `username` props
+            function Nav() {
+              return (
+                <nav>
+                  <UserGreeting />
+                </nav>
+              );
+            }
+
+            // 3. Consume the context directly where it is needed
+            function UserGreeting() {
+              const username = useContext(UserContext);
+              return <h1>Hello, {username}!</h1>;
+            }
+            ```
+  useState | React.js:
+    desc: Adicione o estado React a componentes funcionais
+    tags: [AVN, react, hooks]
+    notes:
+      - md: | #markdown
+          # TL;DR
+          ## useState
+
+          > Adds local state to function components so they can respond to user interaction and other events.
+
+          ```jsx
+          import { useState } from 'react';
+
+          function Counter() {
+            const [count, setCount] = useState(0);
+
+            return (
+              <div>
+                <p>You clicked {count} times</p>
+                <button onClick={() => setCount(count + 1)}>
+                  Click me
+                </button>
+              </div>
+            );
+          }
+          ```
+
+          ## KEY TAKEAWAYS
+
+          - **Stores local component state**:
+            - Perfect for values that change over time and should re-render the UI.
+          - **Use when**:
+            - Use state for inputs, toggles, counters, modal visibility, and other local UI data.
+          - **Avoid when**:
+            - Avoid state for values that can be derived from props or other state.
+  useEffect | React.js:
+    desc: Execute efeitos colaterais em componentes funcionais
+    tags: [AVN, react, hooks]
+    notes:
+      - md: | #markdown
+          # TL;DR
+          ## useEffect
+
+          > Runs side effects after render, such as fetching data, subscribing to events, or syncing with browser APIs.
+
+          ```jsx
+          import { useState, useEffect } from 'react';
+
+          function Example() {
+            const [count, setCount] = useState(0);
+
+            useEffect(() => {
+              document.title = `You clicked ${count} times`;
+
+              return () => {
+                document.title = 'React App';
+              };
+            }, [count]);
+
+            return (
+              <div>
+                <p>You clicked {count} times</p>
+                <button onClick={() => setCount(count + 1)}>
+                  Click me
+                </button>
+              </div>
+            );
+          }
+          ```
+
+          ## KEY TAKEAWAYS
+
+          - **Runs after render**:
+            - Useful for side effects that should happen after the UI is painted.
+          - **Use when**:
+            - Use effects for data fetching, subscriptions, timers, analytics, and browser API synchronization.
+          - **Avoid when**:
+            - Avoid effects for synchronous calculations or state updates that can be handled during render.
+          - **Cleanup matters**:
+            - Return a cleanup function to avoid leaks when the component unmounts or dependencies change.
+  useReducer | React.js:
+    desc: Gerencie estados complexos em componentes React
+    tags: [AVN, react, hooks]
+    notes:
+      - md: | #markdown
+          # TL;DR
+          ## useReducer
+
+          > Handles complex state transitions with a reducer, making updates easier to reason about when state depends on multiple actions.
+
+          ```jsx
+          import { useReducer } from 'react';
+
+          const initialState = { count: 0 };
+
+          function reducer(state, action) {
+            switch (action.type) {
+              case 'increment':
+                return { count: state.count + 1 };
+              case 'decrement':
+                return { count: state.count - 1 };
+              default:
+                throw new Error('Unknown action');
+            }
+          }
+
+          function Counter() {
+            const [state, dispatch] = useReducer(reducer, initialState);
+
+            return (
+              <>
+                Count: {state.count}
+                <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+                <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+              </>
+            );
+          }
+          ```
+
+          ## KEY TAKEAWAYS
+
+          - **Use when**:
+            - Use reducer for coordinated state transitions that depend on several related actions.
+          - **Avoid when**:
+            - Avoid reducer for simple boolean or single-value state that is easier to manage with useState.
+          - **Makes logic predictable**:
+            - Keeps transitions centralized in one reducer function.
+  useRef | React.js:
+    desc: Acesse o nó DOM de um componente React
+    tags: [AVN, react, hooks]
+    notes:
+      - md: | #markdown
+          # TL;DR
+          ## useRef
+
+          > Creates a mutable reference that persists across renders without triggering a re-render.
+
+          ```jsx
+          import { useRef } from 'react';
+
+          function TextInputWithFocusButton() {
+            const inputEl = useRef(null);
+
+            const onButtonClick = () => {
+              inputEl.current?.focus();
+            };
+
+            return (
+              <>
+                <input ref={inputEl} type="text" />
+                <button onClick={onButtonClick}>Focus input</button>
+              </>
+            );
+          }
+          ```
+
+          ## KEY TAKEAWAYS
+
+          - **Stores mutable values**:
+            - Keeps a reference stable between renders.
+          - **Use when**:
+            - Use refs for DOM nodes, timers, mutable instances, and imperative APIs.
+          - **Avoid when**:
+            - Avoid refs for state that should drive UI updates, because they do not trigger re-renders.
+  useMemo | React.js:
+    desc: Memorize valores computados em componentes React
+    tags: [AVN, react, hooks]
+    notes:
+      - md: | #markdown
+          # TL;DR
+          ## useMemo
+
+          > Memoizes a computed value so React can reuse it unless its dependencies change.
+
+          ```jsx
+          import { useMemo } from 'react';
+
+          function computeExpensiveValue(a, b) {
+            return a + b;
+          }
+
+          function MyComponent({ a, b }) {
+            const value = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+            return <p>{value}</p>;
+          }
+          ```
+
+          ## KEY TAKEAWAYS
+
+          - **Optimizes expensive calculations**:
+            - Avoids recomputing the same value on every render.
+          - **Use when**:
+            - Use memo for heavy derived values, memoized lists, and filtered collections.
+          - **Avoid when**:
+            - Avoid memoization for simple computations that are cheap and not repeated often.
+  useCallback | React.js:
+    desc: Memorize funções em componentes React
+    tags: [AVN, react, hooks]
+    notes:
+      - md: | #markdown
+          # TL;DR
+          ## useCallback
+
+          > Memoizes a callback so it can be passed to child components without changing identity on every render.
+
+          ```jsx
+          import { useState, useCallback } from 'react';
+
+          function MyComponent() {
+            const [count, setCount] = useState(0);
+            const increment = useCallback(() => setCount(count + 1), [count]);
+
+            return (
+              <>
+                Count: {count}
+                <button onClick={increment}>Increment</button>
+              </>
+            );
+          }
+          ```
+
+          ## KEY TAKEAWAYS
+
+          - **Memoizes functions**:
+            - Helps keep callback references stable when passed to memoized children.
+          - **Use when**:
+            - Use callback for event handlers and functions passed to memoized child components.
+          - **Avoid when**:
+            - Avoid callback for simple functions that do not affect performance or identity stability.
+  useImperativeHandle | React.js:
+    desc: Personalize o valor retornado por um componente React
+    tags: [AVN, react, hooks]
+    notes:
+      - md: | #markdown
+          # TL;DR
+          ## useImperativeHandle
+
+          > Customizes the instance value exposed to parent components when using a ref.
+
+          ```jsx
+          import { useRef, useImperativeHandle, forwardRef } from 'react';
+
+          const FancyInput = forwardRef(function FancyInput(props, ref) {
+            const inputRef = useRef(null);
+
+            useImperativeHandle(ref, () => ({
+              focus: () => inputRef.current?.focus()
+            }));
+
+            return <input ref={inputRef} />;
+          });
+          ```
+
+          ## KEY TAKEAWAYS
+
+          - **Exposes imperative behavior**:
+            - Useful when a parent needs a custom API from a child component.
+          - **Use when**:
+            - Use imperative handle for custom inputs, rich editors, and browser-like controls that need a focused imperative API.
+          - **Avoid when**:
+            - Avoid imperative handle when props and declarative patterns are enough; it should be used sparingly.
+  useLayoutEffect | React.js:
+    desc: Execute efeitos colaterais após as mudanças no DOM
+    tags: [AVN, react, hooks]
+    notes:
+      - md: | #markdown
+          # TL;DR
+          ## useLayoutEffect
+
+          > Runs synchronously after DOM mutations, before the browser paints, making it suitable for layout measurements and visual adjustments.
+
+          ```jsx
+          import { useLayoutEffect } from 'react';
+
+          function useDocumentTitle(title) {
+            useLayoutEffect(() => {
+              document.title = title;
+            }, [title]);
+          }
+
+          export default useDocumentTitle;
+          ```
+
+          ## KEY TAKEAWAYS
+
+          - **Runs before paint**:
+            - Useful for measurements and updates that should avoid visible flicker.
+          - **Use when**:
+            - Use layout effect for reading layout dimensions, repositioning UI, and syncing with DOM measurements before paint.
+          - **Avoid when**:
+            - Avoid layout effect for most side effects; prefer useEffect when painting can happen normally.
+  Hook Custom | React.js:
+    desc: Extraia lógica de componentes React em funções reutilizáveis
+    tags: [AVN, react, hooks]
+    notes:
+      - md: | #markdown
+          # TL;DR
+          ## Custom Hook
+
+          > Extracts reusable stateful logic into a function so multiple components can share the same behavior.
+
+          ```jsx
+          import { useState, useEffect } from 'react';
+
+          function useDocumentTitle(title) {
+            useEffect(() => {
+              document.title = title;
+            }, [title]);
+          }
+
+          export default useDocumentTitle;
+          ```
+
+          ## KEY TAKEAWAYS
+
+          - **Reuses logic cleanly**:
+            - Lets components share behavior without duplicating code.
+          - **Use when**:
+            - Use custom hooks for shared stateful logic, subscriptions, form handling, and browser API wrappers.
+          - **Avoid when**:
+            - Avoid generic hooks that mix unrelated concerns; keep each hook focused and easy to reason about.
+  Router | React.js:
+    desc: Navegação declarativa
+    tags: [AVN, react, router]
+    notes:
+      - md: | #markdown
+          # TL;DR
+          ## Router
+
+          > React Router enables declarative navigation in single-page applications, letting components render based on the current URL.
+
+          ```jsx
+          import ReactDOM from 'react-dom';
+          import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+
+          function Home() {
+            return <h2>Home Page</h2>;
+          }
+
+          function About() {
+            return <h2>About Page</h2>;
+          }
+
+          function App() {
+            return (
+              <Router>
+                <nav>
+                  <Link to="/">Home</Link>
+                  <Link to="/about">About</Link>
+                </nav>
+
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
+                </Routes>
+              </Router>
+            );
+          }
+
+          ReactDOM.render(<App />, document.getElementById('root'));
+          ```
+
+          ## KEY TAKEAWAYS
+
+          - **Handles app navigation**:
+            - Great for multi-view applications without full page reloads.
+          - **Use when**:
+            - Use a router for dashboards, SPAs, authenticated flows, and nested views.
+          - **Avoid when**:
+            - Avoid a router for very small apps with only one screen, where conditional rendering is simpler.
+  Project Structure > technical folders | React.js:
+    desc: Estrutura de pastas para projetos React
+    tags: [AVN, react, project-structure]
+    links: [React Folder Structure Best Practices: https://robinwieruch.de/react-folder-structure]
+    notes:
+      - md: | #markdown
+          # React Folder Structure Best Practices
+
+          There is no single correct React folder layout.
+          The patterns below are all valid depending on project size, feature count, and how much shared logic you actually need.
+
+          ## TL;DR
+
+          Keep the structure simple and predictable.
+
+          - Put reusable UI in `components/`.
+          - Put shared logic in `hooks/`, `context/`, or `utils/`.
+          - Promote code to a shared layer only when more than one feature needs it.
+          - Introduce `features/`, `domains/` or packages only when the app grows enough to justify them.
+
+          ```tree
+          src/
+          ├── components/   # Reusable UI components
+          ├── hooks/        # Custom React hooks
+          ├── context/      # React context providers and consumers
+          ├── screens/      # Page-level components or views
+          ├── utils/        # Utility functions and helpers
+          ├── App.tsx       # Main application component
+          └── index.tsx     # Entry point for rendering the app
+          ```
+
+          ## TECHNICAL FOLDERS
+
+          Valid pattern for small and medium apps when you want a clean separation between UI code and reusable technical building blocks.
+
+          - **Use when**: the app is still small enough that a few top-level folders are enough to keep code readable.
+          - **Avoid when**: the app has many unrelated business features and a flat technical split starts to hide domain boundaries.
+
+          ```tree
+          src/
+          ├── components/
+          │   ├── app/
+          │   │   ├── index.js
+          │   │   ├── component.js
+          │   │   ├── test.js
+          │   │   └── style.css
+          │   └── list/
+          │       ├── index.js
+          │       ├── component.js
+          │       ├── test.js
+          │       └── style.css
+          ├── hooks/
+          │   ├── use-click-outside/
+          │   │   ├── index.js
+          │   │   ├── hook.js
+          │   │   └── test.js
+          │   └── use-scroll-detect.js
+          ├── context/
+          │   └── session.js
+          └── utils/
+          ```
+
+          ## FEATURE-BASED STRUCTURE
+
+          Strong default for growing apps because it groups code by business capability instead of by technical type.
+
+          - **Use when**: the app has distinct user-facing features with different responsibilities.
+          - **Avoid when**: the project is tiny and the extra nesting adds ceremony without value.
+
+          ```tree
+          src/
+          ├── features/
+          │   ├── user/
+          │   │   ├── profile/
+          │   │   └── avatar/
+          │   ├── project/
+          │   │   ├── project-form/
+          │   │   └── project-list/
+          │   ├── customer/
+          │   │   ├── customer-form/
+          │   │   └── customer-detail/
+          │   └── contact/
+          │       ├── contact-card/
+          │       └── contact-list/
+          └── components/
+          ```
+
+          ## RULES
+
+          - Reusable UI belongs in `components/`.
+          - Feature-specific code belongs in `features/<feature>/`.
+          - Shared logic belongs one level up: `hooks/`, `context/`, or `utils/`.
+          - Move code to a shared layer only when more than one feature needs it.
+          - Code flows in one direction: from shared layers to features, not the other way around.
+          - Features should not import each other directly.
+          - Each feature has a public API
+
+          ## FEATURE AT SCALE
+
+          ```text
+          src/features/project/
+          ├── types.ts
+          ├── enums/
+          │   └── project-state.ts
+          ├── queries/
+          │   ├── get-project.ts
+          │   └── get-projects.ts
+          ├── actions/
+          │   ├── upsert-project-action.ts
+          │   └── delete-project-action.ts
+          ├── components/
+          │   ├── project-upsert-form.tsx
+          │   ├── project-delete-button.tsx
+          │   └── project-table/
+          │       ├── columns.tsx
+          │       ├── table.tsx
+          │       └── index.ts
+          └── relations/
+              ├── customer/
+              │   ├── actions/
+              │   │   └── add-customer-to-project-action.ts
+              │   └── components/
+              │       └── customer-for-project-manage-button.tsx
+              └── user/
+                  └── queries/
+                      └── get-projects-by-user.ts
+          ```
+
+          ## DOMAIN / PACKAGE LAYER
+
+          This is the next step once the app is large enough to need bounded business areas or extracted shared packages.
+
+          - **Use when**: multiple domains or shared libraries become large and conceptually separate from the app shell.
+          - **Avoid when**: your project is still small; this is a scaling tool, not a default starting point.
+
+          ```tree
+          src/
+            ├── domains/
+            │   ├── workspace/features/..
+            │   ├── core/features/..
+            │   └── cms/features/..
+            └── components/hooks/context/utils/
+          packages/
+            ├── shared/
+            │   ├── src/components/
+            │   ├── src/hooks/
+            │   └── src/utils/
+            └── package.json
+          ```
+
+          ## QUICK CHECKLIST
+
+          - Is it reusable across features? Put it higher.
+          - Is it specific to one feature? Keep it inside that feature.
+          - Is the folder structure easy to scan? Prefer simplicity.
+          - Does the structure reduce coupling? Good.
+          - Are you adding abstraction before it is needed? Probably too early.
+
+          ## KEY TAKEAWAYS
+
+          - **Utils**:
+            - Helper functions and utilities separate for clarity.
+          - **Components**:
+            - Reusable UI elements here.
+          - **Hooks**:
+            - Custom hooks that encapsulate logic.
+          - **Context**:
+            - Manage global state and provide it to components.
+          - **Screens/Pages**:
+            - Define top-level views or pages of the application.
+          - **Apps**:
+            - Apps can depend on domains and packages. Apps don't depend on each other.
+          - **Features**:
+            - Features can depend on shared layers and other features, but avoid circular dependencies.
+          - **Domains**:
+            - Domains can depend on packages and other domains, but avoid circular dependencies.
+          - **Packages**:
+            - Packages can depend on other packages, but avoid circular dependencies.
+          - **Rule of thumb**:
+            1. There is no single `“best”` layout.
+              - Choose the structure that matches the app's size, boundaries, and change rate.
+            2. Delete one feature or package in your head.
+              - If many other folders break, the boundaries are too leaky.
+              - If only the pages that compose it break, and the rest still work through its public API, the boundaries are healthy.

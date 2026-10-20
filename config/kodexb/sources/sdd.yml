@@ -1,0 +1,631 @@
+cheats:
+  Specification-first workflow:
+    desc: Specification-first Structured workflow with audit trail in chronological order
+    tags: [sdd, speckit]
+    notes:
+      - md: | #markdown
+          # Specification-first workflow | SDD
+
+          > Ensures that specifications are always committed before implementation begins.
+          > It creates a clear audit trail showing requirements, architectural decisions,
+          > and implementation in chronological order.
+
+          ## Follow this workflow for each feature
+
+          1. Create feature branch from main.
+          2. Generate and commit spec.md.
+          3. Review and refine spec with team.
+          4. Generate and commit plan.md.
+          5. Review plan with relevant stakeholders.
+          6. Generate and commit tasks.md.
+          7. Implement features task by task, committing as you go.
+          8. Create pull request when feature is complete.
+          9. Merge to main after review and testing.
+    links:
+      - https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/10-scale-spec-driven-development-team-collaboration
+  Scale SDD for team collaboration:
+    desc: Scale Spec-Driven Development for team collaboration
+    tags: [sdd, speckit]
+    notes:
+      - md: | #markdown
+          # Scale Spec-Driven Development for team collaboration
+
+          > Spec-driven development scales effectively to team environments through shared constitutions, collaborative specification development, strategic task distribution, and specification-grounded code reviews.
+          > Use feature branches to isolate specification and implementation work.
+          > Conduct asynchronous specification reviews for distributed teams.
+          > Use SDD artifacts for efficient onboarding of new team members.
+          > Maintain specifications as living documents that evolve with requirements and serve as objective criteria for code reviews.
+          > The structured nature of SDD artifacts reduces coordination overhead while improving team alignment and code quality.
+    links:
+      - https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/10-scale-spec-driven-development-team-collaboration
+  Shared constitutions:
+    desc: Team-specific constitutions with shared foundation
+    tags: [sdd, speckit]
+    notes:
+      - md: | #markdown
+          # Team-specific constitutions with shared foundation
+
+          > Each team can define its own constitution, which is a set of guiding principles that govern how the team works together.
+          > The constitution is based on a shared foundation of best practices and principles that apply to all teams.
+
+          ## Example
+
+          - Team back-end's constitution may include principles such as "We prioritize code quality over speed" and "We value open communication and collaboration."
+          - Team front-end's constitution may include principles such as "We embrace continuous learning and improvement"
+
+          ```tree
+            constitution.md (organization-wide)
+            ├── team-back-end-constitution.md (back-end team specifics)
+            └── team-front-end-constitution.md (front-end team specifics)
+          ```
+
+          > This hierarchy ensures consistency across teams while allowing appropriate specialization.
+    links:
+      - https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/10-scale-spec-driven-development-team-collaboration
+  Integrate SDD into CI/CD and DevOps practices:
+    desc: Comprehensive software delivery methodology that maintains alignment from requirements through deployment
+    tags: [speckit, sdd, cicd]
+    notes:
+      - md: | #markdown
+          # Integrate Spec-Driven Development into CI/CD and DevOps practices
+
+          > Integrating spec-driven development into CI/CD pipelines ensures specifications remain synchronized with code throughout the software lifecycle.
+
+          - Automate specification validation, constitution compliance checking, and test coverage verification.
+          - Link SDD artifacts to project management tools like Azure Boards or GitHub Issues for complete traceability.
+          - Monitor specification-code drift through periodic audits and metrics.
+          - Use specifications as deployment gate criteria to ensure production releases meet documented requirements.
+          - Establish governance practices including specification owners and regular retrospectives to continuously improve SDD adoption.
+
+          > These advanced integration patterns transform SDD from a development technique into a comprehensive software delivery methodology that maintains alignment from requirements through deployment.
+    links:
+      - https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/11-integrate-spec-kit-advanced-deployment
+  Specification change notifications:
+    desc: Configure GitHub Actions to notify relevant team members when specifications change
+    tags: [speckit, sdd, cicd]
+    notes:
+      - md: | #markdown
+          # Specification change notifications
+
+          > Ensures stakeholders are aware of requirement changes and can review them before implementation proceeds
+
+          ```yaml
+          name: Notify Spec Changes
+
+          on:
+            pull_request:
+              paths:
+                - '**/spec.md'
+
+          jobs:
+            notify:
+              runs-on: ubuntu-latest
+              steps:
+                - name: Notify stakeholders
+                  uses: actions/github-script@v6
+                  with:
+                    script: |
+                      github.rest.issues.createComment({
+                        issue_number: context.issue.number,
+                        owner: context.repo.owner,
+                        repo: context.repo.name,
+                        body: '📋 Specification changed. @product-team @qa-team please review.'
+                      })
+          ```
+
+          > This automation ensures stakeholders are aware of requirement changes and can review them before implementation proceeds
+    links:
+      - https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/11-integrate-spec-kit-advanced-deployment
+  GitHub Actions for specification validation:
+    desc: Create GitHub Actions workflows that automatically validate specifications on pull requests
+    tags: [speckit, sdd, cicd]
+    notes:
+      - md: | #markdown
+          # Automatically validate specifications when they change
+
+          > Providing immediate feedback about validation failures
+
+          ```yaml
+          name: Validate Specifications
+
+          on:
+            pull_request:
+              paths:
+                - '**/spec.md'
+                - '**/plan.md'
+                - '**/tasks.md'
+
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v3
+
+                - name: Validate Specification Structure
+                  run: python scripts/validate_spec.py
+
+                - name: Check constitution compliance
+                  run: python scripts/check_constitution.py
+
+                - name: Verify Acceptance Criteria Coverage
+                  run: python scripts/verify_test_coverage.py
+          ```
+    links:
+      - https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/11-integrate-spec-kit-advanced-deployment
+  GitHub Actions for validate specification syntax and completeness:
+    desc: Create GitHub Actions workflows that automatically validate specification syntax and completeness on pull requests
+    tags: [speckit, sdd, cicd]
+    notes:
+      - md: | #markdown
+          # Automatically validate specification syntax and completeness
+
+          > Run automated checks on specification markdown files to ensure they follow your organization's spec template.
+          > Verify that required sections (Summary, Acceptance Criteria, Functional Requirements, Edge Cases) are present and nonempty
+
+          ```python
+          # scripts/validate_spec_syntax_and_completeness.py
+          import os
+          import sys
+          import re
+
+          def validate_spec_syntax(file_path):
+              required_sections = [
+                  "Summary",
+                  "Acceptance Criteria",
+                  "Functional Requirements",
+                  "Edge Cases"
+              ]
+
+              with open(file_path, 'r') as f:
+                  content = f.read()
+
+              missing_sections = []
+              for section in required_sections:
+                  if not re.search(rf"^##\s+{section}", content, re.MULTILINE):
+                      missing_sections.append(section)
+
+              if missing_sections:
+                  print(f"Missing required sections in {file_path}: {', '.join(missing_sections)}")
+                  return False
+              return True
+          ```
+
+          ```yaml
+          name: Validate Specification Syntax and Completeness
+
+          on:
+            pull_request:
+              paths:
+                - '**/spec.md'
+                - '**/plan.md'
+                - '**/tasks.md'
+
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v3
+
+                - name: Validate Specification Syntax
+                  run: |
+                    python scripts/validate_spec_syntax_and_completeness.py
+          ```
+
+          > This validation ensures specifications maintain consistent structure across your organization, making them easier to read and automated tooling more reliable.
+    links:
+      - https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/11-integrate-spec-kit-advanced-deployment
+  GitHub Issues integration:
+    desc: Convert tasks from tasks.md into GitHub Issues programmatically
+    tags: [sdd, speckit, openspec]
+    notes:
+      - md: | #markdown
+          # Issues integration via GitHub CLI
+
+          > Use GitHub's API or CLI to create issues with appropriate labels, milestones, and assignments.
+
+          ```sh
+          gh issue create \
+            --title "Implement upload endpoint validation" \
+            --body "Task from Phase 2: Add file validation logic (size, type) to DocumentService" \
+            --label "feature/document-upload" \
+            --label "back-end" \
+            --assignee developer-username
+          ```
+
+          > Automate this process to create issues for all tasks, then close them automatically when corresponding code is merged
+    links:
+      - https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/11-integrate-spec-kit-advanced-deployment
+  Specification-based pull request templates:
+    desc: Pull request templates that reference the specification
+    tags: [sdd, speckit, openspec]
+    notes:
+      - md: | #markdown
+          # Specification-based pull request templates
+
+          > Configure pull request templates that require developers to reference which
+          > specification requirements their changes implement
+
+          ```markdown
+          ## Pull Request Template
+          <!-- Describe what this PR changes -->
+
+          ### Feature Overview
+          - Feature: {{ feature_name }}
+          - Spec: [spec.md](./spec.md)
+          - Plan: [plan.md](./plan.md)
+          - Tasks: [tasks.md](./tasks.md)
+
+          ## Testing
+          <!-- Describe how you verified these changes work correctly -->
+
+          ### Checklist for Reviewers
+          - [ ] Code implements all acceptance criteria listed above
+          - [ ] Tests added for all acceptance criteria
+          - [ ] Plan.md updated if architectural approach changed
+          - [ ] Tasks.md updated to mark completed tasks
+          ```
+
+          > This template ensures pull request reviewers can verify implementations against specifications efficiently.
+    links:
+      - https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/11-integrate-spec-kit-advanced-deployment
+  Automate checks that enforce constitution compliance:
+    desc: Create GitHub Actions workflows that automatically check for constitution compliance on pull requests
+    tags: [sdd, speckit, openspec]
+    notes:
+      - md: | #markdown
+          # Automatically check for constitution compliance
+
+          > Automate checks that verify code changes don't violate constitution principles.
+          > Parse constitution.md to extract rules, then validate code against those rules.
+
+          # Examples
+
+          - If your constitution states `"All cloud resources must use Azure services,"`:
+
+            scan Infrastructure as Code files (ARM templates, Bicep files, Terraform configurations) to verify no Amazon Web Services (AWS) or Google Cloud Platform (GCP) resources are defined.
+
+          - If your constitution states `"All public APIs must have OpenAPI documentation,"`:
+
+            scan codebase for public API endpoints and verify that corresponding OpenAPI documentation exists.
+
+          ```python
+          # scripts/check_constitution.py
+          import os
+          import sys
+          import re
+
+          def check_constitution_compliance():
+              # Load constitution rules
+              with open('constitution.md', 'r') as f:
+                  constitution = f.read()
+
+              # Example rule: All cloud resources must use Azure services
+              if "All cloud resources must use Azure services" in constitution:
+                  # Scan IaC files for non-Azure resources
+                  for root, dirs, files in os.walk('infrastructure'):
+                      for file in files:
+                          if file.endswith(('.tf', '.bicep', '.json')):
+                              with open(os.path.join(root, file), 'r') as iac_file:
+                                  content = iac_file.read()
+                                  if re.search(r'aws_|google_', content):
+                                      print(f"Constitution violation found in {file}: Non-Azure resource detected.")
+                                      return False
+              return True
+          ```
+
+          > These automated checks prevent accidental constitution violations from reaching production
+    links:
+      - https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/11-integrate-spec-kit-advanced-deployment
+
+bookmarks:
+  https://youtu.be/b6cbxSaa4U4:
+    desc: This video provides a six-month update on the state of **Spec-Driven Development (SDD)** frameworks in 2026. While the overall category has grown significantly, the video highlights a major divergence in performance and adoption among the key players.
+    tags: [sdd, speckit, openspec]
+    notes:
+      - md: | #markdown
+          ### The Shifting Landscape
+
+          - **Native Integration:** Many features previously provided by external SDD frameworks—such as planning, standards enforcement, and multi-agent coordination—are being absorbed directly into tools like *Claude Code* (e.g., plan mode, skills, and `CLAUDE.md`).
+          - **New Contenders:** Newer tools like *Superpowers* (16:47), *GSD* (17:31), and *Beats* (17:58) are capturing interest by offering different approaches to orchestration, agent memory, and test-driven development.
+          - **Community Debate:** The conversation has moved beyond "is SDD good?" to "how do we implement it well?" Skeptics compare SDD to the failed model-driven development era, while proponents argue it enables better iterative design than traditional waterfall methods.
+      - md: | #markdown
+          - **OpenSpec:**
+            - The clear winner, growing **863%** in six months. It is noted as the lightest, fastest framework, making it a great starting point for teams new to SDD.
+      - md: | #markdown
+          - **[BMAD](https://bmadcode.com):**
+            - Grew **133%** and underwent a major rewrite (v6).
+            - Features
+              - Amelia: Consolidated multi-agent persona
+              - Skills Architecture
+              - Cross-Platform Agent Team (20+ runtimes)
+              - 12+ specialized agent personas
+              - BMad Builder v1.4 (Standalone project)
+              - Dev Loop Automation
+              - Community skill marketplace
+            - ISSUES:
+              - Many markdown files per spec
+              - Full PM-to-dev handoff rituals
+              - PRD business metrics for weekends projects
+            - ADOPT:
+              - Workflow designed for complex, multi-stage projects
+              - Structure multi-agent workflows
+              - Full agile ritual
+              - Don't mind spec documents
+            - AVOID:
+              - Want to ship quickly
+              - Weekend project
+              - Hate reading PRDs
+      - md: | #markdown
+          - **[Spec Kit](https://speckit-community.github.io/):** [course](https://learn.microsoft.com/en-us/training/modules/spec-driven-development-github-spec-kit-enterprise-developers/)
+            - Remains the leader in absolute GitHub stars, growing **123%**.
+            - Features
+              - Amelia: Consolidated multi-agent persona
+              - Skills Architecture
+              - Cross-Platform Agent Team (20+ runtimes)
+              - 12+ specialized agent personas
+              - BMad Builder v1.4 (Standalone project)
+              - Dev Loop Automation
+              - Community skill marketplace
+            - ISSUES:
+              - *Martin Fowler* have pointed out issues with verbose markdown generation.
+              - Many markdown files per spec
+              - Full PM-to-dev handoff rituals
+              - PRD business metrics for weekends projects
+            - ADOPT:
+              - Workflow designed for complex, multi-stage projects
+              - Structure multi-agent workflows
+              - Full agile ritual
+              - Don't mind spec documents
+            - AVOID:
+              - Want to ship quickly
+              - Weekend project
+              - Hate reading PRDs
+            - EXTENSIONS:
+              - https://speckit-community.github.io/extensions/branch-convention
+              - https://speckit-community.github.io/extensions/memory-md
+              - https://speckit-community.github.io/extensions/memorylint
+              - https://speckit-community.github.io/extensions/roadmap
+              - https://speckit-community.github.io/extensions/multi-model-review
+      - md: | #markdown
+          - **[GSD](https://opengsd.net/):**
+      - md: | #markdown
+          - **[Taskmaster](https://tryhamster.com/product/taskmaster):**
+            - Stalled with only **18%** growth. Factors include a commercial pivot, license restrictions, and concerns over telemetry, despite the engine's strong performance in task decomposition.
+            - Shines at the composition layer - turning PRDs into dependency-aware task graphs
+            - Tasks in JSON
+      - md: | #markdown
+          - **[Superpowers](https://github.com/obra/superpowers):**
+      - md: | #markdown
+          - **[Beads](https://beads.gascity.com/):**
+            - Replaces messy markdown plans with persistent, dependency-aware graph in [Dolt](https://www.dolthub.com/docs/introduction/what-is-dolt/)
+  https://youtu.be/m6g0aWggdUQ:
+    desc: This video explores the challenges of managing *Kubernetes* manifests and introduces *CUE (Configure, Unify, Execute)* as a superior alternative to tools like *Helm*, *Kustomize*, *Carvel ytt*, and *cdk8s*.
+    tags: [k8s, cue, config, manifests]
+    notes:
+      - md: | #markdown
+          # CUE: A Better Way to Manage Kubernetes Manifests
+
+          ### **The Search for a Better Solution**
+          The host evaluates existing tools against a list of key requirements for complex projects:
+          - **Schema Support:** A need for data models to validate configuration (02:16).
+          - **External Schema Import:** The ability to import resource definitions from clusters or repositories (04:24).
+          - **Type Checking:** Ensuring values match required data types (05:49).
+          - **Overlay/Defaulting:** Efficiently layering configurations (06:46).
+          - **Policies/Validation:** Defining constraints (e.g., character limits, ranges) (07:38).
+          - **Usability:** A shallow learning curve (08:32).
+
+          ### **Why CUE?**
+          After determining that traditional tools fail several requirements, the host presents *CUE* as a powerful data validation and inference language (12:20).
+
+          **How CUE fulfills the requirements:**
+          - **Understanding Data:** Unlike *Helm* (which treats files as free text), *CUE* treats configuration as structured data (13:38).
+          - **Schemas & Types:** *CUE* allows for strict definition of data structures and types, providing immediate validation (14:36, 16:33).
+          - **Importing Definitions:** Users can generate *CUE* structs directly from *Kubernetes* resources (15:43).
+          - **Overlays:** *CUE* simplifies the management of default and custom values through its unified structure (17:24).
+          - **Constraints:** *CUE* excels at enforcing policies and logical constraints (18:42).
+
+          > While *CUE* has a steeper learning curve than *Helm* or *Kustomize* (19:50), the host argues that its power in handling complex configuration makes it worth the investment.
+          > The host plans to showcase specialized tools built on *CUE* in a future video, positioning it as the likely future of configuration management (22:20)
+
+speckit:
+  specify:
+    prompts:
+      - explain: Review the current codebase. Explain the ContosoDashboard application features and the purpose of the GitHub Spec Kit files located under the .github\ and .specify\ directories.
+    cmds:
+      - specify init --here --integration copilot --integration-options="--skills": Initializes Spec Kit in the current project directory with GitHub integration and optional skills configuration
+      - specify integration status: Reports the current status of Spec Kit integration in the project, including which commands are available and any missing configuration
+      - specify integration info copilot: Reports the current status of Spec Kit integration in the project, including which commands are available and any missing configuration
+      - specify integration upgrade copilot --integration-options="--skills": Upgrades the Spec Kit integration in the project to the latest version, including any new commands or features. The `--integration-options` flag allows for specifying additional options for the upgrade process.
+      - specify extension catalog add https://raw.githubusercontent.com/github/spec-kit/main/extensions/catalog.json --name default --description 'Built-in catalog of installable extensions' --priority 1 --install-allowed: Installs the default Spec Kit extension catalog from GitHub, which contains a curated list of extensions that can be added to the project. The `--install-allowed` flag allows for automatic installation of extensions from the catalog.
+      - specify extension catalog add https://raw.githubusercontent.com/github/spec-kit/main/extensions/catalog.community.json --name community --description 'Community-contributed extensions' --priority 2 --install-allowed: Installs the community Spec Kit extension catalog from GitHub, which contains a curated list of community-contributed extensions that can be added to the project. The `--install-allowed` flag allows for automatic installation of extensions from the catalog.
+    commands:
+      - /speckit.constitution: Establishes the project's guiding principles, which every later step is evaluated against.
+      - /speckit.specify: Creates the feature specification from a natural-language description `spec.md`. Focus on the what and why, not the tech stack
+      - /speckit.specify --file <PATH>: Creates the feature specification from file
+      - /speckit.clarify: Clarifies the specification by asking questions and recording answers in `clarifications.md`
+      - /speckit.plan: Creates the implementation plan from the specification and clarifications. Focus on the how, not the tech stack
+      - /speckit.checklist: Creates a checklist of tasks from the implementation plan. Focus on the how, not the tech stack
+      - /speckit.tasks: Creates the implementation tasks from the checklist. Focus on the how, not the tech stack
+      - /speckit.analyze: Analyzes the codebase and produces a report of the current state of the codebase, including metrics, dependencies, and potential issues
+      - /speckit.implement: Implements the tasks in the codebase, following the implementation plan and checklist. Focus on the how, not the tech stack
+      - /speckit.implement Implement the MVP first strategy: Implement focusing on the minimum viable product (MVP) first.
+      - /speckit.converge: Checks the codebase against the spec, plan, and tasks. If it finds gaps, it appends new tasks to `tasks.md`; run `/speckit.implement` and converge again until it reports converged. Otherwise you're done — proceed to review or open a PR.
+      - /speckit.converge Evaluate ONLY the MVP first strategy implementation: Checks the codebase against the spec, plan, and tasks for the MVP first strategy implementation.
+  specify extension add agent-context:
+    desc: Manages coding agent context/instruction files (e.g., CLAUDE.md, copilot-instructions.md) with project-specific plan references and configurable markers
+    tags: [speckit, extension]
+    notes:
+      - md: | #markdown
+          # Agent Context Extension
+
+          Manages coding agent context/instruction files (e.g., CLAUDE.md, copilot-instructions.md) with project-specific plan references and configurable markers.
+
+          ## USAGE
+
+          ```sh
+          speckit.agent-context.update: Refresh the managed Spec Kit section in the coding agent context file
+          ```
+
+  specify extension add assess:
+    desc: Assess an idea before Spec-Driven Development via intake, research, define, shape, and decide. A go verdict hands off to /speckit.specify; a kill closes it. Lives under .specify/assessments/<slug>/
+    tags: [speckit, extension]
+    notes:
+      - md: | #markdown
+          # Assess Extension
+
+          Assess an idea before Spec-Driven Development via intake, research, define, shape, and decide. A go verdict hands off to /speckit.specify; a kill closes it. Lives under .specify/assessments/<slug>/.
+
+          ## USAGE
+
+          1. Capture and normalize a raw idea (text, URL, ticket, or codebase pointer) into an intake note
+
+            ```sh
+            speckit.assess.intake: "Let users work offline and sync when they reconnect." slug=offline-mode
+            ```
+
+          2. Gather evidence — users, market, prior art, and data — to support or challenge the idea
+
+            ```sh
+            speckit.assess.research slug=offline-mode
+            ```
+
+          3. Define the problem | who is affected, what hurts, goals, non-goals, and success metrics
+
+            ```sh
+            speckit.assess.define slug=offline-mode
+            ```
+
+          4. Shape a concept | solution options, scope, appetite, and trade-offs (no implementation design)
+
+            ```sh
+            speckit.assess.shape slug=offline-mode
+            ```
+
+          5. Apply a go / needs-clarification / kill gate and hand survivors off to /speckit.specify
+
+            ```sh
+            speckit.assess.decide slug=offline-mode
+            ```
+    links: [https://github.github.com/spec-kit/reference/agentic-assessment.html]
+  specify extension add bug:
+    desc: Assess, fix, and validate bug reports against the codebase with per-bug reports stored under .specify/bugs/<slug>/
+    tags: [speckit, extension]
+    commands:
+      - speckit.bug.assess: Assess a bug report (pasted text or URL) against the codebase and produce an assessment with possible remediation
+      - speckit.bug.fix: Apply the remediation from a bug assessment and record what was changed
+      - speckit.bug.test: Validate that a previously fixed bug is resolved and record the verification report
+  specify extension add git:
+    desc: Feature branch creation, numbering (sequential/timestamp), validation, and Git remote detection
+    tags: [speckit, extension]
+    commands:
+      - speckit.git.feature: Create a feature branch with sequential or timestamp numbering and optional templates
+      - speckit.git.validate: Validate current branch follows feature branch naming conventions
+      - speckit.git.remote: Detect Git remote URL for GitHub integration
+      - speckit.git.initialize: Initialize a Git repository with an initial commit
+      - speckit.git.commit: Auto-commit changes after a Spec Kit command completes
+
+prompts:
+  preflight:
+    desc: Preflight prompts for Spec Kit commands, including spec, plan, tasks, and implement
+    note:
+      - md: | #markdown
+          <current_datetime>{CURRENT_DATETIME}</current_datetime>
+
+          Workspace: {WORKSPACE_ROOT}
+          AUTO_REMEDIATE={true|false}   # set to true to draft remediation edits automatically
+
+          Task:
+          Verify every checklist item in {FEATURE_DIR}/checklists/ against:
+          - {FEATURE_DIR}/spec.md
+          - {FEATURE_DIR}/plan.md
+          - {FEATURE_DIR}/data-model.md
+          - {FEATURE_DIR}/contracts/*
+
+          Scope:
+          Only process checklist lines matching:
+          - [ ] CHK### ...
+          or
+          - [X] CHK### ...
+
+          For each CHK item:
+          1) Decide exactly one status:
+            - Verified
+            - Gap
+          2) If Verified:
+            - Mark it as [X]
+            - Append one-line evidence note citing exact section(s), e.g.:
+              "— Evidence: Spec FR-003; Data Model §Task; OpenAPI TaskInput.title maxLength 200."
+          3) If Gap:
+            - Leave unchecked [ ]
+            - Append exact unresolved question the spec must answer, e.g.:
+              "— GAP QUESTION: <precise question>"
+
+          Hard requirements:
+          - Update checklist files in place.
+          - Do NOT edit spec.md, plan.md, data-model.md, contracts/*, or tasks.md during verification.
+          - Ensure no CHK item is left without either:
+            - [X] + evidence note, or
+            - [ ] + GAP QUESTION.
+          - Do not skip any CHK item.
+
+          Validation pass (mandatory):
+          After editing checklists, re-scan all CHK items and confirm:
+          - total CHK count
+          - verified count
+          - gap count
+          - verified + gap = total
+          - 0 CHK items missing evidence/question annotation
+
+          Output (always):
+          1) Per-checklist-file counts: total / verified / gaps.
+          2) Genuine gap list (CHK id + exact question).
+          3) Suggested next actions, prioritized (P1/P2/P3), to close the gaps.
+
+          Remediation mode:
+          - If gaps exist and AUTO_REMEDIATE=false:
+            - STOP after reporting.
+            - Print:
+              "I found {N} gaps. I can generate concrete remediation edits (exact proposed text changes) for spec.md/plan.md/data-model.md/openapi.yml. Say 'generate remediation edits' to proceed."
+
+          - If gaps exist and AUTO_REMEDIATE=true:
+            - Proceed in the same run to draft remediation edits.
+            - Produce exact, minimal patch-style proposals per file (grouped by CHK id), including:
+              - target file
+              - insertion/replacement location (section heading or nearby anchor text)
+              - proposed text
+              - rationale tied to the specific GAP QUESTION
+            - Apply edits only to: spec.md, plan.md, data-model.md, contracts/*.
+            - Do NOT edit tasks.md.
+            - Re-run checklist verification after drafting/applying remediation edits.
+            - Report updated counts and list any remaining gaps.
+
+          Quality bar for remediation edits:
+          - Keep spec.md technology-agnostic unless the missing requirement is explicitly API-contract-only.
+          - Keep plan.md implementation-focused; do not move product requirements only into plan.
+          - Keep data-model.md aligned with spec requirements.
+          - Prefer smallest possible edits that fully answer each gap question.
+  Concrete remediation edits for gaps:
+    desc: foo
+    notes:
+      - md: | #markdown
+          <current_datetime>{CURRENT_DATETIME}</current_datetime>
+
+          Workspace: {WORKSPACE_ROOT}
+
+          Task:
+          Generate and execute concrete remediation edits for all remaining gaps, mark as `[X]` and add evidence note to each item:
+          - Produce exact, minimal patch-style proposals per file (grouped by CHK id), including:
+              - target file
+              - insertion/replacement location (section heading or nearby anchor text)
+              - proposed text
+              - rationale tied to the specific GAP QUESTION
+            - Apply edits only to: spec.md, plan.md, data-model.md, contracts/*.
+            - Do NOT edit tasks.md.
+            - Re-run checklist verification after drafting/applying remediation edits.
+            - Report updated counts and list any remaining gaps.
+
+          Quality bar for remediation edits:
+          - Keep spec.md technology-agnostic unless the missing requirement is explicitly API-contract-only.
+          - Keep plan.md implementation-focused; do not move product requirements only into plan.
+          - Keep data-model.md aligned with spec requirements.
+          - Prefer smallest possible edits that fully answer each gap question.

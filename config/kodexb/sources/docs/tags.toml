@@ -1,0 +1,807 @@
+# Proposed by `mise run tags:suggest` (docs/doctrine/tag-conventions.doctrine.md). Keep, edit or delete each
+# table, uncomment the suggestions you agree with, then save this file as tags.toml and run `mise run tags:apply`.
+
+# action (1) → plural: actions is also a tag (2 uses)
+["actions"]
+aliases = ["action"]
+
+# apps_script (2) → convention: underscore or space: use a hyphen
+["apps-script"]
+aliases = ["apps_script"]
+
+# binary_search (7) → convention: underscore or space: use a hyphen
+["binary-search"]
+aliases = ["binary_search"]
+
+# check_in (3) → convention: underscore or space: use a hyphen
+["check-in"]
+aliases = ["check_in"]
+
+# cloud_function (1) → convention: underscore or space: use a hyphen
+["cloud-function"]
+aliases = ["cloud_function"]
+
+# code_review (2) → convention: underscore or space: use a hyphen
+["code-review"]
+aliases = ["code_review"]
+
+# coordinate_system (1) → convention: underscore or space: use a hyphen
+["coordinate-system"]
+aliases = ["coordinate_system"]
+
+# data_science (1) → convention: underscore or space: use a hyphen
+["data-science"]
+aliases = ["data_science"]
+
+# data_structure (1) → convention: underscore or space: use a hyphen
+["data-structure"]
+aliases = ["data_structure"]
+
+# decision_making (1) → convention: underscore or space: use a hyphen
+["decision-making"]
+aliases = ["decision_making"]
+
+# design_system (14) → convention: underscore or space: use a hyphen
+["design-system"]
+aliases = ["design_system"]
+
+# full_stack (2) → convention: underscore or space: use a hyphen
+["full-stack"]
+aliases = ["full_stack"]
+
+# http_server (1) → convention: underscore or space: use a hyphen
+["http-server"]
+aliases = ["http_server"]
+
+# linked_list (11) → convention: underscore or space: use a hyphen
+["linked-list"]
+aliases = ["linked_list"]
+
+# no_code (1) → convention: underscore or space: use a hyphen
+["no-code"]
+aliases = ["no_code"]
+
+# note (1) → plural: notes is also a tag (2 uses)
+["notes"]
+aliases = ["note"]
+
+# open_telemetry (1) → convention: underscore or space: use a hyphen
+["open-telemetry"]
+aliases = ["open_telemetry"]
+
+# pre_commit (3) → convention: underscore or space: use a hyphen
+["pre-commit"]
+aliases = ["pre_commit"]
+
+# project structure (1) → convention: underscore or space: use a hyphen
+["project-structure"]
+aliases = ["project structure"]
+
+# pubsub (2) → fingerprint: spelled pub-sub, pubsub
+["pub-sub"]
+aliases = ["pubsub"]
+
+# semantic_release (1) → fingerprint: spelled semantic-release, semantic_release
+["semantic-release"]
+aliases = ["semantic_release"]
+
+# serverles (3) → similar: 1 edit(s) from serverless
+["serverless"]
+aliases = ["serverles"]
+
+# sliding_window (6) → convention: underscore or space: use a hyphen
+["sliding-window"]
+aliases = ["sliding_window"]
+
+# status_code (1) → convention: underscore or space: use a hyphen
+["status-code"]
+aliases = ["status_code"]
+
+# system_design (4) → convention: underscore or space: use a hyphen
+["system-design"]
+aliases = ["system_design"]
+
+# text_to_speech (1) → convention: underscore or space: use a hyphen
+["text-to-speech"]
+aliases = ["text_to_speech"]
+
+# two_pointer (7) → convention: underscore or space: use a hyphen
+["two-pointer"]
+aliases = ["two_pointer"]
+
+# use_case (1) → convention: underscore or space: use a hyphen
+["use-case"]
+aliases = ["use_case"]
+
+# ---- Accepted on 2026-10-12. Rejected below: Stack Overflow master tags longer than the tag in use (aws, cli,
+# auth, py…), names that are not the same thing (xp, nx, gpt, lsp, career), amazon/google, which tag the
+# companies asking a LeetCode problem, and sheet, trick, visualizer, quickstart, checked against their entries.
+
+["-"]
+aliases = ["general", "common", "overview", "info", "definition", "help"]
+
+["github"]
+aliases = ["github-actions"]
+
+["agile"]
+aliases = ["scrum", "retro", "team_building"]
+
+["ai"]
+aliases = ["ia"]
+
+["analytics"]
+aliases = ["analytic"]
+
+["architecture"]
+aliases = ["architect", "software_architect"]
+
+["arrays"]
+aliases = ["arrays_hashing"]
+
+["art"]
+aliases = ["pixelart", "popart", "digitalart"]
+
+["azure"]
+aliases = ["azure_devop"]
+
+["devops"]
+aliases = ["devop", "azure_devop"]
+
+["bits"]
+aliases = ["bit_manipulation"]
+
+["blogs"]
+aliases = ["blog"]
+
+["bookmarks"]
+aliases = ["bookmark"]
+
+["career"]
+aliases = ["resume", "cover letter", "job application"]
+
+["charts"]
+aliases = ["visualization", "chart"]
+
+["cheat"]
+aliases = ["cheatsheet"]
+
+["coding"]
+aliases = ["coding_pattern"]
+
+["config"]
+aliases = ["configuration"]
+
+["crypto"]
+aliases = ["crypt"]
+
+["db"]
+aliases = ["database", "rdbms"]
+
+["dev"]
+aliases = ["developer", "devexp"]
+
+["diagnostics"]
+aliases = ["diagnostic"]
+
+["disk"]
+aliases = ["diskutil"]
+
+["doc"]
+aliases = ["documentation"]
+
+["dp"]
+aliases = ["1d_dynamic_programming", "2d_dynamic_programming"]
+
+["eda"]
+aliases = ["eventbu"]
+
+["english"]
+aliases = ["vocabulary", "cefr"]
+
+["filter"]
+aliases = ["filtering"]
+
+["finance"]
+aliases = ["budget"]
+
+["format"]
+aliases = ["formatter", "formatting"]
+
+["gcp"]
+aliases = ["gcloud"]
+
+["gitops"]
+aliases = ["gitop"]
+
+["graph"]
+aliases = ["advanced_graph"]
+
+["gum"]
+aliases = ["choose", "confirm"]
+
+["heap"]
+aliases = ["heap_priority_queue"]
+
+["image"]
+aliases = ["photo"]
+
+["intervals"]
+aliases = ["interval"]
+
+["interview"]
+aliases = ["prep"]
+
+["java"]
+aliases = ["jdk", "openjdk"]
+
+["jobs"]
+aliases = ["job"]
+
+["k8s"]
+aliases = ["kube", "kubernetes", "kubernete"]
+
+["lambda"]
+aliases = ["aws_lambda"]
+
+["learn"]
+aliases = ["tutorial", "codelab", "guide"]
+
+["leetcode"]
+aliases = ["neetcode"]
+
+["lint"]
+aliases = ["linter", "megalinter"]
+
+["macos"]
+aliases = ["maco"]
+
+["math"]
+aliases = ["math_geometry", "geometry"]
+
+["node"]
+aliases = ["nodejs"]
+
+["notifications"]
+aliases = ["notification"]
+
+["patterns"]
+aliases = ["pattern", "design_pattern", "best-practices", "best practices", "best_practice", "bp", "creational", "structural", "solid", "coding_pattern"]
+
+["perf"]
+aliases = ["performance"]
+
+["postgres"]
+aliases = ["postgresql", "postgre"]
+
+["psy"]
+aliases = ["personality", "dsm_5"]
+
+
+["quote"]
+aliases = ["wisdom"]
+
+["rails"]
+aliases = ["rail"]
+
+["rb"]
+aliases = ["ruby"]
+
+["regex"]
+aliases = ["pattern_matching"]
+
+["rg"]
+aliases = ["ripgrep"]
+
+["scraping"]
+aliases = ["scrapping"]
+
+["secrets"]
+aliases = ["secret"]
+
+["sha"]
+aliases = ["sha1sum"]
+
+["shell"]
+aliases = ["shells"]
+
+["sockets"]
+aliases = ["socket"]
+
+["speckit"]
+aliases = ["specify", "constitution", "taskstoissues"]
+
+["support"]
+aliases = ["customer_succes"]
+
+["term"]
+aliases = ["terminal"]
+
+["test"]
+aliases = ["testing"]
+
+["time"]
+aliases = ["timezones", "utc", "gmt", "timedatectl"]
+
+["tools"]
+aliases = ["tool", "tooling", "devtool"]
+
+["tracking"]
+aliases = ["acompanhamento", "tracker"]
+
+["twm"]
+aliases = ["window-manager", "tiling", "virtual-desktops"]
+
+["vim"]
+aliases = ["neovim", "vi"]
+
+["wireless"]
+aliases = ["wireles"]
+
+["yaml"]
+aliases = ["yml"]
+
+["youtube"]
+aliases = ["yoututbe"]
+
+["agents"]
+aliases = ["agentic governance"]
+
+# ---- Suggestions: signals that read meaning, which only you can confirm. Uncomment a table to accept it.
+
+# dotnet (3) → stackoverflow: Stack Overflow's master tag for dotnet
+# [".net"]
+# aliases = ["dotnet"]
+
+# agentic governance (1) → semantic: agents
+# ["agent"]
+# aliases = ["agentic governance"]
+
+# dynamodb (8) → stackoverflow: Stack Overflow's master tag for dynamodb
+# ["amazon-dynamodb"]
+# aliases = ["dynamodb"]
+
+# kinesis (1) → stackoverflow: Stack Overflow's master tag for kinesis
+# ["amazon-kinesis"]
+# aliases = ["kinesis"]
+
+# rds (4) → stackoverflow: Stack Overflow's master tag for rds
+# ["amazon-rds"]
+# aliases = ["rds"]
+
+# s3 (7) → stackoverflow: Stack Overflow's master tag for s3
+# ["amazon-s3"]
+# aliases = ["s3"]
+
+# sqs (1) → stackoverflow: Stack Overflow's master tag for sqs
+# ["amazon-sqs"]
+# aliases = ["sqs"]
+
+# aws (211) → stackoverflow: Stack Overflow's master tag for aws
+# ["amazon-web-services"]
+# aliases = ["aws"]
+
+# kafka (2) → stackoverflow: Stack Overflow's master tag for kafka
+# ["apache-kafka"]
+# aliases = ["kafka"]
+
+# ai (323) → stackoverflow: Stack Overflow's master tag for ai
+# ["artificial-intelligence"]
+# aliases = ["ai"]
+
+# auth (15) → stackoverflow: Stack Overflow's master tag for auth
+# ["authentication"]
+# aliases = ["auth"]
+
+# amazon (24) → semantic: used for AWS entries; check if some are the shop
+# ["aws"]
+# aliases = ["amazon"]
+
+# fargate (1) → stackoverflow: Stack Overflow's master tag for fargate
+# ["aws-fargate"]
+# aliases = ["fargate"]
+
+# benchmark (3) → stackoverflow: Stack Overflow's master tag for benchmark
+# ["benchmarking"]
+# aliases = ["benchmark"]
+
+# cluster (1) → stackoverflow: Stack Overflow's master tag for cluster
+# ["cluster-computing"]
+# aliases = ["cluster"]
+
+# color (1) → stackoverflow: Stack Overflow's master tag for color
+# ["colors"]
+# aliases = ["color"]
+
+# cli (81) → stackoverflow: Stack Overflow's master tag for cli
+# ["command-line-interface"]
+# aliases = ["cli"]
+
+# complexity (1) → stackoverflow: Stack Overflow's master tag for complexity
+# ["complexity-theory"]
+# aliases = ["complexity"]
+
+# conditional (3) → stackoverflow: Stack Overflow's master tag for conditional
+# ["conditional-statements"]
+# aliases = ["conditional"]
+
+# control (5) → stackoverflow: Stack Overflow's master tag for control
+# ["controls"]
+# aliases = ["control"]
+
+# crypto (2) → stackoverflow: Stack Overflow's master tag for crypto
+# ["cryptography"]
+# aliases = ["crypto"]
+
+# data-science (0) → split: its words are tags: data, science
+# ["data"]
+# aliases = ["data-science"]
+
+# debug (1) → stackoverflow: Stack Overflow's master tag for debug
+# ["debugging"]
+# aliases = ["debug"]
+
+# pattern (30) → stackoverflow: Stack Overflow's master tag for pattern
+# ["design-patterns"]
+# aliases = ["pattern"]
+
+# docusign (1) → stackoverflow: Stack Overflow's master tag for docusign
+# ["docusignapi"]
+# aliases = ["docusign"]
+
+# ddd (1) → stackoverflow: Stack Overflow's master tag for ddd
+# ["domain-driven-design"]
+# aliases = ["ddd"]
+
+# emulator (2) → stackoverflow: Stack Overflow's master tag for emulator
+# ["emulation"]
+# aliases = ["emulator"]
+
+# humor (4) → stackoverflow: Stack Overflow's master tag for humor
+# ["fun"]
+# aliases = ["humor"]
+
+# gpg (1) → stackoverflow: Stack Overflow's master tag for gpg
+# ["gnupg"]
+# aliases = ["gpg"]
+
+# bigquery (2) → stackoverflow: Stack Overflow's master tag for bigquery
+# ["google-bigquery"]
+# aliases = ["bigquery"]
+
+# firestore (5) → stackoverflow: Stack Overflow's master tag for firestore
+# ["google-cloud-firestore"]
+# aliases = ["firestore"]
+
+# gcp (25) → stackoverflow: Stack Overflow's master tag for gcp
+# ["google-cloud-platform"]
+# aliases = ["gcp"]
+
+# gpt (26) → stackoverflow: Stack Overflow's master tag for gpt
+# ["google-publisher-tag"]
+# aliases = ["gpt"]
+
+# bcb (3) → together: always with gov (3 entries): redundant, or related?
+# ["gov"]
+# aliases = ["bcb"]
+
+# trick (1) → semantic: one concept
+# ["hacks"]
+# aliases = ["trick"]
+
+# brew (25) → stackoverflow: Stack Overflow's master tag for brew
+# ["homebrew"]
+# aliases = ["brew"]
+
+# hooks (10) → stackoverflow: Stack Overflow's master tag for hooks
+# ["hook"]
+# aliases = ["hooks"]
+
+# redirection (15) → stackoverflow: Stack Overflow's master tag for redirection
+# ["http-redirect"]
+# aliases = ["redirection"]
+
+# iam (8) → stackoverflow: Stack Overflow's master tag for iam
+# ["identity-management"]
+# aliases = ["iam"]
+
+# setup (2) → stackoverflow: Stack Overflow's master tag for setup
+# ["installation"]
+# aliases = ["setup"]
+
+# js (10) → stackoverflow: Stack Overflow's master tag for js
+# ["javascript"]
+# aliases = ["js"]
+
+# jest (1) → stackoverflow: Stack Overflow's master tag for jest
+# ["jestjs"]
+# aliases = ["jest"]
+
+# keyboard (2) → shorten: kb is its established abbreviation
+# ["kb"]
+# aliases = ["keyboard"]
+
+# lint (4) → together: always with ktlint (4 entries): redundant, or related?
+# ["ktlint"]
+# aliases = ["lint"]
+
+# learn (7) → stackoverflow: Stack Overflow's master tag for learn
+# ["learning"]
+# aliases = ["learn"]
+
+# linkedin (1) → stackoverflow: Stack Overflow's master tag for linkedin
+# ["linkedin-api"]
+# aliases = ["linkedin"]
+
+# lsp (2) → stackoverflow: Stack Overflow's master tag for lsp
+# ["liskov-substitution-principle"]
+# aliases = ["lsp"]
+
+# log (2) → stackoverflow: Stack Overflow's master tag for log
+# ["logging"]
+# aliases = ["log"]
+
+# make (24) → stackoverflow: Stack Overflow's master tag for make
+# ["makefile"]
+# aliases = ["make"]
+
+# mcp (3) → stackoverflow: Stack Overflow's master tag for mcp
+# ["model-context-protocol"]
+# aliases = ["mcp"]
+
+# network (2) → stackoverflow: Stack Overflow's master tag for network
+# ["network-programming"]
+# aliases = ["network"]
+
+# nx (63) → stackoverflow: Stack Overflow's master tag for nx
+# ["nomachine-nx"]
+# aliases = ["nx"]
+
+# openai (4) → stackoverflow: Stack Overflow's master tag for openai
+# ["openai-api"]
+# aliases = ["openai"]
+
+# omp (1) → stackoverflow: Stack Overflow's master tag for omp
+# ["openmp"]
+# aliases = ["omp"]
+
+# os (8) → stackoverflow: Stack Overflow's master tag for os
+# ["operating-system"]
+# aliases = ["os"]
+
+# parallel (6) → stackoverflow: Stack Overflow's master tag for parallel
+# ["parallel-processing"]
+# aliases = ["parallel"]
+
+# pwa (1) → stackoverflow: Stack Overflow's master tag for pwa
+# ["progressive-web-apps"]
+# aliases = ["pwa"]
+
+# py (47) → stackoverflow: Stack Overflow's master tag for py
+# ["python"]
+# aliases = ["py"]
+
+# react (17) → stackoverflow: Stack Overflow's master tag for react
+# ["reactjs"]
+# aliases = ["react"]
+
+# repl (18) → stackoverflow: Stack Overflow's master tag for repl
+# ["read-eval-print-loop"]
+# aliases = ["repl"]
+
+# random (1) → shorten: rng is its established abbreviation
+# ["rng"]
+# aliases = ["random"]
+
+# rails (15) → stackoverflow: Stack Overflow's master tag for rails
+# ["ruby-on-rails"]
+# aliases = ["rails"]
+
+# gem (5) → stackoverflow: Stack Overflow's master tag for gem
+# ["rubygems"]
+# aliases = ["gem"]
+
+# data-science (0) → split: its words are tags: data, science
+# ["science"]
+# aliases = ["data-science"]
+
+# shortcuts (8) → stackoverflow: Stack Overflow's master tag for shortcuts
+# ["shortcut"]
+# aliases = ["shortcuts"]
+
+# spaces (1) → stackoverflow: Stack Overflow's master tag for spaces
+# ["space"]
+# aliases = ["spaces"]
+
+# career (5) → stackoverflow: Stack Overflow's master tag for career
+# ["stuck-tag-newbie-career-development"]
+# aliases = ["career"]
+
+# style (1) → stackoverflow: Stack Overflow's master tag for style
+# ["styles"]
+# aliases = ["style"]
+
+# png (4) → together: always with svg (4 entries): redundant, or related?
+# ["svg"]
+# aliases = ["png"]
+
+# tv (1) → stackoverflow: Stack Overflow's master tag for tv
+# ["television"]
+# aliases = ["tv"]
+
+# text-to-speech (0) → shorten: tts is its established abbreviation
+# ["tts"]
+# aliases = ["text-to-speech"]
+
+# underscore (2) → stackoverflow: Stack Overflow's master tag for underscore
+# ["underscore.js"]
+# aliases = ["underscore"]
+
+# ui (1) → stackoverflow: Stack Overflow's master tag for ui
+# ["user-interface"]
+# aliases = ["ui"]
+
+# movie (22) → stackoverflow: Stack Overflow's master tag for movie
+# ["video"]
+# aliases = ["movie"]
+
+# vscode (19) → stackoverflow: Stack Overflow's master tag for vscode
+# ["vs-code"]
+# aliases = ["vscode"]
+
+# xp (53) → stackoverflow: Stack Overflow's master tag for xp
+# ["windows-xp"]
+# aliases = ["xp"]
+
+# ---- Used once, with no proposal: keep if it names something real, else add it as an alias above.
+#   adb
+#   airport
+#   amqp
+#   analytics
+#   application
+#   archive
+#   assessment
+#   azure
+#   bash
+#   bug
+#   bus
+#   cal
+#   charts
+#   chat
+#   cheat
+#   chown
+#   claude
+#   cmd
+#   colorscheme
+#   commit
+#   connection
+#   coreservices
+#   cosmiconfig
+#   css
+#   cue
+#   cut
+#   dark
+#   demo
+#   deno
+#   diy
+#   earth
+#   edgedb
+#   edgeql
+#   editorconfig
+#   embedded
+#   english
+#   enterprise
+#   esmodule
+#   expired
+#   farmacia
+#   finance
+#   fire
+#   games
+#   gemini
+#   geospatial
+#   getconf
+#   gif
+#   gitlab
+#   glances
+#   group
+#   guardrails
+#   hacks
+#   head
+#   http
+#   huh
+#   iac
+#   idea
+#   infrastructure
+#   init
+#   input
+#   interceptor
+#   join
+#   journalctl
+#   json2md
+#   jtbd
+#   key
+#   kind
+#   launcher
+#   layout
+#   les
+#   light
+#   locate
+#   ls
+#   lua
+#   magic
+#   management
+#   manifests
+#   meminfo
+#   menu
+#   mermaid
+#   mkdir
+#   monorepo
+#   multiline
+#   naming
+#   netstat
+#   nlp
+#   observability
+#   omarchy
+#   openapi
+#   p5
+#   pager
+#   paladin
+#   php
+#   picker
+#   pii
+#   pip
+#   plan
+#   port
+#   postgres
+#   powertools
+#   progress
+#   query-language
+#   range
+#   reclamacao
+#   regex
+#   report
+#   revealj
+#   router
+#   rust
+#   sap
+#   semantic-release
+#   sheldon
+#   shortener
+#   shtab
+#   size
+#   skate
+#   snapchat
+#   speedtest
+#   spin
+#   stage
+#   state
+#   storybook
+#   sv
+#   sweden
+#   table
+#   telescope
+#   templating
+#   timeseries
+#   top
+#   transition
+#   treesitter
+#   trie
+#   troubleshooting
+#   tunnel
+#   twitter
+#   ubuntu
+#   unicode
+#   update
+#   url
+#   usage
+#   value
+#   vector
+#   version
+#   water
+#   web3
+#   webhook
+#   webinar
+#   wifi
+#   wind
+#   write
+#   yabai
+#   zed

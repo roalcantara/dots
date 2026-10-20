@@ -1,0 +1,1066 @@
+bookmarks:
+  https://youtu.be/6NVOVhWhRQU:
+    desc: Electra Ultimate Guide - The Most Unique Tank in Hero Wars Alliance!
+    tags: [games, heroes]
+    notes:
+      - md: | #markdown
+          # Electra Ultimate Guide - The Most Unique Tank in Hero Wars Alliance!
+
+          The video outlines five distinct team compositions designed to maximize Electra von Grave's effectiveness as a front-line tank, emphasizing her ability to absorb damage and boost magical allies (12:46).
+
+          Here are the recommended teams and their characteristics:
+
+          ## Electra, Cai, Zesha, Amamira, and Aiden:
+          - A balanced mix of protection and explosive magic.
+          - Electra handles damage absorption, while Aiden boosts healing and shields.
+          - Amamira effectively counters creep-based attackers, and Zesha provides significant magical follow-up.
+
+          ## Electra, Tempest, Nebula, Folio, and Polaris (13:28)
+          - Focused on tempo control.
+          - Tempest locks the enemy team down, Nebula enhances burst potential
+          - Folio and Polaris disrupt formations to create synchronized damage windows.
+
+          ## Electra, Nebula, Zesha, Folio, and Aiden (14:03)
+          - This lineup prioritizes raw magical power.
+          - It is highly effective against mixed physical-magical enemy teams
+          - Nebula supercharging Zesha for lethal, high-damage eliminations.
+
+          ## Electra, Iris, Somna, and Faceless (14:37)
+          - A strategy built on controlled chaos.
+          - This team utilizes Somna's sleep mechanics and Iris's soul-burning execution to punish debuffed enemies
+          - While Faceless offers crowd control by throwing or copying key abilities.
+
+          ## Electra, Tempest, Morgan, Iris, and Faceless (15:15)
+          - The ultimate dismantling composition.
+          - Tempest prevents the enemy from acting, allowing Electra to soak pressure
+          - While Morgan and Iris wipe the field through sustained magical damage and resurrection punishment.
+cheats:
+  Aurora:
+    desc: Paladin warrior equally skillful in vanquishing enemies and protecting allies with Light magic.
+    tags: [games, heroes, paladin]
+    notes:
+      - yaml: | #yaml
+          Way of Nature: Front Line
+          Power: 19 543
+          Tank level: 72
+          Equipment rank: 9
+          Artifact level: 20
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Strength (main): 1233
+          Intelligence: 679
+          Agility: 646
+          Health: 116631
+          Physical attack: 3078
+          Magic attack: 3741
+  Leonel:
+    desc: A fighter who wields two blades. A master of Critical Damage who burns away his enemies' Energy.
+    tags: [games, heroes, warrior]
+    notes:
+      - yaml: | #yaml
+          Way of Nature: Front Line
+          Power: 18 875
+          Warrior level: 72
+          Equipment rank: 9
+          Artifact level: 33
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Agility (main): 1395
+          Strength: 779
+          Intelligence: 391
+          Health: 72 505
+          Physical attack: 5714
+          Magic attack: 1323
+  Guus:
+    desc: Heals allies, boosts physical damage dealers, and turns Honor fighters into a real threat.
+    tags: [games, heroes, healer]
+    notes:
+      - yaml: | #yaml
+          Way of Honor: Middle Line
+          Power: 15 896
+          Healer level: 74
+          Equipment rank: 9
+          Artifact level: 16
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Strength (main): 1156
+          Agility: 335
+          Intelligence: 420
+          Health: 90 495
+          Physical attack: 2972
+          Magic attack: 1410
+  Ziri:
+    desc: She reflects damage back at enemies when she lures them in, and can escape underground to heal.
+    tags: [games, heroes, tank]
+    notes:
+      - yaml: | #yaml
+          Way of Mystery: Front Line
+          Power: 15 489
+          Tank level: 70
+          Equipment rank: 9
+          Artifact level: 15
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Strength (main): 1212
+          Intelligence: 288
+          Agility: 282
+          Health: 88 570
+          Physical attack: 3532
+          Magic attack: 1014
+  Maya:
+    desc: The wondrous child of Man and Titan, she commands the healing magic of beautiful poisonous flowers.
+    tags: [games, heroes, healer]
+    notes:
+      - yaml: | #yaml
+          Way of Nature: Middle Line
+          Power: 15 355
+          Healer level: 70
+          Equipment rank: 9
+          Artifact level: 16
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 1166
+          Strength: 389
+          Agility: 309
+          Health: 52 897
+          Physical attack: 2151
+          Magic attack: 6042
+  Dante:
+    desc: Gruesome reaper who dodges every attack as he launches a host of spears to destroy his enemies.
+    tags: [games, heroes, marksman]
+    notes:
+      - yaml: | #yaml
+          Way of Eternity: Middle Line
+          Power: 15 220
+          Marksman level: 68
+          Equipment rank: 9
+          Artifact level: 20
+          Damage: 2
+          Defense: 2
+          Support: 1
+          Healing: 0
+          Agility (main): 973
+          Intelligence: 386
+          Strength: 448
+          Health: 59 415
+          Physical attack: 4229
+          Magic attack: 1308
+  Phobos:
+    desc: Overlord of Horror, Bane of Mages. His curses drain all energy from the mages he lays them on.
+    tags: [games, heroes, control]
+    notes:
+      - yaml: | #yaml
+          Way of Eternity: Back Line
+          Power: 14 847
+          Control level: 70
+          Equipment rank: 8
+          Artifact level: 15
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 934
+          Agility: 369
+          Strength: 384
+          Health: 54 122
+          Physical attack: 2095
+          Magic attack: 4792
+  Morrigan:
+    desc: She mastered necromancy to resurrect her enemies and make them fight for her.
+    tags: [games, heroes, healer]
+    notes:
+      - yaml: | #yaml
+          Way of Eternity: Middle Line
+          Power: 14 283
+          Healer level: 70
+          Equipment rank: 8
+          Artifact level: 12
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 970
+          Agility: 314
+          Strength: 464
+          Health: 57 342
+          Physical attack: 1990
+          Magic attack: 4351
+  Kayla:
+    desc: The ardent warrior rushes into the midst of her enemies without fear. With the support of her brother, Aidan, she is unstoppable.
+    tags: [games, heroes, warrior]
+    notes:
+      - yaml: | #yaml
+          Way of Chaos: Front Line
+          Power: 14 227
+          Warrior level: 69
+          Equipment rank: 9
+          Artifact level: 14
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Agility (main): 892
+          Intelligence: 256
+          Strength: 425
+          Health: 62 575
+          Physical attack: 4328
+          Magic attack: 918
+  Jorgen:
+    desc: Warlock who manipulates enemy energy with dark rituals. Don't even think about drinking of his cup!
+    tags: [games, heroes, control]
+    notes:
+      - yaml: | #yaml
+          Way of Chaos: Middle Line
+          Power: 12 680
+          Control level: 70
+          Equipment rank: 9
+          Artifact level: 11
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Strength (main): 861
+          Agility: 212
+          Intelligence: 325
+          Health: 77 370
+          Physical attack: 1652
+          Magic attack: 2479
+  Peech:
+    desc: Circus performer who knocks enemies off their feet with her whip. Hits harder when fighting alongside Chaos heroes.
+    tags: [games, heroes, warrior]
+    notes:
+      - yaml: | #yaml
+          Way of Chaos: Front Line
+          Power: 12 266
+          Warrior level: 67
+          Equipment rank: 8
+          Artifact level: 12
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Agility (main): 790
+          Strength: 456
+          Intelligence: 298
+          Health: 53 700
+          Physical attack: 3322
+          Magic attack: 1044
+  Artemis:
+    desc: Bow-wielding markswoman with a piercing gaze. The more cohesive her team, the more effective she is.
+    tags: [games, heroes, marksman]
+    notes:
+      - yaml: | #yaml
+          Way of Honor: Back Line
+          Power: 12 226
+          Marksman level: 62
+          Equipment rank: 8
+          Artifact level: 15
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Agility (main): 749
+          Strength: 308
+          Intelligence: 376
+          Health: 48 200
+          Physical attack: 3719
+          Magic attack: 1278
+  Keira:
+    desc: Fallen King's Guard Captain who continues vanquishing foes, even as a specter.
+    tags: [games, heroes, marksman]
+    notes:
+      - yaml: | #yaml
+          Way of Eternity: Middle Line
+          Power: 12 203
+          Marksman level: 65
+          Equipment rank: 7
+          Artifact level: 6
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Agility (main): 870
+          Strength: 509
+          Intelligence: 378
+          Health: 55 820
+          Physical attack: 4108
+          Magic attack: 1284
+  Folio:
+    desc: Knowledge is everything for this living magical book. The power of spells hidden within it is devastating.
+    tags: [games, heroes, mage]
+    notes:
+      - yaml: | #yaml
+          Way of Mystery: Middle Line
+          Power: 11 602
+          Mage level: 67
+          Equipment rank: 8
+          Artifact level: 9
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 943
+          Agility: 266
+          Strength: 276
+          Health: 49 600
+          Physical attack: 1842
+          Magic attack: 4750
+  Julius:
+    desc: Fluffiest defender with an impenetrable shield. He protects, he attacks, and most of all, he naps.
+    tags: [games, heroes, tank]
+    notes:
+      - yaml: | #yaml
+          Way of Progress: Front Line
+          Power: 11 577
+          Tank level: 68
+          Equipment rank: 9
+          Artifact level: 11
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Strength (main): 723
+          Intelligence: 236
+          Agility: 313
+          Health: 64 365
+          Physical attack: 3213
+          Magic attack: 858
+  Thea:
+    desc: Hex of the Old Grove - she heals and increases the speed of her allies.
+    tags: [games, heroes, healer]
+    notes:
+      - yaml: | #yaml
+          Way of Nature: Back Line
+          Power: 11 443
+          Healer level: 68
+          Equipment rank: 7
+          Artifact level: 14
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 849
+          Strength: 321
+          Agility: 311
+          Health: 48 318
+          Physical attack: 1866
+          Magic attack: 3953
+  Galahad:
+    desc: Eager maverick fighter, he crushes his enemies with the power of his magic sword.
+    tags: [games, heroes, warrior]
+    notes:
+      - yaml: | #yaml
+          Way of Honor: Front Line
+          Power: 11 316
+          Warrior level: 67
+          Equipment rank: 8
+          Artifact level: 9
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Strength (main): 654
+          Intelligence: 330
+          Agility: 386
+          Health: 62 750
+          Physical attack: 2665
+          Magic attack: 1140
+  Mushy and Shroom:
+    desc: Fungal monster and her servants grow when they are healed. Blink and they've become Legion.
+    tags: [games, heroes, tank]
+    notes:
+      - yaml: | #yaml
+          Way of Nature: Front Line
+          Power: 10 307
+          Tank level: 70
+          Equipment rank: 7
+          Artifact level: 10
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 637
+          Strength: 348
+          Agility: 128
+          Health: 53 928
+          Physical attack: 1260
+          Magic attack: 2923
+  Nebula:
+    desc: Stellar warrior who attacks less with promotions, but her buffs and healing become more effective.
+    tags: [games, heroes, support]
+    notes:
+      - yaml: | #yaml
+          Way of Progress: Middle Line
+          Power: 10 280
+          Support level: 69
+          Equipment rank: 7
+          Artifact level: 10
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Agility (main): 876
+          Intelligence: 272
+          Strength: 404
+          Health: 49 680
+          Physical attack: 3693
+          Magic attack: 966
+  Ginger:
+    desc: Blue-blooded and deadly elegant, she mows enemies down from her self-made chain-gun.
+    tags: [games, heroes, marksman]
+    notes:
+      - yaml: | #yaml
+          Way of Progress: Back Line
+          Power: 10 213
+          Marksman level: 54
+          Equipment rank: 7
+          Artifact level: 5
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Agility (main): 557
+          Intelligence: 316
+          Strength: 317
+          Health: 49 960
+          Physical attack: 2823
+          Magic attack: 1098
+  Faceless:
+    desc: Mysterious wizard with the fearsome power to copy the skills of his enemies and allies.
+    tags: [games, heroes, control]
+    notes:
+      - yaml: | #yaml
+          Way of Eternity: Back Line
+          Power: 10 117
+          Control level: 62
+          Equipment rank: 7
+          Artifact level: 5
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 637
+          Agility: 295
+          Strength: 305
+          Health: 49 485
+          Physical attack: 1718
+          Magic attack: 2947
+  Mojo:
+    desc: Voodoo shaman that commands evil spirits to smite foes and nature magic to heal allies.
+    tags: [games, heroes, mage]
+    notes:
+      - yaml: | #yaml
+          Way of Nature: Middle Line
+          Power: 9 498
+          Mage level: 69
+          Equipment rank: 7
+          Artifact level: 7
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 763
+          Agility: 347
+          Strength: 357
+          Health: 50 165
+          Physical attack: 1824
+          Magic attack: 3063
+  Electra von Grave:
+    desc: Tank, absorbs Damage directed at her and her allies, and boosts her Health by sacrificing other stats.
+    tags: [games, heroes, tank]
+    notes:
+      - yaml: | #yaml
+          Way of Eternity: Front Line
+          Power: 8 808
+          Tank level: 63
+          Equipment rank: 7
+          Artifact level: 5
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Strength (main): 767
+          Intelligence: 362
+          Agility: 193
+          Health: 69 934
+          Physical attack: 1565
+          Magic attack: 1878
+  Drayne:
+    desc: Fighter - a sword master whose whirling attacks leave enemies in pieces, sparing no mercy on the wounded.
+    tags: [games, heroes, warrior]
+    notes:
+      - yaml: | #yaml
+          Way of Eternity: Front Line
+          Power: 8 584
+          Warrior level: 74
+          Equipment rank: 8
+          Artifact level: 4
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Strength (main): 650
+          Intelligence: 222
+          Agility: 285
+          Health: 66 375
+          Physical attack: 2097
+          Magic attack: 816
+  Astaroth:
+    desc: Fallen angel who sacrifices himself to protect allies and can even snatch them from death's grip.
+    tags: [games, heroes, tank]
+    notes:
+      - yaml: | #yaml
+          Way of Chaos: Front Line
+          Power: 8 447
+          Tank level: 58
+          Equipment rank: 6
+          Artifact level: 4
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Strength (main): 537
+          Intelligence: 336
+          Agility: 267
+          Health: 57 860
+          Physical attack: 1619
+          Magic attack: 1357
+  Byrna:
+    desc: Healer. Together with a Guardian Spirit, she heals her allies, grants them Energy, and purges Control effects.
+    tags: [games, heroes, healer]
+    notes:
+      - yaml: | #yaml
+          Way of Nature: Middle Line
+          Power: 8 042
+          Healer level: 72
+          Equipment rank: 6
+          Artifact level: 6
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 831
+          Strength: 327
+          Agility: 283
+          Health: 47 260
+          Physical attack: 1846
+          Magic attack: 3138
+  Soleil:
+    desc: Having vanquished the ancient deity, the priest stands guard over order. He will not let chaos affect the lives of his allies.
+    tags: [games, heroes, support]
+    notes:
+      - yaml: | #yaml
+          Way of Honor: Middle Line
+          Power: 8 181
+          Support level: 55
+          Equipment rank: 4
+          Artifact level: 4
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 835
+          Strength: 314
+          Agility: 304
+          Health: 44 172
+          Physical attack: 1838
+          Magic attack: 2972
+  Polaris:
+    desc: Frozen star from Way of Progress. Her area attacks stun enemies and make them vulnerable to magic damage.
+    tags: [games, heroes, control]
+    notes:
+      - yaml: | #yaml
+          Way of Progress: Back Line
+          Power: 7 558
+          Control level: 68
+          Equipment rank: 6
+          Artifact level: 4
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 652
+          Strength: 376
+          Agility: 230
+          Health: 50 290
+          Physical attack: 1479
+          Magic attack: 3116
+  Helios:
+    desc: The Sun's Harbinger uses magic to protect allies from pain and suffering, inflicting them on foes.
+    tags: [games, heroes, support]
+    notes:
+      - yaml: | #yaml
+          Way of Honor: Back Line
+          Power: 7 194
+          Support level: 55
+          Equipment rank: 4
+          Artifact level: 3
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 542
+          Strength: 252
+          Agility: 252
+          Health: 41 325
+          Physical attack: 1413
+          Magic attack: 2392
+  Kai:
+    desc: Conceited yet talented, this mage knows how to heal himself when attacking enemies with magic.
+    tags: [games, heroes, mage]
+    notes:
+      - yaml: | #yaml
+          Way of Chaos: Middle Line
+          Power: 7 143
+          Mage level: 53
+          Equipment rank: 5
+          Artifact level: 3
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 384
+          Strength: 196
+          Agility: 186
+          Health: 39 260
+          Physical attack: 1123
+          Magic attack: 2006
+  Somna:
+    desc: Control hero, reduces enemies' physical damage and armor penetration, puts them to sleep, and turns them into sheep.
+    tags: [games, heroes, control]
+    notes:
+      - yaml: | #yaml
+          Way of Mystery: Middle Line
+          Power: 6 967
+          Control level: 63
+          Equipment rank: 6
+          Artifact level: 2
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Agility (main): 686
+          Intelligence: 289
+          Strength: 220
+          Health: 40 700
+          Physical attack: 2982
+          Magic attack: 1017
+  Krista:
+    desc: Ice witch who freezes enemies and the battlefield itself. Untouchable alongside her brother, Lars.
+    tags: [games, heroes, support]
+    notes:
+      - yaml: | #yaml
+          Way of Chaos: Middle Line
+          Power: 6 161
+          Support level: 56
+          Equipment rank: 6
+          Artifact level: 4
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 503
+          Strength: 139
+          Agility: 195
+          Health: 37 178
+          Physical attack: 1288
+          Magic attack: 2719
+  Xe'Sha:
+    desc: Witch who draws power by lowering allied health, imbuing them with destructive strength instead.
+    tags: [games, heroes, mage]
+    notes:
+      - yaml: | #yaml
+          Way of Chaos: Middle Line
+          Power: 5 569
+          Mage level: 63
+          Equipment rank: 4
+          Artifact level: 2
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 439
+          Strength: 218
+          Agility: 155
+          Health: 40 730
+          Physical attack: 1116
+          Magic attack: 2031
+  Kendle:
+    desc: Mage. Tortures herself and her allies, enhancing damage, attacks enemies with pure damage, and empowers Critical Hits.
+    tags: [games, heroes, mage]
+    notes:
+      - yaml: | #yaml
+          Way of Chaos: Back Line
+          Power: 5 525
+          Mage level: 56
+          Equipment rank: 3
+          Artifact level: 2
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 498
+          Strength: 310
+          Agility: 188
+          Health: 44 170
+          Physical attack: 1241
+          Magic attack: 1819
+  Amira:
+    desc: Lady Djinn who manipulates the enemy's desires to weaken them. Strong against low-damage enemies.
+    tags: [games, heroes, support]
+    notes:
+      - yaml: | #yaml
+          Way of Mystery: Middle Line
+          Power: 4 691
+          Support level: 53
+          Equipment rank: 2
+          Artifact level: 1
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Intelligence (main): 322
+          Strength: 178
+          Agility: 125
+          Health: 37 620
+          Physical attack: 939
+          Magic attack: 1191
+  Yasmine:
+    desc: Fearsome assassin who appears behind enemies' backs to deal critical hits with her poison blades.
+    tags: [games, heroes, warrior]
+    notes:
+      - yaml: | #yaml
+          Way of Nature: Front Line
+          Power: 5 105
+          Warrior level: 36
+          Equipment rank: 4
+          Artifact level: 1
+          Damage: 2
+          Defense: 5
+          Support: 1
+          Healing: 0
+          Agility (main): 240
+          Intelligence: 137
+          Strength: 141
+          Health: 38 675
+          Physical attack: 1269
+          Magic attack: 561
+  Common Hydra Darkness:
+    desc: A dark variant of the common hydra, known for its multiple heads and regenerative abilities.
+    tags: [games, heroes, hydra]
+    notes:
+      - md: | #markdown
+          ## Common Hydra Darkness
+          > Best results come from a front-line sustain team that can absorb pressure, keep the party alive, and finish the fight without losing tempo.
+
+          - Team 1: Control + sustain
+            > This is the safest setup for a slower, more methodical fight because it keeps the front line stable while preserving enough support to survive the hydra's damage spikes.
+            > Leonel provides the strongest melee pressure from the front line and helps keep the fight moving with high physical attack output.
+            > Mojo adds magic pressure and keeps the team from being too dependent on a single damage source, which matters when the hydra is durable and long-lived.
+            > Morrigan adds sustain and magic-focused healing, helping the squad recover during the longer damage phases.
+            > Aurora gives the team the reliable tanking and durability needed to anchor the formation while staying safe under fire.
+            > Guus is the clean support anchor here: his healing and team utility keep the party steady and reduce the risk of the fight collapsing after a bad burst window.
+            1. Leonel
+            2. Mojo
+            3. Morrigan
+            4. Aurora
+            5. Guus
+
+          - Team 2: Front-line bruiser
+            > This lineup focuses on heavy damage absorption and strong healing throughput because the hydra can punish thin, glassy teams.
+            > Mushy and Shroom is the primary wall here: a tank hero with high health and front-line presence makes it much easier to absorb pressure before the back line is exposed.
+            > Kayla contributes direct melee damage and keeps pressure on the hydra while the team absorbs the incoming punishment.
+            > Phobos adds control and target disruption, which helps the team keep the hydra from freely pushing back into the formation.
+            > Maya provides the sustain side of the duo, keeping the back line stable during the longer damage cycles.
+            > Ziri brings extra tank durability and a second sturdy front-line anchor so the team can trade health more safely and recover faster.
+            1. Mushy and Shroom
+            2. Kayla
+            3. Phobos
+            4. Maya
+            5. Ziri
+
+          - Team 3: Burst + cleanup
+            > Best when you want a faster kill pattern and quick removal of the strongest head because the damage carriers are concentrated enough to end the fight before sustain becomes an issue.
+            > Dante is the main carry here: his marksmanship profile and high physical attack output make him ideal for clean finishing damage.
+            > Byrna provides team sustain and anti-control support, keeping the burst group from falling apart during a bad exchange.
+            > Julius adds a second durable front-line component, which is valuable because the battleground is more dangerous when the team tries to rush the kill.
+            > Jorgen brings the control-side utility needed to keep the hydra from overwhelming the squad during the burst sequence.
+            > Thea gives the team enough healing and support consistency to keep the burst core alive long enough to finish the head.
+            1. Dante
+            2. Byrna
+            3. Julius
+            4. Jorgen
+            5. Thea
+  Common Hydra Water:
+    desc: A water variant of the common hydra that punishes slow teams and favors sustained control and magic-safe front lines.
+    tags: [games, heroes, hydra]
+    notes:
+      - md: | #markdown
+          ## Common Hydra Water
+          > The best approach is a balanced team with reliable front-line durability, magic control, and enough healer coverage to survive long pressure phases.
+
+          - Team 1: Magic control core
+            > This team works because it combines two durable front-line anchors with strong magic control and enough sustain to keep the hydra from outlasting the party.
+            > Mojo is the magical pressure piece: his mage profile and strong magic output let the team punish the hydra while staying in range.
+            > Folio adds another high-magic damage lane and keeps the compositional pressure high, which is important against a water head that favors drawn-out fights.
+            > Jorgen gives the team power through control and utility, helping the squad stay stable instead of being overwhelmed by repeated pressure.
+            > Aurora provides a safe front-line anchor and makes the formation more forgiving when the hydra starts trading damage in longer lanes.
+            > Guus keeps the whole setup alive with healing support, which is especially valuable in a slower hydra fight where the team cannot afford a bad sustain break.
+            1. Mojo
+            2. Folio
+            3. Jorgen
+            4. Aurora
+            5. Guus
+
+          - Team 2: Back-line burst
+            > This lineup works best when you want to pressure the hydra fast and finish before it can recover because the actual damage core is concentrated in the ranged carries.
+            > Keira adds elite marksman pressure and backs the team's burst sequence with a strong ranged attack profile.
+            > Nebula gives this setup a support layer that keeps the damage core active and stable during the key burst windows.
+            > Artemis increases the ranged burst value and helps the team convert a short opening into a quicker finish.
+            > Ziri provides the secondary front-line protection needed so the back line is not exposed while the squad is committing to damage.
+            > Maya supplies sustain and healing, which makes the burst line less fragile when the hydra counters with pressure.
+            1. Keira
+            2. Nebula
+            3. Artemis
+            4. Ziri
+            5. Maya
+
+          - Team 3: Sustain pressure
+            > This team is stronger when the fight drags because it has a stable tank, solid healing, and enough ranged pressure to keep the hydra under control while the party recovers.
+            > Electra von Grave acts as the primary front-line anchor and absorbs pressure so the team can keep attacking without immediately collapsing.
+            > Drayne brings front-line melee pressure and keeps the enemy from freely taking the range lane while the support line sets up.
+            > Helios provides the defensive support layer needed to keep the squad stable during pressure-heavy phases.
+            > Dante adds clean damage output and keeps the hydra from simply surviving until the support line burns out.
+            > Morrigan supplies consistent sustain and healing, making this setup more forgiving in a longer water-head fight.
+            1. Electra von Grave
+            2. Drayne
+            3. Helios
+            4. Dante
+            5. Morrigan
+  Common Hydra Earth:
+    desc: An earth variant of the common hydra that rewards sturdy tanks and stable front-line presence over fragile burst compositions.
+    tags: [games, heroes, hydra]
+    notes:
+      - md: | #markdown
+          ## Common Hydra Earth
+          > Earth heads punish glass-cannon teams. Prioritize tanks, team sustain, and a steady damage rhythm rather than all-in burst.
+
+          - Team 1: Unshakable wall
+            > This is the most reliable setup because it layers tank authority and healing in a way that prevents the hydra from ever getting a clean damage window.
+            > Electra von Grave is the defensive core: her tank profile and high health let the team absorb the front-line punishment that earth bosses naturally create.
+            > Mushy and Shroom brings additional frontline tank presence and keeps the formation stable when the hydra tries to rush the midline.
+            > Astaroth adds another durable tank line so the party can stay physically present and absorb more pressure before forcing a kill.
+            > Guus keeps the team alive while the tank line takes the brunt of the pressure and the damage dealers rotate in.
+            > Aurora gives the team a more robust lead front-liner and makes the whole lineup harder to collapse under attrition.
+            1. Electra von Grave
+            2. Mushy and Shroom
+            3. Astaroth
+            4. Guus
+            5. Aurora
+
+          - Team 2: Front-line offense
+            > This is a more aggressive earth-head plan: it still keeps the line stable, but it pushes more damage through the front line instead of waiting for the back line to do all the work.
+            > Julius gives the team the main front-line tank and a durable melee anchor so the fight can remain in the center longer.
+            > Galahad adds front-line pressure and helps the team hold the line without losing tempo.
+            > Kayla adds direct physical aggression and helps the damage side stay active while the team absorbs the hydra's hits.
+            > Maya provides the sustain needed to keep the fight from turning into a slow attrition loss.
+            > Phobos contributes control and disruption, which helps the squad control the flow when the hydra starts to overwhelm the front line.
+            1. Julius
+            2. Galahad
+            3. Kayla
+            4. Maya
+            5. Phobos
+
+          - Team 3: Counter-punch team
+            > This version is a better fit when you want a more mobile team that still has enough sustain to avoid falling apart in a tougher phase.
+            > Ziri is the main defensive anchor and helps the squad survive the initial pressure while the group repositions around the hydra.
+            > Drayne adds melee output and keeps the front line active without making the team too fragile.
+            > Yasmine adds extra burst and makes the team more dangerous during the moments when the hydra is exposed or low on tempo.
+            > Thea gives the team essential support and healing so the faster punch line does not fall apart under repeated pressure.
+            > Guus makes the setup safer by covering the weakest portions of the team with steady, dependable support.
+            1. Ziri
+            2. Drayne
+            3. Yasmine
+            4. Thea
+            5. Guus
+  Common Hydra Light:
+    desc: A light variant of the common hydra that rewards disciplined healing, control, and consistent back-line pressure.
+    tags: [games, heroes, hydra]
+    notes:
+      - md: | #markdown
+          ## Common Hydra Light
+          > Light heads feel easier with strong support, clean control, and enough burst to finish before the sustain cycle breaks.
+
+          - Team 1: Support lockdown
+            > This lineup works because it balances control, support, and ranged pressure in a way that keeps the team stable while the hydra tries to outlast it.
+            > Polaris adds the control element and helps the team keep the hydra from freely setting the pace of the exchange.
+            > Soleil brings the team the support layer needed to keep the fight from spiraling, especially when the hydra's pressure is long-ranged or repetitive.
+            > Helios improves the sustain value and makes the squad more resilient during the slower damage windows.
+            > Dante keeps the pressure consistent from the back line and helps the team convert a safe start into a clean finish.
+            > Keira adds another ranged damage source, which matters because the team is trying to win by steady pressure rather than one loud burst.
+            1. Polaris
+            2. Soleil
+            3. Helios
+            4. Dante
+            5. Keira
+
+          - Team 2: Tank + support core
+            > This is the safer version of the light-head plan because it keeps the front line stable and gives the team enough sustain to survive the mid-fight pressure cycle.
+            > Aurora anchors the formation with tank durability and makes the whole team less fragile under repeated attacks.
+            > Thea supplies the healing and support that keep the back line stable while the squad controls the pace of the fight.
+            > Guus helps the team absorb the sustain burden, making the formation more reliable during longer engagements.
+            > Leonel adds direct melee pressure and helps the squad keep momentum without depending on a fragile back line.
+            > Mojo adds magic pressure and extra damage coverage so the team is not purely reliant on one kind of attack.
+            1. Aurora
+            2. Thea
+            3. Guus
+            4. Leonel
+            5. Mojo
+
+          - Team 3: High-tempo back line
+            > This team is designed to win by faster damage and fewer delays: the back line is loaded for burst and the support is there to keep the pressure from collapsing.
+            > Nebula gives the team support and tempo control, which helps the ranged core keep a steady rhythm.
+            > Artemis is the cleanest ranged carry here, making the burst line stronger and more consistent.
+            > Kayla contributes the direct physical pressure needed to keep the hydra from recovering while the back line is attacking.
+            > Faceless adds utility and disruption, which helps the team keep the hydra under control rather than letting it dictate the pace.
+            > Morrigan keeps the team stable with healing sustain, so the faster damage line can actually complete the win without falling apart.
+            1. Nebula
+            2. Artemis
+            3. Kayla
+            4. Faceless
+            5. Morrigan
+  Common Hydra Wind:
+    desc: A wind variant of the common hydra that favors speed, repositioning, and elite burst carries over heavy tanking.
+    tags: [games, heroes, hydra]
+    notes:
+      - md: | #markdown
+          ## Common Hydra Wind
+          > Wind heads are easier to control with a high-mobility team and strong carry damage; avoid leaning too hard on pure tank anchors.
+
+          - Team 1: Crit burst
+            > This is the strongest kill-focused setup because it puts the maximum value into the damage carries while keeping just enough support to survive the shorter but sharper pressure windows.
+            > Leonel is the ideal front-line carry for this team because his warrior profile gives the squad immediate physical pressure and a way to hit fast.
+            > Yasmine adds the critical-damage threat and makes the team significantly stronger during the moments when pressure needs to spike.
+            > Dante provides ranged burst and keeps the damage core lean, fast, and threatening.
+            > Keira brings another strong marksman lane and helps the team turn a short opening into a clean finish.
+            > Artemis reinforces the ranged carry role and increases the team’s ability to stack output without overcommitting on healing or tanking.
+            1. Leonel
+            2. Yasmine
+            3. Dante
+            4. Keira
+            5. Artemis
+
+          - Team 2: Balanced tempo
+            > This is the more forgiving wind-head setup because it still carries enough damage, but it adds durable support and protection so the team is not too easy to punish.
+            > Kayla supplies the bulk of the direct melee pressure and helps the squad stay in the fight while the support line stabilizes.
+            > Drayne brings extra front-line durability and keeps the team from collapsing when the hydra tries to punish the melee lane.
+            > Nebula is the tempo support here, helping the damage core stay efficient without forcing the lineup to be overly fragile.
+            > Thea adds steady healing value, which is what makes this team a safer choice than a pure glass-cannon burst core.
+            > Guus gives the squad the finishing support layer it needs to keep the damage line alive long enough to convert pressure into a win.
+            1. Kayla
+            2. Drayne
+            3. Nebula
+            4. Thea
+            5. Guus
+
+          - Team 3: Control + pressure
+            > This version is useful when you want to slow the hydra down and punish the recovery cycle instead of simply trying to burst it down.
+            > Jorgen provides control utility and keeps the fight from becoming a raw numbers contest.
+            > Phobos adds a second control layer and gives the team more leverage when the hydra tries to force a quick counterattack.
+            > Folio keeps the magic damage side alive and helps the control-heavy lineup still produce enough pressure to win.
+            > Aurora is the anchor that keeps the formation from collapsing during a drawn-out exchange.
+            > Morrigan ensures the team can survive the long phases without losing the damage cycle, which is essential when the strategy is control-first rather than burst-first.
+            1. Jorgen
+            2. Phobos
+            3. Folio
+            4. Aurora
+            5. Morrigan
+  Common Hydra Fire:
+    desc: A fire variant of the common hydra that favors explosive magic damage and full-team pressure during the burst phase.
+    tags: [games, heroes, hydra]
+    notes:
+      - md: | #markdown
+          ## Common Hydra Fire
+          > Fire heads reward high burst, magic output, and a stable front line. This is the cleanest place to use your heavier mages and control heroes together.
+
+          - Team 1: Mage burst
+            > This is the most aggressive team because it stacks magical power and pressure together, which is exactly what a fire hydra rewards.
+            > Folio is the lead caster here and carries the biggest magic damage contribution of the team.
+            > Kai adds follow-up magic pressure and helps the team keep the lane hot instead of letting the enemy reset.
+            > Xe'Sha contributes the high-burst caster role and makes the team dangerous during the compressed burst windows.
+            > Kendle adds another burst-focused mage so the squad has enough magical damage density to finish before the boss can reset.
+            > Jorgen rounds out the composition with control and utility, helping the team keep the fight in the burst phase instead of letting it drift into a slower attrition fight.
+            1. Folio
+            2. Kai
+            3. Xe'Sha
+            4. Kendle
+            5. Jorgen
+
+          - Team 2: Reliable all-rounder
+            > This team is better for a steady, safer win because it keeps the front line secure without giving up the power needed to finish a fire-head fight.
+            > Aurora works as the core tank and durability anchor, preventing the squad from becoming too fragile under the hydra's pressure.
+            > Guus brings the core support and sustain layer, which makes the team safer during the longer fire-head exchange.
+            > Leonel adds melee pressure and helps the squad keep momentum instead of dragging the engagement out with pure healing.
+            > Mojo gives the line a strong magic damage option so the team is not forced to rely only on precise front-line damage.
+            > Morrigan keeps the whole party from collapsing during the longer battle rhythm and makes this a practical all-rounder choice.
+            1. Aurora
+            2. Guus
+            3. Leonel
+            4. Mojo
+            5. Morrigan
+
+          - Team 3: Front-line + caster mix
+            > This version is the best compromise when you want a sturdier front line without losing your caster pressure, especially if the hydra is more punishing than a simple burst check.
+            > Electra von Grave gives the team its primary front-line soak, letting the rest of the group commit to offense without immediately losing the formation.
+            > Astaroth adds an additional tank function and gives the team more durability during the prolonged pressure windows.
+            > Ziri contributes a second tough front-line anchor and strengthens the defense, which is helpful when the fight is slower and less burst-oriented.
+            > Mojo keeps the magical pressure side active so the team does not become purely a front-line soak lineup.
+            > Thea ensures the group stays stable enough to convert the defense into long-term pressure rather than simply surviving the fight.
+            1. Electra von Grave
+            2. Astaroth
+            3. Ziri
+            4. Mojo
+            5. Thea
+  Heroes Alliance Teams:
+    desc: Team Composition for Heroes Alliance
+    tags: [games, heroes]
+    notes:
+      - md: | #markdown
+          ## Heroes Alliance Teams
+
+          ### Main Team
+
+          > This is the main team composition for the Heroes Alliance faction,
+          > optimized for balanced performance across various encounters.
+
+          1. Aurora _Tank_
+          2. Leonel _Warrior_
+          3. Guus _Healer_
+          4. Dante _Marksman_
+          5. Phobos _Control_
+
+# Based on the video, here are the top 5 META teams for Hero Wars: Alliance in 2026, known for their powerful synergy and dominance in the current landscape:
+
+# Team 1 (01:50): Yasmine, Byrna, Dante, Cornelius, and Octavia. This setup excels in precision assassination and anti-mage control.
+# Team 2 (03:43): Electra, Drayne, Kayla, Folio, and Aidan. This is built for explosive chaos damage and relentless aggression.
+# Team 3 (05:24): Julius, Byrna, Somna, Folio, and Polaris. A lineup focused on shielding, control, and magical amplification.
+# Team 4 (06:58): Electra, Kayla, Byrna, Iris, and Polaris. A super offensive line designed to destroy opponents quickly.
+# Team 5 (08:18): Yasmine, Byrna, Somna, Folio, and Octavia. A highly adaptable team blending assassination, control, and magical burst.
+
+# In Hero Wars: Alliance, the meta refers to the most effective team strategies currently dominating the game. As the battlefield of Dominion changes with new heroes, relics, and balance updates (0:15 - 0:26), players must adapt their lineups to stay competitive.
+
+# In 2026, the meta is defined by:
+
+# High-Tempo Play: Teams that can strike first, disrupt the enemy, and snowball their advantage are the most successful (0:55 - 1:03).
+# Synergy: It is not about random heroes; the best teams use characters whose abilities connect perfectly (1:17 - 1:26), allowing damage to amplify damage and control to enable burst damage.
+# Adaptability: Because the game is always evolving, the strongest players are those who constantly test and experiment to find new counters (1:29 - 1:44).

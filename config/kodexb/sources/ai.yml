@@ -1,0 +1,1432 @@
+bookmarks:
+  https://youtu.be/X4FVEEegCbk:
+    desc: Skills vs MCP vs RAG vs Memory - What AI Agents Need to Know
+    tags: [ai, skills, mcp, rag, memory]
+    notes:
+      - md: | #markdown
+          # Skills vs MCP vs RAG vs Memory - What AI Agents Need to Know
+
+          - If it's knowledge that somebody has written down: that's RAG.
+          - if it's knowledge that the agents picked up from experience, that's memory.
+          - if it's a procedure to follow something repeatable, that's an agent skill.
+          - if an agent needs to go and actually look something up in the world without
+            using proprietary code, that can be MCP.
+  https://youtu.be/goU9VIXA8II:
+    desc: MCP vs Skills - Which Is Right for Your AI Agent and LLMs?
+    tags: [ai, skills, mcp, rag, memory]
+    notes:
+      - md: | #markdown
+          # MCP vs Skills: Which Is Right for Your AI Agent and LLMs?
+
+          - If it's knowledge that somebody has written down: that's RAG.
+          - if it's knowledge that the agents picked up from experience, that's memory.
+          - if it's a procedure to follow something repeatable, that's an agent skill.
+          - if an agent needs to go and actually look something up in the world without
+            using proprietary code, that can be MCP.
+  https://xirp.spotify.com:
+    desc: Xirp connects to your services, ownership, docs, and architectural decisions — so every AI coding session starts with real context, not guesswork.
+    tags: [ai, coding, harness]
+
+  https://app.artflow.ai:
+    desc: Artflow | AI-powered photo editing
+    tags: [ai, coding]
+    links:
+      - AI Actors are Here! What Comes Next?: https://youtu.be/N5n4W4mGlNo
+      - AI Images of YOU (New FREE & Easy Method): https://youtu.be/u5I41tUm5RQ
+      - My Creations: https://app.artflow.ai/my-creations/5f5f9604464545668e29e877d1102e5e
+      - My Creations: https://app.artflow.ai/my-creations/e5bc795d026b4647ab7d1410e9eae6fa
+      - My Creations: https://app.artflow.ai/my-creations/aacf2205462f4976a7c40fedd4ce38d7
+    notes:
+      - md: |
+          ## Prompts
+
+          > @roalcantara as green lantern flying above a city skyline
+
+          > Action Movie Scene Of @roalcantara As The Hulk, Chaotic Hero. Explosion In The Background. Evil Grin, Gloomy.
+
+          > Sitting behind a news desk, @roalcantara newscaster in a tv station, holding a microphone, reporting the news
+
+          > @roalcantara As A Vampire, With A Black Cape, Red Eyes, And Fangs
+
+          > @roalcantara as a gorilla human hybrid
+
+          > @roalcantara as a body builder flexing muscles, upperbody
+
+          > Breathtaking Portrait Of @roalcantara, Arms, Serious, Viking, Ritual, Ancient Tre Professional
+  https://openai.com:
+    tags: [coding]
+    desc: OpenAI
+    links:
+      - Docs: https://platform.openai.com/docs/overview?lang=curl
+      - API: https://platform.openai.com/docs/api-reference
+      - Models: https://platform.openai.com/docs/models
+      - Libraries: https://platform.openai.com/docs/libraries
+      - Agents: https://platform.openai.com/docs/guides/agents
+      - Codex: https://platform.openai.com/docs/codex/overview
+      - Quickstart: https://platform.openai.com/docs/quickstart?api-mode=responses
+      - Cookbook: https://cookbook.openai.com
+      - Open Models: https://openai.com/open-models
+      - Developer Community: https://community.openai.com
+      - OpenAPI Specification: https://spec.openapis.org/oas/latest.html
+      - API Keys: https://platform.openai.com/settings/organization/api-keys
+  https://platform.openai.com/docs/guides/prompt-engineering:
+    desc: Prompt Engineering Guide | OpenAI
+    tags: [doc]
+  https://platform.openai.com/docs/actions:
+    desc: Actions | OpenAI
+    tags: [doc]
+  https://platform.openai.com/docs/plugins/introduction:
+    desc: Learn how to build a plugin that allows ChatGPT to intelligently call your API | OpenAI
+    tags: [prompt, doc]
+  https://platform.openai.com/docs/guides/function-calling:
+    desc: Learn how to connect large language models to external tools | OpenAI
+    tags: [prompt, doc]
+  https://platform.openai.com/docs/assistants/overview:
+    desc: Learn how to build an assistant that can perform tasks on your behalf | OpenAI
+    tags: [prompt, doc]
+  https://gandalf.lakera.ai:
+    desc: Test your prompting skills to make Gandalf reveal secret information | Gandalf | Lakera
+    tags: [ai]
+  https://chatgpt.com/codex:
+    desc: One agent for everywhere you code-included in ChatGPT Plus, Pro, Team, Edu, and Enterprise plans
+    tags: [ai, codex]
+    links:
+      - https://developers.openai.com/codex
+      - https://developers.openai.com/codex/quickstart
+      - https://chatgpt.com
+    notes:
+      - md: |
+          ## One agent for everywhere you code-included in ChatGPT Plus, Pro, Team, Edu, and Enterprise plans
+
+          Codex is a tool that allows you to write code with AI. It is included in ChatGPT Plus, Pro, Team, Edu, and Enterprise plans.
+
+          ### Features
+
+          - Codex is a tool that allows you to write code with AI.
+          - It is included in ChatGPT Plus, Pro, Team, Edu, and Enterprise plans.
+          - It is a tool that allows you to write code with AI.
+      - sh: |
+          #!/bin/bash
+
+          # Install Codex
+          brew install codex
+
+          # Configure Codex
+          mkdir -p ~/.config/codex/ && vi ~/.config/codex/config.yaml
+  https://github.com/Nutlope/aicommits:
+    desc: AI Commits | A CLI that writes your git commit messages for you with AI
+    tags: [git]
+  https://github.com/coder/aicommit:
+    desc: AI Commit | A tool that writes your git commit messages for you with AI
+    tags: [git]
+    notes:
+      - md: |
+          ## About
+
+          aicommit will read the COMMITS.md file in the root of the repository to determine the style guide.
+          It is optional, but if it exists, it will be followed even if the rules there diverge from the norm.
+          If there is no repo style guide, aicommit will look for a user style guide in ~/COMMITS.md.
+  https://github.com/di-sukharev/opencommit:
+    desc: OpenCommit | A tool that writes your git commit messages for you with AI
+    tags: [git]
+  https://youtu.be/7l-PIcJsDGU:
+    tags: [coding]
+    desc: Aider, Cursor, Windsurf | Build Apps with a SINGLE prompt, NO coding!
+    links:
+      - GitHub Gist with All Prompts: https://gist.github.com/codingthefuturewithai/72e163a4346129fe426cadc84bf36d57
+      - Skool Community (Free Membership!): https://skool.com/coding-the-future-with-ai/about
+      - Aider: https://aider.dev
+      - Cursor: https://cursor.dev
+      - Windsurf: https://windsurf.dev
+      - Website: https://codingthefuture.ai
+    notes:
+      - md: |
+          ## Aider, Cursor, Windsurf | Build Apps with a SINGLE prompt, NO coding!
+
+          In this tutorial, we`re testing three top AI coding assistants-Aider, Cursor, and Windsurf-in a one-prompt challenge.
+          Using just a single, detailed prompt, we`ll build the same app with each tool to see how they compare in performance, accuracy, and adaptability.
+
+          This video highlights the rapid advancements in AI coding tools, showcasing how they make app development faster, easier, and IN SOME CASES entirely code-free.
+          Whether you`re a seasoned developer or new to AI coding, this tutorial offers valuable insights into the power of these tools and their evolving potential.
+
+          In This Video:
+          • Single-Prompt Challenge: Building the same app with Aider, Cursor, and Windsurf
+          • Tool Comparisons: Evaluating performance, debugging, and output quality
+          • AI Coding in Action: Real-time problem-solving and improvements with each assistant
+          • What We Learned: Key takeaways from testing all three tools
+
+          By the end, you`ll gain a clear understanding of each tool`s strengths and how AI coding assistants are transforming software development workflows.
+  https://ai-sdk.dev:
+    tags: [coding]
+    desc: The AI Toolkit for TypeScript | From the creators of Next.js, the AI SDK is a free open-source library that gives you the tools you need to build AI-powered products
+  https://lmarena.ai:
+    desc: Input your Prompt. Compare Answers. Vote for the Best. Discover and Repeat.
+    tags: [ai]
+  https://models.dev:
+    tags: [coding]
+    desc: A comprehensive open-source database of AI model specifications, pricing, and features
+    links:
+      - API: https://models.dev/api.json
+      - AI SDK: https://ai-sdk.dev
+    notes:
+      - md: |
+          ## A comprehensive open-source database of AI model specifications, pricing, and features
+
+          > There's no single database with information about all the available AI models.
+          > We started Models.dev as a community-contributed project to address this.
+          > We also use it internally in opencode.
+
+          ### API
+
+          You can access this data through an API.
+          Use the Model ID field to do a lookup on any model; it's the identifier used by [AI SDK](https://ai-sdk.dev).
+
+          ```bash
+          curl https://models.dev/api.json
+          ```
+  https://opencode.ai:
+    tags: [coding]
+    desc: AI-powered coding agent built for the terminal
+    links:
+      - Docs: https://opencode.ai/docs
+      - GitHub: https://github.com/opencodeai/opencode
+      - Overview: https://youtu.be/2JQcUW6FrQw
+      - OpenCode + Neovim: https://youtu.be/3szpSiGjBkQ
+      - Models.dev: https://models.dev
+      - Setup OpenCode in 5 minutes: https://youtu.be/KWo3lo5VipI
+    notes:
+      - md: |
+          ## AI-powered coding agent built for the terminal
+
+          ### Features
+
+          - **Native TUI**: A responsive, native, themeable terminal UI.
+          - **LSP enabled**: Automatically loads the right LSPs for the LLM.
+          - **Multi-session**: Start multiple agents in parallel on the same project.
+          - **Shareable links**: Share a link to any sessions for reference or to debug.
+          - **Claude Pro**: Log in with Anthropic to use your Claude Pro or Max account.
+          - **Use any model**: Supports 75+ LLM providers through Models.dev, including local models.
+      - jsonc: |
+          // ~/.config/opencode/opencode.jsonc
+          // Opencode | Global configuration
+          // https://opencode.ai/docs/config/#global
+          {
+            "$schema": "https://opencode.ai/config.json",
+            // https://opencode.ai/docs/themes/
+            "theme": "tokyonight",
+            "autoupdate": true
+          }
+      - sh: |
+          #!/bin/bash
+
+          # Install OpenCode
+          $ brew install sst/tap/opencode
+
+          # Add initial configuration
+          $ mkdir -p ~/.config/opencode
+          $ vi ~/.config/opencode/opencode.jsonc
+
+          # Add the token for your(s) provider(s)
+          $ opencode auth login
+
+          # Run OpenCode
+          $ opencode
+
+          # 1. Type a command
+          $ create a new bun project using Hono and provide a hello world endpoint
+          # 💡 if it hangs, CTROL+C and try again
+          # 💡 In another terminal, run curl http://localhost:3000
+
+          # 2. Type other command
+          $ init a git repo, add .gitignore and create initial commit following the conventional commit specification
+
+          # 3. Add a new feature
+          $ add another enpopint, called books, that should return some sample book data
+          # 💡 In another terminal, run curl http://localhost:3000/books
+
+          # AGENTS: Specialized AI assistants that can be configured for specific tasks and workflows
+          # https://opencode.ai/docs/agents
+
+          # Create new agents execute
+          $ opencode agent create
+
+          # 💡 Some common use cases for different agents
+          # Build agent: Full development work with all tools enabled
+          # Plan agent: Analysis and planning without making changes
+          # Review agent: Code review with read-only access plus documentation tools
+          # Debug agent: Focused on investigation with bash and read tools enabled
+          # Docs agent: Documentation writing with file operations but no system commands
+          # More: https://opencode.ai/docs/agents/#examples
+  https://github.com/danielmiessler/Fabric:
+    desc: Fabric | A tool for extracting wisdom from YouTube videos
+    tags: [ai]
+    links:
+      - https://youtu.be/wqD7k5iNvqs
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric
+          brew install fabric-ai
+  https://augmentcode.com:
+    tags: [coding]
+    desc: The most powerful AI software development platform backed by the industry-leading context engine
+    links:
+      - https://docs.augmentcode.com/introduction
+      - https://docs.augmentcode.com/quickstart
+      - https://docs.augmentcode.com/cli
+  https://github.com/github/spec-kit:
+    desc: Toolkit to help you get started with Spec-Driven Development
+    tags: [ai]
+    links:
+      - https://github.com/github/spec-kit?tab=readme-ov-file#-get-started
+      - https://github.com/github/spec-kit/blob/main/spec-driven.md
+      - https://youtu.be/em3vIT9aUsg
+  https://claude.com:
+    tags: [coding]
+    desc: Claude | The AI-powered coding assistant
+    links:
+      - Quickstart: https://docs.claude.com/en/docs/get-started
+      - Anthropic API Fundamentals: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
+      - Anthropic Console: https://console.anthropic.com
+    notes:
+      - sh: |
+          #!/bin/bash
+          curl https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "content-type: application/json" \
+            -H "anthropic-version: 2023-06-01" \
+            -d '{"model": "claude-3-haiku-20240307", "max_tokens": 10, "messages": [{"role": "user", "content": "Hi"}]}'
+  https://console.anthropic.com:
+    desc: Anthropic Console | Account Management and API Keys
+    tags: [ai]
+    links:
+      - Anthropic API Fundamentals: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
+  https://docs.claude.com/en/docs/claude-code/quickstart:
+    desc: Claude Code Quickstart
+    tags: [ai]
+    links:
+      - Quickstart: https://docs.claude.com/en/docs/claude-code/quickstart
+    notes:
+      - md: |
+          ### QUICKSTART
+
+          - This quickstart guide will have you using AI-powered coding assistance in just a few minutes.
+          - By the end, you'll understand how to use Claude Code for common development tasks.
+
+          #### REQUIREMENTS
+
+          - A terminal or command prompt open
+          - A code project to work with
+          - A [Claude.ai](https://claude.ai) (recommended) or [Claude Console](https://console.anthropic.com/) account
+
+          #### STEP 1: Install Claude Code
+
+          ```sh
+          brew install --cask claude-code
+          ```
+
+          #### STEP 2: Log in to your account
+
+          Claude Code requires an account to use. When you start an interactive session with the `claude` command, you'll need to log in:
+
+          ```sh
+          claude
+          # You'll be prompted to log in on first use
+          ```
+
+          ```sh
+          /login
+          # Follow the prompts to log in with your account
+          ```
+
+          You can log in using either account type:
+
+          - [Claude.ai](https://claude.ai) (subscription plans - recommended)
+          - [Claude Console](https://console.anthropic.com) (API access with pre-paid credits)
+
+          Once logged in, your credentials are stored and you won't need to log in again.
+
+          > 💡 **NOTE**
+          >
+          >  When you first authenticate Claude Code with your Claude Console account, a workspace called "Claude Code" is automatically created for you. This workspace provides centralized cost tracking and management for all Claude Code usage in your organization.
+          >  You can have both account types under the same email address. If you need to log in again or switch accounts, use the `/login` command within Claude Code.
+
+          #### STEP 3: Start your first session
+
+          Open your terminal in any project directory and start Claude Code:
+
+          ```sh
+          cd /path/to/your/project
+          claude
+          ```
+
+          - You'll see the Claude Code welcome screen with your session information, recent conversations, and latest updates.
+          - Type `/help` for available commands or `/resume` to continue a previous conversation.
+
+          > 💡 **TIP**
+          >
+          > After logging in (Step 2), your credentials are stored on your system. Learn more in [Credential Management](/en/docs/claude-code/iam#credential-management).
+
+          #### STEP 4: Ask your first question
+
+          - Let's start with understanding your codebase; try one of these commands:
+
+          ```
+          > what does this project do?
+          ```
+
+          - Claude will analyze your files and provide a summary; You can also ask more specific questions:
+
+          ```
+          > what technologies does this project use?
+          ```
+
+          ```
+          > where is the main entry point?
+          ```
+
+          ```
+          > explain the folder structure
+          ```
+
+          - You can also ask Claude about its own capabilities:
+
+          ```
+          > what can Claude Code do?
+          ```
+
+          ```
+          > how do I use slash commands in Claude Code?
+          ```
+
+          ```
+          > can Claude Code work with Docker?
+          ```
+
+          > 💡 **NOTE**
+          > Claude Code reads your files as needed - you don't have to manually add context. Claude also has access to its own documentation and can answer questions about its features and capabilities.
+
+          #### STEP 5: Make your first code change
+
+          - Now let's make Claude Code do some actual coding; try a simple task:
+
+          ```
+          > add a hello world function to the main file
+          ```
+
+          - Claude Code will:
+
+            1. Find the appropriate file
+            2. Show you the proposed changes
+            3. Ask for your approval
+            4. Make the edit
+
+          > 💡 **NOTE**
+          >
+          > Claude Code always asks for permission before modifying files. You can approve individual changes or enable "Accept all" mode for a session.
+
+          #### STEP 6: Use Git with Claude Code
+
+          Claude Code makes Git operations conversational:
+
+          ```
+          > what files have I changed?
+          ```
+
+          ```
+          > commit my changes with a descriptive message
+          ```
+
+          You can also prompt for more complex Git operations:
+
+          ```
+          > create a new branch called feature/quickstart
+          ```
+
+          ```
+          > show me the last 5 commits
+          ```
+
+          ```
+          > help me resolve merge conflicts
+          ```
+
+          #### STEP 7: Fix a bug or add a feature
+
+          Claude is proficient at debugging and feature implementation.
+
+          Describe what you want in natural language:
+
+          ```
+          > add input validation to the user registration form
+          ```
+
+          Or fix existing issues:
+
+          ```
+          > there's a bug where users can submit empty forms - fix it
+          ```
+
+          Claude Code will:
+
+          * Locate the relevant code
+          * Understand the context
+          * Implement a solution
+          * Run tests if available
+
+          #### STEP 8: Test out other common workflows
+
+          There are a number of ways to work with Claude:
+
+          | **TASK**              | **EXAMPLE COMMAND**                                                             |
+          | --------------------- | ------------------------------------------------------------------------------- |
+          | Refactor code         | `> refactor the authentication module to use async/await instead of callbacks`  |
+          | Write tests           | `> write unit tests for the calculator functions`                               |
+          | Update documentation  | `> update the README with installation instructions`                            |
+          | Code review           | `> review my changes and suggest improvements`                                  |
+
+          > 💡 **TIP > REMEMBER**
+          > Claude Code is your AI pair programmer.
+          > Talk to it like you would a helpful colleague - describe what you want to achieve, and it will help you get there
+
+          #### ESSENTIAL COMMANDS
+
+          Here are the most important commands for daily use:
+
+          | **COMMAND**         | **WHAT IT DOES**                  | **EXAMPLE**                         |
+          | ------------------- | --------------------------------- | ----------------------------------- |
+          | `claude`            | Start interactive mode            | `claude`                            |
+          | `claude "task"`     | Run a one-time task               | `claude "fix the build error"`      |
+          | `claude -p "query"` | Run one-off query, then exit      | `claude -p "explain this function"` |
+          | `claude -c`         | Continue most recent conversation | `claude -c`                         |
+          | `claude -r`         | Resume a previous conversation    | `claude -r`                         |
+          | `claude commit`     | Create a Git commit               | `claude commit`                     |
+          | `/clear`            | Clear conversation history        | `> /clear`                          |
+          | `/help`             | Show available commands           | `> /help`                           |
+          | `exit` or Ctrl+C    | Exit Claude Code                  | `> exit`                            |
+
+          See the [CLI reference](/en/docs/claude-code/cli-reference) for a complete list of commands.
+
+          #### PRO TIPS FOR BEGINNERS
+
+          > 💡 **BE SPECIFIC WITH YOUR REQUESTS**
+          >
+          > Instead of: `"fix the bug"`
+          > Try: `"fix the login bug where users see a blank screen after entering wrong credentials"`
+
+          > 💡 **USE STEP-BY-STEP INSTRUCTIONS**
+          >
+          > Instead of: `"create a new database table for user profiles"`
+          > Try: `"1. create a new database table for user profiles"`
+
+          > 💡 **LET CLAUDE EXPLORE FIRST**
+          >
+          > Before making changes, let Claude understand your code:
+
+          > 💡 **SAVE TIME WITH SHORTCUTS**
+          >
+          > Use Tab for command completion
+          > Press ↑ for command history
+          > Type `/` to see all slash commands
+
+          #### WHAT'S NEXT?
+
+          Now that you've learned the basics, explore more advanced features:
+
+          > 💡 **[COMMON WORKFLOWS](https://docs.claude.com/en/docs/claude-code/common-workflows)**
+          >
+          > Step-by-step guides for common tasks
+
+          > 💡 **[CLI REFERENCE](https://docs.claude.com/en/docs/claude-code/cli-reference)**
+          >
+          > Master all commands and options
+
+          > 💡 **[CONFIGURATION](https://docs.claude.com/en/docs/claude-code/settings)**
+          >
+          > Customize Claude Code for your workflow
+
+          #### GETTING HELP
+
+          * **In Claude Code**: Type `/help` or ask "how do I..."
+          * **Documentation**: You're here! Browse other guides
+          * **Community**: Join our [Discord](https://anthropic.com/discord) for tips and support
+  https://docs.claude.com/en/docs/claude-code/vs-code:
+    desc: Claude Code VS Code Extension
+    tags: [ai]
+    links: [https://docs.claude.com/en/docs/claude-code/vs-code]
+    notes:
+      - md: |
+          ### Visual Studio Code
+
+          > Use Claude Code with Visual Studio Code through our native extension or CLI integration
+
+          #### VS Code Extension (Beta)
+
+          The VS Code extension, available in beta, lets you see Claude's changes in real-time through a native graphical interface integrated directly into your IDE. The VS Code extension makes it easier to access and interact with Claude Code for users who prefer a visual interface over the terminal.
+
+          ##### FEATURES
+
+          The VS Code extension provides:
+
+          * **Native IDE experience**: Dedicated Claude Code sidebar panel accessed via the Spark icon
+          * **Plan mode with editing**: Review and edit Claude's plans before accepting them
+          * **Auto-accept edits mode**: Automatically apply Claude's changes as they're made
+          * **File management**: @-mention files or attach files and images using the system file picker
+          * **MCP server usage**: Use Model Context Protocol servers configured through the CLI
+          * **Conversation history**: Easy access to past conversations
+          * **Multiple sessions**: Run multiple Claude Code sessions simultaneously
+          * **Keyboard shortcuts**: Support for most shortcuts from the CLI
+          * **Slash commands**: Access most CLI slash commands directly in the extension
+
+          ##### REQUIREMENTS
+
+          * VS Code 1.98.0 or higher
+
+          ##### INSTALLATION
+
+          Download and install the extension from the [Visual Studio Code Extension Marketplace](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code).
+
+          ##### UPDATING
+
+          To update the VS Code extension:
+
+          1. Open the VS Code command palette with `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux)
+          2. Search for "Claude Code: Update"
+          3. Select the command to update to the latest version
+
+          ##### HOW IT WORKS
+
+          Once installed, you can start using Claude Code through the VS Code interface:
+
+          1. Click the Spark icon in your editor's sidebar to open the Claude Code panel
+          2. Prompt Claude Code in the same way you would in the terminal
+          3. Watch as Claude analyzes your code and suggests changes
+          4. Review and accept edits directly in the interface
+            * **Tip**: Drag the sidebar wider to see inline diffs, then click on them to expand for full details
+
+          ##### USING THIRD-PARTY PROVIDERS (VERTEX AND BEDROCK)
+
+          The VS Code extension supports using Claude Code with third-party providers like Amazon Bedrock and Google Vertex AI. When configured with these providers, the extension will not prompt for login. To use third-party providers, configure environment variables in the VS Code extension settings:
+
+          1. Open VS Code settings
+          2. Search for "Claude Code: Environment Variables"
+          3. Add the required environment variables
+
+          ##### ENVIRONMENT VARIABLES
+
+          | **VARIABLE**                  | **DESCRIPTION**                        | **REQUIRED**           | **EXAMPLE**                                      |
+          | :---------------------------- | :------------------------------------- | :--------------------- | :----------------------------------------------- |
+          | `CLAUDE_CODE_USE_BEDROCK`     | Enable Amazon Bedrock integration      | Required for Bedrock   | `"1"` or `"true"`                                |
+          | `CLAUDE_CODE_USE_VERTEX`      | Enable Google Vertex AI integration    | Required for Vertex AI | `"1"` or `"true"`                                |
+          | `ANTHROPIC_API_KEY`           | API key for third-party access         | Required               | `"your-api-key"`                                 |
+          | `AWS_REGION`                  | AWS region for Bedrock                 |                        | `"us-east-2"`                                    |
+          | `AWS_PROFILE`                 | AWS profile for Bedrock authentication |                        | `"your-profile"`                                 |
+          | `CLOUD_ML_REGION`             | Region for Vertex AI                   |                        | `"global"` or `"us-east5"`                       |
+          | `ANTHROPIC_VERTEX_PROJECT_ID` | GCP project ID for Vertex AI           |                        | `"your-project-id"`                              |
+          | `ANTHROPIC_MODEL`             | Override primary model                 | Override model ID      | `"us.anthropic.claude-3-7-sonnet-20250219-v1:0"` |
+          | `ANTHROPIC_SMALL_FAST_MODEL`  | Override small/fast model              | Optional               | `"us.anthropic.claude-3-5-haiku-20241022-v1:0"`  |
+
+          For detailed setup instructions and additional configuration options, see:
+
+          * [Claude Code on Amazon Bedrock](/en/docs/claude-code/amazon-bedrock)
+          * [Claude Code on Google Vertex AI](/en/docs/claude-code/google-vertex-ai)
+
+          ##### NOT YET IMPLEMENTED
+
+          The following features are not yet available in the VS Code extension:
+
+          * **Full MCP server configuration**: You need to [configure MCP servers through the CLI](/en/docs/claude-code/mcp) first, then the extension will use them
+          * **Subagents configuration**: Configure [subagents through the CLI](/en/docs/claude-code/sub-agents) to use them in VS Code
+          * **Checkpoints**: Save and restore conversation state at specific points
+          * **Advanced shortcuts**:
+            * `#` shortcut to add to memory
+            * `!` shortcut to run bash commands directly
+          * **Tab completion**: File path completion with tab key
+
+          We are working on adding these features in future updates.
+
+          ##### SECURITY CONSIDERATIONS
+
+          When Claude Code runs in VS Code with auto-edit permissions enabled, it may be able to modify IDE configuration files that can be automatically executed by your IDE. This may increase the risk of running Claude Code in auto-edit mode and allow bypassing Claude Code's permission prompts for bash execution.
+
+          When running in VS Code, consider:
+
+          * Enabling [VS Code Restricted Mode](https://code.visualstudio.com/docs/editor/workspace-trust#_restricted-mode) for untrusted workspaces
+          * Using manual approval mode for edits
+          * Taking extra care to ensure Claude is only used with trusted prompts
+
+          ##### LEGACY CLI INTEGRATION
+
+          The first VS Code integration that we released allows Claude Code running in the terminal to interact with your IDE. It provides selection context sharing (current selection/tab is automatically shared with Claude Code), diff viewing in the IDE instead of terminal, file reference shortcuts (`Cmd+Option+K` on Mac or `Alt+Ctrl+K` on Windows/Linux to insert file references like @File#L1-99), and automatic diagnostic sharing (lint and syntax errors).
+
+          The legacy integration auto-installs when you run `claude` from VS Code's integrated terminal. Simply run `claude` from the terminal and all features activate. For external terminals, use the `/ide` command to connect Claude Code to your VS Code instance. To configure, run `claude`, enter `/config`, and set the diff tool to `auto` for automatic IDE detection.
+
+          Both the extension and CLI integration work with Visual Studio Code, Cursor, Windsurf, and VSCodium.
+
+          ##### TROUBLESHOOTING
+
+          ##### EXTENSION NOT INSTALLING
+
+          * Ensure you have a compatible version of VS Code (1.85.0 or later)
+          * Check that VS Code has permission to install extensions
+          * Try installing directly from the marketplace website
+
+          ##### LEGACY INTEGRATION NOT WORKING
+
+          * Ensure you're running Claude Code from VS Code's integrated terminal
+          * Ensure the CLI for your IDE variant is installed:
+            * VS Code: `code` command should be available
+            * Cursor: `cursor` command should be available
+            * Windsurf: `windsurf` command should be available
+            * VSCodium: `codium` command should be available
+          * If the command isn't installed:
+            1. Open command palette with `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux)
+            2. Search for "Shell Command: Install 'code' command in PATH" (or equivalent for your IDE)
+
+          For additional help, see our [troubleshooting guide](/en/docs/claude-code/troubleshooting).
+  https://docs.claude.com/en/docs/claude-code/common-workflows:
+    desc: Common Workflows
+    tags: [ai, claude]
+    links: [https://docs.claude.com/en/docs/claude-code/common-workflows]
+    notes:
+      - md: |
+          ### COMMON WORKFLOWS
+
+          > Learn about common workflows with Claude Code.
+
+          Each task in this document includes clear instructions, example commands, and best practices to help you get the most from Claude Code.
+
+          ## UNDERSTAND NEW CODEBASES
+
+          ### GET A QUICK CODEBASE OVERVIEW
+
+          Suppose you've just joined a new project and need to understand its structure quickly.
+
+          ```sh
+          #!/bin/bash
+
+          # 1. Navigate to the project root directory
+          cd /path/to/project
+
+          # 2. Start Claude Code
+          claude
+
+          # 3. Ask for a high-level overview (paste commands in Claude prompt)
+          # > give me an overview of this codebase
+
+          # 4. Dive deeper into specific components (paste commands in Claude prompt)
+          # > explain the main architecture patterns used here
+          # > what are the key data models?
+          # > how is authentication handled?
+          ```
+
+          > 💡 **TIP**
+          >
+          >  * Start with broad questions, then narrow down to specific areas
+          >  * Ask about coding conventions and patterns used in the project
+          >  * Request a glossary of project-specific terms
+
+          ### FIND RELEVANT CODE
+
+          Suppose you need to locate code related to a specific feature or functionality.
+
+          ```sh
+          #!/bin/bash
+
+          # 0. In the Claude Code prompt..
+
+          # 1. Ask Claude to find relevant files:
+          > find the files that handle user authentication
+
+          # 2. Get context on how components interact:
+          > how do these authentication files work together?
+
+          # 3. Understand the execution flow:
+          > trace the login process from front-end to database
+          ```
+
+          > 💡 **TIP**
+          >
+          >  * Be specific about what you're looking for
+          >  * Use domain language from the project
+
+          ## FIX BUGS EFFICIENTLY
+
+          Suppose you've encountered an error message and need to find and fix its source.
+
+          ```sh
+          #!/bin/bash
+          # 0. In the Claude Code prompt..
+
+          # 1. Ask Claude to find relevant files:
+          > find the files that handle user authentication
+
+          # 2. Get context on how components interact:
+          > how do these authentication files work together?
+
+          # 3. Understand the execution flow:
+          > trace the login process from front-end to database
+          ```
+
+          > 💡 **TIP**
+          >
+          >  * Be specific about what you're looking for
+          >  * Use domain language from the project
+
+          ## REFACTOR CODE
+
+          Suppose you need to update old code to use modern patterns and practices.
+
+          ```sh
+          #!/bin/bash
+          # 0. In the Claude Code prompt..
+
+          # 1. Identify legacy code for refactoring:
+          > find deprecated API usage in our codebase
+
+          # 2. Get refactoring recommendations:
+          > suggest how to refactor utils.js to use modern JavaScript features
+
+          # 3. Apply the changes safely:
+          > refactor utils.js to use ES2024 features while maintaining the same behavior
+          ```
+          > 💡 **TIP**
+          >
+          >  * Be specific about what you're looking for
+          >  * Use domain language from the project
+  https://lensgo.ai:
+    tags: [coding]
+    desc: Free AI-powered tool for creating images and videos. Best for personalized videos. Make your first AI video, or film
+  https://artguru.ai:
+    tags: [coding]
+    desc: ArtGuru | AI Art Generator | Explore the magic of AI art generation - create masterpieces in seconds!
+  https://leonardo.ai:
+    desc: Leonardo | Create production-quality visual assets for your projects with unprecedented quality, speed, and style-consistency.
+    tags: [ai]
+  https://beta.character.ai:
+    tags: [coding]
+    desc: Character | AI-powered video editing
+  # GOOGLE AI STUDIO
+  https://ai.google.dev:
+    tags: [coding]
+    desc: Build with the Gemini API | Google AI Studio
+    links:
+      - Get API key | Google AI Studio: https://makersuite.google.com/app/apikey
+      - Get an API key | Google AI Studio: https://ai.google.dev/tutorials/setup
+    notes:
+      sh: |
+        curl \
+          -H 'Content-Type: application/json' \
+          -d '{"contents":[{"parts":[{"text":"Write a story about a magic backpack"}]}]}' \
+          -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$(gopass show --password token/ai.google.dev)"
+  https://ai.google.dev/tutorials/node_quickstart:
+    desc: Node Quickstart | Build with the Gemini API | Google AI Studio
+    tags: [doc]
+  https://ai.google.dev/tutorials/python_quickstart:
+    desc: Python Quickstart | Build with the Gemini API | Google AI Studio
+    tags: [doc]
+  https://ai.google.dev/tutorials/web_quickstart:
+    desc: Web Quickstart | Build with the Gemini API | Google AI Studio
+    tags: [doc]
+  # GOOGLE DEEPMIND GEMINI
+  https://deepmind.google/technologies/gemini:
+    desc: Gemini | DeepMind
+    tags: [ai]
+  https://deepmind.google/technologies/gemini/#capabilities:
+    desc: Gemini | Capabilities
+    tags: [ai]
+  https://kiro.dev:
+    desc: Kiro | The AI-first development environment
+    tags: [ai, coding]
+    links: [https://kiro.dev/docs, https://youtu.be/4qcWgPb-8Fk]
+  https://kiro.dev/docs/mcp/servers:
+    desc: Model Context Protocol (MCP) Servers | Claude Code
+    tags: [ai, mcp]
+  # LANGGRAPH VS LANGCHAIN VS LANGFLOW VS LANGSMITH
+  https://youtu.be/ldBsvhjEREc:
+    desc: LangGraph vs LangChain vs LangFlow vs LangSmith - Which One To Use & Why?
+    tags: [ai, coding]
+    notes:
+      - md: | #markdown
+          # Which One To Use & Why?
+
+          > **TL;DR:**
+          > - LangChain builds the app.
+          > - LangGraph orchestrates complex workflows.
+          > - LangFlow visualizes the design.
+          > - LangSmith monitors and improves the live system.
+          > Together, they form a practical stack for modern AI application development.
+
+          ## LangChain: Popular framework for building applications with LLMs
+          - **What:** An open-source framework for building applications powered by language models.
+          - **Why:** Simplifies managing complex logic, API calls, memory, and boilerplate code when chaining LLM interactions.
+          - **How:** Provides abstractions and classes (like memory, agents, and sequential chains) to connect prompts, external data, and models (like GPT-4 or Llama 3) into a cohesive workflow.
+
+          ## LangGraph: Focuses on graph-based representations for AI workflows
+          - **What:** An open-source library built on LangChain to manage agents and their workflows.
+          - **Why:** Specifically designed for complex, structured, and cyclical multi-agent interactions that go beyond simple linear prompt chaining.
+          - **How:** Utilizes a graph-based structure consisting of State (shared data), Nodes (actions/tasks), and Edges (the execution flow).
+
+          ## LangFlow: Visual programming interface for LangChain
+          - **What:** A visual, drag-and-drop interface built on top of LangChain.
+          - **Why:** Enables non-coders and teams to rapidly prototype and experiment with AI workflows, chains, and agents.
+          - **How:** By providing a UI where users connect components; workflows can be hosted locally or on cloud servers and accessed via APIs.
+
+          ## LangSmith: Tool for managing and evaluating LLM prompts and outputs
+          - **What:** A platform for monitoring, testing, and debugging LLM applications throughout their lifecycle.
+          - **Why:** Ensures applications perform well in production by offering deep insights into latency, cost, token usage, and error rates.
+          - **How:** Can be connected to any LLM framework (not just LangChain) by adding environment variables and using the traceable annotation to log application performance to a dashboard.
+
+      - md: | #markdown
+          ## The problem with building it all from scratch
+
+          Imagine you want an application that:
+
+          - uses GPT-4 for the first response,
+          - uses Llama 3 to refine or improve that response,
+          - has an agent that decides whether to fetch external data or generate an answer,
+          - keeps memory of prior interactions with the user.
+
+          Without a framework, you end up writing a lot of custom logic by hand:
+
+          1. one function to call GPT-4,
+          2. another to call Llama 3,
+          3. custom code to manage memory,
+          4. custom code to update and retrieve conversation history,
+          5. custom agent logic to decide what to do next,
+          6. custom orchestration between all those steps.
+
+          ```python
+          # Without a framework
+          import openai
+          import requests
+
+          # 1. one function to call GPT-4
+          def query_gpt4(prompt):
+            openai. api_key = "your-gpt4-api-key"
+            response = openai.Completion.create(
+              engine="gpt-4",
+              prompt=prompt,
+              max_tokens=100
+            )
+            return response.choices[0].text
+
+          # 2. another to call Llama 3
+          def query_llama3(prompt):
+              url = "https://llama3-api-endpoint"
+              headers = {
+                  "Authorization": "Bearer your-llama3-api-key",
+                  "Content-Type": "application/json"
+              }
+              data = {
+                  "prompt": prompt,
+                  "max_tokens": 100
+              }
+              response = requests.post(url, headers=headers, json=data)
+              return response.json()["response"]
+
+          # 3. custom code to manage memory
+          memory = {}
+
+          # 4. custom code to update and retrieve conversation history
+          def update_memory(user_input, response):
+              memory['last_interaction'] = {"input": user_input, "response": response}
+
+          def get_memory():
+              return memory.get("last_interaction")
+
+          # Agent function: Decides which model to use
+          # 6. custom orchestration between all those steps.
+          def agent(query):
+              # Retrieve memory
+              last_interaction = get_memory()
+
+              # Logic for using GPT-4 or Llama 3 based on some condition
+              # 5. custom agent logic to decide what to do next
+              if "complex" in query:
+                  response = query_gpt4(query)
+              else:
+                  response = query_llama3(query)
+
+              # Update memory with the latest interaction
+              update_memory(query, response)
+
+              return response
+          ```
+
+          That approach is workable for a small prototype, but it quickly becomes fragile.
+
+          There is a lot of boilerplate code, a lot of API handling, and a lot of custom logic for decision-making.
+
+          As the application grows in complexity, the code becomes harder to maintain and scale.
+
+          ## LangChain: building apps with LLMs
+
+          LangChain is an open-source framework for building applications powered by language models.
+
+          **Key features:**
+
+            - **Abstractions:** Pre-built steps and concepts that you can chain together
+            - **LLM Support:** support for many providers and models
+            - **Prompt:** reusable templates for generating prompts
+            - **Chains:** sequences of tasks connected together
+            - **Indexes:** document indexing (document loading) and retrieval
+            - **Memory:** to maintain context and past interactions
+            - **Agents:** use llm as reasoning engines to decide the next workflow step
+
+          ```python
+          from langchain import OpenAI, LlamaCpp, Memory, Agent
+          from langchain.chains import SequentialChain
+
+          # Step 1: Define the models
+          gpt4_llm = OpenAI(api_key="your-gpt4-api-key", model="gpt-4")
+          llama3_llm = LlamaCpp(model_path="path-to-your-llama3-model")
+
+          # Step 2: Set up memory
+          memory = Memory()
+
+          # Step 3: Create an agent that decides whether to use GPT-4 or Llama 3
+          def agent_fn(query, memory):
+              last_interaction = memory.load()
+
+              # Simple agent decision: Use GPT-4 for complex queries
+              if "complex" in query:
+                  return gpt4_llm(query)
+              else:
+                  return llama3_llm(query)
+
+          agent = Agent(agent_fn, memory=memory)
+
+          # Step 4: Set up LangChain to manage the sequence of tasks
+          chain = SequentialChain([agent], memory=memory)
+
+          # Example usage
+          ```
+
+          In other words, LangChain is the application framework layer.
+          It helps structure the system without forcing you to reinvent the plumbing of each model call and each intermediate step.
+
+          ## LangGraph: managing complex workflow orchestration
+
+          LangGraph is built on top of LangChain and is focused on graph-based multi-agent workflows.
+
+          While LangChain is great for prompt chaining LangGraph excels at handling multiple agents in a more structured workflows.
+
+          if you're building a system where multiple agents interact to solve complex problems, for example task automation or research assistants, you can consider using LangGraph.
+
+          LangGraph has a concept of graph which has 3 core components:
+
+          1. state:
+            - shared data structure that represents the current snapshot of the application
+            - it maintains information that can be updated and accessed by different parts of the graph
+            - a typical State might include user inputs, agent outcomes and a list of actions taken throughout the workflow
+
+          2. nodes:
+            - represent the individual components or actions within the graph
+            - each node can perform specific task, such as executing an llm running a function or interacting with external tools
+
+          3. edges:
+            - connect nodes and Define the flow of execution within the graph
+            - they determine how data moves from one node to another
+
+          And this is nota directed graph: nodes can make decision about which node they want to call next and they can talk to each other back and forth
+
+          You can use LangGraph when you need to create agents that require cyclical interactions and decision-making processes.
+          It is also ideal for scenarios where multiple agents need to collaborate and work together.
+
+          Using LangGraph in your application is really straightforward:
+            - you just need to download the package
+            - then import it in your project
+            - and then start using the classes provided by this library.
+
+          ```python
+          ```
+
+  https://youtube.com/playlist?list=PLbIBj8vQhvm09IqqLYIwLF5dGrcbJzFZc&si=-eJ1PvlCTXLwWcXE:
+    desc: LangChain e LangGraph com Python - O Guia Definitivo
+    tags: [ai, coding]
+    links: [https://github.com/luizomf/react_agent_langgraph_course]
+
+  https://developers.openai.com/cookbook/examples/partners/agentic_governance_guide/agentic_governance_cookbook:
+    desc: Agentic Governance Cookbook by OpenAI
+    tags: [ai, openai, agents]
+    links: [https://developers.openai.com/cookbook/examples/partners/agentic_governance_guide/agentic_governance_cookbook]
+
+  https://adk.dev/get-started/typescript:
+    desc: This guide shows you how to get up and running with Agent Development Kit for TypeScript
+    tags: [ai, adk, agent]
+    notes: | #markdown
+      ## Create an agent project¶
+      Create an empty my-agent directory for your project:
+
+      my-agent/
+      Create this project structure using the command line
+      Configure project and dependencies¶
+      Use the npm tool to install and configure dependencies for your project, including the package file, ADK TypeScript main library, and developer tools. Run the following commands from your my-agent/ directory to create the package.json file and install the project dependencies:
+
+
+      cd my-agent/
+      # initialize a project as an ES module
+      npm init --yes
+      npm pkg set type="module"
+      npm pkg set main="agent.ts"
+      # install ADK libraries
+      npm install @google/adk
+      # install dev tools as a dev dependency
+      npm install -D @google/adk-devtools
+      Define the agent code¶
+      Create the code for a basic agent, including a simple implementation of an ADK Function Tool, called getCurrentTime. Create an agent.ts file in your project directory and add the following code:
+
+      my-agent/agent.ts
+
+      import {FunctionTool, LlmAgent} from '@google/adk';
+      import {z} from 'zod';
+
+      /* Mock tool implementation */
+      const getCurrentTime = new FunctionTool({
+        name: 'get_current_time',
+        description: 'Returns the current time in a specified city.',
+        parameters: z.object({
+          city: z.string().describe("The name of the city for which to retrieve the current time."),
+        }),
+        execute: ({city}) => {
+          return {status: 'success', report: `The current time in ${city} is 10:30 AM`};
+        },
+      });
+
+      export const rootAgent = new LlmAgent({
+        name: 'hello_time_agent',
+        model: 'gemini-flash-latest',
+        description: 'Tells the current time in a specified city.',
+        instruction: `You are a helpful assistant that tells the current time in a city.
+                      Use the 'getCurrentTime' tool for this purpose.`,
+        tools: [getCurrentTime],
+      });
+      Set your API key¶
+      This project uses the Gemini API, which requires an API key. If you don't already have Gemini API key, create a key in Google AI Studio on the API Keys page.
+
+      In a terminal window, write your API key into your .env file of your project to set environment variables:
+
+
+      MacOS / Linux
+      Windows PowerShell
+      Windows Command Prompt
+      Update: my-agent/.env
+
+      echo 'GEMINI_API_KEY="YOUR_API_KEY"' > .env
+
+      Using other AI models with ADK
+      Run your agent¶
+      You can run your ADK agent with the @google/adk-devtools library as an interactive command-line interface using the run command or the ADK web user interface using the web command. Both these options allow you to test and interact with your agent.
+
+      Run with command-line interface¶
+      Run your agent with the ADK TypeScript command-line interface tool using the following command:
+
+
+      npx adk run agent.ts
+      adk-run.png
+
+      Run with web interface¶
+      Run your agent with the ADK web interface using the following command:
+
+
+      npx adk web
+      This command starts a web server with a chat interface for your agent. You can access the web interface at http://localhost:8000. Select your agent at the upper right corner and type a request.
+  https://adk.dev/graphs/#typescript:
+    desc: Graph-based agent workflows
+    tags: [ai, adk, agent]
+    notes:
+      - md: | #markdown
+          ### Graph-based Agent Workflows
+
+          > Graph-based agent workflows in ADK let you build agents with more precise control,
+          > creating deterministic processes that combine code logic and AI reasoning capabilities.
+          >
+          > Graph-based workflows allow you to define your agent logic as a graph of execution nodes and edges,
+          > combining AI-powered agent reasoning with deterministic tools and code.
+      - ts: | #typescript
+          import {
+            createEvent,
+            LlmAgent,
+            node,
+            NodeContext,
+            Workflow,
+          } from '@google/adk';
+          import { z } from 'zod';
+
+          const cityGeneratorAgent = new LlmAgent({
+            name: 'city_generator_agent',
+            model: 'gemini-flash-latest',
+            instruction: `Return the name of a random city.
+                Return only the name, nothing else.`,
+          });
+
+          /** The structured payload handed from the lookup node to the report agent. */
+          const cityTimeSchema = z.object({
+            timeInfo: z.string().describe('Time information.'),
+            city: z.string().describe('City name.'),
+          });
+          type CityTime = z.infer<typeof cityTimeSchema>;
+
+          /** Simulates returning the current time in the specified city. */
+          function lookupTimeFunction(_ctx: NodeContext, nodeInput: string): CityTime {
+            return { timeInfo: '10:10 AM', city: nodeInput.trim() };
+          }
+
+          const cityReportAgent = new LlmAgent({
+            name: 'city_report_agent',
+            model: 'gemini-flash-latest',
+            instruction: `Output the following line:
+              It is {CityTime.timeInfo} in {CityTime.city} right now.`,
+          });
+
+          function completedMessageFunction(_ctx: NodeContext, nodeInput: string) {
+            return createEvent({
+              content: {
+                role: 'model',
+                parts: [{ text: `${nodeInput}\n WORKFLOW COMPLETED.` }],
+              },
+            });
+          }
+
+          export const rootAgent = new Workflow({
+            name: 'root_agent',
+            edges: [
+              [
+                'START',
+                cityGeneratorAgent,
+                node(lookupTimeFunction, {
+                  name: 'lookup_time_function',
+                  outputSchema: cityTimeSchema,
+                }),
+                node(cityReportAgent, { inputSchema: cityTimeSchema }),
+                node(completedMessageFunction, { name: 'completed_message_function' }),
+              ],
+            ],
+          });
+  https://dev.to/pwd9000/github-copilot-instructions-vs-prompts-vs-custom-agents-vs-skills-vs-x-vs-why-339l:
+    desc: GitHub Copilot Instructions vs Prompts vs Custom Agents vs Skills vs X vs WHY?
+    tags: [ai, github, copilot]
+    links: [https://youtu.be/U3Y6oPWcWo0, https://docs.github.com/en/copilot/concepts/agents/copilot-cli/comparing-cli-features]
+
+  https://youtu.be/xWGC4Pc3w5E:
+    desc: UX Tricks Duolingo Uses That You Can Steal For Your App
+    tags: [ai, vibe, tutorial]
+    notes:
+      - md: |
+          # UX Tricks Duolingo Uses That You Can Steal For Your App
+
+          This video breaks down the psychological and UX design principles that make *Duolingo* highly addictive and successful in retaining its 130 million monthly active users. While the app's purpose is language learning, the speaker argues that its success stems from **gamification** and specific psychological levers rather than just the educational content itself.
+
+          ### **Core UX & Psychological Strategies for Retention:**
+
+          1.  **Character Design (0:48 - 2:54):** Instead of a static logo, *Duolingo* uses a living character that reacts, has moods, and facilitates a personal connection, making users feel they are upholding a promise to a "friend" rather than a corporation.
+          2.  **Onboarding Experience (2:55 - 5:43):** The app treats onboarding as a crucial first interaction. It uses a conversation-style flow with the character to personalize the experience *before* the signup wall, reducing drop-off.
+          3.  **Reducing Cognitive Load (5:44 - 8:31):** By using **default selections** and recommended options, the app minimizes the number of decisions a user must make, lowering friction.
+          4.  **UX Writing (8:32 - 10:03):** The app removes shame from failure. Instead of harsh "Wrong" or "Error" labels, it uses encouraging, constructive language and softer color palettes (yellows instead of red) to keep the user engaged.
+          5.  **Low-Friction Interactions (10:04 - 11:28):** Every task is designed for ease—tapping, dragging, and multiple-choice—removing the burden of typing, which makes study feel like a mobile game.
+          6.  **Variable Reward Schedules (11:29 - 13:38):** Inspired by slot machines, the app keeps users engaged with the anticipation of unpredictable rewards (chests, XP claims) after completing lessons.
+          7.  **Personalization & Ownership (13:39 - 15:23):** Customizing avatars and friend streaks leverages the **IKEA Effect**, where users value progress more because they helped build/customize it.
+          8.  **Loss Aversion (15:24 - 18:31):** The **streak system** is the ultimate retention tool. The visual design of a "flame" creates a fear of losing progress, which is a stronger motivator for daily return than the learning itself.
+
+          ### **Tools & References Mentioned:**
+          *   **Figma:** Used by the creator to demonstrate and map out the UI/UX changes. 
+          *   **TikTok:** Referenced as a masterclass in low-friction, addicting UX (specifically regarding the "swipe" interface).
+          *   **Psychological Concepts:** The video cites the **IKEA Effect** (value in creation) and **Loss Aversion** (the pain of losing is greater than the joy of gaining) as fundamental drivers.
+
+  https://youtu.be/76_h94U4ztQ:
+    desc: Watch me Design a Mobile App From Scratch in 32 Minutes (Claude /design & Fable 5)
+    tags: [ai, vibe, tutorial]
+    notes:
+      - md: |
+          # Watch me Design a Mobile App From Scratch in 32 Minutes (Claude /design & Fable 5)
+          The video outlines a professional design-first workflow for building AI-powered mobile applications, emphasizing the need to move beyond "AI slop" to achieve a polished user experience. The author demonstrates this process by designing **"Ride It,"** a mobile app concept designed to provide users with a *Spotify Wrapped*-style recap of their day at a theme park, complete with shareable personality archetypes and stats (6:16 - 10:25).
+
+          ### The Product Development Process (2:22 - 4:45)
+          The author proposes a shift from a direct "Idea to Build" approach to a more structured three-stage methodology:
+          1.  **Define:** Before coding, clarify the business offer: identify the target customer, the pain point, the desired outcome, the mechanism, pricing strategy, and proof of concept.
+          2.  **Design:** Prioritize visual direction and UX (onboarding, landing page, magic moment) before building. This creates a solid foundation that guides the AI’s later output.
+          3.  **Build:** Develop the software once the design system and specifications are locked.
+
+          ### Keys to Great AI Design (4:46 - 6:15)
+          *   **Great References:** Work from high-quality design inspiration to avoid generic outputs.
+          *   **Idea Clarity:** Know the exact key screens and the app's "magic moment" (the core hook) beforehand.
+          *   **Learned Taste:** Actively curate your social feeds with professional design work to train your eye for quality.
+
+          ### Tools & Techniques for Implementation (10:35 - 29:56)
+          *   **Claude Code (`/design`):** Used to iterate on visual mockups directly within the IDE's design canvas. This tool allows for rapid experimentation by dropping in reference images for style comparison.
+          *   **Higsfield MCP:** Integrated into *Claude Code* to generate high-quality, professional illustrations for the app screens without leaving the development environment.
+          *   **Design System Documentation:** The author emphasizes converting final screen designs into a formal design system (using *Product OS* skills). This involves creating a `design.md` file (for LLM prompt context) and a `design.html` file (for a visual reference guide of colors, typography, components, and spacing).
+          *   **Iterative Refinement:** Using different visual directions (e.g., flat vector vs. isometric line art) before choosing a final path and generating specific image prompts for external tools (like *ChatGPT Image*) if needed.
+
+  https://youtu.be/29Vto7o2I2Q:
+    desc: Watch Me Vibe Code an Animated App with Claude Fable 5.1 + Seedance 2.5
+    tags: [ai, vibe, tutorial]
+    notes:
+      - md: |
+          # Watch Me Vibe Code an Animated App with Claude Fable 5.1 + Seedance 2.5
+          This video provides a practical guide on "vibe coding" a gamified, animated mobile application by recreating the *Finch* mental health app. The process relies on AI-driven development to build interactive user interfaces and animated mascots without needing a traditional design team.
+
+          ### **Development Workflow**
+          1.  **Planning and Contextualization:** Provide the AI with comprehensive context, including screen recordings of the target app's onboarding and core flows (5:07), as well as reference images for the desired mascot (4:54).
+          2.  **App Structuring:** 
+              *   **Level 1 (Core):** Build the home screen, main navigation tabs, and primary interactions (4:03).
+              *   **Level 2 (Onboarding):** Implement the onboarding sequence (17–18 pages) including egg hatching animations and paywalls (10:22, 11:52).
+              *   **Level 3 (Animation):** Integrate character and environmental animations (14:02).
+          3.  **Deployment:** Use *React Native* with *Expo* for the app framework and *EAS Build* to handle app packaging, allowing for real-device testing (15:43, 16:18).
+
+          ### **Tools Used**
+          *   **Development:** *Claude Fable 5.1* (or *GPT-6 Astra*) is used as the primary coding engine (2:30, 2:47).
+          *   **Visual Assets & Animation:** *Higgsfield* (utilizing *Seedance 2.5* and other models) generates the custom alligator character, background environments, and animations (2:52, 14:50).
+          *   **Interactions:** *Lottie Files* provides ready-to-use, customizable JSON-based animations like confetti for success states, which are integrated via simple file uploads to *Claude* (21:23).
+
+          ### **Key Techniques**
+          *   **Video-Based Prompting:** Instead of manual annotation, record a *Loom* video of yourself interacting with the app to explain feature requirements and requested design adjustments to the AI (18:36).
+          *   **Iterative Refinement:** Use precise, descriptive prompts to address visual glitches (e.g., character sizing) or to refine environmental loops (e.g., stopping a cloud animation while keeping the water moving) (19:48).
+          *   **Design-to-Code:** Use the `/design` command directly within the IDE/chat interface to generate app mockups and preview them in local browser environments (7:34).
+
+  https://youtu.be/Rk6t9Uq1y9M:
+    desc: Watch Me Vibe Code an Animated App with Claude Opus 5.5 (It's Super Smooth)
+    tags: [ai, vibe, tutorial]
+    notes:
+      - md: |
+          # Watch Me Vibe Code an Animated App with Claude Opus 5.5 (It's Super Smooth)
+
+          The video provides a comprehensive guide on building a highly interactive, animated mobile app using modern AI tools and development frameworks. The author reconstructs the popular habit-tracker *Waterllama* using a *Capybara* mascot, demonstrating a workflow that blends AI-generated code with professional animation techniques.
+
+          ### **Core Workflow & Tools**
+          1.  **Context Gathering:** The author uses *Mobbin* (which has an MCP connector for *Claude*) to analyze existing app UI/UX patterns, flow, and screen structures without manual downloading. He supplements this with his own screen recordings of target apps to provide the AI with specific animation references.
+          2.  **Development Framework:** The app is built using *Expo* and *React Native* for cross-platform compatibility. The author uses *Claude Opus 5.5* (vibecoding) to generate the UI code, logic, and state management.
+          3.  **High-Quality Animations:** 
+              *   **Interface Elements:** Interactive sliders, water levels, and simple UI transitions are coded directly to maintain responsiveness and sharp vector quality.
+              *   **Character Animations:** For complex character movements (leaping, sipping, swimming) that appear stiff when coded, the author utilizes *Higgsfield* (using *Seedance 2.5* and *Genjutsu* models). These are generated as videos with green screens, which *Claude* then integrates into the app. 
+          4.  **Advanced Interactivity:** To achieve smooth, physics-based interactions like character follow-the-cursor or phone-tilt effects, the author relies on *SVG* assets (instead of bitmaps) and integrates the device's *gyroscope* and *gravity sensors* via code.
+
+          ### **Summary of Techniques**
+          *   **Vibe Coding:** Using natural language prompts with visual references (screen recordings) to iterate on app features.
+          *   **AI-Video Integration:** Offloading complex motion graphics to specialized video AI tools like *Higgsfield* while managing the integration through *Claude*.
+          *   **Vector Scaling:** Utilizing *SVG* files for characters and assets ensures high quality at any screen size without performance loss.
+          *   **Iterative Polishing:** Instead of manual coding every change, the author screen-records the app, narrates needed adjustments, and feeds the video back to *Claude* to implement fixes.
+
+  https://youtu.be/aa-Fu5Qw91M:
+    desc: Making An Actually Fun Game (NO Coding experience)
+    tags: [ai, vibe, tutorial]
+    notes:
+      - md: |
+          # Making An Actually Fun Game (NO Coding experience)
+
+          The video provides a comprehensive, hands-on guide to developing a game titled *Library Survivors* in a single weekend, leveraging AI tools to assist with coding and asset creation even without prior coding experience.
+
+          ### **Development Workflow & Tools**
+          *   **Planning:** The concept was brainstormed and fleshed out using *ChatGPT* (specifically the *o3-pro* model) to define mechanics, level design, and the difficulty curve, outputting results in a *Markdown* file.
+          *   **Coding Environment:** The author used *Windsurf* as the primary IDE, installing *Claude Code* to act as an AI-powered coding collaborator. *Claude Code* was instructed to build the game using *JavaScript* based on the design brief.
+          *   **Development Iteration:** The process involved iterative refinement, where the author used *Claude Code*'s planning mode and manual feedback loops to diagnose bugs (using browser console logs) and tweak game mechanics like stamina and collision systems.
+          *   **Version Control:** *GitHub* was used as a safety net, allowing the author to commit the project state to a private repository to ensure they could roll back to a functional version during the development process.
+
+          ### **Assets & Multimedia Generation**
+          *   **Graphics:** The author aimed for a cozy 16-bit retro aesthetic. *Leonardo* (using the *Phoenix* and *Lucid Realism* models) generated the background and character sprites. Tiling options were enabled for the floor texture to avoid seams. *Photoshop* was used manually for post-processing to ensure consistent color palettes across character sprites.
+          *   **Animation:** *Luma AI* (specifically *VO3*) was utilized to create animated background elements from static AI-generated images.
+          *   **Audio:** *Suno AI* was used to generate instrumental Lo-fi music for both the menu and gameplay loops, while *ElevenLabs* provided custom sound effects for in-game actions like menu selection and book-shelving.
+
+          ### **Reference & Methodology**
+          *   **Game Design Influence:** The game is a "reverse" *Vampire Survivors* style concept where the player assumes the role of a librarian cleaning up after NPCs rather than combatting them.
+          *   **AI Methodology:** The author highlights the efficacy of using AI to generate project roadmaps, maintain state management, and troubleshoot code in real-time, effectively demonstrating how non-technical users can build functional web-based games by serving as a "product manager" for AI agents.
+cheats:
+  Brief, high-level explanation of the main LLM/AI concepts:
+    desc: good for interviews or quick intros
+    tags: [ai]
+    notes:
+      - md: |
+          ### LLM / AI Main Concepts
+
+          > LLMs are AI models trained on huge text datasets that learn language patterns, enabling them to understand prompts and generate coherent, context-aware responses
+
+          - **AI (Artificial Intelligence):** The broad field of making machines perform tasks that usually require human intelligence (reasoning, learning, perception).
+          - **Machine Learning (ML):** A subset of AI where systems learn patterns from data instead of being explicitly programmed.
+          - **Neural Networks:** Algorithms inspired by the brain, built from layers of interconnected nodes that process information.
+          - **Deep Learning:** Using large, multi-layer neural networks to model complex patterns (e.g., image recognition, language understanding).
+          - **LLMs (Large Language Models):** A type of deep learning model trained on massive amounts of text to understand and generate human-like language (e.g., GPT, LLaMA).
+          - **Training:** The process of feeding data into a model so it adjusts weights (parameters) to learn patterns.
+          - **Inference:** When a trained model makes predictions or generates outputs based on new input.
+          - **Tokens:** The chunks of text (words or subwords) an LLM reads and generates.
+          - **Prompting:** Giving instructions or context to an LLM to guide its output.
+          - **Fine-tuning / RAG:** Ways to specialize LLMs: fine-tuning = retrain with specific data, RAG (Retrieval-Augmented Generation) = combine LLMs with external knowledge sources.
+commands:
+  'curl https://api.openai.com/v1/responses -H "Content-Type: application/json" -H "Authorization: Bearer $OPENAI_API_KEY" -d ''{ "model": "gpt-4.1", "input": "Tell me a three sentence bedtime story about a unicorn." }''':
+    tags: [ai, openai]
+    desc: OpenAI API Quickstart
+    links: ['https://platform.openai.com/docs/quickstart?api-mode=responses']
+  'curl https://api.openai.com/v1/responses -H "Content-Type: application/json" -H "Authorization: Bearer $(gopass show -n --password tokens/openai.com)" -d ''{ "model": "gpt-4.1", "input": "Tell me a three sentence bedtime story about a unicorn." }''':
+    tags: [ai, openai]
+    desc: OpenAI API Quickstart
+    links: ['https://platform.openai.com/docs/quickstart?api-mode=responses']
+  'curlie https://api.openai.com/v1/models -H "Authorization: Bearer $(gopass show -n --password tokens/openai.com)" -H "OpenAI-Organization: $(gopass show -n --password tokens/org.openai.com)" -H "OpenAI-Project: $(gopass show -n --password tokens/project.openai.com)"':
+    tags: [ai, openai]
+    desc: Usage from these API requests counts as usage for the specified organization and project
+    links:
+      - https://platform.openai.com/docs/api-reference/introduction
+      - https://platform.openai.com/settings/organization/general
+      - https://platform.openai.com/settings/organization/general
+  'curl https://api.anthropic.com/v1/messages -H "Content-Type: application/json" -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" -d ''{ "model": "claude-3-haiku-20240307", "max_tokens": 10, "messages": [{"role": "user", "content": "Hi"}] }''':
+    desc: Claude API Quickstart
+    tags: [ai]
+    links:
+      - Quickstart: https://docs.claude.com/en/docs/get-started
+      - Anthropic API Fundamentals: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
+  brew install codex:
+    desc: Lightweight coding agent that runs in your terminal | OpenAI
+    tags: [codex]
+    links:
+      - https://chatgpt.com/codex/onboarding
+      - https://github.com/openai/codex
+      - https://youtu.be/glOM015IAEI
+
+  skills add -yg https://github.com/github/awesome-copilot --skill copilot-instructions-blueprint-generator:
+    desc: Generate GitHub Copilot instruction files by analyzing actual codebase patterns and technology versions
+    tags: [ai, skills, copilot]
+    links: [https://skills.sh/github/awesome-copilot/copilot-instructions-blueprint-generator]
+  skills add -yg https://github.com/github/awesome-copilot --skill suggest-awesome-github-copilot-instructions:
+    desc: Analyze current repository context and suggest relevant copilot-instruction files from the GitHub awesome-copilot repository that are not already available in this repository.
+    tags: [ai, skills, copilot]
+    links: [https://skills.sh/github/awesome-copilot/suggest-awesome-github-copilot-instructions]
+  skills add -yg https://github.com/github/awesome-copilot --skill generate-custom-instructions-from-codebase:
+    desc: Generates GitHub Copilot migration instructions by analyzing code differences between project versions
+    tags: [ai, skills, copilot]
+    links: [https://skills.sh/github/awesome-copilot/generate-custom-instructions-from-codebase]
+  skills add -yg https://github.com/github/awesome-copilot --skill readme-blueprint-generator:
+    desc: Generate README blueprint files by analyzing the structure and content of the codebase
+    tags: [ai, skills, copilot]
+    links: [https://skills.sh/github/awesome-copilot/readme-blueprint-generator]
+  skills add -yg https://github.com/github/awesome-copilot --skill tldr-prompt:
+    desc: Create concise tldr summaries for GitHub Copilot files, MCP servers, and documentation
+    tags: [ai, skills, copilot]
+    links: [https://skills.sh/github/awesome-copilot/tldr-prompt]
+  skills add -yg https://github.com/github/awesome-copilot --skill memory-merger:
+    desc: Consolidates mature learnings from domain memory files into instruction files with quality-assured merging
+    tags: [ai, skills, copilot]
+    links: [https://skills.sh/github/awesome-copilot/memory-merger]
+  skills add -yg https://github.com/github/awesome-copilot --skill create-readme:
+    desc: Generate README files for GitHub repositories based on the codebase structure and content
+    tags: [ai, skills, copilot]
+    links: [https://skills.sh/github/awesome-copilot/create-readme]
+  skills add -yg https://github.com/mblode/agent-skills --skill readme-creator:
+    desc: Generate README files for GitHub repositories based on the codebase structure and content
+    tags: [ai, skills, readme]
+    links: [https://skills.sh/mblode/agent-skills/readme-creator]
+  skills add -yg https://github.com/anthropics/knowledge-work-plugins --skill documentation:
+    desc: Write clear, maintainable technical documentation for different audiences and purposes
+    tags: [ai, skills, doc]
+    links: [https://skills.sh/anthropics/knowledge-work-plugins/documentation]
+  skills add -yg https://github.com/softaworks/agent-toolkit --skill crafting-effective-readmes:
+    desc: Provides guidance and templates for creating effective README files for GitHub repositories
+    tags: [ai, skills, readme]
+    links: [https://skills.sh/softaworks/agent-toolkit/crafting-effective-readmes]
+  skills add -yg https://github.com/anthropics/skills --skill doc-coauthoring:
+    desc: Collaboratively author and edit documentation with AI assistance
+    tags: [ai, skills, doc]
+    links: [https://skills.sh/anthropics/skills/doc-coauthoring]
+  skills ls --agent 'universal' --json:
+    desc: List all available skills for the 'universal' agent in JSON format
+    tags: [ai, skills, universal]

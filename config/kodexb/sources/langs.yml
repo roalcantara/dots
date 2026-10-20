@@ -1,0 +1,70 @@
+bookmarks:
+  https://cuelang.org:
+    desc: Validate, define, and use dynamic and text-based data
+    tags: [coding, config]
+    notes:
+      - md: | #markdown
+          # Programmable Configuration Language
+
+          - **Core Philosophy:** Types are values, and values are types. It is not Turing-complete, which ensures safety and predictable merging.
+          - **Best For:** Large-scale infrastructure and Kubernetes validation where you want automated, commutative merging without hidden script execution quirks.
+
+  https://dhall-lang.org:
+    desc: Programmable configuration language that you can think of as JSON + functions + types + imports
+    tags: [coding, config]
+    notes:
+      - md: | #markdown
+          # Programmable Configuration Language
+
+          - **Core Philosophy:** A programmable, strongly-typed, functional configuration language that is explicitly not Turing-complete.
+          - **Best For:** Absolute evaluation safety—guaranteeing that your configuration evaluation will always terminate and never hang or loop infinitely.
+
+  https://jsonnet.org:
+    desc: A configuration language for app and tool developers
+    tags: [coding, config]
+    notes:
+      - md: | #markdown
+          # Programmable Configuration Language
+
+          - **Core Philosophy:** Developed by Google, Jsonnet is an official superset of JSON that adds variables, conditionals, arithmetic, and local function definitions.
+          - **Best For:** Teams already heavily reliant on JSON who need basic DRY (Don't Repeat Yourself) templating capabilities.
+
+  https://nickel-lang.org:
+    desc: Manage complex configurations. Modular, correct and boilerplate-free.
+    tags: [coding, config]
+    notes:
+      - md: | #markdown
+          # Programmable Configuration Language
+
+          - **Core Philosophy:** Designed as a cheap, scripting-like configuration language with optional/gradual typing and first-class data validation.
+          - **Best For:** Bridging the gap between untyped flexibility and robust schema constraints.
+
+  https://kcl-lang.io:
+    desc: Open-source constraint-based record & functional language mainly used in configuration and policy scenarios.
+    tags: [coding, config]
+    notes:
+      - md: | #markdown
+          # Programmable Configuration Language
+
+          - **Core Philosophy:** A constraint-based, statically typed configuration language oriented around modern object-oriented schema definitions for cloud-native applications.
+          - **Best For:** Configuration generation and policy validation with rich IDE tooling.
+
+  http://pkl-lang.org:
+    desc: A programming language for configuration and data validation
+    tags: [coding, config]
+    links:
+      - Rust-backed language support for PKL: https://marketplace.visualstudio.com/items?itemName=caniko.pkl-lsp
+    notes:
+      - md: | #markdown
+          # Programmable Configuration Language
+
+          - **Core Philosophy:** Uses runtime-validated types. Emphasizes ergonomics, with features such as classes and functions that make it easier to write and read than some of its peers.
+          - **Best For:** Configuration generation and integration into applications, with code generation support for multiple language stacks.
+
+          ## COMPARING
+
+          - Pkl is often compared with Nickel, Dhall, KCL, CUE, and Jsonnet. Nickel, Dhall, and KCL are the closest in language design, while CUE follows a more restrictive model and Jsonnet is closer to a lightweight templating language.
+          - Unlike CUE, Pkl is not centered on commutative merging and does not follow the same strict semantics. It also targets both configuration generation and integration into applications, with code generation support for multiple language stacks.
+          - In the broader category of configuration DSLs, Pkl, Nickel, KCL, and Jsonnet all support JSON-style data models, functions, and late-bound overrides. Pkl and Jsonnet lean more toward object-oriented patterns, while Nickel and CUE lean more toward functional and merge-based semantics.
+          - Pkl uses runtime-validated types, while Nickel combines static typing with runtime contracts for flexible validation.
+          - Nickel has a mature LSP with contextual completion, while Pkl has strong JetBrains-based editing support.

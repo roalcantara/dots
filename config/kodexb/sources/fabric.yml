@@ -1,0 +1,1901 @@
+commands:
+  fabric --pattern summarize -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}":
+    desc: Extract a YouTube video transcript and process it with a pattern "Summarize"
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#youtube-processing-with-fabric
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern extract_wisdom -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --transcript-with-timestamps:
+    desc: Extract a YouTube video transcript with timestamps preserved and process it with a pattern "Extract Wisdom"
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#youtube-processing-with-fabric
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern analyze_claims -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --comments:
+    desc: Extract comments from a YouTube video and process them with a pattern "Analyze Claims" (requires YouTube API key)
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#youtube-processing-with-fabric
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --metadata:
+    desc: Extract metadata from a YouTube video as JSON
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#youtube-processing-with-fabric
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --yt-dlp-args="--cookies-from-browser brave":
+    desc: Use browser cookies for YouTube age-restricted or private videos
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#advanced-options
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric -g ${2|en,es,fr|} -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --yt-dlp-args="--sub-langs ${3:es,fr}":
+    desc: Override YouTube language selection (takes precedence over -g flag)
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#advanced-options
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --yt-dlp-args="--format best":
+    desc: Use specific YouTube format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#advanced-options
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --yt-dlp-args="--sleep-requests 1":
+    desc: Handle YouTube rate limiting (slow down requests)
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#advanced-options
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --yt-dlp-args="--cookies-from-browser firefox --write-info-json":
+    desc: Multiple YouTube arguments (use quotes)
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#advanced-options
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --yt-dlp-args="--cookies-from-browser brave --sleep-requests 1":
+    desc: Combine YouTube rate limiting with authentication
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#advanced-options
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --yt-dlp-args="--sub-format srt":
+    desc: Override YouTube subtitle format (takes precedence over built-in --sub-format vtt)
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#advanced-options
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern summarize -y "https://www.youtube.com/playlist?list=${1:PL348325B57291B867}" --playlist:
+    desc: Process all YouTube videos in a playlist
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#playlist-processing
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric -y "https://www.youtube.com/playlist?list=${1:PL348325B57291B867}" --playlist -o playlist.csv:
+    desc: Save YouTube playlist videos to CSV
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#playlist-processing
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern summarize -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --stream:
+    desc: Stream YouTube video transcript to the terminal
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#stream-output
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern extract_wisdom -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}":
+    desc: Analyze YouTube video content for key insights
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#content-analysis
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern analyze_claims -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}":
+    desc: Check claims made in the YouTube video
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#content-analysis
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern create_study_notes -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}":
+    desc: Create study notes from educational YouTube videos
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#educational-content
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern extract_concepts -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}":
+    desc: Extract key concepts and definitions from YouTube video
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#educational-content
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern meeting_summary -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --transcript-with-timestamps:
+    desc: Summarize YouTube conference talks with timestamps
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#meetingconference-processing
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern extract_action_items -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}":
+    desc: Extract action items from recorded meetings on YouTube
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#meetingconference-processing
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern create_social_posts -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}":
+    desc: Create social media posts from YouTube video content
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#content-creation
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern write_blog_post -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}":
+    desc: Generate blog post from YouTube video transcript
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#content-creation
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern comprehensive_analysis -y "https://www.youtube.com/watch?v=${1:dQw4w9WgXcQ}" --yt-dlp-args="--cookies-from-browser chrome" --transcript-with-timestamps --comments -o analysis.md:
+    desc: Comprehensive analysis of YouTube video with timestamps, comments, and transcript
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/docs/YouTube-Processing.md#detailed-analysis-with-authentication
+      - https://github.com/yt-dlp/yt-dlp/wiki/Installation
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric and yt-dlp for required for transcript extraction
+          brew install fabric-ai yt-dlp
+
+          # Configure fabric:
+          mkdir -p ~/.config/fabric/ && vi ~/.config/fabric/config.yaml
+
+          # Configure YouTube API (only needed for comments and metadata extraction):
+          # 1. Go to https://console.cloud.google.com/
+          # 2. Create a new project
+          # 3. Enable the YouTube Data API
+          # 4. Create a new API key
+          # 5. Add the API key to the .env file
+          # 6. Add the API key to the Fabric configuration
+          # 7. Configure YouTube API
+          fabric --setup
+  fabric --pattern analyze_claims -u '${1:https://github.com/danielmiessler/fabric}':
+    desc: Analyze claims on a website with Fabric, which uses Jina AI to scrape the URL into markdown format before sending it to the model
+    tags: [fabric, ai]
+    links:
+      [https://github.com/danielmiessler/Fabric/blob/main/README.md#examples]
+    notes:
+      - sh: |
+          #!/bin/bash
+
+          # Install fabric
+          brew install fabric-ai
+  fabric --pattern agility_story '${1:Implement login feature for mobile app}':
+    desc: Generate a user story and acceptance criteria in JSON format based on the given topic
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/agility_story
+  fabric --pattern ai '${1:Explain the concept of recursion in programming}':
+    desc: Interpret questions deeply and provide concise, insightful answers in Markdown bullet points
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/ai
+  fabric --pattern analyze_answers '${1:Correctness of student answers for quiz questions}':
+    desc: Evaluate quiz answers for correctness based on learning objectives and generated quiz questions
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_answers
+  fabric --pattern analyze_bill '${1:Identify hidden agendas in this legislation}':
+    desc: Analyzes legislation to identify overt and covert goals, examining bills for hidden agendas and true intentions
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_bill
+  fabric --pattern analyze_bill_short ${1:'Analyze the new healthcare reform bill'}:
+    desc: Provides a concise analysis of legislation, identifying overt and covert goals in a brief, structured format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_bill_short
+  fabric --pattern analyze_candidates '${1:Compare Kamala Harris and Donald Trump on climate policy.}':
+    desc: Compare and contrast two political candidates based on key issues and policies
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_candidates
+  fabric --pattern analyze_cfp_submission '${1:Enter prompt content}':
+    desc: Review and evaluate conference speaking session submissions based on clarity, relevance, depth, and engagement potential
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_cfp_submission
+  fabric --pattern analyze_claims '${1:Enter prompt content}':
+    desc: Analyse and rate truth claims with evidence, counter-arguments, fallacies, and final recommendations
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_claims
+  fabric --pattern analyze_comments '${1:Analyze these comments for sentiment and tone}':
+    desc: Evaluate internet comments for content, categorize sentiment, and identify reasons for praise, criticism, and neutrality
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_comments
+  fabric --pattern analyze_debate '${1:The impact of AI on employment}':
+    desc: Rate debates on insight, emotionality, and present an unbiased, thorough analysis of arguments, agreements, and disagreements
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_debate
+  fabric --pattern analyze_email_headers '${1:Analyze these email headers for security threats}':
+    desc: Provide cybersecurity analysis and actionable insights on SPF, DKIM, DMARC, and ARC email header results
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_email_headers
+  fabric --pattern analyze_incident '${1:Enter prompt content}':
+    desc: Efficiently extract and organize key details from cybersecurity breach articles, focusing on attack type, vulnerable components, attacker and target info, incident details, and remediation steps
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_incident
+  fabric --pattern analyze_interviewer_techniques '${1:Analyze the interviewing style of David Letterman}':
+    desc: This exercise involves analyzing interviewer techniques, identifying their unique qualities, and succinctly articulating what makes them stand out in a clear, simple format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_interviewer_techniques
+  fabric --pattern analyze_logs '${1:Analyze webserver logs for error trends}':
+    desc: Analyse server log files to identify patterns, anomalies, and issues, providing data-driven insights and recommendations for improving server reliability and performance
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_logs
+  fabric --pattern analyze_malware '${1:Analyze this ransomware sample for indicators}':
+    desc: Analyse malware details, extract key indicators, techniques, and potential detection strategies, and summarize findings concisely for a malware analyst's use in identifying and responding to threats
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_malware
+  fabric --pattern analyze_military_strategy '${1:The Battle of Gettysburg tactical analysis}':
+    desc: Analyse a historical battle, offering in-depth insights into strategic decisions, strengths, weaknesses, tactical approaches, logistical factors, pivotal moments, and consequences for a comprehensive military evaluation
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_military_strategy
+  fabric --pattern analyze_mistakes '${1:My reasoning errors in climate predictions}':
+    desc: Analyse past mistakes in thinking patterns, map them to current beliefs, and offer recommendations to improve accuracy in predictions
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_mistakes
+  fabric --pattern analyze_paper '${1:Summarize the key findings of a machine learning paper}':
+    desc: Analyses research papers by summarizing findings, evaluating rigor, and assessing quality to provide insights for documentation and review
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_paper
+  fabric --pattern analyze_paper_simple '${1:A review of transformer architectures in NLP}':
+    desc: Analyzes academic papers with a focus on primary findings, research quality, and study design evaluation
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_paper_simple
+  fabric --pattern analyze_patent '${1:A patent for a novel cooling system}':
+    desc: Analyse a patent's field, problem, solution, novelty, inventive step, and advantages in detail while summarizing and extracting keywords
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_patent
+  fabric --pattern analyze_personality '${1:Analyze personality from the following user comments}':
+    desc: Performs a deep psychological analysis of a person in the input, focusing on their behavior, language, and psychological traits
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_personality
+  fabric --pattern analyze_presentation '${1:Analyze this product launch presentation}':
+    desc: Reviews and critiques presentations by analyzing the content, speaker's underlying goals, self-focus, and entertainment value
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_presentation
+  fabric --pattern analyze_product_feedback '${1:Analyze and organize user feedback for our app}':
+    desc: A prompt for analyzing and organizing user feedback by identifying themes, consolidating similar comments, and prioritizing them based on usefulness
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_product_feedback
+  fabric --pattern analyze_proposition '${1:Analyze California Proposition 22 on gig economy}':
+    desc: Analyzes a ballot proposition by identifying its purpose, impact, arguments for and against, and relevant background information
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_proposition
+  fabric --pattern analyze_prose '${1:Assess the prose for novelty and clarity.}':
+    desc: Evaluates writing for novelty, clarity, and prose, providing ratings, improvement recommendations, and an overall score
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_prose
+  fabric --pattern analyze_prose_json '${1:This is a sample text for writing analysis.}':
+    desc: Evaluates writing for novelty, clarity, prose, and provides ratings, explanations, improvement suggestions, and an overall score in a JSON format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_prose_json
+  fabric --pattern analyze_prose_pinker '${1:Analyze this paragraph for writing clarity}':
+    desc: Evaluates prose based on Steven Pinker's The Sense of Style, analyzing writing style, clarity, and bad writing elements
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_prose_pinker
+  fabric --pattern analyze_risk '${1:Risk assessment report for vendor Acme Corp}':
+    desc: Conducts a risk assessment of a third-party vendor, assigning a risk score and suggesting security controls based on analysis of provided documents and vendor website
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_risk
+  fabric --pattern analyze_sales_call '${1:Evaluate this sales call transcript for performance}':
+    desc: Rates sales call performance across multiple dimensions, providing scores and actionable feedback based on transcript analysis
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_sales_call
+  fabric --pattern analyze_spiritual_text '${1:Compare the Bhagavad Gita and the Bible}':
+    desc: Compares and contrasts spiritual texts by analyzing claims and differences with the King James Bible
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_spiritual_text
+  fabric --pattern analyze_tech_impact '${1:Analyze the societal impact of AI in healthcare}':
+    desc: Analyzes the societal impact, ethical considerations, and sustainability of technology projects, evaluating their outcomes and benefits
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_tech_impact
+  fabric --pattern analyze_terraform_plan '${1:Analyze this Terraform plan for security risks}':
+    desc: Analyzes Terraform plan outputs to assess infrastructure changes, security risks, cost implications, and compliance considerations
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_terraform_plan
+  fabric --pattern analyze_threat_report '${1:Analyze the latest cybersecurity threat report from 2024}':
+    desc: Extracts surprising insights, trends, statistics, quotes, references, and recommendations from cybersecurity threat reports, summarizing key findings and providing actionable information
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_threat_report
+  fabric --pattern analyze_threat_report_cmds '${1:Recent APT29 threat report with IOCs}':
+    desc: Extract and synthesize actionable cybersecurity commands from provided materials, incorporating command-line arguments and expert insights for pentesters and non-experts
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_threat_report_cmds
+  fabric --pattern analyze_threat_report_trends '${1:Identify surprising trends from this cybersecurity report}':
+    desc: Extract up to 50 surprising, insightful, and interesting trends from a cybersecurity threat report in markdown format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/analyze_threat_report_trends
+  fabric --pattern answer_interview_question ${1:'Explain the difference between REST and GraphQL'}:
+    desc: Generates concise, tailored responses to technical interview questions, incorporating alternative approaches and evidence to demonstrate the candidate's expertise and experience
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/answer_interview_question
+  fabric --pattern ask_secure_by_design_questions '${1:Security considerations for a cloud-based medical records system}':
+    desc: Generates a set of security-focused questions to ensure a project is built securely by design, covering key components and considerations
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/ask_secure_by_design_questions
+  fabric --pattern ask_uncle_duke '${1:Review this code for best practices and suggest improvements}':
+    desc: Coordinates a team of AI agents to research and produce multiple software development solutions based on provided specifications, and conducts detailed code reviews to ensure adherence to best practices
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/ask_uncle_duke
+  fabric --pattern capture_thinkers_work '${1:Analyze the teachings of Aristotle on ethics}':
+    desc: Analyze philosophers or philosophies and provide detailed summaries about their teachings, background, works, advice, and related concepts in a structured template
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/capture_thinkers_work
+  fabric --pattern check_agreement ${1:'Review this nondisclosure agreement for potential issues'}:
+    desc: Analyze contracts and agreements to identify important stipulations, issues, and potential gotchas, then summarize them in Markdown
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/check_agreement
+  fabric --pattern clean_text '${1:Fix this broken text with missing punctuation}':
+    desc: Fix broken or malformatted text by correcting line breaks, punctuation, capitalization, and paragraphs without altering content or spelling
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/clean_text
+  fabric --pattern coding_master '${1:Explain the concept of recursion in Python with examples}':
+    desc: Explain a coding concept to a beginner, providing examples, and formatting code in markdown with specific output sections like ideas, recommendations, facts, and insights
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/coding_master
+  fabric --pattern compare_and_contrast '${1:Compare and contrast apples with oranges}':
+    desc: Compare and contrast a list of items in a markdown table, with items on the left and topics on top
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/compare_and_contrast
+  fabric --pattern convert_to_markdown ${1:'A sample document to convert to Markdown'}:
+    desc: Convert content to clean, complete Markdown format, preserving all original structure, formatting, links, and code blocks without alterations
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/convert_to_markdown
+  fabric --pattern create_5_sentence_summary '${1:Summarize the main ideas of the book Sapiens}':
+    desc: Create concise summaries or answers to input at 5 different levels of depth, from 5 words to 1 word
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_5_sentence_summary
+  fabric --pattern create_academic_paper '${1:A research paper on quantum computing applications}':
+    desc: Generate a high-quality academic paper in LaTeX format with clear concepts, structured content, and a professional layout
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_academic_paper
+  fabric --pattern create_ai_jobs_analysis '${1:Enter prompt content}':
+    desc: Analyze job categories' susceptibility to automation, identify resilient roles, and provide strategies for personal adaptation to AI-driven changes in the workforce
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_ai_jobs_analysis
+  fabric --pattern create_aphorisms '${1:Generate aphorisms about the nature of time}':
+    desc: Find and generate a list of brief, witty statements
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_aphorisms
+  fabric --pattern create_art_prompt '${1:A surreal underwater city with bioluminescent creatures}':
+    desc: Generates a detailed, compelling visual description of a concept, including stylistic references and direct AI instructions for creating art
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_art_prompt
+  fabric --pattern create_better_frame '${1:Analyze different frames for interpreting a setback}':
+    desc: Identifies and analyzes different frames of interpreting reality, emphasizing the power of positive, productive lenses in shaping outcomes
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_better_frame
+  fabric --pattern create_coding_feature '${1:A user authentication module with JWT tokens}':
+    desc: Generates secure and composable code features using modern technology and best practices from project specifications
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_coding_feature
+  fabric --pattern create_coding_project '${1:A simple to-do list with user authentication}':
+    desc: Generate wireframes and starter code for any coding ideas that you have
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_coding_project
+  fabric --pattern create_command '${1:port scan on a specific target IP}':
+    desc: Helps determine the correct parameters and switches for penetration testing tools based on a brief description of the objective
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_command
+  fabric --pattern create_cyber_summary '${1:Summarize recent cybersecurity threats and malware incidents.}':
+    desc: Summarizes cybersecurity threats, vulnerabilities, incidents, and malware with a 25-word summary and categorized bullet points, after thoroughly analyzing and mapping the provided input
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_cyber_summary
+  fabric --pattern create_design_document '${1:Design a cloud-based e-commerce platform for retail}':
+    desc: Creates a detailed design document for a system using the C4 model, addressing business and security postures, and including a system context diagram
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_design_document
+  fabric --pattern create_diy '${1:How to build a simple bookshelf from scratch}':
+    desc: Creates structured "Do It Yourself" tutorial patterns by analyzing prompts, organizing requirements, and providing step-by-step instructions in Markdown format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_diy
+  fabric --pattern create_excalidraw_visualization '${1:Visualize the relationship between machine learning and neuroscience}':
+    desc: Creates complex Excalidraw diagrams to visualize relationships between concepts and ideas in structured format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_excalidraw_visualization
+  fabric --pattern create_flash_cards '${1:Important terms in psychology for student review}':
+    desc: Creates flashcards for key concepts, definitions, and terms with question-answer format for educational purposes
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_flash_cards
+  fabric --pattern create_formal_email '${1:draft a follow-up email after a job interview}':
+    desc: Crafts professional, clear, and respectful emails by analyzing context, tone, and purpose, ensuring proper structure and formatting
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_formal_email
+  fabric --pattern create_git_diff_commit '${1:Analyze the git diff and write a commit message}':
+    desc: Generates Git commands and commit messages for reflecting changes in a repository, using conventional commits and providing concise shell commands for updates
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_git_diff_commit
+  fabric --pattern create_graph_from_input '${1:Security program KPI progress over time data}':
+    desc: Generates a CSV file with progress-over-time data for a security program, focusing on relevant metrics and KPIs
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_graph_from_input
+  fabric --pattern create_hormozi_offer '${1:Create a $100M offer for a fitness app}':
+    desc: Creates a customized business offer based on principles from Alex Hormozi's book, "$100M Offers.
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_hormozi_offer
+  fabric --pattern create_idea_compass '${1:Enter prompt content}':
+    desc: Organizes and structures ideas by exploring their definition, evidence, sources, and related themes or consequences
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_idea_compass
+  fabric --pattern create_investigation_visualization '${2:Visualize the crime scene evidence connections}':
+    desc: Creates detailed Graphviz visualizations of complex input, highlighting key aspects and providing clear, well-annotated diagrams for investigative analysis and conclusions
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_investigation_visualization
+  fabric --pattern create_keynote '${1:A TED talk on the future of renewable energy}':
+    desc: Creates TED-style keynote presentations with a clear narrative, structured slides, and speaker notes, emphasizing impactful takeaways and cohesive flow
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_keynote
+  fabric --pattern create_loe_document '${1:Estimate effort for developing a mobile app}':
+    desc: Creates detailed Level of Effort documents for estimating work effort, resources, and costs for tasks or projects
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_loe_document
+  fabric --pattern create_logo '${1:A minimalist cat icon for a tech startup}':
+    desc: Creates simple, minimalist company logos without text, generating AI prompts for vector graphic logos based on input
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_logo
+  fabric --pattern create_markmap_visualization '${1:Map the key concepts of quantum mechanics}':
+    desc: Transforms complex ideas into clear visualizations using MarkMap syntax, simplifying concepts into diagrams with relationships, boxes, arrows, and labels
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_markmap_visualization
+  fabric --pattern create_mermaid_visualization ${1:'Visualization of a machine learning pipeline workflow'}:
+    desc: Creates detailed, standalone visualizations of concepts using Mermaid (Markdown) syntax, ensuring clarity and coherence in diagrams
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_mermaid_visualization
+  fabric --pattern create_mermaid_visualization_for_github '${1:How to build a CI/CD pipeline with Docker}':
+    desc: Creates standalone, detailed visualizations using Mermaid (Markdown) syntax to effectively explain complex concepts, ensuring clarity and precision
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_mermaid_visualization_for_github
+  fabric --pattern create_micro_summary ${1:'Summarize the main points of the article'}:
+    desc: Summarizes content into a concise, 20-word summary with main points and takeaways, formatted in Markdown
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_micro_summary
+  fabric --pattern create_mnemonic_phrases '${1:Generate mnemonic for vocabulary list}':
+    desc: Creates memorable mnemonic sentences from given words to aid in memory retention and learning
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_mnemonic_phrases
+  fabric --pattern create_network_threat_landscape '${1:Nmap scan results for internal network 192.168.1.0/24}':
+    desc: Analyzes open ports and services from a network scan and generates a comprehensive, insightful, and detailed security threat report in Markdown
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_network_threat_landscape
+  fabric --pattern create_newsletter_entry '${1:A concise newsletter summary of the latest web dev trends}':
+    desc: Condenses provided article text into a concise, objective, newsletter-style summary with a title in the style of Frontend Weekly
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_newsletter_entry
+  fabric --pattern create_npc '${1:a mysterious elven rogue with a hidden past}':
+    desc: Generates a detailed D&D 5E NPC, including background, flaws, stats, appearance, personality, goals, and more in Markdown format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_npc
+  fabric --pattern create_pattern '${1:Explain the process of creating a new habit.}':
+    desc: Extracts, organizes, and formats LLM/AI prompts into structured sections, detailing the AI's role, instructions, output format, and any provided examples for clarity and accuracy
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_pattern
+  fabric --pattern create_prd '${1:Design a mobile app for task management}':
+    desc: Creates a precise Product Requirements Document (PRD) in Markdown based on input
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_prd
+  fabric --pattern create_prediction_block '${1:Create a prediction block for market trends}':
+    desc: Extracts and formats predictions from input into a structured Markdown block for a blog post
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_prediction_block
+  fabric --pattern create_quiz '${1:A quiz about the key events of World War II}':
+    desc: Creates a three-phase reading plan based on an author or topic to help the user become significantly knowledgeable, including core, extended, and supplementary readings
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_quiz
+  fabric --pattern create_reading_plan '${1:Create a reading plan for introductory biology concepts}':
+    desc: Generates review questions based on learning objectives from the input, adapted to the specified student level, and outputs them in a clear markdown format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_reading_plan
+  fabric --pattern create_recursive_outline '${1:Break down the process of starting a business}':
+    desc: Breaks down complex tasks or projects into manageable, hierarchical components with recursive outlining for clarity and simplicity
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_recursive_outline
+  fabric --pattern create_report_finding '${1:Critical SQL injection vulnerability in login form}':
+    desc: Creates a detailed, structured security finding report in markdown, including sections on Description, Risk, Recommendations, References, One-Sentence-Summary, and Quotes
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_report_finding
+  fabric --pattern create_rpg_summary '${1:A summary of our D&D session last night}':
+    desc: Summarizes an in-person RPG session with key events, combat details, player stats, and role-playing highlights in a structured format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_rpg_summary
+  fabric --pattern create_security_update '${1:Latest security threats and vulnerabilities for this week}':
+    desc: Creates concise security updates for newsletters, covering stories, threats, advisories, vulnerabilities, and a summary of key issues
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_security_update
+  fabric --pattern create_show_intro '${1:An intro summarizing the key topics from today'\''s podcast episode}':
+    desc: Creates compelling short intros for podcasts, summarizing key topics and themes discussed in the episode
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_show_intro
+  fabric --pattern create_sigma_rules '${1:Analyze recent CVE-2024-1234 for Sigma rules}':
+    desc: Extracts Tactics, Techniques, and Procedures (TTPs) from security news and converts them into Sigma detection rules for host-based detections
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_sigma_rules
+  fabric --pattern create_story_explanation '${1:Explain blockchain technology as a simple story}':
+    desc: Summarizes complex content in a clear, approachable story format that makes the concepts easy to understand
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_story_explanation
+  fabric --pattern create_stride_threat_model '${1:Enter prompt content}':
+    desc: Create a STRIDE-based threat model for a system design, identifying assets, trust boundaries, data flows, and prioritizing threats with mitigations
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_stride_threat_model
+  fabric --pattern create_summary '${1:Summarize the key points from this article on AI ethics}':
+    desc: Summarizes content into a 20-word sentence, 10 main points (16 words max), and 5 key takeaways in Markdown format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_summary
+  fabric --pattern create_tags '${1:Enter prompt content}':
+    desc: Identifies at least 5 tags from text content for mind mapping tools, including authors and existing tags if present
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_tags
+  fabric --pattern create_threat_scenarios '${1:Threat model for a cloud-based healthcare platform}':
+    desc: Identifies likely attack methods for any system by providing a narrative-based threat model, balancing risk and opportunity
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_threat_scenarios
+  fabric --pattern create_ttrc_graph '${1:Time to remediate critical vulnerabilities over months}':
+    desc: Creates a CSV file showing the progress of Time to Remediate Critical Vulnerabilities over time using given data
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_ttrc_graph
+  fabric --pattern create_ttrc_narrative '${1:Progress in reducing Time to Remediate Critical Vulnerabilities}':
+    desc: Creates a persuasive narrative highlighting progress in reducing the Time to Remediate Critical Vulnerabilities metric over time
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_ttrc_narrative
+  fabric --pattern create_upgrade_pack '${1:Upgrade the world model with new task algorithms}':
+    desc: Extracts world model and task algorithm updates from content, providing beliefs about how the world works and task performance
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_upgrade_pack
+  fabric --pattern create_user_story '${1:Add a two-factor authentication option for users}':
+    desc: Writes concise and clear technical user stories for new features in complex software programs, formatted for all stakeholders
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_user_story
+  fabric --pattern create_video_chapters '${1:Extract key moments from transcript}':
+    desc: Extracts interesting topics and timestamps from a transcript, providing concise summaries of key moments
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_video_chapters
+  fabric --pattern create_visualization '${1:A visual map of the human digestive system}':
+    desc: Transforms complex ideas into visualizations using intricate ASCII art, simplifying concepts where necessary
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/create_visualization
+  fabric --pattern dialog_with_socrates '${1:What is the nature of justice?}':
+    desc: Engages in deep, meaningful dialogues to explore and challenge beliefs using the Socratic method
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/dialog_with_socrates
+  fabric --pattern enrich_blog_post '${1:Transform this blog post into an engaging HTML article}':
+    desc: Enhances Markdown blog files by applying instructions to improve structure, visuals, and readability for HTML rendering
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/enrich_blog_post
+  fabric --pattern explain_code '${1:Explain this Python code snippet}':
+    desc: Explains code, security tool output, configuration text, and answers questions based on the provided input
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/explain_code
+  fabric --pattern explain_docs '${1:Explain the main documentation for the API}':
+    desc: Improves and restructures tool documentation into clear, concise instructions, including overviews, usage, use cases, and key features
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/explain_docs
+  fabric --pattern explain_math '${1:Explain the Pythagorean theorem with a real-world example}':
+    desc: Helps you understand mathematical concepts in a clear and engaging way
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/explain_math
+  fabric --pattern explain_project '${1:Explain the purpose and structure of my project}':
+    desc: Summarizes project documentation into clear, concise sections covering the project, problem, solution, installation, usage, and examples
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/explain_project
+  fabric --pattern explain_terms '${1:Explain advanced terms from this document}':
+    desc: Produces a glossary of advanced terms from content, providing a definition, analogy, and explanation of why each term matters
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/explain_terms
+  fabric --pattern export_data_as_csv '${1:Export customer data from CRM to CSV}':
+    desc: Extracts and outputs all data structures from the input in properly formatted CSV data
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/export_data_as_csv
+  fabric --pattern extract_algorithm_update_recommendations '${1:Recommendations for updating recommendation system algorithms}':
+    desc: Extracts concise, practical algorithm update recommendations from the input and outputs them in a bulleted list
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_algorithm_update_recommendations
+  fabric --pattern extract_article_wisdom '${1:Insights and surprises from the latest neuroscience research}':
+    desc: Extracts surprising, insightful, and interesting information from content, categorizing it into sections like summary, ideas, quotes, facts, references, and recommendations
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_article_wisdom
+  fabric --pattern extract_book_ideas '${1:The subtle art of not caring by Mark Manson}':
+    desc: Extracts and outputs 50 to 100 of the most surprising, insightful, and interesting ideas from a book's content
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_book_ideas
+  fabric --pattern extract_book_recommendations '${1:Actionable strategies from Atomic Habits}':
+    desc: Extracts and outputs 50 to 100 practical, actionable recommendations from a book's content
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_book_recommendations
+  fabric --pattern extract_business_ideas '${1:A transcript of a startup pitch competition}':
+    desc: Extracts top business ideas from content and elaborates on the best 10 with unique differentiators
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_business_ideas
+  fabric --pattern extract_controversial_ideas '${1:Controversial ideas from the climate change debate}':
+    desc: Extracts and outputs controversial statements and supporting quotes from the input in a structured Markdown list
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_controversial_ideas
+  fabric --pattern extract_core_message '${1:Extract the core message from this essay on democracy}':
+    desc: Extracts and outputs a clear, concise sentence that articulates the core message of a given text or body of work
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_core_message
+  fabric --pattern extract_ctf_writeup '${1:Extract a writeup from this CTF warstory}':
+    desc: Extracts a short writeup from a warstory-like text about a cyber security engagement
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_ctf_writeup
+  fabric --pattern extract_domains '${1:Extract all domains from this article about AI}':
+    desc: Extracts domains and URLs from content to identify sources used for articles, newsletters, and other publications
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_domains
+  fabric --pattern extract_extraordinary_claims '${1:Identify scientifically disputed claims in this dialogue}':
+    desc: Extracts and outputs a list of extraordinary claims from conversations, focusing on scientifically disputed or false statements
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_extraordinary_claims
+  fabric --pattern extract_ideas '${1:Key ideas from a lecture on climate change}':
+    desc: Extracts and outputs all the key ideas from input, presented as 15-word bullet points in Markdown
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_ideas
+  fabric --pattern extract_insights '${1:Extract the key insights from this article on AI}':
+    desc: Extracts and outputs the most powerful and insightful ideas from text, formatted as 16-word bullet points in the INSIGHTS section, also IDEAS section
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_insights
+  fabric --pattern extract_insights_dm '${1:Key insights from this business strategy article}':
+    desc: Extracts and outputs all valuable insights and a concise summary of the content, including key points and topics discussed
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_insights_dm
+  fabric --pattern extract_instructions '${1:Step-by-step guide to changing a car tire}':
+    desc: Extracts clear, actionable step-by-step instructions and main objectives from instructional video transcripts, organizing them into a concise list
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_instructions
+  fabric --pattern extract_jokes '${1:Extract all jokes from this text}':
+    desc: Extracts jokes from text content, presenting each joke with its punchline in separate bullet points
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_jokes
+  fabric --pattern extract_latest_video ${1:'Latest video from a YouTube channel'}:
+    desc: Extracts the latest video URL from a YouTube RSS feed and outputs the URL only
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_latest_video
+  fabric --pattern extract_main_activities '${1:Extract key events from this transcript}':
+    desc: Extracts key events and activities from transcripts or logs, providing a summary of what happened
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_main_activities
+  fabric --pattern extract_main_idea '${1:Summarize the key points of this article.}':
+    desc: Extracts the main idea and key recommendation from the input, summarizing them in 15-word sentences
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_main_idea
+  fabric --pattern extract_most_redeeming_thing '${1:A failed business venture with unexpected positive outcome}':
+    desc: Extracts the most redeeming aspect from an input, summarizing it in a single 15-word sentence
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_most_redeeming_thing
+  fabric --pattern extract_patterns '${1:Find recurring and surprising patterns in this text}':
+    desc: Extracts and analyzes recurring, surprising, and insightful patterns from input, providing detailed analysis and advice for builders
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_patterns
+  fabric --pattern extract_poc '${1:Extract proof of concept URLs from CVE-2023-1234}':
+    desc: Extracts proof of concept URLs and validation methods from security reports, providing the URL and command to run
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_poc
+  fabric --pattern extract_predictions '${1:Extract predictions with dates and confidence levels}':
+    desc: Extracts predictions from input, including specific details such as date, confidence level, and verification method
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_predictions
+  fabric --pattern extract_primary_problem '${1:The growing wealth gap in developed countries}':
+    desc: Extracts the primary problem with the world as presented in a given text or body of work
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_primary_problem
+  fabric --pattern extract_primary_solution '${1:The main idea from the global warming article}':
+    desc: Extracts the primary solution for the world as presented in a given text or body of work
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_primary_solution
+  fabric --pattern extract_product_features '${1:Extract key features from this product description}':
+    desc: Extracts and outputs a list of product features from the provided input in a bulleted format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_product_features
+  fabric --pattern extract_questions '${1:An interview transcript of a tech CEO}':
+    desc: Extracts and outputs all questions asked by the interviewer in a conversation or interview
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_questions
+  fabric --pattern extract_recipe '${1:A recipe for chocolate chip cookies with detailed steps}':
+    desc: Extracts and outputs a recipe with a short meal description, ingredients with measurements, and preparation steps
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_recipe
+  fabric --pattern extract_recommendations ${1:'A blog post about effective meeting strategies'}:
+    desc: Extracts and outputs concise, practical recommendations from a given piece of content in a bulleted list
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_recommendations
+  fabric --pattern extract_references ${1:'Find all book and art references in this essay'}:
+    desc: Extracts and outputs a bulleted list of references to art, stories, books, literature, and other sources from content
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_references
+  fabric --pattern extract_skills '${1:Job description for a marketing manager requiring analytics and creativity}':
+    desc: Extracts and classifies skills from a job description into a table, separating each skill and classifying it as either hard or soft
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_skills
+  fabric --pattern extract_song_meaning '${1:Explain the meaning of "Bohemian Rhapsody" by Queen}':
+    desc: Analyzes a song to provide a summary of its meaning, supported by detailed evidence from lyrics, artist commentary, and fan analysis
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_song_meaning
+  fabric --pattern extract_sponsors '${1:List sponsors from this podcast transcript}':
+    desc: Extracts and lists official sponsors and potential sponsors from a provided transcript
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_sponsors
+  fabric --pattern extract_videoid '${1:https://www.youtube.com/watch?v=dQw4w9WgXcQ}':
+    desc: Extracts and outputs the video ID from any given URL
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_videoid
+  fabric --pattern extract_wisdom '${1:Insights from a talk on human flourishing}':
+    desc: Extracts surprising, insightful, and interesting information from text on topics like human flourishing, AI, learning, and more
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_wisdom
+  fabric --pattern extract_wisdom_agents '${1:How can AI enhance human flourishing and learning?}':
+    desc: Extracts valuable insights, ideas, quotes, and references from content, emphasizing topics like human flourishing, AI, learning, and technology
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_wisdom_agents
+  fabric --pattern extract_wisdom_dm '${1:Extract wisdom from this AI learning video}':
+    desc: Extracts all valuable, insightful, and thought-provoking information from content, focusing on topics like human flourishing, AI, learning, and technology
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_wisdom_dm
+  fabric --pattern extract_wisdom_nometa ${1:'Key insights from recent AI research papers'}:
+    desc: Extracts insights, ideas, quotes, habits, facts, references, and recommendations from content, focusing on human flourishing, AI, technology, and related topics
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/extract_wisdom_nometa
+  fabric --pattern find_female_life_partner ${1:'What qualities to look for in a female life partner'}:
+    desc: Analyzes criteria for finding a female life partner and provides clear, direct, and poetic descriptions
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/find_female_life_partner
+  fabric --pattern find_hidden_message '${1:Enter prompt content}':
+    desc: Extracts overt and hidden political messages, justifications, audience actions, and a cynical analysis from content
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/find_hidden_message
+  fabric --pattern find_logical_fallacies '${1:Analyze this argument for logical fallacies}':
+    desc: Identifies and analyzes fallacies in arguments, classifying them as formal or informal with detailed reasoning
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/find_logical_fallacies
+  fabric --pattern get_wow_per_minute '${1:Analyze the wow factor of this video transcript}':
+    desc: Determines the wow-factor of content per minute based on surprise, novelty, insight, value, and wisdom, measuring how rewarding the content is for the viewer
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/get_wow_per_minute
+  fabric --pattern get_youtube_rss '${1:UC9Yy6Y5v0}':
+    desc: Returns the RSS URL for a given YouTube channel based on the channel ID or URL
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/get_youtube_rss
+  fabric --pattern humanize '${1:This is an example of AI text that needs to be rewritten}':
+    desc: Rewrites AI-generated text to sound natural, conversational, and easy to understand, maintaining clarity and simplicity
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/humanize
+  fabric --pattern identify_dsrp_distinctions '${1:Explore the distinctions and boundaries in climate change discourse}':
+    desc: Encourages creative, systems-based thinking by exploring distinctions, boundaries, and their implications, drawing on insights from prominent systems thinkers
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/identify_dsrp_distinctions
+  fabric --pattern identify_dsrp_perspectives '${1:How does a boundary define a concept in systems thinking?}':
+    desc: Explores the concept of distinctions in systems thinking, focusing on how boundaries define ideas, influence understanding, and reveal or obscure insights
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/identify_dsrp_perspectives
+  fabric --pattern identify_dsrp_relationships '${1:Explore distinctions and boundaries between complex ideas}':
+    desc: Encourages exploration of connections, distinctions, and boundaries between ideas, inspired by systems thinkers to reveal new insights and patterns in complex systems
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/identify_dsrp_relationships
+  fabric --pattern identify_dsrp_systems '${1:Explore parts and wholes in a community system}':
+    desc: Encourages organizing ideas into systems of parts and wholes, inspired by systems thinkers to explore relationships and how changes in organization impact meaning and understanding
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/identify_dsrp_systems
+  fabric --pattern identify_job_stories '${1:Identify job stories for a software engineer role}':
+    desc: Identifies key job stories or requirements for roles
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/identify_job_stories
+  fabric --pattern improve_academic_writing '${1:The results were not significant due to small sample size.}':
+    desc: Refines text into clear, concise academic language while improving grammar, coherence, and clarity, with a list of changes
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/improve_academic_writing
+  fabric --pattern improve_prompt '${1:Write a poem about AI in the style of Shakespeare}':
+    desc: Improves an LLM/AI prompt by applying expert prompt writing strategies for better results and clarity
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/improve_prompt
+  fabric --pattern improve_report_finding '${1:Improve the SQL injection finding for web application}':
+    desc: Improves a penetration test security finding by providing detailed descriptions, risks, recommendations, references, quotes, and a concise summary in markdown format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/improve_report_finding
+  fabric --pattern improve_writing '${1:Correct the grammar and style of this paragraph.}':
+    desc: Refines text by correcting grammar, enhancing style, improving clarity, and maintaining the original meaning. skills
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/improve_writing
+  fabric --pattern judge_output '${1:Evaluate this Honeycomb query for analytics relevance}':
+    desc: Evaluates Honeycomb queries by judging their effectiveness, providing critiques and outcomes based on language nuances and analytics relevance
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/judge_output
+  fabric --pattern label_and_rate '${1:Label and rate this content on AI ethics and meaning}':
+    desc: Labels content with up to 20 single-word tags and rates it based on idea count and relevance to human meaning, AI, and other related themes, assigning a tier (S, A, B, C, D) and a quality score
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/label_and_rate
+  fabric --pattern md_callout '${1:This is an urgent security alert for all staff.}':
+    desc: Classifies content and generates a markdown callout based on the provided text, selecting the most appropriate type
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/md_callout
+  fabric --pattern official_pattern_template '${1:Create a new fabric pattern for summarizing}':
+    desc: Template to use if you want to create new fabric patterns
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/official_pattern_template
+  fabric --pattern prepare_7s_strategy '${1:Strategic analysis of a mid-sized tech firm}':
+    desc: Prepares a comprehensive briefing document from 7S's strategy capturing organizational profile, strategic elements, and market dynamics with clear, concise, and organized content
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/prepare_7s_strategy
+  fabric --pattern provide_guidance '${1:I\'m feeling anxious about my career change}':
+    desc: Provides psychological and life coaching advice, including analysis, recommendations, and potential diagnoses, with a compassionate and honest tone
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/provide_guidance
+  fabric --pattern rate_ai_response '${1:Rate this AI response compared to expert performance.}':
+    desc: Rates the quality of AI responses by comparing them to top human expert performance, assigning a letter grade, reasoning, and providing a 1-100 score based on the evaluation
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/rate_ai_response
+  fabric --pattern rate_ai_result '${1:Evaluate the quality of this AI response}':
+    desc: Assesses the quality of AI/ML/LLM work by deeply analyzing content, instructions, and output, then rates performance based on multiple dimensions, including coverage, creativity, and interdisciplinary thinking
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/rate_ai_result
+  fabric --pattern rate_content '${1:Rate this article about AI ethics}':
+    desc: Labels content with up to 20 single-word tags and rates it based on idea count and relevance to human meaning, AI, and other related themes, assigning a tier (S, A, B, C, D) and a quality score
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/rate_content
+  fabric --pattern rate_value '${1:Rate the user experience of this mobile app}':
+    desc: Produces the best possible output by deeply analyzing and understanding the input and its intended purpose
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/rate_value
+  fabric --pattern raw_query '${1:What is the capital of France?}':
+    desc: Fully digests and contemplates the input to produce the best possible result based on understanding the sender's intent
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/raw_query
+  fabric --pattern recommend_artists '${1:Indie rock and folk artists for summer festival}':
+    desc: Recommends a personalized festival schedule with artists aligned to your favorite styles and interests, including rationale
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/recommend_artists
+  fabric --pattern recommend_pipeline_upgrades '${1:Recommend upgrades for our security scanning pipeline}':
+    desc: Optimizes vulnerability-checking pipelines by incorporating new information and improving their efficiency, with detailed explanations of changes
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/recommend_pipeline_upgrades
+  fabric --pattern recommend_talkpanel_topics '${1:Propose talk topics for an AI ethics researcher}':
+    desc: Produces a clean set of proposed talks or panel talking points for a person based on their interests and goals, formatted for submission to a conference organizer
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/recommend_talkpanel_topics
+  fabric --pattern refine_design_document '${1:Refine the design document based on review feedback}':
+    desc: Refines a design document based on a design review by analyzing, mapping concepts, and implementing changes using valid Markdown
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/refine_design_document
+  fabric --pattern review_design '${1:Review the cloud architecture for scalability and security}':
+    desc: Reviews and analyzes architecture design, focusing on clarity, component design, system integrations, security, performance, scalability, and data management
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/review_design
+  fabric --pattern sanitize_broken_html_to_markdown '${1:Fix this broken HTML and convert to Markdown}':
+    desc: Converts messy HTML into clean, properly formatted Markdown, applying custom styling and ensuring compatibility with Vite
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/sanitize_broken_html_to_markdown
+  fabric --pattern show_fabric_options_markmap '${1:Enter prompt content}':
+    desc: Visualizes the functionality of the Fabric framework by representing its components, commands, and features based on the provided input
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/show_fabric_options_markmap
+  fabric --pattern solve_with_cot '${1:Solve the equation 2x + 5 = 15 step by step}':
+    desc: Provides detailed, step-by-step responses with chain of thought reasoning, using structured thinking, reflection, and output sections
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/solve_with_cot
+  fabric --pattern suggest_pattern '${1:Suggest a pattern for summarizing a video}':
+    desc: Suggests appropriate fabric patterns or commands based on user input, providing clear explanations and options for users
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/suggest_pattern
+  fabric --pattern summarize '${1:Summarize this article about climate change}':
+    desc: Summarizes content into a 20-word sentence, main points, and takeaways, formatted with numbered lists in Markdown
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize
+  fabric --pattern summarize_board_meeting '${1:Transcript of Q3 board strategy session}':
+    desc: Creates formal meeting notes from board meeting transcripts for corporate governance documentation
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_board_meeting
+  fabric --pattern summarize_debate '${1:Summarize the debate on gun control legislation}':
+    desc: Summarizes debates, identifies primary disagreement, extracts arguments, and provides analysis of evidence and argument strength to predict outcomes
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_debate
+  fabric --pattern summarize_git_changes '${1:Summarize recent commits from last week}':
+    desc: Summarizes recent project updates from the last 7 days, focusing on key changes with enthusiasm
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_git_changes
+  fabric --pattern summarize_git_diff '${1:Summarize Git diff changes for commit message}':
+    desc: Summarizes and organizes Git diff changes with clear, succinct commit messages and bullet points
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_git_diff
+  fabric --pattern summarize_lecture '${1:Summarize the key concepts from this quantum computing lecture}':
+    desc: Extracts relevant topics, definitions, and tools from lecture transcripts, providing structured summaries with timestamps and key takeaways
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_lecture
+  fabric --pattern summarize_legislation '${1:Enter prompt content}':
+    desc: Summarizes complex political proposals and legislation by analyzing key points, proposed changes, and providing balanced, positive, and cynical characterizations
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_legislation
+  fabric --pattern summarize_meeting '${1:Summarize this team standup meeting transcript}':
+    desc: Analyzes meeting transcripts to extract a structured summary, including an overview, key points, tasks, decisions, challenges, timeline, references, and next steps
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_meeting
+  fabric --pattern summarize_micro '${1:Summarize the key points of the article on renewable energy}':
+    desc: Summarizes content into a 20-word sentence, 3 main points, and 3 takeaways, formatted in clear, concise Markdown
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_micro
+  fabric --pattern summarize_newsletter '${1:provide a structured summary of this newsletter}':
+    desc: Extracts the most meaningful, interesting, and useful content from a newsletter, summarizing key sections such as content, opinions, tools, companies, and follow-up items in clear, structured Markdown
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_newsletter
+  fabric --pattern summarize_paper '${1:A study on quantum computing applications in cryptography}':
+    desc: Summarizes an academic paper by detailing its title, authors, technical approach, distinctive features, experimental setup, results, advantages, limitations, and conclusion in a clear, structured format using human-readable Markdown
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_paper
+  fabric --pattern summarize_prompt ${1:'Write a poem about a lost dog'}:
+    desc: Summarizes AI chat prompts by describing the primary function, unique approach, and expected output in a concise paragraph. The summary is focused on the prompt's purpose without unnecessary details or formatting
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_prompt
+  fabric --pattern summarize_pull-requests ${1:'Summarize recent pull requests for the project'}:
+    desc: Summarizes pull requests for a coding project by providing a summary and listing the top PRs with human-readable descriptions
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_pull-requests
+  fabric --pattern summarize_rpg_session '${1:A tense dungeon crawl with goblins and treasure}':
+    desc: Summarizes a role-playing game session by extracting key events, combat stats, character changes, quotes, and more
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/summarize_rpg_session
+  fabric --pattern t_analyze_challenge_handling ${1:'Evaluate challenge handling in current project'}:
+    desc: Provides 8-16 word bullet points evaluating how well challenges are being addressed, calling out any lack of effort
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_analyze_challenge_handling
+  fabric --pattern t_check_metrics ${1:'Analyze TELOS metrics for recent improvements'}:
+    desc: Analyzes deep context from the TELOS file and input instruction, then provides a wisdom-based output while considering metrics and KPIs to assess recent improvements
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_check_metrics
+  fabric --pattern t_create_h3_career '${1:Summarize my career path and future goals}':
+    desc: Summarizes context and produces wisdom-based output by deeply analyzing both the TELOS File and the input instruction, considering the relationship between the two
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_create_h3_career
+  fabric --pattern t_create_opening_sentences '${1:Extract identity, goals, actions from TELOS}':
+    desc: Describes from TELOS file the person's identity, goals, and actions in 4 concise, 32-word bullet points, humbly
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_create_opening_sentences
+  fabric --pattern t_describe_life_outlook ${1:'Describe the life outlook from TELOS file'}:
+    desc: Describes from TELOS file a person's life outlook in 5 concise, 16-word bullet points
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_describe_life_outlook
+  fabric --pattern t_extract_intro_sentences '${1:A TELOS profile of a software developer}':
+    desc: Summarizes from TELOS file a person's identity, work, and current projects in 5 concise and grounded bullet points
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_extract_intro_sentences
+  fabric --pattern t_extract_panel_topics '${2:Generate panel topics from TELOS analysis for AI ethics}':
+    desc: Creates 5 panel ideas with titles and descriptions based on deep context from a TELOS file and input
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_extract_panel_topics
+  fabric --pattern t_find_blindspots '${1:Analyze my decision-making for hidden biases}':
+    desc: Identify potential blindspots in thinking, frames, or models that may expose the individual to error or risk
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_find_blindspots
+  fabric --pattern t_find_negative_thinking '${1:Identify negative thinking in my journal entry}':
+    desc: Analyze a TELOS file and input to identify negative thinking in documents or journals, followed by tough love encouragement
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_find_negative_thinking
+  fabric --pattern t_find_neglected_goals ${1:'Find goals not updated in the last month'}:
+    desc: Analyze a TELOS file and input instructions to identify goals or projects that have not been worked on recently
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_find_neglected_goals
+  fabric --pattern t_give_encouragement '${1:Encourage based on TELOS analysis of progress.}':
+    desc: Analyze a TELOS file and input instructions to evaluate progress, provide encouragement, and offer recommendations for continued effort
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_give_encouragement
+  fabric --pattern t_red_team_thinking '${1:Analyze TELOS design for red-teaming weaknesses}':
+    desc: Analyze a TELOS file and input instructions to red-team thinking, models, and frames, then provide recommendations for improvement
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_red_team_thinking
+  fabric --pattern t_threat_model_plans '${1:Create threat models for my life plan and suggest improvements}':
+    desc: Analyze a TELOS file and input instructions to create threat models for a life plan and recommend improvements
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_threat_model_plans
+  fabric --pattern t_visualize_mission_goals_projects '${1:Diagram missions, goals, and projects from TELOS}':
+    desc: Analyze a TELOS file and input instructions to create an ASCII art diagram illustrating the relationship of missions, goals, and projects
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_visualize_mission_goals_projects
+  fabric --pattern t_year_in_review '${1:Summarize year in review for John from TELOS file}':
+    desc: Analyze a TELOS file to create insights about a person or entity, then summarize accomplishments and visualizations in bullet points
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/t_year_in_review
+  fabric --pattern to_flashcards '${1:The key concepts of quantum computing for beginners}':
+    desc: Create Anki flashcards from a given text, focusing on concise, optimized questions and answers without external context
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/to_flashcards
+  fabric --pattern transcribe_minutes '${1:Extract meeting minutes from this transcript}':
+    desc: Extracts (from meeting transcription) meeting minutes, identifying actionables, insightful ideas, decisions, challenges, and next steps in a structured format
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/transcribe_minutes
+  fabric --pattern translate '${1:Enter prompt content}':
+    desc: Translates sentences or documentation into the specified language code while maintaining the original formatting and tone
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/translate
+  fabric --pattern tweet '${1:Write a tweet about sustainable living tips}':
+    desc: Provides a step-by-step guide on crafting engaging tweets with emojis, covering Twitter basics, account creation, features, and audience targeting
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/tweet
+  fabric --pattern write_essay '${1:An essay in the style of Jane Austen}':
+    desc: Writes essays in the style of a specified author, embodying their unique voice, vocabulary, and approach. Uses author_name variable
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/write_essay
+  fabric --pattern write_essay_pg '${1:The importance of simplicity in software design}':
+    desc: Writes concise, clear essays in the style of Paul Graham, focusing on simplicity, clarity, and illumination of the provided topic
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/write_essay_pg
+  fabric --pattern write_hackerone_report '${1:Write a bug bounty report for an XSS vulnerability}':
+    desc: Generates concise, clear, and reproducible bug bounty reports, detailing vulnerability impact, steps to reproduce, and exploit details for triagers
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/write_hackerone_report
+  fabric --pattern write_latex '${1:A simple LaTeX document with math and sections}':
+    desc: Generates syntactically correct LaTeX code for a new.tex document, ensuring proper formatting and compatibility with pdflatex
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/write_latex
+  fabric --pattern write_micro_essay '${1:The benefits of reading fiction}':
+    desc: Writes concise, clear, and illuminating essays on the given topic in the style of Paul Graham
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/write_micro_essay
+  fabric --pattern write_nuclei_template_rule '${1:Create a template for detecting SQL injection}':
+    desc: Generates Nuclei YAML templates for detecting vulnerabilities using HTTP requests, matchers, extractors, and dynamic data extraction
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/write_nuclei_template_rule
+  fabric --pattern write_pull-request '${1:Summarize the git diff and suggest changes}':
+    desc: Drafts detailed pull request descriptions, explaining changes, providing reasoning, and identifying potential bugs from the git diff command output
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/write_pull-request
+  fabric --pattern write_semgrep_rule '${1:Write a Semgrep rule to detect SQL injection in Python}':
+    desc: Creates accurate and working Semgrep rules based on input, following syntax guidelines and specific language considerations
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/write_semgrep_rule
+  fabric --pattern youtube_summary '${1:Summarize key points from this YouTube video}':
+    desc: Create concise, timestamped Youtube video summaries that highlight key points
+    tags: [fabric, ai]
+    links:
+      - https://github.com/danielmiessler/Fabric/blob/main/data/patterns/pattern_explanations.md
+      - https://github.com/danielmiessler/Fabric/tree/main/data/patterns/agility_story

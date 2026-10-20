@@ -1,0 +1,590 @@
+bookmarks:
+  https://github.com/charmbracelet/gum:
+    tags: [coding]
+    desc: A tool for glamorous shell scripts
+    notes:
+      sh: | #shell
+        #!/bin/bash
+
+        brew install gum                          # macOS or Linux
+        pacman -S gum                             # Arch Linux (btw)
+        dnf install gum                           # Fedora or EPEL 10
+        nix-env -iA nixpkgs.gum                   # Nix
+        flox install gum                          # Flox
+        mise use gum@latest                       # mise
+
+        # Run the Gum CLI
+        gum --help
+commands:
+  # gum
+  gum input --placeholder "What's your name?":
+    desc: Prompt for short text input, including password and default-value patterns
+    tags: [gum, input, interactive]
+    notes:
+      - sh: |
+          # Basic text prompt
+          gum input --placeholder "What's your name?"
+
+          # With a default value and character limit
+          gum input --placeholder "Email address" --default "you@example.com" --char-limit 120
+
+          # Masked input for secrets or passwords
+          gum input --placeholder "Enter password" --password
+
+          # Prompt with a value from a variable
+          name=$(gum input --placeholder "Your name" --default "Ada")
+      - md: |
+          Use this command for short live prompting in scripts, onboarding flows, and secret entry.
+  gum write --placeholder "Enter description":
+    desc: Prompt for multi-line text, notes, or pasted content
+    tags: [gum, write, multiline]
+    notes:
+      - sh: |
+          # Open a multiline editor in the terminal
+          gum write --placeholder "Enter a short note"
+
+          # Limit the amount of text allowed
+          gum write --placeholder "Paste your commit message" --char-limit 500
+
+          # Set dimensions for a larger writing area
+          gum write --placeholder "Describe the bug" --width 80 --height 20
+
+          # Use the result in a shell variable
+          msg=$(gum write --placeholder "Describe the fix" --char-limit 1000)
+      - md: |
+          This is the Gum equivalent of a mini text editor for longer-form answers and notes.
+  gum choose "option1" "option2" "option3":
+    desc: Choose one option from a list, with single or multi-select support
+    tags: [gum, menu]
+    notes:
+      - sh: |
+          # Single-select prompt
+          gum choose "Deploy" "Preview" "Skip"
+
+          # Multi-select from a list
+          gum choose --multiple "API" "Worker" "Web" "Docs"
+
+          # Limit the number of multi-select choices
+          gum choose --multiple --limit 2 "low" "medium" "high" "critical"
+
+          # Improve the menu display and pointer styling
+          gum choose --cursor ">" --header "Select a region" "us-east-1" "us-west-2" "eu-west-1"
+      - md: |
+          Great for interactive menus, environment selection, deployment targets, and guided task routing.
+  gum confirm "Are you sure?":
+    desc: Ask a yes/no confirmation and capture the result in shell scripts
+    tags: [gum, interactive]
+    notes:
+      - sh: |
+          # Standard confirmation prompt
+          gum confirm "Reset the database?"
+
+          # Customize the button labels
+          gum confirm "Proceed?" --affirmative "YES" --negative "NO"
+
+          # Make the default answer false
+          gum confirm "Delete the file?" --default=false
+
+          # Use the exit code in a script
+          if gum confirm "Continue deployment?" --default=true; then
+            echo "Proceeding"
+          else
+            echo "Aborted"
+          fi
+      - md: |
+          This is ideal for destructive commands, deployment steps, and safety prompts in scripts.
+  gum file .:
+    desc: Pick a file or directory interactively from a folder
+    tags: [gum, file, picker]
+    notes:
+      - sh: |
+          # Pick a file from the current directory
+          gum file .
+
+          # Restrict to a directory tree
+          gum file --directory .
+
+          # Include hidden files and directories
+          gum file --all .
+
+          # Filter to a file extension pattern
+          gum file --glob "*.yaml" .
+
+          # Show a selected file path in a variable
+          file=$(gum file .)
+      - md: |
+          Use file selection when you need interactive browsing before acting on a file or directory path.
+  gum filter:
+    desc: Filter a list from stdin or a pipeline with fuzzy interactive selection
+    tags: [gum, filter, search]
+    notes:
+      - sh: |
+          # Filter a simple list
+          printf '%s\n' "alpha" "beta" "gamma" | gum filter
+
+          # Filter git branches interactively
+          git branch --format='%(refname:short)' | gum filter
+
+          # Apply a placeholder and limit results
+          ls /etc | gum filter --placeholder "Search config files" --limit 10
+
+          # Use the selected item in a script
+          selected=$(git branch --format='%(refname:short)' | gum filter)
+      - md: |
+          This is a great choice for interactive search from pipelines, quick navigation, and choice filtering.
+  gum format:
+    desc: Render a Go template over a string, JSON, or structured input from stdin
+    tags: [gum, format, templating]
+    notes:
+      - sh: |
+          # Basic template formatting
+          printf 'Ada' | gum format --template 'Hello {{ . }}!'
+
+          # Format JSON input into a custom message
+          printf '{"name":"Ada","role":"Engineer"}\n' | gum format --template 'User: {{ .name }} ({{ .role }})'
+
+          # Render a template with multiple values
+          printf 'name=Ada\nrole=Engineer\n' | gum format --template '{{ .name }} is a {{ .role }}'
+
+          # Use a larger template with shell-style output
+          printf '%s\n' 'api' 'worker' 'web' | gum format --template '{{ range $i, $v := . }}{{ if $i }}\n{{ end }}- {{ $v }}{{ end }}'
+      - md: |
+          Use Gum format for clean, templated terminal output and lightweight dynamic messaging.
+  gum join:
+    desc: Join multiple strings either vertically or horizontally for output layout
+    tags: [gum, join, layout]
+    notes:
+      - sh: |
+          # Join several text items horizontally
+          gum join "Left" "Center" "Right"
+
+          # Stack items vertically
+          gum join --vertical "Top" "Middle" "Bottom"
+
+          # Center-align content in one block
+          gum join --align center "One" "Two" "Three"
+
+          # Combine multiple rows into a single output block
+          gum join --vertical \
+            "[START]" \
+            "build" \
+            "test" \
+            "deploy" \
+            "[END]"
+      - md: |
+          Useful for creating simple composite output blocks, status banners, and grouped terminal displays.
+    links: [https://github.com/charmbracelet/gum]
+  gum spin:
+    desc: Show a spinner while a command is running and optionally stream output
+    tags: [gum, spin, progress]
+    notes:
+      - sh: |
+          # Spin while running a shell command
+          gum spin --spinner dot --title "Deploying" -- sleep 3
+
+          # Use a different spinner style
+          gum spin --spinner points --title "Syncing files" -- rsync -av . /tmp/backup
+
+          # Time-limited spinner with a custom command
+          gum spin --spinner globe --title "Downloading" --timeout 10s -- curl -L https://example.com/file.tar.gz -o /tmp/file.tar.gz
+
+          # Show spinner output from a long command
+          gum spin --spinner line --title "Installing dependencies" -- npm install
+      - md: |
+          This is a standard progress pattern for long-running shell work in developer tooling and scripts.
+  gum style:
+    desc: Apply colors, borders, spacing, alignment, and styling to terminal text
+    tags: [gum, style, format]
+    notes:
+      - sh: |
+          # Simple colored text
+          gum style --foreground 212 "Colored text"
+
+          # Add a background and bold styling
+          gum style --foreground 212 --background 198 --bold "Hello from Gum"
+
+          # Add a border and padding
+          gum style --border double --padding "1 2" --margin "1" "A bordered message"
+
+          # Center aligned content in a fixed width block
+          gum style --border rounded --width 40 --align center --foreground 2 "Ready"
+
+          # Full example with border and custom text color
+          gum style --foreground 212 --border-foreground 212 --border double --align center --width 50 --margin "1 2" --padding "2 4" 'Bubble Gum (1¢)' 'So sweet and so fresh!'
+      - md: |
+          Use this to build polished CLI output, status boxes, warnings, banners, and nicer shell prompts.
+  gum table:
+    desc: Render tabular output for CSV, TSV, or piped data
+    tags: [gum, table, ui]
+    notes:
+      - sh: |
+          # Basic CSV table
+          printf '%s\n' 'Name,Age' 'Ada,36' 'Grace,34' | gum table
+
+          # Custom separator for pipe-delimited input
+          printf '%s\n' 'ID|Status' '1|ok' '2|warn' | gum table --separator "|"
+
+          # Fixed width and border
+          printf '%s\n' 'Service|Status|Memory' 'api|ok|256MB' 'worker|warn|512MB' | gum table --separator "|" --width 80 --border rounded
+
+          # Use JSON converted to CSV with jq
+          printf '%s\n' '{"services":[{"name":"auth","status":"up","latency":"45ms"},{"name":"api","status":"up","latency":"62ms"}]}' | jq -r '.services[] | [.name, .status, .latency] | @csv' | gum table --separator "," --width 60
+      - md: |
+          Perfect for quick terminal dashboards, status summaries, and structured CLI output.
+  gum pager:
+    desc: Scroll through long output with a pager interface
+    tags: [gum, pager, output]
+    notes:
+      - sh: |
+          # Page a log stream
+          git log --oneline --decorate --graph --all | gum pager
+
+          # Page output from a command with long text
+          tail -n 200 /var/log/system.log | gum pager
+
+          # Pager for a file
+          gum pager README.md
+
+          # Use with a command that outputs text
+          rg -n "TODO|FIXME" . | gum pager
+      - md: |
+          Use this for long output that is easier to read in a scrollable terminal buffer than a stream of raw lines.
+  gum log:
+    desc: Print structured log lines with levels and prefixes
+    tags: [gum, log, output]
+    notes:
+      - sh: |
+          # Info log
+          gum log --level info "Starting deployment"
+
+          # Warning log
+          gum log --level warn "Disk space is low"
+
+          # Error log
+          gum log --level error "Build failed"
+
+          # Log with a custom prefix and message
+          gum log --level success --prefix "READY" "Server is healthy"
+      - md: |
+          Good for scripts that need readable status output without abandoning shell-native logging patterns.
+  gum version-check:
+    desc: Check whether the local Gum version matches the latest release or is behind
+    tags: [gum, version, tools]
+    notes:
+      - sh: |
+          # Check current version status
+          gum version-check
+
+          # Use in shell setup and onboarding scripts
+          if gum version-check >/dev/null 2>&1; then
+            echo "Gum is current"
+          else
+            echo "Update Gum"
+          fi
+      - md: |
+          Useful for developer environments and automation that should warn when a local CLI version is stale.
+
+cheats:
+  gum | write a conventional commit message:
+    desc: Use gum to write a conventional commit message
+    tags: [gum, git, commit]
+    links: [https://github.com/charmbracelet/gum/blob/main/examples/commit.sh]
+    notes:
+      - sh: | #shell
+          #!/bin/sh
+
+          # This script is used to write a conventional commit message.
+          # It prompts the user to choose the type of commit as specified in the
+          # conventional commit spec. And then prompts for the summary and detailed
+          # description of the message and uses the values provided. as the summary and
+          # details of the message.
+          #
+          # If you want to add a simpler version of this script to your dotfiles, use:
+          #
+          # alias gcm='git commit -m "$(gum input)" -m "$(gum write)"'
+
+          # if [ -z "$(git status -s -uno | grep -v '^ ' | awk '{print $2}')" ]; then
+          #     gum confirm "Stage all?" && git add .
+          # fi
+
+          TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
+          SCOPE=$(gum input --placeholder "scope")
+
+          # Since the scope is optional, wrap it in parentheses if it has a value.
+          test -n "$SCOPE" && SCOPE="($SCOPE)"
+
+          # Pre-populate the input with the type(scope): so that the user may change it
+          SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
+          DESCRIPTION=$(gum write --placeholder "Details of this change")
+
+          # Commit these changes if user confirms
+          gum confirm "Commit changes?" && git commit -m "$SUMMARY" -m "$DESCRIPTION"
+  gum | git stage:
+    desc: Use gum to stage changes in git
+    tags: [gum, git, stage]
+    links: [https://github.com/charmbracelet/gum/blob/main/examples/git-stage.sh]
+    notes:
+      - sh: | #shell
+          #!/bin/sh
+
+          ADD="Add"
+          RESET="Reset"
+
+          ACTION=$(gum choose "$ADD" "$RESET")
+
+          if [ "$ACTION" == "$ADD" ]; then
+              git status --short | cut -c 4- | gum choose --no-limit | xargs git add
+          else
+              git status --short | cut -c 4- | gum choose --no-limit | xargs git restore
+          fi
+  gum | converts some video to a GIF:
+    desc: Use gum to convert some video to a GIF
+    tags: [gum, video, gif]
+    links: [https://github.com/charmbracelet/gum/tree/main/examples]
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          # This script converts some video to a GIF. It prompts the user to select an
+          # video file with `gum filter` Set the frame rate, desired width, and max
+          # colors to use Then, converts the video to a GIF.
+
+          INPUT=$(gum filter --placeholder "Input file")
+          FRAMERATE=$(gum input --prompt "Frame rate: " --placeholder "Frame Rate" --prompt.foreground 240 --value "50")
+          WIDTH=$(gum input --prompt "Width: " --placeholder "Width" --prompt.foreground 240 --value "1200")
+          MAXCOLORS=$(gum input --prompt "Max Colors: " --placeholder "Max Colors" --prompt.foreground 240 --value "256")
+
+          BASENAME=$(basename "$INPUT")
+          BASENAME="${BASENAME%%.*}"
+
+          gum spin --title "Converting to GIF" -- ffmpeg -i "$INPUT" -vf "fps=$FRAMERATE,scale=$WIDTH:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=$MAXCOLORS[p];[s1][p]paletteuse" "$BASENAME.gif"
+  gum | full demo:
+    desc: Use gum to run a full demo
+    tags: [gum, demo]
+    links: [https://github.com/charmbracelet/gum/tree/main/examples]
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "Hello, there! Welcome to $(gum style --foreground 212 'Gum')."
+          NAME=$(gum input --placeholder "What is your name?")
+
+          echo -e "Well, it is nice to meet you, $(gum style --foreground 212 "$NAME")."
+
+          sleep 1; clear
+
+          echo -e "Can you tell me a $(gum style --italic --foreground 99 'secret')?\n"
+
+          gum write --placeholder "I'll keep it to myself, I promise!" > /dev/null # we keep the secret to ourselves
+
+          clear; echo "What should I do with this information?"; sleep 1
+
+          READ="Read"; THINK="Think"; DISCARD="Discard"
+          ACTIONS=$(gum choose --no-limit "$READ" "$THINK" "$DISCARD")
+
+          clear; echo "One moment, please."
+
+          grep -q "$READ" <<< "$ACTIONS" && gum spin -s line --title "Reading the secret..." -- sleep 1
+          grep -q "$THINK" <<< "$ACTIONS" && gum spin -s pulse --title "Thinking about your secret..." -- sleep 1
+          grep -q "$DISCARD" <<< "$ACTIONS" && gum spin -s monkey --title " Discarding your secret..." -- sleep 2
+
+          sleep 1; clear
+
+          GUM=$(echo -e "Cherry\nGrape\nLime\nOrange" | gum filter --placeholder "Favorite flavor?")
+          echo "I'll keep that in mind!"
+
+          sleep 1; clear
+
+          echo "Do you like $(gum style --foreground "#04B575" "Bubble Gum?")"
+          sleep 1
+
+          CHOICE=$(gum choose --item.foreground 250 "Yes" "No" "It's complicated")
+
+          [[ "$CHOICE" == "Yes" ]] && echo "I thought so, $(gum style --bold "Bubble Gum") is the best." || echo "I'm sorry to hear that."
+
+          sleep 1
+
+          gum spin --title "Chewing some $(gum style --foreground "#04B575" "$GUM") bubble gum..." -- sleep 2.5
+
+          clear
+
+          NICE_MEETING_YOU=$(gum style --height 5 --width 20 --padding '1 3' --border double --border-foreground 57 "Nice meeting you, $(gum style --foreground 212 "$NAME"). See you soon!")
+          CHEW_BUBBLE_GUM=$(gum style --width 17 --padding '1 3' --border double --border-foreground 212 "Go chew some $(gum style --foreground "#04B575" "$GUM") bubble gum.")
+          gum join --horizontal "$NICE_MEETING_YOU" "$CHEW_BUBBLE_GUM"
+  gum | embedded in ruby scripts:
+    desc: Use gum embedded in ruby scripts
+    tags: [gum, rb, embedded]
+    links: [https://github.com/charmbracelet/gum/blob/main/examples/gum.rb]
+    notes:
+      - ruby: | #ruby
+          #!/usr/bin/env ruby
+          puts 'What is your name?'
+          name = `gum input --placeholder "Your name"`.chomp
+
+          puts "Hello #{name}!"
+
+          puts 'Pick your 2 favorite colors'
+
+          COLORS = {
+            'Red' => '#FF0000',
+            'Blue' => '#0000FF',
+            'Green' => '#00FF00',
+            'Yellow' => '#FFFF00',
+            'Orange' => '#FFA500',
+            'Purple' => '#800080',
+            'Pink' => '#FF00FF'
+          }.freeze
+
+          colors = `gum choose #{COLORS.keys.join(' ')} --limit 2`.chomp.split("\n")
+
+          if colors.length == 2
+            first = `gum style --foreground '#{COLORS[colors[0]]}' '#{colors[0]}'`.chomp
+            second = `gum style --foreground '#{COLORS[colors[1]]}' '#{colors[1]}'`.chomp
+            puts "You chose #{first} and #{second}."
+          elsif colors.length == 1
+            first = `gum style --foreground '#{COLORS[colors[0]]}' '#{colors[0]}'`.chomp
+            puts "You chose #{first}."
+          else
+            puts "You didn't pick any colors!"
+          end
+  gum | Add example of magic trick:
+    desc: Use gum to perform a magic trick
+    tags: [gum, magic, trick]
+    links: [https://github.com/charmbracelet/gum/blob/main/examples/magic.sh]
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          # Always ask for permission!
+          echo "Do you want to see a magic trick?"
+
+          YES="Yes, please!"
+          NO="No, thank you!"
+
+          CHOICE=$(gum choose "$YES" "$NO")
+
+          if [ "$CHOICE" != "$YES" ]; then
+              echo "Alright, then. Have a nice day!"
+              exit 1
+          fi
+
+
+          # Let the magic begin.
+          echo "Alright, then. Let's begin!"
+          gum style --foreground 212 "Pick a card, any card..."
+
+          CARD=$(gum choose "Ace (A)" "Two (2)" "Three (3)" "Four (4)" "Five (5)" "Six (6)" "Seven (7)" "Eight (8)" "Nine (9)" "Ten (10)" "Jack (J)" "Queen (Q)" "King (K)")
+          SUIT=$(gum choose "Hearts (♥)" "Diamonds (♦)" "Clubs (♣)" "Spades (♠)")
+
+          gum style --foreground 212 "You picked the $CARD of $SUIT."
+
+          SHORT_CARD=$(echo $CARD | cut -d' ' -f2 | tr -d '()')
+          SHORT_SUIT=$(echo $SUIT | cut -d' ' -f2 | tr -d '()')
+
+          TOP_LEFT=$(gum join --vertical "$SHORT_CARD" "$SHORT_SUIT")
+          BOTTOM_RIGHT=$(gum join --vertical "$SHORT_SUIT" "$SHORT_CARD")
+
+          TOP_LEFT=$(gum style --width 10 --height 5 --align left "$TOP_LEFT")
+          BOTTOM_RIGHT=$(gum style --width 10 --align right "$BOTTOM_RIGHT")
+
+          if [[ "$SHORT_SUIT" == "♥" || "$SHORT_SUIT" == "♦" ]]; then
+              CARD_COLOR="1" # Red
+          else
+              CARD_COLOR="7" # Black
+          fi
+
+          gum style --border rounded --padding "0 1" --margin 2 --border-foreground "$CARD_COLOR" --foreground "$CARD_COLOR" "$(gum join --vertical "$TOP_LEFT" "$BOTTOM_RIGHT")"
+
+          echo "Is this your card?"
+
+          gum choose "Omg, yes!" "Nope, sorry!"
+  gum | Show help with Huh?:
+    desc: Use gum to show help with Huh?
+    tags: [gum, huh]
+    links: [https://github.com/charmbracelet/gum/blob/main/examples/test.sh]
+    notes:
+      - sh: | #shell
+          #!/bin/sh
+
+          # Choose
+          gum choose Foo Bar Baz
+          gum choose Choose One Item --cursor "* " --cursor.foreground 99 --selected.foreground 99
+          gum choose Pick Two Items Maximum --limit 2 --cursor "* " --cursor-prefix "(•) " --selected-prefix "(x) " --unselected-prefix "( ) " --cursor.foreground 99 --selected.foreground 99
+          gum choose Unlimited Choice Of Items --no-limit --cursor "* " --cursor-prefix "(•) " --selected-prefix "(x) " --unselected-prefix "( ) " --cursor.foreground 99 --selected.foreground 99
+
+          # Confirm
+          gum confirm "Testing?"
+          gum confirm "No?" --default=false --affirmative "Okay." --negative "Cancel."
+
+          # Filter
+          gum filter
+          echo {1..500} | sed 's/ /\n/g' | gum filter
+          echo {1..500} | sed 's/ /\n/g' | gum filter --indicator ">" --placeholder "Pick a number..." --indicator.foreground 1 --text.foreground 2 --match.foreground 3 --prompt.foreground 4 --height 5
+
+          # Format
+          echo "# Header\nBody" | gum format
+          echo 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello, Gum!")\n}\n' | gum format -t code
+          echo ":candy:" | gum format -t emoji
+          echo '{{ Bold "Bold" }}' | gum format -t template
+
+          # Input
+          gum input
+          gum input --prompt "Email: " --placeholder "john@doe.com" --prompt.foreground 99 --cursor.foreground 99 --width 50
+          gum input --password --prompt "Password: " --placeholder "hunter2" --prompt.foreground 99 --cursor.foreground 99 --width 50
+
+          # Join
+          gum join "Horizontal" "Join"
+          gum join --vertical "Vertical" "Join"
+
+          # Spin
+          gum spin -- sleep 1
+          gum spin --spinner minidot --title "Loading..." --title.foreground 99 -- sleep 1
+          gum spin --show-output --spinner monkey --title "Loading..." --title.foreground 99 -- sh -c 'sleep 1; echo "Hello, Gum!"'
+
+          # Style
+          gum style --foreground 99 --border double --border-foreground 99 --padding "1 2" --margin 1 "Hello, Gum."
+
+          # Write
+          gum write
+          gum write --width 40 --height 6 --placeholder "Type whatever you want" --prompt "| " --show-cursor-line --show-line-numbers --value "Something..." --base.padding 1 --cursor.foreground 99 --prompt.foreground 99
+
+          # Table
+          gum table < table/example.csv
+
+          # Pager
+          gum pager < README.md
+
+          # File
+          gum file
+  gum | show usage with skate:
+    desc: Show usage of gum with skate
+    tags: [gum, skate, usage]
+    links: [https://github.com/charmbracelet/gum/blob/main/examples/skate.sh]
+    notes:
+      - sh: | #shell
+          #!/bin/sh
+
+          # Building a simple `skate` TUI with gum to allow you to select a database and
+          # pick a value from skate.
+
+          DATABASE=$(skate list-dbs | gum choose)
+          skate list --keys-only "$DATABASE" | gum filter | xargs -I {} skate get {}"$DATABASE"
+  gum | filter key value:
+    desc: Use gum to filter key value pairs
+    tags: [gum, filter, key, value]
+    links: [https://github.com/charmbracelet/gum/tree/main/examples]
+    notes:
+      - sh: | #shell
+          #!/bin/bash
+
+          export LIST=$(cat <<END
+          Cow:Moo
+          Cat:Meow
+          Dog:Woof
+          END
+          )
+
+          ANIMAL=$(echo "$LIST" | cut -d':' -f1 | gum filter)
+          SOUND=$(echo "$LIST" | grep $ANIMAL | cut -d':' -f2)
+
+          echo "The $ANIMAL goes $SOUND"

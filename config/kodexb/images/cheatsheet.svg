@@ -1,0 +1,18 @@
+<!-- https://svgrepo.com/svg/234947/file-files-and-folders -->
+<svg height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 505.00 505.00" xml:space="preserve" fill="#000000"
+  data-darkreader-inline-fill="" style="--darkreader-inline-fill: var(--darkreader-background-000000, #111111);"
+  stroke="#000000" stroke-width="1.515">
+  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="8.08"></g>
+  <g id="SVGRepo_iconCarrier">
+    <polygon style="fill: rgb(255, 255, 255); --darkreader-inline-fill: var(--darkreader-text-ffffff, #ffffff);"
+      points="176.9,95.4 176.9,148.1 124.2,148.1 124.2,409.6 380.8,409.6 380.8,95.4 " data-darkreader-inline-fill="">
+    </polygon>
+    <polygon style="fill: rgb(230, 233, 238); --darkreader-inline-fill: var(--darkreader-text-e6e9ee, #ffffff);"
+      points="176.9,95.4 124.2,148.1 176.9,148.1 " data-darkreader-inline-fill=""></polygon>
+    <polygon style="fill: rgb(255, 112, 88); --darkreader-inline-fill: var(--darkreader-text-ff7058, #ff9478);"
+      points="252.5,185.3 278.8,238.6 337.7,247.2 295.1,288.7 305.2,347.3 252.5,319.6 199.8,347.3 209.9,288.7 167.3,247.2 226.2,238.6 "
+      data-darkreader-inline-fill=""></polygon>
+  </g>
+</svg>
