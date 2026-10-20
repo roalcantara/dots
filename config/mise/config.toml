@@ -91,8 +91,15 @@ task.disable_spec_from_run_scripts = true
 
 # Configure a custom command in your global settings to obtain a GitHub token
 # https://mise.jdx.dev/dev-tools/github-tokens.html#credential-command
+[settings.rust]
+# Pin where rustup and cargo live, matching CARGO_HOME / RUSTUP_HOME in .zshenv: a mise started without that env
+# (an IDE, a git hook) would otherwise default to ~/.cargo and ~/.rustup, flip the toolchain link, and reinstall Rust
+# on the next run. https://mise.jdx.dev/lang/rust.html#where-rustup-and-cargo-live
+cargo_home = "~/.local/share/cargo"
+rustup_home = "~/.local/share/rustup"
+
 [settings.github]
-credential_command = "gopass show -n --password tokens/github.com"
+credential_command = "gh auth token"
 
 [tools]
 usage = "latest"
@@ -102,6 +109,7 @@ fnox = "latest"
 uv = "latest"
 # needed to go dependencies
 go = "latest"
+"cargo:https://github.com/RayanBO/todo" = "HEAD"
 
 [tasks]
 [tasks.up]
@@ -127,9 +135,135 @@ run = '''
   echo "" && brew cleanup --prune=all && brew doctor
 '''
 
+[tasks."fix:skills"]
+description = "Find the highest-install skill record for each folder or a file list"
+quiet = true
+tools = { bun = "latest" }
+run = '''
+  #!/usr/bin/env bun
+  import fs from "fs";
+
+  const args = process.argv.slice(2);
+  const sourceArg = (() => {
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+      if (arg === "--from" || arg === "--file") {
+        return args[i + 1] ?? "";
+      }
+      const equalsMatch = arg.match(/^(?:--from|--file)=(.+)$/);
+      if (equalsMatch) {
+        return equalsMatch[1];
+      }
+    }
+    return "";
+  })();
+
+  const skillsDir = `${process.env.HOME}/.agents/skills`;
+  const normalizeFolderName = (rawLine) => {
+    const line = String(rawLine ?? "").replace(/\u001b\[[0-9;]*m/g, "").trim();
+    if (!line || line.startsWith("#")) return null;
+
+    if (line.startsWith("No install records found for ")) {
+      return line.replace(/^No install records found for /, "").trim();
+    }
+
+    if (line.startsWith("Processing skill folder: ")) {
+      return line.replace(/^Processing skill folder:\s*/, "").trim();
+    }
+
+    return line.replace(/^['\"]|['\"]$/g, "").trim() || null;
+  };
+
+  const parseCount = (countText) => {
+    const match = String(countText).match(/^([0-9]+(?:\.\d+)?)([KMB]?)$/);
+    if (!match) return Number.NaN;
+
+    const [, amountText, suffix = ""] = match;
+    const amount = Number.parseFloat(amountText);
+    const multiplier = { K: 1000, M: 1000000, B: 1000000000 };
+    return amount * (multiplier[suffix] ?? 1);
+  };
+
+  const collectFolders = () => {
+    if (sourceArg) {
+      const sourcePath = sourceArg.trim();
+      if (!fs.existsSync(sourcePath)) {
+        throw new Error(`Source file not found: ${sourcePath}`);
+      }
+
+      const lines = fs.readFileSync(sourcePath, "utf8").split(/\r?\n/);
+      return [...new Set(lines.map(normalizeFolderName).filter(Boolean))];
+    }
+
+    return fs.readdirSync(skillsDir)
+      .filter((name) => fs.statSync(`${skillsDir}/${name}`).isDirectory())
+      .sort();
+  };
+
+  const skillFolders = collectFolders();
+  const csvRows = [];
+
+  console.log(`Processing ${skillFolders.length} skill folders`);
+
+  for (const folder of skillFolders) {
+    console.log(`Processing skill folder: ${folder}`);
+
+    const proc = Bun.spawnSync({
+      cmd: ["/opt/homebrew/bin/skills", "find", folder],
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+
+    const rawOutput = proc.stdout ? new TextDecoder().decode(proc.stdout) : "";
+    const skillOutput = rawOutput.replace(/\u001b\[[0-9;]*m/g, "").trim();
+
+    if (!skillOutput || !/install(?:s)?/i.test(skillOutput)) {
+      console.log(`No install records found for ${folder}`);
+      continue;
+    }
+
+    const lines = skillOutput
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    const records = [];
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const match = line.match(/^(.+?)\s+([0-9]+(?:\.\d+)?(?:[KMB])?)\s+install(?:s)?$/);
+      if (!match) continue;
+
+      const nextLine = lines[i + 1] ?? "";
+      const url = nextLine.replace(/^└\s*/, "").trim();
+      if (!url) continue;
+
+      const [, skillName, countText] = match;
+      const count = parseCount(countText);
+      if (!Number.isFinite(count)) continue;
+
+      records.push({ skillName, count, url });
+    }
+
+    if (records.length === 0) {
+      console.log(`No install records found for ${folder}`);
+      continue;
+    }
+
+    const winner = records.reduce((best, current) => (current.count > best.count ? current : best));
+    const row = `${folder}, ${winner.skillName}, ${winner.url}`;
+    csvRows.push(row);
+    console.log(row);
+  }
+
+  const outputCsv = `${process.env.HOME}/Work/dots/script/skills.csv`;
+  fs.writeFileSync(outputCsv, `${csvRows.join("\n")}\n`, "utf8");
+  console.log(`Wrote ${csvRows.length} rows to ${outputCsv}`);
+'''
+
 # Show the full command when executing tasks.
 # https://mise.jdx.dev/configuration/settings.html#task.show_full_cmd
 # task.show_full_cmd = "disable_spec_from_run_scripts"
 
 # # configure messages displayed when entering directories with config files
 # status = { missing_tools = "if_other_versions_installed", show_env = false, show_tools = false }
+#

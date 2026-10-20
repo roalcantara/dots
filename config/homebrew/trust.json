@@ -4,7 +4,6 @@
   ],
   "trustedcasks": [
     "c0desurfer/tap/swift-salamander",
-    "thdxg/tap/macterm",
     "zzet/tap/gortex"
   ],
   "trustedformulae": [

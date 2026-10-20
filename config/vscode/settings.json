@@ -495,10 +495,10 @@
     "tsconfig.json": "tsconfig.*.json, tsconfig.tsbuildinfo, tsconfig.*.tsbuildinfo",
     "package.json": "package-lock.json, .babelrc, .browserslistrc, .dockerignore, .editorconfig, .eslintignore, .eslintrc.*, .gitignore, .graphqlrc.*, .nvmrc, .prettierignore, .prettierrc.*, babel.config.json, cypress.json, jest.config.ts, jest.preset.js, nx.json, package.json, tsconfig.base.json, tsconfig.json, workspace.json, yarn.lock, vercel.json, netlify.toml, pnpm-lock.yaml, webpack.config.js, .prettierrc, .npmrc, CHANGELOG.md, LICENSE, .cursorrules, vitest.config.ts, raycast-env.d.ts, eslint.config.mjs, eslint.config.js, .pre-commit-config.yaml, .gitlint, bun.lockb, biome.jsonc, bun.lock, bunfig.toml, CHANGELOG.md, Dockerfile, knip.jsonc, LICENSE, renovate.json5, .release-it.yml, .jscpd.json, .dependency-cruiser.cjs, .hadolint.yaml",
     "Cargo.toml": "clippy.toml, Cargo.lock, rustfmt.toml, rust-toolchain.toml, .babelrc, .browserslistrc, .dockerignore, .editorconfig, .eslintignore, .eslintrc.*, .gitignore",
-    "README.md": "TODO.md, AGENTS.md, .mcp.json, CLAUDE.md, CONTEXT.md",
+    "README.md": "TODO.md, AGENTS.md, .mcp.json, CLAUDE.md, CONTEXT.md, DESIGN.md, PRODUCT.md, CHANGELOG.md",
     "mise.toml": "mise.*.toml, mise.lock",
     "fallow.toml": "fallow-*.toml",
-    "hk.pkl": ".gitleaks.toml, .ls-lint.yml, .mdschema.yml, cog.toml, cchk.toml, dprint.jsonc, fallow.toml, biome.json, biome.jsonc, committed.toml, doctor.config.json, .quick-commitlint.json, .fnox.toml, sgconfig.yml, fallow-plugin-*.jsonc, .jscpd.json, .deny.toml, deny.toml, dprint.json, taplo.toml, _typos.toml",
+    "hk.pkl": ".gitleaks.toml, .ls-lint.yml, .mdschema.yml, cog.toml, cchk.toml, dprint.jsonc, fallow.toml, biome.json, biome.jsonc, committed.toml, doctor.config.json, .quick-commitlint.json, .fnox.toml, sgconfig.yml, fallow-plugin-*.jsonc, .jscpd.json, .deny.toml, deny.toml, dprint.json, taplo.toml, _typos.toml, .releaserc.yml, mise.toml",
     "Gemfile": "Gemfile.*",
     ".env": ".env.*",
     ".swcrc": ".swcrc.*",
@@ -1721,12 +1721,18 @@
   "fallow.health.statusBar": true,
   "fallow.typeAware.enabled": true,
   "workbench.colorTheme": "Bearded Theme Arc",
-  "yaml.disableSchemaDetection": [
-    "**/.github/workflows/*.yml",
-    "**/.github/workflows/*.yaml",
-    "**/.gitea/workflows/*.yml",
-    "**/.gitea/workflows/*.yaml",
-    "**/.forgejo/workflows/*.yml",
-    "**/.forgejo/workflows/*.yaml"
-  ]
+  "yaml.disableSchemaDetection": [],
+  "chat.tools.urls.autoApprove": {
+    "https://code.visualstudio.com": true,
+    "https://github.com/microsoft/vscode/wiki/*": true,
+    "https://github.com": {
+      "approveRequest": false,
+      "approveResponse": true
+    },
+    "https://raw.githubusercontent.com": {
+      "approveRequest": false,
+      "approveResponse": true
+    }
+  },
+  "dprint.showNoConfigNotification": false
 }

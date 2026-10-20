@@ -87,7 +87,7 @@ brew "uv" # Fast Python package installer and resolver
 brew "wakatime-cli" # WakaTime CLI
 brew "zoxide" # Smart directory navigation for the shell
 brew "zsh" # UNIX shell
-brew "defaultbrowser" # Command-line tool for getting & setting the default browser
+# brew "defaultbrowser" # Command-line tool for getting & setting the default browser
 brew "asmvik/formulae/yabai", trusted: true # A tiling window manager for macos
 # brew "opencode" # Terminal AI coding agent
 # brew "asmvik/formulae/skhd", trusted: true # A tiling window manager for macos
@@ -107,10 +107,10 @@ cask "claude-code" # Claude for code editing
 cask "claude" # Anthropic Claude app
 cask "codex" # OpenAI coding agent
 cask "copilot-cli@prerelease" # Copilot coding agent CLI
-cask "cursor" # AI-first code editor
+# cask "cursor" # AI-first code editor
 cask "docker-desktop" # Container tooling
 cask "discord" # Container tooling
-cask "firefox" # Firefox browser
+# cask "firefox" # Firefox browser
 cask "gcloud-cli" # Google Cloud SDK
 cask "ghostty" # GPU-accelerated terminal emulator
 cask "github-copilot-app" # GitHub Copilot app
@@ -165,8 +165,20 @@ uv "code-review-graph"
 
 # vi: set ft=rb
 # Predictive inline shell autosuggestions for zsh.
-brew "Giammarco-Ferranti/deja/deja"
+brew "Giammarco-Ferranti/deja/deja", trusted: true
 # Blazingly fast Zsh syntax highlighter
 brew "zsh-patina"
 # Post-modern modal text editor
 brew "helix"
+# Open source, extensible AI agent that goes beyond code suggestions
+cask "block-goose"
+# Open source, extensible AI agent that goes beyond code suggestions
+brew "block-goose-cli"
+# Workspace for running and reviewing multiple CLI coding agents
+# cask "ghostex"
+# Application launcher and command palette
+cask "vicinae"
+# Tools for building Android applications
+cask "android-studio"
+# Open-source application manager and system cleaner
+cask "puremac"

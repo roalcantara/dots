@@ -28,7 +28,7 @@
 emulate -L zsh
 setopt no_unset pipe_fail extended_glob
 
-_has() {
+has() {
   case "$1" in
     gum) [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v gum >/dev/null 2>&1 ;;
     fzf) [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v fzf >/dev/null 2>&1 ;;
@@ -36,7 +36,7 @@ _has() {
   esac
 }
 
-_puts() {
+puts() {
   case "$1" in
     info)
       if _has gum; then
@@ -54,11 +54,3 @@ _puts() {
       ;;
   esac
 }
-
-if $usage_puts; then
-  _puts "$usage_level" "$usage_message"
-fi
-
-if $usage_has; then
-  _has "$usage_command"
-fi

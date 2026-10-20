@@ -45,4 +45,14 @@ zim::overrides               # settings that must outrank ZIM's modules
 term::prompt                 # powerlevel10k configuration
 sys::profiling               # zprof teardown (no-op unless z_prof is set)
 sys::purge                   # drop the one-shot setup functions
+
+# Android SDK Tools. Re-add after the framework rebuilds PATH so adb stays on the shell PATH.
+export ANDROID_HOME="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
+for d in "$ANDROID_HOME/platform-tools" "$ANDROID_HOME/cmdline-tools/latest/bin" "$ANDROID_HOME/emulator"; do
+  case ":$PATH:" in
+    *":$d:"*) ;;
+    *) export PATH="$d:$PATH" ;;
+  esac
+done
+
 unset zrc
