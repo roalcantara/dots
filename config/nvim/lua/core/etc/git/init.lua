@@ -4,4 +4,5 @@ return {
   get_unstaged_changes = require('core/etc/git/get_unstaged_changes'),
   get_changes = require('core/etc/git/get_changes'),
   get_conventional_commits_instructions = require('core/etc/git/get_conventional_commits_instructions'),
+  format_conventional_commit = require('core/etc/git/format_conventional_commit'),
 }

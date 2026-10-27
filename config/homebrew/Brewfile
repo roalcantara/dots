@@ -101,16 +101,14 @@ cask "antigravity-ide" # AI coding agent IDE
 cask "antigravity" # Agent orchestration platform
 cask "bitwarden" # Password manager
 cask "brave-browser" # Privacy-focused browser
-cask "c0desurfer/tap/swift-salamander", trusted: true # Dual-pane file manager for local folders and network storage
+# cask "c0desurfer/tap/swift-salamander", trusted: true # Dual-pane file manager for local folders and network storage
 cask "chatgpt" # ChatGPT desktop app
 cask "claude-code" # Claude for code editing
 cask "claude" # Anthropic Claude app
 cask "codex" # OpenAI coding agent
 cask "copilot-cli@prerelease" # Copilot coding agent CLI
-# cask "cursor" # AI-first code editor
 cask "docker-desktop" # Container tooling
 cask "discord" # Container tooling
-# cask "firefox" # Firefox browser
 cask "gcloud-cli" # Google Cloud SDK
 cask "ghostty" # GPU-accelerated terminal emulator
 cask "github-copilot-app" # GitHub Copilot app
@@ -124,9 +122,11 @@ cask "visual-studio-code" # VS Code editor
 cask "vlc" # VLC media player
 cask "vorssaint" # Menu bar toolkit with keep-awake, system monitor and volume mixer
 cask "whatsapp" # WhatsApp desktop app
-cask "yacreader" # Comic reader
 cask "zed" # Multiplayer code editor
 cask "mark-text" # Markdown editor
+# cask "cursor" # AI-first code editor
+# cask "firefox" # Firefox browser
+# cask "yacreader" # Comic reader
 # cask "amethyst" # Tiling window manager for macOS
 # cask "claude-devtools" # Claude session analysis tools
 # cask "karabiner-elements" # Keyboard remapping tool
@@ -171,9 +171,9 @@ brew "zsh-patina"
 # Post-modern modal text editor
 brew "helix"
 # Open source, extensible AI agent that goes beyond code suggestions
-cask "block-goose"
+# cask "block-goose"
 # Open source, extensible AI agent that goes beyond code suggestions
-brew "block-goose-cli"
+# brew "block-goose-cli"
 # Workspace for running and reviewing multiple CLI coding agents
 # cask "ghostex"
 # Application launcher and command palette
@@ -182,3 +182,9 @@ cask "vicinae"
 cask "android-studio"
 # Open-source application manager and system cleaner
 cask "puremac"
+# Markdown previews in Finder QuickLook with diagrams and math
+cask "xykong/tap/flux-markdown", trusted: true
+# Deep clean and optimize your Mac
+brew "mole"
+# Discover, download, and run local LLMs
+cask "lm-studio"

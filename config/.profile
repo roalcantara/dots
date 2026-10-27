@@ -27,3 +27,8 @@ export ZIM_HOME=$HOME/.local/state/zim
 export zdumpfile=$HOME/.cache/zsh/compcache/.zcompdump
 mkdir -p $ZSH_DATA_DIR $ZSH_COMPCACHE $ZIM_HOME
 # }
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/roalcantara/.lmstudio/bin"
+# End of LM Studio CLI section
+

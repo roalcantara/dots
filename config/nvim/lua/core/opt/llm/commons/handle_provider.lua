@@ -20,6 +20,17 @@ local function normalize_input(input)
   return input
 end
 
+--- Split input into instructions (system) and prompt (user), for providers that keep them apart.
+--- @param input string|table User input (string, or table with user/system keys)
+--- @return string|nil system, string user
+local function split_input(input)
+  if type(input) == 'table' and input.user then
+    local system = input.system and normalize_input(input.system) or nil
+    return system, normalize_input(input.user)
+  end
+  return nil, normalize_input(input)
+end
+
 --- Run a single provider request: resolve API key, build body/headers, curl, parse response.
 --- @param opts table Provider-specific options:
 ---   - api_url (string)
@@ -89,6 +100,7 @@ end
 return {
   request = request,
   normalize_input = normalize_input,
+  split_input = split_input,
   build_argv = build_argv,
   strip_preamble = strip_preamble,
 }

@@ -3,12 +3,11 @@ return function(cmd)
     cmd = { cmd }
   end
   Neo.debug(("'%s'"):format(vim.inspect(table.concat(cmd, ' '))), { title = 'exec_cmd' })
-  local result = vim
-    .system(cmd, {
-      text = true,
-      cwd = vim.fn.getcwd(),
-    })
-    :wait()
+  -- Yields instead of blocking when called from a core/etc/sys/async task.
+  local result = require('core/etc/sys/async').system(cmd, {
+    text = true,
+    cwd = vim.fn.getcwd(),
+  })
   if result then
     if result.stderr and result.stderr:len() > 0 then
       return error(result.stderr, result.code)

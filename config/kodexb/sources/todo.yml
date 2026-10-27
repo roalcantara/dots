@@ -119,3 +119,23 @@ commands:
     cmd: todo scan
     tags: [todo, cli]
     links: [https://rayanbo.github.io/todo/documentation]
+
+  todo status a1b2 --set done:
+    desc: Change a task's status
+    tags: [todo, cli]
+    links: [https://rayanbo.github.io/todo/documentation]
+
+  todo add --task "Build login" --priority high --tag login --comment "Started on this":
+    desc: Add a new task with specified actors and priority
+    tags: [todo, cli]
+    links: [https://rayanbo.github.io/todo/documentation]
+
+  todo list --tasks:
+    desc: List all tasks
+    tags: [todo, cli]
+    links: [https://rayanbo.github.io/todo/documentation]
+
+  todo list --overdue:
+    desc: List all overdue tasks
+    tags: [todo, cli]
+    links: [https://rayanbo.github.io/todo/documentation]

@@ -2,7 +2,10 @@ bookmarks:
   https://support.apple.com/en-gb/guide/terminal/apdc6c1077b-5d5d-4d35-9c19-60f2397b2369/mac:
     desc: launchctl command official docs
     tags: [macos, schedule, service]
-    links: [https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/Introduction.html#//apple_ref/doc/uid/10000172i-SW1-SW1]
+    links:
+      [
+        https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/Introduction.html#//apple_ref/doc/uid/10000172i-SW1-SW1,
+      ]
     notes:
       - md: | #markdown
           ## Script management with launchd in Terminal on Mac
@@ -44,7 +47,120 @@ bookmarks:
   https://github.com/acsandmann/rift:
     desc: Rift is a tiling window manager for macOS that supports CLI commands; No native macOS workspace/desktop support.
     tags: [macos, twm]
+  https://vorssaint.com:
+    desc: Free and open-source macOS menu bar toolkit
+    tags: [macos, toolkit]
+    links:
+      - https://youtu.be/MnK7N1Mkzgg
+      - https://github.com/vorssaint/vorssaint-utils
+    notes:
+      - sh: brew install --cask vorssaint
+      - sh: brew bundle add --cask vorssaint
+
+  https://youtu.be/npxlJdxSv4A:
+    desc: Your Mac Is Missing All of These (AntiNote, FluxMarkdown, Monocle, Alcove, Shottr, MiddleDrag, LinearMouse)
+    tags: [macos, toolkit]
+    links:
+      - Cotypist: https://cotypist.app/
+      - Folder Peek: https://apps.apple.com/us/app/folder-peek/id1615988943?mt=12
+      - DockDoor: https://dockdoor.net/
+      - TypeWhisper: https://typewhisper.com/
+      - Hyperkey: https://hyperkey.app/
+      - AntiNote: https://antinote.io/
+      - FluxMarkdown: https://github.com/xykong/flux-markdown
+      - Monocle: https://heyiam.dk/monocle
+      - Alcove: https://tryalcove.com/
+      - Shottr: https://shottr.cc/
+      - MiddleClick: https://github.com/artginzburg/MiddleClick
+      - LinearMouse: https://linearmouse.app/
+
+  https://github.com/xykong/flux-markdown:
+    desc: Markdown previews in Finder QuickLook with diagrams and math
+    tags: [macos, toolkit]
+    notes:
+      - sh: brew install --cask xykong/tap/flux-markdown
+      - sh: brew bundle add --cask xykong/tap/flux-markdown
+
+  https://github.com/tw93/Mole:
+    desc: Deep clean and optimize your Mac
+    tags: [macos, toolkit]
+    notes:
+      - sh: brew install mole
+      - sh: brew bundle add mole
+      - md: | #markdown
+          # Help
+          ```sh
+          mo                           # Interactive menu
+          mo clean                     # Deep cleanup + already-uninstalled app leftovers
+          mo uninstall                 # Remove installed apps + their leftovers
+          mo optimize                  # Refresh caches & services
+          mo analyze                   # Visual disk explorer (or 'mo analyse')
+          mo status                    # Live system health dashboard
+          mo purge                     # Clean project build artifacts
+          mo installer                 # Find and remove installer files
+          mo slim                      # Remove Intel code from universal apps
+
+          mo touchid                   # Configure Touch ID for sudo
+          mo completion                # Set up shell tab completion
+          mo update                    # Update Mole
+          mo update --nightly          # Update to latest unreleased main build, script install only
+          mo remove                    # Remove Mole from system
+          mo --help                    # Show help
+          mo --version                 # Show installed version
+          ```
 commands:
+  # Apple Foundation Models
+  sudo fm license:
+    desc: Manage Apple Foundation Models license
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+  fm models:
+    desc: List available Foundation Models
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+  fm chat:
+    desc: Start an interactive chat session
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+  fm respond 'What is Swift?':
+    desc: Generate a response to a prompt
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+  fm respond 'Provide a basic regex in Swift to parse email addresses':
+    desc: Generate a response to a prompt
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+  fm respond 'Provide a comprehensive regex in Swift to parse email addresses' --model pcc:
+    desc: Generate a response to a prompt
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+  fm respond 'What app is the user using in this screenshot' --model pcc --image path/to/screenshot.png:
+    desc: Generate a response to a prompt
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+  fm respond --model pcc --stream 'Summarize this article?':
+    desc: Generate a response to a prompt
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+  fm chat --instructions 'You are a funny comedian':
+    desc: Start an interactive chat session
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+  fm count-tokens 'Hello world':
+    desc: Count tokens in a prompt or instructions
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+  fm schema object --name AppsIdentified --string app_names --array > schema.json:
+    desc: Generate a schema for a data model object
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+    notes:
+      - sh: fm respond 'What apps are identified?' --schema AppsIdentified --model pcc --image path/to/screenshot.png
+  fm schema object --name Person --string name --int age:
+    desc: Generate a schema for a data model object
+    tags: [macos, fm]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+
   sudo reboot:
     desc: Restart your Mac
     tags: [macos]
@@ -355,35 +471,43 @@ commands:
   sudo launchctl list:
     desc: List all system-wide loaded daemons
     tags: [macos, schedule, service]
-    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links:
+      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl list | grep ssh:
     desc: List all system-wide loaded agents related to ssh
     tags: [macos, schedule, service]
-    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links:
+      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl list com.openssh.sshd:
     desc: View details of the sshd service
     tags: [macos, schedule, service]
-    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links:
+      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl enable system/com.openssh.sshd:
     desc: Enable dev.dotfiles.setup service
     tags: [macos, schedule, service]
-    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links:
+      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl stop system/com.openssh.sshd:
     desc: Enable dev.dotfiles.setup service
     tags: [macos, schedule, service]
-    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links:
+      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl start system/com.openssh.sshd:
     desc: Start the sshd service
     tags: [macos, schedule, service]
-    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links:
+      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl disabled system/com.openssh.sshd:
     desc: Enable dev.dotfiles.setup service
     tags: [macos, schedule, service]
-    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links:
+      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl stop system/com.openssh.sshd && sudo launchctl start system/com.openssh.sshd:
     desc: Restart the sshd service
     tags: [macos, schedule, service]
-    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links:
+      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
 
   # Viewing launchd logs
   sudo launchctl print-disabled system/$(id -u):
@@ -585,3 +709,69 @@ cheats:
           log show --predicate 'process == "launchd" and eventMessage contains "com.example.task"' --last 1h
           # Check stderr/stdout logs (if configured)
           cat ~/Library/Logs/com.example.task.log
+
+  Uses Fundation Model Python API:
+    desc: This section demonstrates how to use the Foundation Model (fm) Python API to triage files into "final" and "draft" categories.
+    tags: [macos, fm, python]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+    notes:
+      - py: | #python
+          import apple_fm_sdk as fm
+          from pathlib import Path
+
+          INSTRUCTIONS = "You're an AI assistant for Cupertino Mart, a grocery store with in-app ordering."
+
+          class GetPastOrdersTool(fm.Tool):
+              name = "get_past_orders"
+              description = "Retrieves information about this user's past orders."
+
+              @fm.generable("Past orders query parameter")
+              class Arguments:
+                  number_orders: str = fm.guide("How many of the last orders to retrieve")
+
+              @property
+              def arguments_schema(self) -> fm.GenerationSchema:
+                  return self.Arguments.generation_schema()
+
+              async def call(self, args: fm.GeneratedContent) -> str:
+                  number_orders = args.value(int, for_property="number_orders")
+                  return await Orders.load_last_orders(user_id=user_id, amount=number_orders)
+
+          async def answer_question(prompt: str) -> str:
+              session = fm.LanguageModelSession(instructions=INSTRUCTIONS, tools=[GetPastOrdersTool()])
+              return await session.respond(prompt)
+
+          # Define a generable class for suggested items in the user's cart
+          @fm.generable("Suggested items")
+          class ItemsSuggestion:
+            item_names: list[str] = fm.guide("Names of the suggested items")
+
+          INSTRUCTIONS = "You're an AI assistant tasked with returning potential grocery items that the user might be interested in."
+          async def generate_suggested_cart_items(user_input: Optional[str]) -> ItemsSuggestion:
+              session = fm.LanguageModelSession(instructions=INSTRUCTIONS, tools=[GetPastOrdersTool()])
+              prompt = "Using the tools to load the user's previous orders, return a list of items the user has already ordered \ and that they might be interested in again \ as they're getting ready to place a new grocery order."
+              if user_input is not None:
+                  prompt += f"\nAccount for the following request from the user: {user_input}"
+              return await session.respond(prompt, generating=ItemsSuggestion)
+
+  Uses fm to triage files:
+    desc: This script uses an AI model to categorize a list of files into "final" or "draft" versions and then moves them into their respective storage directories.
+    tags: [macos, fm, script]
+    links: [https://developer.apple.com/videos/play/wwdc2026/334/]
+    notes:
+      - sh: | #shell
+          #!/bin/sh
+
+          output=$(fm respond \
+              --instructions "I just completed a project, and I need help triaging the latest version of the files from the previous versions. I will give you a list of files. Return a list of the latest files (i.e., all files that, you can infer from their name in the list, are the latest versions), and then return separately a list of all draft files (i.e., all files that weren't considered final)." \
+              "This is the list of all files:\n\n${files_list}" \
+              --schema /tmp/schema.json
+          )
+
+          echo "${output}" | jq -r '.final_files[]' | while read -r file; do
+              cp "${DIRECTORY_TO_TRIAGE}/${file}" "${FINAL_FILES_STORAGE_DIRECTORY}"
+          done
+
+          echo "${output}" | jq -r '.draft_files[]' | while read -r file; do
+              mv "${DIRECTORY_TO_TRIAGE}/${file}" "${DRAFT_FILES_STORAGE_DIRECTORY}"
+          done

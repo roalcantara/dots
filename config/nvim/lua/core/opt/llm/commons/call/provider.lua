@@ -1,12 +1,13 @@
 --- Entry point to call LLM providers.
---- Routes requests to a single provider (anthropic, openai, ollama) or races all and returns the first valid response.
+--- Routes requests to a single provider (anthropic, openai, ollama, fm, omlx, mlx)
+--- or races the remote ones and returns the first valid response.
 
 local handle_provider = require('core/opt/llm/commons/handle_provider')
 
 local PROVIDER_NAMES = { 'anthropic', 'openai', 'ollama' }
 
 --- Load provider API module by name.
---- @param name string One of: anthropic, openai, ollama
+--- @param name string One of: anthropic, openai, ollama, fm, omlx, mlx
 --- @return table|nil api module or nil if unknown
 local function get_provider_api(name)
   if name == 'openai' then
@@ -18,11 +19,37 @@ local function get_provider_api(name)
   if name == 'ollama' then
     return (require('core/opt/llm/providers/ollama/api'))
   end
+  if name == 'fm' then
+    return (require('core/opt/llm/providers/fm/api'))
+  end
+  if name == 'omlx' then
+    return (require('core/opt/llm/providers/omlx/api'))
+  end
+  if name == 'mlx' then
+    return (require('core/opt/llm/providers/mlx/api'))
+  end
   return nil
 end
 
+--- Content string to send to providers: use .user (and optional .system) when input is a table.
+--- @param input string|table User input (string or table with user/system keys)
+--- @return string
+local function content_for_request(input)
+  if type(input) == 'table' then
+    if input.user then
+      local user_str = type(input.user) == 'table' and table.concat(input.user, '\n') or input.user
+      local system_str = input.system
+          and (type(input.system) == 'table' and table.concat(input.system, '\n') or input.system)
+        or nil
+      return system_str and (system_str .. '\n\n' .. user_str) or user_str
+    end
+    return handle_provider.normalize_input(input)
+  end
+  return input
+end
+
 --- Call a single provider and return a normalized result.
---- @param provider_name string One of: anthropic, openai, ollama
+--- @param provider_name string One of: anthropic, openai, ollama, fm, omlx, mlx
 --- @param input string|table User input
 --- @return table { provider = string, response = string, raw = table|nil, error = string|nil }
 local function call_one(provider_name, input)
@@ -31,11 +58,15 @@ local function call_one(provider_name, input)
     return { provider = provider_name, response = nil, raw = nil, error = 'Unknown provider: ' .. provider_name }
   end
 
+  -- fm, omlx and mlx keep system/user apart; the others take a single string.
+  local local_providers = { fm = true, omlx = true, mlx = true }
+  local payload = local_providers[provider_name] and input or content_for_request(input)
+
   local ok, result = pcall(function()
     if provider_name == 'openai' then
-      return api.responses(input)
+      return api.responses(payload)
     end
-    return api.messages(input)
+    return api.messages(payload)
   end)
 
   if not ok then
@@ -53,21 +84,6 @@ local function call_one(provider_name, input)
     raw = nil,
     error = nil,
   }
-end
-
---- Content string to send to providers: use .user (and optional .system) when input is a table.
---- @param input string|table User input (string or table with user/system keys)
---- @return string
-local function content_for_request(input)
-  if type(input) == 'table' then
-    if input.user then
-      local user_str = type(input.user) == 'table' and table.concat(input.user, '\n') or input.user
-      local system_str = input.system and (type(input.system) == 'table' and table.concat(input.system, '\n') or input.system) or nil
-      return system_str and (system_str .. '\n\n' .. user_str) or user_str
-    end
-    return handle_provider.normalize_input(input)
-  end
-  return input
 end
 
 --- Race all providers: start all, return first valid response and stop the others.
@@ -155,11 +171,7 @@ local function call_all(input, opts)
           raw = decoded,
           error = nil,
         }
-        vim.notify(
-          ('Commit message ready (via %s).'):format(provider_name),
-          vim.log.levels.INFO,
-          { title = 'LLM' }
-        )
+        vim.notify(('Commit message ready (via %s).'):format(provider_name), vim.log.levels.INFO, { title = 'LLM' })
         for other_name, _ in pairs(state.pending) do
           local other_job_id = state.pending[other_name]
           if other_job_id and type(other_job_id) == 'number' then
@@ -176,7 +188,7 @@ local function call_all(input, opts)
   end
 
   local poll_interval_ms = 50
-  vim.wait(timeout_ms, function()
+  require('core/etc/sys/async').wait(timeout_ms, function()
     return state.winner ~= nil or vim.tbl_count(state.pending) == 0
   end, poll_interval_ms)
 
@@ -203,7 +215,7 @@ end
 local M = {}
 
 --- Call the chosen LLM provider(s) with the given input.
---- @param provider string One of: "anthropic", "openai", "ollama", "all"
+--- @param provider string One of: "anthropic", "openai", "ollama", "fm", "omlx", "mlx", "all"
 --- @param input string|table User input (string or table of lines)
 --- @param opts table|nil Optional. For provider == "all": timeout_ms (number). Ignored for single provider.
 --- @return table { provider = string, response = string, raw = table|nil, error = string|nil }
@@ -218,6 +230,9 @@ end
 --- @return string[]
 function M.provider_names()
   local names = vim.deepcopy(PROVIDER_NAMES)
+  table.insert(names, 'fm')
+  table.insert(names, 'omlx')
+  table.insert(names, 'mlx')
   table.insert(names, 'all')
   return names
 end
