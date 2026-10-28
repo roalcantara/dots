@@ -1,0 +1,15 @@
+#!/bin/sh
+# Move the focused window in direction; at the display edge, move it to the adjacent display.
+# Displays are numbered left to right; move-window-to-display wraps, so the outer edges stop here.
+# Usage: shove <left|down|up|right>
+set -eu
+case "$(dinky move "$1")" in
+*"nothing to do"*)
+  at=$(dinky list-monitors --focused --format '%{monitor-id}')
+  count=$(dinky list-monitors | wc -l)
+  case $1 in
+  left | up) [ "$at" -gt 1 ] && exec dinky move-window-to-display prev --follow ;;
+  *) [ "$at" -lt "$count" ] && exec dinky move-window-to-display next --follow ;;
+  esac
+  ;;
+esac

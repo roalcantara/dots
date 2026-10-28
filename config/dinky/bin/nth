@@ -1,0 +1,10 @@
+#!/bin/sh
+# Run a dinky workspace command on the Nth workspace of the focused display.
+# dinky numbers workspaces across displays; this keeps H+1–4 per display.
+# Usage: nth <N> <command> [flags]   e.g. nth 2 workspace, nth 2 move-window-to-workspace --follow
+set -eu
+n=$1 cmd=$2
+shift 2
+ws=$(dinky list-workspaces --monitor focused | sed -n "${n}p")
+[ -n "$ws" ] || exit 0
+exec dinky "$cmd" "$ws" "$@"

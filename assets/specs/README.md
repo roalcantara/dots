@@ -20,6 +20,7 @@ Each spec folder SHOULD contain `requirements.md`, `design.md`, and `tasks.md`.
 | ------------------------------------------------ | --------------------------------------------------------------------- |
 | [project-structure](project-structure/design.md) | Canonical `assets/` layout, mise tasks, agent workflow                |
 | `bin/`                                           | BDD pilot umbrella — migrated from `assets/specs/bin` in Task 3 |
+| [macos-tiling-wm-experiment](macos-tiling-wm-experiment/design.md) | Omarchy-style yabai + SIP-on WM comparison                 |
 
 ## Do not use
 

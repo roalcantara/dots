@@ -109,7 +109,6 @@ cask "codex" # OpenAI coding agent
 cask "copilot-cli@prerelease" # Copilot coding agent CLI
 cask "docker-desktop" # Container tooling
 cask "discord" # Container tooling
-cask "gcloud-cli" # Google Cloud SDK
 cask "ghostty" # GPU-accelerated terminal emulator
 cask "github-copilot-app" # GitHub Copilot app
 cask "github" # GitHub desktop app

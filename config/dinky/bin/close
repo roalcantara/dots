@@ -1,0 +1,18 @@
+#!/bin/sh
+# Close the focused window, whatever keys the app binds: File → Close Window, else the close button, else ⌘W.
+# Usage: close
+exec osascript <<'EOF'
+tell application "System Events"
+  tell (first application process whose frontmost is true)
+    try
+      click menu item "Close Window" of menu "File" of menu bar 1
+    on error
+      try
+        click (first button of window 1 whose subrole is "AXCloseButton")
+      on error
+        keystroke "w" using command down
+      end try
+    end try
+  end tell
+end tell
+EOF

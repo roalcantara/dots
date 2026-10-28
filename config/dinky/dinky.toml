@@ -1,0 +1,109 @@
+#:schema https://dinky.rodeo/schemas/dinky.json
+# dinky: Omarchy-shaped tiling on native Spaces, SIP on.
+# Spec: assets/specs/macos-tiling-wm-experiment/ (cheat sheet: design.md §3).
+# Every key and command: https://dinky.rodeo/configuration/
+#
+# H = Raycast Hyper on Right ⌘ (⌃⌥⌘, no ⇧), written ctrl-alt-cmd below; H+⇧ is `hyper`.
+# dinky has no fn modifier, so Omarchy's Super+Alt layer (H+fn in the spec) is the `alt`
+# mode: H+; then one key, which runs and returns to main.
+
+start-at-login = true
+workspaces = 8               # 4 per display: 1–4 built-in, 5–8 external
+default-layout = 'dwindle'   # Hyprland dwindle: split the focused tile on its longer side
+follow-app-activation = true # needs "switch to a Space with open windows" off
+
+[workspace-to-display]
+5 = 'secondary'
+6 = 'secondary'
+7 = 'secondary'
+8 = 'secondary'
+
+[gaps]
+inner = 6
+outer = 12
+
+[borders] # Hyprland's active border, TokyoNight Storm blue
+width = 4
+active-color = '#7aa2f7'
+inactive-color = '#00000000'
+
+[animations] # windows jump to their tiles: macOS draws a new window where the app asks first
+enabled = false
+
+[[rules]]
+app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+[mode.main]
+# Windows (§3.1)
+ctrl-alt-cmd-left = 'focus left --boundaries all-monitors-outer-frame'
+ctrl-alt-cmd-down = 'focus down --boundaries all-monitors-outer-frame'
+ctrl-alt-cmd-up = 'focus up --boundaries all-monitors-outer-frame'
+ctrl-alt-cmd-right = 'focus right --boundaries all-monitors-outer-frame'
+hyper-left = 'exec-and-forget ~/.config/dinky/bin/shove left'
+hyper-down = 'exec-and-forget ~/.config/dinky/bin/shove down'
+hyper-up = 'exec-and-forget ~/.config/dinky/bin/shove up'
+hyper-right = 'exec-and-forget ~/.config/dinky/bin/shove right'
+ctrl-alt-tab = 'exec-and-forget dinky focus-monitor next || dinky focus-monitor prev' # next doesn't wrap
+ctrl-alt-cmd-w = 'exec-and-forget ~/.config/dinky/bin/close'
+ctrl-alt-cmd-t = 'layout floating tiling'
+ctrl-alt-cmd-f = 'fullscreen'
+ctrl-alt-cmd-j = 'layout horizontal vertical'
+ctrl-alt-cmd-l = 'workspace-layout dwindle master scrolling'
+ctrl-alt-cmd-minus = 'resize width -50'
+ctrl-alt-cmd-equal = 'resize width +50'
+hyper-minus = 'resize height -50'
+hyper-equal = 'resize height +50'
+
+# Groups (§3.2): a group is a container; H+fn+Arrow (alt mode) joins, H+G toggles it to an accordion
+ctrl-alt-cmd-g = 'layout accordion tiles'
+
+# Spaces (§3.3): N is per focused display
+ctrl-alt-cmd-1 = 'exec-and-forget ~/.config/dinky/bin/nth 1 workspace'
+ctrl-alt-cmd-2 = 'exec-and-forget ~/.config/dinky/bin/nth 2 workspace'
+ctrl-alt-cmd-3 = 'exec-and-forget ~/.config/dinky/bin/nth 3 workspace'
+ctrl-alt-cmd-4 = 'exec-and-forget ~/.config/dinky/bin/nth 4 workspace'
+hyper-1 = 'exec-and-forget ~/.config/dinky/bin/nth 1 move-window-to-workspace --follow'
+hyper-2 = 'exec-and-forget ~/.config/dinky/bin/nth 2 move-window-to-workspace --follow'
+hyper-3 = 'exec-and-forget ~/.config/dinky/bin/nth 3 move-window-to-workspace --follow'
+hyper-4 = 'exec-and-forget ~/.config/dinky/bin/nth 4 move-window-to-workspace --follow'
+ctrl-alt-cmd-tab = 'workspace next'
+hyper-tab = 'workspace prev'
+ctrl-alt-cmd-backtick = 'workspace-back-and-forth'
+
+# Launchers (§3.4)
+ctrl-alt-cmd-enter = 'exec-and-forget ~/.config/dinky/bin/new-window Terminal'
+hyper-enter = 'exec-and-forget open -na "Brave Browser" --args --new-window'
+hyper-f = "exec-and-forget ~/.config/dinky/bin/new-window Finder 'New Finder Window'"
+hyper-n = 'exec-and-forget open -na Ghostty.app --args -e nvim'
+hyper-slash = 'exec-and-forget open -a Bitwarden'
+
+ctrl-alt-cmd-semicolon = 'mode alt'
+
+[mode.alt]
+# Omarchy's Super+Alt layer: H+; then the key
+left = ['join-with left', 'mode main']
+down = ['join-with down', 'mode main']
+up = ['join-with up', 'mode main']
+right = ['join-with right', 'mode main']
+g = ['flatten-workspace-tree', 'mode main']
+b = ['exec-and-forget open -na "Brave Browser" --args --incognito', 'mode main']
+w = ['exec-and-forget open -a WhatsApp', 'mode main']
+shift-1 = [
+  'exec-and-forget ~/.config/dinky/bin/nth 1 move-window-to-workspace',
+  'mode main',
+]
+shift-2 = [
+  'exec-and-forget ~/.config/dinky/bin/nth 2 move-window-to-workspace',
+  'mode main',
+]
+shift-3 = [
+  'exec-and-forget ~/.config/dinky/bin/nth 3 move-window-to-workspace',
+  'mode main',
+]
+shift-4 = [
+  'exec-and-forget ~/.config/dinky/bin/nth 4 move-window-to-workspace',
+  'mode main',
+]
+r = ['reload-config', 'mode main']
+esc = 'mode main'

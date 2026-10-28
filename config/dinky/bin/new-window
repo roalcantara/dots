@@ -1,0 +1,27 @@
+#!/bin/sh
+# Open a new window of an app on the focused workspace: in its running instance, or launch it.
+# Clicks the app's File menu item, so it works whatever keys the app binds. An app's last key window on
+# another display can drag the new window there (dinky 0.23 adopts it onto that display), so the window
+# is moved back to the workspace that had focus.
+# Usage: new-window <app name> [menu item]   e.g. new-window Ghostty, new-window Finder 'New Finder Window'
+set -eu
+app=$1 item=${2:-New Window}
+ws=$(dinky list-workspaces --focused)
+before=$(dinky list-windows --all --format '%{window-id}')
+if [ "$app" = Terminal ]; then # its File → New Window is a submenu of profiles
+  osascript -e 'tell application "Terminal" to do script ""' >/dev/null
+elif pgrep -xq "$(echo "$app" | tr '[:upper:]' '[:lower:]')" || pgrep -xq "$app"; then
+  osascript -e "tell application \"System Events\" to tell process \"$app\" to click menu item \"$item\" of menu \"File\" of menu bar 1" >/dev/null
+else
+  open -a "$app"
+fi
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+  sleep 0.15
+  focused=$(dinky list-windows --focused --format '%{window-id} %{workspace} %{app-name}' 2>/dev/null) || continue
+  set -- $focused
+  echo "$before" | grep -qx "$1" && continue
+  sleep 0.3 # dinky adopts a new window a moment after it shows
+  at=$(dinky list-windows --all --format '%{window-id} %{workspace}' | awk -v w="$1" '$1 == w { print $2 }')
+  [ "$at" = "$ws" ] || dinky move-window-to-workspace "$ws" --follow
+  exit 0
+done

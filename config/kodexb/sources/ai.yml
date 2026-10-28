@@ -1430,3 +1430,50 @@ commands:
   skills ls --agent 'universal' --json:
     desc: List all available skills for the 'universal' agent in JSON format
     tags: [ai, skills, universal]
+
+  omp --model "google-antigravity/gemini-3.8-flash -p "List files in this folder":
+    desc: 'List all .ts files in src/'
+    tags: [ai, agents]
+  omp --model github-copilot/mai-code-1.1-flash -p "List files in this folder":
+    desc: 'List all .ts files in src/'
+    tags: [ai, agents]
+  omp "List all .ts files in src/":
+    desc: 'Interactive mode with initial prompt'
+    tags: [ai, agents]
+  omp --goal "Investigate the importer":
+    desc: 'Start working on a goal immediately'
+    tags: [ai, agents]
+  omp @prompt.md @image.png "What color is the sky?":
+    desc: 'Include files in initial message'
+    tags: [ai, agents]
+  omp -p "List all .ts files in src/":
+    desc: 'Non-interactive mode (process and exit)'
+    tags: [ai, agents]
+  omp --continue "What did we discuss?":
+    desc: 'Continue previous session'
+    tags: [ai, agents]
+  omp --restore ~/.omp/agent/sessions/--path--/session.jsonl:
+    desc: 'Pick a session back up after a crash, subagents included'
+    tags: [ai, agents]
+  omp --profile work --alias omp-work:
+    desc: 'Create a shell shortcut for a work profile'
+    tags: [ai, agents]
+  omp --model opus "Help me refactor this code":
+    desc: 'Use different model (fuzzy matching)'
+    tags: [ai, agents]
+  omp --models claude-sonnet,claude-haiku,gpt-4o:
+    desc: 'Limit model cycling to specific models'
+    tags: [ai, agents]
+  omp --export ~/.omp/agent/sessions/--path--/session.jsonl:
+    desc: 'Export a session file to HTML'
+    tags: [ai, agents]
+  omp --model github-copilot/mai-code-1.1-flash "This macos has just been rebooted and Active Monitor reports almost 10GB of memory in use. Can you list all mon-essential process that could be turned off so free memory usage?" --skills 'maintaining-macos-health,mac-optimize':
+    desc: 'Identify non-essential macOS processes to free memory'
+    tags: [ai, agents]
+
+  zip -r -m 20261028.zip . -x "20261028.zip":
+    desc: 'Compress all files in this folder into a single 20261028.zip and remove them'
+    tags: [zip, cli]
+  ps -axo pid=,comm=,pmem=,rss=,vsz=,command= | sort -k4 -nr | head -n 100:
+    desc: Top 100 processes by memory usage
+    tags: [macos, cli]

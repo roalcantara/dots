@@ -2,10 +2,7 @@ bookmarks:
   https://support.apple.com/en-gb/guide/terminal/apdc6c1077b-5d5d-4d35-9c19-60f2397b2369/mac:
     desc: launchctl command official docs
     tags: [macos, schedule, service]
-    links:
-      [
-        https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/Introduction.html#//apple_ref/doc/uid/10000172i-SW1-SW1,
-      ]
+    links: [https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/Introduction.html#//apple_ref/doc/uid/10000172i-SW1-SW1]
     notes:
       - md: | #markdown
           ## Script management with launchd in Terminal on Mac
@@ -56,7 +53,6 @@ bookmarks:
     notes:
       - sh: brew install --cask vorssaint
       - sh: brew bundle add --cask vorssaint
-
   https://youtu.be/npxlJdxSv4A:
     desc: Your Mac Is Missing All of These (AntiNote, FluxMarkdown, Monocle, Alcove, Shottr, MiddleDrag, LinearMouse)
     tags: [macos, toolkit]
@@ -73,14 +69,12 @@ bookmarks:
       - Shottr: https://shottr.cc/
       - MiddleClick: https://github.com/artginzburg/MiddleClick
       - LinearMouse: https://linearmouse.app/
-
   https://github.com/xykong/flux-markdown:
     desc: Markdown previews in Finder QuickLook with diagrams and math
     tags: [macos, toolkit]
     notes:
       - sh: brew install --cask xykong/tap/flux-markdown
       - sh: brew bundle add --cask xykong/tap/flux-markdown
-
   https://github.com/tw93/Mole:
     desc: Deep clean and optimize your Mac
     tags: [macos, toolkit]
@@ -108,6 +102,27 @@ bookmarks:
           mo --help                    # Show help
           mo --version                 # Show installed version
           ```
+  https://macoswm.com:
+    desc: A curated directory of window managers, status bars, and scripting tools for macOS.
+    tags: [macos, twm]
+  https://dinky.rodeo:
+    desc: A minimal and fast Markdown editor for macOS
+    tags: [macos, twm]
+    notes:
+      - sh: brew install --cask mikker/tap/dinky
+      - sh: brew bundle add --cask mikker/tap/dinky
+  https://omniwm.app/guides/quick-start:
+    desc: Quick start guide for OmniWM, a tiling window manager for macOS
+    tags: [macos, twm]
+    notes:
+      - sh: brew install --cask omniwm
+      - sh: brew bundle add --cask omniwm
+  https://github.com/apphane-dev/nehir:
+    desc: A tiling window manager for macOS
+    tags: [macos, twm]
+  https://github.com/mogenson/PaperWM.spoon:
+    desc: A tiling window manager for macOS using Hammerspoon
+    tags: [macos, twm]
 commands:
   # Apple Foundation Models
   sudo fm license:
@@ -471,43 +486,35 @@ commands:
   sudo launchctl list:
     desc: List all system-wide loaded daemons
     tags: [macos, schedule, service]
-    links:
-      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl list | grep ssh:
     desc: List all system-wide loaded agents related to ssh
     tags: [macos, schedule, service]
-    links:
-      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl list com.openssh.sshd:
     desc: View details of the sshd service
     tags: [macos, schedule, service]
-    links:
-      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl enable system/com.openssh.sshd:
     desc: Enable dev.dotfiles.setup service
     tags: [macos, schedule, service]
-    links:
-      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl stop system/com.openssh.sshd:
     desc: Enable dev.dotfiles.setup service
     tags: [macos, schedule, service]
-    links:
-      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl start system/com.openssh.sshd:
     desc: Start the sshd service
     tags: [macos, schedule, service]
-    links:
-      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl disabled system/com.openssh.sshd:
     desc: Enable dev.dotfiles.setup service
     tags: [macos, schedule, service]
-    links:
-      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
   sudo launchctl stop system/com.openssh.sshd && sudo launchctl start system/com.openssh.sshd:
     desc: Restart the sshd service
     tags: [macos, schedule, service]
-    links:
-      [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
+    links: [https://launchd.info, https://rakhesh.com/mac/macos-launchctl-commands]
 
   # Viewing launchd logs
   sudo launchctl print-disabled system/$(id -u):
