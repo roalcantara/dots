@@ -562,6 +562,22 @@ commands:
     desc: Remove a secret from the keyring for the given service and account
     tags: [macos, security]
     links: [https://wiki.gnome.org/Projects/SecretTool]
+
+  diskutil list:
+    desc: List all disks and their partitions on the system
+    tags: [macos, disk]
+  iostat -Id disk4:
+    desc: Display I/O statistics for the specified disk
+    tags: [macos, disk]
+  diskutil eject disk4:
+    desc: Eject the specified disk from the system
+    tags: [macos, disk]
+  diskutil unmount disk4:
+    desc: Unmount the specified disk from the system
+    tags: [macos, disk]
+  diskutil unmountDisk disk4:
+    desc: Unmount the specified disk from the system
+    tags: [macos, disk]
 cheats:
   launchctl | Services:
     desc: Tool used to control launchd services (Agents and Daemons)

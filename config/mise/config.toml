@@ -134,6 +134,57 @@ run = '''
   echo "" && gum log --time Datetime --level warn --prefix 'BREW' "brew cleanup --prune=all && brew doctor"
   echo "" && brew cleanup --prune=all && brew doctor
 '''
+[tasks.backup]
+description = "Backup important files"
+quiet = true
+tools = { rsync = "latest" }
+run = '''
+  #!/usr/bin/env bash
+  # rsync -av --progress ~/important_files/ ~/backup/
+
+  # Dry run: the same exclusions run through zip -sf (list only, nothing written)
+  # give 44,677 files totalling 8.95 GB. All of the critical files above are included
+  # (including 16,634 .git files), and nothing from the excluded folders appears.
+  # HeroWarsFanKit is 7.4 GB of that 8.95 GB. It's your own media, so I kept it.
+  # If you can get it again from its source, adding 'Work/mydemon/inspiration/HeroWarsFanKit/*'
+  # to the -x list brings the archive to about 1.5 GB.
+  cd ~ && zip -r -y /Volumes/meex900/bak/Work-2026-10-28.zip Work \
+    -n .wav:.mp3:.mp4:.mov:.png:.jpg:.jpeg:.webp:.zip:.gz:.bin \
+    -x '*/.git/*' '*/.git' '*.git/*' '*.pack' '*.idx' \
+      'Work/bun/kb/*' 'Work/mydemon/inspiration/HeroWarsFanKit/*' \
+      '*/target/*' '*/node_modules/*' \
+      'Work/mydemon/mydemon/build/*' 'Work/mydemon/mydemon/app/build/*' \
+      'Work/mydemon/mydemon/.claude/worktrees/*/build/*' 'Work/mydemon/mydemon/.claude/worktrees/*/app/build/*' \
+      '*/.gradle/*' '*/.cache/*' '*/.code-review-graph/*' '*/graphify-out/*' '*/.gortex/*' '*/.fallow/*' '*/.ruby-lsp/*' \
+      '*/dist/*' '*/tmp/*' '*.log' '*.zwc' '*/.zcompdump' '*/.DS_Store' \
+    && unzip -tq /Volumes/meex900/bak/Work-2026-10-28.zip
+
+  # find selects the files and pipes the list to zip -@.
+  # That's what skips symlinks everywhere, not just at the top level.
+  # The dated name avoids the existing bak/config.zip and bak/config/.
+  cd ~ && find .config -mindepth 1 \( -type l \
+      -o -path .config/raycast/extensions -o -path .config/raycast/node-compile-cache \
+      -o -path .config/.rz/repos -o -path .config/.rz/bin -o -path .config/gcloud/virtenv \
+      -o -path .config/.fallow -o -path .config/opencode/node_modules -o -path .config/wakatime/.wakatime \
+      -o -name '*.log' -o -name .DS_Store -o -name '*.zwc' -o -name '.zcompdump*' \) -prune \
+    -o -type f -print \
+    | zip -q /Volumes/meex900/bak/config-2026-10-28.zip -@ \
+    && unzip -tq /Volumes/meex900/bak/config-2026-10-28.zip
+
+  # Quit every omp session first. Its databases were written to a few minutes ago,
+  # and copying a SQLite database while it's in use can produce a broken copy.
+  cd ~ && find .omp -mindepth 1 \( -type l -o -type s \
+      -o -path .omp/cache -o -path .omp/puppeteer -o -path .omp/natives -o -path .omp/logs \
+      -o -path .omp/run -o -path .omp/ssh-control -o -path .omp/.fallow \
+      -o -path .omp/agent/cache -o -path .omp/plugins/cache \
+      -o -name '*.lock' -o -name .DS_Store -o -name gpu_cache.json \) -prune \
+    -o -type f -print \
+    | zip -q /Volumes/meex900/bak/omp-2026-10-28.zip -@ \
+    && unzip -tq /Volumes/meex900/bak/omp-2026-10-28.zip
+
+  # Encrypt the omp archive using age for secure storage.
+  age -p -o omp-2026-10-28.zip.age omp-2026-10-28.zip
+'''
 
 [tasks."fix:skills"]
 description = "Find the highest-install skill record for each folder or a file list"
