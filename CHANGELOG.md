@@ -1,3 +1,11 @@
+# [1.36.0](https://github.com/roalcantara/dots/compare/v1.35.0...v1.36.0) (2026-10-28)
+
+
+### Features
+
+* **nvim:** Update configuration files ([05db675](https://github.com/roalcantara/dots/commit/05db67520946e824848af8c031af2af233558f56))
+* **specs:** Add macOS tiling WM experiment design ([6aa17ef](https://github.com/roalcantara/dots/commit/6aa17ef1884b60fa6ce3324130baf3d533ae412f))
+
 # [1.35.0](https://github.com/roalcantara/dots/compare/v1.34.0...v1.35.0) (2026-10-20)
 
 
