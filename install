@@ -70,19 +70,9 @@ fi
 
 case "$HISTORY" in
   https://github.com/*)
-    hosts="$HOME/.config/gh/hosts.yml"
-    had_hosts=0
-    [ -e "$hosts" ] && had_hosts=1
     mise exec gh@latest -- gh auth status >/dev/null 2>&1 ||
       mise exec gh@latest -- gh auth login --hostname github.com --git-protocol https --web
     mise exec gh@latest -- gh auth setup-git --hostname github.com
-    # The history tracks hosts.yml: a copy written by this sign-in would conflict with it and pause the whole
-    # restore. Keep the new token in memory instead (the git credential helper reads GH_TOKEN too).
-    if [ "$had_hosts" = 0 ] && [ -e "$hosts" ]; then
-      GH_TOKEN="$(mise exec gh@latest -- gh auth token)"
-      export GH_TOKEN
-      rm -f "$hosts"
-    fi
     ;;
 esac
 
@@ -91,7 +81,11 @@ BOOTSTRAP_ARGS=("-E" "$PROFILE" "--yes")
 # ~/.ssh or ~/.gnupg folder with a link and delete the keys in it.
 if [ "$PROFILE" = "container" ]; then BOOTSTRAP_ARGS+=("--force-dotfiles" "--skip" "user"); fi
 
-mise bootstrap --adopt "$HISTORY" "${BOOTSTRAP_ARGS[@]}"
+# Under `curl | bash` stdin is the script: give mise the terminal so prompts (sudo, chsh) can be answered.
+tty_in=/dev/null
+if (: </dev/tty) 2>/dev/null; then tty_in=/dev/tty; fi
+
+mise bootstrap --adopt "$HISTORY" "${BOOTSTRAP_ARGS[@]}" <"$tty_in"
 ln -sfn ../.local/share/dots/config/age "$HOME/.config/age"
 if [ ! -L "$HOME/.config/mise" ]; then
   test -f "$HOME/.config/mise/config.local.toml" && cat "$HOME/.config/mise/config.local.toml" >> "$DOTS/config/mise/config.local.toml"
@@ -115,4 +109,4 @@ if [ "$PROFILE" != container ]; then
   done
 fi
 
-mise bootstrap "${BOOTSTRAP_ARGS[@]}"
+mise bootstrap "${BOOTSTRAP_ARGS[@]}" <"$tty_in"
