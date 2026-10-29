@@ -1,0 +1,685 @@
+bookmarks:
+  https://jdx.dev/posts/2026-09-07-dotfiles-that-save-themselves:
+    desc: A blog post about dotfiles that save themselves
+    tags: [dots, mise]
+    links:
+      - mise dotfiles: https://mise.jdx.dev/dotfiles.html
+      - mise dotfiles encryption: https://mise.jdx.dev/dotfiles/encryption.html
+      - mise dotfiles history: https://mise.jdx.dev/dotfiles/history.html
+      - mise bootstrap: https://mise.jdx.dev/bootstrap.html
+      - mise bootstrap setup: https://mise.jdx.dev/bootstrap/setup.html
+
+# Common HOW-TOs and cheatsheets for working with mise and dots
+cheats:
+  Debugging mise dependencies in a container:
+    desc: Debugging mise dependencies installation in a container
+    tags: [mise, dots]
+    notes:
+      - md: | #markdown
+          # Quick guide for debugging mise bootstrap in a container
+
+          This allows you to verify the setup without affecting your host environment.
+
+          ```sh
+          docker run --rm -it ubuntu:26.04 bash
+
+          # 1. Base: git, mise, uv (as on the VM)
+          apt-get update && apt-get install -y curl ca-certificates git neovim
+          curl -fsSL https://mise.run | MISE_VERSION=v2026.10.22 sh
+          export PATH="$HOME/.local/bin:$PATH"
+          mise settings set pypi.uvx true
+          mise use -g uv@latest
+
+          # 2. pynvim as a mise tool: it installs one command, pynvim-python (not pynvim)
+          mise use -g "pipx:pynvim@latest"
+          ls "$(mise where pipx:pynvim)/bin"
+
+          # 3. Check that Neovim (0.12+) finds pynvim-python by itself: leave g:python3_host_prog unset
+          nvim --clean --headless -c 'checkhealth vim.provider' -c 'w! /tmp/health.txt' -c 'qa!'
+          grep -iA6 'python 3 provider' /tmp/health.txt
+          nvim --clean --headless -c 'python3 import pynvim; print(pynvim.__version__)' -c 'qa!'
+          ```
+
+          Expected in step 3: "Searching for pynvim-python in the environment", then "pynvim version: 0.6.0" and
+          "OK". A warning that the path "appears to be a pyenv shim" is harmless.
+
+          ## Testing your real config instead of single tools
+
+          Mount the mise config read-only and copy it in, so the container sees exactly what the VM will:
+
+          ```sh
+          # From ~/Work/dots
+          docker run --rm -it -v "$PWD/config/mise:/src:ro" ubuntu:26.04 bash
+          cp /src/config.toml ~/.config/mise/ && mise trust -a && mise install
+          ```
+
+          Copy the whole file. Cutting sections with `sed` easily drops `[tools]` (it comes after
+          `[dotfiles]`): then a shim says "No version is set for shim", which looks like a real failure but isn't.
+
+          ## What tripped us up
+
+          - `which pynvim` and `mise which pynvim` find nothing: the package's command is `pynvim-python`.
+          - A `g:python3_host_prog` pointing at a venv that does not exist stops Neovim from searching:
+            "Executable: Not found".
+          - Ubuntu has no `ensurepip` (`python3-venv`), so `python3 -m venv` fails; `uv venv` would not, but the
+            venv is no longer needed.
+  Testing a dots change, from container to VM:
+    desc: The ladder of checks for a change to install or the mise config, cheapest first
+    tags: [dots, mise, docker, linux]
+    notes:
+      - md: | #markdown
+          # Testing a dots change, from container to VM
+
+          Never run `install`, `mise bootstrap` (except `status`, `plan`, `--dry-run`) or `mise dot save|sync|apply`
+          on the real Mac. Climb the ladder only as far as the change needs.
+
+          ## 1. Read-only on the host (seconds)
+
+          ```sh
+          mise bootstrap plan -E desktop
+          mise bootstrap -E desktop --dry-run
+          mise dot status -E desktop
+          shellcheck install && /bin/bash -n install   # /bin/bash is 3.2 on macOS: keep install compatible
+          ```
+
+          ## 2. A throwaway container (a minute)
+
+          For one tool, one package or a shell snippet: see "Debugging mise dependencies in a container".
+          To test a shell file without its tools, fake the binary:
+
+          ```sh
+          docker run --rm -v "$PWD/config:/c:ro" ubuntu:26.04 bash -c '
+            mkdir -p /home/linuxbrew/.linuxbrew/bin
+            printf "#!/bin/sh\necho ok\n" > /home/linuxbrew/.linuxbrew/bin/fnox
+            chmod +x /home/linuxbrew/.linuxbrew/bin/fnox
+            HOME=/tmp bash --rcfile /c/bash/bashrc -i -c "fnox"'
+          ```
+
+          bashrc returns early in a non-interactive shell: use `bash --rcfile … -i`.
+
+          ## 3. The images and their structure tests (minutes)
+
+          Images build from the committed tree (`git archive HEAD`): commit first.
+
+          ```sh
+          mise run build --local --distro debian --tag local
+          mise run test --image dots:debian-local --config distros/debian/container-structure-test.yml
+          mise run build --local --distro ubuntu --tag local
+          mise run test --image dots:ubuntu-local --config distros/ubuntu/container-structure-test.yml
+          ```
+
+          A formula that fails or builds from source on Linux arm64: add `env = "desktop"` to its entry in
+          `conf.d/packages.toml`, so images skip it.
+
+          ## 4. The end-to-end install (minutes)
+
+          `install` against a throwaway age key and a throwaway history on a Docker volume: checks the restore,
+          the modes (700/600) and that a second run writes nothing.
+
+          ```sh
+          bash assets/specs/mise-bootstrap/e2e/run.sh
+          docker volume ls | grep e2e   # leftovers from an interrupted run: docker volume rm <name>
+          ```
+
+          ## 5. The Ubuntu VM (Parallels; the real thing)
+
+          1. Take a snapshot of the clean VM first; push the branch.
+          2. `curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/<branch>/install | DOTS_BRANCH=<branch> bash`
+          3. Paste the age key; sign in to GitHub in the browser when asked.
+          4. Open a new terminal and check: `mise bootstrap status`, `ls -la ~/.config/ssh ~/.config/gnupg`,
+             `ssh-keygen -y -f ~/.ssh/id_ed25519`, `gpg --list-secret-keys`, `flatpak list --app`, `echo $SHELL`,
+             `command -v nvim fnox hk`.
+          5. Run the one-liner again: nothing should change.
+          6. Revert to the snapshot before the next try.
+
+          Keep an eye on disk space: Docker images and VM snapshots filled the disk twice (ENOSPC).
+          `docker system df`, then `docker system prune -a` and `docker volume prune` free it.
+  Troubleshooting mise bootstrap:
+    desc: Every failure met while moving dots to mise bootstrap, with its cause and fix
+    tags: [mise, dots, linux]
+    links: [https://mise.jdx.dev/bootstrap.html]
+    notes:
+      - md: | #markdown
+          # Troubleshooting mise bootstrap
+
+          Start with `mise bootstrap status` (what each part did) and rerun with `-v` for detail. A run is safe to
+          repeat: parts already applied report `unchanged`.
+
+          | Symptom | Cause | Fix |
+          | --- | --- | --- |
+          | `git: command not found` on a fresh Ubuntu | mise cannot read its config before the repo is cloned | `install` installs git with apt first (macOS: `xcode-select --install`) |
+          | Adopt stops: "refusing to overwrite existing files" | A fresh home has its own `.bashrc`, `.profile`, `~/.ssh` | `install` moves them aside to `~/.local/state/dots/pre-install-<ts>`; never `--force-dotfiles` on a host (deletes keys) |
+          | Conflict on `~/.config/gh/hosts.yml` | gh rewrites it on each login | Untracked it: `mise dot untrack` while still in the config, then `mise dot save && mise dot sync` |
+          | apt hangs or fails on "Configuration file '/etc/zsh/zshenv' … ?" | dpkg asks about a changed config file, with no terminal | `/etc/apt/apt.conf.d/90dots-noninteractive`: `Dpkg::Options { "--force-confdef"; "--force-confold"; };` |
+          | `ENOENT` writing `/etc/flatpak/remotes.d/…` | mise does not create parent folders | Declare `/etc/flatpak` and `/etc/flatpak/remotes.d` in `[bootstrap.directories]` (`phase = "pre-packages"`) |
+          | "flatpak: 9 package(s) skipped (flatpak not found)" | `apt:flatpak` installs in the same packages step that checks for flatpak | `install` installs flatpak with apt before mise; or run `mise bootstrap` again |
+          | No Flathub remote | flatpak ships with no remote | `/etc/flatpak/remotes.d/flathub.flatpakrepo` as a pre-packages file |
+          | A flatpak app fails on arm64 (Discord) | Not built for aarch64 | Check `curl -s https://flathub.org/api/v2/summary/<id> \| jq .arches`; gate with `os = "linux/x64"` |
+          | `chsh: PAM: Authentication failure` | Under `curl \| bash`, stdin is the script, so the password prompt gets nothing | Run mise with `</dev/tty` |
+          | `cargo:` tool fails: "linker cc not found" | No C toolchain | `apt:build-essential` (desktop) |
+          | pipx tool fails: "has no binary distribution" | No wheels for the newest Python on Linux arm64 | `{ version = "latest", uvx_args = "--python 3.13" }` on that tool |
+          | Python venv fails: `ensurepip` missing | Ubuntu splits it into `python3-venv` | Use `pipx:` tools (or `uv venv`); for Neovim, `pipx:pynvim` |
+          | `hk: command not found` in the bootstrap task | `brew:` packages live in the Homebrew prefix, not on a task's PATH | The task adds `/home/linuxbrew/.linuxbrew/bin` and `/opt/homebrew/bin` |
+          | `brew:` packages installed but not found in the shell | No `brew` binary, so the prefix detection fell back to `/usr/local` | Pick the prefix by folder (`env::homebrew` in zsh, bashrc) |
+          | "No version is set for shim: X" | X is not a configured mise tool here (removed, or a `brew:` package) | Configure it, or put the prefix on PATH; for commits: `mise x <tools> -- git commit` |
+          | `ENOSPC` | Disk full (Docker, snapshots) | `docker system prune -a`, `docker volume prune` |
+          | Clipboard warnings about `xsel`/`xclip` | No clipboard tool on a fresh Linux | Harmless |
+  Secrets in mise's encrypted dotfile history:
+    desc: How ~/.config/ssh and ~/.config/gnupg are kept encrypted in dots-history, and how to restore them
+    tags: [mise, dots, secrets, age]
+    links: [https://mise.jdx.dev/dotfiles.html, https://mise.jdx.dev/encryption.html]
+    notes:
+      - md: | #markdown
+          # Secrets in mise's encrypted dotfile history
+
+          The public dots repo holds no secrets. `[dotfiles]` entries with `mode = "track"` and `encrypt = true`
+          (in the global `config.toml` only: environment files cannot enrol tracking) are recorded in mise's
+          history, encrypted to the age recipient in `[history.encryption]`, and pushed to the private origin
+          `roalcantara/dots-history`. The one root secret is the age key (`~/.config/age/keys.txt`, read through
+          `[settings.age] identity_files`); it also decrypts the repo's SOPS files.
+
+          ## Once: connect the origin
+
+          ```sh
+          mise dot origin set https://github.com/roalcantara/dots-history.git --sync manual -E desktop
+          mise dot save -E desktop && mise dot sync -E desktop
+          ```
+
+          ## Every change to a tracked secret
+
+          ```sh
+          mise dot status           # what changed
+          mise dot save && mise dot sync
+          ```
+
+          On another machine: `mise dot sync && mise dot pull --yes` (`--take-remote` to settle a conflict).
+
+          ## A new machine
+
+          `install` does it: the age key goes to `~/.config/mise/age.txt` (where mise looks before
+          `~/.config/mise` links into dots), then `mise bootstrap --adopt <origin>` restores the files.
+          Check them:
+
+          ```sh
+          ls -la ~/.config/ssh ~/.config/gnupg      # folders 700, keys 600
+          ssh-keygen -y -f ~/.ssh/id_ed25519
+          gpg --list-secret-keys
+          ```
+
+          ## Stop tracking a file
+
+          1. `mise dot untrack <path>` while the entry is still in the config (after removing it, untrack errors).
+          2. Remove the entry from `[dotfiles]`.
+          3. `mise dot save && mise dot sync`.
+
+          `~/.config/gh/hosts.yml` went this way: gh rewrites it at each login, and its tokens live in the macOS
+          keychain anyway. On Linux, `gh auth login --web` again.
+
+          ## Check the origin holds no plaintext
+
+          ```sh
+          d=$(mktemp -d) && git clone -q https://github.com/roalcantara/dots-history.git "$d" \
+            && ! git -C "$d" log -p --all | grep -qE 'BEGIN (OPENSSH|PGP) PRIVATE|oauth_token' \
+            && echo clean; rm -rf "$d"
+          ```
+
+          ## Rules
+
+          - Never commit `config/age/keys.txt` or `config/mise/age.txt` (both gitignored).
+          - Tests use throwaway keys only (`age-keygen -o /tmp/test.key`).
+          - The old encrypted archive `assets/dump.zip.enc` goes once a VM restores everything from dots-history.
+  Homebrew packages without brew:
+    desc: How mise installs brew formulae and casks without Homebrew, and the brew commands it replaces
+    tags: [mise, brew, dots, macos, linux]
+    links: [https://mise.jdx.dev/bootstrap/packages/brew.html]
+    notes:
+      - md: | #markdown
+          # Homebrew packages without brew
+
+          `"brew:foo"` and `"brew-cask:foo"` entries in `config/mise/conf.d/packages.toml` are installed by mise
+          itself: it downloads the bottles into the Homebrew prefix (`/opt/homebrew` on Apple silicon,
+          `/home/linuxbrew/.linuxbrew` on Linux; Intel Macs are skipped) and writes Homebrew-compatible receipts.
+          No `brew` binary is installed. A real Homebrew can coexist: `brew list/upgrade/uninstall` work on what
+          mise installed, and mise counts what brew installed.
+
+          ## PATH
+
+          mise makes no shims for these packages and never changes PATH, so:
+
+          - Shells add `<prefix>/bin`, choosing the prefix by folder (zsh `env::homebrew`, bashrc); `brew shellenv`
+            runs only if brew exists.
+          - `mise run` tasks and `mise x` (git hooks) do not see them: a task that needs one adds the prefix itself.
+          - `mise which brew:neovim` fails by design; use `command -v nvim`.
+
+          ## From brew to mise
+
+          | brew | mise |
+          | --- | --- |
+          | `brew bundle add [--cask] foo` + `brew bundle` | `mise run brew:add [--cask] foo` |
+          | `brew uninstall` + editing the Brewfile | `mise run brew:rm [--cask] foo` |
+          | `brew search foo` | `mise run brew:search foo` |
+          | `brew info foo` | `mise run brew:info [--cask] foo` |
+          | `brew ls --cask` | `mise bootstrap packages ls \| grep brew-cask` |
+          | `brew update && brew upgrade`, `brew autoremove`, `brew bundle cleanup` | `mise run up` |
+          | `brew --prefix foo` | `mise bootstrap packages where brew:foo` |
+          | `brew tap owner/tap` | Nothing: use `brew:owner/tap/foo` (`packages brew tap` for odd repo names) |
+
+          ## Caveats
+
+          - mise cannot uninstall one package: `prune` removes every undeclared one. Always read its list.
+          - On a machine with formulae installed by real brew, run `mise bootstrap packages prune --dry-run` first,
+            or `mise bootstrap packages import` to declare them.
+          - Self-updating casks (Ghostty, Chrome) update themselves and are pruned only with `--force`; there is
+            no `--greedy`.
+          - No `brew cleanup` or `brew doctor`.
+          - Search and info read Homebrew's public API (`formulae.brew.sh/api`); search caches the full lists in
+            `~/.cache/brew-api` for a day.
+  Preparing this Mac for a clean reinstall:
+    desc: Back up what dots and the history do not hold, reinstall macOS, then retire the old setup
+    tags: [macos, dots, secrets]
+    notes:
+      - md: | #markdown
+          # Preparing this Mac for a clean reinstall
+
+          ## 1. Back up what dots does not hold
+
+          `mise run backup` (in the global config) zips `~/Work`, `~/.config` and `~/.omp`:
+
+          - `~/Work` without `.git` packs, `node_modules`, `target`, build and cache folders, and already
+            compressed media stored as-is (`zip -n .mp4:.png:…`).
+          - `~/.config` and `~/.omp` through `find … -type f -print | zip -@`: that is what skips every symlink, not
+            only the top-level ones (dots recreates them).
+          - Each archive is tested with `unzip -tq`; the omp one is encrypted with `age -p`.
+          - Quit every omp session first: copying a SQLite database in use can produce a broken copy.
+
+          Check before reinstalling: open each archive somewhere else and spot-check a few files.
+
+          ## 2. Where not to write
+
+          The external drive formatted exFAT is mounted by macOS's FSKit driver, which corrupted files written to
+          it (AppleDouble headers inside them). Copy backups elsewhere, or reformat the drive APFS first.
+
+          ## 3. What needs no backup
+
+          - Passkeys and passwords in the Passwords app: they live in iCloud Keychain and come back with the
+            Apple Account.
+          - `~/.ssh`, `~/.gnupg`: in dots-history (see "Secrets in mise's encrypted dotfile history").
+          - The age key: keep it in the password manager; it is the one thing to paste during install.
+
+          ## 4. After the reinstall
+
+          1. `xcode-select --install`, then the one-liner from `main`.
+          2. Restore the archives you still need.
+          3. Delete the old setup from dots: `config/flox`, `config/bin/purge_flox`, `config/homebrew`,
+             `config/apt`, `config/flatpak`, `config/snap`, `distros/alpine` (or port it), their exclusions in
+             `dotfiles.toml`, and `assets/dump.zip.enc`.
+
+# Commonly used commands and installation references for dots
+commands:
+  # INSTALLATION - QUICK REFERENCE
+  curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash:
+    desc: Install dots asking for age key (AGE-SECRET-KEY-1...)
+    tags: [mise, dots]
+    links: [https://mise.jdx.dev/bootstrap.html]
+    notes:
+      - md: | #markdown
+          # Bootstrap
+
+          `install` ensures git (apt on Linux; `xcode-select --install` on macOS), installs a pinned mise, clones dots
+          into `~/.local/share/dots`, asks for the age key, signs in to GitHub (`gh auth login --web`), then runs
+          `mise bootstrap` twice: `--adopt` restores the encrypted secrets from `dots-history`, the second applies
+          everything once `~/.config/mise` links into the checkout. On Linux desktops it installs `flatpak` first.
+          Rerunning it is safe: nothing changes.
+
+          | Env var        | Default                                           | Purpose                              |
+          | -------------- | ------------------------------------------------- | ------------------------------------ |
+          | `DOTS_BRANCH`  | `main`                                            | Branch to clone                      |
+          | `DOTS_REPO`    | `https://github.com/roalcantara/dots.git`         | Repo to clone                        |
+          | `DOTS_HISTORY` | `https://github.com/roalcantara/dots-history.git` | Encrypted secrets origin             |
+          | `DOTS_PROFILE` | `desktop`                                         | `desktop` or `container`             |
+          | `DOTS_AGE_KEY` | (prompted)                                        | The age key, for tests only          |
+      - sh: | #shell
+          # Install dots from the bit.ly link
+          curl -fsSL https://bit.ly/4ySh0M7 | bash
+      - sh: | #shell
+          # Install dots from the specified branch
+          curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/feat/mise-bootstrap/install | DOTS_BRANCH=feat/mise-bootstrap bash
+      - sh: | #shell
+          # What install runs, step by step (for troubleshooting a failed run)
+          mise bootstrap --adopt https://github.com/roalcantara/dots-history.git -E desktop --yes </dev/tty
+          ln -sfn ../.local/share/dots/config/mise ~/.config/mise
+          mise bootstrap -E desktop --yes </dev/tty
+  age-keygen -y ~/.config/age/keys.txt:
+    desc: Print the public recipient (age1...) of the age key, as in [history.encryption] recipients
+    tags: [age, secrets, dots]
+    notes:
+      - md: | #markdown
+          The age key is the single root secret: it decrypts the repo's SOPS files and the mise history.
+          It lives at `~/.local/share/dots/config/age/keys.txt` (gitignored, mode 600), linked as `~/.config/age`.
+          `install` writes the recipient to `config/mise/config.local.toml`.
+
+  # PACKAGE MANAGEMENT - QUICK REFERENCE
+  mise run up:
+    desc: Upgrade every package, then remove the ones no config declares
+    tags: [mise, dots, brew]
+    notes:
+      - md: | #markdown
+          Runs `mise bootstrap packages upgrade --yes`, then `prune --manager brew` and, on macOS,
+          `prune --manager brew-cask`; each prune lists what it would remove and asks first.
+          Self-updating casks (Ghostty, Chrome) are pruned only with `--force` and update themselves.
+  mise run brew:info:
+    desc: Show information about Homebrew packages
+    tags: [mise, dots, brew]
+    notes:
+      - sh: | #shell
+          # Version, description, homepage, license, dependencies and caveats (formula first, then cask)
+          mise run brew:info fnox
+      - sh: | #shell
+          # The same without the task: Homebrew's public API
+          curl -s https://formulae.brew.sh/api/formula/fnox.json | jq '{name, desc, version: .versions.stable}'
+          curl -s https://formulae.brew.sh/api/cask/ghostty.json | jq '{token, desc, version}'
+  mise run brew:info --cask:
+    desc: Show information about Homebrew cask packages
+    tags: [mise, dots, brew]
+  mise run brew:search:
+    desc: Search for Homebrew packages
+    tags: [mise, dots, brew]
+    notes:
+      - md: | #markdown
+          Searches formulae and casks by name, then description. Downloads Homebrew's full lists
+          (`formula.json`, `cask.json`) into `~/.cache/brew-api` at most once a day; delete it to refresh.
+  mise run brew:add:
+    desc: Install Homebrew packages
+    tags: [mise, dots, brew]
+    notes:
+      - md: | #markdown
+          Adds `"brew:foo" = "latest"` to `config/mise/conf.d/packages.toml` and installs it. A third-party
+          tap is `owner/tap/foo`. Gate it afterwards by editing the entry: `{ os = "macos" }`, `{ env = "desktop" }`.
+  mise run brew:add --cask:
+    desc: Install Homebrew cask packages
+    tags: [mise, dots, brew]
+  mise run brew:rm:
+    desc: Uninstall Homebrew packages
+    tags: [mise, dots, brew]
+    notes:
+      - md: | #markdown
+          Removes the entry from `conf.d/packages.toml`, then runs `prune`: mise cannot uninstall one package,
+          so the prune lists every undeclared formula (or cask with `--cask`) and asks before removing.
+  mise run brew:rm --cask:
+    desc: Uninstall Homebrew cask packages
+    tags: [mise, dots, brew]
+  mise bootstrap packages ls | grep brew-cask:
+    desc: List the declared casks and their state (brew ls --cask)
+    tags: [mise, dots, brew]
+    notes:
+      - sh: | #shell
+          # Every declared package and its state; JSON; exit 1 when anything differs from the config
+          mise bootstrap packages status
+          mise bootstrap packages status -J
+          mise bootstrap packages status --missing
+  mise bootstrap packages apply:
+    desc: Install missing packages from [bootstrap.packages] (aliases i, install)
+    tags: [mise, dots]
+    notes:
+      - sh: | #shell
+          # Only some packages, or one manager
+          mise bootstrap packages apply brew:jq apt:curl
+          mise bootstrap packages apply --manager flatpak
+  mise bootstrap packages use -p ~/.config/mise/conf.d/packages.toml brew:foo:
+    desc: Declare a package in packages.toml and install it (what brew:add runs)
+    tags: [mise, dots]
+    notes:
+      - sh: | #shell
+          # Preview without writing or installing; any manager works
+          mise bootstrap packages use -n brew:foo
+          mise bootstrap packages use -p ~/.config/mise/conf.d/packages.toml apt:foo flatpak:org.foo.Bar
+  mise bootstrap packages upgrade [--dry-run]:
+    desc: Upgrade the declared packages that are installed (alias up)
+    tags: [mise, dots]
+    notes:
+      - sh: | #shell
+          mise bootstrap packages upgrade --manager brew
+          mise bootstrap packages upgrade brew:neovim
+          # Or upgrade as part of a whole bootstrap run
+          mise bootstrap -E desktop --upgrade
+  mise bootstrap packages prune --dry-run:
+    desc: Show which packages would be removed without actually removing them
+    tags: [mise, dots]
+    notes:
+      - sh: | #shell
+          mise bootstrap packages prune --manager brew --dry-run
+          mise bootstrap packages prune --manager brew-cask --dry-run
+          # Casks that update themselves or run install scripts
+          mise bootstrap packages prune --manager brew-cask --force
+          # Before the first prune on a machine with formulae installed by real brew: record them instead
+          mise bootstrap packages import
+  mise bootstrap packages where brew:openssl@3:
+    desc: Print the opt path of an installed formula (stays valid across upgrades)
+    tags: [mise, brew]
+  mise bootstrap packages brew tap:
+    desc: Record a tap whose GitHub repo has a non-standard name in [bootstrap.brew.taps]
+    tags: [mise, brew]
+    notes:
+      - md: | #markdown
+          Not needed for `owner/tap`, which mise finds at `github.com/owner/homebrew-tap`.
+  export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH":
+    desc: Put brew packages on PATH (mise makes no shims and never changes PATH for them)
+    tags: [mise, brew, linux, zsh]
+    links: [https://mise.jdx.dev/bootstrap/packages/brew.html]
+    notes:
+      - md: | #markdown
+          mise installs `brew:` bottles itself into the Homebrew prefix: `/opt/homebrew` (Apple silicon),
+          `/home/linuxbrew/.linuxbrew` (Linux). No `brew` binary is installed. zsh's `env::homebrew` and bash's
+          bashrc add `<prefix>/bin` by folder; `brew shellenv` runs only if brew exists.
+
+          - `mise which brew:neovim` fails by design: use `command -v nvim`.
+          - `mise run` and `mise x` do not add the prefix: tasks that need brew tools add it themselves.
+  curl -s https://flathub.org/api/v2/summary/com.discordapp.Discord | jq .arches:
+    desc: Check which architectures a Flathub app is built for
+    tags: [linux, dots]
+    notes:
+      - md: | #markdown
+          Discord has no aarch64 build: gate such apps with `{ os = "linux/x64", env = "desktop" }`.
+          The Flathub remote comes from `/etc/flatpak/remotes.d/flathub.flatpakrepo` (a pre-packages file).
+      - sh: | #shell
+          flatpak remotes
+          flatpak list --app
+
+  # TOOLS - QUICK REFERENCE
+  mise use -g "pipx:pynvim@latest":
+    desc: Install a Python CLI through uv (pipx backend; settings.pypi.uvx = true)
+    tags: [mise, python, vim]
+    notes:
+      - md: | #markdown
+          pynvim's command is `pynvim-python`: Neovim 0.12 finds it on PATH when `g:python3_host_prog` is unset.
+          No venv is needed. Pin a Python per tool with `{ version = "latest", uvx_args = "--python 3.13" }`
+          when a package has no wheels for the newest Python.
+      - sh: | #shell
+          mise where pipx:pynvim
+          ls "$(mise where pipx:pynvim)/bin"
+          mise install --force pipx:pynvim@0.6.0
+          mise settings set pypi.uvx true
+  nvim --headless -c 'checkhealth vim.provider' -c 'w! /tmp/health.txt' -c 'qa!':
+    desc: Check Neovim's Python, Node and Ruby providers from the shell
+    tags: [vim, dots]
+    notes:
+      - sh: | #shell
+          grep -A6 'Python 3 provider' /tmp/health.txt
+          nvim --headless -c 'python3 import pynvim; print(pynvim.__version__)' -c 'qa!'
+  mise x -- sh -c 'echo $PATH':
+    desc: Show the PATH a mise task or git hook sees (mise tools only, no brew packages)
+    tags: [mise, shell]
+    notes:
+      - sh: | #shell
+          mise ls
+          mise which hk
+          which -a hk
+  mise x hk pkl shellcheck shfmt sd npm:markdownlint-cli pipx:yamllint taplo hadolint -- git commit:
+    desc: Commit in dots when the hook tools are installed but not on PATH (before bootstrap)
+    tags: [mise, git, dots]
+    notes:
+      - md: | #markdown
+          The hk pre-commit hook runs `mise x -- hk run pre-commit`. On a machine where the `brew:` packages are
+          missing, it fails with "No version is set for shim". Naming the tools gives the hook their PATH.
+          `HK=0 git commit` skips the hooks entirely (last resort).
+      - sh: | #shell
+          # Reinstall the hooks (also run by the bootstrap task)
+          mise run -C ~/.local/share/dots setup:hooks
+
+  # CONTAINER_STRUCTURE_TESTING - QUICK REFERENCE
+  mise run test --tag latest --platform arm64:
+    desc: Run tests for the latest tag on the ARM64 platform
+    tags: [mise, dots, docker]
+  mise run build --local --distro debian --tag local:
+    desc: Build the Debian image from the committed tree (commit first) and test it
+    tags: [mise, dots, docker]
+    notes:
+      - sh: | #shell
+          mise run build --local --distro debian --tag local
+          mise run test --image dots:debian-local --config distros/debian/container-structure-test.yml
+          mise run build --local --distro ubuntu --tag local
+          mise run test --image dots:ubuntu-local --config distros/ubuntu/container-structure-test.yml
+  bash assets/specs/mise-bootstrap/e2e/run.sh:
+    desc: End-to-end install test in Docker with a throwaway age key and history
+    tags: [dots, docker, secrets]
+    notes:
+      - sh: | #shell
+          # Leftover volumes from an interrupted run
+          docker volume ls | grep e2e
+          docker volume rm e2e-origin-18463 e2e-test-vol
+  docker run --rm -it ubuntu:26.04 bash:
+    desc: Try a mise config change in a throwaway Ubuntu container before the VM
+    tags: [docker, mise, dots]
+    notes:
+      - sh: | #shell
+          # From ~/Work/dots: the mise config mounted read-only
+          docker run --rm -it -v "$PWD/config/mise:/src:ro" ubuntu:26.04 bash
+          # Inside the container
+          apt-get update && apt-get install -y curl ca-certificates git jq
+          curl -fsSL https://mise.run | MISE_VERSION=v2026.10.22 sh
+          export PATH="$HOME/.local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
+          mkdir -p ~/.config/mise && cp /src/config.toml ~/.config/mise/
+          mise trust -a && mise install
+
+  # BOOTSTRAP - QUICK REFERENCE
+  mise bootstrap [--dry-run]:
+    desc: Set up this machine from your mise config; Apply every configured part
+    tags: [mise, dots]
+    links: [https://mise.jdx.dev/bootstrap.html#how-it-runs]
+    notes:
+      - md: | #markdown
+          # Set up this machine from your mise config
+
+          Applies each part your config declares, in this order.
+          Each step names its parts as --only and --skip accept them,
+          followed by any condition.
+
+          1. accounts, then plugins (package manager plugins)
+          2. files with phase = "pre-packages", then built-in packages
+          3. The remaining files, then services, firewall, and compose
+          4. repos, then dotfiles
+          5. mise-shell-activate, macos-defaults, and macos-launchd-agents
+          6. linux-systemd-units, then user (the login shell)
+          7. tools
+          8. Plugin packages, then user services with requires_tools = true
+          9. task (the bootstrap task, if defined), then final-hook
+
+          Gotchas seen while porting dots:
+
+          - A package manager installed by `apt:` in the packages step is not there when that same step reaches
+            its packages (flatpak apps were skipped): install the manager before mise.
+          - mise does not create parent folders of `[bootstrap.files]`: declare them in `[bootstrap.directories]`.
+          - Prompts (sudo, chsh) need a terminal: under `curl | bash`, run mise with `</dev/tty`.
+          - Unattended apt must not ask about changed config files: `/etc/apt/apt.conf.d/90dots-noninteractive`
+            sets `Dpkg::Options { "--force-confdef"; "--force-confold"; };`.
+  mise bootstrap status:
+    desc: Show the status of the bootstrap process
+    tags: [mise, dots]
+  mise bootstrap plan:
+    desc: Show the planned changes for the bootstrap process
+    tags: [mise, dots]
+  mise bootstrap -E desktop --yes:
+    desc: Apply everything for a workstation (loads config.desktop.toml)
+    tags: [mise, dots]
+    notes:
+      - sh: | #shell
+          # Only some parts, or all but some
+          mise bootstrap -E desktop --only packages,dotfiles
+          mise bootstrap -E desktop --skip user
+          # Upgrade packages and tools as well as installing missing ones
+          mise bootstrap -E desktop --upgrade
+  mise bootstrap -E container --skip user:
+    desc: Bootstrap the container environment while skipping the user profile
+    tags: [mise, dots, docker]
+    notes:
+      - sh: | #shell
+          # What the images run: --force-dotfiles replaces the base image's .bashrc/.profile.
+          # Never on a host: it would replace a real ~/.ssh or ~/.gnupg with a link and delete its keys.
+          mise bootstrap -E container --force-dotfiles --skip user --yes
+  mise bootstrap --adopt https://github.com/roalcantara/dots-history.git:
+    desc: Clone a dotfile history (or a global config repo) and apply it
+    tags: [mise, dots, secrets]
+    notes:
+      - md: | #markdown
+          Needs the age key at an identity file mise reads (`~/.config/mise/age.txt` before `~/.config/mise`
+          links into dots; `[settings.age] identity_files` after). Files that differ stop the adoption;
+          `--take-remote-all` takes the repository's version of each (the replaced ones are saved first).
+  mise help bootstrap:
+    desc: Full reference of mise bootstrap, its parts and flags
+    tags: [mise]
+
+  # DOTFILES & ENCRYPTED SECRETS - QUICK REFERENCE
+  mise dot status:
+    desc: Show each dotfile entry (symlink, symlink-each, track) and its state
+    tags: [mise, dots]
+    links: [https://mise.jdx.dev/dotfiles.html, https://mise.jdx.dev/encryption.html]
+    notes:
+      - md: | #markdown
+          `track` entries with `encrypt = true` (`~/.config/ssh`, `~/.config/gnupg`) are kept encrypted with age in
+          mise's history and synced to the private origin `roalcantara/dots-history`. Tracking is accepted only in
+          the global `config.toml`, not in `config.desktop.toml`.
+  mise dot save && mise dot sync:
+    desc: Record changes to the tracked secrets, then push them (encrypted) to dots-history
+    tags: [mise, dots, secrets]
+    notes:
+      - sh: | #shell
+          # Once per machine: connect the origin (manual sync)
+          mise dot origin set https://github.com/roalcantara/dots-history.git --sync manual -E desktop
+  mise dot sync && mise dot pull --yes:
+    desc: Fetch the secrets another machine pushed and apply them
+    tags: [mise, dots, secrets]
+    notes:
+      - sh: | #shell
+          # Resolve a conflict by taking the origin's version
+          mise dot pull --take-remote
+  mise dot untrack ~/.config/gh/hosts.yml:
+    desc: Stop tracking a file (before removing its entry from [dotfiles])
+    tags: [mise, dots, gh]
+    notes:
+      - md: | #markdown
+          Run it while the entry is still in the config; once removed, `untrack` errors. Then
+          `mise dot save && mise dot sync`. gh tokens are not tracked: on macOS they live in the keychain;
+          elsewhere sign in again with `gh auth login --web`.
+  mise dot apply --force:
+    desc: Re-apply every dotfile entry, replacing what differs
+    tags: [mise, dots]
+    notes:
+      - md: | #markdown
+          `--force` replaces real folders with links: never on a host with a real `~/.ssh` or `~/.gnupg`.
+          `install` moves those aside instead, into `~/.local/state/dots/pre-install-<timestamp>`.
+  d=$(mktemp -d) && git clone -q https://github.com/roalcantara/dots-history.git "$d":
+    desc: Check that dots-history holds no plaintext secret
+    tags: [dots, secrets, git]
+    notes:
+      - sh: | #shell
+          d=$(mktemp -d) && git clone -q https://github.com/roalcantara/dots-history.git "$d" \
+            && ! git -C "$d" log -p --all | grep -qE 'BEGIN (OPENSSH|PGP) PRIVATE|oauth_token' \
+            && echo clean; rm -rf "$d"
+  ssh-keygen -y -f ~/.ssh/id_ed25519:
+    desc: Check the restored secrets work (and their modes are 700/600)
+    tags: [dots, secrets, ssh]
+    notes:
+      - sh: | #shell
+          ls -la ~/.config/ssh ~/.config/gnupg
+          ssh-keygen -y -f ~/.ssh/id_ed25519
+          gpg --list-secret-keys

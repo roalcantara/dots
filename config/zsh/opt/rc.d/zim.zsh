@@ -92,3 +92,61 @@ zim::load() {
   [[ -f $ZIM_HOME/init.zsh ]] && source $ZIM_HOME/init.zsh
   return 0
 }
+
+#ABOUT Load the powerlevel10k configuration.
+#ORDER After ZIM, which sources the theme.
+term::prompt() {
+  [[ ! -f ${ZDOTDIR:-$HOME/.config/zsh}/.p10k.zsh ]] || source ${ZDOTDIR:-$HOME/.config/zsh}/.p10k.zsh
+}
+
+#ABOUT Finish a zprof/xtrace profiling run. No-op unless z_prof or z_trace is set.
+sys::profiling() {
+  # profilling
+  if [[ -n "$z_prof" ]]; then
+    if [[ -n "$z_trace" ]]; then
+      unsetopt XTRACE
+      exec 2>&3 3>&-
+      zprof >$ZDOTDIR/tmp/benchmark.$$.prof.log
+    else
+      zprof
+    fi
+    zmodload -u zsh/zprof
+  elif [[ -n "$z_trace" ]]; then
+    unsetopt XTRACE
+  fi
+}
+
+#ABOUT Drop the one-shot setup functions once startup is complete.
+#ORDER Last. Keeps _has_command, mise-refresh and sys::bench, which stay useful interactively.
+sys::purge() {
+  local -a keep=(sys::bench)
+  local f
+  for f in ${(k)functions[(I)(env|theme|term|zim|sys)::*]}; do
+    (( ${keep[(Ie)$f]} )) && continue
+    unfunction $f 2>/dev/null
+  done
+  # This unfunctions sys::purge itself, which is safe while it runs. The
+  # explicit `return 0` matters: .zshrc's final status becomes the shell's,
+  # so a failing last command makes `zsh -ic cmd` exit non-zero.
+  return 0
+}
+
+#ABOUT Android SDK Tools.
+#ORDER Re-add after the framework rebuilds PATH so adb stays on the shell PATH.
+plug::android() {
+  export ANDROID_HOME="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
+  for d in "$ANDROID_HOME/platform-tools" "$ANDROID_HOME/cmdline-tools/latest/bin" "$ANDROID_HOME/emulator"; do
+    case ":$PATH:" in
+      *":$d:"*) ;;
+      *) export PATH="$d:$PATH" ;;
+    esac
+  done
+}
+
+zim::dumpfile                # where ZIM writes .zcompdump
+zim::load                    # bootstrap zimfw and source its generated init.zsh
+zim::overrides               # settings that must outrank ZIM's modules
+term::prompt                 # powerlevel10k configuration
+sys::profiling               # zprof teardown (no-op unless z_prof is set)
+sys::purge                   # drop the one-shot setup functions
+plug::android                # Android SDK Tools

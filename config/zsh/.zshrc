@@ -15,44 +15,14 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Each module is sourced immediately before the functions it declares, so the
-# file that defines every step below is visible at the call site. Sourcing only
-# defines functions; nothing runs until it is called.
+# file that defines every step below is visible at the call site.
 zrc=${ZDOTDIR:-$HOME/.config/zsh}/opt/rc.d
 
 # --- before the framework ---------------------------------------------------
-source $zrc/env.zsh          # declares: env::* and _has_command
-env::core                    # shell identity
-env::options                 # shell options
-env::paths                   # path, fpath, cdpath, manpath
-env::homebrew                # brew shellenv and prefixes
-env::editor                  # EDITOR, VISUAL, GIT_EDITOR, vim aliases
-
-source $zrc/theme.zsh        # declares: theme::palette
-theme::palette               # LS_COLORS, EXA_COLORS, syntax-highlight palette
-
-source $zrc/term.zsh         # declares: term::profile, term::prompt
-term::profile                # terminal detection and shell integration
-
-source $zrc/sys.zsh          # declares: sys::dotenv, sys::runtime_dir, sys::profiling, sys::bench, sys::purge
-sys::dotenv                  # secrets from ~/.config/.env
-sys::fix_xdg_runtime_dir     # private XDG_RUNTIME_DIR
-
-source $zrc/zim.zsh          # declares: zim::dumpfile, zim::load, zim::overrides
-zim::dumpfile                # where ZIM writes .zcompdump
-zim::load                    # bootstrap zimfw and source its generated init.zsh
-zim::overrides               # settings that must outrank ZIM's modules
-
-term::prompt                 # powerlevel10k configuration
-sys::profiling               # zprof teardown (no-op unless z_prof is set)
-sys::purge                   # drop the one-shot setup functions
-
-# Android SDK Tools. Re-add after the framework rebuilds PATH so adb stays on the shell PATH.
-export ANDROID_HOME="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
-for d in "$ANDROID_HOME/platform-tools" "$ANDROID_HOME/cmdline-tools/latest/bin" "$ANDROID_HOME/emulator"; do
-  case ":$PATH:" in
-    *":$d:"*) ;;
-    *) export PATH="$d:$PATH" ;;
-  esac
-done
+source $zrc/env.zsh          # shell identity, options, path, fpath, cdpath, manpath, brew, EDITOR, VISUAL, GIT_EDITOR, vim aliases
+source $zrc/theme.zsh        # LS_COLORS, EXA_COLORS, syntax-highlight palette
+source $zrc/term.zsh         # terminal detection and shell integration
+source $zrc/sys.zsh          # handles ~/.config/.env, private XDG_RUNTIME_DIR
+source $zrc/zim.zsh          # powerlevel10k configuration, zprof teardown, drop the one-shot setup functions, Android SDK Tools.
 
 unset zrc

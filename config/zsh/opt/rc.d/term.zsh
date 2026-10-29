@@ -60,8 +60,4 @@ term::profile() {
   unset _zsh_term
 }
 
-#ABOUT Load the powerlevel10k configuration.
-#ORDER After ZIM, which sources the theme.
-term::prompt() {
-  [[ ! -f ${ZDOTDIR:-$HOME/.config/zsh}/.p10k.zsh ]] || source ${ZDOTDIR:-$HOME/.config/zsh}/.p10k.zsh
-}
+term::profile

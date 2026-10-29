@@ -55,7 +55,6 @@ Domain routing table: [`.cursor/dots-skill-routing.md`](.cursor/dots-skill-routi
 - `docs-writer` — when writing or reviewing assets/guides or assets/specs
 - `ast-grep` — for structural search or rewrite rules
 - `verification-before-completion` — as a reminder; dots-quality-gate remains the executable authority
-- `flox-environments` — when editing config/flox or Flox environments
 - `neovim-best-practices` — when editing config/nvim or Neovim Lua
 - `lua` — for Lua under config/nvim or Busted tests
 <!-- skills:optional-companions:end -->

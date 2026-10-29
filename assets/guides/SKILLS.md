@@ -101,7 +101,6 @@ project-specific situation.
 | `config/bin`, install scripts, shell hooks   | `bash-scripting`, `bash-linux`                                                                     |
 | `config/zsh`, plugins, completions           | `configuring-zsh`                                                                                  |
 | Docker, Dockerfile, distros, CST, Hadolint   | `docker-expert`, `docker-patterns`                                                                 |
-| Flox manifests under `config/flox/`          | `flox-environments`                                                                                |
 | `mise.toml`, task wiring, tool versions      | `mise-tasks`, `mise-expert`                                                                        |
 | GitHub Actions, workflows, CI                | `github-actions-docs`                                                                              |
 | Gherkin, Cucumber, `assets/features/`        | `bdd-gherkin-specification`, `cucumber-gherkin`, `bdd-scenarios`, `bdd-patterns`, `bdd-principles` |

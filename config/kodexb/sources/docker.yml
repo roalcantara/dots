@@ -2,10 +2,7 @@ cheats:
   Using regex in Container Structure Tests:
     desc: Using regex in Container Structure Tests
     tags: [docker]
-    links: [
-      https://github.com/GoogleContainerTools/container-structure-test/blob/main/README.md,
-      https://github.com/GoogleContainerTools/container-structure-test/pkgs/container/container-structure-test
-    ]
+    links: [https://github.com/GoogleContainerTools/container-structure-test/blob/main/README.md, https://github.com/GoogleContainerTools/container-structure-test/pkgs/container/container-structure-test]
     notes:
       - md: | #markdown
           ### Using regex in Container Structure Tests
@@ -214,7 +211,7 @@ commands:
   'docker inspect --format {{.State.Pid}} $(docker container ls -a -q)':
     desc: Get process ID for a container
     tags: [docker]
-  'docker inspect --format=''{{json .Volumes}}'' $(docker container ls -a -q) python -mjson.tool':
+  "docker inspect --format='{{json .Volumes}}' $(docker container ls -a -q) python -mjson.tool":
     desc: List mounted volumes from container
     tags: [docker]
   docker cp <FILE> <CONTAINER>:<TARGET>:
@@ -256,7 +253,7 @@ commands:
   docker images -a:
     desc: List docker images
     tags: [docker]
-  'docker stats $(docker ps --format=''{{.Names}}':
+  "docker stats $(docker ps --format='{{.Names}}":
     desc: Produce console stats for all running docker containers - like'top'
     tags: [docker]
   docker compose build:
@@ -410,7 +407,7 @@ commands:
     desc: Run a DOCKER COMPOSE autoremovable container overriding the values set durying the build
     tags: [docker]
   docker run -d --name sql-server-sgs -p 1433:1433 -v /Volumes/etc/Data/sql-server/sgs:/var/opt/mssql/data -e'ACCEPT_EULA=Y' -e'SA_PASSWORD=q1!w2@e3#' liaisonintl/mssql-server-linux:latest:
-    desc: 'Runs Docker container ''sql-server-sgs'' :: ''/Volumes/etc/Data/mongo/db''::''root@1433''::''localhost:27017'' - DEAMONIZED'
+    desc: "Runs Docker container 'sql-server-sgs' :: '/Volumes/etc/Data/mongo/db'::'root@1433'::'localhost:27017' - DEAMONIZED"
     tags: [docker, sqlserver]
   docker run -d -rm --name sql-server-sgs -p 1433:1433 -v /Volumes/etc/Data/sql-server/sgs:/var/opt/mssql/data -e'ACCEPT_EULA=Y' -e'SA_PASSWORD=q1!w2@e3#' liaisonintl/mssql-server-linux:latest:
     desc: Runs liaisonintl/mssql-server-linux:latest Docker container 'sql-server-sgs' @ localhost:1433 - DEAMONIZED/AUTO REMOVABLE
@@ -435,3 +432,19 @@ commands:
     desc: Build your image then jump straight into analyzing it
     tags: [docker, dive]
     links: [https://github.com/wagoodman/dive]
+
+  df -h /:
+    desc: Show disk usage for the root filesystem
+    tags: [disk]
+  docker system df:
+    desc: Show Docker disk usage summary
+    tags: [docker]
+  docker builder prune -f:
+    desc: Prune the Docker build cache
+    tags: [docker]
+  docker volume rm e2e-origin-18463 e2e-test-vol:
+    desc: Remove specified Docker volumes
+    tags: [docker]
+  docker image rm dots:debian-local dots:ubuntu-local spike-base:latest:
+    desc: Remove specified Docker images
+    tags: [docker]

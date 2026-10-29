@@ -96,3 +96,5 @@ theme::palette() {
   # Recursive
   FAST_HIGHLIGHT_STYLES[recursive-base]='none'
 }
+
+theme::palette

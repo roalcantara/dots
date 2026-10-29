@@ -562,6 +562,22 @@ commands:
     desc: Remove a secret from the keyring for the given service and account
     tags: [macos, security]
     links: [https://wiki.gnome.org/Projects/SecretTool]
+
+  diskutil list:
+    desc: List all disks and their partitions on the system
+    tags: [macos, disk]
+  iostat -Id disk4:
+    desc: Display I/O statistics for the specified disk
+    tags: [macos, disk]
+  diskutil eject disk4:
+    desc: Eject the specified disk from the system
+    tags: [macos, disk]
+  diskutil unmount disk4:
+    desc: Unmount the specified disk from the system
+    tags: [macos, disk]
+  diskutil unmountDisk disk4:
+    desc: Unmount the specified disk from the system
+    tags: [macos, disk]
 cheats:
   launchctl | Services:
     desc: Tool used to control launchd services (Agents and Daemons)
@@ -782,3 +798,171 @@ cheats:
           echo "${output}" | jq -r '.draft_files[]' | while read -r file; do
               mv "${DIRECTORY_TO_TRIAGE}/${file}" "${DRAFT_FILES_STORAGE_DIRECTORY}"
           done
+  External drive will not eject (exFAT check in progress):
+    desc: Diagnose a drive that will not eject or unmount, and decide whether to wait or stop the check
+    tags: [macos, disk]
+    notes:
+      - md: | #markdown
+          # External drive will not eject
+
+          ## Symptoms
+
+          - The volume is not mounted, yet `diskutil unmount disk4` says it is "already unmounted".
+          - `diskutil unmountDisk disk4` or `diskutil eject disk4` waits forever.
+
+          ## 1. Is something on the volume still writing?
+
+          ```sh
+          diskutil list disk4
+          mount | grep -i <volume>
+          lsof +D /Volumes/<volume> | head                       # open files on the volume
+          ps -axo pid,etime,stat,command | grep -iE '<volume>|zip|rsync|ditto|mds_stores|mdworker' | grep -v grep
+          ```
+
+          ## 2. Is a file-system check holding the raw device?
+
+          ```sh
+          ps -axo pid,etime,stat,command | grep -iE 'fsck|exfat|ntfs|diskutil|disk4' | grep -v grep
+          lsof /dev/disk4 /dev/rdisk4 /dev/disk4s1 /dev/rdisk4s1 /dev/disk4s2 /dev/rdisk4s2
+          ```
+
+          A process such as `com.apple.fskit.exfat` holding `/dev/rdisk4s2` is macOS checking that partition. It does
+          this when an exFAT volume was not ejected cleanly last time (a restart with the drive attached is
+          enough). The unmount is queued behind the check, which is why it seems to hang.
+
+          ## 3. Is the check progressing?
+
+          ```sh
+          ps -o pid,%cpu,time,etime -p <pid>
+          iostat -d -w 5 -c 2 disk4                              # MB/s over 5 s
+          log show --last 40m --info --style compact --process com.apple.fskit.exfat | tail
+          ```
+
+          macOS redacts the driver's log messages, so the read rate is the only progress sign. In our case it read
+          about 46 GB in 38 minutes (about 20 MB/s): hours for a volume with hundreds of GB used.
+
+          ## 4. Decide
+
+          - **Wait (safest).** When the check finishes, the volume mounts by itself; then `diskutil eject disk4`.
+          - **Stop it.** The volume stays marked unclean and is checked again next time. If the check is repairing,
+            not only reading, interrupting it can corrupt the drive.
+
+            ```sh
+            kill <pid>             # sudo kill -9 <pid> if it does not stop within a few seconds
+            diskutil unmountDisk disk4
+            diskutil eject disk4
+            ```
+
+          Other partitions on the same disk are not involved unless they are being checked too.
+
+  Verifying backups on an external drive (FSKit exFAT corruption):
+    desc: Check that files written to an external drive read back intact; macOS's exFAT driver corrupted new writes
+    tags: [macos, disk]
+    notes:
+      - md: | #markdown
+          # Verifying backups on an external drive
+
+          ## What happened
+
+          On macOS 27, exFAT volumes are mounted by the FSKit driver (`com.apple.fskit.exfat`). Files written to the
+          drive through it read back with different bytes: the hash of the copy differed from the original, a
+          zip on the drive failed `unzip -t`, and copying again with `cp -X` (no extended attributes) gave the
+          same wrong hash. Files written there months earlier read back fine. So every backup written that day was
+          unusable, and nothing looked wrong until the hashes were compared.
+
+          ```sh
+          diskutil info /Volumes/<volume> | grep -E 'File System Personality|Volume Free Space'
+          ```
+
+          ## The rule: write locally, copy, compare on both sides
+
+          ```sh
+          shasum -a 256 ~/backup.zip /Volumes/<volume>/backup.zip    # both hashes must match
+          unzip -tq /Volumes/<volume>/backup.zip                      # and the archive must test clean
+          ```
+
+          ## When the hashes differ
+
+          1. Rule out a read-cache problem: eject, unplug, plug back in, hash again. If it now matches, only reads
+             were wrong.
+          2. Test with a throwaway file: write it, hash it, delete it. Compare with an old file on the drive.
+          3. If new writes are corrupted, stop writing there. Keep backups elsewhere (local disk, another drive,
+             a git repo for small encrypted files), or reformat the drive as APFS if only Macs need to read it.
+
+          The drive also needs a clean eject every time: an exFAT volume that was not ejected cleanly triggers a
+          long check on the next mount (see "External drive will not eject").
+
+  Evaluating a tiling window manager (dinky vs yabai):
+    desc: What we measured comparing dinky and yabai, and why a new window always appears then moves on macOS
+    tags: [macos, twm, spaces]
+    links: [https://dinky.rodeo, https://github.com/mikker/Dinky, https://github.com/koekeishiya/yabai]
+    notes:
+      - md: | #markdown
+          # Evaluating a tiling window manager (dinky vs yabai)
+
+          Goal: replace yabai (needs SIP partly off for its scripting addition) with a tool that tiles like
+          Omarchy (dwindle), uses real macOS Spaces and leaves SIP on. Outcome: yabai stays for now.
+
+          ## Candidates (October 2026)
+
+          | Tool | Tiling | Spaces | SIP | Verdict |
+          | --- | --- | --- | --- | --- |
+          | dinky | dwindle | native | on (Accessibility only) | Tried for a day; one TOML file, `brew install --cask mikker/tap/dinky` |
+          | Nehir | dwindle | its own | on | No release, no commits since August |
+          | PaperWM.spoon | scrolling, not dwindle | native | on | Needs Hammerspoon; Space moves break with macOS releases |
+          | AeroSpace, OmniWM, Rift, Glide | various | their own | on | Fake workspaces; same new-window behaviour |
+
+          dinky gaps: no `fn` modifier (use a binding mode), `move` never crosses displays, no yabai-style stacks,
+          and it switches Spaces with private APIs, so a macOS update can break it (as with yabai).
+
+          ## Why a new window appears, then moves (every macOS WM)
+
+          macOS lets the app draw its new window where it wants, and only then tells the window manager, which
+          moves it into its tile. Measured with dinky and yabai on the same Space:
+
+          | Situation | What you see | Time to tile |
+          | --- | --- | --- |
+          | Window-opening animation on (default) | The window grows frame by frame, fighting the move | about 150 ms |
+          | Animation off, same display | Appears at the app's spot, one jump to the tile | 30–60 ms |
+          | App's last window on the other display | Born on that display, moved over | 50–600 ms |
+          | App not running (cold start) | Opens large at its default spot; the WM waits for it to answer Accessibility | visible, hundreds of ms |
+
+          yabai was not faster (13–39 ms to appear, 83–179 ms to tile, vs 39–53 and 42–192 for dinky). Only a
+          compositor (Hyprland on Linux) places a window before drawing it, and macOS allows no third-party one.
+
+          ## What helps
+
+          ```sh
+          # Turn off the window-opening animation (apps pick it up when they next launch)
+          defaults write -g NSAutomaticWindowAnimationsEnabled -bool false
+          # Undo
+          defaults delete -g NSAutomaticWindowAnimationsEnabled
+          ```
+
+          - Keep the terminal running: Ghostty's `quit-after-last-window-closed = false` (or a login item), so a
+            new window never waits for a cold start.
+          - Prefer tabs or splits to new terminal windows.
+          - Keep the pointer on the display you work on: dinky falls back to the pointer's display when focus is
+            in flux.
+
+          ## How we measured
+
+          - A control app: Terminal.app reproduced the same jump, so it was not Ghostty.
+          - TextEdit, freshly launched, showed the animation setting's effect (apps read it at launch).
+          - Close test windows by id, never with File → Close Window: that closes whichever window is in front.
+
+          ## Settings dinky needed (reverted)
+
+          ```sh
+          # "Switch to a Space with open windows" off, so Spaces switch fast on ⌘Tab; undo:
+          defaults delete com.apple.dock workspaces-auto-swoosh && killall Dock
+          ```
+
+          ## Switching back to yabai
+
+          ```sh
+          brew uninstall --cask dinky && rm ~/.config/dinky
+          yabai --install-service && yabai --start-service   # yabairc loads the scripting addition via sudoers
+          ```
+
+          The dinky config stays in dots history (`config/dinky/`) for a retry after the macOS reinstall.

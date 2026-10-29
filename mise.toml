@@ -7,7 +7,7 @@
 # mise run build --nocache
 # mise run build --nocache --distro ubuntu
 # mise run build --nocache --local
-# mise run build --nocache --local --user vscode --group vscode --tag latest
+# mise run build --nocache --local --user vscode --tag latest
 
 [tasks."build"]
 description = "Build a Docker image for dotfiles"
@@ -30,8 +30,6 @@ usage = '''
   flag "--branch <branch>" help="Git branch for remote install"
   flag "--repo <repo>" help="GitHub repo (owner/name)"
   flag "--user <user>" help="Build arg USERNAME"
-  flag "--group <group>" help="Build arg GROUPNAME"
-  flag "--package-manager <pm>" help="Package manager" default="flox"
   flag "--build-arg <arg>" {
     help "Extra docker --build-arg (repeat flag)"
     var #true
@@ -39,6 +37,7 @@ usage = '''
 '''
 run = '''
 #!/usr/bin/env bash
+set -o pipefail
 
 case "${usage_platform?}" in
   amd64)    PLATFORM_VALUE="linux/amd64" ;;
@@ -60,20 +59,12 @@ if [ -n "${usage_user:-}" ]; then
   DOCKER_CMD+=(--build-arg=USERNAME="$usage_user")
 fi
 
-if [ -n "${usage_group:-}" ]; then
-  DOCKER_CMD+=(--build-arg=GROUPNAME="$usage_group")
-fi
-
 if [ -n "${usage_branch:-}" ]; then
   DOCKER_CMD+=(--build-arg=BRANCH="$usage_branch")
 fi
 
 if [ -n "${usage_repo:-}" ]; then
   DOCKER_CMD+=(--build-arg=GITHUB_REPO="$usage_repo")
-fi
-
-if [ -n "${usage_package_manager:-}" ]; then
-  DOCKER_CMD+=(--build-arg=PACKAGE_MANAGER="$usage_package_manager")
 fi
 
 if [ -n "${usage_build_arg:-}" ]; then
@@ -99,16 +90,19 @@ fi
 
 DOCKER_CMD+=(--file="distros/${usage_distro?}/Dockerfile")
 
-if [ "${usage_publish:-false}" = "true" ]; then
-  DOCKER_CMD+=(--target=publish .)
-elif [ "${usage_local:-false}" = "true" ]; then
-  DOCKER_CMD+=(--target=local .)
+# local and publish build the committed tree: the working tree holds decrypted SOPS files (config/.env,
+# config/ssh/keys/*.key). The smudge filter is disabled so git archive exports them encrypted.
+if [ "${usage_publish:-false}" = "true" ] || [ "${usage_local:-false}" = "true" ]; then
+  target=local
+  [ "${usage_publish:-false}" = "true" ] && target=publish
+  DOCKER_CMD+=(--target="$target" -)
+  echo "  ==> git archive HEAD | ${DOCKER_CMD[*]}"
+  git -c filter.sops.smudge=cat -c filter.sops.required=false archive --format=tar HEAD | eval "${DOCKER_CMD[*]}"
 else
   DOCKER_CMD+=(--target=remote .)
+  echo "  ==> ${DOCKER_CMD[*]}"
+  eval "${DOCKER_CMD[*]}"
 fi
-
-echo "  ==> ${DOCKER_CMD[*]}"
-eval "${DOCKER_CMD[*]}"
 '''
 
 # mise run start
@@ -323,27 +317,3 @@ experimental = true
 # Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
 # https://mise.jdx.dev/configuration/settings.html#lockfile
 lockfile = true
-
-# Config files with these prefixes will be trusted by default
-# https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
-# trusted_config_paths = ["~/.local/share/dots", "~/.local/share/mise"]
-
-# set to true to automatically answer yes to all prompts
-# https://mise.jdx.dev/configuration/settings.html#yes
-# yes = true
-
-[tools]
-hk = "2.0.1"
-pkl = "latest"
-sd = "latest"
-shellcheck = "latest"
-shfmt = "latest"
-"npm:markdownlint-cli" = "0.49.1"
-hadolint = "latest"
-"pipx:yamllint" = "1.38.0"
-taplo = "latest"
-"pipx:commit-check" = "2.18.0"
-
-# set to true to see full installation output, see `MISE_VERBOSE`
-# https://mise.jdx.dev/configuration/settings.html#verbose
-# verbose=true

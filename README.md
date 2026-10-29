@@ -29,37 +29,32 @@ An opinionated [DotFiles][10] repository. Ready to Engage!
 
 ## Install
 
-The `install` script handles macOS (`darwin`) and Linux (Debian-based distros such as `debian` and `ubuntu`), as well as DevContainers and containers.
+On a fresh macOS or Debian/Ubuntu machine (macOS: run `xcode-select --install` first for `git`):
 
-### Quick Install (One-Liner)
+```sh
+curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash
+```
 
-- Default installation (`roalcantara:wheel` or current user):
+`install` installs mise, clones this repo into `~/.local/share/dots`, asks you to paste the age key (hidden input;
+keep it in your password manager), links `~/.config/mise`, signs `gh` in to GitHub (a browser device flow) and runs
+[`mise bootstrap`](https://mise.jdx.dev/bootstrap.html) twice:
 
-  ```sh
-  wget -qO- "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash
-  # or via curl:
-  curl -fsSL "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash
-  ```
+1. `mise bootstrap --adopt` restores the encrypted secrets from the private `dots-history` repository:
+   `~/.config/ssh`, `~/.config/gnupg` and `~/.config/gh/hosts.yml`.
+2. `mise bootstrap -E desktop` applies `config/mise/`: packages, links, directories, login shell, the setup task.
 
-- Installation with custom username and group:
+It creates no user and sets no timezone: the machine's own setup does that. A second run changes nothing.
 
-  ```sh
-  wget -qO- "https://raw.githubusercontent.com/roalcantara/dots/main/install" | bash -s -- -u "vscode" -g "vscode"
-  ```
+| Variable | Default | |
+| --- | --- | --- |
+| `DOTS_BRANCH` | `main` | Branch to clone (to try a branch, fetch `install` from it too) |
+| `DOTS_REPO` | `https://github.com/roalcantara/dots.git` | Repository to clone |
+| `DOTS_HISTORY` | `https://github.com/roalcantara/dots-history.git` | Encrypted history to restore |
+| `DOTS_PROFILE` | `desktop` | `container` skips the login shell and replaces a base image's dotfiles |
+| `DOTS_AGE_KEY` | — | The key itself, for tests; otherwise it is prompted |
 
-### Manual Installation (Git Clone)
-
-- Clone and run the installer:
-
-    ```sh
-    git clone https://github.com/roalcantara/dots ~/.local/share/dots && ~/.local/share/dots/install
-    ```
-
-- Normal Installation with custom user and group
-
-    ```sh
-    git clone https://github.com/roalcantara/dots ~/.local/share/dots && ~/.local/share/dots/install -u "vscode" -g "vscode"
-    ```
+Docker images do not use `install` and get no secrets; see `assets/guides/DOCKER_GUIDE.md`. Later runs:
+`mise bootstrap -E desktop`.
 
 ### OVEREVIEW
 

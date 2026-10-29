@@ -1,0 +1,105 @@
+# Machine setup applied by `mise bootstrap` (assets/specs/mise-bootstrap/design.md §4.2–4.3).
+
+# Folders the shell config and tools expect, plus the XDG user folders the images' structure tests check.
+[bootstrap.directories."~/.local/bin"]
+[bootstrap.directories."~/.local/state/zim"]
+[bootstrap.directories."~/.local/share/zsh"]
+[bootstrap.directories."~/.local/share/npm"]
+[bootstrap.directories."~/.local/share/gems"]
+[bootstrap.directories."~/.cache/zsh"]
+mode = "0700"
+[bootstrap.directories."~/.cache/npm"]
+[bootstrap.directories."~/.cache/mise"]
+# Private (0700), as macOS creates them; bootstrap would otherwise reset them to 0755.
+[bootstrap.directories."~/Desktop"]
+mode = "0700"
+[bootstrap.directories."~/Documents"]
+mode = "0700"
+[bootstrap.directories."~/Downloads"]
+mode = "0700"
+[bootstrap.directories."~/Movies"]
+mode = "0700"
+[bootstrap.directories."~/Music"]
+mode = "0700"
+[bootstrap.directories."~/Pictures"]
+mode = "0700"
+[bootstrap.directories."~/Projects"]
+[bootstrap.directories."~/Work"]
+
+# Real folders the ~/.ssh and ~/.gnupg links point to; install --secrets fills them.
+[bootstrap.directories."~/.config/ssh"]
+mode = "0700"
+
+[bootstrap.directories."~/.config/gnupg"]
+mode = "0700"
+
+[bootstrap.user]
+login_shell = "zsh"
+
+# Runs last on every `mise bootstrap`, so every step checks before acting and only warns on failure.
+[tasks.bootstrap]
+description = "Repo git filters and hooks, Neovim providers and plugins"
+run = '''
+#!/usr/bin/env bash
+export PATH="$HOME/.local/bin:$PATH"
+# brew: packages (hk, sd, the linters) land in the Homebrew prefix, which only an interactive shell puts on PATH.
+for d in /opt/homebrew/bin /home/linuxbrew/.linuxbrew/bin; do [ -d "$d" ] && PATH="$d:$PATH"; done
+dots="$HOME/.local/share/dots"
+nvim_cfg="$HOME/.config/nvim"
+warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
+
+mise run -C "$dots" setup:git:filters || warn "setup:git:filters"
+mise run -C "$dots" setup:hooks || warn "setup:hooks"
+
+[ -d "$nvim_cfg" ] || exit 0
+if command -v npm >/dev/null && ! npm ls -g neovim >/dev/null 2>&1; then
+  npm install -g neovim || warn "npm neovim"
+fi
+if command -v gem >/dev/null && ! gem list -i neovim >/dev/null 2>&1; then
+  gem install neovim || warn "gem neovim"
+fi
+# restore (not sync) installs the lockfile's versions, so a rerun changes nothing; bounded so a network stall
+# cannot hang an unattended run.
+if command -v nvim >/dev/null; then
+  limit=""
+  if command -v timeout >/dev/null; then limit="timeout 600"; elif command -v gtimeout >/dev/null; then limit="gtimeout 600"; fi
+  $limit nvim --headless "+Lazy! restore" +qa </dev/null || warn "nvim Lazy restore"
+fi
+'''
+
+# Linux: apt runs unattended, so dpkg must never ask about a changed config file (it fails without a terminal,
+# e.g. on /etc/zsh/zshenv left by the old install). Keep the existing file; take the package's when untouched.
+[bootstrap.files."/etc/apt/apt.conf.d/90dots-noninteractive"]
+os = "linux"
+phase = "pre-packages"
+owner = "root"
+group = "root"
+mode = "0644"
+content = '''
+Dpkg::Options { "--force-confdef"; "--force-confold"; };
+'''
+
+# Linux desktops: Flathub for the system-wide flatpak apps in packages.toml. Flatpak reads remotes from this
+# folder; declared before packages so the remote exists when mise installs flatpak and then the apps.
+# The folders do not exist until the flatpak package installs, so they are declared too.
+[bootstrap.directories."/etc/flatpak"]
+os = "linux"
+phase = "pre-packages"
+owner = "root"
+group = "root"
+mode = "0755"
+
+[bootstrap.directories."/etc/flatpak/remotes.d"]
+os = "linux"
+phase = "pre-packages"
+owner = "root"
+group = "root"
+mode = "0755"
+
+[bootstrap.files."/etc/flatpak/remotes.d/flathub.flatpakrepo"]
+os = "linux"
+phase = "pre-packages"
+source = "../files/flathub.flatpakrepo"
+owner = "root"
+group = "root"
+mode = "0644"

@@ -139,3 +139,74 @@ commands:
             Run `mise bootstrap packages apply` to install the declared build dependencies.
           Ordinary mise doctor continues to diagnose mise itself; it does not run these checks. Checks do not run automatically when entering a directory or running a task. There are no implicit project checks: declare the requirements you need.
           ```
+
+  mise dot status:
+    desc: Show the state of your dotfiles and their history
+    tags: [mise]
+  mise dot add ~/.zshrc:
+    desc: Start managing ~/.zshrc from your dotfiles directory
+    tags: [mise]
+  mise dot track ~/.config/nvim:
+    desc: Save the history of a directory in place
+    tags: [mise]
+  mise dot undo:
+    desc: Revert the last change to the dotfiles managed by mise
+    tags: [mise]
+  mise dot save:
+    desc: Save the current state of the dotfiles managed by mise
+    tags: [mise]
+  mise dot apply:
+    desc: Deploy every [dotfiles] entry
+    tags: [mise]
+  mise dot sync:
+    desc: Sync the dotfiles managed by mise with the remote repository
+    tags: [mise]
+  mise dot history:
+    desc: List saved checkpoints
+    tags: [mise]
+  mise dot origin set https://github.com/roalcantara/dots-history.git --sync manual -E desktop:
+    desc: Set the origin for the dotfiles repository and sync manually for the desktop environment
+    tags: [mise]
+  mise dot save -E desktop && mise dot sync -E desktop:
+    desc: Save and sync the dotfiles for the desktop environment
+    tags: [mise]
+
+  mise bootstrap --only dotfiles,tools:
+    desc: Apply everything except tools and the bootstrap task
+    tags: [mise]
+  mise bootstrap --force-dotfiles:
+    desc: Replace files that conflict with whole-file dotfile entries
+    tags: [mise]
+  mise bootstrap --from git@github.com:example/workstation.git:
+    desc: Clone a bootstrap project and apply it
+    tags: [mise]
+  mise -E work bootstrap --from git@github.com:example/workstation.git:
+    desc: Clone a bootstrap work project (mise.work.toml) and apply it
+    tags: [mise]
+  mise bootstrap --from https://github.com/example/dotfiles.git --from-dir ~/.dotfiles --config-dir .config/mise:
+    desc: Clone a dotfiles repository and link ~/.config/mise to its .config/mise
+    tags: [mise]
+  mise bootstrap packages import --manager brew:
+    desc: Import packages using the Homebrew package manager
+    tags: [mise]
+  mise bootstrap --adopt example/mise-config:
+    desc: Clone global config into ~/.config/mise, then apply it
+    tags: [mise]
+  mise bootstrap --adopt example/setup --replace-history --yes:
+    desc: Use a setup repository's dotfile history instead of this machine's
+    tags: [mise]
+  mise bootstrap --update:
+    desc: Refresh package metadata and fast-forward repositories first
+    tags: [mise]
+  mise bootstrap -E desktop:
+    desc: Bootstrap the desktop environment with the specified profile
+    tags: [mise]
+  mise bootstrap --adopt:
+    desc: Adopt the current environment into the mise bootstrap process
+    tags: [mise]
+  mise bootstrap --adopt dots-history:
+    desc: Adopt the current environment into the mise bootstrap process for the dots-history profile
+    tags: [mise]
+  mise bootstrap packages status:
+    desc: Show the status of the bootstrap packages
+    tags: [mise]

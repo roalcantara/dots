@@ -1,842 +1,111 @@
 #!/usr/bin/env bash
-# USAGE: install [-u username] [-g groupname] [-t timezone] [-p flox] [-r repo] [-b branch] [-e]
-# EXAMPLES:
-#   ./install
-#   ./install -u "vscode" -g "vscode"
-#   ./install -u "vscode" -g "vscode" -t "America/Sao_Paulo" -p "flox" -r "https://github.com/roalcantara/dots" -b "main"
-#   DOTS_EMBEDDED=1 ./install   # or -e: use files already at ~/.local/share/dots; do not clone/pull or strip .git
-set -eu
-declare -g -A COLORS=([E]='\033[0;31m' [F]='\033[0;31m' [S]='\033[0;32m' [W]='\033[1;33m' [I]='\033[0;34m' [MAGENTA]='\033[0;35m' [NC]='\033[0m')
-declare -g USERNAME GROUPNAME TIMEZONE="America/Sao_Paulo" REPO_URL="https://github.com/roalcantara/dots" BRANCH="main" USR_LOCAL_BIN="/usr/local/bin" PACKAGE_MANAGER="flox" FLOX_VERSION="1.12.1" CONFIGS_TO_BACKUP=".bashrc .bash_logout .bash_profile .profile .zshrc .zprofile .gitconfig .oh-my-zsh"
-declare -g UNAME ARCH PLATFORM_ARCH DISTRO ENV CONTEXT HOME DOTS_SRC_DIR FLOX_PATH BACKUP_DIR
-declare -g -A PACKAGES=(
-  [apt]="$HOME/.config/apt/requirements.txt"
-  [flatpak]="$HOME/.config/flatpak/requirements.txt"
-  [snap]="$HOME/.config/snap/requirements.txt"
-  [homebrew]="$HOME/.config/homebrew/Brewfile"
-)
-# UTILITIES functions
-show_usage() {
-  echo "Usage: $0 [options]" >&2
-  echo "Options:" >&2
-  echo "  -u, --username USER     Set username" >&2
-  echo "  -g, --groupname GROUP   Set group name" >&2
-  echo "  -t, --timezone TZ       Set timezone" >&2
-  echo "  -p, --package-manager   Package manager (flox)" >&2
-  echo "  -r, --repo URL          Repository URL" >&2
-  echo "  -b, --branch BRANCH     Git branch" >&2
-  echo "  -e, --embedded          Use existing ~/.local/share/dots (no clone/pull; keep .git in containers)" >&2
+# Sets up this machine: mise, the dots checkout, the age key, then mise bootstrap (design.md §10).
+# curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash
+# Env: DOTS_BRANCH (main), DOTS_REPO (clone URL), DOTS_HISTORY (the private history origin),
+#      DOTS_PROFILE (desktop), DOTS_AGE_KEY (the key, for tests; otherwise it is read from the terminal).
+set -euo pipefail
+
+MISE_VERSION="2026.10.22"
+DOTS="$HOME/.local/share/dots"
+KEY="$DOTS/config/age/keys.txt"
+BRANCH="${DOTS_BRANCH:-main}"
+REPO="${DOTS_REPO:-https://github.com/roalcantara/dots.git}"
+HISTORY="${DOTS_HISTORY:-https://github.com/roalcantara/dots-history.git}"
+PROFILE="${DOTS_PROFILE:-desktop}"
+export PATH="$HOME/.local/bin:$PATH"
+
+apt_install() {
+  sudo=""
+  [ "$(id -u)" -eq 0 ] || sudo="sudo"
+  $sudo apt-get update -qq
+  $sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "$@"
 }
-log() { echo -e "${COLORS[MAGENTA]} ==> [$(date '+%Y-%m-%d %H:%M:%S')]${COLORS[NC]} ${COLORS[$1]}[$1]${CONTEXT:+ ($CONTEXT)}${COLORS[NC]} ${*:2}"; }
-info() { log "I" "$@"; }
-warn() { log "W" "$@"; }
-error() { log "E" "$@" >&2; }
-fatal() { log "F" "$@" >&2; exit 1; }
-success() { log "S" "$@"; }
-ok() { log "S" "${COLORS[I]}==> |$1| [$(printf '%20s' "$2")] ==> READY ${4:-✔✔}${COLORS[NC]} ${3:-''}"; }
-has_cmd() { command -v "$1" >/dev/null 2>&1; }
-is_devcontainer() { [ -n "${REMOTE_CONTAINERS:-}" ] || [ -n "${CODESPACES:-}" ] || [ -f "/.devcontainer/.postCreateCommandMarker" ] || [ -d "/.devcontainer" ]; }
-needs_sudo() { [ "$(id -u)" -ne 0 ] && return 0 || return 1; }
-user_exists() { id "$1" &>/dev/null; }
-run_cmd() { info "Running: $*"; "$@"; }
-is_darwin() { [ "$UNAME" = "darwin" ]; }
-group_exists() { is_darwin && dscl . -read /Groups/"$1" &>/dev/null || getent group "$1" &>/dev/null; }
-ensure_dir() { [ -d "$1" ] || run_cmd sudo mkdir -p "$1"; }
-ensure_dir_and_export_var() { ensure_dir "$1"; [ -n "$2" ] && export "$2"="$1"; }
-is_container() {
-  if [ -n "${DOCKER_CONTAINER:-}" ] || [ -n "${container:-}" ] ||
-    [ -f "/.dockerenv" ] || [ -f "/var/run/docker.sock" ] || [ -f "/run/.containerenv" ] ||
-    [ -n "${REMOTE_CONTAINERS:-}" ] || [ -n "${CODESPACES:-}" ] ||
-    ([ -f "/proc/1/cgroup" ] && (grep -q "docker" "/proc/1/cgroup" || grep -q '^0::/$' /proc/1/cgroup)) ||
-    ([ -f "/proc/1/cgroup" ] && grep -q "containerd" "/proc/1/cgroup"); then
-    return 0
+
+# git: this script clones the repo and mise clones the history; mise cannot read its config before both exist.
+# A fresh Ubuntu desktop has curl and sudo but no git.
+if ! command -v git >/dev/null; then
+  if [ "$(uname -s)" = Darwin ]; then
+    echo "install: git is missing; run 'xcode-select --install', then rerun install" >&2
+    exit 2
+  elif command -v apt-get >/dev/null; then
+    apt_install git
+  else
+    echo "install: git is missing; install it, then rerun install" >&2
+    exit 2
   fi
-  return 1
-}
-is_host() { ! is_container && ! is_devcontainer; }
-get_github_token() {
-  [ -n "${GITHUB_TOKEN:-}" ] && info "GitHub token READY! ✔" && return
-  for location in /run/secrets/github_token /tmp/github_token "$HOME/.github_token" "$HOME/.secrets/github_token"; do
-    if [ -f "$location" ]; then
-      export GITHUB_TOKEN="$(cat "$location")"
-      info "GitHub token loading READY => '$location' ✔"
-      return
+fi
+# flatpak: mise skips the flatpak apps when flatpak is missing as packages start, and apt:flatpak installs in that
+# same step, so the first run would leave the apps out.
+if [ "$PROFILE" = desktop ] && command -v apt-get >/dev/null && ! command -v flatpak >/dev/null; then
+  apt_install flatpak
+fi
+
+command -v mise >/dev/null || curl -fsSL https://mise.run | MISE_VERSION="v$MISE_VERSION" sh
+[ -d "$DOTS/.git" ] || git clone --branch "$BRANCH" "$REPO" "$DOTS"
+
+if [ ! -s "$KEY" ]; then
+  key="${DOTS_AGE_KEY:-}"
+  if [ -z "$key" ]; then
+    printf 'Paste the age key (AGE-SECRET-KEY-1...) and press Enter: ' >/dev/tty
+    IFS= read -rs key </dev/tty
+    printf '\n' >/dev/tty
+  fi
+  case "$key" in AGE-SECRET-KEY-1*) ;; *) echo "install: that is not an age secret key" >&2; exit 2 ;; esac
+  (umask 077 && printf '%s\n' "$key" >"$KEY")
+fi
+mkdir -p "$DOTS/config/mise"
+if command -v age-keygen >/dev/null 2>&1 && [ -s "$KEY" ]; then
+  pub="$(age-keygen -y "$KEY" 2>/dev/null || true)"
+  if [ -n "$pub" ]; then
+    printf '[history.encryption]\nrecipients = ["%s"]\n' "$pub" > "$DOTS/config/mise/config.local.toml"
+  fi
+fi
+# The first adopt runs before ~/.config/mise links into the repo, so mise finds the key at its default path.
+# Only into a real folder: through the link it would land in the public checkout. The folder is removed below.
+if [ ! -L "$HOME/.config/mise" ]; then
+  mkdir -p "$HOME/.config/mise"
+  [ -e "$HOME/.config/mise/age.txt" ] || (umask 077 && cp "$KEY" "$HOME/.config/mise/age.txt")
+fi
+
+case "$HISTORY" in
+  https://github.com/*)
+    mise exec gh@latest -- gh auth status >/dev/null 2>&1 ||
+      mise exec gh@latest -- gh auth login --hostname github.com --git-protocol https --web
+    mise exec gh@latest -- gh auth setup-git --hostname github.com
+    ;;
+esac
+
+BOOTSTRAP_ARGS=("-E" "$PROFILE" "--yes")
+# Containers only: replace the base image's .bashrc/.profile. On a host, --force-dotfiles would replace a real
+# ~/.ssh or ~/.gnupg folder with a link and delete the keys in it.
+if [ "$PROFILE" = "container" ]; then BOOTSTRAP_ARGS+=("--force-dotfiles" "--skip" "user"); fi
+
+# Under `curl | bash` stdin is the script: give mise the terminal so prompts (sudo, chsh) can be answered.
+tty_in=/dev/null
+if (: </dev/tty) 2>/dev/null; then tty_in=/dev/tty; fi
+
+mise bootstrap --adopt "$HISTORY" "${BOOTSTRAP_ARGS[@]}" <"$tty_in"
+ln -sfn ../.local/share/dots/config/age "$HOME/.config/age"
+if [ ! -L "$HOME/.config/mise" ]; then
+  test -f "$HOME/.config/mise/config.local.toml" && cat "$HOME/.config/mise/config.local.toml" >> "$DOTS/config/mise/config.local.toml"
+  rm -rf "$HOME/.config/mise" # with age.txt: from here on the key is read from ~/.config/age/keys.txt
+fi
+ln -sfn ../.local/share/dots/config/mise "$HOME/.config/mise"
+# Hosts: a fresh home has its own ~/.bashrc and ~/.profile (from /etc/skel), and ~/.ssh or ~/.gnupg may already be
+# folders. mise refuses to replace them, rightly: forcing it can delete keys. Move them aside instead, once.
+if [ "$PROFILE" != container ]; then
+  aside="$HOME/.local/state/dots/pre-install-$(date +%Y%m%d%H%M%S)"
+  for name in .bashrc .profile .zshenv .ssh .gnupg; do
+    path="$HOME/$name"
+    if [ -L "$path" ] || [ ! -e "$path" ]; then continue; fi
+    if [ -d "$path" ] && [ -z "$(ls -A "$path")" ]; then
+      rmdir "$path"
+      continue
     fi
+    mkdir -p "$aside"
+    mv "$path" "$aside/"
+    echo "install: moved ~/$name to $aside (dots links it to its own copy)"
   done
-  warn "No GitHub token found - API rate limits may apply..."
-}
-run_as_user() {
-  local username="$1"; shift
-  # In DevContainers, if we're already the target user, just run directly
-  if is_devcontainer && [ "$USER" = "$username" ]; then
-    warn "Running command as current user '$USER' in DevContainer => '$*'"
-    bash -c "$*"
-  elif [ "$(id -u)" -eq 0 ] && [ "$username" != "root" ]; then
-    warn "Running command as user '$username' => '$*' ($USERNAME/$GROUPNAME)"
-    # Export all required function dependencies - include ALL functions that might be called
-    local all_functions="$(declare -f backup backup_home ensure_dir ensure_dir_and_export_var ensure_dirs_and_export_vars error fatal get_github_token group_exists has_cmd info is_container is_darwin is_devcontainer is_host log needs_sudo ok prepare_tools_nvim prepare_tools_zsh run_as_target_user run_cmd success task_add_flox task_add_packages_from_flatpak task_add_packages_from_homebrew task_add_packages_from_snap task_add_packages_from_flox task_add_flox_permissions user_exists warn)"
-    # Export required arrays and variables
-    local all_arrays="$(declare -p COLORS PACKAGES)"
-    # Preserve environment variables for the target user
-    sudo -u "$username" -H \
-      HOME="${HOME:-}" \
-      USERNAME="${USERNAME:-}" \
-      GROUPNAME="${GROUPNAME:-}" \
-      NPM_CONFIG_PREFIX="${NPM_CONFIG_PREFIX:-}" \
-      XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-}" \
-      XDG_DATA_HOME="${XDG_DATA_HOME:-}" \
-      MISE_DATA_HOME="${MISE_DATA_HOME:-}" \
-      MISE_CACHE_DIR="${MISE_CACHE_DIR:-}" \
-      FLOX_PATH="${FLOX_PATH:-}" \
-      GITHUB_TOKEN="${GITHUB_TOKEN:-}" \
-      USR_LOCAL_BIN="${USR_LOCAL_BIN:-}" \
-      PLATFORM_ARCH="${PLATFORM_ARCH:-}" \
-      FLOX_VERSION="${FLOX_VERSION:-}" \
-      UNAME="${UNAME:-}" \
-      CONTEXT="${CONTEXT:-}" \
-      PATH="/usr/local/bin:$HOME/.local/bin:$PATH" \
-      bash -c "
-        # Import functions and arrays
-        $all_functions
-        $all_arrays
-        # Execute the command
-        $*
-      "
-  else
-    warn "Running command as current user '$USER' => '$*'"
-    bash -c "$*"
-  fi
-}
-run_as_target_user() {
-  local command="$1"
-  shift
-  if [ $# -gt 0 ]; then
-    run_as_user "$USERNAME" "$command" "$@"
-  else
-    run_as_user "$USERNAME" "$command"
-  fi
-}
-backup() {
-  local target="$1" source="${2:-''}"
-  local cmd_prefix=""
-  if needs_sudo || is_container || is_devcontainer; then
-    cmd_prefix="sudo "
-  fi
-  if [ -e "$target" ]; then
-    if is_container; then
-      run_cmd ${cmd_prefix}rm -rf "$target"
-    else
-      run_cmd ${cmd_prefix}mv "$target" "${BACKUP_DIR:?}/"
-    fi
-  fi
-  if [ -n "$source" ] && [ -e "$source" ]; then
-    run_cmd ${cmd_prefix}ln -sf "$source" "$target"
-  fi
-}
-backup_home() {
-  BACKUP_DIR=$HOME/.local/share/backup/$(date +%Y%m%d_%H%M%S)
-  local ROOT_DIRS_TO_BACKUP=("$HOME" "/root")
-  if ! is_container; then
-    ROOT_DIRS_TO_BACKUP=("$HOME")
-    ensure_dir "$BACKUP_DIR"
-  fi
-  for e in "${ROOT_DIRS_TO_BACKUP[@]}"; do
-    for f in $CONFIGS_TO_BACKUP; do
-      backup "${e:?}/$f"
-    done
-    ok "$1" "BAK$e" "{$CONFIGS_TO_BACKUP}" "✔"
-  done
-}
-ensure_dirs_and_export_vars() {
- for dir_var in "$@"; do
-    ensure_dir_and_export_var "${dir_var%%:*}" "${dir_var##*:}";
-  done
-}
-ensure_user_and_group_darwin() {
-  local cmd_prefix=""
-  if needs_sudo || is_container || is_devcontainer; then
-    cmd_prefix="sudo "
-  fi
-  if ! user_exists "$USERNAME"; then
-    local next_uid=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -n | tail -1)
-    next_uid=$((next_uid + 1))
-    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME"
-    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME" UserShell /bin/zsh
-    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME" RealName "$USERNAME"
-    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME" UniqueID "$next_uid"
-    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME" PrimaryGroupID 20
-    run_cmd ${cmd_prefix}dscl . create /Users/"$USERNAME" NFSHomeDirectory /Users/"$USERNAME"
-    run_cmd ${cmd_prefix}createhomedir -c -u "$USERNAME"
-    run_cmd ${cmd_prefix}dscl . append /Groups/admin GroupMembership "$USERNAME"
-    if is_container; then
-      ok "$1" "USER/GROUP" "/Users/$USERNAME passwordless created; Admin group access granted!" "✔"
-    else
-      run_cmd ${cmd_prefix}passwd "$USERNAME"
-      run_cmd ${cmd_prefix}pwpolicy -u "$USERNAME" -setpolicy "passwordCannotBeAccountName=1,requiresAlpha=1,requiresNumeric=1,minChars=8,maxFailedLoginAttempts=5,usingHistory=5,canModifyPasswordforSelf=1,expiresEveryNDays=90"
-      ok "$1" "USER/GROUP" "/Users/$USERNAME created; Forcing password change on first login!" "✔"
-    fi
-  fi
-  if ! group_exists "$GROUPNAME"; then
-    local next_gid=$(dscl . -list /Groups PrimaryGroupID | awk '{print $2}' | sort -n | tail -1)
-    next_gid=$((next_gid + 1))
-    run_cmd ${cmd_prefix}dscl . create /Groups/"$GROUPNAME"
-    run_cmd ${cmd_prefix}dscl . create /Groups/"$GROUPNAME" PrimaryGroupID "$next_gid"
-    ok "$1" "USER/GROUP" "/Groups/$GROUPNAME created; PrimaryGroupID=$next_gid!" "✔"
-  fi
-}
-ensure_user_and_group_debian() {
-  local cmd_prefix=""
-  if needs_sudo || is_container || is_devcontainer; then
-    cmd_prefix="sudo "
-  fi
-  if ! group_exists "$GROUPNAME"; then
-    run_cmd ${cmd_prefix}groupadd "$GROUPNAME" 2>/dev/null;
-    ok "$1" "USER/GROUP" "Group $GROUPNAME created!" "✔"
-  fi
-  if ! user_exists "$USERNAME"; then
-    run_cmd ${cmd_prefix}useradd -m -s /bin/bash -G "$GROUPNAME" "$USERNAME" 2>/dev/null
-    if is_container; then
-      run_cmd ${cmd_prefix}usermod -aG sudo "$USERNAME" 2>/dev/null || run_cmd ${cmd_prefix}usermod -aG wheel "$USERNAME"
-      run_cmd ${cmd_prefix}passwd -d "$USERNAME"
-      echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/$USERNAME"
-      run_cmd ${cmd_prefix}chmod 440 "/etc/sudoers.d/$USERNAME"
-      ok "$1" "USER/GROUP" "User $USERNAME:$GROUPNAME passwordless created; Sudo access granted!" "✔"
-    else
-      run_cmd ${cmd_prefix}usermod -aG sudo "$USERNAME" 2>/dev/null || run_cmd ${cmd_prefix}usermod -aG $GROUPNAME "$USERNAME" 2>/dev/null
-      run_cmd ${cmd_prefix}passwd "$USERNAME" 2>/dev/null
-      run_cmd ${cmd_prefix}chage -d 0 "$USERNAME" 2>/dev/null
-      ok "$1" "USER/GROUP" "User $USERNAME:$GROUPNAME created; Forcing password change on first login!" "✔"
-    fi
-  fi
-}
-# TASKS functions
-task_add_flox_permissions() {
-  local username="${1:-$USERNAME}"
-  info "Fixing Nix/Flox permissions for user '$username'..."
+fi
 
-  # Fix Nix database permissions
-  [ -d "/nix/var/nix" ] && run_cmd sudo chown -R "$username:$GROUPNAME" "/nix/var/nix"
-
-  # Fix user profile directory
-  local user_profile_dir="/nix/var/nix/profiles/per-user/$username"
-  [ -d "$user_profile_dir" ] || run_cmd sudo mkdir -p "$user_profile_dir"
-  run_cmd sudo chown -R "$username:$GROUPNAME" "$user_profile_dir"
-
-  # Fix user's flox directories
-  if [ -d "/home/$username" ]; then
-    run_cmd sudo chown -R "$username:$GROUPNAME" "/home/$username"
-  elif [ -d "/home/$username/.config/flox" ]; then
-    run_cmd sudo chown -R "$username:$GROUPNAME" "/home/$username/.config/flox"
-  elif [ -d "/home/$username/.local/share/dots/config/flox" ]; then
-    run_cmd sudo chown -R "$username:$GROUPNAME" "/home/$username/.local/share/dots/config/flox"
-  fi
-}
-task_add_flox() {
-  if is_darwin; then # curl -fL https://downloads.flox.dev/by-env/stable/osx/flox-1.7.5.aarch64-darwin.pkg -o /tmp/flox.pkg && sudo installer -pkg /tmp/flox.pkg -target /usr/local/bin && rm /tmp/flox.pkg && flox --version
-    run_cmd wget "https://downloads.flox.dev/by-env/stable/osx/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-darwin.pkg" -O "/tmp/flox.pkg"
-    run_cmd sudo installer -pkg /tmp/flox.pkg -target / && rm -f /tmp/flox.pkg
-  else # curl -L https://downloads.flox.dev/by-env/stable/deb/flox-1.7.5.aarch64-linux.deb -o /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version | wget https://downloads.flox.dev/by-env/stable/deb/flox-1.7.2.aarch64-linux.deb -O /tmp/flox.deb && sudo dpkg -i /tmp/flox.deb && rm /tmp/flox.deb && flox --version
-    # Ensure nix multi-user build accounts exist (required if Nix uses build-users-group=nixbld)
-    run_cmd sudo groupadd -r nixbld || true
-    for i in $(seq 1 32); do
-      run_cmd sudo useradd -r -g nixbld -G nixbld -d /var/empty -s /usr/sbin/nologin "nixbld$i" 2>/dev/null || true
-    done
-    run_cmd wget "https://downloads.flox.dev/by-env/stable/deb/flox-${FLOX_VERSION}.${PLATFORM_ARCH}-linux.deb" -O "/tmp/flox.deb"
-    run_cmd sudo dpkg -i /tmp/flox.deb && rm -f /tmp/flox.deb
-  fi
-}
-task_add_packages_from_flox() {
-  if is_host; then
-    run_cmd sudo flox pull roalcantara/default --dir "$HOME" --force
-  else
-    run_cmd sudo flox pull roalcantara/cockpit --dir "$HOME" --force
-  fi
-  # Fix permissions after installation for container/devcontainer use
-  task_add_flox_permissions
-  eval "$(FLOX_SHELL=/bin/bash flox activate --dir $HOME)"
-  run_cmd flox envs
-  run_cmd flox list --dir "$HOME"
-}
-task_add_packages_from_homebrew() {
-  local brewfile="${1:-${PACKAGES[homebrew]}}"
-  local indent="${2:-}"
-  if ! command -v brew >/dev/null 2>&1; then
-    info "$1 Installing Homebrew"
-    run_cmd /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    eval "$(/opt/homebrew/bin/brew shellenv)" || true
-    ok "$1" "HOMEBREW" "Homebrew installed! ✔"
-  fi
-  run_cmd brew update && run_cmd brew upgrade || true
-  run_cmd brew bundle install --file "$brewfile"
-  run_cmd brew list --cask
-  ok "${indent}" "HOMEBREW" "Brewfile installed! ✔"
-}
-task_add_packages_from_flatpak() {
-  local apps_file="${1:-${PACKAGES[flatpak]}}"
-  local indent="${2:-}"
-  local cmd_prefix=""
-  if needs_sudo || is_container || is_devcontainer; then
-    cmd_prefix="sudo "
-  fi
-  if ! command -v flatpak >/dev/null 2>&1; then
-    export DEBIAN_FRONTEND=noninteractive
-    if dpkg -l 2>/dev/null | grep -q gnome-software; then
-      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get install -y flatpak gnome-software-plugin-flatpak
-    else
-      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get install -y flatpak
-    fi
-    run_cmd ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
-    run_cmd flatpak --version
-    ok "$1" "FLATPAK" "Flatpak installed and configured! ✔"
-  fi
-
-  if ! flatpak remotes 2>/dev/null | grep -q flathub; then
-    run_cmd ${cmd_prefix}flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-  fi
-
-  info "${indent}Checking Flatpak applications from '$apps_file'"
-  if [ ! -f "$apps_file" ]; then
-    warn "${indent}Flatpak apps file not found: '$apps_file' ✗"
-    return 0
-  fi
-
-  info "${indent}Installing Flatpak applications from '$apps_file'"
-  local apps
-  apps=$(grep -v '^#' "$apps_file" | grep -v '^$' | tr '\n' ' ')
-
-  if [ -z "$apps" ]; then
-    info "${indent}No apps to install ✗"
-    return 0
-  fi
-
-  if ${cmd_prefix}flatpak install -y --noninteractive flathub $apps 2>&1; then
-    ok "${indent}" "FLATPAK" "Flatpak apps installed! ✔"
-  else
-    warn "${indent}Batch install failed, trying individually..."
-    for app in $apps; do
-      if flatpak list --app 2>/dev/null | grep -q "$app"; then
-        info "${indent}  ✓ $app (already installed)"
-      else
-        info "${indent}  Installing $app..."
-        ${cmd_prefix}flatpak install -y --noninteractive flathub "$app" 2>/dev/null || warn "${indent}  ✗ Failed: $app"
-      fi
-    done
-  fi
-  info "${indent}Installed Flatpak Apps:"
-  run_cmd ${cmd_prefix}flatpak list --app --columns=name,application
-  ok "${indent}" "FLATPAK" "Flatpak apps installed! ✔"
-}
-task_add_packages_from_snap() {
-  local apps_file="${1:-${PACKAGES[snap]}}"
-  local indent="${2:-}"
-  local cmd_prefix=""
-  if needs_sudo || is_container || is_devcontainer; then
-    cmd_prefix="sudo "
-  fi
-  info "${indent}Checking Snap applications from '$apps_file'"
-  if [ ! -f "$apps_file" ]; then
-    warn "${indent}Snap apps file not found: '$apps_file' ✗"
-    return 0
-  fi
-  export DEBIAN_FRONTEND=noninteractive
-  run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get install -y snapd
-  run_cmd ${cmd_prefix}apt-get clean && run_cmd ${cmd_prefix}rm -rf /var/lib/apt/lists/*
-  # Enable snapd socket and create symlink
-  run_cmd ${cmd_prefix}systemctl enable --now snapd.socket
-  run_cmd ${cmd_prefix}ln -sf /var/lib/snapd/snap /snap
-
-  # Wait for snapd to be ready
-  info "${indent}Waiting for snapd to be ready..."
-  local retries=0
-  while ! snap version >/dev/null 2>&1 && [ $retries -lt 10 ]; do
-    sleep 2
-    ((retries++))
-  done
-
-  if ! snap version >/dev/null 2>&1; then
-    warn "${indent}Snap daemon not ready, skipping Snap installations"
-    return 1
-  fi
-
-  info "${indent}Installing Snap applications from '$apps_file'"
-  local installed=0
-  local failed=0
-  while IFS= read -r line || [ -n "$line" ]; do
-    # Skip comments and empty lines
-    [[ "$line" =~ ^#.*$ ]] && continue
-    [[ -z "$line" ]] && continue
-
-    # Parse app name and flags
-    local app_name
-    local app_flags
-    app_name=$(echo "$line" | awk '{print $1}')
-    app_flags=$(echo "$line" | cut -d' ' -f2-)
-
-    # If only one word, no flags
-    if [ "$app_name" = "$app_flags" ]; then
-      app_flags=""
-    fi
-
-    # Check if already installed
-    if snap list 2>/dev/null | grep -q "^$app_name "; then
-      info "${indent}  ✓ $app_name (already installed)"
-      ((installed++))
-    else
-      info "${indent}  Installing $app_name $app_flags..."
-      if ${cmd_prefix}snap install $app_name $app_flags; then
-        info "${indent}  ✓ $app_name installed"
-        ((installed++))
-      else
-        warn "${indent}  ✗ Failed to install $app_name"
-        ((failed++))
-      fi
-    fi
-  done < "$apps_file"
-  info "${indent}Refreshing Snap packages..."
-  timeout 60 ${cmd_prefix}snap refresh || warn "${indent}Snap refresh timed out or failed"
-  info "${indent}Installed Snap apps:"
-  run_cmd ${cmd_prefix} snap list
-  ok "${indent}" "SNAP" "Snap apps installed: $installed, failed: $failed ✔"
-}
-task_add_packages_from_apt() {
-  local apps_file="${1:-${PACKAGES[apt]}}"
-  local indent="${2:-}"
-  local cmd_prefix=""
-  if needs_sudo || is_container || is_devcontainer; then
-    cmd_prefix="sudo "
-  fi
-
-  info "${indent}Checking APT applications from '$apps_file'"
-  if [ ! -f "$apps_file" ]; then
-    warn "${indent}APT apps file not found: '$apps_file' ✗"
-    return 0
-  fi
-
-  # Update package lists first
-  info "${indent}Updating APT package lists..."
-  export DEBIAN_FRONTEND=noninteractive
-  run_cmd ${cmd_prefix}apt-get update -y
-
-  local installed=0
-  local failed=0
-  local packages_to_install=()
-
-  # Collect packages to install
-  while IFS= read -r line || [ -n "$line" ]; do
-    # Skip comments and empty lines
-    [[ "$line" =~ ^#.*$ ]] && continue
-    [[ -z "$line" ]] && continue
-
-    local app_name=$(echo "$line" | awk '{print $1}')
-
-    # Check if already installed
-    if dpkg -l 2>/dev/null | grep -q "^ii  $app_name "; then
-      info "${indent}  ✓ $app_name (already installed)"
-      ((installed++))
-    else
-      packages_to_install+=("$app_name")
-    fi
-  done < "$apps_file"
-
-  # Install packages in batch
-  if [ ${#packages_to_install[@]} -gt 0 ]; then
-    info "${indent}Installing ${#packages_to_install[@]} APT packages..."
-    export DEBIAN_FRONTEND=noninteractive
-    if ${cmd_prefix}apt-get install -y "${packages_to_install[@]}"; then
-      info "${indent}✓ All packages installed successfully"
-      ((installed += ${#packages_to_install[@]}))
-    else
-      warn "${indent}✗ Some packages failed to install"
-      ((failed += ${#packages_to_install[@]}))
-    fi
-  fi
-
-  # Cleanup and show installed packages
-  info "${indent}Cleaning up APT cache..."
-  export DEBIAN_FRONTEND=noninteractive
-  run_cmd ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/* && ${cmd_prefix}fc-cache -f -v
-  info "${indent}Installed APT packages:"
-  run_cmd ${cmd_prefix}dpkg -l | awk '/^ii/ {print $2}'
-  ok "${indent}" "APT" "APT apps installed: $installed, failed: $failed ✔"
-}
-task_add_linux_docker_desktop() {
-  local indent="${1:-}"
-
-  # Check if Docker is already available
-  if command -v docker >/dev/null 2>&1; then
-    info "$indent Docker already available, skipping..."
-    return 0
-  fi
-
-  # Check OS requirements
-  if [ ! -f "/etc/os-release" ]; then
-    warn "$indent Cannot detect OS, skipping Docker Desktop..."
-    return 0
-  fi
-
-  . /etc/os-release
-
-  # Support both Ubuntu and Debian-based systems
-  if [[ "$ID" != "ubuntu" ]] && [[ "$ID" != "debian" ]] && [[ "$ID_LIKE" != *"ubuntu"* ]] && [[ "$ID_LIKE" != *"debian"* ]]; then
-    warn "$indent Docker Desktop only available on Ubuntu/Debian-based systems (detected: $ID)"
-    return 0
-  fi
-
-  # Check system requirements
-  if ! command -v systemctl >/dev/null 2>&1; then
-    warn "$indent Docker Desktop requires systemd, skipping..."
-    return 0
-  fi
-
-  info "$indent Setting up Docker Desktop for $ID..."
-
-  # Set up Docker Desktop repository
-  if [ ! -f "/etc/apt/sources.list.d/docker-desktop.list" ]; then
-    info "$indent Adding Docker Desktop repository..."
-    run_cmd sudo install -m 0755 -d /etc/apt/keyrings
-
-    # Use the correct repository URL for both Ubuntu and Debian
-    local repo_url="https://desktop.docker.com/linux/ubuntu"
-    if [[ "$ID" == "debian" ]]; then
-      repo_url="https://desktop.docker.com/linux/debian"
-    fi
-
-    if curl -fsSL "${repo_url}/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker-desktop.gpg 2>/dev/null; then
-      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-desktop.gpg] ${repo_url} ${VERSION_CODENAME} stable" | \
-        sudo tee /etc/apt/sources.list.d/docker-desktop.list > /dev/null
-
-      export DEBIAN_FRONTEND=noninteractive
-      run_cmd sudo apt-get update -y
-      ok "$indent" "DOCKER" "Repository configured! ✔"
-    else
-      warn "$indent Failed to add Docker Desktop repository"
-      return 1
-    fi
-  fi
-
-  # Install Docker Desktop
-  if ! dpkg -l 2>/dev/null | grep -q docker-desktop; then
-    info "$indent Installing Docker Desktop..."
-    export DEBIAN_FRONTEND=noninteractive
-    if sudo apt-get install -y docker-desktop; then
-      ok "$indent" "DOCKER" "Docker Desktop installed! ✔"
-      info "$indent Note: You may need to log out and back in to use Docker Desktop"
-    else
-      warn "$indent Docker Desktop installation failed"
-      return 1
-    fi
-  else
-    info "$indent Docker Desktop already installed"
-  fi
-}
-task_add_linux_ollama() {
-  local indent="${1:-}"
-  if ! has_cmd ollama; then
-    info "$indent Installing Ollama"
-    if run_cmd curl -fsSL https://ollama.ai/install.sh | sh; then
-      ok "$indent" "OLLAMA" "Ollama installed! ✔"
-    else
-      warn "$indent Failed to install Ollama..."
-    fi
-  fi
-}
-task_add_apps_manually_linux() {
-  local indent="${1:-}"
-  # Ollama: curl -fsSL https://ollama.ai/install.sh | sh
-  task_add_linux_ollama "$indent"
-  # Nerd Fonts
-  task_add_linux_nerd_fonts "$indent"
-  # Docker Desktop: Use Docker Engine (apt install docker.io)
-  task_add_linux_docker_desktop "$indent"
-  # TODO
-  # Claude/ChatGPT: Use web apps or manual installation
-  # Ghostty: Build from source (https://github.com/ghostty-org/ghostty)
-  # Google Drive: Use rclone or gnome-online-accounts
-}
-# PREPARATION functions
-prepare_platform_detection() {
-  UNAME="$(uname -s | tr '[:upper:]' '[:lower:]')"
-  [ "$UNAME" != "darwin" ] && [ "$UNAME" != "linux" ] && fatal "$1 Unsupported System '$UNAME'! Supported: darwin, linux (Debian-based)"
-  DISTRO=$( [ "$UNAME" = "darwin" ] && echo "darwin" || { [ -f "/etc/os-release" ] && . /etc/os-release && echo "$ID"; } || echo "unknown" )
-  case "$(uname -m)" in aarch64|arm64) ARCH="arm64"; PLATFORM_ARCH="aarch64";; x86_64|amd64) ARCH="amd64"; PLATFORM_ARCH="x86_64";; *) fatal "$1 Unsupported arch '$(uname -m)'! Supported: arm64, amd64";; esac
-  ENV=$(is_devcontainer && echo "devcontainer" || (is_container && echo "container" || echo "host"))
-  CONTEXT="$UNAME/$ARCH/$ENV"
-  success "$1 Context Detection READY => '$CONTEXT' ✔"
-}
-prepare_argument_parsing() {
-  local step="$1"; shift
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      -u|--username) USERNAME="$2"; shift 2 ;;
-      -g|--groupname) GROUPNAME="$2"; shift 2 ;;
-      -t|--timezone) TIMEZONE="$2"; shift 2 ;;
-      -p|--package-manager) PACKAGE_MANAGER="$2"; shift 2 ;;
-      -r|--repo) REPO_URL="$2"; shift 2 ;;
-      -b|--branch) BRANCH="$2"; shift 2 ;;
-      -e|--embedded) export DOTS_EMBEDDED=1; shift ;;
-      *)
-        warn "$step Unknown option: $1" >&2
-        show_usage
-        exit 1
-      ;;
-    esac
-  done
-  if [[ -z "${USERNAME:-}" ]]; then
-    if [[ "$USER" == "root" ]]; then
-      USERNAME="roalcantara"
-    else
-      USERNAME=$USER
-    fi
-  fi
-  if [[ -z "${GROUPNAME:-}" ]]; then
-    if [[ "$USER" == "root" ]]; then
-      if is_darwin; then
-        GROUPNAME="staff"
-      else
-        GROUPNAME="wheel"
-      fi
-    else
-      GROUPNAME=$(id -gn)
-    fi
-  fi
-  [[ "$PACKAGE_MANAGER" != "flox" ]] && show_usage && exit 1
-  success "$step Arguments extraction READY => [USERNAME:$USERNAME, GROUPNAME:$GROUPNAME, TIMEZONE:$TIMEZONE, PACKAGE_MANAGER:$PACKAGE_MANAGER, REPO_URL:$REPO_URL, BRANCH:$BRANCH, DOTS_EMBEDDED:${DOTS_EMBEDDED:-}] ✔"
-}
-prepare_system_requirements() {
-  if has_cmd apt; then
-    local cmd_prefix=""
-    if needs_sudo || is_container || is_devcontainer; then
-      cmd_prefix="sudo "
-    fi
-    export DEBIAN_FRONTEND=noninteractive
-    if is_host; then
-      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y && ${cmd_prefix}apt-get install -y --no-install-recommends sudo git wget unzip ca-certificates gnupg zsh
-      run_cmd ${cmd_prefix}add-apt-repository universe -y && ${cmd_prefix}apt-get update -y
-    else
-      run_cmd ${cmd_prefix}apt-get update -y && ${cmd_prefix}apt-get upgrade -y
-    fi
-    run_cmd ${cmd_prefix}apt-get clean && ${cmd_prefix}rm -rf /var/lib/apt/lists/*
-    success "$1 System MINIMAL packages installed successfully! ✔"
-  else
-    warn "$1 No SYSTEM PACKAGE MANAGER found! Skipping system packages installation..."
-  fi
-}
-prepare_system_post_install() {
-  if [[ -n "$TIMEZONE" ]] && [[ -f "/usr/share/zoneinfo/$TIMEZONE" ]]; then
-    # Skip timezone setting in DevContainers as it's not allowed
-    if ! is_devcontainer; then
-      ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime || sudo ln -snf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
-      if echo "$TIMEZONE" > /etc/timezone 2>/dev/null || echo "$TIMEZONE" | sudo tee /etc/timezone > /dev/null; then
-        info "$1 Timezone '$TIMEZONE' set successfully."
-      else
-        error "$1 Failed to write timezone '$TIMEZONE' to /etc/timezone."
-      fi
-    fi
-  else
-    error "$1 Invalid timezone: '$TIMEZONE'. Skipping timezone configuration."
-  fi
-  success "$1 System post-install configuration READY! ✔"
-}
-prepare_user_and_group() {
-  is_darwin && ensure_user_and_group_darwin "$1" || ensure_user_and_group_debian "$1"
-  export USER="$USERNAME"; export GROUP="$GROUPNAME";
-  ok "$1" "USER/GROUP" "{USER=$USER, GROUP=$GROUP} ensured!" "✔"
-}
-prepare_home_and_xdg_dirs() {
-  is_darwin && export HOME="/Users/$USERNAME" || export HOME="/home/$USERNAME"
-  backup_home "$1"
-  export XDG_CONFIG_HOME="$HOME/.config"
-  ensure_dirs_and_export_vars \
-    "$HOME/.cache:XDG_CACHE_HOME" \
-    "$HOME/.local/share:XDG_DATA_HOME" \
-    "$HOME/.local/state:XDG_STATE_HOME" \
-    "/tmp/runtime-$(id -u "$USERNAME"):XDG_RUNTIME_DIR" \
-    "$HOME/.local/bin:XDG_LOCAL_BIN_DIR" \
-    "$HOME/Desktop:XDG_DESKTOP_DIR" \
-    "$HOME/Downloads:XDG_DOWNLOAD_DIR" \
-    "$HOME/Documents:XDG_DOCUMENTS_DIR" \
-    "$HOME/Music:XDG_MUSIC_DIR" \
-    "$HOME/Pictures:XDG_PICTURES_DIR" \
-    "$HOME/Movies:XDG_VIDEOS_DIR" \
-    "$HOME/Projects:XDG_PROJECTS_DIR" \
-    "$HOME/Work:XDG_WORKSPACE_DIR" \
-    "$HOME/.cache/zsh:ZSH_CACHE_DIR" \
-    "$HOME/.cache/npm:NPM_CONFIG_CACHE" \
-    "$HOME/.local/state/zim:ZIM_HOME" \
-    "$HOME/.local/share/zsh:ZSH_DATA_DIR" \
-    "$HOME/.local/share/npm:NPM_CONFIG_PREFIX" \
-    "$HOME/.local/share/gems:GEM_HOME" \
-    "$HOME/.local/share/mise:MISE_DATA_HOME" \
-    "$HOME/.cache/mise:MISE_CACHE_DIR"
-  ok "$1" "HOME/XDG/DIRS" "{HOME=$HOME, XDG_CONFIG_HOME=$XDG_CONFIG_HOME, XDG_CACHE_HOME=$XDG_CACHE_HOME, XDG_DATA_HOME=$XDG_DATA_HOME, XDG_STATE_HOME=$XDG_STATE_HOME, ZSH_CACHE_DIR=$ZSH_CACHE_DIR, NPM_CONFIG_PREFIX=$NPM_CONFIG_PREFIX, GEM_HOME=$GEM_HOME, MISE_DATA_HOME=$MISE_DATA_HOME, MISE_CACHE_DIR=$MISE_CACHE_DIR} exported!" "✔"
-}
-prepare_tools_zsh() {
-  local zsh_path="$(command -v zsh)"
-  local current_shell="$(has_cmd getent && getent passwd "$USERNAME" | cut -d: -f7 || awk -F: -v user="$USERNAME" '$1 == user {print $7}' /etc/passwd)"
-  if [ "$current_shell" != "$zsh_path" ] && has_cmd chsh; then
-    local cmd_prefix=""
-    if needs_sudo || is_container || is_devcontainer; then
-      cmd_prefix="sudo "
-    fi
-    if ! run_cmd ${cmd_prefix}chsh -s "$zsh_path" "$USERNAME" 2>/dev/null; then
-      warn "$1 ZSH default shell change failed..."
-    fi
-    if [ ! -f "/etc/zsh/zshenv" ]; then
-      run_cmd ${cmd_prefix}touch /etc/zsh/zshenv
-    fi
-    if ! grep -q "USER_ZDOTDIR" /etc/zsh/zshenv; then
-      printf '\nexport USER_ZDOTDIR=%s/.config/zsh\n' "$HOME" | ${cmd_prefix}tee -a /etc/zsh/zshenv > /dev/null
-      ok "$1" "TOOLS/ZSH" "USER_ZDOTDIR set to '$HOME/.config/zsh' for user '$USERNAME' at '/etc/zsh/zshenv' ✔"
-    fi
-  fi
-  ok "$1" "TOOLS/ZSH" "ZSH default shell changed to '$zsh_path' for user '$USERNAME' ✔"
-}
-prepare_tools_nvim() {
-  if [ -d "$XDG_CONFIG_HOME/nvim" ]; then
-    rm -rf "$XDG_CONFIG_HOME/nvim/.venv"
-  else
-    warn "$1 Neovim config not found at '$XDG_CONFIG_HOME/nvim'! Skipping..."; return;
-  fi
-  has_cmd npm && timeout 300 npm -g --prefix="$NPM_CONFIG_PREFIX" install neovim 2>/dev/null || warn "$1 NEOVIM/PROVIDERS/NPM NOT FOUND => NPM packages installation skipped..."
-  has_cmd python3 && cd "$XDG_CONFIG_HOME/nvim" && python3 -m venv .venv && sudo chown -R "$USERNAME:$GROUPNAME" "$HOME" && .venv/bin/pip install pynvim neovim || warn "$1 NEOVIM/PROVIDERS/PYTHON NOT FOUND or failed to install pynvim/neovim => PIP packages installation skipped..."
-  has_cmd gem && timeout 300 gem install neovim 2>/dev/null || warn "$1 NEOVIM/PROVIDERS/RUBY NOT FOUND => Gems installation skipped..."
-  has_cmd nvim && timeout 600 nvim --headless "+Lazy! sync" "+TSUpdateSync" "+MasonToolsUpdateSync" "+qa" 2>/dev/null || warn "$1 NEOVIM/MASON plugins failed => non-fatal, continue the setup..."
-  ok "$1" "TOOLS/NEOVIM/PROVIDERS/RUBY"
-}
-prepare_tools_hk() {
-  info "$1 Preparing hk config and installing hooks..."
-  local cmd_prefix=""
-  if needs_sudo || is_container || is_devcontainer; then
-    cmd_prefix="sudo "
-  fi
-  # hk reads ~/.config/hk/config.pkl and cog reads ~/.config/cog/cog.toml.
-  # Link the directories; the repo already names the files correctly.
-  for hk_cfg_dir in hk cog; do
-    backup "$HOME/.config/$hk_cfg_dir" "$HOME/.local/share/dots/config/$hk_cfg_dir"
-  done
-
-  # Install git hooks for this repository via hk
-  if has_cmd mise; then
-    info "$1 Installing hk git hooks globally via mise..."
-    run_as_target_user "mise run setup:hooks"
-  elif has_cmd hk; then
-    info "$1 Installing hk git hooks for this repository..."
-    run_as_target_user "hk install --mise --legacy --force-local"
-  else
-    warn "$1 hk not found on PATH! Hook installation skipped."
-  fi
-  ok "$1" "TOOLS/HK" "hk git hooks and config prepared! ✔"
-}
-# CORE functions
-setup_ownership() {
-  run_cmd chown -R "$USERNAME:$GROUPNAME" "$HOME" 2>/dev/null || sudo chown -R "$USERNAME:$GROUPNAME" "$HOME" || {
-    fatal "$1 Failed to ensure ownership of '$HOME' to '$USERNAME:$GROUPNAME'"
-  }
-  ok "$1" "CHOWN$HOME" "{USER=$USERNAME, GROUP=$GROUPNAME}" "${2:-✔}"
-}
-setup_system() {
-  prepare_platform_detection "$1"
-  prepare_argument_parsing "$1" "${@:2}"
-  prepare_system_requirements "$1"
-  prepare_system_post_install "$1"
-  ok "$1" "SYSTEM/PACKAGES/$CONTEXT"
-}
-setup_user_home_and_dotfiles() {
-  prepare_user_and_group "$1"
-  prepare_home_and_xdg_dirs "$1"
-  local cmd_prefix=""
-  if needs_sudo || is_container || is_devcontainer; then
-    cmd_prefix="sudo "
-  fi
-  if [ -n "${DOTS_EMBEDDED:-}" ]; then
-    [ -d "$HOME/.local/share/dots/config" ] || fatal "$1 Embedded install requires '$HOME/.local/share/dots/config' (copy the repo into the image or set WORKDIR before running install)"
-  else
-    if [ ! -d "$HOME/.local/share/dots" ]; then # Clone repo if not present
-      run_cmd ${cmd_prefix}git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$HOME/.local/share/dots"
-    elif [ -d "$HOME/.local/share/dots/.git" ]; then # Update repo if already present
-      run_cmd ${cmd_prefix}git -C "$HOME/.local/share/dots" pull --ff-only origin "$BRANCH"
-    fi
-  fi
-  [ -d "$HOME/.local/share/dots/config" ] && backup "$HOME/.config" "$HOME/.local/share/dots/config" || fatal "Source directory '$HOME/.local/share/dots/config' not found!"
-  backup "$HOME/.zshenv" "$HOME/.config/zsh/.zshenv"
-  backup "$HOME/.profile" "$HOME/.config/.profile"
-  ensure_dirs_and_export_vars "$HOME/.config/zsh:ZDOTDIR" "$HOME/.config/flox:FLOX_PATH"
-  # Create symlinks in $HOME/.local/bin for each file in $HOME/.local/share/dots/config/bin if not already present
-  if [ -d "$HOME/.local/share/dots/config/bin" ]; then
-    for file in "$HOME/.local/share/dots/config/bin/"*; do
-      # Only expose executable regular files as commands in ~/.local/bin.
-      [ -f "$file" ] && [ -x "$file" ] || continue
-      local base_name="$(basename "$file")"
-      local current_target="$HOME/.local/bin/$base_name"
-      if has_cmd readlink && [ -L "$HOME/.local/bin/$base_name" ]; then
-        current_target="$(readlink "$HOME/.local/bin/$base_name" || true)"
-      fi
-      if [ ! -L "$HOME/.local/bin/$base_name" ] || [ "$current_target" != "$file" ]; then
-        run_cmd ${cmd_prefix}ln -snf "$file" "$HOME/.local/bin/$base_name"
-        ok "$1" "USER/HOME/DOTS/BIN" "Symlink set '$HOME/.local/bin/$base_name' targeting => '$file'! ✔"
-      fi
-    done
-  fi
-  if is_container && [ -z "${DOTS_EMBEDDED:-}" ]; then
-    run_cmd ${cmd_prefix}rm -rf "$HOME/.local/share/dots/.git"
-  fi
-  ok "$1" "USER/HOME/DOTS" "{XDG_CONFIG_HOME=$XDG_CONFIG_HOME, ZDOTDIR=$ZDOTDIR, FLOX_PATH=$FLOX_PATH, HOME=$HOME}"
-}
-setup_user_context() {
-  setup_ownership "$1" # Just ensure ownership, no user switching
-  ok "$1" "USER_CONTEXT/$USERNAME" "{HOME=$HOME}"
-}
-setup_package_manager() {
-  if ! has_cmd "$PACKAGE_MANAGER"; then
-    if [ "$PACKAGE_MANAGER" = "flox" ]; then
-      task_add_flox
-    else
-      fatal "$1 '$PACKAGE_MANAGER' is unknown! Available options are: flox"
-    fi
-  fi
-  run_cmd which $PACKAGE_MANAGER && $PACKAGE_MANAGER --version && ok "$1" "PM/$PACKAGE_MANAGER" || fatal "$1 Package Manager '$PACKAGE_MANAGER' not accessible!"
-}
-setup_packages() {
-  get_github_token
-  if [ "$PACKAGE_MANAGER" = "flox" ]; then
-    # Run flox setup directly (handles permissions internally)
-    task_add_packages_from_flox
-  else
-    fatal "$1 '$PACKAGE_MANAGER' is unknown! Available options are: flox"
-  fi
-  ok "$1" "PM/$PACKAGE_MANAGER/PACKAGES"
-}
-setup_tools() {
-  prepare_tools_zsh "$1"
-  prepare_tools_nvim "$1"
-  prepare_tools_hk "$1"
-  ok "$1" "TOOLS/SOPS"
-}
-setup_operation_system() {
-  if is_host; then
-    local indent="${1:-}"
-    if is_darwin; then
-      task_add_packages_from_homebrew "${PACKAGES[homebrew]}" "${indent}  "
-      ok "${indent}" "MACOS" "macOS prepared! ✔"
-    elif has_cmd apt; then
-      info "${indent}Setting up GUI APPS for '$UNAME'..."
-      task_add_packages_from_flatpak "${PACKAGES[flatpak]}" "${indent}  "
-      task_add_packages_from_snap "${PACKAGES[snap]}" "${indent}  "
-      task_add_packages_from_apt "${PACKAGES[apt]}" "${indent}  "
-      task_add_apps_manually_linux "${indent}  "
-      ok "${indent}" "LINUX/DEBIAN" "Debian/Ubuntu environment prepared! ✔"
-    fi
-    ok "$1" "OS/$UNAME" "Operation System prepared! ✔"
-  fi
-}
-# MAIN execution
-setup_system "1/8" "$@"
-setup_user_home_and_dotfiles "2/8"
-setup_user_context "3/8"
-setup_package_manager "4/8"
-setup_packages "5/8"
-setup_tools "6/8"
-setup_operation_system "7/8"
-setup_ownership "8/8" "Installation completed! Restart your shell to use the new environment! 🚀🚀"
-
-# vim: set ft=bash:
+mise bootstrap "${BOOTSTRAP_ARGS[@]}" <"$tty_in"

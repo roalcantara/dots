@@ -58,47 +58,23 @@ commandTests:
     args: [git]
     exitCode: 0
 
-  # FLOX
-  - name: Flox should be installed
-    command: which
-    args: [flox]
+  # MISE
+  - name: mise should be installed
+    command: /home/vscode/.local/bin/mise
+    args: [--version]
     exitCode: 0
-  - name: Flox should have a default environment
-    command: flox
-    args: [envs]
-    expectedOutput:
-      - "\\s*cockpit.*\\/home\\/vscode.*"
-  - name: Flox cockpit environment should have all minimum tools installed
-    command: flox
-    args: [list, --dir=/home/vscode, --name]
-    expectedOutput:
-      [
-        'age',
-        'bat',
-        'coreutils',
-        'delta',
-        'eza',
-        'fd',
-        'findutils',
-        'fzf',
-        'gawk',
-        'gitlint',
-        'glow',
-        'gnugrep',
-        'gnumake',
-        'gum',
-        'less',
-        'lesspipe',
-        'mise',
-        'neovim',
-        'pre-commit',
-        'ripgrep',
-        'sops',
-        'sqlite',
-        'starship',
-        'tree-sitter',
-        'zoxide',
-      ]
+  - name: core tools should be installed by mise bootstrap
+    command: bash
+    args: [-c, "for t in age bat eza fd fzf jq nvim rg sops zoxide; do command -v $t >/dev/null || { echo missing $t; exit 1; }; done"]
+    exitCode: 0
+  - name: Neovim's Python provider (pynvim-python) should import pynvim
+    command: bash
+    args: [-c, "/home/vscode/.local/share/mise/shims/pynvim-python -c 'import pynvim'"]
+    exitCode: 0
+  - name: SOPS-filtered files should stay encrypted in the image
+    command: bash
+    args: [-c, "set -e; ls /home/vscode/.local/share/dots/config/ssh/keys/*.key >/dev/null; ! grep -q 'BEGIN OPENSSH PRIVATE KEY' /home/vscode/.local/share/dots/config/ssh/keys/*.key"]
+    exitCode: 0
 
 # HOME DIRECTORIES
 fileExistenceTests:
@@ -109,27 +85,27 @@ fileExistenceTests:
   - name: ~/Desktop dir (XDG_DESKTOP_DIR)
     path: /home/vscode/Desktop
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Documents dir (XDG_DOCUMENTS_DIR)
     path: /home/vscode/Documents
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Downloads dir (XDG_DOWNLOAD_DIR)
     path: /home/vscode/Downloads
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Movies dir (XDG_VIDEOS_DIR)
     path: /home/vscode/Movies
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Music dir (XDG_MUSIC_DIR)
     path: /home/vscode/Music
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Pictures dir (XDG_PICTURES_DIR)
     path: /home/vscode/Pictures
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Projects dir (XDG_PROJECTS_DIR)
     path: /home/vscode/Projects
     shouldExist: true
@@ -144,72 +120,50 @@ fileExistenceTests:
     permissions: Lrwxrwxrwx
   - name: ~/.bashrc file
     path: /home/vscode/.bashrc
-    shouldExist: false
-  - name: ~/.oh-my-zsh dir
-    path: /home/vscode/.oh-my-zsh
-    shouldExist: false
+    shouldExist: true
+    permissions: Lrwxrwxrwx
 
   # XDG_CONFIG_HOME (CONFIG)
   - name: ~/.config dir (XDG_CONFIG_HOME)
     path: /home/vscode/.config
     shouldExist: true
-    permissions: Lrwxrwxrwx
+    permissions: drwxr-xr-x
   - name: ~/.config/nvim dir
     path: /home/vscode/.config/nvim
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/nvim/init.lua (MYVIMRC)
     path: /home/vscode/.config/nvim/init.lua
     shouldExist: true
-    permissions: -rw-r--r--
-  - name: ~/.config/nvim/.venv dir
-    path: /home/vscode/.config/nvim/.venv
-    shouldExist: true
-    permissions: drwxr-xr-x
-  - name: ~/.config/nvim/.venv/bin dir
-    path: /home/vscode/.config/nvim/.venv/bin
-    shouldExist: true
-    permissions: drwxr-xr-x
-  - name: ~/.config/nvim/.venv/bin/activate file
-    path: /home/vscode/.config/nvim/.venv/bin/activate
-    shouldExist: true
-    permissions: -rw-r--r--
-  - name: ~/.config/nvim/.venv/bin/python3 file
-    path: /home/vscode/.config/nvim/.venv/bin/python3
-    shouldExist: true
-    permissions: Lrwxrwxrwx
   - name: ~/.config/zsh dir (ZDOTDIR)
     path: /home/vscode/.config/zsh
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/npm/.npmrc (NPM_CONFIG_USERCONFIG)
     path: /home/vscode/.config/npm/.npmrc
     shouldExist: true
-    permissions: -rw-r--r--
   - name: ~/.config/git dir
     path: /home/vscode/.config/git
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/snippets dir
     path: /home/vscode/.config/snippets
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/starship dir (STARSHIP_CONFIG_HOME)
     path: /home/vscode/.config/starship
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/starship/starship.toml (STARSHIP_CONFIG)
     path: /home/vscode/.config/starship/starship.toml
     shouldExist: true
-    permissions: -rwxr-xr-x
   - name: ~/.config/ghostty config
     path: /home/vscode/.config/ghostty
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/ripgrep/.ripgreprc (RIPGREP_CONFIG_PATH)
     path: /home/vscode/.config/ripgrep/.ripgreprc
     shouldExist: true
-    permissions: -rw-r--r--
 
   # XDG_CACHE_HOME (CACHE)
   - name: ~/.cache dir (XDG_CACHE_HOME)
@@ -223,7 +177,7 @@ fileExistenceTests:
   - name: ~/.cache/zsh dir (ZSH_CACHE_DIR)
     path: /home/vscode/.cache/zsh
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
 
   # XDG_STATE_HOME (LOCAL/STATE)
   - name: ~/.local/state dir (XDG_STATE_HOME)

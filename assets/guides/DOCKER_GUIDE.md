@@ -23,8 +23,7 @@ and **docker-patterns** companion skills (see
 | `.github/workflows/preview.yml` | PR pipeline: Hadolint → build → CST |
 
 Build context is always the **repository root** (`.`). Dockerfiles live under
-`distros/<distro>/` and use paths such as `../../install` and
-`../../config/flox` relative to that file location.
+`distros/<distro>/`. Images do not run `install`: each stage installs mise and runs `mise bootstrap` directly.
 
 ## Distro layout
 
@@ -49,22 +48,18 @@ Both distros share the same multi-stage pattern:
 | Stage | Purpose |
 | --- | --- |
 | `base` | Microsoft DevContainer base (`mcr.microsoft.com/devcontainers/base:debian` or `:ubuntu`) |
-| `local` | `COPY` full repo; run `./install` with `DOTS_EMBEDDED=1` — for iterating on uncommitted changes |
-| `remote` | Download `install` from GitHub; default for CI and production-like builds |
-| `publish` | Layered `COPY` of minimal config + `./install -e`; full tree copied after install for cache efficiency and Docker Hub publish |
+| `local` | `git archive HEAD` (SOPS files kept encrypted) copied to `~/.local/share/dots`, then `mise bootstrap` |
+| `remote` | `git clone` of `BRANCH` into `~/.local/share/dots`, then `mise bootstrap`; default for CI and production-like builds |
+| `publish` | Same as `local`, tagged for Docker Hub |
 
-Shared build args: `TZ`, `TERM`, `BRANCH`, `USERNAME`, `GROUPNAME`,
-`GITHUB_REPO`, `PACKAGE_MANAGER` (default `flox`).
-
-Both disable Nix syscall filtering (`filter-syscalls = false`) so Flox works
-under QEMU/Docker arm64 emulation.
+Shared build args: `TZ`, `TERM`, `BRANCH`, `USERNAME`, `GITHUB_REPO`.
 
 ### Alpine
 
 Alpine is a **single-stage**, remote-only Dockerfile:
 
 - Base: `mcr.microsoft.com/devcontainers/base:alpine-3.18`
-- Installs via `curl …/install | bash` (no `local` / `remote` / `publish` targets)
+- Not yet ported: it still pipes the retired `install` flags (`--TZ`, `--USERNAME`, `--GROUPNAME`) and would block on the key prompt. Port it to the Debian pattern or drop it (tasks-native.md N9)
 - Includes a `HEALTHCHECK` that runs `zsh`
 - **Not** in the `mise run build` distro choices today (`debian` | `ubuntu` only)
 - **No** `container-structure-test.yml` yet
@@ -76,25 +71,16 @@ DevContainer paths.
 
 | Target | When to use | Install source | Typical tag |
 | --- | --- | --- | --- |
-| `remote` | CI, PR preview, “install from branch” smoke tests | `wget` / GitHub raw `install` | `dots:<distro>` or `dots:<distro>-<tag>` |
-| `local` | Dev loop with working-tree changes | `COPY` repo + `./install` | `dots:<distro>-local` (convention) |
-| `publish` | Docker Hub / embedded publish with layer caching | Partial `COPY` + `./install -e`, then full tree | `dots:<distro>-publish` |
+| `remote` | CI, PR preview, “branch” smoke tests | `git clone` + `mise bootstrap` | `dots:<distro>` or `dots:<distro>-<tag>` |
+| `local` | Dev loop with committed changes | `git archive HEAD` + `mise bootstrap` | `dots:<distro>-local` (convention) |
+| `publish` | Docker Hub / embedded publish | `git archive HEAD` + `mise bootstrap` | `dots:<distro>-publish` |
 
-**Remote** mirrors what a user gets from `curl …/install | bash` on a given
-`BRANCH`. Preview CI builds `remote` with `BRANCH=${{ github.head_ref }}`.
+**Remote** builds the given `BRANCH` from GitHub. Preview CI builds `remote` with `BRANCH=${{ github.head_ref }}`.
 
-**Local** sets `DOTS_EMBEDDED=1` and copies the entire repository into
-`~/.local/share/dots` before running `install`. Use this when validating
-Dockerfile or install changes before push:
-
-```bash
-mise run build --local --nocache --distro debian --tag local
-mise run start --distro debian --tag local
-```
-
-**Publish** optimizes layer caching for registry pushes: only `install` and
-selected `config/*` subtrees (including `config/flox`) run through the heavy
-`install -e` step; the rest of the repo is copied in a cheap final layer.
+**Local** and **publish** build from `git archive HEAD` with the SOPS smudge filter
+disabled, so encrypted files stay encrypted in the image; uncommitted changes are not included. Every stage runs as the base image's `vscode` user: it installs mise,
+links `~/.config/mise` and runs `mise bootstrap -E container --force-dotfiles --skip user --yes`. Images never get
+the age key or the `dots-history` secrets; only `GITHUB_TOKEN`, from the `github_token` build secret.
 
 Pass `--publish` to `mise run build` to select the `publish` target.
 
@@ -115,10 +101,8 @@ with platform mapping and target selection.
 | `--nocache` | off | Pass `--no-cache` to Docker |
 | `--tag` | — | Suffix appended: `dots:<distro>-<tag>` |
 | `--user` | — | `USERNAME` build-arg |
-| `--group` | — | `GROUPNAME` build-arg |
 | `--branch` | — | `BRANCH` build-arg (remote/publish install URL) |
 | `--repo` | — | `GITHUB_REPO` build-arg (`owner/name`) |
-| `--package-manager` | `flox` | `PACKAGE_MANAGER` build-arg |
 | `--secret` | `./.secrets/github_token.secret` | GitHub token for BuildKit secret mount |
 | `--build-arg` | — | Repeatable extra `--build-arg` pairs |
 
@@ -134,9 +118,9 @@ mise run build
 mise run build --distro ubuntu --platform amd64 --branch main
 
 # Local dev iteration
-mise run build --local --nocache --user vscode --group vscode --tag latest
+mise run build --local --nocache --user vscode --tag latest
 
-# Publish target (registry-oriented layers)
+# Publish target (registry-oriented image)
 mise run build --publish --distro debian --platform amd64 --tag publish
 ```
 
@@ -177,21 +161,6 @@ Starts an interactive container:
 ```bash
 mise run start --tag local --user vscode --workdir /workspaces/dots
 ```
-
-## Flox in the image
-
-Dots uses Flox as the default package manager (`PACKAGE_MANAGER=flox`).
-Manifest and composed environments live under [`config/flox`](../../config/flox):
-
-- [`config/flox/flox.toml`](../../config/flox/flox.toml) — root manifest; includes remote environment `roalcantara/cockpit`
-- [`config/flox/envs/cockpit/`](../../config/flox/envs/cockpit/) — local cockpit env metadata
-
-The **publish** stage explicitly `COPY`s `config/flox` before `install -e` so
-Flox paths and the cockpit environment exist before symlinks are created.
-CST asserts Flox is on `PATH`, lists the cockpit env, and checks minimum
-packages (`mise`, `neovim`, `sops`, `starship`, etc.).
-
-For manifest edits, load **flox-environments** (see skill routing).
 
 ## Hadolint (`.hadolint.yaml`)
 
@@ -257,7 +226,6 @@ Alpine is **not** in the Preview matrix today.
 | --- | --- |
 | **docker-expert** | Editing Dockerfiles, build args, multi-stage design, BuildKit mounts |
 | **docker-patterns** | Compose, networking, volume strategy, container security |
-| **flox-environments** | Changing `config/flox` or Flox manifest behavior |
 | **github-actions-docs** | Changing `.github/workflows/preview.yml` |
 | **mise-tasks** | Extending `build` / `test` / `start` task usage blocks |
 

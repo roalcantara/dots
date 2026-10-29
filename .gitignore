@@ -171,3 +171,8 @@ graphify-out/.graphify_root
 
 # mise
 .mise/locks
+*/**/.mise/locks
+config/mise/*.local.toml
+
+# Encrypted archives (the retired secrets archive flow); never commit them.
+*.zip.enc

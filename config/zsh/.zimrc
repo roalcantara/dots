@@ -43,8 +43,8 @@ zmodule Aloxaf/fzf-tab --source fzf-tab.zsh --if-command fzf                    
 zmodule michel-kraemer/zsh-patina --cmd 'eval "$(zsh-patina activate)"' --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]' --if-command zsh-patina
 
 # MUST be sourced after syntax-highlighting. Skip in Warp Terminal as it has AI-powered suggestions
-# zmodule zsh-users/zsh-autosuggestions --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'
-zmodule Giammarco-Ferranti/deja --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]' --on-pull 'deja import && deja daemon --restart &' --if-command deja
+zmodule zsh-users/zsh-autosuggestions --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'
+# zmodule Giammarco-Ferranti/deja --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]' --on-pull 'deja import && deja daemon --restart &' --if-command deja
 
 zmodule zsh-users/zsh-history-substring-search --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'       # MUST be sourced after syntax-highlighting. Skip in Warp Terminal as it has enhanced history search
 zmodule romkatv/powerlevel10k --if '[[ -z "$ZSH_MINIMAL_TERMINAL" ]]'

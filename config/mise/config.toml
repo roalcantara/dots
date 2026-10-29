@@ -2,12 +2,13 @@
 # https://mise.jdx.dev/configuration.html#global-config-config-mise-config-toml
 
 [settings]
+
 # https://mise.jdx.dev/configuration/settings.html
 # tools can read the versions files used by other version managers
 
 # configure `mise install` to always keep the downloaded archive
 # always_keep_download = false # deleted after install by default
-always_keep_install = false  # deleted on failure by default
+always_keep_install = false # deleted on failure by default
 
 # Enable color output in the terminal
 # https://mise.jdx.dev/configuration/settings.html#color
@@ -89,50 +90,221 @@ idiomatic_version_file_enable_tools = [
 # Instead use https://usage.jdx.dev/spec
 task.disable_spec_from_run_scripts = true
 
+# Skills are managed in .agents/skills/ per SKILLS.yml; do not auto-fetch from tool git repos
+skills.fetch = false
+
 # Configure a custom command in your global settings to obtain a GitHub token
 # https://mise.jdx.dev/dev-tools/github-tokens.html#credential-command
+# The SOPS age key is the single root secret: it decrypts this repo's SOPS files and the mise history.
+[settings.age]
+identity_files = ["~/.config/age/keys.txt"]
+
 [settings.rust]
 # Pin where rustup and cargo live, matching CARGO_HOME / RUSTUP_HOME in .zshenv: a mise started without that env
 # (an IDE, a git hook) would otherwise default to ~/.cargo and ~/.rustup, flip the toolchain link, and reinstall Rust
 # on the next run. https://mise.jdx.dev/lang/rust.html#where-rustup-and-cargo-live
-cargo_home = "~/.local/share/cargo"
-rustup_home = "~/.local/share/rustup"
+# cargo_home = "~/.local/share/cargo"
+# rustup_home = "~/.local/share/rustup"
 
 [settings.github]
 credential_command = "gh auth token"
 
+[settings.pypi]
+uvx = true
+
+[history.encryption]
+recipients = ["age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4"]
+
+# Secrets that are not in this repo, synced encrypted to the private origin (design.md §10).
+[dotfiles]
+"~/.config/ssh" = { mode = "track", encrypt = true, exclude = [
+  "S.*",
+  "s.*",
+  "agent",
+] }
+"~/.config/gnupg" = { mode = "track", encrypt = true, exclude = [
+  "S.*",
+  ".#lk*",
+  "random_seed",
+  "*~",
+] }
+
 [tools]
-usage = "latest"
-hk = "latest"
-fnox = "latest"
-# needed to python/uv/pipx dependencies
-uv = "latest"
-# needed to go dependencies
-go = "latest"
-"cargo:https://github.com/RayanBO/todo" = "HEAD"
+# Only what Homebrew does not package; everything else is in conf.d/packages.toml.
+# pipx installs go through uv (settings.pypi.uvx; brew:uv). Python 3.13 for these tools only: Homebrew's newest
+# Python lacks wheels some need on Linux arm64.
+"uv" = "latest"
+"pipx:debugpy" = "latest"
+"pipx:graphifyy" = "latest"
+"pipx:code-review-graph" = "latest"
+"pipx:commit-check" = "latest"
+"pipx:pynvim" = "latest"
 
 [tasks]
 [tasks.up]
-description = "Bump BREW dependencies"
-confirm = { message = "Bump all brew dependencies?", default = "yes" }
+description = "Upgrade every package, then remove the ones no config declares"
+confirm = { message = "Upgrade all packages and prune undeclared ones?", default = "yes" }
 quiet = true
-tools = { gum = "latest" }
+raw = true
 run = '''
   #!/usr/bin/env bash
-  gum log --time Datetime --level warn --prefix 'BREW' "brew bundle upgrade --upgrade --zap --force --force-cleanup --verbose"
-  echo "" && brew bundle upgrade --upgrade --zap --force --force-cleanup 2> /dev/null
+  set -euo pipefail
+  mise bootstrap packages upgrade --yes
+  # prune asks before removing; brew-cask exists on macOS only, and naming an unavailable manager is an error.
+  mise bootstrap packages prune --manager brew
+  [ "$(uname -s)" != Darwin ] || mise bootstrap packages prune --manager brew-cask
+'''
 
-  echo "" && gum log --time Datetime --level warn --prefix 'BREW' "brew autoremove && brew update --auto-update --force --verbose"
-  echo "" && brew autoremove && brew update --auto-update --force --verbose 2> /dev/null
+# Homebrew without brew: mise installs the bottles; search and info read Homebrew's public API.
+[tasks."brew:search"]
+description = "Search Homebrew formulae and casks by name or description"
+quiet = true
+usage = 'arg "<query>" help="Text to find, case-insensitive"'
+run = '''
+  #!/usr/bin/env bash
+  set -euo pipefail
+  cache="${XDG_CACHE_HOME:-$HOME/.cache}/brew-api"
+  mkdir -p "$cache"
+  for kind in formula cask; do
+    f="$cache/$kind.json"
+    if [ -z "$(find "$f" -mtime -1 2>/dev/null)" ]; then
+      curl -fsSL -o "$f.tmp" "https://formulae.brew.sh/api/$kind.json" && mv "$f.tmp" "$f"
+    fi
+  done
+  q="$(printf '%s' "$usage_query" | tr '[:upper:]' '[:lower:]')"
+  # Name matches first, then description matches.
+  find_in() {
+    jq -r --arg q "$q" --arg id "$2" --arg ver "$3" '
+      [ .[] | {id: .[$id], ver: (.[$ver] | if type == "object" then .stable else . end), desc: (.desc // "")} ]
+      | (map(select(.id | ascii_downcase | contains($q)))
+         + map(select((.id | ascii_downcase | contains($q) | not) and (.desc | ascii_downcase | contains($q)))))
+      | .[] | "\(.id)  \(.ver)  \(.desc)"' "$cache/$1.json"
+  }
+  echo "==> Formulae"
+  find_in formula name versions
+  echo
+  echo "==> Casks"
+  find_in cask token version
+'''
 
-  echo "" && gum log --time Datetime --level warn --prefix 'BREW' "brew upgrade --greedy --greedy-latest --greedy-auto-updates --yes --force"
-  echo "" && brew upgrade --greedy --greedy-latest --greedy-auto-updates --yes --force 2> /dev/null
+[tasks."brew:info"]
+description = "Show a Homebrew formula or cask"
+quiet = true
+usage = '''
+flag "--cask" help="Look up a cask (otherwise a formula, then a cask)"
+arg "<name>" help="Formula or cask name"
+'''
+run = '''
+  #!/usr/bin/env bash
+  set -euo pipefail
+  api="https://formulae.brew.sh/api"
+  if [ "${usage_cask:-false}" != true ] && json="$(curl -fsSL "$api/formula/$usage_name.json" 2>/dev/null)"; then
+    jq -r '"\(.name) \(.versions.stable)\n\(.desc)\n\(.homepage)\nLicense: \(.license // "-")",
+      "Dependencies: \(.dependencies | join(", ") | if . == "" then "-" else . end)",
+      (.caveats // empty | "Caveats:\n\(.)")' <<<"$json"
+    echo "Add: mise run brew:add $usage_name"
+  elif json="$(curl -fsSL "$api/cask/$usage_name.json" 2>/dev/null)"; then
+    jq -r '"\(.token) \(.version) (cask)\n\(.desc // "")\n\(.homepage)",
+      "Auto-updates: \(.auto_updates // false)",
+      (.caveats // empty | "Caveats:\n\(.)")' <<<"$json"
+    echo "Add: mise run brew:add --cask $usage_name"
+  else
+    echo "brew:info: no formula or cask named $usage_name" >&2
+    exit 1
+  fi
+'''
 
-  echo "" && gum log --time Datetime --level warn --prefix 'BREW' "brew upgrade --greedy --greedy-latest --greedy-auto-updates --force --yes --cask"
-  echo "" && brew upgrade --greedy --greedy-latest --greedy-auto-updates --force --yes --cask 2> /dev/null
+[tasks."brew:add"]
+description = "Declare a Homebrew formula or cask in conf.d/packages.toml and install it"
+quiet = true
+raw = true
+usage = '''
+flag "--cask" help="Add a cask"
+arg "<name>" help="Formula or cask name; owner/tap/name for a third-party tap"
+'''
+run = '''
+  #!/usr/bin/env bash
+  set -euo pipefail
+  manager=brew
+  [ "${usage_cask:-false}" != true ] || manager=brew-cask
+  mise bootstrap packages use --path "$HOME/.config/mise/conf.d/packages.toml" "$manager:$usage_name"
+'''
 
-  echo "" && gum log --time Datetime --level warn --prefix 'BREW' "brew cleanup --prune=all && brew doctor"
-  echo "" && brew cleanup --prune=all && brew doctor
+[tasks."brew:rm"]
+description = "Remove a Homebrew formula or cask from conf.d/packages.toml and uninstall it"
+quiet = true
+raw = true
+usage = '''
+flag "--cask" help="Remove a cask"
+arg "<name>" help="Formula or cask name, as declared"
+'''
+run = '''
+  #!/usr/bin/env bash
+  set -euo pipefail
+  manager=brew
+  [ "${usage_cask:-false}" != true ] || manager=brew-cask
+  pkgs="$HOME/.config/mise/conf.d/packages.toml"
+  key="\"$manager:$usage_name\""
+  if ! grep -q "^$key *=" "$pkgs"; then
+    echo "brew:rm: $manager:$usage_name is not declared in $pkgs" >&2
+    exit 1
+  fi
+  # Rewrite in place: the file sits in the dots checkout behind ~/.config/mise.
+  grep -v "^$key *=" "$pkgs" >"$pkgs.tmp" && cat "$pkgs.tmp" >"$pkgs" && rm "$pkgs.tmp"
+  echo "brew:rm: removed $manager:$usage_name from $pkgs"
+  # prune takes no names: it lists every undeclared package and asks before removing.
+  mise bootstrap packages prune --manager "$manager"
+'''
+
+[tasks.backup]
+description = "Backup important files"
+quiet = true
+run = '''
+  #!/usr/bin/env bash
+  # rsync -av --progress ~/important_files/ ~/backup/
+
+  # Dry run: the same exclusions run through zip -sf (list only, nothing written)
+  # give 44,677 files totalling 8.95 GB. All of the critical files above are included
+  # (including 16,634 .git files), and nothing from the excluded folders appears.
+  # HeroWarsFanKit is 7.4 GB of that 8.95 GB. It's your own media, so I kept it.
+  # If you can get it again from its source, adding 'Work/mydemon/inspiration/HeroWarsFanKit/*'
+  # to the -x list brings the archive to about 1.5 GB.
+  cd ~ && zip -r -y /Volumes/meex900/bak/Work-2026-10-28.zip Work \
+    -n .wav:.mp3:.mp4:.mov:.png:.jpg:.jpeg:.webp:.zip:.gz:.bin \
+    -x '*/.git/*' '*/.git' '*.git/*' '*.pack' '*.idx' \
+      'Work/bun/kb/*' 'Work/mydemon/inspiration/HeroWarsFanKit/*' \
+      '*/target/*' '*/node_modules/*' \
+      'Work/mydemon/mydemon/build/*' 'Work/mydemon/mydemon/app/build/*' \
+      'Work/mydemon/mydemon/.claude/worktrees/*/build/*' 'Work/mydemon/mydemon/.claude/worktrees/*/app/build/*' \
+      '*/.gradle/*' '*/.cache/*' '*/.code-review-graph/*' '*/graphify-out/*' '*/.gortex/*' '*/.fallow/*' '*/.ruby-lsp/*' \
+      '*/dist/*' '*/tmp/*' '*.log' '*.zwc' '*/.zcompdump' '*/.DS_Store' \
+    && unzip -tq /Volumes/meex900/bak/Work-2026-10-28.zip
+
+  # find selects the files and pipes the list to zip -@.
+  # That's what skips symlinks everywhere, not just at the top level.
+  # The dated name avoids the existing bak/config.zip and bak/config/.
+  cd ~ && find .config -mindepth 1 \( -type l \
+      -o -path .config/raycast/extensions -o -path .config/raycast/node-compile-cache \
+      -o -path .config/.rz/repos -o -path .config/.rz/bin -o -path .config/gcloud/virtenv \
+      -o -path .config/.fallow -o -path .config/opencode/node_modules -o -path .config/wakatime/.wakatime \
+      -o -name '*.log' -o -name .DS_Store -o -name '*.zwc' -o -name '.zcompdump*' \) -prune \
+    -o -type f -print \
+    | zip -q /Volumes/meex900/bak/config-2026-10-28.zip -@ \
+    && unzip -tq /Volumes/meex900/bak/config-2026-10-28.zip
+
+  # Quit every omp session first. Its databases were written to a few minutes ago,
+  # and copying a SQLite database while it's in use can produce a broken copy.
+  cd ~ && find .omp -mindepth 1 \( -type l -o -type s \
+      -o -path .omp/cache -o -path .omp/puppeteer -o -path .omp/natives -o -path .omp/logs \
+      -o -path .omp/run -o -path .omp/ssh-control -o -path .omp/.fallow \
+      -o -path .omp/agent/cache -o -path .omp/plugins/cache \
+      -o -name '*.lock' -o -name .DS_Store -o -name gpu_cache.json \) -prune \
+    -o -type f -print \
+    | zip -q /Volumes/meex900/bak/omp-2026-10-28.zip -@ \
+    && unzip -tq /Volumes/meex900/bak/omp-2026-10-28.zip
+
+  # Encrypt the omp archive using age for secure storage.
+  age -p -o omp-2026-10-28.zip.age omp-2026-10-28.zip
 '''
 
 [tasks."fix:skills"]

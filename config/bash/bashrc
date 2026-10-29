@@ -36,8 +36,8 @@ export PATH="${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin}:${CARGO_HOME:-$XDG_DATA_HOME
 : "${HOMEBREW_PREFIX:=${HOMEBREW_PREFIX:-$(
   if [ -d /opt/homebrew ]; then
     echo "/opt/homebrew"
-  elif [ -d ~/.linuxbrew ]; then
-    echo "$HOME/.linuxbrew"
+  elif [ -d /home/linuxbrew/.linuxbrew ]; then
+    echo "/home/linuxbrew/.linuxbrew"
   else
     echo "/usr/local"
   fi
@@ -96,9 +96,11 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Load Homebrew if it exists and hasn't been loaded yet
-if ! command -v brew >/dev/null && [ -d "$HOMEBREW_PREFIX/bin" ]; then
+# Load Homebrew if it exists and hasn't been loaded yet; mise's brew: packages fill the prefix without brew itself
+if ! command -v brew >/dev/null && [ -x "$HOMEBREW_PREFIX/bin/brew" ]; then
   eval "$("$HOMEBREW_PREFIX"/bin/brew shellenv)"
+elif [ -d "$HOMEBREW_PREFIX/bin" ]; then
+  case ":$PATH:" in *":$HOMEBREW_PREFIX/bin:"*) ;; *) PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH" ;; esac
 fi
 
 # MISE | https://mise.jdx.dev/ {
