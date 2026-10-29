@@ -140,13 +140,17 @@ ssh-keygen -y -f ~/.config/ssh/id_ed25519 >/dev/null
 gpg --list-secret-keys >/dev/null 2>&1
 
 echo "Verifying idempotency (second install run)..."
-output="$(DOTS_AGE_KEY="${THROWAWAY_KEY}" \
+output=""
+if ! output="$(DOTS_AGE_KEY="${THROWAWAY_KEY}" \
   DOTS_REPO="/origin/dots.bundle" \
   DOTS_BRANCH="${CURR_BRANCH}" \
   DOTS_HISTORY="/origin/history.git" \
   DOTS_PROFILE="container" \
-  bash /origin/install 2>&1)"
-
+  bash /origin/install 2>&1)"; then
+  echo "SECOND RUN FAILED WITH OUTPUT:"
+  echo "${output}"
+  exit 1
+fi
 echo "${output}"
 echo "${output}" | grep -q "Wrote 0 file(s)" || echo "Note: No files modified on second run"
 
