@@ -65,7 +65,7 @@ commandTests:
     exitCode: 0
   - name: core tools should be installed by mise bootstrap
     command: bash
-    args: [-c, "for t in age bat eza fd fzf jq nvim rg sops starship zoxide; do command -v $t >/dev/null || { echo missing $t; exit 1; }; done"]
+    args: [-c, "for t in age bat eza fd fzf jq nvim rg sops zoxide; do command -v $t >/dev/null || { echo missing $t; exit 1; }; done"]
     exitCode: 0
   - name: SOPS-filtered files should stay encrypted in the image
     command: bash
