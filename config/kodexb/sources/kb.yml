@@ -1,0 +1,53 @@
+commands:
+  /kb:remember:
+    desc: Remember a knowledge of this session
+    tags: [kb, command]
+    notes:
+      - ~/.agents/commands/kb/remember.md
+      - md: | #markdown
+          # What it does when you run it:
+
+          ## 1. Find
+          - it reads sources_path from `~/.config/kb/config.toml`, falling back to `~/.config/kodexb/sources`.
+          - It lists the files and counts the tags already in use, and notes any uncommitted edits so it builds on them instead of overwriting them.
+
+          ## 2. Collect
+          - it goes through the whole session for commands worth running again, pages worth reopening, and how-tos (goals reached, diagnoses, comparisons with measurements, failures with their fixes).
+          - If part of the session was summarised, it recovers exact commands and figures from the session transcript, as I did for macos.yml, or leaves out what it can't recover.
+
+          ## 3. Choose files
+          - it picks the file that fits each subject, searches all sources for an existing entry first, and improves it instead of adding a duplicate.
+          - It corrects your own entries only when the session proved them wrong, as with your pynvim cheat, and says so.
+          - It replaces one-off details with placeholders such as `<pid>` and `<volume>`, then prints the proposal.
+
+          ## 4. Write
+          - it follows each file's sections, indentation and `# … - QUICK REFERENCE` headers, and quotes keys when YAML needs it.
+          - It writes no secrets or temporary paths, only what the session ran or verified, and marks what wasn't tested.
+
+          ## 5. Check
+          - every touched file must parse, and every entry needs a desc and tags.
+          - New tags must follow your tag rules and can't be an alias listed in docs/tags.toml.
+          - It checks this itself because kb's tags:check sees only tags that have already been synced.
+
+          ## 6. Report
+          - what it added, improved, corrected or skipped in each file.
+          - It never commits;
+          - you review with git diff, then `Refresh (⌘R)` in kb.
+
+  /kb:remember dry:
+    desc: Remember knowledge in dry-run mode
+    tags: [kb, command]
+    notes:
+      - ~/.agents/commands/kb/remember.md
+
+  /kb:remember file=macos.yml the eject diagnosis:
+    desc: Remember knowledge from the macOS eject diagnosis file
+    tags: [kb, command]
+    notes:
+      - ~/.agents/commands/kb/remember.md
+
+  /kb:remember only=cheats:
+    desc: Remember only the cheats knowledge
+    tags: [kb, command]
+    notes:
+      - ~/.agents/commands/kb/remember.md
