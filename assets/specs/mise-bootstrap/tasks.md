@@ -288,7 +288,7 @@ git commit -m "feat(mise): Add bootstrap directories, login shell and setup task
 - Create: `config/mise/conf.d/packages.toml`
 - Modify: `config/mise/config.toml` (the `[tools]` table, line 104)
 
-- [ ] **Step 1: Write the one-off converter (not committed)**
+- [x] **Step 1: Write the one-off converter (not committed)**
 
 Create `/tmp/brewfile-to-mise.ts`:
 ```ts
@@ -359,7 +359,7 @@ ${taps.join("\n")}
 "flatpak-user:org.videolan.VLC" = "latest"`);
 ```
 
-- [ ] **Step 2: Generate the file**
+- [x] **Step 2: Generate the file**
 
 Run:
 ```bash
@@ -371,7 +371,7 @@ grep -c 'os = "macos"' ~/Work/dots/config/mise/conf.d/packages.toml
 Expected: 84 `brew:` lines (83 converted from the Brewfile, which skips `mise`, plus the Linux `brew:ollama`),
 38 `brew-cask:` lines, and the macOS-only count printed (record it under "Findings").
 
-- [ ] **Step 3: Compare with what is installed on this Mac**
+- [x] **Step 3: Compare with what is installed on this Mac**
 
 Run:
 ```bash
@@ -382,7 +382,7 @@ comm -23 /tmp/installed.txt /tmp/declared.txt
 Expected: the formulae installed here but not in the Brewfile. Show the list to the owner; add the ones they
 want to keep as `"brew:<name>" = "latest"` in the `# CORE FORMULAE` section.
 
-- [ ] **Step 4: Flag formulae that ran as services**
+- [x] **Step 4: Flag formulae that ran as services**
 
 Run:
 ```bash
@@ -391,7 +391,7 @@ brew services list 2>/dev/null | awk 'NR>1 && $2!="none" {print $1, $2}'
 Expected: the formulae Homebrew runs as services. For each one also declared in `packages.toml`, write one line
 under "Findings" (name and how it starts today); Task 10 checks each on the macOS guest.
 
-- [ ] **Step 5: Add the Go and uv tools**
+- [x] **Step 5: Add the Go and uv tools**
 
 In `config/mise/config.toml`, inside `[tools]`, after `go = "latest"`, add:
 ```toml
@@ -408,7 +408,7 @@ In `config/mise/config.toml`, inside `[tools]`, after `go = "latest"`, add:
 ```
 (`go-code-graph-wrapper` is not a module path and is not in `~/go/bin`, so it is dropped.)
 
-- [ ] **Step 6: Check it read-only**
+- [x] **Step 6: Check it read-only**
 
 Run:
 ```bash
@@ -419,7 +419,7 @@ Expected: the file parses; Linux entries show as skipped; formulae and casks sho
 Record the missing ones under "Findings". `mise ls --missing` lists the new Go and pipx tools; do not install
 them here.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 cd ~/Work/dots && git add config/mise/conf.d/packages.toml config/mise/config.toml assets/specs/mise-bootstrap/tasks.md
@@ -1553,3 +1553,8 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 2: empty `[bootstrap.directories."..."]` tables parse and default to mode 0755, which would loosen the macOS private folders; the seven (`~/Desktop`, `Documents`, `Downloads`, `Movies`, `Music`, `Pictures`, `~/.cache/zsh`) are pinned to 0700.
 - Task 2: all 18 directories parse; only `~/Projects` is `create`, the rest unchanged; the `bootstrap` task is listed by `mise tasks ls`.
 - Task 2: `login_shell = "zsh"` resolves via PATH to Homebrew's `/opt/homebrew/bin/zsh` (apt's on Linux), the canonical shell; this Mac's `/usr/local/bin/zsh` shows `differs`, which is expected.
+- Task 3: converter gave 84 `brew:` (one is Linux `ollama`), 38 `brew-cask:`, 62 `os = "macos"`; the Brewfile lists `mole` twice (duplicate TOML key), so the second copy and its comment were removed: 83 `brew:`, 61 macOS-only.
+- Task 3: installed but not in the Brewfile (owner to decide): block-goose-cli, dust, giammarco-ferranti/deja/deja, git-delta, mise (install provides it), ncdu, node. The Brewfile has `delta` and `nodejs`, which `status` reports missing (installed here as `git-delta` and `node`): names to check.
+- Task 3: Homebrew services running here: none.
+- Task 3: `packages status`: 117 installed, 10 skipped (Linux flatpaks), 3 missing: `brew delta`, `brew nodejs`, `brew-cask mark-text`.
+- Task 3: `mise ls --missing`: `go:golang.org/x/tools/gopls`, `go:mvdan.cc/gofumpt`, `pipx:debugpy` (versions resolved); the four `go-code-graph` tools timed out resolving (3s); `graphifyy` and `code-review-graph` are already installed.
