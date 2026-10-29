@@ -40,12 +40,12 @@ recipients = ["<contents of config/age/recipient.txt>"]
   environment file, move those two tables to `config/mise/config.toml` (containers then know the recipient but
   have no track entries, which is fine) and record it.
 - [x] **Step 3:** Commit (`feat(mise): Track ssh, gnupg and gh secrets encrypted`).
-- [ ] **Step 4 (owner):** connect the origin and push the encrypted history:
+- [x] **Step 4 (owner):** connect the origin and push the encrypted history:
 ```bash
 mise dot origin set https://github.com/roalcantara/dots-history.git --sync manual -E desktop
 mise dot save -E desktop && mise dot sync -E desktop
 ```
-- [ ] **Step 5:** Verify the origin holds no plaintext:
+- [x] **Step 5:** Verify the origin holds no plaintext:
   `d=$(mktemp -d) && git clone -q https://github.com/roalcantara/dots-history.git "$d" && ! git -C "$d" log -p --all | grep -qE 'BEGIN (OPENSSH|PGP) PRIVATE|oauth_token' && echo clean; rm -rf "$d"`.
 
 ### N2: Minimal `install` (rewrite)
@@ -53,7 +53,7 @@ mise dot save -E desktop && mise dot sync -E desktop
 **Files:** Replace `install`. Delete `assets/integration/install/install.spec.ts` (its cases test the retired
 script; N4 tests the new one end to end).
 
-- [ ] **Step 1:** Replace `install` with:
+- [x] **Step 1:** Replace `install` with:
 ```bash
 #!/usr/bin/env bash
 # Sets up this machine: mise, the dots checkout, the age key, then mise bootstrap (design.md §10).
@@ -98,7 +98,7 @@ esac
 mise bootstrap --adopt "$HISTORY" -E "$PROFILE" --yes
 mise bootstrap -E "$PROFILE" --yes
 ```
-- [ ] **Step 2:** `shellcheck install && /bin/bash -n install`. Commit (`refactor(install): Reduce install to mise bootstrap`).
+- [x] **Step 2:** `shellcheck install && /bin/bash -n install`. Commit (`refactor(install): Reduce install to mise bootstrap`).
 
 ### N3: Images without `install`
 

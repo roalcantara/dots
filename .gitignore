@@ -171,6 +171,7 @@ graphify-out/.graphify_root
 
 # mise
 .mise/locks
+config/mise/*.local.toml
 
 # Secrets archives from `mise run prepare`; never commit them, not even fixtures.
 *.zip.enc
