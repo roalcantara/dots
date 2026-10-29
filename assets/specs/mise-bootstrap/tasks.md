@@ -439,11 +439,11 @@ git commit -m "feat(mise): Declare packages and Go/uv tools for mise bootstrap"
 
 ```ts
 #!/usr/bin/env bun
-// prepare-secrets: the archive install --secrets opens. Uses --fixture only; never real keys.
+// prepare-secrets: the archive install --secrets opens. Uses --fixture or a fake HOME; never real keys.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { mkdtempSync, rmSync, statSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 
 const repo = resolve(import.meta.dir, "../../..");
 const script = join(repo, "script/prepare-secrets");
@@ -457,6 +457,16 @@ afterEach(() => rmSync(dir, { recursive: true, force: true }));
 function sh(cmd: string[], env: Record<string, string> = {}) {
   const r = Bun.spawnSync(cmd, { env: { PATH: process.env.PATH ?? "", HOME: dir, ...env }, stdout: "pipe", stderr: "pipe" });
   return { code: r.exitCode, out: r.stdout.toString(), err: r.stderr.toString() };
+}
+
+function open(archive: string, pass: string, out = join(dir, "opened.zip")) {
+  return sh(["openssl", "enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", "600000", "-md", "sha256",
+    "-in", archive, "-out", out, "-pass", `pass:${pass}`]);
+}
+
+function put(path: string, body = "x\n") {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, body);
 }
 
 describe("prepare-secrets", () => {
@@ -474,9 +484,7 @@ describe("prepare-secrets", () => {
     expect(statSync(archive).mode & 0o777).toBe(0o600);
 
     const zip = join(dir, "fixture.zip");
-    const opened = sh(["openssl", "enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", "600000",
-      "-in", archive, "-out", zip, "-pass", "pass:dots-fixture"]);
-    expect(opened.code).toBe(0);
+    expect(open(archive, "dots-fixture", zip).code).toBe(0);
     const listing = sh(["unzip", "-l", zip]).out;
     for (const path of ["age/keys.txt", "ssh/id_ed25519", "ssh/id_ed25519.pub", "gnupg/README", "gh/hosts.yml"]) {
       expect(listing).toContain(path);
@@ -487,10 +495,76 @@ describe("prepare-secrets", () => {
   it("cannot be opened with another passphrase", () => {
     const archive = join(dir, "fixture.zip.enc");
     sh(["/bin/bash", script, "--fixture", "--output", archive]);
-    const opened = sh(["openssl", "enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", "600000",
-      "-in", archive, "-out", join(dir, "x.zip"), "-pass", "pass:wrong"]);
+    const opened = open(archive, "wrong", join(dir, "x.zip"));
     const listed = sh(["unzip", "-l", join(dir, "x.zip")]);
     expect(opened.code !== 0 || listed.code !== 0).toBe(true);
+  });
+
+  it("forces mode 600 when the output already exists with mode 644", () => {
+    const archive = join(dir, "fixture.zip.enc");
+    writeFileSync(archive, "old");
+    chmodSync(archive, 0o644);
+    expect(sh(["/bin/bash", script, "--fixture", "--output", archive]).code).toBe(0);
+    expect(statSync(archive).mode & 0o777).toBe(0o600);
+  });
+
+  it("leaves no output file when a stage fails", () => {
+    const bin = join(dir, "bin");
+    mkdirSync(bin);
+    writeFileSync(join(bin, "zip"), "#!/bin/sh\nexit 1\n");
+    chmodSync(join(bin, "zip"), 0o755);
+    const archive = join(dir, "fixture.zip.enc");
+    const r = sh(["/bin/bash", script, "--fixture", "--output", archive], { PATH: `${bin}:${process.env.PATH}` });
+    expect(r.code).not.toBe(0);
+    expect(existsSync(archive)).toBe(false);
+  });
+
+  it("fixture ignores an ambient DOTS_SECRETS_PASSPHRASE", () => {
+    const archive = join(dir, "fixture.zip.enc");
+    const made = sh(["/bin/bash", script, "--fixture", "--output", archive], { DOTS_SECRETS_PASSPHRASE: "other" });
+    expect(made.code).toBe(0);
+    expect(open(archive, "dots-fixture").code).toBe(0);
+  });
+
+  it("packs a fake home, skipping runtime files and the missing token", () => {
+    const home = join(dir, "home");
+    const cfg = join(home, ".config");
+    put(join(home, ".local/share/dots/config/age/keys.txt"));
+    put(join(cfg, "ssh/keys/id_test.key"));
+    symlinkSync("keys/id_test.key", join(cfg, "ssh/id_test"));
+    for (const f of ["ssh/S.agent", "gnupg/.#lk0x1", "gnupg/random_seed", "gnupg/pubring.kbx~", "gnupg/pubring.kbx", "gh/hosts.yml"]) {
+      put(join(cfg, f));
+    }
+    const bin = join(dir, "bin");
+    mkdirSync(bin);
+    writeFileSync(join(bin, "gh"), "#!/bin/sh\nexit 1\n");
+    chmodSync(join(bin, "gh"), 0o755);
+    const archive = join(dir, "real.zip.enc");
+    const r = sh(["/bin/bash", script, "--output", archive],
+      { HOME: home, XDG_CONFIG_HOME: cfg, DOTS_SECRETS_PASSPHRASE: "t", PATH: `${bin}:${process.env.PATH}` });
+    expect(r.err).toBe("");
+    expect(r.code).toBe(0);
+    expect(open(archive, "t").code).toBe(0);
+    const listing = sh(["unzip", "-l", join(dir, "opened.zip")]).out;
+    for (const path of ["age/keys.txt", "ssh/id_test", "ssh/keys/id_test.key", "gnupg/pubring.kbx", "gh/hosts.yml"]) {
+      expect(listing).toContain(path);
+    }
+    for (const path of ["S.agent", ".#lk0x1", "random_seed", "pubring.kbx~", "github_token"]) {
+      expect(listing).not.toContain(path);
+    }
+  });
+
+  it("rejects a link pointing outside the archive", () => {
+    const home = join(dir, "home");
+    const cfg = join(home, ".config");
+    mkdirSync(join(cfg, "ssh"), { recursive: true });
+    symlinkSync("/etc/hosts", join(cfg, "ssh/id_bad"));
+    const archive = join(dir, "bad.zip.enc");
+    const r = sh(["/bin/bash", script, "--output", archive],
+      { HOME: home, XDG_CONFIG_HOME: cfg, DOTS_SECRETS_PASSPHRASE: "t" });
+    expect(r.code).toBe(1);
+    expect(r.err).toContain("is a link to");
+    expect(existsSync(archive)).toBe(false);
   });
 });
 ```
@@ -507,7 +581,8 @@ Expected: FAIL; `script/prepare-secrets` does not exist.
 # Packs the files `install --secrets` expects into an AES-256 encrypted zip.
 # USAGE: prepare-secrets [--fixture] [--output <file>]
 #   --fixture  throwaway keys and the passphrase "dots-fixture", for tests; never commit the result
-# The passphrase comes from DOTS_SECRETS_PASSPHRASE, or openssl asks for it.
+# The passphrase is prompted by default; DOTS_SECRETS_PASSPHRASE is for tests and CI (inline values end up in
+# shell history).
 # Design: assets/specs/mise-bootstrap/design.md (§4.6). Must run under macOS bash 3.2.
 set -euo pipefail
 
@@ -517,14 +592,17 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --fixture) FIXTURE=1; shift ;;
     --output) OUTPUT="${2:?--output needs a file}"; shift 2 ;;
-    -h | --help) sed -n '2,5s/^# \{0,1\}//p' "$0"; exit 0 ;;
+    -h | --help) sed -n '2,6s/^# \{0,1\}//p' "$0"; exit 0 ;;
     *) printf "prepare-secrets: unknown option '%s'\n" "$1" >&2; exit 2 ;;
   esac
 done
 
 stage="$(mktemp -d)"
-trap 'rm -rf "$stage"' EXIT
-chmod 700 "$stage"
+work="$(mktemp -d)"
+trap 'rm -rf "$stage" "$work"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM HUP
+chmod 700 "$stage" "$work"
 
 if [ "$FIXTURE" = 1 ]; then
   mkdir -p "$stage/age" "$stage/ssh" "$stage/gnupg" "$stage/gh"
@@ -532,7 +610,7 @@ if [ "$FIXTURE" = 1 ]; then
   ssh-keygen -q -t ed25519 -N '' -C dots-fixture -f "$stage/ssh/id_ed25519"
   printf 'throwaway fixture\n' >"$stage/gnupg/README"
   printf 'github.com:\n  user: dots-fixture\n' >"$stage/gh/hosts.yml"
-  : "${DOTS_SECRETS_PASSPHRASE:=dots-fixture}"
+  DOTS_SECRETS_PASSPHRASE=dots-fixture
   export DOTS_SECRETS_PASSPHRASE
 else
   cfg="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -542,7 +620,7 @@ else
     cp "$key" "$stage/age/keys.txt"
   fi
   for dir in ssh gnupg; do
-    if [ -d "$cfg/$dir" ]; then tar -C "$cfg" --exclude 'S.*' -cf - "$dir" | tar -C "$stage" -xf -; fi
+    if [ -d "$cfg/$dir" ]; then tar -C "$cfg" --exclude 'S.*' --exclude 's.*' --exclude '.#lk*' --exclude random_seed --exclude '*~' -cf - "$dir" | tar -C "$stage" -xf -; fi
   done
   if [ -f "$cfg/gh/hosts.yml" ]; then
     mkdir -p "$stage/gh"
@@ -553,11 +631,37 @@ else
   fi
 fi
 
+# A link must stay inside the archive: a missing or outside target would pack the wrong file or nothing.
+stage_real="$(cd "$stage" && pwd -P)"
+while IFS= read -r link; do
+  rel="${link#"$stage"/}"
+  target="$(readlink "$link")"
+  resolved=""
+  case "$target" in
+    /*) ;;
+    *) if [ -e "$link" ] && base="$(cd "$(dirname "$link")" && cd "$(dirname "$target")" && pwd -P)"; then
+         resolved="$base/$(basename "$target")"
+       fi ;;
+  esac
+  case "$resolved" in
+    "$stage_real"/*) ;;
+    *)
+      printf 'prepare-secrets: %s is a link to %s, outside the archive or missing; replace it with a file or a link inside the folder\n' "$rel" "$target" >&2
+      exit 1
+      ;;
+  esac
+done < <(find "$stage" -type l)
+
 pass=()
 if [ -n "${DOTS_SECRETS_PASSPHRASE:-}" ]; then pass=(-pass env:DOTS_SECRETS_PASSPHRASE); fi
+# openssl enc has no authentication (zip CRCs catch corruption); acceptable for an archive the owner carries.
+# Zip to a file (links are stored, which a pipe cannot take), encrypt inside the work folder, then move into place:
+# a failure never leaves a partial or world-readable $OUTPUT.
 umask 077
-(cd "$stage" && zip -qr -y - .) |
-  openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -salt -out "$OUTPUT" "${pass[@]+"${pass[@]}"}"
+(cd "$stage" && zip -qr -y "$work/secrets.zip" .)
+openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -md sha256 -salt -in "$work/secrets.zip" -out "$work/out.enc" "${pass[@]+"${pass[@]}"}"
+mv -f "$work/out.enc" "$OUTPUT"
+chmod 600 "$OUTPUT"
 printf '%s\n' "$OUTPUT"
 ```
 Then: `chmod +x ~/Work/dots/script/prepare-secrets`.
@@ -583,7 +687,7 @@ Run:
 cd ~/Work/dots/assets && bun test integration/install/prepare-secrets.spec.ts
 cd ~/Work/dots && shellcheck script/prepare-secrets && mise run prepare --help | head -3
 ```
-Expected: PASS, 3 tests; no shellcheck findings; the usage text prints.
+Expected: PASS, 8 tests; no shellcheck findings; the usage text prints.
 
 - [ ] **Step 6: Make the real archive (owner, interactive)**
 
@@ -931,7 +1035,7 @@ open_secrets() {
   trap 'rm -rf "$SECRETS_TMP"' EXIT
   local pass=()
   if [ -n "${DOTS_SECRETS_PASSPHRASE:-}" ]; then pass=(-pass env:DOTS_SECRETS_PASSPHRASE); fi
-  if ! openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -in "$SECRETS" -out "$SECRETS_TMP/secrets.zip" \
+  if ! openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -md sha256 -in "$SECRETS" -out "$SECRETS_TMP/secrets.zip" \
     "${pass[@]+"${pass[@]}"}" || ! unzip -q "$SECRETS_TMP/secrets.zip" -d "$SECRETS_TMP/files" 2>/dev/null; then
     die "cannot open '$SECRETS': wrong passphrase, or not an archive from prepare" 2
   fi
@@ -1088,7 +1192,7 @@ main "$@"
 - [ ] **Step 4: Run both specs**
 
 Run: `cd ~/Work/dots/assets && bun test integration/install/`
-Expected: PASS, 13 tests (3 prepare-secrets, 10 install).
+Expected: PASS, 18 tests (8 prepare-secrets, 10 install).
 
 - [ ] **Step 5: Lint and check bash 3.2**
 
@@ -1567,3 +1671,7 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 3: `packages status` without `-E`: 107 installed, 10 skipped, 12 desktop entries not listed, only `mark-text` missing; with `-E desktop`: 119 installed, only `mark-text` missing.
 - Design: desktop profile = workstations; install defaults hosts to it.
 - Task 4: `mise run prepare --help` is intercepted by mise (prints the task help); `mise run prepare -- --help` reaches the script (use `--` for options). Spec failed first (2 of 3, exit 127), then passed 3/3; shellcheck clean; works under /bin/bash 3.2.57; fixture .enc is unreadable by unzip, a second run yields a different ssh key; no staging leftovers. Step 6 (real archive) skipped: owner-interactive.
+- Task 4: Output is atomic and owner-only: encrypted in a work folder, then `mv -f` and `chmod 600` onto `--output`; INT/TERM/HUP exit 130/143 and the EXIT trap cleans both folders.
+- Task 4: `zip -y` (store links) cannot write to a pipe ("zip -0 not supported for I/O on pipes"), so the zip goes to a file in the work folder before `openssl enc`.
+- Task 4: Staged links must resolve inside the archive (absolute or missing targets exit 1 with `is a link to`); ssh/ and gnupg/ copies skip `S.*`, `s.*`, `.#lk*`, `random_seed`, `*~`.
+- Task 4: The fixture forces the passphrase `dots-fixture` over any ambient value; `openssl enc` pins `-md sha256` (spec and Task 5 decrypt updated); it has no authentication, noted in the script. 8 tests now.

@@ -151,7 +151,7 @@ nothing:
    - Linux: the `export USER_ZDOTDIR=<home>/.config/zsh` line in `/etc/zsh/zshenv`, added once.
    - Linux with `-E desktop`: `apt-get install flatpak` when missing.
    - Linux with `--secrets`: `apt-get install unzip` when missing (minimal Ubuntu lacks it).
-   - **Open the archive:** `openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000` into a temporary folder (mode
+   - **Open the archive:** `openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -md sha256` into a temporary folder (mode
      700), then `unzip`. A wrong passphrase stops `install` with exit code 2. The folder is deleted on exit, and
      before the switch to the user, who receives its own copy.
    - When run as root from a checkout inside the user's home that another user owns (a repo `COPY`d into an
@@ -193,7 +193,7 @@ prepare-secrets [--fixture] [--output <file>]
 ```
 
 Collects what `install --secrets` expects, zips it, and encrypts the zip with
-`openssl enc -aes-256-cbc -pbkdf2 -iter 600000` (the passphrase from `DOTS_SECRETS_PASSPHRASE`, or an
+`openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -md sha256` (the passphrase from `DOTS_SECRETS_PASSPHRASE`, or an
 `openssl` prompt). The archive is written mode 600, to `~/dots-secrets.zip.enc` by default; `*.zip.enc` is
 git-ignored.
 
