@@ -34,6 +34,7 @@ secrets, and rehearsing the Linux desktop profile (its first run is on real hard
 | Homebrew | Not installed; mise installs bottles and casks itself | Fewest tools; mise never runs `brew` |
 | Repo location | `~/Work/dots` when cloned; `~/.local/share/dots` links to the checkout in use | Every existing link target keeps working |
 | Secrets | `mise run prepare` packs them into an AES-256 encrypted archive; `install --secrets <archive>` opens it | One file to carry; private keys never sit unencrypted on a drive; the age key exists before `setup:age` runs |
+| Where the real archive lives | Committed as `assets/dump.zip.enc`, encrypted with a random 50-character passphrase kept in the password manager (decided 2026-10-28) | The backup drive's exFAT (FSKit) driver corrupts new writes; a fresh Mac gets the archive from GitHub. The archive holds the age key, so it is the root of trust: its safety rests on that passphrase alone. Moving it into the password manager (gopass) is the planned follow-up |
 | Test secrets | A fixture archive of throwaway keys, generated (`prepare --fixture`), never committed | The repo is public; secret scanners would flag committed keys, even fake ones |
 | Image contents | `--local` and `--publish` images build from the committed tree (`git archive`), with the SOPS smudge filter off | The working tree holds decrypted SOPS files; images must only contain them encrypted |
 | Passwordless sudo | Automatic in containers; opt-in with `--nopasswd` elsewhere | Unattended builds without weakening hosts by default |
@@ -202,7 +203,8 @@ prepare-secrets [--fixture] [--output <file>]
 Collects what `install --secrets` expects, zips it, and encrypts the zip with
 `openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -md sha256` (the passphrase from `DOTS_SECRETS_PASSPHRASE`, or an
 `openssl` prompt). The archive is written mode 600, to `~/dots-secrets.zip.enc` by default; `*.zip.enc` is
-git-ignored.
+git-ignored, except the owner's real archive, committed on purpose as `assets/dump.zip.enc` (§2). Regenerate it
+with `mise run prepare -- --output assets/dump.zip.enc` and commit it again when a secret changes.
 
 | Archive path | Taken from |
 | --- | --- |
@@ -226,10 +228,14 @@ user, repo and secrets exist.
 
 ## 6. New-Mac runbook
 
-0. **Before wiping the old Mac:** `mise run -C ~/Work/dots prepare -- --output /Volumes/meex900/backups/dots-secrets.zip.enc`.
-1. Finish macOS setup; sign in to the Apple Account and the App Store; run `xcode-select --install`; connect
-   the backup drive.
-2. Run §5 with `--secrets /Volumes/meex900/backups/dots-secrets.zip.enc`; enter the passphrase when asked.
+0. **Before wiping the old Mac:** make sure `assets/dump.zip.enc` is current and pushed (`mise run prepare --
+   --output assets/dump.zip.enc`, commit, push), and that every backup archive verifies at its destination
+   (`shasum -a 256` on both sides; `unzip -tq`).
+1. Finish macOS setup; sign in to the Apple Account and the App Store; run `xcode-select --install`.
+2. Download the archive (`install` checks `--secrets` before it clones the repo), then run §5 with it; enter the
+   passphrase from the password manager when asked:
+   `curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/assets/dump.zip.enc -o /tmp/dump.zip.enc`,
+   then `--secrets /tmp/dump.zip.enc`.
 3. Unzip `config-<date>.zip` into `~/restore`, copy the app settings it holds (every `~/restore/.config` entry
    that is not a link in `~/.config` now) into `~/.config`, then restore `omp-<date>.zip` into `~`.
 4. Restore `Work-<date>.zip` without the repo: `unzip Work-<date>.zip -x 'Work/dots/*'`.

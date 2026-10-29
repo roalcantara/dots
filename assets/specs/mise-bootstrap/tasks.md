@@ -35,7 +35,8 @@ successfully, and a second run changes nothing; then the macOS guest; then the r
   this Mac before Task 11: it is the machine being backed up.
 - `install` and `prepare-secrets` must run under macOS's `/bin/bash` 3.2: no `mapfile`, no `${var,,}`, and
   empty arrays expanded as `"${a[@]+"${a[@]}"}"` because `set -u` rejects them otherwise.
-- Never commit a secrets archive, real or fixture (`*.zip.enc` is git-ignored from Task 4).
+- Never commit a fixture archive (`*.zip.enc` is git-ignored from Task 4). The owner's real archive is the one
+  exception: committed on purpose as `assets/dump.zip.enc` (design.md §2).
 
 ## File map
 
@@ -689,13 +690,13 @@ cd ~/Work/dots && shellcheck script/prepare-secrets && mise run prepare --help |
 ```
 Expected: PASS, 8 tests; no shellcheck findings; the usage text prints.
 
-- [ ] **Step 6: Make the real archive (owner, interactive)**
+- [x] **Step 6: Make the real archive (owner, interactive)**
 
-Ask the owner to run, entering a passphrase they store in Bitwarden:
+Done by the owner on 2026-10-28, with a random 50-character passphrase kept in the password manager, and
+committed as `assets/dump.zip.enc` (design.md §2: the backup drive's exFAT driver corrupts new writes):
 ```bash
-cd ~/Work/dots && mise run prepare -- --output /Volumes/meex900/backups/dots-secrets.zip.enc
+cd ~/Work/dots && mise run prepare -- --output assets/dump.zip.enc
 ```
-Expected: the path prints; `ls -l` shows `-rw-------`. Not committed.
 
 - [x] **Step 7: Commit**
 
@@ -1481,11 +1482,11 @@ HOME=$(mktemp -d) DOTS_CONTAINER=0 /bin/bash ./install --user "$(id -un)" --dry-
 Expected: no shellcheck findings; `/bin/bash` reports 3.2.x; the dry run ends with
 `would: <tmp>/.local/bin/mise bootstrap` and exits 0.
 
-- [ ] **Step 6: Dry-run against the real home with the real archive (read-only)**
+- [x] **Step 6: Dry-run against the real home with the real archive (read-only)**
 
-Ask the owner to run (it prompts for the archive's passphrase):
+Done by the owner on 2026-10-28; the output matched the expectation below:
 ```bash
-cd ~/Work/dots && ./install --secrets /Volumes/meex900/backups/dots-secrets.zip.enc --dry-run
+cd ~/Work/dots && ./install --secrets assets/dump.zip.enc --dry-run
 ```
 Expected: `user roalcantara exists`, both links `is linked`, every secret reported as `exists` (this Mac already
 has them), and only the mise install (unless `~/.local/bin/mise` is 2026.10.21) and the final `mise bootstrap`
@@ -1796,8 +1797,11 @@ directories, login shell and the setup task. It runs on macOS and Debian/Ubuntu,
 run changes nothing.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash -s -- --secrets dots-secrets.zip.enc
+curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash -s -- --secrets /tmp/dump.zip.enc
 ```
+
+On a fresh machine, download the archive first (`install` checks `--secrets` before it clones the repo):
+`curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/assets/dump.zip.enc -o /tmp/dump.zip.enc`.
 
 | Option | Default | |
 | --- | --- | --- |
@@ -1897,7 +1901,7 @@ For each, confirm it runs or note how it must be started; add a `[bootstrap.maco
 - [ ] **Step 1: Reinstall and run the runbook**
 
 Merge `feat/mise-bootstrap` into `main`, then follow design.md §6 on the reinstalled Mac with
-`--secrets /Volumes/meex900/backups/dots-secrets.zip.enc` (the real archive from Task 4 Step 6).
+`--secrets /tmp/dump.zip.enc`, downloaded from the repo (the real archive from Task 4 Step 6).
 
 - [ ] **Step 2: Delete the old pieces**
 
@@ -1963,3 +1967,4 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 5 review: copy_secret_dir keeps `umask 077` in the script (not a subshell) so the dry-run line stays `would: cp -R src dst`; `find` fixes the modes.
 - Task 5 re-review: the root stage chowns the handed-over script and `cleanup` tolerates failures; before `exec` it removes every other root temp (secrets_tmp, sudoers tmp). The user stage trusts `DOTS_SECRETS` and `$0` only by exact mktemp names (`/tmp/dots-secrets.XXXXXX`, `/tmp/dots-install.XXXXXX`), a real folder owned by the user, and removes neither under `--dry-run`. The switch forwards `DOTS_CONTAINER=<1|0>` and appends `-E <profile>` unless given.
 - Task 5 re-review: deviation: `DOTS_CONTAINER` is not unset in a first stage, because it is a documented override (specs and users set it); the other three handoff variables are. `DOTS_INSTALL_EMIT_SCRIPT=<file>` (dry run only) writes the script `switch_to_user` would hand over, so a spec runs that exact code as the user stage. Now 27 tests (8 + 19).
+- Decision (2026-10-28): the real secrets archive is committed as `assets/dump.zip.enc` (random 50-character passphrase in the password manager), because the backup drive's exFAT (FSKit) driver corrupts new writes: today's `Work`, `config` and secrets archives on it read back with an AppleDouble header and fail `unzip -tq`; older files read fine. Moving the archive into gopass is the planned follow-up. The owner's dry run with it matched Task 5 Step 6's expectation.
