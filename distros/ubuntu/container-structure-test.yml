@@ -77,7 +77,7 @@ fileExistenceTests:
   - name: ~/ (HOME dir)
     path: /home/vscode
     shouldExist: true
-    permissions: drwx------
+    permissions: drwxr-x---
   - name: ~/Desktop dir (XDG_DESKTOP_DIR)
     path: /home/vscode/Desktop
     shouldExist: true
