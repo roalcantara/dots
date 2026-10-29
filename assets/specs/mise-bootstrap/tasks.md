@@ -1785,7 +1785,7 @@ where it is testable), commit, revert the VM to the `clean` snapshot, and rerun 
 - Modify: `assets/guides/DOCKER_GUIDE.md`
 - Modify: `AGENTS.md`, `.agents/skills/dots-context/SKILL.md`
 
-- [ ] **Step 1: Replace the README install section**
+- [x] **Step 1: Replace the README install section**
 
 Replace everything from `## Install` up to (not including) `### OVEREVIEW` with:
 ````markdown
@@ -1821,7 +1821,7 @@ Later runs: `~/.local/share/dots/install`, or `mise bootstrap` directly.
 
 ````
 
-- [ ] **Step 2: Update the Docker guide**
+- [x] **Step 2: Update the Docker guide**
 
 In `assets/guides/DOCKER_GUIDE.md`:
 1. Lines 26–27: replace "`../../install` and `../../config/flox`" with "`../../install`".
@@ -1843,14 +1843,14 @@ In `assets/guides/DOCKER_GUIDE.md`:
 7. Delete the `--package-manager` row of the build flags table (line 121).
 8. Delete the whole `## Flox in the image` section (from line 181 to the next `##` heading).
 
-- [ ] **Step 3: Update agent guides**
+- [x] **Step 3: Update agent guides**
 
 In `AGENTS.md` and `.agents/skills/dots-context/SKILL.md`, delete the line
 `- \`flox-environments\` — when editing config/flox or Flox environments` (and its table row in the skill),
 and in `.agents/skills/dots-context/SKILL.md` replace the `| **Flox** | Declarative env in config/flox/flox.toml |`
 row with `| **mise bootstrap** | Machine setup in config/mise/conf.d/, entered through install |`.
 
-- [ ] **Step 4: Lint and commit**
+- [x] **Step 4: Lint and commit**
 
 ```bash
 cd ~/Work/dots && hk check --all
