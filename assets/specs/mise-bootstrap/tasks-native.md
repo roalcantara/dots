@@ -160,7 +160,7 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 
 ### N7–N9 (owner, manual)
 
-- [ ] **N7 Ubuntu VM** (Parallels, snapshot first): `curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/<branch>/install | DOTS_BRANCH=<branch> bash`; paste the key; sign in to GitHub when asked; check links, secrets (modes 700/600), flatpak apps, zsh; rerun (nothing changes).
+- [x] **N7 Ubuntu VM** (Parallels, snapshot first): `curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/<branch>/install | DOTS_BRANCH=<branch> bash`; paste the key; sign in to GitHub when asked; check links, secrets (modes 700/600), flatpak apps, zsh; rerun (nothing changes).
 - [ ] **N8 macOS VM:** the same on a fresh macOS guest.
 - [ ] **N9 Reinstall this Mac:** merge to `main`; verify every backup at its destination; reinstall; run the
   one-liner; then delete `config/flox`, `config/bin/purge_flox`, `config/homebrew`, `config/apt`,
@@ -173,3 +173,4 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 - N5: Both dots:debian-local and dots:ubuntu-local built and passed all 39 CST tests. Added skills.fetch = false in config.toml to avoid 404s on upstream tool skills, and aligned CST directory permissions for .cache, .local/state, and .local/share with standard 0755.
 - N6: Removed the archive builder and the retired install secrets task, kept `assets/dump.zip.enc` as instructed, and updated the install docs to the `curl …/install | bash` flow with the age-key prompt and `dots-history` restore path. `GROUPNAME`/`--group`, `wget`, and layer-caching leftovers were removed from the active docs.
 - N6: Removed `flox-environments` from `assets/guides/SKILLS.yml`; `mise run -C assets skill sync` refreshed the registry without unrelated churn.
+- N7: Ubuntu 26.04 arm64 VM ran install end to end (secrets restored from dots-history, packages, flatpak apps, zsh, Neovim plugins) after fixes for git, dpkg prompts, /etc/flatpak, Discord (x64 only), chsh under curl|bash, cc for cargo, pynvim (pipx:pynvim), brew tools off PATH in the task and in shells, and flatpak installed before mise.
