@@ -201,14 +201,22 @@ git commit -m "feat(mise): Declare dotfile links for mise bootstrap"
 [bootstrap.directories."~/.local/share/npm"]
 [bootstrap.directories."~/.local/share/gems"]
 [bootstrap.directories."~/.cache/zsh"]
+mode = "0700"
 [bootstrap.directories."~/.cache/npm"]
 [bootstrap.directories."~/.cache/mise"]
+# Private (0700), as macOS creates them; bootstrap would otherwise reset them to 0755.
 [bootstrap.directories."~/Desktop"]
+mode = "0700"
 [bootstrap.directories."~/Documents"]
+mode = "0700"
 [bootstrap.directories."~/Downloads"]
+mode = "0700"
 [bootstrap.directories."~/Movies"]
+mode = "0700"
 [bootstrap.directories."~/Music"]
+mode = "0700"
 [bootstrap.directories."~/Pictures"]
+mode = "0700"
 [bootstrap.directories."~/Projects"]
 [bootstrap.directories."~/Work"]
 
@@ -257,7 +265,7 @@ Run:
 ```bash
 cd ~ && mise bootstrap status 2>&1 | tee /tmp/bootstrap-status.txt | grep -iE 'director|user|login|task' | head -30
 ```
-Expected: the 18 directories show as present; the login shell shows as matching (`/bin/zsh`); no parse error.
+Expected: the 18 directories show as present or create (`~/Projects`); the login shell shows the resolved Homebrew/apt zsh (it differs on this Mac, whose shell is /usr/local/bin/zsh); no parse error.
 If an unknown key is reported, fix its name from `mise bootstrap files --help` / `mise bootstrap user --help`
 and rerun.
 
@@ -1219,6 +1227,8 @@ and change two expectations:
     permissions: drwxr-xr-x
 ```
 
+Also change the `permissions` of the `~/Desktop`, `~/Documents`, `~/Downloads`, `~/Movies`, `~/Music`, `~/Pictures` and `~/.cache/zsh` tests to `drwx------` (bootstrap creates them 0700).
+
 - [ ] **Step 4: Build local images from the committed tree; drop flox and groups**
 
 In `mise.toml`, `[tasks."build"]`:
@@ -1536,6 +1546,6 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 1: 5 missing (`claude`, `dinky`, `github`, `npm`, `tombi`): this Mac never linked them.
 - Task 1: `~/.config/cog` differs only in form (absolute link to `~/Work/dots/config/cog`, relative requested; same target).
 - Task 1: `~/.local/bin` differs (17 linked, 2 missing); apply would remove 6 stale links (`keyring`, `osx`, `xc-foo`, `xc-skills`, `xc-usage`, `yw`), all broken links to scripts no longer in `config/bin`, so the removal is correct cleanup.
-- Task 2: empty `[bootstrap.directories."..."]` tables parse and default to mode 0755; `status` shows 8 as `update` (7 macOS folders at 0700: `~/Desktop`, `Documents`, `Downloads`, `Movies`, `Music`, `Pictures`, `~/.cache/zsh`) and `~/Projects` as `create`. Apply would loosen those to 0755; decide whether to pin `mode = "0700"` on them.
-- Task 2: all 18 directories parse (`~/.config/ssh` and `gnupg` already 0700, unchanged); `bootstrap` task is listed by `mise tasks ls`.
-- Task 2: `login_shell = "zsh"` resolves via PATH to `/opt/homebrew/bin/zsh`; this Mac's shell is `/usr/local/bin/zsh`, so status says `differs` and a dry run would `chsh` (and append to `/etc/shells` with sudo). Not the `/bin/zsh` the plan expected.
+- Task 2: empty `[bootstrap.directories."..."]` tables parse and default to mode 0755, which would loosen the macOS private folders; the seven (`~/Desktop`, `Documents`, `Downloads`, `Movies`, `Music`, `Pictures`, `~/.cache/zsh`) are pinned to 0700.
+- Task 2: all 18 directories parse; only `~/Projects` is `create`, the rest unchanged; the `bootstrap` task is listed by `mise tasks ls`.
+- Task 2: `login_shell = "zsh"` resolves via PATH to Homebrew's `/opt/homebrew/bin/zsh` (apt's on Linux), the canonical shell; this Mac's `/usr/local/bin/zsh` shows `differs`, which is expected.

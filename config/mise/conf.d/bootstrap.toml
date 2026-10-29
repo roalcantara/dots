@@ -7,14 +7,22 @@
 [bootstrap.directories."~/.local/share/npm"]
 [bootstrap.directories."~/.local/share/gems"]
 [bootstrap.directories."~/.cache/zsh"]
+mode = "0700"
 [bootstrap.directories."~/.cache/npm"]
 [bootstrap.directories."~/.cache/mise"]
+# Private (0700), as macOS creates them; bootstrap would otherwise reset them to 0755.
 [bootstrap.directories."~/Desktop"]
+mode = "0700"
 [bootstrap.directories."~/Documents"]
+mode = "0700"
 [bootstrap.directories."~/Downloads"]
+mode = "0700"
 [bootstrap.directories."~/Movies"]
+mode = "0700"
 [bootstrap.directories."~/Music"]
+mode = "0700"
 [bootstrap.directories."~/Pictures"]
+mode = "0700"
 [bootstrap.directories."~/Projects"]
 [bootstrap.directories."~/Work"]
 
