@@ -79,9 +79,11 @@ Expected: about 64 lines (35 in `~/.config`, 5 in `~`, 24 in `~/.local/bin`).
 # Links into this repo (assets/specs/mise-bootstrap/design.md §4.2). `install` links ~/.local/share/dots and
 # ~/.config/mise itself, because mise needs them before it can read this file.
 [dotfiles]
+# The list is static: compare it with git ls-files config | cut -d/ -f2 | sort -u when config/ changes.
 # One link per top-level entry of config/ (mode symlink: the whole folder or file). symlink-each would link
 # every file recursively. Not linked: mise (install), hk (setup:hooks), non-config files, the package lists,
-# and folders that are real on the Mac (app settings and keys restored from backup).
+# delta (its only file, .env, is git-ignored), and folders that are real on the Mac (app settings and keys
+# restored from backup).
 "~/.config/.env" = { source = "~/.local/share/dots/config/.env", relative = true }
 "~/.config/.markdownlint.yml" = { source = "~/.local/share/dots/config/.markdownlint.yml", relative = true }
 "~/.config/.profile" = { source = "~/.local/share/dots/config/.profile", relative = true }
@@ -94,7 +96,6 @@ Expected: about 64 lines (35 in `~/.config`, 5 in `~`, 24 in `~/.local/bin`).
 "~/.config/claude" = { source = "~/.local/share/dots/config/claude", relative = true }
 "~/.config/cog" = { source = "~/.local/share/dots/config/cog", relative = true }
 "~/.config/cursor" = { source = "~/.local/share/dots/config/cursor", relative = true }
-"~/.config/delta" = { source = "~/.local/share/dots/config/delta", relative = true }
 "~/.config/dinky" = { source = "~/.local/share/dots/config/dinky", relative = true }
 "~/.config/fabric" = { source = "~/.local/share/dots/config/fabric", relative = true }
 "~/.config/ghostty" = { source = "~/.local/share/dots/config/ghostty", relative = true }
@@ -104,6 +105,7 @@ Expected: about 64 lines (35 in `~/.config`, 5 in `~`, 24 in `~/.local/bin`).
 "~/.config/helix" = { source = "~/.local/share/dots/config/helix", relative = true }
 "~/.config/homebrew" = { source = "~/.local/share/dots/config/homebrew", relative = true }
 "~/.config/kodexb" = { source = "~/.local/share/dots/config/kodexb", relative = true }
+"~/.config/kb" = { source = "~/.local/share/dots/config/kodexb", relative = true } # alias
 "~/.config/npm" = { source = "~/.local/share/dots/config/npm", relative = true }
 "~/.config/nvim" = { source = "~/.local/share/dots/config/nvim", relative = true }
 "~/.config/ranma" = { source = "~/.local/share/dots/config/ranma", relative = true }
@@ -119,15 +121,17 @@ Expected: about 64 lines (35 in `~/.config`, 5 in `~`, 24 in `~/.local/bin`).
 "~/.config/yabai" = { source = "~/.local/share/dots/config/yabai", relative = true }
 "~/.config/zsh" = { source = "~/.local/share/dots/config/zsh", relative = true }
 "~/.config/zsh-patina" = { source = "~/.local/share/dots/config/zsh-patina", relative = true }
-"~/.config/kb" = { source = "~/.local/share/dots/config/kodexb", relative = true }
 "~/.zshenv" = { source = "~/.config/zsh/.zshenv", relative = true }
 "~/.bashrc" = { source = "~/.config/bash/bashrc", relative = true }
 "~/.profile" = { source = "~/.config/.profile", relative = true }
+# ~/.config/ssh and ~/.config/gnupg are real folders: created by bootstrap.toml, filled by install --secrets.
 "~/.ssh" = { source = "~/.config/ssh", relative = true }
 "~/.gnupg" = { source = "~/.config/gnupg", relative = true }
 # Links each executable file of config/bin; this Mac's links are absolute, so relative is left off.
+# Keep the exclude list in step when adding non-executables to config/bin.
 "~/.local/bin" = { source = "~/.local/share/dots/config/bin", mode = "symlink-each", exclude = [
   ".editorconfig",
+  ".vscode",
   "HANDOFF-USAGE-MIGRATION.md",
   "LICENSE",
   "README.md",
@@ -1520,7 +1524,8 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 1: `[dotfiles]` in a `conf.d` file loads (mise 2026.10.21); multi-line inline tables parse.
 - Task 1: `~` expands in `source` (no missing-source error), so the `{{env.HOME}}` fallback is not needed.
 - Task 1: `symlink-each` links every file recursively (1394 under config/), so `~/.config` has one `symlink` entry per config/ entry; it stays only for `~/.local/bin`.
-- Task 1: the file has 44 entries (37 `~/.config/<name>`, `~/.config/kb`, 5 `$HOME` links, `~/.local/bin`); `mise dot status` reports 36 up to date and 8 not.
-- Task 1: 6 missing (`claude`, `delta`, `dinky`, `github`, `npm`, `tombi`): this Mac never linked them.
+- Task 1: the file has 43 entries (36 `~/.config/<name>`, `~/.config/kb`, 5 `$HOME` links, `~/.local/bin`); `mise dot status` reports 36 up to date and 7 not.
+- Task 1: delta not linked: config/delta holds only a git-ignored .env.
+- Task 1: 5 missing (`claude`, `dinky`, `github`, `npm`, `tombi`): this Mac never linked them.
 - Task 1: `~/.config/cog` differs only in form (absolute link to `~/Work/dots/config/cog`, relative requested; same target).
-- Task 1: `~/.local/bin` differs (17 linked, 3 missing); apply would remove 6 stale links (`keyring`, `osx`, `xc-foo`, `xc-skills`, `xc-usage`, `yw`), all broken links to scripts no longer in `config/bin`, so the removal is correct cleanup.
+- Task 1: `~/.local/bin` differs (17 linked, 2 missing); apply would remove 6 stale links (`keyring`, `osx`, `xc-foo`, `xc-skills`, `xc-usage`, `yw`), all broken links to scripts no longer in `config/bin`, so the removal is correct cleanup.
