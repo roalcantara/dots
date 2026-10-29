@@ -712,7 +712,7 @@ git commit -m "feat(secrets): Add prepare task for an encrypted secrets archive"
 - Create: `assets/integration/install/install.spec.ts`
 - Modify: `install` (full rewrite)
 
-- [ ] **Step 1: Write the failing spec**
+- [x] **Step 1: Write the failing spec**
 
 ```ts
 #!/usr/bin/env bun
@@ -835,12 +835,12 @@ describe("install", () => {
 });
 ```
 
-- [ ] **Step 2: Run it against the old `install`**
+- [x] **Step 2: Run it against the old `install`**
 
 Run: `cd ~/Work/dots/assets && bun test integration/install/install.spec.ts`
 Expected: FAIL. The old script has no `--secrets <archive>` usage, rejects `--user`, and has no `--dry-run`.
 
-- [ ] **Step 3: Replace `install` with the new script**
+- [x] **Step 3: Replace `install` with the new script**
 
 Overwrite `install` with:
 ```bash
@@ -1189,12 +1189,12 @@ main() {
 main "$@"
 ```
 
-- [ ] **Step 4: Run both specs**
+- [x] **Step 4: Run both specs**
 
 Run: `cd ~/Work/dots/assets && bun test integration/install/`
 Expected: PASS, 18 tests (8 prepare-secrets, 10 install).
 
-- [ ] **Step 5: Lint and check bash 3.2**
+- [x] **Step 5: Lint and check bash 3.2**
 
 Run:
 ```bash
@@ -1214,7 +1214,7 @@ Expected: `user roalcantara exists`, both links `is linked`, every secret report
 has them), and only the mise install (unless `~/.local/bin/mise` is 2026.10.21) and the final `mise bootstrap`
 as `would:` lines.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 cd ~/Work/dots && git add install assets/integration/install/install.spec.ts
@@ -1675,3 +1675,4 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 4: `zip -y` (store links) cannot write to a pipe ("zip -0 not supported for I/O on pipes"), so the zip goes to a file in the work folder before `openssl enc`.
 - Task 4: Staged links must resolve inside the archive (absolute or missing targets exit 1 with `is a link to`); ssh/ and gnupg/ copies skip `S.*`, `s.*`, `.#lk*`, `random_seed`, `*~`.
 - Task 4: The fixture forces the passphrase `dots-fixture` over any ambient value; `openssl enc` pins `-md sha256` (spec and Task 5 decrypt updated); it has no authentication, noted in the script. 8 tests now.
+- Task 5: Spec failed first on the old `install` (0 pass, 10 fail; every spec invocation starts with an option the old parser rejects with exit 1 before any setup, so the run was safe); then 18/18 passed (8 prepare-secrets + 10 install); shellcheck clean, `/bin/bash` 3.2.57 syntax ok; fake-HOME dry run ends with `would: <tmp>/.local/bin/mise bootstrap -E desktop`; real-home dry run reports user exists and both links `is linked`. Step 6 (real archive and passphrase) skipped: owner-interactive.
