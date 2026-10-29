@@ -119,7 +119,6 @@ go = "latest"
 "pipx:debugpy" = "latest"
 "pipx:graphifyy" = "latest"
 "pipx:code-review-graph" = "latest"
-"cargo:https://github.com/RayanBO/todo" = "HEAD"
 
 [tasks]
 [tasks.up]

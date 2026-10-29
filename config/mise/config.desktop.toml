@@ -1,0 +1,3 @@
+[tools]
+# RayanBO/todo requires cargo/rust to compile from source, so keep it on desktop workstations
+"cargo:https://github.com/RayanBO/todo" = "HEAD"
