@@ -30,8 +30,6 @@ usage = '''
   flag "--branch <branch>" help="Git branch for remote install"
   flag "--repo <repo>" help="GitHub repo (owner/name)"
   flag "--user <user>" help="Build arg USERNAME"
-  flag "--group <group>" help="Build arg GROUPNAME"
-  flag "--package-manager <pm>" help="Package manager" default="flox"
   flag "--build-arg <arg>" {
     help "Extra docker --build-arg (repeat flag)"
     var #true
@@ -60,20 +58,12 @@ if [ -n "${usage_user:-}" ]; then
   DOCKER_CMD+=(--build-arg=USERNAME="$usage_user")
 fi
 
-if [ -n "${usage_group:-}" ]; then
-  DOCKER_CMD+=(--build-arg=GROUPNAME="$usage_group")
-fi
-
 if [ -n "${usage_branch:-}" ]; then
   DOCKER_CMD+=(--build-arg=BRANCH="$usage_branch")
 fi
 
 if [ -n "${usage_repo:-}" ]; then
   DOCKER_CMD+=(--build-arg=GITHUB_REPO="$usage_repo")
-fi
-
-if [ -n "${usage_package_manager:-}" ]; then
-  DOCKER_CMD+=(--build-arg=PACKAGE_MANAGER="$usage_package_manager")
 fi
 
 if [ -n "${usage_build_arg:-}" ]; then
@@ -99,16 +89,19 @@ fi
 
 DOCKER_CMD+=(--file="distros/${usage_distro?}/Dockerfile")
 
-if [ "${usage_publish:-false}" = "true" ]; then
-  DOCKER_CMD+=(--target=publish .)
-elif [ "${usage_local:-false}" = "true" ]; then
-  DOCKER_CMD+=(--target=local .)
+# local and publish build the committed tree: the working tree holds decrypted SOPS files (config/.env,
+# config/ssh/keys/*.key). The smudge filter is disabled so git archive exports them encrypted.
+if [ "${usage_publish:-false}" = "true" ] || [ "${usage_local:-false}" = "true" ]; then
+  target=local
+  [ "${usage_publish:-false}" = "true" ] && target=publish
+  DOCKER_CMD+=(--target="$target" -)
+  echo "  ==> git archive HEAD | ${DOCKER_CMD[*]}"
+  git -c filter.sops.smudge=cat -c filter.sops.required=false archive --format=tar HEAD | eval "${DOCKER_CMD[*]}"
 else
   DOCKER_CMD+=(--target=remote .)
+  echo "  ==> ${DOCKER_CMD[*]}"
+  eval "${DOCKER_CMD[*]}"
 fi
-
-echo "  ==> ${DOCKER_CMD[*]}"
-eval "${DOCKER_CMD[*]}"
 '''
 
 # mise run start

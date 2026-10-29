@@ -58,48 +58,6 @@ commandTests:
     args: [git]
     exitCode: 0
 
-  # FLOX
-  - name: Flox should be installed
-    command: which
-    args: [flox]
-    exitCode: 0
-  - name: Flox should have a default environment
-    command: flox
-    args: [envs]
-    expectedOutput:
-      - "\\s*cockpit.*\\/home\\/vscode.*"
-  - name: Flox cockpit environment should have all minimum tools installed
-    command: flox
-    args: [list, --dir=/home/vscode, --name]
-    expectedOutput:
-      [
-        'age',
-        'bat',
-        'coreutils',
-        'delta',
-        'eza',
-        'fd',
-        'findutils',
-        'fzf',
-        'gawk',
-        'gitlint',
-        'glow',
-        'gnugrep',
-        'gnumake',
-        'gum',
-        'less',
-        'lesspipe',
-        'mise',
-        'neovim',
-        'pre-commit',
-        'ripgrep',
-        'sops',
-        'sqlite',
-        'starship',
-        'tree-sitter',
-        'zoxide',
-      ]
-
 # HOME DIRECTORIES
 fileExistenceTests:
   - name: ~/ (HOME dir)
@@ -109,27 +67,27 @@ fileExistenceTests:
   - name: ~/Desktop dir (XDG_DESKTOP_DIR)
     path: /home/vscode/Desktop
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Documents dir (XDG_DOCUMENTS_DIR)
     path: /home/vscode/Documents
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Downloads dir (XDG_DOWNLOAD_DIR)
     path: /home/vscode/Downloads
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Movies dir (XDG_VIDEOS_DIR)
     path: /home/vscode/Movies
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Music dir (XDG_MUSIC_DIR)
     path: /home/vscode/Music
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Pictures dir (XDG_PICTURES_DIR)
     path: /home/vscode/Pictures
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
   - name: ~/Projects dir (XDG_PROJECTS_DIR)
     path: /home/vscode/Projects
     shouldExist: true
@@ -144,7 +102,8 @@ fileExistenceTests:
     permissions: Lrwxrwxrwx
   - name: ~/.bashrc file
     path: /home/vscode/.bashrc
-    shouldExist: false
+    shouldExist: true
+    permissions: Lrwxrwxrwx
   - name: ~/.oh-my-zsh dir
     path: /home/vscode/.oh-my-zsh
     shouldExist: false
@@ -153,7 +112,7 @@ fileExistenceTests:
   - name: ~/.config dir (XDG_CONFIG_HOME)
     path: /home/vscode/.config
     shouldExist: true
-    permissions: Lrwxrwxrwx
+    permissions: drwxr-xr-x
   - name: ~/.config/nvim dir
     path: /home/vscode/.config/nvim
     shouldExist: true
@@ -223,7 +182,7 @@ fileExistenceTests:
   - name: ~/.cache/zsh dir (ZSH_CACHE_DIR)
     path: /home/vscode/.cache/zsh
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwx------
 
   # XDG_STATE_HOME (LOCAL/STATE)
   - name: ~/.local/state dir (XDG_STATE_HOME)

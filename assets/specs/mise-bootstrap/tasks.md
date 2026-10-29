@@ -1514,7 +1514,7 @@ The old `local` and `publish` stages copied this Mac's working tree, in which `c
 with `--local` or `--publish`. If any exists: delete it, and rotate the GitHub, GitHub deploy and Bitbucket SSH
 keys. Record the answer under "Findings".
 
-- [ ] **Step 1: Rewrite the Debian Dockerfile**
+- [x] **Step 1: Rewrite the Debian Dockerfile**
 
 ```dockerfile
 # syntax=docker/dockerfile:1.7
@@ -1558,6 +1558,7 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 
 # GitHub branch: mise run build (the default)
 FROM base AS remote
+# hadolint ignore=DL4006
 RUN --mount=type=secret,id=github_token \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -1573,7 +1574,7 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 FROM local AS publish
 ```
 
-- [ ] **Step 2: Derive the Ubuntu Dockerfile**
+- [x] **Step 2: Derive the Ubuntu Dockerfile**
 
 ```bash
 cd ~/Work/dots && sed -e 's/A Debian development/An Ubuntu development/' -e 's/base:debian AS base/base:ubuntu AS base/' \
@@ -1582,7 +1583,7 @@ diff distros/debian/Dockerfile distros/ubuntu/Dockerfile
 ```
 Expected: exactly two differing lines (the comment and the `FROM`).
 
-- [ ] **Step 3: Update the structure tests (both files)**
+- [x] **Step 3: Update the structure tests (both files)**
 
 In each `container-structure-test.yml`, replace the whole `# FLOX` block (from `  # FLOX` to the end of the
 `expectedOutput` list, before `# HOME DIRECTORIES`) with:
@@ -1617,7 +1618,7 @@ and change two expectations:
 
 Also change the `permissions` of the `~/Desktop`, `~/Documents`, `~/Downloads`, `~/Movies`, `~/Music`, `~/Pictures` and `~/.cache/zsh` tests to `drwx------` (bootstrap creates them 0700).
 
-- [ ] **Step 4: Build local images from the committed tree; drop flox and groups**
+- [x] **Step 4: Build local images from the committed tree; drop flox and groups**
 
 In `mise.toml`, `[tasks."build"]`:
 1. Delete the usage lines `flag "--group <group>" help="Build arg GROUPNAME"` and
@@ -1650,12 +1651,12 @@ else
 fi
 ```
 
-- [ ] **Step 5: Lint**
+- [x] **Step 5: Lint**
 
 Run: `cd ~/Work/dots && hk check --all`
 Expected: hadolint, shellcheck and the YAML/TOML checks pass for the changed files.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 cd ~/Work/dots && git add distros/debian distros/ubuntu mise.toml
@@ -1953,6 +1954,7 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 4: Staged links must resolve inside the archive (absolute or missing targets exit 1 with `is a link to`); ssh/ and gnupg/ copies skip `S.*`, `s.*`, `.#lk*`, `random_seed`, `*~`.
 - Task 4: The fixture forces the passphrase `dots-fixture` over any ambient value; `openssl enc` pins `-md sha256` (spec and Task 5 decrypt updated); it has no authentication, noted in the script. 8 tests now.
 - Task 5: Spec failed first on the old `install` (0 pass, 10 fail; every spec invocation starts with an option the old parser rejects with exit 1 before any setup, so the run was safe); then 18/18 passed (8 prepare-secrets + 10 install); shellcheck clean, `/bin/bash` 3.2.57 syntax ok; fake-HOME dry run ends with `would: <tmp>/.local/bin/mise bootstrap -E desktop`; real-home dry run reports user exists and both links `is linked`. Step 6 (real archive and passphrase) skipped: owner-interactive.
+- Task 6: Step 0 (Docker Hub check) left unticked for the owner. Dockerfiles rewritten; Ubuntu differs from Debian in two lines. Both CST files: FLOX block replaced by MISE, `.bashrc` now a symlink, `.config` a dir, six XDG dirs and `~/.cache/zsh` 0700 (Ubuntu keeps its own `~/` mode). `mise.toml` build: group and package-manager flags removed, no leftover `usage_group`/`PACKAGE_MANAGER`/`GROUPNAME`; local/publish pipe `git archive` into `docker build ... -`. Check: the archive of `config/ssh/keys/id_ed25519_github.key` starts with SOPS JSON (`"data": "ENC[AES256_GCM`), not the OpenSSH header. Deviation: `# hadolint ignore=DL4006` added to the remote stage (hadolint does not see the base stage's pipefail SHELL; plan block synced). Risk for Task 7: `install --tz` validates against `/usr/share/zoneinfo`; devcontainers base images are expected to ship tzdata, unverified. `hk check --all` fails on unrelated pre-existing shfmt diffs (config/nvim, config/raycast scripts), aborting other steps; hadolint and yamllint pass on their own.
 - Task 5 review: `--tz` and `--branch` are validated (exit 2); root commands take values as `sh -c` arguments, never interpolated; the root-to-user switch writes the running code (`declare -f`) to `/tmp/dots-install.*` and hands the user an owned copy of the secrets and `GITHUB_TOKEN` in `/tmp/dots-secrets.*`; one `cleanup` list removes every temp path; apt updates once and installs non-interactively; the passphrase is unset after opening. Now 24 tests (8 + 16), including a real run in a fake checkout and home with a stub `mise`.
 - Task 5 review: deviation: the "run as root or as <user>" check in `detect` is skipped under `--dry-run`, so a dry run for another user still plans the user and stops at `would: continue as <user>` (an existing spec case). Linux paths (apt, sudo switch) are untested here; the regenerated script was checked by running it as the user stage on this Mac.
 - Task 5 review: copy_secret_dir keeps `umask 077` in the script (not a subshell) so the dry-run line stays `would: cp -R src dst`; `find` fixes the modes.
