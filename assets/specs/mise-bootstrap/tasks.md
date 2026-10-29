@@ -64,7 +64,7 @@ loaded, whether `~` expands in `source`, and whether `relative = true` reproduce
 **Files:**
 - Create: `config/mise/conf.d/dotfiles.toml`
 
-- [ ] **Step 1: Record this Mac's current links (the expected result)**
+- [x] **Step 1: Record this Mac's current links (the expected result)**
 
 Run:
 ```bash
@@ -73,7 +73,7 @@ wc -l /tmp/links-before.txt
 ```
 Expected: about 64 lines (35 in `~/.config`, 5 in `~`, 24 in `~/.local/bin`).
 
-- [ ] **Step 2: Write the config**
+- [x] **Step 2: Write the config**
 
 ```toml
 # Links into this repo (assets/specs/mise-bootstrap/design.md §4.2). `install` links ~/.local/share/dots and
@@ -96,7 +96,7 @@ Expected: about 64 lines (35 in `~/.config`, 5 in `~`, 24 in `~/.local/bin`).
 ] }
 ```
 
-- [ ] **Step 3: Check it read-only**
+- [x] **Step 3: Check it read-only**
 
 Run:
 ```bash
@@ -108,21 +108,21 @@ Expected, all three must hold:
 3. Existing links (`~/.config/zsh`, `~/.zshenv`, `~/.local/bin/gitx`, …) show as unchanged; only the entries
    this Mac does not link yet (`npm`, `claude`, `delta`, `dinky`, `github`, `tombi`, …) show as missing.
 
-- [ ] **Step 4: If check 2 fails, use a template instead of `~`**
+- [x] **Step 4: If check 2 fails, use a template instead of `~`**
 
 ```bash
 sed -i '' -e 's|source = "~/|source = "{{env.HOME}}/|g' ~/Work/dots/config/mise/conf.d/dotfiles.toml
 ```
 Rerun Step 3.
 
-- [ ] **Step 5: If check 3 shows existing links as changed**
+- [x] **Step 5: If check 3 shows existing links as changed**
 
 Read the reported target in `/tmp/dot-status.txt`. If it differs only in form (for example
 `../Work/dots/config/zsh` instead of `../.local/share/dots/config/zsh`, because mise resolved the
 `~/.local/share/dots` link) and still reaches the same file, accept it and write one line under "Findings". Any
 other difference (a wrong file, an absolute path despite `relative = true`) stops the task: report it.
 
-- [ ] **Step 6: Confirm nothing changed on disk**
+- [x] **Step 6: Confirm nothing changed on disk**
 
 Run:
 ```bash
@@ -130,7 +130,7 @@ find ~/.config ~ ~/.local/bin -maxdepth 1 -type l -exec sh -c 'printf "%s -> %s\
 ```
 Expected: no output.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 cd ~/Work/dots && git add config/mise/conf.d/dotfiles.toml assets/specs/mise-bootstrap/tasks.md
@@ -1475,3 +1475,8 @@ cd ~/Work/dots && git add config/mise/conf.d/dotfiles.toml && git commit -m "ref
 Record here what each task's checks show (one line each): conf.d loading, `~` in `source`, link forms, the
 macOS-only formula count, installed-but-undeclared formulae and the owner's decision, Homebrew services, Linux
 formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, the Ubuntu VM run.
+- Task 1: `[dotfiles]` in a `conf.d` file loads (mise 2026.10.21): `mise dot status` lists all 8 entries from `~/.config/mise/conf.d/dotfiles.toml`.
+- Task 1: `~` expands in `source`; no missing-source error, so the `{{env.HOME}}` fallback is not needed.
+- Task 1: the 6 single-link entries (`kb`, `.zshenv`, `.bashrc`, `.profile`, `.ssh`, `.gnupg`) report `applied`; `~/.config` and `~/.local/bin` report `differs`.
+- Task 1: SURPRISE: `symlink-each` links every FILE recursively (1394 files under config/, 20 under config/bin), not each top-level entry; this Mac links whole folders (`~/.config/age -> ../.local/share/dots/config/age`), so apply would replace them with real directories of file links and remove stale links (`~/.config/mise`, `raycast/scripts`, `tealdeer`, `~/.local/bin/keyring|osx|xc-*|yw`). The `~/.config` entry needs another design (one `symlink` entry per top-level folder). Not applied; disk unchanged.
+- Task 1: `/tmp/links-before.txt` has 77 links, not about 64. Link form mise would write was not observable without apply.
