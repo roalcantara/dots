@@ -27,6 +27,13 @@ if [ ! -s "$KEY" ]; then
   case "$key" in AGE-SECRET-KEY-1*) ;; *) echo "install: that is not an age secret key" >&2; exit 2 ;; esac
   (umask 077 && printf '%s\n' "$key" >"$KEY")
 fi
+mkdir -p "$DOTS/config/mise"
+if command -v age-keygen >/dev/null 2>&1 && [ -s "$KEY" ]; then
+  pub="$(age-keygen -y "$KEY" 2>/dev/null || true)"
+  if [ -n "$pub" ]; then
+    printf '[history.encryption]\nrecipients = ["%s"]\n' "$pub" > "$DOTS/config/mise/config.local.toml"
+  fi
+fi
 mkdir -p "$HOME/.config/mise"
 test -e "$HOME/.config/mise/age.txt" || (umask 077 && cp "$KEY" "$HOME/.config/mise/age.txt" 2>/dev/null || true)
 
@@ -41,7 +48,7 @@ esac
 mise bootstrap --adopt "$HISTORY" -E "$PROFILE" --yes
 ln -sfn ../.local/share/dots/config/age "$HOME/.config/age"
 if [ ! -L "$HOME/.config/mise" ]; then
-  test -f "$HOME/.config/mise/config.local.toml" && cp "$HOME/.config/mise/config.local.toml" "$DOTS/config/mise/config.local.toml"
+  test -f "$HOME/.config/mise/config.local.toml" && cat "$HOME/.config/mise/config.local.toml" >> "$DOTS/config/mise/config.local.toml"
   test -f "$HOME/.config/mise/age.txt" && cp "$HOME/.config/mise/age.txt" "$DOTS/config/mise/age.txt"
   rm -rf "$HOME/.config/mise"
 fi
