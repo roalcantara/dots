@@ -90,6 +90,9 @@ idiomatic_version_file_enable_tools = [
 # Instead use https://usage.jdx.dev/spec
 task.disable_spec_from_run_scripts = true
 
+# Skills are managed in .agents/skills/ per SKILLS.yml; do not auto-fetch from tool git repos
+skills.fetch = false
+
 # Configure a custom command in your global settings to obtain a GitHub token
 # https://mise.jdx.dev/dev-tools/github-tokens.html#credential-command
 # The SOPS age key is the single root secret: it decrypts this repo's SOPS files and the mise history.
