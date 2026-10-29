@@ -104,7 +104,7 @@ elif [ -d "$HOMEBREW_PREFIX/bin" ]; then
 fi
 
 # MISE | https://mise.jdx.dev/ {
-  if ! command -v mise >/dev/null; then
+  if command -v mise >/dev/null; then
     eval "$(mise activate bash)"
   fi
 # }
@@ -112,7 +112,7 @@ fi
 # EDITOR {
   # Set default editor to nvim, vim or vi
   # https://neovim.io/doc/user/starting.html#config
-  if ! command -v nvim >/dev/null; then
+  if command -v nvim >/dev/null; then
     export EDITOR=${EDITOR:-"$(command -v nvim)"}
     export VIM_PATH=${VIM_PATH:-$XDG_CONFIG_HOME/nvim}
     export MYVIMRC=${MYVIMRC:-$VIM_PATH/init.lua}

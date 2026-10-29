@@ -156,15 +156,16 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
   prompt and `dots-history`. Fix DOCKER_GUIDE leftovers (GROUPNAME/`--group`, `wget`, layer caching).
 - [x] Remove `flox-environments` from `assets/guides/SKILLS.yml` and run `mise run -C assets skill sync`.
 - [x] Commit (`refactor: Retire the secrets archive and the old install`).
-- [ ] Owner: delete `assets/dump.zip.enc` once a VM run (N7 or N8) restores the secrets from `dots-history`.
+- [x] Owner: delete `assets/dump.zip.enc` once a VM run (N7 or N8) restores the secrets from `dots-history`.
 
 ### N7–N9 (owner, manual)
 
 - [x] **N7 Ubuntu VM** (Parallels, snapshot first): `curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/<branch>/install | DOTS_BRANCH=<branch> bash`; paste the key; sign in to GitHub when asked; check links, secrets (modes 700/600), flatpak apps, zsh; rerun (nothing changes).
 - [ ] **N8 macOS VM:** the same on a fresh macOS guest.
 - [ ] **N9 Reinstall this Mac:** merge to `main`; verify every backup at its destination; reinstall; run the
-  one-liner; then delete `config/flox`, `config/bin/purge_flox`, `config/homebrew`, `config/apt`,
-  `config/flatpak`, `config/snap`, `distros/alpine` (or port it), and their `dotfiles.toml` exclusions.
+  one-liner. The deletions it listed (`config/flox`, `config/bin/purge_flox`, `config/apt`, `config/flatpak`,
+  `config/snap`, `distros/alpine`) landed before the reinstall, at the owner's request; `config/homebrew` and the
+  `dotfiles.toml` exclusions were already gone. Git history keeps them if the reinstall needs one.
 
 ## Findings
 - N1: mise rejects [dotfiles] tracking in environment files ("tracking is enrolled from the global configuration only"); moved [settings] age.key_file, [history.encryption], and [dotfiles] tracking to config/mise/config.toml.
@@ -174,3 +175,4 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 - N6: Removed the archive builder and the retired install secrets task, kept `assets/dump.zip.enc` as instructed, and updated the install docs to the `curl …/install | bash` flow with the age-key prompt and `dots-history` restore path. `GROUPNAME`/`--group`, `wget`, and layer-caching leftovers were removed from the active docs.
 - N6: Removed `flox-environments` from `assets/guides/SKILLS.yml`; `mise run -C assets skill sync` refreshed the registry without unrelated churn.
 - N7: Ubuntu 26.04 arm64 VM ran install end to end (secrets restored from dots-history, packages, flatpak apps, zsh, Neovim plugins) after fixes for git, dpkg prompts, /etc/flatpak, Discord (x64 only), chsh under curl|bash, cc for cargo, pynvim (pipx:pynvim), brew tools off PATH in the task and in shells, and flatpak installed before mise.
+- Follow-ups (2026-10-29): `~/.config/gopass` (encrypted) and `~/.agents` (commands and skills; `.skill-lock.json` lists only one skill, so it cannot restore them) tracked in `[dotfiles]`; `tasks.bootstrap` clones the gopass store once SSH keys and the age identity are restored, and downloads the three oMLX models with `brew:hf` when `/Applications/oMLX.app` exists (the app itself is installed by hand: no Homebrew cask).
