@@ -81,7 +81,7 @@ DevContainer paths.
 
 **Local** and **publish** build from `git archive HEAD` with the SOPS smudge filter
 disabled, so encrypted files stay encrypted in the image; uncommitted changes are not included. `install`
-runs as root, creates the user, grants passwordless sudo and runs `mise bootstrap -E container --skip user`
+runs as root, creates the user, grants passwordless sudo and runs `mise bootstrap --force-dotfiles -E container --skip user`
 as that user. Images never receive a secrets archive, only `GITHUB_TOKEN` from the `github_token` build
 secret.
 

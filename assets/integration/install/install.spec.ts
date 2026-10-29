@@ -85,7 +85,9 @@ describe("install", () => {
       expect(r.out).toContain(`would: ln -snf ${repo} ${home}/.local/share/dots`);
       expect(r.out).toContain(`would: ln -snf ../.local/share/dots/config/mise ${home}/.config/mise`);
       expect(r.out).toContain(`would: ${home}/.local/bin/mise bootstrap`);
-      expect(r.out).toContain("mise bootstrap --force-dotfiles -E desktop");
+      expect(r.out).toContain("mise bootstrap -E desktop");
+      // On a host, forcing dotfiles would replace a real ~/.ssh folder with a link and delete its keys.
+      expect(r.out).not.toContain("--force-dotfiles");
     });
 
     it("changes no link that is already right", () => {
@@ -108,6 +110,24 @@ describe("install", () => {
       expect(r.out).toContain(`${home}/.config/ssh`);
       expect(r.out).toMatch(/would: install -m 0600 \S+\/files\/gh\/hosts\.yml /);
       expect(r.out).toContain("config/age/keys.txt"); // planned, or reported as existing on a set-up Mac
+    });
+
+    it("plans replacing an empty secrets folder but removes nothing in a dry run", () => {
+      mkdirSync(join(home, ".config/ssh"), { recursive: true });
+      const r = run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "dots-fixture" });
+      expect(r.code).toBe(0);
+      expect(r.out).toContain(`would: rmdir ${home}/.config/ssh`);
+      expect(r.out).toMatch(/would: cp -R \S+\/files\/ssh /);
+      expect(existsSync(join(home, ".config/ssh"))).toBe(true);
+    });
+
+    it("keeps a secrets folder that already has files", () => {
+      mkdirSync(join(home, ".config/ssh"), { recursive: true });
+      writeFileSync(join(home, ".config/ssh/known_hosts"), "kept");
+      const r = run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "dots-fixture" });
+      expect(r.code).toBe(0);
+      expect(r.out).toContain(`${home}/.config/ssh exists`);
+      expect(r.out).not.toMatch(/would: (rmdir|cp -R \S+\/files\/ssh)/);
     });
 
     it("stops with exit code 2 on a wrong passphrase", () => {
@@ -217,7 +237,7 @@ describe("install", () => {
         if (statSync(join(home, ".config/ssh", f)).isFile()) expect(mode(join(home, ".config/ssh", f))).toBe(0o600);
       }
       expect(mode(join(checkout, "config/age/keys.txt"))).toBe(0o600);
-      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap --force-dotfiles -E desktop");
+      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap -E desktop");
       expect(readFileSync(join(home, ".config/gh/hosts.yml"), "utf8")).toBe("mine\n");
       expect(newTemps(before)).toEqual([]);
 
@@ -265,7 +285,7 @@ describe("install", () => {
       expect(left).toEqual([false, false]);
       expect(mode(join(home, ".config/ssh"))).toBe(0o700);
       expect(mode(join(home, ".config/ssh/id"))).toBe(0o600);
-      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap --force-dotfiles -E desktop");
+      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap -E desktop");
     });
   });
 

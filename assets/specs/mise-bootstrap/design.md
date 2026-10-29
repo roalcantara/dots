@@ -171,7 +171,9 @@ nothing:
    `github_token` file is exported as `GITHUB_TOKEN` for this run only, unless `GITHUB_TOKEN` is already set,
    so mise avoids GitHub API rate limits; it is never stored.
 7. **Flathub** (Linux with `-E desktop`): `flatpak remote-add --user --if-not-exists flathub …`.
-8. **Bootstrap:** `mise bootstrap`, with `-E <profile>` and, in containers, `--skip user --yes`.
+8. **Bootstrap:** `mise bootstrap`, with `-E <profile>` and, in containers, `--force-dotfiles --skip user --yes`
+   (`--force-dotfiles` replaces the base image's own `.bashrc`/`.profile`; never on a host, where it would
+   replace a real `~/.ssh` folder with a link and delete its keys).
 
 Packages, links and tools live only in the mise config; `install` holds none of them.
 

@@ -804,6 +804,8 @@ describe("install", () => {
       expect(r.out).toContain(`would: ln -snf ../.local/share/dots/config/mise ${home}/.config/mise`);
       expect(r.out).toContain(`would: ${home}/.local/bin/mise bootstrap`);
       expect(r.out).toContain("mise bootstrap -E desktop");
+      // On a host, forcing dotfiles would replace a real ~/.ssh folder with a link and delete its keys.
+      expect(r.out).not.toContain("--force-dotfiles");
     });
 
     it("changes no link that is already right", () => {
@@ -826,6 +828,24 @@ describe("install", () => {
       expect(r.out).toContain(`${home}/.config/ssh`);
       expect(r.out).toMatch(/would: install -m 0600 \S+\/files\/gh\/hosts\.yml /);
       expect(r.out).toContain("config/age/keys.txt"); // planned, or reported as existing on a set-up Mac
+    });
+
+    it("plans replacing an empty secrets folder but removes nothing in a dry run", () => {
+      mkdirSync(join(home, ".config/ssh"), { recursive: true });
+      const r = run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "dots-fixture" });
+      expect(r.code).toBe(0);
+      expect(r.out).toContain(`would: rmdir ${home}/.config/ssh`);
+      expect(r.out).toMatch(/would: cp -R \S+\/files\/ssh /);
+      expect(existsSync(join(home, ".config/ssh"))).toBe(true);
+    });
+
+    it("keeps a secrets folder that already has files", () => {
+      mkdirSync(join(home, ".config/ssh"), { recursive: true });
+      writeFileSync(join(home, ".config/ssh/known_hosts"), "kept");
+      const r = run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "dots-fixture" });
+      expect(r.code).toBe(0);
+      expect(r.out).toContain(`${home}/.config/ssh exists`);
+      expect(r.out).not.toMatch(/would: (rmdir|cp -R \S+\/files\/ssh)/);
     });
 
     it("stops with exit code 2 on a wrong passphrase", () => {
@@ -993,7 +1013,7 @@ describe("install", () => {
       expect(r.code).toBe(0);
       expect(r.out).toContain("profile container");
       expect(r.out).toContain("visudo -cf");
-      expect(r.out).toContain("mise bootstrap -E container --skip user --yes");
+      expect(r.out).toContain("mise bootstrap --force-dotfiles -E container --skip user --yes");
     });
   });
 });
@@ -1312,7 +1332,7 @@ switch_to_user() {
     done
   fi
   cd "$home" 2>/dev/null || cd /
-  exec sudo -u "$TARGET_USER" -H env DOTS_STAGE=user DOTS_SECRETS="$copy" DOTS_CHECKOUT="$checkout" \
+  exec sudo -u "$TARGET_USER" -H env PATH="$PATH" DOTS_STAGE=user DOTS_SECRETS="$copy" DOTS_CHECKOUT="$checkout" \
     DOTS_CONTAINER="$container" bash "$script" "${fwd[@]}"
 }
 
@@ -1389,7 +1409,9 @@ copy_secret_file() {
 copy_secret_dir() {
   local src="$1" dst="$2"
   [ -d "$src" ] || return 0
-  if [ -e "$dst" ]; then
+  if [ -d "$dst" ] && [ ! -L "$dst" ] && [ -z "$(ls -A "$dst")" ]; then
+    act rmdir "$dst" # empty (bootstrap pre-creates ~/.config/ssh and gnupg): replaced by the copy
+  elif [ -e "$dst" ]; then
     log "$dst exists"
     return
   fi
@@ -1422,6 +1444,9 @@ ensure_flathub() {
 
 run_bootstrap() {
   local args=(bootstrap)
+  # Containers only: replace the base image's own .bashrc/.profile. On a host, --force-dotfiles would replace a
+  # real ~/.ssh or ~/.gnupg folder with a link and delete the keys in it.
+  if [ "$SKIP_USER" = 1 ]; then args+=(--force-dotfiles); fi
   if [ -n "$PROFILE" ]; then args+=(-E "$PROFILE"); fi
   if [ "$SKIP_USER" = 1 ]; then args+=(--skip user --yes); fi
   cd "$HOME"
@@ -1706,7 +1731,7 @@ at `would: continue as vscode`, prints no other `would:` line. Then confirm the 
 ```bash
 docker run --rm --entrypoint bash dots:debian-local -c '~/Work/dots/install --dry-run | grep "^would:"'
 ```
-Expected: one line only, `would: /home/vscode/.local/bin/mise bootstrap -E container --skip user --yes`.
+Expected: one line only, `would: /home/vscode/.local/bin/mise bootstrap --force-dotfiles -E container --skip user --yes`.
 
 - [x] **Step 4: Run the structure tests**
 
@@ -1973,3 +1998,4 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 7: `RayanBO/todo` (cargo build from source requiring rust) moved to `config/mise/config.desktop.toml` so containers without desktop toolchains skip building it.
 - Task 7: `install` root-to-user switch updated to pass `PATH="$PATH"`, and `copy_secret_dir` prunes empty directories before copying so pre-existing directories like `~/.config/ssh` get their secrets copied and permissioned (700 / 600) cleanly.
 - Task 7: `container-structure-test` pinned in `mise.toml` tools (1.22.1); Debian & Ubuntu CST updated to match mise bootstrap layout (symlinked config folders, permission alignments, and non-existing files removed); all 37 tests PASS on both Debian and Ubuntu local images.
+- Review of Tasks 7/9 (2026-10-29): `--force-dotfiles` is now passed only in containers (on a host `mise dot apply --force` deleted a real `~/.ssh` in a scratch test); `copy_secret_dir` replaces only an empty destination, through `act`, so a dry run removes nothing; two spec cases added (29 tests).

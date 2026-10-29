@@ -379,8 +379,9 @@ copy_secret_file() {
 copy_secret_dir() {
   local src="$1" dst="$2"
   [ -d "$src" ] || return 0
-  [ -d "$dst" ] && rmdir "$dst" 2>/dev/null || true
-  if [ -e "$dst" ]; then
+  if [ -d "$dst" ] && [ ! -L "$dst" ] && [ -z "$(ls -A "$dst")" ]; then
+    act rmdir "$dst" # empty (bootstrap pre-creates ~/.config/ssh and gnupg): replaced by the copy
+  elif [ -e "$dst" ]; then
     log "$dst exists"
     return
   fi
@@ -412,7 +413,10 @@ ensure_flathub() {
 }
 
 run_bootstrap() {
-  local args=(bootstrap --force-dotfiles)
+  local args=(bootstrap)
+  # Containers only: replace the base image's own .bashrc/.profile. On a host, --force-dotfiles would replace a
+  # real ~/.ssh or ~/.gnupg folder with a link and delete the keys in it.
+  if [ "$SKIP_USER" = 1 ]; then args+=(--force-dotfiles); fi
   if [ -n "$PROFILE" ]; then args+=(-E "$PROFILE"); fi
   if [ "$SKIP_USER" = 1 ]; then args+=(--skip user --yes); fi
   cd "$HOME"
