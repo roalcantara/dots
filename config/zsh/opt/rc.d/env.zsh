@@ -146,8 +146,9 @@ env::paths() {
 #ABOUT Export HOMEBREW_* settings and add brew prefixes to $path.
 #ORDER After env::paths.
 env::homebrew() {
+  # mise's brew: packages fill the prefix without installing brew itself, so the prefix is found by its folders.
   if [[ -d /opt/homebrew || -d /home/linuxbrew/.linuxbrew || -d /usr/local/Homebrew || -e /usr/local/bin/brew ]]; then
-    export HOMEBREW_PREFIX=${HOMEBREW_PREFIX:-$(if [[ -x /opt/homebrew/bin/brew ]]; then echo "/opt/homebrew"; elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then echo "/home/linuxbrew/.linuxbrew"; elif [[ -x /usr/local/bin/brew ]]; then echo "/usr/local"; else echo "/usr/local"; fi)}
+    export HOMEBREW_PREFIX=${HOMEBREW_PREFIX:-$(if [[ -d /opt/homebrew ]]; then echo "/opt/homebrew"; elif [[ -d /home/linuxbrew/.linuxbrew ]]; then echo "/home/linuxbrew/.linuxbrew"; else echo "/usr/local"; fi)}
     export HOMEBREW_BIN=$HOMEBREW_PREFIX/bin
     export HOMEBREW_SHARE=$HOMEBREW_PREFIX/share
     export HOMEBREW_OPT=$HOMEBREW_PREFIX/opt
@@ -157,7 +158,7 @@ env::homebrew() {
     export HOMEBREW_BAT_THEME=dracula             # Use this as the bat theme for syntax highlighting
     export HOMEBREW_BUNDLE_DUMP_NO_VSCODE=1       # Don't dump vscode extensions
     export HOMEBREW_BUNDLE_FILE=${HOMEBREW_BUNDLE_FILE:-$XDG_CONFIG_HOME/homebrew/Brewfile}
-    eval "$("$HOMEBREW_BIN"/brew shellenv)"
+    [[ -x $HOMEBREW_BIN/brew ]] && eval "$("$HOMEBREW_BIN"/brew shellenv)"
     path=(
       $HOMEBREW_PREFIX/opt/{ruby,gems,curl,rustup,awscli@1}/bin
       $HOMEBREW_PREFIX/opt/gawk/libexec/gnubin
