@@ -171,46 +171,6 @@ commands:
     desc: Save and sync the dotfiles for the desktop environment
     tags: [mise]
 
-  mise bootstrap [--dry-run]:
-    desc: Set up this machine from your mise config; Apply every configured part
-    tags: [mise]
-    links: [https://mise.jdx.dev/bootstrap.html#how-it-runs]
-    notes:
-      - md: | #markdown
-          Set up this machine from your mise config
-
-          Applies each part your config declares, in this order.
-          Each step names its parts as --only and --skip accept them,
-          followed by any condition.
-
-          1. accounts, then plugins (package manager plugins)
-          2. files with phase = "pre-packages", then built-in packages
-          3. The remaining files, then services, firewall, and compose
-          4. repos, then dotfiles
-          5. mise-shell-activate, macos-defaults, and macos-launchd-agents
-          6. linux-systemd-units, then user (the login shell)
-          7. tools
-          8. Plugin packages, then user services with requires_tools = true
-          9. task (the bootstrap task, if defined), then final-hook
-
-          Hooks run before and after packages, repos, dotfiles, macOS defaults, the
-          login shell, and tools.
-
-          The post-packages hook runs right after built-in packages, or after
-          plugin packages when any are configured.
-
-          Parts that already match the config are left alone,
-          but hooks and the bootstrap task run every time,
-          so make them safe to repeat.
-
-          Checking dotfile state can render templates,
-          which may run exec().
-
-          Preview with `--dry-run`.
-
-          To inspect without applying,
-          use `mise bootstrap status` for current state
-          or `mise bootstrap plan` for resource-level changes.
   mise bootstrap --only dotfiles,tools:
     desc: Apply everything except tools and the bootstrap task
     tags: [mise]
@@ -250,37 +210,3 @@ commands:
   mise bootstrap packages status:
     desc: Show the status of the bootstrap packages
     tags: [mise]
-  mise bootstrap status:
-    desc: Show the status of the bootstrap process
-    tags: [mise]
-  mise bootstrap plan:
-    desc: Show the planned changes for the bootstrap process
-    tags: [mise]
-  mise bootstrap -E container --skip user:
-    desc: Bootstrap the container environment while skipping the user profile
-    tags: [mise]
-  mise bootstrap packages prune --dry-run:
-    desc: Show which packages would be removed without actually removing them
-    tags: [mise]
-
-  mise run up:
-    desc: Upgrade every package, then remove the ones no config declares
-    tags: [mise, dots]
-  mise run brew:info:
-    desc: Show information about Homebrew packages
-    tags: [mise, dots]
-  mise run brew:info --cask:
-    desc: Show information about Homebrew cask packages
-    tags: [mise, dots]
-  mise run brew:search:
-    desc: Search for Homebrew packages
-    tags: [mise, dots]
-  mise run brew:add:
-    desc: Install Homebrew packages
-    tags: [mise, dots]
-  mise run brew:add --cask:
-    desc: Install Homebrew cask packages
-    tags: [mise, dots]
-  mise run brew:rm:
-    desc: Uninstall Homebrew packages
-    tags: [mise, dots]
