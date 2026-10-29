@@ -43,9 +43,9 @@
 "~/.config/yabai" = { source = "~/.local/share/dots/config/yabai", relative = true }
 "~/.config/zsh" = { source = "~/.local/share/dots/config/zsh", relative = true }
 "~/.config/zsh-patina" = { source = "~/.local/share/dots/config/zsh-patina", relative = true }
-"~/.zshenv" = { source = "~/.config/zsh/.zshenv", relative = true }
-"~/.bashrc" = { source = "~/.config/bash/bashrc", relative = true }
-"~/.profile" = { source = "~/.config/.profile", relative = true }
+"~/.zshenv" = { source = "~/.local/share/dots/config/zsh/.zshenv", relative = true }
+"~/.bashrc" = { source = "~/.local/share/dots/config/bash/bashrc", relative = true }
+"~/.profile" = { source = "~/.local/share/dots/config/.profile", relative = true }
 # ~/.config/ssh and ~/.config/gnupg are real folders: created by bootstrap.toml, filled by install --secrets.
 "~/.ssh" = { source = "~/.config/ssh", relative = true }
 "~/.gnupg" = { source = "~/.config/gnupg", relative = true }

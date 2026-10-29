@@ -411,7 +411,7 @@ ensure_flathub() {
 }
 
 run_bootstrap() {
-  local args=(bootstrap)
+  local args=(bootstrap --force-dotfiles)
   if [ -n "$PROFILE" ]; then args+=(-E "$PROFILE"); fi
   if [ "$SKIP_USER" = 1 ]; then args+=(--skip user --yes); fi
   cd "$HOME"

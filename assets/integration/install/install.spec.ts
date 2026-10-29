@@ -85,7 +85,7 @@ describe("install", () => {
       expect(r.out).toContain(`would: ln -snf ${repo} ${home}/.local/share/dots`);
       expect(r.out).toContain(`would: ln -snf ../.local/share/dots/config/mise ${home}/.config/mise`);
       expect(r.out).toContain(`would: ${home}/.local/bin/mise bootstrap`);
-      expect(r.out).toContain("mise bootstrap -E desktop");
+      expect(r.out).toContain("mise bootstrap --force-dotfiles -E desktop");
     });
 
     it("changes no link that is already right", () => {
@@ -217,7 +217,7 @@ describe("install", () => {
         if (statSync(join(home, ".config/ssh", f)).isFile()) expect(mode(join(home, ".config/ssh", f))).toBe(0o600);
       }
       expect(mode(join(checkout, "config/age/keys.txt"))).toBe(0o600);
-      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap -E desktop");
+      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap --force-dotfiles -E desktop");
       expect(readFileSync(join(home, ".config/gh/hosts.yml"), "utf8")).toBe("mine\n");
       expect(newTemps(before)).toEqual([]);
 
@@ -265,7 +265,7 @@ describe("install", () => {
       expect(left).toEqual([false, false]);
       expect(mode(join(home, ".config/ssh"))).toBe(0o700);
       expect(mode(join(home, ".config/ssh/id"))).toBe(0o600);
-      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap -E desktop");
+      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap --force-dotfiles -E desktop");
     });
   });
 
@@ -275,7 +275,7 @@ describe("install", () => {
       expect(r.code).toBe(0);
       expect(r.out).toContain("profile container");
       expect(r.out).toContain("visudo -cf");
-      expect(r.out).toContain("mise bootstrap -E container --skip user --yes");
+      expect(r.out).toContain("mise bootstrap --force-dotfiles -E container --skip user --yes");
     });
   });
 });
