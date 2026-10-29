@@ -173,5 +173,5 @@ graphify-out/.graphify_root
 .mise/locks
 config/mise/*.local.toml
 
-# Secrets archives from `mise run prepare`; never commit them, not even fixtures.
+# Encrypted archives (the retired secrets archive flow); never commit them.
 *.zip.enc

@@ -29,20 +29,32 @@ An opinionated [DotFiles][10] repository. Ready to Engage!
 
 ## Install
 
-`install` prepares a machine (user, sudo, timezone, mise, this repo, and the age key) and hands over to
-[`mise bootstrap`](https://mise.jdx.dev/bootstrap.html), which applies `config/mise/conf.d/`: packages, links,
-directories, login shell, and the setup task. It runs on macOS and Debian/Ubuntu, in containers too, and a second
-run changes nothing.
+On a fresh macOS or Debian/Ubuntu machine (macOS: run `xcode-select --install` first for `git`):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash
 ```
 
-When the script prompts, paste the age key for this repo's encrypted history. The install entrypoint then
-restores the tracked secrets from the private `dots-history` origin (`~/.config/ssh`, `~/.config/gnupg`, and
-`~/.config/gh/hosts.yml`) and finishes with `mise bootstrap --adopt ...` / `mise bootstrap ...`.
+`install` installs mise, clones this repo into `~/.local/share/dots`, asks you to paste the age key (hidden input;
+keep it in your password manager), links `~/.config/mise`, signs `gh` in to GitHub (a browser device flow) and runs
+[`mise bootstrap`](https://mise.jdx.dev/bootstrap.html) twice:
 
-Later runs: `~/.local/share/dots/install`, or `mise bootstrap` directly.
+1. `mise bootstrap --adopt` restores the encrypted secrets from the private `dots-history` repository:
+   `~/.config/ssh`, `~/.config/gnupg` and `~/.config/gh/hosts.yml`.
+2. `mise bootstrap -E desktop` applies `config/mise/`: packages, links, directories, login shell, the setup task.
+
+It creates no user and sets no timezone: the machine's own setup does that. A second run changes nothing.
+
+| Variable | Default | |
+| --- | --- | --- |
+| `DOTS_BRANCH` | `main` | Branch to clone (to try a branch, fetch `install` from it too) |
+| `DOTS_REPO` | `https://github.com/roalcantara/dots.git` | Repository to clone |
+| `DOTS_HISTORY` | `https://github.com/roalcantara/dots-history.git` | Encrypted history to restore |
+| `DOTS_PROFILE` | `desktop` | `container` skips the login shell and replaces a base image's dotfiles |
+| `DOTS_AGE_KEY` | — | The key itself, for tests; otherwise it is prompted |
+
+Docker images do not use `install` and get no secrets; see `assets/guides/DOCKER_GUIDE.md`. Later runs:
+`mise bootstrap -E desktop`.
 
 ### OVEREVIEW
 

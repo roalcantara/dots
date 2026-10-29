@@ -1,6 +1,10 @@
 <!-- markdownlint-disable -->
 # Handoff: mise-bootstrap, from Task 7
 
+> **Superseded (2026-10-29).** This handoff describes the retired `install --secrets` and `script/prepare-secrets`
+> flow. Follow [tasks-native.md](./tasks-native.md) and design.md §10 instead; its hard rules (no `install`, `mise
+> bootstrap` or `mise dot save|sync|apply` on the host; throwaway keys only; signed commits) still apply.
+
 You are taking over the implementation of a plan in the `dots` repository (`~/Work/dots`, branch
 `feat/mise-bootstrap`). Tasks 1–6 are done, reviewed and committed. Start at **Task 7**.
 

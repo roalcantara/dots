@@ -23,7 +23,7 @@ and **docker-patterns** companion skills (see
 | `.github/workflows/preview.yml` | PR pipeline: Hadolint → build → CST |
 
 Build context is always the **repository root** (`.`). Dockerfiles live under
-`distros/<distro>/` and use paths such as `../../install` relative to that file location.
+`distros/<distro>/`. Images do not run `install`: each stage installs mise and runs `mise bootstrap` directly.
 
 ## Distro layout
 
@@ -48,8 +48,8 @@ Both distros share the same multi-stage pattern:
 | Stage | Purpose |
 | --- | --- |
 | `base` | Microsoft DevContainer base (`mcr.microsoft.com/devcontainers/base:debian` or `:ubuntu`) |
-| `local` | `git archive HEAD` (SOPS files kept encrypted) copied to `~/.local/share/dots`; `curl …/install | bash` runs in the container |
-| `remote` | `curl` the one-liner from GitHub; default for CI and production-like builds |
+| `local` | `git archive HEAD` (SOPS files kept encrypted) copied to `~/.local/share/dots`, then `mise bootstrap` |
+| `remote` | `git clone` of `BRANCH` into `~/.local/share/dots`, then `mise bootstrap`; default for CI and production-like builds |
 | `publish` | Same as `local`, tagged for Docker Hub |
 
 Shared build args: `TZ`, `TERM`, `BRANCH`, `USERNAME`, `GITHUB_REPO`.
@@ -59,7 +59,7 @@ Shared build args: `TZ`, `TERM`, `BRANCH`, `USERNAME`, `GITHUB_REPO`.
 Alpine is a **single-stage**, remote-only Dockerfile:
 
 - Base: `mcr.microsoft.com/devcontainers/base:alpine-3.18`
-- Installs via `curl …/install | bash` (no `local` / `remote` / `publish` targets)
+- Not yet ported: it still pipes the retired `install` flags (`--TZ`, `--USERNAME`, `--GROUPNAME`) and would block on the key prompt. Port it to the Debian pattern or drop it (tasks-native.md N9)
 - Includes a `HEALTHCHECK` that runs `zsh`
 - **Not** in the `mise run build` distro choices today (`debian` | `ubuntu` only)
 - **No** `container-structure-test.yml` yet
@@ -71,18 +71,16 @@ DevContainer paths.
 
 | Target | When to use | Install source | Typical tag |
 | --- | --- | --- | --- |
-| `remote` | CI, PR preview, “install from branch” smoke tests | `curl …/install | bash` | `dots:<distro>` or `dots:<distro>-<tag>` |
-| `local` | Dev loop with working-tree changes | `git archive HEAD` + `curl …/install | bash` | `dots:<distro>-local` (convention) |
-| `publish` | Docker Hub / embedded publish | `git archive HEAD` + `curl …/install | bash` | `dots:<distro>-publish` |
+| `remote` | CI, PR preview, “branch” smoke tests | `git clone` + `mise bootstrap` | `dots:<distro>` or `dots:<distro>-<tag>` |
+| `local` | Dev loop with committed changes | `git archive HEAD` + `mise bootstrap` | `dots:<distro>-local` (convention) |
+| `publish` | Docker Hub / embedded publish | `git archive HEAD` + `mise bootstrap` | `dots:<distro>-publish` |
 
-**Remote** mirrors what a user gets from `curl …/install | bash` on a given
-`BRANCH`. Preview CI builds `remote` with `BRANCH=${{ github.head_ref }}`.
+**Remote** builds the given `BRANCH` from GitHub. Preview CI builds `remote` with `BRANCH=${{ github.head_ref }}`.
 
 **Local** and **publish** build from `git archive HEAD` with the SOPS smudge filter
-disabled, so encrypted files stay encrypted in the image; uncommitted changes are not included. `install`
-runs as root, creates the user, grants passwordless sudo, and runs `mise bootstrap --force-dotfiles -E container --skip user`
-as that user. Images never receive a secrets archive; they restore the tracked secrets from the private `dots-history`
-origin when the key is pasted at the install prompt.
+disabled, so encrypted files stay encrypted in the image; uncommitted changes are not included. Every stage runs as the base image's `vscode` user: it installs mise,
+links `~/.config/mise` and runs `mise bootstrap -E container --force-dotfiles --skip user --yes`. Images never get
+the age key or the `dots-history` secrets; only `GITHUB_TOKEN`, from the `github_token` build secret.
 
 Pass `--publish` to `mise run build` to select the `publish` target.
 
