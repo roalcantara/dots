@@ -155,14 +155,11 @@ function M.getenv(varname)
   return storage.memo('paths::getenv', os.getenv, varname)
 end
 
---- Get the path to the bin for python3 venv
---- @return string The path to the bin for python3 venv
+--- Get the python3 host program override, if any
+--- Unset, Neovim finds `pynvim-python` on PATH (mise's `pipx:pynvim`).
+--- @return string|nil The python3 binary set in NEOVIM_PYTHON3_VENV_PATH
 function M.bin_for_python3_venv()
-  return storage.memo('paths::bin_for_python3_venv', function(value)
-    return M.getenv(value)
-      or M.getenv('NEOVIM_PYTHON3_VENV_PATH')
-      or M.stdpath('config', '.venv', 'bin', 'python3')
-  end, 'VIRTUAL_ENV')
+  return M.getenv('NEOVIM_PYTHON3_VENV_PATH')
 end
 
 -- returns the root directory based on:

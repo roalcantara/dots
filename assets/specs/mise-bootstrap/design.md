@@ -119,8 +119,8 @@ Runs last on every `mise bootstrap`; every step is idempotent and warns instead 
 1. `mise run -C ~/.local/share/dots setup:git:filters` (depends on `setup:age`, which skips when
    `~/.config/age/keys.txt` exists).
 2. `mise run -C ~/.local/share/dots setup:hooks`.
-3. Neovim providers and plugins, as the old `install` does: `npm` `neovim`, the `pynvim` venv, `gem`
-   `neovim`, and a headless `Lazy! sync`.
+3. Neovim providers and plugins, as the old `install` does: `npm` `neovim`, `gem` `neovim`, and a headless
+   `Lazy! sync`. `pynvim` is `pipx:pynvim` in `config.toml`; Neovim finds its `pynvim-python` on `PATH`.
 
 ### 4.4 `install`
 

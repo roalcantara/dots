@@ -67,6 +67,10 @@ commandTests:
     command: bash
     args: [-c, "for t in age bat eza fd fzf jq nvim rg sops zoxide; do command -v $t >/dev/null || { echo missing $t; exit 1; }; done"]
     exitCode: 0
+  - name: Neovim's Python provider (pynvim-python) should import pynvim
+    command: bash
+    args: [-c, "pynvim-python -c 'import pynvim'"]
+    exitCode: 0
   - name: SOPS-filtered files should stay encrypted in the image
     command: bash
     args: [-c, "set -e; ls /home/vscode/.local/share/dots/config/ssh/keys/*.key >/dev/null; ! grep -q 'BEGIN OPENSSH PRIVATE KEY' /home/vscode/.local/share/dots/config/ssh/keys/*.key"]
@@ -132,10 +136,6 @@ fileExistenceTests:
     path: /home/vscode/.config/nvim/init.lua
     shouldExist: true
     permissions: -rw-rw-r--
-  - name: ~/.config/nvim/.venv dir
-    path: /home/vscode/.config/nvim/.venv
-    shouldExist: true
-    permissions: drwxr-xr-x
   - name: ~/.config/zsh dir (ZDOTDIR)
     path: /home/vscode/.config/zsh
     shouldExist: true
