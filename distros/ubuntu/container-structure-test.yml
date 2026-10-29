@@ -173,7 +173,7 @@ fileExistenceTests:
   - name: ~/.cache dir (XDG_CACHE_HOME)
     path: /home/vscode/.cache
     shouldExist: true
-    permissions: drwxrwxr-x
+    permissions: drwxr-xr-x
   - name: ~/.cache/npm dir (NPM_CONFIG_CACHE)
     path: /home/vscode/.cache/npm
     shouldExist: true
@@ -187,7 +187,7 @@ fileExistenceTests:
   - name: ~/.local/state dir (XDG_STATE_HOME)
     path: /home/vscode/.local/state
     shouldExist: true
-    permissions: drwxrwxr-x
+    permissions: drwxr-xr-x
   - name: ~/.local/state/nvim dir
     path: /home/vscode/.local/state/nvim
     shouldExist: true
@@ -201,7 +201,7 @@ fileExistenceTests:
   - name: ~/.local/share dir (XDG_DATA_HOME)
     path: /home/vscode/.local/share
     shouldExist: true
-    permissions: drwxrwxr-x
+    permissions: drwxr-xr-x
   - name: ~/.local/share/npm dir (NPM_CONFIG_PREFIX)
     path: /home/vscode/.local/share/npm
     shouldExist: true
