@@ -142,27 +142,120 @@ recipients = ["age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4"]
 
 [tasks]
 [tasks.up]
-description = "Bump BREW dependencies"
-confirm = { message = "Bump all brew dependencies?", default = "yes" }
+description = "Upgrade every package, then remove the ones no config declares"
+confirm = { message = "Upgrade all packages and prune undeclared ones?", default = "yes" }
 quiet = true
-tools = { gum = "latest" }
+raw = true
 run = '''
   #!/usr/bin/env bash
-  gum log --time Datetime --level warn --prefix 'BREW' "brew bundle upgrade --upgrade --zap --force --force-cleanup --verbose"
-  echo "" && brew bundle upgrade --upgrade --zap --force --force-cleanup 2> /dev/null
-
-  echo "" && gum log --time Datetime --level warn --prefix 'BREW' "brew autoremove && brew update --auto-update --force --verbose"
-  echo "" && brew autoremove && brew update --auto-update --force --verbose 2> /dev/null
-
-  echo "" && gum log --time Datetime --level warn --prefix 'BREW' "brew upgrade --greedy --greedy-latest --greedy-auto-updates --yes --force"
-  echo "" && brew upgrade --greedy --greedy-latest --greedy-auto-updates --yes --force 2> /dev/null
-
-  echo "" && gum log --time Datetime --level warn --prefix 'BREW' "brew upgrade --greedy --greedy-latest --greedy-auto-updates --force --yes --cask"
-  echo "" && brew upgrade --greedy --greedy-latest --greedy-auto-updates --force --yes --cask 2> /dev/null
-
-  echo "" && gum log --time Datetime --level warn --prefix 'BREW' "brew cleanup --prune=all && brew doctor"
-  echo "" && brew cleanup --prune=all && brew doctor
+  set -euo pipefail
+  mise bootstrap packages upgrade --yes
+  # prune asks before removing; brew-cask exists on macOS only, and naming an unavailable manager is an error.
+  mise bootstrap packages prune --manager brew
+  [ "$(uname -s)" != Darwin ] || mise bootstrap packages prune --manager brew-cask
 '''
+
+# Homebrew without brew: mise installs the bottles; search and info read Homebrew's public API.
+[tasks."brew:search"]
+description = "Search Homebrew formulae and casks by name or description"
+quiet = true
+usage = 'arg "<query>" help="Text to find, case-insensitive"'
+run = '''
+  #!/usr/bin/env bash
+  set -euo pipefail
+  cache="${XDG_CACHE_HOME:-$HOME/.cache}/brew-api"
+  mkdir -p "$cache"
+  for kind in formula cask; do
+    f="$cache/$kind.json"
+    if [ -z "$(find "$f" -mtime -1 2>/dev/null)" ]; then
+      curl -fsSL -o "$f.tmp" "https://formulae.brew.sh/api/$kind.json" && mv "$f.tmp" "$f"
+    fi
+  done
+  q="$(printf '%s' "$usage_query" | tr '[:upper:]' '[:lower:]')"
+  # Name matches first, then description matches.
+  find_in() {
+    jq -r --arg q "$q" --arg id "$2" --arg ver "$3" '
+      [ .[] | {id: .[$id], ver: (.[$ver] | if type == "object" then .stable else . end), desc: (.desc // "")} ]
+      | (map(select(.id | ascii_downcase | contains($q)))
+         + map(select((.id | ascii_downcase | contains($q) | not) and (.desc | ascii_downcase | contains($q)))))
+      | .[] | "\(.id)  \(.ver)  \(.desc)"' "$cache/$1.json"
+  }
+  echo "==> Formulae"
+  find_in formula name versions
+  echo
+  echo "==> Casks"
+  find_in cask token version
+'''
+
+[tasks."brew:info"]
+description = "Show a Homebrew formula or cask"
+quiet = true
+usage = '''
+flag "--cask" help="Look up a cask (otherwise a formula, then a cask)"
+arg "<name>" help="Formula or cask name"
+'''
+run = '''
+  #!/usr/bin/env bash
+  set -euo pipefail
+  api="https://formulae.brew.sh/api"
+  if [ "${usage_cask:-false}" != true ] && json="$(curl -fsSL "$api/formula/$usage_name.json" 2>/dev/null)"; then
+    jq -r '"\(.name) \(.versions.stable)\n\(.desc)\n\(.homepage)\nLicense: \(.license // "-")",
+      "Dependencies: \(.dependencies | join(", ") | if . == "" then "-" else . end)",
+      (.caveats // empty | "Caveats:\n\(.)")' <<<"$json"
+    echo "Add: mise run brew:add $usage_name"
+  elif json="$(curl -fsSL "$api/cask/$usage_name.json" 2>/dev/null)"; then
+    jq -r '"\(.token) \(.version) (cask)\n\(.desc // "")\n\(.homepage)",
+      "Auto-updates: \(.auto_updates // false)",
+      (.caveats // empty | "Caveats:\n\(.)")' <<<"$json"
+    echo "Add: mise run brew:add --cask $usage_name"
+  else
+    echo "brew:info: no formula or cask named $usage_name" >&2
+    exit 1
+  fi
+'''
+
+[tasks."brew:add"]
+description = "Declare a Homebrew formula or cask in conf.d/packages.toml and install it"
+quiet = true
+raw = true
+usage = '''
+flag "--cask" help="Add a cask"
+arg "<name>" help="Formula or cask name; owner/tap/name for a third-party tap"
+'''
+run = '''
+  #!/usr/bin/env bash
+  set -euo pipefail
+  manager=brew
+  [ "${usage_cask:-false}" != true ] || manager=brew-cask
+  mise bootstrap packages use --path "$HOME/.config/mise/conf.d/packages.toml" "$manager:$usage_name"
+'''
+
+[tasks."brew:rm"]
+description = "Remove a Homebrew formula or cask from conf.d/packages.toml and uninstall it"
+quiet = true
+raw = true
+usage = '''
+flag "--cask" help="Remove a cask"
+arg "<name>" help="Formula or cask name, as declared"
+'''
+run = '''
+  #!/usr/bin/env bash
+  set -euo pipefail
+  manager=brew
+  [ "${usage_cask:-false}" != true ] || manager=brew-cask
+  pkgs="$HOME/.config/mise/conf.d/packages.toml"
+  key="\"$manager:$usage_name\""
+  if ! grep -q "^$key *=" "$pkgs"; then
+    echo "brew:rm: $manager:$usage_name is not declared in $pkgs" >&2
+    exit 1
+  fi
+  # Rewrite in place: the file sits in the dots checkout behind ~/.config/mise.
+  grep -v "^$key *=" "$pkgs" >"$pkgs.tmp" && cat "$pkgs.tmp" >"$pkgs" && rm "$pkgs.tmp"
+  echo "brew:rm: removed $manager:$usage_name from $pkgs"
+  # prune takes no names: it lists every undeclared package and asks before removing.
+  mise bootstrap packages prune --manager "$manager"
+'''
+
 [tasks.backup]
 description = "Backup important files"
 quiet = true
