@@ -379,6 +379,7 @@ copy_secret_file() {
 copy_secret_dir() {
   local src="$1" dst="$2"
   [ -d "$src" ] || return 0
+  [ -d "$dst" ] && rmdir "$dst" 2>/dev/null || true
   if [ -e "$dst" ]; then
     log "$dst exists"
     return
