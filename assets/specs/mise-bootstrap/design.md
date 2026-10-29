@@ -226,10 +226,10 @@ user, repo and secrets exist.
 
 ## 6. New-Mac runbook
 
-0. **Before wiping the old Mac:** `mise run -C ~/Work/dots prepare -- --output /Volumes/meex900/bak/dots-secrets.zip.enc`.
+0. **Before wiping the old Mac:** `mise run -C ~/Work/dots prepare -- --output /Volumes/meex900/backups/dots-secrets.zip.enc`.
 1. Finish macOS setup; sign in to the Apple Account and the App Store; run `xcode-select --install`; connect
    the backup drive.
-2. Run §5 with `--secrets /Volumes/meex900/bak/dots-secrets.zip.enc`; enter the passphrase when asked.
+2. Run §5 with `--secrets /Volumes/meex900/backups/dots-secrets.zip.enc`; enter the passphrase when asked.
 3. Unzip `config-<date>.zip` into `~/restore`, copy the app settings it holds (every `~/restore/.config` entry
    that is not a link in `~/.config` now) into `~/.config`, then restore `omp-<date>.zip` into `~`.
 4. Restore `Work-<date>.zip` without the repo: `unzip Work-<date>.zip -x 'Work/dots/*'`.

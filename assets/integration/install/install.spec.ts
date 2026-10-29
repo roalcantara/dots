@@ -4,6 +4,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import {
   chmodSync,
   copyFileSync,
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
@@ -40,6 +41,7 @@ beforeEach(() => {
 afterEach(() => rmSync(home, { recursive: true, force: true }));
 
 const dotsTemps = () => readdirSync("/tmp").filter((n) => n.startsWith("dots-"));
+const newTemps = (before: string[]) => dotsTemps().filter((n) => !before.includes(n));
 
 function run(args: string[], env: Record<string, string> = {}) {
   const r = Bun.spawnSync(["/bin/bash", script, ...args], {
@@ -128,9 +130,38 @@ describe("install", () => {
   describe("temporary files", () => {
     it("leaves none after a dry run or a wrong passphrase", () => {
       const before = dotsTemps();
-      run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "dots-fixture" });
-      run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "wrong" });
-      expect(dotsTemps()).toEqual(before);
+      const ok = run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "dots-fixture" });
+      expect(ok.code).toBe(0);
+      const bad = run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "wrong" });
+      expect(bad.code).toBe(2);
+      expect(newTemps(before)).toEqual([]);
+    });
+  });
+
+  describe("the user stage", () => {
+    const mk = (template: string, dir = false) =>
+      Bun.spawnSync(["mktemp", ...(dir ? ["-d"] : []), template]).stdout.toString().trim();
+
+    it("rejects a DOTS_SECRETS path that is not a plain dots-secrets folder, and deletes nothing", () => {
+      const victim = mkdtempSync(join(tmpdir(), "install-victim-"));
+      writeFileSync(join(victim, "keep"), "x");
+      const r = run(["--user", me], {
+        DOTS_STAGE: "user",
+        DOTS_SECRETS: `/tmp/dots-secrets.abcdef/..${victim}`,
+      });
+      expect(r.code).toBe(2);
+      expect(r.err).toContain("untrusted");
+      expect(readFileSync(join(victim, "keep"), "utf8")).toBe("x");
+      rmSync(victim, { recursive: true, force: true });
+    });
+
+    it("does not delete a trusted folder under --dry-run", () => {
+      const dir = mk("/tmp/dots-secrets.XXXXXX", true);
+      const r = run(["--user", me, "--dry-run"], { DOTS_STAGE: "user", DOTS_SECRETS: dir });
+      const kept = statSync(dir).isDirectory();
+      rmSync(dir, { recursive: true, force: true });
+      expect(r.code).toBe(0);
+      expect(kept).toBe(true);
     });
   });
 
@@ -188,7 +219,7 @@ describe("install", () => {
       expect(mode(join(checkout, "config/age/keys.txt"))).toBe(0o600);
       expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap -E desktop");
       expect(readFileSync(join(home, ".config/gh/hosts.yml"), "utf8")).toBe("mine\n");
-      expect(dotsTemps()).toEqual(before);
+      expect(newTemps(before)).toEqual([]);
 
       const mtimes = () =>
         [join(checkout, "config/age/keys.txt"), ...readdirSync(join(home, ".config/ssh")).map((f) => join(home, ".config/ssh", f))].map(
@@ -199,7 +230,42 @@ describe("install", () => {
       expect(r2.exitCode).toBe(0);
       expect(mtimes()).toEqual(m1);
       expect(readFileSync(join(home, "mise.log"), "utf8").match(/bootstrap/g)?.length).toBe(2);
-      expect(dotsTemps()).toEqual(before);
+      expect(newTemps(before)).toEqual([]);
+    });
+
+    it("runs the script the root stage writes, as the user stage, and removes what it was handed", () => {
+      const mk = (template: string, dir = false) =>
+        Bun.spawnSync(["mktemp", ...(dir ? ["-d"] : []), template]).stdout.toString().trim();
+      const emitted = mk("/tmp/dots-install.XXXXXX");
+      const env = {
+        PATH: `${stubs}:${process.env.PATH ?? ""}`,
+        HOME: home,
+        DOTS_CONTAINER: "0",
+      };
+      // DOTS_INSTALL_EMIT_SCRIPT makes a dry run write the script switch_to_user would hand over, and stop.
+      const gen = Bun.spawnSync(["/bin/bash", join(checkout, "install"), "--user", me, "--dry-run"], {
+        env: { ...env, DOTS_INSTALL_EMIT_SCRIPT: emitted },
+      });
+      expect(gen.exitCode).toBe(0);
+      chmodSync(emitted, 0o755);
+      const secrets = mk("/tmp/dots-secrets.XXXXXX", true);
+      mkdirSync(join(secrets, "ssh"));
+      writeFileSync(join(secrets, "ssh/id"), "key\n");
+      writeFileSync(join(secrets, "github_token"), "tok");
+      const r = Bun.spawnSync(["/bin/bash", emitted, "--user", me], {
+        env: { ...env, DOTS_STAGE: "user", DOTS_SECRETS: secrets, DOTS_CHECKOUT: checkout },
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      const left = [existsSync(secrets), existsSync(emitted)];
+      rmSync(secrets, { recursive: true, force: true });
+      rmSync(emitted, { force: true });
+      expect(r.stderr.toString()).toBe("");
+      expect(r.exitCode).toBe(0);
+      expect(left).toEqual([false, false]);
+      expect(mode(join(home, ".config/ssh"))).toBe(0o700);
+      expect(mode(join(home, ".config/ssh/id"))).toBe(0o600);
+      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap -E desktop");
     });
   });
 

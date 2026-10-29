@@ -17,6 +17,7 @@ init_globals() {
   NOPASSWD=0
   BRANCH="main"
   PROFILE=""
+  PROFILE_GIVEN=0
   DRY_RUN=0
   SKIP_USER=0
   OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
@@ -54,7 +55,7 @@ cleanup() {
   local p
   [ "${#CLEAN[@]}" -gt 0 ] || return 0
   for p in "${CLEAN[@]}"; do
-    [ -z "$p" ] || rm -rf "$p"
+    [ -z "$p" ] || rm -rf "$p" 2>/dev/null || true
   done
   return 0
 }
@@ -73,17 +74,17 @@ parse_args() {
       --tz) TZ_NAME="${2:?--tz needs a zone}"; shift 2 ;;
       --nopasswd) NOPASSWD=1; shift ;;
       --branch) BRANCH="${2:?--branch needs a ref}"; shift 2 ;;
-      -E) PROFILE="${2:?-E needs a profile}"; shift 2 ;;
+      -E) PROFILE="${2:?-E needs a profile}"; PROFILE_GIVEN=1; shift 2 ;;
       --dry-run) DRY_RUN=1; shift ;;
       -h | --help) usage; exit 0 ;;
       *) usage >&2; die "unknown option '$1'" 2 ;;
     esac
   done
-  local re_user='^[a-z_][a-z0-9_-]*$' re_tz='^[A-Za-z0-9_+-]+(/[A-Za-z0-9_+-]+)*$' re_ref='^[A-Za-z0-9._/-]+$'
+  local re_user='^[a-z_][a-z0-9_-]*$' re_tz='^[A-Za-z0-9_][A-Za-z0-9_+-]*(/[A-Za-z0-9_][A-Za-z0-9_+-]*)*$' re_ref='^[A-Za-z0-9._/-]+$'
   [[ "$TARGET_USER" =~ $re_user ]] || die "invalid user name '$TARGET_USER'" 2
   if [ -n "$TZ_NAME" ]; then
     [[ "$TZ_NAME" =~ $re_tz ]] || die "invalid timezone '$TZ_NAME'" 2
-    if [ "$OS" = linux ] && [ ! -e "/usr/share/zoneinfo/$TZ_NAME" ]; then die "invalid timezone '$TZ_NAME'" 2; fi
+    [ -f "/usr/share/zoneinfo/$TZ_NAME" ] || die "invalid timezone '$TZ_NAME'" 2
   fi
   if [[ ! "$BRANCH" =~ $re_ref ]] || [[ "$BRANCH" == -* ]] || [[ "$BRANCH" == *..* ]]; then
     die "invalid branch '$BRANCH'" 2
@@ -168,7 +169,7 @@ ensure_timezone() {
     act_root systemsetup -settimezone "$TZ_NAME"
   else
     act_root ln -snf "/usr/share/zoneinfo/$TZ_NAME" /etc/localtime
-    # shellcheck disable=SC2016 # the script is single-quoted on purpose; sh expands $1 and $2
+    # shellcheck disable=SC2016 # single-quoted on purpose: sh expands $1
   act_root sh -c 'printf "%s\n" "$1" > /etc/timezone' sh "$TZ_NAME"
   fi
 }
@@ -185,6 +186,7 @@ ensure_nopasswd() {
   printf '%s ALL=(ALL) NOPASSWD:ALL\n' "$TARGET_USER" >"$tmp"
   act_root visudo -cf "$tmp"
   act_root install -m 0440 "$tmp" "$file"
+  rm -f "$tmp"
 }
 
 ensure_zdotdir() {
@@ -196,7 +198,7 @@ ensure_zdotdir() {
     return
   fi
   act_root mkdir -p /etc/zsh
-  # shellcheck disable=SC2016 # the script is single-quoted on purpose; sh expands $1 and $2
+  # shellcheck disable=SC2016 # single-quoted on purpose: sh expands $1
   act_root sh -c 'printf "%s\n" "$1" >> /etc/zsh/zshenv' sh "$line"
 }
 
@@ -252,8 +254,19 @@ ensure_ownership() {
   [ "$owner" = "$TARGET_USER" ] || act_root chown -R "$TARGET_USER" "$repo"
 }
 
-# switch_to_user re-runs this code as the target user, unless it already is that user. The user cannot read
-# root's temporary files, so it gets the code in a file of its own and, when there are secrets, a copy of them.
+# emit_script writes the code this run is executing to a file, for the user to run (it cannot read root's files).
+emit_script() {
+  {
+    printf '#!/usr/bin/env bash\nset -euo pipefail\n'
+    declare -p MISE_PIN REPO
+    declare -f
+    printf 'main "$@"\n'
+  } >"$1"
+  chmod 0755 "$1"
+}
+
+# switch_to_user re-runs this code as the target user, unless it already is that user. The user gets the code in a
+# file of its own and, when there are secrets, a copy of them; exec skips the EXIT trap, so root's temps go first.
 switch_to_user() {
   [ "$(id -un)" != "$TARGET_USER" ] || return 0
   if [ "$DRY_RUN" = 1 ]; then
@@ -261,18 +274,13 @@ switch_to_user() {
     exit 0
   fi
   [ "$(id -u)" -eq 0 ] || die "run as root or as $TARGET_USER" 2
-  local script copy="" checkout home
+  local script copy="" checkout home container=0 fwd=()
   home="$(user_home)"
   checkout="$(checkout_dir || true)"
   script="$(mktemp /tmp/dots-install.XXXXXX)"
   track "$script"
-  {
-    printf '#!/usr/bin/env bash\nset -euo pipefail\n'
-    declare -p MISE_PIN REPO
-    declare -f
-    printf 'main "$@"\n'
-  } >"$script"
-  chmod 0755 "$script"
+  emit_script "$script"
+  chown "$TARGET_USER" "$script"
   if [ -n "$SECRETS_SRC" ] || [ -n "${GITHUB_TOKEN:-}" ]; then
     copy="$(mktemp -d /tmp/dots-secrets.XXXXXX)"
     track "$copy"
@@ -283,28 +291,35 @@ switch_to_user() {
     )
     chown -R "$TARGET_USER" "$copy"
   fi
-  if [ -n "$SECRETS_TMP" ]; then # root's opened files go now; the user has its own copy
-    rm -rf "$SECRETS_TMP"
-    SECRETS_TMP=""
+  if is_container; then container=1; fi
+  fwd=(${ARGS[@]+"${ARGS[@]}"})
+  if [ "$PROFILE_GIVEN" = 0 ]; then fwd+=(-E "$PROFILE"); fi
+  # Everything root made except the two things handed over.
+  local p
+  if [ "${#CLEAN[@]}" -gt 0 ]; then
+    for p in "${CLEAN[@]}"; do
+      if [ "$p" != "$script" ] && [ "$p" != "$copy" ]; then rm -rf "$p" 2>/dev/null || true; fi
+    done
   fi
-  cd "$home"
+  cd "$home" 2>/dev/null || cd /
   exec sudo -u "$TARGET_USER" -H env DOTS_STAGE=user DOTS_SECRETS="$copy" DOTS_CHECKOUT="$checkout" \
-    bash "$script" "${ARGS[@]+"${ARGS[@]}"}"
+    DOTS_CONTAINER="$container" bash "$script" "${fwd[@]}"
 }
 
-# trust_user_stage accepts what the root stage handed over only from a directory this user owns, and removes it on exit.
+# trust_user_stage accepts what the root stage handed over only when it is a real folder this user owns whose
+# name is exactly a mktemp template of ours (dots-secrets.XXXXXX in /tmp), and removes it on exit. The running
+# script is removed the same way when its name is exactly /tmp/dots-install.XXXXXX. A dry run removes neither.
 trust_user_stage() {
-  local dir="${DOTS_SECRETS:-}" owner
-  case "$0" in /tmp/dots-install.*) track "$0" ;; esac
-  [ -n "$dir" ] || return 0
-  owner="$(stat -c %u "$dir" 2>/dev/null || stat -f %u "$dir" 2>/dev/null || true)"
-  case "$dir" in
-    /tmp/dots-secrets.*) ;;
-    *) die "untrusted DOTS_SECRETS '$dir'" 2 ;;
-  esac
-  if [ -L "$dir" ] || [ ! -d "$dir" ] || [ "$owner" != "$(id -u)" ]; then die "untrusted DOTS_SECRETS '$dir'" 2; fi
-  track "$dir"
-  SECRETS_SRC="$dir"
+  local dir="${DOTS_SECRETS:-}" owner re_secrets='^/tmp/dots-secrets\.[A-Za-z0-9]{6}$' re_script='^/tmp/dots-install\.[A-Za-z0-9]{6}$'
+  if [ -n "$dir" ]; then
+    owner="$(stat -c %u "$dir" 2>/dev/null || stat -f %u "$dir" 2>/dev/null || true)"
+    if [[ ! "$dir" =~ $re_secrets ]] || [ -L "$dir" ] || [ ! -d "$dir" ] || [ "$owner" != "$(id -u)" ]; then
+      die "untrusted DOTS_SECRETS '$dir'" 2
+    fi
+    SECRETS_SRC="$dir"
+    if [ "$DRY_RUN" = 0 ]; then track "$dir"; fi
+  fi
+  if [ "$DRY_RUN" = 0 ] && [[ "$0" =~ $re_script ]]; then track "$0"; fi
 }
 
 # --- user steps -------------------------------------------------------------------------------------------
@@ -319,7 +334,7 @@ ensure_mise() {
   local dir
   dir="$(mktemp -d /tmp/dots-mise.XXXXXX)"
   track "$dir"
-  # shellcheck disable=SC2016 # the script is single-quoted on purpose; sh expands $1 and $2
+  # shellcheck disable=SC2016 # single-quoted on purpose: sh expands $1 and $2
   act sh -c 'curl -fsSL https://mise.run -o "$1" && MISE_VERSION="$2" sh "$1"' sh "$dir/mise.sh" "v$MISE_PIN"
 }
 
@@ -406,11 +421,17 @@ run_bootstrap() {
 main() {
   init_globals
   trap cleanup EXIT
-  # Only a root-started switch may set the user stage; anything inherited by a first stage is dropped.
+  # DOTS_STAGE=user is honoured only when not root (the switch runs sudo -u <user>). That is the only check: the
+  # handed-over paths are vetted in trust_user_stage. A first stage drops all three variables.
   if [ "${DOTS_STAGE:-}" = user ] && [ "$(id -u)" -ne 0 ]; then STAGE=user; fi
   if [ "$STAGE" != user ]; then unset DOTS_STAGE DOTS_SECRETS DOTS_CHECKOUT; fi
   if [ $# -gt 0 ]; then ARGS=("$@"); fi
   parse_args "$@"
+  # DOTS_INSTALL_EMIT_SCRIPT=<file> (dry run only): write the script switch_to_user hands over, and stop. For specs.
+  if [ "$DRY_RUN" = 1 ] && [ -n "${DOTS_INSTALL_EMIT_SCRIPT:-}" ]; then
+    emit_script "$DOTS_INSTALL_EMIT_SCRIPT"
+    exit 0
+  fi
   detect
   if [ "$STAGE" = user ]; then
     [ "$(id -un)" = "$TARGET_USER" ] || die "the user stage must run as $TARGET_USER" 2
