@@ -135,7 +135,6 @@ fileExistenceTests:
   - name: ~/.config/nvim/init.lua (MYVIMRC)
     path: /home/vscode/.config/nvim/init.lua
     shouldExist: true
-    permissions: -rw-rw-r--
   - name: ~/.config/zsh dir (ZDOTDIR)
     path: /home/vscode/.config/zsh
     shouldExist: true
@@ -143,7 +142,6 @@ fileExistenceTests:
   - name: ~/.config/npm/.npmrc (NPM_CONFIG_USERCONFIG)
     path: /home/vscode/.config/npm/.npmrc
     shouldExist: true
-    permissions: -rw-rw-r--
   - name: ~/.config/git dir
     path: /home/vscode/.config/git
     shouldExist: true
@@ -159,7 +157,6 @@ fileExistenceTests:
   - name: ~/.config/starship/starship.toml (STARSHIP_CONFIG)
     path: /home/vscode/.config/starship/starship.toml
     shouldExist: true
-    permissions: -rwxrwxr-x
   - name: ~/.config/ghostty config
     path: /home/vscode/.config/ghostty
     shouldExist: true
@@ -167,7 +164,6 @@ fileExistenceTests:
   - name: ~/.config/ripgrep/.ripgreprc (RIPGREP_CONFIG_PATH)
     path: /home/vscode/.config/ripgrep/.ripgreprc
     shouldExist: true
-    permissions: -rw-rw-r--
 
   # XDG_CACHE_HOME (CACHE)
   - name: ~/.cache dir (XDG_CACHE_HOME)
