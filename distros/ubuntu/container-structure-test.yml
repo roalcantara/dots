@@ -69,7 +69,7 @@ commandTests:
     exitCode: 0
   - name: Neovim's Python provider (pynvim-python) should import pynvim
     command: bash
-    args: [-c, "pynvim-python -c 'import pynvim'"]
+    args: [-c, "/home/vscode/.local/share/mise/shims/pynvim-python -c 'import pynvim'"]
     exitCode: 0
   - name: SOPS-filtered files should stay encrypted in the image
     command: bash
