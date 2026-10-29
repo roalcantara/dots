@@ -677,6 +677,7 @@ describe("install", () => {
       expect(r.out).toContain(`would: ln -snf ${repo} ${home}/.local/share/dots`);
       expect(r.out).toContain(`would: ln -snf ../.local/share/dots/config/mise ${home}/.config/mise`);
       expect(r.out).toContain(`would: ${home}/.local/bin/mise bootstrap`);
+      expect(r.out).toContain("mise bootstrap -E desktop");
     });
 
     it("changes no link that is already right", () => {
@@ -772,7 +773,7 @@ Usage: install [options]
   --tz <zone>          timezone to set, such as America/Sao_Paulo
   --nopasswd           grant the user passwordless sudo (always on in containers)
   --branch <ref>       branch to clone (default: main)
-  -E <profile>         mise profile: desktop, or container (the default in containers)
+  -E <profile>         mise profile: desktop (the default on hosts) or container (the default in containers)
   --dry-run            print what would change and change nothing
 EOF
 }
@@ -822,6 +823,8 @@ detect() {
     NOPASSWD=1
     SKIP_USER=1
     PROFILE="${PROFILE:-container}"
+  else
+    PROFILE="${PROFILE:-desktop}"
   fi
   log "system: $OS${PROFILE:+, profile $PROFILE}"
 }
@@ -1364,7 +1367,7 @@ In the VM (the branch must be pushed first: `git push -u origin feat/mise-bootst
 sudo apt-get update && sudo apt-get install -y curl
 export GITHUB_TOKEN=<a token from `gh auth token` on the Mac> DOTS_SECRETS_PASSPHRASE=dots-fixture
 curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/feat/mise-bootstrap/install \
-  | bash -s -- --branch feat/mise-bootstrap -E desktop --secrets ~/fixture.zip.enc
+  | bash -s -- --branch feat/mise-bootstrap --secrets ~/fixture.zip.enc
 ```
 Expected: exits 0, prompting for the sudo password where needed. Then check:
 ```bash
@@ -1378,7 +1381,7 @@ ls -l ~/.local/share/dots ~/.config/mise ~/.config/zsh   # links into ~/Work/dot
 - [ ] **Step 4: Run it again (idempotency)**
 
 ```bash
-~/.local/share/dots/install -E desktop --secrets ~/fixture.zip.enc --dry-run | grep '^would:'
+~/.local/share/dots/install --secrets ~/fixture.zip.enc --dry-run | grep '^would:'
 ```
 Expected: only `would: flatpak remote-add --user --if-not-exists flathub …` (a no-op by design) and
 `would: … mise bootstrap -E desktop`. Then `mise bootstrap status -E desktop` shows nothing pending.
@@ -1419,7 +1422,7 @@ curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bas
 | `--tz <zone>` | — | Timezone to set |
 | `--nopasswd` | on in containers | Passwordless sudo for the user |
 | `--branch <ref>` | `main` | Branch to clone |
-| `-E <profile>` | `container` in containers | `desktop` on a Linux desktop (flatpak apps, Docker Engine) |
+| `-E <profile>` | `desktop` on hosts, `container` in containers | `desktop` adds workstation-only entries (GUI apps, heavy toolchains); flatpak on Linux |
 | `--dry-run` | — | Print what would change; change nothing |
 
 Make the secrets archive on a machine that has the keys: `mise run prepare -- --output <file>`. It holds the
@@ -1559,3 +1562,7 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 3: `packages status`: 119 installed, 10 skipped (Linux flatpaks), 1 missing: `brew-cask mark-text`.
 - Task 3: `mise ls --missing`: `go:golang.org/x/tools/gopls`, `go:mvdan.cc/gofumpt`, `pipx:debugpy` (versions resolved); the four `go-code-graph` tools timed out resolving (3s); `graphifyy` and `code-review-graph` are already installed.
 - Task 3: delta and nodejs were Homebrew aliases; renamed to git-delta and node. The Brewfile listed mole twice (duplicate dropped). Both have Linux bottles, so they are not macOS-only.
+- Task 3: WhatsApp flatpak ID `io.github.mimbrero.WhatsAppDesktop` (not on Flathub) replaced by `com.rtosta.zapzap` (verified on Flathub); the unused taps table was removed.
+- Task 3: 8 GNU/apt duplicates (bash, coreutils, findutils, gawk, gnu-sed, less, git, zsh) are now macOS-only; 12 heavy formulae are `env = "desktop"` (openjdk, rust, mermaid-cli, cairo, lua-language-server, fabric-ai, pup, wakatime-cli, bbrew, python@3.14, ruby-lsp, solargraph); macOS-only count is now 65, `env = "desktop"` lines 15.
+- Task 3: `packages status` without `-E`: 107 installed, 10 skipped, 12 desktop entries not listed, only `mark-text` missing; with `-E desktop`: 119 installed, only `mark-text` missing.
+- Design: desktop profile = workstations; install defaults hosts to it.
