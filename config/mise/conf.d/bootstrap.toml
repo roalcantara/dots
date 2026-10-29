@@ -83,6 +83,21 @@ Dpkg::Options { "--force-confdef"; "--force-confold"; };
 
 # Linux desktops: Flathub for the system-wide flatpak apps in packages.toml. Flatpak reads remotes from this
 # folder; declared before packages so the remote exists when mise installs flatpak and then the apps.
+# The folders do not exist until the flatpak package installs, so they are declared too.
+[bootstrap.directories."/etc/flatpak"]
+os = "linux"
+phase = "pre-packages"
+owner = "root"
+group = "root"
+mode = "0755"
+
+[bootstrap.directories."/etc/flatpak/remotes.d"]
+os = "linux"
+phase = "pre-packages"
+owner = "root"
+group = "root"
+mode = "0755"
+
 [bootstrap.files."/etc/flatpak/remotes.d/flathub.flatpakrepo"]
 os = "linux"
 phase = "pre-packages"
