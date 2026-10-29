@@ -156,7 +156,7 @@
 "apt:docker.io" = { os = "linux", env = "desktop" }
 "brew:ollama" = { os = "linux", env = "desktop" }
 
-# LINUX DESKTOP APPS (install -E desktop adds flatpak and the Flathub remote)
+# LINUX DESKTOP APPS (install adds flatpak and the Flathub remote first on Linux desktops)
 "flatpak-user:com.visualstudio.code" = "latest"
 "flatpak-user:dev.zed.Zed" = "latest"
 "flatpak-user:com.getpostman.Postman" = "latest"

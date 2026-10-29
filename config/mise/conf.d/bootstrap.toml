@@ -68,3 +68,15 @@ if command -v nvim >/dev/null; then
   $limit nvim --headless "+Lazy! restore" +qa </dev/null || warn "nvim Lazy restore"
 fi
 '''
+
+# Linux: apt runs unattended, so dpkg must never ask about a changed config file (it fails without a terminal,
+# e.g. on /etc/zsh/zshenv left by the old install). Keep the existing file; take the package's when untouched.
+[bootstrap.files."/etc/apt/apt.conf.d/90dots-noninteractive"]
+os = "linux"
+phase = "pre-packages"
+owner = "root"
+group = "root"
+mode = "0644"
+content = '''
+Dpkg::Options { "--force-confdef"; "--force-confold"; };
+'''

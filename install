@@ -14,8 +14,16 @@ HISTORY="${DOTS_HISTORY:-https://github.com/roalcantara/dots-history.git}"
 PROFILE="${DOTS_PROFILE:-desktop}"
 export PATH="$HOME/.local/bin:$PATH"
 
-# git clones the repo here and mise clones the history; a fresh Ubuntu desktop has curl and sudo but no git.
-if ! command -v git >/dev/null; then
+# Prerequisites mise cannot provide itself:
+# - git: this script clones the repo and mise clones the history (a fresh Ubuntu desktop has no git);
+# - Linux desktop: flatpak and the Flathub remote, which the flatpak apps in packages.toml need before
+#   mise installs them in the same step.
+need=()
+command -v git >/dev/null || need+=(git)
+if [ "$(uname -s)" = Linux ] && [ "$PROFILE" = desktop ]; then
+  command -v flatpak >/dev/null || need+=(flatpak)
+fi
+if [ ${#need[@]} -gt 0 ]; then
   if [ "$(uname -s)" = Darwin ]; then
     echo "install: git is missing; run 'xcode-select --install', then rerun install" >&2
     exit 2
@@ -23,11 +31,14 @@ if ! command -v git >/dev/null; then
     sudo=""
     [ "$(id -u)" -eq 0 ] || sudo="sudo"
     $sudo apt-get update -qq
-    $sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq git
+    $sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "${need[@]}"
   else
-    echo "install: git is missing; install it, then rerun install" >&2
+    echo "install: missing ${need[*]}; install them, then rerun install" >&2
     exit 2
   fi
+fi
+if command -v flatpak >/dev/null && [ "$PROFILE" = desktop ]; then
+  flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 fi
 
 command -v mise >/dev/null || curl -fsSL https://mise.run | MISE_VERSION="v$MISE_VERSION" sh
