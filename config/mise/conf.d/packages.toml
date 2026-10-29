@@ -30,7 +30,7 @@
 "brew:cairo" = "latest"                              # Vector graphics library with cross-device output support
 "brew:coreutils" = "latest"                          # GNU file, shell, and text utilities
 "brew:curlie" = "latest"                             # Power of curl, ease of use of HTTPie
-"brew:delta" = { os = "macos" }                      # Syntax-highlighting pager for git and diff output
+"brew:git-delta" = { os = "macos" }                  # Syntax-highlighting pager for git and diff output
 "brew:devcontainer" = { os = "macos" }               # Development Containers reference implementation
 "brew:docker-language-server" = "latest"             # LSP for Dockerfiles and Compose files
 "brew:eza" = "latest"                                # Modern replacement for ls
@@ -60,7 +60,7 @@
 "brew:mermaid-cli" = "latest"                        # CLI for Mermaid
 "brew:mole" = { os = "macos" }                       # Deep clean and optimize your Mac
 "brew:neovim" = "latest"                             # Text editor focused on extensibility
-"brew:nodejs" = { os = "macos" }                     # JavaScript runtime and package manager support
+"brew:node" = { os = "macos" }                       # JavaScript runtime and package manager support
 "brew:openjdk" = "latest"                            # Java development kit
 "brew:openssl@3" = "latest"                          # Cryptography and TLS toolkit
 "brew:oven-sh/bun/bun" = { os = "macos" }            # JavaScript runtime, bundler, and package manager

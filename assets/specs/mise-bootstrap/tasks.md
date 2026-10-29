@@ -1554,7 +1554,8 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 2: all 18 directories parse; only `~/Projects` is `create`, the rest unchanged; the `bootstrap` task is listed by `mise tasks ls`.
 - Task 2: `login_shell = "zsh"` resolves via PATH to Homebrew's `/opt/homebrew/bin/zsh` (apt's on Linux), the canonical shell; this Mac's `/usr/local/bin/zsh` shows `differs`, which is expected.
 - Task 3: converter gave 84 `brew:` (one is Linux `ollama`), 38 `brew-cask:`, 62 `os = "macos"`; the Brewfile lists `mole` twice (duplicate TOML key), so the second copy and its comment were removed: 83 `brew:`, 61 macOS-only.
-- Task 3: installed but not in the Brewfile (owner to decide): block-goose-cli, dust, giammarco-ferranti/deja/deja, git-delta, mise (install provides it), ncdu, node. The Brewfile has `delta` and `nodejs`, which `status` reports missing (installed here as `git-delta` and `node`): names to check.
+- Task 3: installed but not in the Brewfile, owner chose not to add: block-goose-cli, dust, deja, ncdu (mise is provided by install).
 - Task 3: Homebrew services running here: none.
-- Task 3: `packages status`: 117 installed, 10 skipped (Linux flatpaks), 3 missing: `brew delta`, `brew nodejs`, `brew-cask mark-text`.
+- Task 3: `packages status`: 119 installed, 10 skipped (Linux flatpaks), 1 missing: `brew-cask mark-text`.
 - Task 3: `mise ls --missing`: `go:golang.org/x/tools/gopls`, `go:mvdan.cc/gofumpt`, `pipx:debugpy` (versions resolved); the four `go-code-graph` tools timed out resolving (3s); `graphifyy` and `code-review-graph` are already installed.
+- Task 3: delta and nodejs were Homebrew aliases; renamed to git-delta and node. The Brewfile listed mole twice (duplicate dropped).
