@@ -156,8 +156,8 @@ nothing:
      before the switch to the user, who receives its own copy.
    - When run as root from a checkout inside the user's home that another user owns (a repo `COPY`d into an
      image): `chown -R <user>` of that checkout.
-3. **Switch to the user.** When run as root, `install` runs the remaining steps as the user
-   (`sudo -u <user> -H`). A copy piped from `curl` is saved to a temporary file first so it can run itself.
+3. **Switch to the user.** When run as root, `install` writes the code it is running to a temporary file the user
+   can read and re-runs it as the user (`sudo -u <user> -H`).
 4. **mise:** the pinned version into `~/.local/bin` (`curl https://mise.run` with `MISE_VERSION`), unless
    `mise --version` already reports it.
 5. **Repo:** when `install` runs from a checkout of `dots`, that checkout is used where it is; otherwise
@@ -173,6 +173,13 @@ nothing:
 8. **Bootstrap:** `mise bootstrap`, with `-E <profile>` and, in containers, `--skip user --yes`.
 
 Packages, links and tools live only in the mise config; `install` holds none of them.
+
+Notes:
+
+- A dry run for another user stops at `would: continue as <user>` (that user's home may not exist yet).
+- With `--nopasswd` on a host, the sudoers check uses `sudo -n` and may prompt when the sudo cache is cold.
+- A dry run with `--secrets` still decrypts into a private temporary folder, removed on exit.
+- New macOS users are created as admins (`-admin`); new Linux users join `sudo`.
 
 ### 4.5 Docker images (`distros/{debian,ubuntu}/Dockerfile`)
 

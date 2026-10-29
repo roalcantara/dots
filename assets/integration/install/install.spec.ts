@@ -1,7 +1,20 @@
 #!/usr/bin/env bun
 // install behaviour through --dry-run and the fixture archive: checks read the real machine, nothing changes.
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import {
+  chmodSync,
+  copyFileSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  readlinkSync,
+  realpathSync,
+  rmSync,
+  statSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir, userInfo } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -26,6 +39,8 @@ beforeEach(() => {
 });
 afterEach(() => rmSync(home, { recursive: true, force: true }));
 
+const dotsTemps = () => readdirSync("/tmp").filter((n) => n.startsWith("dots-"));
+
 function run(args: string[], env: Record<string, string> = {}) {
   const r = Bun.spawnSync(["/bin/bash", script, ...args], {
     env: { PATH: process.env.PATH ?? "", HOME: home, DOTS_CONTAINER: "0", ...env },
@@ -48,6 +63,10 @@ describe("install", () => {
       [["--bogus"], "unknown option '--bogus'"],
       [["--user", "Bad Name"], "invalid user name 'Bad Name'"],
       [["--secrets", "/no/such/file.zip.enc"], "is not a file"],
+      [["--tz", "x'; y", "--dry-run"], "invalid timezone"],
+      [["--tz", "../x", "--dry-run"], "invalid timezone"],
+      [["--branch", "../../a/b/c", "--dry-run"], "invalid branch"],
+      [["--branch", "-x", "--dry-run"], "invalid branch"],
     ])("rejects %p", (args, message) => {
       const r = run(args as string[]);
       expect(r.code).toBe(2);
@@ -60,7 +79,7 @@ describe("install", () => {
       const r = run(["--user", me, "--dry-run"]);
       expect(r.code).toBe(0);
       expect(r.out).toContain(`user ${me} exists`);
-      expect(r.out).toContain("MISE_VERSION=v");
+      expect(r.out).toMatch(/ v\d{4}\.\d+\.\d+\n/);
       expect(r.out).toContain(`would: ln -snf ${repo} ${home}/.local/share/dots`);
       expect(r.out).toContain(`would: ln -snf ../.local/share/dots/config/mise ${home}/.config/mise`);
       expect(r.out).toContain(`would: ${home}/.local/bin/mise bootstrap`);
@@ -103,6 +122,84 @@ describe("install", () => {
       expect(r.code).toBe(0);
       expect(r.out).toContain(isMac ? "sysadminctl -addUser dots-test-nobody" : "useradd -m -g dots-test-nobody");
       expect(r.out).toContain("would: continue as dots-test-nobody");
+    });
+  });
+
+  describe("temporary files", () => {
+    it("leaves none after a dry run or a wrong passphrase", () => {
+      const before = dotsTemps();
+      run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "dots-fixture" });
+      run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "wrong" });
+      expect(dotsTemps()).toEqual(before);
+    });
+  });
+
+  describe("a real run in a fake checkout and home", () => {
+    let base: string;
+    let checkout: string;
+    let stubs: string;
+    beforeEach(() => {
+      base = mkdtempSync(join(tmpdir(), "install-real-"));
+      checkout = realpathSync(base) + "/checkout";
+      stubs = join(base, "stubs");
+      mkdirSync(join(checkout, "script"), { recursive: true });
+      mkdirSync(join(checkout, "config/mise"), { recursive: true });
+      mkdirSync(join(checkout, "config/age"), { recursive: true });
+      copyFileSync(script, join(checkout, "install"));
+      mkdirSync(join(home, ".local/bin"), { recursive: true });
+      const mise = join(home, ".local/bin/mise");
+      writeFileSync(
+        mise,
+        '#!/bin/sh\nif [ "$1" = --version ]; then echo "2026.10.21 stub"; else echo "$*" >> "$HOME/mise.log"; fi\n',
+      );
+      chmodSync(mise, 0o755);
+      mkdirSync(stubs);
+      writeFileSync(join(stubs, "flatpak"), "#!/bin/sh\nexit 0\n");
+      chmodSync(join(stubs, "flatpak"), 0o755);
+      mkdirSync(join(home, ".config/gh"), { recursive: true });
+      writeFileSync(join(home, ".config/gh/hosts.yml"), "mine\n");
+    });
+    afterEach(() => rmSync(base, { recursive: true, force: true }));
+
+    const real = () =>
+      Bun.spawnSync(["/bin/bash", join(checkout, "install"), "--user", me, "--secrets", fixture], {
+        env: {
+          PATH: `${stubs}:${process.env.PATH ?? ""}`,
+          HOME: home,
+          DOTS_CONTAINER: "0",
+          DOTS_SECRETS_PASSPHRASE: "dots-fixture",
+        },
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+    const mode = (p: string) => statSync(p).mode & 0o777;
+
+    it("places links and secrets, bootstraps, and changes nothing on a second run", () => {
+      const before = dotsTemps();
+      const r = real();
+      expect(r.stderr.toString()).toBe("");
+      expect(r.exitCode).toBe(0);
+      expect(readlinkSync(join(home, ".local/share/dots"))).toBe(checkout);
+      expect(readlinkSync(join(home, ".config/mise"))).toBe("../.local/share/dots/config/mise");
+      expect(mode(join(home, ".config/ssh"))).toBe(0o700);
+      for (const f of readdirSync(join(home, ".config/ssh"))) {
+        if (statSync(join(home, ".config/ssh", f)).isFile()) expect(mode(join(home, ".config/ssh", f))).toBe(0o600);
+      }
+      expect(mode(join(checkout, "config/age/keys.txt"))).toBe(0o600);
+      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap -E desktop");
+      expect(readFileSync(join(home, ".config/gh/hosts.yml"), "utf8")).toBe("mine\n");
+      expect(dotsTemps()).toEqual(before);
+
+      const mtimes = () =>
+        [join(checkout, "config/age/keys.txt"), ...readdirSync(join(home, ".config/ssh")).map((f) => join(home, ".config/ssh", f))].map(
+          (p) => statSync(p).mtimeMs,
+        );
+      const m1 = mtimes();
+      const r2 = real();
+      expect(r2.exitCode).toBe(0);
+      expect(mtimes()).toEqual(m1);
+      expect(readFileSync(join(home, "mise.log"), "utf8").match(/bootstrap/g)?.length).toBe(2);
+      expect(dotsTemps()).toEqual(before);
     });
   });
 

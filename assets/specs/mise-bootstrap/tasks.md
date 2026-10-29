@@ -718,7 +718,20 @@ git commit -m "feat(secrets): Add prepare task for an encrypted secrets archive"
 #!/usr/bin/env bun
 // install behaviour through --dry-run and the fixture archive: checks read the real machine, nothing changes.
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import {
+  chmodSync,
+  copyFileSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  readlinkSync,
+  realpathSync,
+  rmSync,
+  statSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir, userInfo } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -743,6 +756,8 @@ beforeEach(() => {
 });
 afterEach(() => rmSync(home, { recursive: true, force: true }));
 
+const dotsTemps = () => readdirSync("/tmp").filter((n) => n.startsWith("dots-"));
+
 function run(args: string[], env: Record<string, string> = {}) {
   const r = Bun.spawnSync(["/bin/bash", script, ...args], {
     env: { PATH: process.env.PATH ?? "", HOME: home, DOTS_CONTAINER: "0", ...env },
@@ -765,6 +780,10 @@ describe("install", () => {
       [["--bogus"], "unknown option '--bogus'"],
       [["--user", "Bad Name"], "invalid user name 'Bad Name'"],
       [["--secrets", "/no/such/file.zip.enc"], "is not a file"],
+      [["--tz", "x'; y", "--dry-run"], "invalid timezone"],
+      [["--tz", "../x", "--dry-run"], "invalid timezone"],
+      [["--branch", "../../a/b/c", "--dry-run"], "invalid branch"],
+      [["--branch", "-x", "--dry-run"], "invalid branch"],
     ])("rejects %p", (args, message) => {
       const r = run(args as string[]);
       expect(r.code).toBe(2);
@@ -777,7 +796,7 @@ describe("install", () => {
       const r = run(["--user", me, "--dry-run"]);
       expect(r.code).toBe(0);
       expect(r.out).toContain(`user ${me} exists`);
-      expect(r.out).toContain("MISE_VERSION=v");
+      expect(r.out).toMatch(/ v\d{4}\.\d+\.\d+\n/);
       expect(r.out).toContain(`would: ln -snf ${repo} ${home}/.local/share/dots`);
       expect(r.out).toContain(`would: ln -snf ../.local/share/dots/config/mise ${home}/.config/mise`);
       expect(r.out).toContain(`would: ${home}/.local/bin/mise bootstrap`);
@@ -823,6 +842,84 @@ describe("install", () => {
     });
   });
 
+  describe("temporary files", () => {
+    it("leaves none after a dry run or a wrong passphrase", () => {
+      const before = dotsTemps();
+      run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "dots-fixture" });
+      run(["--user", me, "--secrets", fixture, "--dry-run"], { DOTS_SECRETS_PASSPHRASE: "wrong" });
+      expect(dotsTemps()).toEqual(before);
+    });
+  });
+
+  describe("a real run in a fake checkout and home", () => {
+    let base: string;
+    let checkout: string;
+    let stubs: string;
+    beforeEach(() => {
+      base = mkdtempSync(join(tmpdir(), "install-real-"));
+      checkout = realpathSync(base) + "/checkout";
+      stubs = join(base, "stubs");
+      mkdirSync(join(checkout, "script"), { recursive: true });
+      mkdirSync(join(checkout, "config/mise"), { recursive: true });
+      mkdirSync(join(checkout, "config/age"), { recursive: true });
+      copyFileSync(script, join(checkout, "install"));
+      mkdirSync(join(home, ".local/bin"), { recursive: true });
+      const mise = join(home, ".local/bin/mise");
+      writeFileSync(
+        mise,
+        '#!/bin/sh\nif [ "$1" = --version ]; then echo "2026.10.21 stub"; else echo "$*" >> "$HOME/mise.log"; fi\n',
+      );
+      chmodSync(mise, 0o755);
+      mkdirSync(stubs);
+      writeFileSync(join(stubs, "flatpak"), "#!/bin/sh\nexit 0\n");
+      chmodSync(join(stubs, "flatpak"), 0o755);
+      mkdirSync(join(home, ".config/gh"), { recursive: true });
+      writeFileSync(join(home, ".config/gh/hosts.yml"), "mine\n");
+    });
+    afterEach(() => rmSync(base, { recursive: true, force: true }));
+
+    const real = () =>
+      Bun.spawnSync(["/bin/bash", join(checkout, "install"), "--user", me, "--secrets", fixture], {
+        env: {
+          PATH: `${stubs}:${process.env.PATH ?? ""}`,
+          HOME: home,
+          DOTS_CONTAINER: "0",
+          DOTS_SECRETS_PASSPHRASE: "dots-fixture",
+        },
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+    const mode = (p: string) => statSync(p).mode & 0o777;
+
+    it("places links and secrets, bootstraps, and changes nothing on a second run", () => {
+      const before = dotsTemps();
+      const r = real();
+      expect(r.stderr.toString()).toBe("");
+      expect(r.exitCode).toBe(0);
+      expect(readlinkSync(join(home, ".local/share/dots"))).toBe(checkout);
+      expect(readlinkSync(join(home, ".config/mise"))).toBe("../.local/share/dots/config/mise");
+      expect(mode(join(home, ".config/ssh"))).toBe(0o700);
+      for (const f of readdirSync(join(home, ".config/ssh"))) {
+        if (statSync(join(home, ".config/ssh", f)).isFile()) expect(mode(join(home, ".config/ssh", f))).toBe(0o600);
+      }
+      expect(mode(join(checkout, "config/age/keys.txt"))).toBe(0o600);
+      expect(readFileSync(join(home, "mise.log"), "utf8")).toContain("bootstrap -E desktop");
+      expect(readFileSync(join(home, ".config/gh/hosts.yml"), "utf8")).toBe("mine\n");
+      expect(dotsTemps()).toEqual(before);
+
+      const mtimes = () =>
+        [join(checkout, "config/age/keys.txt"), ...readdirSync(join(home, ".config/ssh")).map((f) => join(home, ".config/ssh", f))].map(
+          (p) => statSync(p).mtimeMs,
+        );
+      const m1 = mtimes();
+      const r2 = real();
+      expect(r2.exitCode).toBe(0);
+      expect(mtimes()).toEqual(m1);
+      expect(readFileSync(join(home, "mise.log"), "utf8").match(/bootstrap/g)?.length).toBe(2);
+      expect(dotsTemps()).toEqual(before);
+    });
+  });
+
   describe("containers", () => {
     it("uses the container profile, skips the login shell and plans passwordless sudo", () => {
       const r = run(["--user", me, "--dry-run"], { DOTS_CONTAINER: "1" });
@@ -852,21 +949,28 @@ set -euo pipefail
 
 MISE_PIN="2026.10.21"
 REPO="roalcantara/dots"
-TARGET_USER="roalcantara"
-SECRETS=""      # the archive passed with --secrets
-SECRETS_SRC=""  # the folder its files are read from once opened
-SECRETS_TMP=""
-TZ_NAME=""
-NOPASSWD=0
-BRANCH="main"
-PROFILE=""
-DRY_RUN=0
-SKIP_USER=0
-OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
-SELF="${BASH_SOURCE[0]:-}"
-MISE="$HOME/.local/bin/mise"
-DOTS_DIR=""
-ARGS=()
+
+# init_globals sets every other global; the user stage re-runs the functions without this top-level code.
+init_globals() {
+  TARGET_USER="roalcantara"
+  SECRETS="" # the archive passed with --secrets
+  SECRETS_SRC="" # the folder its files are read from once opened
+  SECRETS_TMP=""
+  TZ_NAME=""
+  NOPASSWD=0
+  BRANCH="main"
+  PROFILE=""
+  DRY_RUN=0
+  SKIP_USER=0
+  OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  SELF="${BASH_SOURCE[0]:-}"
+  MISE="$HOME/.local/bin/mise"
+  DOTS_DIR=""
+  STAGE=first
+  APT_UPDATED=0
+  ARGS=()
+  CLEAN=()
+}
 
 usage() {
   cat <<'EOF'
@@ -886,6 +990,16 @@ log() { printf '==> %s\n' "$*"; }
 die() {
   printf 'install: %s\n' "$1" >&2
   exit "${2:-1}"
+}
+# track registers a path for removal on exit; cleanup removes them all, so traps never override each other.
+track() { CLEAN+=("$1"); }
+cleanup() {
+  local p
+  [ "${#CLEAN[@]}" -gt 0 ] || return 0
+  for p in "${CLEAN[@]}"; do
+    [ -z "$p" ] || rm -rf "$p"
+  done
+  return 0
 }
 # act runs a command, or prints it under --dry-run.
 act() { if [ "$DRY_RUN" = 1 ]; then printf 'would: %s\n' "$*"; else "$@"; fi; }
@@ -908,9 +1022,17 @@ parse_args() {
       *) usage >&2; die "unknown option '$1'" 2 ;;
     esac
   done
-  [[ "$TARGET_USER" =~ ^[a-z_][a-z0-9_-]*$ ]] || die "invalid user name '$TARGET_USER'" 2
+  local re_user='^[a-z_][a-z0-9_-]*$' re_tz='^[A-Za-z0-9_+-]+(/[A-Za-z0-9_+-]+)*$' re_ref='^[A-Za-z0-9._/-]+$'
+  [[ "$TARGET_USER" =~ $re_user ]] || die "invalid user name '$TARGET_USER'" 2
+  if [ -n "$TZ_NAME" ]; then
+    [[ "$TZ_NAME" =~ $re_tz ]] || die "invalid timezone '$TZ_NAME'" 2
+    if [ "$OS" = linux ] && [ ! -e "/usr/share/zoneinfo/$TZ_NAME" ]; then die "invalid timezone '$TZ_NAME'" 2; fi
+  fi
+  if [[ ! "$BRANCH" =~ $re_ref ]] || [[ "$BRANCH" == -* ]] || [[ "$BRANCH" == *..* ]]; then
+    die "invalid branch '$BRANCH'" 2
+  fi
   # The user stage receives the opened files instead (DOTS_SECRETS) and may not be able to read the archive.
-  if [ "${DOTS_STAGE:-}" != user ] && [ -n "$SECRETS" ] && [ ! -f "$SECRETS" ]; then
+  if [ "$STAGE" != user ] && [ -n "$SECRETS" ] && [ ! -f "$SECRETS" ]; then
     die "--secrets '$SECRETS' is not a file" 2
   fi
 }
@@ -930,6 +1052,9 @@ detect() {
   else
     PROFILE="${PROFILE:-desktop}"
   fi
+  if [ "$DRY_RUN" = 0 ] && [ "$(id -u)" -ne 0 ] && [ "$(id -un)" != "$TARGET_USER" ]; then
+    die "run as root or as $TARGET_USER" 2
+  fi
   log "system: $OS${PROFILE:+, profile $PROFILE}"
 }
 
@@ -944,8 +1069,13 @@ user_home() {
 
 # checkout_dir prints the dots checkout this script runs from, if any.
 checkout_dir() {
-  if [ -z "$SELF" ] || [ ! -f "$SELF" ]; then return 1; fi
   local dir
+  if [ "$STAGE" = user ]; then # the regenerated script has no checkout beside it
+    dir="${DOTS_CHECKOUT:-}"
+    if [ -n "$dir" ] && [ -d "$dir/config/mise" ]; then printf '%s\n' "$dir"; return 0; fi
+    return 1
+  fi
+  if [ -z "$SELF" ] || [ ! -f "$SELF" ]; then return 1; fi
   dir="$(cd "$(dirname "$SELF")" && pwd -P)"
   [ -d "$dir/config/mise" ] || return 1
   printf '%s\n' "$dir"
@@ -981,7 +1111,8 @@ ensure_timezone() {
     act_root systemsetup -settimezone "$TZ_NAME"
   else
     act_root ln -snf "/usr/share/zoneinfo/$TZ_NAME" /etc/localtime
-    act_root sh -c "printf '%s\n' '$TZ_NAME' > /etc/timezone"
+    # shellcheck disable=SC2016 # the script is single-quoted on purpose; sh expands $1 and $2
+  act_root sh -c 'printf "%s\n" "$1" > /etc/timezone' sh "$TZ_NAME"
   fi
 }
 
@@ -992,11 +1123,11 @@ ensure_nopasswd() {
     log "passwordless sudo for $TARGET_USER is set"
     return
   fi
-  tmp="$(mktemp)"
+  tmp="$(mktemp /tmp/dots-sudoers.XXXXXX)"
+  track "$tmp"
   printf '%s ALL=(ALL) NOPASSWD:ALL\n' "$TARGET_USER" >"$tmp"
   act_root visudo -cf "$tmp"
   act_root install -m 0440 "$tmp" "$file"
-  rm -f "$tmp"
 }
 
 ensure_zdotdir() {
@@ -1008,7 +1139,17 @@ ensure_zdotdir() {
     return
   fi
   act_root mkdir -p /etc/zsh
-  act_root sh -c "printf '%s\n' '$line' >> /etc/zsh/zshenv"
+  # shellcheck disable=SC2016 # the script is single-quoted on purpose; sh expands $1 and $2
+  act_root sh -c 'printf "%s\n" "$1" >> /etc/zsh/zshenv' sh "$line"
+}
+
+# apt_install updates the package lists once, then installs without prompting.
+apt_install() {
+  if [ "$APT_UPDATED" = 0 ]; then
+    act_root env DEBIAN_FRONTEND=noninteractive apt-get update -qq
+    APT_UPDATED=1
+  fi
+  act_root env DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"
 }
 
 ensure_flatpak() {
@@ -1017,22 +1158,22 @@ ensure_flatpak() {
     log "flatpak is installed"
     return
   fi
-  act_root apt-get install -y flatpak
+  apt_install flatpak
 }
 
 ensure_unzip() {
   if [ -z "$SECRETS" ] || command -v unzip >/dev/null; then return 0; fi
   [ "$OS" = linux ] || die "unzip is required to open --secrets"
-  act_root apt-get install -y unzip
+  apt_install unzip
 }
 
 # open_secrets decrypts and unpacks the archive into an owner-only temporary folder, removed on exit.
 open_secrets() {
   [ -n "$SECRETS" ] || return 0
   command -v unzip >/dev/null || die "unzip is required to open --secrets"
-  SECRETS_TMP="$(mktemp -d)"
+  SECRETS_TMP="$(mktemp -d /tmp/dots-secrets.XXXXXX)"
   chmod 700 "$SECRETS_TMP"
-  trap 'rm -rf "$SECRETS_TMP"' EXIT
+  track "$SECRETS_TMP"
   local pass=()
   if [ -n "${DOTS_SECRETS_PASSPHRASE:-}" ]; then pass=(-pass env:DOTS_SECRETS_PASSPHRASE); fi
   if ! openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -md sha256 -in "$SECRETS" -out "$SECRETS_TMP/secrets.zip" \
@@ -1040,6 +1181,7 @@ open_secrets() {
     die "cannot open '$SECRETS': wrong passphrase, or not an archive from prepare" 2
   fi
   rm -f "$SECRETS_TMP/secrets.zip"
+  unset DOTS_SECRETS_PASSPHRASE
   SECRETS_SRC="$SECRETS_TMP/files"
 }
 
@@ -1053,38 +1195,75 @@ ensure_ownership() {
   [ "$owner" = "$TARGET_USER" ] || act_root chown -R "$TARGET_USER" "$repo"
 }
 
-# switch_to_user re-runs this script as the target user, unless it already is that user.
+# switch_to_user re-runs this code as the target user, unless it already is that user. The user cannot read
+# root's temporary files, so it gets the code in a file of its own and, when there are secrets, a copy of them.
 switch_to_user() {
   [ "$(id -un)" != "$TARGET_USER" ] || return 0
   if [ "$DRY_RUN" = 1 ]; then
     printf 'would: continue as %s\n' "$TARGET_USER"
     exit 0
   fi
-  [ "$(id -u)" -eq 0 ] || die "run as root or as $TARGET_USER"
-  local script="$SELF" secrets_copy=""
-  if ! checkout_dir >/dev/null; then # piped from curl: fetch a copy the user can run
-    script="$(mktemp)"
-    curl -fsSL "https://raw.githubusercontent.com/$REPO/$BRANCH/install" -o "$script"
-    chmod 0755 "$script"
+  [ "$(id -u)" -eq 0 ] || die "run as root or as $TARGET_USER" 2
+  local script copy="" checkout home
+  home="$(user_home)"
+  checkout="$(checkout_dir || true)"
+  script="$(mktemp /tmp/dots-install.XXXXXX)"
+  track "$script"
+  {
+    printf '#!/usr/bin/env bash\nset -euo pipefail\n'
+    declare -p MISE_PIN REPO
+    declare -f
+    printf 'main "$@"\n'
+  } >"$script"
+  chmod 0755 "$script"
+  if [ -n "$SECRETS_SRC" ] || [ -n "${GITHUB_TOKEN:-}" ]; then
+    copy="$(mktemp -d /tmp/dots-secrets.XXXXXX)"
+    track "$copy"
+    (
+      umask 077
+      if [ -n "$SECRETS_SRC" ]; then cp -R "$SECRETS_SRC"/. "$copy"/; fi
+      if [ -n "${GITHUB_TOKEN:-}" ]; then printf '%s' "$GITHUB_TOKEN" >"$copy/github_token"; fi
+    )
+    chown -R "$TARGET_USER" "$copy"
   fi
-  if [ -n "$SECRETS_SRC" ]; then # hand the user its own copy of the opened files; drop root's
-    secrets_copy="$(mktemp -d)"
-    cp -R "$SECRETS_SRC"/. "$secrets_copy"/
-    chown -R "$TARGET_USER" "$secrets_copy"
+  if [ -n "$SECRETS_TMP" ]; then # root's opened files go now; the user has its own copy
     rm -rf "$SECRETS_TMP"
+    SECRETS_TMP=""
   fi
-  exec sudo -u "$TARGET_USER" -H env DOTS_STAGE=user DOTS_SECRETS="$secrets_copy" GITHUB_TOKEN="${GITHUB_TOKEN:-}" \
+  cd "$home"
+  exec sudo -u "$TARGET_USER" -H env DOTS_STAGE=user DOTS_SECRETS="$copy" DOTS_CHECKOUT="$checkout" \
     bash "$script" "${ARGS[@]+"${ARGS[@]}"}"
+}
+
+# trust_user_stage accepts what the root stage handed over only from a directory this user owns, and removes it on exit.
+trust_user_stage() {
+  local dir="${DOTS_SECRETS:-}" owner
+  case "$0" in /tmp/dots-install.*) track "$0" ;; esac
+  [ -n "$dir" ] || return 0
+  owner="$(stat -c %u "$dir" 2>/dev/null || stat -f %u "$dir" 2>/dev/null || true)"
+  case "$dir" in
+    /tmp/dots-secrets.*) ;;
+    *) die "untrusted DOTS_SECRETS '$dir'" 2 ;;
+  esac
+  if [ -L "$dir" ] || [ ! -d "$dir" ] || [ "$owner" != "$(id -u)" ]; then die "untrusted DOTS_SECRETS '$dir'" 2; fi
+  track "$dir"
+  SECRETS_SRC="$dir"
 }
 
 # --- user steps -------------------------------------------------------------------------------------------
 
 ensure_mise() {
-  if [ -x "$MISE" ] && "$MISE" --version 2>/dev/null | grep -q "^$MISE_PIN "; then
-    log "mise $MISE_PIN is installed"
-    return
-  fi
-  act sh -c "curl -fsSL https://mise.run | MISE_VERSION=v$MISE_PIN sh"
+  case "$("$MISE" --version 2>/dev/null || true)" in
+    "$MISE_PIN "*)
+      log "mise $MISE_PIN is installed"
+      return
+      ;;
+  esac
+  local dir
+  dir="$(mktemp -d /tmp/dots-mise.XXXXXX)"
+  track "$dir"
+  # shellcheck disable=SC2016 # the script is single-quoted on purpose; sh expands $1 and $2
+  act sh -c 'curl -fsSL https://mise.run -o "$1" && MISE_VERSION="$2" sh "$1"' sh "$dir/mise.sh" "v$MISE_PIN"
 }
 
 ensure_link() {
@@ -1094,6 +1273,7 @@ ensure_link() {
     return
   fi
   if [ -e "$path" ] && [ ! -L "$path" ]; then die "$path exists and is not a link; move it away and rerun"; fi
+  if [ -L "$path" ]; then log "relinking $path (was $(readlink "$path"))"; fi
   act mkdir -p "$(dirname "$path")"
   act ln -snf "$target" "$path"
 }
@@ -1131,8 +1311,13 @@ copy_secret_dir() {
     log "$dst exists"
     return
   fi
+  local old
+  old="$(umask)"
+  umask 077
   act cp -R "$src" "$dst"
-  act chmod -R u=rwX,go= "$dst"
+  umask "$old"
+  act find "$dst" -type d -exec chmod 700 {} +
+  act find "$dst" -type f -exec chmod 600 {} +
 }
 
 ensure_secrets() {
@@ -1146,7 +1331,6 @@ ensure_secrets() {
     export GITHUB_TOKEN
     log "GITHUB_TOKEN set for this run"
   fi
-  if [ -n "${DOTS_SECRETS:-}" ]; then rm -rf "$DOTS_SECRETS"; fi
 }
 
 ensure_flathub() {
@@ -1163,11 +1347,17 @@ run_bootstrap() {
 }
 
 main() {
+  init_globals
+  trap cleanup EXIT
+  # Only a root-started switch may set the user stage; anything inherited by a first stage is dropped.
+  if [ "${DOTS_STAGE:-}" = user ] && [ "$(id -u)" -ne 0 ]; then STAGE=user; fi
+  if [ "$STAGE" != user ]; then unset DOTS_STAGE DOTS_SECRETS DOTS_CHECKOUT; fi
   if [ $# -gt 0 ]; then ARGS=("$@"); fi
   parse_args "$@"
   detect
-  if [ "${DOTS_STAGE:-}" = user ]; then
-    SECRETS_SRC="${DOTS_SECRETS:-}"
+  if [ "$STAGE" = user ]; then
+    [ "$(id -un)" = "$TARGET_USER" ] || die "the user stage must run as $TARGET_USER" 2
+    trust_user_stage
   else
     ensure_user
     ensure_timezone
@@ -1192,7 +1382,7 @@ main "$@"
 - [x] **Step 4: Run both specs**
 
 Run: `cd ~/Work/dots/assets && bun test integration/install/`
-Expected: PASS, 18 tests (8 prepare-secrets, 10 install).
+Expected: PASS, 24 tests (8 prepare-secrets, 16 install).
 
 - [x] **Step 5: Lint and check bash 3.2**
 
@@ -1676,3 +1866,6 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 4: Staged links must resolve inside the archive (absolute or missing targets exit 1 with `is a link to`); ssh/ and gnupg/ copies skip `S.*`, `s.*`, `.#lk*`, `random_seed`, `*~`.
 - Task 4: The fixture forces the passphrase `dots-fixture` over any ambient value; `openssl enc` pins `-md sha256` (spec and Task 5 decrypt updated); it has no authentication, noted in the script. 8 tests now.
 - Task 5: Spec failed first on the old `install` (0 pass, 10 fail; every spec invocation starts with an option the old parser rejects with exit 1 before any setup, so the run was safe); then 18/18 passed (8 prepare-secrets + 10 install); shellcheck clean, `/bin/bash` 3.2.57 syntax ok; fake-HOME dry run ends with `would: <tmp>/.local/bin/mise bootstrap -E desktop`; real-home dry run reports user exists and both links `is linked`. Step 6 (real archive and passphrase) skipped: owner-interactive.
+- Task 5 review: `--tz` and `--branch` are validated (exit 2); root commands take values as `sh -c` arguments, never interpolated; the root-to-user switch writes the running code (`declare -f`) to `/tmp/dots-install.*` and hands the user an owned copy of the secrets and `GITHUB_TOKEN` in `/tmp/dots-secrets.*`; one `cleanup` list removes every temp path; apt updates once and installs non-interactively; the passphrase is unset after opening. Now 24 tests (8 + 16), including a real run in a fake checkout and home with a stub `mise`.
+- Task 5 review: deviation: the "run as root or as <user>" check in `detect` is skipped under `--dry-run`, so a dry run for another user still plans the user and stops at `would: continue as <user>` (an existing spec case). Linux paths (apt, sudo switch) are untested here; the regenerated script was checked by running it as the user stage on this Mac.
+- Task 5 review: copy_secret_dir keeps `umask 077` in the script (not a subshell) so the dry-run line stays `would: cp -R src dst`; `find` fixes the modes.
