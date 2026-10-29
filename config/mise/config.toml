@@ -128,6 +128,15 @@ recipients = ["age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4"]
   "random_seed",
   "*~",
 ] }
+# gopass's age identity (itself passphrase-protected); the store is a git clone the bootstrap task makes.
+"~/.config/gopass" = { mode = "track", encrypt = true }
+# Agent commands are the owner's own; skills come from many sources with no manifest (`.skill-lock.json` lists
+# one), so the folder itself is the record; encrypted because some skills ship token-named files mise would
+# otherwise omit. The two links point into local checkouts.
+"~/.agents" = { mode = "track", encrypt = true, exclude = [
+  "skills/cua-driver",
+  "skills/recon",
+] }
 
 [tools]
 # Only what Homebrew does not package; everything else is in conf.d/packages.toml.
@@ -135,8 +144,8 @@ recipients = ["age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4"]
 # Python lacks wheels some need on Linux arm64.
 "uv" = "latest"
 "pipx:debugpy" = "latest"
-"pipx:graphifyy" = "latest"
-"pipx:code-review-graph" = "latest"
+"pipx:graphifyy" = { version = "latest", uvx_args = "--python 3.13" }
+"pipx:code-review-graph" = { version = "latest", uvx_args = "--python 3.13" }
 "pipx:commit-check" = "latest"
 "pipx:pynvim" = "latest"
 

@@ -19,7 +19,7 @@ An opinionated [DotFiles][10] repository. Ready to Engage!
 - **Automated Bootstrap:** One-liner setup script configuring shell, user permissions, tools, and dotfile symlinks.
 - **Shell & Prompt:** Fast, modern Zsh environment powered by [Zimfw][19] and the [Starship][25] prompt.
 - **Composable CLI Suite:** A comprehensive library of standalone, `#USAGE`-documented terminal helpers in `config/bin/`.
-- **Declarative Package Management:** Unified runtime management with [Mise][6], reproducible system packages via [Flox][16], and declarative macOS package management with [Homebrew Bundle][5].
+- **Declarative Package Management:** Runtimes, Homebrew bottles and casks, apt and flatpak packages, and machine setup declared in [Mise][6] (`mise bootstrap`).
 - **Editor Configuration:** Fast, extensible [Neovim][26] setup powered by [LazyVim][27].
 - **High-Performance Git Hooks:** Fast Rust-native git hooks via [hk][7] enforcing [Conventional Commits][9] and multi-linter verification.
 - **Living Documentation & Testing:** Spec-Driven Development (SDD) planning artifacts, BDD living documentation with Gherkin/Cucumber, and Bun subprocess integration specs in `assets/`.
@@ -309,7 +309,6 @@ The project is available as open source under the terms of the [MIT License](LIC
 - [Dotfiles][10]
 - [hk Git Hook Manager][7]
 - [Mise Development Environment Manager][6]
-- [Flox Declarative Environments][16]
 - [CST (Container Structure Tests)][12]
 - [OCI Best Practices Image Annotations][13]
 - [DevContainers Specification][15]
@@ -332,7 +331,6 @@ The project is available as open source under the terms of the [MIT License](LIC
 [13]: https://github.com/opencontainers/image-spec/blob/main/annotations.md 'OCI Best Practices Image Annotations'
 [14]: https://docker.com/blog/multi-arch-build-and-images-the-simple-way 'Multi-arch build and images the simple way'
 [15]: https://containers.dev 'DevContainers'
-[16]: https://flox.dev 'Flox: Developer Environments'
 [17]: https://jetify.com/devbox 'Devbox: Portable, Isolated Dev Environments'
 [18]: https://devenv.sh 'Devenv: Fast, Declarative Developer Environments using Nix'
 [19]: https://zimfw.sh 'Zim: Modular, customizable, and blazing fast Zsh framework'

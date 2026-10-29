@@ -9,88 +9,89 @@
 
 [bootstrap.packages]
 # CORE FORMULAE
-"brew:act" = { env = "desktop" } # Run your GitHub Actions locally
-"brew:age" = "latest"            # Simple, modern, secure file encryption
-"brew:aqua" = "latest"           # Declarative CLI version manager
-"brew:ast-grep" = "latest"       # Code searching, linting, rewriting
-"brew:bash" = { os = "macos" }   # Bourne-Again shell
-"brew:bash-language-server" = { os = "macos" } # Language server for Bash
-"brew:bat" = "latest"                          # Clone of cat(1) with syntax highlighting and Git integration
-"brew:bat-extras" = "latest"                   # Extra tools that integrate bat with the shell
-"brew:can1357/tap/omp" = { os = "macos" }      # Coding agent with the IDE wired in
-"brew:coreutils" = { os = "macos" }      # GNU file, shell, and text utilities
-"brew:curlie" = "latest"                 # Power of curl, ease of use of HTTPie
-"brew:git-delta" = "latest"              # Syntax-highlighting pager for git and diff output
-"brew:devcontainer" = { os = "macos" }   # Development Containers reference implementation
-"brew:docker-language-server" = "latest" # LSP for Dockerfiles and Compose files
-"brew:eza" = "latest"                    # Modern replacement for ls
-"brew:fabric-ai" = { env = "desktop" }   # Open-source framework for augmenting humans using AI
-"brew:fd" = "latest"                     # Fast file search utility
-"brew:findutils" = { os = "macos" }      # GNU find, xargs, and locate
-"brew:fzf" = "latest"                    # Command-line fuzzy finder
-"brew:gawk" = { os = "macos" }           # GNU awk utility
-"brew:gh" = "latest"                     # GitHub CLI
-"brew:git" = { os = "macos" }            # Distributed revision control system
-"brew:git-extras" = { os = "macos" }     # Small git utilities
-"brew:git-lfs" = "latest"                # Git extension for versioning large files
-"brew:glow" = "latest"                   # Render Markdown in the terminal
-"brew:gnu-sed" = { os = "macos" }                # GNU sed implementation
-"brew:gopass" = "latest"                         # Secrets management tool
-"brew:gopls" = "latest"                          # Go language server
-"brew:gofumpt" = "latest"                        # Go code formatter
-"brew:gum" = "latest"                            # Tool for glamorous shell scripts
-"brew:hadolint" = "latest"                       # Dockerfile linter
-"brew:hyperfine" = "latest"                      # Command-line benchmarking tool
-"brew:jq" = "latest"                             # Lightweight JSON processor
-"brew:less" = { os = "macos" }                   # Pager program similar to more
-"brew:lesspipe" = { os = "macos" }               # Input filter for less
-"brew:libyaml" = "latest"                        # YAML parser
-"brew:yamllint" = "latest"                       # YAML linter
-"brew:taplo" = "latest"                          # TOML linter and formatter
-"brew:markdownlint-cli" = "latest"               # Markdown linter
-"brew:markdownlint-cli2" = "latest"              # Markdown linter
-"brew:lua-language-server" = { env = "desktop" } # Language server for Lua
-"brew:container-structure-test" = "latest"       # Container structure testing tool
-"brew:mermaid-cli" = { env = "desktop" }         # CLI for Mermaid
-"brew:neovim" = "latest"                         # Text editor focused on extensibility
-"brew:node" = "latest"                           # JavaScript runtime and package manager support
-"brew:openjdk" = { env = "desktop" } # Java development kit
-"brew:openssl@3" = "latest"               # Cryptography and TLS toolkit
-"brew:oven-sh/bun/bun" = { os = "macos" } # JavaScript runtime, bundler, and package manager
-"brew:pinentry-mac" = { os = "macos" }    # Pinentry for GPG on macOS
-"brew:pkl" = "latest"                     # Pkl language CLI
-"brew:pkl-lsp" = { os = "macos" }         # Pkl language server
-"brew:pnpm" = "latest"                    # Fast, disk space efficient package manager
-"brew:pyright" = { os = "macos" }        # Python static type checker
-"brew:python@3.14" = { env = "desktop" } # Python runtime
-"brew:ripgrep" = "latest"                # Search tool like grep
-"brew:ruby" = "latest"                   # Ruby runtime
-"brew:ruby-lsp" = { env = "desktop" }    # Ruby language server
-"brew:sd" = "latest"                                   # Intuitive find and replace CLI
-"brew:shfmt" = "latest"                                # Shell script formatter
-"brew:shellcheck" = "latest"                           # Shell script static analysis tool
-"brew:shellspec" = { os = "macos" }                    # BDD framework for shells
-"brew:skills" = { os = "macos" }                       # Open agent skills ecosystem
-"brew:sops" = "latest"                                 # Secrets file encryption and management
-"brew:sqlite" = "latest"                               # SQLite command-line interface
-"brew:tealdeer" = "latest"                             # Fast tldr client
-"brew:television" = "latest"                           # General purpose fuzzy finder TUI
-"brew:tombi" = "latest"                                # TOML formatter, linter, and language server
-"brew:tree" = "latest"                                 # Display directories as trees
-"brew:tree-sitter" = "latest"                          # Incremental parsing library
-"brew:tree-sitter-cli" = "latest"                      # Parser generator tool
-"brew:typescript-language-server" = { os = "macos" }   # LSP for TypeScript
-"brew:usage" = "latest"                                # Tool for working with usage-spec CLIs
-"brew:hk" = "latest"                                   # Git hook manager (this repo's hooks)
-"brew:fnox" = "latest"                                 # Secrets from providers into the environment
-"brew:wakatime-cli" = { env = "desktop" }              # WakaTime CLI
-"brew:zoxide" = "latest"                               # Smart directory navigation for the shell
-"brew:zsh" = { os = "macos" }                          # UNIX shell
-"brew:zsh-autosuggestions" = "latest"                  # Predictive inline shell autosuggestions for zsh
-"brew:helix" = "latest"                                # Post-modern modal text editor
-"brew:zsh-patina" = "latest"                           # Blazingly fast Zsh syntax highlighter
-"brew:asmvik/formulae/yabai" = { os = "macos" }        # A tiling window manager for macos
-"brew:rust" = { env = "desktop" }                      # Rust toolchain
+"brew:act" = { env = "desktop" }                     # Run your GitHub Actions locally
+"brew:age" = "latest"                                # Simple, modern, secure file encryption
+"brew:aqua" = "latest"                               # Declarative CLI version manager
+"brew:ast-grep" = "latest"                           # Code searching, linting, rewriting
+"brew:bash" = { os = "macos" }                       # Bourne-Again shell
+"brew:bash-language-server" = { os = "macos" }       # Language server for Bash
+"brew:bat" = "latest"                                # Clone of cat(1) with syntax highlighting and Git integration
+"brew:bat-extras" = "latest"                         # Extra tools that integrate bat with the shell
+"brew:can1357/tap/omp" = { os = "macos" }            # Coding agent with the IDE wired in
+"brew:coreutils" = { os = "macos" }                  # GNU file, shell, and text utilities
+"brew:curlie" = "latest"                             # Power of curl, ease of use of HTTPie
+"brew:git-delta" = "latest"                          # Syntax-highlighting pager for git and diff output
+"brew:devcontainer" = { os = "macos" }               # Development Containers reference implementation
+"brew:docker-language-server" = "latest"             # LSP for Dockerfiles and Compose files
+"brew:eza" = "latest"                                # Modern replacement for ls
+"brew:fabric-ai" = { env = "desktop" }               # Open-source framework for augmenting humans using AI
+"brew:fd" = "latest"                                 # Fast file search utility
+"brew:findutils" = { os = "macos" }                  # GNU find, xargs, and locate
+"brew:fzf" = "latest"                                # Command-line fuzzy finder
+"brew:gawk" = { os = "macos" }                       # GNU awk utility
+"brew:gh" = "latest"                                 # GitHub CLI
+"brew:git" = { os = "macos" }                        # Distributed revision control system
+"brew:git-extras" = { os = "macos" }                 # Small git utilities
+"brew:git-lfs" = "latest"                            # Git extension for versioning large files
+"brew:glow" = "latest"                               # Render Markdown in the terminal
+"brew:gnu-sed" = { os = "macos" }                    # GNU sed implementation
+"brew:gopass" = "latest"                             # Secrets management tool
+"brew:gopls" = "latest"                              # Go language server
+"brew:gofumpt" = "latest"                            # Go code formatter
+"brew:gum" = "latest"                                # Tool for glamorous shell scripts
+"brew:hf" = { os = "macos" }                         # Hugging Face CLI (oMLX models)
+"brew:hadolint" = "latest"                           # Dockerfile linter
+"brew:hyperfine" = "latest"                          # Command-line benchmarking tool
+"brew:jq" = "latest"                                 # Lightweight JSON processor
+"brew:less" = { os = "macos" }                       # Pager program similar to more
+"brew:lesspipe" = { os = "macos" }                   # Input filter for less
+"brew:libyaml" = "latest"                            # YAML parser
+"brew:yamllint" = "latest"                           # YAML linter
+"brew:taplo" = "latest"                              # TOML linter and formatter
+"brew:markdownlint-cli" = "latest"                   # Markdown linter
+"brew:markdownlint-cli2" = "latest"                  # Markdown linter
+"brew:lua-language-server" = { env = "desktop" }     # Language server for Lua
+"brew:container-structure-test" = "latest"           # Container structure testing tool
+"brew:mermaid-cli" = { env = "desktop" }             # CLI for Mermaid
+"brew:neovim" = "latest"                             # Text editor focused on extensibility
+"brew:node" = "latest"                               # JavaScript runtime and package manager support
+"brew:openjdk" = { env = "desktop" }                 # Java development kit
+"brew:openssl@3" = "latest"                          # Cryptography and TLS toolkit
+"brew:oven-sh/bun/bun" = { os = "macos" }            # JavaScript runtime, bundler, and package manager
+"brew:pinentry-mac" = { os = "macos" }               # Pinentry for GPG on macOS
+"brew:pkl" = "latest"                                # Pkl language CLI
+"brew:pkl-lsp" = { os = "macos" }                    # Pkl language server
+"brew:pnpm" = "latest"                               # Fast, disk space efficient package manager
+"brew:pyright" = { os = "macos" }                    # Python static type checker
+"brew:python@3.14" = { env = "desktop" }             # Python runtime
+"brew:ripgrep" = "latest"                            # Search tool like grep
+"brew:ruby" = "latest"                               # Ruby runtime
+"brew:ruby-lsp" = { env = "desktop" }                # Ruby language server
+"brew:sd" = "latest"                                 # Intuitive find and replace CLI
+"brew:shfmt" = "latest"                              # Shell script formatter
+"brew:shellcheck" = "latest"                         # Shell script static analysis tool
+"brew:shellspec" = { os = "macos" }                  # BDD framework for shells
+"brew:skills" = { os = "macos" }                     # Open agent skills ecosystem
+"brew:sops" = "latest"                               # Secrets file encryption and management
+"brew:sqlite" = "latest"                             # SQLite command-line interface
+"brew:tealdeer" = "latest"                           # Fast tldr client
+"brew:television" = "latest"                         # General purpose fuzzy finder TUI
+"brew:tombi" = "latest"                              # TOML formatter, linter, and language server
+"brew:tree" = "latest"                               # Display directories as trees
+"brew:tree-sitter" = "latest"                        # Incremental parsing library
+"brew:tree-sitter-cli" = "latest"                    # Parser generator tool
+"brew:typescript-language-server" = { os = "macos" } # LSP for TypeScript
+"brew:usage" = "latest"                              # Tool for working with usage-spec CLIs
+"brew:hk" = "latest"                                 # Git hook manager (this repo's hooks)
+"brew:fnox" = "latest"                               # Secrets from providers into the environment
+"brew:wakatime-cli" = { env = "desktop" }            # WakaTime CLI
+"brew:zoxide" = "latest"                             # Smart directory navigation for the shell
+"brew:zsh" = { os = "macos" }                        # UNIX shell
+"brew:zsh-autosuggestions" = "latest"                # Predictive inline shell autosuggestions for zsh
+"brew:helix" = "latest"                              # Post-modern modal text editor
+"brew:zsh-patina" = "latest"                         # Blazingly fast Zsh syntax highlighter
+"brew:asmvik/formulae/yabai" = { os = "macos" }      # A tiling window manager for macos
+"brew:rust" = { env = "desktop" }                    # Rust toolchain
 # "brew:beautysh" = "latest"                             # Shell script beautifier
 # "brew:uv" = "latest"                                   # Fast Python package installer and resolver
 # "brew:Giammarco-Ferranti/deja/deja" = { os = "macos" } # Predictive inline shell autosuggestions for zsh
@@ -187,4 +188,3 @@
 "flatpak:com.rtosta.zapzap" = { env = "desktop" }
 "flatpak:com.bitwarden.desktop" = { env = "desktop" }
 "flatpak:org.videolan.VLC" = { env = "desktop" }
-
