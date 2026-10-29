@@ -74,11 +74,12 @@
 "brew:wakatime-cli" = { env = "desktop" }              # WakaTime CLI
 "brew:zoxide" = "latest"                               # Smart directory navigation for the shell
 "brew:zsh" = { os = "macos" }                          # UNIX shell
-"brew:Giammarco-Ferranti/deja/deja" = { os = "macos" } # Predictive inline shell autosuggestions for zsh
+"brew:zsh-autosuggestions" = "latest"                  # Predictive inline shell autosuggestions for zsh
 "brew:helix" = "latest"                                # Post-modern modal text editor
 "brew:zsh-patina" = "latest"                           # Blazingly fast Zsh syntax highlighter
 "brew:asmvik/formulae/yabai" = { os = "macos" }        # A tiling window manager for macos
 "brew:rust" = { env = "desktop" }                      # Rust toolchain
+# "brew:Giammarco-Ferranti/deja/deja" = { os = "macos" } # Predictive inline shell autosuggestions for zsh
 # "brew:bbrew" = { env = "desktop" }                     # TUI for managing Homebrew, Flatpak, and Mac App Store packages
 # "brew:cairo" = { env = "desktop" }                     # Vector graphics library with cross-device output support
 # "brew:gmp" = "latest"                                  # GNU multiple precision arithmetic library
