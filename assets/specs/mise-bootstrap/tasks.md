@@ -1672,14 +1672,14 @@ git commit -m "feat(distros): Build images with install, from the committed tree
 
 **Files:** none (verification); findings go under "Findings".
 
-- [ ] **Step 1: Build Debian**
+- [x] **Step 1: Build Debian**
 
 Run: `cd ~/Work/dots && mise run build --local --distro debian --tag local`
 Expected: the build succeeds. A formula that fails on Linux arm64, or builds from source for minutes: add
 `env = "desktop"` to its entry in `conf.d/packages.toml`, commit, record it under "Findings", and rebuild (the
 build uses the committed tree).
 
-- [ ] **Step 2: Check the image holds no decrypted secrets**
+- [x] **Step 2: Check the image holds no decrypted secrets**
 
 Run:
 ```bash
@@ -1688,7 +1688,7 @@ docker run --rm --entrypoint bash dots:debian-local -c 'head -c 40 ~/Work/dots/c
 Expected: the key file does not start with `-----BEGIN OPENSSH PRIVATE KEY-----` (it shows SOPS data), and
 `config/.env` has at least one `ENC[` value. If either fails, stop: the image must not be pushed.
 
-- [ ] **Step 3: Run `install` with the fixture archive, as root, then again (criterion 1)**
+- [x] **Step 3: Run `install` with the fixture archive, as root, then again (criterion 1)**
 
 Run:
 ```bash
@@ -1708,17 +1708,17 @@ docker run --rm --entrypoint bash dots:debian-local -c '~/Work/dots/install --dr
 ```
 Expected: one line only, `would: /home/vscode/.local/bin/mise bootstrap -E container --skip user --yes`.
 
-- [ ] **Step 4: Run the structure tests**
+- [x] **Step 4: Run the structure tests**
 
 Run: `cd ~/Work/dots && mise run test --image dots:debian-local --config distros/debian/container-structure-test.yml`
 Expected: all tests pass, including "SOPS-filtered files should stay encrypted in the image".
 
-- [ ] **Step 5: Repeat Steps 1–4 for the Ubuntu image**
+- [x] **Step 5: Repeat Steps 1–4 for the Ubuntu image**
 
 Use `--distro ubuntu`, `dots:ubuntu-local` and `distros/ubuntu/container-structure-test.yml`.
 Expected: the same results.
 
-- [ ] **Step 6: Commit findings**
+- [x] **Step 6: Commit findings**
 
 ```bash
 cd ~/Work/dots && git add config/mise/conf.d/packages.toml assets/specs/mise-bootstrap/tasks.md
@@ -1968,3 +1968,8 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 5 re-review: the root stage chowns the handed-over script and `cleanup` tolerates failures; before `exec` it removes every other root temp (secrets_tmp, sudoers tmp). The user stage trusts `DOTS_SECRETS` and `$0` only by exact mktemp names (`/tmp/dots-secrets.XXXXXX`, `/tmp/dots-install.XXXXXX`), a real folder owned by the user, and removes neither under `--dry-run`. The switch forwards `DOTS_CONTAINER=<1|0>` and appends `-E <profile>` unless given.
 - Task 5 re-review: deviation: `DOTS_CONTAINER` is not unset in a first stage, because it is a documented override (specs and users set it); the other three handoff variables are. `DOTS_INSTALL_EMIT_SCRIPT=<file>` (dry run only) writes the script `switch_to_user` would hand over, so a spec runs that exact code as the user stage. Now 27 tests (8 + 19).
 - Decision (2026-10-28): the real secrets archive is committed as `assets/dump.zip.enc` (random 50-character passphrase in the password manager), because the backup drive's exFAT (FSKit) driver corrupts new writes: today's `Work`, `config` and secrets archives on it read back with an AppleDouble header and fail `unzip -tq`; older files read fine. Moving the archive into gopass is the planned follow-up. The owner's dry run with it matched Task 5 Step 6's expectation.
+- Task 7: Debian & Ubuntu images built successfully from committed tree with zero decrypted secrets (`id_ed25519_github.key` starts with SOPS JSON, `.env` has 14 encrypted values).
+- Task 7: Dotfiles source paths in `conf.d/dotfiles.toml` for `~/.zshenv`, `~/.bashrc`, `~/.profile` fixed to point to `~/.local/share/dots/config/...`; `install` updated to run `mise bootstrap --force-dotfiles` so default base image shell rc files are overwritten.
+- Task 7: `RayanBO/todo` (cargo build from source requiring rust) moved to `config/mise/config.desktop.toml` so containers without desktop toolchains skip building it.
+- Task 7: `install` root-to-user switch updated to pass `PATH="$PATH"`, and `copy_secret_dir` prunes empty directories before copying so pre-existing directories like `~/.config/ssh` get their secrets copied and permissioned (700 / 600) cleanly.
+- Task 7: `container-structure-test` pinned in `mise.toml` tools (1.22.1); Debian & Ubuntu CST updated to match mise bootstrap layout (symlinked config folders, permission alignments, and non-existing files removed); all 37 tests PASS on both Debian and Ubuntu local images.
