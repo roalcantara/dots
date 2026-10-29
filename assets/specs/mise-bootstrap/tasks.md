@@ -79,18 +79,53 @@ Expected: about 64 lines (35 in `~/.config`, 5 in `~`, 24 in `~/.local/bin`).
 # Links into this repo (assets/specs/mise-bootstrap/design.md §4.2). `install` links ~/.local/share/dots and
 # ~/.config/mise itself, because mise needs them before it can read this file.
 [dotfiles]
-# Every top-level entry of config/ except: mise (install), hk (setup:hooks), files that are not config, the
-# package lists, and folders that are real on the Mac (app settings and keys restored from backup).
-"~/.config" = { source = "~/.local/share/dots/config", mode = "symlink-each", relative = true, exclude = [
-  ".gitignore", ".vscode", "mise", "hk", "apt", "flatpak", "snap", "flox", "glow", "opencode", "raycast", "ssh",
-] }
+# One link per top-level entry of config/ (mode symlink: the whole folder or file). symlink-each would link
+# every file recursively. Not linked: mise (install), hk (setup:hooks), non-config files, the package lists,
+# and folders that are real on the Mac (app settings and keys restored from backup).
+"~/.config/.env" = { source = "~/.local/share/dots/config/.env", relative = true }
+"~/.config/.markdownlint.yml" = { source = "~/.local/share/dots/config/.markdownlint.yml", relative = true }
+"~/.config/.profile" = { source = "~/.local/share/dots/config/.profile", relative = true }
+"~/.config/age" = { source = "~/.local/share/dots/config/age", relative = true }
+"~/.config/amethyst" = { source = "~/.local/share/dots/config/amethyst", relative = true }
+"~/.config/atlassian" = { source = "~/.local/share/dots/config/atlassian", relative = true }
+"~/.config/bash" = { source = "~/.local/share/dots/config/bash", relative = true }
+"~/.config/bat" = { source = "~/.local/share/dots/config/bat", relative = true }
+"~/.config/bin" = { source = "~/.local/share/dots/config/bin", relative = true }
+"~/.config/claude" = { source = "~/.local/share/dots/config/claude", relative = true }
+"~/.config/cog" = { source = "~/.local/share/dots/config/cog", relative = true }
+"~/.config/cursor" = { source = "~/.local/share/dots/config/cursor", relative = true }
+"~/.config/delta" = { source = "~/.local/share/dots/config/delta", relative = true }
+"~/.config/dinky" = { source = "~/.local/share/dots/config/dinky", relative = true }
+"~/.config/fabric" = { source = "~/.local/share/dots/config/fabric", relative = true }
+"~/.config/ghostty" = { source = "~/.local/share/dots/config/ghostty", relative = true }
+"~/.config/git" = { source = "~/.local/share/dots/config/git", relative = true }
+"~/.config/github" = { source = "~/.local/share/dots/config/github", relative = true }
+"~/.config/glide" = { source = "~/.local/share/dots/config/glide", relative = true }
+"~/.config/helix" = { source = "~/.local/share/dots/config/helix", relative = true }
+"~/.config/homebrew" = { source = "~/.local/share/dots/config/homebrew", relative = true }
+"~/.config/kodexb" = { source = "~/.local/share/dots/config/kodexb", relative = true }
+"~/.config/npm" = { source = "~/.local/share/dots/config/npm", relative = true }
+"~/.config/nvim" = { source = "~/.local/share/dots/config/nvim", relative = true }
+"~/.config/ranma" = { source = "~/.local/share/dots/config/ranma", relative = true }
+"~/.config/rift" = { source = "~/.local/share/dots/config/rift", relative = true }
+"~/.config/ripgrep" = { source = "~/.local/share/dots/config/ripgrep", relative = true }
+"~/.config/skhd" = { source = "~/.local/share/dots/config/skhd", relative = true }
+"~/.config/snippets" = { source = "~/.local/share/dots/config/snippets", relative = true }
+"~/.config/sops" = { source = "~/.local/share/dots/config/sops", relative = true }
+"~/.config/starship" = { source = "~/.local/share/dots/config/starship", relative = true }
+"~/.config/television" = { source = "~/.local/share/dots/config/television", relative = true }
+"~/.config/tombi" = { source = "~/.local/share/dots/config/tombi", relative = true }
+"~/.config/vscode" = { source = "~/.local/share/dots/config/vscode", relative = true }
+"~/.config/yabai" = { source = "~/.local/share/dots/config/yabai", relative = true }
+"~/.config/zsh" = { source = "~/.local/share/dots/config/zsh", relative = true }
+"~/.config/zsh-patina" = { source = "~/.local/share/dots/config/zsh-patina", relative = true }
 "~/.config/kb" = { source = "~/.local/share/dots/config/kodexb", relative = true }
 "~/.zshenv" = { source = "~/.config/zsh/.zshenv", relative = true }
 "~/.bashrc" = { source = "~/.config/bash/bashrc", relative = true }
 "~/.profile" = { source = "~/.config/.profile", relative = true }
 "~/.ssh" = { source = "~/.config/ssh", relative = true }
 "~/.gnupg" = { source = "~/.config/gnupg", relative = true }
-# Executables only; this Mac's links are absolute, so relative is left off.
+# Links each executable file of config/bin; this Mac's links are absolute, so relative is left off.
 "~/.local/bin" = { source = "~/.local/share/dots/config/bin", mode = "symlink-each", exclude = [
   ".editorconfig", "HANDOFF-USAGE-MIGRATION.md", "LICENSE", "README.md", "mise.lock", "mise.toml", "src",
 ] }
@@ -1478,5 +1513,5 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 1: `[dotfiles]` in a `conf.d` file loads (mise 2026.10.21): `mise dot status` lists all 8 entries from `~/.config/mise/conf.d/dotfiles.toml`.
 - Task 1: `~` expands in `source`; no missing-source error, so the `{{env.HOME}}` fallback is not needed.
 - Task 1: the 6 single-link entries (`kb`, `.zshenv`, `.bashrc`, `.profile`, `.ssh`, `.gnupg`) report `applied`; `~/.config` and `~/.local/bin` report `differs`.
-- Task 1: SURPRISE: `symlink-each` links every FILE recursively (1394 files under config/, 20 under config/bin), not each top-level entry; this Mac links whole folders (`~/.config/age -> ../.local/share/dots/config/age`), so apply would replace them with real directories of file links and remove stale links (`~/.config/mise`, `raycast/scripts`, `tealdeer`, `~/.local/bin/keyring|osx|xc-*|yw`). The `~/.config` entry needs another design (one `symlink` entry per top-level folder). Not applied; disk unchanged.
+- Task 1: OUTCOME: `symlink-each` links every file recursively (1394 under config/), so `~/.config` uses one `symlink` entry per top-level entry of config/; `symlink-each` stays only for `~/.local/bin`. Nothing applied; disk unchanged.
 - Task 1: `/tmp/links-before.txt` has 77 links, not about 64. Link form mise would write was not observable without apply.

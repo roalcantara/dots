@@ -92,7 +92,7 @@ Shared by both systems, mirroring this Mac. `install` creates `~/.local/share/do
 
 | Link | Target | Count |
 | --- | --- | --- |
-| `~/.config/<name>` | each top-level entry of `~/.local/share/dots/config` (one `symlink-each` entry) | All but the excluded: `mise` (`install`), `hk` (`setup:hooks`), `.gitignore`, `.vscode`, the package lists (`apt`, `flatpak`, `snap`, `flox`), and `glow`, `opencode`, `raycast`, `ssh`, which are real folders on this Mac (settings and keys restored from backup). This matches the containers, which linked all of `~/.config`, and links 12 entries this Mac does not link yet (`npm`, `claude`, `delta`, …) |
+| `~/.config/<name>` | each top-level entry of `~/.local/share/dots/config` (one `symlink` entry each; `symlink-each` would link every file recursively) | All but the excluded: `mise` (`install`), `hk` (`setup:hooks`), `.gitignore`, `.vscode`, the package lists (`apt`, `flatpak`, `snap`, `flox`), and `glow`, `opencode`, `raycast`, `ssh`, which are real folders on this Mac (settings and keys restored from backup). This matches the containers, which linked all of `~/.config`, and links 12 entries this Mac does not link yet (`npm`, `claude`, `delta`, …) |
 | `~/.config/kb` | `~/.local/share/dots/config/kodexb` | 1 alias; the broken `bunfig.toml` and `tealdeer` links are not recreated |
 | `~/.zshenv`, `~/.bashrc`, `~/.profile` | their files under `~/.config` | 3 |
 | `~/.ssh`, `~/.gnupg` | `~/.config/ssh`, `~/.config/gnupg` (copied by `install --secrets`) | 2 |
