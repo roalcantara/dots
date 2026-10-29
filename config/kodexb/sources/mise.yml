@@ -139,3 +139,148 @@ commands:
             Run `mise bootstrap packages apply` to install the declared build dependencies.
           Ordinary mise doctor continues to diagnose mise itself; it does not run these checks. Checks do not run automatically when entering a directory or running a task. There are no implicit project checks: declare the requirements you need.
           ```
+
+  mise dot status:
+    desc: Show the state of your dotfiles and their history
+    tags: [mise]
+  mise dot add ~/.zshrc:
+    desc: Start managing ~/.zshrc from your dotfiles directory
+    tags: [mise]
+  mise dot track ~/.config/nvim:
+    desc: Save the history of a directory in place
+    tags: [mise]
+  mise dot undo:
+    desc: Revert the last change to the dotfiles managed by mise
+    tags: [mise]
+  mise dot save:
+    desc: Save the current state of the dotfiles managed by mise
+    tags: [mise]
+  mise dot apply:
+    desc: Deploy every [dotfiles] entry
+    tags: [mise]
+  mise dot sync:
+    desc: Sync the dotfiles managed by mise with the remote repository
+    tags: [mise]
+  mise dot history:
+    desc: List saved checkpoints
+    tags: [mise]
+  mise dot origin set https://github.com/roalcantara/dots-history.git --sync manual -E desktop:
+    desc: Set the origin for the dotfiles repository and sync manually for the desktop environment
+    tags: [mise]
+  mise dot save -E desktop && mise dot sync -E desktop:
+    desc: Save and sync the dotfiles for the desktop environment
+    tags: [mise]
+
+  mise bootstrap [--dry-run]:
+    desc: Set up this machine from your mise config; Apply every configured part
+    tags: [mise]
+    links: [https://mise.jdx.dev/bootstrap.html#how-it-runs]
+    notes:
+      - md: | #markdown
+          Set up this machine from your mise config
+
+          Applies each part your config declares, in this order.
+          Each step names its parts as --only and --skip accept them,
+          followed by any condition.
+
+          1. accounts, then plugins (package manager plugins)
+          2. files with phase = "pre-packages", then built-in packages
+          3. The remaining files, then services, firewall, and compose
+          4. repos, then dotfiles
+          5. mise-shell-activate, macos-defaults, and macos-launchd-agents
+          6. linux-systemd-units, then user (the login shell)
+          7. tools
+          8. Plugin packages, then user services with requires_tools = true
+          9. task (the bootstrap task, if defined), then final-hook
+
+          Hooks run before and after packages, repos, dotfiles, macOS defaults, the
+          login shell, and tools.
+
+          The post-packages hook runs right after built-in packages, or after
+          plugin packages when any are configured.
+
+          Parts that already match the config are left alone,
+          but hooks and the bootstrap task run every time,
+          so make them safe to repeat.
+
+          Checking dotfile state can render templates,
+          which may run exec().
+
+          Preview with `--dry-run`.
+
+          To inspect without applying,
+          use `mise bootstrap status` for current state
+          or `mise bootstrap plan` for resource-level changes.
+  mise bootstrap --only dotfiles,tools:
+    desc: Apply everything except tools and the bootstrap task
+    tags: [mise]
+  mise bootstrap --force-dotfiles:
+    desc: Replace files that conflict with whole-file dotfile entries
+    tags: [mise]
+  mise bootstrap --from git@github.com:example/workstation.git:
+    desc: Clone a bootstrap project and apply it
+    tags: [mise]
+  mise -E work bootstrap --from git@github.com:example/workstation.git:
+    desc: Clone a bootstrap work project (mise.work.toml) and apply it
+    tags: [mise]
+  mise bootstrap --from https://github.com/example/dotfiles.git --from-dir ~/.dotfiles --config-dir .config/mise:
+    desc: Clone a dotfiles repository and link ~/.config/mise to its .config/mise
+    tags: [mise]
+  mise bootstrap packages import --manager brew:
+    desc: Import packages using the Homebrew package manager
+    tags: [mise]
+  mise bootstrap --adopt example/mise-config:
+    desc: Clone global config into ~/.config/mise, then apply it
+    tags: [mise]
+  mise bootstrap --adopt example/setup --replace-history --yes:
+    desc: Use a setup repository's dotfile history instead of this machine's
+    tags: [mise]
+  mise bootstrap --update:
+    desc: Refresh package metadata and fast-forward repositories first
+    tags: [mise]
+  mise bootstrap -E desktop:
+    desc: Bootstrap the desktop environment with the specified profile
+    tags: [mise]
+  mise bootstrap --adopt:
+    desc: Adopt the current environment into the mise bootstrap process
+    tags: [mise]
+  mise bootstrap --adopt dots-history:
+    desc: Adopt the current environment into the mise bootstrap process for the dots-history profile
+    tags: [mise]
+  mise bootstrap packages status:
+    desc: Show the status of the bootstrap packages
+    tags: [mise]
+  mise bootstrap status:
+    desc: Show the status of the bootstrap process
+    tags: [mise]
+  mise bootstrap plan:
+    desc: Show the planned changes for the bootstrap process
+    tags: [mise]
+  mise bootstrap -E container --skip user:
+    desc: Bootstrap the container environment while skipping the user profile
+    tags: [mise]
+  mise bootstrap packages prune --dry-run:
+    desc: Show which packages would be removed without actually removing them
+    tags: [mise]
+
+  mise run up:
+    desc: Upgrade every package, then remove the ones no config declares
+    tags: [mise, dots]
+  mise run brew:info:
+    desc: Show information about Homebrew packages
+    tags: [mise, dots]
+  mise run brew:info --cask:
+    desc: Show information about Homebrew cask packages
+    tags: [mise, dots]
+  mise run brew:search:
+    desc: Search for Homebrew packages
+    tags: [mise, dots]
+  mise run brew:add:
+    desc: Install Homebrew packages
+    tags: [mise, dots]
+  mise run brew:add --cask:
+    desc: Install Homebrew cask packages
+    tags: [mise, dots]
+  mise run brew:rm:
+    desc: Uninstall Homebrew packages
+    tags: [mise, dots]

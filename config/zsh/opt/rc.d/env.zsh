@@ -186,3 +186,9 @@ env::editor() {
   export GIT_EDITOR=${GIT_EDITOR:-"$EDITOR -c 'startinsert'"}
   export LAUNCH_EDITOR=${LAUNCH_EDITOR:-$EDITOR}
 }
+
+env::core                    # shell identity
+env::options                 # shell options
+env::paths                   # path, fpath, cdpath, manpath
+env::homebrew                # brew shellenv and prefixes
+env::editor                  # EDITOR, VISUAL, GIT_EDITOR, vim aliases

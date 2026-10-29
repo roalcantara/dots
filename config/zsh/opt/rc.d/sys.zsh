@@ -37,23 +37,6 @@ sys::fix_xdg_runtime_dir() {
   return 0
 }
 
-#ABOUT Finish a zprof/xtrace profiling run. No-op unless z_prof or z_trace is set.
-sys::profiling() {
-  # profilling
-  if [[ -n "$z_prof" ]]; then
-    if [[ -n "$z_trace" ]]; then
-      unsetopt XTRACE
-      exec 2>&3 3>&-
-      zprof >$ZDOTDIR/tmp/benchmark.$$.prof.log
-    else
-      zprof
-    fi
-    zmodload -u zsh/zprof
-  elif [[ -n "$z_trace" ]]; then
-    unsetopt XTRACE
-  fi
-}
-
 #ABOUT Measure shell startup and interactive latency. Survives sys::purge.
 #USAGE sys::bench [--startup|--latency|--modules]   (default: all available)
 sys::bench() {
@@ -111,17 +94,5 @@ sys::bench() {
   fi
 }
 
-#ABOUT Drop the one-shot setup functions once startup is complete.
-#ORDER Last. Keeps _has_command, mise-refresh and sys::bench, which stay useful interactively.
-sys::purge() {
-  local -a keep=(sys::bench)
-  local f
-  for f in ${(k)functions[(I)(env|theme|term|zim|sys)::*]}; do
-    (( ${keep[(Ie)$f]} )) && continue
-    unfunction $f 2>/dev/null
-  done
-  # This unfunctions sys::purge itself, which is safe while it runs. The
-  # explicit `return 0` matters: .zshrc's final status becomes the shell's,
-  # so a failing last command makes `zsh -ic cmd` exit non-zero.
-  return 0
-}
+sys::dotenv                  # secrets from ~/.config/.env
+sys::fix_xdg_runtime_dir     # private XDG_RUNTIME_DIR
