@@ -52,14 +52,18 @@ mise run -C "$dots" setup:hooks || warn "setup:hooks"
 if command -v npm >/dev/null && ! npm ls -g neovim >/dev/null 2>&1; then
   npm install -g neovim || warn "npm neovim"
 fi
-if command -v python3 >/dev/null && [ ! -x "$nvim_cfg/.venv/bin/python" ]; then
-  { python3 -m venv "$nvim_cfg/.venv" && "$nvim_cfg/.venv/bin/pip" install -q pynvim; } || warn "pynvim venv"
+if command -v python3 >/dev/null && ! "$nvim_cfg/.venv/bin/python" -c 'import pynvim' 2>/dev/null; then
+  { { [ -x "$nvim_cfg/.venv/bin/python" ] || python3 -m venv "$nvim_cfg/.venv"; } &&
+    "$nvim_cfg/.venv/bin/pip" install -q pynvim; } || warn "pynvim venv"
 fi
 if command -v gem >/dev/null && ! gem list -i neovim >/dev/null 2>&1; then
   gem install neovim || warn "gem neovim"
 fi
-# restore (not sync) installs the lockfile's versions, so a rerun changes nothing.
+# restore (not sync) installs the lockfile's versions, so a rerun changes nothing; bounded so a network stall
+# cannot hang an unattended run.
 if command -v nvim >/dev/null; then
-  nvim --headless "+Lazy! restore" +qa || warn "nvim Lazy restore"
+  limit=""
+  if command -v timeout >/dev/null; then limit="timeout 600"; elif command -v gtimeout >/dev/null; then limit="gtimeout 600"; fi
+  $limit nvim --headless "+Lazy! restore" +qa </dev/null || warn "nvim Lazy restore"
 fi
 '''
