@@ -163,7 +163,7 @@
 "flatpak-user:io.github.shiftey.Desktop" = "latest"
 "flatpak-user:org.chromium.Chromium" = "latest"
 "flatpak-user:com.brave.Browser" = "latest"
-"flatpak-user:com.discordapp.Discord" = "latest"
+"flatpak-user:com.discordapp.Discord" = { os = "linux/x64" } # Flathub builds it for x86_64 only
 "flatpak-user:com.rtosta.zapzap" = "latest"
 "flatpak-user:com.bitwarden.desktop" = "latest"
 "flatpak-user:org.videolan.VLC" = "latest"
