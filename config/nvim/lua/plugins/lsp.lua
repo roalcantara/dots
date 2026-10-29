@@ -7,7 +7,6 @@ return {
       local has = require('core/vi/paths').has
       local tools = {
         'editorconfig-checker',
-        'beautysh',
         'shellcheck',
         'shfmt',
         'stylua',
