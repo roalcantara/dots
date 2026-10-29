@@ -34,8 +34,12 @@ if command -v age-keygen >/dev/null 2>&1 && [ -s "$KEY" ]; then
     printf '[history.encryption]\nrecipients = ["%s"]\n' "$pub" > "$DOTS/config/mise/config.local.toml"
   fi
 fi
-mkdir -p "$HOME/.config/mise"
-test -e "$HOME/.config/mise/age.txt" || (umask 077 && cp "$KEY" "$HOME/.config/mise/age.txt" 2>/dev/null || true)
+# The first adopt runs before ~/.config/mise links into the repo, so mise finds the key at its default path.
+# Only into a real folder: through the link it would land in the public checkout. The folder is removed below.
+if [ ! -L "$HOME/.config/mise" ]; then
+  mkdir -p "$HOME/.config/mise"
+  [ -e "$HOME/.config/mise/age.txt" ] || (umask 077 && cp "$KEY" "$HOME/.config/mise/age.txt")
+fi
 
 case "$HISTORY" in
   https://github.com/*)
@@ -45,15 +49,16 @@ case "$HISTORY" in
     ;;
 esac
 
-BOOTSTRAP_ARGS=("-E" "$PROFILE" "--force-dotfiles" "--yes")
-[ "$PROFILE" = "container" ] && BOOTSTRAP_ARGS+=("--skip" "user")
+BOOTSTRAP_ARGS=("-E" "$PROFILE" "--yes")
+# Containers only: replace the base image's .bashrc/.profile. On a host, --force-dotfiles would replace a real
+# ~/.ssh or ~/.gnupg folder with a link and delete the keys in it.
+if [ "$PROFILE" = "container" ]; then BOOTSTRAP_ARGS+=("--force-dotfiles" "--skip" "user"); fi
 
 mise bootstrap --adopt "$HISTORY" "${BOOTSTRAP_ARGS[@]}"
 ln -sfn ../.local/share/dots/config/age "$HOME/.config/age"
 if [ ! -L "$HOME/.config/mise" ]; then
   test -f "$HOME/.config/mise/config.local.toml" && cat "$HOME/.config/mise/config.local.toml" >> "$DOTS/config/mise/config.local.toml"
-  test -f "$HOME/.config/mise/age.txt" && cp "$HOME/.config/mise/age.txt" "$DOTS/config/mise/age.txt"
-  rm -rf "$HOME/.config/mise"
+  rm -rf "$HOME/.config/mise" # with age.txt: from here on the key is read from ~/.config/age/keys.txt
 fi
 ln -sfn ../.local/share/dots/config/mise "$HOME/.config/mise"
 mise bootstrap "${BOOTSTRAP_ARGS[@]}"
