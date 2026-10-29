@@ -45,7 +45,10 @@ case "$HISTORY" in
     ;;
 esac
 
-mise bootstrap --adopt "$HISTORY" -E "$PROFILE" --yes
+BOOTSTRAP_ARGS=("-E" "$PROFILE" "--force-dotfiles" "--yes")
+[ "$PROFILE" = "container" ] && BOOTSTRAP_ARGS+=("--skip" "user")
+
+mise bootstrap --adopt "$HISTORY" "${BOOTSTRAP_ARGS[@]}"
 ln -sfn ../.local/share/dots/config/age "$HOME/.config/age"
 if [ ! -L "$HOME/.config/mise" ]; then
   test -f "$HOME/.config/mise/config.local.toml" && cat "$HOME/.config/mise/config.local.toml" >> "$DOTS/config/mise/config.local.toml"
@@ -53,6 +56,4 @@ if [ ! -L "$HOME/.config/mise" ]; then
   rm -rf "$HOME/.config/mise"
 fi
 ln -sfn ../.local/share/dots/config/mise "$HOME/.config/mise"
-BOOTSTRAP_ARGS=("-E" "$PROFILE" "--force-dotfiles" "--yes")
-[ "$PROFILE" = "container" ] && BOOTSTRAP_ARGS+=("--skip" "user")
 mise bootstrap "${BOOTSTRAP_ARGS[@]}"
