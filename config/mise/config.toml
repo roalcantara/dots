@@ -2,6 +2,9 @@
 # https://mise.jdx.dev/configuration.html#global-config-config-mise-config-toml
 
 [settings]
+# The SOPS age key is the single root secret: it decrypts this repo's SOPS files and the mise history.
+age.key_file = "~/.config/age/keys.txt"
+
 # https://mise.jdx.dev/configuration/settings.html
 # tools can read the versions files used by other version managers
 
@@ -100,6 +103,24 @@ rustup_home = "~/.local/share/rustup"
 
 [settings.github]
 credential_command = "gh auth token"
+
+[history.encryption]
+recipients = ["age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4"]
+
+# Secrets that are not in this repo, synced encrypted to the private origin (design.md §10).
+[dotfiles]
+"~/.config/ssh" = { mode = "track", encrypt = true, exclude = [
+  "S.*",
+  "s.*",
+  "agent",
+] }
+"~/.config/gnupg" = { mode = "track", encrypt = true, exclude = [
+  "S.*",
+  ".#lk*",
+  "random_seed",
+  "*~",
+] }
+"~/.config/gh/hosts.yml" = { mode = "track", encrypt = true }
 
 [tools]
 usage = "latest"

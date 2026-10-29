@@ -19,7 +19,7 @@ Docker. Throwaway keys only in tests. Signed Conventional Commits (sentence case
 
 **Files:** Modify `config/mise/config.desktop.toml`, `config/mise/conf.d/dotfiles.toml` (comments only).
 
-- [ ] **Step 1:** Append to `config/mise/config.desktop.toml` (recipient = the contents of
+- [x] **Step 1:** Append to `config/mise/config.desktop.toml` (recipient = the contents of
   `config/age/recipient.txt`):
 ```toml
 # The SOPS age key is the single root secret: it decrypts this repo's SOPS files and the mise history.
@@ -35,11 +35,11 @@ recipients = ["<contents of config/age/recipient.txt>"]
 "~/.config/gnupg" = { mode = "track", encrypt = true, exclude = ["S.*", ".#lk*", "random_seed", "*~"] }
 "~/.config/gh/hosts.yml" = { mode = "track", encrypt = true }
 ```
-- [ ] **Step 2:** Check read-only on this Mac: `cd ~ && mise dot status -E desktop 2>&1 | tail -20`. Expected: the
+- [x] **Step 2:** Check read-only on this Mac: `cd ~ && mise dot status -E desktop 2>&1 | tail -20`. Expected: the
   three track entries are listed (not yet saved); no parse error. If `[settings]`/`[history]` are rejected in an
   environment file, move those two tables to `config/mise/config.toml` (containers then know the recipient but
   have no track entries, which is fine) and record it.
-- [ ] **Step 3:** Commit (`feat(mise): Track ssh, gnupg and gh secrets encrypted`).
+- [x] **Step 3:** Commit (`feat(mise): Track ssh, gnupg and gh secrets encrypted`).
 - [ ] **Step 4 (owner):** connect the origin and push the encrypted history:
 ```bash
 mise dot origin set https://github.com/roalcantara/dots-history.git --sync manual -E desktop
@@ -166,4 +166,5 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
   `config/flatpak`, `config/snap` and their `dotfiles.toml` exclusions.
 
 ## Findings
+- N1: mise rejects [dotfiles] tracking in environment files ("tracking is enrolled from the global configuration only"); moved [settings] age.key_file, [history.encryption], and [dotfiles] tracking to config/mise/config.toml.
 
