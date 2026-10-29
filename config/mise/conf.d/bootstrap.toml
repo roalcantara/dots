@@ -1,0 +1,57 @@
+# Machine setup applied by `mise bootstrap` (assets/specs/mise-bootstrap/design.md §4.2–4.3).
+
+# Folders the shell config and tools expect, plus the XDG user folders the images' structure tests check.
+[bootstrap.directories."~/.local/bin"]
+[bootstrap.directories."~/.local/state/zim"]
+[bootstrap.directories."~/.local/share/zsh"]
+[bootstrap.directories."~/.local/share/npm"]
+[bootstrap.directories."~/.local/share/gems"]
+[bootstrap.directories."~/.cache/zsh"]
+[bootstrap.directories."~/.cache/npm"]
+[bootstrap.directories."~/.cache/mise"]
+[bootstrap.directories."~/Desktop"]
+[bootstrap.directories."~/Documents"]
+[bootstrap.directories."~/Downloads"]
+[bootstrap.directories."~/Movies"]
+[bootstrap.directories."~/Music"]
+[bootstrap.directories."~/Pictures"]
+[bootstrap.directories."~/Projects"]
+[bootstrap.directories."~/Work"]
+
+# Real folders the ~/.ssh and ~/.gnupg links point to; install --secrets fills them.
+[bootstrap.directories."~/.config/ssh"]
+mode = "0700"
+
+[bootstrap.directories."~/.config/gnupg"]
+mode = "0700"
+
+[bootstrap.user]
+login_shell = "zsh"
+
+# Runs last on every `mise bootstrap`, so every step checks before acting and only warns on failure.
+[tasks.bootstrap]
+description = "Repo git filters and hooks, Neovim providers and plugins"
+run = '''
+#!/usr/bin/env bash
+dots="$HOME/.local/share/dots"
+nvim_cfg="$HOME/.config/nvim"
+warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
+
+mise run -C "$dots" setup:git:filters || warn "setup:git:filters"
+mise run -C "$dots" setup:hooks || warn "setup:hooks"
+
+[ -d "$nvim_cfg" ] || exit 0
+if command -v npm >/dev/null && ! npm ls -g neovim >/dev/null 2>&1; then
+  npm install -g neovim || warn "npm neovim"
+fi
+if command -v python3 >/dev/null && [ ! -x "$nvim_cfg/.venv/bin/python" ]; then
+  { python3 -m venv "$nvim_cfg/.venv" && "$nvim_cfg/.venv/bin/pip" install -q pynvim; } || warn "pynvim venv"
+fi
+if command -v gem >/dev/null && ! gem list -i neovim >/dev/null 2>&1; then
+  gem install neovim || warn "gem neovim"
+fi
+# restore (not sync) installs the lockfile's versions, so a rerun changes nothing.
+if command -v nvim >/dev/null; then
+  nvim --headless "+Lazy! restore" +qa || warn "nvim Lazy restore"
+fi
+'''

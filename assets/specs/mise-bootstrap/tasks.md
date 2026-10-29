@@ -189,7 +189,7 @@ git commit -m "feat(mise): Declare dotfile links for mise bootstrap"
 **Files:**
 - Create: `config/mise/conf.d/bootstrap.toml`
 
-- [ ] **Step 1: Write the config**
+- [x] **Step 1: Write the config**
 
 ```toml
 # Machine setup applied by `mise bootstrap` (assets/specs/mise-bootstrap/design.md §4.2–4.3).
@@ -211,6 +211,13 @@ git commit -m "feat(mise): Declare dotfile links for mise bootstrap"
 [bootstrap.directories."~/Pictures"]
 [bootstrap.directories."~/Projects"]
 [bootstrap.directories."~/Work"]
+
+# Real folders the ~/.ssh and ~/.gnupg links point to; install --secrets fills them.
+[bootstrap.directories."~/.config/ssh"]
+mode = "0700"
+
+[bootstrap.directories."~/.config/gnupg"]
+mode = "0700"
 
 [bootstrap.user]
 login_shell = "zsh"
@@ -244,17 +251,17 @@ fi
 '''
 ```
 
-- [ ] **Step 2: Check it read-only**
+- [x] **Step 2: Check it read-only**
 
 Run:
 ```bash
 cd ~ && mise bootstrap status 2>&1 | tee /tmp/bootstrap-status.txt | grep -iE 'director|user|login|task' | head -30
 ```
-Expected: the 16 directories show as present; the login shell shows as matching (`/bin/zsh`); no parse error.
+Expected: the 18 directories show as present; the login shell shows as matching (`/bin/zsh`); no parse error.
 If an unknown key is reported, fix its name from `mise bootstrap files --help` / `mise bootstrap user --help`
 and rerun.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 cd ~/Work/dots && git add config/mise/conf.d/bootstrap.toml
@@ -1529,3 +1536,6 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 1: 5 missing (`claude`, `dinky`, `github`, `npm`, `tombi`): this Mac never linked them.
 - Task 1: `~/.config/cog` differs only in form (absolute link to `~/Work/dots/config/cog`, relative requested; same target).
 - Task 1: `~/.local/bin` differs (17 linked, 2 missing); apply would remove 6 stale links (`keyring`, `osx`, `xc-foo`, `xc-skills`, `xc-usage`, `yw`), all broken links to scripts no longer in `config/bin`, so the removal is correct cleanup.
+- Task 2: empty `[bootstrap.directories."..."]` tables parse and default to mode 0755; `status` shows 8 as `update` (7 macOS folders at 0700: `~/Desktop`, `Documents`, `Downloads`, `Movies`, `Music`, `Pictures`, `~/.cache/zsh`) and `~/Projects` as `create`. Apply would loosen those to 0755; decide whether to pin `mode = "0700"` on them.
+- Task 2: all 18 directories parse (`~/.config/ssh` and `gnupg` already 0700, unchanged); `bootstrap` task is listed by `mise tasks ls`.
+- Task 2: `login_shell = "zsh"` resolves via PATH to `/opt/homebrew/bin/zsh`; this Mac's shell is `/usr/local/bin/zsh`, so status says `differs` and a dry run would `chsh` (and append to `/etc/shells` with sudo). Not the `/bin/zsh` the plan expected.
