@@ -127,7 +127,13 @@ Expected: about 64 lines (35 in `~/.config`, 5 in `~`, 24 in `~/.local/bin`).
 "~/.gnupg" = { source = "~/.config/gnupg", relative = true }
 # Links each executable file of config/bin; this Mac's links are absolute, so relative is left off.
 "~/.local/bin" = { source = "~/.local/share/dots/config/bin", mode = "symlink-each", exclude = [
-  ".editorconfig", "HANDOFF-USAGE-MIGRATION.md", "LICENSE", "README.md", "mise.lock", "mise.toml", "src",
+  ".editorconfig",
+  "HANDOFF-USAGE-MIGRATION.md",
+  "LICENSE",
+  "README.md",
+  "mise.lock",
+  "mise.toml",
+  "src",
 ] }
 ```
 
@@ -1510,8 +1516,11 @@ cd ~/Work/dots && git add config/mise/conf.d/dotfiles.toml && git commit -m "ref
 Record here what each task's checks show (one line each): conf.d loading, `~` in `source`, link forms, the
 macOS-only formula count, installed-but-undeclared formulae and the owner's decision, Homebrew services, Linux
 formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, the Ubuntu VM run.
-- Task 1: `[dotfiles]` in a `conf.d` file loads (mise 2026.10.21): `mise dot status` lists all 8 entries from `~/.config/mise/conf.d/dotfiles.toml`.
-- Task 1: `~` expands in `source`; no missing-source error, so the `{{env.HOME}}` fallback is not needed.
-- Task 1: the 6 single-link entries (`kb`, `.zshenv`, `.bashrc`, `.profile`, `.ssh`, `.gnupg`) report `applied`; `~/.config` and `~/.local/bin` report `differs`.
-- Task 1: OUTCOME: `symlink-each` links every file recursively (1394 under config/), so `~/.config` uses one `symlink` entry per top-level entry of config/; `symlink-each` stays only for `~/.local/bin`. Nothing applied; disk unchanged.
 - Task 1: `/tmp/links-before.txt` has 77 links, not about 64. Link form mise would write was not observable without apply.
+- Task 1: `[dotfiles]` in a `conf.d` file loads (mise 2026.10.21); multi-line inline tables parse.
+- Task 1: `~` expands in `source` (no missing-source error), so the `{{env.HOME}}` fallback is not needed.
+- Task 1: `symlink-each` links every file recursively (1394 under config/), so `~/.config` has one `symlink` entry per config/ entry; it stays only for `~/.local/bin`.
+- Task 1: the file has 44 entries (37 `~/.config/<name>`, `~/.config/kb`, 5 `$HOME` links, `~/.local/bin`); `mise dot status` reports 36 up to date and 8 not.
+- Task 1: 6 missing (`claude`, `delta`, `dinky`, `github`, `npm`, `tombi`): this Mac never linked them.
+- Task 1: `~/.config/cog` differs only in form (absolute link to `~/Work/dots/config/cog`, relative requested; same target).
+- Task 1: `~/.local/bin` differs (17 linked, 3 missing); apply would remove 6 stale links (`keyring`, `osx`, `xc-foo`, `xc-skills`, `xc-usage`, `yw`), all broken links to scripts no longer in `config/bin`, so the removal is correct cleanup.
