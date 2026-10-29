@@ -58,8 +58,8 @@ secrets, and rehearsing the Linux desktop profile (its first run is on real hard
 
 | Profile | Selected by | Used by | Effect |
 | --- | --- | --- | --- |
-| default | — | the new Mac | Every entry for the current OS |
-| `desktop` | `-E desktop` (`install` passes it through) | a Linux desktop | Also applies entries marked `env = "desktop"` |
+| default | — | `mise bootstrap` run without `install` | Every entry without `env` |
+| `desktop` | `install` on hosts (macOS, Linux desktop) | the new Mac, a Linux desktop | Also applies entries marked `env = "desktop"` (workstation-only: GUI apps, heavy toolchains) |
 | `container` | `install` detects a container | the Debian and Ubuntu images, devcontainers | Applies no `env = "desktop"` entries; `install` also passes `--skip user` (the login shell) |
 
 Entries carry `os = "macos"` or `os = "linux"` only where needed: mise skips entries whose manager is
@@ -78,7 +78,7 @@ missing (no casks on Linux, no flatpak in containers).
 | flatpak | The 10 entries of `config/flatpak/requirements.txt` as `flatpak-user:` | none needed; skipped where flatpak is missing. `install -E desktop` installs flatpak and adds the Flathub remote, which mise never does |
 | Docker Engine | `apt:docker.io` (replaces the old Docker Desktop repo step, which pointed at a repository Docker does not publish Desktop through) | `env = "desktop"` |
 | Ollama | `brew:ollama` (replaces `curl \| sh`) | — |
-| Desktop-only CLI tools | Formulae only useful on a desktop | `env = "desktop"`, added when a container build shows they are slow or useless there |
+| Workstation-only formulae | Heavy toolchains, GUI-ish tools | `env = "desktop"`, so the images skip them |
 
 The Brewfile has no `mas` lines, so there are no App Store entries. The snap list (`snapcraft`, `ghostty`) is
 dropped: neither is needed in images, and Ghostty on a Linux desktop is installed by hand until a package
@@ -134,7 +134,7 @@ install [--user <name>] [--secrets <archive>] [--tz <zone>] [--nopasswd] [--bran
 | `--tz` | none (the current zone is kept) | Sets the timezone when it differs |
 | `--nopasswd` | off; on in containers | Grants the user passwordless sudo |
 | `--branch` | `main` | Branch to clone when `install` does not run from a checkout |
-| `-E` | none; `container` in containers | Passed to `mise bootstrap`; `desktop` also prepares flatpak (step 2) |
+| `-E` | `desktop` on hosts; `container` in containers | Passed to `mise bootstrap`; `desktop` also prepares flatpak (step 2) |
 | `--dry-run` | off | Prints `would: …` for every change, including the final `mise bootstrap` command, and makes none |
 
 Bash, `set -euo pipefail`, one function per step. Every step tests before acting, so a second run changes
