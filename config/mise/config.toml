@@ -130,24 +130,12 @@ recipients = ["age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4"]
 ] }
 
 [tools]
-usage = "latest"
-hk = "latest"
-fnox = "latest"
-# needed to python/uv/pipx dependencies
-uv = "latest"
-python = "3.13"
-# needed to go dependencies
-go = "latest"
-# From the Brewfile's `go` and `uv` lines (cmd/go and cmd/gofmt come with Go itself).
-"go:mvdan.cc/gofumpt" = "latest"
-"go:golang.org/x/tools/gopls" = "latest"
-"go:github.com/brutski/go-code-graph/cmd/import-neo4j" = "latest"
-"go:github.com/brutski/go-code-graph/cmd/mcp-server" = "latest"
-"go:github.com/brutski/go-code-graph/cmd/analyze" = "latest"
-"go:github.com/brutski/go-code-graph/cmd/server" = "latest"
-"pipx:debugpy" = "latest"
-"pipx:graphifyy" = "latest"
-"pipx:code-review-graph" = "latest"
+# Only what Homebrew does not package; everything else is in conf.d/packages.toml.
+# pipx installs go through uv (settings.pypi.uvx; brew:uv). Python 3.13 for these tools only: Homebrew's newest
+# Python lacks wheels some need on Linux arm64.
+"pipx:debugpy" = { version = "latest", uvx_args = "--python 3.13" }
+"pipx:graphifyy" = { version = "latest", uvx_args = "--python 3.13" }
+"pipx:code-review-graph" = { version = "latest", uvx_args = "--python 3.13" }
 
 [tasks]
 [tasks.up]
