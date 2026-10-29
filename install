@@ -14,6 +14,13 @@ HISTORY="${DOTS_HISTORY:-https://github.com/roalcantara/dots-history.git}"
 PROFILE="${DOTS_PROFILE:-desktop}"
 export PATH="$HOME/.local/bin:$PATH"
 
+apt_install() {
+  sudo=""
+  [ "$(id -u)" -eq 0 ] || sudo="sudo"
+  $sudo apt-get update -qq
+  $sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "$@"
+}
+
 # git: this script clones the repo and mise clones the history; mise cannot read its config before both exist.
 # A fresh Ubuntu desktop has curl and sudo but no git.
 if ! command -v git >/dev/null; then
@@ -21,14 +28,16 @@ if ! command -v git >/dev/null; then
     echo "install: git is missing; run 'xcode-select --install', then rerun install" >&2
     exit 2
   elif command -v apt-get >/dev/null; then
-    sudo=""
-    [ "$(id -u)" -eq 0 ] || sudo="sudo"
-    $sudo apt-get update -qq
-    $sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq git
+    apt_install git
   else
     echo "install: git is missing; install it, then rerun install" >&2
     exit 2
   fi
+fi
+# flatpak: mise skips the flatpak apps when flatpak is missing as packages start, and apt:flatpak installs in that
+# same step, so the first run would leave the apps out.
+if [ "$PROFILE" = desktop ] && command -v apt-get >/dev/null && ! command -v flatpak >/dev/null; then
+  apt_install flatpak
 fi
 
 command -v mise >/dev/null || curl -fsSL https://mise.run | MISE_VERSION="v$MISE_VERSION" sh

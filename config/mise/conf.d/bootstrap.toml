@@ -42,6 +42,8 @@ description = "Repo git filters and hooks, Neovim providers and plugins"
 run = '''
 #!/usr/bin/env bash
 export PATH="$HOME/.local/bin:$PATH"
+# brew: packages (hk, sd, the linters) land in the Homebrew prefix, which only an interactive shell puts on PATH.
+for d in /opt/homebrew/bin /home/linuxbrew/.linuxbrew/bin; do [ -d "$d" ] && PATH="$d:$PATH"; done
 dots="$HOME/.local/share/dots"
 nvim_cfg="$HOME/.config/nvim"
 warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
