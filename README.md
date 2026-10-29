@@ -27,6 +27,8 @@ An opinionated [DotFiles][10] repository. Ready to Engage!
 
 ---
 
+## Install
+
 `install` prepares a machine (user, sudo, timezone, mise, this repo, and the age key) and hands over to
 [`mise bootstrap`](https://mise.jdx.dev/bootstrap.html), which applies `config/mise/conf.d/`: packages, links,
 directories, login shell, and the setup task. It runs on macOS and Debian/Ubuntu, in containers too, and a second
