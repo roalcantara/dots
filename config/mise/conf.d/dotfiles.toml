@@ -25,7 +25,6 @@
 "~/.config/github" = { source = "~/.local/share/dots/config/github", relative = true }
 "~/.config/glide" = { source = "~/.local/share/dots/config/glide", relative = true }
 "~/.config/helix" = { source = "~/.local/share/dots/config/helix", relative = true }
-"~/.config/homebrew" = { source = "~/.local/share/dots/config/homebrew", relative = true }
 "~/.config/kodexb" = { source = "~/.local/share/dots/config/kodexb", relative = true }
 "~/.config/kb" = { source = "~/.local/share/dots/config/kodexb", relative = true }                           # alias
 "~/.config/npm" = { source = "~/.local/share/dots/config/npm", relative = true }
