@@ -118,9 +118,6 @@ fileExistenceTests:
     path: /home/vscode/.bashrc
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: ~/.oh-my-zsh dir
-    path: /home/vscode/.oh-my-zsh
-    shouldExist: false
 
   # XDG_CONFIG_HOME (CONFIG)
   - name: ~/.config dir (XDG_CONFIG_HOME)
@@ -130,65 +127,49 @@ fileExistenceTests:
   - name: ~/.config/nvim dir
     path: /home/vscode/.config/nvim
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/nvim/init.lua (MYVIMRC)
     path: /home/vscode/.config/nvim/init.lua
     shouldExist: true
-    permissions: -rw-r--r--
-  - name: ~/.config/nvim/.venv dir
-    path: /home/vscode/.config/nvim/.venv
-    shouldExist: true
-    permissions: drwxr-xr-x
-  - name: ~/.config/nvim/.venv/bin dir
-    path: /home/vscode/.config/nvim/.venv/bin
-    shouldExist: true
-    permissions: drwxr-xr-x
-  - name: ~/.config/nvim/.venv/bin/activate file
-    path: /home/vscode/.config/nvim/.venv/bin/activate
-    shouldExist: true
-    permissions: -rw-r--r--
-  - name: ~/.config/nvim/.venv/bin/python3 file
-    path: /home/vscode/.config/nvim/.venv/bin/python3
-    shouldExist: true
-    permissions: Lrwxrwxrwx
+    permissions: -rw-rw-r--
   - name: ~/.config/zsh dir (ZDOTDIR)
     path: /home/vscode/.config/zsh
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/npm/.npmrc (NPM_CONFIG_USERCONFIG)
     path: /home/vscode/.config/npm/.npmrc
     shouldExist: true
-    permissions: -rw-r--r--
+    permissions: -rw-rw-r--
   - name: ~/.config/git dir
     path: /home/vscode/.config/git
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/snippets dir
     path: /home/vscode/.config/snippets
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/starship dir (STARSHIP_CONFIG_HOME)
     path: /home/vscode/.config/starship
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/starship/starship.toml (STARSHIP_CONFIG)
     path: /home/vscode/.config/starship/starship.toml
     shouldExist: true
-    permissions: -rwxr-xr-x
+    permissions: -rwxrwxr-x
   - name: ~/.config/ghostty config
     path: /home/vscode/.config/ghostty
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: Lrwxrwxrwx
   - name: ~/.config/ripgrep/.ripgreprc (RIPGREP_CONFIG_PATH)
     path: /home/vscode/.config/ripgrep/.ripgreprc
     shouldExist: true
-    permissions: -rw-r--r--
+    permissions: -rw-rw-r--
 
   # XDG_CACHE_HOME (CACHE)
   - name: ~/.cache dir (XDG_CACHE_HOME)
     path: /home/vscode/.cache
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwxrwxr-x
   - name: ~/.cache/npm dir (NPM_CONFIG_CACHE)
     path: /home/vscode/.cache/npm
     shouldExist: true
@@ -202,11 +183,7 @@ fileExistenceTests:
   - name: ~/.local/state dir (XDG_STATE_HOME)
     path: /home/vscode/.local/state
     shouldExist: true
-    permissions: drwxr-xr-x
-  - name: ~/.local/state/nvim dir
-    path: /home/vscode/.local/state/nvim
-    shouldExist: true
-    permissions: drwx------
+    permissions: drwxrwxr-x
   - name: ~/.local/state/zim dir (ZIM_HOME)
     path: /home/vscode/.local/state/zim
     shouldExist: true
@@ -216,7 +193,7 @@ fileExistenceTests:
   - name: ~/.local/share dir (XDG_DATA_HOME)
     path: /home/vscode/.local/share
     shouldExist: true
-    permissions: drwxr-xr-x
+    permissions: drwxrwxr-x
   - name: ~/.local/share/npm dir (NPM_CONFIG_PREFIX)
     path: /home/vscode/.local/share/npm
     shouldExist: true

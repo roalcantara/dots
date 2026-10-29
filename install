@@ -302,7 +302,7 @@ switch_to_user() {
     done
   fi
   cd "$home" 2>/dev/null || cd /
-  exec sudo -u "$TARGET_USER" -H env DOTS_STAGE=user DOTS_SECRETS="$copy" DOTS_CHECKOUT="$checkout" \
+  exec sudo -u "$TARGET_USER" -H env PATH="$PATH" DOTS_STAGE=user DOTS_SECRETS="$copy" DOTS_CHECKOUT="$checkout" \
     DOTS_CONTAINER="$container" bash "$script" "${fwd[@]}"
 }
 
