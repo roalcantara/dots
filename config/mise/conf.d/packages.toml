@@ -1,6 +1,12 @@
 # Packages applied by `mise bootstrap` (assets/specs/mise-bootstrap/design.md §4.1).
 # Converted from the Brewfile; edit here from now on. mise installs Homebrew bottles and casks itself.
 
+[bootstrap.brew.taps]
+"asmvik/formulae" = "https://github.com/asmvik/homebrew-formulae.git"
+"can1357/tap" = "https://github.com/can1357/homebrew-tap.git"
+"oven-sh/bun" = "https://github.com/oven-sh/homebrew-bun.git"
+# "giammarco-ferranti/deja" = "https://github.com/giammarco-ferranti/homebrew-deja.git"
+
 [bootstrap.packages]
 # CORE FORMULAE
 "brew:act" = { env = "desktop" } # Run your GitHub Actions locally
@@ -39,7 +45,12 @@
 "brew:less" = { os = "macos" }                   # Pager program similar to more
 "brew:lesspipe" = { os = "macos" }               # Input filter for less
 "brew:libyaml" = "latest"                        # YAML parser
+"brew:yamllint" = "latest"                       # YAML linter
+"brew:taplo" = "latest"                          # TOML linter and formatter
+"brew:markdownlint-cli" = "latest"               # Markdown linter
+"brew:markdownlint-cli2" = "latest"              # Markdown linter
 "brew:lua-language-server" = { env = "desktop" } # Language server for Lua
+"brew:container-structure-test" = "latest"       # Container structure testing tool
 "brew:mermaid-cli" = { env = "desktop" }         # CLI for Mermaid
 "brew:neovim" = "latest"                         # Text editor focused on extensibility
 "brew:node" = "latest"                           # JavaScript runtime and package manager support
@@ -56,6 +67,8 @@
 "brew:ruby" = "latest"                   # Ruby runtime
 "brew:ruby-lsp" = { env = "desktop" }    # Ruby language server
 "brew:sd" = "latest"                                   # Intuitive find and replace CLI
+"brew:shfmt" = "latest"                                # Shell script formatter
+"brew:shellcheck" = "latest"                           # Shell script static analysis tool
 "brew:shellspec" = { os = "macos" }                    # BDD framework for shells
 "brew:skills" = { os = "macos" }                       # Open agent skills ecosystem
 "brew:sops" = "latest"                                 # Secrets file encryption and management
@@ -70,7 +83,6 @@
 "brew:usage" = "latest"                                # Tool for working with usage-spec CLIs
 "brew:hk" = "latest"                                   # Git hook manager (this repo's hooks)
 "brew:fnox" = "latest"                                 # Secrets from providers into the environment
-"brew:uv" = "latest"                                   # Fast Python package installer and resolver
 "brew:wakatime-cli" = { env = "desktop" }              # WakaTime CLI
 "brew:zoxide" = "latest"                               # Smart directory navigation for the shell
 "brew:zsh" = { os = "macos" }                          # UNIX shell
@@ -79,6 +91,7 @@
 "brew:zsh-patina" = "latest"                           # Blazingly fast Zsh syntax highlighter
 "brew:asmvik/formulae/yabai" = { os = "macos" }        # A tiling window manager for macos
 "brew:rust" = { env = "desktop" }                      # Rust toolchain
+# "brew:uv" = "latest"                                   # Fast Python package installer and resolver
 # "brew:Giammarco-Ferranti/deja/deja" = { os = "macos" } # Predictive inline shell autosuggestions for zsh
 # "brew:bbrew" = { env = "desktop" }                     # TUI for managing Homebrew, Flatpak, and Mac App Store packages
 # "brew:cairo" = { env = "desktop" }                     # Vector graphics library with cross-device output support

@@ -53,10 +53,6 @@ mise run -C "$dots" setup:hooks || warn "setup:hooks"
 if command -v npm >/dev/null && ! npm ls -g neovim >/dev/null 2>&1; then
   npm install -g neovim || warn "npm neovim"
 fi
-if command -v python3 >/dev/null && ! "$nvim_cfg/.venv/bin/python" -c 'import pynvim' 2>/dev/null; then
-  { { [ -x "$nvim_cfg/.venv/bin/python" ] || python3 -m venv "$nvim_cfg/.venv"; } &&
-    "$nvim_cfg/.venv/bin/pip" install -q pynvim; } || warn "pynvim venv"
-fi
 if command -v gem >/dev/null && ! gem list -i neovim >/dev/null 2>&1; then
   gem install neovim || warn "gem neovim"
 fi

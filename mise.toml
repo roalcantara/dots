@@ -317,28 +317,3 @@ experimental = true
 # Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
 # https://mise.jdx.dev/configuration/settings.html#lockfile
 lockfile = true
-
-# Config files with these prefixes will be trusted by default
-# https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
-# trusted_config_paths = ["~/.local/share/dots", "~/.local/share/mise"]
-
-# set to true to automatically answer yes to all prompts
-# https://mise.jdx.dev/configuration/settings.html#yes
-# yes = true
-
-[tools]
-hk = "2.0.1"
-pkl = "latest"
-sd = "latest"
-shellcheck = "latest"
-shfmt = "latest"
-"npm:markdownlint-cli" = "0.49.1"
-hadolint = "latest"
-"pipx:yamllint" = "1.38.0"
-taplo = "latest"
-"pipx:commit-check" = "2.18.0"
-"container-structure-test" = "1.22.1"
-
-# set to true to see full installation output, see `MISE_VERBOSE`
-# https://mise.jdx.dev/configuration/settings.html#verbose
-# verbose=true
