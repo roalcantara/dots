@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
-# An Ubuntu development container set up by ./install (mise bootstrap).
-# Images never receive a secrets archive; only GITHUB_TOKEN, from a build secret, for GitHub API limits.
+# An Ubuntu development container set up by mise bootstrap.
+# Images never receive secrets; only GITHUB_TOKEN, from a build secret, for GitHub API limits.
 # https://mcr.microsoft.com/en-us/artifact/mar/devcontainers/base/tags
 FROM mcr.microsoft.com/devcontainers/base:ubuntu AS base
 
@@ -12,7 +12,6 @@ ARG BRANCH=main
 ARG USERNAME=vscode
 ARG GITHUB_REPO=roalcantara/dots
 
-# DOTS_CONTAINER=1: BuildKit has no /.dockerenv and cgroup v2 shows `0::/`, so install cannot detect the container.
 ENV CLICOLOR=1 \
     TZ=$TZ \
     TERM="$TERM" \
@@ -22,33 +21,36 @@ ENV CLICOLOR=1 \
     GITHUB_REPO="$GITHUB_REPO" \
     BRANCH="$BRANCH" \
     DEBIAN_FRONTEND=noninteractive \
-    DOTS_CONTAINER=1 \
     PATH="/home/$USERNAME/.local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends tzdata && rm -rf /var/lib/apt/lists/*
+
 # Committed tree (sent by `mise run build --local` as a git archive)
 FROM base AS local
-COPY . /home/$USERNAME/Work/dots
-RUN --mount=type=secret,id=github_token \
-    --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)" \
-    "/home/$USERNAME/Work/dots/install" --user "$USERNAME" --tz "$TZ"
 USER $USERNAME
+COPY --chown=$USERNAME:$USERNAME . /home/$USERNAME/.local/share/dots
+# hadolint ignore=DL4006
+RUN --mount=type=secret,id=github_token,uid=1000 \
+    export GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)"; \
+    curl -fsSL https://mise.run | MISE_VERSION=v2026.10.22 sh && \
+    mkdir -p ~/.config && ln -sfn ../.local/share/dots/config/mise ~/.config/mise && \
+    ~/.local/bin/mise bootstrap -E container --force-dotfiles --skip user --yes
 WORKDIR /home/$USERNAME
 SHELL ["/usr/bin/zsh", "-c"]
 ENTRYPOINT ["/usr/bin/zsh", "-il"]
 
 # GitHub branch: mise run build (the default)
 FROM base AS remote
-# hadolint ignore=DL4006
-RUN --mount=type=secret,id=github_token \
-    --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    export GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)"; \
-    curl -fsSL "https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}/install" \
-      | bash -s -- --user "$USERNAME" --tz "$TZ" --branch "$BRANCH"
 USER $USERNAME
+# hadolint ignore=DL4006
+RUN --mount=type=secret,id=github_token,uid=1000 \
+    export GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)"; \
+    git clone --branch "$BRANCH" "https://github.com/${GITHUB_REPO}.git" "/home/$USERNAME/.local/share/dots" && \
+    curl -fsSL https://mise.run | MISE_VERSION=v2026.10.22 sh && \
+    mkdir -p ~/.config && ln -sfn ../.local/share/dots/config/mise ~/.config/mise && \
+    ~/.local/bin/mise bootstrap -E container --force-dotfiles --skip user --yes
 WORKDIR /home/$USERNAME
 SHELL ["/usr/bin/zsh", "-c"]
 ENTRYPOINT ["/usr/bin/zsh", "-il"]

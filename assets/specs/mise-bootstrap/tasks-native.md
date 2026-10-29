@@ -104,7 +104,7 @@ mise bootstrap -E "$PROFILE" --yes
 
 **Files:** `distros/{debian,ubuntu}/Dockerfile`, both `container-structure-test.yml`, `config/mise/config.toml`.
 
-- [ ] **Step 1:** In both Dockerfiles: base stage installs `tzdata` as root (`apt-get update && apt-get install
+- [x] **Step 1:** In both Dockerfiles: base stage installs `tzdata` as root (`apt-get update && apt-get install
   -y --no-install-recommends tzdata && rm -rf /var/lib/apt/lists/*`); drop `DOTS_CONTAINER`. The `local` stage:
 ```dockerfile
 FROM base AS local
@@ -122,12 +122,12 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
   The `remote` stage is the same with `git clone --branch "$BRANCH" https://github.com/${GITHUB_REPO}.git
   ~/.local/share/dots` instead of `COPY`; `publish` stays `FROM local`. `USERNAME` must already exist in the base
   image (`vscode`); drop other user support.
-- [ ] **Step 2:** CST: repo path `~/Work/dots` → `~/.local/share/dots` (SOPS check), keep the mise and core-tools
+- [x] **Step 2:** CST: repo path `~/Work/dots` → `~/.local/share/dots` (SOPS check), keep the mise and core-tools
   checks; restore the `~/.config/nvim/.venv` and `~/.local/state/nvim` checks.
-- [ ] **Step 3:** Pipx tools fail on Python 3.15 (Linux arm64, missing wheels): pin `python = "3.13"` in
+- [x] **Step 3:** Pipx tools fail on Python 3.15 (Linux arm64, missing wheels): pin `python = "3.13"` in
   `config/mise/config.toml` `[tools]` (check `mise ls python` on the host first, read-only) and make sure the pipx
   backend uses it (`mise settings pipx.uvx`/docs); record what worked.
-- [ ] **Step 4:** hadolint, yamllint; commit (`refactor(distros): Build images with mise bootstrap alone`).
+- [x] **Step 4:** hadolint, yamllint; commit (`refactor(distros): Build images with mise bootstrap alone`).
 
 ### N4: End-to-end `install` test in Docker (throwaway history)
 
@@ -167,4 +167,5 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 
 ## Findings
 - N1: mise rejects [dotfiles] tracking in environment files ("tracking is enrolled from the global configuration only"); moved [settings] age.key_file, [history.encryption], and [dotfiles] tracking to config/mise/config.toml.
+- N3: pinned python = "3.13" in config/mise/config.toml [tools] and set [settings.pypi] uvx = true (aliased from pipx.uvx) so pipx installs use uvx under Python 3.13.
 
