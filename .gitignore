@@ -171,3 +171,6 @@ graphify-out/.graphify_root
 
 # mise
 .mise/locks
+
+# Secrets archives from `mise run prepare`; never commit them, not even fixtures.
+*.zip.enc

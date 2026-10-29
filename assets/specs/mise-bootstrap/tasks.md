@@ -435,7 +435,7 @@ git commit -m "feat(mise): Declare packages and Go/uv tools for mise bootstrap"
 - Create: `script/prepare-secrets`
 - Modify: `mise.toml` (add `[tasks.prepare]`), `.gitignore` (add `*.zip.enc`)
 
-- [ ] **Step 1: Write the failing spec**
+- [x] **Step 1: Write the failing spec**
 
 ```ts
 #!/usr/bin/env bun
@@ -495,12 +495,12 @@ describe("prepare-secrets", () => {
 });
 ```
 
-- [ ] **Step 2: Run it to see it fail**
+- [x] **Step 2: Run it to see it fail**
 
 Run: `cd ~/Work/dots/assets && bun test integration/install/prepare-secrets.spec.ts`
 Expected: FAIL; `script/prepare-secrets` does not exist.
 
-- [ ] **Step 3: Write `script/prepare-secrets`**
+- [x] **Step 3: Write `script/prepare-secrets`**
 
 ```bash
 #!/usr/bin/env bash
@@ -562,7 +562,7 @@ printf '%s\n' "$OUTPUT"
 ```
 Then: `chmod +x ~/Work/dots/script/prepare-secrets`.
 
-- [ ] **Step 4: Add the task and the ignore rule**
+- [x] **Step 4: Add the task and the ignore rule**
 
 In `mise.toml`, after `[tasks."setup:hooks"]` and its `run` block, add:
 ```toml
@@ -576,7 +576,7 @@ In `.gitignore` (repo root), add:
 *.zip.enc
 ```
 
-- [ ] **Step 5: Run the spec and lint**
+- [x] **Step 5: Run the spec and lint**
 
 Run:
 ```bash
@@ -593,7 +593,7 @@ cd ~/Work/dots && mise run prepare -- --output /Volumes/meex900/bak/dots-secrets
 ```
 Expected: the path prints; `ls -l` shows `-rw-------`. Not committed.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 cd ~/Work/dots && git add script/prepare-secrets assets/integration/install/prepare-secrets.spec.ts mise.toml .gitignore
@@ -1566,3 +1566,4 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 3: 8 GNU/apt duplicates (bash, coreutils, findutils, gawk, gnu-sed, less, git, zsh) are now macOS-only; 12 heavy formulae are `env = "desktop"` (openjdk, rust, mermaid-cli, cairo, lua-language-server, fabric-ai, pup, wakatime-cli, bbrew, python@3.14, ruby-lsp, solargraph); macOS-only count is now 65, `env = "desktop"` lines 15.
 - Task 3: `packages status` without `-E`: 107 installed, 10 skipped, 12 desktop entries not listed, only `mark-text` missing; with `-E desktop`: 119 installed, only `mark-text` missing.
 - Design: desktop profile = workstations; install defaults hosts to it.
+- Task 4: `mise run prepare --help` is intercepted by mise (prints the task help); `mise run prepare -- --help` reaches the script (use `--` for options). Spec failed first (2 of 3, exit 127), then passed 3/3; shellcheck clean; works under /bin/bash 3.2.57; fixture .enc is unreadable by unzip, a second run yields a different ssh key; no staging leftovers. Step 6 (real archive) skipped: owner-interactive.

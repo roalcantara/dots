@@ -287,6 +287,10 @@ done
 echo "hk hooks installed for $(git rev-parse --show-toplevel)"
 '''
 
+[tasks.prepare]
+description = "Pack the secrets `install --secrets` expects into an encrypted archive (--fixture for tests)"
+run = "script/prepare-secrets"
+
 [tasks."zsh:baseline"]
 description = "Capture the pre-change zsh parity baseline"
 run = "./script/zsh-verify.sh baseline"
