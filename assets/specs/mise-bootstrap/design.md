@@ -278,3 +278,32 @@ Each stage gates the next:
 | A piped `install` cannot re-run itself as the user | Saved to a temporary file before switching (§4.4 step 3) |
 | The secrets archive is lost, or its passphrase forgotten | Keep the passphrase in Bitwarden; `prepare` can be rerun on any machine that still has the keys |
 | `git archive` applies the SOPS smudge filter and decrypts files into the build context | The build disables it (`-c filter.sops.smudge=cat`); stage 2 checks that the image's SOPS files are encrypted |
+
+## 10. Native revision (2026-10-29)
+
+Supersedes §4.4 (`install`), §4.5 (images) and §4.6 (`prepare`) after the spike (`spike-native.md`) proved mise
+can carry the secrets and apply everything else. Owner decisions: a `curl` one-liner; the age key pasted at a
+prompt; the checkout in `~/.local/share/dots`; images run mise directly and never get secrets; the existing SOPS
+age key (`config/age/keys.txt`, recipient `config/age/recipient.txt`) is the **single root secret**, kept in the
+password manager; the encrypted history's origin is the private `roalcantara/dots-history`.
+
+**Secrets:** mise's encrypted dotfile history. `config/mise/config.desktop.toml` (loaded only with `-E desktop`,
+so images never see it) sets `age.key_file = "~/.config/age/keys.txt"`, `[history.encryption] recipients` to the
+recipient above, and `track` + `encrypt` entries for `~/.config/ssh`, `~/.config/gnupg` (sockets and lock files
+excluded) and `~/.config/gh/hosts.yml`. The `~/.ssh`/`~/.gnupg` symlinks to those folders stay.
+
+**`install`** (about 30 lines, macOS bash 3.2): install the pinned mise if missing; `git clone` dots into
+`~/.local/share/dots` (`DOTS_BRANCH`, default `main`); if `config/age/keys.txt` is missing, read the key from the
+terminal (hidden; or `DOTS_AGE_KEY` for tests) and write it mode 600; link `~/.config/mise`; for a GitHub origin,
+`gh auth login` (via `mise exec gh`) and `gh auth setup-git`; `mise bootstrap --adopt <history>` (`DOTS_HISTORY`);
+`mise bootstrap -E desktop` (`DOTS_PROFILE`). No user, sudo, timezone, root switch, flatpak or secrets logic: the
+Mac's user comes from Setup Assistant, Linux desktops get flatpak from `apt:flatpak` and a post-packages hook,
+and mise uses `sudo` itself for system parts. The plain `git clone` (not `--from`) puts the key in place before the
+first bootstrap, which encrypted entries need.
+
+**Images:** run as the base image's `vscode` user, without `install`: install mise, copy the committed tree
+(`git archive`) to `~/.local/share/dots`, link `~/.config/mise`, `mise bootstrap -E container --force-dotfiles
+--skip user --yes`. `TZ` and `tzdata` come from the Dockerfile.
+
+**Retired** once the history is verified: the §4.4 `install`, `script/prepare-secrets`, `mise run prepare`,
+`assets/dump.zip.enc`, and their specs. Plan: `tasks-native.md`.

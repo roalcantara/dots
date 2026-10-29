@@ -1,6 +1,9 @@
 <!-- markdownlint-disable -->
 # Setting up machines with `mise bootstrap` — implementation plan
 
+> **Superseded from Task 6 onward (2026-10-29)** by [tasks-native.md](./tasks-native.md) (design.md §10). Tasks 1–3
+> stand; Tasks 4–5's `prepare-secrets` and `install` are retired by it.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or
 > superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for
 > tracking.
