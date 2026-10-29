@@ -1,3 +1,5 @@
 [tools]
-# RayanBO/todo requires cargo/rust to compile from source, so keep it on desktop workstations
+# RayanBO/todo compiles from source: it needs Rust (below) and a C linker (Xcode CLT on macOS, apt:build-essential
+# on Linux, in packages.toml), so keep it on desktop workstations.
+rust = "latest"
 "cargo:https://github.com/RayanBO/todo" = "HEAD"

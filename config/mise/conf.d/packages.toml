@@ -3,58 +3,58 @@
 
 [bootstrap.packages]
 # CORE FORMULAE
-"brew:act" = { env = "desktop" }                       # Run your GitHub Actions locally
-"brew:age" = "latest"                                  # Simple, modern, secure file encryption
-"brew:aqua" = "latest"                                 # Declarative CLI version manager
-"brew:ast-grep" = "latest"                             # Code searching, linting, rewriting
-"brew:bash" = { os = "macos" }                         # Bourne-Again shell
+"brew:act" = { env = "desktop" } # Run your GitHub Actions locally
+"brew:age" = "latest"            # Simple, modern, secure file encryption
+"brew:aqua" = "latest"           # Declarative CLI version manager
+"brew:ast-grep" = "latest"       # Code searching, linting, rewriting
+"brew:bash" = { os = "macos" }   # Bourne-Again shell
 # "brew:bbrew" = { env = "desktop" }                     # TUI for managing Homebrew, Flatpak, and Mac App Store packages
-"brew:bash-language-server" = { os = "macos" }         # Language server for Bash
-"brew:bat" = "latest"                                  # Clone of cat(1) with syntax highlighting and Git integration
-"brew:bat-extras" = "latest"                           # Extra tools that integrate bat with the shell
-"brew:can1357/tap/omp" = { os = "macos" }              # Coding agent with the IDE wired in
+"brew:bash-language-server" = { os = "macos" } # Language server for Bash
+"brew:bat" = "latest"                          # Clone of cat(1) with syntax highlighting and Git integration
+"brew:bat-extras" = "latest"                   # Extra tools that integrate bat with the shell
+"brew:can1357/tap/omp" = { os = "macos" }      # Coding agent with the IDE wired in
 # "brew:cairo" = { env = "desktop" }                     # Vector graphics library with cross-device output support
-"brew:coreutils" = { os = "macos" }                    # GNU file, shell, and text utilities
-"brew:curlie" = "latest"                               # Power of curl, ease of use of HTTPie
-"brew:git-delta" = "latest"                            # Syntax-highlighting pager for git and diff output
-"brew:devcontainer" = { os = "macos" }                 # Development Containers reference implementation
-"brew:docker-language-server" = "latest"               # LSP for Dockerfiles and Compose files
-"brew:eza" = "latest"                                  # Modern replacement for ls
-"brew:fabric-ai" = { env = "desktop" }                 # Open-source framework for augmenting humans using AI
-"brew:fd" = "latest"                                   # Fast file search utility
-"brew:findutils" = { os = "macos" }                    # GNU find, xargs, and locate
-"brew:fzf" = "latest"                                  # Command-line fuzzy finder
-"brew:gawk" = { os = "macos" }                         # GNU awk utility
-"brew:gh" = "latest"                                   # GitHub CLI
-"brew:git" = { os = "macos" }                          # Distributed revision control system
-"brew:git-extras" = { os = "macos" }                   # Small git utilities
-"brew:git-lfs" = "latest"                              # Git extension for versioning large files
-"brew:glow" = "latest"                                 # Render Markdown in the terminal
+"brew:coreutils" = { os = "macos" }      # GNU file, shell, and text utilities
+"brew:curlie" = "latest"                 # Power of curl, ease of use of HTTPie
+"brew:git-delta" = "latest"              # Syntax-highlighting pager for git and diff output
+"brew:devcontainer" = { os = "macos" }   # Development Containers reference implementation
+"brew:docker-language-server" = "latest" # LSP for Dockerfiles and Compose files
+"brew:eza" = "latest"                    # Modern replacement for ls
+"brew:fabric-ai" = { env = "desktop" }   # Open-source framework for augmenting humans using AI
+"brew:fd" = "latest"                     # Fast file search utility
+"brew:findutils" = { os = "macos" }      # GNU find, xargs, and locate
+"brew:fzf" = "latest"                    # Command-line fuzzy finder
+"brew:gawk" = { os = "macos" }           # GNU awk utility
+"brew:gh" = "latest"                     # GitHub CLI
+"brew:git" = { os = "macos" }            # Distributed revision control system
+"brew:git-extras" = { os = "macos" }     # Small git utilities
+"brew:git-lfs" = "latest"                # Git extension for versioning large files
+"brew:glow" = "latest"                   # Render Markdown in the terminal
 # "brew:gmp" = "latest"                                  # GNU multiple precision arithmetic library
-"brew:gnu-sed" = { os = "macos" }                      # GNU sed implementation
-"brew:gopass" = "latest"                               # Secrets management tool
-"brew:gopls" = "latest"                                # Go language server
-"brew:gum" = "latest"                                  # Tool for glamorous shell scripts
-"brew:hadolint" = "latest"                             # Dockerfile linter
-"brew:hyperfine" = "latest"                            # Command-line benchmarking tool
-"brew:jq" = "latest"                                   # Lightweight JSON processor
-"brew:less" = { os = "macos" }                         # Pager program similar to more
-"brew:lesspipe" = { os = "macos" }                     # Input filter for less
-"brew:libyaml" = "latest"                              # YAML parser
-"brew:lua-language-server" = { env = "desktop" }       # Language server for Lua
-"brew:mermaid-cli" = { env = "desktop" }               # CLI for Mermaid
-"brew:mole" = { os = "macos" }                         # Deep clean and optimize your Mac
-"brew:neovim" = "latest"                               # Text editor focused on extensibility
-"brew:node" = "latest"                                 # JavaScript runtime and package manager support
+"brew:gnu-sed" = { os = "macos" }                # GNU sed implementation
+"brew:gopass" = "latest"                         # Secrets management tool
+"brew:gopls" = "latest"                          # Go language server
+"brew:gum" = "latest"                            # Tool for glamorous shell scripts
+"brew:hadolint" = "latest"                       # Dockerfile linter
+"brew:hyperfine" = "latest"                      # Command-line benchmarking tool
+"brew:jq" = "latest"                             # Lightweight JSON processor
+"brew:less" = { os = "macos" }                   # Pager program similar to more
+"brew:lesspipe" = { os = "macos" }               # Input filter for less
+"brew:libyaml" = "latest"                        # YAML parser
+"brew:lua-language-server" = { env = "desktop" } # Language server for Lua
+"brew:mermaid-cli" = { env = "desktop" }         # CLI for Mermaid
+"brew:mole" = { os = "macos" }                   # Deep clean and optimize your Mac
+"brew:neovim" = "latest"                         # Text editor focused on extensibility
+"brew:node" = "latest"                           # JavaScript runtime and package manager support
 # "brew:jaq" = "latest"                                  # JQ clone focused on correctness and speed
-"brew:openjdk" = { env = "desktop" }                   # Java development kit
+"brew:openjdk" = { env = "desktop" } # Java development kit
 # "brew:posting" = "latest"                              # Modern API client for the terminal
-"brew:openssl@3" = "latest"                            # Cryptography and TLS toolkit
-"brew:oven-sh/bun/bun" = { os = "macos" }              # JavaScript runtime, bundler, and package manager
-"brew:pinentry-mac" = { os = "macos" }                 # Pinentry for GPG on macOS
-"brew:pkl" = "latest"                                  # Pkl language CLI
-"brew:pkl-lsp" = { os = "macos" }                      # Pkl language server
-"brew:pnpm" = "latest"                                 # Fast, disk space efficient package manager
+"brew:openssl@3" = "latest"               # Cryptography and TLS toolkit
+"brew:oven-sh/bun/bun" = { os = "macos" } # JavaScript runtime, bundler, and package manager
+"brew:pinentry-mac" = { os = "macos" }    # Pinentry for GPG on macOS
+"brew:pkl" = "latest"                     # Pkl language CLI
+"brew:pkl-lsp" = { os = "macos" }         # Pkl language server
+"brew:pnpm" = "latest"                    # Fast, disk space efficient package manager
 # "brew:pup" = { env = "desktop" }                       # CLI companion for Datadog and internal tooling
 "brew:pyright" = { os = "macos" }                      # Python static type checker
 "brew:python@3.14" = { env = "desktop" }               # Python runtime
@@ -82,7 +82,7 @@
 "brew:Giammarco-Ferranti/deja/deja" = { os = "macos" } # Predictive inline shell autosuggestions for zsh
 "brew:helix" = "latest"                                # Post-modern modal text editor
 "brew:zsh-patina" = "latest"                           # Blazingly fast Zsh syntax highlighter
-"brew:asmvik/formulae/yabai" = { os = "macos" } # A tiling window manager for macos
+"brew:asmvik/formulae/yabai" = { os = "macos" }        # A tiling window manager for macos
 # "brew:solargraph" = { env = "desktop" }                # Ruby language server
 # "brew:starship" = "latest"                             # Cross-shell prompt
 # "brew:block-goose-cli" = "latest" # Open source, extensible AI agent that goes beyond code suggestions
@@ -93,12 +93,12 @@
 # "brew:acsandmann/tap/rift" = "latest" # A tiling window manager for macos
 
 # DESKTOP AND BROWSER APPS
-"brew-cask:android-studio" = { os = "macos" }  # Tools for building Android applications
-"brew-cask:antigravity-cli" = { os = "macos" } # Terminal interface for Antigravity agents
-"brew-cask:antigravity-ide" = { os = "macos" } # AI coding agent IDE
-"brew-cask:antigravity" = { os = "macos" }     # Agent orchestration platform
-"brew-cask:bitwarden" = { os = "macos" }       # Password manager
-"brew-cask:brave-browser" = { os = "macos" }   # Privacy-focused browser
+"brew-cask:android-studio" = { os = "macos" }           # Tools for building Android applications
+"brew-cask:antigravity-cli" = { os = "macos" }          # Terminal interface for Antigravity agents
+"brew-cask:antigravity-ide" = { os = "macos" }          # AI coding agent IDE
+"brew-cask:antigravity" = { os = "macos" }              # Agent orchestration platform
+"brew-cask:bitwarden" = { os = "macos" }                # Password manager
+"brew-cask:brave-browser" = { os = "macos" }            # Privacy-focused browser
 "brew-cask:chatgpt" = { os = "macos" }                  # ChatGPT desktop app
 "brew-cask:claude-code" = { os = "macos" }              # Claude for code editing
 "brew-cask:claude" = { os = "macos" }                   # Anthropic Claude app
@@ -153,6 +153,7 @@
 "apt:unzip" = { os = "linux" }
 "apt:wget" = { os = "linux" }
 "apt:fontconfig" = { os = "linux" }
+"apt:build-essential" = { os = "linux", env = "desktop" } # C linker for tools built from source (cargo:)
 "apt:docker.io" = { os = "linux", env = "desktop" }
 "brew:ollama" = { os = "linux", env = "desktop" }
 
