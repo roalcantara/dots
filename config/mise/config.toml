@@ -2,8 +2,6 @@
 # https://mise.jdx.dev/configuration.html#global-config-config-mise-config-toml
 
 [settings]
-# The SOPS age key is the single root secret: it decrypts this repo's SOPS files and the mise history.
-age.key_file = "~/.config/age/keys.txt"
 
 # https://mise.jdx.dev/configuration/settings.html
 # tools can read the versions files used by other version managers
@@ -94,6 +92,10 @@ task.disable_spec_from_run_scripts = true
 
 # Configure a custom command in your global settings to obtain a GitHub token
 # https://mise.jdx.dev/dev-tools/github-tokens.html#credential-command
+# The SOPS age key is the single root secret: it decrypts this repo's SOPS files and the mise history.
+[settings.age]
+identity_files = ["~/.config/age/keys.txt"]
+
 [settings.rust]
 # Pin where rustup and cargo live, matching CARGO_HOME / RUSTUP_HOME in .zshenv: a mise started without that env
 # (an IDE, a git hook) would otherwise default to ~/.cargo and ~/.rustup, flip the toolchain link, and reinstall Rust

@@ -133,14 +133,14 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 
 **Files:** `assets/specs/mise-bootstrap/e2e/{Dockerfile,run.sh}` (adapt `spike/`).
 
-- [ ] Container A: generate a throwaway age key; build a bare history origin on a volume holding encrypted
+- [x] Container A: generate a throwaway age key; build a bare history origin on a volume holding encrypted
   throwaway `~/.config/ssh` and `~/.config/gnupg` (as spike experiment 1, recipient = the throwaway key).
-- [ ] Container B (fresh `vscode` home, branch pushed or `git bundle` of HEAD served as `DOTS_BRANCH`/clone URL —
+- [x] Container B (fresh `vscode` home, branch pushed or `git bundle` of HEAD served as `DOTS_BRANCH`/clone URL —
   if `install` needs a URL override for the repo, add `DOTS_REPO` with default `https://github.com/roalcantara/dots.git`):
   run `DOTS_AGE_KEY=<throwaway> DOTS_HISTORY=/origin/history.git DOTS_PROFILE=container bash install` — expected:
   exit 0; restored secrets byte-identical with modes 700/600; `~/.config/mise` linked; a second run exits 0 and
   writes nothing (`Wrote 0 file(s)`).
-- [ ] Commit (`test(install): Add an end-to-end run in Docker`).
+- [x] Commit (`test(install): Add an end-to-end run in Docker`).
 
 ### N5: Build and verify the images (replaces old Task 7)
 
@@ -168,4 +168,5 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 ## Findings
 - N1: mise rejects [dotfiles] tracking in environment files ("tracking is enrolled from the global configuration only"); moved [settings] age.key_file, [history.encryption], and [dotfiles] tracking to config/mise/config.toml.
 - N3: pinned python = "3.13" in config/mise/config.toml [tools] and set [settings.pypi] uvx = true (aliased from pipx.uvx) so pipx installs use uvx under Python 3.13.
+- N4: Full end-to-end install test passes in Docker; configured [settings.age] identity_files = ["~/.config/age/keys.txt"], skip user shell in container profile, and preserved config.local.toml across adopt.
 

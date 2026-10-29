@@ -27,9 +27,8 @@ if [ ! -s "$KEY" ]; then
   case "$key" in AGE-SECRET-KEY-1*) ;; *) echo "install: that is not an age secret key" >&2; exit 2 ;; esac
   (umask 077 && printf '%s\n' "$key" >"$KEY")
 fi
-
-mkdir -p "$HOME/.config"
-ln -sfn ../.local/share/dots/config/mise "$HOME/.config/mise"
+mkdir -p "$HOME/.config/mise"
+test -e "$HOME/.config/mise/age.txt" || (umask 077 && cp "$KEY" "$HOME/.config/mise/age.txt" 2>/dev/null || true)
 
 case "$HISTORY" in
   https://github.com/*)
@@ -40,4 +39,13 @@ case "$HISTORY" in
 esac
 
 mise bootstrap --adopt "$HISTORY" -E "$PROFILE" --yes
-mise bootstrap -E "$PROFILE" --yes
+ln -sfn ../.local/share/dots/config/age "$HOME/.config/age"
+if [ ! -L "$HOME/.config/mise" ]; then
+  test -f "$HOME/.config/mise/config.local.toml" && cp "$HOME/.config/mise/config.local.toml" "$DOTS/config/mise/config.local.toml"
+  test -f "$HOME/.config/mise/age.txt" && cp "$HOME/.config/mise/age.txt" "$DOTS/config/mise/age.txt"
+  rm -rf "$HOME/.config/mise"
+fi
+ln -sfn ../.local/share/dots/config/mise "$HOME/.config/mise"
+BOOTSTRAP_ARGS=("-E" "$PROFILE" "--force-dotfiles" "--yes")
+[ "$PROFILE" = "container" ] && BOOTSTRAP_ARGS+=("--skip" "user")
+mise bootstrap "${BOOTSTRAP_ARGS[@]}"
