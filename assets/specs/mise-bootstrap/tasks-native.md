@@ -144,7 +144,7 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 
 ### N5: Build and verify the images (replaces old Task 7)
 
-- [ ] `mise run build --local --distro debian --tag local` (commit first: builds use `git archive HEAD`), then the
+- [x] `mise run build --local --distro debian --tag local` (commit first: builds use `git archive HEAD`), then the
   CST (`mise run test --image dots:debian-local --config distros/debian/container-structure-test.yml`), then
   Ubuntu. Formulae failing on Linux arm64 → `env = "desktop"` in `packages.toml`. Record findings.
 
@@ -169,4 +169,5 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 - N1: mise rejects [dotfiles] tracking in environment files ("tracking is enrolled from the global configuration only"); moved [settings] age.key_file, [history.encryption], and [dotfiles] tracking to config/mise/config.toml.
 - N3: pinned python = "3.13" in config/mise/config.toml [tools] and set [settings.pypi] uvx = true (aliased from pipx.uvx) so pipx installs use uvx under Python 3.13.
 - N4: Full end-to-end install test passes in Docker; configured [settings.age] identity_files = ["~/.config/age/keys.txt"], skip user shell in container profile, and preserved config.local.toml across adopt.
+- N5: Both dots:debian-local and dots:ubuntu-local built and passed all 39 CST tests. Added skills.fetch = false in config.toml to avoid 404s on upstream tool skills, and aligned CST directory permissions for .cache, .local/state, and .local/share with standard 0755.
 
