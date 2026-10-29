@@ -103,8 +103,8 @@ identity_files = ["~/.config/age/keys.txt"]
 # Pin where rustup and cargo live, matching CARGO_HOME / RUSTUP_HOME in .zshenv: a mise started without that env
 # (an IDE, a git hook) would otherwise default to ~/.cargo and ~/.rustup, flip the toolchain link, and reinstall Rust
 # on the next run. https://mise.jdx.dev/lang/rust.html#where-rustup-and-cargo-live
-cargo_home = "~/.local/share/cargo"
-rustup_home = "~/.local/share/rustup"
+# cargo_home = "~/.local/share/cargo"
+# rustup_home = "~/.local/share/rustup"
 
 [settings.github]
 credential_command = "gh auth token"
@@ -129,13 +129,13 @@ recipients = ["age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4"]
   "*~",
 ] }
 
-[tools]
+# [tools]
 # Only what Homebrew does not package; everything else is in conf.d/packages.toml.
 # pipx installs go through uv (settings.pypi.uvx; brew:uv). Python 3.13 for these tools only: Homebrew's newest
 # Python lacks wheels some need on Linux arm64.
-"pipx:debugpy" = { version = "latest", uvx_args = "--python 3.13" }
-"pipx:graphifyy" = { version = "latest", uvx_args = "--python 3.13" }
-"pipx:code-review-graph" = { version = "latest", uvx_args = "--python 3.13" }
+# "pipx:debugpy" = { version = "latest", uvx_args = "--python 3.13" }
+# "pipx:graphifyy" = { version = "latest", uvx_args = "--python 3.13" }
+# "pipx:code-review-graph" = { version = "latest", uvx_args = "--python 3.13" }
 
 [tasks]
 [tasks.up]

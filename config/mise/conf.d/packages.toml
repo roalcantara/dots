@@ -78,6 +78,7 @@
 "brew:helix" = "latest"                                # Post-modern modal text editor
 "brew:zsh-patina" = "latest"                           # Blazingly fast Zsh syntax highlighter
 "brew:asmvik/formulae/yabai" = { os = "macos" }        # A tiling window manager for macos
+"brew:rust" = { env = "desktop" }                      # Rust toolchain
 # "brew:bbrew" = { env = "desktop" }                     # TUI for managing Homebrew, Flatpak, and Mac App Store packages
 # "brew:cairo" = { env = "desktop" }                     # Vector graphics library with cross-device output support
 # "brew:gmp" = "latest"                                  # GNU multiple precision arithmetic library
@@ -85,7 +86,6 @@
 # "brew:jaq" = "latest"                                  # JQ clone focused on correctness and speed
 # "brew:posting" = "latest"                              # Modern API client for the terminal
 # "brew:pup" = { env = "desktop" }                       # CLI companion for Datadog and internal tooling
-# "brew:rust" = { env = "desktop" }                      # Rust toolchain
 # "brew:solargraph" = { env = "desktop" }                # Ruby language server
 # "brew:starship" = "latest"                             # Cross-shell prompt
 # "brew:block-goose-cli" = "latest" # Open source, extensible AI agent that goes beyond code suggestions
