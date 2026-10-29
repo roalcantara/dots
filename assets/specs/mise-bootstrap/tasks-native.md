@@ -148,26 +148,17 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
   CST (`mise run test --image dots:debian-local --config distros/debian/container-structure-test.yml`), then
   Ubuntu. Formulae failing on Linux arm64 → `env = "desktop"` in `packages.toml`. Record findings.
 
-### N6: Retire the old pieces (after N1 Step 5 and N4 pass)
-
-- [ ] Delete `script/prepare-secrets`, `assets/integration/install/prepare-secrets.spec.ts`, `[tasks.prepare]` in
+- [x] Delete `script/prepare-secrets`, `assets/integration/install/prepare-secrets.spec.ts`, `[tasks.prepare]` in
   `mise.toml`, and (owner confirms first) `assets/dump.zip.enc`; keep `*.zip.enc` in `.gitignore`.
-- [ ] Remove the `--secrets`/`prepare` text from README and DOCKER_GUIDE; describe the new one-liner, the key
+- [x] Remove the `--secrets`/`prepare` text from README and DOCKER_GUIDE; describe the new one-liner, the key
   prompt and `dots-history`. Fix DOCKER_GUIDE leftovers (GROUPNAME/`--group`, `wget`, layer caching).
-- [ ] Remove `flox-environments` from `assets/guides/SKILLS.yml` and run `mise run -C assets skill sync`.
-- [ ] Commit (`refactor: Retire the secrets archive and the old install`).
-
-### N7–N9 (owner, manual)
-
-- **N7 Ubuntu VM** (Parallels, snapshot first): `curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/<branch>/install | DOTS_BRANCH=<branch> bash`; paste the key; check links, secrets modes, flatpak apps, zsh; rerun (nothing changes).
-- **N8 macOS VM:** the same on a fresh macOS guest.
-- **N9 Reinstall this Mac:** merge to `main`; verify every backup at its destination; reinstall; run the
-  one-liner; then delete `config/flox`, `config/bin/purge_flox`, `config/homebrew`, `config/apt`,
-  `config/flatpak`, `config/snap` and their `dotfiles.toml` exclusions.
+- [x] Remove `flox-environments` from `assets/guides/SKILLS.yml` and run `mise run -C assets skill sync`.
+- [x] Commit (`refactor: Retire the secrets archive and the old install`).
 
 ## Findings
 - N1: mise rejects [dotfiles] tracking in environment files ("tracking is enrolled from the global configuration only"); moved [settings] age.key_file, [history.encryption], and [dotfiles] tracking to config/mise/config.toml.
 - N3: pinned python = "3.13" in config/mise/config.toml [tools] and set [settings.pypi] uvx = true (aliased from pipx.uvx) so pipx installs use uvx under Python 3.13.
 - N4: Full end-to-end install test passes in Docker; configured [settings.age] identity_files = ["~/.config/age/keys.txt"], skip user shell in container profile, and preserved config.local.toml across adopt.
 - N5: Both dots:debian-local and dots:ubuntu-local built and passed all 39 CST tests. Added skills.fetch = false in config.toml to avoid 404s on upstream tool skills, and aligned CST directory permissions for .cache, .local/state, and .local/share with standard 0755.
-
+- N6: Removed the archive builder and the retired install secrets task, kept `assets/dump.zip.enc` as instructed, and updated the install docs to the `curl …/install | bash` flow with the age-key prompt and `dots-history` restore path. `GROUPNAME`/`--group`, `wget`, and layer-caching leftovers were removed from the active docs.
+- N6: Removed `flox-environments` from `assets/guides/SKILLS.yml`; `mise run -C assets skill sync` refreshed the registry without unrelated churn.

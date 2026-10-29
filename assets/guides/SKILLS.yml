@@ -507,23 +507,6 @@ skills:
       surfaces:
         claude_optional: as a reminder; dots-quality-gate remains the executable authority
         dots_context_optional: Final reminder only; dots-quality-gate is the executable authority.
-  flox-environments:
-    location: global
-    rationale: Reproducible cross-platform environments via config/flox/ and Flox manifests.
-    policy:
-      type: optional
-      usage:
-        summary: Flox manifest and environment setup.
-        when:
-          load:
-            - config/flox
-            - flox.toml
-            - reproducible dev environments
-          avoid:
-            - Docker-only distro work with no Flox change
-      surfaces:
-        claude_optional: when editing config/flox or Flox environments
-        dots_context_optional: Editing config/flox or Flox environment manifests.
   neovim-best-practices:
     location: global
     rationale: Neovim configuration patterns for config/nvim while project Lua conventions apply.

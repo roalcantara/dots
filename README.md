@@ -27,33 +27,18 @@ An opinionated [DotFiles][10] repository. Ready to Engage!
 
 ---
 
-## Install
-
-`install` prepares a machine (user, sudo, timezone, mise, this repo, secrets) and hands over to
+`install` prepares a machine (user, sudo, timezone, mise, this repo, and the age key) and hands over to
 [`mise bootstrap`](https://mise.jdx.dev/bootstrap.html), which applies `config/mise/conf.d/`: packages, links,
-directories, login shell and the setup task. It runs on macOS and Debian/Ubuntu, in containers too, and a second
+directories, login shell, and the setup task. It runs on macOS and Debian/Ubuntu, in containers too, and a second
 run changes nothing.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash -s -- --secrets /tmp/dump.zip.enc
+curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash
 ```
 
-On a fresh machine, download the archive first (`install` checks `--secrets` before it clones the repo):
-`curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/assets/dump.zip.enc -o /tmp/dump.zip.enc`.
-
-| Option | Default | |
-| --- | --- | --- |
-| `--user <name>` | `roalcantara` | Target user; created when missing |
-| `--secrets <archive>` | — | Encrypted archive from `mise run prepare` (passphrase prompted, or `DOTS_SECRETS_PASSPHRASE`) |
-| `--tz <zone>` | — | Timezone to set |
-| `--nopasswd` | on in containers | Passwordless sudo for the user |
-| `--branch <ref>` | `main` | Branch to clone |
-| `-E <profile>` | `desktop` on hosts, `container` in containers | `desktop` adds workstation-only entries (GUI apps, heavy toolchains); flatpak on Linux |
-| `--dry-run` | — | Print what would change; change nothing |
-
-Make the secrets archive on a machine that has the keys: `mise run prepare -- --output <file>`. It holds the
-age key, `~/.config/ssh`, `~/.config/gnupg`, `gh` hosts and a GitHub token, encrypted with AES-256. Keep its
-passphrase in Bitwarden. `mise run prepare -- --fixture` makes a throwaway archive for tests.
+When the script prompts, paste the age key for this repo's encrypted history. The install entrypoint then
+restores the tracked secrets from the private `dots-history` origin (`~/.config/ssh`, `~/.config/gnupg`, and
+`~/.config/gh/hosts.yml`) and finishes with `mise bootstrap --adopt ...` / `mise bootstrap ...`.
 
 Later runs: `~/.local/share/dots/install`, or `mise bootstrap` directly.
 

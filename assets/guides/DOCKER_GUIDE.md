@@ -48,12 +48,11 @@ Both distros share the same multi-stage pattern:
 | Stage | Purpose |
 | --- | --- |
 | `base` | Microsoft DevContainer base (`mcr.microsoft.com/devcontainers/base:debian` or `:ubuntu`) |
-| `local` | `git archive HEAD` (SOPS files kept encrypted) copied to `~/Work/dots`; run `./install` — commit first |
-| `remote` | `curl` `install` from GitHub; default for CI and production-like builds |
+| `local` | `git archive HEAD` (SOPS files kept encrypted) copied to `~/.local/share/dots`; `curl …/install | bash` runs in the container |
+| `remote` | `curl` the one-liner from GitHub; default for CI and production-like builds |
 | `publish` | Same as `local`, tagged for Docker Hub |
 
-Shared build args: `TZ`, `TERM`, `BRANCH`, `USERNAME`, `GROUPNAME`,
-`GITHUB_REPO`.
+Shared build args: `TZ`, `TERM`, `BRANCH`, `USERNAME`, `GITHUB_REPO`.
 
 ### Alpine
 
@@ -72,18 +71,18 @@ DevContainer paths.
 
 | Target | When to use | Install source | Typical tag |
 | --- | --- | --- | --- |
-| `remote` | CI, PR preview, “install from branch” smoke tests | `wget` / GitHub raw `install` | `dots:<distro>` or `dots:<distro>-<tag>` |
-| `local` | Dev loop with working-tree changes | `git archive HEAD` + `./install` | `dots:<distro>-local` (convention) |
-| `publish` | Docker Hub / embedded publish with layer caching | `git archive HEAD` + `./install` | `dots:<distro>-publish` |
+| `remote` | CI, PR preview, “install from branch” smoke tests | `curl …/install | bash` | `dots:<distro>` or `dots:<distro>-<tag>` |
+| `local` | Dev loop with working-tree changes | `git archive HEAD` + `curl …/install | bash` | `dots:<distro>-local` (convention) |
+| `publish` | Docker Hub / embedded publish | `git archive HEAD` + `curl …/install | bash` | `dots:<distro>-publish` |
 
 **Remote** mirrors what a user gets from `curl …/install | bash` on a given
 `BRANCH`. Preview CI builds `remote` with `BRANCH=${{ github.head_ref }}`.
 
 **Local** and **publish** build from `git archive HEAD` with the SOPS smudge filter
 disabled, so encrypted files stay encrypted in the image; uncommitted changes are not included. `install`
-runs as root, creates the user, grants passwordless sudo and runs `mise bootstrap --force-dotfiles -E container --skip user`
-as that user. Images never receive a secrets archive, only `GITHUB_TOKEN` from the `github_token` build
-secret.
+runs as root, creates the user, grants passwordless sudo, and runs `mise bootstrap --force-dotfiles -E container --skip user`
+as that user. Images never receive a secrets archive; they restore the tracked secrets from the private `dots-history`
+origin when the key is pasted at the install prompt.
 
 Pass `--publish` to `mise run build` to select the `publish` target.
 
@@ -104,7 +103,6 @@ with platform mapping and target selection.
 | `--nocache` | off | Pass `--no-cache` to Docker |
 | `--tag` | — | Suffix appended: `dots:<distro>-<tag>` |
 | `--user` | — | `USERNAME` build-arg |
-| `--group` | — | `GROUPNAME` build-arg |
 | `--branch` | — | `BRANCH` build-arg (remote/publish install URL) |
 | `--repo` | — | `GITHUB_REPO` build-arg (`owner/name`) |
 | `--secret` | `./.secrets/github_token.secret` | GitHub token for BuildKit secret mount |
@@ -122,9 +120,9 @@ mise run build
 mise run build --distro ubuntu --platform amd64 --branch main
 
 # Local dev iteration
-mise run build --local --nocache --user vscode --group vscode --tag latest
+mise run build --local --nocache --user vscode --tag latest
 
-# Publish target (registry-oriented layers)
+# Publish target (registry-oriented image)
 mise run build --publish --distro debian --platform amd64 --tag publish
 ```
 
@@ -230,7 +228,6 @@ Alpine is **not** in the Preview matrix today.
 | --- | --- |
 | **docker-expert** | Editing Dockerfiles, build args, multi-stage design, BuildKit mounts |
 | **docker-patterns** | Compose, networking, volume strategy, container security |
-| **flox-environments** | Changing `config/flox` or Flox manifest behavior |
 | **github-actions-docs** | Changing `.github/workflows/preview.yml` |
 | **mise-tasks** | Extending `build` / `test` / `start` task usage blocks |
 
