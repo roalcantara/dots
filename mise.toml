@@ -7,7 +7,7 @@
 # mise run build --nocache
 # mise run build --nocache --distro ubuntu
 # mise run build --nocache --local
-# mise run build --nocache --local --user vscode --group vscode --tag latest
+# mise run build --nocache --local --user vscode --tag latest
 
 [tasks."build"]
 description = "Build a Docker image for dotfiles"
@@ -37,6 +37,7 @@ usage = '''
 '''
 run = '''
 #!/usr/bin/env bash
+set -o pipefail
 
 case "${usage_platform?}" in
   amd64)    PLATFORM_VALUE="linux/amd64" ;;

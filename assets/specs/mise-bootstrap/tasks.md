@@ -1531,6 +1531,7 @@ ARG BRANCH=main
 ARG USERNAME=vscode
 ARG GITHUB_REPO=roalcantara/dots
 
+# DOTS_CONTAINER=1: BuildKit has no /.dockerenv and cgroup v2 shows `0::/`, so install cannot detect the container.
 ENV CLICOLOR=1 \
     TZ=$TZ \
     TERM="$TERM" \
@@ -1540,6 +1541,7 @@ ENV CLICOLOR=1 \
     GITHUB_REPO="$GITHUB_REPO" \
     BRANCH="$BRANCH" \
     DEBIAN_FRONTEND=noninteractive \
+    DOTS_CONTAINER=1 \
     PATH="/home/$USERNAME/.local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -1599,7 +1601,7 @@ In each `container-structure-test.yml`, replace the whole `# FLOX` block (from `
     exitCode: 0
   - name: SOPS-filtered files should stay encrypted in the image
     command: bash
-    args: [-c, "! grep -q 'BEGIN OPENSSH PRIVATE KEY' /home/vscode/Work/dots/config/ssh/keys/*.key"]
+    args: [-c, "set -e; ls /home/vscode/Work/dots/config/ssh/keys/*.key >/dev/null; ! grep -q 'BEGIN OPENSSH PRIVATE KEY' /home/vscode/Work/dots/config/ssh/keys/*.key"]
     exitCode: 0
 ```
 and change two expectations:
@@ -1955,6 +1957,7 @@ formulae moved behind `env = "desktop"`, Docker Hub tags from the old stages, th
 - Task 4: The fixture forces the passphrase `dots-fixture` over any ambient value; `openssl enc` pins `-md sha256` (spec and Task 5 decrypt updated); it has no authentication, noted in the script. 8 tests now.
 - Task 5: Spec failed first on the old `install` (0 pass, 10 fail; every spec invocation starts with an option the old parser rejects with exit 1 before any setup, so the run was safe); then 18/18 passed (8 prepare-secrets + 10 install); shellcheck clean, `/bin/bash` 3.2.57 syntax ok; fake-HOME dry run ends with `would: <tmp>/.local/bin/mise bootstrap -E desktop`; real-home dry run reports user exists and both links `is linked`. Step 6 (real archive and passphrase) skipped: owner-interactive.
 - Task 6: Step 0 (Docker Hub check) left unticked for the owner. Dockerfiles rewritten; Ubuntu differs from Debian in two lines. Both CST files: FLOX block replaced by MISE, `.bashrc` now a symlink, `.config` a dir, six XDG dirs and `~/.cache/zsh` 0700 (Ubuntu keeps its own `~/` mode). `mise.toml` build: group and package-manager flags removed, no leftover `usage_group`/`PACKAGE_MANAGER`/`GROUPNAME`; local/publish pipe `git archive` into `docker build ... -`. Check: the archive of `config/ssh/keys/id_ed25519_github.key` starts with SOPS JSON (`"data": "ENC[AES256_GCM`), not the OpenSSH header. Deviation: `# hadolint ignore=DL4006` added to the remote stage (hadolint does not see the base stage's pipefail SHELL; plan block synced). Risk for Task 7: `install --tz` validates against `/usr/share/zoneinfo`; devcontainers base images are expected to ship tzdata, unverified. `hk check --all` fails on unrelated pre-existing shfmt diffs (config/nvim, config/raycast scripts), aborting other steps; hadolint and yamllint pass on their own.
+- Task 6 (review fixes): the MISE block was missing from both CST files (an earlier edit failed silently); now inserted, with the SOPS test made non-vacuous (`ls` of the keys first). `DOTS_CONTAINER=1` added to the `base` ENV (BuildKit has no /.dockerenv; cgroup v2 shows `0::/`). `set -o pipefail` added to the build task so a failing `git archive` fails the build. Stale `--group vscode` removed from the mise.toml example comment. Plan Step 1 block synced byte-identical with distros/debian/Dockerfile. hadolint and yamllint pass.
 - Task 5 review: `--tz` and `--branch` are validated (exit 2); root commands take values as `sh -c` arguments, never interpolated; the root-to-user switch writes the running code (`declare -f`) to `/tmp/dots-install.*` and hands the user an owned copy of the secrets and `GITHUB_TOKEN` in `/tmp/dots-secrets.*`; one `cleanup` list removes every temp path; apt updates once and installs non-interactively; the passphrase is unset after opening. Now 24 tests (8 + 16), including a real run in a fake checkout and home with a stub `mise`.
 - Task 5 review: deviation: the "run as root or as <user>" check in `detect` is skipped under `--dry-run`, so a dry run for another user still plans the user and stops at `would: continue as <user>` (an existing spec case). Linux paths (apt, sudo switch) are untested here; the regenerated script was checked by running it as the user stage on this Mac.
 - Task 5 review: copy_secret_dir keeps `umask 077` in the script (not a subshell) so the dry-run line stays `would: cp -R src dst`; `find` fixes the modes.

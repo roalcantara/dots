@@ -12,6 +12,7 @@ ARG BRANCH=main
 ARG USERNAME=vscode
 ARG GITHUB_REPO=roalcantara/dots
 
+# DOTS_CONTAINER=1: BuildKit has no /.dockerenv and cgroup v2 shows `0::/`, so install cannot detect the container.
 ENV CLICOLOR=1 \
     TZ=$TZ \
     TERM="$TERM" \
@@ -21,6 +22,7 @@ ENV CLICOLOR=1 \
     GITHUB_REPO="$GITHUB_REPO" \
     BRANCH="$BRANCH" \
     DEBIAN_FRONTEND=noninteractive \
+    DOTS_CONTAINER=1 \
     PATH="/home/$USERNAME/.local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 

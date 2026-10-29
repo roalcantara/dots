@@ -58,6 +58,20 @@ commandTests:
     args: [git]
     exitCode: 0
 
+  # MISE
+  - name: mise should be installed
+    command: /home/vscode/.local/bin/mise
+    args: [--version]
+    exitCode: 0
+  - name: core tools should be installed by mise bootstrap
+    command: bash
+    args: [-c, "for t in age bat eza fd fzf jq nvim rg sops starship zoxide; do command -v $t >/dev/null || { echo missing $t; exit 1; }; done"]
+    exitCode: 0
+  - name: SOPS-filtered files should stay encrypted in the image
+    command: bash
+    args: [-c, "set -e; ls /home/vscode/Work/dots/config/ssh/keys/*.key >/dev/null; ! grep -q 'BEGIN OPENSSH PRIVATE KEY' /home/vscode/Work/dots/config/ssh/keys/*.key"]
+    exitCode: 0
+
 # HOME DIRECTORIES
 fileExistenceTests:
   - name: ~/ (HOME dir)
