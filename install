@@ -98,4 +98,21 @@ if [ ! -L "$HOME/.config/mise" ]; then
   rm -rf "$HOME/.config/mise" # with age.txt: from here on the key is read from ~/.config/age/keys.txt
 fi
 ln -sfn ../.local/share/dots/config/mise "$HOME/.config/mise"
+# Hosts: a fresh home has its own ~/.bashrc and ~/.profile (from /etc/skel), and ~/.ssh or ~/.gnupg may already be
+# folders. mise refuses to replace them, rightly: forcing it can delete keys. Move them aside instead, once.
+if [ "$PROFILE" != container ]; then
+  aside="$HOME/.local/state/dots/pre-install-$(date +%Y%m%d%H%M%S)"
+  for name in .bashrc .profile .zshenv .ssh .gnupg; do
+    path="$HOME/$name"
+    if [ -L "$path" ] || [ ! -e "$path" ]; then continue; fi
+    if [ -d "$path" ] && [ -z "$(ls -A "$path")" ]; then
+      rmdir "$path"
+      continue
+    fi
+    mkdir -p "$aside"
+    mv "$path" "$aside/"
+    echo "install: moved ~/$name to $aside (dots links it to its own copy)"
+  done
+fi
+
 mise bootstrap "${BOOTSTRAP_ARGS[@]}"
