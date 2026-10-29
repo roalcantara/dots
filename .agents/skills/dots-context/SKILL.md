@@ -28,7 +28,7 @@ integration specs, guides, or CI.
 | -------------- | --------------------------------------------------------------- |
 | **Bash/Zsh**   | User shell; `config/bin` on PATH, functions on `$fpath`         |
 | **mise**       | Tool versions and tasks (root + `assets/mise.toml`)             |
-| **Flox**       | Declarative env in `config/flox/flox.toml`                      |
+| **mise bootstrap** | Machine setup in `config/mise/conf.d/`, entered through `install` |
 | **Docker**     | Dev images under `distros/`; `mise run build`                   |
 | **Bun**        | Test runner for `assets/integration/` and Cucumber support only |
 | **Neovim/Lua** | `config/nvim/`                                                  |
@@ -96,7 +96,6 @@ See [`config/bin/README.md`](../../config/bin/README.md).
 | **docs-writer** | Writing or reviewing guides and specs under assets/. |
 | **ast-grep** | Authoring or debugging structural search and rewrite rules. |
 | **verification-before-completion** | Final reminder only; dots-quality-gate is the executable authority. |
-| **flox-environments** | Editing config/flox or Flox environment manifests. |
 | **neovim-best-practices** | Editing config/nvim, LSP, plugins, or keymaps. |
 | **lua** | Lua under config/nvim or Busted test work. |
 <!-- skills:optional-companions:end -->

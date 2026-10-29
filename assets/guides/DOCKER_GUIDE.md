@@ -23,8 +23,7 @@ and **docker-patterns** companion skills (see
 | `.github/workflows/preview.yml` | PR pipeline: Hadolint → build → CST |
 
 Build context is always the **repository root** (`.`). Dockerfiles live under
-`distros/<distro>/` and use paths such as `../../install` and
-`../../config/flox` relative to that file location.
+`distros/<distro>/` and use paths such as `../../install` relative to that file location.
 
 ## Distro layout
 
@@ -49,15 +48,12 @@ Both distros share the same multi-stage pattern:
 | Stage | Purpose |
 | --- | --- |
 | `base` | Microsoft DevContainer base (`mcr.microsoft.com/devcontainers/base:debian` or `:ubuntu`) |
-| `local` | `COPY` full repo; run `./install` with `DOTS_EMBEDDED=1` — for iterating on uncommitted changes |
-| `remote` | Download `install` from GitHub; default for CI and production-like builds |
-| `publish` | Layered `COPY` of minimal config + `./install -e`; full tree copied after install for cache efficiency and Docker Hub publish |
+| `local` | `git archive HEAD` (SOPS files kept encrypted) copied to `~/Work/dots`; run `./install` — commit first |
+| `remote` | `curl` `install` from GitHub; default for CI and production-like builds |
+| `publish` | Same as `local`, tagged for Docker Hub |
 
 Shared build args: `TZ`, `TERM`, `BRANCH`, `USERNAME`, `GROUPNAME`,
-`GITHUB_REPO`, `PACKAGE_MANAGER` (default `flox`).
-
-Both disable Nix syscall filtering (`filter-syscalls = false`) so Flox works
-under QEMU/Docker arm64 emulation.
+`GITHUB_REPO`.
 
 ### Alpine
 
@@ -77,24 +73,17 @@ DevContainer paths.
 | Target | When to use | Install source | Typical tag |
 | --- | --- | --- | --- |
 | `remote` | CI, PR preview, “install from branch” smoke tests | `wget` / GitHub raw `install` | `dots:<distro>` or `dots:<distro>-<tag>` |
-| `local` | Dev loop with working-tree changes | `COPY` repo + `./install` | `dots:<distro>-local` (convention) |
-| `publish` | Docker Hub / embedded publish with layer caching | Partial `COPY` + `./install -e`, then full tree | `dots:<distro>-publish` |
+| `local` | Dev loop with working-tree changes | `git archive HEAD` + `./install` | `dots:<distro>-local` (convention) |
+| `publish` | Docker Hub / embedded publish with layer caching | `git archive HEAD` + `./install` | `dots:<distro>-publish` |
 
 **Remote** mirrors what a user gets from `curl …/install | bash` on a given
 `BRANCH`. Preview CI builds `remote` with `BRANCH=${{ github.head_ref }}`.
 
-**Local** sets `DOTS_EMBEDDED=1` and copies the entire repository into
-`~/.local/share/dots` before running `install`. Use this when validating
-Dockerfile or install changes before push:
-
-```bash
-mise run build --local --nocache --distro debian --tag local
-mise run start --distro debian --tag local
-```
-
-**Publish** optimizes layer caching for registry pushes: only `install` and
-selected `config/*` subtrees (including `config/flox`) run through the heavy
-`install -e` step; the rest of the repo is copied in a cheap final layer.
+**Local** and **publish** build from `git archive HEAD` with the SOPS smudge filter
+disabled, so encrypted files stay encrypted in the image; uncommitted changes are not included. `install`
+runs as root, creates the user, grants passwordless sudo and runs `mise bootstrap -E container --skip user`
+as that user. Images never receive a secrets archive, only `GITHUB_TOKEN` from the `github_token` build
+secret.
 
 Pass `--publish` to `mise run build` to select the `publish` target.
 
@@ -118,7 +107,6 @@ with platform mapping and target selection.
 | `--group` | — | `GROUPNAME` build-arg |
 | `--branch` | — | `BRANCH` build-arg (remote/publish install URL) |
 | `--repo` | — | `GITHUB_REPO` build-arg (`owner/name`) |
-| `--package-manager` | `flox` | `PACKAGE_MANAGER` build-arg |
 | `--secret` | `./.secrets/github_token.secret` | GitHub token for BuildKit secret mount |
 | `--build-arg` | — | Repeatable extra `--build-arg` pairs |
 
@@ -177,21 +165,6 @@ Starts an interactive container:
 ```bash
 mise run start --tag local --user vscode --workdir /workspaces/dots
 ```
-
-## Flox in the image
-
-Dots uses Flox as the default package manager (`PACKAGE_MANAGER=flox`).
-Manifest and composed environments live under [`config/flox`](../../config/flox):
-
-- [`config/flox/flox.toml`](../../config/flox/flox.toml) — root manifest; includes remote environment `roalcantara/cockpit`
-- [`config/flox/envs/cockpit/`](../../config/flox/envs/cockpit/) — local cockpit env metadata
-
-The **publish** stage explicitly `COPY`s `config/flox` before `install -e` so
-Flox paths and the cockpit environment exist before symlinks are created.
-CST asserts Flox is on `PATH`, lists the cockpit env, and checks minimum
-packages (`mise`, `neovim`, `sops`, `starship`, etc.).
-
-For manifest edits, load **flox-environments** (see skill routing).
 
 ## Hadolint (`.hadolint.yaml`)
 
