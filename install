@@ -14,6 +14,22 @@ HISTORY="${DOTS_HISTORY:-https://github.com/roalcantara/dots-history.git}"
 PROFILE="${DOTS_PROFILE:-desktop}"
 export PATH="$HOME/.local/bin:$PATH"
 
+# git clones the repo here and mise clones the history; a fresh Ubuntu desktop has curl and sudo but no git.
+if ! command -v git >/dev/null; then
+  if [ "$(uname -s)" = Darwin ]; then
+    echo "install: git is missing; run 'xcode-select --install', then rerun install" >&2
+    exit 2
+  elif command -v apt-get >/dev/null; then
+    sudo=""
+    [ "$(id -u)" -eq 0 ] || sudo="sudo"
+    $sudo apt-get update -qq
+    $sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq git
+  else
+    echo "install: git is missing; install it, then rerun install" >&2
+    exit 2
+  fi
+fi
+
 command -v mise >/dev/null || curl -fsSL https://mise.run | MISE_VERSION="v$MISE_VERSION" sh
 [ -d "$DOTS/.git" ] || git clone --branch "$BRANCH" "$REPO" "$DOTS"
 
