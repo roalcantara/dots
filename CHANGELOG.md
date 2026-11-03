@@ -1,3 +1,10 @@
+## [1.36.2](https://github.com/roalcantara/dots/compare/v1.36.1...v1.36.2) (2026-11-03)
+
+
+### Bug Fixes
+
+* **mise:** gopass on Linux, history push, devcontainer profile ([#88](https://github.com/roalcantara/dots/issues/88)) ([ef357ec](https://github.com/roalcantara/dots/commit/ef357ec87bbb1a82d657ca81c24cbccf15ff2510))
+
 ## [1.36.1](https://github.com/roalcantara/dots/compare/v1.36.0...v1.36.1) (2026-11-03)
 
 
