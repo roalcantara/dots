@@ -68,8 +68,11 @@ if [ -d /Applications/oMLX.app ] && command -v hf >/dev/null; then
   done
 fi
 
-# devcontainer: minimal, so no Neovim providers or plugins.
+# devcontainer: minimal, so no agent skills, Neovim providers or plugins.
 case ",${MISE_ENV:-}," in *,devcontainer,*) exit 0 ;; esac
+
+# Agent skills from config/agents/skill-lock.json; installs only the missing ones.
+mise run -C "$dots" skills:restore || warn "skills:restore"
 [ -d "$nvim_cfg" ] || exit 0
 if command -v npm >/dev/null && ! npm ls -g neovim >/dev/null 2>&1; then
   npm install -g neovim || warn "npm neovim"
