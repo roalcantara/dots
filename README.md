@@ -50,7 +50,7 @@ It creates no user and sets no timezone: the machine's own setup does that. A se
 | `DOTS_BRANCH` | `main` | Branch to clone (to try a branch, fetch `install` from it too) |
 | `DOTS_REPO` | `https://github.com/roalcantara/dots.git` | Repository to clone |
 | `DOTS_HISTORY` | `https://github.com/roalcantara/dots-history.git` | Encrypted history to restore |
-| `DOTS_PROFILE` | `desktop` | `container` skips the login shell and replaces a base image's dotfiles |
+| `DOTS_PROFILE` | `desktop` | `container` skips the login shell and replaces a base image's dotfiles; `devcontainer` also skips system packages and the Neovim setup ([test playbook](#testing-install-in-a-container-devcontainer-profile)) |
 | `DOTS_AGE_KEY` | — | The key itself, for tests; otherwise it is prompted |
 
 Docker images do not use `install` and get no secrets; see `assets/guides/DOCKER_GUIDE.md`. Later runs:
@@ -244,6 +244,60 @@ mise run test
 # Run CST with custom tag and platform:
 mise run test --tag latest --platform arm64
 ```
+
+### Testing `install` in a container (`devcontainer` profile)
+
+Runs the real `install` (with the secrets) in a throwaway container, in about 3 minutes. The `devcontainer`
+profile skips apt, Homebrew and the Neovim setup; `config/mise/config.devcontainer.toml` installs only gh, age,
+gopass, hk, pkl and sd. Use it to check the history restore, links and gopass without a VM.
+
+1. Put the age key and a GitHub token in a private folder (both stay on this machine; delete them in step 5):
+
+   ```sh
+   t="$(mktemp -d)"
+   (umask 077; grep '^AGE-SECRET-KEY' ~/.config/age/keys.txt > "$t/age"; gh auth token > "$t/gh")
+   ```
+
+2. Copy the `install` to test, from a branch or from `main`:
+
+   ```sh
+   git -C ~/Work/dots show <branch>:install > "$t/install"
+   curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install > "$t/install"
+   ```
+
+3. Write the test script:
+
+   ```sh
+   cat > "$t/run.sh" <<'SCRIPT'
+   set -u
+   export DOTS_AGE_KEY="$(cat /run/s/age)" GH_TOKEN="$(cat /run/s/gh)"
+   export DOTS_PROFILE=devcontainer DOTS_BRANCH="${BRANCH:-main}"
+   bash /run/s/install </dev/null > /tmp/install.log 2>&1; echo "install exit=$?"
+   grep -E '^bootstrap: .*failed' /tmp/install.log
+   unset GH_TOKEN DOTS_AGE_KEY
+   zsh -lic 'gopass ls --flat | wc -l; gopass config mounts.path; ssh -G github.com >/dev/null && echo ssh-ok'
+   exec bash
+   SCRIPT
+   ```
+
+4. Run it (pass the branch you copied `install` from; leave the shell with `exit`):
+
+   ```sh
+   docker run --rm -it -e BRANCH=<branch> -v "$t:/run/s:ro" -u vscode -w /home/vscode \
+     mcr.microsoft.com/devcontainers/base:ubuntu bash /run/s/run.sh
+   ```
+
+   Expect `install exit=0`, no `bootstrap: … failed` lines, the store's entry count, the path
+   `~/.local/share/gopass/password-store`, and `ssh-ok`. `/tmp/install.log` has the full output.
+
+5. Delete the key and token copies:
+
+   ```sh
+   rm -rf "$t"
+   ```
+
+The container restores the history but never pushes to it. Mac changes reach it only after `mise dot save` and
+`mise dot sync` on the Mac.
 
 ---
 
