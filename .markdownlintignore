@@ -5,3 +5,4 @@ graphify-out/
 .claude/
 config/fabric/patterns/
 docs/superpowers/
+config/agents/commands/
