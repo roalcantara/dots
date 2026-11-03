@@ -95,6 +95,8 @@ if [ ! -L "$HOME/.config/mise" ]; then
   rm -rf "$HOME/.config/mise" # with age.txt: from here on the key is read from ~/.config/age/keys.txt
 fi
 ln -sfn ../.local/share/dots/config/mise "$HOME/.config/mise"
+# Remember the profile for this machine: shells and later `mise bootstrap` runs load the same environment.
+printf 'env = ["%s"]\n' "$PROFILE" > "$DOTS/config/mise/miserc.local.toml"
 # Hosts: a fresh home has its own ~/.bashrc and ~/.profile (from /etc/skel), and ~/.ssh or ~/.gnupg may already be
 # folders. mise refuses to replace them, rightly: forcing it can delete keys. Move them aside instead, once.
 if [ "$PROFILE" = desktop ]; then
