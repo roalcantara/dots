@@ -1,3 +1,10 @@
+## [1.36.1](https://github.com/roalcantara/dots/compare/v1.36.0...v1.36.1) (2026-11-03)
+
+
+### Bug Fixes
+
+* **mise:** Finish the bootstrap follow-ups ([#87](https://github.com/roalcantara/dots/issues/87)) ([a0d4869](https://github.com/roalcantara/dots/commit/a0d48693c5ea27dba720ee5513ced99a12ce89a3))
+
 # [1.36.0](https://github.com/roalcantara/dots/compare/v1.35.0...v1.36.0) (2026-10-28)
 
 
