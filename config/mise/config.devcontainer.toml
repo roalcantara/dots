@@ -1,0 +1,7 @@
+# `mise bootstrap -E devcontainer` (install: DOTS_PROFILE=devcontainer): a minimal profile for fast container
+# tests. install skips system packages (apt, Homebrew), so the few tools the secrets and gopass need come from
+# aqua here; everything else in [bootstrap] and config.toml still applies.
+[tools]
+"aqua:cli/cli" = "latest"
+"aqua:FiloSottile/age" = "latest"
+"aqua:gopasspw/gopass" = "latest"
