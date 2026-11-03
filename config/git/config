@@ -727,9 +727,14 @@ name = roalcantara
 email = rogerio.alcantara@gmail.com
 signingkey = ~/.ssh/id_ed25519_github.pub
 
-[credential]
-helper = manager
-credentialStore = keychain
+# GitHub over HTTPS (the mise history origin) through the gh login; Git Credential Manager is not installed.
+# The empty helper clears system helpers (osxkeychain) for this host only.
+[credential "https://github.com"]
+helper =
+helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+helper =
+helper = !gh auth git-credential
 
 # vi: set ft=gitconfig:
 [filter "lfs"]
