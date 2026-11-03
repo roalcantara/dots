@@ -127,3 +127,166 @@ export function reviewCsv(rows: Row[]): string {
 export function addCommand(source: string, names: string[], agents: string[]): string[] {
   return ["skills", "add", source, "-g", "-y", "-s", ...names, ...(agents.length ? ["-a", ...agents] : [])];
 }
+
+// ---- commands -------------------------------------------------------------------------------------------
+
+const repoRoot = resolve(import.meta.dir, "..");
+const repoLock = join(repoRoot, "config/agents/skill-lock.json");
+const stateLock = join(process.env.XDG_STATE_HOME ?? join(homedir(), ".local/state"), "skills/.skill-lock.json");
+const csvPath = join(repoRoot, "script/skills.csv");
+const reviewPath = join(repoRoot, "config/agents/review.csv");
+
+/** SKILL_LOCK, else the repo's lock once it exists, else the CLI's own (before the migration). */
+function lockPath(): string {
+  return process.env.SKILL_LOCK ?? (existsSync(repoLock) ? repoLock : stateLock);
+}
+
+function skillsDir(): string {
+  return process.env.SKILLS_DIR ?? join(homedir(), ".agents/skills");
+}
+
+function readLock(path: string): Lock {
+  return JSON.parse(readFileSync(path, "utf8")) as Lock;
+}
+
+const isGithubRepo = (source: string) => /^[\w.-]+\/[\w.-]+$/.test(source);
+
+const trees = new Map<string, TreeEntry[]>();
+
+/** A GitHub repo's full tree, fetched once per run; empty (with a warning) when it cannot be read. */
+function fetchTree(source: string): TreeEntry[] {
+  const cached = trees.get(source);
+  if (cached) return cached;
+  const r = run(["gh", "api", `repos/${source}/git/trees/HEAD?recursive=1`]);
+  let tree: TreeEntry[] = [];
+  if (r.code !== 0) {
+    console.warn(`warning: cannot read ${source}: ${r.err.trim().split("\n")[0]}`);
+  } else {
+    const body = JSON.parse(r.out) as { tree: TreeEntry[]; truncated?: boolean };
+    if (body.truncated) console.warn(`warning: ${source} is too large for one tree request; some folders are missed`);
+    tree = body.tree;
+  }
+  trees.set(source, tree);
+  return tree;
+}
+
+function audit(apply: boolean): void {
+  const dir = skillsDir();
+  const lock = readLock(lockPath());
+  const csv = existsSync(csvPath) ? parseSkillsCsv(readFileSync(csvPath, "utf8")) : new Map<string, string>();
+  const names = readdirSync(dir).filter((n) => !n.startsWith(".")).sort();
+  const rows: Row[] = [];
+
+  // 1. Self-check: the hashing must reproduce the lock's skillFolderHash for nearly every locked skill.
+  let checked = 0;
+  let matched = 0;
+  for (const name of names) {
+    const entry = lock.skills[name];
+    if (!entry) continue;
+    if (lstatSync(join(dir, name)).isSymbolicLink()) {
+      rows.push({ name, status: "custom", candidateSource: "", localHash: "", upstreamHash: "" });
+      continue;
+    }
+    const localHash = treeHash(join(dir, name));
+    const same = !!entry.skillFolderHash && entry.skillFolderHash === localHash;
+    checked++;
+    if (same) matched++;
+    rows.push({
+      name,
+      status: same ? "locked" : "locked-differs",
+      candidateSource: entry.source,
+      localHash,
+      upstreamHash: entry.skillFolderHash ?? "",
+    });
+  }
+  console.log(`self-check: ${matched}/${checked} locked skills match their skillFolderHash`);
+  if (checked > 0 && matched / checked < MIN_MATCH_RATIO) {
+    console.error("self-check failed: the hashing does not reproduce the lock; stopping");
+    process.exit(1);
+  }
+
+  // 2. Unlocked skills: look for a folder of the same name, its CSV source first, then every known source.
+  const sources = [...new Set([...Object.values(lock.skills).map((e) => e.source), ...csv.values()])].filter(isGithubRepo);
+  for (const name of names) {
+    if (lock.skills[name]) continue;
+    const path = join(dir, name);
+    if (lstatSync(path).isSymbolicLink()) {
+      rows.push({ name, status: "custom", candidateSource: "", localHash: "", upstreamHash: "" });
+      continue;
+    }
+    const localHash = treeHash(path);
+    const first = csv.get(name);
+    const order = first && isGithubRepo(first) ? [first, ...sources.filter((s) => s !== first)] : sources;
+    const candidates: { source: string; entry: TreeEntry }[] = [];
+    for (const source of order) {
+      for (const entry of findCandidates(name, fetchTree(source))) candidates.push({ source, entry });
+      if (candidates.some((c) => c.entry.sha === localHash)) break;
+    }
+    rows.push({ name, localHash, ...matchCandidates(localHash, candidates) });
+    console.log(`${name}: ${rows[rows.length - 1].status}`);
+  }
+
+  // 3. Report.
+  const counts = new Map<Status, number>();
+  for (const r of rows) counts.set(r.status, (counts.get(r.status) ?? 0) + 1);
+  console.log([...counts].map(([s, n]) => `${s} ${n}`).join(" · "));
+  mkdirSync(dirname(reviewPath), { recursive: true });
+  writeFileSync(reviewPath, reviewCsv(rows));
+  console.log(`wrote ${relative(repoRoot, reviewPath)}`);
+
+  // 4. --apply: re-add confirmed skills through the CLI, which records them in its lock.
+  if (!apply) return;
+  const bySource = new Map<string, string[]>();
+  for (const r of rows.filter((row) => row.status === "confirmed")) {
+    bySource.set(r.candidateSource, [...(bySource.get(r.candidateSource) ?? []), r.name]);
+  }
+  const failed = [...bySource].filter(([source, list]) => runLoud(addCommand(source, list, lock.lastSelectedAgents ?? [])) !== 0);
+  if (failed.length) {
+    console.error(`skills add failed for: ${failed.map(([s]) => s).join(", ")}`);
+    process.exit(1);
+  }
+}
+
+function restore(): void {
+  const path = lockPath();
+  const lock = readLock(path);
+  const committed = run(["git", "show", "HEAD:config/agents/skill-lock.json"], repoRoot);
+  const committedCount =
+    !process.env.SKILL_LOCK && committed.code === 0 ? Object.keys((JSON.parse(committed.out) as Lock).skills ?? {}).length : 0;
+  const problem = lockProblem(lock, committedCount);
+  if (problem) {
+    console.error(`skills:restore: ${problem}`);
+    process.exit(1);
+  }
+  const missing = missingSkills(lock, skillsDir());
+  if (missing.length === 0) {
+    console.log("skills:restore: every locked skill is installed");
+    return;
+  }
+  // A throwaway state folder, so the CLI writes its lock there and never rewrites the committed one.
+  const state = mkdtempSync(join(tmpdir(), "skills-state-"));
+  const env = { ...process.env, XDG_STATE_HOME: state };
+  const failed: string[] = [];
+  try {
+    for (const [source, names] of groupBySource(lock, missing)) {
+      if (runLoud(addCommand(source, names, lock.lastSelectedAgents ?? []), env) !== 0) failed.push(source);
+    }
+  } finally {
+    rmSync(state, { recursive: true, force: true });
+  }
+  console.log(`skills:restore: ${missing.length} missing, ${failed.length} source(s) failed`);
+  if (failed.length) {
+    console.error(`failed: ${failed.join(", ")}`);
+    process.exit(1);
+  }
+}
+
+if (import.meta.main) {
+  const [command, ...args] = process.argv.slice(2);
+  if (command === "audit") audit(args.includes("--apply"));
+  else if (command === "restore") restore();
+  else {
+    console.error("usage: bun script/agent-skills.ts audit [--apply] | restore");
+    process.exit(2);
+  }
+}

@@ -175,3 +175,35 @@ describe("treeHash", () => {
     }
   });
 });
+
+describe("restore command", () => {
+  const script = join(import.meta.dir, "../../../script/agent-skills.ts");
+
+  function restore(lockText: string) {
+    const dir = tempDir();
+    try {
+      writeFileSync(join(dir, "lock.json"), lockText);
+      mkdirSync(join(dir, "skills"));
+      const r = Bun.spawnSync(["bun", script, "restore"], {
+        env: { ...process.env, SKILL_LOCK: join(dir, "lock.json"), SKILLS_DIR: join(dir, "skills") },
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      return { code: r.exitCode, out: r.stdout.toString(), err: r.stderr.toString() };
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+
+  it("refuses a lock of another version", () => {
+    const r = restore(JSON.stringify({ version: 2, skills: {} }));
+    expect(r.code).toBe(1);
+    expect(r.err).toContain("lock version 2");
+  });
+
+  it("does nothing when every locked skill is present", () => {
+    const r = restore(JSON.stringify({ version: 3, skills: {} }));
+    expect(r.code).toBe(0);
+    expect(r.out).toContain("every locked skill is installed");
+  });
+});
