@@ -2,7 +2,7 @@
 # Sets up this machine: mise, the dots checkout, the age key, then mise bootstrap (design.md §10).
 # curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash
 # Env: DOTS_BRANCH (main), DOTS_REPO (clone URL), DOTS_HISTORY (the private history origin),
-#      DOTS_PROFILE (desktop), DOTS_AGE_KEY (the key, for tests; otherwise it is read from the terminal).
+#      DOTS_PROFILE (desktop | container | devcontainer), DOTS_AGE_KEY (the key, for tests; otherwise it is read from the terminal).
 set -euo pipefail
 
 MISE_VERSION="2026.10.22"
@@ -78,7 +78,11 @@ esac
 BOOTSTRAP_ARGS=("-E" "$PROFILE" "--yes")
 # Containers only: replace the base image's .bashrc/.profile. On a host, --force-dotfiles would replace a real
 # ~/.ssh or ~/.gnupg folder with a link and delete the keys in it.
-if [ "$PROFILE" = "container" ]; then BOOTSTRAP_ARGS+=("--force-dotfiles" "--skip" "user"); fi
+case "$PROFILE" in
+  container) BOOTSTRAP_ARGS+=("--force-dotfiles" "--skip" "user") ;;
+  # Minimal: no system packages (apt, Homebrew); config.devcontainer.toml installs the few tools it needs.
+  devcontainer) BOOTSTRAP_ARGS+=("--force-dotfiles" "--skip" "user,packages") ;;
+esac
 
 # Under `curl | bash` stdin is the script: give mise the terminal so prompts (sudo, chsh) can be answered.
 tty_in=/dev/null
@@ -91,9 +95,11 @@ if [ ! -L "$HOME/.config/mise" ]; then
   rm -rf "$HOME/.config/mise" # with age.txt: from here on the key is read from ~/.config/age/keys.txt
 fi
 ln -sfn ../.local/share/dots/config/mise "$HOME/.config/mise"
+# Remember the profile for this machine: shells and later `mise bootstrap` runs load the same environment.
+printf 'env = ["%s"]\n' "$PROFILE" > "$DOTS/config/mise/miserc.local.toml"
 # Hosts: a fresh home has its own ~/.bashrc and ~/.profile (from /etc/skel), and ~/.ssh or ~/.gnupg may already be
 # folders. mise refuses to replace them, rightly: forcing it can delete keys. Move them aside instead, once.
-if [ "$PROFILE" != container ]; then
+if [ "$PROFILE" = desktop ]; then
   aside="$HOME/.local/state/dots/pre-install-$(date +%Y%m%d%H%M%S)"
   for name in .bashrc .profile .zshenv .ssh .gnupg; do
     path="$HOME/$name"

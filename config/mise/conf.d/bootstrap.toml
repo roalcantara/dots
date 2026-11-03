@@ -51,11 +51,12 @@ warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
 mise run -C "$dots" setup:git:filters || warn "setup:git:filters"
 mise run -C "$dots" setup:hooks || warn "setup:hooks"
 
-# gopass store: cloned once the history has restored the SSH keys and gopass's age identity (hosts only).
+# gopass store: cloned once the history has restored gopass's age identity. HTTPS through the gh login
+# (install runs `gh auth login`): the SSH config names GitHub `Host github`, so git@github.com has no key.
 store="$HOME/.local/share/gopass/password-store"
-if command -v gopass >/dev/null && [ ! -d "$store/.git" ] && [ -s "$HOME/.config/ssh/id_ed25519_github" ] &&
-  [ -d "$HOME/.config/gopass/age" ]; then
-  git clone git@github.com:roalcantara/pass-store.git "$store" || warn "gopass store clone"
+if command -v gopass >/dev/null && [ ! -d "$store/.git" ] && [ -d "$HOME/.config/gopass/age" ]; then
+  git -c credential.helper= -c 'credential.https://github.com.helper=!gh auth git-credential' \
+    clone https://github.com/roalcantara/pass-store.git "$store" || warn "gopass store clone"
 fi
 
 # oMLX models (macOS, once the app is installed by hand): download only the missing ones.
@@ -67,6 +68,8 @@ if [ -d /Applications/oMLX.app ] && command -v hf >/dev/null; then
   done
 fi
 
+# devcontainer: minimal, so no Neovim providers or plugins.
+case ",${MISE_ENV:-}," in *,devcontainer,*) exit 0 ;; esac
 [ -d "$nvim_cfg" ] || exit 0
 if command -v npm >/dev/null && ! npm ls -g neovim >/dev/null 2>&1; then
   npm install -g neovim || warn "npm neovim"

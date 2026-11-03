@@ -7,8 +7,49 @@
 #USAGE example "pss"
 #USAGE example "pss tools/bitly.com/token"
 #USAGE example "pss export /path/to/secrets"
-source /Users/roalcantara/Work/dots/config/bin/src/helpers
-h::needs_command gopass
+
+__has_bin() {
+  command -v "$1" >/dev/null 2>&1
+}
+__needs_command() {
+  if ! __has_bin "$1"; then
+    echo "Error: $1 is not installed" >&2
+    exit 1
+  fi
+}
+__has_command() {
+  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v "$1" >/dev/null 2>&1
+}
+__puts() {
+  case "$1" in
+    i|info)
+      if __has_command gum; then
+        gum log --time DateTime --level info "$2"
+      else
+        print -P -- "%F{green}✔%f $2"
+      fi
+      ;;
+    w|warn)
+      if __has_command gum; then
+        gum log --time DateTime --level warn "$2"
+      else
+        print -P -- "%F{yellow}✘%f $2" >&2
+      fi
+      ;;
+    e|err|error)
+      if __has_command gum; then
+        gum log --time DateTime --level error "$2"
+      else
+        print -P -- "%F{red}✘%f $2" >&2
+      fi
+      ;;
+    f|fatal)
+      __puts error "$2"
+      exit 1
+      ;;
+  esac
+}
+__needs_command gopass
 
 if [[ -n "${usage_export_path:-}" ]]; then
   mkdir -p "$usage_export_path"
@@ -23,15 +64,15 @@ fi
 
 if [[ -z "${usage_key:-}" ]]; then
   if [[ ! -t 1 ]]; then
-    h::puts fatal "key argument required in non-interactive environment"
+    __puts fatal "key argument required in non-interactive environment"
   fi
   items=$(gopass ls --flat 2>/dev/null || true)
-  if h::has_command gum; then
+  if __has_command gum; then
     usage_key=$(echo "$items" | gum filter --limit=1)
-  elif h::has_command fzf; then
+  elif __has_command fzf; then
     usage_key=$(echo "$items" | fzf)
   else
-    h::puts fatal "Interactive selection requires gum or fzf"
+    __puts fatal "Interactive selection requires gum or fzf"
   fi
 fi
 

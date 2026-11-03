@@ -161,3 +161,4 @@ keys.txt
 
 # mise age identity: the root secret; install never puts it here, but keep it out of git regardless.
 mise/age.txt
+*/**/mise/locks
