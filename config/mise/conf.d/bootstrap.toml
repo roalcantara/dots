@@ -51,6 +51,22 @@ warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
 mise run -C "$dots" setup:git:filters || warn "setup:git:filters"
 mise run -C "$dots" setup:hooks || warn "setup:hooks"
 
+# gopass store: cloned once the history has restored the SSH keys and gopass's age identity (hosts only).
+store="$HOME/.local/share/gopass/password-store"
+if command -v gopass >/dev/null && [ ! -d "$store/.git" ] && [ -s "$HOME/.config/ssh/id_ed25519_github" ] &&
+  [ -d "$HOME/.config/gopass/age" ]; then
+  git clone git@github.com:roalcantara/pass-store.git "$store" || warn "gopass store clone"
+fi
+
+# oMLX models (macOS, once the app is installed by hand): download only the missing ones.
+if [ -d /Applications/oMLX.app ] && command -v hf >/dev/null; then
+  for model in mlx-community/parakeet-tdt-0.6b-v3 Jundot/gemma-4-E2B-it-oQ4e-mtp \
+    mlx-community/Qwen3-4B-Instruct-2507-4bit; do
+    dir="$HOME/.omlx/models/$model"
+    [ -f "$dir/config.json" ] || hf download "$model" --local-dir "$dir" || warn "oMLX model $model"
+  done
+fi
+
 [ -d "$nvim_cfg" ] || exit 0
 if command -v npm >/dev/null && ! npm ls -g neovim >/dev/null 2>&1; then
   npm install -g neovim || warn "npm neovim"

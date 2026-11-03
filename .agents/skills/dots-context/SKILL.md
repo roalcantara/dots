@@ -46,7 +46,7 @@ assets/guides/       Human guides (read GLOSSARY first)
 assets/specs/        SDD: requirements, design, tasks per feature
 assets/features/     Gherkin living documentation
 assets/integration/  Bun subprocess specs
-distros/             Dockerfiles (debian, ubuntu, alpine)
+distros/             Dockerfiles (debian, ubuntu)
 install              Bootstrap script
 mise.toml            Docker, setup, CI tasks
 assets/mise.toml     bdd, integration, test, skill tasks

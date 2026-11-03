@@ -33,12 +33,10 @@ distros/
 │   ├── Dockerfile
 │   ├── container-structure-test.yml
 │   └── .dockerignore
-├── ubuntu/
-│   ├── Dockerfile
-│   ├── container-structure-test.yml
-│   └── .dockerignore
-└── alpine/
-    └── Dockerfile
+└── ubuntu/
+    ├── Dockerfile
+    ├── container-structure-test.yml
+    └── .dockerignore
 ```
 
 ### Debian and Ubuntu
@@ -53,19 +51,6 @@ Both distros share the same multi-stage pattern:
 | `publish` | Same as `local`, tagged for Docker Hub |
 
 Shared build args: `TZ`, `TERM`, `BRANCH`, `USERNAME`, `GITHUB_REPO`.
-
-### Alpine
-
-Alpine is a **single-stage**, remote-only Dockerfile:
-
-- Base: `mcr.microsoft.com/devcontainers/base:alpine-3.18`
-- Not yet ported: it still pipes the retired `install` flags (`--TZ`, `--USERNAME`, `--GROUPNAME`) and would block on the key prompt. Port it to the Debian pattern or drop it (tasks-native.md N9)
-- Includes a `HEALTHCHECK` that runs `zsh`
-- **Not** in the `mise run build` distro choices today (`debian` | `ubuntu` only)
-- **No** `container-structure-test.yml` yet
-
-Use Alpine for lightweight experiments; Debian/Ubuntu are the supported
-DevContainer paths.
 
 ## Build targets: local vs remote vs publish
 
@@ -187,7 +172,7 @@ Per-distro YAML under `distros/<distro>/container-structure-test.yml`
 (schema 2.0.0). Each file defines:
 
 1. **`globalEnvVars`** — XDG paths, `ZDOTDIR`, `MISE_*`, npm/starship config
-2. **`commandTests`** — `which` for core tools; Flox env and package list
+2. **`commandTests`** — `which` for core tools
 3. **`fileExistenceTests`** — Home layout, config symlinks, nvim venv, absence of `.oh-my-zsh`
 
 CI runs CST in debug mode with JUnit output for GitHub Checks (see below).
@@ -218,8 +203,6 @@ Notable CI settings:
 - **Cache:** GitHub Actions cache + registry cache refs
 - **Secrets:** `GH_TOKEN` / `github_token` for install; `DOCKERHUB_TOKEN` for login
 
-Alpine is **not** in the Preview matrix today.
-
 ## Related skills
 
 | Skill | Load when |
@@ -231,33 +214,20 @@ Alpine is **not** in the Preview matrix today.
 
 ## Suggested improvements
 
-1. **Add Alpine to CI matrix** — `distros/alpine/Dockerfile` exists but Preview
-   only lint/builds `debian` and `ubuntu`. Add Hadolint + remote build smoke
-   (or a dedicated alpine job) once `container-structure-test.yml` exists for
-   alpine.
-
-2. **Pin base image digests** — Dockerfiles use floating tags
+1. **Pin base image digests** — Dockerfiles use floating tags
    (`mcr.microsoft.com/devcontainers/base:debian`). Pin by digest in `FROM` and
    document update cadence in this guide to improve reproducibility and supply-chain
    hygiene (Hadolint `DL3007` is currently ignored for flexibility).
 
-3. **Document and promote `--local` in contributor flow** — Remote builds hide
+2. **Document and promote `--local` in contributor flow** — Remote builds hide
    uncommitted changes; new contributors often expect `mise run build` to test
    their branch. Add a short “local vs remote” callout to PR templates or
    [`TESTING_GUIDE.md`](TESTING_GUIDE.md) cross-link, and consider a
    `mise run build --local` smoke job on PRs (optional, cache-friendly).
 
-4. **Extend `mise run build --distro` to alpine** — Wire alpine into usage
-   `choices` and add `distros/alpine/container-structure-test.yml` so local
-   and CI paths match debian/ubuntu.
-
-5. **Unify secret mount IDs** — Alpine uses `GITHUB_TOKEN`; debian/ubuntu use
-   `github_token`. Align secret IDs across Dockerfiles and CI for simpler
-   operator mental model.
 
 ## See also
 
-- [`GLOSSARY.md`](GLOSSARY.md) — Hadolint, CST, DevContainer, Flox
+- [`GLOSSARY.md`](GLOSSARY.md) — Hadolint, CST, DevContainer
 - [`MISE_GUIDE.md`](MISE_GUIDE.md) — `usage` flags and `usage_*` variables
 - [`TESTING_GUIDE.md`](TESTING_GUIDE.md) — verification gates
-- [`config/flox/flox.toml`](../../config/flox/flox.toml) — Flox manifest
