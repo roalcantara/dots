@@ -3,7 +3,62 @@
 
 emulate -L zsh          # Pin zsh-native behavior regardless of invoking environment
 setopt no_unset         # Enforce explicit ${VAR:-} guards for environment variables
-source /Users/roalcantara/Work/dots/config/bin/src/helpers
+
+__has_bin() {
+  command -v "$1" >/dev/null 2>&1
+}
+__needs_command() {
+  if ! __has_bin "$1"; then
+    echo "Error: $1 is not installed" >&2
+    exit 1
+  fi
+}
+__has_command() {
+  [[ -t 1 && "${TERM:-}" != "dumb" ]] && command -v "$1" >/dev/null 2>&1
+}
+__puts() {
+  case "$1" in
+    i|info)
+      if __has_command gum; then
+        gum log --time DateTime --level info "$2"
+      else
+        print -P -- "%F{green}✔%f $2"
+      fi
+      ;;
+    w|warn)
+      if __has_command gum; then
+        gum log --time DateTime --level warn "$2"
+      else
+        print -P -- "%F{yellow}✘%f $2" >&2
+      fi
+      ;;
+    e|err|error)
+      if __has_command gum; then
+        gum log --time DateTime --level error "$2"
+      else
+        print -P -- "%F{red}✘%f $2" >&2
+      fi
+      ;;
+    f|fatal)
+      __puts error "$2"
+      exit 1
+      ;;
+  esac
+}
+__copy_to_clipboard() {
+  if __has_bin pbcopy; then
+    printf '%s' "$1" | pbcopy
+  elif [[ -n "${WAYLAND_DISPLAY:-}" ]] && __has_bin wl-copy; then
+    printf '%s' "$1" | wl-copy
+  elif __has_bin xclip; then
+    printf '%s' "$1" | xclip -selection clipboard
+  elif __has_bin xsel; then
+    printf '%s' "$1" | xsel --clipboard --input
+  else
+    __puts error "No clipboard utility found (pbcopy, xclip, xsel)"
+    return 1
+  fi
+}
 
 # Must be captured at top level: zsh sets FUNCTION_ARGZERO by default, so inside
 # a function $0 is the function's own name, not this file. %x is the file being
@@ -43,7 +98,7 @@ EOF
 }
 
 xcg::in_repo() {
-  git rev-parse --git-dir >/dev/null 2>&1 || h::puts fatal "not a git repository"
+  git rev-parse --git-dir >/dev/null 2>&1 || __puts fatal "not a git repository"
 }
 
 xcg::head_branch() {
@@ -130,7 +185,7 @@ xcg::list() {
 }
 
 xcg::ui() {
-  h::needs_command fzf
+  __needs_command fzf
 
   export XCG_STATE="${XCG_STATE:-$(mktemp -t xcg-state)}"
   export XCG_LOG="${XCG_LOG:-$(mktemp -t xcg-log)}"
@@ -198,13 +253,13 @@ xcg::copy_diag() {
     print -r -- "$payload"
     return 0
   fi
-  h::copy_to_clipboard "$payload"
+  __copy_to_clipboard "$payload"
 }
 
 xcg::confirm() {
   local prompt="$1"
   [[ -n "${XCG_YES:-}" ]] && return 0
-  if h::has_bin gum; then
+  if __has_bin gum; then
     gum confirm "$prompt"
   else
     local reply
@@ -238,7 +293,7 @@ xcg::delete() {
     fi
   done
 
-  (( ${#skipped} )) && h::puts warn "Skipped protected: ${(j:, :)skipped}"
+  (( ${#skipped} )) && __puts warn "Skipped protected: ${(j:, :)skipped}"
   (( ${#locals} + ${#remotes} )) || return 0
 
   local flag=-d
@@ -248,7 +303,7 @@ xcg::delete() {
   (( ${#locals} ))  && print -r -- "  local  (git branch $flag): ${(j:, :)locals}"
   (( ${#remotes} )) && print -r -- "  remote (git push --delete): ${(j:, :)remotes}"
 
-  xcg::confirm "Proceed?" || { h::puts info "Aborted"; return 0; }
+  xcg::confirm "Proceed?" || { __puts info "Aborted"; return 0; }
 
   local rc=0
   (( ${#locals} )) && { git branch "$flag" "${locals[@]}" || rc=$? }
@@ -358,7 +413,7 @@ xcg::copy() {
     print -r -- "$payload"
     return 0
   fi
-  h::copy_to_clipboard "$payload"
+  __copy_to_clipboard "$payload"
 }
 
 main() {
@@ -373,7 +428,7 @@ main() {
 
   case "$subcmd" in
     "")
-      if [[ -t 1 ]] && h::has_bin fzf; then
+      if [[ -t 1 ]] && __has_bin fzf; then
         xcg::ui
       else
         xcg::branches
@@ -383,7 +438,7 @@ main() {
     remote-branches) xcg::remote_branches "${1:-origin}" ;;
     head-branch)     xcg::head_branch ;;
     cnb)
-      [[ -n "${1:-}" ]] || h::puts fatal "cnb requires a branch name"
+      [[ -n "${1:-}" ]] || __puts fatal "cnb requires a branch name"
       git checkout -b "$1"
       ;;
     clear-merged)    xcg::clear_merged ;;
@@ -397,7 +452,7 @@ main() {
     __diag)      xcg::diag ;;
     __copy-diag) xcg::copy_diag ;;
     *)
-      h::puts error "unknown subcommand: $subcmd"
+      __puts error "unknown subcommand: $subcmd"
       xcg::help >&2
       return 1
       ;;
@@ -425,7 +480,7 @@ xcg::clear_merged() {
   done < <(git for-each-ref --merged "$(xcg::default_branch)" --format='%(refname:short)' refs/heads 2>/dev/null)
   (( ${#doomed} )) || return 0
   git branch -d "${doomed[@]}"
-  h::puts info "Cleared merged branches"
+  __puts info "Cleared merged branches"
 }
 
 xcg::clear_gone() {
@@ -440,7 +495,7 @@ xcg::clear_gone() {
   done < <(git for-each-ref --format='%(refname:short)|%(upstream:track,nobracket)' refs/heads 2>/dev/null)
   (( ${#doomed} )) || return 0
   git branch -D "${doomed[@]}"
-  h::puts info "Cleared gone branches"
+  __puts info "Cleared gone branches"
 }
 
 main "$@"
