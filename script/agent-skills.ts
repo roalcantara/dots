@@ -10,7 +10,14 @@ export const LOCK_VERSION = 3;
 /** Below this share of locked skills matching their skillFolderHash, the hashing is wrong and the audit stops. */
 export const MIN_MATCH_RATIO = 0.9;
 
-export type LockEntry = { source: string; sourceUrl?: string; skillPath?: string; skillFolderHash?: string };
+export type LockEntry = {
+  source: string;
+  sourceType?: string;
+  sourceUrl?: string;
+  sourceBaseUrl?: string;
+  skillPath?: string;
+  skillFolderHash?: string;
+};
 export type Lock = { version: number; skills: Record<string, LockEntry>; lastSelectedAgents?: string[] };
 export type TreeEntry = { path: string; type: string; sha: string };
 export type Status = "locked" | "locked-differs" | "confirmed" | "differs" | "unknown" | "custom";
@@ -26,7 +33,13 @@ function run(cmd: string[], cwd?: string): Result {
 /** Runs a command with its output on this terminal; returns the exit code. */
 function runLoud(cmd: string[], env: Record<string, string | undefined> = process.env): number {
   console.log(`$ ${cmd.join(" ")}`);
-  return Bun.spawnSync(cmd, { env, stdout: "inherit", stderr: "inherit" }).exitCode ?? 1;
+  try {
+    return Bun.spawnSync(cmd, { env, stdout: "inherit", stderr: "inherit" }).exitCode ?? 1;
+  } catch (error) {
+    // Bun throws when the executable is missing (e.g. `skills` not installed yet).
+    console.error(`cannot run ${cmd[0]}: ${(error as Error).message}`);
+    return 127;
+  }
 }
 
 /** Git tree id of a folder's contents without .git and node_modules: what the lock's skillFolderHash records. */
@@ -85,18 +98,25 @@ export function lockProblem(lock: unknown, committedCount: number): string | nul
   if (version !== LOCK_VERSION) {
     return `lock version ${version} is not ${LOCK_VERSION}; check the skills CLI before restoring`;
   }
+  // A wipe empties the lock; an uncommitted `skills remove` only shrinks it, so allow up to half.
   const count = Object.keys(skills ?? {}).length;
-  if (count < committedCount) return `the lock has ${count} entries, fewer than the ${committedCount} committed at HEAD`;
+  if (count < committedCount / 2) {
+    return `the lock has ${count} entries, less than half of the ${committedCount} committed at HEAD`;
+  }
   return null;
 }
 
-/** The given lock entries grouped by the source `skills add` takes (sourceUrl, else source), in lock order. */
+/**
+ * The given lock entries grouped by the source `skills add` takes, in lock order: sourceUrl, else source; for a
+ * well-known entry, sourceBaseUrl (its sourceUrl is a versioned archive URL that `skills add` does not accept).
+ */
 export function groupBySource(lock: Lock, names: string[]): Map<string, string[]> {
   const groups = new Map<string, string[]>();
   for (const name of names) {
     const entry = lock.skills[name];
     if (!entry) continue;
-    const source = entry.sourceUrl ?? entry.source;
+    const source =
+      entry.sourceType === "well-known" ? (entry.sourceBaseUrl ?? entry.source) : (entry.sourceUrl ?? entry.source);
     groups.set(source, [...(groups.get(source) ?? []), name]);
   }
   return groups;
@@ -274,11 +294,15 @@ function restore(): void {
   } finally {
     rmSync(state, { recursive: true, force: true });
   }
-  console.log(`skills:restore: ${missing.length} missing, ${failed.length} source(s) failed`);
-  if (failed.length) {
-    console.error(`failed: ${failed.join(", ")}`);
-    process.exit(1);
-  }
+  // `skills add` exits 0 when a requested skill is gone upstream, so check what is still missing.
+  const notInstalled = missingSkills(lock, skillsDir()).filter((name) => missing.includes(name));
+  console.log(
+    `skills:restore: ${missing.length} missing, ${missing.length - notInstalled.length} installed, ` +
+      `${failed.length} source(s) failed`,
+  );
+  if (failed.length) console.error(`failed sources: ${failed.join(", ")}`);
+  if (notInstalled.length) console.error(`not installed (gone upstream or failed): ${notInstalled.join(", ")}`);
+  if (failed.length || notInstalled.length) process.exit(1);
 }
 
 if (import.meta.main) {

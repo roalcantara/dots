@@ -66,7 +66,7 @@ it. The CLI's own lock file moves into the repo and is linked back to both paths
 - Create: `assets/integration/agents/agent-skills.spec.ts`
 - Create: `script/agent-skills.ts`
 
-- [ ] **Step 1: Write the failing tests.** Create `assets/integration/agents/agent-skills.spec.ts` with exactly:
+- [x] **Step 1: Write the failing tests.** Create `assets/integration/agents/agent-skills.spec.ts` with exactly:
 
 ```ts
 #!/usr/bin/env bun
@@ -248,12 +248,12 @@ describe("treeHash", () => {
 });
 ```
 
-- [ ] **Step 2: Run the tests and watch them fail.**
+- [x] **Step 2: Run the tests and watch them fail.**
 
 Run: `cd ~/Work/dots/assets && mise x bun@1.3.14 -- bun test integration/agents/`
 Expected: FAIL, with an error like `Cannot find module '../../../script/agent-skills'`.
 
-- [ ] **Step 3: Write the helpers.** Create `script/agent-skills.ts` with exactly this content (Task 2 adds the
+- [x] **Step 3: Write the helpers.** Create `script/agent-skills.ts` with exactly this content (Task 2 adds the
   commands at the end):
 
 ```ts
@@ -388,13 +388,13 @@ export function addCommand(source: string, names: string[], agents: string[]): s
 }
 ```
 
-- [ ] **Step 4: Run the tests and watch them pass.**
+- [x] **Step 4: Run the tests and watch them pass.**
 
 Run: `cd ~/Work/dots/assets && mise x bun@1.3.14 -- bun test integration/agents/`
 Expected: PASS, `18 pass`, `0 fail`. If `treeHash` fails with a different id, do not change the expected
 value: check that the filter skips `.git` and `node_modules`, then stop and ask the owner.
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 cd ~/Work/dots
@@ -412,7 +412,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Modify: `script/agent-skills.ts` (append at the end)
 - Modify: `assets/integration/agents/agent-skills.spec.ts` (append at the end)
 
-- [ ] **Step 1: Write the failing test for the restore guard.** Append to
+- [x] **Step 1: Write the failing test for the restore guard.** Append to
   `assets/integration/agents/agent-skills.spec.ts`:
 
 ```ts
@@ -449,13 +449,13 @@ describe("restore command", () => {
 });
 ```
 
-- [ ] **Step 2: Run the tests and watch the two new ones fail.**
+- [x] **Step 2: Run the tests and watch the two new ones fail.**
 
 Run: `cd ~/Work/dots/assets && mise x bun@1.3.14 -- bun test integration/agents/`
 Expected: the 18 earlier tests pass; the 2 `restore command` tests FAIL (the script has no `restore` yet,
 so it exits 0 with no output).
 
-- [ ] **Step 3: Append the commands** to the end of `script/agent-skills.ts`:
+- [x] **Step 3: Append the commands** to the end of `script/agent-skills.ts`:
 
 ```ts
 // ---- commands -------------------------------------------------------------------------------------------
@@ -622,12 +622,12 @@ if (import.meta.main) {
 }
 ```
 
-- [ ] **Step 4: Run the tests and watch them all pass.**
+- [x] **Step 4: Run the tests and watch them all pass.**
 
 Run: `cd ~/Work/dots/assets && mise x bun@1.3.14 -- bun test integration/agents/`
 Expected: PASS, `20 pass`, `0 fail`.
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 cd ~/Work/dots
@@ -645,7 +645,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Modify: `mise.toml` (append at the end)
 - Modify: `config/mise/config.toml` (the `[tools]` table, and the `fix:skills` task at the end)
 
-- [ ] **Step 1: Append the tasks** to the end of `mise.toml`:
+- [x] **Step 1: Append the tasks** to the end of `mise.toml`:
 
 ```toml
 
@@ -664,14 +664,14 @@ run = "bun script/agent-skills.ts restore"
   mise appends arguments given after `--` to a one-line `run`, so `mise run skills:audit -- --apply` runs
   `bun script/agent-skills.ts audit --apply`.
 
-- [ ] **Step 2: Declare the `skills` CLI.** In `config/mise/config.toml`, find the line
+- [x] **Step 2: Declare the `skills` CLI.** In `config/mise/config.toml`, find the line
   `"pipx:pynvim" = "latest"` in `[tools]` and add this line right after it:
 
 ```toml
 "npm:skills" = "latest"                                          # Agent skills CLI (config/agents/skill-lock.json)
 ```
 
-- [ ] **Step 3: Delete the `fix:skills` task.** It is the last section of `config/mise/config.toml`
+- [x] **Step 3: Delete the `fix:skills` task.** It is the last section of `config/mise/config.toml`
   (from the line `[tasks."fix:skills"]` to the end of the file). Run:
 
 ```bash
@@ -689,12 +689,12 @@ grep -c 'fix:skills' config/mise/config.toml
   Expected: the last lines are the end of the `[tasks.backup]` task (`age -p -o omp-...` then `'''`), and the
   count is `0`.
 
-- [ ] **Step 4: Check the tasks load.**
+- [x] **Step 4: Check the tasks load.**
 
 Run: `cd ~/Work/dots && mise tasks ls 2>/dev/null | grep -E '^skills:'`
 Expected: two lines, `skills:audit` and `skills:restore`.
 
-- [ ] **Step 5: Lint and commit.** Run the `hk check` command from the ground rules; then:
+- [x] **Step 5: Lint and commit.** Run the `hk check` command from the ground rules; then:
 
 ```bash
 cd ~/Work/dots
@@ -713,7 +713,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 **Files:**
 - Create (generated): `config/agents/review.csv`
 
-- [ ] **Step 1: Run it.** It reads `~/.local/state/skills/.skill-lock.json` (the repo lock does not exist yet)
+- [x] **Step 1: Run it.** It reads `~/.local/state/skills/.skill-lock.json` (the repo lock does not exist yet)
   and makes about 70 `gh api` calls. It takes a few minutes.
 
 ```bash
@@ -728,7 +728,7 @@ cd ~/Work/dots && mise run skills:audit 2>&1 | tee "$TMPDIR/skills-audit.log" | 
 
   If the self-check fails, **STOP** and report the log to the owner.
 
-- [ ] **Step 2: Check the report.**
+- [x] **Step 2: Check the report.**
 
 ```bash
 cd ~/Work/dots
@@ -739,7 +739,7 @@ cut -d, -f2 config/agents/review.csv | sort | uniq -c
   Expected: the header `name,status,candidate_source,local_hash,upstream_hash`, and counts for only
   `differs`, `locked-differs` and `unknown`.
 
-- [ ] **Step 3: STOP.** Report to the owner: the counts line, and that `config/agents/review.csv` lists the
+- [x] **Step 3: STOP.** Report to the owner: the counts line, and that `config/agents/review.csv` lists the
   skills to back up. Ask the owner to:
   1. back up the folders listed in `review.csv` (from `~/.agents/skills/<name>`), and
   2. approve running `--apply`, which re-adds the `confirmed` skills through the `skills` CLI (the content is
@@ -755,7 +755,7 @@ cut -d, -f2 config/agents/review.csv | sort | uniq -c
 - Create: `config/agents/skill-lock.json`
 - Modify: `config/mise/conf.d/dotfiles.toml` (append at the end)
 
-- [ ] **Step 1: Apply.**
+- [x] **Step 1: Apply.**
 
 ```bash
 cd ~/Work/dots && mise run skills:audit -- --apply 2>&1 | tee "$TMPDIR/skills-apply.log" | tail -5
@@ -765,7 +765,7 @@ python3 -c "import json,os;print(len(json.load(open(os.path.expanduser('~/.local
   Expected: one `$ skills add …` line per confirmed source, no `skills add failed` line, and the printed
   count equals 187 plus the `confirmed` count from Task 4.
 
-- [ ] **Step 2: Copy the lock into the repo.**
+- [x] **Step 2: Copy the lock into the repo.**
 
 ```bash
 cd ~/Work/dots
@@ -776,7 +776,7 @@ python3 -c "import json;d=json.load(open('config/agents/skill-lock.json'));print
 
   Expected: `3 <count from Step 1>`.
 
-- [ ] **Step 3: Link both lock paths to it.** Append to `config/mise/conf.d/dotfiles.toml`:
+- [x] **Step 3: Link both lock paths to it.** Append to `config/mise/conf.d/dotfiles.toml`:
 
 ```toml
 
@@ -786,7 +786,7 @@ python3 -c "import json;d=json.load(open('config/agents/skill-lock.json'));print
 "~/.agents/.skill-lock.json" = { source = "~/.local/share/dots/config/agents/skill-lock.json", relative = true }
 ```
 
-- [ ] **Step 4: Replace the two real files with the links.** mise refuses to replace a real file, so move them
+- [x] **Step 4: Replace the two real files with the links.** mise refuses to replace a real file, so move them
   aside first:
 
 ```bash
@@ -803,7 +803,7 @@ ls -l ~/.local/state/skills/.skill-lock.json ~/.agents/.skill-lock.json
   the checkout these links resolve through; on this Mac it points at `~/Work/dots`
   (`readlink ~/.local/share/dots`).
 
-- [ ] **Step 5: Check the CLI sees it.**
+- [x] **Step 5: Check the CLI sees it.**
 
 ```bash
 python3 -c "import json,os;print(len(json.load(open(os.path.expanduser('~/.local/state/skills/.skill-lock.json')))['skills']))"
@@ -811,7 +811,7 @@ python3 -c "import json,os;print(len(json.load(open(os.path.expanduser('~/.local
 
   Expected: the same count as Step 2.
 
-- [ ] **Step 6: Lint and commit.**
+- [x] **Step 6: Lint and commit.**
 
 ```bash
 cd ~/Work/dots
@@ -832,7 +832,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `config/agents/commands/` (moved from `~/.agents/commands`)
 - Modify: `config/mise/conf.d/dotfiles.toml`
 
-- [ ] **Step 1: Scan for secrets.** The repo is public.
+- [x] **Step 1: Scan for secrets.** The repo is public.
 
 ```bash
 grep -rniE 'ghp_|github_pat_|sk-[a-z0-9]{16}|AKIA[0-9A-Z]{16}|AGE-SECRET-KEY|BEGIN [A-Z ]*PRIVATE KEY|password *[:=]' ~/.agents/commands
@@ -841,7 +841,7 @@ grep -rniE 'ghp_|github_pat_|sk-[a-z0-9]{16}|AKIA[0-9A-Z]{16}|AGE-SECRET-KEY|BEG
   Expected: no output (checked on 2026-11-03: the only `token`/`secret` words are instructions not to write
   secrets). If anything prints, **STOP** and show it to the owner.
 
-- [ ] **Step 2: Copy the folder into the repo.**
+- [x] **Step 2: Copy the folder into the repo.**
 
 ```bash
 cd ~/Work/dots
@@ -851,14 +851,14 @@ diff -r ~/.agents/commands config/agents/commands && echo same
 
   Expected: `same`.
 
-- [ ] **Step 3: Link it.** Append to `config/mise/conf.d/dotfiles.toml`:
+- [x] **Step 3: Link it.** Append to `config/mise/conf.d/dotfiles.toml`:
 
 ```toml
 # The owner's agent commands.
 "~/.agents/commands" = { source = "~/.local/share/dots/config/agents/commands", relative = true }
 ```
 
-- [ ] **Step 4: Replace the real folder with the link.**
+- [x] **Step 4: Replace the real folder with the link.**
 
 ```bash
 mv ~/.agents/commands "$TMPDIR/old-agents-commands"
@@ -869,7 +869,7 @@ ls ~/.agents/commands
 
   Expected: a link ending in `config/agents/commands`, listing `done.md fd kb setup superset wip`.
 
-- [ ] **Step 5: Lint and commit.**
+- [x] **Step 5: Lint and commit.**
 
 ```bash
 cd ~/Work/dots
@@ -888,7 +888,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Modify: `config/mise/conf.d/bootstrap.toml` (the `bootstrap` task)
 - Delete: `script/skills.csv`
 
-- [ ] **Step 1: Drop the track entry.** In `config/mise/config.toml`, delete these lines exactly (they follow
+- [x] **Step 1: Drop the track entry.** In `config/mise/config.toml`, delete these lines exactly (they follow
   the `"~/.config/gopass"` entry):
 
 ```toml
@@ -903,7 +903,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
   Check: `grep -c '"~/.agents"' config/mise/config.toml` prints `0`.
 
-- [ ] **Step 2: Call the restore from bootstrap.** In `config/mise/conf.d/bootstrap.toml`, find these two
+- [x] **Step 2: Call the restore from bootstrap.** In `config/mise/conf.d/bootstrap.toml`, find these two
   lines in the `bootstrap` task:
 
 ```bash
@@ -921,13 +921,13 @@ case ",${MISE_ENV:-}," in *,devcontainer,*) exit 0 ;; esac
 mise run -C "$dots" skills:restore || warn "skills:restore"
 ```
 
-- [ ] **Step 3: Delete the old CSV.**
+- [x] **Step 3: Delete the old CSV.**
 
 ```bash
 cd ~/Work/dots && git rm -q script/skills.csv
 ```
 
-- [ ] **Step 4: Check the config and the history.**
+- [x] **Step 4: Check the config and the history.**
 
 ```bash
 cd ~/Work/dots
@@ -940,7 +940,7 @@ mise dot status 2>&1 | sed -n '/Tracking/,/checkpoints/p'
   Expected: three `ok` lines; `Tracking` shows 3 entries (`~/.config/ssh`, `~/.config/gnupg`,
   `~/.config/gopass`), far fewer files than the 4,000+ before.
 
-- [ ] **Step 5: Check the restore is a no-op here.**
+- [x] **Step 5: Check the restore is a no-op here.**
 
 ```bash
 cd ~/Work/dots && mise run skills:restore && git status --short config/agents
@@ -948,7 +948,7 @@ cd ~/Work/dots && mise run skills:restore && git status --short config/agents
 
   Expected: `skills:restore: every locked skill is installed`, and no changes under `config/agents`.
 
-- [ ] **Step 6: Lint and commit.**
+- [x] **Step 6: Lint and commit.**
 
 ```bash
 cd ~/Work/dots
@@ -961,7 +961,7 @@ skills:restore. script/skills.csv is replaced by skills:audit.
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ```
 
-- [ ] **Step 7: Save and push the history**, so other machines stop restoring `~/.agents` from it:
+- [x] **Step 7: Save and push the history**, so other machines stop restoring `~/.agents` from it:
 
 ```bash
 mise dot save 2>&1 | tail -1
@@ -980,7 +980,7 @@ mise dot status 2>&1 | grep 'Last published'
 - Modify: `README.md` (the "Testing `install` in a container" section)
 - Modify: `assets/specs/mise-bootstrap/tasks-native.md` (the `## Findings` list, at the end)
 
-- [ ] **Step 1: README.** In `README.md`, find this paragraph at the end of the container playbook:
+- [x] **Step 1: README.** In `README.md`, find this paragraph at the end of the container playbook:
 
 ```markdown
 The container restores the history but never pushes to it. Mac changes reach it only after `mise dot save` and
@@ -1000,13 +1000,13 @@ there), so `skills add` and `skills update` show up as git diffs. `mise run skil
 whose source is not confirmed in `config/agents/review.csv`.
 ```
 
-- [ ] **Step 2: tasks-native.md.** Append this line to the end of `assets/specs/mise-bootstrap/tasks-native.md`:
+- [x] **Step 2: tasks-native.md.** Append this line to the end of `assets/specs/mise-bootstrap/tasks-native.md`:
 
 ```markdown
 - Follow-up (2026-11-03): `~/.agents` is no longer tracked in `dots-history`. Skills restore from `config/agents/skill-lock.json` (`skills:restore`, run by `tasks.bootstrap`); commands live in `config/agents/commands`. See `assets/specs/agent-skills-lock/`.
 ```
 
-- [ ] **Step 3: Lint and commit.**
+- [x] **Step 3: Lint and commit.**
 
 ```bash
 cd ~/Work/dots
@@ -1020,13 +1020,13 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 9: Verify in a fresh container
 
-- [ ] **Step 1: Push the branch** (the container clones it):
+- [x] **Step 1: Push the branch** (the container clones it):
 
 ```bash
 cd ~/Work/dots && git push -u origin feat/agent-skills-lock
 ```
 
-- [ ] **Step 2: Prepare the secrets folder and the script** (the README playbook, steps 1–3, with this branch):
+- [x] **Step 2: Prepare the secrets folder and the script** (the README playbook, steps 1–3, with this branch):
 
 ```bash
 t="$(mktemp -d)"
@@ -1049,7 +1049,7 @@ SCRIPT
 echo "$t"
 ```
 
-- [ ] **Step 3: Run it.** It takes several minutes (about 60 repo clones).
+- [x] **Step 3: Run it.** It takes several minutes (about 60 repo clones).
 
 ```bash
 docker run --rm -v "$t:/run/s:ro" -u vscode -w /home/vscode mcr.microsoft.com/devcontainers/base:ubuntu bash /run/s/run.sh
@@ -1066,7 +1066,7 @@ docker run --rm -v "$t:/run/s:ro" -u vscode -w /home/vscode mcr.microsoft.com/de
   If any source fails, record the failing sources from `/tmp/restore.log` in the PR description; do not change
   the lock to hide them.
 
-- [ ] **Step 4: Delete the secrets copy.**
+- [x] **Step 4: Delete the secrets copy.**
 
 ```bash
 rm -rf "$t"
@@ -1076,7 +1076,7 @@ rm -rf "$t"
 
 ### Task 10: Pull request
 
-- [ ] **Step 1: Open it.**
+- [x] **Step 1: Open it.**
 
 ```bash
 cd ~/Work/dots
@@ -1101,4 +1101,12 @@ EOF
 
   Replace the `<fill in …>` text with the real numbers from Task 9 before running the command.
 
-- [ ] **Step 2: Report** the PR link and the Task 4 counts to the owner.
+- [x] **Step 2: Report** the PR link and the Task 4 counts to the owner.
+
+## Review (2026-11-03)
+
+- Container run (Task 9): 318 of 336 restored. 3 sources failed to clone, and 15 skills were silently missing: their
+  folders are gone upstream and `skills add` exits 0 anyway. `restore` now re-checks and names them.
+- `macos-memory-triage` (well-known) failed: restore used its archive `sourceUrl`; it now uses `sourceBaseUrl`.
+- The count guard now refuses only below half the committed entries, so an uncommitted `skills remove` does not
+  block bootstrap; a missing `skills` binary is reported instead of crashing.

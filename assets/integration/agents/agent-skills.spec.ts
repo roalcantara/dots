@@ -96,8 +96,12 @@ describe("lockProblem", () => {
     expect(lockProblem({ ...lock, version: 2 }, 0)).toContain("lock version 2");
   });
 
-  it("rejects a lock with fewer entries than committed", () => {
-    expect(lockProblem(lock, 4)).toContain("fewer than the 4 committed");
+  it("accepts a lock a little smaller than committed (an uncommitted skills remove)", () => {
+    expect(lockProblem(lock, 4)).toBeNull();
+  });
+
+  it("rejects a lock with less than half the committed entries (a wipe)", () => {
+    expect(lockProblem(lock, 7)).toContain("less than half of the 7 committed");
   });
 
   it("rejects something that is not a lock", () => {
@@ -112,6 +116,23 @@ describe("groupBySource", () => {
       ["https://github.com/o/one.git", ["alpha", "beta"]],
       ["o/two", ["gamma"]],
     ]);
+  });
+});
+
+describe("groupBySource for well-known entries", () => {
+  it("uses sourceBaseUrl, not the archive sourceUrl", () => {
+    const wk: Lock = {
+      version: LOCK_VERSION,
+      skills: {
+        triage: {
+          source: "clawhub.ai",
+          sourceType: "well-known",
+          sourceUrl: "https://example.site/api/v1/agent-skills/x/triage/archive?version=1.0.0",
+          sourceBaseUrl: "https://clawhub.ai/x/skills/triage",
+        },
+      },
+    };
+    expect([...groupBySource(wk, ["triage"]).keys()]).toEqual(["https://clawhub.ai/x/skills/triage"]);
   });
 });
 

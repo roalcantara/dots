@@ -76,15 +76,21 @@ A mise task, read-only unless given `--apply`.
 
 A mise task run by new machines.
 
-- **Guards:** refuse when the lock's `version` is not 3, or when it has fewer entries than the committed lock at
-  `HEAD` (another silent wipe).
+- **Guards:** refuse when the lock's `version` is not 3, or when it has less than half the entries of the committed
+  lock at `HEAD` (another silent wipe; an uncommitted `skills remove` only shrinks it a little).
 - **Idempotent:** skip every skill whose folder already exists, edited or not, so a restore never overwrites local
   edits.
 - **Install:** one `skills add <sourceUrl> -s <names> -g -y` per source, for the lock's `lastSelectedAgents`.
 - **Leaves the committed lock alone:** runs with `XDG_STATE_HOME` set to a temporary folder, so new machines do
   not rewrite `installedAt`/`updatedAt`. The owner's own `skills add` and `update` still write the real lock.
-- **Failures:** a failing source warns and the run continues; a summary lists the failures and the task exits
-  non-zero.
+- **Failures:** a failing source warns and the run continues. `skills add` exits 0 when a requested skill is gone
+  upstream, so restore re-checks what is still missing; a summary names failed sources and skills not installed,
+  and the task exits non-zero.
+- **Well-known sources** (`sourceType = "well-known"`) restore from `sourceBaseUrl`: their `sourceUrl` is a
+  versioned archive URL `skills add` rejects. Re-adding one through the CLI drops `sourceBaseUrl` from the lock,
+  so check its diff before committing.
+- **Not pinned:** the lock records no commit, so restore installs the latest upstream; a skill deleted upstream
+  cannot be restored (15 of 336 on 2026-11-03). Keep a backup of those.
 - **Callers:** `tasks.bootstrap` on the `desktop` and `container` profiles; the `devcontainer` profile skips
   it (about 60 clones), and tests run it by hand.
 
