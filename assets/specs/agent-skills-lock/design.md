@@ -32,7 +32,8 @@ than the global scope.
 | 448 installed skills have no lock entry | 635 folders minus 187 |
 | `script/skills.csv` guesses a source for 263 of them | `fix:skills` output: the most-installed `skills find` match by name, not proof |
 | 185 have neither | Mostly `google-*`, `gke-*`, `cloud-*`, `bigquery-*`, `apple-*`, `apollo-*`, `electrobun-*`, `superset-*`, `nx-*` |
-| Lock entries carry `source`, `sourceUrl`, `skillPath`, `skillFolderHash` | `skillFolderHash` is 40 hex characters, assumed to be the folder's git tree id (checked in §4.1 step 1) |
+| `skillFolderHash` is the folder's GitHub tree id | The CLI's `getSkillFolderHashFromTree()`; `git write-tree` of the local folder (without `.git` and `node_modules`) reproduces it for 169 of the 187 |
+| 18 locked skills were edited here | Their tree ids differ: e.g. `brainstorming` and `writing-plans` carry a local Doctrine Check section |
 
 ## 3. Decisions
 
@@ -52,7 +53,8 @@ than the global scope.
 A mise task, read-only unless given `--apply`.
 
 1. **Self-check.** Compute the git tree id of each locked skill's folder and compare it with `skillFolderHash`.
-   If any differ, stop: the hashing method is wrong.
+   If fewer than 90% match, stop: the hashing method is wrong. Locked skills that differ are edited here, and a
+   restore would replace them with upstream: they get the status `locked-differs`.
 2. **Candidates.** For each installed folder without a lock entry, take its `script/skills.csv` source; failing
    that, any repo already in the lock or the CSV that has a folder of that name. Each repo's tree is fetched once
    with `gh api repos/<owner>/<repo>/git/trees/HEAD?recursive=1`.
@@ -64,6 +66,8 @@ A mise task, read-only unless given `--apply`.
    | `differs` | Same name upstream, different content | Row in `review.csv` |
    | `unknown` | No candidate | Row in `review.csv` |
    | `custom` | A link into `config/agents/skills/` or a local checkout (`cua-driver`, `recon`) | Skipped |
+   | `locked` | In the lock, same tree id | Nothing |
+   | `locked-differs` | In the lock, edited here | Row in `review.csv` |
 
 4. Print the counts per status. `review.csv` columns: `name, status, candidate_source, local_hash,
    upstream_hash`.
@@ -74,7 +78,8 @@ A mise task run by new machines.
 
 - **Guards:** refuse when the lock's `version` is not 3, or when it has fewer entries than the committed lock at
   `HEAD` (another silent wipe).
-- **Idempotent:** skip skills already installed with a matching tree id.
+- **Idempotent:** skip every skill whose folder already exists, edited or not, so a restore never overwrites local
+  edits.
 - **Install:** one `skills add <sourceUrl> -s <names> -g -y` per source, for the lock's `lastSelectedAgents`.
 - **Leaves the committed lock alone:** runs with `XDG_STATE_HOME` set to a temporary folder, so new machines do
   not rewrite `installedAt`/`updatedAt`. The owner's own `skills add` and `update` still write the real lock.
@@ -113,7 +118,7 @@ Nothing is untracked before everything it covers has another home.
 
 | Check | Expect |
 | --- | --- |
-| Audit self-check | All 187 local tree ids equal `skillFolderHash` |
+| Audit self-check | At least 90% of locked skills match `skillFolderHash` (169 of 187 on 2026-11-03) |
 | Restore in a fresh `devcontainer` container, run by hand | Every lock entry installed with a matching tree id |
 | Restore again | Nothing installed |
 | Guard | A lock with `version: 2`, or fewer entries than `HEAD`, is refused |
