@@ -1,0 +1,102 @@
+#:schema ./backup.schema.json
+# Backup policy for script/backup.ts (mise run backup, backup:restore, …).
+# Every key, default and reason: assets/guides/REINSTALL_GUIDE.md, "The manifest".
+
+[repository]
+root = "/Volumes/backups"                          # DOTS_BACKUP_ROOT overrides
+path = "machines/{host}/restic"                    # {host}: scutil --get LocalHostName, or DOTS_BACKUP_HOST
+password_command = "gopass show -o backups/restic" # skipped when a RESTIC_PASSWORD* variable is set
+
+[backup]
+paths = ["~"]
+tags = ["{host}"]
+exclude_caches = true # also skip any folder holding a CACHEDIR.TAG
+
+[retention]
+daily = 7
+weekly = 4
+monthly = 12
+
+[[exclude]]
+pattern = "~/.cache"
+why = "XDG cache; tools recreate it"
+
+[[exclude]]
+pattern = "~/Library/Caches"
+why = "macOS app caches; apps recreate them"
+
+[[exclude]]
+pattern = "~/.Trash"
+why = "Deleted files"
+
+[[exclude]]
+pattern = "~/Library/CloudStorage"
+why = "Cloud drives (Google Drive, Dropbox); their provider syncs them, and reading them downloads every file"
+
+[[exclude]]
+pattern = "~/Library/Mobile Documents"
+why = "iCloud Drive; iCloud syncs it"
+
+[[exclude]]
+pattern = "~/.omlx"
+why = "oMLX models; the bootstrap task downloads them again"
+
+[[exclude]]
+pattern = "~/.local/share/mise"
+why = "mise tool installs; mise bootstrap reinstalls them"
+
+[[exclude]]
+pattern = "~/.local/share/cargo"
+why = "Cargo registry and builds; reinstalled from the Brewfile and mise"
+
+[[exclude]]
+pattern = "~/.local/share/rustup"
+why = "Rust toolchains; rustup reinstalls them"
+
+[[exclude]]
+pattern = "~/.local/share/uv"
+why = "uv tools and Pythons; the bootstrap task reinstalls them"
+
+[[exclude]]
+pattern = "~/.local/share/nvim"
+why = "Neovim plugins; Lazy restores them from the lock file in dots"
+
+[[exclude]]
+pattern = "~/Library/Developer/Xcode/DerivedData"
+why = "Xcode build output"
+
+[[exclude]]
+pattern = "~/Library/Developer/CoreSimulator"
+why = "iOS simulators; Xcode downloads them again"
+
+[[exclude]]
+pattern = "~/Library/Containers/com.docker.docker"
+why = "Docker Desktop VM disk; images are pulled or rebuilt"
+
+[[exclude]]
+pattern = "~/.orbstack"
+why = "OrbStack VM disk; images are pulled or rebuilt"
+
+[[exclude]]
+pattern = "**/node_modules"
+why = "JavaScript dependencies; the package manager reinstalls them"
+
+[[exclude]]
+pattern = "**/target"
+why = "Rust and Maven build output"
+
+[[exclude]]
+pattern = "**/.gradle"
+why = "Gradle caches"
+
+[[exclude]]
+pattern = "**/.venv"
+why = "Python virtual environments; recreated from lock files"
+
+[[exclude]]
+pattern = "**/__pycache__"
+why = "Python bytecode"
+
+[[exclude]]
+pattern = "**/.DS_Store"
+why = "Finder metadata"

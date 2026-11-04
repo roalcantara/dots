@@ -1,0 +1,9 @@
+#:schema ../../../../config/restic/backup.schema.json
+[repository]
+path = "r"
+
+[backup]
+paths = ["~"]
+
+[retenion]
+daily = 7

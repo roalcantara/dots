@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/roalcantara/dots/config/restic/backup.schema.json",
+  "title": "Dots backup manifest",
+  "description": "Backup policy read by script/backup.ts. See assets/guides/REINSTALL_GUIDE.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["repository", "backup"],
+  "properties": {
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "root": { "type": "string", "minLength": 1, "description": "Backup root; DOTS_BACKUP_ROOT overrides" },
+        "path": { "type": "string", "minLength": 1, "description": "Repository path relative to root; {host} expands" },
+        "password_command": { "type": "string", "minLength": 1, "description": "Becomes RESTIC_PASSWORD_COMMAND" }
+      }
+    },
+    "backup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["paths"],
+      "properties": {
+        "paths": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "tags": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "exclude_caches": { "type": "boolean" }
+      }
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "daily": { "type": "integer", "minimum": 0 },
+        "weekly": { "type": "integer", "minimum": 0 },
+        "monthly": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "exclude": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pattern", "why"],
+        "properties": {
+          "pattern": { "type": "string", "minLength": 1 },
+          "why": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
