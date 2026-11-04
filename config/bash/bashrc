@@ -96,12 +96,11 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Load Homebrew if it exists and hasn't been loaded yet; mise's brew: packages fill the prefix without brew itself
+# Homebrew (installed by mise bootstrap)
 if ! command -v brew >/dev/null && [ -x "$HOMEBREW_PREFIX/bin/brew" ]; then
   eval "$("$HOMEBREW_PREFIX"/bin/brew shellenv)"
-elif [ -d "$HOMEBREW_PREFIX/bin" ]; then
-  case ":$PATH:" in *":$HOMEBREW_PREFIX/bin:"*) ;; *) PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH" ;; esac
 fi
+export HOMEBREW_BUNDLE_FILE="$HOME/.local/share/dots/config/homebrew/Brewfile"
 
 # MISE | https://mise.jdx.dev/ {
   if command -v mise >/dev/null; then

@@ -22,9 +22,31 @@ env:
   DOCKER_BUILDKIT: 1
   BUILDKIT_INLINE_CACHE: 1
   REGISTRY_IMAGE: ${{ github.repository }}
-  PLATFORMS: linux/amd64
+  PLATFORMS: ${{ vars.PLATFORMS || 'linux/amd64' }}
 
 jobs:
+  brewfile:
+    name: Brewfile parses (desktop and container)
+    runs-on: ubuntu-24.04
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Homebrew
+        run: |
+          brew=/home/linuxbrew/.linuxbrew/bin/brew
+          [ -x "$brew" ] || NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
+      - name: List both groups
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+        run: |
+          for p in container desktop; do
+            echo "::group::$p"
+            HOMEBREW_DOTS_PROFILE=$p brew bundle list --all --file config/homebrew/Brewfile
+            echo "::endgroup::"
+          done
   lint:
     runs-on: ${{ matrix.runner }}
     if: github.event.pull_request.draft == false
@@ -46,7 +68,8 @@ jobs:
           config: ./.hadolint.yaml
   validate:
     runs-on: ${{ matrix.runner }}
-    needs: lint
+    timeout-minutes: 30
+    needs: [lint, brewfile]
     strategy:
       matrix:
         distro: [debian, ubuntu]
@@ -68,21 +91,29 @@ jobs:
       REGISTRY_URL: ${{ steps.setup.outputs.REGISTRY_URL }}
       IMAGE_INFO: ${{ steps.setup.outputs.IMAGE_INFO }}
     steps:
+      - name: Free disk space
+        if: env.ACT != 'true'
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/boost "$AGENT_TOOLSDIRECTORY"
+          df -h /
       - name: Setup outputs
         id: setup
         run: |
-          short_sha=$(echo $GITHUB_SHA | cut -c1-7)
-          registry_url_tags=https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags
-          echo "DISTRO=${{ matrix.distro }}" >> $GITHUB_OUTPUT
-          echo "SHORT_SHA=$short_sha" >> $GITHUB_OUTPUT
-          echo "IMAGE_NAME=${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${short_sha}" >> $GITHUB_OUTPUT
-          echo "REGISTRY_URL_TAGS=${registry_url_tags}" >> $GITHUB_OUTPUT
-          echo "REGISTRY_URL=${registry_url_tags}?name=pr-${{ github.event.pull_request.number }}-${short_sha}" >> $GITHUB_OUTPUT
+          short_sha=$(echo "$GITHUB_SHA" | cut -c1-7)
+          registry_url_tags="https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags"
+          {
+            echo "DISTRO=${{ matrix.distro }}"
+            echo "SHORT_SHA=$short_sha"
+            echo "IMAGE_NAME=${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${short_sha}"
+            echo "REGISTRY_URL_TAGS=${registry_url_tags}"
+            echo "REGISTRY_URL=${registry_url_tags}?name=pr-${{ github.event.pull_request.number }}-${short_sha}"
+          } >> "$GITHUB_OUTPUT"
         env:
           GITHUB_SHA: ${{ github.sha }}
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Login to Docker Hub
+        if: env.ACT != 'true'
         uses: docker/login-action@v3
         with:
           username: roalcantara
@@ -107,12 +138,18 @@ jobs:
           tags: ${{ steps.setup.outputs.IMAGE_NAME }}-amd64
           github-token: ${{ secrets.GH_TOKEN }}
           secrets: github_token=${{ secrets.GH_TOKEN }}
-          cache-from: |
-            type=gha,scope=build-${{ matrix.distro }}-amd64
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}
-          cache-to: |
-            type=gha,scope=build-${{ matrix.distro }}-amd64,mode=max
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
+          cache-from: ${{ env.ACT != 'true' && format('type=gha,scope=build-{0}-amd64
+            type=registry,ref=docker.io/{1}-cache:{0}', matrix.distro, env.REGISTRY_IMAGE) || '' }}
+          cache-to: ${{ env.ACT != 'true' && format('type=gha,scope=build-{0}-amd64,mode=max
+            type=registry,ref=docker.io/{1}-cache:{0},mode=max', matrix.distro, env.REGISTRY_IMAGE) || '' }}
+      - name: Check the image size
+        env:
+          IMAGE: ${{ steps.setup.outputs.IMAGE_NAME }}-amd64
+          BUDGET_BYTES: ${{ vars.IMAGE_BUDGET_BYTES || '2800000000' }}
+        run: |
+          size=$(docker image inspect "$IMAGE" --format '{{.Size}}')
+          echo "image size: $((size / 1000000)) MB (budget $((BUDGET_BYTES / 1000000)) MB)" | tee -a "$GITHUB_STEP_SUMMARY"
+          [ "$size" -le "$BUDGET_BYTES" ] || { echo "::error::image is over budget"; exit 1; }
       - name: Run Container Structure Test (${{ matrix.distro }}/amd64)
         uses: docker://gcr.io/gcp-runtimes/container-structure-test:latest
         with:

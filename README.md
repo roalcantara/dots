@@ -39,7 +39,6 @@ It creates no user and sets no timezone. A second run changes nothing.
 | -------------- | -------------------- | --------------------------------------------------------------------------------------------------- |
 | `desktop`      | A real machine       | Nothing; moves an existing `~/.bashrc`, `~/.profile`, `~/.zshenv`, `~/.ssh`, `~/.gnupg` aside first |
 | `container`    | Docker images        | The login shell; replaces the image's dotfiles                                                      |
-| `devcontainer` | Fast container tests | The login shell, system packages (apt, Homebrew), the Neovim setup and agent skills                 |
 
 Later, to apply config changes: `mise bootstrap -E <profile>`.
 
@@ -50,11 +49,11 @@ Later, to apply config changes: `mise bootstrap -E <profile>`.
 
 | File                                                                     | Holds                                                                                                                                                              |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`config/mise/config.toml`](config/mise/config.toml)                     | `[tools]` mise installs itself (`npm:`, `pipx:`, `aqua:`), settings, the encrypted history (`[dotfiles]` track entries), and the `up`, `brew:*` and `backup` tasks |
-| [`config/mise/conf.d/packages.toml`](config/mise/conf.d/packages.toml)   | `[bootstrap.packages]`: Homebrew formulae and casks, apt and flatpak packages, with `os` and `env` gates                                                           |
+| [`config/mise/config.toml`](config/mise/config.toml)                     | Settings, the encrypted history (`[dotfiles]` track entries), and the `backup` task                                                                               |
+| [`config/homebrew/Brewfile`](config/homebrew/Brewfile)                   | Every user package: formulae, casks, taps, `uv` tools, Flatpak apps. `HOMEBREW_DOTS_PROFILE=container` gets only the first group                                 |
+| [`config/mise/conf.d/system.toml`](config/mise/conf.d/system.toml)       | apt packages Homebrew needs on Linux                                                                                                                               |
 | [`config/mise/conf.d/bootstrap.toml`](config/mise/conf.d/bootstrap.toml) | Directories, system files, the login shell, and the `bootstrap` task (git filters, hooks, gopass store, oMLX models, agent skills, Neovim)                         |
 | [`config/mise/conf.d/dotfiles.toml`](config/mise/conf.d/dotfiles.toml)   | Links from `~/.config/*` into this repo                                                                                                                            |
-| `config/mise/config.<profile>.toml`                                      | Per-profile overrides ([`devcontainer`](config/mise/config.devcontainer.toml): the minimal tool set)                                                               |
 | [`config/agents/`](config/agents)                                        | The agent skills lock, `review.csv`, and agent commands                                                                                                            |
 | [`mise.toml`](mise.toml)                                                 | Repo tasks: `build`, `test`, `start`, `setup:*`, `zsh:*`, `skills:*`                                                                                               |
 
@@ -66,49 +65,40 @@ Later, to apply config changes: `mise bootstrap -E <profile>`.
 mise bootstrap status            # every part: packages, files, dotfiles, tools, login shell
 mise bootstrap status --missing  # same, but exits 1 when anything differs from the config
 mise bootstrap plan              # what applying would change
-mise bootstrap packages status   # packages only
+brew bundle check --verbose        # packages: what the Brewfile wants but is missing
 mise outdated                    # mise tools with a newer version
 mise dot status                  # secrets history: tracked files, unsaved changes, last push
-```
-
-## Managing packages
-
-```sh
-mise bootstrap packages apply       # Installs missing packages only
-mise bootstrap -E desktop           # Applies everything of the desktop profile: packages, links, directories, login shell, the bootstrap task
-mise run up                         # Upgrade every package and prune undeclared ones
 ```
 
 ### Find, add and remove packages
 
 ```sh
-mise run brew:search <text>          # search Homebrew formulae and casks
-mise run brew:info <name> [--cask]   # show one
-mise run brew:add <name> [--cask]    # declare it in conf.d/packages.toml and install it
-mise run brew:rm <name> [--cask]     # remove it from conf.d/packages.toml and uninstall it
+brew search <text>                   # find a formula or cask
+brew info <name>                     # show one
+brew bundle add <name> [--cask]      # declare it in the Brewfile (then: brew bundle install)
+brew bundle remove <name> [--cask]   # remove it from the Brewfile (then: brew bundle cleanup --force)
+brew bundle install                  # install everything the Brewfile declares that is missing
 ```
 
-Or edit [`conf.d/packages.toml`](config/mise/conf.d/packages.toml) by hand, then run `mise bootstrap -E <profile>`:
+`brew bundle add` appends to the end of the file, below `return unless desktop`, so a new package is
+desktop-only; move its line up only if containers need it. Or edit
+[`config/homebrew/Brewfile`](config/homebrew/Brewfile) by hand:
 
-```toml
-[bootstrap.packages]
-"brew:ripgrep" = "latest"                       # everywhere
-"brew:gnu-sed" = { os = "macos" }               # macOS only
-"brew:act" = { env = "desktop" }                # desktop profile only
-"brew-cask:ghostty" = { os = "macos" }          # a cask
-"brew:oven-sh/bun/bun" = { os = "macos" }       # from a tap declared in [bootstrap.brew.taps]
-"apt:build-essential" = { os = "linux" }        # Debian/Ubuntu package
-"flatpak:dev.zed.Zed" = { env = "desktop" }     # Linux desktop app (Flathub)
+```ruby
+brew "ripgrep"                       # above `return unless desktop`: containers too
+brew "gnu-sed" if OS.mac?            # macOS only
+cask "ghostty" if OS.mac?            # an app
+tap "oven-sh/bun", "https://github.com/oven-sh/homebrew-bun.git"
+uv "pynvim"                          # a Python tool
+flatpak "dev.zed.Zed" if OS.linux?   # a Linux app (Flathub)
 ```
-
-mise installs Homebrew bottles and casks itself, without `brew`. Tools mise can install directly (`npm:`,
-`pipx:`, `aqua:`) go in `[tools]` of [`config.toml`](config/mise/config.toml) instead.
 
 ### Update
 
 ```sh
-mise run up                  # upgrade every package, then prune undeclared ones (asks first)
-mise upgrade                 # upgrade mise [tools]
+brew update && brew upgrade  # upgrade every package
+brew bundle cleanup          # list installed packages the Brewfile does not declare (--force removes them)
+mise upgrade                 # upgrade mise itself and repo task tools
 mise bootstrap -E <profile>  # re-apply after editing the config
 ```
 
@@ -147,7 +137,6 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | Terminal helpers (`~/.local/bin`)   | [`config/bin`](config/bin/README.md)                                                               |
 | Helix                               | [`config/helix`](config/helix/README.md)                                                           |
 | bat                                 | [`config/bat`](config/bat/README.md)                                                               |
-| Starship prompt                     | [`config/starship`](config/starship)                                                               |
 | Ghostty                             | [`config/ghostty`](config/ghostty)                                                                 |
 | Window management (macOS)           | [`config/amethyst`](config/amethyst), [`config/yabai`](config/yabai), [`config/skhd`](config/skhd) |
 | mise                                | [`config/mise`](config/mise)                                                                       |
@@ -157,7 +146,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 
 | Playbook                                               | Where                                                                                             |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| Test `install` in a container (`devcontainer` profile) | [Docker guide](assets/guides/DOCKER_GUIDE.md#testing-install-in-a-container-devcontainer-profile) |
+| Test `install` in a container                        | [Docker guide](assets/guides/DOCKER_GUIDE.md#testing-install-in-a-container)                      |
 | Build, run and structure-test the Docker images        | [Docker guide](assets/guides/DOCKER_GUIDE.md)                                                     |
 | Run the tests (BDD and integration specs)              | [Testing guide](assets/guides/TESTING_GUIDE.md#verification-gates)                                |
 | Verify and benchmark zsh startup                       | [Testing guide](assets/guides/TESTING_GUIDE.md#zsh-startup)                                       |
@@ -171,8 +160,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 - **`mise dot sync` hangs:** GitHub HTTPS signs in through `gh`; check `gh auth status`.
 - **A new shell lacks the profile's tools:** they load through `config/mise/miserc.local.toml`, which `install`
   writes; re-run `install` or create it with `env = ["<profile>"]`.
-- **`brew:` packages are not on PATH in a script:** they live in the Homebrew prefix (`/opt/homebrew/bin`,
-  `/home/linuxbrew/.linuxbrew/bin`), which only an interactive shell adds.
+- **`brew bundle cleanup` only lists** what it would remove; add `--force` to remove it.
 - **`skills add` and `skills update` write the committed lock** through its link: review the diff.
 - **A skill deleted upstream cannot be restored:** the lock records no commit; keep a backup.
 - **Encrypted files (`config/.env`) look like gibberish in git:** run `mise run setup:git:filters`.

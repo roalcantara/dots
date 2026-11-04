@@ -3,6 +3,8 @@
 # Folders the shell config and tools expect, plus the XDG user folders the images' structure tests check.
 [bootstrap.directories."~/.local/bin"]
 [bootstrap.directories."~/.local/state/zim"]
+[bootstrap.directories."~/.local/state/nvim"]
+mode = "0700"
 [bootstrap.directories."~/.local/share/zsh"]
 [bootstrap.directories."~/.local/share/npm"]
 [bootstrap.directories."~/.local/share/gems"]
@@ -43,13 +45,24 @@ run = '''
 #!/usr/bin/env bash
 export PATH="$HOME/.local/bin:$PATH"
 # brew: packages (hk, sd, the linters) land in the Homebrew prefix, which only an interactive shell puts on PATH.
-for d in /opt/homebrew/bin /home/linuxbrew/.linuxbrew/bin; do [ -d "$d" ] && PATH="$d:$PATH"; done
+for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && eval "$("$b" shellenv)"; done
+desktop=true
+case ",${MISE_ENV:-desktop}," in *,desktop,*) ;; *) desktop=false ;; esac
 dots="$HOME/.local/share/dots"
 nvim_cfg="$HOME/.config/nvim"
 warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
 
 mise run -C "$dots" setup:git:filters || warn "setup:git:filters"
+# Pre-initialize user shell caches (zimfw modules, completions) so login shells start with clean stderr.
+zsh -ic 'exit' >/dev/null 2>&1 || true
+# Containers: git filters only (cheap); everything below is desktop-only.
+$desktop || exit 0
 mise run -C "$dots" setup:hooks || warn "setup:hooks"
+
+# Python tools that need 3.13 (no wheels for the newest Python); the Brewfile's uv entries cannot pin it.
+for tool in graphifyy code-review-graph; do
+  uv tool list 2>/dev/null | grep -q "^$tool " || uv tool install --python 3.13 "$tool" || warn "uv $tool"
+done
 
 # gopass store: cloned once the history has restored gopass's age identity. HTTPS through the gh login
 # (install runs `gh auth login`): the SSH config names GitHub `Host github`, so git@github.com has no key.
@@ -68,8 +81,6 @@ if [ -d /Applications/oMLX.app ] && command -v hf >/dev/null; then
   done
 fi
 
-# devcontainer: minimal, so no agent skills, Neovim providers or plugins.
-case ",${MISE_ENV:-}," in *,devcontainer,*) exit 0 ;; esac
 
 # Agent skills from config/agents/skill-lock.json; installs only the missing ones.
 mise run -C "$dots" skills:restore || warn "skills:restore"
@@ -101,7 +112,7 @@ content = '''
 Dpkg::Options { "--force-confdef"; "--force-confold"; };
 '''
 
-# Linux desktops: Flathub for the system-wide flatpak apps in packages.toml. Flatpak reads remotes from this
+# Linux desktops: Flathub for the system-wide flatpak apps in config/homebrew/Brewfile. Flatpak reads remotes from this
 # folder; declared before packages so the remote exists when mise installs flatpak and then the apps.
 # The folders do not exist until the flatpak package installs, so they are declared too.
 [bootstrap.directories."/etc/flatpak"]
@@ -125,3 +136,39 @@ source = "../files/flathub.flatpakrepo"
 owner = "root"
 group = "root"
 mode = "0644"
+
+# Homebrew and every user package (assets/specs/brewfile-packages/design.md §4.3). Runs after the apt
+# prerequisites; a failure stops the bootstrap.
+[bootstrap.hooks.post-packages]
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+brew=""
+for b in "$(command -v brew || true)" /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  [ -n "$b" ] && [ -x "$b" ] && { brew="$b"; break; }
+done
+if [ -z "$brew" ]; then
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && brew="$b"; done
+fi
+eval "$("$brew" shellenv)"
+export HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_ANALYTICS=1 HOMEBREW_NO_ENV_HINTS=1
+profile="${MISE_ENV:-}"
+if [ -z "$profile" ]; then
+  if [ -r "/proc/$PPID/cmdline" ]; then
+    profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | sed -n 's/^--env=//p')"
+    [ -n "$profile" ] || profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | grep -A1 -E '^(-E|--env)$' | tail -1)"
+  elif command -v ps >/dev/null; then
+    args="$(ps -o args= -p "$PPID" 2>/dev/null || true)"
+    profile="$(printf '%s\n' "$args" | grep -oE -- '(-E|--env)[ =][a-zA-Z0-9_-]+' | head -1 | awk '{print $NF}' | tr -d '=')"
+  fi
+  [ -n "$profile" ] || [ ! -f "$HOME/.local/share/dots/config/mise/miserc.local.toml" ] || \
+    profile="$(sed -n 's/.*env = \["\([^"]*\)"\].*/\1/p' "$HOME/.local/share/dots/config/mise/miserc.local.toml")"
+fi
+HOMEBREW_DOTS_PROFILE="${profile:-desktop}" brew bundle install --no-upgrade \
+  --file "$HOME/.local/share/dots/config/homebrew/Brewfile"
+if [ "${profile:-desktop}" = "container" ]; then
+  brew cleanup --prune=all 2>/dev/null || true
+  rm -rf "$HOME/.cache/Homebrew" 2>/dev/null || true
+fi
+'''

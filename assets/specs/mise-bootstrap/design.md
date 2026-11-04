@@ -69,6 +69,9 @@ missing (no casks on Linux, no flatpak in containers).
 ## 4. Components
 
 ### 4.1 Packages (`conf.d/packages.toml`)
+> Superseded (2026-11-04): packages now come from `config/homebrew/Brewfile`; see
+> [brewfile-packages](../brewfile-packages/design.md).
+
 
 | Group | Entries | Condition |
 | --- | --- | --- |

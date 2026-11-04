@@ -154,10 +154,10 @@ env::homebrew() {
     export HOMEBREW_OPT=$HOMEBREW_PREFIX/opt
     export HOMEBREW_NO_ENV_HINTS=1                # Hide hints
     export HOMEBREW_NO_ANALYTICS=1                # Disabled analytics
+    export HOMEBREW_BUNDLE_FILE=$HOME/.local/share/dots/config/homebrew/Brewfile  # brew bundle from anywhere
     export HOMEBREW_BAT=true                      # Use bat for the brew cat command
     export HOMEBREW_BAT_THEME=dracula             # Use this as the bat theme for syntax highlighting
     export HOMEBREW_BUNDLE_DUMP_NO_VSCODE=1       # Don't dump vscode extensions
-    export HOMEBREW_BUNDLE_FILE=${HOMEBREW_BUNDLE_FILE:-$XDG_CONFIG_HOME/homebrew/Brewfile}
     [[ -x $HOMEBREW_BIN/brew ]] && eval "$("$HOMEBREW_BIN"/brew shellenv)"
     path=(
       $HOMEBREW_PREFIX/opt/{ruby,gems,curl,rustup,awscli@1}/bin
