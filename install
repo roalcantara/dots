@@ -77,6 +77,24 @@ if [ ! -L "$HOME/.config/mise" ]; then
   [ -e "$HOME/.config/mise/age.txt" ] || (umask 077 && cp "$KEY" "$HOME/.config/mise/age.txt")
 fi
 
+# gh-link: begin
+# gh writes its login to ~/.config/gh. Link it to config/gh first (the link mise dotfiles makes), so the login lands
+# in config/gh/hosts.yml (git-ignored) instead of a real folder that `mise bootstrap` then refuses to replace.
+gh_cfg="$HOME/.config/gh"
+if [ -d "$DOTS/config/gh" ]; then
+  if [ -d "$gh_cfg" ] && [ ! -L "$gh_cfg" ]; then
+    # A re-run, or a login made before this link existed: keep this machine's login, set the folder aside.
+    if [ -f "$gh_cfg/hosts.yml" ] && [ ! -e "$DOTS/config/gh/hosts.yml" ]; then
+      (umask 077 && cp "$gh_cfg/hosts.yml" "$DOTS/config/gh/hosts.yml")
+    fi
+    mkdir -p "$HOME/.local/state/dots"
+    mv "$gh_cfg" "$HOME/.local/state/dots/pre-install-gh-$(date +%Y%m%d%H%M%S)"
+  fi
+  mkdir -p "$HOME/.config"
+  [ -e "$gh_cfg" ] || ln -sfn ../.local/share/dots/config/gh "$gh_cfg"
+fi
+# gh-link: end
+
 case "$HISTORY" in
   https://github.com/*)
     mise exec gh@latest -- gh auth status >/dev/null 2>&1 ||

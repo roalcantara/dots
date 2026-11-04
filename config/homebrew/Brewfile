@@ -17,6 +17,7 @@ brew "ripgrep"
 brew "fd"
 brew "jq"
 brew "neovim"
+brew "mise"
 brew "git-delta"
 
 # Desktop only below. `brew bundle add` appends here, so new packages are desktop-only unless moved up.
@@ -149,11 +150,11 @@ cask "font-jetbrains-mono-nerd-font" if OS.mac?
 # Desktop: Flatpak apps (Linux; Flathub is configured by conf.d/bootstrap.toml)
 flatpak "com.visualstudio.code" if OS.linux?
 flatpak "dev.zed.Zed" if OS.linux?
-flatpak "com.getpostman.Postman" if OS.linux?
-flatpak "io.github.shiftey.Desktop" if OS.linux?
 flatpak "org.chromium.Chromium" if OS.linux?
-flatpak "com.brave.Browser" if OS.linux?
 flatpak "com.discordapp.Discord" if OS.linux? && Hardware::CPU.intel?  # Flathub builds it for x86_64 only
 flatpak "com.rtosta.zapzap" if OS.linux?
 flatpak "com.bitwarden.desktop" if OS.linux?
-flatpak "org.videolan.VLC" if OS.linux?
+# flatpak "com.getpostman.Postman" if OS.linux?
+# flatpak "io.github.shiftey.Desktop" if OS.linux?
+# flatpak "com.brave.Browser" if OS.linux?
+# flatpak "org.videolan.VLC" if OS.linux?
