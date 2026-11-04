@@ -81,6 +81,21 @@ if command -v gopass >/dev/null && [ ! -d "$store/.git" ] && [ -d "$HOME/.config
     clone https://github.com/roalcantara/pass-store.git "$store" || warn "gopass store clone"
 fi
 
+# gopass-keyring: begin
+# gopass's identity keyring should be locked to the age key (docs/REINSTALL.md, "One secret: the age key"),
+# so gopass never asks for a PIN. Only warns: the switch is interactive and done once by the owner.
+ids="$HOME/.config/gopass/age/identities"
+if command -v gopass >/dev/null && [ -s "$ids" ]; then
+  if head -n 3 "$ids" | grep -q -- '-> scrypt'; then
+    echo "bootstrap: gopass keyring still uses a passphrase; switch it to the age key: see docs/REINSTALL.md#one-secret-the-age-key" >&2
+  else
+    kid="$(gopass config age.keyring-identities 2>/dev/null || true)"
+    kid="${kid/#\~/$HOME}"
+    [ -z "$kid" ] || [ -s "$kid" ] || echo "bootstrap: gopass keyring identity file missing: $kid" >&2
+  fi
+fi
+# gopass-keyring: end
+
 # oMLX models (macOS, once the app is installed by hand): download only the missing ones.
 if [ -d /Applications/oMLX.app ] && command -v hf >/dev/null; then
   for model in mlx-community/parakeet-tdt-0.6b-v3 Jundot/gemma-4-E2B-it-oQ4e-mtp \
