@@ -110,7 +110,7 @@ Owner (all 8):
 | `dprint` | `dprint.jsonc` (63 lines, global config) | — | |
 | `posting` | `config.yaml` (38 lines) | — | |
 | `vicinae` | `settings.json` (26 lines) | — (vicinae may write to it: port only if it is hand-edited, else Leave) | |
-| `gh` | `config.yml` (aliases, settings) | `hosts.yml` (token: Track) | |
+| `gh` | `config.yml` (aliases, settings) | `hosts.yml` (token: SOPS, §3.5) | |
 
 `zed`, `zentty` and `gh` mix ported files with local state, so they use per-file links
 (`"~/.config/zed/settings.json" = …`), not a folder link.
