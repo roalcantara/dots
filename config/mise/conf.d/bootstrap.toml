@@ -49,6 +49,7 @@ for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b
 desktop=true
 case ",${MISE_ENV:-desktop}," in *,desktop,*) ;; *) desktop=false ;; esac
 dots="$HOME/.local/share/dots"
+[ -r "$dots/script/bootstrap-log.sh" ] && . "$dots/script/bootstrap-log.sh"
 nvim_cfg="$HOME/.config/nvim"
 warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
 # Repeat the post-packages hook's warning last, where it is seen (it scrolls away during the bootstrap).
@@ -163,6 +164,7 @@ mode = "0644"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
+f="$HOME/.local/share/dots/script/bootstrap-log.sh"; [ -r "$f" ] && . "$f"
 brew=""
 for b in "$(command -v brew || true)" /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
   [ -n "$b" ] && [ -x "$b" ] && { brew="$b"; break; }
