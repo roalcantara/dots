@@ -1,0 +1,187 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// https://zed.dev/docs/configuring-zed
+// https://zed-themes.com/
+// https://zed.dev/theme-builder
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "accessible_mode": true,
+  "language_models": {
+    "opencode": {
+      "show_go_models": false
+    }
+  },
+  "base_keymap": "Atom",
+  "format_on_save": "on",
+  "remove_trailing_whitespace_on_save": true,
+  "markdown_preview": {
+    "max_width": 900.0,
+    "limit_content_width": true,
+  },
+  "terminal": {
+    "show_count_badge": true,
+  },
+  "use_system_window_tabs": true,
+  "preview_tabs": {
+    "enabled": true,
+  },
+  "tabs": {
+    "show_diagnostics": "errors",
+    "close_position": "left",
+    "file_icons": true,
+    "git_status": true,
+  },
+  "title_bar": {
+    "show_menus": true,
+    "show_user_picture": false,
+    "show_branch_status_icon": false,
+  },
+  "status_bar": {
+    "show_active_file": false,
+    "line_endings_button": true,
+  },
+  "close_on_file_delete": true,
+  "use_smartcase_search": true,
+  "document_symbols": "on",
+  "code_lens": "on",
+  "inlay_hints": {
+    "show_background": false,
+    "enabled": false,
+  },
+  "fast_scroll_sensitivity": 6.0,
+  "double_click_in_multibuffer": "open",
+  "toolbar": {
+    "code_actions": true,
+  },
+  "auto_signature_help": false,
+  "diagnostics": {
+    "inline": {
+      "enabled": false,
+    },
+  },
+  "cli_default_open_behavior": "new_window",
+  "ui_font_family": ".ZedMono",
+  "ui_font_fallbacks": ["CaskaydiaMono Nerd Font Mono"],
+  "ui_font_features": {
+    "+calt": true,
+    "+liga": true,
+    "+dlig": true,
+    "+rclt": true,
+    "+ss20": true,
+    "+zero": true,
+  },
+  "tab_size": 2,
+  "auto_indent": "preserve_indent",
+  "auto_indent_on_paste": true,
+  "show_completion_documentation": true,
+  "show_completions_on_input": true,
+  "inline_code_actions": true,
+  "lsp_document_colors": "background",
+  "hover_popover_enabled": true,
+  "disable_ai": false,
+  "project_panel": {
+    "auto_fold_dirs": false,
+    "hide_root": false,
+    "bold_folder_labels": false,
+    "entry_spacing": "comfortable",
+    "git_status_indicator": true,
+    "diagnostic_badges": true,
+    "dock": "left",
+  },
+  "outline_panel": {
+    "dock": "left",
+  },
+  "collaboration_panel": {
+    "dock": "left",
+  },
+  "agent": {
+    "sandbox_permissions": {
+      "allow_fs_write_all": true,
+      "allow_all_hosts": true
+    },
+    "tool_permissions": {
+      "tools": {
+        "fetch": {
+          "always_allow": [
+            {
+              "pattern": "^https?://github\\.com",
+            },
+            {
+              "pattern": "^https?://hk\\.jdx\\.dev",
+            },
+          ],
+        },
+        "terminal": {
+          "always_allow": [
+            {
+              "pattern": "^bunx\\s+depcruise(\\s|$)",
+            },
+            {
+              "pattern": "^head\\b",
+            },
+            {
+              "pattern": "^hk\\b",
+            },
+          ],
+        },
+      },
+    },
+    "default_model": {
+      "effort": "high",
+      "provider": "anthropic",
+      "model": "claude-sonnet-5",
+      "enable_thinking": true,
+    },
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": [],
+  },
+  "git_panel": {
+    "file_icons": true,
+    "tree_view": false,
+    "dock": "left",
+  },
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "One Dark Pro Vivid",
+  },
+  "icon_theme": {
+    "mode": "light",
+    "light": "Material Icon Theme",
+    "dark": "Material Icon Theme",
+  },
+  "theme_overrides": {
+    "Catppuccin Macchiato": {
+      "border.variant": "#24273A",
+      "border": "#24273A",
+    },
+  },
+  "ui_font_size": 16,
+  "buffer_font_family": "Cascadia Code PL",
+  "buffer_font_size": 16,
+  "buffer_font_weight": 300,
+  "colorize_brackets": true,
+  "semantic_tokens": "combined",
+  "languages": {
+    "JSON": {
+      "enable_language_server": true,
+    },
+    "TypeScript": {
+      "enable_language_server": true,
+    },
+    "JavaScript": {
+      "enable_language_server": true,
+    },
+    "Markdown": {
+      "enable_language_server": true,
+    },
+    "YAML": {
+      "enable_language_server": true,
+    },
+  },
+}
