@@ -1,3 +1,10 @@
+## [1.38.2](https://github.com/roalcantara/dots/compare/v1.38.1...v1.38.2) (2026-11-04)
+
+
+### Bug Fixes
+
+* **hk:** Drop the global commit-message rules ([#96](https://github.com/roalcantara/dots/issues/96)) ([07cb058](https://github.com/roalcantara/dots/commit/07cb058676029ccca92f540285f89c24ed4dbfb8)), closes [#95](https://github.com/roalcantara/dots/issues/95)
+
 ## [1.38.1](https://github.com/roalcantara/dots/compare/v1.38.0...v1.38.1) (2026-11-04)
 
 
