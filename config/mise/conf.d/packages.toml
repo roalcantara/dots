@@ -71,7 +71,7 @@
 "brew:shfmt" = "latest"                              # Shell script formatter
 "brew:shellcheck" = "latest"                         # Shell script static analysis tool
 "brew:shellspec" = { os = "macos" }                  # BDD framework for shells
-"brew:skills" = { os = "macos" }                     # Open agent skills ecosystem
+"brew:skills" = "latest"                             # Agent skills CLI (config/agents/skill-lock.json)
 "brew:sops" = "latest"                               # Secrets file encryption and management
 "brew:sqlite" = "latest"                             # SQLite command-line interface
 "brew:tealdeer" = "latest"                           # Fast tldr client
