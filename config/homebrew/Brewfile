@@ -1,4 +1,4 @@
-# Every user package (assets/specs/brewfile-packages/design.md). Installed by the post-packages hook in
+# Every user package. Installed by the post-packages hook in
 # config/mise/conf.d/bootstrap.toml; `brew bundle …` reads it through HOMEBREW_BUNDLE_FILE.
 # HOMEBREW_DOTS_PROFILE selects the groups (brew passes only HOMEBREW_* variables to a Brewfile):
 # container gets the first group only; desktop (the default) gets everything.
@@ -100,42 +100,9 @@ brew "helix"  # Post-modern modal text editor
 brew "zsh-patina"  # Blazingly fast Zsh syntax highlighter
 brew "asmvik/formulae/yabai" if OS.mac?  # A tiling window manager for macos
 brew "rust"  # Rust toolchain
-# "brew:beautysh" = "latest"                             # Shell script beautifier
-# "brew:uv" = "latest"                                   # Fast Python package installer and resolver
-# "brew:Giammarco-Ferranti/deja/deja" = { os = "macos" } # Predictive inline shell autosuggestions for zsh
-# "brew:bbrew" = { env = "desktop" }                     # TUI for managing Homebrew, Flatpak, and Mac App Store packages
-# "brew:cairo" = { env = "desktop" }                     # Vector graphics library with cross-device output support
-# "brew:gmp" = "latest"                                  # GNU multiple precision arithmetic library
-# "brew:mole" = { os = "macos" }                   # Deep clean and optimize your Mac
-# "brew:jaq" = "latest"                                  # JQ clone focused on correctness and speed
-# "brew:posting" = "latest"                              # Modern API client for the terminal
-# "brew:pup" = { env = "desktop" }                       # CLI companion for Datadog and internal tooling
-# "brew:solargraph" = { env = "desktop" }                # Ruby language server
-# "brew:block-goose-cli" = "latest" # Open source, extensible AI agent that goes beyond code suggestions
-# "brew:defaultbrowser" = "latest" # Command-line tool for getting & setting the default browser
-# "brew:opencode" = "latest" # Terminal AI coding agent
-# "brew:asmvik/formulae/skhd" = "latest" # A tiling window manager for macos
-# "brew:typester/ranma/ranma" = "latest" # A programmable macOS status bar overlay
-# "brew:acsandmann/tap/rift" = "latest" # A tiling window manager for macos
 # DESKTOP AND BROWSER APPS
-# "brew-cask:puremac" = { os = "macos" }                  # Open-source application manager and system cleaner
-# "brew-cask:vicinae" = { env = "desktop" }               # Application launcher and command palette
-# "brew-cask:c0desurfer/tap/swift-salamander" = { os = "macos" } # Dual-pane file manager for local folders and network storage
-# "brew-cask:lm-studio" = { os = "macos" }                # Discover, download, and run local LLMs
-# "brew-cask:simple-comic" = { os = "macos" }             # Comic viewer/reader
-# "brew-cask:cursor" = { os = "macos" } # AI-first code editor
-# "brew-cask:firefox" = { os = "macos" } # Firefox browser
-# "brew-cask:yacreader" = { os = "macos" } # Comic reader
-# "brew-cask:amethyst" = { os = "macos" } # Tiling window manager for macOS
-# "brew-cask:claude-devtools" = { os = "macos" } # Claude session analysis tools
-# "brew-cask:karabiner-elements" = { os = "macos" } # Keyboard remapping tool
-# "brew-cask:opencode-desktop" = { os = "macos" } # AI coding agent desktop client
-# "brew-cask:stablyai/orca/orca" = { os = "macos" } # IDE for orchestrating AI coding agents across terminals and worktrees
-# "brew-cask:supacode" = { os = "macos" } # Terminal coding agents command center
-# "brew-cask:warp" = { os = "macos" } # Terminal with AI features
 # FONTS
 # LINUX (`env = "desktop"` means workstations, Mac and Linux desktop, not Docker images)
-# "brew:ollama" = { os = "linux", env = "desktop" }
 # LINUX DESKTOP APPS (system-wide; Flathub comes from /etc/flatpak/remotes.d, declared in bootstrap.toml)
 
 # Desktop: Python tools (graphifyy and code-review-graph need Python 3.13: the bootstrap task installs them)

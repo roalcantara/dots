@@ -318,7 +318,7 @@ experimental = true
 # https://mise.jdx.dev/configuration/settings.html#lockfile
 lockfile = true
 
-# Agent skills from config/agents/skill-lock.json (assets/specs/agent-skills-lock/design.md).
+# Agent skills from config/agents/skill-lock.json.
 [tasks."skills:audit"]
 description = "Classify installed agent skills against the lock and write config/agents/review.csv (-- --apply re-adds confirmed ones)"
 tools = { bun = "1.3.14", node = "22" }

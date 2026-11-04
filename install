@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sets up this machine: mise, the dots checkout, the age key, then mise bootstrap (design.md §10).
+# Sets up this machine: mise, the dots checkout, the age key, then mise bootstrap.
 # curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash
 # Env: DOTS_BRANCH (main), DOTS_REPO (clone URL), DOTS_HISTORY (the private history origin),
 #      DOTS_PROFILE (desktop | container), DOTS_AGE_KEY (the key, for tests; otherwise it is read from the terminal).

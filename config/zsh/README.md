@@ -38,8 +38,6 @@ or `command xc-usage <name>`. The convention is the same as `config/bin` scripts
 ##?   <tool> -h
 ```
 
-See also: [assets/specs/xc-usage/design.md §4.2](../../assets/specs/xc-usage/design.md#42-end-to-end-example-xc-foo) for a complete end-to-end example.
-
 ## Three-layer help model
 
 | Layer           | Mechanism                     | When                              |
@@ -49,10 +47,6 @@ See also: [assets/specs/xc-usage/design.md §4.2](../../assets/specs/xc-usage/de
 | Mise tasks      | `usage = '''…'''` in mise.toml| `mise run tool:specs --scenario` |
 
 **Rule:** never require `mise` to be installed for `show_usage` or `xc-usage` to work.
-
-## Command reference
-
-See [assets/specs/xc-usage/design.md §4.1](../../assets/specs/xc-usage/design.md#41-invocation-table) for the full `xc-usage` command table.
 
 ## Standalone `xc-usage`
 
@@ -101,7 +95,7 @@ fi
 
 ## Out of scope
 
-- Auto-parsing `##?` to generate `zparseopts` calls (see [design.md §13](../../assets/specs/xc-usage/design.md#13-out-of-scope))
+- Auto-parsing `##?` to generate `zparseopts` calls
 - Inferring help from code or minimal `##?`
 - `config/zsh/opt/completions/*` (generated or third-party completion scripts)
 

@@ -161,7 +161,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | Build, run and structure-test the Docker images        | [Docker guide](assets/guides/DOCKER_GUIDE.md)                                                     |
 | Run the tests (BDD and integration specs)              | [Testing guide](assets/guides/TESTING_GUIDE.md#verification-gates)                                |
 | Verify and benchmark zsh startup                       | [Testing guide](assets/guides/TESTING_GUIDE.md#zsh-startup)                                       |
-| Prepare a reinstall (backups, new-Mac runbook)         | [mise-bootstrap design §6](assets/specs/mise-bootstrap/design.md#6-new-mac-runbook)               |
+| Prepare a reinstall (backups, new-Mac runbook)         | [Reinstall guide](docs/REINSTALL.md)                                                              |
 | Reinstall a Mac                                        | [Reinstall guide](assets/guides/REINSTALL_GUIDE.md)                                               |
 | Work on this repo with an agent                        | [AGENTS.md](AGENTS.md)                                                                            |
 

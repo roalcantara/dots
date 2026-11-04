@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // Manifest-driven restic backups and the reinstall audit.
-// Design: assets/specs/reinstall-backup/design.md. Usage: assets/guides/REINSTALL_GUIDE.md.
+// Usage: docs/REINSTALL.md.
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { hostname, tmpdir } from "node:os";
 import { join } from "node:path";

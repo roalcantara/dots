@@ -1,4 +1,4 @@
-# Links into this repo (assets/specs/mise-bootstrap/design.md §4.2). `install` links ~/.local/share/dots and
+# Links into this repo. `install` links ~/.local/share/dots and
 # ~/.config/mise itself, because mise needs them before it can read this file.
 [dotfiles]
 # The list is static: compare it with git ls-files config | cut -d/ -f2 | sort -u when config/ changes.
@@ -59,7 +59,7 @@
   "src",
 ] }
 
-# The skills CLI's global lock (assets/specs/agent-skills-lock/design.md). It reads the first path when
+# The skills CLI's global lock. It reads the first path when
 # XDG_STATE_HOME is set and the second otherwise (GUI apps, cron), so both point at one file.
 "~/.local/state/skills/.skill-lock.json" = { source = "~/.local/share/dots/config/agents/skill-lock.json", relative = true }
 "~/.agents/.skill-lock.json" = { source = "~/.local/share/dots/config/agents/skill-lock.json", relative = true }

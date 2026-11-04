@@ -1,4 +1,4 @@
-# Machine setup applied by `mise bootstrap` (assets/specs/mise-bootstrap/design.md §4.2–4.3).
+# Machine setup applied by `mise bootstrap`.
 
 # Folders the shell config and tools expect, plus the XDG user folders the images' structure tests check.
 [bootstrap.directories."~/.local/bin"]
@@ -145,7 +145,7 @@ owner = "root"
 group = "root"
 mode = "0644"
 
-# Homebrew and every user package (assets/specs/brewfile-packages/design.md §4.3). Runs after the apt
+# Homebrew and every user package. Runs after the apt
 # prerequisites, in two stages: the core group (what the shell and git need) stops the bootstrap on failure;
 # the rest of the Brewfile only warns, so one broken entry cannot skip the links, the login shell and the
 # bootstrap task. CI or DOTS_STRICT makes the second stage fatal too.

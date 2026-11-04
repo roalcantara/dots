@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-// Audit and restore the global agent skills from config/agents/skill-lock.json
-// (assets/specs/agent-skills-lock/design.md). Usage: bun script/agent-skills.ts audit [--apply] | restore
+// Audit and restore the global agent skills from config/agents/skill-lock.json.
+// Usage: bun script/agent-skills.ts audit [--apply] | restore
 import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
