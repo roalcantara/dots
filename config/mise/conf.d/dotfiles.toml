@@ -45,7 +45,7 @@
 "~/.zshenv" = { source = "~/.local/share/dots/config/zsh/.zshenv", relative = true }
 "~/.bashrc" = { source = "~/.local/share/dots/config/bash/bashrc", relative = true }
 "~/.profile" = { source = "~/.local/share/dots/config/.profile", relative = true }
-# ~/.config/ssh and ~/.config/gnupg are real folders: synced encrypted by mise dot history (config.toml).
+# ~/.config/ssh and ~/.config/gnupg are real folders: synced encrypted by mise dot history (config.toml). Everything else in ~/.config links into config/; secret files there are SOPS-encrypted (.sops.yaml).
 "~/.ssh" = { source = "~/.config/ssh", relative = true }
 "~/.gnupg" = { source = "~/.config/gnupg", relative = true }
 # Links each executable file of config/bin; this Mac's links are absolute, so relative is left off.
