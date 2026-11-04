@@ -35,14 +35,14 @@ Spec: [`docs/superpowers/specs/2026-11-04-gopass-age-keyring-design.md`](../spec
 
 ### Task 0: Baseline
 
-- [ ] **Step 1:** In `~/Work/dots-gopass`, run `MISE_AUTO_INSTALL=0 mise run test:specs 2>&1 | grep -E '^\s*[0-9]+ (pass|fail)|scenarios'` and `hk check`; write the counts down.
+- [x] **Step 1:** In `~/Work/dots-gopass`, run `MISE_AUTO_INSTALL=0 mise run test:specs 2>&1 | grep -E '^\s*[0-9]+ (pass|fail)|scenarios'` and `hk check`; write the counts down.
   Known pre-existing: up to 3 `xc-git > fixup-suggest` failures (they depend on the real repo's branch history and also fail on a clean `main`). Anything else failing: stop and report.
 
 ### Task 1: Bootstrap keyring check (TDD)
 
 **Files:** Create `test/integration/bootstrap/gopass-keyring.spec.ts`; modify `config/mise/conf.d/bootstrap.toml`.
 
-- [ ] **Step 1: Write the failing spec**
+- [x] **Step 1: Write the failing spec**
 
 ```ts
 #!/usr/bin/env bun
@@ -118,12 +118,12 @@ describe("bootstrap gopass-keyring check", () => {
 });
 ```
 
-- [ ] **Step 2: Run it, expect failures**
+- [x] **Step 2: Run it, expect failures**
 
 Run: `cd test && bun test integration/bootstrap/gopass-keyring.spec.ts`
 Expected: FAIL (`SNIPPET` is empty: "is in the bootstrap task" and the warning tests fail).
 
-- [ ] **Step 3: Add the snippet** in `config/mise/conf.d/bootstrap.toml`, directly after the `fi` that closes the gopass store clone block (the `clone https://github.com/roalcantara/pass-store.git` lines) and before `# oMLX models`:
+- [x] **Step 3: Add the snippet** in `config/mise/conf.d/bootstrap.toml`, directly after the `fi` that closes the gopass store clone block (the `clone https://github.com/roalcantara/pass-store.git` lines) and before `# oMLX models`:
 
 ```sh
 # gopass-keyring: begin
@@ -142,12 +142,12 @@ fi
 # gopass-keyring: end
 ```
 
-- [ ] **Step 4: Run the spec, expect PASS**
+- [x] **Step 4: Run the spec, expect PASS**
 
 Run: `cd test && bun test integration/bootstrap/gopass-keyring.spec.ts`
 Expected: 5 pass, 0 fail. Then `cd test && bun test integration/bootstrap` (all bootstrap specs still pass) and `hk check` (taplo clean).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 g add config/mise/conf.d/bootstrap.toml test/integration/bootstrap/gopass-keyring.spec.ts
@@ -160,7 +160,7 @@ mise exec cocogitto@7.0.0 -- git -c filter.sops.clean=cat -c filter.sops.smudge=
 
 This replays the 2026-11-04 container run (spec §3) in a throwaway `HOME`. It needs `gopass`, `age-keygen`, `expect` and `git` on PATH; otherwise it is skipped. It must never see the real `~/.config/gopass` or the Keychain: it builds a fresh env (so `GOPASS_CONFIG`, `GOPASS_CONFIG_HOME`, `GOPASS_HOMEDIR` never leak in), points every XDG dir into the temp dir, and runs with a PATH of only those four tools plus `/usr/bin:/bin`, so no pinentry can run. Every call has a 30 s timeout. Also add `symlinkSync` to the spec's `node:fs` import: `import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";`.
 
-- [ ] **Step 1: Append the spec**
+- [x] **Step 1: Append the spec**
 
 ```ts
 const tools = ["gopass", "age-keygen", "expect", "git"].every((c) => Bun.which(c) !== null);
@@ -224,13 +224,13 @@ describe.skipIf(!tools)("gopass keyring switch (end to end)", () => {
 });
 ```
 
-- [ ] **Step 2: Run it**
+- [x] **Step 2: Run it**
 
 Run: `cd test && bun test integration/bootstrap/gopass-keyring.spec.ts`
 Expected on this Mac (gopass and age installed; `expect` ships with macOS at `/usr/bin/expect`): 6 pass, 0 fail. If `gopass setup` fails because it tries to reach the real store, print `sh(...).stderr` and fix the env isolation (add the missing `GOPASS_*` variable pointing into `h`), never point it at the real home.
 Confirm isolation afterwards: `ls -la ~/.config/gopass/age/identities` has the same mtime as before the run.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 g add test/integration/bootstrap/gopass-keyring.spec.ts
@@ -241,7 +241,7 @@ mise exec cocogitto@7.0.0 -- git -c filter.sops.clean=cat -c filter.sops.smudge=
 
 **Files:** `docs/REINSTALL.md`, `docs/GLOSSARY.md`, `config/mise/config.toml`.
 
-- [ ] **Step 1: REINSTALL.md** — append at the end of `## 7. First-time setup` (after step 6's code block, before the `---`):
+- [x] **Step 1: REINSTALL.md** — append at the end of `## 7. First-time setup` (after step 6's code block, before the `---`):
 
 ````markdown
 ### One secret: the age key
@@ -275,13 +275,13 @@ longer used.
   by `age.keyring-identities` is missing. It never changes gopass settings.
 ````
 
-- [ ] **Step 2: REINSTALL.md §12** — add a row to the Troubleshooting table, after the `password command failed` row:
+- [x] **Step 2: REINSTALL.md §12** — add a row to the Troubleshooting table, after the `password command failed` row:
 
 ```markdown
 | `Enter your PIN` from gopass, or `pinentry error` in scripts | The gopass keyring still uses its own passphrase. | Lock it to the age key: [One secret: the age key](#one-secret-the-age-key). |
 ```
 
-- [ ] **Step 3: GLOSSARY.md** — append to the terms table:
+- [x] **Step 3: GLOSSARY.md** — append to the terms table:
 
 ```markdown
 | **Keyring recipient** | Public age key that gopass's identity keyring is encrypted to (`age.keyring-recipients`): the bootstrap key and the recovery key. |
@@ -289,13 +289,13 @@ longer used.
 | **Recovery key** | Offline age key kept as a Bitwarden secure note; a second keyring recipient for when `keys.txt` is lost. |
 ```
 
-- [ ] **Step 4: config/mise/config.toml:128** — replace the comment line with:
+- [x] **Step 4: config/mise/config.toml:128** — replace the comment line with:
 
 ```toml
 # gopass's age identity keyring (locked to the age key: docs/REINSTALL.md); the store is a git clone the bootstrap task makes.
 ```
 
-- [ ] **Step 5: Check and commit**
+- [x] **Step 5: Check and commit**
 
 Run: `hk check` (markdownlint, taplo clean) and `rg -n 'one-secret-the-age-key' docs config` (the anchor used by the bootstrap warning exists as `### One secret: the age key`).
 
@@ -306,10 +306,10 @@ mise exec cocogitto@7.0.0 -- git -c filter.sops.clean=cat -c filter.sops.smudge=
 
 ### Task 4: Verification
 
-- [ ] **Step 1:** `MISE_AUTO_INSTALL=0 mise run test:specs`: baseline counts + 6 new bootstrap specs, no new failures (the known `xc-git fixup-suggest` ones may now pass, since the branch has commits).
-- [ ] **Step 2:** `hk check` clean.
-- [ ] **Step 3:** `g diff --stat origin/main..` lists only the five files from the file-structure table plus this plan and the spec.
-- [ ] **Step 4:** Report the commits, the counts against Task 0, and anything skipped (e.g. E2E skipped for a missing tool).
+- [x] **Step 1:** `MISE_AUTO_INSTALL=0 mise run test:specs`: baseline counts + 6 new bootstrap specs, no new failures (the known `xc-git fixup-suggest` ones may now pass, since the branch has commits).
+- [x] **Step 2:** `hk check` clean.
+- [x] **Step 3:** `g diff --stat origin/main..` lists only the five files from the file-structure table plus this plan and the spec.
+- [x] **Step 4:** Report the commits, the counts against Task 0, and anything skipped (e.g. E2E skipped for a missing tool).
 
 ### Task 5: Owner steps (not for the agent)
 
