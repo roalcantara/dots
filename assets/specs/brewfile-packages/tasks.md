@@ -594,14 +594,14 @@ HOMEBREW_DOTS_PROFILE=desktop brew bundle check --verbose --file ~/Work/dots-bre
 
 **Files:** Modify `.github/workflows/preview.yml`
 
-- [ ] **Step 1: Platforms from a variable** (so `act` can build arm64 locally). Change the workflow-level
+- [x] **Step 1: Platforms from a variable** (so `act` can build arm64 locally). Change the workflow-level
   `PLATFORMS: linux/amd64` to:
 
 ```yaml
   PLATFORMS: ${{ vars.PLATFORMS || 'linux/amd64' }}
 ```
 
-- [ ] **Step 2: Add the `brewfile` job** under `jobs:`, before `lint:`:
+- [x] **Step 2: Add the `brewfile` job** under `jobs:`, before `lint:`:
 
 ```yaml
   brewfile:
@@ -628,7 +628,7 @@ HOMEBREW_DOTS_PROFILE=desktop brew bundle check --verbose --file ~/Work/dots-bre
           done
 ```
 
-- [ ] **Step 3: `validate` changes.**
+- [x] **Step 3: `validate` changes.**
   - Add `timeout-minutes: 30` under `runs-on:` of `validate`.
   - Add `needs: [lint, brewfile]` (replacing `needs: lint`).
   - As the **first** step of `validate`, before `Setup outputs`:
@@ -664,7 +664,7 @@ HOMEBREW_DOTS_PROFILE=desktop brew bundle check --verbose --file ~/Work/dots-bre
           [ "$size" -le "$BUDGET_BYTES" ] || { echo "::error::image is over budget"; exit 1; }
 ```
 
-- [ ] **Step 4: Lint the workflow.**
+- [x] **Step 4: Lint the workflow.**
 
 ```bash
 cd ~/Work/dots-brewfile
@@ -673,10 +673,10 @@ mise x aqua:rhysd/actionlint@latest -- actionlint .github/workflows/preview.yml
 
   Expected: no output. Fix what it reports.
 
-- [ ] **Step 5: Check `publish.yml`.** `grep -nE 'devcontainer|packages\.toml|-E ' .github/workflows/publish.yml`;
+- [x] **Step 5: Check `publish.yml`.** `grep -nE 'devcontainer|packages\.toml|-E ' .github/workflows/publish.yml`;
   change any reference to the removed profile or file. Expected: nothing to change.
 
-- [ ] **Step 6: Commit.**
+- [x] **Step 6: Commit.**
 
 ```bash
 g add .github/workflows/preview.yml .github/workflows/publish.yml
