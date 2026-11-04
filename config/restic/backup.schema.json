@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/roalcantara/dots/config/restic/backup.schema.json",
   "title": "Dots backup manifest",
-  "description": "Backup policy read by script/backup.ts. See assets/guides/REINSTALL_GUIDE.md.",
+  "description": "Backup policy read by script/backup.ts. See docs/REINSTALL.md.",
   "type": "object",
   "additionalProperties": false,
   "required": ["repository", "backup"],

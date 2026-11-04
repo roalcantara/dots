@@ -221,7 +221,7 @@ const DRIVE_README = `# Backups
 
 Restore (after the dots install): DOTS_BACKUP_HOST=<host> mise run backup:restore -- --include Work --dry-run
 Without dots: restic --repo machines/<host>/restic restore latest:/Users/<user> --target ~ --include /Work
-Guide: https://github.com/roalcantara/dots/blob/main/assets/guides/REINSTALL_GUIDE.md
+Guide: https://github.com/roalcantara/dots/blob/main/docs/REINSTALL.md
 `;
 
 function init(m: Manifest, ctx: Ctx): void {

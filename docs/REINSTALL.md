@@ -26,7 +26,7 @@ This guide provides instructions for routine backups, clean macOS reinstalls, an
 | **Config and dotfiles** | `install` (this repo) | Symlinked from `~/.local/share/dots` into `$HOME` (`~/.config`, `~/.zshrc`, etc.). |
 | **Packages and tools** | Homebrew Brewfile (`config/homebrew/Brewfile`) | CLI binaries, GUI casks, and language toolchains installed via `brew bundle`. |
 | **Secrets and keys** | `dots-history` via age key | Encrypted repository holding SSH keys, GPG keys, SOPS secrets, and gopass store. |
-| **Agent skills** | `skills:restore` | Agent skills declared in `skills-lock.json` and restored via Skills CLI. |
+| **Agent skills** | `skills:restore` (background) | Agent skills declared in `config/agents/skill-lock.json`, restored in parallel in the background. |
 | **Models and caches** | Re-downloaded on demand | oMLX models, rustup toolchains, uv Pythons, and mise runtimes reinstalled cleanly. |
 | **Personal data** | restic backup repository | `~/Work`, `~/Documents`, `~/Pictures`, and other data directories. |
 | **Age key and restic password** | Password manager **only** | Stored in 1Password / Bitwarden; the only two secrets dots cannot restore. |
@@ -448,6 +448,33 @@ DOTS_BACKUP_HOST=<old host> mise run backup:restore -- --include Work --include 
   mv /Volumes/backups/machines/<old host> /Volumes/backups/archive/
   ```
 
+
+---
+
+## Bootstrap runbook
+
+A condensed checklist for provisioning a clean machine from scratch:
+
+1. **Before wiping the old Mac:**
+   - Push secrets history: `mise dot sync`
+   - Run the reinstall audit: `mise run reinstall:audit`
+   - Run a full restic backup: `mise run backup`
+   - Confirm age root secret (`config/age/keys.txt`, recipient `config/age/recipient.txt`) is in your password manager
+2. **On the new Mac:**
+   - Complete macOS Setup Assistant; sign in to Apple Account and App Store
+   - Install command-line tools: `xcode-select --install`
+   - Run the bootstrap script:
+     ```sh
+     curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash
+     ```
+   - Paste the age key when prompted; `install` adopts `dots-history` and runs `mise bootstrap -E desktop`
+   - Agent skills are restored in the background (log: `~/.local/state/dots/skills-restore.log`)
+3. **Restore data and verify:**
+   - Mount backup drive and restore data directories:
+     ```sh
+     DOTS_BACKUP_HOST=<old-host> mise run backup:restore -- --include Work
+     ```
+   - Open a new shell: `mise bootstrap status` reports no pending changes
 ---
 
 ## 9. Recovery without gopass
@@ -507,8 +534,7 @@ restic --repo /Volumes/backups/machines/<host>/restic restore latest:/Users/<old
 
 ## 13. See also
 
-- Dots repository overview: [`README.md`](../../README.md)
-- Backup configuration manifest: [`config/restic/backup.toml`](../../config/restic/backup.toml)
-- Backup CLI implementation: [`script/backup.ts`](../../script/backup.ts)
-- Reinstall backup specification: [`assets/specs/reinstall-backup/`](../specs/reinstall-backup/)
+- Dots repository overview: [`README.md`](../README.md)
+- Backup configuration manifest: [`config/restic/backup.toml`](../config/restic/backup.toml)
+- Backup CLI implementation: [`script/backup.ts`](../script/backup.ts)
 - Official restic documentation: [https://restic.readthedocs.io](https://restic.readthedocs.io)

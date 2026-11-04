@@ -1,5 +1,5 @@
 # Backups and the reinstall audit: script/backup.ts, policy in config/restic/backup.toml.
-# Guide: assets/guides/REINSTALL_GUIDE.md. Extra arguments go after `--`.
+# Guide: docs/REINSTALL.md. Extra arguments go after `--`.
 
 [tasks."reinstall:audit"]
 description = "Read-only report of what a reinstall would lose, written to the backup drive (-- --stdout to print)"

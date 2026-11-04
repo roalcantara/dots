@@ -1,6 +1,6 @@
 # Conventional Commits policy for all dots-managed repositories.
 # Surfaced at ~/.config/cog/cog.toml; a repo-local cog.toml overrides it.
-# Type set matches assets/guides/GIT_GUIDE.md section 5.1.
+# Type set matches docs/CONTRIBUTING.md.
 
 ignore_merge_commits = true
 ignore_fixup_commits = true
