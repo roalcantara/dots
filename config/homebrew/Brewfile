@@ -17,6 +17,7 @@ brew "ripgrep"
 brew "fd"
 brew "jq"
 brew "neovim"
+brew "mise"
 brew "git-delta"
 
 # Desktop only below. `brew bundle add` appends here, so new packages are desktop-only unless moved up.
