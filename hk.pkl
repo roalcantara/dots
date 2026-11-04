@@ -47,6 +47,12 @@ local stagingLinters = new Mapping<String, Step> {
     check   = "taplo fmt --check {{files}}"
     fix     = "taplo fmt {{files}}"
   }
+  ["taplo-schema"] {
+    // Validates manifests that declare `#:schema` (taplo fmt does not); scoped so taplo
+    // never fetches remote schemas for other TOML files.
+    glob  = List("config/restic/backup.toml")
+    check = "taplo check {{files}}"
+  }
 }
 
 hooks {

@@ -73,6 +73,7 @@ brew "pkl-lsp" if OS.mac?  # Pkl language server
 brew "pnpm"  # Fast, disk space efficient package manager
 brew "pyright" if OS.mac?  # Python static type checker
 brew "python@3.14"  # Python runtime
+brew "restic"  # Encrypted, deduplicated backups (config/restic/backup.toml)
 brew "ruby"  # Ruby runtime
 brew "ruby-lsp"  # Ruby language server
 brew "sd"  # Intuitive find and replace CLI

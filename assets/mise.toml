@@ -61,7 +61,7 @@ fi
 ''' }
 
 "test" = { description = "Run BDD + integration for a scope", usage = '''
-arg "<scope>" help="Verification scope (bin or all)"
+arg "<scope>" help="Verification scope (bin, backup or all)"
 ''', run = '''
 #!/usr/bin/env bash
 set -euo pipefail
@@ -70,8 +70,12 @@ case "${usage_scope:-}" in
     mise run bdd run --domain bin
     mise run integration bin all
     ;;
+  backup)
+    mise run integration backup all
+    ;;
   all)
     mise run test bin
+    mise run integration backup all
     ;;
   *)
     echo "ERROR: unknown scope ${usage_scope:-}" >&2; exit 1

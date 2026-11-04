@@ -15,3 +15,4 @@ Shared reusable guidance for Dots. Read `GLOSSARY.md` first for terminology.
 | `GIT_COMMITS_GUIDE.md` | Commit message format rules for this repository |
 | `CODESTYLE_GUIDE.md` | Code style conventions |
 | `DoD.md` | Definition of done checklist for task completion |
+| `REINSTALL_GUIDE.md` | Back up, wipe, reinstall and restore a Mac; backup drive layout; the backup manifest |

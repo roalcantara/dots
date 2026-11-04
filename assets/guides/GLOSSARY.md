@@ -30,6 +30,12 @@ documentation. Add terms only when a spec needs shared language.
 | `show_usage` | The Zsh-facing entrypoint that resolves a function name to its source file and delegates to `command xc-usage <target>`. Prefer `show_usage` inside autoload functions, `xc-usage` in bin scripts. |
 | Mise task | A task declared in `mise.toml` and run with `mise run <task>`. |
 | Acceptance gate | A command or checklist item that must pass before work moves to the next task. |
+| Backup root | The folder holding all backups, `/Volumes/backups` by default; `DOTS_BACKUP_ROOT` overrides. |
+| Backup manifest | `config/restic/backup.toml`: what to back up, where, retention and excludes, validated by `backup.schema.json`. |
+| restic repository | The encrypted, deduplicated store at `<backup root>/machines/<host>/restic`. |
+| Snapshot | One backup run in a restic repository, tagged with the host. |
+| Export | A dated folder under `machines/<host>/exports/` holding an audit and one-off copies. |
+| Reinstall audit | `mise run reinstall:audit`: a read-only report of what a reinstall would lose (`MANIFEST.md`). |
 
 ### Bin ↔ Zsh architecture
 

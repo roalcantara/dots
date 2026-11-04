@@ -114,6 +114,17 @@ mise dot sync   # push it
 
 On another machine: `mise dot sync && mise dot pull`.
 
+### Back up
+
+```sh
+mise run backup                                   # home folder → restic on /Volumes/backups, then check
+mise run backup:restore -- --include Work --dry-run
+mise run reinstall:audit                          # before a wipe: what would be lost
+```
+
+The policy is [`config/restic/backup.toml`](config/restic/backup.toml); the full playbook is
+[`assets/guides/REINSTALL_GUIDE.md`](assets/guides/REINSTALL_GUIDE.md).
+
 ### Agent skills
 
 Skills come from [`config/agents/skill-lock.json`](config/agents/skill-lock.json), the `skills` CLI's own lock
@@ -151,6 +162,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | Run the tests (BDD and integration specs)              | [Testing guide](assets/guides/TESTING_GUIDE.md#verification-gates)                                |
 | Verify and benchmark zsh startup                       | [Testing guide](assets/guides/TESTING_GUIDE.md#zsh-startup)                                       |
 | Prepare a reinstall (backups, new-Mac runbook)         | [mise-bootstrap design §6](assets/specs/mise-bootstrap/design.md#6-new-mac-runbook)               |
+| Reinstall a Mac                                        | [Reinstall guide](assets/guides/REINSTALL_GUIDE.md)                                               |
 | Work on this repo with an agent                        | [AGENTS.md](AGENTS.md)                                                                            |
 
 ## Gotchas
