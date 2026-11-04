@@ -11,7 +11,7 @@ on:
 
 concurrency:
   cancel-in-progress: true
-  group: 'dots-${{ github.ref }}'
+  group: 'release-${{ github.ref }}'
 
 defaults:
   run:

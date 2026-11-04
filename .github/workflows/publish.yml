@@ -7,7 +7,7 @@ on:
 
 concurrency:
   cancel-in-progress: false
-  group: 'dots-${{ github.ref }}'
+  group: 'publish-${{ github.ref }}'
 
 defaults:
   run:
