@@ -27,6 +27,7 @@
 "~/.config/kb" = { source = "~/.local/share/dots/config/kodexb", relative = true }                           # alias
 "~/.config/npm" = { source = "~/.local/share/dots/config/npm", relative = true }
 "~/.config/nvim" = { source = "~/.local/share/dots/config/nvim", relative = true }
+"~/.config/posting" = { source = "~/.local/share/dots/config/posting", relative = true }
 "~/.config/ripgrep" = { source = "~/.local/share/dots/config/ripgrep", relative = true }
 "~/.config/snippets" = { source = "~/.local/share/dots/config/snippets", relative = true }
 "~/.config/sops" = { source = "~/.local/share/dots/config/sops", relative = true }

@@ -1,0 +1,38 @@
+# POSTING | The API client that lives in your terminal
+# https://posting.sh
+
+# QUICK REFERENCE
+# https://posting.sh/guide/keymap/
+# CTRL+j,ALT+ENTER  | Send the current request (send-request)
+# CTRL+t            | Focus the method selector (focus-method)
+# CTRL+l            | Focus the URL input (focus-url)
+# CTRL+s            | Save the current request (save-request)
+# CTRL+m            | Expand or shrink the section which has focus (expand-section)
+# CTRL+h            | Toggle the collection browser (toggle-collection)
+# CTRL+n            | Create a new request (new-request)
+# CTRL+p            | Open the command palette (commands)
+# F1,CTRL+?         | Open the help dialog for the currently focused widget (help)
+# CTRL+c            | Quit the application (quit)
+# CTRL+o            | Enter jump mode (jump)
+# F3                | Open the content of the focused text area in your $PAGER/$POSTING_PAGER/$POSTING_PAGER_JSON (open-in-pager)
+# F4                | Open the content of the focused text area in your $EDITOR/$POSTING_EDITOR (open-in-editor)
+# CTRL+SHIFT+P      | Go to a request by name (search-requests)
+
+# SETTINGS
+# https://posting.sh/guide/configuration/#full-configuration-reference
+
+# Sets the theme of the application
+theme: galaxy
+
+# Sets the layout of the application
+layout: horizontal
+
+response:
+  # If enabled, JSON responses will be pretty-formatted
+  prettify_json: true
+
+heading:
+  # Show/hide the app header
+  visible: true
+  # Show/hide the hostname in the app header
+  show_host: false
