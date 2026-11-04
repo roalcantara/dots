@@ -23,3 +23,6 @@ This glossary defines terms used across Dots configuration, documentation, and t
 | **Snapshot** | Point-in-time backup archive inside a restic repository, tagged with the machine host name. |
 | **Export** | Dated folder under `machines/<host>/exports/` holding machine audit reports and manual exports. |
 | **Reinstall audit** | `mise run reinstall:audit`: read-only evaluation of uncommitted git state, non-cask apps, and machine risk (`MANIFEST.md`). |
+| **Keyring recipient** | Public age key that gopass's identity keyring is encrypted to (`age.keyring-recipients`): the bootstrap key and the recovery key. |
+| **Keyring identity** | Plaintext age key file that unlocks gopass's identity keyring (`age.keyring-identities`): `~/.config/age/keys.txt`. |
+| **Recovery key** | Offline age key kept as a Bitwarden secure note; a second keyring recipient for when `keys.txt` is lost. |
