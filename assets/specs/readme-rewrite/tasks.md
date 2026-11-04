@@ -57,7 +57,7 @@ one go from the full text given here; Task 7 verifies commands, links, stale ter
 
 **Files:** Modify `AGENTS.md`, `assets/README.md`
 
-- [ ] **Step 1: Add the section.** In `AGENTS.md`, insert this block right before the line `## Specs and guides`:
+- [x] **Step 1: Add the section.** In `AGENTS.md`, insert this block right before the line `## Specs and guides`:
 
 ```markdown
 ## Workflow
@@ -73,13 +73,13 @@ Features follow Spec-Driven Development (SDD):
 
 ```
 
-- [ ] **Step 2: Fix the link.** In `assets/README.md`, replace `[README.md](../README.md#agent-workflow)` with
+- [x] **Step 2: Fix the link.** In `assets/README.md`, replace `[README.md](../README.md#agent-workflow)` with
   `[AGENTS.md](../AGENTS.md#workflow)`.
 
   Check: `grep -n 'agent-workflow' assets/README.md` prints nothing; `grep -n 'AGENTS.md#workflow' assets/README.md`
   prints one line.
 
-- [ ] **Step 3: Lint and commit.**
+- [x] **Step 3: Lint and commit.**
 
 ```bash
 cd ~/Work/dots-readme
@@ -96,7 +96,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 **Files:** Modify `assets/guides/DOCKER_GUIDE.md`
 
-- [ ] **Step 1: Copy the section.** The README section `### Testing \`install\` in a container (\`devcontainer\`
+- [x] **Step 1: Copy the section.** The README section `### Testing \`install\` in a container (\`devcontainer\`
   profile)` runs up to (not including) the `---` line before `### Terminal Helpers`. Copy it, promoted to `##`,
   right before `## See also` in `DOCKER_GUIDE.md`:
 
@@ -119,7 +119,7 @@ EOF
 
   Expected: `## Testing \`install\` in a container (\`devcontainer\` profile)`.
 
-- [ ] **Step 2: Lint and commit.** (Do not edit the README yet; Task 6 replaces it whole.)
+- [x] **Step 2: Lint and commit.** (Do not edit the README yet; Task 6 replaces it whole.)
 
 ```bash
 mise x npm:markdownlint-cli@0.49.1 -- markdownlint assets/guides/DOCKER_GUIDE.md
@@ -135,7 +135,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 **Files:** Modify `config/bin/README.md`
 
-- [ ] **Step 1: Copy the table.** It is the Markdown table inside the README's `### Terminal Helpers
+- [x] **Step 1: Copy the table.** It is the Markdown table inside the README's `### Terminal Helpers
   (\`config/bin\`)` section. Seven of its rows name scripts that no longer exist (`xc-usage`, `xc-md`,
   `xc-skills`, `osx`, `xcz`, `yw`, `keyring`), and four current scripts are missing. The script below drops rows
   whose linked script is gone, adds the four, rewrites links relative to `config/bin/`, and inserts the result as
@@ -176,7 +176,7 @@ EOF
   Expected: `17 table lines` (header, separator, 11 kept rows, 4 added). Markdown tables need no column
   alignment, so the uneven widths are fine.
 
-- [ ] **Step 2: Lint and commit.**
+- [x] **Step 2: Lint and commit.**
 
 ```bash
 mise x npm:markdownlint-cli@0.49.1 -- markdownlint config/bin/README.md
@@ -195,7 +195,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 **Files:** Modify `assets/guides/TESTING_GUIDE.md`
 
-- [ ] **Step 1: Add the section** right before the line `## Enforcement`:
+- [x] **Step 1: Add the section** right before the line `## Enforcement`:
 
 ```markdown
 ## Zsh startup
@@ -212,7 +212,7 @@ All three run `script/zsh-verify.sh`.
 
 ```
 
-- [ ] **Step 2: Lint and commit.**
+- [x] **Step 2: Lint and commit.**
 
 ```bash
 cd ~/Work/dots-readme
@@ -229,7 +229,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 **Files:** Delete `assets/guides/homebrew-recipes.md`
 
-- [ ] **Step 1: Check what links to it.**
+- [x] **Step 1: Check what links to it.**
 
 ```bash
 cd ~/Work/dots-readme && git grep -n 'homebrew-recipes' -- ':!docs/superpowers'
@@ -238,7 +238,7 @@ cd ~/Work/dots-readme && git grep -n 'homebrew-recipes' -- ':!docs/superpowers'
   Expected: only `README.md` (replaced in Task 6). If anything else prints, remove that link line too and add
   the file to the commit below.
 
-- [ ] **Step 2: Delete and commit.**
+- [x] **Step 2: Delete and commit.**
 
 ```bash
 g rm -q assets/guides/homebrew-recipes.md
@@ -255,7 +255,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 **Files:** Replace `README.md`
 
-- [ ] **Step 1: Write the file.** Replace the whole of `README.md` with exactly the text between the two
+- [x] **Step 1: Write the file.** Replace the whole of `README.md` with exactly the text between the two
   `~~~~` fence lines below (the fences are not part of the file):
 
 ~~~~markdown
@@ -446,7 +446,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 [MIT](LICENSE)
 ~~~~
 
-- [ ] **Step 2: Lint.**
+- [x] **Step 2: Lint.**
 
 ```bash
 cd ~/Work/dots-readme && mise x npm:markdownlint-cli@0.49.1 -- markdownlint README.md
@@ -455,7 +455,7 @@ cd ~/Work/dots-readme && mise x npm:markdownlint-cli@0.49.1 -- markdownlint READ
   Expected: no output. The repo config allows long lines in tables; if `MD013` (line length) fires on a table
   row, leave the row as is and add `<!-- markdownlint-disable MD013 -->` as the first line of the file.
 
-- [ ] **Step 3: Commit.**
+- [x] **Step 3: Commit.**
 
 ```bash
 g add README.md
@@ -472,7 +472,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 7: Verify
 
-- [ ] **Step 1: No stale terms.**
+- [x] **Step 1: No stale terms.**
 
 ```bash
 cd ~/Work/dots-readme && grep -niE 'brewfile|bundle|flox|config/homebrew|homebrew-recipes' README.md
@@ -480,7 +480,7 @@ cd ~/Work/dots-readme && grep -niE 'brewfile|bundle|flox|config/homebrew|homebre
 
   Expected: no output.
 
-- [ ] **Step 2: Every link resolves.** Run:
+- [x] **Step 2: Every link resolves.** Run:
 
 ```bash
 cd ~/Work/dots-readme
@@ -522,7 +522,7 @@ EOF
   Expected: `broken: 0`. Fix any broken link in the file it names (wrong path or heading), re-run, and commit
   the fix with `docs: Fix README links`.
 
-- [ ] **Step 3: The read-only commands run.** These need the real checkout, so run them from `~`:
+- [x] **Step 3: The read-only commands run.** These need the real checkout, so run them from `~`:
 
 ```bash
 cd ~ && export MISE_AUTO_INSTALL=0 MISE_EXEC_AUTO_INSTALL=0
@@ -534,7 +534,7 @@ done
 
   (`${=c}` is zsh word splitting; in bash use `$c`.) Expected: `exit 0` for all seven (checked on 2026-11-04).
 
-- [ ] **Step 4: Lint everything changed.**
+- [x] **Step 4: Lint everything changed.**
 
 ```bash
 cd ~/Work/dots-readme
@@ -548,7 +548,7 @@ mise x npm:markdownlint-cli@0.49.1 -- markdownlint README.md AGENTS.md assets/RE
 
 ### Task 8: Pull request
 
-- [ ] **Step 1: Push and open it.**
+- [x] **Step 1: Push and open it.**
 
 ```bash
 cd ~/Work/dots-readme
@@ -575,4 +575,4 @@ EOF
 )"
 ```
 
-- [ ] **Step 2: Report** the PR link to the owner.
+- [x] **Step 2: Report** the PR link to the owner.
