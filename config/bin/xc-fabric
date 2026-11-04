@@ -703,10 +703,6 @@ main() {
   _boot_check_deps
 
   case "${1:-}" in
-    -h|--help|help)
-      usage zsh "$XC_SCRIPT" --help
-      exit 0
-      ;;
     run)
       _xc_fabric_cmd_run "${usage_pattern:-}" "${usage_url:-}"
       ;;

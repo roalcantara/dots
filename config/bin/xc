@@ -300,10 +300,6 @@ _xc_main() {
       _xc_cmd_treeify
       exit 0
       ;;
-    -h|--help|help)
-      usage zsh "$XC_LAUNCHER_SELF" --help
-      exit 0
-      ;;
     '')
       _xc_run_tool
       ;;

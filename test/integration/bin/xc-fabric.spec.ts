@@ -4,7 +4,7 @@ import { describe, expect, it } from "bun:test";
 import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { fixturesDir, realUsageBin, scriptPath } from "./support/paths";
+import { fixturesDir, realUsageBin, realUsageDir, scriptPath } from "./support/paths";
 
 const selected = (Bun.env.usage_scenario ?? "").trim();
 const skipWhenOtherScenario = (id: string) =>
@@ -99,9 +99,10 @@ describe("xc-fabric", () => {
   describe.skipIf(skipWhenOtherScenario("help"))("when help is requested", () => {
     it("prints usage for -h and --help", () => {
       for (const flag of ["-h", "--help"]) {
-        const r = Bun.spawnSync(["zsh", script, flag], {
+        const r = Bun.spawnSync([script, flag], {
           stdout: "pipe",
           stderr: "pipe",
+          env: { ...process.env, PATH: `${realUsageDir()}:/usr/bin:/bin` },
         });
         expect(r.exitCode).toBe(0);
         const out = decode(r.stdout);
