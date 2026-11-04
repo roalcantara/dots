@@ -36,6 +36,7 @@
 "~/.config/television" = { source = "~/.local/share/dots/config/television", relative = true }
 "~/.config/tombi" = { source = "~/.local/share/dots/config/tombi", relative = true }
 "~/.config/vscode" = { source = "~/.local/share/dots/config/vscode", relative = true }
+"~/.config/wakatime" = { source = "~/.local/share/dots/config/wakatime", relative = true }
 "~/.config/yabai" = { source = "~/.local/share/dots/config/yabai", relative = true }
 "~/.config/zed" = { source = "~/.local/share/dots/config/zed", relative = true }
 "~/.config/zentty" = { source = "~/.local/share/dots/config/zentty", relative = true }

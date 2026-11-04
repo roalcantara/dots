@@ -1,0 +1,7 @@
+# Local state; only .wakatime.cfg (SOPS-encrypted) is versioned.
+.wakatime/
+ai-sqlite
+offline_heartbeats.bdb
+wakatime-internal.cfg
+wakatime.log
+!.wakatime.cfg
