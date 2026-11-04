@@ -3,6 +3,8 @@
 # Folders the shell config and tools expect, plus the XDG user folders the images' structure tests check.
 [bootstrap.directories."~/.local/bin"]
 [bootstrap.directories."~/.local/state/zim"]
+[bootstrap.directories."~/.local/state/nvim"]
+mode = "0700"
 [bootstrap.directories."~/.local/share/zsh"]
 [bootstrap.directories."~/.local/share/npm"]
 [bootstrap.directories."~/.local/share/gems"]
@@ -12,22 +14,16 @@ mode = "0700"
 [bootstrap.directories."~/.cache/mise"]
 # Private (0700), as macOS creates them; bootstrap would otherwise reset them to 0755.
 [bootstrap.directories."~/Desktop"]
-env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Documents"]
-env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Downloads"]
-env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Movies"]
-env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Music"]
-env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Pictures"]
-env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Projects"]
 [bootstrap.directories."~/Work"]
@@ -169,4 +165,8 @@ if [ -z "$profile" ]; then
 fi
 HOMEBREW_DOTS_PROFILE="${profile:-desktop}" brew bundle install --no-upgrade \
   --file "$HOME/.local/share/dots/config/homebrew/Brewfile"
+if [ "${profile:-desktop}" = "container" ]; then
+  brew cleanup --prune=all 2>/dev/null || true
+  rm -rf "$HOME/.cache/Homebrew" 2>/dev/null || true
+fi
 '''

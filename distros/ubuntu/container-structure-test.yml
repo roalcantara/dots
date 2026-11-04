@@ -65,7 +65,7 @@ commandTests:
     expectedOutput: ['Homebrew \d']
   - name: the container group of the Brewfile should be on PATH in a login shell
     command: zsh
-    args: [-lic, "for t in zoxide fzf eza bat rg fd jq nvim delta; do command -v $t >/dev/null || { echo missing $t; exit 1; }; done; echo ok"]
+    args: [-lic, "which zoxide fzf eza bat rg fd jq nvim delta >/dev/null && echo ok"]
     expectedOutput: [ok]
   - name: a login shell should start without errors
     command: zsh
@@ -74,7 +74,7 @@ commandTests:
     excludedError: ['.+']
   - name: desktop-only parts should be absent
     command: bash
-    args: [-c, "for p in ~/.agents/skills ~/.local/share/gopass/password-store ~/.local/share/nvim/lazy; do [ ! -e $p ] || { echo present $p; exit 1; }; done; echo ok"]
+    args: [-c, "[ ! -e ~/.agents/skills ] && [ ! -e ~/.local/share/gopass/password-store ] && [ ! -e ~/.local/share/nvim/lazy ] && echo ok"]
     expectedOutput: [ok]
   - name: SOPS-filtered files should stay encrypted in the image
     command: bash

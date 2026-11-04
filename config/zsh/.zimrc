@@ -35,7 +35,7 @@ zmodule completion
 # After `completion`: compdef already exists, so mise skips its own compinit.
 # Their fpath entries are emitted at the top of init.zsh regardless of order.
 zmodule joke/zim-mise --if-command mise                                                       # Sets up mise Zsh shell integration (https://github.com/joke/zim-mise)
-zmodule fzf --if-command fzf                                                                  # Fuzzy finder (https://github.com/zimfw/fzf)
+zmodule fzf --if-command fzf --if '[[ -t 0 ]]'                                                  # Fuzzy finder (https://github.com/zimfw/fzf)
 zmodule Aloxaf/fzf-tab --source fzf-tab.zsh --if-command fzf                                  # MUST be sourced after compinit but before other plugins
 
 # MUST be sourced after completion. Skip in Warp Terminal as it has native syntax highlighting
