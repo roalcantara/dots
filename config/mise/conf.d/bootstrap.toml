@@ -101,7 +101,7 @@ content = '''
 Dpkg::Options { "--force-confdef"; "--force-confold"; };
 '''
 
-# Linux desktops: Flathub for the system-wide flatpak apps in packages.toml. Flatpak reads remotes from this
+# Linux desktops: Flathub for the system-wide flatpak apps in config/homebrew/Brewfile. Flatpak reads remotes from this
 # folder; declared before packages so the remote exists when mise installs flatpak and then the apps.
 # The folders do not exist until the flatpak package installs, so they are declared too.
 [bootstrap.directories."/etc/flatpak"]

@@ -219,7 +219,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 3: apt prerequisites in `system.toml`; delete `packages.toml`
 
-- [ ] **Step 1: Create `config/mise/conf.d/system.toml`:**
+- [x] **Step 1: Create `config/mise/conf.d/system.toml`:**
 
 ```toml
 # Linux system packages: only what Homebrew needs to install itself, plus desktop services. Every other
@@ -236,7 +236,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 "apt:docker.io" = { os = "linux", env = "desktop" }
 ```
 
-- [ ] **Step 2: Delete the old list and the converter; fix the stale comment.**
+- [x] **Step 2: Delete the old list and the converter; fix the stale comment.**
 
 ```bash
 g rm -q config/mise/conf.d/packages.toml script/brewfile-from-mise.py
@@ -246,7 +246,7 @@ grep -n 'packages.toml' config/mise/conf.d/bootstrap.toml
 
   Expected: the `grep` prints nothing.
 
-- [ ] **Step 3: Lint and commit.**
+- [x] **Step 3: Lint and commit.**
 
 ```bash
 mise x taplo@0.10.0 -- taplo fmt --check config/mise/conf.d/system.toml config/mise/conf.d/bootstrap.toml
