@@ -2,7 +2,7 @@
 // The gopass-keyring check in the bootstrap task (config/mise/conf.d/bootstrap.toml): warns when the gopass
 // identity keyring still uses a passphrase, or when its unlock file is missing; never fails the bootstrap.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -68,4 +68,64 @@ describe("bootstrap gopass-keyring check", () => {
     rmSync(join(t, "bin", "gopass"));
     expect(snippet(SCRYPT).err).toBe("");
   });
+});
+
+const tools = ["gopass", "age-keygen", "expect", "git"].every((c) => Bun.which(c) !== null);
+
+describe.skipIf(!tools)("gopass keyring switch (end to end)", () => {
+  it("after reencrypt, gopass decrypts with no tty and no passphrase; without the key it fails", () => {
+    const h = mkdtempSync(join(tmpdir(), "gopass-e2e-"));
+    // Only the four tools, never pinentry: pinentry-mac could open a dialog or write a Keychain item named
+    // like the real one (GnuPG / pass/age-identities). /usr/bin and /bin have no pinentry.
+    mkdirSync(join(h, "bin"));
+    for (const c of ["gopass", "age-keygen", "expect", "git"]) symlinkSync(Bun.which(c) as string, join(h, "bin", c));
+    const env: Record<string, string> = {
+      PATH: `${join(h, "bin")}:/usr/bin:/bin`, HOME: h, XDG_CONFIG_HOME: join(h, ".config"),
+      XDG_DATA_HOME: join(h, ".local/share"), XDG_CACHE_HOME: join(h, ".cache"), XDG_RUNTIME_DIR: join(h, "run"),
+      GOPASS_NO_NOTIFY: "true", GIT_CONFIG_GLOBAL: join(h, "gitconfig"), GIT_CONFIG_NOSYSTEM: "1", TERM: "dumb",
+    };
+    // A fresh env (not process.env), so GOPASS_CONFIG / GOPASS_CONFIG_HOME / GOPASS_HOMEDIR never leak in.
+    const sh = (cmd: string, extra: Record<string, string> = {}) =>
+      Bun.spawnSync(["bash", "-c", cmd], {
+        env: { ...env, ...extra }, stdin: "ignore", stdout: "pipe", stderr: "pipe", timeout: 30_000,
+      });
+    try {
+      mkdirSync(env.XDG_RUNTIME_DIR as string, { recursive: true, mode: 0o700 });
+      writeFileSync(env.GIT_CONFIG_GLOBAL as string, "[user]\n  email = t@example.com\n  name = T\n[commit]\n  gpgsign = false\n");
+      const pass = { GOPASS_AGE_PASSWORD: "lab-pass-123" };
+
+      expect(sh("gopass setup --crypto age --storage fs --name T --email t@example.com", pass).exitCode).toBe(0);
+      expect(sh("echo the-secret-value | gopass insert -f tokens/demo", pass).exitCode).toBe(0);
+      expect(sh("head -n 2 ~/.config/gopass/age/identities").stdout.toString()).toContain("-> scrypt");
+
+      expect(sh("mkdir -p ~/.config/age && (umask 077; age-keygen -o ~/.config/age/keys.txt)").exitCode).toBe(0);
+      expect(sh("gopass config age.keyring-identities '~/.config/age/keys.txt'").exitCode).toBe(0);
+      expect(sh('gopass config age.keyring-recipients "$(age-keygen -y ~/.config/age/keys.txt)"').exitCode).toBe(0);
+      const exp = [
+        "set timeout 30",
+        "spawn gopass age identities reencrypt",
+        "expect {",
+        "  -re {\\[y/N/q\\]} { send \"y\\r\"; exp_continue }",
+        "  eof {}",
+        "  timeout { exit 9 }",
+        "}",
+        "catch wait r",
+        "exit [lindex $r 3]",
+      ].join("\n");
+      writeFileSync(join(h, "re.exp"), exp);
+      expect(sh(`expect ${join(h, "re.exp")}`, pass).exitCode).toBe(0);
+      expect(sh("head -n 2 ~/.config/gopass/age/identities").stdout.toString()).toContain("-> X25519");
+
+      sh("gopass config age.agent-enabled false");
+      const after = sh("gopass show -o tokens/demo");
+      expect(after.exitCode).toBe(0);
+      expect(after.stdout.toString().trim()).toBe("the-secret-value");
+
+      sh("mv ~/.config/age/keys.txt ~/keys.moved");
+      expect(sh("gopass show -o tokens/demo").exitCode).not.toBe(0);
+    } finally {
+      sh("gopass age agent stop >/dev/null 2>&1; true");
+      rmSync(h, { recursive: true, force: true });
+    }
+  }, 120_000);
 });
