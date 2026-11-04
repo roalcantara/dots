@@ -1684,10 +1684,10 @@
   "gherkinRunner.showCodeLens": true,
   "gherkinRunner.showVisualCodeLens": true,
   "cucumber.features": [
-    "assets/features/**/*.feature"
+    "test/features/**/*.feature"
   ],
   "cucumber.glue": [
-    "assets/features/**/*.ts"
+    "test/features/**/*.ts"
   ],
   "[pkl]": {
     "editor.defaultFormatter": "dprint.dprint"

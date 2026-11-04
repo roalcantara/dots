@@ -112,7 +112,7 @@ The backup policy is declared in `config/restic/backup.toml`:
 ```toml
 #:schema ./backup.schema.json
 # Backup policy for script/backup.ts (mise run backup, backup:restore, …).
-# Every key, default and reason: assets/guides/REINSTALL_GUIDE.md, "The manifest".
+# Every key, default and reason: docs/REINSTALL.md, "The manifest".
 
 [repository]
 root = "/Volumes/backups"                          # DOTS_BACKUP_ROOT overrides

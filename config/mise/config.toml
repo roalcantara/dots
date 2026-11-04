@@ -90,7 +90,7 @@ idiomatic_version_file_enable_tools = [
 # Instead use https://usage.jdx.dev/spec
 task.disable_spec_from_run_scripts = true
 
-# Skills are managed in .agents/skills/ per SKILLS.yml; do not auto-fetch from tool git repos
+# Skills are managed in ~/.agents/skills/ per config/agents/skill-lock.json
 skills.fetch = false
 
 # Configure a custom command in your global settings to obtain a GitHub token
