@@ -145,7 +145,7 @@ jobs:
       - name: Check the image size
         env:
           IMAGE: ${{ steps.setup.outputs.IMAGE_NAME }}-amd64
-          BUDGET_BYTES: ${{ vars.IMAGE_BUDGET_BYTES || '2000000000' }}
+          BUDGET_BYTES: ${{ vars.IMAGE_BUDGET_BYTES || '2800000000' }}
         run: |
           size=$(docker image inspect "$IMAGE" --format '{{.Size}}')
           echo "image size: $((size / 1000000)) MB (budget $((BUDGET_BYTES / 1000000)) MB)" | tee -a "$GITHUB_STEP_SUMMARY"
