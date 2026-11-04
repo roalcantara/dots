@@ -827,7 +827,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 12: Open the PR and watch Preview
 
-- [ ] **Step 1: Push and open.**
+- [x] **Step 1: Push and open.**
 
 ```bash
 cd ~/Work/dots-brewfile && g push
@@ -852,14 +852,14 @@ EOF
 
   Replace both `<…>` placeholders with the real results before running the command.
 
-- [ ] **Step 2: Watch the run** (it starts within a minute of opening the PR):
+- [x] **Step 2: Watch the run** (it starts within a minute of opening the PR):
 
 ```bash
 sleep 60; run=$(gh run list --branch feat/brewfile-packages --workflow Preview --limit 1 --json databaseId -q '.[0].databaseId')
 gh run watch "$run" --exit-status; echo "exit=$?"
 ```
 
-- [ ] **Step 3: Check the budget and timings.**
+- [x] **Step 3: Check the budget and timings.**
 
 ```bash
 gh run view "$run" --json jobs -q '.jobs[] | "\(.name): \(.conclusion) in \(((.completedAt|fromdate)-(.startedAt|fromdate))/60|floor) min"'
@@ -868,12 +868,12 @@ gh run view "$run" --log | grep -E 'image size:'
 
   Expected: every job `success`; `validate` jobs under 30 minutes; both `image size:` lines under budget.
 
-- [ ] **Step 4: If it fails**, read `gh run view "$run" --log-failed | tail -60`, fix the cause in the matching
+- [x] **Step 4: If it fails**, read `gh run view "$run" --log-failed | tail -60`, fix the cause in the matching
   task's file, commit, push, and repeat Steps 2–3. After three failed attempts, **STOP** and report.
 
-- [ ] **Step 5: Set the budget** from the real sizes: the larger image size plus 20%, rounded up to 100 MB. Ask the
+- [x] **Step 5: Set the budget** from the real sizes: the larger image size plus 20%, rounded up to 100 MB. Ask the
   owner to set it (`gh variable set IMAGE_BUDGET_BYTES --body <bytes>`): it is a repository setting, so do not set
   it yourself.
 
-- [ ] **Step 6: Report** to the owner: the PR link, both image sizes, job times, the Task 8 missing list, and any
+- [x] **Step 6: Report** to the owner: the PR link, both image sizes, job times, the Task 8 missing list, and any
   zsh guards added in Task 1.
