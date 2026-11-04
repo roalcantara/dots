@@ -67,7 +67,7 @@ brew "mermaid-cli"  # CLI for Mermaid
 brew "node"  # JavaScript runtime and package manager support
 brew "openjdk"  # Java development kit
 brew "openssl@3"  # Cryptography and TLS toolkit
-brew "oven-sh/bun/bun" if OS.mac?  # JavaScript runtime, bundler, and package manager
+brew "oven-sh/bun/bun"  # JavaScript runtime, bundler, and package manager (the fallback behind mise's bun shim)
 brew "pinentry-mac" if OS.mac?  # Pinentry for GPG on macOS
 brew "pkl"  # Pkl language CLI
 brew "pkl-lsp" if OS.mac?  # Pkl language server
@@ -139,6 +139,7 @@ cask "vorssaint" if OS.mac?  # Menu bar toolkit with keep-awake, system monitor 
 cask "whatsapp" if OS.mac?  # WhatsApp desktop app
 cask "zed" if OS.mac?  # Multiplayer code editor
 cask "xykong/tap/flux-markdown" if OS.mac?  # Markdown previews in Finder QuickLook with diagrams and math
+# Fonts: Linux gets the same casks from config/mise/conf.d/system.toml (`brew-cask:` installs font casks there).
 cask "font-cascadia-code" if OS.mac?
 cask "font-cascadia-code-pl" if OS.mac?
 cask "font-caskaydia-mono-nerd-font" if OS.mac?
