@@ -254,16 +254,15 @@ fi
 '''
 
 [tasks."setup:hooks"]
-description = "Link the global hk/cog config and install this repo's git hooks"
+description = "Link the global hk config and install this repo's git hooks"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
 DOTS="${DOTS_DIR:-$HOME/.local/share/dots}"
 CFG="${XDG_CONFIG_HOME:-$HOME/.config}"
 
-# hk reads ~/.config/hk/config.pkl and cog reads ~/.config/cog/cog.toml.
-# Link the directories so edits in the repo take effect immediately.
-for d in hk cog; do
+# hk reads ~/.config/hk/config.pkl. Link the directory so edits in the repo take effect immediately.
+for d in hk; do
   if [ ! -e "$CFG/$d" ]; then
     ln -snf "$DOTS/config/$d" "$CFG/$d"
     echo "linked $CFG/$d -> $DOTS/config/$d"
