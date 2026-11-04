@@ -18,17 +18,16 @@ export const fixtureFabricPatterns = join(
   "test/integration/bin/fixtures/xc-fabric/patterns",
 );
 
-function resolveBin(name: string, fallback: string): string {
-  if (typeof Bun !== "undefined") {
-    return Bun.which(name) ?? fallback;
-  }
+function resolveBinDir(name: string, fallback: string): string {
+  if (existsSync(`/opt/homebrew/bin/${name}`)) return "/opt/homebrew/bin";
+  if (existsSync(`/usr/local/bin/${name}`)) return "/usr/local/bin";
   try {
-    return execSync(`which ${name}`, { encoding: "utf8" }).trim() || fallback;
-  } catch {
-    return existsSync(fallback) ? fallback : name;
-  }
+    const which = typeof Bun !== "undefined" ? Bun.which(name) : execSync(`which ${name}`, { encoding: "utf8" }).trim();
+    if (which && !which.includes(".local/share/mise/shims")) return dirname(which);
+  } catch {}
+  return dirname(fallback);
 }
 
 /** Folder holding the `usage` binary (Homebrew or mise), for subprocess PATHs; xc needs usage and jq. */
-export const toolBin = dirname(resolveBin("usage", "/opt/homebrew/bin/usage"));
-export const jqBin = dirname(resolveBin("jq", "/opt/homebrew/bin/jq"));
+export const toolBin = resolveBinDir("usage", "/opt/homebrew/bin/usage");
+export const jqBin = resolveBinDir("jq", "/opt/homebrew/bin/jq");
