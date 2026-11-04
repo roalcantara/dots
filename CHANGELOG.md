@@ -1,3 +1,10 @@
+# [1.38.0](https://github.com/roalcantara/dots/compare/v1.37.0...v1.38.0) (2026-11-04)
+
+
+### Features
+
+* **packages:** One Brewfile for every package; minimal containers ([#92](https://github.com/roalcantara/dots/issues/92)) ([f4c71e2](https://github.com/roalcantara/dots/commit/f4c71e22b89db8fce197d122cb4c6ffe389bba9a))
+
 # [1.37.0](https://github.com/roalcantara/dots/compare/v1.36.2...v1.37.0) (2026-11-04)
 
 
