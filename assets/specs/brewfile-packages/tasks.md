@@ -432,7 +432,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 **Files:** `distros/debian/container-structure-test.yml`, `distros/ubuntu/container-structure-test.yml` (same
 edits in both)
 
-- [ ] **Step 1: Replace the tools test.** Find the `commandTests` entry named
+- [x] **Step 1: Replace the tools test.** Find the `commandTests` entry named
   `core tools should be installed by mise bootstrap` and replace the whole entry with:
 
 ```yaml
@@ -455,13 +455,13 @@ edits in both)
     expectedOutput: [ok]
 ```
 
-- [ ] **Step 2: Remove** the `commandTests` entry named
+- [x] **Step 2: Remove** the `commandTests` entry named
   `Neovim's Python provider (pynvim-python) should import pynvim`, and the six `fileExistenceTests` entries named
   `~/Desktop dir (XDG_DESKTOP_DIR)`, `~/Documents dir (XDG_DOCUMENTS_DIR)`, `~/Downloads dir (XDG_DOWNLOAD_DIR)`,
   `~/Movies dir (XDG_VIDEOS_DIR)`, `~/Music dir (XDG_MUSIC_DIR)` and `~/Pictures dir (XDG_PICTURES_DIR)`, each
   with all its lines.
 
-- [ ] **Step 3: Check and commit.**
+- [x] **Step 3: Check and commit.**
 
 ```bash
 for d in debian ubuntu; do python3 -c "import yaml,sys;yaml.safe_load(open('distros/$d/container-structure-test.yml'))" 2>/dev/null \

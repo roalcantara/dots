@@ -63,14 +63,23 @@ commandTests:
     command: /home/vscode/.local/bin/mise
     args: [--version]
     exitCode: 0
-  - name: core tools should be installed by mise bootstrap
-    command: bash
-    args: [-c, "for t in age bat eza fd fzf jq nvim rg sops zoxide; do command -v $t >/dev/null || { echo missing $t; exit 1; }; done"]
+  - name: Homebrew should be installed
+    command: /home/linuxbrew/.linuxbrew/bin/brew
+    args: [--version]
+    expectedOutput: ['Homebrew \d']
+  - name: the container group of the Brewfile should be on PATH in a login shell
+    command: zsh
+    args: [-lic, "for t in zoxide fzf eza bat rg fd jq nvim delta; do command -v $t >/dev/null || { echo missing $t; exit 1; }; done; echo ok"]
+    expectedOutput: [ok]
+  - name: a login shell should start without errors
+    command: zsh
+    args: [-lic, exit]
     exitCode: 0
-  - name: Neovim's Python provider (pynvim-python) should import pynvim
+    excludedError: ['.+']
+  - name: desktop-only parts should be absent
     command: bash
-    args: [-c, "/home/vscode/.local/share/mise/shims/pynvim-python -c 'import pynvim'"]
-    exitCode: 0
+    args: [-c, "for p in ~/.agents/skills ~/.local/share/gopass/password-store ~/.local/share/nvim/lazy; do [ ! -e $p ] || { echo present $p; exit 1; }; done; echo ok"]
+    expectedOutput: [ok]
   - name: SOPS-filtered files should stay encrypted in the image
     command: bash
     args: [-c, "set -e; ls /home/vscode/.local/share/dots/config/ssh/keys/*.key >/dev/null; ! grep -q 'BEGIN OPENSSH PRIVATE KEY' /home/vscode/.local/share/dots/config/ssh/keys/*.key"]
@@ -82,30 +91,6 @@ fileExistenceTests:
     path: /home/vscode
     shouldExist: true
     permissions: drwxr-x---
-  - name: ~/Desktop dir (XDG_DESKTOP_DIR)
-    path: /home/vscode/Desktop
-    shouldExist: true
-    permissions: drwx------
-  - name: ~/Documents dir (XDG_DOCUMENTS_DIR)
-    path: /home/vscode/Documents
-    shouldExist: true
-    permissions: drwx------
-  - name: ~/Downloads dir (XDG_DOWNLOAD_DIR)
-    path: /home/vscode/Downloads
-    shouldExist: true
-    permissions: drwx------
-  - name: ~/Movies dir (XDG_VIDEOS_DIR)
-    path: /home/vscode/Movies
-    shouldExist: true
-    permissions: drwx------
-  - name: ~/Music dir (XDG_MUSIC_DIR)
-    path: /home/vscode/Music
-    shouldExist: true
-    permissions: drwx------
-  - name: ~/Pictures dir (XDG_PICTURES_DIR)
-    path: /home/vscode/Pictures
-    shouldExist: true
-    permissions: drwx------
   - name: ~/Projects dir (XDG_PROJECTS_DIR)
     path: /home/vscode/Projects
     shouldExist: true
