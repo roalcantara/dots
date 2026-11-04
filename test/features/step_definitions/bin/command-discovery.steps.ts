@@ -5,8 +5,12 @@ import { existsSync } from "node:fs";
 import {
   binRoot,
   fixtureLauncherBin,
+  toolBin,
+  jqBin,
   xcLauncher,
 } from "../../support/paths";
+
+const toolPaths = toolBin === jqBin ? `:${toolBin}` : `:${toolBin}:${jqBin}`;
 import { LastCommand } from "../../support/screenplay/last-command";
 import { RunCommand } from "../../support/screenplay/run-command";
 
@@ -21,7 +25,7 @@ Given("the xc launcher is available", function () {
 When("{actor} runs `xc list`", async (actor: Actor) =>
   actor.attemptsTo(
     RunCommand.with(["zsh", xcLauncher, "list"], {
-      PATH: `${binRoot}:/usr/bin:/bin`,
+      PATH: `${binRoot}${toolPaths}:/usr/bin:/bin`,
       XC_BIN_DIR: fixtureLauncherBin,
     }),
   ));
@@ -29,7 +33,7 @@ When("{actor} runs `xc list`", async (actor: Actor) =>
 When("{actor} runs `xc -h`", async (actor: Actor) =>
   actor.attemptsTo(
     RunCommand.with(["zsh", xcLauncher, "-h"], {
-      PATH: `${binRoot}:/usr/bin:/bin`,
+      PATH: `${binRoot}${toolPaths}:/usr/bin:/bin`,
       XC_BIN_DIR: binRoot,
     }),
   ));

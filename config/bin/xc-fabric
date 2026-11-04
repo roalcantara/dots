@@ -703,6 +703,10 @@ main() {
   _boot_check_deps
 
   case "${1:-}" in
+    -h|--help|help)
+      usage zsh "$XC_SCRIPT" --help
+      exit 0
+      ;;
     run)
       _xc_fabric_cmd_run "${usage_pattern:-}" "${usage_url:-}"
       ;;
@@ -714,7 +718,7 @@ main() {
       ;;
     show)
       if [[ -z "${usage_pattern:-}" ]]; then
-        usage zsh "${0:a}" show --help >&2
+        usage zsh "$XC_SCRIPT" show --help >&2
         exit 1
       fi
       _xc_fabric_cmd_show "${usage_pattern:-}"
@@ -724,7 +728,7 @@ main() {
       ;;
     scrape)
       if [[ -z "${usage_url:-}" ]]; then
-        usage zsh "${0:a}" scrape --help >&2
+        usage zsh "$XC_SCRIPT" scrape --help >&2
         exit 1
       fi
       _xc_fabric_cmd_scrape "${usage_url:-}" "${usage_pattern:-}"
@@ -733,7 +737,7 @@ main() {
       _xc_fabric_interactive
       ;;
     *)
-      usage zsh "${0:a}" --help >&2
+      usage zsh "$XC_SCRIPT" --help >&2
       exit 1
       ;;
   esac

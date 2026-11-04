@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { describe, expect, it } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { fixturesDir, scriptPath } from "./support/paths";
@@ -17,6 +17,7 @@ const basePath = "/usr/bin:/bin:/usr/sbin:/sbin";
 
 function makeTmpStubs(stubs: Record<string, string>): string {
   const tmp = mkdtempSync(join(tmpdir(), "xc-fabric-spec-"));
+  symlinkSync(Bun.which("usage") ?? "/opt/homebrew/bin/usage", join(tmp, "usage"));
   for (const [name, body] of Object.entries(stubs)) {
     writeFileSync(join(tmp, name), body, { mode: 0o755 });
   }
@@ -62,8 +63,8 @@ function run(
   };
   try {
     const cmd = options.pty
-      ? ["script", "-q", "/dev/null", "zsh", script, ...args]
-      : ["zsh", script, ...args];
+      ? ["script", "-q", "/dev/null", script, ...args]
+      : [script, ...args];
     const finalCmd =
       options.input === undefined
         ? cmd
@@ -77,6 +78,7 @@ function run(
           ];
     const result = Bun.spawnSync(finalCmd, {
       env,
+      stdin: options.input === undefined ? "ignore" : "pipe",
       stdout: "pipe",
       stderr: "pipe",
     });

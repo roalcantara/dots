@@ -1,8 +1,10 @@
 #!/usr/bin/env bun
 
 import { describe, expect, it } from "bun:test";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { binRoot, fixturesDir, scriptPath } from "./support/paths";
+
+const toolBin = dirname(Bun.which("usage") ?? "/opt/homebrew/bin/usage");
 
 const selected = (Bun.env.usage_scenario ?? "").trim();
 const skipWhenOtherScenario = (id: string) => selected !== "" && selected !== id;
@@ -12,7 +14,7 @@ const fixtureBin = join(fixturesDir, "xc-launcher", "bin");
 
 const testEnv = (extra: Record<string, string | undefined> = {}) => ({
   ...process.env,
-  PATH: `${binRoot}:/usr/bin:/bin`,
+  PATH: `${binRoot}:${toolBin}:/usr/bin:/bin`,
   ...extra,
 });
 
@@ -54,7 +56,7 @@ describe("xc launcher", () => {
       expect(r.exitCode).toBe(0);
       const out = new TextDecoder().decode(r.stdout);
       expect(out).toContain("xc-fabric");
-      expect(out).toContain("xc-usage");
+      expect(out).toContain("xc-git");
       expect(out).not.toMatch(/\bxc\s+Interactive launcher/);
     });
   });

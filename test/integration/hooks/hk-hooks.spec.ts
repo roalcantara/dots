@@ -1,24 +1,26 @@
 #!/usr/bin/env bun
 
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
 // Apple's /usr/bin/git is older than 2.54 and silently ignores config-based
 // hooks. Every commit here goes through it deliberately: it is what VS Code and
 // GUI clients get, and what the legacy shims must survive.
 const APPLE_GIT = "/usr/bin/git";
-const CLEAN_PATH = "/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin";
+const configDir = resolve(import.meta.dir, "../../../config");
 
 let repo: string;
+let cleanBin: string;
+let cleanPath: string;
 
 function git(args: string[], env: Record<string, string> = {}) {
   return Bun.spawnSync([APPLE_GIT, ...args], {
     cwd: repo,
     stdout: "pipe",
     stderr: "pipe",
-    env: { ...Bun.env, PATH: CLEAN_PATH, ...env },
+    env: { ...Bun.env, PATH: cleanPath, XDG_CONFIG_HOME: configDir, ...env },
   });
 }
 
@@ -32,6 +34,10 @@ function stderrOf(r: { stderr: Uint8Array }) {
 
 beforeAll(() => {
   repo = mkdtempSync(join(tmpdir(), "hk-hooks-"));
+  cleanBin = mkdtempSync(join(tmpdir(), "hk-clean-bin-"));
+  symlinkSync(Bun.which("mise") ?? "/opt/homebrew/bin/mise", join(cleanBin, "mise"));
+  cleanPath = `${cleanBin}:/usr/bin:/bin:/usr/sbin:/sbin`;
+
   for (const args of [
     ["init", "-q", "-b", "main", "."],
     ["config", "user.email", "test@example.com"],
@@ -42,20 +48,23 @@ beforeAll(() => {
   }
   writeFileSync(
     join(repo, "hk.pkl"),
-    'amends "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Config.pkl"\n',
+    'amends "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl"\n',
   );
-  writeFileSync(join(repo, "mise.toml"), '[tools]\nhk = "1.56.0"\ncocogitto = "7.0.0"\n');
+  writeFileSync(join(repo, "mise.toml"), '[tools]\nhk = "2.6.0"\ncocogitto = "7.0.0"\n');
   const install = Bun.spawnSync(["hk", "install", "--mise", "--legacy", "--force-local"], {
     cwd: repo,
+    env: { ...Bun.env, XDG_CONFIG_HOME: configDir },
     stdout: "pipe",
-    stderr: "pipe",
   });
   expect(install.exitCode).toBe(0);
   git(["add", "-A"]);
   expect(commit("feat(hk): Add initial configuration").exitCode).toBe(0);
 });
 
-afterAll(() => rmSync(repo, { recursive: true, force: true }));
+afterAll(() => {
+  rmSync(repo, { recursive: true, force: true });
+  rmSync(cleanBin, { recursive: true, force: true });
+});
 
 describe("hk git hooks", () => {
   describe("wiring", () => {
@@ -66,7 +75,7 @@ describe("hk git hooks", () => {
 
     it("enforces rules under Apple git with hk absent from PATH", () => {
       const which = Bun.spawnSync(["sh", "-c", "command -v hk"], {
-        env: { PATH: CLEAN_PATH },
+        env: { PATH: cleanPath },
         stdout: "pipe",
       });
       expect(which.exitCode).not.toBe(0);
