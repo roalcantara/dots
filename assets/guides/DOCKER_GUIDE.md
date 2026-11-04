@@ -226,11 +226,12 @@ Notable CI settings:
    `mise run build --local` smoke job on PRs (optional, cache-friendly).
 
 
-## Testing `install` in a container (`devcontainer` profile)
+## Testing `install` in a container
 
-Runs the real `install` (with the secrets) in a throwaway container, in about 3 minutes. The `devcontainer`
-profile skips apt, Homebrew and the Neovim setup; `config/mise/config.devcontainer.toml` installs only gh, age,
-gopass, hk, pkl and sd. Use it to check the history restore, links and gopass without a VM.
+Runs the real `install` (with the secrets) in a throwaway container, in about 3 minutes. The `container`
+profile installs Homebrew and the Brewfile's first group only (the minimal shell set), and skips agent skills,
+the gopass store, oMLX models and the Neovim plugins. Use it to check the history restore, links and gopass
+without a VM.
 
 1. Put the age key and a GitHub token in a private folder (both stay on this machine; delete them in step 5):
 
@@ -252,7 +253,7 @@ gopass, hk, pkl and sd. Use it to check the history restore, links and gopass wi
    cat > "$t/run.sh" <<'SCRIPT'
    set -u
    export DOTS_AGE_KEY="$(cat /run/s/age)" GH_TOKEN="$(cat /run/s/gh)"
-   export DOTS_PROFILE=devcontainer DOTS_BRANCH="${BRANCH:-main}"
+   export DOTS_PROFILE=container DOTS_BRANCH="${BRANCH:-main}"
    bash /run/s/install </dev/null > /tmp/install.log 2>&1; echo "install exit=$?"
    grep -E '^bootstrap: .*failed' /tmp/install.log
    unset GH_TOKEN DOTS_AGE_KEY
@@ -280,13 +281,15 @@ gopass, hk, pkl and sd. Use it to check the history restore, links and gopass wi
 The container restores the history but never pushes to it. Mac changes reach it only after `mise dot save` and
 `mise dot sync` on the Mac.
 
-The `devcontainer` profile skips agent skills. To test their restore, run `mise run -C ~/.local/share/dots
-skills:restore` in the container's shell after step 4: it installs every skill in
-`config/agents/skill-lock.json`, and a second run prints `every locked skill is installed`.
 
 Agent skills come from `config/agents/skill-lock.json`, the `skills` CLI's own lock (both paths it reads link
 there), so `skills add` and `skills update` show up as git diffs. `mise run skills:audit` lists installed skills
 whose source is not confirmed in `config/agents/review.csv`.
+
+## Image size budget
+
+Preview fails a PR whose image is larger than `IMAGE_BUDGET_BYTES` (a repository variable; default 2 GB).
+The container profile installs only the Brewfile's first group; anything added there grows every image.
 
 ## See also
 

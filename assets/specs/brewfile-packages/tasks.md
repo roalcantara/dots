@@ -693,7 +693,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 Docker Hub login and the remote caches (Task 9). The `remote` build target clones the PR branch from GitHub, so
 **push the branch first** (no PR yet).
 
-- [ ] **Step 1: Push and write a pull_request event.**
+- [x] **Step 1: Push and write a pull_request event.**
 
 ```bash
 cd ~/Work/dots-brewfile
@@ -703,7 +703,7 @@ cat > "$TMPDIR/pr-event.json" <<'EOF'
 EOF
 ```
 
-- [ ] **Step 2: The `brewfile` job.**
+- [x] **Step 2: The `brewfile` job.**
 
 ```bash
 act pull_request -e "$TMPDIR/pr-event.json" -j brewfile \
@@ -713,7 +713,7 @@ act pull_request -e "$TMPDIR/pr-event.json" -j brewfile \
   Expected: `Job succeeded`, with both groups listed. (The act image has no Homebrew, so the job's setup step
   installs it: a few minutes.)
 
-- [ ] **Step 3: The `validate` job for Ubuntu, arm64.**
+- [x] **Step 3: The `validate` job for Ubuntu, arm64.**
 
 ```bash
 act pull_request -e "$TMPDIR/pr-event.json" -j validate --matrix distro:ubuntu \
@@ -731,7 +731,7 @@ grep -nE 'image size|Job succeeded|Job failed|::error' "$TMPDIR/act-validate.log
 
 ### Task 11: Docs
 
-- [ ] **Step 1: README.md.** Make these edits:
+- [x] **Step 1: README.md.** Make these edits:
   - **Install → profiles table:** delete the `devcontainer` row; in the text above it, drop
     `config/mise/miserc.local.toml` if it now reads oddly (keep the step).
   - **How it works → table:** replace the `conf.d/packages.toml` row with two rows:
@@ -784,7 +784,7 @@ grep -nE 'image size|Job succeeded|Job failed|::error' "$TMPDIR/act-validate.log
   - **Playbooks:** rename the first row to `Test \`install\` in a container` and keep its link (its anchor changes
     in Step 2; update the link to `#testing-install-in-a-container`).
 
-- [ ] **Step 2: `assets/guides/DOCKER_GUIDE.md`.**
+- [x] **Step 2: `assets/guides/DOCKER_GUIDE.md`.**
   - Rename `## Testing \`install\` in a container (\`devcontainer\` profile)` to `## Testing \`install\` in a container`.
   - In that section: replace `DOTS_PROFILE=devcontainer` with `DOTS_PROFILE=container`; replace the intro
     sentence about the `devcontainer` profile with: "The `container` profile installs Homebrew and the Brewfile's
@@ -800,16 +800,16 @@ grep -nE 'image size|Job succeeded|Job failed|::error' "$TMPDIR/act-validate.log
     The container profile installs only the Brewfile's first group; anything added there grows every image.
     ```
 
-- [ ] **Step 3: `assets/specs/mise-bootstrap/design.md`.** Under its `## 4. Components` heading's package
+- [x] **Step 3: `assets/specs/mise-bootstrap/design.md`.** Under its `## 4. Components` heading's package
   subsection (the first one that mentions `packages.toml`), add the line:
   `> Superseded (2026-11-04): packages now come from \`config/homebrew/Brewfile\`; see
   [brewfile-packages](../brewfile-packages/design.md).`
 
-- [ ] **Step 4: `AGENTS.md`, `.agents/skills/dots-context/SKILL.md`.**
+- [x] **Step 4: `AGENTS.md`, `.agents/skills/dots-context/SKILL.md`.**
   `grep -nE 'packages\.toml|devcontainer profile|config\.devcontainer|mise run brew|mise run up' AGENTS.md .agents/skills/dots-context/SKILL.md`
   and update each hit to the Brewfile equivalent.
 
-- [ ] **Step 5: Stale-term sweep, links, lint, commit.**
+- [x] **Step 5: Stale-term sweep, links, lint, commit.**
 
 ```bash
 cd ~/Work/dots-brewfile
