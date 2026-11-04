@@ -336,6 +336,40 @@ Perform this one-time setup on a new machine:
    mise run backup:restore -- --include Documents --target "$(mktemp -d)"
    ```
 
+### One secret: the age key
+
+The age key that `install` asks for (`config/age/keys.txt`) decrypts the mise history. gopass's own identity
+keyring (`~/.config/gopass/age/identities`) is locked to the same key, so a new machine needs that one secret
+and gopass never asks for a PIN. Without this, the keyring has its own passphrase: macOS hides it (pinentry-mac
+saved it in the Keychain), Linux asks for it on every `gopass show` and scripts fail with `pinentry error`.
+
+Switch once, on a machine where gopass works (it asks for the old passphrase and to confirm the recipients).
+The backup goes outside `~/.config/gopass`, which the history tracks:
+
+```sh
+bak="$HOME/.local/state/dots/gopass-identities.scrypt.bak"; mkdir -p "${bak%/*}"
+cp -p ~/.config/gopass/age/identities "$bak"
+gopass config age.keyring-identities '~/.config/age/keys.txt'
+gopass config age.keyring-recipients "$(age-keygen -y ~/.config/age/keys.txt)"
+gopass age identities reencrypt                               # old passphrase, then y
+gopass show -o tokens/age.dots.github.com </dev/null          # prints with no prompt
+head -n 2 ~/.config/gopass/age/identities                     # "-> X25519", no longer "-> scrypt"
+mise dot save && mise dot sync                                # the history carries it to every machine
+```
+
+Delete the backup once a second machine decrypts. The old Keychain item (`GnuPG` / `pass/age-identities`) is no
+longer used.
+
+- **Recovery key:** keep the age key itself (the `AGE-SECRET-KEY-1…` line of `config/age/keys.txt`) as a
+  Bitwarden secure note. It is the only key to the history, and the history is the only carrier of
+  `~/.config/gopass`, so it recovers gopass too: paste it when `install` asks. A second keyring recipient would
+  not help on a new machine, where there is no history to open without the age key.
+- **Trade-off:** before the switch, the age key opened the history but not gopass: the keyring passphrase was a
+  second factor. After it, the age key alone opens every gopass secret. Keep it `0600` on an encrypted disk
+  (FileVault, LUKS) and only in Bitwarden off the machine.
+- **Bootstrap check:** `mise bootstrap` warns while the keyring still uses a passphrase, or when the file named
+  by `age.keyring-identities` is missing. It never changes gopass settings.
+
 ---
 
 ## 8. Reinstall playbook
@@ -524,6 +558,7 @@ restic --repo /Volumes/backups/machines/<host>/restic restore latest:/Users/<old
 | `backup root not found: <dir>` | External drive not mounted or wrong mount point. | Connect the drive or set `DOTS_BACKUP_ROOT=/path/to/drive`. |
 | `no repository at <path>` | Repository not initialized or wrong host name. | Run `mise run backup:init` or set `DOTS_BACKUP_HOST=<old host>`. |
 | `password command failed` | gopass password entry missing or gopass locked. | Generate password via `gopass generate backups/restic 32` or unlock gopass. |
+| `Enter your PIN` from gopass, or `pinentry error` in scripts | The gopass keyring still uses its own passphrase. | Lock it to the age key: [One secret: the age key](#one-secret-the-age-key). |
 | `wrong password or no key found` | Supplied restic password does not match repo key. | Verify password in password manager; test with `restic --repo <path> key list`. |
 | `repository is already locked` | Prior restic process was aborted abruptly. | Remove stale locks with `restic --repo <path> unlock`. |
 | Backup exits with code `3` | Protected macOS directories unreadable. | Grant Full Disk Access to Terminal/Ghostty in macOS System Settings. |

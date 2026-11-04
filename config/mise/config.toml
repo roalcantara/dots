@@ -125,5 +125,5 @@ recipients = ["age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4"]
   "random_seed",
   "*~",
 ] }
-# gopass's age identity (itself passphrase-protected); the store is a git clone the bootstrap task makes.
+# gopass's age identity keyring (locked to the age key: docs/REINSTALL.md); the store is a git clone the bootstrap task makes.
 "~/.config/gopass" = { mode = "track", encrypt = true }
