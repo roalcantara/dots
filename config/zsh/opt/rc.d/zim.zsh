@@ -73,11 +73,11 @@ zim::overrides() {
   zstyle ':completion:*' squeeze-slashes no
   zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
-  # zim-starship sets this to 1; we want the right prompt flush to the edge.
+  # the prompt module sets this to 1; we want the right prompt flush to the edge.
   export ZLE_RPROMPT_INDENT=0
 
   # Terminals that draw their own prompt get a plain one. PROMPT is
-  # deliberately NOT exported: zim-starship assigns a command substitution
+  # deliberately NOT exported: the prompt module assigns a command substitution
   # into it, which would then leak into every child process.
   if [[ -n "$ZSH_MINIMAL_TERMINAL" ]]; then
     setopt prompt_subst

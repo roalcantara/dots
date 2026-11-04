@@ -34,10 +34,6 @@ globalEnvVars:
     value: /home/vscode/.local/share/npm
   - key: NPM_CONFIG_CACHE
     value: /home/vscode/.cache/npm
-  - key: STARSHIP_CONFIG_HOME
-    value: /home/vscode/.config/starship
-  - key: STARSHIP_CONFIG
-    value: /home/vscode/.config/starship/starship.toml
 
 commandTests:
   # SYSTEM
@@ -135,13 +131,6 @@ fileExistenceTests:
     path: /home/vscode/.config/snippets
     shouldExist: true
     permissions: Lrwxrwxrwx
-  - name: ~/.config/starship dir (STARSHIP_CONFIG_HOME)
-    path: /home/vscode/.config/starship
-    shouldExist: true
-    permissions: Lrwxrwxrwx
-  - name: ~/.config/starship/starship.toml (STARSHIP_CONFIG)
-    path: /home/vscode/.config/starship/starship.toml
-    shouldExist: true
   - name: ~/.config/ghostty config
     path: /home/vscode/.config/ghostty
     shouldExist: true

@@ -147,7 +147,6 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | Terminal helpers (`~/.local/bin`)   | [`config/bin`](config/bin/README.md)                                                               |
 | Helix                               | [`config/helix`](config/helix/README.md)                                                           |
 | bat                                 | [`config/bat`](config/bat/README.md)                                                               |
-| Starship prompt                     | [`config/starship`](config/starship)                                                               |
 | Ghostty                             | [`config/ghostty`](config/ghostty)                                                                 |
 | Window management (macOS)           | [`config/amethyst`](config/amethyst), [`config/yabai`](config/yabai), [`config/skhd`](config/skhd) |
 | mise                                | [`config/mise`](config/mise)                                                                       |

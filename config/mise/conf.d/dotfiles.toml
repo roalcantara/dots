@@ -35,7 +35,6 @@
 "~/.config/skhd" = { source = "~/.local/share/dots/config/skhd", relative = true }
 "~/.config/snippets" = { source = "~/.local/share/dots/config/snippets", relative = true }
 "~/.config/sops" = { source = "~/.local/share/dots/config/sops", relative = true }
-"~/.config/starship" = { source = "~/.local/share/dots/config/starship", relative = true }
 "~/.config/television" = { source = "~/.local/share/dots/config/television", relative = true }
 "~/.config/tombi" = { source = "~/.local/share/dots/config/tombi", relative = true }
 "~/.config/vscode" = { source = "~/.local/share/dots/config/vscode", relative = true }

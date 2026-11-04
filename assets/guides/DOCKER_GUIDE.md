@@ -171,7 +171,7 @@ hadolint --config .hadolint.yaml distros/ubuntu/Dockerfile
 Per-distro YAML under `distros/<distro>/container-structure-test.yml`
 (schema 2.0.0). Each file defines:
 
-1. **`globalEnvVars`** — XDG paths, `ZDOTDIR`, `MISE_*`, npm/starship config
+1. **`globalEnvVars`** — XDG paths, `ZDOTDIR`, `MISE_*`, npm config
 2. **`commandTests`** — `which` for core tools
 3. **`fileExistenceTests`** — Home layout, config symlinks, nvim venv, absence of `.oh-my-zsh`
 

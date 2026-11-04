@@ -481,7 +481,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 The prompt is powerlevel10k (`config/zsh/.zimrc`), so `starship` is unused.
 
-- [ ] **Step 1: Delete its config and link.**
+- [x] **Step 1: Delete its config and link.**
 
 ```bash
 cd ~/Work/dots-brewfile
@@ -492,17 +492,17 @@ grep -c starship config/mise/conf.d/dotfiles.toml
 
   Expected: `0`.
 
-- [ ] **Step 2: CST.** In both `distros/{debian,ubuntu}/container-structure-test.yml`, delete the
+- [x] **Step 2: CST.** In both `distros/{debian,ubuntu}/container-structure-test.yml`, delete the
   `globalEnvVars` entries `STARSHIP_CONFIG_HOME` and `STARSHIP_CONFIG` (key and value lines), and the two
   `fileExistenceTests` entries `~/.config/starship dir (STARSHIP_CONFIG_HOME)` and
   `~/.config/starship/starship.toml (STARSHIP_CONFIG)` with all their lines.
 
-- [ ] **Step 3: Comments and docs.**
+- [x] **Step 3: Comments and docs.**
   - `config/zsh/opt/rc.d/zim.zsh`: in the two comments, replace `zim-starship` with `the prompt module`.
   - `README.md`: delete the `Starship prompt` row of the Configurations table.
   - `assets/guides/DOCKER_GUIDE.md`: in the `globalEnvVars` line, replace `npm/starship config` with `npm config`.
 
-- [ ] **Step 4: Check and commit.**
+- [x] **Step 4: Check and commit.**
 
 ```bash
 git -c filter.sops.smudge=cat grep -n -i starship -- . ':!CHANGELOG.md' ':!assets/specs' ':!docs' ':!graphify-out' \

@@ -110,7 +110,6 @@ brew "rust"  # Rust toolchain
 # "brew:posting" = "latest"                              # Modern API client for the terminal
 # "brew:pup" = { env = "desktop" }                       # CLI companion for Datadog and internal tooling
 # "brew:solargraph" = { env = "desktop" }                # Ruby language server
-# "brew:starship" = "latest"                             # Cross-shell prompt
 # "brew:block-goose-cli" = "latest" # Open source, extensible AI agent that goes beyond code suggestions
 # "brew:defaultbrowser" = "latest" # Command-line tool for getting & setting the default browser
 # "brew:opencode" = "latest" # Terminal AI coding agent
