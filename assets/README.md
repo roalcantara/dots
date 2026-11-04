@@ -26,4 +26,4 @@ Implementation code stays in `config/`. Neovim busted specs stay in
 ## Agents
 
 New features start in `assets/specs/<feature-slug>/`. Planning and implementation
-rules are in the root [README.md](../README.md#agent-workflow).
+rules are in the root [AGENTS.md](../AGENTS.md#workflow).

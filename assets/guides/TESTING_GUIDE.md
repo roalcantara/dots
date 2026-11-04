@@ -866,6 +866,18 @@ mise run -C assets test bin   # bin verification gate
 mise run -C assets test all   # full verification gate
 ```
 
+## Zsh startup
+
+From the repository root:
+
+| Command | Does |
+| --- | --- |
+| `mise run zsh:baseline` | Capture a parity baseline before changing `config/zsh` |
+| `mise run zsh:verify` | Check zsh syntax and parity against that baseline |
+| `mise run zsh:bench` | Benchmark zsh startup across terminal contexts |
+
+All three run `script/zsh-verify.sh`.
+
 ## Enforcement
 
 `mise run test:spec-audit` checks co-located spec coverage only. Better Specs
