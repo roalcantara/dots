@@ -67,7 +67,9 @@ Targets deleted from the repo earlier (closeout #95, packages #92, or never comm
 
 ### 3.2 Remove: empty folders (8)
 
-`act`, `crewai`, `crush`, `devin`, `firebase`, `obsidian`, `rclone`, `swiftpm`: 0 bytes each.
+`act`, `crewai`, `crush`, `devin`, `firebase`, `obsidian`, `rclone`, `swiftpm`: 0 bytes each. (At removal,
+`crush`, `devin` held empty `skills/` link folders and `swiftpm` links into `~/Library`: moved aside, not deleted.
+A skills restore may recreate `crush`/`devin`.)
 
 Owner (all 8): OK
 
@@ -122,9 +124,13 @@ link with a regular file.
 | Entry      | Plain files                                            | SOPS-encrypted files                                              | Owner |
 | ---------- | ------------------------------------------------------ | ----------------------------------------------------------------- | :---: |
 | `gopass`   | `config`                                               | `age/identities` (and any future file under `config/gopass/age/`) |  OK   |
-| `gh`       | `config.yml` (also in §3.4)                            | `hosts.yml` (token)                                               |  OK   |
+| `gh`       | `config.yml` (also in §3.4)                            | — (`hosts.yml` git-ignored, see below)                             |  OK   |
 | `wakatime` | —                                                      | `.wakatime.cfg` (api key); the rest stays local (§3.6)            |  OK   |
 | `gortex`   | `config.yaml` (repo paths of this machine; not secret) | —                                                                 |  OK   |
+
+After review, `gh/hosts.yml` is **not** versioned: it is per machine (who is logged in, keyring or file token;
+`install` runs `gh auth login`), and SOPS YAML rewrites gh's `user:` as `user: null`, so it would show as modified
+after every gh write. It stays local, git-ignored in `config/gh/.gitignore`.
 
 Folder links here too; `wakatime` state (`.wakatime/`, logs, databases) and `gopass/.fallow/` are git-ignored.
 
@@ -182,6 +188,7 @@ the repo changes (config files, `dotfiles.toml`, `config.toml`) are commits.
 ## 6. Done when
 
 1. Every §3 row has an owner verdict.
-2. `ls -A ~/.config` shows only: links into `config/`, `ssh`, `gnupg`, and §3.7 entries.
+2. `ls -A ~/.config` shows only: links into `config/`, `ssh`, `gnupg`, §3.7 entries, and `glow`, `opencode`,
+   `raycast` (in `config/` but real folders on this Mac, never linked: out of this audit's scope).
    `~/.config/gopass` is a link, and `gopass show -o tokens/age.dots.github.com </dev/null` prints.
 3. `hk check` clean; `mise dot status` (or `mise bootstrap status`) reports no pending changes.

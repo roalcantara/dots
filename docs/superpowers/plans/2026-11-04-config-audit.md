@@ -319,6 +319,11 @@ On this Mac, after the PR is merged and `cd ~/Work/dots && git pull`:
 ```bash
 cd ~/.config
 aside="$HOME/.local/state/dots/config-aside-$(date +%Y%m%d)-port"; mkdir -p "$aside"; chmod 700 "$aside"
+# A broken leftover link inside posting/ (not app state): drop it so rsync does not copy it into the repo.
+[ -L posting/posting ] && [ ! -e posting/posting ] && rm posting/posting
+# Folders holding decrypted secrets: owner-only, so later pulls (written with the umask) stay private.
+chmod 700 ~/Work/dots/config/gopass/age ~/Work/dots/config/wakatime
+chmod 600 ~/Work/dots/config/gopass/age/* ~/Work/dots/config/wakatime/.wakatime.cfg
 for app in dprint gh gopass gortex posting wakatime zed zentty; do
   [ -L "$app" ] && continue
   # Local state (git-ignored in config/<app>) moves into the linked folder; versioned files are already there.
@@ -332,5 +337,11 @@ gh auth status >/dev/null 2>&1 && echo "gh ok"
 cd ~/Work/dots && git status --short   # must be empty: apps did not rewrite tracked files
 ```
 
-Other machines (e.g. the Ubuntu VM): `git pull` in the dots checkout; `mise run setup:git:filters` (or the
-re-smudge in a fresh `install`); then the same block. Delete the `config-aside-*` folders after a few weeks.
+Other machines (e.g. the Ubuntu VM): `git pull` in the dots checkout. Where the SOPS filter is already configured,
+the pull decrypts new files itself; if any SOPS file is still ciphertext (`head -c 20 config/gopass/age/identities`
+shows `{`), force the re-smudge: `git config --local --unset filter.sops.clean && mise run setup:git:filters`.
+Then the same block. `gh` keeps each machine's own `hosts.yml` (git-ignored): run `gh auth login` there if
+`gh auth status` fails. Delete the `config-aside-*` folders after a few weeks.
+
+The old `~/.config/gopass` checkpoints stay in the private dots-history (encrypted, no longer updated); the track
+entry is gone, so nothing restores them.

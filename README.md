@@ -106,8 +106,9 @@ mise bootstrap -E <profile>  # re-apply after editing the config
 
 ### Secrets
 
-`~/.config/ssh`, `~/.config/gnupg` and `~/.config/gopass` are tracked, encrypted, in the private `dots-history`
-repo. After changing one:
+`~/.config/ssh` and `~/.config/gnupg` are tracked, encrypted, in the private `dots-history` repo. Other secrets
+live in this repo, SOPS-encrypted on commit (`.sops.yaml`, `.gitattributes`): `config/.env`, `config/ssh/keys`,
+`config/gopass/age`, `config/wakatime/.wakatime.cfg`; commit them like any file. After changing ssh or gnupg:
 
 ```sh
 mise dot save   # record a checkpoint

@@ -252,9 +252,25 @@ if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/
   # sops-resmudge: begin
   # install clones before the age key exists, so filter=sops files were checked out encrypted: check them out
   # again through the filter now, and make the decrypted secrets private.
-  git ls-files -z ':(attr:filter=sops)' | while IFS= read -r -d '' f; do
-    rm -f -- "$f" && git checkout -- "$f" && chmod go-rwx "$f"
-  done
+  # A file that does not decrypt is put back as it was, and the filter is unset so the next run retries.
+  failed=""
+  while IFS= read -r -d '' f; do
+    mv "$f" "$f.pre-smudge"
+    if git checkout -- "$f" 2>/dev/null; then
+      rm -f "$f.pre-smudge"
+      chmod go-rwx "$f"
+      # Private folders keep later checkouts private too (git writes files with the umask).
+      case "$(dirname "$f")" in config | .) ;; *) chmod go-rwx "$(dirname "$f")" ;; esac
+    else
+      mv "$f.pre-smudge" "$f"
+      failed="$failed $f"
+    fi
+  done < <(git ls-files -z ':(attr:filter=sops)')
+  if [ -n "$failed" ]; then
+    git config --local --unset filter.sops.clean
+    echo "setup:git:filters: could not decrypt:$failed (check sops, age and ~/.config/sops/age/keys.txt)" >&2
+    exit 1
+  fi
   # sops-resmudge: end
   echo "✓ Git filters configured"
 fi

@@ -1,0 +1,2 @@
+# The login is per machine (`gh auth login`; install runs it): never versioned.
+hosts.yml

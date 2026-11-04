@@ -361,9 +361,9 @@ Delete the backup once a second machine decrypts. The old Keychain item (`GnuPG`
 longer used.
 
 - **Recovery key:** keep the age key itself (the `AGE-SECRET-KEY-1…` line of `config/age/keys.txt`) as a
-  Bitwarden secure note. It is the only key to the history, and the history is the only carrier of
-  `~/.config/gopass`, so it recovers gopass too: paste it when `install` asks. A second keyring recipient would
-  not help on a new machine, where there is no history to open without the age key.
+  Bitwarden secure note. It decrypts the history and the SOPS files in this repo (`config/gopass/age/` included),
+  so it recovers gopass too: paste it when `install` asks. A second keyring recipient would not help on a new
+  machine, where nothing opens without the age key.
 - **Trade-off:** before the switch, the age key opened the history but not gopass: the keyring passphrase was a
   second factor. After it, the age key alone opens every gopass secret. Keep it `0600` on an encrypted disk
   (FileVault, LUKS) and only in Bitwarden off the machine.

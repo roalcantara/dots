@@ -73,7 +73,7 @@ for tool in graphifyy code-review-graph; do
   uv tool list 2>/dev/null | grep -q "^$tool " || uv tool install --python 3.13 "$tool" || warn "uv $tool"
 done
 
-# gopass store: cloned once the history has restored gopass's age identity. HTTPS through the gh login
+# gopass store: cloned once ~/.config/gopass (linked to config/gopass, SOPS-decrypted) holds the age identity. HTTPS through the gh login
 # (install runs `gh auth login`): the SSH config names GitHub `Host github`, so git@github.com has no key.
 store="$HOME/.local/share/gopass/password-store"
 if command -v gopass >/dev/null && [ ! -d "$store/.git" ] && [ -d "$HOME/.config/gopass/age" ]; then

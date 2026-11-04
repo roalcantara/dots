@@ -25,4 +25,4 @@ This glossary defines terms used across Dots configuration, documentation, and t
 | **Reinstall audit** | `mise run reinstall:audit`: read-only evaluation of uncommitted git state, non-cask apps, and machine risk (`MANIFEST.md`). |
 | **Keyring recipient** | Public age key that gopass's identity keyring is encrypted to (`age.keyring-recipients`): the bootstrap age key. |
 | **Keyring identity** | Plaintext age key file that unlocks gopass's identity keyring (`age.keyring-identities`): `~/.config/age/keys.txt`. |
-| **Recovery key** | The bootstrap age key itself, kept as a Bitwarden secure note: it reopens the history, and through it gopass. |
+| **Recovery key** | The bootstrap age key itself, kept as a Bitwarden secure note: it decrypts the history and the repo's SOPS files, gopass's keyring included. |
