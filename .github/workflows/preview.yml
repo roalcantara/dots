@@ -10,7 +10,7 @@ on:
 
 concurrency:
   cancel-in-progress: true
-  group: 'dots-${{ github.ref }}'
+  group: 'preview-${{ github.event.pull_request.number || github.ref }}'
 
 defaults:
   run:
