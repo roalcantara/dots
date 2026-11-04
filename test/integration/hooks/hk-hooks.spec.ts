@@ -1,14 +1,15 @@
 #!/usr/bin/env bun
 
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
 // Apple's /usr/bin/git is older than 2.54 and silently ignores config-based
 // hooks. Every commit here goes through it deliberately: it is what VS Code and
 // GUI clients get, and what the legacy shims must survive.
 const APPLE_GIT = "/usr/bin/git";
+const configDir = resolve(import.meta.dir, "../../../config");
 let repo: string;
 let cleanBin: string;
 let cleanPath: string;
@@ -37,69 +38,9 @@ beforeAll(() => {
   symlinkSync(Bun.which("mise") ?? "/opt/homebrew/bin/mise", join(cleanBin, "mise"));
   cleanPath = `${cleanBin}:/usr/bin:/bin:/usr/sbin:/sbin`;
 
+  // Only the hk and cog configs under test, never the rest of the live config/ (git signing, mise, ...).
   testConfigDir = mkdtempSync(join(tmpdir(), "hk-config-"));
-  mkdirSync(join(testConfigDir, "hk"), { recursive: true });
-  mkdirSync(join(testConfigDir, "cog"), { recursive: true });
-
-  writeFileSync(
-    join(testConfigDir, "cog", "cog.toml"),
-    `ignore_merge_commits = true
-ignore_fixup_commits = true
-
-[commit_types]
-ref = { changelog_title = "Refactoring" }
-refactor = {}
-`,
-  );
-
-  writeFileSync(
-    join(testConfigDir, "hk", "config.pkl"),
-    `amends "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl"
-
-hooks {
-  ["commit-msg"] {
-    steps {
-      ["conventional-commit"] {
-        check = #"""
-          {% raw %}
-          f="{% endraw %}{{ commit_msg_file | default(value=files) }}{% raw %}"
-          subject=$(grep -v '^#' "$f" | sed -e '/./,$!d' | head -1)
-
-          case "$subject" in
-            Revert\\ *|Reapply\\ *) exit 0 ;;
-          esac
-
-          cfg="cog.toml"
-          [ -f "$cfg" ] || cfg="\${XDG_CONFIG_HOME:-\$HOME/.config}/cog/cog.toml"
-          [ -f "$cfg" ] || { echo "No cog.toml found (repo or \$cfg)" >&2; exit 1; }
-          exec cog --config "$cfg" --quiet verify --file "$f"
-          {% endraw %}
-          """#
-      }
-      ["commit-style"] {
-        check = #"""
-          {% raw %}
-          f="{% endraw %}{{ commit_msg_file | default(value=files) }}{% raw %}"
-          msg=$(grep -v '^#' "$f" | sed -e '/./,$!d')
-          subject=$(printf '%s\\n' "$msg" | head -1)
-
-          case "$subject" in
-            Merge\\ *|Revert\\ *|Reapply\\ *|fixup!\\ *|squash!\\ *|amend!\\ *) exit 0 ;;
-          esac
-
-          desc=\${subject#*: }
-          case "$desc" in
-            [[:upper:]]*) ;;
-            *) echo "Description must be capitalized: \$desc" >&2; exit 1 ;;
-          esac
-          {% endraw %}
-          """#
-      }
-    }
-  }
-}
-`,
-  );
+  for (const app of ["hk", "cog"]) symlinkSync(join(configDir, app), join(testConfigDir, app));
 
   for (const args of [
     ["init", "-q", "-b", "main", "."],
