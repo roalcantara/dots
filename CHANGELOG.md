@@ -1,3 +1,10 @@
+## [1.38.4](https://github.com/roalcantara/dots/compare/v1.38.3...v1.38.4) (2026-11-04)
+
+
+### Bug Fixes
+
+* **install:** Installation process improvements ([#100](https://github.com/roalcantara/dots/issues/100)) ([9098808](https://github.com/roalcantara/dots/commit/90988086505c2c321e8e9a06c673e231941a3ca2))
+
 ## [1.38.3](https://github.com/roalcantara/dots/compare/v1.38.2...v1.38.3) (2026-11-04)
 
 
