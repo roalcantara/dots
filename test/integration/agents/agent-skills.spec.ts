@@ -1,18 +1,21 @@
 #!/usr/bin/env bun
 import { describe, expect, it } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
+  DEFAULT_JOBS,
   LOCK_VERSION,
   addCommand,
   findCandidates,
   groupBySource,
+  jobsFromEnv,
   lockProblem,
   matchCandidates,
   missingSkills,
   parseSkillsCsv,
   reviewCsv,
+  runPool,
   treeHash,
   type Lock,
   type TreeEntry,
@@ -226,5 +229,88 @@ describe("restore command", () => {
     const r = restore(JSON.stringify({ version: 3, skills: {} }));
     expect(r.code).toBe(0);
     expect(r.out).toContain("every locked skill is installed");
+  });
+});
+
+describe("runPool", () => {
+  it("never runs more than `jobs` workers at once and keeps input order", async () => {
+    let running = 0, peak = 0;
+    const out = await runPool([1, 2, 3, 4, 5], 2, async (n) => {
+      running++; peak = Math.max(peak, running);
+      await Bun.sleep(20);
+      running--;
+      return n * 10;
+    });
+    expect(peak).toBe(2);
+    expect(out).toEqual([10, 20, 30, 40, 50]);
+  });
+  it("handles no items and more jobs than items", async () => {
+    expect(await runPool([], 4, async (n: number) => n)).toEqual([]);
+    expect(await runPool([1], 4, async (n) => n + 1)).toEqual([2]);
+  });
+});
+
+describe("jobsFromEnv", () => {
+  it("reads SKILLS_JOBS, falling back to the default on junk", () => {
+    expect(jobsFromEnv({ SKILLS_JOBS: "3" })).toBe(3);
+    expect(jobsFromEnv({})).toBe(DEFAULT_JOBS);
+    expect(jobsFromEnv({ SKILLS_JOBS: "0" })).toBe(DEFAULT_JOBS);
+    expect(jobsFromEnv({ SKILLS_JOBS: "x" })).toBe(DEFAULT_JOBS);
+  });
+});
+
+describe("restore in parallel", () => {
+  const script = join(import.meta.dir, "../../../script/agent-skills.ts");
+  // Stub `skills add <source> -g -y -s <names…> [-a …]`: logs start/end and its XDG_STATE_HOME, sleeps,
+  // creates each skill folder, and fails for the source o/bad.
+  const STUB = `#!/usr/bin/env bun
+import { appendFileSync, mkdirSync } from "node:fs";
+const a = process.argv.slice(2); const source = a[1] ?? "";
+const s = a.indexOf("-s"); const end = a.indexOf("-a");
+const names = a.slice(s + 1, end === -1 ? undefined : end);
+const t0 = Date.now(); await Bun.sleep(150);
+for (const n of names) if (source !== "o/bad") mkdirSync(process.env.SKILLS_DIR + "/" + n, { recursive: true });
+appendFileSync(process.env.STUB_LOG!, JSON.stringify({ source, t0, t1: Date.now(), state: process.env.XDG_STATE_HOME }) + "\\n");
+process.exit(source === "o/bad" ? 1 : 0);
+`;
+
+  function setup() {
+    const dir = tempDir();
+    mkdirSync(join(dir, "bin"));
+    writeFileSync(join(dir, "bin", "skills"), STUB);
+    chmodSync(join(dir, "bin", "skills"), 0o755);
+    mkdirSync(join(dir, "skills"));
+    const skills: Lock["skills"] = {};
+    for (const [name, source] of [["a1", "o/one"], ["a2", "o/one"], ["b1", "o/two"], ["c1", "o/three"], ["x1", "o/bad"]]) {
+      skills[name as string] = { source: source as string, sourceUrl: `${source}` };
+    }
+    writeFileSync(join(dir, "lock.json"), JSON.stringify({ version: LOCK_VERSION, skills }));
+    return dir;
+  }
+  function env(dir: string, extra: Record<string, string> = {}) {
+    return {
+      PATH: `${join(dir, "bin")}:${process.env.PATH}`, HOME: dir, XDG_STATE_HOME: join(dir, "state"),
+      SKILL_LOCK: join(dir, "lock.json"), SKILLS_DIR: join(dir, "skills"), STUB_LOG: join(dir, "calls"),
+      SKILLS_JOBS: "2", ...extra,
+    };
+  }
+  const calls = (dir: string) =>
+    readFileSync(join(dir, "calls"), "utf8").trim().split("\n").map((l) => JSON.parse(l) as { source: string; t0: number; t1: number; state: string });
+
+  it("runs at most SKILLS_JOBS sources at once, each with its own state folder", () => {
+    const dir = setup();
+    try {
+      const r = Bun.spawnSync(["bun", script, "restore"], { env: env(dir), stdout: "pipe", stderr: "pipe" });
+      const firstPass = calls(dir).slice(0, 4); // 4 sources; a retry pass would append more
+      const peak = Math.max(...firstPass.map((x) => firstPass.filter((y) => y.t0 < x.t1 && x.t0 < y.t1).length));
+      expect(peak).toBeLessThanOrEqual(2);
+      expect(new Set(firstPass.map((x) => x.state)).size).toBe(4);
+      expect(r.stdout.toString()).toContain("✓ o/one (2)");
+      expect(r.stdout.toString()).toContain("✗ o/bad");
+      expect(r.exitCode).toBe(1);
+      expect(r.stderr.toString()).toContain("x1");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
