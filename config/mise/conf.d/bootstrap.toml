@@ -12,16 +12,22 @@ mode = "0700"
 [bootstrap.directories."~/.cache/mise"]
 # Private (0700), as macOS creates them; bootstrap would otherwise reset them to 0755.
 [bootstrap.directories."~/Desktop"]
+env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Documents"]
+env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Downloads"]
+env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Movies"]
+env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Music"]
+env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Pictures"]
+env = "desktop"
 mode = "0700"
 [bootstrap.directories."~/Projects"]
 [bootstrap.directories."~/Work"]
@@ -43,13 +49,22 @@ run = '''
 #!/usr/bin/env bash
 export PATH="$HOME/.local/bin:$PATH"
 # brew: packages (hk, sd, the linters) land in the Homebrew prefix, which only an interactive shell puts on PATH.
-for d in /opt/homebrew/bin /home/linuxbrew/.linuxbrew/bin; do [ -d "$d" ] && PATH="$d:$PATH"; done
+for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && eval "$("$b" shellenv)"; done
+desktop=true
+case ",${MISE_ENV:-desktop}," in *,desktop,*) ;; *) desktop=false ;; esac
 dots="$HOME/.local/share/dots"
 nvim_cfg="$HOME/.config/nvim"
 warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
 
 mise run -C "$dots" setup:git:filters || warn "setup:git:filters"
+# Containers: git filters only (cheap); everything below is desktop-only.
+$desktop || exit 0
 mise run -C "$dots" setup:hooks || warn "setup:hooks"
+
+# Python tools that need 3.13 (no wheels for the newest Python); the Brewfile's uv entries cannot pin it.
+for tool in graphifyy code-review-graph; do
+  uv tool list 2>/dev/null | grep -q "^$tool " || uv tool install --python 3.13 "$tool" || warn "uv $tool"
+done
 
 # gopass store: cloned once the history has restored gopass's age identity. HTTPS through the gh login
 # (install runs `gh auth login`): the SSH config names GitHub `Host github`, so git@github.com has no key.
@@ -68,8 +83,6 @@ if [ -d /Applications/oMLX.app ] && command -v hf >/dev/null; then
   done
 fi
 
-# devcontainer: minimal, so no agent skills, Neovim providers or plugins.
-case ",${MISE_ENV:-}," in *,devcontainer,*) exit 0 ;; esac
 
 # Agent skills from config/agents/skill-lock.json; installs only the missing ones.
 mise run -C "$dots" skills:restore || warn "skills:restore"
@@ -125,3 +138,23 @@ source = "../files/flathub.flatpakrepo"
 owner = "root"
 group = "root"
 mode = "0644"
+
+# Homebrew and every user package (assets/specs/brewfile-packages/design.md §4.3). Runs after the apt
+# prerequisites; a failure stops the bootstrap.
+[bootstrap.hooks.post-packages]
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+brew=""
+for b in "$(command -v brew || true)" /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  [ -n "$b" ] && [ -x "$b" ] && { brew="$b"; break; }
+done
+if [ -z "$brew" ]; then
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && brew="$b"; done
+fi
+eval "$("$brew" shellenv)"
+export HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_ANALYTICS=1 HOMEBREW_NO_ENV_HINTS=1
+HOMEBREW_DOTS_PROFILE="${MISE_ENV:-desktop}" brew bundle install --no-upgrade \
+  --file "$HOME/.local/share/dots/config/homebrew/Brewfile"
+'''

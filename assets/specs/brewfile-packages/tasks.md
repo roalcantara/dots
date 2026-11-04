@@ -262,7 +262,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 **Files:** Modify `config/mise/conf.d/bootstrap.toml`
 
-- [ ] **Step 1: Add the hook** at the end of `bootstrap.toml`:
+- [x] **Step 1: Add the hook** at the end of `bootstrap.toml`:
 
 ```toml
 
@@ -287,7 +287,7 @@ HOMEBREW_DOTS_PROFILE="${MISE_ENV:-desktop}" brew bundle install --no-upgrade \
 '''
 ```
 
-- [ ] **Step 2: Branch the `bootstrap` task.** In its `run`, make these three edits:
+- [x] **Step 2: Branch the `bootstrap` task.** In its `run`, make these three edits:
 
   a. Replace the line
   `for d in /opt/homebrew/bin /home/linuxbrew/.linuxbrew/bin; do [ -d "$d" ] && PATH="$d:$PATH"; done` with:
@@ -318,11 +318,11 @@ done
 case ",${MISE_ENV:-}," in *,devcontainer,*) exit 0 ;; esac
 ```
 
-- [ ] **Step 3: Gate the XDG user folders.** In `bootstrap.toml`, for each of `~/Desktop`, `~/Documents`,
+- [x] **Step 3: Gate the XDG user folders.** In `bootstrap.toml`, for each of `~/Desktop`, `~/Documents`,
   `~/Downloads`, `~/Movies`, `~/Music`, `~/Pictures`, add `env = "desktop"` under its
   `[bootstrap.directories."…"]` header (next to `mode = "0700"`).
 
-- [ ] **Step 4: Check.**
+- [x] **Step 4: Check.**
 
 ```bash
 python3 -c "import tomllib;tomllib.load(open('config/mise/conf.d/bootstrap.toml','rb'))" && echo toml-ok
@@ -338,8 +338,7 @@ grep -c 'env = "desktop"' config/mise/conf.d/bootstrap.toml
 
   Expected: `toml-ok`, `hook syntax ok`, `task syntax ok`, and a count of at least 6.
 
-- [ ] **Step 5: Lint and commit.**
-
+- [x] **Step 5: Lint and commit.**
 ```bash
 mise x taplo@0.10.0 -- taplo fmt --check config/mise/conf.d/bootstrap.toml
 g add config/mise/conf.d/bootstrap.toml
