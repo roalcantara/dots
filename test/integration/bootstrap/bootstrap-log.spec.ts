@@ -30,12 +30,24 @@ describe("bootstrap log", () => {
     expect(readlinkSync(join(logs(), "latest.log"))).toBe(files[0]);
   });
 
-  it("appends to DOTS_LOG when install set it", () => {
+  it("appends to DOTS_LOG when it is set", () => {
     mkdirSync(logs(), { recursive: true });
     const f = join(logs(), "bootstrap-20261104-000000.log");
     writeFileSync(f, "from install\n");
     run('echo "from hook"', { DOTS_LOG: f });
     expect(readFileSync(f, "utf8")).toBe("from install\nfrom hook\n");
+  });
+
+  it("adds no second tee when install already tees into DOTS_LOG", () => {
+    mkdirSync(logs(), { recursive: true });
+    const f = join(logs(), "bootstrap-20261104-000000.log");
+    writeFileSync(f, "");
+    // install's own tee, then the hook sourcing the script: each line must reach the log once.
+    const p = Bun.spawnSync(["bash", "-c", `exec > >(tee -a "${f}") 2>&1; export DOTS_LOG_TEED=1; . "${LIB}"; echo "from hook"; sleep 0.2`], {
+      env: { PATH: "/usr/bin:/bin", HOME: t, XDG_STATE_HOME: join(t, "state"), DOTS_LOG: f }, stdout: "pipe",
+    });
+    expect(p.exitCode).toBe(0);
+    expect(readFileSync(f, "utf8")).toBe("from hook\n");
   });
 
   it("reuses latest.log written in the last 30 minutes (hook, then task, of one direct run)", () => {

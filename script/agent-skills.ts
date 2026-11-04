@@ -347,11 +347,11 @@ function report(code: number, result: string): void {
 type SourceRun = { source: string; names: string[]; code: number; log: string };
 
 /** One `skills add`, with its own state folder (the CLI writes its lock there) and its own log. */
-async function addSource(source: string, names: string[], agents: string[], runDir: string): Promise<SourceRun> {
+async function addSource(source: string, names: string[], agents: string[], runDir: string, attempt = ""): Promise<SourceRun> {
   const slug = source.replace(/[^\w.-]+/g, "_");
   const state = join(runDir, "state", slug);
   mkdirSync(state, { recursive: true });
-  const log = join(runDir, `${slug}.log`);
+  const log = join(runDir, `${slug}${attempt}.log`);
   const cmd = addCommand(source, names, agents);
   let code = 127, out = "", err = "";
   try {
@@ -392,10 +392,11 @@ async function restore(): Promise<{ code: number; result: string }> {
   const runs = await runPool([...groupBySource(lock, missing)], jobs, ([source, names]) => addSource(source, names, agents, runDir));
   // `skills add` exits 0 when a requested skill is gone upstream, so check what is still missing.
   let still = missingSkills(lock, skillsDir()).filter((name) => missing.includes(name));
-  // A parallel run can lose a race the CLI does not guard against: retry those sources once, one at a time.
+  // A parallel run can lose a race the CLI does not guard against (a crash or a silent miss): retry those
+  // sources once, one at a time, keeping the first attempt's log.
   if (jobs > 1) {
-    for (const r of runs.filter((r) => r.code === 0 && r.names.some((n) => still.includes(n)))) {
-      Object.assign(r, await addSource(r.source, r.names.filter((n) => still.includes(n)), agents, runDir));
+    for (const r of runs.filter((r) => r.names.some((n) => still.includes(n)))) {
+      Object.assign(r, await addSource(r.source, r.names.filter((n) => still.includes(n)), agents, runDir, ".retry"));
     }
     still = missingSkills(lock, skillsDir()).filter((name) => missing.includes(name));
   }
@@ -411,17 +412,18 @@ if (import.meta.main) {
   const [command, ...args] = process.argv.slice(2);
   if (command === "audit") audit(args.includes("--apply"));
   else if (command === "restore") {
-    if (!args.includes("--background")) process.exit((await restore()).code);
+    // Both modes take the lock: restore() resets the shared run folder, so two runs must never overlap.
+    const background = args.includes("--background");
     const pidFile = join(dotsState(), "skills-restore.pid");
     if (!acquireLock(pidFile)) {
-      console.log("skills:restore: already running");
-      process.exit(0);
+      console.log(`skills:restore: already running (pid ${lockOwner(pidFile)})`);
+      process.exit(background ? 0 : 1);
     }
     let outcome = { code: 1, result: "skills:restore crashed; see the log" };
     try {
       outcome = await restore();
     } finally {
-      report(outcome.code, outcome.result);
+      if (background) report(outcome.code, outcome.result);
       releaseLock(pidFile);
     }
     process.exit(outcome.code);

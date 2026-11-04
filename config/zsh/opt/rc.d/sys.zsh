@@ -97,10 +97,12 @@ sys::bench() {
 sys::dotenv                  # secrets from ~/.config/.env
 sys::fix_xdg_runtime_dir     # private XDG_RUNTIME_DIR
 
-# A failed background skills restore (bootstrap task) is reported once, then forgotten.
+# A failed background skills restore (bootstrap task) is reported once, then forgotten. Only a shell whose
+# stderr is a terminal reports it: `zsh -ic exit >/dev/null` (bootstrap) or an editor resolving the shell
+# environment would otherwise consume the notice unseen.
 () {
   local f="${XDG_STATE_HOME:-$HOME/.local/state}/dots/skills-restore.failed"
-  [[ -s $f ]] || return 0
+  [[ -t 2 && -s $f ]] || return 0
   print -u2 "dots: agent skills restore incomplete: $(<$f) (retry: mise run skills:restore)"
   rm -f -- "$f"
 }

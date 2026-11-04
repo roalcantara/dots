@@ -21,6 +21,7 @@ export DOTS_LOG="$LOG_DIR/bootstrap-$(date +%Y%m%d-%H%M%S).log"
 : >"$DOTS_LOG"
 ln -sfn "$(basename "$DOTS_LOG")" "$LOG_DIR/latest.log"
 exec > >(tee -a "$DOTS_LOG") 2>&1
+export DOTS_LOG_TEED=1 # bootstrap-log.sh: output is already in the log
 echo "install: log: $DOTS_LOG"
 
 apt_install() {

@@ -370,6 +370,21 @@ process.exit(source === "o/bad" ? 1 : 0);
     }
   });
 
+  it("a foreground restore refuses (exit 1) while a background one holds the lock", () => {
+    const dir = setup();
+    try {
+      mkdirSync(join(dir, "state", "dots", "skills-restore"), { recursive: true });
+      writeFileSync(join(dir, "state", "dots", "skills-restore", "keep.log"), "running\n");
+      writeFileSync(join(dir, "state", "dots", "skills-restore.pid"), `${process.pid}\n`);
+      const r = Bun.spawnSync(["bun", script, "restore"], { env: env(dir), stdout: "pipe" });
+      expect(r.exitCode).toBe(1);
+      expect(r.stdout.toString()).toContain("already running");
+      expect(existsSync(join(dir, "state", "dots", "skills-restore", "keep.log"))).toBe(true);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("--background exits 0 while another restore holds the lock", () => {
     const dir = setup();
     try {
