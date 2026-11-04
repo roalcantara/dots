@@ -1,0 +1,43 @@
+{
+  "savedAt" : "2026-09-17T02:35:09Z",
+  "schemaVersion" : 1,
+  "templates" : [
+    {
+      "capturedReadableWidth" : 2756.015625,
+      "columns" : [
+        {
+          "focusedPaneID" : "pn_c6e3b684-4efb-4125-a7d3-8e99503b9d0e",
+          "id" : "column-pn_c6e3b684-4efb-4125-a7d3-8e99503b9d0e",
+          "lastFocusedPaneID" : "pn_c6e3b684-4efb-4125-a7d3-8e99503b9d0e",
+          "paneHeights" : [
+            1
+          ],
+          "panes" : [
+            {
+              "command" : "tv",
+              "customTitle" : "Television",
+              "environment" : {
+
+              },
+              "id" : "pn_c6e3b684-4efb-4125-a7d3-8e99503b9d0e",
+              "titleSeed" : "tv",
+              "wasUserEdited" : false,
+              "workingDirectory" : "\/Users\/roalcantara"
+            }
+          ],
+          "width" : 2756.015625
+        }
+      ],
+      "createdAt" : "2026-09-17T02:34:43Z",
+      "focusedColumnID" : "column-pn_c6e3b684-4efb-4125-a7d3-8e99503b9d0e",
+      "id" : "08F70432-C2E1-4CB6-861B-323524BE223D",
+      "kind" : "bookmark",
+      "name" : "roalcantara",
+      "nextPaneNumber" : 1,
+      "pinned" : false,
+      "projectRoot" : "\/Users\/roalcantara",
+      "schemaVersion" : 1,
+      "updatedAt" : "2026-09-17T02:35:09Z"
+    }
+  ]
+}

@@ -36,6 +36,7 @@
 "~/.config/vscode" = { source = "~/.local/share/dots/config/vscode", relative = true }
 "~/.config/yabai" = { source = "~/.local/share/dots/config/yabai", relative = true }
 "~/.config/zed" = { source = "~/.local/share/dots/config/zed", relative = true }
+"~/.config/zentty" = { source = "~/.local/share/dots/config/zentty", relative = true }
 "~/.config/zsh" = { source = "~/.local/share/dots/config/zsh", relative = true }
 "~/.config/zsh-patina" = { source = "~/.local/share/dots/config/zsh-patina", relative = true }
 "~/.zshenv" = { source = "~/.local/share/dots/config/zsh/.zshenv", relative = true }
