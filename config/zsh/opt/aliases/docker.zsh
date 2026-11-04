@@ -74,5 +74,7 @@
   #       scout recommendations                             # Display available base image updates and remediation recommendations
   #       scout repo                                        # Commands to list, enable, and disable Docker Scout on repositories
   #       scout version                                     # Show Docker Scout version information
-  alias scout='docker run -it --rm -u root -v /var/run/docker.sock:/var/run/docker.sock -e DOCKER_SCOUT_HUB_USER="roalcantara" -e DOCKER_SCOUT_HUB_PASSWORD="$(gopass show -o token/read.hub.docker.com)" docker/scout-cli'
+  if (( $+commands[gopass] )); then
+    alias scout='docker run -it --rm -u root -v /var/run/docker.sock:/var/run/docker.sock -e DOCKER_SCOUT_HUB_USER="roalcantara" -e DOCKER_SCOUT_HUB_PASSWORD="$(gopass show -o token/read.hub.docker.com)" docker/scout-cli'
+  fi
 ## }}
