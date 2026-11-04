@@ -75,7 +75,7 @@ Structure Test, GitHub Actions, `act` 0.2.96, Python 3 (converter), Bun (repo te
 
 ### Task 1: Containers' hard dependencies
 
-- [ ] **Step 1: Find tools zsh and git need at startup.**
+- [x] **Step 1: Find tools zsh and git need at startup.**
 
 ```bash
 cd ~/Work/dots-brewfile
@@ -83,12 +83,12 @@ grep -rnE '^\s*(eval "\$\(|source <\(|alias [a-z]+=)' config/zsh --include='*.zs
 grep -nE 'pager|delta|diff-so-fancy' config/git/config | head
 ```
 
-- [ ] **Step 2: Decide each tool.** For each tool printed that is **not** in the always-installed group
+- [x] **Step 2: Decide each tool.** For each tool printed that is **not** in the always-installed group
   (`zoxide fzf eza bat ripgrep fd jq neovim git-delta`): if its line runs unguarded at startup, wrap it in
   `if (( $+commands[<tool>] )); then … fi` (zsh) in the file grep named. Do not add tools to the group without
   asking: **STOP** if one seems required. Record what you changed in the PR description later.
 
-- [ ] **Step 3: Commit** any guards: `HK=0 g commit -m "fix(zsh): Guard optional tools at startup"` (skip if
+- [x] **Step 3: Commit** any guards: `HK=0 g commit -m "fix(zsh): Guard optional tools at startup"` (skip if
   nothing changed).
 
 ---
@@ -97,7 +97,7 @@ grep -nE 'pager|delta|diff-so-fancy' config/git/config | head
 
 **Files:** Create `script/brewfile-from-mise.py`, `config/homebrew/Brewfile`
 
-- [ ] **Step 1: Write the converter** `script/brewfile-from-mise.py`:
+- [x] **Step 1: Write the converter** `script/brewfile-from-mise.py`:
 
 ```python
 #!/usr/bin/env python3
@@ -172,7 +172,7 @@ dest.write_text("\n".join(out))
 print(f"taps {len(taps)} core {len(CORE)} formulae {sum(1 for n,_ in formulae if n!='#')} casks {len(casks)} flatpaks {len(flatpaks)}")
 ```
 
-- [ ] **Step 2: Run it.**
+- [x] **Step 2: Run it.**
 
 ```bash
 cd ~/Work/dots-brewfile && python3 script/brewfile-from-mise.py
@@ -181,7 +181,7 @@ cd ~/Work/dots-brewfile && python3 script/brewfile-from-mise.py
   Expected: `core not in packages.toml (added anyway): []` and a count line with `taps 3`, `casks 34`,
   `flatpaks 10`, and formulae = 83 minus the 9 core ones (= 74).
 
-- [ ] **Step 3: Check both groups parse and list.**
+- [x] **Step 3: Check both groups parse and list.**
 
 ```bash
 export HOMEBREW_NO_AUTO_UPDATE=1
@@ -194,7 +194,7 @@ wc -l "$TMPDIR/bf-container" "$TMPDIR/bf-desktop"; cat "$TMPDIR/bf-container"
   longer, the profile variable is not reaching the Brewfile); the desktop list is much
   longer and includes `ghostty`, `pynvim`, `uv`. Neither contains `starship`. On a parse error, fix the converter (not the Brewfile) and re-run.
 
-- [ ] **Step 4: Compare with this Mac.** Expect almost everything already installed:
+- [x] **Step 4: Compare with this Mac.** Expect almost everything already installed:
 
 ```bash
 HOMEBREW_DOTS_PROFILE=desktop brew bundle check --verbose --file config/homebrew/Brewfile 2>&1 | tail -20
@@ -205,7 +205,7 @@ HOMEBREW_DOTS_PROFILE=desktop brew bundle check --verbose --file config/homebrew
   `mise bootstrap packages status` (run from `~`) reports as installed: real Homebrew does not adopt mise's
   bottles, and the owner must decide on the migration.
 
-- [ ] **Step 5: Commit** the Brewfile and the converter (the converter is removed in Task 3 once
+- [x] **Step 5: Commit** the Brewfile and the converter (the converter is removed in Task 3 once
   `packages.toml` is gone):
 
 ```bash
