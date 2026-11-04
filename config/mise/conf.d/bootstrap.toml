@@ -51,6 +51,14 @@ case ",${MISE_ENV:-desktop}," in *,desktop,*) ;; *) desktop=false ;; esac
 dots="$HOME/.local/share/dots"
 nvim_cfg="$HOME/.config/nvim"
 warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
+# Repeat the post-packages hook's warning last, where it is seen (it scrolls away during the bootstrap).
+failed_file="${XDG_STATE_HOME:-$HOME/.local/state}/dots/brew-bundle.failed"
+remind() {
+  [ -s "$failed_file" ] || return 0
+  printf '\nbootstrap: brew bundle could not install: %s\n  retry: brew bundle install (log: %s)\n' \
+    "$(cat "$failed_file")" "${failed_file%.failed}.log" >&2
+}
+trap remind EXIT
 
 mise run -C "$dots" setup:git:filters || warn "setup:git:filters"
 # Pre-initialize user shell caches (zimfw modules, completions) so login shells start with clean stderr.
@@ -138,7 +146,9 @@ group = "root"
 mode = "0644"
 
 # Homebrew and every user package (assets/specs/brewfile-packages/design.md §4.3). Runs after the apt
-# prerequisites; a failure stops the bootstrap.
+# prerequisites, in two stages: the core group (what the shell and git need) stops the bootstrap on failure;
+# the rest of the Brewfile only warns, so one broken entry cannot skip the links, the login shell and the
+# bootstrap task. CI or DOTS_STRICT makes the second stage fatal too.
 [bootstrap.hooks.post-packages]
 run = '''
 #!/usr/bin/env bash
@@ -165,10 +175,29 @@ if [ -z "$profile" ]; then
   [ -n "$profile" ] || [ ! -f "$HOME/.local/share/dots/config/mise/miserc.local.toml" ] || \
     profile="$(sed -n 's/.*env = \["\([^"]*\)"\].*/\1/p' "$HOME/.local/share/dots/config/mise/miserc.local.toml")"
 fi
-HOMEBREW_DOTS_PROFILE="${profile:-desktop}" brew bundle install --no-upgrade \
-  --file "$HOME/.local/share/dots/config/homebrew/Brewfile"
+export HOMEBREW_BUNDLE_FILE="${HOMEBREW_BUNDLE_FILE:-$HOME/.local/share/dots/config/homebrew/Brewfile}"
+bundle() { HOMEBREW_DOTS_PROFILE="$1" brew bundle install --no-upgrade; }
+
+# 1. Core group: the shell and git need it, so a failure stops the bootstrap.
+bundle container
 if [ "${profile:-desktop}" = "container" ]; then
   brew cleanup --prune=all 2>/dev/null || true
   rm -rf "$HOME/.cache/Homebrew" 2>/dev/null || true
+  exit 0
+fi
+
+# 2. Everything else: warn and carry on. The bootstrap task repeats the warning at its end.
+state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
+mkdir -p "$state"
+rm -f "$state/brew-bundle.failed"
+if ! bundle "${profile:-desktop}" 2>&1 | tee "$state/brew-bundle.log"; then
+  failed="$(sed -nE 's/^(Installing|Tapping) (.+) has failed!$/\2/p' "$state/brew-bundle.log" | sort -u | paste -sd ' ' -)"
+  printf '%s\n' "${failed:-unknown (see the log)}" > "$state/brew-bundle.failed"
+  if [ -n "${DOTS_STRICT:-}${CI:-}" ]; then
+    echo "brew bundle failed: ${failed:-see $state/brew-bundle.log}" >&2
+    exit 1
+  fi
+  printf '\nWARNING: brew bundle could not install: %s\n  log: %s\n  retry: brew bundle install\n\n' \
+    "${failed:-unknown}" "$state/brew-bundle.log" >&2
 fi
 '''
