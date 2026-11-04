@@ -1,3 +1,10 @@
+## [1.38.3](https://github.com/roalcantara/dots/compare/v1.38.2...v1.38.3) (2026-11-04)
+
+
+### Bug Fixes
+
+* **ci:** Give each workflow its own concurrency group ([#99](https://github.com/roalcantara/dots/issues/99)) ([3cde5d8](https://github.com/roalcantara/dots/commit/3cde5d8712de381a56b8b1b203d6fbee4da8a7b8))
+
 ## [1.38.2](https://github.com/roalcantara/dots/compare/v1.38.1...v1.38.2) (2026-11-04)
 
 
