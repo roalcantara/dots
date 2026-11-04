@@ -10,7 +10,6 @@
 "~/.config/.markdownlint.yml" = { source = "~/.local/share/dots/config/.markdownlint.yml", relative = true }
 "~/.config/.profile" = { source = "~/.local/share/dots/config/.profile", relative = true }
 "~/.config/age" = { source = "~/.local/share/dots/config/age", relative = true }
-"~/.config/amethyst" = { source = "~/.local/share/dots/config/amethyst", relative = true }
 "~/.config/atlassian" = { source = "~/.local/share/dots/config/atlassian", relative = true }
 "~/.config/bash" = { source = "~/.local/share/dots/config/bash", relative = true }
 "~/.config/bat" = { source = "~/.local/share/dots/config/bat", relative = true }
@@ -22,16 +21,12 @@
 "~/.config/ghostty" = { source = "~/.local/share/dots/config/ghostty", relative = true }
 "~/.config/git" = { source = "~/.local/share/dots/config/git", relative = true }
 "~/.config/github" = { source = "~/.local/share/dots/config/github", relative = true }
-"~/.config/glide" = { source = "~/.local/share/dots/config/glide", relative = true }
 "~/.config/helix" = { source = "~/.local/share/dots/config/helix", relative = true }
 "~/.config/kodexb" = { source = "~/.local/share/dots/config/kodexb", relative = true }
 "~/.config/kb" = { source = "~/.local/share/dots/config/kodexb", relative = true }                           # alias
 "~/.config/npm" = { source = "~/.local/share/dots/config/npm", relative = true }
 "~/.config/nvim" = { source = "~/.local/share/dots/config/nvim", relative = true }
-"~/.config/ranma" = { source = "~/.local/share/dots/config/ranma", relative = true }
-"~/.config/rift" = { source = "~/.local/share/dots/config/rift", relative = true }
 "~/.config/ripgrep" = { source = "~/.local/share/dots/config/ripgrep", relative = true }
-"~/.config/skhd" = { source = "~/.local/share/dots/config/skhd", relative = true }
 "~/.config/snippets" = { source = "~/.local/share/dots/config/snippets", relative = true }
 "~/.config/sops" = { source = "~/.local/share/dots/config/sops", relative = true }
 "~/.config/television" = { source = "~/.local/share/dots/config/television", relative = true }

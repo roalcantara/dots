@@ -149,7 +149,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | Helix                               | [`config/helix`](config/helix/README.md)                                                           |
 | bat                                 | [`config/bat`](config/bat/README.md)                                                               |
 | Ghostty                             | [`config/ghostty`](config/ghostty)                                                                 |
-| Window management (macOS)           | [`config/amethyst`](config/amethyst), [`config/yabai`](config/yabai), [`config/skhd`](config/skhd) |
+| Window management (macOS)           | [`config/dinky`](config/dinky), [`config/yabai`](config/yabai)                                     |
 | mise                                | [`config/mise`](config/mise)                                                                       |
 | Agent skills and commands           | [`config/agents`](config/agents)                                                                   |
 
