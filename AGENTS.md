@@ -18,7 +18,7 @@ Features follow Spec-Driven Development (SDD):
    `requirements.md`, `design.md` and `tasks.md` under `assets/specs/<feature-slug>/`; stop for review once the
    specs are approved.
 2. **Implement:** execute `assets/specs/<feature-slug>/tasks.md` step by step; keep every quality gate
-   (`mise run -C assets test all`, linters, type checks) at zero warnings and errors; commit atomically with
+   (`mise run -C test test all`, linters, type checks) at zero warnings and errors; commit atomically with
    [Conventional Commits](assets/guides/GIT_COMMITS_GUIDE.md).
 
 ## Specs and guides
@@ -32,9 +32,9 @@ Features follow Spec-Driven Development (SDD):
 [`assets/guides/SKILLS.yml`](assets/guides/SKILLS.yml) drives validation and sync:
 
 ```bash
-mise run -C assets skill validate
-mise run -C assets skill sync
-mise run -C assets skill install
+mise run -C test skill validate
+mise run -C test skill sync
+mise run -C test skill install
 ```
 
 Domain routing table: [`.cursor/dots-skill-routing.md`](.cursor/dots-skill-routing.md)

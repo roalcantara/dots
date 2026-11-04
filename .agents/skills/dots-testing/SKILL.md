@@ -18,7 +18,7 @@ description: Canonical testing workflow for Dots — SDD specs, Gherkin features
 From repository root:
 
 ```bash
-mise run -C assets test bin      # BDD + integration for config/bin
+mise run -C test test bin      # BDD + integration for config/bin
 mise run test                    # Docker CST + root CI parity (when applicable)
 ```
 

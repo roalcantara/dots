@@ -9,9 +9,9 @@ export const xcLauncher = join(binRoot, "xc");
 export const xcFabric = join(binRoot, "xc-fabric");
 export const fixtureLauncherBin = join(
   repoRoot,
-  "assets/integration/bin/fixtures/xc-launcher/bin",
+  "test/integration/bin/fixtures/xc-launcher/bin",
 );
 export const fixtureFabricPatterns = join(
   repoRoot,
-  "assets/integration/bin/fixtures/xc-fabric/patterns",
+  "test/integration/bin/fixtures/xc-fabric/patterns",
 );

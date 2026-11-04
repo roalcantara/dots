@@ -196,6 +196,10 @@ echo "  ==> ${CST_CMD[*]}"
 eval "${CST_CMD[*]}"
 '''
 
+[tasks."test:specs"]
+description = "Run every BDD scenario and integration spec under test/"
+run = "mise run -C test test all"
+
 [tasks."setup:age"]
 description = "Setup AGE keys from Bitwarden"
 run = '''

@@ -159,6 +159,7 @@ age/keys.txt
 **/age/keys.txt
 keys.txt
 *.lock
+!test/bun.lock
 
 # SSH known_hosts (host public keys only; not secret; avoid SOPS filter + gitignore)
 config/ssh/keys/known_hosts

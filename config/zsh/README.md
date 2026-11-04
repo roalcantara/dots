@@ -110,4 +110,4 @@ Before committing a function file:
 1. Add a `##?` docopt header (copy the template above)
 2. Wire `show_usage` or `command xc-usage` on `-h`/`--help`
 3. Run `command xc-usage <function-name>` to verify help extraction
-4. Run `mise run -C assets integration bin xc-usage` for integration checks
+4. Run `mise run -C test integration bin xc-usage` for integration checks

@@ -858,12 +858,12 @@ Dots verification runs from `assets/` via mise. devDependencies live in
 | Shell lint | Lint changed zsh scripts | `mise exec -- shellcheck <script>` (from repo root) |
 | Whitespace | Catch trailing whitespace | `git diff --check` |
 
-From the repository root, prefix with `mise run -C assets` (root `test` is
+From the repository root, prefix with `mise run -C test` (root `test` is
 reserved for Docker container structure tests):
 
 ```bash
-mise run -C assets test bin   # bin verification gate
-mise run -C assets test all   # full verification gate
+mise run -C test test bin   # bin verification gate
+mise run -C test test all   # full verification gate
 ```
 
 ## Zsh startup

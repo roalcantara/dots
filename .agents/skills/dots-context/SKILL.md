@@ -19,7 +19,7 @@ integration specs, guides, or CI.
   `location: global` in [`assets/guides/SKILLS.yml`](../../assets/guides/SKILLS.yml).
 - **Ledger**: [`assets/guides/SKILLS.md`](../../assets/guides/SKILLS.md) and
   [`assets/guides/SKILLS.yml`](../../assets/guides/SKILLS.yml) — validated by
-  `mise run -C assets skill validate`.
+  `mise run -C test skill validate`.
 - **Domain routing**: [`.cursor/dots-skill-routing.md`](../../.cursor/dots-skill-routing.md).
 
 ## Stack

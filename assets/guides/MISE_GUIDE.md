@@ -17,10 +17,10 @@ mise run build
 mise run test
 
 # Shell verification (assets/mise.toml — use -C assets from repo root)
-mise run -C assets test bin
-mise run -C assets bdd lint --domain bin
-mise run -C assets integration bin xc-git
-mise run -C assets skill validate
+mise run -C test test bin
+mise run -C test bdd lint --domain bin
+mise run -C test integration bin xc-git
+mise run -C test skill validate
 ```
 
 List tasks: `mise tasks` or `mise run --help`. Inspect args: `mise run <task> --help`.
@@ -77,12 +77,12 @@ project tasks.
 Examples:
 
 ```bash
-mise run -C assets bdd lint --domain bin
-mise run -C assets bdd run --domain bin
-mise run -C assets integration bin all
-mise run -C assets integration bin xc-git --scenario help
-mise run -C assets test bin
-mise run -C assets skill sync --dry-run
+mise run -C test bdd lint --domain bin
+mise run -C test bdd run --domain bin
+mise run -C test integration bin all
+mise run -C test integration bin xc-git --scenario help
+mise run -C test test bin
+mise run -C test skill sync --dry-run
 ```
 
 ## Task inputs: `usage` and `${usage_*?}`
@@ -196,7 +196,7 @@ stanzas per task.
 5. **After editing:**
    - `mise run <task> --help`
    - `mise tasks validate <task>` (when available)
-   - Smoke-run the task (e.g. `mise run -C assets test bin`)
+   - Smoke-run the task (e.g. `mise run -C test test bin`)
 
 ### When direct commands are acceptable
 
