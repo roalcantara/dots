@@ -17,7 +17,6 @@
 "~/.config/bin" = { source = "~/.local/share/dots/config/bin", relative = true }
 "~/.config/claude" = { source = "~/.local/share/dots/config/claude", relative = true }
 "~/.config/cog" = { source = "~/.local/share/dots/config/cog", relative = true }
-"~/.config/cursor" = { source = "~/.local/share/dots/config/cursor", relative = true }
 "~/.config/dinky" = { source = "~/.local/share/dots/config/dinky", relative = true }
 "~/.config/fabric" = { source = "~/.local/share/dots/config/fabric", relative = true }
 "~/.config/ghostty" = { source = "~/.local/share/dots/config/ghostty", relative = true }

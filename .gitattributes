@@ -1,5 +1,5 @@
 # SOPS encrypt on commit; diff.sops decrypts for git diff/log (see mise.toml sops:setup).
-# IDE agents skip config/.env via .cursorignore — do not add config/.env -diff here.
+# Do not add config/.env -diff here: diff.sops decrypts it for git diff/log.
 *.env filter=sops diff=sops
 config/ssh/keys/*.key filter=sops diff=sops
 config/ssh/keys/*.pem filter=sops diff=sops
