@@ -351,7 +351,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ### Task 5: Remove the old package paths and the `devcontainer` profile
 
-- [ ] **Step 1: `config/mise/config.toml`.** Delete, exactly:
+- [x] **Step 1: `config/mise/config.toml`.** Delete, exactly:
   - the `[settings.pypi]` table (`[settings.pypi]` and `uvx = true`);
   - the whole `[tools]` table: its comment lines and the `"uv"` and five `"pipx:…"` lines;
   - the tasks `[tasks.up]`, `[tasks."brew:search"]`, `[tasks."brew:info"]`, `[tasks."brew:add"]`,
@@ -361,7 +361,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   Check: `grep -nE 'pipx|pypi|tasks.up|brew:(search|info|add|rm)|^\[tools\]' config/mise/config.toml` prints nothing,
   and `python3 -c "import tomllib;tomllib.load(open('config/mise/config.toml','rb'))"` succeeds.
 
-- [ ] **Step 2: `config/mise/mise.lock`.** Remove the removed tools' entries:
+- [x] **Step 2: `config/mise/mise.lock`.** Remove the removed tools' entries:
 
 ```bash
 python3 - <<'EOF'
@@ -376,7 +376,7 @@ grep -cE 'pipx:|tools\.uv' config/mise/mise.lock
 
   Expected: some blocks removed and a final count of `0`.
 
-- [ ] **Step 3: The profile.**
+- [x] **Step 3: The profile.**
 
 ```bash
 g rm -q config/mise/config.devcontainer.toml
@@ -395,7 +395,7 @@ bash -n install && grep -c devcontainer install
 
   Expected: `0`.
 
-- [ ] **Step 4: Shell PATH.** Homebrew is now real, so `brew shellenv` alone sets PATH.
+- [x] **Step 4: Shell PATH.** Homebrew is now real, so `brew shellenv` alone sets PATH.
   - `config/bash/bashrc`: replace the block starting `# Load Homebrew if it exists and hasn't been loaded yet`
     (the `if … elif … fi` that adds `$HOMEBREW_PREFIX/bin` "without brew") with:
 
@@ -415,7 +415,7 @@ export HOMEBREW_BUNDLE_FILE="$HOME/.local/share/dots/config/homebrew/Brewfile"
 
   Check: `bash -n config/bash/bashrc && zsh -n config/zsh/opt/rc.d/env.zsh && echo ok`.
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 mise x taplo@0.10.0 -- taplo fmt --check config/mise/config.toml
