@@ -2,10 +2,10 @@
 
 **Date:** 2026-11-04
 
-**Status:** Approved approach A (consolidate); this document awaits the owner's review.
+**Status:** Approved by the owner (2026-11-04).
 
 **Scope:** the whole repository: removals, the `assets/` split into `docs/` and `test/`, one canonical doc set,
-a green test gate, and a non-blocking, parallel `skills:restore`.
+a green test gate, a non-blocking, parallel `skills:restore`, and a bootstrap log.
 
 ## 1. Goal
 
@@ -23,6 +23,8 @@ The repository holds only what dots uses. Every topic is documented once. `mise 
    and passes its CST.
 5. On a desktop, `mise bootstrap` finishes without waiting for `skills:restore`, which runs in parallel in the
    background and raises an OS notification when done (§6).
+6. Every `install` and `mise bootstrap` run leaves a log in `~/.local/state/dots/logs/` (§6.3).
+7. `docs/superpowers/` holds only this design and its plan.
 
 ## 2. Findings (2026-11-04)
 
@@ -50,7 +52,7 @@ From a read-only audit of the tree and a web survey of dotfiles conventions.
 | --- | --- | --- |
 | Approach | A, consolidate | The problem is duplicated and stale docs; B (Diátaxis + ADRs) adds structure a one-owner repo won't fill; C (move as is) keeps the duplication |
 | Agent artifacts | `docs/superpowers/plans/YYYY-MM-DD-<topic>.md`, `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` | Superpowers' defaults; no override needed |
-| Old specs | All removed, `assets/specs/` **and** the 10 existing files in `docs/superpowers/` (Aug–Sep 2026); git history keeps them | The owner asked for every old spec to live only in git history; this document is the first under the new convention |
+| Old specs | All removed, `assets/specs/` **and** the 10 existing files in `docs/superpowers/` (Aug–Sep 2026); git history keeps them | Owner's choice (2026-11-04): start `docs/superpowers/` fresh; this document is the first under the new convention |
 | Agent entry | `AGENTS.md` only; `.agents/` removed after merging its 3 owned skills | Every agent reads `AGENTS.md`; the skills duplicated it |
 | Cursor | Removed: `.cursor/`, `.cursorignore`, `config/cursor` and its link | Not used |
 | graphify | Keep the tool (bootstrap `uv` install, Brewfile); remove `graphify-out/` and its repo references | Used elsewhere; the committed graph is stale (2026-05-08) |
@@ -159,7 +161,21 @@ fi
 `mise run skills:restore` stays the foreground command (retries, watching progress). `DOTS_SKILLS_FOREGROUND=1`
 restores the old blocking behavior in the bootstrap.
 
-### 6.3 Tests
+### 6.3 Bootstrap log
+
+Every run leaves a log for debugging, outside the repository (XDG state, so nothing to ignore in git):
+
+- `install` tees its whole output, the two `mise bootstrap` runs included, to
+  `~/.local/state/dots/logs/bootstrap-YYYYMMDD-HHMMSS.log` (`exec > >(tee -a "$log") 2>&1` after the variables)
+  and exports `DOTS_LOG` with that path. Prompts already go to `/dev/tty`, so the age key never reaches the log.
+- A direct `mise bootstrap` has no wrapper, so the parts dots owns log themselves: the `post-packages` hook and
+  the `bootstrap` task append to `$DOTS_LOG` when it is set, else to a new dated file in the same folder (same
+  `exec … tee` line). mise's own parts (links, directories) appear only in an `install` log; for a full log of a
+  direct run: `mise bootstrap -E desktop 2>&1 | tee "$HOME/.local/state/dots/logs/manual.log"`.
+- `logs/latest.log` links to the newest; only the 10 newest are kept.
+- The background skills restore keeps its own log (§6.2) and names it in the bootstrap log.
+
+### 6.4 Tests
 
 In `test/integration/agents/` with a stub `skills` on PATH: the pool runs at most `SKILLS_JOBS` at once (the stub
 records start and end times); each worker gets a distinct `XDG_STATE_HOME`; a failing source is reported and
@@ -171,7 +187,8 @@ at once and `DOTS_SKILLS_FOREGROUND=1` runs in the foreground.
 ## 7. Delivery
 
 One worktree (`~/Work/dots-closeout`), branch `chore/repo-closeout`, one PR. Commits grouped by area so each is
-reviewable on its own: removals; `assets/` → `test/` and the test fixes; docs; app-config review; skills restore.
+reviewable on its own: removals; `assets/` → `test/` and the test fixes; docs; app-config review; skills restore;
+bootstrap log.
 
 ## 8. Verification
 
