@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { describe, expect, it } from "bun:test";
-import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { fixturesDir, scriptPath } from "./support/paths";
@@ -17,7 +17,8 @@ const basePath = "/usr/bin:/bin:/usr/sbin:/sbin";
 
 function makeTmpStubs(stubs: Record<string, string>): string {
   const tmp = mkdtempSync(join(tmpdir(), "xc-fabric-spec-"));
-  symlinkSync(Bun.which("usage") ?? "/opt/homebrew/bin/usage", join(tmp, "usage"));
+  const usagePath = existsSync("/opt/homebrew/bin/usage") ? "/opt/homebrew/bin/usage" : (Bun.which("usage") ?? "/opt/homebrew/bin/usage");
+  symlinkSync(usagePath, join(tmp, "usage"));
   for (const [name, body] of Object.entries(stubs)) {
     writeFileSync(join(tmp, name), body, { mode: 0o755 });
   }

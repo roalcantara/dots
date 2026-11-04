@@ -1,10 +1,11 @@
 #!/usr/bin/env bun
 
 import { describe, expect, it } from "bun:test";
+import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { binRoot, fixturesDir, scriptPath } from "./support/paths";
 
-const toolBin = dirname(Bun.which("usage") ?? "/opt/homebrew/bin/usage");
+const toolBin = existsSync("/opt/homebrew/bin/usage") ? "/opt/homebrew/bin" : dirname(Bun.which("usage") ?? "/opt/homebrew/bin/usage");
 
 const selected = (Bun.env.usage_scenario ?? "").trim();
 const skipWhenOtherScenario = (id: string) => selected !== "" && selected !== id;
