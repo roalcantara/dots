@@ -27,19 +27,19 @@ curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bas
 
 It creates no user and sets no timezone. A second run changes nothing.
 
-| Variable | Default | |
-| --- | --- | --- |
-| `DOTS_PROFILE` | `desktop` | Which profile to apply (below) |
-| `DOTS_BRANCH` | `main` | Branch to clone; to try a branch, fetch `install` from it too |
-| `DOTS_REPO` | `https://github.com/roalcantara/dots.git` | Repository to clone |
-| `DOTS_HISTORY` | `https://github.com/roalcantara/dots-history.git` | Encrypted history to restore |
-| `DOTS_AGE_KEY` | — | The key itself, for tests; otherwise it is prompted |
+| Variable       | Default                                           |                                                               |
+| -------------- | ------------------------------------------------- | ------------------------------------------------------------- |
+| `DOTS_PROFILE` | `desktop`                                         | Which profile to apply (below)                                |
+| `DOTS_BRANCH`  | `main`                                            | Branch to clone; to try a branch, fetch `install` from it too |
+| `DOTS_REPO`    | `https://github.com/roalcantara/dots.git`         | Repository to clone                                           |
+| `DOTS_HISTORY` | `https://github.com/roalcantara/dots-history.git` | Encrypted history to restore                                  |
+| `DOTS_AGE_KEY` | —                                                 | The key itself, for tests; otherwise it is prompted           |
 
-| Profile | For | Skips |
-| --- | --- | --- |
-| `desktop` | A real machine | Nothing; moves an existing `~/.bashrc`, `~/.profile`, `~/.zshenv`, `~/.ssh`, `~/.gnupg` aside first |
-| `container` | Docker images | The login shell; replaces the image's dotfiles |
-| `devcontainer` | Fast container tests | The login shell, system packages (apt, Homebrew), the Neovim setup and agent skills |
+| Profile        | For                  | Skips                                                                                               |
+| -------------- | -------------------- | --------------------------------------------------------------------------------------------------- |
+| `desktop`      | A real machine       | Nothing; moves an existing `~/.bashrc`, `~/.profile`, `~/.zshenv`, `~/.ssh`, `~/.gnupg` aside first |
+| `container`    | Docker images        | The login shell; replaces the image's dotfiles                                                      |
+| `devcontainer` | Fast container tests | The login shell, system packages (apt, Homebrew), the Neovim setup and agent skills                 |
 
 Later, to apply config changes: `mise bootstrap -E <profile>`.
 
@@ -48,15 +48,15 @@ Later, to apply config changes: `mise bootstrap -E <profile>`.
 `install` prepares the machine and hands over to `mise bootstrap`. mise reads `~/.config/mise`, which links to
 `config/mise/` in this repo, so editing a file there and re-running `mise bootstrap` applies it.
 
-| File | Holds |
-| --- | --- |
-| [`config/mise/config.toml`](config/mise/config.toml) | `[tools]` mise installs itself (`npm:`, `pipx:`, `aqua:`), settings, the encrypted history (`[dotfiles]` track entries), and the `up`, `brew:*` and `backup` tasks |
-| [`config/mise/conf.d/packages.toml`](config/mise/conf.d/packages.toml) | `[bootstrap.packages]`: Homebrew formulae and casks, apt and flatpak packages, with `os` and `env` gates |
-| [`config/mise/conf.d/bootstrap.toml`](config/mise/conf.d/bootstrap.toml) | Directories, system files, the login shell, and the `bootstrap` task (git filters, hooks, gopass store, oMLX models, agent skills, Neovim) |
-| [`config/mise/conf.d/dotfiles.toml`](config/mise/conf.d/dotfiles.toml) | Links from `~/.config/*` into this repo |
-| `config/mise/config.<profile>.toml` | Per-profile overrides ([`devcontainer`](config/mise/config.devcontainer.toml): the minimal tool set) |
-| [`config/agents/`](config/agents) | The agent skills lock, `review.csv`, and agent commands |
-| [`mise.toml`](mise.toml) | Repo tasks: `build`, `test`, `start`, `setup:*`, `zsh:*`, `skills:*` |
+| File                                                                     | Holds                                                                                                                                                              |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`config/mise/config.toml`](config/mise/config.toml)                     | `[tools]` mise installs itself (`npm:`, `pipx:`, `aqua:`), settings, the encrypted history (`[dotfiles]` track entries), and the `up`, `brew:*` and `backup` tasks |
+| [`config/mise/conf.d/packages.toml`](config/mise/conf.d/packages.toml)   | `[bootstrap.packages]`: Homebrew formulae and casks, apt and flatpak packages, with `os` and `env` gates                                                           |
+| [`config/mise/conf.d/bootstrap.toml`](config/mise/conf.d/bootstrap.toml) | Directories, system files, the login shell, and the `bootstrap` task (git filters, hooks, gopass store, oMLX models, agent skills, Neovim)                         |
+| [`config/mise/conf.d/dotfiles.toml`](config/mise/conf.d/dotfiles.toml)   | Links from `~/.config/*` into this repo                                                                                                                            |
+| `config/mise/config.<profile>.toml`                                      | Per-profile overrides ([`devcontainer`](config/mise/config.devcontainer.toml): the minimal tool set)                                                               |
+| [`config/agents/`](config/agents)                                        | The agent skills lock, `review.csv`, and agent commands                                                                                                            |
+| [`mise.toml`](mise.toml)                                                 | Repo tasks: `build`, `test`, `start`, `setup:*`, `zsh:*`, `skills:*`                                                                                               |
 
 ## Day to day
 
@@ -69,6 +69,14 @@ mise bootstrap plan              # what applying would change
 mise bootstrap packages status   # packages only
 mise outdated                    # mise tools with a newer version
 mise dot status                  # secrets history: tracked files, unsaved changes, last push
+```
+
+## Managing packages
+
+```sh
+mise bootstrap packages apply       # Installs missing packages only
+mise bootstrap -E desktop           # Applies everything of the desktop profile: packages, links, directories, login shell, the bootstrap task
+mise run up                         # Upgrade every package and prune undeclared ones
 ```
 
 ### Find, add and remove packages
@@ -128,33 +136,33 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 
 ## Configurations
 
-| Area | Config |
-| --- | --- |
-| Zsh (shell, functions, plugins) | [`config/zsh`](config/zsh/README.md) |
-| Neovim | [`config/nvim`](config/nvim/README.md) |
-| Git | [`config/git`](config/git/README.md) |
-| Git hooks (hk) | [`config/hk`](config/hk/README.md) |
-| SSH | [`config/ssh`](config/ssh/README.md) |
-| SOPS (encrypted files in this repo) | [`config/sops`](config/sops/README.md) |
-| Terminal helpers (`~/.local/bin`) | [`config/bin`](config/bin/README.md) |
-| Helix | [`config/helix`](config/helix/README.md) |
-| bat | [`config/bat`](config/bat/README.md) |
-| Starship prompt | [`config/starship`](config/starship) |
-| Ghostty | [`config/ghostty`](config/ghostty) |
-| Window management (macOS) | [`config/amethyst`](config/amethyst), [`config/yabai`](config/yabai), [`config/skhd`](config/skhd) |
-| mise | [`config/mise`](config/mise) |
-| Agent skills and commands | [`config/agents`](config/agents) |
+| Area                                | Config                                                                                             |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Zsh (shell, functions, plugins)     | [`config/zsh`](config/zsh/README.md)                                                               |
+| Neovim                              | [`config/nvim`](config/nvim/README.md)                                                             |
+| Git                                 | [`config/git`](config/git/README.md)                                                               |
+| Git hooks (hk)                      | [`config/hk`](config/hk/README.md)                                                                 |
+| SSH                                 | [`config/ssh`](config/ssh/README.md)                                                               |
+| SOPS (encrypted files in this repo) | [`config/sops`](config/sops/README.md)                                                             |
+| Terminal helpers (`~/.local/bin`)   | [`config/bin`](config/bin/README.md)                                                               |
+| Helix                               | [`config/helix`](config/helix/README.md)                                                           |
+| bat                                 | [`config/bat`](config/bat/README.md)                                                               |
+| Starship prompt                     | [`config/starship`](config/starship)                                                               |
+| Ghostty                             | [`config/ghostty`](config/ghostty)                                                                 |
+| Window management (macOS)           | [`config/amethyst`](config/amethyst), [`config/yabai`](config/yabai), [`config/skhd`](config/skhd) |
+| mise                                | [`config/mise`](config/mise)                                                                       |
+| Agent skills and commands           | [`config/agents`](config/agents)                                                                   |
 
 ## Playbooks
 
-| Playbook | Where |
-| --- | --- |
+| Playbook                                               | Where                                                                                             |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
 | Test `install` in a container (`devcontainer` profile) | [Docker guide](assets/guides/DOCKER_GUIDE.md#testing-install-in-a-container-devcontainer-profile) |
-| Build, run and structure-test the Docker images | [Docker guide](assets/guides/DOCKER_GUIDE.md) |
-| Run the tests (BDD and integration specs) | [Testing guide](assets/guides/TESTING_GUIDE.md#verification-gates) |
-| Verify and benchmark zsh startup | [Testing guide](assets/guides/TESTING_GUIDE.md#zsh-startup) |
-| Prepare a reinstall (backups, new-Mac runbook) | [mise-bootstrap design §6](assets/specs/mise-bootstrap/design.md#6-new-mac-runbook) |
-| Work on this repo with an agent | [AGENTS.md](AGENTS.md) |
+| Build, run and structure-test the Docker images        | [Docker guide](assets/guides/DOCKER_GUIDE.md)                                                     |
+| Run the tests (BDD and integration specs)              | [Testing guide](assets/guides/TESTING_GUIDE.md#verification-gates)                                |
+| Verify and benchmark zsh startup                       | [Testing guide](assets/guides/TESTING_GUIDE.md#zsh-startup)                                       |
+| Prepare a reinstall (backups, new-Mac runbook)         | [mise-bootstrap design §6](assets/specs/mise-bootstrap/design.md#6-new-mac-runbook)               |
+| Work on this repo with an agent                        | [AGENTS.md](AGENTS.md)                                                                            |
 
 ## Gotchas
 
@@ -171,14 +179,14 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 
 ## Repository layout
 
-| Path | |
-| --- | --- |
-| [`install`](install) | The one-liner's script |
-| [`config/`](config) | Everything linked into `~/.config`, plus the mise config |
-| [`assets/`](assets) | Specs (`assets/specs/`), guides (`assets/guides/`), tests |
-| [`distros/`](distros) | Debian and Ubuntu Dockerfiles and structure tests |
-| [`script/`](script) | Repo scripts: SOPS filters, zsh checks, the skills audit and restore |
-| [`mise.toml`](mise.toml), [`hk.pkl`](hk.pkl) | Repo tasks and git hooks |
+| Path                                         |                                                                      |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| [`install`](install)                         | The one-liner's script                                               |
+| [`config/`](config)                          | Everything linked into `~/.config`, plus the mise config             |
+| [`assets/`](assets)                          | Specs (`assets/specs/`), guides (`assets/guides/`), tests            |
+| [`distros/`](distros)                        | Debian and Ubuntu Dockerfiles and structure tests                    |
+| [`script/`](script)                          | Repo scripts: SOPS filters, zsh checks, the skills audit and restore |
+| [`mise.toml`](mise.toml), [`hk.pkl`](hk.pkl) | Repo tasks and git hooks                                             |
 
 ## License
 
