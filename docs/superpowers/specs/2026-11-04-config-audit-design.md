@@ -112,8 +112,10 @@ Owner (all 8): OK
 | `posting` | `config.yaml` (38 lines)                                                  | —                                                                       |   OK   |
 | `gh`      | `config.yml` (aliases, settings)                                          | `hosts.yml` (token: SOPS, §3.5)                                         |   OK   |
 
-`zed`, `zentty` and `gh` mix ported files with local state, so they use per-file links
-(`"~/.config/zed/settings.json" = …`), not a folder link.
+Every ported app uses a **folder link** (`"~/.config/<app>" = { source = …/config/<app> }`). Local state stays in
+the linked folder but is git-ignored by `config/<app>/.gitignore` (as `config/ssh/.gitignore` does). Per-file links
+were rejected: apps that save by writing a temp file and renaming it (common for zed, gh) silently replace a file
+link with a regular file.
 
 ### 3.5 Port (secret): SOPS-encrypted in the repo
 
@@ -124,8 +126,7 @@ Owner (all 8): OK
 | `wakatime` | —                                                      | `.wakatime.cfg` (api key); the rest stays local (§3.6)            |  OK   |
 | `gortex`   | `config.yaml` (repo paths of this machine; not secret) | —                                                                 |  OK   |
 
-`gh` and `wakatime` keep local state next to the ported files, so they use per-file links. `gopass` is a folder
-link: everything in it is either plain config or encrypted.
+Folder links here too; `wakatime` state (`.wakatime/`, logs, databases) and `gopass/.fallow/` are git-ignored.
 
 ### 3.6 Remove: owner's choice (app still installed, moved aside first)
 
