@@ -10,6 +10,17 @@ Zsh functions in `config/zsh`, verification in `assets/`, Docker images in
 2. Load [`.agents/skills/dots-context/SKILL.md`](.agents/skills/dots-context/SKILL.md) for every task.
 3. Follow [`assets/guides/SKILLS.md`](assets/guides/SKILLS.md) for skill routing.
 
+## Workflow
+
+Features follow Spec-Driven Development (SDD):
+
+1. **Plan:** read [`assets/guides/GLOSSARY.md`](assets/guides/GLOSSARY.md) and the relevant guides; write
+   `requirements.md`, `design.md` and `tasks.md` under `assets/specs/<feature-slug>/`; stop for review once the
+   specs are approved.
+2. **Implement:** execute `assets/specs/<feature-slug>/tasks.md` step by step; keep every quality gate
+   (`mise run -C assets test all`, linters, type checks) at zero warnings and errors; commit atomically with
+   [Conventional Commits](assets/guides/GIT_COMMITS_GUIDE.md).
+
 ## Specs and guides
 
 - SDD artifacts: `assets/specs/<feature-slug>/` (`requirements.md`, `design.md`, `tasks.md`)
