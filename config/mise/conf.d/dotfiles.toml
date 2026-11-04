@@ -18,6 +18,7 @@
 "~/.config/dinky" = { source = "~/.local/share/dots/config/dinky", relative = true }
 "~/.config/dprint" = { source = "~/.local/share/dots/config/dprint", relative = true }
 "~/.config/fabric" = { source = "~/.local/share/dots/config/fabric", relative = true }
+"~/.config/gh" = { source = "~/.local/share/dots/config/gh", relative = true }
 "~/.config/ghostty" = { source = "~/.local/share/dots/config/ghostty", relative = true }
 "~/.config/git" = { source = "~/.local/share/dots/config/git", relative = true }
 "~/.config/github" = { source = "~/.local/share/dots/config/github", relative = true }
