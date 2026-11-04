@@ -53,6 +53,8 @@ nvim_cfg="$HOME/.config/nvim"
 warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
 
 mise run -C "$dots" setup:git:filters || warn "setup:git:filters"
+# Pre-initialize user shell caches (zimfw modules, completions) so login shells start with clean stderr.
+zsh -ic 'exit' >/dev/null 2>&1 || true
 # Containers: git filters only (cheap); everything below is desktop-only.
 $desktop || exit 0
 mise run -C "$dots" setup:hooks || warn "setup:hooks"
