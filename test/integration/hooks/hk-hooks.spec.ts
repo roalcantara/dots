@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -28,19 +28,15 @@ function commit(message: string, env: Record<string, string> = {}) {
   return git(["commit", "--allow-empty", "-m", message], env);
 }
 
-function stderrOf(r: { stderr: Uint8Array }) {
-  return new TextDecoder().decode(r.stderr);
-}
-
 beforeAll(() => {
   repo = mkdtempSync(join(tmpdir(), "hk-hooks-"));
   cleanBin = mkdtempSync(join(tmpdir(), "hk-clean-bin-"));
   symlinkSync(Bun.which("mise") ?? "/opt/homebrew/bin/mise", join(cleanBin, "mise"));
   cleanPath = `${cleanBin}:/usr/bin:/bin:/usr/sbin:/sbin`;
 
-  // Only the hk and cog configs under test, never the rest of the live config/ (git signing, mise, ...).
+  // Only the global hk config under test, never the rest of the live config/ (git signing, mise, ...).
   testConfigDir = mkdtempSync(join(tmpdir(), "hk-config-"));
-  for (const app of ["hk", "cog"]) symlinkSync(join(configDir, app), join(testConfigDir, app));
+  symlinkSync(join(configDir, "hk"), join(testConfigDir, "hk"));
 
   for (const args of [
     ["init", "-q", "-b", "main", "."],
@@ -50,11 +46,16 @@ beforeAll(() => {
   ]) {
     git(args);
   }
+  // The global config defines no hooks, so the repo declares one: a subject must start with "ok:".
   writeFileSync(
     join(repo, "hk.pkl"),
-    'amends "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl"\n',
+    [
+      'amends "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl"',
+      'hooks { ["commit-msg"] { steps { ["subject"] { check = "grep -q \'^ok:\' {{commit_msg_file}}" } } } }',
+      "",
+    ].join("\n"),
   );
-  writeFileSync(join(repo, "mise.toml"), '[tools]\nhk = "2.6.0"\ncocogitto = "7.0.0"\n');
+  writeFileSync(join(repo, "mise.toml"), '[tools]\nhk = "2.6.0"\n');
   const install = Bun.spawnSync(["hk", "install", "--mise", "--legacy", "--force-local"], {
     cwd: repo,
     env: { ...Bun.env, XDG_CONFIG_HOME: testConfigDir },
@@ -62,7 +63,7 @@ beforeAll(() => {
   });
   expect(install.exitCode).toBe(0);
   git(["add", "-A"]);
-  expect(commit("feat(hk): Add initial configuration").exitCode).toBe(0);
+  expect(commit("ok: initial configuration").exitCode).toBe(0);
 });
 
 afterAll(() => {
@@ -84,7 +85,8 @@ describe("hk git hooks", () => {
         stdout: "pipe",
       });
       expect(which.exitCode).not.toBe(0);
-      expect(commit("feat(cli): add lowercase").exitCode).not.toBe(0);
+      expect(commit("feat(cli): Not ok").exitCode).not.toBe(0);
+      expect(commit("ok: accepted").exitCode).toBe(0);
     });
 
     it("bypasses every hook when HK=0", () => {
@@ -93,46 +95,9 @@ describe("hk git hooks", () => {
     });
   });
 
-  // Type and subject-style rules are covered exhaustively by `hk test` in
-  // config/hk/config.pkl, which is ~7x faster per assertion. Only one of each
-  // is asserted here, to prove the config is actually reaching the hook.
-  describe("policy reaches the hook", () => {
-    it("rejects refactor, proving the shared cog.toml is in effect", () => {
-      expect(commit("refactor(nvim): Simplify keymaps").exitCode).not.toBe(0);
-    });
-
-    it("rejects an uncapitalized description", () => {
-      expect(stderrOf(commit("feat(cli): add search command"))).toContain("capitalized");
-    });
-  });
-
-  describe("machine-generated commits are exempt", () => {
-    it("allows git merge --no-ff", () => {
-      git(["checkout", "-q", "-b", "side"]);
-      expect(commit("feat(b): Add side work").exitCode).toBe(0);
-      git(["checkout", "-q", "main"]);
-      expect(commit("feat(c): Add main work").exitCode).toBe(0);
-      expect(git(["merge", "--no-ff", "-m", "Merge branch 'side'", "side"]).exitCode).toBe(0);
-    });
-
-    it("allows git revert of a normal commit", () => {
-      writeFileSync(join(repo, "r.txt"), "x\n");
-      git(["add", "-A"]);
-      expect(git(["commit", "-m", "feat(r): Add a file to revert"]).exitCode).toBe(0);
-      expect(git(["revert", "--no-edit", "HEAD"]).exitCode).toBe(0);
-    });
-
-    it("allows git commit --fixup", () => {
-      writeFileSync(join(repo, "fx.txt"), "x\n");
-      git(["add", "-A"]);
-      expect(git(["commit", "--fixup", "HEAD"]).exitCode).toBe(0);
-    });
-
-    it("allows rebase --autosquash", () => {
-      const r = git(["rebase", "--autosquash", "-i", "HEAD~2"], {
-        GIT_SEQUENCE_EDITOR: "true",
-      });
-      expect(r.exitCode).toBe(0);
-    });
+  // config/hk/config.pkl is merged into every repository on the machine: a hook there would gate
+  // commits in repos that never asked for it (and need its tools, e.g. cog, installed globally).
+  it("the global config defines no hooks", () => {
+    expect(readFileSync(join(configDir, "hk", "config.pkl"), "utf8")).not.toMatch(/^\s*hooks\s*\{/m);
   });
 });

@@ -28,7 +28,7 @@ g() { git -c filter.sops.clean=cat -c filter.sops.smudge=cat "$@"; }
 
 ## 2. Commit message conventions
 
-Commit messages follow the Conventional Commits specification, validated on commit by `hk` and `config/cog/cog.toml`.
+Commit messages follow the Conventional Commits specification. No hook enforces it: keep to the format below by hand.
 
 ### Format
 

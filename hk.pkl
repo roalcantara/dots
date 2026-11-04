@@ -1,7 +1,6 @@
 /// https://hk.jdx.dev/configuration.html#hk-pkl
-/// Repository linters. Commit-message rules are inherited from the global
-/// config at ~/.config/hk/config.pkl (source: config/hk/config.pkl) and can be
-/// overridden here - see config/hk/README.md.
+/// Repository linters. The global ~/.config/hk/config.pkl (source: config/hk/config.pkl)
+/// only sets hk defaults; it defines no hooks - see config/hk/README.md.
 amends "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl"
 import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
 
