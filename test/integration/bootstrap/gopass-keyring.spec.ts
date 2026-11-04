@@ -2,7 +2,7 @@
 // The gopass-keyring check in the bootstrap task (config/mise/conf.d/bootstrap.toml): warns when the gopass
 // identity keyring still uses a passphrase, or when its unlock file is missing; never fails the bootstrap.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -63,10 +63,21 @@ describe("bootstrap gopass-keyring check", () => {
     expect(r.err).toContain(`gopass keyring identity file missing: ${join(t, ".config/age/keys.txt")}`);
   });
 
-  it("does nothing without gopass or without an identities file", () => {
-    expect(snippet(null).err).toBe("");
+  it("does nothing without an identities file", () => expect(snippet(null).err).toBe(""));
+
+  // Only meaningful where gopass is not a system package (e.g. apt's /usr/bin/gopass).
+  it.skipIf(existsSync("/usr/bin/gopass") || existsSync("/bin/gopass"))("does nothing without gopass", () => {
     rmSync(join(t, "bin", "gopass"));
     expect(snippet(SCRYPT).err).toBe("");
+  });
+
+  it("checks every file of a comma-separated age.keyring-identities", () => {
+    mkdirSync(join(t, ".config", "age"), { recursive: true });
+    writeFileSync(join(t, ".config", "age", "keys.txt"), "AGE-SECRET-KEY-1TEST\n");
+    expect(snippet(X25519, { STUB_KID: "~/.config/age/keys.txt, ~/.config/age/keys.txt" }).err).toBe("");
+    const r = snippet(X25519, { STUB_KID: "~/.config/age/keys.txt,~/gone.txt" });
+    expect(r.err).toContain(`gopass keyring identity file missing: ${join(t, "gone.txt")}`);
+    expect(r.err).not.toContain("keys.txt");
   });
 });
 
@@ -78,7 +89,7 @@ describe.skipIf(!tools)("gopass keyring switch (end to end)", () => {
     // Only the four tools, never pinentry: pinentry-mac could open a dialog or write a Keychain item named
     // like the real one (GnuPG / pass/age-identities). /usr/bin and /bin have no pinentry.
     mkdirSync(join(h, "bin"));
-    for (const c of ["gopass", "age-keygen", "expect", "git"]) symlinkSync(Bun.which(c) as string, join(h, "bin", c));
+    for (const c of ["gopass", "age-keygen", "expect", "git"]) symlinkSync(realpathSync(Bun.which(c) as string), join(h, "bin", c)); // real binary, never a mise shim
     const env: Record<string, string> = {
       PATH: `${join(h, "bin")}:/usr/bin:/bin`, HOME: h, XDG_CONFIG_HOME: join(h, ".config"),
       XDG_DATA_HOME: join(h, ".local/share"), XDG_CACHE_HOME: join(h, ".cache"), XDG_RUNTIME_DIR: join(h, "run"),
@@ -116,13 +127,15 @@ describe.skipIf(!tools)("gopass keyring switch (end to end)", () => {
       expect(sh(`expect ${join(h, "re.exp")}`, pass).exitCode).toBe(0);
       expect(sh("head -n 2 ~/.config/gopass/age/identities").stdout.toString()).toContain("-> X25519");
 
-      sh("gopass config age.agent-enabled false");
+      expect(sh("gopass config age.agent-enabled false").exitCode).toBe(0); // no agent cache can serve the show
       const after = sh("gopass show -o tokens/demo");
       expect(after.exitCode).toBe(0);
       expect(after.stdout.toString().trim()).toBe("the-secret-value");
 
       sh("mv ~/.config/age/keys.txt ~/keys.moved");
-      expect(sh("gopass show -o tokens/demo").exitCode).not.toBe(0);
+      const missing = sh("gopass show -o tokens/demo");
+      expect(missing.exitCode).not.toBe(0);
+      expect(missing.stdout.toString() + missing.stderr.toString()).toContain("failed to decrypt");
     } finally {
       sh("gopass age agent stop >/dev/null 2>&1; true");
       rmSync(h, { recursive: true, force: true });

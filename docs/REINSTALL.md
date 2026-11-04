@@ -343,13 +343,14 @@ keyring (`~/.config/gopass/age/identities`) is locked to the same key, so a new 
 and gopass never asks for a PIN. Without this, the keyring has its own passphrase: macOS hides it (pinentry-mac
 saved it in the Keychain), Linux asks for it on every `gopass show` and scripts fail with `pinentry error`.
 
-Switch once, on a machine where gopass works (it asks for the old passphrase and to confirm the recipients):
+Switch once, on a machine where gopass works (it asks for the old passphrase and to confirm the recipients).
+The backup goes outside `~/.config/gopass`, which the history tracks:
 
 ```sh
-cp -p ~/.config/gopass/age/identities ~/.config/gopass/age/identities.scrypt.bak
-age-keygen                                                    # recovery key: save all of it as a Bitwarden secure note
+bak="$HOME/.local/state/dots/gopass-identities.scrypt.bak"; mkdir -p "${bak%/*}"
+cp -p ~/.config/gopass/age/identities "$bak"
 gopass config age.keyring-identities '~/.config/age/keys.txt'
-gopass config age.keyring-recipients "$(age-keygen -y ~/.config/age/keys.txt),<recovery public key age1…>"
+gopass config age.keyring-recipients "$(age-keygen -y ~/.config/age/keys.txt)"
 gopass age identities reencrypt                               # old passphrase, then y
 gopass show -o tokens/age.dots.github.com </dev/null          # prints with no prompt
 head -n 2 ~/.config/gopass/age/identities                     # "-> X25519", no longer "-> scrypt"
@@ -359,10 +360,13 @@ mise dot save && mise dot sync                                # the history carr
 Delete the backup once a second machine decrypts. The old Keychain item (`GnuPG` / `pass/age-identities`) is no
 longer used.
 
-- **Recovery:** if `keys.txt` is lost, write the recovery key from Bitwarden to a `0600` file and run
-  `gopass config age.keyring-identities <that file>`; set it back to `~/.config/age/keys.txt` afterwards.
-- **Trade-off:** the age key alone now opens gopass. It already decrypts the whole history, gopass keyring
-  included, so trust does not change; keep it `0600` on an encrypted disk (FileVault, LUKS).
+- **Recovery key:** keep the age key itself (the `AGE-SECRET-KEY-1…` line of `config/age/keys.txt`) as a
+  Bitwarden secure note. It is the only key to the history, and the history is the only carrier of
+  `~/.config/gopass`, so it recovers gopass too: paste it when `install` asks. A second keyring recipient would
+  not help on a new machine, where there is no history to open without the age key.
+- **Trade-off:** before the switch, the age key opened the history but not gopass: the keyring passphrase was a
+  second factor. After it, the age key alone opens every gopass secret. Keep it `0600` on an encrypted disk
+  (FileVault, LUKS) and only in Bitwarden off the machine.
 - **Bootstrap check:** `mise bootstrap` warns while the keyring still uses a passphrase, or when the file named
   by `age.keyring-identities` is missing. It never changes gopass settings.
 

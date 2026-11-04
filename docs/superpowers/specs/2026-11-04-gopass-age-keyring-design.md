@@ -2,6 +2,10 @@
 
 Status: approved approach (owner, 2026-11-04): **A, the age key unlocks everything**; recovery key in Bitwarden.
 
+> Revised after review (2026-11-04): the recovery key is the age key itself, not a second keyring recipient (the
+> history is encrypted only to the age key, so a second recipient cannot recover a new machine); the backup is
+> kept outside the tracked `~/.config/gopass`; the trade-off is stated as a real loss of a second factor.
+
 ## 1. Problem
 
 `install` asks for one secret, the age key (`config/age/keys.txt`), which decrypts the mise history. The history
@@ -45,22 +49,24 @@ Interactive by nature (old passphrase plus the recipient review, which `--yes` d
 documented owner step, never automated:
 
 ```sh
-cp -p ~/.config/gopass/age/identities ~/.config/gopass/age/identities.scrypt.bak
-age-keygen                                     # recovery key: save the whole output as a Bitwarden secure note
+bak="$HOME/.local/state/dots/gopass-identities.scrypt.bak"; mkdir -p "${bak%/*}"   # outside the tracked dir
+cp -p ~/.config/gopass/age/identities "$bak"
 gopass config age.keyring-identities '~/.config/age/keys.txt'
-gopass config age.keyring-recipients "$(age-keygen -y ~/.config/age/keys.txt),age1<recovery public key>"
+gopass config age.keyring-recipients "$(age-keygen -y ~/.config/age/keys.txt)"
 gopass age identities reencrypt                # old passphrase, then y
 gopass show -o tokens/age.dots.github.com </dev/null   # prints, no prompt
 mise dot save && mise dot sync                 # record ~/.config/gopass in the history and push it
-rm ~/.config/gopass/age/identities.scrypt.bak   # once a second machine has decrypted
+rm "$bak"                                      # once a second machine has decrypted
 ```
 
 Optional: delete the stale Keychain item (`GnuPG` / `pass/age-identities`).
 
 ### 4.2 Recovery
 
-The recovery identity (`AGE-SECRET-KEY-1…`) lives only in Bitwarden. To use it: write it to a `0600` file and
-`gopass config age.keyring-identities <that file>`; then restore the normal setting.
+The recovery key is the age key itself (`AGE-SECRET-KEY-1…`), kept as a Bitwarden secure note. The history is
+encrypted only to it and is the only carrier of `~/.config/gopass`, so on a new machine it is the one thing that
+recovers both: paste it when `install` asks. A second keyring recipient was considered and dropped: without the
+age key there is no history, hence no keyring, to open.
 
 ### 4.3 Bootstrap check
 
@@ -105,15 +111,15 @@ It only warns; it never exits non-zero and never edits gopass config. `install` 
 
 `mise.toml` `setup:age` fetches the age key from Bitwarden through `bw` (macOS only, credentials in the Keychain).
 `bw` is no longer installed and `install` asks for the key instead. Bitwarden stays the off-machine home of the
-age key and now also of the recovery key; whether to drop or port `setup:age` is a separate decision.
+age key (the recovery key); whether to drop or port `setup:age` is a separate decision.
 
 ## 5. Risks and trade-offs
 
 | Risk | Mitigation |
 | --- | --- |
-| The age key alone now opens gopass (before: key + passphrase) | Same trust the key already has (it decrypts the whole history, gopass keyring included); `0600` file; FileVault / LUKS |
-| `keys.txt` lost | Recovery key in Bitwarden (§4.2) |
-| Bitwarden account lost too | The age key itself is also stored by the owner (as today); losing both equals losing the history today |
+| The age key alone now opens gopass (before: key + passphrase, a second factor) | Accepted for one-secret bootstrap: `0600` file, FileVault / LUKS, off-machine copy only in Bitwarden |
+| `keys.txt` lost | The age key's copy in Bitwarden (§4.2) |
+| Bitwarden copy lost too | Same as today: the history (and so gopass) is unrecoverable |
 | A new gopass version changes the feature | The E2E spec catches regressions on machines that run it |
 | Migration interrupted | Backup in §4.1; gopass verifies decryption of the new keyring before replacing the old |
 

@@ -89,9 +89,12 @@ if command -v gopass >/dev/null && [ -s "$ids" ]; then
   if head -n 3 "$ids" | grep -q -- '-> scrypt'; then
     echo "bootstrap: gopass keyring still uses a passphrase; switch it to the age key: see docs/REINSTALL.md#one-secret-the-age-key" >&2
   else
-    kid="$(gopass config age.keyring-identities 2>/dev/null || true)"
-    kid="${kid/#\~/$HOME}"
-    [ -z "$kid" ] || [ -s "$kid" ] || echo "bootstrap: gopass keyring identity file missing: $kid" >&2
+    # age.keyring-identities may list several files, comma-separated; each may start with ~.
+    IFS=, read -ra kids <<<"$(gopass config age.keyring-identities 2>/dev/null || true)"
+    for kid in "${kids[@]}"; do
+      kid="${kid#"${kid%%[![:space:]]*}"}"; kid="${kid%"${kid##*[![:space:]]}"}"; kid="${kid/#\~/$HOME}"
+      [ -z "$kid" ] || [ -s "$kid" ] || echo "bootstrap: gopass keyring identity file missing: $kid" >&2
+    done
   fi
 fi
 # gopass-keyring: end
