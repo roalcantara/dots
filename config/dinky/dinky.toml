@@ -1,6 +1,5 @@
 #:schema https://dinky.rodeo/schemas/dinky.json
 # dinky: Omarchy-shaped tiling on native Spaces, SIP on.
-# Spec: assets/specs/macos-tiling-wm-experiment/ (cheat sheet: design.md §3).
 # Every key and command: https://dinky.rodeo/configuration/
 #
 # H = Raycast Hyper on Right ⌘ (⌃⌥⌘, no ⇧), written ctrl-alt-cmd below; H+⇧ is `hyper`.

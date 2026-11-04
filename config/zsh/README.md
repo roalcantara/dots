@@ -1,119 +1,49 @@
-# config/zsh — Zsh autoload functions
+# Zsh configuration
 
-Help conventions, command reference, and worked examples for Zsh functions.
-All legacy autoload functions previously in `config/zsh/etc/functions/` have migrated to `config/bin/`.
+Modular Zsh configuration powered by [Zimfw](https://github.com/zimfw/zimfw) and [Powerlevel10k](https://github.com/romkatv/powerlevel10k).
 
-## Zsh-only vs migrated
+## Overview
 
-Some functions belong exclusively on `$fpath`; others have moved to `config/bin/`.
-See [config/bin/README.md](../bin/README.md) for the PATH helpers.
-
-| Status        | Examples                                                                              | Notes                                       |
-| ------------- | ------------------------------------------------------------------------------------- | ------------------------------------------- |
-| **Migrated**  | `barrel`, `recase`, `toast`, `yw`, `keyring`, `psc`, `pss`, `gen`, `zsys`, `dots`, `osx`, `gitx` | Ported to `config/bin/` with Usage CLI & Gum |
-
-All 12 legacy shell functions (`barrel`, `recase`, `toast`, `yw`, `keyring`, `psc`, `pss`, `gen`, `zsys`, `dots`, `osx`, `gitx`) have been migrated to standalone executable tools in `config/bin/` with `#USAGE` headers and `gum` UX primitives.
-
-## Help conventions
-
-Every function uses docopt-shaped **`##?`** headers. Help is printed via **`show_usage`**
-or `command xc-usage <name>`. The convention is the same as `config/bin` scripts.
-
-### Canonical `##?` template
+The configuration is organized under `config/zsh/`:
 
 ```text
-##? <tool> - One-line summary
-##?
-##? Usage:
-##?   <tool> [options] <args...>
-##?   <tool> -h | --help
-##?
-##? Arguments:
-##?   <name>    Description
-##?
-##? Options:
-##?   -h, --help    Show this screen
-##?
-##? Examples:
-##?   <tool> -h
+config/zsh/
+├── .zshrc               # Entrypoint sourcing modules and aliases
+├── .zshenv              # Environment variables sourced for all shells
+├── .zprofile            # Login shell setup
+├── .zlogin              # Post-login execution
+├── .zimrc               # Zim module declarations
+├── .p10k.zsh            # Powerlevel10k prompt configuration
+└── opt/
+    ├── rc.d/            # Modular lifecycle scripts (functions only)
+    ├── plugins/         # Plugin setup and configurations
+    ├── keybindings/     # Custom ZLE keymaps and fuzzy-finder widgets
+    ├── completions/     # Autoloadable shell completion functions
+    └── aliases/         # Command shortcuts grouped by domain
 ```
 
-See also: [assets/specs/xc-usage/design.md §4.2](../../assets/specs/xc-usage/design.md#42-end-to-end-example-xc-foo) for a complete end-to-end example.
+## Lifecycle modules (`opt/rc.d/`)
 
-## Three-layer help model
+Each file under `opt/rc.d/` defines isolated functions that `.zshrc` invokes in a controlled sequence:
 
-| Layer           | Mechanism                     | When                              |
-| --------------- | ----------------------------- | --------------------------------- |
-| Script help     | `##?` + `xc-usage`/`show_usage`| `xc-fabric -h`, `gitx -h`, always |
-| CLI parsing     | `zparseopts` in the function  | real flags and positionals        |
-| Mise tasks      | `usage = '''…'''` in mise.toml| `mise run tool:specs --scenario` |
+| Script | Purpose | Declares |
+| --- | --- | --- |
+| `env.zsh` | Shell options, PATH search order, Homebrew shell environment, and editor configuration | `env::core`, `env::options`, `env::paths`, `env::homebrew`, `env::editor`, `_has_command` |
+| `term.zsh` | Terminal detection (Ghostty, Warp, etc.), minimal terminal mode gates, and shell integration | `term::profile`, `term::prompt` |
+| `theme.zsh` | Color palettes (`LS_COLORS`, `EXA_COLORS`) and fast-syntax-highlighting themes | `theme::palette` |
+| `zim.zsh` | Zim completion dump location and atomic caching for `zim-mise` | `zim::dumpfile`, `zim::mise_cache`, `zim::load`, `zim::overrides` |
+| `sys.zsh` | Secrets loading (`~/.config/.env`), private runtime directory permissions, one-time error alerts, and startup benchmarks | `sys::dotenv`, `sys::fix_xdg_runtime_dir`, `sys::bench` |
 
-**Rule:** never require `mise` to be installed for `show_usage` or `xc-usage` to work.
+## Adding aliases and functions
 
-## Command reference
+- **Aliases:** Add short commands to domain files under `opt/aliases/` (e.g. `git.zsh`, `docker.zsh`, `util.zsh`).
+- **Autoloaded completions:** Place completion scripts prefixed with an underscore in `opt/completions/` (e.g. `_mytool`).
+- **Complex scripts:** Executable helpers and CLI tools belong in `config/bin/`, not inline shell functions, so subshells and non-interactive scripts can invoke them.
 
-See [assets/specs/xc-usage/design.md §4.1](../../assets/specs/xc-usage/design.md#41-invocation-table) for the full `xc-usage` command table.
+## Benchmarking startup
 
-## Standalone `xc-usage`
-
-`xc-usage` is a self-contained zsh script at `config/bin/xc-usage`. It does **not** invoke mise, parse KDL, or read `#USAGE` headers. The only dependency is `zsh`, `grep`, `sed`, and the executable bit on `config/bin/xc-usage`.
-
-Symlink to `~/.local/bin/xc-usage` so it is on `$PATH`:
+Run the built-in startup benchmark:
 
 ```sh
-ln -sf ~/.config/bin/xc-usage ~/.local/bin/xc-usage
+sys::bench --startup
 ```
-
-## `show_usage`
-
-`show_usage` is the Zsh-facing entrypoint. It resolves a function name to its source
-file and delegates to `command xc-usage <target>` (target-first API — no `print`
-subcommand).
-
-**Usage:**
-
-```zsh
-show_usage              # uses funcstack[2] for the calling function
-show_usage gen          # prints help for the `gen` function
-show_usage /path/file   # prints help for any readable file
-```
-
-After `zparseopts` in a function:
-
-```zsh
-if (( ${+opts[-h]} )) || (( ${+opts[--help]} )); then
-  show_usage
-  return 0
-fi
-```
-
-**Or use `xc-usage` directly:**
-
-```zsh
-if [[ -n $help ]]; then
-  command xc-usage gen
-  return $?
-fi
-```
-
-**Bin scripts:** use `case -h|--help` + `command xc-usage "${0:a}"` (see
-`config/bin/README.md`).
-
-## Out of scope
-
-- Auto-parsing `##?` to generate `zparseopts` calls (see [design.md §13](../../assets/specs/xc-usage/design.md#13-out-of-scope))
-- Inferring help from code or minimal `##?`
-- `config/zsh/opt/completions/*` (generated or third-party completion scripts)
-
-## Migrated to bin
-
-All legacy shell functions (`barrel`, `recase`, `toast`, `yw`, `keyring`, `psc`, `pss`, `gen`, `zsys`, `dots`, `osx`, `gitx`, `puts`) have been ported to `config/bin/` as standalone scripts using the Usage CLI shebang and Charm Gum UX primitives. The legacy `config/zsh/etc/` directory and its functions have been removed.
-
-## Authoring checklist
-
-Before committing a function file:
-
-1. Add a `##?` docopt header (copy the template above)
-2. Wire `show_usage` or `command xc-usage` on `-h`/`--help`
-3. Run `command xc-usage <function-name>` to verify help extraction
-4. Run `mise run -C assets integration bin xc-usage` for integration checks

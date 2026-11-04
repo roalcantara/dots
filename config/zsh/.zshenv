@@ -179,10 +179,6 @@ fi
   export PASSWORD_STORE_ENABLE_EXTENSIONS=${PASSWORD_STORE_ENABLE_EXTENSIONS:-true}
 # }
 
-# GITLINT | https://jorisroovers.com/gitlint {
-  # Gitlint checks your commit messages for style and content
-  export GITLINT_CONFIG=${GITLINT_CONFIG:-$XDG_CONFIG_HOME/gitlint/gitlint.cfg}
-# }
 
 # WAKATIME | https://github.com/wakatime/wakatime {
   # WakaTime command line interface

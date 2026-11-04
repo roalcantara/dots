@@ -55,7 +55,9 @@ Later, to apply config changes: `mise bootstrap -E <profile>`.
 | [`config/mise/conf.d/bootstrap.toml`](config/mise/conf.d/bootstrap.toml) | Directories, system files, the login shell, and the `bootstrap` task (git filters, hooks, gopass store, oMLX models, agent skills, Neovim)                         |
 | [`config/mise/conf.d/dotfiles.toml`](config/mise/conf.d/dotfiles.toml)   | Links from `~/.config/*` into this repo                                                                                                                            |
 | [`config/agents/`](config/agents)                                        | The agent skills lock, `review.csv`, and agent commands                                                                                                            |
-| [`mise.toml`](mise.toml)                                                 | Repo tasks: `build`, `test`, `start`, `setup:*`, `zsh:*`, `skills:*`                                                                                               |
+| [`script/bootstrap-log.sh`](script/bootstrap-log.sh)                     | Logging wrapper sourced by `install` and `mise bootstrap` tasks; writes to `~/.local/state/dots/logs/`                                                             |
+| [`test/`](test)                                                          | Verification suite: BDD features (`test/features/`) and Bun integration specs (`test/integration/`)                                                                |
+| [`mise.toml`](mise.toml)                                                 | Repo tasks: `build`, `test`, `test:specs`, `start`, `setup:*`, `zsh:*`, `skills:*`                                                                                 |
 
 ## Day to day
 
@@ -123,15 +125,18 @@ mise run reinstall:audit                          # before a wipe: what would be
 ```
 
 The policy is [`config/restic/backup.toml`](config/restic/backup.toml); the full playbook is
-[`assets/guides/REINSTALL_GUIDE.md`](assets/guides/REINSTALL_GUIDE.md).
+[`docs/REINSTALL.md`](docs/REINSTALL.md).
 
 ### Agent skills
 
 Skills come from [`config/agents/skill-lock.json`](config/agents/skill-lock.json), the `skills` CLI's own lock
 (both paths it reads link there), so `skills add <repo> -g` and `skills update` show up as a git diff: commit it.
+The bootstrap restores missing skills in parallel in the background, logging to
+`~/.local/state/dots/skills-restore.log` and sending an OS notification upon completion. Set
+`DOTS_SKILLS_FOREGROUND=1` to wait for them. Logs: `~/.local/state/dots/logs/latest.log`.
 
 ```sh
-mise run skills:restore   # install every locked skill that is missing (the bootstrap task runs this)
+mise run skills:restore   # install every locked skill that is missing (foreground run)
 mise run skills:audit     # list skills whose source is not confirmed in config/agents/review.csv
 ```
 
@@ -149,7 +154,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | Helix                               | [`config/helix`](config/helix/README.md)                                                           |
 | bat                                 | [`config/bat`](config/bat/README.md)                                                               |
 | Ghostty                             | [`config/ghostty`](config/ghostty)                                                                 |
-| Window management (macOS)           | [`config/amethyst`](config/amethyst), [`config/yabai`](config/yabai), [`config/skhd`](config/skhd) |
+| Window management (macOS)           | [`config/dinky`](config/dinky), [`config/yabai`](config/yabai)                                     |
 | mise                                | [`config/mise`](config/mise)                                                                       |
 | Agent skills and commands           | [`config/agents`](config/agents)                                                                   |
 
@@ -157,12 +162,12 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 
 | Playbook                                               | Where                                                                                             |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| Test `install` in a container                        | [Docker guide](assets/guides/DOCKER_GUIDE.md#testing-install-in-a-container)                      |
-| Build, run and structure-test the Docker images        | [Docker guide](assets/guides/DOCKER_GUIDE.md)                                                     |
-| Run the tests (BDD and integration specs)              | [Testing guide](assets/guides/TESTING_GUIDE.md#verification-gates)                                |
-| Verify and benchmark zsh startup                       | [Testing guide](assets/guides/TESTING_GUIDE.md#zsh-startup)                                       |
-| Prepare a reinstall (backups, new-Mac runbook)         | [mise-bootstrap design §6](assets/specs/mise-bootstrap/design.md#6-new-mac-runbook)               |
-| Reinstall a Mac                                        | [Reinstall guide](assets/guides/REINSTALL_GUIDE.md)                                               |
+| Test `install` in a container                          | [Docker guide](docs/DOCKER.md#testing-install-in-a-container)                                      |
+| Build, run and structure-test the Docker images        | [Docker guide](docs/DOCKER.md)                                                                    |
+| Run the tests (BDD and integration specs)              | [Testing guide](docs/TESTING.md#verification-gates)                                               |
+| Verify and benchmark zsh startup                       | [Testing guide](docs/TESTING.md#zsh-startup)                                                      |
+| Prepare a reinstall (backups, new-Mac runbook)         | [Reinstall guide](docs/REINSTALL.md)                                                              |
+| Reinstall a Mac                                        | [Reinstall guide](docs/REINSTALL.md)                                                              |
 | Work on this repo with an agent                        | [AGENTS.md](AGENTS.md)                                                                            |
 
 ## Gotchas
@@ -181,17 +186,29 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 - **`skills add` and `skills update` write the committed lock** through its link: review the diff.
 - **A skill deleted upstream cannot be restored:** the lock records no commit; keep a backup.
 - **Encrypted files (`config/.env`) look like gibberish in git:** run `mise run setup:git:filters`.
+- **A bootstrap failed:** read `~/.local/state/dots/logs/latest.log`.
 
 ## Repository layout
 
-| Path                                         |                                                                      |
+| Path                                         | Holds                                                                |
 | -------------------------------------------- | -------------------------------------------------------------------- |
-| [`install`](install)                         | The one-liner's script                                               |
+| [`install`](install)                         | The one-liner's bootstrap script                                     |
 | [`config/`](config)                          | Everything linked into `~/.config`, plus the mise config             |
-| [`assets/`](assets)                          | Specs (`assets/specs/`), guides (`assets/guides/`), tests            |
 | [`distros/`](distros)                        | Debian and Ubuntu Dockerfiles and structure tests                    |
-| [`script/`](script)                          | Repo scripts: SOPS filters, zsh checks, the skills audit and restore |
+| [`docs/`](docs)                              | Canonical documentation and agent specs/plans                        |
+| [`script/`](script)                          | Repo scripts: SOPS filters, zsh checks, backup, logging, skills      |
+| [`test/`](test)                              | BDD living documentation and Bun integration specs                   |
 | [`mise.toml`](mise.toml), [`hk.pkl`](hk.pkl) | Repo tasks and git hooks                                             |
+
+## Docs
+
+- [`README.md`](README.md) — What dots is, installation, day-to-day usage, playbooks, gotchas, layout, docs index.
+- [`AGENTS.md`](AGENTS.md) — Agent entry point: repository layout, workflow, quality gates, hard rules, and companion skills.
+- [`docs/TESTING.md`](docs/TESTING.md) — Verification gates, Bun integration spec architecture, BDD and Gherkin rules, and Definition of Done.
+- [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — Commit conventions, code style standards, and mise task conventions.
+- [`docs/DOCKER.md`](docs/DOCKER.md) — Container images, CST testing, and GitHub Actions CI pipelines.
+- [`docs/REINSTALL.md`](docs/REINSTALL.md) — Backup runbook and clean-machine reinstall procedure.
+- [`docs/GLOSSARY.md`](docs/GLOSSARY.md) — Common terms and domain glossary.
 
 ## License
 

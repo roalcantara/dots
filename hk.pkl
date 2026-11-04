@@ -5,7 +5,7 @@
 amends "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl"
 import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
 
-exclude = List("graphify-out", "node_modules", ".git")
+exclude = List("node_modules", ".git")
 
 display_skip_reasons = List()
 
@@ -30,7 +30,7 @@ local stagingLinters = new Mapping<String, Step> {
     check = "zsh -n {{files}}"
   }
   ["markdownlint"] = (Builtins.markdown_lint) {
-    exclude = List("README.md", "config/git/README.md", "assets/specs/update-hooks/tasks.md")
+    exclude = List("README.md", "config/git/README.md")
   }
   ["hadolint"] = (Builtins.hadolint) {
     glob = List("**/Dockerfile", "**/Dockerfile.*")

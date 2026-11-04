@@ -196,6 +196,10 @@ echo "  ==> ${CST_CMD[*]}"
 eval "${CST_CMD[*]}"
 '''
 
+[tasks."test:specs"]
+description = "Run every BDD scenario and integration spec under test/"
+run = "mise run -C test test all"
+
 [tasks."setup:age"]
 description = "Setup AGE keys from Bitwarden"
 run = '''
@@ -318,7 +322,7 @@ experimental = true
 # https://mise.jdx.dev/configuration/settings.html#lockfile
 lockfile = true
 
-# Agent skills from config/agents/skill-lock.json (assets/specs/agent-skills-lock/design.md).
+# Agent skills from config/agents/skill-lock.json.
 [tasks."skills:audit"]
 description = "Classify installed agent skills against the lock and write config/agents/review.csv (-- --apply re-adds confirmed ones)"
 tools = { bun = "1.3.14", node = "22" }

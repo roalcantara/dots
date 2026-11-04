@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sets up this machine: mise, the dots checkout, the age key, then mise bootstrap (design.md §10).
+# Sets up this machine: mise, the dots checkout, the age key, then mise bootstrap.
 # curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash
 # Env: DOTS_BRANCH (main), DOTS_REPO (clone URL), DOTS_HISTORY (the private history origin),
 #      DOTS_PROFILE (desktop | container), DOTS_AGE_KEY (the key, for tests; otherwise it is read from the terminal).
@@ -13,6 +13,16 @@ REPO="${DOTS_REPO:-https://github.com/roalcantara/dots.git}"
 HISTORY="${DOTS_HISTORY:-https://github.com/roalcantara/dots-history.git}"
 PROFILE="${DOTS_PROFILE:-desktop}"
 export PATH="$HOME/.local/bin:$PATH"
+
+# Log the whole run (both mise bootstrap runs included) for debugging; prompts use /dev/tty and stay out of it.
+LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/dots/logs"
+mkdir -p "$LOG_DIR"
+export DOTS_LOG="$LOG_DIR/bootstrap-$(date +%Y%m%d-%H%M%S).log"
+: >"$DOTS_LOG"
+ln -sfn "$(basename "$DOTS_LOG")" "$LOG_DIR/latest.log"
+exec > >(tee -a "$DOTS_LOG") 2>&1
+export DOTS_LOG_TEED=1 # bootstrap-log.sh: output is already in the log
+echo "install: log: $DOTS_LOG"
 
 apt_install() {
   sudo=""

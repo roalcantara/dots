@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-// Audit and restore the global agent skills from config/agents/skill-lock.json
-// (assets/specs/agent-skills-lock/design.md). Usage: bun script/agent-skills.ts audit [--apply] | restore
+// Audit and restore the global agent skills from config/agents/skill-lock.json.
+// Usage: bun script/agent-skills.ts audit [--apply] | restore
 import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
@@ -148,6 +148,28 @@ export function addCommand(source: string, names: string[], agents: string[]): s
   return ["skills", "add", source, "-g", "-y", "-s", ...names, ...(agents.length ? ["-a", ...agents] : [])];
 }
 
+/** Concurrent `skills add` runs; the spike in the close-out plan (Task 6) chose it. */
+export const DEFAULT_JOBS = 6;
+
+export function jobsFromEnv(env: Record<string, string | undefined>): number {
+  const n = Number(env.SKILLS_JOBS);
+  return Number.isInteger(n) && n >= 1 ? n : DEFAULT_JOBS;
+}
+
+/** Runs `worker` over `items`, at most `jobs` at once; results keep the input order. */
+export async function runPool<T, R>(items: T[], jobs: number, worker: (item: T) => Promise<R>): Promise<R[]> {
+  const results = new Array<R>(items.length);
+  let next = 0;
+  const lane = async () => {
+    while (next < items.length) {
+      const i = next++;
+      results[i] = await worker(items[i] as T);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(jobs, items.length)) }, lane));
+  return results;
+}
+
 // ---- commands -------------------------------------------------------------------------------------------
 
 const repoRoot = resolve(import.meta.dir, "..");
@@ -267,7 +289,86 @@ function audit(apply: boolean): void {
   }
 }
 
-function restore(): void {
+const dotsState = () => join(process.env.XDG_STATE_HOME ?? join(homedir(), ".local/state"), "dots");
+
+/** The OS notification command, or null when this machine has no way to show one. */
+export function notifyCommand(
+  platform: string, env: Record<string, string | undefined>, has: (cmd: string) => boolean, title: string, body: string,
+): string[] | null {
+  if (platform === "darwin" && has("osascript")) {
+    return ["osascript", "-e", `display notification ${JSON.stringify(body)} with title ${JSON.stringify(title)}`];
+  }
+  if (platform === "linux" && has("notify-send") && (env.DISPLAY || env.WAYLAND_DISPLAY || env.DBUS_SESSION_BUS_ADDRESS)) {
+    return ["notify-send", title, body];
+  }
+  return null;
+}
+
+/** The PID in `pidFile` when that process is alive, else null. */
+export function lockOwner(pidFile: string): number | null {
+  let pid = 0;
+  try {
+    pid = Number(readFileSync(pidFile, "utf8").trim());
+  } catch {
+    return null;
+  }
+  if (!Number.isInteger(pid) || pid <= 0) return null;
+  try {
+    process.kill(pid, 0);
+    return pid;
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code === "EPERM" ? pid : null;
+  }
+}
+
+export function acquireLock(pidFile: string): boolean {
+  const owner = lockOwner(pidFile);
+  if (owner !== null && owner !== process.pid) return false;
+  mkdirSync(dirname(pidFile), { recursive: true });
+  writeFileSync(pidFile, `${process.pid}\n`);
+  return true;
+}
+
+export function releaseLock(pidFile: string): void {
+  if (lockOwner(pidFile) === process.pid) rmSync(pidFile, { force: true });
+}
+
+/** Background mode: the result file, the failure marker (read once by the next zsh) and the notification. */
+function report(code: number, result: string): void {
+  const dir = dotsState();
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "skills-restore.result"), `${result}\n`);
+  if (code !== 0) writeFileSync(join(dir, "skills-restore.failed"), `${result}\n`);
+  else rmSync(join(dir, "skills-restore.failed"), { force: true });
+  const cmd = notifyCommand(process.platform, process.env, (c) => Bun.which(c) !== null, "dots: agent skills", result);
+  if (cmd) Bun.spawnSync(cmd, { stdout: "ignore", stderr: "ignore" });
+}
+
+type SourceRun = { source: string; names: string[]; code: number; log: string };
+
+/** One `skills add`, with its own state folder (the CLI writes its lock there) and its own log. */
+async function addSource(source: string, names: string[], agents: string[], runDir: string, attempt = ""): Promise<SourceRun> {
+  const slug = source.replace(/[^\w.-]+/g, "_");
+  const state = join(runDir, "state", slug);
+  mkdirSync(state, { recursive: true });
+  const log = join(runDir, `${slug}${attempt}.log`);
+  const cmd = addCommand(source, names, agents);
+  let code = 127, out = "", err = "";
+  try {
+    const p = Bun.spawn(cmd, { env: { ...process.env, XDG_STATE_HOME: state }, stdin: "ignore", stdout: "pipe", stderr: "pipe" });
+    [out, err] = await Promise.all([new Response(p.stdout).text(), new Response(p.stderr).text()]);
+    code = await p.exited;
+  } catch (error) {
+    // Bun throws when the executable is missing (e.g. `skills` not installed yet).
+    err = `cannot run ${cmd[0]}: ${(error as Error).message}\n`;
+  }
+  writeFileSync(log, `$ ${cmd.join(" ")}\n${out}${err}`);
+  console.log(code === 0 ? `✓ ${source} (${names.length})` : `✗ ${source} (exit ${code}), log: ${log}`);
+  return { source, names, code, log };
+}
+
+/** Installs the missing locked skills; returns the exit code and the one-line result. */
+async function restore(): Promise<{ code: number; result: string }> {
   const path = lockPath();
   const lock = readLock(path);
   const committed = run(["git", "show", "HEAD:config/agents/skill-lock.json"], repoRoot);
@@ -276,41 +377,59 @@ function restore(): void {
   const problem = lockProblem(lock, committedCount);
   if (problem) {
     console.error(`skills:restore: ${problem}`);
-    process.exit(1);
+    return { code: 1, result: problem };
   }
   const missing = missingSkills(lock, skillsDir());
   if (missing.length === 0) {
     console.log("skills:restore: every locked skill is installed");
-    return;
+    return { code: 0, result: "every locked skill is installed" };
   }
-  // A throwaway state folder, so the CLI writes its lock there and never rewrites the committed one.
-  const state = mkdtempSync(join(tmpdir(), "skills-state-"));
-  const env = { ...process.env, XDG_STATE_HOME: state };
-  const failed: string[] = [];
-  try {
-    for (const [source, names] of groupBySource(lock, missing)) {
-      if (runLoud(addCommand(source, names, lock.lastSelectedAgents ?? []), env) !== 0) failed.push(source);
-    }
-  } finally {
-    rmSync(state, { recursive: true, force: true });
-  }
+  const runDir = join(dotsState(), "skills-restore");
+  rmSync(runDir, { recursive: true, force: true });
+  mkdirSync(runDir, { recursive: true });
+  const agents = lock.lastSelectedAgents ?? [];
+  const jobs = jobsFromEnv(process.env);
+  const runs = await runPool([...groupBySource(lock, missing)], jobs, ([source, names]) => addSource(source, names, agents, runDir));
   // `skills add` exits 0 when a requested skill is gone upstream, so check what is still missing.
-  const notInstalled = missingSkills(lock, skillsDir()).filter((name) => missing.includes(name));
-  console.log(
-    `skills:restore: ${missing.length} missing, ${missing.length - notInstalled.length} installed, ` +
-      `${failed.length} source(s) failed`,
-  );
-  if (failed.length) console.error(`failed sources: ${failed.join(", ")}`);
-  if (notInstalled.length) console.error(`not installed (gone upstream or failed): ${notInstalled.join(", ")}`);
-  if (failed.length || notInstalled.length) process.exit(1);
+  let still = missingSkills(lock, skillsDir()).filter((name) => missing.includes(name));
+  // A parallel run can lose a race the CLI does not guard against (a crash or a silent miss): retry those
+  // sources once, one at a time, keeping the first attempt's log.
+  if (jobs > 1) {
+    for (const r of runs.filter((r) => r.names.some((n) => still.includes(n)))) {
+      Object.assign(r, await addSource(r.source, r.names.filter((n) => still.includes(n)), agents, runDir, ".retry"));
+    }
+    still = missingSkills(lock, skillsDir()).filter((name) => missing.includes(name));
+  }
+  const failed = runs.filter((r) => r.code !== 0).map((r) => r.source);
+  const result = `${missing.length - still.length} of ${missing.length} installed, ${failed.length} source(s) failed`;
+  console.log(`skills:restore: ${result}`);
+  if (failed.length) console.error(`failed sources: ${failed.join(", ")} (logs: ${runDir})`);
+  if (still.length) console.error(`not installed (gone upstream or failed): ${still.join(", ")}`);
+  return { code: failed.length || still.length ? 1 : 0, result: still.length ? `${result}: ${still.join(", ")}` : result };
 }
 
 if (import.meta.main) {
   const [command, ...args] = process.argv.slice(2);
   if (command === "audit") audit(args.includes("--apply"));
-  else if (command === "restore") restore();
+  else if (command === "restore") {
+    // Both modes take the lock: restore() resets the shared run folder, so two runs must never overlap.
+    const background = args.includes("--background");
+    const pidFile = join(dotsState(), "skills-restore.pid");
+    if (!acquireLock(pidFile)) {
+      console.log(`skills:restore: already running (pid ${lockOwner(pidFile)})`);
+      process.exit(background ? 0 : 1);
+    }
+    let outcome = { code: 1, result: "skills:restore crashed; see the log" };
+    try {
+      outcome = await restore();
+    } finally {
+      if (background) report(outcome.code, outcome.result);
+      releaseLock(pidFile);
+    }
+    process.exit(outcome.code);
+  }
   else {
-    console.error("usage: bun script/agent-skills.ts audit [--apply] | restore");
+    console.error("usage: bun script/agent-skills.ts audit [--apply] | restore [--background]");
     process.exit(2);
   }
 }

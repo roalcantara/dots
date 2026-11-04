@@ -1,475 +1,59 @@
-# ~/.config/bin
+# Portable CLI tools (`config/bin`)
 
-Personal executable scripts is part of my [dotfiles][0].
+Portable executable scripts and CLI helpers linked to `~/.local/bin/`.
 
-Utilities, git helpers, fzf integrations, and whatever else doesn't belong in a
-plugin or a shell function.
+## Overview
 
-## OVERVIEW
+Scripts placed in `config/bin` are standalone executables available on `$PATH`. Unlike shell functions, they can be invoked across subshells, background runners, and tools like `fzf --preview` or `xargs`.
 
-Shell functions defined in `~/.zshrc` or autoloaded via ZIM/ZSH are great for
-interactive workflows, but they are invisible to subshells. Tools like `fzf --preview`,
-`xargs`, and `env -i` spawn non-interactive shells that don't source your config — so
-functions simply don't exist there.
+During `mise bootstrap`, all executable scripts in `config/bin/` are symlinked into `~/.local/bin/`.
 
-Scripts in `$PATH` solve that. They are executables, not functions, so any process can
-invoke them regardless of how the shell was started.
+## Tools
 
-`~/.config/bin` is the source of truth. A symlink from `~/.local/bin` puts everything
-on `$PATH` without duplicating files.
+| Tool | Purpose | Example |
+| --- | --- | --- |
+| [`xc`](xc) | Interactive launcher and dispatcher for `xc-*` tools | `xc` |
+| [`xc-fabric`](xc-fabric) | Fabric AI pattern runner with fzf picker and terminal UI | `xc-fabric ls --raw` |
+| [`xc-git`](xc-git) | Git helpers (branch preview, fixup suggestions, fzf log) | `xc-git fixup-suggest --dry-run .` |
+| [`xc-puts`](xc-puts) | Formatted, colored console output for scripts | `xc-puts --green "Done"` |
+| [`xc-sec`](xc-sec) | Redact sensitive information in files with backups | `xc-sec --help` |
+| [`xc-toast`](xc-toast) / [`toast`](toast) | Terminal toast overlay notifications | `toast "Build completed" 2` |
+| [`xcg`](xcg) | Interactive Git branch manager using fzf | `xcg` |
+| [`barrel`](barrel) | TypeScript/JavaScript barrel (`index.ts`) export generator | `barrel ./src -r` |
+| [`recase`](recase) | File and string naming convention converter | `recase MyFile.ts --kebab` |
+| [`gen`](gen) | Shell completion generator from command usage specs | `gen mycmd` |
+| [`dots`](dots) | Dotfiles manager and runtime diagnostics | `dots doctor` |
+| [`gitx`](gitx) | Interactive Git rebase and history dispatcher | `gitx fzl` |
+| [`psc`](psc) / [`pss`](pss) | Gopass secret copier (`psc`) and revealer (`pss`) | `psc github/token` |
+| [`zsys`](zsys) | Path, environment, and system diagnostics | `zsys --help` |
+| [`yb`](yb) | macOS Yabai tiling manager helper | `yb --help` |
 
-```txt
-~/.config/bin/xc-git                    ← unified git helpers (flat executable, like xc-fabric)
-~/.local/bin/xc-git                     ← symlink → ~/.config/bin/xc-git
-~/.config/bin/xc-fabric               ← interactive Fabric pattern runner
-```
+## Authoring conventions
 
-## TOOLS
-
-| Command                                                         | Purpose                                                                      | Example                            |
-| --------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------- |
-| [`xc-git`](xc-git)                                   | Unified Git workflow helper (branch preview, fixup suggestion, log fzf)      | `xc-git fixup-suggest --dry-run .` |
-| [`xc-fabric`](xc-fabric)                             | Interactive Fabric AI pattern runner with fzf and gum                  | `xc-fabric ls --raw`               |
-| [`xc-puts`](xc-puts)                                 | Formatted, colored console messages for scripts and installers               | `xc-puts --green "ready"`          |
-| [`xc`](xc)                                           | Interactive fzf launcher for all `xc-*` tools                                | `xc`                               |
-| [`barrel`](barrel)                                   | TypeScript and JavaScript barrel (`index.ts`/`index.js`) export generator    | `barrel ./src -r`                  |
-| [`recase`](recase)                                   | File and directory naming convention converter (snake, kebab, camel, pascal) | `recase MyFile.ts --kebab`         |
-| [`toast`](toast) / [`xc-toast`](xc-toast) | Short-lived terminal toast notifications                                     | `toast "Build completed" 2`        |
-| [`dots`](dots)                                       | Dotfiles manager, runtime permissions, theme palette, and diagnostics        | `dots doctor`                      |
-| [`gitx`](gitx)                                       | Interactive Git rebase, history, and branch workflow dispatcher              | `gitx fzl`                         |
-| [`psc`](psc) / [`pss`](pss)               | Gopass secret clipboard copier (`psc`) and secret revealer (`pss`)           | `psc github/token`                 |
-| [`gen`](gen)                                         | Zsh completion script generator from command `--help` outputs                | `gen mycmd`                        |
-| [`xcg`](xcg) | fzf-driven git branch manager | `xcg` |
-| [`xc-sec`](xc-sec) | Redact sensitive information in files (in place, with timestamped backups) | `xc-sec --help` |
-| [`zsys`](zsys) | PATH, command, file, and setup diagnostic utilities | `zsys --help` |
-| [`yb`](yb) | yabai wrapper | `yb --help` |
-
-## DEPENDENCIES
-
-- [Git][5]
-- [FZF][6]
-- [Gum][7]
-- [Delta][8]
-- [Fabric][20] _(required for `xc-fabric`)_
-- [fzf][21] _(optional rich pattern picker for `xc-fabric`)_
-- [Gum][22] _(optional prompts, logs, tables, and spinners for `xc-fabric`)_
-- [Glow][23] _(optional Markdown renderer for `xc-fabric`)_
-- [bat][24] _(optional `xc-fabric` rendering fallback)_
-
-**`xc-fabric` picker:** When `fzf` is installed (**0.27+** for `preview-bg` / `header-bg` in COLSPEC; tested on **0.71**), the default pattern UI uses `--layout=default`, rounded borders, and a darker preview panel. Override Markdown preview styling with `GLOW_STYLE` (see `_boot_preview_cmd` in the script; default theme for that path is `dracula`). Result rendering after a run uses `glow -s "${GLOW_STYLE:-dark}"`.
-
-## DEVELOPMENT
-
-### NAMING
-
-Every script here is prefixed with `xc-`.
-
-```txt
-xc-<topic>-<action>
-```
-
-The prefix makes origin obvious at a glance — in a listing, in a `$PATH` search, in
-shell history. It also prevents collisions with system tools, package managers, and
-third-party CLIs.
-
-#### EXAMPLES
-
-```txt
-xc-git
-xc-git-stash-preview
-xc-fzf-file-preview
-```
-
-### xc-git
-
-Git workflow helpers are unified under a single CLI: **`xc-git`**
-
-| Subcommand       | Purpose                           | Example                                  |
-| ---------------- | --------------------------------- | ---------------------------------------- |
-| `branch-preview` | fzf branch preview (gum + delta)  | `xc-git branch-preview main`             |
-| `fixup-suggest`  | Safe fixup target or `git commit` | `xc-git fixup-suggest --dry-run -- path` |
-| `log-fzf`        | Interactive log + gitx keys       | `xc-git log-fzf fix`                     |
-
-```sh
-xc-git -h
-xc-git fixup-suggest --dry-run .
-git add file && git fix "$(xc-git fixup-suggest -q -- file)"
-git lol                # → gitx → xc-git log-fzf
-```
-
-`xc-git` lives at `config/bin/xc-git` (single flat executable, subcommands inline). Old package dir `xc-git/`, wrappers, and `lib/xc-git/` are removed.
-
-**Dependencies:** `git` · `delta` (for `branch-preview` diff) · `gum` optional (section headings; plain `printf` fallback).
-
-**Testing:**
-
-```sh
-mise run xc-git:specs
-```
-
-### xc-skills
-
-Multi-agent AI skill manager and interactive browser: **`xc-skills`**
-
-| Subcommand | Purpose | Example |
-| ---------- | ------- | ------- |
-| `ls` | Interactive fzf skill browser + markdown preview + keybindings | `xc-skills ls` |
-| `sync` | Mirror skill symlinks from source to target/agent directories | `xc-skills sync` |
-| `collect` | Harvest regular skill files from agent dirs into source | `xc-skills collect --dry-run` |
-
-**Interactive `xc-skills ls` Keybindings:**
-
-- `↵`: Output selected skill path(s)
-- `Tab` / `Shift-Tab`: Multi-select toggle
-- `Ctrl-O`: Open selected `SKILL.md` in `$EDITOR` (`nvim`)
-- `Ctrl-N`: Copy skill folder name(s) to system clipboard
-- `Ctrl-P`: Copy skill path(s) (`~/.agents/skills/...`) to system clipboard
-- `Ctrl-U`: Update selected skill(s) via `skills update`
-- `Esc`: Exit
-
-**Symlink:** `ln -sf ~/.config/bin/xc-skills ~/.local/bin/xc-skills`
-
-### Portable tool symlinks
-
-```sh
-ln -sf ~/.config/bin/xc-git  ~/.local/bin/xc-git
-ln -sf ~/.config/bin/xc-puts        ~/.local/bin/xc-puts
-ln -sf ~/.config/bin/xc-toast       ~/.local/bin/xc-toast
-ln -sf ~/.config/bin/xc-usage       ~/.local/bin/xc-usage
-```
-
-**Removed:** `config/zsh/etc/functions/{puts,toast}`, `config/bin/{lib/xc-git,xc-git-*}` wrappers, root `config/bin/xc-git` file.
-
-### xc (launcher)
-
-**`xc`** is the interactive entry point for all other `xc-*` tools (each tool stays its own file).
-
-```bash
-xc              # fzf menu + stacked help preview (xc-usage preview)
-xc list         # table of discovered tools
-ln -sf ~/.config/bin/xc ~/.local/bin/xc
-```
-
-Discovery scans `~/.config/bin` for executable `xc-*` files (flat layout; skips `xc` itself). Requires **fzf** (or **gum** as fallback) for the interactive picker.
-
-### xc-usage
-
-All `config/bin` scripts use **`xc-usage`** to print help from `##?` docopt headers.
-Legacy `#?` (single-hash) headers are no longer used for help extraction.
-
-**Target-first API** — `xc-usage` resolves any `<target>` to its source file and
-prints the `##?` block:
-
-```bash
-xc-usage gen           # Zsh function on $fpath → ##? from source file
-xc-usage xc-git        # bin script on $PATH → ##? from config/bin/xc-git
-xc-usage ./my-script   # explicit file path
-```
-
-Optional modifiers (dispatchers / `xc` launcher only):
-
-| Flag                     | Purpose                                        |
-| ------------------------ | ---------------------------------------------- |
-| `--md`                   | Pipe help through `xc-md` (glow → bat → plain) |
-| `--scope main\|sub:NAME` | Scoped docopt block in multi-section scripts   |
-| `--preview [NAME]`       | Stacked help for `xc` fzf preview              |
-| `--list-subs`            | Subcommand names from `##? Subcommands:`       |
-| `--metadata`             | Print `#?` license lines only                  |
-
-Flat tools and Zsh functions use `xc-usage <target>` only.
-
-**Three-layer help model:**
-
-| Layer       | Mechanism                      | When                             |
-| ----------- | ------------------------------ | -------------------------------- |
-| Script help | `##?` + `xc-usage`             | `xc-fabric -h`, always           |
-| CLI parsing | `zparseopts` in the script     | real flags and positionals       |
-| Mise tasks  | `usage = '''…'''` in mise.toml | `mise run tool:specs --scenario` |
-
-**Mise `usage` field** applies only to `mise run` tasks — never to `xc-usage`. `xc-usage` is a standalone zsh script; it does not invoke mise, parse KDL, or read `#USAGE` headers.
-
-**Dual header convention (`#?` + `##?`):**
-
-| Prefix | Purpose                      |
-| ------ | ---------------------------- |
-| `#?`   | License, version, docopt URL |
-| `##?`  | Docopt help                  |
-
-Use `xc-usage --metadata <file>` to print only `#?` license/metadata lines. Files with only `#?` (no `##?`) are rejected with a docopt hint.
-
-For Zsh function conventions, see [config/zsh/README.md](../zsh/README.md).
-
-### xc-md
-
-`xc-md` renders markdown from stdin with graceful fallback: **glow → bat → plain**.
-Exit **0** on success; no stderr warnings when a renderer is absent.
-
-```bash
-xc-usage gen --md         # rendered help via xc-md
-xc-usage gen | xc-md      # equivalent composition
-echo '# Title' | xc-md    # standalone stdin → rendered output
-```
-
-| Tier | Condition             | Action                                      |
-| ---- | --------------------- | ------------------------------------------- |
-| 1    | `command -v glow`     | `glow` (stdin → stdout)                     |
-| 2    | else `command -v bat` | `bat -l md --paging=never` (stdin → stdout) |
-| 3    | else                  | `cat` (passthrough)                         |
-
-**Symlink:** `ln -sf ~/.config/bin/xc-md ~/.local/bin/xc-md`
-
-### CONVENTIONS
-
-Each script follows the USAGE CLI specification and shebang convention:
+Scripts in this directory use the [Usage CLI](https://usage.jdx.dev) specification with inline `#USAGE` annotations and native shebang:
 
 ```zsh
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154,SC2168
 
-#? <name> 0.1.0
-#? License RIT (Robot Institute of Technology)
-
 #USAGE version "0.1.0"
-#USAGE about "One-line description of the script"
-#USAGE arg "[message]" help="The text message to print"
-#USAGE flag "-p --prefix <prefix>" help="Print message with prefix"
-#USAGE example "xc-<name> 'Hello, world!'"
+#USAGE about "One-line summary of tool"
+#USAGE arg "<file>" help="Input file path"
+#USAGE flag "-f --force" help="Force execution"
+#USAGE example "xc-sample input.txt --force"
 
-emulate -L zsh
-setopt no_unset pipe_fail
+set -euo pipefail
 
-if [[ -z "${usage_message:-}" ]]; then
-  usage zsh "${0:a}" --help >&2
-  exit 1
-fi
+FILE="${usage_file:-}"
+FORCE="${usage_force:-false}"
 
-# implementation
+# Command implementation
 ```
 
-**Multi-command dispatcher shape:** (see `xc-git` / `xc-skills` / `xc-fabric`):
+## Tasks
 
-```zsh
-#!/usr/bin/env -S usage zsh
+Tasks defined in `config/bin/mise.toml`:
 
-#USAGE cmd "subcommand" help="Subcommand description" {
-#USAGE   arg "<name>" help="Positional argument"
-#USAGE   flag "-f --flag" help="Flag description"
-#USAGE   example "xc-<tool> subcommand target"
-#USAGE }
-
-#? <tool> 0.1.0
-#? License RIT (Robot Institute of Technology)
-
-#USAGE version "0.1.0"
-#USAGE about "Tool description"
+```sh
+mise run setup    # Ensure xc-fabric dependencies (fabric-ai, bat, fzf)
 ```
-
-#### RULES
-
-- Shebang is `#!/usr/bin/env -S usage zsh` or `#!/usr/bin/env -S usage bash`
-- Metadata and arguments are declared via `#USAGE` comments
-- Subcommands use `#USAGE cmd "name" { ... }` blocks
-- Top-level `-h`/`--help` is handled natively by `usage`
-- For missing required inputs, invoke `usage zsh "${0:a}" --help >&2` (or `command usage bash "$SCRIPT_PATH" --help >&2`) and exit 1
-- Scripts are self-contained — no sourcing of `~/.zshrc` or personal config
-- All dependencies (`gum`, `delta`, `bat`, `fzf`, `usage`, etc.) are assumed to be on `$PATH`
-
-### ADDING SCRIPTS
-
-```zsh
-touch ~/.config/bin/xc-<name>
-chmod +x ~/.config/bin/xc-<name>
-ln -s ~/.config/bin/xc-<name> ~/.local/bin/xc-<name>
-```
-
-### HELP
-
-```zsh
-xc-<name> --help
-# or (target-first API):
-xc-usage xc-<name>
-# with markdown rendering:
-xc-usage xc-<name> --md
-```
-
-### TESTING (BUN + MISE)
-
-- Some scripts here have automated checks driven by [mise][9] and [Bun][10].
-- Specs live under [`tests/<script-name>.spec.ts`](tests/)
-  - For example: [`tests/xc-git.spec.ts`](tests/xc-git.spec.ts)
-- The mise task [`xc-git:specs`](mise.toml) sets:
-  - `dir` to `{{ config_root }}` which is the directory that contains this `mise.toml`
-    - For example: `config/bin` inside the dotfiles repo
-  - `XC_GIT` to the absolute path of the script under test
-- Then runs **`bunx bun test`** on the spec file
-
-#### GLOSSARY
-
-- **`tests/*.spec.ts`** _(test files)_:
-  - Bun discovers tests by filename ([test runner][11]).
-  - Keeping `*.spec.ts` next to `mise.toml` avoids temp-file naming issues from inline-only tasks.
-
-- **`bunx bun test …`** _(running specs)_:
-  - [bunx][15] runs a package binary from the registry cache.
-  - `bunx bun test <file>` invokes the `bun` CLI’s test runner on the given spec file.
-
-- **`config_root`** _(mise template)_:
-  - Mise template: the directory that contains this `mise.toml` ([templates][12]).
-  - The task uses `dir = "{{ config_root }}"` and `env` so:
-    - `bun test` runs with the correct cwd
-    - `XC_GIT_LOG_FZF` points to the script under test
-
-- **`usage` / `usage_*`** _(mise task arguments)_:
-  - CLI flags from the task `usage` block are exposed as environment variables
-  - e.g. `usage_scenario` is set to the value of `--scenario`
-  - See [task arguments][13]
-
-- **`--scenario` + `choices`** _(mise task arguments)_:
-  - Optional filter: omit the flag to run **all** suites; with `--scenario`, only the matching suite runs and the rest are skipped
-  - Valid values:
-    - Are defined in the task `usage` block
-    - Must match the scenario ids used in `describe.skipIf(skipWhenOtherScenario("…"))` in the spec file
-
-- **`skipWhenOtherScenario(id)`** _(test file)_:
-  - If `usage_scenario` is set:
-    - Suites whose id does not match are skipped
-    - So you can run one scenario at a time
-    - Example: `mise run xc-git:specs --scenario help` runs only the `help` suite
-
-#### CONVENTIONS AND PATTERNS
-
-1. Add `tests/<name>.spec.ts`
-   1. With `describe` / `it` from `bun:test`
-   2. Using [Better Specs][14]-style names: `when …`, present-tense `it`
-
-2. Add a `[tasks."<name>:specs"]` entry:
-   1. `dir = "{{ config_root }}"`
-   2. `env` for any absolute paths.
-   3. Optional `usage` with `flag … choices …`.
-   4. And `run = "bunx bun test tests/<name>.spec.ts"`
-
-3. For subprocess checks on shell scripts:
-   1. Use `Bun.spawnSync(["zsh", script, …], { env, stdout: "pipe", stderr: "pipe" })`
-   2. Assert exit code and output.
-   3. If `XC_GIT_LOG_FZF` is unset (running `bun test` by hand):
-      1. Fall back to a path relative to `import.meta.dir`
-
-#### RUNNING SPECS
-
-##### WITH MISE
-
-1. Run `cd config/bin` in this repo.
-2. Run `mise trust` if prompted.
-3. Run the specs:
-
-  ```sh
-  # 💡 NOTE: Invalid `--scenario` values are rejected by mise before Bun starts
-
-  # xc-git
-  mise run xc-git:specs
-  mise run xc-git:specs --scenario help
-  mise run xc-git:specs --scenario fixup_suggest
-
-  # xc-puts
-  mise run xc-puts:specs
-  mise run xc-puts:specs --scenario help
-
-  # xc-toast
-  mise run xc-toast:specs
-  mise run xc-toast:specs --scenario help
-
-  # xc-usage
-  mise run xc-usage:specs
-  mise run xc-usage:specs --scenario metadata
-
-  # xc-fabric
-  mise run setup
-  mise run xc-fabric:specs
-  mise run xc-fabric:specs --scenario help
-  mise run xc-fabric:specs --scenario missing_fabric
-  mise run xc-fabric:specs --scenario ls_raw
-  mise run xc-fabric:specs --scenario ls_table
-  mise run xc-fabric:specs --scenario run_raw
-  mise run xc-fabric:specs --scenario run_youtube_url
-  mise run xc-fabric:specs --scenario run_youtube_pattern
-  mise run xc-fabric:specs --scenario run_copy
-  mise run xc-fabric:specs --scenario run_output
-  mise run xc-fabric:specs --scenario run_variable
-  mise run xc-fabric:specs --scenario yt_flags
-  mise run xc-fabric:specs --scenario render_fallback
-  mise run xc-fabric:specs --scenario clip_macos
-  mise run xc-fabric:specs --scenario clip_linux
-  mise run xc-fabric:specs --scenario update
-  mise run xc-fabric:specs --scenario show
-  mise run xc-fabric:specs --scenario strategies
-  mise run xc-fabric:specs --scenario strategy_passthrough
-  mise run xc-fabric:specs --scenario scrape_url
-  mise run xc-fabric:specs --scenario picker_fzf_preferred
-  mise run xc-fabric:specs --scenario picker_fzf_stdin_lines
-  mise run xc-fabric:specs --scenario picker_gum_fallback
-  ```
-
-##### WITHOUT MISE
-
-1. Ensure Bun is on `PATH`
-2. Run `cd config/bin` from the root of this repo.
-3. Run the specs:
-
-  ```sh
-  # xc-git
-  bunx bun test tests/xc-git.spec.ts
-
-  # xc-fabric
-  bunx bun test tests/xc-fabric.spec.ts
-  ```
-
-## REFERENCES
-
-- [mise — TOML tasks][18] (including [shell shebang][19])
-- [mise — Task arguments / usage][13]
-- [mise — Templates][12]
-- [Bun — bunx][15]
-- [Bun — Test runner (CLI)][11]
-- [Bun — Writing tests][16]
-- [Bun — Shell (`$`)][17]
-- [Better Specs][14]
-
-## ACKNOWLEDGEMENTS
-
-- [Standard Readme][4]
-
-## CONTRIBUTING
-
-- Bug reports and pull requests are welcome on [GitHub][0]
-- Do follow [Editor Config][3] rules.
-- All contributors across code, issues, chat, and mailing lists must follow the [Contributor Covenant][2].
-
-## LICENSE
-
-The project is available as open source under the terms of the [MIT][1] [License](LICENSE)
-
-[0]: https://github.com/roalcantara/dots 'An opinionated DotFiles'
-[1]: https://opensource.org/licenses/MIT 'Open Source Initiative'
-[2]: https://contributor-covenant.org 'A Code of Conduct for Open Source Communities'
-[3]: https://editorconfig.org 'EditorConfig'
-[4]: https://github.com/RichardLitt/standard-readme 'Standard Readme'
-[5]: https://git-scm.com 'Distributed version control system'
-[6]: https://github.com/junegunn/fzf 'FZF'
-[7]: https://github.com/charmbracelet/gum 'Gum'
-[8]: https://github.com/dandavison/delta 'Delta'
-[9]: https://mise.jdx.dev/ "mise-en-place"
-[10]: https://bun.sh/ "Bun"
-[11]: https://bun.com/docs/cli/test "Bun test runner"
-[12]: https://mise.jdx.dev/templates.html#variables "mise templates"
-[13]: https://mise.jdx.dev/tasks/task-arguments.html#usage-field "mise task arguments"
-[14]: https://betterspecs.org/ "Better Specs"
-[15]: https://bun.com/docs/cli/bunx "bunx"
-[16]: https://bun.com/docs/test/writing-tests "Bun writing tests"
-[17]: https://bun.com/docs/runtime/shell "Bun shell (`$`)"
-[18]: https://mise.jdx.dev/tasks/toml-tasks.html "mise TOML tasks"
-[19]: https://mise.jdx.dev/tasks/toml-tasks.html#shell-shebang "mise shell shebang"
-[20]: https://github.com/danielmiessler/Fabric "Fabric"
-[21]: https://github.com/junegunn/fzf "fzf"
-[22]: https://github.com/charmbracelet/gum "Gum"
-[23]: https://github.com/charmbracelet/glow "Glow"
-[24]: https://github.com/sharkdp/bat "bat"

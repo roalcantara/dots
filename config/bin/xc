@@ -19,7 +19,6 @@
 #USAGE example "xc up"
 #USAGE example "pbpaste | xc treeify"
 
-readonly XC_LAUNCHER_SELF="${${(%):-%x}:a}"
 
 _xc_bin_dir() {
   print -r -- "${XC_BIN_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/bin}"

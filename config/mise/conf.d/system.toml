@@ -1,5 +1,5 @@
 # Linux system packages: only what Homebrew needs to install itself, plus desktop services. Every other
-# package is in config/homebrew/Brewfile (assets/specs/brewfile-packages/design.md).
+# package is in config/homebrew/Brewfile.
 [bootstrap.packages]
 "apt:build-essential" = { os = "linux" }
 "apt:procps" = { os = "linux" }

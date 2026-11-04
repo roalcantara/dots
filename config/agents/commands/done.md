@@ -2,7 +2,7 @@ Run the project's Definition of Done checklist.
 
 1. Find and read the DoD file (look for DOD.md, DEFINITION_OF_DONE.md, 
    or the DoD section in CLAUDE.md)
-2. Find and read the git commit convention (look for GIT_COMMITS_GUIDE.md,
+2. Find and read the git commit convention (look for docs/CONTRIBUTING.md,
    CONTRIBUTING.md, or commit convention in CLAUDE.md)
 3. Run lint, tests, and build using whatever commands are defined in 
    the project's CLAUDE.md or package.json scripts

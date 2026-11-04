@@ -1,75 +1,63 @@
 # Dots — agent instructions
 
-Dots is a cross-platform dotfiles repository: shell helpers in `config/bin`,
-Zsh functions in `config/zsh`, verification in `assets/`, Docker images in
-`distros/`, and mise tasks at the repo root and under `assets/mise.toml`.
+## What this repo is
 
-## Start here
+Dots is a cross-platform dotfiles repository configured via `install` and `mise bootstrap`.
+It maintains a single Homebrew `Brewfile` across platforms, links `config/<app>` into `~/.config`,
+and builds reproducible development Docker images under `distros/`.
 
-1. Read [`assets/guides/GLOSSARY.md`](assets/guides/GLOSSARY.md) for terminology.
-2. Load [`.agents/skills/dots-context/SKILL.md`](.agents/skills/dots-context/SKILL.md) for every task.
-3. Follow [`assets/guides/SKILLS.md`](assets/guides/SKILLS.md) for skill routing.
+## Layout
+
+| Folder | Contents |
+| --- | --- |
+| `config/` | Application configurations linked into `~/.config`, Homebrew `Brewfile`, shell helpers (`config/bin`), and mise bootstrap fragments (`config/mise/conf.d/`) |
+| `distros/` | Dockerfiles and Container Structure Test manifests for Debian and Ubuntu images |
+| `docs/` | Canonical documentation and agent specs/plans (`docs/superpowers/`) |
+| `script/` | Automation scripts (agent skills, restic backups, bootstrap logging, SOPS filter hooks) |
+| `test/` | Verification suite: BDD features (`test/features/`) and Bun integration specs (`test/integration/`) |
+| `.github/` | CI/CD GitHub Actions workflows (`preview.yml`, `publish.yml`, `release.yml`) |
 
 ## Workflow
 
-Features follow Spec-Driven Development (SDD):
+1. **Brainstorm & Spec:** Explore requirements and create design specs under `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`.
+2. **Plan:** Draft an implementation plan with step-by-step checkboxes under `docs/superpowers/plans/YYYY-MM-DD-<topic>.md`.
+3. **Implement:** Work in an isolated worktree. Old specs and plans live in git history only.
 
-1. **Plan:** read [`assets/guides/GLOSSARY.md`](assets/guides/GLOSSARY.md) and the relevant guides; write
-   `requirements.md`, `design.md` and `tasks.md` under `assets/specs/<feature-slug>/`; stop for review once the
-   specs are approved.
-2. **Implement:** execute `assets/specs/<feature-slug>/tasks.md` step by step; keep every quality gate
-   (`mise run -C assets test all`, linters, type checks) at zero warnings and errors; commit atomically with
-   [Conventional Commits](assets/guides/GIT_COMMITS_GUIDE.md).
+## Quality gate
 
-## Specs and guides
+Keep every gate green before declaring work complete:
 
-- SDD artifacts: `assets/specs/<feature-slug>/` (`requirements.md`, `design.md`, `tasks.md`)
-- Guides: `assets/guides/`
-- Do **not** write to `docs/superpowers/` — redirect to `assets/specs/`
+- `mise run test:specs` — runs BDD scenarios and all Bun integration test domains (`bin`, `backup`, `bootstrap`, `agents`, `hooks`).
+- `hk check --all` — runs repository linters (shellcheck, shfmt, taplo, hadolint, markdownlint, yamllint, zsh-syntax).
+- `mise run zsh:verify` — runs syntax checks and benchmark verification for Zsh configuration changes.
+- `mise run build --local --distro <d>` and `mise run test --image dots:<d>-<tag> --config distros/<d>/container-structure-test.yml` — required for Dockerfile, CST, or bootstrap changes.
 
-## Skill registry
+## Hard rules
 
-[`assets/guides/SKILLS.yml`](assets/guides/SKILLS.yml) drives validation and sync:
+- **SOPS Git Filter Wrapper:** Always invoke git with the SOPS filter wrapper:
+  `g() { git -c filter.sops.clean=cat -c filter.sops.smudge=cat "$@"; }`
+- **Never `git add -A` or `git add .`:** Stage named paths only.
+- **Never print or commit secrets:** Files such as `config/.env`, `config/ssh/keys/*.key`, `config/ssh/keys/*.pem`, and `config/age/keys.txt` must never be displayed or committed unencrypted.
+- **No unrequested push or PR:** Do not push to remote or open a pull request unless explicitly instructed by the user.
+- **Conventional Commits:** Write commit messages following Conventional Commits with a capitalized description; see [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
 
-```bash
-mise run -C assets skill validate
-mise run -C assets skill sync
-mise run -C assets skill install
-```
+## Useful skills
 
-Domain routing table: [`.cursor/dots-skill-routing.md`](.cursor/dots-skill-routing.md)
+- `systematic-debugging` — investigate failing tests, gate failures, regressions, or unexpected runtime errors.
+- `mise-tasks` — orchestrate tasks, task dependencies, or usage specifications in `mise.toml`.
+- `mise-expert` — manage mise tool versions, plugins, or environment variables.
+- `bash-scripting` — write or debug bash scripts with defensive error handling and ShellCheck compliance.
+- `docker-expert` — optimize multi-stage Docker builds, container configs, and CST assertions.
+- `writing-plans` — sequence multi-step technical plans with checkpoints and verification steps.
+- `brainstorming` — explore tradeoffs, architectural decisions, and alternatives before designing features.
+- `verification-before-completion` — execute smoke tests and assert concrete results before completing tasks.
+- `receiving-code-review` — systematically review and address critique and feedback.
 
-## Optional companion skills
+## Docs
 
-<!-- skills:optional-companions:start -->
-- `bun-development` — for Bun TypeScript under assets/integration or assets/features
-- `bun-runtime` — for Bun runtime or package-manager questions under assets/
-- `systematic-debugging` — before fixing failing tests, gate failures, or unexpected behavior
-- `mise-expert` — when editing mise tool versions or environment setup
-- `mise-tasks` — when editing mise.toml or task orchestration
-- `bash-scripting` — when editing config/bin, install scripts, or shell hooks
-- `bash-linux` — for bash terminal patterns on macOS or Linux
-- `configuring-zsh` — when editing config/zsh or zsh startup behavior
-- `github-actions-docs` — when editing GitHub Actions workflows or CI
-- `docker-expert` — for Docker, Dockerfile, or distro image work
-- `docker-patterns` — for Docker Compose or container security patterns
-- `bdd-gherkin-specification` — when writing Gherkin under assets/features
-- `bdd-patterns` — for BDD pattern questions during feature work
-- `bdd-principles` — for BDD philosophy or acceptance-test phrasing
-- `bdd-scenarios` — when designing Gherkin scenarios or edge cases
-- `cucumber-gherkin` — for Cucumber/Gherkin syntax under assets/features
-- `spec-driven-development` — when planning SDD artifacts under assets/specs/ (with using-superpowers)
-- `using-superpowers` — at conversation start and when selecting skills for SDD work
-- `writing-plans` — before multi-step implementation work
-- `receiving-code-review` — when applying review feedback
-- `requesting-code-review` — when preparing a review handoff or PR
-- `docs-writer` — when writing or reviewing assets/guides or assets/specs
-- `ast-grep` — for structural search or rewrite rules
-- `verification-before-completion` — as a reminder; dots-quality-gate remains the executable authority
-- `neovim-best-practices` — when editing config/nvim or Neovim Lua
-- `lua` — for Lua under config/nvim or Busted tests
-<!-- skills:optional-companions:end -->
-
-## Cursor rules
-
-Project rules live under [`.cursor/rules/`](.cursor/rules/).
+- [`README.md`](README.md) — overview, installation, day-to-day commands, and playbook references.
+- [`docs/TESTING.md`](docs/TESTING.md) — test architecture, BDD/Gherkin patterns, and Definition of Done.
+- [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — commit conventions, code style standards, and mise task conventions.
+- [`docs/DOCKER.md`](docs/DOCKER.md) — container images, CST testing, and GitHub Actions CI pipelines.
+- [`docs/REINSTALL.md`](docs/REINSTALL.md) — backup runbook and clean-machine reinstall procedure.
+- [`docs/GLOSSARY.md`](docs/GLOSSARY.md) — repository-wide definitions and domain terminology.

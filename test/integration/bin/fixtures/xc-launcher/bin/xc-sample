@@ -1,0 +1,4 @@
+#!/usr/bin/env -S usage zsh
+#USAGE about "Fixture tool for xc launcher discovery tests"
+
+true
