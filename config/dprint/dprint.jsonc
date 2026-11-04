@@ -1,0 +1,64 @@
+{
+  "typescript": {},
+  "json": {
+    // JSON/JSONC Code Formatter | https://dprint.dev/plugins/json
+    // The width of a line the printer will try to stay under. Note that the printer may exceed this width in certain cases.
+    "lineWidth": 120,
+    // The number of spaces per indentation level
+    "indentWidth": 2,
+    // Whether to use tabs (true) or spaces (false).
+    "useTabs": false,
+    // The kind of newline to use.
+    "newLineKind": "auto",
+    // Forces a space after slashes. For example: `// comment` instead of `//comment`
+    "commentLine.forceSpaceAfterSlashes": true,
+    // If arrays and objects should collapse to a single line if it would be below the line width
+    "preferSingleLine": true,
+    // Whether to use trailing commas
+    "trailingCommas": "never",
+    // The text to use for an ignore comment (ex. `// dprint-ignore`).
+    "ignoreNodeCommentText": "dprint-ignore"
+  },
+  "markdown": {},
+  "toml": {},
+  "yaml": {
+    // Pretty YAML | https://dprint.dev/plugins/pretty_yaml
+    // The line width limitation that Pretty YAML should *(but not must)* avoid exceeding
+    "printWidth": 120,
+    // Size of indentation
+    "indentWidth": 2,
+    // Use single quotes as possible. However if there're `\` char or `"` char in strings, quotes will be kept as-is.
+    "quotes": "forceSingle",
+    // Whether trailing comma should be inserted or not
+    "trailingComma": false,
+    // Whether whitespace should be inserted at the beginning of comments or not
+    "formatComments": false,
+    // Whether block sequence should be indented or not in a block map
+    "indentBlockSequenceInMap": true,
+    // Whether whitespace should be inserted between braces or not
+    "braceSpacing": true,
+    // Whether whitespace should be inserted between brackets or not
+    "bracketSpacing": false,
+    // Whitespace behavior of block compact map in block sequence value - only when `indentWidth` is greater than 2
+    "dashSpacing": "oneSpace",
+    // Whether items should be placed on single line as possible, even they're originally on multiple lines
+    "preferSingleLine": true,
+    // Whether trailing whitespaces should be trimmed or not
+    "trimTrailingWhitespaces": true,
+    // Whether trailing zeros should be removed or not
+    "trimTrailingZero": false,
+    // Text directive for ignoring formatting specific content
+    "ignoreCommentDirective": "pretty-yaml-ignore"
+  },
+  "excludes": [
+    "**/node_modules",
+    "**/*-lock.json"
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.96.1.wasm",
+    "https://plugins.dprint.dev/json-0.23.0.wasm",
+    "https://plugins.dprint.dev/markdown-0.22.1.wasm",
+    "https://plugins.dprint.dev/toml-0.7.0.wasm",
+    "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.6.0.wasm"
+  ]
+}
