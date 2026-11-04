@@ -17,6 +17,9 @@ stops running out of disk. Agent skills, the gopass store and oMLX models are se
 4. The `devcontainer` profile no longer exists in config, `install` or docs.
 5. README and guides describe only the Brewfile flow.
 
+**Also:** remove `starship`, which is unused (the prompt is powerlevel10k): `config/starship/`, its link and
+its CST checks.
+
 **Out of scope:** Windows (`winget`), macOS settings, Homebrew services, Linux desktop rehearsal (its first run is
 on real hardware), and pinning package versions.
 
@@ -52,17 +55,17 @@ on real hardware), and pinning package versions.
 
 ### 4.1 `config/homebrew/Brewfile`
 
-Ruby, read by `brew bundle`. The profile comes from `DOTS_PROFILE` (default `desktop`):
+Ruby, read by `brew bundle`. The profile comes from `HOMEBREW_DOTS_PROFILE` (default `desktop`); Homebrew hides other variables from a
+Brewfile:
 
 ```ruby
-desktop = ENV.fetch("DOTS_PROFILE", "desktop") == "desktop"
+desktop = ENV.fetch("HOMEBREW_DOTS_PROFILE", "desktop") == "desktop"  # brew passes only HOMEBREW_* vars
 
 # Taps (from [bootstrap.brew.taps])
 tap "oven-sh/bun"
 # ...
 
 # Everywhere, containers included: the minimal shell set
-brew "starship"
 brew "zoxide"
 brew "fzf"
 brew "eza"
@@ -114,7 +117,7 @@ In `conf.d/bootstrap.toml`, idempotent:
 1. If `brew` is not found (on PATH, `/opt/homebrew/bin`, `/home/linuxbrew/.linuxbrew/bin`), install Homebrew
    with `NONINTERACTIVE=1` and the official script.
 2. `eval "$(brew shellenv)"` for the rest of the run.
-3. `DOTS_PROFILE="${MISE_ENV:-desktop}" brew bundle install --file <dots>/config/homebrew/Brewfile --no-upgrade`.
+3. `HOMEBREW_DOTS_PROFILE="${MISE_ENV:-desktop}" brew bundle install --file <dots>/config/homebrew/Brewfile --no-upgrade`.
 
 A failure stops the bootstrap (packages are the base for everything after).
 
@@ -174,12 +177,12 @@ Branches on `MISE_ENV`:
 
 | Change | Why |
 | --- | --- |
-| New `brewfile` job (`ubuntu-latest`): `ruby -c config/homebrew/Brewfile`, then `brew bundle list --all` with `DOTS_PROFILE=desktop` and `=container` | Parses both groups without installing |
+| New `brewfile` job (`ubuntu-latest`): `ruby -c config/homebrew/Brewfile`, then `brew bundle list --all` with `HOMEBREW_DOTS_PROFILE=desktop` and `=container` | Parses both groups without installing |
 | `validate`: free disk space first (remove `/usr/share/dotnet`, `/opt/ghc`, `/usr/local/lib/android`) | The run failed on a full disk |
 | `validate`: `timeout-minutes: 30` | A hang fails fast |
 | `validate`: after the build, fail if `docker image inspect --format '{{.Size}}'` exceeds the budget | The image cannot drift back to full size |
 
-The budget starts at 2 GB and is set from the first green build (expected ≈1.5 GB: base ≈1 GB, Linuxbrew and ten
+The budget starts at 2 GB and is set from the first green build (expected ≈1.5 GB: base ≈1 GB, Linuxbrew and nine
 bottles). `publish.yml` is checked for anything tied to the removed profile.
 
 ## 7. Docs
