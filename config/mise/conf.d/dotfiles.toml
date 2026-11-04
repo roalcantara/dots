@@ -60,3 +60,11 @@
   "mise.toml",
   "src",
 ] }
+
+# The skills CLI's global lock (assets/specs/agent-skills-lock/design.md). It reads the first path when
+# XDG_STATE_HOME is set and the second otherwise (GUI apps, cron), so both point at one file.
+"~/.local/state/skills/.skill-lock.json" = { source = "~/.local/share/dots/config/agents/skill-lock.json", relative = true }
+"~/.agents/.skill-lock.json" = { source = "~/.local/share/dots/config/agents/skill-lock.json", relative = true }
+
+# The owner's agent commands.
+"~/.agents/commands" = { source = "~/.local/share/dots/config/agents/commands", relative = true }

@@ -299,6 +299,14 @@ gopass, hk, pkl and sd. Use it to check the history restore, links and gopass wi
 The container restores the history but never pushes to it. Mac changes reach it only after `mise dot save` and
 `mise dot sync` on the Mac.
 
+The `devcontainer` profile skips agent skills. To test their restore, run `mise run -C ~/.local/share/dots
+skills:restore` in the container's shell after step 4: it installs every skill in
+`config/agents/skill-lock.json`, and a second run prints `every locked skill is installed`.
+
+Agent skills come from `config/agents/skill-lock.json`, the `skills` CLI's own lock (both paths it reads link
+there), so `skills add` and `skills update` show up as git diffs. `mise run skills:audit` lists installed skills
+whose source is not confirmed in `config/agents/review.csv`.
+
 ---
 
 ### Terminal Helpers (`config/bin`)
