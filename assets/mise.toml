@@ -76,6 +76,7 @@ case "${usage_scope:-}" in
   all)
     mise run test bin
     mise run integration backup all
+    mise run integration bootstrap all
     ;;
   *)
     echo "ERROR: unknown scope ${usage_scope:-}" >&2; exit 1

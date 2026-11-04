@@ -173,6 +173,11 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 - **A new shell lacks the profile's tools:** they load through `config/mise/miserc.local.toml`, which `install`
   writes; re-run `install` or create it with `env = ["<profile>"]`.
 - **`brew bundle cleanup` only lists** what it would remove; add `--force` to remove it.
+- **A package failed during `mise bootstrap`:** the core group (the shell set) stops the bootstrap; any other
+  Brewfile entry only warns, and the bootstrap finishes. The names are in
+  `~/.local/state/dots/brew-bundle.failed`, the output in `brew-bundle.log` beside it; fix the entry (an
+  architecture gate such as `if OS.linux? && Hardware::CPU.intel?`, or remove it), then `brew bundle install`.
+  With `CI` or `DOTS_STRICT` set, any failure stops the bootstrap.
 - **`skills add` and `skills update` write the committed lock** through its link: review the diff.
 - **A skill deleted upstream cannot be restored:** the lock records no commit; keep a backup.
 - **Encrypted files (`config/.env`) look like gibberish in git:** run `mise run setup:git:filters`.
