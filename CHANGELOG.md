@@ -1,3 +1,10 @@
+## [1.38.1](https://github.com/roalcantara/dots/compare/v1.38.0...v1.38.1) (2026-11-04)
+
+
+### Bug Fixes
+
+* **bootstrap:** Warn instead of aborting when a desktop package fails ([#94](https://github.com/roalcantara/dots/issues/94)) ([04ae0d0](https://github.com/roalcantara/dots/commit/04ae0d05fbdc60bef9ad67c694d6a9b17b9e8a9b))
+
 # [1.38.0](https://github.com/roalcantara/dots/compare/v1.37.0...v1.38.0) (2026-11-04)
 
 
