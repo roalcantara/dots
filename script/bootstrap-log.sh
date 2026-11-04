@@ -16,4 +16,6 @@ fi
 # shellcheck disable=SC2012 # names are ours, no spaces
 ls -1t "$dots_log_dir"/bootstrap-*.log 2> /dev/null | tail -n +11 | while IFS= read -r old; do rm -f -- "$old"; done
 export DOTS_LOG
-exec > >(tee -a "$DOTS_LOG") 2>&1
+if [ -n "${BASH_VERSION:-}" ]; then
+  eval 'exec > >(tee -a "$DOTS_LOG") 2>&1'
+fi
