@@ -24,6 +24,26 @@ on `$PATH` without duplicating files.
 ~/.config/bin/xc-fabric               ← interactive Fabric pattern runner
 ```
 
+## TOOLS
+
+| Command                                                         | Purpose                                                                      | Example                            |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------- |
+| [`xc-git`](xc-git)                                   | Unified Git workflow helper (branch preview, fixup suggestion, log fzf)      | `xc-git fixup-suggest --dry-run .` |
+| [`xc-fabric`](xc-fabric)                             | Interactive Fabric AI pattern runner with fzf and gum                  | `xc-fabric ls --raw`               |
+| [`xc-puts`](xc-puts)                                 | Formatted, colored console messages for scripts and installers               | `xc-puts --green "ready"`          |
+| [`xc`](xc)                                           | Interactive fzf launcher for all `xc-*` tools                                | `xc`                               |
+| [`barrel`](barrel)                                   | TypeScript and JavaScript barrel (`index.ts`/`index.js`) export generator    | `barrel ./src -r`                  |
+| [`recase`](recase)                                   | File and directory naming convention converter (snake, kebab, camel, pascal) | `recase MyFile.ts --kebab`         |
+| [`toast`](toast) / [`xc-toast`](xc-toast) | Short-lived terminal toast notifications                                     | `toast "Build completed" 2`        |
+| [`dots`](dots)                                       | Dotfiles manager, runtime permissions, theme palette, and diagnostics        | `dots doctor`                      |
+| [`gitx`](gitx)                                       | Interactive Git rebase, history, and branch workflow dispatcher              | `gitx fzl`                         |
+| [`psc`](psc) / [`pss`](pss)               | Gopass secret clipboard copier (`psc`) and secret revealer (`pss`)           | `psc github/token`                 |
+| [`gen`](gen)                                         | Zsh completion script generator from command `--help` outputs                | `gen mycmd`                        |
+| [`xcg`](xcg) | fzf-driven git branch manager | `xcg` |
+| [`xc-sec`](xc-sec) | Redact sensitive information in files (in place, with timestamped backups) | `xc-sec --help` |
+| [`zsys`](zsys) | PATH, command, file, and setup diagnostic utilities | `zsys --help` |
+| [`yb`](yb) | yabai wrapper | `yb --help` |
+
 ## DEPENDENCIES
 
 - [Git][5]
