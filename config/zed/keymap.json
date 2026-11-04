@@ -1,0 +1,217 @@
+// ── VS Code overrides ──
+//
+// VS Code bindings not ported (no ZED equivalent):
+//   ctrl+cmd+s → insertSnippet — ZED has no snippet insertion command
+//   ctrl+o     → cursorUndo — ZED has no cursor undo
+//   ctrl+alt+cmd+e → runSelectedText — ZED has no "run selection in terminal"
+//   cmd+alt+/  → insertSnippet JSDoc — ZED has no snippet system
+//   ctrl+shift+right/left → extend/shrink selection (extension-specific)
+//   ctrl+u     → voiceChat, ctrl+d → dictation — VS Code-specific AI features
+//   f12        → goToDefinition was unbound in VS Code (ZED keeps default)
+//
+// Zed keymap — Atom Keybindings
+//
+// Ported from vscode-atom-keybindings v3.3.0
+// https://github.com/microsoft/vscode-atom-keybindings
+//
+// Key syntax:
+//   Modifiers: ctrl, cmd, alt, shift (alphabetical order)
+//   Chords:    "cmd-k cmd-b" (space-separated)
+//
+// Contexts: Workspace > Pane > Editor
+//   "Editor"                     — editor focused
+//   "ProjectPanel"               — file tree sidebar focused, not renaming
+//   "Terminal"                   — terminal focused
+//   "Pane"                       — an editor/terminal tab container
+//   "Picker"                     — command palette, file finder, etc.
+//
+// For details: https://zed.dev/docs/key-bindings
+// https://github.com/zed-industries/zed/blob/main/assets/keymaps/default-macos.json
+// https://github.com/zed-industries/zed/blob/main/assets/keymaps/macos/atom.json
+// https://zed.dev/docs/migrate/vs-code
+
+// ── VS Code user unbinds ──
+// These keys were unbound in VS Code. Uncomment to mirror in ZED.
+// "ctrl-cmd-f": null,      // toggle fullscreen (unbound in VS Code, ZED default)
+// "f2": null,              // rename (unbound in VS Code, ZED default)
+// "cmd-k cmd-1": null,     // fold level (unbound in VS Code, Atom port)
+// "cmd-k cmd-2": null,
+// "cmd-k cmd-3": null,
+// "cmd-k cmd-4": null,
+// "cmd-k cmd-5": null,
+// "alt-ctrl-b": null,       // format (unbound in VS Code, Atom port)
+// "ctrl-cmd-up": null,      // move line up (unbound in VS Code, Atom port)
+// "ctrl-cmd-down": null,    // move line down (unbound in VS Code, Atom port)
+// "alt-cmd-ctrl-l": null,   // reload (unbound in VS Code, Atom port)
+// "cmd-k cmd-b": null,      // toggle sidebar (unbound in VS Code, Atom port)
+// "alt-cmd-i": null,        // dev tools (unbound in VS Code, Atom port)
+// "cmd-b": null,            // show all editors + toggle sidebar (unbound in VS Code, Atom port tab_switcher)
+// "cmd-p": null,            // quick open previous (unbound in VS Code, Atom port goBack)
+
+[
+  // ── Editor ──────────────────────────────────────────────────────
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-click": "editor::GoToDefinition",
+      "ctrl-cmd-up": "editor::MoveLineUp",
+      "ctrl-cmd-down": "editor::MoveLineDown",
+      "cmd-shift-d": "editor::DuplicateLineDown",
+      "cmd-delete": "editor::DeleteToEndOfLine",
+      "alt-ctrl-b": "editor::Format", // Format document
+      // Fold / unfold
+      "alt-cmd-[": "editor::FoldAll",
+      "alt-cmd-]": "editor::UnfoldAll",
+      // Fold levels
+      "cmd-k cmd-1": "editor::FoldAtLevel_1",
+      "cmd-k cmd-2": "editor::FoldAtLevel_2",
+      "cmd-k cmd-3": "editor::FoldAtLevel_3",
+      "cmd-k cmd-4": "editor::FoldAtLevel_4",
+      "cmd-k cmd-5": "editor::FoldAtLevel_5",
+      // Toggle comment (non-US layout: / is shift-7)
+      // "cmd-shift-7": "editor::ToggleComments",
+      "shift-cmd-z": "editor::Redo",
+      "cmd-y": "editor::Redo",
+      "cmd-j": "editor::JoinLines",
+      "alt-cmd-\\": "editor::RevealInFileManager",
+      "ctrl-shift-c": "workspace::CopyPath", // Copy path of active file
+      "ctrl-cmd-g": "editor::SelectAllMatches", // Select all occurrences
+      "cmd-shift-l": "editor::SelectAllMatches",
+      "cmd-\\": "workspace::ToggleLeftDock", // Toggle sidebar
+      "cmd-i": "editor::GoToDefinition",
+      "alt-cmd-i": "editor::GoToImplementation",
+      "shift-alt-cmd-r": "editor::FindAllReferences", // Go to references
+      "alt-cmd-k": "editor::Hover",
+      "alt-cmd-enter": "editor::Rename",
+      "alt-cmd-f": "editor::Format",
+      "cmd-[": "editor::Fold",
+      "cmd-]": "editor::UnfoldLines",
+      "alt-cmd-d": "editor::GoToDeclaration",
+      "alt-cmd-r": "editor::FindAllReferences",
+      "shift-cmd-]": "editor::GoToDiagnostic", // Next diagnostic
+      "shift-cmd-[": "editor::GoToPreviousDiagnostic",
+      "alt-cmd-space": "editor::ShowSignatureHelp",
+      "shift-cmd-.": "editor::ToggleCodeActions",
+      // Split editor right (ctrl+cmd+enter — no Atom conflict)
+      // "ctrl-cmd-enter": "pane::SplitRight",
+      // Inline assist (ctrl+cmd+i)
+      "ctrl-cmd-i": "assistant::InlineAssist",
+    },
+  },
+
+  // ── Project Panel (File Explorer) ──────────────────────────────
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      // File/folder actions
+      "shift-f": "project_panel::NewFile",
+      "shift-d": "project_panel::NewDirectory",
+      "cmd-1": "project_panel::Open", // Open to side
+      "backspace": "project_panel::Trash", // Delete
+      "cmd-c": "workspace::CopyRelativePath" // Copy
+    },
+  },
+
+  // ── Pane (Tab Navigation) ──────────────────────────────────────
+  {
+    "context": "Pane",
+    "bindings": {
+      // Switch to editor tab at index (1–9)
+      "cmd-1": ["pane::ActivateItem", 0],
+      "cmd-2": ["pane::ActivateItem", 1],
+      "cmd-3": ["pane::ActivateItem", 2],
+      "cmd-4": ["pane::ActivateItem", 3],
+      "cmd-5": ["pane::ActivateItem", 4],
+      "cmd-6": ["pane::ActivateItem", 5],
+      "cmd-7": ["pane::ActivateItem", 6],
+      "cmd-8": ["pane::ActivateItem", 7],
+      "cmd-9": ["pane::ActivateItem", 8],
+      // Next/previous tab
+      "ctrl-pagedown": "pane::ActivateNextItem",
+      "ctrl-pageup": "pane::ActivateLastItem",
+    },
+  },
+
+  // ── Workspace (Global) ─────────────────────────────────────────
+  {
+    "context": "Workspace",
+    "bindings": {
+      // Zen mode
+      // "ctrl-cmd-shift-f": "workspace::ToggleZen",
+      // Toggle sidebar
+      // "cmd-k cmd-b": "workspace::ToggleLeftDock",
+      "cmd-\\": "workspace::ToggleLeftDock",
+      // Split editor
+      "cmd-k left": "pane::SplitLeft",
+      // Quick open (file finder)
+      "cmd-t": "file_finder::Toggle",
+      // Quick open previous editor → go back
+      "cmd-p": "file_finder::Toggle",
+      "ctrl-shift-l": "language_selector::Toggle",
+      "ctrl-shift-m": "markdown::OpenPreviewToTheSide", // Markdown preview
+      "alt-cmd-ctrl-l": "workspace::Reload", // Reload window
+      // Open file/folder
+      "cmd-shift-o": "workspace::Open",
+      // Toggle developer tools
+      // "alt-cmd-i": "dev::ToggleInspector",
+      // Toggle terminal
+      "alt-ctrl-t": "terminal_panel::Toggle",
+      // Full screen
+      "ctrl-cmd-f": "zed::ToggleFullScreen",
+      // Go to symbol
+      "cmd-r": "project_symbols::Toggle",
+      // Zoom in/out
+      "cmd-=": ["zed::IncreaseBufferFontSize", { "persist": false }],
+      "cmd--": ["zed::DecreaseBufferFontSize", { "persist": false }],
+      // Open settings
+      "cmd-,": "zed::OpenSettingsFile",
+      // Show all editors (tab switcher)
+      // "cmd-b": "file_finder::Toggle",
+      // ── VS Code user overrides ──
+      // Toggle terminal (cmd+t — conflicts with Atom file_finder::Toggle)
+      // "cmd-t": "terminal_panel::Toggle",
+      // Toggle right dock (shift+cmd+\ — no Atom conflict)
+      "shift-cmd-\\": "workspace::ToggleRightDock",
+      // Toggle right dock (alt+cmd+s — no Atom conflict)
+      "alt-cmd-s": "workspace::ToggleRightDock",
+      // Problems panel (cmd+alt+e — no Atom conflict)
+      "cmd-alt-e": "diagnostics::Deploy",
+      // Zen mode (ctrl+cmd+z — no Atom conflict)
+      // "ctrl-cmd-z": "workspace::ToggleZen",
+      // Run task (ctrl+alt+cmd+r — no Atom conflict)
+      "alt-cmd-ctrl-r": "task::Spawn",
+      // Build task (ctrl+alt+cmd+b — no Atom conflict)
+      "alt-cmd-ctrl-b": "task::Spawn",
+      // Open keymap (alt+cmd+m — no Atom conflict)
+      "alt-cmd-m": "zed::OpenKeymap",
+      // Toggle agent panel (alt+i — no Atom conflict)
+      "alt-i": "agent::ToggleFocus",
+      // Activate pane in direction left (ctrl+cmd+left — no Atom conflict)
+      "ctrl-cmd-left": "workspace::ActivatePaneLeft",
+      // Activate pane in direction right (ctrl+cmd+right — no Atom conflict)
+      "ctrl-cmd-right": "workspace::ActivatePaneRight",
+    },
+  },
+
+  // ── Terminal ───────────────────────────────────────────────────
+  {
+    "context": "Terminal",
+    "bindings": {
+      // Clear terminal
+      "cmd-k": "terminal::Clear",
+      // ── VS Code user overrides ──
+      // Send enter via keystroke (shift+enter — no Atom conflict)
+      "shift-enter": ["terminal::SendKeystroke", "enter"],
+      // Terminal clear was unbound in VS Code — keep Atom binding active
+    },
+  },
+
+  // ── Picker (Quick Open / Command Palette) ──────────────────────
+  {
+    "context": "Picker",
+    "bindings": {
+      // Navigate next in quick open
+      "cmd-b": "menu::SelectNext",
+    },
+  },
+]

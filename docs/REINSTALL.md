@@ -25,7 +25,7 @@ This guide provides instructions for routine backups, clean macOS reinstalls, an
 | --- | --- | --- |
 | **Config and dotfiles** | `install` (this repo) | Symlinked from `~/.local/share/dots` into `$HOME` (`~/.config`, `~/.zshrc`, etc.). |
 | **Packages and tools** | Homebrew Brewfile (`config/homebrew/Brewfile`) | CLI binaries, GUI casks, and language toolchains installed via `brew bundle`. |
-| **Secrets and keys** | `dots-history` via age key | Encrypted repository holding SSH keys, GPG keys, SOPS secrets, and gopass store. |
+| **Secrets and keys** | `dots-history` via age key | Encrypted repository holding SSH and GPG keys; gopass, gh and wakatime secrets are SOPS-encrypted in this repo (`config/<app>`). |
 | **Agent skills** | `skills:restore` (background) | Agent skills declared in `config/agents/skill-lock.json`, restored in parallel in the background. |
 | **Models and caches** | Re-downloaded on demand | oMLX models, rustup toolchains, uv Pythons, and mise runtimes reinstalled cleanly. |
 | **Personal data** | restic backup repository | `~/Work`, `~/Documents`, `~/Pictures`, and other data directories. |
@@ -344,7 +344,7 @@ and gopass never asks for a PIN. Without this, the keyring has its own passphras
 saved it in the Keychain), Linux asks for it on every `gopass show` and scripts fail with `pinentry error`.
 
 Switch once, on a machine where gopass works (it asks for the old passphrase and to confirm the recipients).
-The backup goes outside `~/.config/gopass`, which the history tracks:
+The backup goes outside `config/gopass` (linked from `~/.config/gopass`):
 
 ```sh
 bak="$HOME/.local/state/dots/gopass-identities.scrypt.bak"; mkdir -p "${bak%/*}"
@@ -354,16 +354,16 @@ gopass config age.keyring-recipients "$(age-keygen -y ~/.config/age/keys.txt)"
 gopass age identities reencrypt                               # old passphrase, then y
 gopass show -o tokens/age.dots.github.com </dev/null          # prints with no prompt
 head -n 2 ~/.config/gopass/age/identities                     # "-> X25519", no longer "-> scrypt"
-mise dot save && mise dot sync                                # the history carries it to every machine
+cd ~/Work/dots && git add config/gopass && git commit -m "chore(gopass): Lock the keyring to the age key"   # SOPS encrypts age/
 ```
 
 Delete the backup once a second machine decrypts. The old Keychain item (`GnuPG` / `pass/age-identities`) is no
 longer used.
 
 - **Recovery key:** keep the age key itself (the `AGE-SECRET-KEY-1…` line of `config/age/keys.txt`) as a
-  Bitwarden secure note. It is the only key to the history, and the history is the only carrier of
-  `~/.config/gopass`, so it recovers gopass too: paste it when `install` asks. A second keyring recipient would
-  not help on a new machine, where there is no history to open without the age key.
+  Bitwarden secure note. It decrypts the history and the SOPS files in this repo (`config/gopass/age/` included),
+  so it recovers gopass too: paste it when `install` asks. A second keyring recipient would not help on a new
+  machine, where nothing opens without the age key.
 - **Trade-off:** before the switch, the age key opened the history but not gopass: the keyring passphrase was a
   second factor. After it, the age key alone opens every gopass secret. Keep it `0600` on an encrypted disk
   (FileVault, LUKS) and only in Bitwarden off the machine.

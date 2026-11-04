@@ -4,3 +4,5 @@
 config/ssh/keys/*.key filter=sops diff=sops
 config/ssh/keys/*.pem filter=sops diff=sops
 config/ssh/keys/config filter=sops diff=sops
+config/gopass/age/** filter=sops diff=sops
+config/wakatime/.wakatime.cfg filter=sops diff=sops

@@ -1,0 +1,5 @@
+# Local state of the app; only the config files above are versioned.
+conversations/
+prompts/
+themes/
+keymap_backup.json

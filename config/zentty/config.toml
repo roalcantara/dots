@@ -1,0 +1,102 @@
+[sidebar]
+width = 203.984375
+visibility = "hidden"
+
+[pane_layout]
+laptop = "compact"
+large_display = "balanced"
+ultrawide = "balanced"
+right_split_behavior = "adaptive"
+visible_split_window_width = 1200
+
+[panes]
+show_labels = false
+show_borders = true
+inactive_opacity = 0.9938578571017952
+show_project_icons = true
+smooth_scroll_enabled = true
+focus_follows_mouse = true
+focus_follows_mouse_delay = "short"
+focus_on_1password_prompt = true
+return_after_1password_prompt = true
+
+[appearance]
+preferred_dark_theme_name = "TokyoNight Storm"
+sync_opencode_theme_with_terminal = false
+
+[open_with]
+primary_target_id = "finder"
+enabled_target_ids = ["vscode", "zed", "finder"]
+
+[server_detection]
+passive_detection_enabled = true
+preferred_browser_id = "system-default"
+enabled_browser_target_ids = ["chrome", "firefox", "brave"]
+ignored_port_rules = []
+
+[[shortcuts.bindings]]
+command_id = "sidebar.toggle"
+shortcut = "command+control+option+\\"
+
+[[shortcuts.bindings]]
+command_id = "command_palette.show"
+shortcut = "command+control+option+p"
+
+[error_reporting]
+enabled = true
+
+[updates]
+channel = "stable"
+
+[notifications]
+sound_name = ""
+
+[confirmations]
+confirm_before_closing_pane = true
+confirm_before_closing_window = true
+confirm_before_quitting = false
+
+[clipboard]
+always_clean_copies = false
+flatten_multi_line_commands = true
+command_flatten_aggressiveness = "normal"
+preserve_blank_lines_when_flattening = false
+remove_box_drawing = true
+flatten_slash_command_selections = true
+strip_url_tracking_parameters = true
+quote_paths_with_spaces = true
+show_copy_markdown_command = true
+
+[worklanes]
+new_worklane_placement = "after_current"
+
+[restore]
+restore_workspace_on_launch = true
+
+[agent_teams]
+enabled = false
+
+[agent_caffeination]
+enabled = true
+
+[agent_lists]
+always_show_task_lists = false
+always_show_subagent_lists = false
+
+[menu_bar]
+show_status_item = true
+
+[agent_integrations]
+grandfathered_v1 = true
+
+[agent_integrations.states]
+claude = "off"
+codex = "off"
+copilot = "off"
+devin = "off"
+gemini = "off"
+kilo = "off"
+omp = "off"
+opencode = "off"
+pi = "off"
+small-harness = "off"

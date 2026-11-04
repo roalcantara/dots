@@ -1,0 +1,3 @@
+# Local state of the app; only the config files above are versioned.
+restore-*.json
+run/
