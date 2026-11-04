@@ -1,19 +1,23 @@
 #!/usr/bin/env bun
 import { describe, expect, it } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   DEFAULT_JOBS,
   LOCK_VERSION,
+  acquireLock,
   addCommand,
   findCandidates,
   groupBySource,
   jobsFromEnv,
+  lockOwner,
   lockProblem,
   matchCandidates,
   missingSkills,
+  notifyCommand,
   parseSkillsCsv,
+  releaseLock,
   reviewCsv,
   runPool,
   treeHash,
@@ -259,6 +263,39 @@ describe("jobsFromEnv", () => {
   });
 });
 
+describe("notifyCommand", () => {
+  const has = (cmds: string[]) => (c: string) => cmds.includes(c);
+  it("uses osascript on macOS", () => {
+    expect(notifyCommand("darwin", {}, has(["osascript"]), "t", 'a "b"')).toEqual([
+      "osascript", "-e", 'display notification "a \\"b\\"" with title "t"',
+    ]);
+  });
+  it("uses notify-send on Linux only with a session", () => {
+    expect(notifyCommand("linux", { DISPLAY: ":0" }, has(["notify-send"]), "t", "b")).toEqual(["notify-send", "t", "b"]);
+    expect(notifyCommand("linux", {}, has(["notify-send"]), "t", "b")).toBeNull();
+    expect(notifyCommand("linux", { DISPLAY: ":0" }, has([]), "t", "b")).toBeNull();
+  });
+});
+
+describe("PID lock", () => {
+  it("is held by a live process and released only by its owner", () => {
+    const dir = tempDir();
+    try {
+      const f = join(dir, "x.pid");
+      expect(lockOwner(f)).toBeNull();
+      expect(acquireLock(f)).toBe(true);
+      expect(lockOwner(f)).toBe(process.pid);
+      writeFileSync(f, "999999\n"); // a dead PID
+      expect(lockOwner(f)).toBeNull();
+      expect(acquireLock(f)).toBe(true);
+      releaseLock(f);
+      expect(existsSync(f)).toBe(false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
 describe("restore in parallel", () => {
   const script = join(import.meta.dir, "../../../script/agent-skills.ts");
   // Stub `skills add <source> -g -y -s <names…> [-a …]`: logs start/end and its XDG_STATE_HOME, sleeps,
@@ -309,6 +346,38 @@ process.exit(source === "o/bad" ? 1 : 0);
       expect(r.stdout.toString()).toContain("✗ o/bad");
       expect(r.exitCode).toBe(1);
       expect(r.stderr.toString()).toContain("x1");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("--background records the result, the failure marker and notifies", () => {
+    const dir = setup();
+    try {
+      for (const n of ["osascript", "notify-send"]) {
+        writeFileSync(join(dir, "bin", n), `#!/bin/sh\necho "$@" >> "${join(dir, "notified")}"\n`);
+        chmodSync(join(dir, "bin", n), 0o755);
+      }
+      const r = Bun.spawnSync(["bun", script, "restore", "--background"], { env: env(dir, { DISPLAY: ":0" }), stdout: "pipe", stderr: "pipe" });
+      expect(r.exitCode).toBe(1);
+      const state = join(dir, "state", "dots");
+      expect(readFileSync(join(state, "skills-restore.result"), "utf8")).toContain("4 of 5 installed, 1 source(s) failed: x1");
+      expect(existsSync(join(state, "skills-restore.failed"))).toBe(true);
+      expect(existsSync(join(state, "skills-restore.pid"))).toBe(false);
+      expect(readFileSync(join(dir, "notified"), "utf8")).toContain("4 of 5 installed");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("--background exits 0 while another restore holds the lock", () => {
+    const dir = setup();
+    try {
+      mkdirSync(join(dir, "state", "dots"), { recursive: true });
+      writeFileSync(join(dir, "state", "dots", "skills-restore.pid"), `${process.pid}\n`);
+      const r = Bun.spawnSync(["bun", script, "restore", "--background"], { env: env(dir), stdout: "pipe" });
+      expect(r.exitCode).toBe(0);
+      expect(r.stdout.toString()).toContain("already running");
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

@@ -291,6 +291,59 @@ function audit(apply: boolean): void {
 
 const dotsState = () => join(process.env.XDG_STATE_HOME ?? join(homedir(), ".local/state"), "dots");
 
+/** The OS notification command, or null when this machine has no way to show one. */
+export function notifyCommand(
+  platform: string, env: Record<string, string | undefined>, has: (cmd: string) => boolean, title: string, body: string,
+): string[] | null {
+  if (platform === "darwin" && has("osascript")) {
+    return ["osascript", "-e", `display notification ${JSON.stringify(body)} with title ${JSON.stringify(title)}`];
+  }
+  if (platform === "linux" && has("notify-send") && (env.DISPLAY || env.WAYLAND_DISPLAY || env.DBUS_SESSION_BUS_ADDRESS)) {
+    return ["notify-send", title, body];
+  }
+  return null;
+}
+
+/** The PID in `pidFile` when that process is alive, else null. */
+export function lockOwner(pidFile: string): number | null {
+  let pid = 0;
+  try {
+    pid = Number(readFileSync(pidFile, "utf8").trim());
+  } catch {
+    return null;
+  }
+  if (!Number.isInteger(pid) || pid <= 0) return null;
+  try {
+    process.kill(pid, 0);
+    return pid;
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code === "EPERM" ? pid : null;
+  }
+}
+
+export function acquireLock(pidFile: string): boolean {
+  const owner = lockOwner(pidFile);
+  if (owner !== null && owner !== process.pid) return false;
+  mkdirSync(dirname(pidFile), { recursive: true });
+  writeFileSync(pidFile, `${process.pid}\n`);
+  return true;
+}
+
+export function releaseLock(pidFile: string): void {
+  if (lockOwner(pidFile) === process.pid) rmSync(pidFile, { force: true });
+}
+
+/** Background mode: the result file, the failure marker (read once by the next zsh) and the notification. */
+function report(code: number, result: string): void {
+  const dir = dotsState();
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "skills-restore.result"), `${result}\n`);
+  if (code !== 0) writeFileSync(join(dir, "skills-restore.failed"), `${result}\n`);
+  else rmSync(join(dir, "skills-restore.failed"), { force: true });
+  const cmd = notifyCommand(process.platform, process.env, (c) => Bun.which(c) !== null, "dots: agent skills", result);
+  if (cmd) Bun.spawnSync(cmd, { stdout: "ignore", stderr: "ignore" });
+}
+
 type SourceRun = { source: string; names: string[]; code: number; log: string };
 
 /** One `skills add`, with its own state folder (the CLI writes its lock there) and its own log. */
@@ -357,7 +410,22 @@ async function restore(): Promise<{ code: number; result: string }> {
 if (import.meta.main) {
   const [command, ...args] = process.argv.slice(2);
   if (command === "audit") audit(args.includes("--apply"));
-  else if (command === "restore") process.exit((await restore()).code);
+  else if (command === "restore") {
+    if (!args.includes("--background")) process.exit((await restore()).code);
+    const pidFile = join(dotsState(), "skills-restore.pid");
+    if (!acquireLock(pidFile)) {
+      console.log("skills:restore: already running");
+      process.exit(0);
+    }
+    let outcome = { code: 1, result: "skills:restore crashed; see the log" };
+    try {
+      outcome = await restore();
+    } finally {
+      report(outcome.code, outcome.result);
+      releaseLock(pidFile);
+    }
+    process.exit(outcome.code);
+  }
   else {
     console.error("usage: bun script/agent-skills.ts audit [--apply] | restore [--background]");
     process.exit(2);

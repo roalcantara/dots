@@ -90,8 +90,18 @@ if [ -d /Applications/oMLX.app ] && command -v hf >/dev/null; then
 fi
 
 
-# Agent skills from config/agents/skill-lock.json; installs only the missing ones.
-mise run -C "$dots" skills:restore || warn "skills:restore"
+# skills: begin
+# Agent skills from config/agents/skill-lock.json, in the background: hundreds of skills must not hold up the
+# bootstrap. A notification and ~/.local/state/dots/skills-restore.result report the outcome.
+skills_state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
+mkdir -p "$skills_state"
+if [ -n "${DOTS_SKILLS_FOREGROUND:-}" ]; then
+  mise run -C "$dots" skills:restore || warn "skills:restore"
+else
+  nohup mise run -C "$dots" skills:restore -- --background >"$skills_state/skills-restore.log" 2>&1 </dev/null &
+  echo "bootstrap: restoring agent skills in the background (log: $skills_state/skills-restore.log)"
+fi
+# skills: end
 [ -d "$nvim_cfg" ] || exit 0
 if command -v npm >/dev/null && ! npm ls -g neovim >/dev/null 2>&1; then
   npm install -g neovim || warn "npm neovim"
