@@ -524,7 +524,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 The `local` Docker target copies the **committed** tree (`git archive HEAD`), so everything must be committed.
 
-- [ ] **Step 1: Build Ubuntu** (native arm64; 10–20 minutes the first time):
+- [x] **Step 1: Build Ubuntu** (native arm64; 10–20 minutes the first time):
 
 ```bash
 cd ~/Work/dots-brewfile
@@ -543,7 +543,7 @@ grep -nE 'bootstrap: .*failed|Error|error:' "$TMPDIR/build-ubuntu.log" | head -2
     `docker run --rm -it mcr.microsoft.com/devcontainers/base:ubuntu`;
   - a formula fails to build from source → it has no bottle for arm64 Linux; **STOP** and report which.
 
-- [ ] **Step 2: Size.**
+- [x] **Step 2: Size.**
 
 ```bash
 docker image inspect dots:ubuntu-brewfile --format '{{.Size}}' | awk '{printf "%.2f GB\n", $1/1e9}'
@@ -552,7 +552,7 @@ docker history --human dots:ubuntu-brewfile | head -8
 
   Record the size. Expected under 2.0 GB. **STOP** if over 2.0 GB, with the `docker history` output.
 
-- [ ] **Step 3: CST.**
+- [x] **Step 3: CST.**
 
 ```bash
 mise run test --image dots:ubuntu-brewfile --config distros/ubuntu/container-structure-test.yml 2>&1 | tail -15
@@ -561,10 +561,10 @@ mise run test --image dots:ubuntu-brewfile --config distros/ubuntu/container-str
   Expected: `PASS` for every test, `Failures: 0`. A failing `a login shell should start without errors` prints
   the stderr: fix the tool guard (Task 1) and rebuild.
 
-- [ ] **Step 4: Debian.** Repeat Steps 1–3 with `--distro debian`, image `dots:debian-brewfile`, config
+- [x] **Step 4: Debian.** Repeat Steps 1–3 with `--distro debian`, image `dots:debian-brewfile`, config
   `distros/debian/container-structure-test.yml`.
 
-- [ ] **Step 5: Interactive smoke check** (optional, 1 minute):
+- [x] **Step 5: Interactive smoke check** (optional, 1 minute):
 
 ```bash
 docker run --rm -it dots:ubuntu-brewfile -c 'zoxide --version; nvim --version | head -1; brew bundle check --file ~/.local/share/dots/config/homebrew/Brewfile; echo profile=$(cat ~/.config/mise/miserc.local.toml 2>/dev/null)'
@@ -578,14 +578,14 @@ docker run --rm -it dots:ubuntu-brewfile -c 'zoxide --version; nvim --version | 
 
 ### Task 8: Migrate this Mac (STOP gate)
 
-- [ ] **Step 1: Dry run.**
+- [x] **Step 1: Dry run.**
 
 ```bash
 cd ~ && export HOMEBREW_NO_AUTO_UPDATE=1
 HOMEBREW_DOTS_PROFILE=desktop brew bundle check --verbose --file ~/Work/dots-brewfile/config/homebrew/Brewfile 2>&1 | tail -30
 ```
 
-- [ ] **Step 2: STOP.** Report the missing list to the owner. Do **not** run `brew bundle install` or
+- [x] **Step 2: STOP.** Report the missing list to the owner. Do **not** run `brew bundle install` or
   `mise bootstrap` on this Mac; the owner runs the migration after merging.
 
 ---
