@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 # ZIM lifecycle: what it needs beforehand, and what must outrank it afterwards.
 # Loaded by .zshrc; defines functions only — nothing runs at load time.
-#DECLARES zim::dumpfile  zim::load  zim::overrides
+#DECLARES zim::dumpfile  zim::mise_cache  zim::load  zim::overrides
 
 #ABOUT Tell ZIM where to write the completion dump.
 #ORDER Before ZIM sources init.zsh.
@@ -9,6 +9,35 @@ zim::dumpfile() {
   # Read at runtime by ZIM's completion module, so it must be set here and
   # not in .zimrc (which only executes when ZIM rebuilds init.zsh).
   zstyle ':zim:completion' dumpfile "${zdumpfile:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compcache/.zcompdump}"
+}
+
+#ABOUT Refresh zim-mise's cached activate script and completions atomically.
+#ORDER Before zim::load: zim-mise then finds both files fresh and skips its own write.
+zim::mise_cache() {
+  # zim-mise regenerates these whenever the mise binary is newer than them,
+  # by truncating and rewriting in place (`>|`). Shells that start together
+  # right after `brew upgrade mise` (Ghostty restoring its tabs) write over
+  # each other and leave a spliced, unparseable script behind. Writing to a
+  # per-shell temp file and renaming it makes every update all-or-nothing.
+  # It also keeps zim-mise's "Regenerated completions" notice off the
+  # console, which would otherwise trip p10k's instant-prompt warning.
+  # Steady-state cost: two stat comparisons, no fork.
+  [[ -z "$MSYSTEM" ]] || return 0  # zim-mise patches the script itself there
+  local mise=${commands[mise]} dir=$ZIM_HOME/modules/zim-mise
+  [[ -n $mise && -d $dir ]] || return 0
+
+  local act=$dir/mise-activate.zsh comp=$dir/functions/_mise
+  if [[ ! -e $act || $act -ot $mise ]]; then
+    # No zcompile: a stale .zwc is ignored once the script is newer than it.
+    $mise activate zsh >|$act.$$ 2>/dev/null && command mv -f $act.$$ $act
+    command rm -f $act.$$
+  fi
+  if [[ ! -e $comp || $comp -ot $mise ]]; then
+    command mkdir -p ${comp:h}
+    $mise complete --shell zsh >|$comp.$$ 2>/dev/null && command mv -f $comp.$$ $comp
+    command rm -f $comp.$$
+  fi
+  return 0
 }
 
 #ABOUT Re-assert settings that ZIM's modules would otherwise win.
@@ -144,6 +173,7 @@ plug::android() {
 }
 
 zim::dumpfile                # where ZIM writes .zcompdump
+zim::mise_cache              # refresh zim-mise caches atomically (concurrent-start safe)
 zim::load                    # bootstrap zimfw and source its generated init.zsh
 zim::overrides               # settings that must outrank ZIM's modules
 term::prompt                 # powerlevel10k configuration
