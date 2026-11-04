@@ -141,7 +141,6 @@ recipients = ["age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4"]
 "pipx:code-review-graph" = { version = "latest", uvx_args = "--python 3.13" }
 "pipx:commit-check" = "latest"
 "pipx:pynvim" = "latest"
-"npm:skills" = "latest"                                                       # Agent skills CLI (config/agents/skill-lock.json)
 
 [tasks]
 [tasks.up]
