@@ -1,3 +1,10 @@
+# [1.37.0](https://github.com/roalcantara/dots/compare/v1.36.2...v1.37.0) (2026-11-04)
+
+
+### Features
+
+* **skills:** Restore agent skills from a versioned lock ([#89](https://github.com/roalcantara/dots/issues/89)) ([776597a](https://github.com/roalcantara/dots/commit/776597aff4f8983335ccd83038ed4fe19dc82780))
+
 ## [1.36.2](https://github.com/roalcantara/dots/compare/v1.36.1...v1.36.2) (2026-11-03)
 
 
