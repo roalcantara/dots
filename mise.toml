@@ -249,6 +249,13 @@ if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/
   git config --local filter.sops.required true
   git config --local filter.sops.clean "script/clean.sops.sh %f"
   git config --local diff.sops.command "script/smudge.sops.sh %f"
+  # sops-resmudge: begin
+  # install clones before the age key exists, so filter=sops files were checked out encrypted: check them out
+  # again through the filter now, and make the decrypted secrets private.
+  git ls-files -z ':(attr:filter=sops)' | while IFS= read -r -d '' f; do
+    rm -f -- "$f" && git checkout -- "$f" && chmod go-rwx "$f"
+  done
+  # sops-resmudge: end
   echo "✓ Git filters configured"
 fi
 '''
