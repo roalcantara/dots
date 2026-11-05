@@ -51,11 +51,17 @@ describe("setup:git:filters re-smudge", () => {
     const b = join(t, "b");
     expect(sh(t, `git clone -q ${a} ${b}`).exitCode).toBe(0);
     expect(readFileSync(join(b, "secret", "blob"), "utf8")).toContain("ENC[");
+    // A clean filter that always fails (as SOPS does on an already-encrypted copy) must not matter here.
+    const realClean = readFileSync(join(b, "script", "clean.sops.sh"), "utf8");
+    writeFileSync(join(b, "script", "clean.sops.sh"), "#!/bin/sh\necho 'sops: already encrypted' >&2\nexit 203\n");
     const r = sh(b, `${setup}\n${SNIPPET}`);
     expect(r.exitCode).toBe(0);
     expect(readFileSync(join(b, "secret", "blob"), "utf8")).toBe("plain-text-value\n");
     expect(statSync(join(b, "secret", "blob")).mode & 0o077).toBe(0);
-    expect(sh(b, "git status --porcelain").stdout.toString()).toBe("");
+    writeFileSync(join(b, "script", "clean.sops.sh"), realClean);
+    const st = sh(b, "git status --porcelain");
+    expect(st.exitCode).toBe(0);
+    expect(st.stdout.toString()).toBe("");
   });
 
   it.skipIf(!tools)("a file that does not decrypt is put back, the task fails and retries next time", () => {

@@ -256,7 +256,9 @@ if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/
   failed=""
   while IFS= read -r -d '' f; do
     mv "$f" "$f.pre-smudge"
-    if err="$(git checkout -- "$f" 2>&1)"; then
+    # Only the smudge (decrypt) is needed to restore a file. git may also run the clean filter on the
+    # still-encrypted copy, which fails ("already encrypted", exit 203); cat makes that a no-op here.
+    if err="$(git -c filter.sops.clean=cat checkout -- "$f" 2>&1)"; then
       rm -f "$f.pre-smudge"
       chmod go-rwx "$f"
       # Private folders keep later checkouts private too (git writes files with the umask).
