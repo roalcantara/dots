@@ -50,6 +50,9 @@ export PATH="$HOME/.local/bin:$PATH"
 for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && eval "$("$b" shellenv)"; done
 desktop=true
 case ",${MISE_ENV:-desktop}," in *,desktop,*) ;; *) desktop=false ;; esac
+# dev (`mise run setup dev`: desktop,dev) adds the heavy steps below; dev implies desktop, as in the Brewfile.
+dev=false
+case ",${MISE_ENV:-desktop}," in *,dev,*) dev=true desktop=true ;; esac
 dots="$HOME/.local/share/dots"
 [ -r "$dots/script/bootstrap-log.sh" ] && . "$dots/script/bootstrap-log.sh"
 nvim_cfg="$HOME/.config/nvim"
@@ -70,10 +73,14 @@ zsh -ic 'exit' >/dev/null 2>&1 || true
 $desktop || exit 0
 mise run -C "$dots" setup:hooks || warn "setup:hooks"
 
-# Python tools that need 3.13 (no wheels for the newest Python); the Brewfile's uv entries cannot pin it.
-for tool in graphifyy code-review-graph; do
-  uv tool list 2>/dev/null | grep -q "^$tool " || uv tool install --python 3.13 "$tool" || warn "uv $tool"
-done
+# dev-python: begin
+# Python tools that need 3.13 (no wheels for the newest Python); the Brewfile's uv entries cannot pin it. dev only.
+if $dev; then
+  for tool in graphifyy code-review-graph; do
+    uv tool list 2>/dev/null | grep -q "^$tool " || uv tool install --python 3.13 "$tool" || warn "uv $tool"
+  done
+fi
+# dev-python: end
 
 # gopass store: cloned once ~/.config/gopass (linked to config/gopass, SOPS-decrypted) holds the age identity. HTTPS through the gh login
 # (install runs `gh auth login`): the SSH config names GitHub `Host github`, so git@github.com has no key.
@@ -113,14 +120,16 @@ fi
 
 # skills: begin
 # Agent skills from config/agents/skill-lock.json, in the background: hundreds of skills must not hold up the
-# bootstrap. A notification and ~/.local/state/dots/skills-restore.result report the outcome.
-skills_state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
-mkdir -p "$skills_state"
-if [ -n "${DOTS_SKILLS_FOREGROUND:-}" ]; then
-  mise run -C "$dots" skills:restore || warn "skills:restore"
-else
-  nohup mise run -C "$dots" skills:restore -- --background >"$skills_state/skills-restore.log" 2>&1 </dev/null &
-  echo "bootstrap: restoring agent skills in the background (log: $skills_state/skills-restore.log)"
+# bootstrap. A notification and ~/.local/state/dots/skills-restore.result report the outcome. dev only.
+if $dev; then
+  skills_state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
+  mkdir -p "$skills_state"
+  if [ -n "${DOTS_SKILLS_FOREGROUND:-}" ]; then
+    mise run -C "$dots" skills:restore || warn "skills:restore"
+  else
+    nohup mise run -C "$dots" skills:restore -- --background >"$skills_state/skills-restore.log" 2>&1 </dev/null &
+    echo "bootstrap: restoring agent skills in the background (log: $skills_state/skills-restore.log)"
+  fi
 fi
 # skills: end
 [ -d "$nvim_cfg" ] || exit 0
