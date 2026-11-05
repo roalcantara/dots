@@ -1,12 +1,14 @@
-# Linux system packages: only what Homebrew needs to install itself, plus desktop services. Every other
-# package is in config/homebrew/Brewfile.
+# Linux system packages: only what Homebrew needs to install itself, plus desktop services. Every user package,
+# fonts and flatpak apps included, is in config/homebrew/Brewfile (packages.toml was tried and rejected: see
+# docs/superpowers/specs/2026-11-05-packages-toml-design.md).
 [bootstrap.packages]
-"apt:build-essential" = { os = "linux" }
-"apt:procps" = { os = "linux" }
-"apt:curl" = { os = "linux" }
-"apt:file" = { os = "linux" }
-"apt:git" = { os = "linux" }
-"apt:ca-certificates" = { os = "linux" }
-"apt:zsh" = { os = "linux" }
-"apt:flatpak" = { os = "linux", env = "desktop" }
-"apt:docker.io" = { os = "linux", env = "desktop" }
+"apt:build-essential" = "latest"
+"apt:procps" = "latest"
+"apt:curl" = "latest"
+"apt:file" = "latest"
+"apt:git" = "latest"
+"apt:ca-certificates" = "latest"
+"apt:zsh" = "latest"
+"apt:xclip" = "latest"
+"apt:flatpak" = { env = "desktop" }
+"apt:docker.io" = { env = "desktop" }

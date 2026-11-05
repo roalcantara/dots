@@ -256,7 +256,9 @@ if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/
   failed=""
   while IFS= read -r -d '' f; do
     mv "$f" "$f.pre-smudge"
-    if git checkout -- "$f" 2>/dev/null; then
+    # Only the smudge (decrypt) is needed to restore a file. git may also run the clean filter on the
+    # still-encrypted copy, which fails ("already encrypted", exit 203); cat makes that a no-op here.
+    if err="$(git -c filter.sops.clean=cat checkout -- "$f" 2>&1)"; then
       rm -f "$f.pre-smudge"
       chmod go-rwx "$f"
       # Private folders keep later checkouts private too (git writes files with the umask).
@@ -264,10 +266,14 @@ if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/
     else
       mv "$f.pre-smudge" "$f"
       failed="$failed $f"
+      # The filter's own reason (e.g. "ERROR: sops command not found"), never file contents.
+      printf 'setup:git:filters: %s: %s\n' "$f" "$(printf '%s\n' "$err" | grep -m1 -E 'ERROR|[Ff]ailed|error' || printf '%s' "$err" | tail -n1)" >&2
     fi
   done < <(git ls-files -z ':(attr:filter=sops)')
   if [ -n "$failed" ]; then
-    git config --local --unset filter.sops.clean
+    # Unset the whole filter (not only clean): with required=true and no clean filter, git refuses to pull.
+    # Without it, git treats the files as plain until the next run, which retries.
+    for k in clean smudge required; do git config --local --unset "filter.sops.$k" || true; done
     echo "setup:git:filters: could not decrypt:$failed (check sops, age and ~/.config/sops/age/keys.txt)" >&2
     exit 1
   fi

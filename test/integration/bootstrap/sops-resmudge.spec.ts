@@ -51,11 +51,17 @@ describe("setup:git:filters re-smudge", () => {
     const b = join(t, "b");
     expect(sh(t, `git clone -q ${a} ${b}`).exitCode).toBe(0);
     expect(readFileSync(join(b, "secret", "blob"), "utf8")).toContain("ENC[");
+    // A clean filter that always fails (as SOPS does on an already-encrypted copy) must not matter here.
+    const realClean = readFileSync(join(b, "script", "clean.sops.sh"), "utf8");
+    writeFileSync(join(b, "script", "clean.sops.sh"), "#!/bin/sh\necho 'sops: already encrypted' >&2\nexit 203\n");
     const r = sh(b, `${setup}\n${SNIPPET}`);
     expect(r.exitCode).toBe(0);
     expect(readFileSync(join(b, "secret", "blob"), "utf8")).toBe("plain-text-value\n");
     expect(statSync(join(b, "secret", "blob")).mode & 0o077).toBe(0);
-    expect(sh(b, "git status --porcelain").stdout.toString()).toBe("");
+    writeFileSync(join(b, "script", "clean.sops.sh"), realClean);
+    const st = sh(b, "git status --porcelain");
+    expect(st.exitCode).toBe(0);
+    expect(st.stdout.toString()).toBe("");
   });
 
   it.skipIf(!tools)("a file that does not decrypt is put back, the task fails and retries next time", () => {
@@ -89,7 +95,11 @@ describe("setup:git:filters re-smudge", () => {
     const r = sh(b, `${setup}\n${SNIPPET}`, { SOPS_AGE_KEY_FILE: `${key}.away.missing` });
     expect(r.exitCode).not.toBe(0);
     expect(r.stderr.toString()).toContain("could not decrypt: secret/blob");
+    // The filter's reason is shown per file, so a failed install says why.
+    expect(r.stderr.toString()).toContain("setup:git:filters: secret/blob: ERROR: AGE key file not found");
     expect(readFileSync(join(b, "secret", "blob"), "utf8")).toBe(before);
-    expect(sh(b, "git config --local --get filter.sops.clean").exitCode).not.toBe(0);
+    for (const k of ["clean", "smudge", "required"]) expect(sh(b, `git config --local --get filter.sops.${k}`).exitCode).not.toBe(0);
+    // With the filter unset, git keeps working (status, pull) on the still-encrypted file.
+    expect(sh(b, "git status --porcelain").exitCode).toBe(0);
   });
 });

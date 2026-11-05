@@ -33,7 +33,7 @@ brew "ast-grep"  # Code searching, linting, rewriting
 brew "bash" if OS.mac?  # Bourne-Again shell
 brew "bash-language-server" if OS.mac?  # Language server for Bash
 brew "bat-extras"  # Extra tools that integrate bat with the shell
-brew "can1357/tap/omp" if OS.mac?  # Coding agent with the IDE wired in
+brew "can1357/tap/omp", trusted: true if OS.mac?  # Coding agent with the IDE wired in
 brew "coreutils" if OS.mac?  # GNU file, shell, and text utilities
 brew "curlie"  # Power of curl, ease of use of HTTPie
 brew "devcontainer" if OS.mac?  # Development Containers reference implementation
@@ -67,7 +67,7 @@ brew "mermaid-cli"  # CLI for Mermaid
 brew "node"  # JavaScript runtime and package manager support
 brew "openjdk"  # Java development kit
 brew "openssl@3"  # Cryptography and TLS toolkit
-brew "oven-sh/bun/bun" if OS.mac?  # JavaScript runtime, bundler, and package manager
+brew "oven-sh/bun/bun", trusted: true  # JavaScript runtime, bundler, and package manager (the fallback behind mise's bun shim)
 brew "pinentry-mac" if OS.mac?  # Pinentry for GPG on macOS
 brew "pkl"  # Pkl language CLI
 brew "pkl-lsp" if OS.mac?  # Pkl language server
@@ -99,19 +99,11 @@ brew "zsh" if OS.mac?  # UNIX shell
 brew "zsh-autosuggestions"  # Predictive inline shell autosuggestions for zsh
 brew "helix"  # Post-modern modal text editor
 brew "zsh-patina"  # Blazingly fast Zsh syntax highlighter
-brew "asmvik/formulae/yabai" if OS.mac?  # A tiling window manager for macos
+brew "asmvik/formulae/yabai", trusted: true if OS.mac?  # A tiling window manager for macos
 brew "rust"  # Rust toolchain
-# DESKTOP AND BROWSER APPS
-# FONTS
-# LINUX (`env = "desktop"` means workstations, Mac and Linux desktop, not Docker images)
-# LINUX DESKTOP APPS (system-wide; Flathub comes from /etc/flatpak/remotes.d, declared in bootstrap.toml)
-
-# Desktop: Python tools (graphifyy and code-review-graph need Python 3.13: the bootstrap task installs them)
-uv "pynvim"
-uv "debugpy"
-uv "commit-check"
-
-# Desktop: casks (macOS)
+brew "mole" if OS.mac? # Deep clean and optimize your Mac
+# Desktop: casks
+cask_args appdir: "/Applications" if OS.mac?
 cask "android-studio" if OS.mac?  # Tools for building Android applications
 cask "antigravity-cli" if OS.mac?  # Terminal interface for Antigravity agents
 cask "antigravity-ide" if OS.mac?  # AI coding agent IDE
@@ -119,14 +111,14 @@ cask "antigravity" if OS.mac?  # Agent orchestration platform
 cask "bitwarden" if OS.mac?  # Password manager
 cask "brave-browser" if OS.mac?  # Privacy-focused browser
 cask "chatgpt" if OS.mac?  # ChatGPT desktop app
-cask "claude-code" if OS.mac?  # Claude for code editing
+cask "claude-code"  # Claude for code editing
 cask "claude" if OS.mac?  # Anthropic Claude app
-cask "codex" if OS.mac?  # OpenAI coding agent
-cask "copilot-cli@prerelease" if OS.mac?  # Copilot coding agent CLI
+cask "codex"  # OpenAI coding agent
+cask "copilot-cli@prerelease"  # Copilot coding agent CLI
 cask "docker-desktop" if OS.mac?  # Container tooling
 cask "discord" if OS.mac?  # Chat and voice app
 cask "ghostty" if OS.mac?  # GPU-accelerated terminal emulator
-cask "github-copilot-app" if OS.mac?  # GitHub Copilot app
+cask "github-copilot-app"  # GitHub Copilot app
 cask "github" if OS.mac?  # GitHub desktop app
 cask "google-chrome" if OS.mac?  # Chrome browser
 cask "google-drive" if OS.mac?  # Google Drive client
@@ -137,24 +129,31 @@ cask "visual-studio-code" if OS.mac?  # VS Code editor
 cask "vlc" if OS.mac?  # VLC media player
 cask "vorssaint" if OS.mac?  # Menu bar toolkit with keep-awake, system monitor and volume mixer
 cask "whatsapp" if OS.mac?  # WhatsApp desktop app
-cask "zed" if OS.mac?  # Multiplayer code editor
-cask "xykong/tap/flux-markdown" if OS.mac?  # Markdown previews in Finder QuickLook with diagrams and math
-cask "font-cascadia-code" if OS.mac?
-cask "font-cascadia-code-pl" if OS.mac?
-cask "font-caskaydia-mono-nerd-font" if OS.mac?
-cask "font-fira-code" if OS.mac?
-cask "font-fira-code-nerd-font" if OS.mac?
-cask "font-hack-nerd-font" if OS.mac?
-cask "font-jetbrains-mono-nerd-font" if OS.mac?
+cask "zed"  # Multiplayer code editor
+cask "xykong/tap/flux-markdown", trusted: true if OS.mac?  # Markdown previews in Finder QuickLook with diagrams and math
 
-# Desktop: Flatpak apps (Linux; Flathub is configured by conf.d/bootstrap.toml)
-flatpak "com.visualstudio.code" if OS.linux?
-flatpak "dev.zed.Zed" if OS.linux?
-flatpak "org.chromium.Chromium" if OS.linux?
-flatpak "com.discordapp.Discord" if OS.linux? && Hardware::CPU.intel?  # Flathub builds it for x86_64 only
-flatpak "com.rtosta.zapzap" if OS.linux?
-flatpak "com.bitwarden.desktop" if OS.linux?
-# flatpak "com.getpostman.Postman" if OS.linux?
-# flatpak "io.github.shiftey.Desktop" if OS.linux?
-# flatpak "com.brave.Browser" if OS.linux?
-# flatpak "org.videolan.VLC" if OS.linux?
+# Desktop: Python tools (graphifyy and code-review-graph need Python 3.13: the bootstrap task installs them)
+uv "pynvim"
+uv "debugpy"
+uv "commit-check"
+
+# Desktop: JavaScript tools
+npm "bun-dap-x"
+npm "react-devtools"
+npm "@vscode/js-debug-browsers"
+
+# Desktop: fonts (font casks install on macOS and Linux)
+cask "font-cascadia-code"
+cask "font-cascadia-code-pl"
+cask "font-caskaydia-mono-nerd-font"
+cask "font-fira-code"
+cask "font-fira-code-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
+
+# Desktop: Linux apps (system-wide; Flathub comes from /etc/flatpak/remotes.d, declared in bootstrap.toml)
+flatpak "org.chromium.Chromium"  # Chromium browser
+flatpak "com.visualstudio.code"  # VS Code editor
+flatpak "com.rtosta.zapzap"  # WhatsApp client
+flatpak "com.bitwarden.desktop"  # Password manager
+flatpak "com.discordapp.Discord" if Hardware::CPU.intel?  # Flathub builds it for x86_64 only

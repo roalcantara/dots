@@ -77,6 +77,16 @@ if [ ! -L "$HOME/.config/mise" ]; then
   [ -e "$HOME/.config/mise/age.txt" ] || (umask 077 && cp "$KEY" "$HOME/.config/mise/age.txt")
 fi
 
+# age-link: begin
+# The key at the path the mise config names ([settings.age] identity_files = ~/.config/age/keys.txt), before
+# `--adopt`: once mise reads that config it looks only there, and the history cannot be decrypted otherwise
+# ("no age identity is available on this machine"). Same link mise dotfiles makes, so it accepts it.
+mkdir -p "$HOME/.config"
+if [ -L "$HOME/.config/age" ] || [ ! -e "$HOME/.config/age" ]; then
+  ln -sfn ../.local/share/dots/config/age "$HOME/.config/age"
+fi
+# age-link: end
+
 # gh-link: begin
 # gh writes its login to ~/.config/gh. Link it to config/gh first (the link mise dotfiles makes), so the login lands
 # in config/gh/hosts.yml (git-ignored) instead of a real folder that `mise bootstrap` then refuses to replace.
@@ -115,7 +125,6 @@ tty_in=/dev/null
 if (: </dev/tty) 2>/dev/null; then tty_in=/dev/tty; fi
 
 mise bootstrap --adopt "$HISTORY" "${BOOTSTRAP_ARGS[@]}" <"$tty_in"
-ln -sfn ../.local/share/dots/config/age "$HOME/.config/age"
 if [ ! -L "$HOME/.config/mise" ]; then
   test -f "$HOME/.config/mise/config.local.toml" && cat "$HOME/.config/mise/config.local.toml" >> "$DOTS/config/mise/config.local.toml"
   rm -rf "$HOME/.config/mise" # with age.txt: from here on the key is read from ~/.config/age/keys.txt
