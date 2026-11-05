@@ -123,3 +123,36 @@ describe("bootstrap task reminder", () => {
     expect(p.stderr.toString()).toBe("");
   });
 });
+
+describe("Homebrew install needs sudo", () => {
+  // The lines between `# brew-sudo: begin` and `# brew-sudo: end`, run with stub id/sudo and no terminal.
+  const snippet = HOOK.match(/# brew-sudo: begin\n[\s\S]*?# brew-sudo: end\n/)?.[0] ?? "";
+  const runSnippet = (sudoOk: boolean, detach = false) => {
+    writeFileSync(join(t, "bin", "id"), "#!/bin/sh\necho 501\n");
+    writeFileSync(join(t, "bin", "sudo"), `#!/bin/sh\necho "sudo $*" >> "${join(t, "sudo.log")}"\nexit ${sudoOk ? 0 : 1}\n`);
+    for (const n of ["id", "sudo"]) chmodSync(join(t, "bin", n), 0o755);
+    // setsid detaches from the terminal, so /dev/tty is unavailable (the no-terminal case).
+    const p = Bun.spawnSync([...(detach ? ["setsid"] : []), "bash", "-c", `${snippet}echo AFTER`], {
+      env: { PATH: `${join(t, "bin")}:/usr/bin:/bin` }, stdin: "ignore", stdout: "pipe", stderr: "pipe",
+    });
+    return { code: p.exitCode, out: p.stdout.toString(), err: p.stderr.toString() };
+  };
+
+  it("is in the hook, before the installer", () => {
+    expect(snippet).toContain("sudo -n true");
+    expect(HOOK.indexOf("# brew-sudo: end")).toBeLessThan(HOOK.indexOf("NONINTERACTIVE=1 /bin/bash"));
+  });
+
+  it("goes on when a sudo ticket already exists (Linux, after apt)", () => {
+    const r = runSnippet(true);
+    expect(r.code).toBe(0);
+    expect(r.out).toContain("AFTER");
+  });
+
+  it.skipIf(!Bun.which("setsid"))("without a ticket or a terminal, stops with what to run", () => {
+    const r = runSnippet(false, true);
+    expect(r.code).toBe(1);
+    expect(r.out).not.toContain("AFTER");
+    expect(r.err).toContain("run 'sudo -v', then mise bootstrap");
+  });
+});

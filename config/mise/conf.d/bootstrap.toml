@@ -188,6 +188,19 @@ for b in "$(command -v brew || true)" /opt/homebrew/bin/brew /home/linuxbrew/.li
   [ -n "$b" ] && [ -x "$b" ] && { brew="$b"; break; }
 done
 if [ -z "$brew" ]; then
+  # brew-sudo: begin
+  # The installer runs sudo without prompting under NONINTERACTIVE=1, so it needs a sudo ticket already. Linux has
+  # one from the apt packages; macOS has no earlier sudo step, so ask here, on the terminal.
+  if [ "$(id -u)" -ne 0 ] && ! sudo -n true 2>/dev/null; then
+    if (: </dev/tty) 2>/dev/null; then
+      echo "Homebrew needs administrator access to create its prefix; enter your password:" >&2
+      sudo -v </dev/tty || { echo "bootstrap: sudo failed; Homebrew was not installed" >&2; exit 1; }
+    else
+      echo "bootstrap: Homebrew needs sudo and there is no terminal to ask on: run 'sudo -v', then mise bootstrap" >&2
+      exit 1
+    fi
+  fi
+  # brew-sudo: end
   NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && brew="$b"; done
 fi
