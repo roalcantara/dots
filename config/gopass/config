@@ -3,4 +3,6 @@
 [recipients]
 	hash = d7a90ae8495599c569239cdff2f60f1cdb149af6a9f2aa3b52bb017e2b499c6e
 [age]
+	keyring-recipients = age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4
+	keyring-identities = ~/.config/age/keys.txt
 	agent-enabled = true
