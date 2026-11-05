@@ -9,5 +9,6 @@
 "apt:git" = "latest"
 "apt:ca-certificates" = "latest"
 "apt:zsh" = "latest"
+"apt:xclip" = "latest"
 "apt:flatpak" = { env = "desktop" }
 "apt:docker.io" = { env = "desktop" }
