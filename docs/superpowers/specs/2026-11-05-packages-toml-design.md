@@ -1,5 +1,11 @@
 # One packages.toml for every package — design
 
+> **Not pursued (owner, 2026-11-05).** The spikes (§5, "Spike results") showed that `mise bootstrap` stops entirely
+> when any package fails (the #94 problem, with no option to continue) and that mise cannot install third-party tap
+> formulae (`oven-sh/bun/bun`). Keeping the Brewfile instead: it already continues past failures, handles taps,
+> Linux casks and uv/npm with one version each. The Brewfile now also holds the flatpak apps and fonts; mise keeps only
+> Homebrew's apt prerequisites (`config/mise/conf.d/system.toml`). This document stays as the record of why.
+
 Status: approach approved by the owner (2026-11-05): **one `config/mise/conf.d/packages.toml`**, everything under
 `[bootstrap.packages]`, using mise's built-in managers plus three small in-repo package-manager plugins
 (`cask:`, `uv:`, `npm:`) that call real Homebrew, uv and npm. It replaces `config/homebrew/Brewfile` (#92).

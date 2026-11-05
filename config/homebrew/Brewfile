@@ -102,11 +102,6 @@ brew "zsh-patina"  # Blazingly fast Zsh syntax highlighter
 brew "asmvik/formulae/yabai", trusted: true if OS.mac?  # A tiling window manager for macos
 brew "rust"  # Rust toolchain
 brew "mole" if OS.mac? # Deep clean and optimize your Mac
-# DESKTOP AND BROWSER APPS
-# FONTS
-# LINUX (`env = "desktop"` means workstations, Mac and Linux desktop, not Docker images)
-# LINUX DESKTOP APPS (system-wide; Flathub comes from /etc/flatpak/remotes.d, declared in bootstrap.toml)
-
 # Desktop: casks
 cask_args appdir: "/Applications" if OS.mac?
 cask "android-studio" if OS.mac?  # Tools for building Android applications
@@ -147,4 +142,18 @@ npm "bun-dap-x"
 npm "react-devtools"
 npm "@vscode/js-debug-browsers"
 
+# Desktop: fonts (font casks install on macOS and Linux)
+cask "font-cascadia-code"
+cask "font-cascadia-code-pl"
+cask "font-caskaydia-mono-nerd-font"
+cask "font-fira-code"
+cask "font-fira-code-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
+
+# Desktop: Linux apps (system-wide; Flathub comes from /etc/flatpak/remotes.d, declared in bootstrap.toml)
+flatpak "org.chromium.Chromium"  # Chromium browser
+flatpak "com.visualstudio.code"  # VS Code editor
+flatpak "com.rtosta.zapzap"  # WhatsApp client
+flatpak "com.bitwarden.desktop"  # Password manager
 flatpak "com.discordapp.Discord" if Hardware::CPU.intel?  # Flathub builds it for x86_64 only

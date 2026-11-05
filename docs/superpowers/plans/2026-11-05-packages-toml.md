@@ -1,5 +1,8 @@
 # One packages.toml for every package — Implementation Plan
 
+> **Stopped at Task 1 (2026-11-05).** The spikes failed the gate (S2, S3); the owner chose to keep the Brewfile. See
+> the spec's "Spike results". Tasks 2–8 were not done.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Replace `config/homebrew/Brewfile` and `config/mise/conf.d/system.toml` with one `config/mise/conf.d/packages.toml`, using mise's built-in managers plus three in-repo package-manager plugins (`cask:`, `uv:`, `npm:`) that call real Homebrew, uv and npm.
