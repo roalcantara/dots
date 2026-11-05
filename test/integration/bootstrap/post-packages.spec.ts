@@ -92,6 +92,20 @@ describe("post-packages hook", () => {
     expect(calls()).toEqual([`container ${join(t, "Brewfile")}`]);
   });
 
+  it("desktop,dev: passes the whole list to the full Brewfile run", () => {
+    const r = hook({ MISE_ENV: "desktop,dev" });
+    expect(r.code).toBe(0);
+    expect(calls()).toEqual([`container ${join(t, "Brewfile")}`, `desktop,dev ${join(t, "Brewfile")}`]);
+  });
+
+  it("reads a two-env miserc.local.toml when MISE_ENV is unset", () => {
+    mkdirSync(join(t, ".local", "share", "dots", "config", "mise"), { recursive: true });
+    writeFileSync(join(t, ".local", "share", "dots", "config", "mise", "miserc.local.toml"), 'env = ["desktop", "dev"]\n');
+    const r = hook({});
+    expect(r.code).toBe(0);
+    expect(calls()[1]).toBe(`desktop,dev ${join(t, "Brewfile")}`);
+  });
+
   it("container: installs only the core group", () => {
     const r = hook({ MISE_ENV: "container" });
     expect(r.code).toBe(0);

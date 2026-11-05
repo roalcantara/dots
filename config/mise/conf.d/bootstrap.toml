@@ -212,24 +212,26 @@ profile="${MISE_ENV:-}"
 if [ -z "$profile" ]; then
   if [ -r "/proc/$PPID/cmdline" ]; then
     profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | sed -n 's/^--env=//p')"
-    [ -n "$profile" ] || profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | grep -A1 -E '^(-E|--env)$' | tail -1)"
+    [ -n "$profile" ] || profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | grep -A1 -E '^(-E|--env)$' | tail -1 || true)"
   elif command -v ps >/dev/null; then
     args="$(ps -o args= -p "$PPID" 2>/dev/null || true)"
-    profile="$(printf '%s\n' "$args" | grep -oE -- '(-E|--env)[ =][a-zA-Z0-9_-]+' | head -1 | awk '{print $NF}' | tr -d '=')"
+    profile="$(printf '%s\n' "$args" | grep -oE -- '(-E|--env)[ =][a-zA-Z0-9_,-]+' | head -1 | awk '{print $NF}' | tr -d '=' || true)"
   fi
   [ -n "$profile" ] || [ ! -f "$HOME/.local/share/dots/config/mise/miserc.local.toml" ] || \
-    profile="$(sed -n 's/.*env = \["\([^"]*\)"\].*/\1/p' "$HOME/.local/share/dots/config/mise/miserc.local.toml")"
+    profile="$(sed -n 's/^env *= *\[\(.*\)\].*/\1/p' "$HOME/.local/share/dots/config/mise/miserc.local.toml" | tr -d '" ')"
 fi
 export HOMEBREW_BUNDLE_FILE="${HOMEBREW_BUNDLE_FILE:-$HOME/.local/share/dots/config/homebrew/Brewfile}"
 bundle() { HOMEBREW_DOTS_PROFILE="$1" brew bundle install --no-upgrade; }
 
 # 1. Core group: the shell and git need it, so a failure stops the bootstrap.
 bundle container
-if [ "${profile:-desktop}" = "container" ]; then
-  brew cleanup --prune=all 2>/dev/null || true
-  rm -rf "$HOME/.cache/Homebrew" 2>/dev/null || true
-  exit 0
-fi
+case ",${profile:-desktop}," in
+  *,container,*)
+    brew cleanup --prune=all 2>/dev/null || true
+    rm -rf "$HOME/.cache/Homebrew" 2>/dev/null || true
+    exit 0
+    ;;
+esac
 
 # 2. Everything else: warn and carry on. The bootstrap task repeats the warning at its end.
 state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
