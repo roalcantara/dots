@@ -4,7 +4,9 @@ export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 export XDG_DATA_HOME=$HOME/.local/share
 export XDG_STATE_HOME=$HOME/.local/state
-export XDG_RUNTIME_DIR=/tmp/runtime-$UID
+# Keep the session's own runtime dir: on Linux, systemd sets /run/user/$UID, where the user D-Bus lives (overriding it
+# breaks GNOME Terminal after a reboot: "Failed to connect to user scope bus"). macOS and containers get a fallback.
+export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/tmp/runtime-$UID}
 export XDG_LOCAL_DIR=$HOME/.local
 export XDG_LOCAL_BIN_DIR=$HOME/.local/bin
 export XDG_PROJECTS_DIR=$HOME/Projects
