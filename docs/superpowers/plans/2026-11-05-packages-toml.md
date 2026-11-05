@@ -105,7 +105,8 @@ end
   - **Layout Q (second pass, expected):** S6 = skipped → keep installing Homebrew in `post-packages`, then in the same
     hook run `mise bootstrap packages apply` again so the `cask:`, `uv:`, `npm:` managers (now available) install.
 - [ ] If S2 shows one failure stops everything with no option to continue, or S4 has no working form: **stop and
-  report**; do not start Task 2.
+  report**; do not start Task 2. In the report, say whether the spec's §5.1 fallback applies (pinned `[tools]` with a
+  lockfile for uv/npm; a hook for casks) so the owner can choose it without another design round.
 - [ ] Commit the spec update: `g add docs/superpowers/specs/2026-11-05-packages-toml-design.md && g commit -m "docs(specs): Record the packages.toml spikes"`.
 
 ### Task 2: The plugins (TDD)

@@ -27,6 +27,8 @@ Status: approach approved by the owner (2026-11-05): **one `config/mise/conf.d/p
 | Real Homebrew installs zed, claude-code, codex, copilot-cli, github-copilot-app on Linux | the VM run with the Brewfile (`e7a3c62` drops `if OS.mac?`) |
 | mise `[tools]` keeps old versions: `latest` installs new versions without an upgrade, so `upgrade.auto_prune` never runs | `mise ls --installed` on this Mac |
 | A package-manager plugin is Lua: `PackageInstalled` (read-only) and `PackageInstall` hooks, `requires` host programs, no `sudo`, raise on failure; declared under `[bootstrap.plugins]`, referenced as `"<name>:<pkg>"`; names cannot be built-in managers | mise package plugin docs |
+| No public repo uses custom package-manager plugins yet (GitHub code search: no `mise.plugin.toml` with `[package-manager]`); `cask:`/`uv:`/`npm:` are early-adopter code | 2026-11-05 search |
+| The closest public setup ([nateberkopec/dotfiles](https://github.com/nateberkopec/dotfiles)): one mise config with `[bootstrap.packages]` (`brew:`, `apt:`) plus `[tools]` `npm:`/`pipx:` **pinned to exact versions** with a lockfile (`mise bootstrap --locked`); casks through real Homebrew in a separate step; updates via a reviewed weekly PR, never during bootstrap | its ADRs 0002, 0006–0008 |
 | The Brewfile today | 3 taps (3 `trusted: true` entries + 1 cask from `xykong/tap`), 87 `brew`, 27 `cask`, 1 `flatpak`, 3 `uv`, 3 `npm`; a minimal group above `return unless desktop` |
 
 ## 3. Decisions
@@ -119,6 +121,27 @@ In a throwaway Ubuntu container (arm64) and on this Mac, with a scratch config:
 | S3 | Do taps with `trusted: true` (Homebrew 7) need anything in `[bootstrap.brew.taps]`? | `brew:oven-sh/bun/bun` installs | Use the documented trust key |
 | S4 | The exact `[bootstrap.plugins]` syntax for an in-repo plugin path | `mise bootstrap packages status` lists `cask:`/`uv:`/`npm:` entries | Link with `mise plugins link <name> <path>` in `pre-packages` |
 | S5 | `arch`-specific entries (Discord x86_64 only) | an `arch` key, or `os` + comment | keep it with a comment |
+
+### 5.1 Fallback if the plugin spikes fail
+
+If S1, S4 or S6 rules the `uv:`/`npm:` plugins out (no working declaration, plugins break the run, or ordering cannot
+be fixed by a second pass), keep everything else in this design and replace **only those two plugins** with the
+pattern above:
+
+- In `packages.toml`, a `[tools]` table next to `[bootstrap.packages]`: `uv = "<x.y.z>"`, `"pipx:pynvim" = "<x.y.z>"`,
+  `"pipx:debugpy"`, `"pipx:commit-check"`, `"npm:bun-dap-x"`, `"npm:react-devtools"`,
+  `"npm:@vscode/js-debug-browsers"` — **exact versions**, not `latest` (one version per tool: nothing new is resolved
+  on a bootstrap run, so nothing piles up).
+- A lockfile (`mise lock`, `lockfile_mode` per mise docs) committed with the config; `install` and the bootstrap use
+  `--locked` where the command supports it.
+- Updates are deliberate: bump the version in packages.toml, run `mise install`, then `mise prune --tools --yes` to drop
+  the old version (or rely on `upgrade.auto_prune` when updating with `mise upgrade`).
+- Trade-offs the owner accepted by choosing plugins first: these tools run through mise's shims instead of
+  `~/.local/bin` / Homebrew's `bin`, and version bumps are manual.
+
+`cask:` stays a plugin in both cases: real Homebrew is the only way to get those casks on Linux, which is also what the
+closest public setup does. If the `cask:` plugin itself fails S4/S6, the fallback for it is a bootstrap hook that runs
+`brew install --cask` for a list read from packages.toml (`[dots.casks]` or a comment-free array), still one file.
 
 ## 6. Testing
 
