@@ -122,6 +122,18 @@ In a throwaway Ubuntu container (arm64) and on this Mac, with a scratch config:
 | S4 | The exact `[bootstrap.plugins]` syntax for an in-repo plugin path | `mise bootstrap packages status` lists `cask:`/`uv:`/`npm:` entries | Link with `mise plugins link <name> <path>` in `pre-packages` |
 | S5 | `arch`-specific entries (Discord x86_64 only) | an `arch` key, or `os` + comment | keep it with a comment |
 
+### Spike results (2026-11-05, Ubuntu 26.04 arm64 container, mise 2026.10.22 and 2026.11.0)
+
+| # | Result | Evidence |
+| --- | --- | --- |
+| S1 | **Pass.** `mise bootstrap` runs built-in packages at step 2 and **plugin packages at step 8**, after `tools` (7); no second pass is needed. But "the post-packages hook runs … after plugin packages when any are configured", so Homebrew must be installed by a hook that runs before step 8 (e.g. `pre-tools`), not `post-packages` | `mise bootstrap --help`, "Applies each part … in this order" |
+| S4 | **Partial.** `[bootstrap.plugins]` accepts only a **git URL** and clones it ("Could not verify … is a valid git directory"); an in-repo plugin folder cannot be declared there. `mise plugins link <name> <dir>` works (`echo  x  missing` in `status`) | spike |
+| S6 | **Pass.** A plugin whose `requires` program is missing is skipped with a warning (`1 package(s) skipped (required binary 'uv' not found…)`); bootstrap continues, exit 0 | spike |
+| S7 | **Pass.** mise's native `brew:` installs into `/home/linuxbrew/.linuxbrew` (it creates the prefix) with no Homebrew installed: `brew:jq` in 11 s | spike |
+| S2 | **Fail for bootstrap.** Within a packages apply, an install failure does not stop the other packages (`pinentry-mac ✗`, `fd` installed, exit 1); a name that does not exist (404) stops the apply before anything installs. Either way **`mise bootstrap` stops after the packages part**: the dotfiles, login shell and bootstrap task do not run. No flag, setting or entry option changes this (docs: entry options are `version`, `os`, `env`, `state`, `adopt`, `appdir`, `url`/`sha256`/`artifact`, `channel`, `classic`) | spike; mise packages docs |
+| S5 | **Pass.** `os` takes a platform: `os = "linux/x64"` for Discord | mise packages docs |
+| S3 | **Fail.** A third-party tap formula (`brew:oven-sh/bun/bun` with the tap in `[bootstrap.brew.taps]`) fails: mise evaluates the tap's Ruby formula with a mise-installed Ruby 4.0.9 and errors with "Permission denied (os error 13)" | spike, `MISE_VERBOSE=1` |
+
 ### 5.1 Fallback if the plugin spikes fail
 
 If S1, S4 or S6 rules the `uv:`/`npm:` plugins out (no working declaration, plugins break the run, or ordering cannot
