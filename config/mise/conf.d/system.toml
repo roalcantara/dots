@@ -1,24 +1,17 @@
 # Linux system packages: what Homebrew needs to install itself, desktop services, and what the Brewfile cannot
 # install on Linux (a snap, font casks). Every other package is in config/homebrew/Brewfile.
 [bootstrap.packages]
-"apt:build-essential" = { os = "linux" }
-"apt:procps" = { os = "linux" }
-"apt:curl" = { os = "linux" }
-"apt:file" = { os = "linux" }
-"apt:git" = { os = "linux" }
-"apt:ca-certificates" = { os = "linux" }
-"apt:zsh" = { os = "linux" }
-"apt:flatpak" = { os = "linux", env = "desktop" }
-"apt:docker.io" = { os = "linux", env = "desktop" }
+"apt:build-essential" = "latest"
+"apt:procps" = "latest"
+"apt:curl" = "latest"
+"apt:file" = "latest"
+"apt:git" = "latest"
+"apt:ca-certificates" = "latest"
+"apt:zsh" = "latest"
+"apt:flatpak" = { env = "desktop" }
+"apt:docker.io" = { env = "desktop" }
 
 # Linux desktop: the Mac's terminal and fonts. Ghostty is not on Flathub; its snap is classic, so it reads
 # ~/.config/ghostty. Homebrew casks are macOS-only in the Brewfile, but mise's `brew-cask:` installs font
 # casks on Linux (into ~/.local/share/fonts): the same list as the Brewfile's.
-"snap:ghostty" = { os = "linux", env = "desktop", classic = true }
-"brew-cask:font-cascadia-code" = { os = "linux", env = "desktop" }
-"brew-cask:font-cascadia-code-pl" = { os = "linux", env = "desktop" }
-"brew-cask:font-caskaydia-mono-nerd-font" = { os = "linux", env = "desktop" }
-"brew-cask:font-fira-code" = { os = "linux", env = "desktop" }
-"brew-cask:font-fira-code-nerd-font" = { os = "linux", env = "desktop" }
-"brew-cask:font-hack-nerd-font" = { os = "linux", env = "desktop" }
-"brew-cask:font-jetbrains-mono-nerd-font" = { os = "linux", env = "desktop" }
+"snap:ghostty" = { env = "desktop", classic = true }
