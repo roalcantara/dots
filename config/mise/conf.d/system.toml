@@ -10,8 +10,15 @@
 "apt:zsh" = "latest"
 "apt:flatpak" = { env = "desktop" }
 "apt:docker.io" = { env = "desktop" }
+"flatpak:org.chromium.Chromium" = { env = "desktop" }
+"flatpak:com.visualstudio.code" = { env = "desktop" }
+"flatpak:com.rtosta.zapzap" = { env = "desktop" }
+"flatpak:com.bitwarden.desktop" = { env = "desktop" }
 
-# Linux desktop: the Mac's terminal and fonts. Ghostty is not on Flathub; its snap is classic, so it reads
-# ~/.config/ghostty. Homebrew casks are macOS-only in the Brewfile, but mise's `brew-cask:` installs font
-# casks on Linux (into ~/.local/share/fonts): the same list as the Brewfile's.
-"snap:ghostty" = { env = "desktop", classic = true }
+"brew-cask:font-cascadia-code" = { env = "desktop" }
+"brew-cask:font-cascadia-code-pl" = { env = "desktop" }
+"brew-cask:font-caskaydia-mono-nerd-font" = { env = "desktop" }
+"brew-cask:font-fira-code" = { env = "desktop" }
+"brew-cask:font-fira-code-nerd-font" = { env = "desktop" }
+"brew-cask:font-hack-nerd-font" = { env = "desktop" }
+"brew-cask:font-jetbrains-mono-nerd-font" = { env = "desktop" }
