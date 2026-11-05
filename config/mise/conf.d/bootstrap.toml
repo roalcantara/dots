@@ -36,7 +36,9 @@ mode = "0700"
 mode = "0700"
 
 [bootstrap.user]
-login_shell = "zsh"
+# macOS: Homebrew's zsh (the Brewfile installs it before this step). A bare "zsh" resolves PATH first, and during
+# install /bin comes before /opt/homebrew/bin, so it picked the system /bin/zsh. Linux: the apt zsh.
+login_shell = '{% if os() == "macos" %}/opt/homebrew/bin/zsh{% else %}zsh{% endif %}'
 
 # Runs last on every `mise bootstrap`, so every step checks before acting and only warns on failure.
 [tasks.bootstrap]
