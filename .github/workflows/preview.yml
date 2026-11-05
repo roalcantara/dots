@@ -26,7 +26,7 @@ env:
 
 jobs:
   brewfile:
-    name: Brewfile parses (desktop and container)
+    name: Brewfile parses (container, desktop, dev)
     runs-on: ubuntu-24.04
     if: github.event.pull_request.draft == false
     timeout-minutes: 10
@@ -38,11 +38,11 @@ jobs:
           brew=/home/linuxbrew/.linuxbrew/bin/brew
           [ -x "$brew" ] || NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
-      - name: List both groups
+      - name: List every profile
         env:
           HOMEBREW_NO_AUTO_UPDATE: 1
         run: |
-          for p in container desktop; do
+          for p in container desktop desktop,dev; do
             echo "::group::$p"
             HOMEBREW_DOTS_PROFILE=$p brew bundle list --all --file config/homebrew/Brewfile
             echo "::endgroup::"
