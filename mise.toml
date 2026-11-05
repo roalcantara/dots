@@ -256,7 +256,7 @@ if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/
   failed=""
   while IFS= read -r -d '' f; do
     mv "$f" "$f.pre-smudge"
-    if git checkout -- "$f" 2>/dev/null; then
+    if err="$(git checkout -- "$f" 2>&1)"; then
       rm -f "$f.pre-smudge"
       chmod go-rwx "$f"
       # Private folders keep later checkouts private too (git writes files with the umask).
@@ -264,6 +264,8 @@ if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/
     else
       mv "$f.pre-smudge" "$f"
       failed="$failed $f"
+      # The filter's own reason (e.g. "ERROR: sops command not found"), never file contents.
+      printf 'setup:git:filters: %s: %s\n' "$f" "$(printf '%s\n' "$err" | grep -m1 -E 'ERROR|[Ff]ailed|error' || printf '%s' "$err" | tail -n1)" >&2
     fi
   done < <(git ls-files -z ':(attr:filter=sops)')
   if [ -n "$failed" ]; then

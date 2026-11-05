@@ -89,6 +89,8 @@ describe("setup:git:filters re-smudge", () => {
     const r = sh(b, `${setup}\n${SNIPPET}`, { SOPS_AGE_KEY_FILE: `${key}.away.missing` });
     expect(r.exitCode).not.toBe(0);
     expect(r.stderr.toString()).toContain("could not decrypt: secret/blob");
+    // The filter's reason is shown per file, so a failed install says why.
+    expect(r.stderr.toString()).toContain("setup:git:filters: secret/blob: ERROR: AGE key file not found");
     expect(readFileSync(join(b, "secret", "blob"), "utf8")).toBe(before);
     expect(sh(b, "git config --local --get filter.sops.clean").exitCode).not.toBe(0);
   });
