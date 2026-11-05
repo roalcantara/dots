@@ -30,6 +30,20 @@ describe("bootstrap log", () => {
     expect(readlinkSync(join(logs(), "latest.log"))).toBe(files[0]);
   });
 
+  // mise runs hooks with `sh`: bash 3.2 in POSIX mode on macOS (no process substitution), dash on Linux.
+  it("tees when sourced by sh, as mise runs hooks", () => {
+    const p = Bun.spawnSync(["sh", "-c", `. "${LIB}"\necho "from sh"; echo "err from sh" >&2\nsleep 0.2`], {
+      env: { PATH: "/usr/bin:/bin", HOME: t, XDG_STATE_HOME: join(t, "state") }, stdout: "pipe", stderr: "pipe",
+    });
+    expect(p.exitCode).toBe(0);
+    expect(p.stderr.toString()).not.toContain("syntax error");
+    expect(p.stdout.toString()).toContain("from sh");
+    const files = readdirSync(logs()).filter((f) => f.startsWith("bootstrap-"));
+    const text = readFileSync(join(logs(), files[0] as string), "utf8");
+    expect(text).toContain("from sh");
+    expect(text).toContain("err from sh");
+  });
+
   it("appends to DOTS_LOG when it is set", () => {
     mkdirSync(logs(), { recursive: true });
     const f = join(logs(), "bootstrap-20261104-000000.log");
