@@ -269,7 +269,9 @@ if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/
     fi
   done < <(git ls-files -z ':(attr:filter=sops)')
   if [ -n "$failed" ]; then
-    git config --local --unset filter.sops.clean
+    # Unset the whole filter (not only clean): with required=true and no clean filter, git refuses to pull.
+    # Without it, git treats the files as plain until the next run, which retries.
+    for k in clean smudge required; do git config --local --unset "filter.sops.$k" || true; done
     echo "setup:git:filters: could not decrypt:$failed (check sops, age and ~/.config/sops/age/keys.txt)" >&2
     exit 1
   fi

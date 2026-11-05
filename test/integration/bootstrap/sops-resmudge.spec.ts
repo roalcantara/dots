@@ -92,6 +92,8 @@ describe("setup:git:filters re-smudge", () => {
     // The filter's reason is shown per file, so a failed install says why.
     expect(r.stderr.toString()).toContain("setup:git:filters: secret/blob: ERROR: AGE key file not found");
     expect(readFileSync(join(b, "secret", "blob"), "utf8")).toBe(before);
-    expect(sh(b, "git config --local --get filter.sops.clean").exitCode).not.toBe(0);
+    for (const k of ["clean", "smudge", "required"]) expect(sh(b, `git config --local --get filter.sops.${k}`).exitCode).not.toBe(0);
+    // With the filter unset, git keeps working (status, pull) on the still-encrypted file.
+    expect(sh(b, "git status --porcelain").exitCode).toBe(0);
   });
 });
