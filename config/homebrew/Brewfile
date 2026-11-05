@@ -1,8 +1,11 @@
 # Every user package. Installed by the post-packages hook in
 # config/mise/conf.d/bootstrap.toml; `brew bundle …` reads it through HOMEBREW_BUNDLE_FILE.
-# HOMEBREW_DOTS_PROFILE selects the groups (brew passes only HOMEBREW_* variables to a Brewfile):
-# container gets the first group only; desktop (the default) gets everything.
-desktop = ENV.fetch("HOMEBREW_DOTS_PROFILE", "desktop") == "desktop"
+# HOMEBREW_DOTS_PROFILE is the mise profile list (brew passes only HOMEBREW_* variables to a Brewfile):
+# container gets the first group; desktop (the default, what `install` sets up) everything down to DEVTOOLS;
+# dev (`mise run setup dev`: desktop,dev) everything.
+profiles = ENV.fetch("HOMEBREW_DOTS_PROFILE", "desktop").split(",").map(&:strip)
+dev = profiles.include?("dev")
+desktop = dev || profiles.include?("desktop")
 
 tap "asmvik/formulae", "https://github.com/asmvik/homebrew-formulae.git"
 tap "can1357/tap", "https://github.com/can1357/homebrew-tap.git"
@@ -25,19 +28,13 @@ return unless desktop
 
 # Desktop: formulae
 brew "uv"                                  # Python tool installer (the uv entries below)
-# CORE FORMULAE
-brew "act"  # Run your GitHub Actions locally
 brew "age"  # Simple, modern, secure file encryption
 brew "aqua"  # Declarative CLI version manager
-brew "ast-grep"  # Code searching, linting, rewriting
 brew "bash" if OS.mac?  # Bourne-Again shell
 brew "bash-language-server" if OS.mac?  # Language server for Bash
 brew "bat-extras"  # Extra tools that integrate bat with the shell
-brew "can1357/tap/omp", trusted: true if OS.mac?  # Coding agent with the IDE wired in
 brew "coreutils" if OS.mac?  # GNU file, shell, and text utilities
 brew "curlie"  # Power of curl, ease of use of HTTPie
-brew "devcontainer" if OS.mac?  # Development Containers reference implementation
-brew "docker-language-server"  # LSP for Dockerfiles and Compose files
 brew "fabric-ai"  # Open-source framework for augmenting humans using AI
 brew "findutils" if OS.mac?  # GNU find, xargs, and locate
 brew "gawk" if OS.mac?  # GNU awk utility
@@ -48,49 +45,28 @@ brew "git-lfs"  # Git extension for versioning large files
 brew "glow"  # Render Markdown in the terminal
 brew "gnu-sed" if OS.mac?  # GNU sed implementation
 brew "gopass"  # Secrets management tool
-brew "gopls"  # Go language server
-brew "gofumpt"  # Go code formatter
 brew "gum"  # Tool for glamorous shell scripts
 brew "hf" if OS.mac?  # Hugging Face CLI (oMLX models)
-brew "hadolint"  # Dockerfile linter
-brew "hyperfine"  # Command-line benchmarking tool
 brew "less" if OS.mac?  # Pager program similar to more
 brew "lesspipe" if OS.mac?  # Input filter for less
-brew "libyaml"  # YAML parser
-brew "yamllint"  # YAML linter
-brew "taplo"  # TOML linter and formatter
-brew "markdownlint-cli"  # Markdown linter
-brew "markdownlint-cli2"  # Markdown linter
-brew "lua-language-server"  # Language server for Lua
-brew "container-structure-test"  # Container structure testing tool
-brew "mermaid-cli"  # CLI for Mermaid
 brew "node"  # JavaScript runtime and package manager support
 brew "openjdk"  # Java development kit
 brew "openssl@3"  # Cryptography and TLS toolkit
 brew "oven-sh/bun/bun", trusted: true  # JavaScript runtime, bundler, and package manager (the fallback behind mise's bun shim)
 brew "pinentry-mac" if OS.mac?  # Pinentry for GPG on macOS
-brew "pkl"  # Pkl language CLI
-brew "pkl-lsp" if OS.mac?  # Pkl language server
 brew "pnpm"  # Fast, disk space efficient package manager
-brew "pyright" if OS.mac?  # Python static type checker
 brew "python@3.14"  # Python runtime
 brew "restic"  # Encrypted, deduplicated backups (config/restic/backup.toml)
 brew "ruby"  # Ruby runtime
-brew "ruby-lsp"  # Ruby language server
 brew "sd"  # Intuitive find and replace CLI
-brew "shfmt"  # Shell script formatter
-brew "shellcheck"  # Shell script static analysis tool
-brew "shellspec" if OS.mac?  # BDD framework for shells
 brew "skills"  # Agent skills CLI (config/agents/skill-lock.json)
 brew "sops"  # Secrets file encryption and management
 brew "sqlite"  # SQLite command-line interface
 brew "tealdeer"  # Fast tldr client
 brew "television"  # General purpose fuzzy finder TUI
-brew "tombi"  # TOML formatter, linter, and language server
 brew "tree"  # Display directories as trees
 brew "tree-sitter"  # Incremental parsing library
 brew "tree-sitter-cli"  # Parser generator tool
-brew "typescript-language-server" if OS.mac?  # LSP for TypeScript
 brew "usage"  # Tool for working with usage-spec CLIs
 brew "hk"  # Git hook manager (this repo's hooks)
 brew "fnox"  # Secrets from providers into the environment
@@ -100,48 +76,25 @@ brew "zsh-autosuggestions"  # Predictive inline shell autosuggestions for zsh
 brew "helix"  # Post-modern modal text editor
 brew "zsh-patina"  # Blazingly fast Zsh syntax highlighter
 brew "asmvik/formulae/yabai", trusted: true if OS.mac?  # A tiling window manager for macos
-brew "rust"  # Rust toolchain
 brew "mole" if OS.mac? # Deep clean and optimize your Mac
+brew "hyperfine"  # Command-line benchmarking tool
 # Desktop: casks
 cask_args appdir: "/Applications" if OS.mac?
-cask "android-studio" if OS.mac?  # Tools for building Android applications
-cask "antigravity-cli" if OS.mac?  # Terminal interface for Antigravity agents
-cask "antigravity-ide" if OS.mac?  # AI coding agent IDE
-cask "antigravity" if OS.mac?  # Agent orchestration platform
 cask "bitwarden" if OS.mac?  # Password manager
-cask "brave-browser" if OS.mac?  # Privacy-focused browser
 cask "chatgpt" if OS.mac?  # ChatGPT desktop app
-cask "claude-code"  # Claude for code editing
 cask "claude" if OS.mac?  # Anthropic Claude app
-cask "codex"  # OpenAI coding agent
-cask "copilot-cli@prerelease"  # Copilot coding agent CLI
-cask "docker-desktop" if OS.mac?  # Container tooling
 cask "discord" if OS.mac?  # Chat and voice app
-cask "ghostty" if OS.mac?  # GPU-accelerated terminal emulator
-cask "github-copilot-app"  # GitHub Copilot app
-cask "github" if OS.mac?  # GitHub desktop app
 cask "google-chrome" if OS.mac?  # Chrome browser
 cask "google-drive" if OS.mac?  # Google Drive client
-cask "google-gemini" if OS.mac?  # Google Gemini app
-cask "mark-text" if OS.mac?  # Markdown editor
+cask "ghostty" if OS.mac?  # GPU-accelerated terminal emulator
+cask "github" if OS.mac?  # GitHub desktop app
 cask "raycast" if OS.mac?  # Command launcher and automation hub
-cask "visual-studio-code" if OS.mac?  # VS Code editor
 cask "vlc" if OS.mac?  # VLC media player
 cask "vorssaint" if OS.mac?  # Menu bar toolkit with keep-awake, system monitor and volume mixer
 cask "whatsapp" if OS.mac?  # WhatsApp desktop app
-cask "zed"  # Multiplayer code editor
+cask "claude-code"  # Claude for code editing
+cask "visual-studio-code" if OS.mac?  # VS Code editor
 cask "xykong/tap/flux-markdown", trusted: true if OS.mac?  # Markdown previews in Finder QuickLook with diagrams and math
-
-# Desktop: Python tools (graphifyy and code-review-graph need Python 3.13: the bootstrap task installs them)
-uv "pynvim"
-uv "debugpy"
-uv "commit-check"
-
-# Desktop: JavaScript tools
-npm "bun-dap-x"
-npm "react-devtools"
-npm "@vscode/js-debug-browsers"
-
 # Desktop: fonts (font casks install on macOS and Linux)
 cask "font-cascadia-code"
 cask "font-cascadia-code-pl"
@@ -150,10 +103,57 @@ cask "font-fira-code"
 cask "font-fira-code-nerd-font"
 cask "font-hack-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
-
 # Desktop: Linux apps (system-wide; Flathub comes from /etc/flatpak/remotes.d, declared in bootstrap.toml)
 flatpak "org.chromium.Chromium"  # Chromium browser
 flatpak "com.visualstudio.code"  # VS Code editor
 flatpak "com.rtosta.zapzap"  # WhatsApp client
 flatpak "com.bitwarden.desktop"  # Password manager
 flatpak "com.discordapp.Discord" if Hardware::CPU.intel?  # Flathub builds it for x86_64 only
+
+# DEVTOOLS (dev profile only: `mise run setup dev`)
+return unless dev
+brew "act"  # Run your GitHub Actions locally
+brew "ast-grep"  # Code searching, linting, rewriting
+brew "can1357/tap/omp", trusted: true if OS.mac?  # Coding agent with the IDE wired in
+brew "devcontainer" if OS.mac?  # Development Containers reference implementation
+brew "docker-language-server"  # LSP for Dockerfiles and Compose files
+brew "gopls"  # Go language server
+cask "github-copilot-app"  # GitHub Copilot app
+brew "gofumpt"  # Go code formatter
+brew "hadolint"  # Dockerfile linter
+brew "libyaml"  # YAML parser
+brew "yamllint"  # YAML linter
+brew "taplo"  # TOML linter and formatter
+brew "markdownlint-cli"  # Markdown linter
+brew "markdownlint-cli2"  # Markdown linter
+brew "lua-language-server"  # Language server for Lua
+brew "container-structure-test"  # Container structure testing tool
+brew "mermaid-cli"  # CLI for Mermaid
+brew "pkl"  # Pkl language CLI
+brew "pkl-lsp" if OS.mac?  # Pkl language server
+brew "pyright" if OS.mac?  # Python static type checker
+brew "ruby-lsp"  # Ruby language server
+brew "shfmt"  # Shell script formatter
+brew "shellcheck"  # Shell script static analysis tool
+brew "shellspec" if OS.mac?  # BDD framework for shells
+brew "tombi"  # TOML formatter, linter, and language server
+brew "typescript-language-server" if OS.mac?  # LSP for TypeScript
+brew "rust"  # Rust toolchain
+cask "android-studio" if OS.mac?  # Tools for building Android applications
+cask "antigravity-cli" if OS.mac?  # Terminal interface for Antigravity agents
+cask "antigravity-ide" if OS.mac?  # AI coding agent IDE
+cask "antigravity" if OS.mac?  # Agent orchestration platform
+cask "brave-browser" if OS.mac?  # Privacy-focused browser
+cask "codex"  # OpenAI coding agent
+cask "copilot-cli@prerelease"  # Copilot coding agent CLI
+cask "docker-desktop" if OS.mac?  # Container tooling
+cask "google-gemini" if OS.mac?  # Google Gemini app
+cask "zed"  # Multiplayer code editor
+# DEVTOOLS: Python tools (graphifyy and code-review-graph need Python 3.13: the bootstrap task installs them)
+uv "pynvim"
+uv "debugpy"
+uv "commit-check"
+# DEVTOOLS: JavaScript tools
+npm "bun-dap-x"
+npm "react-devtools"
+npm "@vscode/js-debug-browsers"
