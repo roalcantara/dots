@@ -1,0 +1,20 @@
+# This machine's profile. `install` sets up desktop; `mise run setup dev` adds the development tools (the Brewfile's
+# DEVTOOLS section, agent skills, Python 3.13 tools) and `mise run setup desktop` goes back. The choice is recorded
+# in config/mise/miserc.local.toml, so later `mise bootstrap` runs and new shells use it. Going back uninstalls
+# nothing: brew bundle never removes packages, the dev entries just stop being installed and updated.
+[tasks.setup]
+description = "Choose this machine's profile and apply it: desktop (the install default) or dev (desktop + dev tools)"
+usage = 'arg "<profile>" help="desktop or dev" { choices "desktop" "dev" }'
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+dots="$HOME/.local/share/dots"
+case "${usage_profile:?}" in
+  desktop) envs='"desktop"' list=desktop ;;
+  dev) envs='"desktop", "dev"' list=desktop,dev ;;
+  *) echo "setup: unknown profile: $usage_profile (desktop or dev)" >&2; exit 2 ;;
+esac
+printf 'env = [%s]\n' "$envs" > "$dots/config/mise/miserc.local.toml"
+echo "setup: profile $list (saved in $dots/config/mise/miserc.local.toml)"
+exec mise bootstrap -E "$list" --yes
+'''
