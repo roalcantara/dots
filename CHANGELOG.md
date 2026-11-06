@@ -1,3 +1,10 @@
+# [1.40.0](https://github.com/roalcantara/dots/compare/v1.39.1...v1.40.0) (2026-11-06)
+
+
+### Features
+
+* **backup:** Back up an allowlist instead of the whole home ([#105](https://github.com/roalcantara/dots/issues/105)) ([bbfcb1e](https://github.com/roalcantara/dots/commit/bbfcb1e987d49f487c00babd05e6254e71d24a0d))
+
 ## [1.39.1](https://github.com/roalcantara/dots/compare/v1.39.0...v1.39.1) (2026-11-06)
 
 
