@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Verification harness for the ZSH/ZIM restructure.
-# See docs/superpowers/specs/2026-09-17-zsh-zim-restructure-design.md
+# Design: commit 5363d1a (docs/superpowers/specs/2026-09-17-zsh-zim-restructure-design.md, in git history only).
 set -euo pipefail
 
 ZSH_BIN="${ZSH_BIN:-/opt/homebrew/bin/zsh}"

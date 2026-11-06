@@ -1,6 +1,6 @@
 # Linux system packages: only what Homebrew needs to install itself, plus desktop services. Every user package,
-# fonts and flatpak apps included, is in config/homebrew/Brewfile (packages.toml was tried and rejected: see
-# docs/superpowers/specs/2026-11-05-packages-toml-design.md).
+# fonts and flatpak apps included, is in config/homebrew/Brewfile (packages.toml was tried and rejected: mise
+# bootstrap stops on the first failed package and cannot install tap formulae; see commit da666c2).
 [bootstrap.packages]
 "apt:build-essential" = "latest"
 "apt:procps" = "latest"
