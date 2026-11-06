@@ -8,8 +8,15 @@ path = "machines/{host}/restic"                    # {host}: scutil --get LocalH
 password_command = "gopass show -o backups/restic" # skipped when a RESTIC_PASSWORD* variable is set
 
 [backup]
-paths = ["~"]
-tags = ["{host}"]
+# An allowlist: only files with no other source (git remote, dots, Homebrew, iCloud, app sync).
+# Everything else in ~ (~/.local, ~/Library, Downloads, media, tool folders) is rebuilt or disposable.
+paths = [
+  "~/Documents",
+  "~/Desktop",
+  "~/Private",
+  "~/Work",      # repos without a remote, uncommitted and unpushed work, non-git projects
+]
+tags = ["{host}"] # backup.ts also adds home:<home>, which restore reads
 exclude_caches = true # also skip any folder holding a CACHEDIR.TAG
 
 [retention]
@@ -18,64 +25,8 @@ weekly = 4
 monthly = 12
 
 [[exclude]]
-pattern = "~/.cache"
-why = "XDG cache; tools recreate it"
-
-[[exclude]]
-pattern = "~/Library/Caches"
-why = "macOS app caches; apps recreate them"
-
-[[exclude]]
-pattern = "~/.Trash"
-why = "Deleted files"
-
-[[exclude]]
-pattern = "~/Library/CloudStorage"
-why = "Cloud drives (Google Drive, Dropbox); their provider syncs them, and reading them downloads every file"
-
-[[exclude]]
-pattern = "~/Library/Mobile Documents"
-why = "iCloud Drive; iCloud syncs it"
-
-[[exclude]]
-pattern = "~/.omlx"
-why = "oMLX models; the bootstrap task downloads them again"
-
-[[exclude]]
-pattern = "~/.local/share/mise"
-why = "mise tool installs; mise bootstrap reinstalls them"
-
-[[exclude]]
-pattern = "~/.local/share/cargo"
-why = "Cargo registry and builds; reinstalled from the Brewfile and mise"
-
-[[exclude]]
-pattern = "~/.local/share/rustup"
-why = "Rust toolchains; rustup reinstalls them"
-
-[[exclude]]
-pattern = "~/.local/share/uv"
-why = "uv tools and Pythons; the bootstrap task reinstalls them"
-
-[[exclude]]
-pattern = "~/.local/share/nvim"
-why = "Neovim plugins; Lazy restores them from the lock file in dots"
-
-[[exclude]]
-pattern = "~/Library/Developer/Xcode/DerivedData"
-why = "Xcode build output"
-
-[[exclude]]
-pattern = "~/Library/Developer/CoreSimulator"
-why = "iOS simulators; Xcode downloads them again"
-
-[[exclude]]
-pattern = "~/Library/Containers/com.docker.docker"
-why = "Docker Desktop VM disk; images are pulled or rebuilt"
-
-[[exclude]]
-pattern = "~/.orbstack"
-why = "OrbStack VM disk; images are pulled or rebuilt"
+pattern = "~/Work/mydemon/inspiration"
+why = "Reference images (7 GiB); not worth keeping (owner, 2026-11-06)"
 
 [[exclude]]
 pattern = "**/node_modules"

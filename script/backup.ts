@@ -77,7 +77,15 @@ export const backupArgs = (m: Manifest, ctx: Ctx, excludeFile: string): string[]
   "--exclude-file", excludeFile,
   ...(m.backup.exclude_caches ? ["--exclude-caches"] : []),
   ...m.backup.tags.flatMap((t) => ["--tag", expand(t, ctx)]),
+  "--tag", `home:${ctx.home}`, // restore maps paths from this home (the snapshot may hold several paths)
 ];
+
+// The old home of a snapshot: its home: tag, else (untagged, paths = ["~"]) its only path.
+export function homeFromSnapshot(snap: { paths: string[]; tags?: string[] }): string | undefined {
+  const tag = (snap.tags ?? []).find((t) => t.startsWith("home:"));
+  if (tag) return tag.slice("home:".length);
+  return snap.paths.length === 1 ? snap.paths[0] : undefined;
+}
 
 export function forgetArgs(m: Manifest): string[] {
   const keep = (["daily", "weekly", "monthly"] as const)
@@ -279,9 +287,8 @@ export function parseRestoreFlags(args: string[]): RestoreFlags {
 function snapshotHome(repo: string, snapshot: string, env: Record<string, string>): string | undefined {
   const p = Bun.spawnSync(["restic", "--repo", repo, "snapshots", "--json", snapshot], { env: { ...process.env, ...env }, stdout: "pipe", stderr: "inherit" });
   const list = strictArray(safeJson(p.stdout.toString()));
-  // A snapshot of the manifest default (paths = ["~"]) has exactly one path: the old home.
-  const paths = strings(table(list[list.length - 1]).paths);
-  return paths.length === 1 ? paths[0] : undefined;
+  const snap = table(list[list.length - 1]);
+  return homeFromSnapshot({ paths: strings(snap.paths), tags: strings(snap.tags) });
 }
 
 function restore(m: Manifest, ctx: Ctx, args: string[]): void {

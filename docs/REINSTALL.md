@@ -28,12 +28,25 @@ This guide provides instructions for routine backups, clean macOS reinstalls, an
 | **Secrets and keys** | `dots-history` via age key | Encrypted repository holding SSH and GPG keys; gopass, gh and wakatime secrets are SOPS-encrypted in this repo (`config/<app>`). |
 | **Agent skills** | `skills:restore` (background) | Agent skills declared in `config/agents/skill-lock.json`, restored in parallel in the background. |
 | **Models and caches** | Re-downloaded on demand | oMLX models, rustup toolchains, uv Pythons, and mise runtimes reinstalled cleanly. |
-| **Personal data** | restic backup repository | `~/Work`, `~/Documents`, `~/Pictures`, and other data directories. |
+| **Personal data** | restic backup repository | An allowlist: `~/Documents`, `~/Desktop`, `~/Private` and `~/Work`. Nothing else in `~` is backed up. |
 | **Age key and restic password** | Password manager **only** | Stored in 1Password / Bitwarden; the only two secrets dots cannot restore. |
 
-### Why excludes can be broad
+### Why an allowlist
 
-Because dots, Homebrew, and lockfiles reconstitute build tools, caches, and configuration from scratch, restic never needs to back up caches, package dependencies (`node_modules`, `.venv`), VM disks, or installed tools. Excluding recreated state keeps backups fast, compact, and deterministic.
+dots, Homebrew and lock files rebuild tools, caches and configuration; iCloud, browser sync and the apps themselves
+restore their own data. So restic backs up only folders whose files have no other source, and lists them by name
+(`backup.paths`) instead of excluding what is not wanted from all of `~`. A full-home run read 606,863 files (541 GiB,
+mostly Parallels VMs in `~/.local/state`); the allowlist keeps the backup small and fast.
+
+| Not backed up | Comes back from |
+| --- | --- |
+| `~/.config`, `~/.ssh`, `~/.gnupg`, `~/.local` | dots (`install`, `mise bootstrap`); VMs are rebuilt |
+| `~/Library` | The apps, iCloud and their own sync |
+| `~/Downloads`, `~/Pictures`, `~/Movies`, `~/Music` | Disposable, or synced (iCloud Photos, Apple Music) |
+| Tool folders (`~/.android`, `~/.claude`, `~/.omp`, `~/.omlx`, …) | The tools re-create or re-download them |
+
+A new folder is **not** backed up until it is added to `backup.paths`. Keep a file you need inside one of the four
+folders.
 
 ---
 
@@ -120,8 +133,15 @@ path = "machines/{host}/restic"                    # {host}: scutil --get LocalH
 password_command = "gopass show -o backups/restic" # skipped when a RESTIC_PASSWORD* variable is set
 
 [backup]
-paths = ["~"]
-tags = ["{host}"]
+# An allowlist: only files with no other source (git remote, dots, Homebrew, iCloud, app sync).
+# Everything else in ~ (~/.local, ~/Library, Downloads, media, tool folders) is rebuilt or disposable.
+paths = [
+  "~/Documents",
+  "~/Desktop",
+  "~/Private",
+  "~/Work",      # repos without a remote, uncommitted and unpushed work, non-git projects
+]
+tags = ["{host}"] # backup.ts also adds home:<home>, which restore reads
 exclude_caches = true # also skip any folder holding a CACHEDIR.TAG
 
 [retention]
@@ -137,8 +157,8 @@ monthly = 12
 | `repository.root` | string | `"/Volumes/backups"` | Backup drive mount root | Allows environment override via `DOTS_BACKUP_ROOT`. |
 | `repository.path` | string | `"machines/{host}/restic"` | Path to restic repo relative to root | Keeps each machine isolated under its own folder. |
 | `repository.password_command` | string | `"gopass show -o backups/restic"` | Command that outputs repository password | Avoids hardcoding passwords in files. |
-| `backup.paths` | string[] | `["~"]` | List of folders to back up | Backs up entire user home by default. |
-| `backup.tags` | string[] | `["{host}"]` | Tags applied to restic snapshots | Identifies snapshots by machine name. |
+| `backup.paths` | string[] | `["~/Documents", "~/Desktop", "~/Private", "~/Work"]` | Folders to back up (an allowlist) | Only files with no other source; see [Why an allowlist](#why-an-allowlist). |
+| `backup.tags` | string[] | `["{host}"]` | Tags applied to restic snapshots; `home:<home>` is always added | Identifies snapshots by machine; `restore` maps paths from the old home. |
 | `backup.exclude_caches` | boolean | `true` | Appends `--exclude-caches` to restic | Skips standard cache directories marked with `CACHEDIR.TAG`. |
 | `retention.daily` | integer | `7` | Number of daily snapshots to preserve | Daily rollback coverage for the past week. |
 | `retention.weekly` | integer | `4` | Number of weekly snapshots to preserve | Weekly rollback coverage for the past month. |
@@ -148,25 +168,11 @@ monthly = 12
 
 ### Exclude patterns
 
-Every exclusion is listed with its rationale:
+Excludes apply only inside the allowed folders. Every exclusion is listed with its rationale:
 
 | Pattern | Why |
 | --- | --- |
-| `~/.cache` | XDG cache; tools recreate it |
-| `~/Library/Caches` | macOS app caches; apps recreate them |
-| `~/.Trash` | Deleted files |
-| `~/Library/CloudStorage` | Cloud drives (Google Drive, Dropbox); their provider syncs them, and reading them downloads every file |
-| `~/Library/Mobile Documents` | iCloud Drive; iCloud syncs it |
-| `~/.omlx` | oMLX models; the bootstrap task downloads them again |
-| `~/.local/share/mise` | mise tool installs; mise bootstrap reinstalls them |
-| `~/.local/share/cargo` | Cargo registry and builds; reinstalled from the Brewfile and mise |
-| `~/.local/share/rustup` | Rust toolchains; rustup reinstalls them |
-| `~/.local/share/uv` | uv tools and Pythons; the bootstrap task reinstalls them |
-| `~/.local/share/nvim` | Neovim plugins; Lazy restores them from the lock file in dots |
-| `~/Library/Developer/Xcode/DerivedData` | Xcode build output |
-| `~/Library/Developer/CoreSimulator` | iOS simulators; Xcode downloads them again |
-| `~/Library/Containers/com.docker.docker` | Docker Desktop VM disk; images are pulled or rebuilt |
-| `~/.orbstack` | OrbStack VM disk; images are pulled or rebuilt |
+| `~/Work/mydemon/inspiration` | Reference images (7 GiB); not worth keeping (owner, 2026-11-06) |
 | `**/node_modules` | JavaScript dependencies; the package manager reinstalls them |
 | `**/target` | Rust and Maven build output |
 | `**/.gradle` | Gradle caches |
@@ -185,14 +191,18 @@ Every exclusion is listed with its rationale:
   - Leading `/` anchors to the backup root.
   - restic does not perform shell tilde expansion, so `script/backup.ts` expands `~` before passing patterns to restic via a temporary `--exclude-file`.
 
+### Adding a folder
+
+Add it to `backup.paths` (keep the list short: only files with no other source), then run `mise run backup`.
+
 ### Adding an exclusion
 
 To add an exclusion, append a new `[[exclude]]` block to `config/restic/backup.toml`:
 
 ```toml
 [[exclude]]
-pattern = "~/.local/share/some-cache"
-why = "Disposable cache; recreated automatically"
+pattern = "~/Work/some-project/build"
+why = "Build output; recreated by the project's build"
 ```
 
 Then validate the file:
@@ -264,7 +274,7 @@ Restores selected directories from a snapshot into the target directory.
 - **Flags:**
   - `--include <path>`: Required relative path inside snapshot (e.g. `--include Work`).
   - `--snapshot <id>`: Snapshot ID (defaults to `latest`).
-  - `--from-home <dir>`: Original user home folder (auto-detected if single path backed up).
+  - `--from-home <dir>`: Original user home folder (read from the snapshot's `home:` tag; older untagged snapshots of `~` use their only path).
   - `--target <dir>`: Target folder for restoration (defaults to `$HOME`).
   - `--dry-run`: Simulates restoration without modifying files.
 - **Example:**
@@ -533,7 +543,7 @@ restic --repo /Volumes/backups/machines/<host>/restic restore latest:/Users/<old
 1. **Drive filesystem:** The backup drive is unencrypted HFS+. restic repositories are encrypted at rest with AES-256. Files placed in `exports/legacy/` are unencrypted; never copy raw tokens or private keys there.
 2. **Full Disk Access:** Without Full Disk Access, macOS blocks terminal access to Safari, Mail, and Messages data, causing restic exit code 3.
 3. **Host name changes:** If the new macOS installation assigns a different computer name, specify `DOTS_BACKUP_HOST=<old host>` to restore from the old repository.
-4. **Cloud drives:** Google Drive and Dropbox are excluded by default to avoid triggering mass file downloads during backup traversal.
+4. **Allowlist only:** Only `backup.paths` is read, so cloud drives (Google Drive, Dropbox, iCloud) and new folders elsewhere in `~` are never backed up; move a file you need into one of the four folders.
 5. **Repositories without remotes:** The audit flags repositories with zero git remotes; ensure critical repositories have upstreams.
 6. **Large folders:** Large non-git folders (e.g. local build trees, model weights) significantly increase backup time; exclude them if recreatable.
 7. **Keychain and application state:** macOS Keychain entries, browser session caches, and Mail databases are not managed by dots.
