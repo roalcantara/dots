@@ -119,12 +119,11 @@ eval "$(ssh-agent -s)"
     # => Hello roalcantara! You've successfully authenticated, but GitHub does not provide shell access.
     ```
 
-10. (optional) Enables GPGTools to store and retrieve GPG key passphrases using the macOS Keychain
+10. GPG passphrases stay out of the macOS Keychain
 
-    ```bash
-    # allows automatic passphrase retrieval rather than requiring manual entry each time.
-    defaults write org.gpgtools.common UseKeychain YES
-    ```
+    `mise bootstrap` sets `org.gpgtools.common UseKeychain` to `NO` (`[bootstrap.macos.defaults]` in
+    `config/mise/conf.d/bootstrap.toml`): pinentry-mac does not store GPG passphrases in Keychain, and gopass's
+    environment check stays quiet. Setting it to `YES` here is undone by the next `mise bootstrap`.
 
 11. (optional) Encrypt SSH Files using [transcrypt][5]
 

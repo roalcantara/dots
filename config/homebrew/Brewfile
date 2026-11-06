@@ -7,9 +7,9 @@ profiles = ENV.fetch("HOMEBREW_DOTS_PROFILE", "desktop").split(",").map(&:strip)
 dev = profiles.include?("dev")
 desktop = dev || profiles.include?("desktop")
 
-tap "asmvik/formulae", "https://github.com/asmvik/homebrew-formulae.git"
-tap "can1357/tap", "https://github.com/can1357/homebrew-tap.git"
-tap "oven-sh/bun", "https://github.com/oven-sh/homebrew-bun.git"
+# No `tap` lines: brew bundle taps a third-party tap when an entry names it in full (user/tap/name). A `tap` line
+# would tap it in every profile, while that entry's `trusted: true` applies only in its own profile, so brew warns
+# "taps are not trusted" (can1357/tap on desktop, where omp is not listed).
 
 # Everywhere, containers included: the minimal shell set
 brew "zoxide"
@@ -94,7 +94,9 @@ cask "vorssaint" if OS.mac?  # Menu bar toolkit with keep-awake, system monitor 
 cask "whatsapp" if OS.mac?  # WhatsApp desktop app
 cask "claude-code"  # Claude for code editing
 cask "visual-studio-code" if OS.mac?  # VS Code editor
-cask "xykong/tap/flux-markdown", trusted: true if OS.mac?  # Markdown previews in Finder QuickLook with diagrams and math
+# Off: 1.44.761's installer script fails on a fresh Mac ("editor-restore-unconfirmed / Registration failed").
+# brew install --cask xykong/tap/flux-markdown by hand once a release fixes it.
+# cask "xykong/tap/flux-markdown", trusted: true if OS.mac?  # Markdown previews in Finder QuickLook with diagrams and math
 # Desktop: fonts (font casks install on macOS and Linux)
 cask "font-cascadia-code"
 cask "font-cascadia-code-pl"

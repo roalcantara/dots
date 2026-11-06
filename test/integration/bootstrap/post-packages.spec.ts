@@ -2,7 +2,7 @@
 // The post-packages hook in config/mise/conf.d/bootstrap.toml, run against a stub `brew`:
 // the core group is fatal, the rest of the Brewfile only warns (unless CI or DOTS_STRICT).
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -19,6 +19,7 @@ case "$1" in
   shellenv|cleanup) exit 0 ;;
   bundle)
     echo "$HOMEBREW_DOTS_PROFILE $HOMEBREW_BUNDLE_FILE" >> "$STUB_LOG"
+    echo "\${XDG_CONFIG_HOME:-unset}" > "$STUB_LOG.xdg"
     case ",$STUB_FAIL," in
       *",$HOMEBREW_DOTS_PROFILE,"*)
         echo "Installing com.discordapp.Discord has failed!"
@@ -168,5 +169,33 @@ describe("Homebrew install needs sudo", () => {
     expect(r.code).toBe(1);
     expect(r.out).not.toContain("AFTER");
     expect(r.err).toContain("run 'sudo -v', then mise bootstrap");
+  });
+});
+
+// Shells set XDG_CONFIG_HOME, so brew reads its trust store from ~/.config/homebrew (the link into
+// config/homebrew); the hook must use that store too, and make the link before brew creates a real folder there.
+describe("brew's user config folder", () => {
+  const link = () => join(t, ".config", "homebrew");
+  const xdg = () => readFileSync(join(t, "calls.xdg"), "utf8").trim();
+  beforeEach(() => mkdirSync(join(t, ".local", "share", "dots", "config", "homebrew"), { recursive: true }));
+
+  it("links ~/.config/homebrew into the repo and runs brew bundle with XDG_CONFIG_HOME=~/.config", () => {
+    expect(hook({ MISE_ENV: "desktop" }).code).toBe(0);
+    expect(readlinkSync(link())).toBe("../.local/share/dots/config/homebrew");
+    expect(xdg()).toBe(join(t, ".config"));
+  });
+
+  it("keeps an existing ~/.config/homebrew and the caller's XDG_CONFIG_HOME", () => {
+    mkdirSync(join(t, ".config"), { recursive: true });
+    symlinkSync("/elsewhere", link());
+    expect(hook({ MISE_ENV: "desktop", XDG_CONFIG_HOME: join(t, ".config") }).code).toBe(0);
+    expect(readlinkSync(link())).toBe("/elsewhere");
+    expect(xdg()).toBe(join(t, ".config"));
+  });
+
+  it("makes no link when XDG_CONFIG_HOME is somewhere else", () => {
+    expect(hook({ MISE_ENV: "desktop", XDG_CONFIG_HOME: join(t, "xdg") }).code).toBe(0);
+    expect(existsSync(link())).toBe(false);
+    expect(xdg()).toBe(join(t, "xdg"));
   });
 });

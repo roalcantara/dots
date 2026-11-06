@@ -164,6 +164,9 @@ keys.txt
 # SSH known_hosts (host public keys only; not secret; avoid SOPS filter + gitignore)
 config/ssh/keys/known_hosts
 
+# brew's tap trust store (~/.config/homebrew links here); brew bundle rebuilds it from the Brewfile's trusted: true
+config/homebrew/trust.json
+
 # mise
 .mise/locks
 */**/.mise/locks
