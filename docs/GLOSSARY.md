@@ -18,9 +18,9 @@ This glossary defines terms used across Dots configuration, documentation, and t
 | **Mise task** | Automation workflow declared in `mise.toml` or `test/mise.toml`, run via `mise run <task>`. |
 | **Quality gate** | Concrete verification command (e.g. `mise run test:specs`, `hk check --all`) that must be green before merging. |
 | **Backup root** | Storage directory holding backups, `/Volumes/backups` by default; overridden by `DOTS_BACKUP_ROOT`. |
-| **Backup manifest** | `config/restic/backup.toml`: defines repository path, source paths, retention policy, and exclusions with reasons. |
+| **Backup manifest** | `config/restic/backup.toml`: defines repository path, the allowlist of source paths, retention policy, and exclusions with reasons. |
 | **restic repository** | Encrypted, deduplicated restic storage at `<backup root>/machines/<host>/restic`. |
-| **Snapshot** | Point-in-time backup archive inside a restic repository, tagged with the machine host name. |
+| **Snapshot** | Point-in-time backup archive inside a restic repository, tagged with the machine host name and `home:<home>` (the folder `restore` maps from). |
 | **Export** | Dated folder under `machines/<host>/exports/` holding machine audit reports and manual exports. |
 | **Reinstall audit** | `mise run reinstall:audit`: read-only evaluation of uncommitted git state, non-cask apps, and machine risk (`MANIFEST.md`). |
 | **Keyring recipient** | Public age key that gopass's identity keyring is encrypted to (`age.keyring-recipients`): the bootstrap age key. |

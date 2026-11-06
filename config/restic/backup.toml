@@ -8,8 +8,104 @@ path = "machines/{host}/restic"                    # {host}: scutil --get LocalH
 password_command = "gopass show -o backups/restic" # skipped when a RESTIC_PASSWORD* variable is set
 
 [backup]
-paths = ["~"]
-tags = ["{host}"]
+# An allowlist, conservative: personal files, XDG config, settings, customization and credentials.
+# Not caches, histories of tools, binaries, models, VMs or worktrees. Reasons: docs/REINSTALL.md, "Why an allowlist".
+paths = [
+  # Personal files: no other copy
+  "~/Documents",
+  "~/Desktop",
+  "~/Private",
+  "~/Pictures",
+  "~/Work",
+  # XDG config and app data (dots links are stored as links; ~/.config/ssh and gnupg are real folders)
+  "~/.config",
+  "~/.local/share/zsh",
+  "~/.local/share/gopass",
+  "~/.local/share/posting",
+  "~/.local/share/television",
+  "~/.local/state/gh",
+  # Shell files that are real files, not dots links (installers write to them)
+  "~/.zshrc",
+  "~/.zprofile",
+  "~/.gitconfig",
+  "~/.bash_history",
+  "~/.zsh_history",
+  # Credentials and keys (restic encrypts the repository)
+  "~/.aws",
+  "~/.claude.json",
+  "~/.codex/auth.json",
+  "~/.gemini/oauth_creds.json",
+  "~/.gemini/gemini-credentials.json",
+  "~/.gemini/google_accounts.json",
+  "~/.docker/config.json",
+  "~/.docker/daemon.json",
+  "~/.gsutil/credstore2",
+  "~/.localstack/auth.json",
+  "~/.streamlit/credentials.toml",
+  "~/.serverlessrc",
+  "~/.android/debug.keystore",
+  "~/.android/adbkey",
+  "~/.android/adbkey.pub",
+  "~/.android/maps.key",
+  "~/.emulator_console_auth_token",
+  "~/Library/Keychains",
+  "~/Library/Application Support/AWS VPN Client",
+  # Agent memory, sessions and settings
+  "~/.claude",
+  "~/.omp",
+  "~/.agents",
+  "~/.codex/config.toml",
+  "~/.codex/AGENTS.md",
+  "~/.codex/hooks.json",
+  "~/.gemini/settings.json",
+  "~/.gemini/GEMINI.md",
+  "~/.gemini/config",
+  "~/.gemini/trustedFolders.json",
+  "~/.cursor/mcp.json",
+  "~/.cursor/hooks.json",
+  "~/.cursor/cli-config.json",
+  "~/.cursor/plans",
+  "~/.copilot/config.json",
+  "~/.copilot/settings.json",
+  "~/.copilot/lsp-config.json",
+  "~/.copilot/hooks",
+  "~/.kiro/agents",
+  "~/.kiro/steering",
+  "~/.kiro/settings",
+  "~/.factory/settings.json",
+  "~/.pi/agent/settings.json",
+  "~/.vibe/hooks.toml",
+  "~/.openclaw/openclaw.json",
+  "~/.codeium/mcp_config.json",
+  "~/.claude-server-commander/config.json",
+  # Tool settings (not the tools, models or extensions)
+  "~/.lmstudio/settings.json",
+  "~/.lmstudio/mcp.json",
+  "~/.lmstudio/config-presets",
+  "~/.omlx/settings.json",
+  "~/.omlx/model_settings.json",
+  "~/.omlx/hf_download_tasks.json",
+  "~/.vscode/argv.json",
+  "~/.code-review-graph/watch.toml",
+  "~/.gortex/config.yaml",
+  "~/.lsp.yml",
+  "~/.yarnrc",
+  "~/.bundle/config",
+  # macOS and app settings with no other copy
+  "~/Library/Preferences",
+  "~/Library/LaunchAgents",
+  "~/Library/Services",
+  "~/Library/Spelling",
+  "~/Library/Sounds",
+  "~/Library/DBeaverData",
+  "~/Library/Application Support/.com.raycast.macos.backups",
+  "~/Library/Application Support/Code/User/keybindings.json",
+  "~/Library/Application Support/Code/User/mcp.json",
+  "~/Library/Application Support/Code/User/mcp",
+  "~/Library/Application Support/Claude/claude_desktop_config.json",
+  "~/Library/Application Support/Claude/config.json",
+]
+tags = ["{host}"] # backup.ts also adds home:<home>, which restore reads
 exclude_caches = true # also skip any folder holding a CACHEDIR.TAG
 
 [retention]
@@ -18,64 +114,76 @@ weekly = 4
 monthly = 12
 
 [[exclude]]
-pattern = "~/.cache"
-why = "XDG cache; tools recreate it"
+pattern = "~/Work/dots-*"
+why = "dots worktrees (git worktree add ../dots-<topic>); their commits live in ~/Work/dots/.git"
 
 [[exclude]]
-pattern = "~/Library/Caches"
-why = "macOS app caches; apps recreate them"
+pattern = "**/.claude/worktrees"
+why = "Claude Code worktrees; their commits live in the main repository"
 
 [[exclude]]
-pattern = "~/.Trash"
-why = "Deleted files"
+pattern = "~/.config/.fallow"
+why = "fallow cache"
 
 [[exclude]]
-pattern = "~/Library/CloudStorage"
-why = "Cloud drives (Google Drive, Dropbox); their provider syncs them, and reading them downloads every file"
+pattern = "~/.claude/cache"
+why = "Claude Code cache"
 
 [[exclude]]
-pattern = "~/Library/Mobile Documents"
-why = "iCloud Drive; iCloud syncs it"
+pattern = "~/.claude/paste-cache"
+why = "Claude Code paste cache"
 
 [[exclude]]
-pattern = "~/.omlx"
-why = "oMLX models; the bootstrap task downloads them again"
+pattern = "~/.claude/shell-snapshots"
+why = "Claude Code shell snapshots; regenerated"
 
 [[exclude]]
-pattern = "~/.local/share/mise"
-why = "mise tool installs; mise bootstrap reinstalls them"
+pattern = "~/.claude/session-env"
+why = "Claude Code session environment; regenerated"
 
 [[exclude]]
-pattern = "~/.local/share/cargo"
-why = "Cargo registry and builds; reinstalled from the Brewfile and mise"
+pattern = "~/.claude/ide"
+why = "Claude Code IDE lock files"
 
 [[exclude]]
-pattern = "~/.local/share/rustup"
-why = "Rust toolchains; rustup reinstalls them"
+pattern = "~/.claude/file-history"
+why = "Claude Code edit checkpoints (history)"
 
 [[exclude]]
-pattern = "~/.local/share/uv"
-why = "uv tools and Pythons; the bootstrap task reinstalls them"
+pattern = "~/.claude/stats-cache.json"
+why = "Claude Code stats cache"
 
 [[exclude]]
-pattern = "~/.local/share/nvim"
-why = "Neovim plugins; Lazy restores them from the lock file in dots"
+pattern = "~/.claude/mcp-needs-auth-cache.json"
+why = "Claude Code MCP auth cache"
 
 [[exclude]]
-pattern = "~/Library/Developer/Xcode/DerivedData"
-why = "Xcode build output"
+pattern = "~/.omp/cache"
+why = "OMP cache"
 
 [[exclude]]
-pattern = "~/Library/Developer/CoreSimulator"
-why = "iOS simulators; Xcode downloads them again"
+pattern = "~/.omp/puppeteer"
+why = "OMP headless browser download"
 
 [[exclude]]
-pattern = "~/Library/Containers/com.docker.docker"
-why = "Docker Desktop VM disk; images are pulled or rebuilt"
+pattern = "~/.omp/natives"
+why = "OMP native binaries"
 
 [[exclude]]
-pattern = "~/.orbstack"
-why = "OrbStack VM disk; images are pulled or rebuilt"
+pattern = "~/.omp/logs"
+why = "OMP logs"
+
+[[exclude]]
+pattern = "~/.omp/run"
+why = "OMP runtime files"
+
+[[exclude]]
+pattern = "~/.omp/ssh-control"
+why = "OMP SSH control sockets"
+
+[[exclude]]
+pattern = "~/Work/mydemon/inspiration"
+why = "Reference images (7 GiB); not worth keeping (owner, 2026-11-06)"
 
 [[exclude]]
 pattern = "**/node_modules"

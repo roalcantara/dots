@@ -10,6 +10,7 @@ import {
   excludeLines,
   expand,
   forgetArgs,
+  homeFromSnapshot,
   parseManifest,
   passwordEnv,
   renderManifest,
@@ -55,7 +56,8 @@ describe("parseManifest", () => {
   });
   it("accepts the repository manifest, and every exclude has a reason", () => {
     const real = parseManifest(readFileSync(join(REPO, "config/restic/backup.toml"), "utf8"));
-    expect(real.exclude.length).toBeGreaterThan(10);
+    expect(real.backup.paths.length).toBeGreaterThan(0);
+    expect(real.backup.paths).not.toContain("~"); // an allowlist, not the whole home
     for (const e of real.exclude) expect(e.why.length).toBeGreaterThan(0);
     expect(real.exclude.map((e) => e.pattern)).not.toContain("~/Work/dots");
   });
@@ -92,7 +94,7 @@ describe("passwordEnv", () => {
 describe("restic arguments", () => {
   it("backup", () => {
     expect(backupArgs(m, ctx, "/tmp/ex")).toEqual([
-      "backup", "/Users/me", "/opt/x", "--exclude-file", "/tmp/ex", "--exclude-caches", "--tag", "mac",
+      "backup", "/Users/me", "/opt/x", "--exclude-file", "/tmp/ex", "--exclude-caches", "--tag", "mac", "--tag", "home:/Users/me",
     ]);
   });
   it("forget omits zero keeps and prunes", () => {
@@ -108,6 +110,18 @@ describe("restic arguments", () => {
       "restore", "latest:/Users/old", "--target", "/Users/me",
       "--include", "/Work", "--include", "/Documents", "--include", "/Pictures", "--dry-run", "--verbose",
     ]);
+  });
+});
+
+describe("homeFromSnapshot", () => {
+  it("reads the home tag", () => {
+    expect(homeFromSnapshot({ paths: ["/Users/old/Work", "/Users/old/Documents"], tags: ["mac", "home:/Users/old"] })).toBe("/Users/old");
+  });
+  it("falls back to the only path of an untagged snapshot (paths = [\"~\"])", () => {
+    expect(homeFromSnapshot({ paths: ["/Users/old"], tags: ["mac"] })).toBe("/Users/old");
+  });
+  it("cannot tell from several untagged paths", () => {
+    expect(homeFromSnapshot({ paths: ["/Users/old/Work", "/Users/old/Documents"] })).toBeUndefined();
   });
 });
 
@@ -207,7 +221,7 @@ describe.skipIf(!hasRestic)("end to end with restic", () => {
       writeFileSync(join(home, "proj", "main.ts"), "m");
       writeFileSync(join(home, "proj", "node_modules", "x.js"), "x");
       const manifest = join(t, "backup.toml");
-      writeFileSync(manifest, `[repository]\npath = "machines/{host}/restic"\n[backup]\npaths = ["~"]\ntags = ["{host}"]\n[retention]\ndaily = 1\n[[exclude]]\npattern = "**/node_modules"\nwhy = "deps"\n`);
+      writeFileSync(manifest, `[repository]\npath = "machines/{host}/restic"\n[backup]\npaths = ["~/docs", "~/proj"]\ntags = ["{host}"]\n[retention]\ndaily = 1\n[[exclude]]\npattern = "**/node_modules"\nwhy = "deps"\n`);
       const env = { HOME: home, DOTS_BACKUP_ROOT: root, DOTS_BACKUP_HOST: "e2e", DOTS_BACKUP_MANIFEST: manifest, RESTIC_PASSWORD: "test" };
 
       expect(cli(["init"], env).code).toBe(0);
