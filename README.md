@@ -37,10 +37,25 @@ It creates no user and sets no timezone. A second run changes nothing.
 
 | Profile        | For                  | Skips                                                                                               |
 | -------------- | -------------------- | --------------------------------------------------------------------------------------------------- |
-| `desktop`      | A real machine       | Nothing; moves an existing `~/.bashrc`, `~/.profile`, `~/.zshenv`, `~/.ssh`, `~/.gnupg` aside first |
+| `desktop`      | A real machine       | The dev tools (below); moves an existing `~/.bashrc`, `~/.profile`, `~/.zshenv`, `~/.ssh`, `~/.gnupg` aside first |
 | `container`    | Docker images        | The login shell; replaces the image's dotfiles                                                      |
 
-Later, to apply config changes: `mise bootstrap -E <profile>`.
+`install` sets up **desktop**: the shell, secrets, browsers, terminal, fonts and everyday apps. Add the development
+tools when you need them, from any folder in your home:
+
+```sh
+mise run setup dev       # desktop + dev: the Brewfile's DEVTOOLS section, agent skills, Python 3.13 tools
+mise run setup desktop   # back to desktop (uninstalls nothing; the dev tools just stop being updated)
+```
+
+| Profile            | Brewfile                                   | Bootstrap task adds                               |
+| ------------------ | ------------------------------------------ | ------------------------------------------------- |
+| `container`        | the minimal group                          | git filters only                                  |
+| `desktop`          | minimal + everything above `# DEVTOOLS`    | hooks, gopass store, Neovim providers and plugins |
+| `desktop,dev`      | + the `# DEVTOOLS` section                 | + agent skills restore, + Python 3.13 tools       |
+
+`setup` records the choice in `config/mise/miserc.local.toml`. Later, to apply config changes: `mise bootstrap`
+(it uses the recorded profile).
 
 ## How it works
 

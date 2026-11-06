@@ -502,7 +502,8 @@ A condensed checklist for provisioning a clean machine from scratch:
      curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bash
      ```
    - Paste the age key when prompted; `install` adopts `dots-history` and runs `mise bootstrap -E desktop`
-   - Agent skills are restored in the background (log: `~/.local/state/dots/skills-restore.log`)
+   - For the development tools (IDEs, language servers, Docker, coding agents, agent skills): `mise run setup dev`.
+     Agent skills are then restored in the background (log: `~/.local/state/dots/skills-restore.log`)
 3. **Restore data and verify:**
    - Mount backup drive and restore data directories:
      ```sh

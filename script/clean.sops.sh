@@ -28,6 +28,10 @@ if [ ! -f "$AGE_KEY_FILE" ]; then
     exit 1
 fi
 
+# Tell sops where the key is: on macOS sops otherwise looks in ~/Library/Application Support/sops/age/keys.txt
+# unless XDG_CONFIG_HOME is set, which a fresh install has not done yet ("Failed to get the data key").
+export SOPS_AGE_KEY_FILE="${SOPS_AGE_KEY_FILE:-$AGE_KEY_FILE}"
+
 # Check if age command is available
 if ! command -v age > /dev/null 2>&1; then
     echo "ERROR: age command not found. Please install age." >&2

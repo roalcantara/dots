@@ -36,7 +36,9 @@ mode = "0700"
 mode = "0700"
 
 [bootstrap.user]
-login_shell = "zsh"
+# macOS: Homebrew's zsh (the Brewfile installs it before this step). A bare "zsh" resolves PATH first, and during
+# install /bin comes before /opt/homebrew/bin, so it picked the system /bin/zsh. Linux: the apt zsh.
+login_shell = '{% if os() == "macos" %}/opt/homebrew/bin/zsh{% else %}zsh{% endif %}'
 
 # Runs last on every `mise bootstrap`, so every step checks before acting and only warns on failure.
 [tasks.bootstrap]
@@ -48,6 +50,9 @@ export PATH="$HOME/.local/bin:$PATH"
 for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && eval "$("$b" shellenv)"; done
 desktop=true
 case ",${MISE_ENV:-desktop}," in *,desktop,*) ;; *) desktop=false ;; esac
+# dev (`mise run setup dev`: desktop,dev) adds the heavy steps below; dev implies desktop, as in the Brewfile.
+dev=false
+case ",${MISE_ENV:-desktop}," in *,dev,*) dev=true desktop=true ;; esac
 dots="$HOME/.local/share/dots"
 [ -r "$dots/script/bootstrap-log.sh" ] && . "$dots/script/bootstrap-log.sh"
 nvim_cfg="$HOME/.config/nvim"
@@ -68,10 +73,14 @@ zsh -ic 'exit' >/dev/null 2>&1 || true
 $desktop || exit 0
 mise run -C "$dots" setup:hooks || warn "setup:hooks"
 
-# Python tools that need 3.13 (no wheels for the newest Python); the Brewfile's uv entries cannot pin it.
-for tool in graphifyy code-review-graph; do
-  uv tool list 2>/dev/null | grep -q "^$tool " || uv tool install --python 3.13 "$tool" || warn "uv $tool"
-done
+# dev-python: begin
+# Python tools that need 3.13 (no wheels for the newest Python); the Brewfile's uv entries cannot pin it. dev only.
+if $dev; then
+  for tool in graphifyy code-review-graph; do
+    uv tool list 2>/dev/null | grep -q "^$tool " || uv tool install --python 3.13 "$tool" || warn "uv $tool"
+  done
+fi
+# dev-python: end
 
 # gopass store: cloned once ~/.config/gopass (linked to config/gopass, SOPS-decrypted) holds the age identity. HTTPS through the gh login
 # (install runs `gh auth login`): the SSH config names GitHub `Host github`, so git@github.com has no key.
@@ -111,14 +120,16 @@ fi
 
 # skills: begin
 # Agent skills from config/agents/skill-lock.json, in the background: hundreds of skills must not hold up the
-# bootstrap. A notification and ~/.local/state/dots/skills-restore.result report the outcome.
-skills_state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
-mkdir -p "$skills_state"
-if [ -n "${DOTS_SKILLS_FOREGROUND:-}" ]; then
-  mise run -C "$dots" skills:restore || warn "skills:restore"
-else
-  nohup mise run -C "$dots" skills:restore -- --background >"$skills_state/skills-restore.log" 2>&1 </dev/null &
-  echo "bootstrap: restoring agent skills in the background (log: $skills_state/skills-restore.log)"
+# bootstrap. A notification and ~/.local/state/dots/skills-restore.result report the outcome. dev only.
+if $dev; then
+  skills_state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
+  mkdir -p "$skills_state"
+  if [ -n "${DOTS_SKILLS_FOREGROUND:-}" ]; then
+    mise run -C "$dots" skills:restore || warn "skills:restore"
+  else
+    nohup mise run -C "$dots" skills:restore -- --background >"$skills_state/skills-restore.log" 2>&1 </dev/null &
+    echo "bootstrap: restoring agent skills in the background (log: $skills_state/skills-restore.log)"
+  fi
 fi
 # skills: end
 [ -d "$nvim_cfg" ] || exit 0
@@ -188,6 +199,19 @@ for b in "$(command -v brew || true)" /opt/homebrew/bin/brew /home/linuxbrew/.li
   [ -n "$b" ] && [ -x "$b" ] && { brew="$b"; break; }
 done
 if [ -z "$brew" ]; then
+  # brew-sudo: begin
+  # The installer runs sudo without prompting under NONINTERACTIVE=1, so it needs a sudo ticket already. Linux has
+  # one from the apt packages; macOS has no earlier sudo step, so ask here, on the terminal.
+  if [ "$(id -u)" -ne 0 ] && ! sudo -n true 2>/dev/null; then
+    if (: </dev/tty) 2>/dev/null; then
+      echo "Homebrew needs administrator access to create its prefix; enter your password:" >&2
+      sudo -v </dev/tty || { echo "bootstrap: sudo failed; Homebrew was not installed" >&2; exit 1; }
+    else
+      echo "bootstrap: Homebrew needs sudo and there is no terminal to ask on: run 'sudo -v', then mise bootstrap" >&2
+      exit 1
+    fi
+  fi
+  # brew-sudo: end
   NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && brew="$b"; done
 fi
@@ -197,24 +221,26 @@ profile="${MISE_ENV:-}"
 if [ -z "$profile" ]; then
   if [ -r "/proc/$PPID/cmdline" ]; then
     profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | sed -n 's/^--env=//p')"
-    [ -n "$profile" ] || profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | grep -A1 -E '^(-E|--env)$' | tail -1)"
+    [ -n "$profile" ] || profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | grep -A1 -E '^(-E|--env)$' | tail -1 || true)"
   elif command -v ps >/dev/null; then
     args="$(ps -o args= -p "$PPID" 2>/dev/null || true)"
-    profile="$(printf '%s\n' "$args" | grep -oE -- '(-E|--env)[ =][a-zA-Z0-9_-]+' | head -1 | awk '{print $NF}' | tr -d '=')"
+    profile="$(printf '%s\n' "$args" | grep -oE -- '(-E|--env)[ =][a-zA-Z0-9_,-]+' | head -1 | awk '{print $NF}' | tr -d '=' || true)"
   fi
   [ -n "$profile" ] || [ ! -f "$HOME/.local/share/dots/config/mise/miserc.local.toml" ] || \
-    profile="$(sed -n 's/.*env = \["\([^"]*\)"\].*/\1/p' "$HOME/.local/share/dots/config/mise/miserc.local.toml")"
+    profile="$(sed -n 's/^env *= *\[\(.*\)\].*/\1/p' "$HOME/.local/share/dots/config/mise/miserc.local.toml" | tr -d '" ')"
 fi
 export HOMEBREW_BUNDLE_FILE="${HOMEBREW_BUNDLE_FILE:-$HOME/.local/share/dots/config/homebrew/Brewfile}"
 bundle() { HOMEBREW_DOTS_PROFILE="$1" brew bundle install --no-upgrade; }
 
 # 1. Core group: the shell and git need it, so a failure stops the bootstrap.
 bundle container
-if [ "${profile:-desktop}" = "container" ]; then
-  brew cleanup --prune=all 2>/dev/null || true
-  rm -rf "$HOME/.cache/Homebrew" 2>/dev/null || true
-  exit 0
-fi
+case ",${profile:-desktop}," in
+  *,container,*)
+    brew cleanup --prune=all 2>/dev/null || true
+    rm -rf "$HOME/.cache/Homebrew" 2>/dev/null || true
+    exit 0
+    ;;
+esac
 
 # 2. Everything else: warn and carry on. The bootstrap task repeats the warning at its end.
 state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"

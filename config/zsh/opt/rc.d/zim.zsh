@@ -105,8 +105,10 @@ zim::load() {
   if [[ ! -e $ZIM_HOME/zimfw.zsh ]]; then
     command mkdir -p $ZIM_HOME ${zlog:h}
     # >| overrides NO_CLOBBER: zim::overrides has not run yet to turn it off.
-    if ! command wget -q -O $ZIM_HOME/zimfw.zsh \
-      https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh >|$zlog 2>&1; then
+    # curl first: macOS ships curl but not wget (a fresh Mac failed here); Linux has curl from the apt list.
+    local zurl=https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+    if ! { if (( $+commands[curl] )); then command curl -fsSL -o $ZIM_HOME/zimfw.zsh $zurl
+           else command wget -q -O $ZIM_HOME/zimfw.zsh $zurl; fi } >|$zlog 2>&1; then
       print -u2 "zim::load: could not download zimfw.zsh - see $zlog"
       return 1
     fi
