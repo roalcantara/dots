@@ -8,13 +8,102 @@ path = "machines/{host}/restic"                    # {host}: scutil --get LocalH
 password_command = "gopass show -o backups/restic" # skipped when a RESTIC_PASSWORD* variable is set
 
 [backup]
-# An allowlist: only files with no other source (git remote, dots, Homebrew, iCloud, app sync).
-# Everything else in ~ (~/.local, ~/Library, Downloads, media, tool folders) is rebuilt or disposable.
+# An allowlist, conservative: personal files, XDG config, settings, customization and credentials.
+# Not caches, histories of tools, binaries, models, VMs or worktrees. Reasons: docs/REINSTALL.md, "Why an allowlist".
 paths = [
+  # Personal files: no other copy
   "~/Documents",
   "~/Desktop",
   "~/Private",
-  "~/Work",      # repos without a remote, uncommitted and unpushed work, non-git projects
+  "~/Pictures",
+  "~/Work",
+  # XDG config and app data (dots links are stored as links; ~/.config/ssh and gnupg are real folders)
+  "~/.config",
+  "~/.local/share/zsh",
+  "~/.local/share/gopass",
+  "~/.local/share/posting",
+  "~/.local/share/television",
+  "~/.local/state/gh",
+  # Shell files that are real files, not dots links (installers write to them)
+  "~/.zshrc",
+  "~/.zprofile",
+  "~/.gitconfig",
+  "~/.bash_history",
+  "~/.zsh_history",
+  # Credentials and keys (restic encrypts the repository)
+  "~/.aws",
+  "~/.claude.json",
+  "~/.codex/auth.json",
+  "~/.gemini/oauth_creds.json",
+  "~/.gemini/gemini-credentials.json",
+  "~/.gemini/google_accounts.json",
+  "~/.docker/config.json",
+  "~/.docker/daemon.json",
+  "~/.gsutil/credstore2",
+  "~/.localstack/auth.json",
+  "~/.streamlit/credentials.toml",
+  "~/.serverlessrc",
+  "~/.android/debug.keystore",
+  "~/.android/adbkey",
+  "~/.android/adbkey.pub",
+  "~/.android/maps.key",
+  "~/.emulator_console_auth_token",
+  "~/Library/Keychains",
+  "~/Library/Application Support/AWS VPN Client",
+  # Agent memory, sessions and settings
+  "~/.claude",
+  "~/.omp",
+  "~/.agents",
+  "~/.codex/config.toml",
+  "~/.codex/AGENTS.md",
+  "~/.codex/hooks.json",
+  "~/.gemini/settings.json",
+  "~/.gemini/GEMINI.md",
+  "~/.gemini/config",
+  "~/.gemini/trustedFolders.json",
+  "~/.cursor/mcp.json",
+  "~/.cursor/hooks.json",
+  "~/.cursor/cli-config.json",
+  "~/.cursor/plans",
+  "~/.copilot/config.json",
+  "~/.copilot/settings.json",
+  "~/.copilot/lsp-config.json",
+  "~/.copilot/hooks",
+  "~/.kiro/agents",
+  "~/.kiro/steering",
+  "~/.kiro/settings",
+  "~/.factory/settings.json",
+  "~/.pi/agent/settings.json",
+  "~/.vibe/hooks.toml",
+  "~/.openclaw/openclaw.json",
+  "~/.codeium/mcp_config.json",
+  "~/.claude-server-commander/config.json",
+  # Tool settings (not the tools, models or extensions)
+  "~/.lmstudio/settings.json",
+  "~/.lmstudio/mcp.json",
+  "~/.lmstudio/config-presets",
+  "~/.omlx/settings.json",
+  "~/.omlx/model_settings.json",
+  "~/.omlx/hf_download_tasks.json",
+  "~/.vscode/argv.json",
+  "~/.code-review-graph/watch.toml",
+  "~/.gortex/config.yaml",
+  "~/.lsp.yml",
+  "~/.yarnrc",
+  "~/.bundle/config",
+  # macOS and app settings with no other copy
+  "~/Library/Preferences",
+  "~/Library/LaunchAgents",
+  "~/Library/Services",
+  "~/Library/Spelling",
+  "~/Library/Sounds",
+  "~/Library/DBeaverData",
+  "~/Library/Application Support/.com.raycast.macos.backups",
+  "~/Library/Application Support/Code/User/keybindings.json",
+  "~/Library/Application Support/Code/User/mcp.json",
+  "~/Library/Application Support/Code/User/mcp",
+  "~/Library/Application Support/Claude/claude_desktop_config.json",
+  "~/Library/Application Support/Claude/config.json",
 ]
 tags = ["{host}"] # backup.ts also adds home:<home>, which restore reads
 exclude_caches = true # also skip any folder holding a CACHEDIR.TAG
@@ -23,6 +112,74 @@ exclude_caches = true # also skip any folder holding a CACHEDIR.TAG
 daily = 7
 weekly = 4
 monthly = 12
+
+[[exclude]]
+pattern = "~/Work/dots-*"
+why = "dots worktrees (git worktree add ../dots-<topic>); their commits live in ~/Work/dots/.git"
+
+[[exclude]]
+pattern = "**/.claude/worktrees"
+why = "Claude Code worktrees; their commits live in the main repository"
+
+[[exclude]]
+pattern = "~/.config/.fallow"
+why = "fallow cache"
+
+[[exclude]]
+pattern = "~/.claude/cache"
+why = "Claude Code cache"
+
+[[exclude]]
+pattern = "~/.claude/paste-cache"
+why = "Claude Code paste cache"
+
+[[exclude]]
+pattern = "~/.claude/shell-snapshots"
+why = "Claude Code shell snapshots; regenerated"
+
+[[exclude]]
+pattern = "~/.claude/session-env"
+why = "Claude Code session environment; regenerated"
+
+[[exclude]]
+pattern = "~/.claude/ide"
+why = "Claude Code IDE lock files"
+
+[[exclude]]
+pattern = "~/.claude/file-history"
+why = "Claude Code edit checkpoints (history)"
+
+[[exclude]]
+pattern = "~/.claude/stats-cache.json"
+why = "Claude Code stats cache"
+
+[[exclude]]
+pattern = "~/.claude/mcp-needs-auth-cache.json"
+why = "Claude Code MCP auth cache"
+
+[[exclude]]
+pattern = "~/.omp/cache"
+why = "OMP cache"
+
+[[exclude]]
+pattern = "~/.omp/puppeteer"
+why = "OMP headless browser download"
+
+[[exclude]]
+pattern = "~/.omp/natives"
+why = "OMP native binaries"
+
+[[exclude]]
+pattern = "~/.omp/logs"
+why = "OMP logs"
+
+[[exclude]]
+pattern = "~/.omp/run"
+why = "OMP runtime files"
+
+[[exclude]]
+pattern = "~/.omp/ssh-control"
+why = "OMP SSH control sockets"
 
 [[exclude]]
 pattern = "~/Work/mydemon/inspiration"

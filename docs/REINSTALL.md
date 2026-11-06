@@ -28,25 +28,40 @@ This guide provides instructions for routine backups, clean macOS reinstalls, an
 | **Secrets and keys** | `dots-history` via age key | Encrypted repository holding SSH and GPG keys; gopass, gh and wakatime secrets are SOPS-encrypted in this repo (`config/<app>`). |
 | **Agent skills** | `skills:restore` (background) | Agent skills declared in `config/agents/skill-lock.json`, restored in parallel in the background. |
 | **Models and caches** | Re-downloaded on demand | oMLX models, rustup toolchains, uv Pythons, and mise runtimes reinstalled cleanly. |
-| **Personal data** | restic backup repository | An allowlist: `~/Documents`, `~/Desktop`, `~/Private` and `~/Work`. Nothing else in `~` is backed up. |
+| **Personal data and settings** | restic backup repository | An allowlist (`backup.paths`): personal folders, `~/.config`, shell files, credentials, agent memory and settings, macOS preferences. Nothing else in `~` is backed up. |
 | **Age key and restic password** | Password manager **only** | Stored in 1Password / Bitwarden; the only two secrets dots cannot restore. |
 
 ### Why an allowlist
 
 dots, Homebrew and lock files rebuild tools, caches and configuration; iCloud, browser sync and the apps themselves
-restore their own data. So restic backs up only folders whose files have no other source, and lists them by name
-(`backup.paths`) instead of excluding what is not wanted from all of `~`. A full-home run read 606,863 files (541 GiB,
-mostly Parallels VMs in `~/.local/state`); the allowlist keeps the backup small and fast.
+restore their own data. So restic backs up a list of named paths (`backup.paths`) instead of excluding what is not
+wanted from all of `~`. A full-home run read 606,863 files (541 GiB, mostly Parallels VMs in `~/.local/state`).
+
+The list is conservative: everything personal, every setting or customization, and every credential, even where
+another copy exists (dots, a git remote, a cloud account). It leaves out what a tool can download or rebuild.
+
+| Backed up | Why |
+| --- | --- |
+| `~/Documents`, `~/Desktop`, `~/Private`, `~/Pictures`, `~/Work` | Personal files; repos without a remote, uncommitted and unpushed work |
+| `~/.config`, small `~/.local/{share,state}` folders (zsh history, gopass store, posting, television, gh) | XDG config; dots links are stored as links, `~/.config/ssh` and `~/.config/gnupg` are real folders |
+| `~/.zshrc`, `~/.zprofile`, `~/.gitconfig`, shell histories | Real files, not dots links: installers write to them |
+| Credentials: `~/.aws`, `~/.claude.json`, `~/.codex/auth.json`, Gemini, Docker, gsutil, LocalStack, Streamlit, Serverless, Android keys, `~/Library/Keychains`, AWS VPN Client | Just in case; restic encrypts the repository |
+| Agents: `~/.claude`, `~/.omp`, `~/.agents`, and the settings of Codex, Gemini, Cursor, Copilot, Kiro and other agent tools | Memory, sessions, settings, hooks, MCP servers |
+| Tool settings: LM Studio, oMLX, VS Code `argv.json`, small rc files | Settings only; not the models or extensions |
+| `~/Library/Preferences`, `LaunchAgents`, `Services`, `Spelling`, `Sounds`, `DBeaverData`, Raycast's backups, VS Code keybindings and MCP, Claude desktop config | macOS and app settings with no other copy |
 
 | Not backed up | Comes back from |
 | --- | --- |
-| `~/.config`, `~/.ssh`, `~/.gnupg`, `~/.local` | dots (`install`, `mise bootstrap`); VMs are rebuilt |
-| `~/Library` | The apps, iCloud and their own sync |
-| `~/Downloads`, `~/Pictures`, `~/Movies`, `~/Music` | Disposable, or synced (iCloud Photos, Apple Music) |
-| Tool folders (`~/.android`, `~/.claude`, `~/.omp`, `~/.omlx`, …) | The tools re-create or re-download them |
+| The rest of `~/.local` (tool installs, VMs) | `mise bootstrap`; VMs are rebuilt |
+| The rest of `~/Library` (app data, caches, containers) | The apps, iCloud and their own sync |
+| `~/Downloads`, `~/Movies`, `~/Music` | Disposable, or synced (Apple TV, Apple Music) |
+| Tool payloads: models (`~/.omlx/models`), extensions (`~/.vscode/extensions`), caches, logs | The tools download or rebuild them |
+| Worktrees (`~/Work/dots-*`, `**/.claude/worktrees`) | Their commits live in the main repository |
 
-A new folder is **not** backed up until it is added to `backup.paths`. Keep a file you need inside one of the four
-folders.
+A new folder is **not** backed up until it is added to `backup.paths`.
+
+restic cannot read `.gitignore`, so git-ignored files are backed up unless an exclude pattern matches them. That is
+deliberate: some secrets exist only as ignored files (`~/Work/dots/config/age/keys.txt`, `config/gh/hosts.yml`).
 
 ---
 
@@ -133,13 +148,11 @@ path = "machines/{host}/restic"                    # {host}: scutil --get LocalH
 password_command = "gopass show -o backups/restic" # skipped when a RESTIC_PASSWORD* variable is set
 
 [backup]
-# An allowlist: only files with no other source (git remote, dots, Homebrew, iCloud, app sync).
-# Everything else in ~ (~/.local, ~/Library, Downloads, media, tool folders) is rebuilt or disposable.
 paths = [
+  # Personal files: no other copy
   "~/Documents",
   "~/Desktop",
-  "~/Private",
-  "~/Work",      # repos without a remote, uncommitted and unpushed work, non-git projects
+  # … about 90 paths in 7 groups: XDG config, shell files, credentials, agents, tool settings, macOS settings
 ]
 tags = ["{host}"] # backup.ts also adds home:<home>, which restore reads
 exclude_caches = true # also skip any folder holding a CACHEDIR.TAG
@@ -157,7 +170,7 @@ monthly = 12
 | `repository.root` | string | `"/Volumes/backups"` | Backup drive mount root | Allows environment override via `DOTS_BACKUP_ROOT`. |
 | `repository.path` | string | `"machines/{host}/restic"` | Path to restic repo relative to root | Keeps each machine isolated under its own folder. |
 | `repository.password_command` | string | `"gopass show -o backups/restic"` | Command that outputs repository password | Avoids hardcoding passwords in files. |
-| `backup.paths` | string[] | `["~/Documents", "~/Desktop", "~/Private", "~/Work"]` | Folders to back up (an allowlist) | Only files with no other source; see [Why an allowlist](#why-an-allowlist). |
+| `backup.paths` | string[] | 86 folders and files, in groups | Folders and files to back up (an allowlist) | Only files with no other source; see [Why an allowlist](#why-an-allowlist). |
 | `backup.tags` | string[] | `["{host}"]` | Tags applied to restic snapshots; `home:<home>` is always added | Identifies snapshots by machine; `restore` maps paths from the old home. |
 | `backup.exclude_caches` | boolean | `true` | Appends `--exclude-caches` to restic | Skips standard cache directories marked with `CACHEDIR.TAG`. |
 | `retention.daily` | integer | `7` | Number of daily snapshots to preserve | Daily rollback coverage for the past week. |
@@ -172,6 +185,23 @@ Excludes apply only inside the allowed folders. Every exclusion is listed with i
 
 | Pattern | Why |
 | --- | --- |
+| `~/Work/dots-*` | dots worktrees (git worktree add ../dots-<topic>); their commits live in ~/Work/dots/.git |
+| `**/.claude/worktrees` | Claude Code worktrees; their commits live in the main repository |
+| `~/.config/.fallow` | fallow cache |
+| `~/.claude/cache` | Claude Code cache |
+| `~/.claude/paste-cache` | Claude Code paste cache |
+| `~/.claude/shell-snapshots` | Claude Code shell snapshots; regenerated |
+| `~/.claude/session-env` | Claude Code session environment; regenerated |
+| `~/.claude/ide` | Claude Code IDE lock files |
+| `~/.claude/file-history` | Claude Code edit checkpoints (history) |
+| `~/.claude/stats-cache.json` | Claude Code stats cache |
+| `~/.claude/mcp-needs-auth-cache.json` | Claude Code MCP auth cache |
+| `~/.omp/cache` | OMP cache |
+| `~/.omp/puppeteer` | OMP headless browser download |
+| `~/.omp/natives` | OMP native binaries |
+| `~/.omp/logs` | OMP logs |
+| `~/.omp/run` | OMP runtime files |
+| `~/.omp/ssh-control` | OMP SSH control sockets |
 | `~/Work/mydemon/inspiration` | Reference images (7 GiB); not worth keeping (owner, 2026-11-06) |
 | `**/node_modules` | JavaScript dependencies; the package manager reinstalls them |
 | `**/target` | Rust and Maven build output |
@@ -543,7 +573,7 @@ restic --repo /Volumes/backups/machines/<host>/restic restore latest:/Users/<old
 1. **Drive filesystem:** The backup drive is unencrypted HFS+. restic repositories are encrypted at rest with AES-256. Files placed in `exports/legacy/` are unencrypted; never copy raw tokens or private keys there.
 2. **Full Disk Access:** Without Full Disk Access, macOS blocks terminal access to Safari, Mail, and Messages data, causing restic exit code 3.
 3. **Host name changes:** If the new macOS installation assigns a different computer name, specify `DOTS_BACKUP_HOST=<old host>` to restore from the old repository.
-4. **Allowlist only:** Only `backup.paths` is read, so cloud drives (Google Drive, Dropbox, iCloud) and new folders elsewhere in `~` are never backed up; move a file you need into one of the four folders.
+4. **Allowlist only:** Only `backup.paths` is read, so cloud drives (Google Drive, Dropbox, iCloud) and new folders elsewhere in `~` are never backed up; move a file you need into an allowed folder.
 5. **Repositories without remotes:** The audit flags repositories with zero git remotes; ensure critical repositories have upstreams.
 6. **Large folders:** Large non-git folders (e.g. local build trees, model weights) significantly increase backup time; exclude them if recreatable.
 7. **Keychain and application state:** macOS Keychain entries, browser session caches, and Mail databases are not managed by dots.

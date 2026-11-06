@@ -135,7 +135,7 @@ On another machine: `mise dot sync && mise dot pull`.
 ### Back up
 
 ```sh
-mise run backup                                   # Documents, Desktop, Private, Work → restic, then check
+mise run backup                                   # the allowlist in config/restic/backup.toml → restic, then check
 mise run backup:restore -- --include Work --dry-run
 mise run reinstall:audit                          # before a wipe: what would be lost
 ```
