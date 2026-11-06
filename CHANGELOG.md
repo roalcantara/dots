@@ -1,3 +1,10 @@
+## [1.39.1](https://github.com/roalcantara/dots/compare/v1.39.0...v1.39.1) (2026-11-06)
+
+
+### Bug Fixes
+
+* **bootstrap:** One brew trust store; quiet gopass on macOS ([#103](https://github.com/roalcantara/dots/issues/103)) ([59d983e](https://github.com/roalcantara/dots/commit/59d983eb90eedc0460e805056499d731db14ef41))
+
 # [1.39.0](https://github.com/roalcantara/dots/compare/v1.38.4...v1.39.0) (2026-11-06)
 
 
