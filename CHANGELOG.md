@@ -1,3 +1,10 @@
+# [1.39.0](https://github.com/roalcantara/dots/compare/v1.38.4...v1.39.0) (2026-11-06)
+
+
+### Features
+
+* **mise:** Add a dev profile; fix the fresh macOS install ([#102](https://github.com/roalcantara/dots/issues/102)) ([dbe14bc](https://github.com/roalcantara/dots/commit/dbe14bc9c77b9af9435ce9c79e7f8699679f9c33))
+
 ## [1.38.4](https://github.com/roalcantara/dots/compare/v1.38.3...v1.38.4) (2026-11-04)
 
 
