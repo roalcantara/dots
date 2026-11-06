@@ -1,5 +1,5 @@
 # Backups and the reinstall audit: script/backup.ts, policy in config/restic/backup.toml.
-# Guide: docs/REINSTALL.md. Extra arguments go after `--`.
+# Guide: docs/REINSTALL.md. Flags (restore, reinstall:audit only) go after `--`.
 
 [tasks."reinstall:audit"]
 description = "Read-only report of what a reinstall would lose, written to the backup drive (-- --stdout to print)"
@@ -12,7 +12,7 @@ tools = { bun = "1.3.14" }
 run = 'bun "$HOME/.local/share/dots/script/backup.ts" init'
 
 [tasks.backup]
-description = "Back up the home folder per config/restic/backup.toml, then restic check"
+description = "Back up the allowlist in config/restic/backup.toml, then restic check"
 tools = { bun = "1.3.14" }
 run = 'bun "$HOME/.local/share/dots/script/backup.ts" backup'
 
