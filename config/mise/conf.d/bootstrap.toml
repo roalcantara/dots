@@ -40,6 +40,11 @@ mode = "0700"
 # install /bin comes before /opt/homebrew/bin, so it picked the system /bin/zsh. Linux: the apt zsh.
 login_shell = '{% if os() == "macos" %}/opt/homebrew/bin/zsh{% else %}zsh{% endif %}'
 
+# macOS: gopass checks this GPG Suite preference now and then and warns "Domain 'org.gpgtools.common' not found"
+# while it is unset. "NO" (a string, as gopass reads it) also keeps pinentry-mac from saving passphrases in Keychain.
+[bootstrap.macos.defaults]
+"org.gpgtools.common" = { UseKeychain = "NO" }
+
 # Runs last on every `mise bootstrap`, so every step checks before acting and only warns on failure.
 [tasks.bootstrap]
 description = "Repo git filters and hooks, Neovim providers and plugins"
@@ -217,6 +222,17 @@ if [ -z "$brew" ]; then
 fi
 eval "$("$brew" shellenv)"
 export HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_ANALYTICS=1 HOMEBREW_NO_ENV_HINTS=1
+# brew-config: begin
+# brew keeps its tap trust store in $XDG_CONFIG_HOME/homebrew/trust.json (~/.homebrew without it). Shells set
+# XDG_CONFIG_HOME, so use the same store here, through the ~/.config/homebrew link into config/homebrew. Packages run
+# before dotfiles: make that link now (the one mise dotfiles makes), or brew creates a real folder dotfiles won't replace.
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+if [ "$XDG_CONFIG_HOME" = "$HOME/.config" ] && [ ! -e "$HOME/.config/homebrew" ] && [ ! -L "$HOME/.config/homebrew" ] \
+  && [ -d "$HOME/.local/share/dots/config/homebrew" ]; then
+  mkdir -p "$HOME/.config"
+  ln -s ../.local/share/dots/config/homebrew "$HOME/.config/homebrew"
+fi
+# brew-config: end
 profile="${MISE_ENV:-}"
 if [ -z "$profile" ]; then
   if [ -r "/proc/$PPID/cmdline" ]; then
