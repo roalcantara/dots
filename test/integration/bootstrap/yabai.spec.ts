@@ -84,7 +84,8 @@ describe("yabai and borders services", () => {
   });
 
   it("loads the scripting addition without ever waiting for a password", () => {
-    expect(yabairc).toContain("sudo -n yabai --load-sa");
+    // the sudoers rule names /opt/homebrew/bin/yabai; sudo matches that path exactly
+    expect(yabairc).toContain("sudo -n /opt/homebrew/bin/yabai --load-sa");
     expect(yabairc).not.toMatch(/sudo yabai/);
   });
 
@@ -92,6 +93,12 @@ describe("yabai and borders services", () => {
     expect(yabairc).toMatch(/focus_follows_mouse off/);
     expect(yabairc).toMatch(/window_animation_duration 0\.0/);
     expect(yabairc).toMatch(/layout bsp/);
+  });
+
+  it("uses Omarchy's gaps: 10 between windows and at the screen edges", () => {
+    for (const key of ["top_padding", "bottom_padding", "left_padding", "right_padding", "window_gap"]) {
+      expect(yabairc).toMatch(new RegExp(`${key} 10\\b`));
+    }
   });
 
   it("re-checks the spaces when screens change, and refreshes the kb strip", () => {
@@ -113,11 +120,11 @@ describe("yabai and borders services", () => {
     expect(yabairc).toContain('subrole="^AXDialog$" manage=off');
   });
 
-  it("outlines only the focused window", () => {
+  it("draws Omarchy's borders: a cyan-to-green gradient when focused, translucent grey otherwise", () => {
     const rc = read("config/borders/bordersrc");
-    expect(rc).toMatch(/^borders .*active_color=0xffe1e3e4/m);
-    expect(rc).toMatch(/inactive_color=0x00000000/);
-    expect(rc).toMatch(/width=5\.0/);
+    expect(rc).toContain('active_color="gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)"');
+    expect(rc).toContain("inactive_color=0xaa595959");
+    expect(rc).toMatch(/width=2\.0/);
   });
 
   it("runs yabai and borders as LaunchAgents that restart on exit", () => {
