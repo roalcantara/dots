@@ -30,7 +30,6 @@ const ARROWS = [
   ['down_arrow', 'south'],
 ] as const
 const APPS = [
-  ['return_or_enter', ['shift'], 'Google Chrome'],
   ['f', ['shift'], 'Finder'],
   ['c', ['shift'], 'Claude'],
   ['v', ['shift'], 'Visual Studio Code'],
@@ -79,6 +78,8 @@ export const bindings: readonly Binding[] = [
   b('Layout', 'left_arrow', ['shift', 'option'], 'Rotate the layout counter-clockwise', ['rotate', 'ccw']),
 
   b('Apps', 'return_or_enter', [], 'New Ghostty window', ['term']),
+  b('Apps', 'return_or_enter', ['shift'], 'Default browser', ['browser']),
+  b('Apps', 'return_or_enter', ['shift', 'option'], 'New default browser window', ['browser', '--window']),
   ...APPS.map(([key, mods, app]) => b('Apps', key, mods, app, ['app', app])),
   b('Apps', 'n', ['shift'], 'Neovim', ['nvim']),
 

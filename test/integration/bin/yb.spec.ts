@@ -27,6 +27,7 @@ const OSASCRIPT = `#!/bin/sh
 case "$*" in
   *"is running"*) echo "\${GHOSTTY_RUNNING:-true}" ;;
   *nvim*"new window"*) echo "osascript Ghostty new window nvim" >> "$YB_STUB_LOG" ;;
+  *"make new document"*) echo "osascript Safari new document" >> "$YB_STUB_LOG" ;;
   *"new window"*) echo "osascript Ghostty new window" >> "$YB_STUB_LOG" ;;
 esac
 `;
@@ -676,5 +677,32 @@ describe("yb term on the focused screen", () => {
       YB_STUB_WINDOWS_2: '[{"id":42,"app":"Ghostty","display":1}]',
     });
     expect(r.calls.some((c) => c.includes("--display 1") && c.includes("window 42"))).toBe(false);
+  });
+});
+
+describe("yb browser", () => {
+  const opened = (args: string[], env: Record<string, string>) => yb(args, env).calls.filter((c) => !c.startsWith("-m "));
+
+  it("fn + ⇧ + Return brings up the default browser", () => {
+    expect(opened(["browser"], { DOTS_BROWSER_ID: "com.google.chrome" })).toEqual(["open -b com.google.chrome"]);
+  });
+
+  it("fn + ⌥⇧ + Return opens a new window: Chromium browsers take --new-window", () => {
+    expect(opened(["browser", "--window"], { DOTS_BROWSER_ID: "com.google.chrome" }))
+      .toEqual(["open -nb com.google.chrome --args --new-window"]);
+  });
+
+  it("Safari gets its new window through AppleScript", () => {
+    expect(opened(["browser", "--window"], { DOTS_BROWSER_ID: "com.apple.safari" })).toEqual(["osascript Safari new document"]);
+  });
+
+  it("moves the new window to the focused screen", () => {
+    const r = yb(["browser", "--window"], {
+      DOTS_BROWSER_ID: "com.google.chrome",
+      YB_STUB_DISPLAY: '{"index":2}',
+      YB_STUB_WINDOWS_2: '[{"id":9,"app":"Google Chrome","display":1}]',
+    });
+    expect(r.calls).toContain("-m window 9 --display 2");
+    expect(r.calls).toContain("-m window --focus 9");
   });
 });

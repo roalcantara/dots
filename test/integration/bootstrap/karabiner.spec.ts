@@ -68,7 +68,8 @@ describe("karabiner fn layer", () => {
     for (const m of manipulators.filter((x) => x.to[0]?.shell_command)) {
       expect(m.to[0]!.shell_command).toMatch(/^PATH=\/opt\/homebrew\/bin:\/usr\/bin:\/bin YB_KEY='fn [^']*' "\$HOME\/\.local\/bin\/yb" /);
     }
-    expect(command("return_or_enter", "shift")).toEndWith("yb\" app 'Google Chrome'");
+    expect(command("return_or_enter", "shift")).toEndWith('yb" browser');
+    expect(command("return_or_enter", "shift", "option")).toEndWith('yb" browser --window');
     expect(command("return_or_enter")).toEndWith('yb" term');
     // the layout turns the way the arrow points; fn + r stays clockwise
     expect(command("right_arrow", "shift", "option")).toEndWith('yb" rotate cw');

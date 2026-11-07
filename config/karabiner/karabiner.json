@@ -1401,7 +1401,7 @@
               },
               {
                 "type": "basic",
-                "description": "Google Chrome",
+                "description": "Default browser",
                 "from": {
                   "key_code": "return_or_enter",
                   "modifiers": {
@@ -1416,7 +1416,29 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ Return' \"$HOME/.local/bin/yb\" app 'Google Chrome'"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ Return' \"$HOME/.local/bin/yb\" browser"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "New default browser window",
+                "from": {
+                  "key_code": "return_or_enter",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ Return' \"$HOME/.local/bin/yb\" browser --window"
                   }
                 ]
               },

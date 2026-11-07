@@ -331,7 +331,12 @@
   },
   {
     "keys": "fn ⇧ Return",
-    "label": "Google Chrome",
+    "label": "Default browser",
+    "group": "Apps"
+  },
+  {
+    "keys": "fn ⌥ ⇧ Return",
+    "label": "New default browser window",
     "group": "Apps"
   },
   {
