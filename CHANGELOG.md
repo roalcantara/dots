@@ -1,3 +1,10 @@
+# [1.42.0](https://github.com/roalcantara/dots/compare/v1.41.0...v1.42.0) (2026-11-07)
+
+
+### Features
+
+* **bootstrap:** Run agents in bash, link VS Code, pass all gates ([#108](https://github.com/roalcantara/dots/issues/108)) ([15ebd18](https://github.com/roalcantara/dots/commit/15ebd18e739fb9bd3bdb3f5982201c5205017441))
+
 # [1.41.0](https://github.com/roalcantara/dots/compare/v1.40.0...v1.41.0) (2026-11-07)
 
 
