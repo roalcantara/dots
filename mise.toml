@@ -325,6 +325,17 @@ run = ["./script/zsh-verify.sh syntax", "./script/zsh-verify.sh parity"]
 description = "Benchmark zsh startup across terminal contexts"
 run = "./script/zsh-verify.sh bench"
 
+# Agent skills from config/agents/skill-lock.json.
+[tasks."skills:audit"]
+description = "Classify installed agent skills against the lock and write config/agents/review.csv (-- --apply re-adds confirmed ones)"
+tools = { bun = "1.3.14", node = "22" }
+run = "bun script/agent-skills.ts audit"
+
+[tasks."skills:restore"]
+description = "Install every skill in config/agents/skill-lock.json that is missing from ~/.agents/skills"
+tools = { bun = "1.3.14", node = "22" }
+run = "bun script/agent-skills.ts restore"
+
 [settings]
 # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
 # https://mise.jdx.dev/configuration/settings.html#activate_aggressive
@@ -349,14 +360,3 @@ experimental = true
 # Read/update lockfiles for tool versions. This is useful when you'd like to have loose versions in mise.tomlLockfile to use for the project.
 # https://mise.jdx.dev/configuration/settings.html#lockfile
 lockfile = true
-
-# Agent skills from config/agents/skill-lock.json.
-[tasks."skills:audit"]
-description = "Classify installed agent skills against the lock and write config/agents/review.csv (-- --apply re-adds confirmed ones)"
-tools = { bun = "1.3.14", node = "22" }
-run = "bun script/agent-skills.ts audit"
-
-[tasks."skills:restore"]
-description = "Install every skill in config/agents/skill-lock.json that is missing from ~/.agents/skills"
-tools = { bun = "1.3.14", node = "22" }
-run = "bun script/agent-skills.ts restore"

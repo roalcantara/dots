@@ -83,3 +83,22 @@ export function makeNonRepo(): AddFixture {
 export function stagedFiles(cwd: string): string[] {
   return git(cwd, "diff", "--cached", "--name-only").split("\n").filter(Boolean).sort();
 }
+
+/**
+ * A feature branch one commit ahead of origin/main, so branch-history lookups do not depend on the real repo:
+ *   origin/main: initial (config/bin/README.md, ROOT.md)
+ *   HEAD:        docs: touch the bin README   <- the latest branch commit for config/bin/README.md
+ */
+export function makeBranchRepo(): AddFixture {
+  const work = initRepo("xc-git-branch-");
+  mkdirSync(join(work, "config/bin"), { recursive: true });
+  writeFileSync(join(work, "config/bin/README.md"), "# bin\n");
+  writeFileSync(join(work, "ROOT.md"), "# root\n");
+  git(work, "add", "-A");
+  git(work, "commit", "-qm", "initial");
+  git(work, "update-ref", "refs/remotes/origin/main", "HEAD");
+  git(work, "switch", "-qc", "feature");
+  appendFileSync(join(work, "config/bin/README.md"), "more\n");
+  git(work, "commit", "-qam", "docs: touch the bin README");
+  return fixture(work);
+}

@@ -35,9 +35,6 @@ color_theme = "dracula"
 # config files with these prefixes will be trusted by default
 # https://mise.jdx.dev/configuration/settings.html#trusted_config_paths
 trusted_config_paths = [
-  "~/config",
-  "~/config/mise",
-  "~/Work/dots/config/mise",
   "~/.local/share/dots",
   "~/.local/share/dots/config",
   "~/.local/share/dots/config/mise",

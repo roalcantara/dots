@@ -801,6 +801,8 @@
   },
   "terminal.integrated.defaultProfile.linux": "zsh",
   "terminal.integrated.defaultProfile.osx": "zsh",
+  "chat.tools.terminal.terminalProfile.linux": { "path": "bash", "args": ["-l"] },
+  "chat.tools.terminal.terminalProfile.osx": { "path": "/opt/homebrew/bin/bash", "args": ["-l"] },
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.inheritEnv": true,
   "terminal.integrated.shellIntegration.enabled": true,

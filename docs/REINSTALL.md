@@ -48,7 +48,7 @@ another copy exists (dots, a git remote, a cloud account). It leaves out what a 
 | Credentials: `~/.aws`, `~/.claude.json`, `~/.codex/auth.json`, Gemini, Docker, gsutil, LocalStack, Streamlit, Serverless, Android keys, `~/Library/Keychains`, AWS VPN Client | Just in case; restic encrypts the repository                                                       |
 | Agents: `~/.claude`, `~/.omp`, `~/.agents`, and the settings of Codex, Gemini, Cursor, Copilot, Kiro and other agent tools                                                    | Memory, sessions, settings, hooks, MCP servers                                                     |
 | Tool settings: LM Studio, oMLX, VS Code `argv.json`, small rc files                                                                                                           | Settings only; not the models or extensions                                                        |
-| `~/Library/Preferences`, `LaunchAgents`, `Services`, `Spelling`, `Sounds`, `DBeaverData`, Raycast's backups, VS Code keybindings and MCP, Claude desktop config               | macOS and app settings with no other copy                                                          |
+| `~/Library/Preferences`, `LaunchAgents`, `Services`, `Spelling`, `Sounds`, `DBeaverData`, Raycast's backups, VS Code MCP, Claude desktop config                               | macOS and app settings with no other copy                                                          |
 
 | Not backed up                                                                               | Comes back from                               |
 | ------------------------------------------------------------------------------------------- | --------------------------------------------- |

@@ -29,7 +29,8 @@ local stagingLinters = new Mapping<String, Step> {
     check = "zsh -n {{files}}"
   }
   ["markdownlint"] = (Builtins.markdown_lint) {
-    exclude = List("README.md", "config/git/README.md")
+    // CHANGELOG.md is written by semantic-release (.releaserc.yml) on every release.
+    exclude = List("README.md", "config/git/README.md", "CHANGELOG.md")
   }
   ["hadolint"] = (Builtins.hadolint) {
     glob = List("**/Dockerfile", "**/Dockerfile.*")
@@ -45,6 +46,14 @@ local stagingLinters = new Mapping<String, Step> {
     exclude = List("config/tombi/config.toml", "\(read("env:HOME"))/.config/tombi/config.toml")
     check   = "taplo fmt --check {{files}}"
     fix     = "taplo fmt {{files}}"
+  }
+  // Tombi lints what taplo does not: table order, empty keys and JSON Schemas (from the catalog in
+  // config/tombi/config.toml). Warnings fail, so the IDE's Tombi diagnostics never reach a commit.
+  ["tombi"] {
+    glob    = List("**/*.toml")
+    // Manifests that are invalid on purpose, for the backup validation specs.
+    exclude = List("test/integration/backup/fixtures/**")
+    check   = "tombi lint --error-on-warnings {{files}}"
   }
   ["taplo-schema"] {
     // Validates manifests that declare `#:schema` (taplo fmt does not); scoped so taplo

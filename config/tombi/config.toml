@@ -52,17 +52,6 @@ enabled = true
 strict = true
 catalog = {
   paths = [
-    "tombi://schemastore.org/api/json/catalog.json",
-    "tombi://tombi-toml.github.io/tombi/schema/catalog.json"
+    "tombi://www.schemastore.org/api/json/catalog.json",
   ],
 }
-
-# Root Schema (exclude config/tombi to avoid self-validation issues)
-[[schemas]]
-path = "https://tombi-toml.github.io/tombi/schema/catalog.json"
-include = [
-  "config/nvim/**/*.toml",
-  "config/snippets/**/*.toml",
-  "**/pyproject.toml",
-  "**/Cargo.toml"
-]

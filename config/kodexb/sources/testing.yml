@@ -8,7 +8,7 @@ bookmarks:
   https://pact.io:
     desc: Pact | A code-first tool for testing HTTP and message integrations using contract tests
     tags: [bdd, api]
-    links: [https://docs.pact.io, https://youtube.com/playlist?list=PLwy9Bnco-IpfZ72VQ7hce8GicVZs7nm0i, https://share.google/aimode/HkXPmxEQxI8AVwu0c]
+    links: [https://docs.pact.io, "https://youtube.com/playlist?list=PLwy9Bnco-IpfZ72VQ7hce8GicVZs7nm0i", https://share.google/aimode/HkXPmxEQxI8AVwu0c]
   https://specmatic.io:
     desc: Specmatic | Contract Testing and Service Virtualization made easy
     tags: [bdd, api]

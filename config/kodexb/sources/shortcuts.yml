@@ -1705,7 +1705,7 @@ cheats:
 
           ### unconsumed:
 
-          - Ghostty runs the action and still forwards the keypress (its encoded input, if any) to the program running in the terminal. 
+          - Ghostty runs the action and still forwards the keypress (its encoded input, if any) to the program running in the terminal.
           - Use it when you want a "terminal feature" without breaking the app's own key handling.
 
           #### WHEN TO USE `unconsumed`
@@ -1714,7 +1714,7 @@ cheats:
 
           #### WHAT `UNCONSUMED:` DOES (AND WHAT IT DOESN'T)
 
-          - `unconsumed:` only affects whether Ghostty consumes the key event when it has a keybind match. 
+          - `unconsumed:` only affects whether Ghostty consumes the key event when it has a keybind match.
           - It does not prevent the terminal app from seeing injected text: bytes, because those bytes are already "typed input".
 
           ### PRACTICAL EXAMPLES
@@ -1741,7 +1741,7 @@ cheats:
 
           ### global:unconsumed:
 
-          - global: makes the keybind work even when Ghostty is not focused and implies all:. 
+          - global: makes the keybind work even when Ghostty is not focused and implies all:.
           - Per Ghostty docs, global: keybinds always consume input regardless of unconsumed:, because they're not tied to a specific surface to encode/send input.
           - So in practice: global:unconsumed: behaves like global: (system-wide hotkey), and the unconsumed: part is effectively ignored.
 

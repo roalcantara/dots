@@ -134,13 +134,8 @@ export HOMEBREW_BUNDLE_FILE="$HOME/.local/share/dots/config/homebrew/Brewfile"
       builtin source "$GHOSTTY_RESOURCES_DIR"/shell-integration/bash/ghostty.bash
     fi
     export SNACKS_GHOSTTY=true
-  elif [[ "$TERM_PROGRAM" == "vscode" ]] && _has_command code; then
-    builtin source "$(code --locate-shell-integration-path zsh)"
+  elif [[ "$TERM_PROGRAM" == "vscode" ]] && command -v code >/dev/null; then
+    builtin source "$(code --locate-shell-integration-path bash)"
   fi
   export TERM="${TERM:-xterm-256color}"
 # }
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/roalcantara/.lmstudio/bin"
-# End of LM Studio CLI section
-

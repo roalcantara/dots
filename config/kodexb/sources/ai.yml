@@ -1232,7 +1232,7 @@ bookmarks:
           8.  **Loss Aversion (15:24 - 18:31):** The **streak system** is the ultimate retention tool. The visual design of a "flame" creates a fear of losing progress, which is a stronger motivator for daily return than the learning itself.
 
           ### **Tools & References Mentioned:**
-          *   **Figma:** Used by the creator to demonstrate and map out the UI/UX changes. 
+          *   **Figma:** Used by the creator to demonstrate and map out the UI/UX changes.
           *   **TikTok:** Referenced as a masterclass in low-friction, addicting UX (specifically regarding the "swipe" interface).
           *   **Psychological Concepts:** The video cites the **IKEA Effect** (value in creation) and **Loss Aversion** (the pain of losing is greater than the joy of gaining) as fundamental drivers.
 
@@ -1271,7 +1271,7 @@ bookmarks:
 
           ### **Development Workflow**
           1.  **Planning and Contextualization:** Provide the AI with comprehensive context, including screen recordings of the target app's onboarding and core flows (5:07), as well as reference images for the desired mascot (4:54).
-          2.  **App Structuring:** 
+          2.  **App Structuring:**
               *   **Level 1 (Core):** Build the home screen, main navigation tabs, and primary interactions (4:03).
               *   **Level 2 (Onboarding):** Implement the onboarding sequence (17–18 pages) including egg hatching animations and paywalls (10:22, 11:52).
               *   **Level 3 (Animation):** Integrate character and environmental animations (14:02).
@@ -1299,9 +1299,9 @@ bookmarks:
           ### **Core Workflow & Tools**
           1.  **Context Gathering:** The author uses *Mobbin* (which has an MCP connector for *Claude*) to analyze existing app UI/UX patterns, flow, and screen structures without manual downloading. He supplements this with his own screen recordings of target apps to provide the AI with specific animation references.
           2.  **Development Framework:** The app is built using *Expo* and *React Native* for cross-platform compatibility. The author uses *Claude Opus 5.5* (vibecoding) to generate the UI code, logic, and state management.
-          3.  **High-Quality Animations:** 
+          3.  **High-Quality Animations:**
               *   **Interface Elements:** Interactive sliders, water levels, and simple UI transitions are coded directly to maintain responsiveness and sharp vector quality.
-              *   **Character Animations:** For complex character movements (leaping, sipping, swimming) that appear stiff when coded, the author utilizes *Higgsfield* (using *Seedance 2.5* and *Genjutsu* models). These are generated as videos with green screens, which *Claude* then integrates into the app. 
+              *   **Character Animations:** For complex character movements (leaping, sipping, swimming) that appear stiff when coded, the author utilizes *Higgsfield* (using *Seedance 2.5* and *Genjutsu* models). These are generated as videos with green screens, which *Claude* then integrates into the app.
           4.  **Advanced Interactivity:** To achieve smooth, physics-based interactions like character follow-the-cursor or phone-tilt effects, the author relies on *SVG* assets (instead of bitmaps) and integrates the device's *gyroscope* and *gravity sensors* via code.
 
           ### **Summary of Techniques**

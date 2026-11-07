@@ -1,9 +1,10 @@
 #!/usr/bin/env bun
 
-import { describe, expect, it } from "bun:test";
+import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { mkdtempSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { type AddFixture, gitEnv, makeBranchRepo } from "./support/add-fixture";
 import { repoRoot, scriptPath } from "./support/paths";
 
 const selected = (Bun.env.usage_scenario ?? "").trim();
@@ -91,6 +92,13 @@ describe("xc-git", () => {
   });
 
   describe.skipIf(skipWhenOtherScenario("fixup_suggest"))("fixup-suggest subcommand", () => {
+    // A throwaway repo, so the results do not depend on what the current branch of dots touches.
+    let fx: AddFixture;
+    beforeAll(() => {
+      fx = makeBranchRepo();
+    });
+    afterAll(() => fx.cleanup());
+
     it("prints subcommand help with --help and exits 0", () => {
       const r = Bun.spawnSync([script, "fixup-suggest", "--help"], {
         stdout: "pipe",
@@ -107,7 +115,8 @@ describe("xc-git", () => {
       const r = Bun.spawnSync(
         [script, "fixup-suggest", "--dry-run", "config/bin/README.md"],
         {
-          cwd: repoRoot,
+          cwd: fx.work,
+          env: gitEnv,
           stdout: "pipe",
           stderr: "pipe",
         },
@@ -121,13 +130,14 @@ describe("xc-git", () => {
     });
 
     it("exits 1 with -q when no fixup target exists", () => {
-      const orphan = join(repoRoot, ".xc-git-spec-orphan");
+      const orphan = join(fx.work, ".xc-git-spec-orphan");
       writeFileSync(orphan, "spec orphan\n");
       try {
         const r = Bun.spawnSync(
           [script, "fixup-suggest", "-q", ".xc-git-spec-orphan"],
           {
-            cwd: repoRoot,
+            cwd: fx.work,
+            env: gitEnv,
             stdout: "pipe",
             stderr: "pipe",
           },
@@ -145,7 +155,8 @@ describe("xc-git", () => {
       const r = Bun.spawnSync(
         [script, "fixup-suggest", "-q", "config/bin/README.md"],
         {
-          cwd: repoRoot,
+          cwd: fx.work,
+          env: gitEnv,
           stdout: "pipe",
           stderr: "pipe",
         },

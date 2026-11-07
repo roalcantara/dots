@@ -265,7 +265,18 @@ aliases = ["nodejs"]
 aliases = ["notification"]
 
 ["patterns"]
-aliases = ["pattern", "design_pattern", "best-practices", "best practices", "best_practice", "bp", "creational", "structural", "solid", "coding_pattern"]
+aliases = [
+  "pattern",
+  "design_pattern",
+  "best-practices",
+  "best practices",
+  "best_practice",
+  "bp",
+  "creational",
+  "structural",
+  "solid",
+  "coding_pattern",
+]
 
 ["perf"]
 aliases = ["performance"]

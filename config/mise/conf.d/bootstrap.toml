@@ -45,6 +45,127 @@ login_shell = '{% if os() == "macos" %}/opt/homebrew/bin/zsh{% else %}zsh{% endi
 [bootstrap.macos.defaults]
 "org.gpgtools.common" = { UseKeychain = "NO" }
 
+# Linux: apt runs unattended, so dpkg must never ask about a changed config file (it fails without a terminal,
+# e.g. on /etc/zsh/zshenv left by the old install). Keep the existing file; take the package's when untouched.
+[bootstrap.files."/etc/apt/apt.conf.d/90dots-noninteractive"]
+os = "linux"
+phase = "pre-packages"
+owner = "root"
+group = "root"
+mode = "0644"
+content = '''
+Dpkg::Options { "--force-confdef"; "--force-confold"; };
+'''
+
+# Linux desktops: Flathub for the system-wide flatpak apps in config/homebrew/Brewfile. Flatpak reads remotes from this
+# folder; declared before packages so the remote exists when mise installs flatpak and then the apps.
+# The folders do not exist until the flatpak package installs, so they are declared too.
+[bootstrap.directories."/etc/flatpak"]
+os = "linux"
+phase = "pre-packages"
+owner = "root"
+group = "root"
+mode = "0755"
+
+[bootstrap.directories."/etc/flatpak/remotes.d"]
+os = "linux"
+phase = "pre-packages"
+owner = "root"
+group = "root"
+mode = "0755"
+
+[bootstrap.files."/etc/flatpak/remotes.d/flathub.flatpakrepo"]
+os = "linux"
+phase = "pre-packages"
+source = "../files/flathub.flatpakrepo"
+owner = "root"
+group = "root"
+mode = "0644"
+
+# Homebrew and every user package. Runs after the apt
+# prerequisites, in two stages: the core group (what the shell and git need) stops the bootstrap on failure;
+# the rest of the Brewfile only warns, so one broken entry cannot skip the links, the login shell and the
+# bootstrap task. CI or DOTS_STRICT makes the second stage fatal too.
+[bootstrap.hooks.post-packages]
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+f="$HOME/.local/share/dots/script/bootstrap-log.sh"; [ -r "$f" ] && . "$f"
+brew=""
+for b in "$(command -v brew || true)" /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  [ -n "$b" ] && [ -x "$b" ] && { brew="$b"; break; }
+done
+if [ -z "$brew" ]; then
+  # brew-sudo: begin
+  # The installer runs sudo without prompting under NONINTERACTIVE=1, so it needs a sudo ticket already. Linux has
+  # one from the apt packages; macOS has no earlier sudo step, so ask here, on the terminal.
+  if [ "$(id -u)" -ne 0 ] && ! sudo -n true 2>/dev/null; then
+    if (: </dev/tty) 2>/dev/null; then
+      echo "Homebrew needs administrator access to create its prefix; enter your password:" >&2
+      sudo -v </dev/tty || { echo "bootstrap: sudo failed; Homebrew was not installed" >&2; exit 1; }
+    else
+      echo "bootstrap: Homebrew needs sudo and there is no terminal to ask on: run 'sudo -v', then mise bootstrap" >&2
+      exit 1
+    fi
+  fi
+  # brew-sudo: end
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && brew="$b"; done
+fi
+eval "$("$brew" shellenv)"
+export HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_ANALYTICS=1 HOMEBREW_NO_ENV_HINTS=1
+# brew-config: begin
+# brew keeps its tap trust store in $XDG_CONFIG_HOME/homebrew/trust.json (~/.homebrew without it). Shells set
+# XDG_CONFIG_HOME, so use the same store here, through the ~/.config/homebrew link into config/homebrew. Packages run
+# before dotfiles: make that link now (the one mise dotfiles makes), or brew creates a real folder dotfiles won't replace.
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+if [ "$XDG_CONFIG_HOME" = "$HOME/.config" ] && [ ! -e "$HOME/.config/homebrew" ] && [ ! -L "$HOME/.config/homebrew" ] \
+  && [ -d "$HOME/.local/share/dots/config/homebrew" ]; then
+  mkdir -p "$HOME/.config"
+  ln -s ../.local/share/dots/config/homebrew "$HOME/.config/homebrew"
+fi
+# brew-config: end
+profile="${MISE_ENV:-}"
+if [ -z "$profile" ]; then
+  if [ -r "/proc/$PPID/cmdline" ]; then
+    profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | sed -n 's/^--env=//p')"
+    [ -n "$profile" ] || profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | grep -A1 -E '^(-E|--env)$' | tail -1 || true)"
+  elif command -v ps >/dev/null; then
+    args="$(ps -o args= -p "$PPID" 2>/dev/null || true)"
+    profile="$(printf '%s\n' "$args" | grep -oE -- '(-E|--env)[ =][a-zA-Z0-9_,-]+' | head -1 | awk '{print $NF}' | tr -d '=' || true)"
+  fi
+  [ -n "$profile" ] || [ ! -f "$HOME/.local/share/dots/config/mise/miserc.local.toml" ] || \
+    profile="$(sed -n 's/^env *= *\[\(.*\)\].*/\1/p' "$HOME/.local/share/dots/config/mise/miserc.local.toml" | tr -d '" ')"
+fi
+export HOMEBREW_BUNDLE_FILE="${HOMEBREW_BUNDLE_FILE:-$HOME/.local/share/dots/config/homebrew/Brewfile}"
+bundle() { HOMEBREW_DOTS_PROFILE="$1" brew bundle install --no-upgrade; }
+
+# 1. Core group: the shell and git need it, so a failure stops the bootstrap.
+bundle container
+case ",${profile:-desktop}," in
+  *,container,*)
+    brew cleanup --prune=all 2>/dev/null || true
+    rm -rf "$HOME/.cache/Homebrew" 2>/dev/null || true
+    exit 0
+    ;;
+esac
+
+# 2. Everything else: warn and carry on. The bootstrap task repeats the warning at its end.
+state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
+mkdir -p "$state"
+rm -f "$state/brew-bundle.failed"
+if ! bundle "${profile:-desktop}" 2>&1 | tee "$state/brew-bundle.log"; then
+  failed="$(sed -nE 's/^(Installing|Tapping) (.+) has failed!$/\2/p' "$state/brew-bundle.log" | sort -u | paste -sd ' ' -)"
+  printf '%s\n' "${failed:-unknown (see the log)}" > "$state/brew-bundle.failed"
+  if [ -n "${DOTS_STRICT:-}${CI:-}" ]; then
+    echo "brew bundle failed: ${failed:-see $state/brew-bundle.log}" >&2
+    exit 1
+  fi
+  printf '\nWARNING: brew bundle could not install: %s\n  log: %s\n  retry: brew bundle install\n\n' \
+    "${failed:-unknown}" "$state/brew-bundle.log" >&2
+fi
+'''
+
 # Runs last on every `mise bootstrap`, so every step checks before acting and only warns on failure.
 [tasks.bootstrap]
 description = "Repo git filters and hooks, Neovim providers and plugins"
@@ -173,126 +294,5 @@ if command -v nvim >/dev/null; then
   limit=""
   if command -v timeout >/dev/null; then limit="timeout 600"; elif command -v gtimeout >/dev/null; then limit="gtimeout 600"; fi
   $limit nvim --headless "+Lazy! restore" +qa </dev/null || warn "nvim Lazy restore"
-fi
-'''
-
-# Linux: apt runs unattended, so dpkg must never ask about a changed config file (it fails without a terminal,
-# e.g. on /etc/zsh/zshenv left by the old install). Keep the existing file; take the package's when untouched.
-[bootstrap.files."/etc/apt/apt.conf.d/90dots-noninteractive"]
-os = "linux"
-phase = "pre-packages"
-owner = "root"
-group = "root"
-mode = "0644"
-content = '''
-Dpkg::Options { "--force-confdef"; "--force-confold"; };
-'''
-
-# Linux desktops: Flathub for the system-wide flatpak apps in config/homebrew/Brewfile. Flatpak reads remotes from this
-# folder; declared before packages so the remote exists when mise installs flatpak and then the apps.
-# The folders do not exist until the flatpak package installs, so they are declared too.
-[bootstrap.directories."/etc/flatpak"]
-os = "linux"
-phase = "pre-packages"
-owner = "root"
-group = "root"
-mode = "0755"
-
-[bootstrap.directories."/etc/flatpak/remotes.d"]
-os = "linux"
-phase = "pre-packages"
-owner = "root"
-group = "root"
-mode = "0755"
-
-[bootstrap.files."/etc/flatpak/remotes.d/flathub.flatpakrepo"]
-os = "linux"
-phase = "pre-packages"
-source = "../files/flathub.flatpakrepo"
-owner = "root"
-group = "root"
-mode = "0644"
-
-# Homebrew and every user package. Runs after the apt
-# prerequisites, in two stages: the core group (what the shell and git need) stops the bootstrap on failure;
-# the rest of the Brewfile only warns, so one broken entry cannot skip the links, the login shell and the
-# bootstrap task. CI or DOTS_STRICT makes the second stage fatal too.
-[bootstrap.hooks.post-packages]
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-f="$HOME/.local/share/dots/script/bootstrap-log.sh"; [ -r "$f" ] && . "$f"
-brew=""
-for b in "$(command -v brew || true)" /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
-  [ -n "$b" ] && [ -x "$b" ] && { brew="$b"; break; }
-done
-if [ -z "$brew" ]; then
-  # brew-sudo: begin
-  # The installer runs sudo without prompting under NONINTERACTIVE=1, so it needs a sudo ticket already. Linux has
-  # one from the apt packages; macOS has no earlier sudo step, so ask here, on the terminal.
-  if [ "$(id -u)" -ne 0 ] && ! sudo -n true 2>/dev/null; then
-    if (: </dev/tty) 2>/dev/null; then
-      echo "Homebrew needs administrator access to create its prefix; enter your password:" >&2
-      sudo -v </dev/tty || { echo "bootstrap: sudo failed; Homebrew was not installed" >&2; exit 1; }
-    else
-      echo "bootstrap: Homebrew needs sudo and there is no terminal to ask on: run 'sudo -v', then mise bootstrap" >&2
-      exit 1
-    fi
-  fi
-  # brew-sudo: end
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && brew="$b"; done
-fi
-eval "$("$brew" shellenv)"
-export HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_ANALYTICS=1 HOMEBREW_NO_ENV_HINTS=1
-# brew-config: begin
-# brew keeps its tap trust store in $XDG_CONFIG_HOME/homebrew/trust.json (~/.homebrew without it). Shells set
-# XDG_CONFIG_HOME, so use the same store here, through the ~/.config/homebrew link into config/homebrew. Packages run
-# before dotfiles: make that link now (the one mise dotfiles makes), or brew creates a real folder dotfiles won't replace.
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-if [ "$XDG_CONFIG_HOME" = "$HOME/.config" ] && [ ! -e "$HOME/.config/homebrew" ] && [ ! -L "$HOME/.config/homebrew" ] \
-  && [ -d "$HOME/.local/share/dots/config/homebrew" ]; then
-  mkdir -p "$HOME/.config"
-  ln -s ../.local/share/dots/config/homebrew "$HOME/.config/homebrew"
-fi
-# brew-config: end
-profile="${MISE_ENV:-}"
-if [ -z "$profile" ]; then
-  if [ -r "/proc/$PPID/cmdline" ]; then
-    profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | sed -n 's/^--env=//p')"
-    [ -n "$profile" ] || profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | grep -A1 -E '^(-E|--env)$' | tail -1 || true)"
-  elif command -v ps >/dev/null; then
-    args="$(ps -o args= -p "$PPID" 2>/dev/null || true)"
-    profile="$(printf '%s\n' "$args" | grep -oE -- '(-E|--env)[ =][a-zA-Z0-9_,-]+' | head -1 | awk '{print $NF}' | tr -d '=' || true)"
-  fi
-  [ -n "$profile" ] || [ ! -f "$HOME/.local/share/dots/config/mise/miserc.local.toml" ] || \
-    profile="$(sed -n 's/^env *= *\[\(.*\)\].*/\1/p' "$HOME/.local/share/dots/config/mise/miserc.local.toml" | tr -d '" ')"
-fi
-export HOMEBREW_BUNDLE_FILE="${HOMEBREW_BUNDLE_FILE:-$HOME/.local/share/dots/config/homebrew/Brewfile}"
-bundle() { HOMEBREW_DOTS_PROFILE="$1" brew bundle install --no-upgrade; }
-
-# 1. Core group: the shell and git need it, so a failure stops the bootstrap.
-bundle container
-case ",${profile:-desktop}," in
-  *,container,*)
-    brew cleanup --prune=all 2>/dev/null || true
-    rm -rf "$HOME/.cache/Homebrew" 2>/dev/null || true
-    exit 0
-    ;;
-esac
-
-# 2. Everything else: warn and carry on. The bootstrap task repeats the warning at its end.
-state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
-mkdir -p "$state"
-rm -f "$state/brew-bundle.failed"
-if ! bundle "${profile:-desktop}" 2>&1 | tee "$state/brew-bundle.log"; then
-  failed="$(sed -nE 's/^(Installing|Tapping) (.+) has failed!$/\2/p' "$state/brew-bundle.log" | sort -u | paste -sd ' ' -)"
-  printf '%s\n' "${failed:-unknown (see the log)}" > "$state/brew-bundle.failed"
-  if [ -n "${DOTS_STRICT:-}${CI:-}" ]; then
-    echo "brew bundle failed: ${failed:-see $state/brew-bundle.log}" >&2
-    exit 1
-  fi
-  printf '\nWARNING: brew bundle could not install: %s\n  log: %s\n  retry: brew bundle install\n\n' \
-    "${failed:-unknown}" "$state/brew-bundle.log" >&2
 fi
 '''

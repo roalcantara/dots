@@ -1,6 +1,8 @@
 # Local state; only .wakatime.cfg (SOPS-encrypted) is versioned.
 .wakatime/
 ai-sqlite
+# The AI session parser's progress (session ids, token counts); rewritten every minute.
+wakatime-internal-ai-parsing.json
 offline_heartbeats.bdb
 wakatime-internal.cfg
 wakatime.log

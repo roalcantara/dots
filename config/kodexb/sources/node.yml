@@ -399,7 +399,7 @@ cheats:
       console.log(crypto.hash('sha1', string));
       // 10b3493287f831e81a438811a1ffba01f8cec4b7
       ```
-    
+
   Nx Environment Variables:
     desc: Environment variables for Nx
     tags: [nx]
