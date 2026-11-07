@@ -32,11 +32,9 @@ const ARROWS = [
 const APPS = [
   ['return_or_enter', ['shift'], 'Google Chrome'],
   ['f', ['shift'], 'Finder'],
-  ['a', ['shift'], 'ChatGPT'],
   ['c', ['shift'], 'Claude'],
   ['v', ['shift'], 'Visual Studio Code'],
-  ['g', ['shift'], 'WhatsApp'],
-  ['d', ['shift'], 'Discord'],
+  ['g', ['shift'], 'Gemini'],
 ] as const
 
 const slot = (i: number) => String(i + 1)
@@ -53,9 +51,10 @@ export const bindings: readonly Binding[] = [
 
   ...ARROWS.map(([key, dir]) => b('Windows', key, [], `Focus window ${dir}`, ['focus', dir])),
   ...ARROWS.map(([key, dir]) => b('Windows', key, ['shift'], `Swap window ${dir}`, ['swap', dir])),
-  b('Windows', 'left_arrow', ['shift', 'control'], 'Send window to the screen west', ['send-display', 'west']),
-  b('Windows', 'right_arrow', ['shift', 'control'], 'Send window to the screen east', ['send-display', 'east']),
-  b('Windows', 'grave_accent_and_tilde', [], 'Focus the other screen', ['display-other']),
+  b('Windows', 'open_bracket', [], 'Focus the screen west', ['screen', 'west']),
+  b('Windows', 'close_bracket', [], 'Focus the screen east', ['screen', 'east']),
+  b('Windows', 'open_bracket', ['shift'], 'Send window to the screen west', ['send-display', 'west']),
+  b('Windows', 'close_bracket', ['shift'], 'Send window to the screen east', ['send-display', 'east']),
   b('Windows', 'w', [], 'Close window', ['close']),
   b('Windows', 't', [], 'Toggle tiled / floating', ['float']),
   b('Windows', 'f', [], 'Fullscreen inside the space', ['zoom', 'full']),
@@ -76,7 +75,6 @@ export const bindings: readonly Binding[] = [
   }),
   b('Layout', 'l', [], 'Toggle tiled / floating layout', ['layout']),
   b('Layout', 'b', [], 'Balance the splits', ['balance']),
-  b('Layout', 'r', [], 'Rotate the layout clockwise', ['rotate']),
   b('Layout', 'right_arrow', ['shift', 'option'], 'Rotate the layout clockwise', ['rotate', 'cw']),
   b('Layout', 'left_arrow', ['shift', 'option'], 'Rotate the layout counter-clockwise', ['rotate', 'ccw']),
 

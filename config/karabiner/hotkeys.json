@@ -205,18 +205,23 @@
     "group": "Windows"
   },
   {
-    "keys": "fn ⌃ ⇧ ←",
+    "keys": "fn [",
+    "label": "Focus the screen west",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ]",
+    "label": "Focus the screen east",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⇧ [",
     "label": "Send window to the screen west",
     "group": "Windows"
   },
   {
-    "keys": "fn ⌃ ⇧ →",
+    "keys": "fn ⇧ ]",
     "label": "Send window to the screen east",
-    "group": "Windows"
-  },
-  {
-    "keys": "fn `",
-    "label": "Focus the other screen",
     "group": "Windows"
   },
   {
@@ -310,11 +315,6 @@
     "group": "Layout"
   },
   {
-    "keys": "fn R",
-    "label": "Rotate the layout clockwise",
-    "group": "Layout"
-  },
-  {
     "keys": "fn ⌥ ⇧ →",
     "label": "Rotate the layout clockwise",
     "group": "Layout"
@@ -340,11 +340,6 @@
     "group": "Apps"
   },
   {
-    "keys": "fn ⇧ A",
-    "label": "ChatGPT",
-    "group": "Apps"
-  },
-  {
     "keys": "fn ⇧ C",
     "label": "Claude",
     "group": "Apps"
@@ -356,12 +351,7 @@
   },
   {
     "keys": "fn ⇧ G",
-    "label": "WhatsApp",
-    "group": "Apps"
-  },
-  {
-    "keys": "fn ⇧ D",
-    "label": "Discord",
+    "label": "Gemini",
     "group": "Apps"
   },
   {

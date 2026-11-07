@@ -116,7 +116,8 @@ describe("yb", () => {
       const cases: Array<[string[], string[]]> = [
         [["swap", "north"], ["-m window --swap north"]],
         [["send-display", "east"], ["-m window --display east", "-m display --focus east"]],
-        [["display-other"], ["-m display --focus recent"]],
+        [["screen", "west"], ["-m display --focus west"]],
+        [["screen", "east"], ["-m display --focus east"]],
         [["split"], ["-m window --toggle split"]],
         [["float"], ["-m window --toggle float"]],
         [["zoom", "full"], ["-m window --toggle zoom-fullscreen"]],

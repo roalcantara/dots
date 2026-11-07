@@ -32,7 +32,11 @@
 #USAGE     choices "west" "east" "north" "south"
 #USAGE   }
 #USAGE }
-#USAGE cmd "display-other" help="Focus the other screen"
+#USAGE cmd "screen" help="Focus the screen that way" {
+#USAGE   arg "<dir>" {
+#USAGE     choices "west" "east" "north" "south"
+#USAGE   }
+#USAGE }
 #USAGE cmd "split" help="Toggle the split orientation"
 #USAGE cmd "arrange" help="Arrange the focused window and its neighbour: side by side (left/right) or one above the other (up/down), focused on that side" {
 #USAGE   arg "<dir>" {
@@ -486,7 +490,7 @@ main() {
     focus) Yq window --focus "$usage_dir" || Y display --focus "$usage_dir" ;;
     swap) Y window --swap "$usage_dir" ;;
     send-display) Y window --display "$usage_dir" && Y display --focus "$usage_dir" ;;
-    display-other) Y display --focus recent ;;
+    screen) Y display --focus "$usage_dir" ;;
     split) Y window --toggle split ;;
     arrange) arrange "$usage_dir" ;;
     layout) toggle_layout ;;

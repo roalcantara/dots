@@ -23,6 +23,8 @@ const KEYS: Readonly<Record<string, string>> = {
   escape: 'Esc',
   tab: 'Tab',
   grave_accent_and_tilde: '`',
+  open_bracket: '[',
+  close_bracket: ']',
   hyphen: '−',
   equal_sign: '=',
 }

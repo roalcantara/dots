@@ -877,53 +877,9 @@
               },
               {
                 "type": "basic",
-                "description": "Send window to the screen west",
+                "description": "Focus the screen west",
                 "from": {
-                  "key_code": "left_arrow",
-                  "modifiers": {
-                    "mandatory": [
-                      "fn",
-                      "shift",
-                      "control"
-                    ],
-                    "optional": [
-                      "caps_lock"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ ⇧ ←' \"$HOME/.local/bin/yb\" send-display west"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "description": "Send window to the screen east",
-                "from": {
-                  "key_code": "right_arrow",
-                  "modifiers": {
-                    "mandatory": [
-                      "fn",
-                      "shift",
-                      "control"
-                    ],
-                    "optional": [
-                      "caps_lock"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ ⇧ →' \"$HOME/.local/bin/yb\" send-display east"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "description": "Focus the other screen",
-                "from": {
-                  "key_code": "grave_accent_and_tilde",
+                  "key_code": "open_bracket",
                   "modifiers": {
                     "mandatory": [
                       "fn"
@@ -935,7 +891,69 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn `' \"$HOME/.local/bin/yb\" display-other"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn [' \"$HOME/.local/bin/yb\" screen west"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focus the screen east",
+                "from": {
+                  "key_code": "close_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ]' \"$HOME/.local/bin/yb\" screen east"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Send window to the screen west",
+                "from": {
+                  "key_code": "open_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ [' \"$HOME/.local/bin/yb\" send-display west"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Send window to the screen east",
+                "from": {
+                  "key_code": "close_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ ]' \"$HOME/.local/bin/yb\" send-display east"
                   }
                 ]
               },
@@ -1316,26 +1334,6 @@
                 "type": "basic",
                 "description": "Rotate the layout clockwise",
                 "from": {
-                  "key_code": "r",
-                  "modifiers": {
-                    "mandatory": [
-                      "fn"
-                    ],
-                    "optional": [
-                      "caps_lock"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn R' \"$HOME/.local/bin/yb\" rotate"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "description": "Rotate the layout clockwise",
-                "from": {
                   "key_code": "right_arrow",
                   "modifiers": {
                     "mandatory": [
@@ -1445,27 +1443,6 @@
               },
               {
                 "type": "basic",
-                "description": "ChatGPT",
-                "from": {
-                  "key_code": "a",
-                  "modifiers": {
-                    "mandatory": [
-                      "fn",
-                      "shift"
-                    ],
-                    "optional": [
-                      "caps_lock"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ A' \"$HOME/.local/bin/yb\" app ChatGPT"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
                 "description": "Claude",
                 "from": {
                   "key_code": "c",
@@ -1508,7 +1485,7 @@
               },
               {
                 "type": "basic",
-                "description": "WhatsApp",
+                "description": "Gemini",
                 "from": {
                   "key_code": "g",
                   "modifiers": {
@@ -1523,28 +1500,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ G' \"$HOME/.local/bin/yb\" app WhatsApp"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "description": "Discord",
-                "from": {
-                  "key_code": "d",
-                  "modifiers": {
-                    "mandatory": [
-                      "fn",
-                      "shift"
-                    ],
-                    "optional": [
-                      "caps_lock"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ D' \"$HOME/.local/bin/yb\" app Discord"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ G' \"$HOME/.local/bin/yb\" app Gemini"
                   }
                 ]
               },

@@ -60,7 +60,6 @@ describe("karabiner fn layer", () => {
   it("fn + arrows focus, ⇧ swaps, ⌥↑/↓ page", () => {
     expect(command("left_arrow")).toEndWith('yb" focus west');
     expect(command("down_arrow", "shift")).toEndWith('yb" swap south');
-    expect(command("right_arrow", "shift", "control")).toEndWith('yb" send-display east');
     expect(find("up_arrow", "option")?.to).toEqual([{ key_code: "page_up" }]);
     expect(find("down_arrow", "option")?.to).toEqual([{ key_code: "page_down" }]);
   });
@@ -74,12 +73,20 @@ describe("karabiner fn layer", () => {
     // the layout turns the way the arrow points; fn + r stays clockwise
     expect(command("right_arrow", "shift", "option")).toEndWith('yb" rotate cw');
     expect(command("left_arrow", "shift", "option")).toEndWith('yb" rotate ccw');
-    expect(command("r")).toEndWith('yb" rotate');
     // no stacking: stacked windows hid with no sign (yabai has no tab bar)
     for (const [key, ...mods] of [["g"], ["g", "option"], ["left_arrow", "option"], ["right_arrow", "option"], ["tab", "option"], ["tab", "shift", "option"], ["l", "option"]]) {
       expect(find(key!, ...mods)).toBeUndefined();
     }
     expect(command("l")).toEndWith('yb" layout');
+    // removed: fn+⇧a (ChatGPT), fn+⇧d (Discord), fn+r (rotate; the ⌥⇧ arrows remain), fn+` and fn+⇧⌃←/→ (now [ and ])
+    for (const [key, ...mods] of [["a", "shift"], ["d", "shift"], ["r"], ["grave_accent_and_tilde"], ["left_arrow", "shift", "control"], ["right_arrow", "shift", "control"]]) {
+      expect(find(key!, ...mods)).toBeUndefined();
+    }
+    expect(command("g", "shift")).toEndWith(`yb" app Gemini`);
+    expect(command("open_bracket")).toEndWith('yb" screen west');
+    expect(command("close_bracket")).toEndWith('yb" screen east');
+    expect(command("open_bracket", "shift")).toEndWith('yb" send-display west');
+    expect(command("close_bracket", "shift")).toEndWith('yb" send-display east');
     // fn + ⌃ + arrow: the focused window and its neighbour, arranged the way the arrow points
     for (const [key, dir] of [["left_arrow", "left"], ["right_arrow", "right"], ["up_arrow", "up"], ["down_arrow", "down"]]) {
       expect(command(key!, "control")).toEndWith(`yb" arrange ${dir}`);
