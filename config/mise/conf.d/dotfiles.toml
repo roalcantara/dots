@@ -47,6 +47,8 @@
 "~/.zshenv" = { source = "~/.local/share/dots/config/zsh/.zshenv", relative = true }
 "~/.bashrc" = { source = "~/.local/share/dots/config/bash/bashrc", relative = true }
 "~/.profile" = { source = "~/.local/share/dots/config/.profile", relative = true }
+# Claude Code user settings: runs the Bash tool in bash, not the login zsh (word splitting).
+"~/.claude/settings.json" = { source = "~/.local/share/dots/config/claude/settings.json", relative = true }
 # ~/.config/ssh and ~/.config/gnupg are real folders: synced encrypted by mise dot history (config.toml). Everything else in ~/.config links into config/; secret files there are SOPS-encrypted (.sops.yaml).
 "~/.ssh" = { source = "~/.config/ssh", relative = true }
 "~/.gnupg" = { source = "~/.config/gnupg", relative = true }
