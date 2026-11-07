@@ -155,8 +155,9 @@ its neighbour (docs/TILING.md has the current keys).
 
 ### Look and behaviour
 
-- bsp layout, new windows split the focused one, `auto_balance` on, gaps and padding as in the current
-  `yabairc` (12 padding, 6 gap) until tuned.
+- bsp layout like Hyprland's dwindle: a new window splits the newest tile (`window_insertion_point last`),
+  along its longer side, taking the right or bottom half; `auto_balance` off so sizes set by hand stay
+  (fn + b balances); gaps and padding 10 (Omarchy's).
 - Focused window: JankyBorders outline, accent colour, width about 5, rounded; unfocused windows get no
   border.
 - With the scripting addition: no slide between spaces, no window shadows.
