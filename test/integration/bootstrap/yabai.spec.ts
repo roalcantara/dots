@@ -99,6 +99,8 @@ describe("yabai and borders services", () => {
     expect(yabairc).toMatch(/window_insertion_point last/);
     expect(yabairc).toMatch(/window_placement second_child/);
     expect(yabairc).toMatch(/split_type auto/);
+    // a new window must not undo sizes set with fn + − / =: balance only on fn + b
+    expect(yabairc).toMatch(/auto_balance off/);
   });
 
   it("uses Omarchy's gaps: 10 between windows and at the screen edges", () => {
