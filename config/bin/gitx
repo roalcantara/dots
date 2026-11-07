@@ -82,7 +82,7 @@
 
 emulate -L zsh
 setopt no_unset pipe_fail extended_glob
-source /Users/roalcantara/Work/dots/config/bin/src/helpers
+source "${0:A:h}/src/helpers"
 
 _gitx_branches() {
   git branch -vva --color=never 2>/dev/null \
