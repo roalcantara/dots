@@ -70,3 +70,61 @@ describe("tiling packages and links", () => {
     });
   });
 });
+
+describe("yabai and borders services", () => {
+  const yabairc = read("config/yabai/yabairc");
+  const sh = (args: string[]) => Bun.spawnSync(args, { stdout: "pipe", stderr: "pipe" });
+
+  it("yabairc and bordersrc are valid sh that shellcheck accepts", () => {
+    for (const f of ["config/yabai/yabairc", "config/borders/bordersrc"]) {
+      expect(sh(["sh", "-n", join(REPO, f)]).exitCode).toBe(0);
+      const r = sh(["shellcheck", "-s", "sh", join(REPO, f)]);
+      expect(r.stdout.toString()).toBe("");
+    }
+  });
+
+  it("loads the scripting addition without ever waiting for a password", () => {
+    expect(yabairc).toContain("sudo -n yabai --load-sa");
+    expect(yabairc).not.toMatch(/sudo yabai/);
+  });
+
+  it("keeps focus where the keyboard puts it, without animations", () => {
+    expect(yabairc).toMatch(/focus_follows_mouse off/);
+    expect(yabairc).toMatch(/window_animation_duration 0\.0/);
+    expect(yabairc).toMatch(/layout bsp/);
+  });
+
+  it("re-checks the spaces when screens change, and refreshes the kb strip", () => {
+    for (const event of ["display_added", "display_removed", "display_moved"]) {
+      expect(yabairc).toMatch(new RegExp(`event=${event} .*action="\\$SPACES"`));
+    }
+    for (const event of ["space_changed", "display_changed", "window_created", "window_destroyed"]) {
+      expect(yabairc).toMatch(new RegExp(`event=${event} .*action="\\$KB"`));
+    }
+    expect(yabairc).toContain('SPACES="$HOME/.local/bin/yb spaces"');
+    expect(yabairc).toContain("raycast://extensions/roalcantara/kb/yabai.screen?launchType=background");
+    expect(yabairc).toMatch(/^\$HOME\/\.local\/bin\/yb spaces/m);
+  });
+
+  it("leaves settings windows, dialogs and launchers floating", () => {
+    for (const app of ["System Settings", "Calculator", "Archive Utility", "Raycast", "Karabiner-Elements"]) {
+      expect(yabairc).toContain(`app="^${app}$" manage=off`);
+    }
+    expect(yabairc).toContain('subrole="^AXDialog$" manage=off');
+  });
+
+  it("outlines only the focused window", () => {
+    const rc = read("config/borders/bordersrc");
+    expect(rc).toMatch(/^borders .*active_color=0xffe1e3e4/m);
+    expect(rc).toMatch(/inactive_color=0x00000000/);
+    expect(rc).toMatch(/width=5\.0/);
+  });
+
+  it("runs yabai and borders as LaunchAgents that restart on exit", () => {
+    const agents = toml("config/mise/conf.d/yabai.toml").bootstrap.macos.launchd.agents;
+    for (const [name, program] of [["yabai", "/opt/homebrew/bin/yabai"], ["borders", "/opt/homebrew/bin/borders"]]) {
+      expect(agents[name!]).toMatchObject({ program, keep_alive: true, run_at_load: true });
+      expect(agents[name!].environment.PATH).toStartWith("/opt/homebrew/bin:");
+    }
+  });
+});

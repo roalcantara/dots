@@ -1,0 +1,16 @@
+# Tiling: yabai with ten labelled spaces, JankyBorders, and the Karabiner fn layer (docs/TILING.md).
+# Spec: docs/superpowers/specs/2026-11-07-yabai-omarchy-design.md.
+
+# yabai and borders run as LaunchAgents (dev.mise.<name>) and restart if they exit. PATH reaches
+# Homebrew, where yb's usage and zsh, and jq, live.
+[bootstrap.macos.launchd.agents.yabai]
+program = "/opt/homebrew/bin/yabai"
+run_at_load = true
+keep_alive = true
+environment = { PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
+
+[bootstrap.macos.launchd.agents.borders]
+program = "/opt/homebrew/bin/borders"
+run_at_load = true
+keep_alive = true
+environment = { PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }

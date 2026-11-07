@@ -1,2 +1,5 @@
-#!/usr/bin/env bash
-# JankyBorders: the outline around the focused window. Settings arrive in the next commit.
+#!/usr/bin/env sh
+# JankyBorders: an outline around the focused window only (docs/TILING.md).
+# https://github.com/FelixKratz/JankyBorders — the LaunchAgent in config/mise/conf.d/yabai.toml runs
+# `borders`, which reads this file.
+borders active_color=0xffe1e3e4 inactive_color=0x00000000 width=5.0 style=round hidpi=on
