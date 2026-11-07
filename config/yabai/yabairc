@@ -50,12 +50,14 @@ yabai -m signal --add event=display_added label=spaces_added action="$SPACES"
 yabai -m signal --add event=display_removed label=spaces_removed action="$SPACES"
 yabai -m signal --add event=display_moved label=spaces_moved action="$SPACES"
 
-# The kb Raycast extension's space strip (roalcantara/kb-raycast, command yabai.screen).
-KB="nohup open -g 'raycast://extensions/roalcantara/kb/yabai.screen?launchType=background' >/dev/null 2>&1 &"
-yabai -m signal --add event=space_changed label=kb_space action="$KB"
-yabai -m signal --add event=display_changed label=kb_display action="$KB"
-yabai -m signal --add event=window_created label=kb_window_created action="$KB"
-yabai -m signal --add event=window_destroyed label=kb_window_destroyed action="$KB"
+# The space strip in the menu bar (SwiftBar, config/swiftbar): redraw on every change, including focus
+# moving between screens (application_front_switched).
+BAR="open -g 'swiftbar://refreshplugin?name=spaces'"
+yabai -m signal --add event=space_changed label=bar_space action="$BAR"
+yabai -m signal --add event=display_changed label=bar_display action="$BAR"
+yabai -m signal --add event=window_created label=bar_window_created action="$BAR"
+yabai -m signal --add event=window_destroyed label=bar_window_destroyed action="$BAR"
+yabai -m signal --add event=application_front_switched label=bar_front action="$BAR"
 
 $HOME/.local/bin/yb spaces
 echo "yabai configuration loaded"

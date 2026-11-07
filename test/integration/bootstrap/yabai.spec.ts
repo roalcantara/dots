@@ -2,7 +2,7 @@
 // The tiling setup (docs/superpowers/specs/2026-11-07-yabai-omarchy-design.md): packages, the fn key
 // default, the links bootstrap makes, and the services and rules around yabai.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -101,15 +101,16 @@ describe("yabai and borders services", () => {
     }
   });
 
-  it("re-checks the spaces when screens change, and refreshes the kb strip", () => {
+  it("re-checks the spaces when screens change, and refreshes the SwiftBar strip", () => {
     for (const event of ["display_added", "display_removed", "display_moved"]) {
       expect(yabairc).toMatch(new RegExp(`event=${event} .*action="\\$SPACES"`));
     }
-    for (const event of ["space_changed", "display_changed", "window_created", "window_destroyed"]) {
-      expect(yabairc).toMatch(new RegExp(`event=${event} .*action="\\$KB"`));
+    for (const event of ["space_changed", "display_changed", "window_created", "window_destroyed", "application_front_switched"]) {
+      expect(yabairc).toMatch(new RegExp(`event=${event} .*action="\\$BAR"`));
     }
+    expect(yabairc).toContain(`BAR="open -g 'swiftbar://refreshplugin?name=spaces'"`);
+    expect(yabairc).not.toContain("kb/yabai.screen");
     expect(yabairc).toContain('SPACES="$HOME/.local/bin/yb spaces"');
-    expect(yabairc).toContain("raycast://extensions/roalcantara/kb/yabai.screen?launchType=background");
     expect(yabairc).toMatch(/^\$HOME\/\.local\/bin\/yb spaces/m);
   });
 
@@ -155,5 +156,54 @@ describe("scripting addition hook", () => {
     } finally {
       rmSync(t, { recursive: true, force: true });
     }
+  });
+});
+
+describe("SwiftBar space strip", () => {
+  const brewfile = read("config/homebrew/Brewfile");
+  const dotfiles = toml("config/mise/conf.d/dotfiles.toml");
+  const hook: string = toml("config/mise/conf.d/yabai.toml").bootstrap.hooks["post-defaults"].run;
+  const plugin = join(REPO, "config/swiftbar/plugins/spaces.sh");
+
+  it("installs SwiftBar and links ~/.config/swiftbar", () => {
+    expect(brewfile).toMatch(/^cask "swiftbar" if OS\.mac\?/m);
+    expect(dotfiles.dotfiles["~/.config/swiftbar"]).toEqual({ source: "~/.local/share/dots/config/swiftbar", relative: true });
+  });
+
+  it("the plugin is executable and prints yb bar with Homebrew on PATH", () => {
+    expect(statSync(plugin).mode & 0o111).not.toBe(0);
+    const body = readFileSync(plugin, "utf8");
+    expect(body).toContain('exec "$HOME/.local/bin/yb" bar');
+    expect(body).toContain("/opt/homebrew/bin");
+    expect(body).toContain("<swiftbar.hideAbout>true</swiftbar.hideAbout>");
+  });
+
+  function runHook(os: string) {
+    const t = mkdtempSync(join(tmpdir(), "swiftbar-hook-"));
+    try {
+      for (const [name, body] of [["uname", `echo ${os}`], ["defaults", `echo "$@" >> "${t}/defaults.calls"`]]) {
+        writeFileSync(join(t, name!), `#!/bin/sh\n${body}\n`);
+        chmodSync(join(t, name!), 0o755);
+      }
+      const r = Bun.spawnSync(["bash", "-c", hook], { env: { PATH: `${t}:/usr/bin:/bin`, HOME: t }, stdout: "pipe", stderr: "pipe" });
+      return { code: r.exitCode, calls: existsSync(join(t, "defaults.calls")) ? readFileSync(join(t, "defaults.calls"), "utf8") : "", home: t };
+    } finally {
+      // read before cleanup
+    }
+  }
+
+  it("points SwiftBar at the plugin folder so its first launch needs no prompt", () => {
+    const r = runHook("Darwin");
+    expect(r.code).toBe(0);
+    expect(r.calls).toContain(`write com.ameba.SwiftBar PluginDirectory -string ${r.home}/.config/swiftbar/plugins`);
+    expect(r.calls).toContain("write com.ameba.SwiftBar SUHasLaunchedBefore -bool true");
+    rmSync(r.home, { recursive: true, force: true });
+  });
+
+  it("does nothing off macOS", () => {
+    const r = runHook("Linux");
+    expect(r.code).toBe(0);
+    expect(r.calls).toBe("");
+    rmSync(r.home, { recursive: true, force: true });
   });
 });

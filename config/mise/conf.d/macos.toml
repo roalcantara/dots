@@ -63,6 +63,7 @@ apps = [
   "/Applications/Vorssaint.app",
   "/Applications/Bitwarden.app",
   "/Applications/Google Drive.app",
+  "/Applications/SwiftBar.app",
 ]
 
 [bootstrap.macos.defaults.NSGlobalDomain]
