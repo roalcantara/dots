@@ -34,6 +34,11 @@
 #USAGE }
 #USAGE cmd "display-other" help="Focus the other screen"
 #USAGE cmd "split" help="Toggle the split orientation"
+#USAGE cmd "arrange" help="Arrange the focused window and its neighbour: side by side (left/right) or stacked (up/down), focused on that side" {
+#USAGE   arg "<dir>" {
+#USAGE     choices "left" "right" "up" "down"
+#USAGE   }
+#USAGE }
 #USAGE cmd "layout" help="Cycle the space layout bsp, stack, float" {
 #USAGE   arg "<step>" {
 #USAGE     choices "next" "prev"
@@ -441,6 +446,32 @@ toggle_pin() {
   fi
 }
 
+# yabai describes each window by the split it shares with its neighbour: split-type vertical = side by
+# side, horizontal = stacked; split-child first = left/top, second = right/bottom.
+arrange() {
+  local dir="$1" want_split want_child info split child
+  case "$dir" in
+    left | right) want_split=vertical ;;
+    *) want_split=horizontal ;;
+  esac
+  case "$dir" in
+    left | up) want_child=first_child ;;
+    *) want_child=second_child ;;
+  esac
+  info="$(Y query --windows --window)" || return
+  split="$(jq -r '."split-type" // "none"' <<<"$info")"
+  child="$(jq -r '."split-child" // ""' <<<"$info")"
+  [[ $split == none ]] && return 0
+  if [[ $split != "$want_split" ]]; then
+    Y window --toggle split || return
+  fi
+  if [[ $child != "$want_child" ]]; then
+    # a neighbour that is a group of windows is no swappable sibling: swap toward the arrow instead
+    local -A toward=(left west right east up north down south)
+    Yq window --swap sibling || Y window --swap "${toward[$dir]}"
+  fi
+}
+
 resize() {
   local far near
   case "$1" in
@@ -471,6 +502,7 @@ main() {
     send-display) Y window --display "$usage_dir" && Y display --focus "$usage_dir" ;;
     display-other) Y display --focus recent ;;
     split) Y window --toggle split ;;
+    arrange) arrange "$usage_dir" ;;
     layout) cycle_layout "$usage_step" ;;
     float) Y window --toggle float ;;
     pin) toggle_pin ;;

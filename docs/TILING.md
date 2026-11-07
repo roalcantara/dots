@@ -68,6 +68,7 @@ everyday ones:
 | fn + g / ⌥ + ← → / ⌥Tab      | Stack with the neighbour / stack that way / next in the stack                                                  |
 | fn + j / l / b / r           | Split orientation / next layout / balance / rotate clockwise                                                   |
 | fn + ⌥⇧ + → / ←              | Rotate the layout clockwise / counter-clockwise                                                                |
+| fn + ⌃ + ← / → / ↑ / ↓       | Focused window and its neighbour side by side (← →) or stacked (↑ ↓), focused that way                         |
 | fn + ⌥ + ↑ / ↓               | Page Up / Page Down (fn + ↑/↓ now move focus)                                                                  |
 | fn + Return / ⇧Return        | Ghostty / Chrome; fn + ⇧ + f, a, c, v, g, d, n for Finder, ChatGPT, Claude, VS Code, WhatsApp, Discord, Neovim |
 | fn + Esc                     | Lock, sleep, restart (kb System command)                                                                       |
@@ -173,6 +174,8 @@ OS), so expect them to fail there until yabai is replaced or updated.
 - [ ] fn + l / ⌥l cycle bsp → stack → float (float stops tiling: cycle back to bsp).
 - [ ] fn + b balances the splits; fn + r rotates them clockwise.
 - [ ] fn + ⌥⇧ + → rotates the layout clockwise, fn + ⌥⇧ + ← counter-clockwise; focus stays on the same window.
+- [ ] fn + ⌃ + ← / →: the focused window and its neighbour side by side, focused on the left / right;
+      fn + ⌃ + ↑ / ↓: stacked, focused on top / at the bottom.
 
 ### Apps
 

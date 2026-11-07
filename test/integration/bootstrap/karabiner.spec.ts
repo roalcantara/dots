@@ -75,6 +75,10 @@ describe("karabiner fn layer", () => {
     expect(command("right_arrow", "shift", "option")).toEndWith('yb" rotate cw');
     expect(command("left_arrow", "shift", "option")).toEndWith('yb" rotate ccw');
     expect(command("r")).toEndWith('yb" rotate');
+    // fn + ⌃ + arrow: the focused window and its neighbour, arranged the way the arrow points
+    for (const [key, dir] of [["left_arrow", "left"], ["right_arrow", "right"], ["up_arrow", "up"], ["down_arrow", "down"]]) {
+      expect(command(key!, "control")).toEndWith(`yb" arrange ${dir}`);
+    }
     // the key's name reaches yb's trace (yb log)
     expect(command("1", "shift")).toContain("YB_KEY='fn ⇧ 1'");
   });

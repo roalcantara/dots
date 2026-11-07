@@ -1295,6 +1295,90 @@
               },
               {
                 "type": "basic",
+                "description": "Focused and its neighbour side by side, focused on the left",
+                "from": {
+                  "key_code": "left_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ ←' \"$HOME/.local/bin/yb\" arrange left"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focused and its neighbour side by side, focused on the right",
+                "from": {
+                  "key_code": "right_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ →' \"$HOME/.local/bin/yb\" arrange right"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focused and its neighbour stacked, focused on top",
+                "from": {
+                  "key_code": "up_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ ↑' \"$HOME/.local/bin/yb\" arrange up"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focused and its neighbour stacked, focused at the bottom",
+                "from": {
+                  "key_code": "down_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ ↓' \"$HOME/.local/bin/yb\" arrange down"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
                 "description": "Next layout (bsp, stack, float)",
                 "from": {
                   "key_code": "l",

@@ -165,6 +165,37 @@ describe("yb", () => {
     });
   });
 
+  describe("arrange", () => {
+    const q = (split: string, child: string) => ({ YB_STUB_QUERY: `{"split-type":"${split}","split-child":"${child}"}` });
+    const Q = "-m query --windows --window";
+
+    it("puts the focused window and its neighbour side by side, focused on the left or right", () => {
+      expect(yb(["arrange", "left"], q("horizontal", "first_child")).calls).toEqual([Q, "-m window --toggle split"]);
+      expect(yb(["arrange", "right"], q("horizontal", "first_child")).calls).toEqual([Q, "-m window --toggle split", "-m window --swap sibling"]);
+      expect(yb(["arrange", "left"], q("vertical", "second_child")).calls).toEqual([Q, "-m window --swap sibling"]);
+      expect(yb(["arrange", "right"], q("vertical", "second_child")).calls).toEqual([Q]);
+    });
+
+    it("stacks them, focused on top or at the bottom", () => {
+      expect(yb(["arrange", "up"], q("vertical", "first_child")).calls).toEqual([Q, "-m window --toggle split"]);
+      expect(yb(["arrange", "down"], q("horizontal", "first_child")).calls).toEqual([Q, "-m window --swap sibling"]);
+    });
+
+    it("swaps toward the arrow when the neighbour is a group of windows", () => {
+      const r = yb(["arrange", "left"], { ...q("vertical", "second_child"), YB_STUB_FAIL: "swap sibling" });
+      expect(r.calls).toEqual([Q, "-m window --swap sibling", "-m window --swap west"]);
+      expect(r.code).toBe(0);
+    });
+
+    it("does nothing for a window alone on its space", () => {
+      expect(yb(["arrange", "left"], q("none", "second_child")).calls).toEqual([Q]);
+    });
+
+    it("rejects other directions", () => {
+      expect(yb(["arrange", "west"]).code).not.toBe(0);
+    });
+  });
+
   describe("layout", () => {
     it("cycles bsp → stack → float and back", () => {
       expect(yb(["layout", "next"], { YB_STUB_QUERY: '{"type":"bsp"}' }).calls).toEqual([

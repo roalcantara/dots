@@ -305,6 +305,26 @@
     "group": "Layout"
   },
   {
+    "keys": "fn ⌃ ←",
+    "label": "Focused and its neighbour side by side, focused on the left",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌃ →",
+    "label": "Focused and its neighbour side by side, focused on the right",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌃ ↑",
+    "label": "Focused and its neighbour stacked, focused on top",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌃ ↓",
+    "label": "Focused and its neighbour stacked, focused at the bottom",
+    "group": "Layout"
+  },
+  {
     "keys": "fn L",
     "label": "Next layout (bsp, stack, float)",
     "group": "Layout"

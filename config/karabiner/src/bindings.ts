@@ -74,6 +74,11 @@ export const bindings: readonly Binding[] = [
   b('Windows', 'tab', ['shift', 'option'], 'Previous window in the stack', ['stack', 'prev']),
 
   b('Layout', 'j', [], 'Toggle split orientation', ['split']),
+  ...ARROWS.map(([key]) => {
+    const dir = ({ left_arrow: 'left', right_arrow: 'right', up_arrow: 'up', down_arrow: 'down' } as const)[key]
+    const how = dir === 'left' || dir === 'right' ? 'side by side' : 'stacked'
+    return b('Layout', key, ['control'], `Focused and its neighbour ${how}, focused ${dir === 'up' ? 'on top' : dir === 'down' ? 'at the bottom' : `on the ${dir}`}`, ['arrange', dir])
+  }),
   b('Layout', 'l', [], 'Next layout (bsp, stack, float)', ['layout', 'next']),
   b('Layout', 'l', ['option'], 'Previous layout', ['layout', 'prev']),
   b('Layout', 'b', [], 'Balance the splits', ['balance']),
