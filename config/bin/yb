@@ -1,26 +1,185 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154,SC2168,SC2046
+# yb — the yabai CLI behind the Karabiner fn layer (config/karabiner, docs/TILING.md).
+# Spaces are labelled s1…s10: s1–s5 on the built-in screen, s6–s10 on the external one.
+# DOTS_YABAI overrides the yabai binary (tests); failures go to ~/.local/state/dots/yb.log.
 
-#USAGE version "0.1.0"
-#USAGE about "Yabai wrapper"
-#USAGE arg "<action>" {
-#USAGE   choices ignore_case=#true {
-#USAGE     choice "update" help="Update the hash in sudoers"
+#USAGE version "0.2.0"
+#USAGE about "Yabai actions for the fn layer"
+#USAGE cmd "space" help="Focus a space: 1-10 (labels s1-s10), next, prev or recent" {
+#USAGE   arg "<target>" {
+#USAGE     choices "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "next" "prev" "recent"
 #USAGE   }
 #USAGE }
-#USAGE example "yb update"
+#USAGE cmd "move" help="Move the focused window to a space and follow it" {
+#USAGE   arg "<n>" {
+#USAGE     choices "1" "2" "3" "4" "5" "6" "7" "8" "9" "10"
+#USAGE   }
+#USAGE   flag "--stay" help="Stay on the current space"
+#USAGE }
+#USAGE cmd "focus" help="Focus the window that way, or the screen that way at the edge" {
+#USAGE   arg "<dir>" {
+#USAGE     choices "west" "east" "north" "south"
+#USAGE   }
+#USAGE }
+#USAGE cmd "swap" help="Swap the focused window with its neighbour" {
+#USAGE   arg "<dir>" {
+#USAGE     choices "west" "east" "north" "south"
+#USAGE   }
+#USAGE }
+#USAGE cmd "send-display" help="Send the focused window to the screen that way and follow it" {
+#USAGE   arg "<dir>" {
+#USAGE     choices "west" "east" "north" "south"
+#USAGE   }
+#USAGE }
+#USAGE cmd "display-other" help="Focus the other screen"
+#USAGE cmd "split" help="Toggle the split orientation"
+#USAGE cmd "layout" help="Cycle the space layout bsp, stack, float" {
+#USAGE   arg "<step>" {
+#USAGE     choices "next" "prev"
+#USAGE   }
+#USAGE }
+#USAGE cmd "float" help="Toggle tiled or floating"
+#USAGE cmd "pin" help="Toggle floating, on top, on every space of its screen"
+#USAGE cmd "zoom" help="Fill the space (full) or the parent split (parent)" {
+#USAGE   arg "<kind>" {
+#USAGE     choices "full" "parent"
+#USAGE   }
+#USAGE }
+#USAGE cmd "scratchpad" help="Toggle the scratchpad window" {
+#USAGE   flag "--send" help="Send the focused window to the scratchpad instead"
+#USAGE }
+#USAGE cmd "resize" help="Narrower (w-), wider (w+), shorter (h-) or taller (h+)" {
+#USAGE   arg "<step>" {
+#USAGE     choices "w-" "w+" "h-" "h+"
+#USAGE   }
+#USAGE }
+#USAGE cmd "stack" help="Stack onto the neighbour that way, or focus next/prev in the stack" {
+#USAGE   arg "<target>" {
+#USAGE     choices "west" "east" "north" "south" "next" "prev"
+#USAGE   }
+#USAGE }
+#USAGE cmd "balance" help="Balance the split sizes"
+#USAGE cmd "rotate" help="Rotate the layout 90 degrees"
+#USAGE cmd "close" help="Close the focused window"
+#USAGE cmd "app" help="Open an app by name" {
+#USAGE   arg "<name>"
+#USAGE }
+#USAGE cmd "nvim" help="Open Neovim in a new Ghostty window"
+#USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
+#USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
+#USAGE cmd "update" help="Update the hash in sudoers"
+#USAGE example "yb space 6"
+#USAGE example "yb move 3 --stay"
+#USAGE example "yb focus west"
 
-command -V yabai >/dev/null || exit 1
+setopt no_unset pipe_fail
 
-if $usage_update; then
-  # this script assumes a single user installation!
-  YABAI="$(which yabai)"
+yabai="${DOTS_YABAI:-/opt/homebrew/bin/yabai}"
+logfile="$HOME/.local/state/dots/yb.log"
+args="$*"
 
-  # calculate new hash for the binary
-  SHA256=$(shasum -a 256 "$YABAI" | cut -d' ' -f 1)
-  echo "New yabai hash: $SHA256"
+log() {
+  mkdir -p "${logfile:h}"
+  print -r -- "$(date '+%F %T') yb $args: $*" >>"$logfile"
+}
 
-  # replace the hash in-place in the sudoers file
-  #sudo sed -i '' -e 's/sha256:[[:alnum:]]*/sha256:'${SHA256}'/' /private/etc/sudoers.d/yabai || (echo "failed" && exit 1)
-  (echo "$(whoami) ALL=(root) NOPASSWD: sha256:${SHA256} ${YABAI} --load-sa" | sudo tee /private/etc/sudoers.d/yabai) || (echo "failed" && exit 1)
-fi
+# Y runs a yabai command and logs a failure; Yq is for first attempts that have a fallback.
+Y() {
+  "$yabai" -m "$@" && return 0
+  local rc=$?
+  log "yabai -m $* exited $rc"
+  return $rc
+}
+Yq() { "$yabai" -m "$@" 2>/dev/null; }
+
+case "$1" in
+  app | nvim | system | hotkeys | update) ;;
+  *)
+    if [[ ! -x $yabai ]]; then
+      log "yabai not found at $yabai"
+      print -u2 "yb: yabai not found at $yabai"
+      exit 1
+    fi
+    ;;
+esac
+
+kb() { open "raycast://extensions/roalcantara/kb/$1"; }
+
+cycle_layout() {
+  local current next
+  current="$(Y query --spaces --space | jq -r '.type // "bsp"')"
+  case "$1:$current" in
+    next:bsp | prev:float) next=stack ;;
+    next:stack | prev:bsp) next=float ;;
+    *) next=bsp ;;
+  esac
+  Y space --layout "$next"
+}
+
+toggle_pin() {
+  if [[ "$(Y query --windows --window | jq -r '."is-sticky" // false')" == true ]]; then
+    Y window --toggle sticky && Y window --toggle float && Y window --sub-layer auto
+  else
+    Y window --toggle float && Y window --toggle sticky && Y window --sub-layer above
+  fi
+}
+
+resize() {
+  local far near
+  case "$1" in
+    w-) far=right:-40:0 near=left:40:0 ;;
+    w+) far=right:40:0 near=left:-40:0 ;;
+    h-) far=bottom:0:-40 near=top:0:40 ;;
+    h+) far=bottom:0:40 near=top:0:-40 ;;
+  esac
+  Yq window --resize "$far" || Y window --resize "$near"
+}
+
+case "$1" in
+  space)
+    case "$usage_target" in
+      next) Yq space --focus next || Y space --focus first ;;
+      prev) Yq space --focus prev || Y space --focus last ;;
+      recent) Y space --focus recent ;;
+      *) Y space --focus "s$usage_target" ;;
+    esac
+    ;;
+  move)
+    Y window --space "s$usage_n" || exit
+    [[ ${usage_stay:-false} == true ]] || Y space --focus "s$usage_n"
+    ;;
+  focus) Yq window --focus "$usage_dir" || Y display --focus "$usage_dir" ;;
+  swap) Y window --swap "$usage_dir" ;;
+  send-display) Y window --display "$usage_dir" && Y display --focus "$usage_dir" ;;
+  display-other) Y display --focus recent ;;
+  split) Y window --toggle split ;;
+  layout) cycle_layout "$usage_step" ;;
+  float) Y window --toggle float ;;
+  pin) toggle_pin ;;
+  zoom) Y window --toggle "zoom-${usage_kind/full/fullscreen}" ;;
+  scratchpad)
+    if [[ ${usage_send:-false} == true ]]; then Y window --scratchpad scratch; else Y window --toggle scratch; fi
+    ;;
+  resize) resize "$usage_step" ;;
+  stack)
+    case "$usage_target" in
+      next | prev) Y window --focus "stack.$usage_target" ;;
+      *) Y window --stack "$usage_target" ;;
+    esac
+    ;;
+  balance) Y space --balance ;;
+  rotate) Y space --rotate 90 ;;
+  close) Y window --close ;;
+  app) open -a "$usage_name" ;;
+  nvim) open -na Ghostty --args -e nvim ;;
+  system) kb system.screen ;;
+  hotkeys) kb hotkeys.screen ;;
+  update)
+    # this script assumes a single user installation!
+    YABAI="$(which yabai)"
+    SHA256=$(shasum -a 256 "$YABAI" | cut -d' ' -f 1)
+    echo "New yabai hash: $SHA256"
+    (echo "$(whoami) ALL=(root) NOPASSWD: sha256:${SHA256} ${YABAI} --load-sa" | sudo tee /private/etc/sudoers.d/yabai) || (echo "failed" && exit 1)
+    ;;
+esac
