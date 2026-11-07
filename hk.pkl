@@ -47,6 +47,14 @@ local stagingLinters = new Mapping<String, Step> {
     check   = "taplo fmt --check {{files}}"
     fix     = "taplo fmt {{files}}"
   }
+  // Tombi lints what taplo does not: table order, empty keys and JSON Schemas (from the catalog in
+  // config/tombi/config.toml). Warnings fail, so the IDE's Tombi diagnostics never reach a commit.
+  ["tombi"] {
+    glob    = List("**/*.toml")
+    // Manifests that are invalid on purpose, for the backup validation specs.
+    exclude = List("test/integration/backup/fixtures/**")
+    check   = "tombi lint --error-on-warnings {{files}}"
+  }
   ["taplo-schema"] {
     // Validates manifests that declare `#:schema` (taplo fmt does not); scoped so taplo
     // never fetches remote schemas for other TOML files.
