@@ -486,7 +486,8 @@ main() {
       esac
       ;;
     balance) Y space --balance ;;
-    rotate) Y space --rotate "$([[ ${usage_direction:-cw} == ccw ]] && print 270 || print 90)" ;;
+    # yabai's --rotate 90 turns the layout counter-clockwise on screen, so clockwise is 270.
+    rotate) Y space --rotate "$([[ ${usage_direction:-cw} == ccw ]] && print 90 || print 270)" ;;
     close) Y window --close ;;
     app) open -a "$usage_name" ;;
     term) ghostty_window ;;

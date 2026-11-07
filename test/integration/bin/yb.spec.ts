@@ -127,9 +127,10 @@ describe("yb", () => {
         [["stack", "next"], ["-m window --focus stack.next"]],
         [["stack", "prev"], ["-m window --focus stack.prev"]],
         [["balance"], ["-m space --balance"]],
-        [["rotate"], ["-m space --rotate 90"]],
-        [["rotate", "cw"], ["-m space --rotate 90"]],
-        [["rotate", "ccw"], ["-m space --rotate 270"]],
+        // yabai's --rotate 90 turns the layout counter-clockwise on screen (measured: right half -> top)
+        [["rotate"], ["-m space --rotate 270"]],
+        [["rotate", "cw"], ["-m space --rotate 270"]],
+        [["rotate", "ccw"], ["-m space --rotate 90"]],
         [["close"], ["-m window --close"]],
       ];
       for (const [args, calls] of cases) expect(yb(args).calls).toEqual(calls);
