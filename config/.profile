@@ -30,7 +30,8 @@ export zdumpfile=$HOME/.cache/zsh/compcache/.zcompdump
 mkdir -p $ZSH_DATA_DIR $ZSH_COMPCACHE $ZIM_HOME
 # }
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/roalcantara/.lmstudio/bin"
-# End of LM Studio CLI section
+# LM Studio CLI (lms), when installed. Its installer writes a copy with the home folder hardcoded.
+if [ -d "$HOME/.lmstudio/bin" ]; then
+  export PATH="$PATH:$HOME/.lmstudio/bin"
+fi
 
