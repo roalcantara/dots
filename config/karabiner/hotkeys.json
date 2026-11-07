@@ -321,7 +321,17 @@
   },
   {
     "keys": "fn R",
-    "label": "Rotate the layout",
+    "label": "Rotate the layout clockwise",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌥ ⇧ →",
+    "label": "Rotate the layout clockwise",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌥ ⇧ ←",
+    "label": "Rotate the layout counter-clockwise",
     "group": "Layout"
   },
   {

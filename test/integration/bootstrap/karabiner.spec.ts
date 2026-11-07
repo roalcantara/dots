@@ -71,6 +71,10 @@ describe("karabiner fn layer", () => {
     }
     expect(command("return_or_enter", "shift")).toEndWith("yb\" app 'Google Chrome'");
     expect(command("return_or_enter")).toEndWith('yb" term');
+    // the layout turns the way the arrow points; fn + r stays clockwise
+    expect(command("right_arrow", "shift", "option")).toEndWith('yb" rotate cw');
+    expect(command("left_arrow", "shift", "option")).toEndWith('yb" rotate ccw');
+    expect(command("r")).toEndWith('yb" rotate');
     // the key's name reaches yb's trace (yb log)
     expect(command("1", "shift")).toContain("YB_KEY='fn ⇧ 1'");
   });

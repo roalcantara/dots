@@ -66,7 +66,8 @@ everyday ones:
 | fn + o / s / ⌥s              | Pin on top of every space / scratchpad / send to scratchpad                                                    |
 | fn + − / = (⇧ for height)    | Narrower / wider (shorter / taller)                                                                            |
 | fn + g / ⌥ + ← → / ⌥Tab      | Stack with the neighbour / stack that way / next in the stack                                                  |
-| fn + j / l / b / r           | Split orientation / next layout / balance / rotate                                                             |
+| fn + j / l / b / r           | Split orientation / next layout / balance / rotate clockwise                                                   |
+| fn + ⌥⇧ + → / ←              | Rotate the layout clockwise / counter-clockwise                                                                |
 | fn + ⌥ + ↑ / ↓               | Page Up / Page Down (fn + ↑/↓ now move focus)                                                                  |
 | fn + Return / ⇧Return        | Ghostty / Chrome; fn + ⇧ + f, a, c, v, g, d, n for Finder, ChatGPT, Claude, VS Code, WhatsApp, Discord, Neovim |
 | fn + Esc                     | Lock, sleep, restart (kb System command)                                                                       |
@@ -170,7 +171,8 @@ OS), so expect them to fail there until yabai is replaced or updated.
 
 - [ ] fn + j flips the split orientation.
 - [ ] fn + l / ⌥l cycle bsp → stack → float (float stops tiling: cycle back to bsp).
-- [ ] fn + b balances the splits; fn + r rotates them.
+- [ ] fn + b balances the splits; fn + r rotates them clockwise.
+- [ ] fn + ⌥⇧ + → rotates the layout clockwise, fn + ⌥⇧ + ← counter-clockwise; focus stays on the same window.
 
 ### Apps
 

@@ -1356,7 +1356,7 @@
               },
               {
                 "type": "basic",
-                "description": "Rotate the layout",
+                "description": "Rotate the layout clockwise",
                 "from": {
                   "key_code": "r",
                   "modifiers": {
@@ -1371,6 +1371,50 @@
                 "to": [
                   {
                     "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn R' \"$HOME/.local/bin/yb\" rotate"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Rotate the layout clockwise",
+                "from": {
+                  "key_code": "right_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ →' \"$HOME/.local/bin/yb\" rotate cw"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Rotate the layout counter-clockwise",
+                "from": {
+                  "key_code": "left_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ ←' \"$HOME/.local/bin/yb\" rotate ccw"
                   }
                 ]
               }

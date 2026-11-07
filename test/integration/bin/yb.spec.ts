@@ -128,6 +128,8 @@ describe("yb", () => {
         [["stack", "prev"], ["-m window --focus stack.prev"]],
         [["balance"], ["-m space --balance"]],
         [["rotate"], ["-m space --rotate 90"]],
+        [["rotate", "cw"], ["-m space --rotate 90"]],
+        [["rotate", "ccw"], ["-m space --rotate 270"]],
         [["close"], ["-m window --close"]],
       ];
       for (const [args, calls] of cases) expect(yb(args).calls).toEqual(calls);

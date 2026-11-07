@@ -60,7 +60,11 @@
 #USAGE   }
 #USAGE }
 #USAGE cmd "balance" help="Balance the split sizes"
-#USAGE cmd "rotate" help="Rotate the layout 90 degrees"
+#USAGE cmd "rotate" help="Rotate the layout 90 degrees, clockwise (cw, default) or counter-clockwise (ccw)" {
+#USAGE   arg "[direction]" default="cw" {
+#USAGE     choices "cw" "ccw"
+#USAGE   }
+#USAGE }
 #USAGE cmd "close" help="Close the focused window"
 #USAGE cmd "app" help="Open an app by name" {
 #USAGE   arg "<name>"
@@ -482,7 +486,7 @@ main() {
       esac
       ;;
     balance) Y space --balance ;;
-    rotate) Y space --rotate 90 ;;
+    rotate) Y space --rotate "$([[ ${usage_direction:-cw} == ccw ]] && print 270 || print 90)" ;;
     close) Y window --close ;;
     app) open -a "$usage_name" ;;
     term) ghostty_window ;;

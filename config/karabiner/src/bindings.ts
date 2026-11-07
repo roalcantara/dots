@@ -77,7 +77,9 @@ export const bindings: readonly Binding[] = [
   b('Layout', 'l', [], 'Next layout (bsp, stack, float)', ['layout', 'next']),
   b('Layout', 'l', ['option'], 'Previous layout', ['layout', 'prev']),
   b('Layout', 'b', [], 'Balance the splits', ['balance']),
-  b('Layout', 'r', [], 'Rotate the layout', ['rotate']),
+  b('Layout', 'r', [], 'Rotate the layout clockwise', ['rotate']),
+  b('Layout', 'right_arrow', ['shift', 'option'], 'Rotate the layout clockwise', ['rotate', 'cw']),
+  b('Layout', 'left_arrow', ['shift', 'option'], 'Rotate the layout counter-clockwise', ['rotate', 'ccw']),
 
   b('Apps', 'return_or_enter', [], 'New Ghostty window', ['term']),
   ...APPS.map(([key, mods, app]) => b('Apps', key, mods, app, ['app', app])),
