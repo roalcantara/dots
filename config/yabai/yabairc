@@ -59,5 +59,12 @@ yabai -m signal --add event=window_created label=bar_window_created action="$BAR
 yabai -m signal --add event=window_destroyed label=bar_window_destroyed action="$BAR"
 yabai -m signal --add event=application_front_switched label=bar_front action="$BAR"
 
+# The tiling trace (yb log): yabai's own events, next to the keys yb logs.
+yabai -m signal --add event=window_created label=trace_window_created action="$HOME/.local/bin/yb event window_created"
+yabai -m signal --add event=window_destroyed label=trace_window_destroyed action="$HOME/.local/bin/yb event window_destroyed"
+yabai -m signal --add event=space_changed label=trace_space_changed action="$HOME/.local/bin/yb event space_changed"
+yabai -m signal --add event=display_changed label=trace_display_changed action="$HOME/.local/bin/yb event display_changed"
+yabai -m signal --add event=application_front_switched label=trace_application_front_switched action="$HOME/.local/bin/yb event application_front_switched"
+
 $HOME/.local/bin/yb spaces
 echo "yabai configuration loaded"

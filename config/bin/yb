@@ -69,6 +69,12 @@
 #USAGE cmd "nvim" help="Open Neovim in a new Ghostty window"
 #USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
 #USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
+#USAGE cmd "log" help="Show the tiling trace (~/.local/state/dots/tiling.log): keys, yb calls, yabai events" {
+#USAGE   flag "-f --follow" help="Keep following new lines"
+#USAGE }
+#USAGE cmd "event" help="Trace a yabai event (yabairc signals call this)" {
+#USAGE   arg "<name>"
+#USAGE }
 #USAGE cmd "bar" help="Print the space strip for the SwiftBar plugin (config/swiftbar)" {
 #USAGE   flag "--svg <colour>" help="Print the strip as SVG in this colour instead (for checks)"
 #USAGE }
@@ -100,7 +106,7 @@ Y() {
 Yq() { "$yabai" -m "$@" 2>/dev/null; }
 
 case "$1" in
-  app | term | nvim | system | hotkeys | bar | sa | update) ;;
+  app | term | nvim | system | hotkeys | bar | log | sa | update) ;;
   *)
     if [[ ! -x $yabai ]]; then
       log "yabai not found at $yabai"
@@ -112,9 +118,66 @@ esac
 
 kb() { open "raycast://extensions/roalcantara/kb/$1"; }
 
+# The tiling trace: one line per key (YB_KEY, set by the Karabiner rules) and per yabai event, so what happened
+# can be read back in order with `yb log`. Kept under ~512 KB.
+tracefile="$HOME/.local/state/dots/tiling.log"
+trace() {
+  mkdir -p "${tracefile:h}"
+  print -r -- "[$(date '+%F %T')] $*" >>"$tracefile"
+  if [[ $(stat -f %z "$tracefile" 2>/dev/null || echo 0) -gt 524288 ]]; then
+    tail -n 2000 "$tracefile" >"$tracefile.tmp" && mv "$tracefile.tmp" "$tracefile"
+  fi
+}
+
+# Where the keyboard is: "<label> on display <n>".
+where() {
+  "$yabai" -m query --spaces --space 2>/dev/null |
+    jq -r '"\(if (.label // "") != "" then .label else (.index | tostring) end) on display \(.display)"' 2>/dev/null
+}
+
+trace_event() {
+  local name="$1" detail
+  case "$name" in
+    window_created | window_focused | application_front_switched)
+      detail="$("$yabai" -m query --windows --window "${YABAI_WINDOW_ID:-}" 2>/dev/null |
+        jq -r '"\(.app) #\(.id) on space \(.space), display \(.display)"' 2>/dev/null)" ;;
+    window_destroyed) detail="#${YABAI_WINDOW_ID:-?}" ;;
+    *) detail="now $(where)" ;;
+  esac
+  trace "[yabai] [$name] ${detail:-?}"
+}
+
 # A new Ghostty window through its AppleScript dictionary (`open -a` only brings the app forward, and
 # `ghostty +new-window` is Linux-only). Neovim starts through the user's shell, so it gets their PATH.
 ghostty_window() {
+  local display before
+  if [[ -x $yabai ]]; then
+    display="$("$yabai" -m query --displays --display 2>/dev/null | jq -r '.index' 2>/dev/null)"
+    before="$("$yabai" -m query --windows 2>/dev/null | jq -c '[.[] | select(.app == "Ghostty") | .id]' 2>/dev/null)"
+  fi
+  ghostty_open "$@"
+  [[ -n ${display:-} && -n ${before:-} ]] && follow_new_window Ghostty "$before" "$display"
+}
+
+# macOS opens an app's new window where the app last was, not on the screen with the keyboard: wait for the new
+# window and bring it to the focused screen.
+follow_new_window() {
+  local app="$1" before="$2" display="$3" step found
+  for step in {1..${YB_WAIT_STEPS:-20}}; do
+    found="$("$yabai" -m query --windows 2>/dev/null |
+      jq -r --arg app "$app" --argjson before "$before" \
+        '[.[] | select(.app == $app and ([.id] | inside($before) | not))] | first | select(. != null) | "\(.id) \(.display)"' 2>/dev/null)"
+    [[ -n $found ]] && break
+    sleep 0.1
+  done
+  [[ -n $found ]] || return 0
+  if [[ ${found#* } != "$display" ]]; then
+    Y window "${found%% *}" --display "$display"
+  fi
+  Y window --focus "${found%% *}"
+}
+
+ghostty_open() {
   if [[ "$(osascript -e 'application "Ghostty" is running' 2>/dev/null)" != true ]]; then
     open -a Ghostty
     [[ -z ${1:-} ]] && return
@@ -385,47 +448,65 @@ resize() {
   Yq window --resize "$far" || Y window --resize "$near"
 }
 
+main() {
+  case "$1" in
+    space)
+      case "$usage_target" in
+        next) Yq space --focus next || Y space --focus first ;;
+        prev) Yq space --focus prev || Y space --focus last ;;
+        recent) Y space --focus recent ;;
+        *) Y space --focus "s$usage_target" ;;
+      esac
+      ;;
+    move)
+      Y window --space "s$usage_n" || return
+      [[ ${usage_stay:-false} == true ]] || Y space --focus "s$usage_n"
+      ;;
+    focus) Yq window --focus "$usage_dir" || Y display --focus "$usage_dir" ;;
+    swap) Y window --swap "$usage_dir" ;;
+    send-display) Y window --display "$usage_dir" && Y display --focus "$usage_dir" ;;
+    display-other) Y display --focus recent ;;
+    split) Y window --toggle split ;;
+    layout) cycle_layout "$usage_step" ;;
+    float) Y window --toggle float ;;
+    pin) toggle_pin ;;
+    zoom) Y window --toggle "zoom-${usage_kind/full/fullscreen}" ;;
+    scratchpad)
+      if [[ ${usage_send:-false} == true ]]; then Y window --scratchpad scratch; else Y window --toggle scratch; fi
+      ;;
+    resize) resize "$usage_step" ;;
+    stack)
+      case "$usage_target" in
+        next | prev) Y window --focus "stack.$usage_target" ;;
+        *) Y window --stack "$usage_target" ;;
+      esac
+      ;;
+    balance) Y space --balance ;;
+    rotate) Y space --rotate 90 ;;
+    close) Y window --close ;;
+    app) open -a "$usage_name" ;;
+    term) ghostty_window ;;
+    nvim) ghostty_window nvim ;;
+    system) kb system.screen ;;
+    hotkeys) kb hotkeys.screen ;;
+    log)
+      if [[ ${usage_follow:-false} == true ]]; then tail -n 50 -f "$tracefile"; else tail -n 50 "$tracefile" 2>/dev/null; fi
+      ;;
+    event) trace_event "$usage_name" ;;
+    bar) render_bar ;;
+    spaces) sync_spaces ;;
+    sa | update) setup_sa ;;
+  esac
+}
+
+main "$@"
+rc=$?
 case "$1" in
-  space)
-    case "$usage_target" in
-      next) Yq space --focus next || Y space --focus first ;;
-      prev) Yq space --focus prev || Y space --focus last ;;
-      recent) Y space --focus recent ;;
-      *) Y space --focus "s$usage_target" ;;
-    esac
+  bar | log | event) ;;
+  *)
+    now=""
+    [[ ${YB_TRACE_WHERE:-1} != 0 && -x $yabai ]] && now="$(where)"
+    trace "[${YB_KEY:-cli}] [yb $args] $([[ $rc == 0 ]] && print ok || print "exit $rc")${now:+ · now $now}"
     ;;
-  move)
-    Y window --space "s$usage_n" || exit
-    [[ ${usage_stay:-false} == true ]] || Y space --focus "s$usage_n"
-    ;;
-  focus) Yq window --focus "$usage_dir" || Y display --focus "$usage_dir" ;;
-  swap) Y window --swap "$usage_dir" ;;
-  send-display) Y window --display "$usage_dir" && Y display --focus "$usage_dir" ;;
-  display-other) Y display --focus recent ;;
-  split) Y window --toggle split ;;
-  layout) cycle_layout "$usage_step" ;;
-  float) Y window --toggle float ;;
-  pin) toggle_pin ;;
-  zoom) Y window --toggle "zoom-${usage_kind/full/fullscreen}" ;;
-  scratchpad)
-    if [[ ${usage_send:-false} == true ]]; then Y window --scratchpad scratch; else Y window --toggle scratch; fi
-    ;;
-  resize) resize "$usage_step" ;;
-  stack)
-    case "$usage_target" in
-      next | prev) Y window --focus "stack.$usage_target" ;;
-      *) Y window --stack "$usage_target" ;;
-    esac
-    ;;
-  balance) Y space --balance ;;
-  rotate) Y space --rotate 90 ;;
-  close) Y window --close ;;
-  app) open -a "$usage_name" ;;
-  term) ghostty_window ;;
-  nvim) ghostty_window nvim ;;
-  system) kb system.screen ;;
-  hotkeys) kb hotkeys.screen ;;
-  bar) render_bar ;;
-  spaces) sync_spaces ;;
-  sa | update) setup_sa ;;
 esac
+exit $rc

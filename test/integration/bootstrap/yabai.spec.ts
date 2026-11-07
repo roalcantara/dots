@@ -114,6 +114,12 @@ describe("yabai and borders services", () => {
     expect(yabairc).toMatch(/^\$HOME\/\.local\/bin\/yb spaces/m);
   });
 
+  it("traces its own events next to the keys (yb log)", () => {
+    for (const event of ["window_created", "window_destroyed", "space_changed", "display_changed", "application_front_switched"]) {
+      expect(yabairc).toContain(`yabai -m signal --add event=${event} label=trace_${event} action="$HOME/.local/bin/yb event ${event}"`);
+    }
+  });
+
   it("leaves settings windows, dialogs and launchers floating", () => {
     for (const app of ["System Settings", "Calculator", "Archive Utility", "Raycast", "Karabiner-Elements"]) {
       expect(yabairc).toContain(`app="^${app}$" manage=off`);

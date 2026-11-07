@@ -30,7 +30,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space 1"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 1' \"$HOME/.local/bin/yb\" space 1"
                   }
                 ]
               },
@@ -50,7 +50,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space 2"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 2' \"$HOME/.local/bin/yb\" space 2"
                   }
                 ]
               },
@@ -70,7 +70,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space 3"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 3' \"$HOME/.local/bin/yb\" space 3"
                   }
                 ]
               },
@@ -90,7 +90,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space 4"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 4' \"$HOME/.local/bin/yb\" space 4"
                   }
                 ]
               },
@@ -110,7 +110,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space 5"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 5' \"$HOME/.local/bin/yb\" space 5"
                   }
                 ]
               },
@@ -130,7 +130,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space 6"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 6' \"$HOME/.local/bin/yb\" space 6"
                   }
                 ]
               },
@@ -150,7 +150,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space 7"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 7' \"$HOME/.local/bin/yb\" space 7"
                   }
                 ]
               },
@@ -170,7 +170,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space 8"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 8' \"$HOME/.local/bin/yb\" space 8"
                   }
                 ]
               },
@@ -190,7 +190,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space 9"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 9' \"$HOME/.local/bin/yb\" space 9"
                   }
                 ]
               },
@@ -210,7 +210,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space 10"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 0' \"$HOME/.local/bin/yb\" space 10"
                   }
                 ]
               },
@@ -231,7 +231,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 1"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 1' \"$HOME/.local/bin/yb\" move 1"
                   }
                 ]
               },
@@ -252,7 +252,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 2"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 2' \"$HOME/.local/bin/yb\" move 2"
                   }
                 ]
               },
@@ -273,7 +273,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 3"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 3' \"$HOME/.local/bin/yb\" move 3"
                   }
                 ]
               },
@@ -294,7 +294,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 4"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 4' \"$HOME/.local/bin/yb\" move 4"
                   }
                 ]
               },
@@ -315,7 +315,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 5"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 5' \"$HOME/.local/bin/yb\" move 5"
                   }
                 ]
               },
@@ -336,7 +336,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 6"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 6' \"$HOME/.local/bin/yb\" move 6"
                   }
                 ]
               },
@@ -357,7 +357,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 7"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 7' \"$HOME/.local/bin/yb\" move 7"
                   }
                 ]
               },
@@ -378,7 +378,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 8"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 8' \"$HOME/.local/bin/yb\" move 8"
                   }
                 ]
               },
@@ -399,7 +399,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 9"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 9' \"$HOME/.local/bin/yb\" move 9"
                   }
                 ]
               },
@@ -420,7 +420,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 10"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 0' \"$HOME/.local/bin/yb\" move 10"
                   }
                 ]
               },
@@ -442,7 +442,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 1 --stay"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 1' \"$HOME/.local/bin/yb\" move 1 --stay"
                   }
                 ]
               },
@@ -464,7 +464,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 2 --stay"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 2' \"$HOME/.local/bin/yb\" move 2 --stay"
                   }
                 ]
               },
@@ -486,7 +486,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 3 --stay"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 3' \"$HOME/.local/bin/yb\" move 3 --stay"
                   }
                 ]
               },
@@ -508,7 +508,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 4 --stay"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 4' \"$HOME/.local/bin/yb\" move 4 --stay"
                   }
                 ]
               },
@@ -530,7 +530,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 5 --stay"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 5' \"$HOME/.local/bin/yb\" move 5 --stay"
                   }
                 ]
               },
@@ -552,7 +552,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 6 --stay"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 6' \"$HOME/.local/bin/yb\" move 6 --stay"
                   }
                 ]
               },
@@ -574,7 +574,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 7 --stay"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 7' \"$HOME/.local/bin/yb\" move 7 --stay"
                   }
                 ]
               },
@@ -596,7 +596,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 8 --stay"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 8' \"$HOME/.local/bin/yb\" move 8 --stay"
                   }
                 ]
               },
@@ -618,7 +618,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 9 --stay"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 9' \"$HOME/.local/bin/yb\" move 9 --stay"
                   }
                 ]
               },
@@ -640,7 +640,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" move 10 --stay"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 0' \"$HOME/.local/bin/yb\" move 10 --stay"
                   }
                 ]
               },
@@ -660,7 +660,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space next"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn Tab' \"$HOME/.local/bin/yb\" space next"
                   }
                 ]
               },
@@ -681,7 +681,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space prev"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ Tab' \"$HOME/.local/bin/yb\" space prev"
                   }
                 ]
               },
@@ -702,7 +702,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" space recent"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ Tab' \"$HOME/.local/bin/yb\" space recent"
                   }
                 ]
               }
@@ -727,7 +727,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" focus west"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ←' \"$HOME/.local/bin/yb\" focus west"
                   }
                 ]
               },
@@ -747,7 +747,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" focus east"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn →' \"$HOME/.local/bin/yb\" focus east"
                   }
                 ]
               },
@@ -767,7 +767,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" focus north"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ↑' \"$HOME/.local/bin/yb\" focus north"
                   }
                 ]
               },
@@ -787,7 +787,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" focus south"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ↓' \"$HOME/.local/bin/yb\" focus south"
                   }
                 ]
               },
@@ -808,7 +808,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" swap west"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ ←' \"$HOME/.local/bin/yb\" swap west"
                   }
                 ]
               },
@@ -829,7 +829,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" swap east"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ →' \"$HOME/.local/bin/yb\" swap east"
                   }
                 ]
               },
@@ -850,7 +850,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" swap north"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ ↑' \"$HOME/.local/bin/yb\" swap north"
                   }
                 ]
               },
@@ -871,7 +871,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" swap south"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ ↓' \"$HOME/.local/bin/yb\" swap south"
                   }
                 ]
               },
@@ -893,7 +893,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" send-display west"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ ⇧ ←' \"$HOME/.local/bin/yb\" send-display west"
                   }
                 ]
               },
@@ -915,7 +915,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" send-display east"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ ⇧ →' \"$HOME/.local/bin/yb\" send-display east"
                   }
                 ]
               },
@@ -935,7 +935,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" display-other"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn `' \"$HOME/.local/bin/yb\" display-other"
                   }
                 ]
               },
@@ -955,7 +955,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" close"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn W' \"$HOME/.local/bin/yb\" close"
                   }
                 ]
               },
@@ -975,7 +975,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" float"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn T' \"$HOME/.local/bin/yb\" float"
                   }
                 ]
               },
@@ -995,7 +995,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" zoom full"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn F' \"$HOME/.local/bin/yb\" zoom full"
                   }
                 ]
               },
@@ -1016,7 +1016,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" zoom parent"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ F' \"$HOME/.local/bin/yb\" zoom parent"
                   }
                 ]
               },
@@ -1036,7 +1036,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" pin"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn O' \"$HOME/.local/bin/yb\" pin"
                   }
                 ]
               },
@@ -1056,7 +1056,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" scratchpad"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn S' \"$HOME/.local/bin/yb\" scratchpad"
                   }
                 ]
               },
@@ -1077,7 +1077,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" scratchpad --send"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ S' \"$HOME/.local/bin/yb\" scratchpad --send"
                   }
                 ]
               },
@@ -1097,7 +1097,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" resize w-"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn −' \"$HOME/.local/bin/yb\" resize w-"
                   }
                 ]
               },
@@ -1117,7 +1117,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" resize w+"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn =' \"$HOME/.local/bin/yb\" resize w+"
                   }
                 ]
               },
@@ -1138,7 +1138,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" resize h-"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ −' \"$HOME/.local/bin/yb\" resize h-"
                   }
                 ]
               },
@@ -1159,7 +1159,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" resize h+"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ =' \"$HOME/.local/bin/yb\" resize h+"
                   }
                 ]
               },
@@ -1179,7 +1179,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" stack sibling"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn G' \"$HOME/.local/bin/yb\" stack sibling"
                   }
                 ]
               },
@@ -1200,7 +1200,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" stack west"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ←' \"$HOME/.local/bin/yb\" stack west"
                   }
                 ]
               },
@@ -1221,7 +1221,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" stack east"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ →' \"$HOME/.local/bin/yb\" stack east"
                   }
                 ]
               },
@@ -1242,7 +1242,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" stack next"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ Tab' \"$HOME/.local/bin/yb\" stack next"
                   }
                 ]
               },
@@ -1264,7 +1264,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" stack prev"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ Tab' \"$HOME/.local/bin/yb\" stack prev"
                   }
                 ]
               }
@@ -1289,7 +1289,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" split"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn J' \"$HOME/.local/bin/yb\" split"
                   }
                 ]
               },
@@ -1309,7 +1309,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" layout next"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn L' \"$HOME/.local/bin/yb\" layout next"
                   }
                 ]
               },
@@ -1330,7 +1330,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" layout prev"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ L' \"$HOME/.local/bin/yb\" layout prev"
                   }
                 ]
               },
@@ -1350,7 +1350,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" balance"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn B' \"$HOME/.local/bin/yb\" balance"
                   }
                 ]
               },
@@ -1370,7 +1370,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" rotate"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn R' \"$HOME/.local/bin/yb\" rotate"
                   }
                 ]
               }
@@ -1395,7 +1395,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" term"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn Return' \"$HOME/.local/bin/yb\" term"
                   }
                 ]
               },
@@ -1416,7 +1416,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" app 'Google Chrome'"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ Return' \"$HOME/.local/bin/yb\" app 'Google Chrome'"
                   }
                 ]
               },
@@ -1437,7 +1437,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" app Finder"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ F' \"$HOME/.local/bin/yb\" app Finder"
                   }
                 ]
               },
@@ -1458,7 +1458,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" app ChatGPT"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ A' \"$HOME/.local/bin/yb\" app ChatGPT"
                   }
                 ]
               },
@@ -1479,7 +1479,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" app Claude"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ C' \"$HOME/.local/bin/yb\" app Claude"
                   }
                 ]
               },
@@ -1500,7 +1500,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" app 'Visual Studio Code'"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ V' \"$HOME/.local/bin/yb\" app 'Visual Studio Code'"
                   }
                 ]
               },
@@ -1521,7 +1521,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" app WhatsApp"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ G' \"$HOME/.local/bin/yb\" app WhatsApp"
                   }
                 ]
               },
@@ -1542,7 +1542,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" app Discord"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ D' \"$HOME/.local/bin/yb\" app Discord"
                   }
                 ]
               },
@@ -1563,7 +1563,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" nvim"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ N' \"$HOME/.local/bin/yb\" nvim"
                   }
                 ]
               }
@@ -1588,7 +1588,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" hotkeys"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn K' \"$HOME/.local/bin/yb\" hotkeys"
                   }
                 ]
               },
@@ -1608,7 +1608,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" system"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn Esc' \"$HOME/.local/bin/yb\" system"
                   }
                 ]
               },

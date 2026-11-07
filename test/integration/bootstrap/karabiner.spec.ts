@@ -67,10 +67,12 @@ describe("karabiner fn layer", () => {
 
   it("runs yb from ~/.local/bin with Homebrew on PATH", () => {
     for (const m of manipulators.filter((x) => x.to[0]?.shell_command)) {
-      expect(m.to[0]!.shell_command).toStartWith('PATH=/opt/homebrew/bin:/usr/bin:/bin "$HOME/.local/bin/yb" ');
+      expect(m.to[0]!.shell_command).toMatch(/^PATH=\/opt\/homebrew\/bin:\/usr\/bin:\/bin YB_KEY='fn [^']*' "\$HOME\/\.local\/bin\/yb" /);
     }
     expect(command("return_or_enter", "shift")).toEndWith("yb\" app 'Google Chrome'");
     expect(command("return_or_enter")).toEndWith('yb" term');
+    // the key's name reaches yb's trace (yb log)
+    expect(command("1", "shift")).toContain("YB_KEY='fn ⇧ 1'");
   });
 
   it("writes one hotkey entry per binding", () => {

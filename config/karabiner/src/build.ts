@@ -14,21 +14,6 @@ const GROUPS: readonly Group[] = ['Spaces', 'Windows', 'Layout', 'Apps', 'System
 
 const quote = (arg: string) => (/^[\w.+-]+$/.test(arg) ? arg : `'${arg.replaceAll("'", "'\\''")}'`)
 
-const manipulator = (binding: Binding) => ({
-  type: 'basic' as const,
-  description: binding.label,
-  // Caps Lock counts as a modifier to Karabiner; optional keeps every key working while it is on.
-  from: { key_code: binding.key, modifiers: { mandatory: ['fn', ...binding.mods], optional: ['caps_lock'] } },
-  to: binding.sends
-    ? [{ key_code: binding.sends }]
-    : [{ shell_command: `PATH=/opt/homebrew/bin:/usr/bin:/bin "$HOME/.local/bin/yb" ${(binding.yb ?? []).map(quote).join(' ')}` }],
-})
-
-const rules = () =>
-  GROUPS.map(group =>
-    rule(`fn layer: ${group}`).manipulators(bindings.filter(x => x.group === group).map(manipulator) as never)
-  )
-
 const KEYS: Readonly<Record<string, string>> = {
   left_arrow: '←',
   right_arrow: '→',
@@ -44,10 +29,28 @@ const KEYS: Readonly<Record<string, string>> = {
 const SYMBOLS: Readonly<Record<string, string>> = { control: '⌃', option: '⌥', shift: '⇧' }
 const ORDER = ['control', 'option', 'shift']
 
+// "fn ⇧ 1": the key as hotkeys.json and yb's trace (YB_KEY) name it.
+const keysOf = (x: Binding): string =>
+  ['fn', ...ORDER.filter(m => x.mods.includes(m as never)).map(m => SYMBOLS[m]), KEYS[x.key] ?? x.key.toUpperCase()].join(' ')
+
+const manipulator = (binding: Binding) => ({
+  type: 'basic' as const,
+  description: binding.label,
+  // Caps Lock counts as a modifier to Karabiner; optional keeps every key working while it is on.
+  from: { key_code: binding.key, modifiers: { mandatory: ['fn', ...binding.mods], optional: ['caps_lock'] } },
+  to: binding.sends
+    ? [{ key_code: binding.sends }]
+    : [{ shell_command: `PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='${keysOf(binding)}' "$HOME/.local/bin/yb" ${(binding.yb ?? []).map(quote).join(' ')}` }],
+})
+
+const rules = () =>
+  GROUPS.map(group =>
+    rule(`fn layer: ${group}`).manipulators(bindings.filter(x => x.group === group).map(manipulator) as never)
+  )
+
 const hotkeys = () =>
   bindings.map(x => ({
-    keys: ['fn', ...ORDER.filter(m => x.mods.includes(m as never)).map(m => SYMBOLS[m]), KEYS[x.key] ?? x.key.toUpperCase()]
-      .join(' '),
+    keys: keysOf(x),
     label: x.label,
     group: x.group,
   }))

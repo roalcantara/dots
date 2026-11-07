@@ -12,7 +12,12 @@ const script = scriptPath("yb");
 const STUB = `#!/bin/sh
 printf '%s\\n' "$*" >> "$YB_STUB_LOG"
 if [ -n "\${YB_STUB_FAIL:-}" ] && printf '%s' "$*" | grep -Eq "$YB_STUB_FAIL"; then exit 1; fi
-case "$2" in query) printf '%s\\n' "\${YB_STUB_QUERY:-{\\}}" ;; esac
+case "$2 $3 $4" in
+  "query --displays --display") printf '%s\\n' "\${YB_STUB_DISPLAY:-{\\"index\\":1\\}}" ;;
+  "query --windows ") n=$(cat "$YB_STUB_LOG.n" 2>/dev/null || echo 0); echo $((n + 1)) > "$YB_STUB_LOG.n"
+    if [ "$n" -eq 0 ]; then printf '%s\\n' "\${YB_STUB_WINDOWS_1:-[]}"; else printf '%s\\n' "\${YB_STUB_WINDOWS_2:-[]}"; fi ;;
+  query*) printf '%s\\n' "\${YB_STUB_QUERY:-{\\}}" ;;
+esac
 exit 0
 `;
 const OPEN = `#!/bin/sh\nprintf 'open %s\\n' "$*" >> "$YB_STUB_LOG"\n`;
@@ -41,6 +46,7 @@ afterAll(() => rmSync(dir, { recursive: true, force: true }));
 
 function yb(args: string[], env: Record<string, string> = {}) {
   writeFileSync(log, "");
+  rmSync(`${log}.n`, { force: true });
   const r = Bun.spawnSync([script, ...args], {
     stdout: "pipe",
     stderr: "pipe",
@@ -49,6 +55,8 @@ function yb(args: string[], env: Record<string, string> = {}) {
       HOME: home,
       DOTS_YABAI: join(dir, "yabai"),
       YB_STUB_LOG: log,
+      YB_TRACE_WHERE: "0",
+      YB_WAIT_STEPS: "2",
       ...env,
     },
   });
@@ -168,9 +176,11 @@ describe("yb", () => {
   describe("apps and Raycast", () => {
     it("opens apps, Neovim in Ghostty, and the kb commands", () => {
       expect(yb(["app", "Google Chrome"]).calls).toEqual(["open -a Google Chrome"]);
-      expect(yb(["term"]).calls).toEqual(["osascript Ghostty new window"]);
-      expect(yb(["nvim"]).calls).toEqual(["osascript Ghostty new window nvim"]);
-      expect(yb(["term"], { GHOSTTY_RUNNING: "false" }).calls).toEqual(["open -a Ghostty"]);
+      // term and nvim also ask yabai where the keyboard is (see "yb term on the focused screen")
+      const opened = (args: string[], env: Record<string, string> = {}) => yb(args, env).calls.filter((c) => !c.startsWith("-m query"));
+      expect(opened(["term"])).toEqual(["osascript Ghostty new window"]);
+      expect(opened(["nvim"])).toEqual(["osascript Ghostty new window nvim"]);
+      expect(opened(["term"], { GHOSTTY_RUNNING: "false" })).toEqual(["open -a Ghostty"]);
       expect(yb(["system"]).calls).toEqual(["open raycast://extensions/roalcantara/kb/system.screen"]);
       expect(yb(["hotkeys"]).calls).toEqual(["open raycast://extensions/roalcantara/kb/hotkeys.screen"]);
     });
@@ -575,5 +585,60 @@ describe("yb bar", () => {
     expect(code).toBe(0);
     expect(lines[0]).toStartWith("·");
     expect(lines).toContain("yabai is not answering");
+  });
+});
+
+describe("yb tracing", () => {
+  const trace = () => readFileSync(join(home, ".local/state/dots/tiling.log"), "utf8").trim().split("\n");
+  const clear = () => rmSync(join(home, ".local/state/dots/tiling.log"), { force: true });
+
+  it("logs each key with the yb call and the result", () => {
+    clear();
+    yb(["space", "1"], { YB_KEY: "fn 1" });
+    expect(trace().at(-1)).toMatch(/^\[\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\] \[fn 1\] \[yb space 1\] ok$/);
+  });
+
+  it("marks calls from a terminal as cli, and failures with their exit code", () => {
+    clear();
+    yb(["close"], { YB_STUB_FAIL: "close" });
+    expect(trace().at(-1)).toMatch(/\[cli\] \[yb close\] exit 1$/);
+  });
+
+  it("adds where the keyboard ends up when asked", () => {
+    clear();
+    yb(["space", "7"], { YB_KEY: "fn 7", YB_TRACE_WHERE: "1", YB_STUB_QUERY: '{"index":4,"label":"s7","display":2}' });
+    expect(trace().at(-1)).toEndWith("[fn 7] [yb space 7] ok · now s7 on display 2");
+  });
+
+  it("logs yabai's own events with the window's app and place", () => {
+    clear();
+    yb(["event", "window_created"], { YABAI_WINDOW_ID: "42", YB_STUB_QUERY: '{"id":42,"app":"Ghostty","space":3,"display":1}' });
+    expect(trace().at(-1)).toMatch(/\[yabai\] \[window_created\] Ghostty #42 on space 3, display 1$/);
+  });
+
+  it("shows the last lines with yb log", () => {
+    clear();
+    yb(["space", "2"], { YB_KEY: "fn 2" });
+    expect(yb(["log"]).out).toContain("[fn 2] [yb space 2] ok");
+  });
+});
+
+describe("yb term on the focused screen", () => {
+  it("moves a new Ghostty window that macOS opened on another screen to the focused one", () => {
+    const r = yb(["term"], {
+      YB_STUB_DISPLAY: '{"index":2}',
+      YB_STUB_WINDOWS_1: '[{"id":7,"app":"Ghostty","display":2}]',
+      YB_STUB_WINDOWS_2: '[{"id":7,"app":"Ghostty","display":2},{"id":42,"app":"Ghostty","display":1}]',
+    });
+    expect(r.calls).toContain("-m window 42 --display 2");
+    expect(r.calls).toContain("-m window --focus 42");
+  });
+
+  it("leaves it alone when it opened on the focused screen", () => {
+    const r = yb(["term"], {
+      YB_STUB_DISPLAY: '{"index":1}',
+      YB_STUB_WINDOWS_2: '[{"id":42,"app":"Ghostty","display":1}]',
+    });
+    expect(r.calls.some((c) => c.includes("--display 1") && c.includes("window 42"))).toBe(false);
   });
 });
