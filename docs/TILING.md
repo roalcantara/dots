@@ -89,6 +89,86 @@ macOS's own fn shortcuts (fn + E emoji, fn + F fullscreen, fn + A, C, N, Q) are 
 4. **Register the kb extension** with Raycast once: `bun install && bun run dev` in `~/Work/kb`.
 5. **Log out once** so the fn setting applies.
 
+## Validation checklist
+
+Walk this after a fresh setup or a change. Items marked **(SA)** need yabai's scripting addition and those
+marked **(focus)** need space switching; both fail silently on macOS 27 with yabai 7.1.25 (it rejects the
+OS), so expect them to fail there until yabai is replaced or updated.
+
+### Setup
+
+- [ ] `csrutil status` shows "Custom Configuration" with Filesystem, Debugging and NVRAM protections disabled.
+- [ ] `nvram boot-args` includes `-arm64e_preview_abi`.
+- [ ] `sudo -n /opt/homebrew/bin/yabai --load-sa` exits 0 without asking for a password.
+- [ ] `launchctl list | grep dev.mise` shows `dev.mise.yabai` and `dev.mise.borders` running.
+- [ ] Karabiner-Elements → Profiles: `dots` is selected; pressing 🌐/fn alone does nothing.
+
+### Look
+
+- [ ] Two tiled windows have a 10-point gap between them and at the screen edges.
+- [ ] The focused window has a cyan-to-green outline; the others a faint grey one.
+- [ ] A new window splits the focused one instead of covering it.
+- [ ] System Settings, Calculator, Raycast and dialogs float above the tiles.
+- [ ] Window shadows are gone **(SA)**.
+
+### Menu bar strip (kb)
+
+- [ ] The strip reads built-in slots `│` external slots, in the order the screens are arranged.
+- [ ] Marks agree with the dropdown: filled = focused, outlined = shown on the other screen, plain = has
+      windows, · = empty.
+- [ ] The strip updates when a window opens or closes and when the space changes.
+- [ ] Clicking a space in the dropdown goes there **(focus)**.
+
+### Spaces
+
+- [ ] `yabai -m query --spaces | jq '.[] | {index, label, display}'`: every space is labelled; `s1`… on the
+      built-in screen, `s6`… on the external one.
+- [ ] Five spaces on each screen **(SA)**; with SIP-only yabai, add them in Mission Control and run `yb spaces`.
+- [ ] fn + 1…0 go to that space **(focus)**.
+- [ ] fn + ⇧ + 1…0 move the window and follow; fn + ⇧⌥ + 1…0 move it and stay **(focus)**.
+- [ ] fn + Tab / ⇧Tab / ⌃Tab: next / previous / last space **(focus)**.
+- [ ] Unplug the external screen: all spaces land on the built-in one, labels intact (`s1`–`s10` with **(SA)**).
+- [ ] Plug it back in: `s6`… return to it with their windows (moving spaces needs **(SA)**).
+
+### Windows
+
+- [ ] fn + ←↓↑→ move focus; at the edge, focus crosses to the other screen.
+- [ ] fn + ⇧ + ←↓↑→ swap with the neighbour.
+- [ ] fn + ⇧⌃ + ← / → send the window to the other screen and follow it.
+- [ ] fn + \` focuses the other screen (may need one screen switch after login).
+- [ ] fn + w closes; fn + t toggles floating; fn + f fills the space; fn + ⌥f fills the parent split.
+- [ ] fn + − / = narrower / wider; with ⇧, shorter / taller.
+- [ ] fn + g stacks with the neighbour; fn + ⌥ + ← / → stack that way; fn + ⌥Tab / ⇧⌥Tab cycle the stack.
+- [ ] fn + o pins a window on top of every space **(SA)**; again to unpin.
+- [ ] fn + s toggles the scratchpad; fn + ⌥s sends a window to it **(SA)**.
+- [ ] fn + drag moves a window; fn + right-drag resizes it.
+
+### Layout
+
+- [ ] fn + j flips the split orientation.
+- [ ] fn + l / ⌥l cycle bsp → stack → float (float stops tiling: cycle back to bsp).
+- [ ] fn + b balances the splits; fn + r rotates them.
+
+### Apps
+
+- [ ] fn + Return opens a new Ghostty window, also while Ghostty is in front.
+- [ ] fn + ⇧n opens Neovim in a new Ghostty window.
+- [ ] fn + ⇧Return Chrome, ⇧f Finder, ⇧a ChatGPT, ⇧c Claude, ⇧v VS Code, ⇧g WhatsApp, ⇧d Discord.
+
+### System and keyboard
+
+- [ ] fn + k opens the kb Hotkeys list; fn + Esc opens the kb System list.
+- [ ] fn + ⌥↑ / ⌥↓ page up / down.
+- [ ] fn + E, F, A, C, N, Q do not open macOS's emoji picker, fullscreen, Dock, Control Center,
+      Notification Center or Quick Note.
+- [ ] Every fn key still works with Caps Lock on.
+- [ ] ⌘C / ⌘V / ⌘Tab / ⌘Space (Raycast) behave as before.
+
+### Recovery
+
+- [ ] `pkill yabai`: it is back within seconds (LaunchAgent).
+- [ ] A failing key leaves a line in `~/.local/state/dots/yb.log`.
+
 ## Troubleshooting
 
 | Symptom | Check |
