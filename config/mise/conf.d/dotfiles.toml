@@ -17,6 +17,7 @@
 "~/.config/claude" = { source = "~/.local/share/dots/config/claude", relative = true }
 "~/.config/dinky" = { source = "~/.local/share/dots/config/dinky", relative = true }
 "~/.config/dprint" = { source = "~/.local/share/dots/config/dprint", relative = true }
+"~/.config/duti" = { source = "~/.local/share/dots/config/duti", relative = true }
 "~/.config/fabric" = { source = "~/.local/share/dots/config/fabric", relative = true }
 "~/.config/gh" = { source = "~/.local/share/dots/config/gh", relative = true }
 "~/.config/ghostty" = { source = "~/.local/share/dots/config/ghostty", relative = true }

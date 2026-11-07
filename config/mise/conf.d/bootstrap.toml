@@ -113,6 +113,29 @@ if command -v gopass >/dev/null && [ -s "$ids" ]; then
 fi
 # gopass-keyring: end
 
+# ssh-keychain: begin
+# macOS: git signs commits with the GitHub key (config/git/config) through the agent only; ssh-keygen -Y sign never
+# reads Keychain. Load it from Keychain, or store its passphrase there once, asked on the terminal. Apple's ssh-add
+# (Homebrew's has no --apple-* flags). At each login the dev.mise.ssh-add LaunchAgent (macos.toml) loads it again.
+key="$HOME/.ssh/id_ed25519_github"
+sshbin="${DOTS_SSH_BIN:-/usr/bin}"
+if [ "$(uname)" = Darwin ] && [ -r "$key" ] && [ -r "$key.pub" ]; then
+  fp="$("$sshbin/ssh-keygen" -lf "$key.pub" 2>/dev/null | awk '{print $2}')"
+  has_key() { [ -n "$fp" ] && "$sshbin/ssh-add" -l 2>/dev/null | grep -qF "$fp"; }
+  if ! has_key; then
+    "$sshbin/ssh-add" --apple-load-keychain >/dev/null 2>&1 || true
+    if has_key; then
+      :
+    elif (: </dev/tty) 2>/dev/null; then
+      echo "bootstrap: enter the passphrase for $key once; Keychain keeps it" >&2
+      "$sshbin/ssh-add" --apple-use-keychain "$key" </dev/tty || warn "ssh-add $key"
+    else
+      echo "bootstrap: $key is not in Keychain; run: ssh-add --apple-use-keychain $key" >&2
+    fi
+  fi
+fi
+# ssh-keychain: end
+
 # oMLX models (macOS, once the app is installed by hand): download only the missing ones.
 if [ -d /Applications/oMLX.app ] && command -v hf >/dev/null; then
   for model in mlx-community/parakeet-tdt-0.6b-v3 Jundot/gemma-4-E2B-it-oQ4e-mtp \

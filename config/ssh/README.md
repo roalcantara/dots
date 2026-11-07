@@ -68,7 +68,8 @@ eval "$(ssh-agent -s)"
 4. Add SSH Private Key to the ssh-agent
 
     ```bash
-    # [macOS] add SSH Private Key to the ssh-agent
+    # [macOS] add SSH Private Key to the ssh-agent (`mise bootstrap` does this for the GitHub key and loads it at
+    # every login; see docs/MACOS.md#ssh-key-and-commit-signing)
     ssh-add --apple-use-keychain ~/.ssh/id_ed25519_github
 
     # [Linux] add SSH Private Key to the ssh-agent
