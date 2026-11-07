@@ -141,12 +141,13 @@ describe("yabai and borders services", () => {
     expect(yabairc).toContain('subrole="^AXDialog$" manage=off');
   });
 
-  it("draws Omarchy's borders: a cyan-to-green gradient when focused, translucent grey otherwise", () => {
+  it("outlines only the focused window: Omarchy's cyan-to-green gradient, 5 wide", () => {
     const rc = read("config/borders/bordersrc");
     expect(rc).toContain('active_color="gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)"');
-    expect(rc).toContain("inactive_color=0xaa595959");
-    // JankyBorders draws one width for every outline: 5.0 thickened the unfocused ones too
-    expect(rc).toMatch(/width=2\.0/);
+    // no outline on unfocused windows, so the focused one can be thick on its own
+    expect(rc).toContain("inactive_color=0x00000000");
+    // JankyBorders draws one width for every outline; with unfocused outlines transparent only the focused one shows
+    expect(rc).toMatch(/width=5\.0/);
   });
 
   it("runs yabai and borders as LaunchAgents that restart on exit", () => {
