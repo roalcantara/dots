@@ -21,6 +21,7 @@ type Config = {
       login_items: { apps: string[]; exclusive?: boolean };
       defaults: Record<string, Record<string, unknown>>;
       defaults_entries: Entry[];
+      launchd: { agents: Record<string, Record<string, unknown>> };
     };
   };
 };
@@ -97,6 +98,14 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
     const e = entry("NSGlobalDomain", "com.apple.mouse.tapBehavior");
     expect(e?.host).toBe("current");
     expect(e?.value).toBe(1);
+  });
+
+  it("loads the SSH keys from Keychain at every login (Apple's ssh-add)", () => {
+    const agent = macos.launchd.agents["ssh-add"];
+    expect(agent.program).toBe("/usr/bin/ssh-add");
+    expect(agent.args).toEqual(["--apple-load-keychain"]);
+    expect(agent.run_at_load).toBe(true);
+    expect(agent.keep_alive).not.toBe(true);
   });
 
   it("starts noTunes and the menu-bar helpers at login without removing other login items", () => {

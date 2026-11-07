@@ -6,7 +6,7 @@ description: Back up, wipe, reinstall and restore a Mac with dots; the backup dr
 
 # Reinstall and backup guide
 
-> Last reviewed: 2026-11-04
+> Last reviewed: 2026-11-06
 
 ## 1. Purpose
 
@@ -467,6 +467,15 @@ longer used.
   ```sh
   bash -c "$(curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install)"
   ```
+  Besides the age key and the GitHub login, `mise bootstrap` asks for two things, once each, on the terminal
+  ([macOS guide](MACOS.md)):
+  - **Your macOS password**, for `sudo`: it writes `/etc/pam.d/sudo_local` (Touch ID for `sudo`) before Homebrew,
+    which then reuses that sudo session. Later `sudo` prompts take a fingerprint.
+  - **The GitHub SSH key's passphrase**: stored in Keychain (`ssh-add --apple-use-keychain`), so git can sign
+    commits; the `dev.mise.ssh-add` LaunchAgent loads it at every login.
+
+  Run unattended (no terminal), both are skipped with a message; rerun
+  `mise bootstrap --only files,macos-defaults,macos-launchd-agents,task` from a terminal to finish them.
 - [ ] Trust any third-party taps flagged by the audit:
   ```sh
   brew trust can1357/tap

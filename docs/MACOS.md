@@ -29,6 +29,7 @@ Items marked † are there for Raycast (launcher on ⌘Space) or yabai (tiling w
 | Login items | noTunes, Raycast, Vorssaint, Bitwarden and Google Drive open at login; other login items stay. |
 | Default apps | Text, code and config files open in VS Code ([`config/duti/defaults.duti`](../config/duti/defaults.duti)). |
 | Touch ID for `sudo` | `/etc/pam.d/sudo_local` (root-owned, written with `sudo`; the one bootstrap step that asks for a password, once). |
+| SSH key | The GitHub key (git's signing key) is stored in Keychain once and loaded into the agent at every login. |
 
 After the defaults step a `post-defaults` hook sets the screenshot folder (mise writes values as given and cannot
 expand `$HOME`), sets the default apps with `duti`, applies the Spotlight shortcut without a logout, and restarts Dock, Finder and the menu bar. It runs
@@ -104,6 +105,20 @@ A Bluetooth headset sends a "play" key when it connects, and macOS starts Apple 
 turns this off, and the background service behind it (`rcd`) is protected by System Integrity Protection.
 [noTunes](https://github.com/tombonez/noTunes) (the `notunes` cask) runs at login and closes Music whenever it
 opens. To open Music on purpose, quit noTunes from its menu-bar icon first.
+
+## SSH key and commit signing
+
+Git signs commits with `~/.ssh/id_ed25519_github` ([`config/git/config`](../config/git/config)). Signing goes
+through `ssh-keygen -Y sign`, which uses the SSH agent and never reads Keychain, so without the key in the agent a
+commit waits for a passphrase (and hangs where there is no terminal).
+
+- **Once per Mac:** the bootstrap task loads the key from Keychain; if Keychain does not have it yet, it asks for the
+  passphrase on the terminal (`ssh-add --apple-use-keychain`). Without a terminal it prints the command to run.
+- **Every login:** the `dev.mise.ssh-add` LaunchAgent runs `/usr/bin/ssh-add --apple-load-keychain`.
+- **`ssh` itself:** `AddKeysToAgent yes` and `UseKeychain yes` in the SSH config load other keys on first use.
+
+Apple's `/usr/bin/ssh-add` is used on purpose: Homebrew's OpenSSH has no `--apple-*` flags. Check with
+`ssh-add -l`; check the agent with `mise bootstrap macos launchd-agents status`.
 
 ## Manual checklist
 

@@ -192,3 +192,10 @@ dutifile="${XDG_CONFIG_HOME:-$HOME/.config}/duti/defaults.duti"
 "${DOTS_ACTIVATE_SETTINGS:-/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings}" -u >/dev/null 2>&1 || true
 killall Dock Finder SystemUIServer >/dev/null 2>&1 || true
 '''
+
+# At every login, load the SSH keys whose passphrases are in Keychain (the bootstrap task stores the GitHub key's
+# once), so git can sign commits without a prompt. Apple's ssh-add: Homebrew's has no --apple-* flags.
+[bootstrap.macos.launchd.agents.ssh-add]
+program = "/usr/bin/ssh-add"
+args = ["--apple-load-keychain"]
+run_at_load = true
