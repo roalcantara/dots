@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
-// mise links VS Code's user settings.json and snippets (Application Support, macOS) back to the repo, so the
-// live copy cannot drift from config/vscode. A link never replaces a real file, so the pre-dotfiles hook moves
-// what VS Code or Settings Sync wrote aside first, keeping it as a dated backup.
+// mise links VS Code's user settings.json, keybindings.json and snippets (Application Support, macOS) back
+// to the repo, so the live copy cannot drift from config/vscode. A link never replaces a real file, so the
+// pre-dotfiles hook moves what VS Code or Settings Sync wrote aside first, keeping it as a dated backup.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -33,11 +33,16 @@ function hook(os = "Darwin") {
 const backups = () => readdirSync(user).filter((f) => f.includes(".pre-dots-")).sort();
 
 describe("VS Code links", () => {
-  it("links settings.json to config/vscode and snippets to ~/.config/snippets, on macOS only", () => {
+  it("links settings.json and keybindings.json to config/vscode and snippets to ~/.config/snippets, on macOS only", () => {
     expect(conf.dotfiles["vscode-settings"]).toEqual({
       source: "~/.local/share/dots/config/vscode/settings.json",
       relative: true,
       variants: [{ os: "macos", target: `${VS}/settings.json` }],
+    });
+    expect(conf.dotfiles["vscode-keybindings"]).toEqual({
+      source: "~/.local/share/dots/config/vscode/keybindings.json",
+      relative: true,
+      variants: [{ os: "macos", target: `${VS}/keybindings.json` }],
     });
     expect(conf.dotfiles["vscode-snippets"]).toEqual({
       source: "~/.config/snippets",
@@ -57,18 +62,22 @@ describe("VS Code links", () => {
     expect(backups()).toEqual([]);
   });
 
-  it("hook: moves a real settings.json and snippets folder aside, keeping their content", () => {
+  it("hook: moves a real settings.json, keybindings.json and snippets folder aside, keeping their content", () => {
     mkdirSync(join(user, "snippets"), { recursive: true });
     writeFileSync(join(user, "settings.json"), '{ "old": true }\n');
+    writeFileSync(join(user, "keybindings.json"), "[]\n");
     writeFileSync(join(user, "snippets", "bash.json"), "{}\n");
     const r = hook();
     expect(r.code).toBe(0);
     expect(existsSync(join(user, "settings.json"))).toBe(false);
+    expect(existsSync(join(user, "keybindings.json"))).toBe(false);
     expect(existsSync(join(user, "snippets"))).toBe(false);
-    const [settings, snippets] = backups();
+    const [keybindings, settings, snippets] = backups();
+    expect(keybindings).toMatch(/^keybindings\.json\.pre-dots-\d{14}$/);
     expect(settings).toMatch(/^settings\.json\.pre-dots-\d{14}$/);
     expect(snippets).toMatch(/^snippets\.pre-dots-\d{14}$/);
     expect(readFileSync(join(user, settings!), "utf8")).toBe('{ "old": true }\n');
+    expect(readFileSync(join(user, keybindings!), "utf8")).toBe("[]\n");
     expect(readFileSync(join(user, snippets!, "bash.json"), "utf8")).toBe("{}\n");
     expect(r.err).toContain("moved");
   });
@@ -76,9 +85,11 @@ describe("VS Code links", () => {
   it("hook: leaves the dots links alone", () => {
     mkdirSync(user, { recursive: true });
     symlinkSync(join(REPO, "config/vscode/settings.json"), join(user, "settings.json"));
+    symlinkSync(join(REPO, "config/vscode/keybindings.json"), join(user, "keybindings.json"));
     symlinkSync(join(REPO, "config/snippets"), join(user, "snippets"));
     expect(hook().code).toBe(0);
     expect(lstatSync(join(user, "settings.json")).isSymbolicLink()).toBe(true);
+    expect(lstatSync(join(user, "keybindings.json")).isSymbolicLink()).toBe(true);
     expect(lstatSync(join(user, "snippets")).isSymbolicLink()).toBe(true);
     expect(backups()).toEqual([]);
   });
