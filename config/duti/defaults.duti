@@ -1,0 +1,22 @@
+# Default apps for file types, set by `duti` from the post-defaults hook (config/mise/conf.d/macos.toml).
+# Format: bundle ID <TAB> UTI <TAB> role. Whole-line comments only: duti reads a trailing comment as part of the role.
+# Real UTIs only (`mdls -name kMDItemContentType <file>`): an extension's dynamic dyn.* type fails with error -50.
+# Not .ts: macOS maps it to public.mpeg-2-transport-stream (video). Check one: duti -x sh, duti -d public.json.
+
+# Text, code and config: VS Code.
+com.microsoft.VSCode	public.plain-text	all
+com.microsoft.VSCode	public.source-code	all
+com.microsoft.VSCode	public.script	all
+com.microsoft.VSCode	public.shell-script	all
+com.microsoft.VSCode	public.bash-script	all
+com.microsoft.VSCode	public.zsh-script	all
+com.microsoft.VSCode	public.json	all
+com.microsoft.VSCode	public.yaml	all
+com.microsoft.VSCode	public.xml	all
+com.microsoft.VSCode	net.daringfireball.markdown	all
+com.microsoft.VSCode	public.python-script	all
+com.microsoft.VSCode	public.ruby-script	all
+com.microsoft.VSCode	com.netscape.javascript-source	all
+com.microsoft.VSCode	public.css	all
+com.microsoft.VSCode	public.patch-file	all
+com.microsoft.VSCode	com.apple.log	all

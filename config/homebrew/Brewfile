@@ -36,6 +36,7 @@ brew "bat-extras"  # Extra tools that integrate bat with the shell
 brew "coreutils" if OS.mac?  # GNU file, shell, and text utilities
 brew "curlie"  # Power of curl, ease of use of HTTPie
 brew "fabric-ai"  # Open-source framework for augmenting humans using AI
+brew "duti" if OS.mac?  # Default apps for file types (config/duti, set by the macos.toml hook)
 brew "findutils" if OS.mac?  # GNU find, xargs, and locate
 brew "gawk" if OS.mac?  # GNU awk utility
 brew "gh"  # GitHub CLI
@@ -88,6 +89,7 @@ cask "google-chrome" if OS.mac?  # Chrome browser
 cask "google-drive" if OS.mac?  # Google Drive client
 cask "ghostty" if OS.mac?  # GPU-accelerated terminal emulator
 cask "github" if OS.mac?  # GitHub desktop app
+cask "notunes" if OS.mac?  # Stops Apple Music opening when headphones connect (login item: config/mise/conf.d/macos.toml)
 cask "raycast" if OS.mac?  # Command launcher and automation hub
 cask "vlc" if OS.mac?  # VLC media player
 cask "vorssaint" if OS.mac?  # Menu bar toolkit with keep-awake, system monitor and volume mixer
