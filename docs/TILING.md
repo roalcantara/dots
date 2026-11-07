@@ -18,7 +18,8 @@ The design and its trade-offs are in the
 | `yb` | The yabai actions every fn key calls (`yb --help`) | [`config/bin/yb`](../config/bin/yb) |
 | Karabiner-Elements | Turns fn combinations into `yb` calls, before macOS sees them | [`config/karabiner/src/bindings.ts`](../config/karabiner/src/bindings.ts) |
 | JankyBorders | Outlines the focused window | [`config/borders/bordersrc`](../config/borders/bordersrc) |
-| kb Raycast extension | Space strip in the menu bar, Hotkeys and System commands | `~/Work/kb` ([roalcantara/kb-raycast](https://github.com/roalcantara/kb-raycast)) |
+| SwiftBar | The space strip in the menu bar (`yb bar`) | [`config/swiftbar/plugins/spaces.sh`](../config/swiftbar/plugins/spaces.sh) |
+| kb Raycast extension | Hotkeys and System commands | `~/Work/kb` ([roalcantara/kb-raycast](https://github.com/roalcantara/kb-raycast)) |
 | mise bootstrap | Installs, links and starts all of it | [`config/mise/conf.d/yabai.toml`](../config/mise/conf.d/yabai.toml) |
 
 ## Spaces and screens
@@ -31,6 +32,19 @@ There are ten spaces, labelled `s1`…`s10`; fn + 1…9 go to `s1`…`s9` and fn
 
 `yb spaces` enforces this. yabai runs it at start and whenever a screen is added, removed or moved. It
 creates and removes spaces as needed, and never removes one that holds windows: it moves them first.
+
+## The menu bar strip
+
+One numbered square per space that exists, built-in screen first, a dot, then the external screen:
+
+| Square | Meaning |
+| --- | --- |
+| Filled white | On screen and focused (where the keyboard is) |
+| Outline | On screen, not focused (what the other screen shows) |
+| Filled dimmed | Not on any screen |
+
+Click it for the spaces with their apps; choose one to go there. SwiftBar runs `yb bar`, and yabai refreshes it
+on every space, screen, window and focus change.
 
 ## Keys
 
@@ -69,8 +83,9 @@ macOS's own fn shortcuts (fn + E emoji, fn + F fullscreen, fn + A, C, N, Q) are 
 
 ### Done by `mise bootstrap`
 
-- Installs yabai, JankyBorders and Karabiner-Elements; links `~/.config/yabai`, `~/.config/karabiner` and
-  `~/.config/borders`, moving a real `~/.config/karabiner` aside first.
+- Installs yabai, JankyBorders, Karabiner-Elements and SwiftBar; links `~/.config/yabai`, `~/.config/karabiner`,
+  `~/.config/borders` and `~/.config/swiftbar`, moving a real `~/.config/karabiner` aside first.
+- Starts SwiftBar at login, pointed at `~/.config/swiftbar/plugins`.
 - Sets "Press 🌐 key to" to Do Nothing (`AppleFnUsageType = 0`; takes effect after a logout).
 - Runs yabai and borders as LaunchAgents (`dev.mise.yabai`, `dev.mise.borders`) that restart if they exit.
 - `yb sa` writes `/etc/sudoers.d/yabai` (pinned to yabai's hash, rewritten after `brew upgrade yabai`) and adds
@@ -111,13 +126,14 @@ OS), so expect them to fail there until yabai is replaced or updated.
 - [ ] System Settings, Calculator, Raycast and dialogs float above the tiles.
 - [ ] Window shadows are gone **(SA)**.
 
-### Menu bar strip (kb)
+### Menu bar strip (SwiftBar)
 
-- [ ] The strip reads built-in slots `│` external slots, in the order the screens are arranged.
-- [ ] Marks agree with the dropdown: filled = focused, outlined = shown on the other screen, plain = has
-      windows, · = empty.
-- [ ] The strip updates when a window opens or closes and when the space changes.
-- [ ] Clicking a space in the dropdown goes there **(focus)**.
+- [ ] One square per existing space: built-in screen first, a dot, then the external screen.
+- [ ] Filled white = on screen and focused; outline = on screen, not focused; dimmed = not on screen.
+- [ ] Clicking into the other screen swaps the filled and outlined squares at once.
+- [ ] The strip redraws when a window opens or closes and when the space changes.
+- [ ] The dropdown lists each space with its apps; choosing one goes there **(focus)**.
+- [ ] White on a dark menu bar, black on a light one.
 
 ### Spaces
 
@@ -177,5 +193,5 @@ OS), so expect them to fail there until yabai is replaced or updated.
 | fn + E opens emoji, or fn + F goes native fullscreen | Karabiner is not running or the `dots` profile is not selected (Karabiner-Elements → Profiles) |
 | Spaces still slide, or the scratchpad does nothing | The scripting addition is not loaded: `sudo -n yabai --load-sa`; if it asks for a password, run `yb sa` |
 | Wrong number of spaces, or labels missing | `yb spaces`, then `yabai -m query --spaces \| jq '.[] \| {index, label, display}'` |
-| The menu bar strip is stale | Run the kb "Yabai" command once; `yabairc` refreshes it on every space and window change |
+| The menu bar strip is stale or missing | `open -g 'swiftbar://refreshplugin?name=spaces'`; `yb bar` in a terminal shows what SwiftBar gets |
 | yabai stopped | `launchctl kickstart -k gui/$(id -u)/dev.mise.yabai` |
