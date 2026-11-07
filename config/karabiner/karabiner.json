@@ -1401,7 +1401,7 @@
               },
               {
                 "type": "basic",
-                "description": "Default browser",
+                "description": "New tab in the default browser",
                 "from": {
                   "key_code": "return_or_enter",
                   "modifiers": {

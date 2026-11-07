@@ -69,7 +69,7 @@
 #USAGE cmd "app" help="Open an app by name" {
 #USAGE   arg "<name>"
 #USAGE }
-#USAGE cmd "browser" help="Bring up the default browser, or open a new window of it" {
+#USAGE cmd "browser" help="Open a new tab in the default browser's front window, or a new window of it" {
 #USAGE   flag "--window" help="Open a new browser window on the focused screen"
 #USAGE }
 #USAGE cmd "term" help="Open a new Ghostty window (launches Ghostty when it is not running)"
@@ -190,6 +190,21 @@ browser_id() {
   plutil -convert json -o - "$HOME/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist" 2>/dev/null |
     jq -r 'first(.LSHandlers[]? | select(.LSHandlerURLScheme == "https") | .LSHandlerRoleAll) // "com.apple.safari"' 2>/dev/null ||
     print com.apple.safari
+}
+
+# A new tab in the default browser's front window (a first window when it has none). Safari and Chromium
+# browsers take AppleScript; Firefox takes --new-tab.
+browser_tab() {
+  local id="$1"
+  case "${id:l}" in
+    org.mozilla.firefox*) open -b "$id" --args --new-tab about:newtab ;;
+    com.apple.safari)
+      osascript -e "tell application id \"$id\"" -e 'if (count of windows) = 0 then make new document' \
+        -e 'tell front window to set current tab to (make new tab)' -e 'activate' -e 'end tell' >/dev/null ;;
+    *)
+      osascript -e "tell application id \"$id\"" -e 'if (count of windows) = 0 then make new window' \
+        -e 'tell front window to make new tab' -e 'activate' -e 'end tell' >/dev/null ;;
+  esac
 }
 
 # A new window of the default browser on the focused screen. Safari takes AppleScript; Chromium browsers
@@ -534,7 +549,7 @@ main() {
     close) Y window --close ;;
     app) open -a "$usage_name" ;;
     browser)
-      if [[ ${usage_window:-false} == true ]]; then browser_window "$(browser_id)"; else open -b "$(browser_id)"; fi
+      if [[ ${usage_window:-false} == true ]]; then browser_window "$(browser_id)"; else browser_tab "$(browser_id)"; fi
       ;;
     term) ghostty_window ;;
     nvim) ghostty_window nvim ;;

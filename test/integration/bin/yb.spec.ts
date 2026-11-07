@@ -27,6 +27,7 @@ const OSASCRIPT = `#!/bin/sh
 case "$*" in
   *"is running"*) echo "\${GHOSTTY_RUNNING:-true}" ;;
   *nvim*"new window"*) echo "osascript Ghostty new window nvim" >> "$YB_STUB_LOG" ;;
+  *"make new tab"*) echo "osascript new tab" >> "$YB_STUB_LOG" ;;
   *"make new document"*) echo "osascript Safari new document" >> "$YB_STUB_LOG" ;;
   *"new window"*) echo "osascript Ghostty new window" >> "$YB_STUB_LOG" ;;
 esac
@@ -683,8 +684,13 @@ describe("yb term on the focused screen", () => {
 describe("yb browser", () => {
   const opened = (args: string[], env: Record<string, string>) => yb(args, env).calls.filter((c) => !c.startsWith("-m "));
 
-  it("fn + ⇧ + Return brings up the default browser", () => {
-    expect(opened(["browser"], { DOTS_BROWSER_ID: "com.google.chrome" })).toEqual(["open -b com.google.chrome"]);
+  it("fn + ⇧ + Return opens a new tab in the browser's front window (Chromium and Safari: AppleScript)", () => {
+    expect(opened(["browser"], { DOTS_BROWSER_ID: "com.google.chrome" })).toEqual(["osascript new tab"]);
+    expect(opened(["browser"], { DOTS_BROWSER_ID: "com.apple.safari" })).toEqual(["osascript new tab"]);
+  });
+
+  it("Firefox gets its new tab with --new-tab", () => {
+    expect(opened(["browser"], { DOTS_BROWSER_ID: "org.mozilla.firefox" })).toEqual(["open -b org.mozilla.firefox --args --new-tab about:newtab"]);
   });
 
   it("fn + ⌥⇧ + Return opens a new window: Chromium browsers take --new-window", () => {
