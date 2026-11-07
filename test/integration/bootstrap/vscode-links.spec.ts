@@ -6,10 +6,12 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { Database } from "bun:sqlite";
 
 const REPO = join(import.meta.dir, "../../..");
 const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/dotfiles.toml"), "utf8")) as any;
 const HOOK: string = conf.bootstrap.hooks["pre-dotfiles"].run;
+const SYNC_HOOK: string = conf.bootstrap.hooks["post-dotfiles"].run;
 const VS = "~/Library/Application Support/Code/User";
 
 let t: string;
@@ -20,13 +22,13 @@ beforeEach(() => {
 });
 afterEach(() => rmSync(t, { recursive: true, force: true }));
 
-function hook(os = "Darwin") {
+function hook(os = "Darwin", script = HOOK) {
   const bin = join(t, "bin");
   mkdirSync(bin, { recursive: true });
   writeFileSync(join(bin, "uname"), `#!/bin/sh\necho ${os}\n`);
   chmodSync(join(bin, "uname"), 0o755);
-  const p = Bun.spawnSync(["sh", "-o", "errexit", "-c", HOOK], {
-    env: { PATH: `${bin}:/usr/bin:/bin`, HOME: t, DOTS_VSCODE_USER: user }, stdout: "pipe", stderr: "pipe",
+  const p = Bun.spawnSync(["sh", "-o", "errexit", "-c", script], {
+    env: { PATH: `${bin}:/usr/bin:/bin`, HOME: t, DOTS_VSCODE_USER: user, DOTS_VSCODE_STATE: join(user, "globalStorage", "state.vscdb") }, stdout: "pipe", stderr: "pipe",
   });
   return { code: p.exitCode, err: p.stderr.toString() };
 }
@@ -92,5 +94,42 @@ describe("VS Code links", () => {
     expect(lstatSync(join(user, "keybindings.json")).isSymbolicLink()).toBe(true);
     expect(lstatSync(join(user, "snippets")).isSymbolicLink()).toBe(true);
     expect(backups()).toEqual([]);
+  });
+
+  describe("Settings Sync", () => {
+    const db = () => join(user, "globalStorage", "state.vscdb");
+    const rows = () => {
+      const d = new Database(db(), { readonly: true });
+      try {
+        return Object.fromEntries(
+          (d.query("select key, value from ItemTable where key like 'sync.%' order by key").all() as { key: string; value: string }[])
+            .map((r) => [r.key, String(r.value)]),
+        );
+      } finally {
+        d.close();
+      }
+    };
+    const OFF = { "sync.enable.keybindings": "false", "sync.enable.settings": "false", "sync.enable.snippets": "false" };
+
+    it("does nothing off macOS", () => {
+      expect(hook("Linux", SYNC_HOOK).code).toBe(0);
+      expect(existsSync(db())).toBe(false);
+    });
+
+    it("turns settings, keybindings and snippets off in a fresh state database", () => {
+      expect(hook("Darwin", SYNC_HOOK).code).toBe(0);
+      expect(rows()).toEqual(OFF);
+    });
+
+    it("switches them off in VS Code's existing database and leaves the other keys alone", () => {
+      mkdirSync(join(user, "globalStorage"), { recursive: true });
+      const d = new Database(db());
+      d.run("CREATE TABLE ItemTable (key TEXT UNIQUE ON CONFLICT REPLACE, value BLOB)");
+      d.run("INSERT INTO ItemTable VALUES ('sync.enable', 'true'), ('sync.enable.settings', 'true'), ('sync.enable.prompts', 'true')");
+      d.close();
+      expect(hook("Darwin", SYNC_HOOK).code).toBe(0);
+      expect(hook("Darwin", SYNC_HOOK).code).toBe(0);
+      expect(rows()).toEqual({ ...OFF, "sync.enable": "true", "sync.enable.prompts": "true" });
+    });
   });
 });
