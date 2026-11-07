@@ -72,3 +72,38 @@
 
 # The owner's agent commands.
 "~/.agents/commands" = { source = "~/.local/share/dots/config/agents/commands", relative = true }
+
+# VS Code reads its user settings and snippets from Application Support on macOS, so link both back to
+# the repo; the pre-dotfiles hook below clears the way. Linux machines (the Docker images) have no VS Code.
+[dotfiles.vscode-settings]
+source = "~/.local/share/dots/config/vscode/settings.json"
+relative = true
+variants = [
+  { os = "macos", target = "~/Library/Application Support/Code/User/settings.json" },
+]
+
+[dotfiles.vscode-snippets]
+source = "~/.config/snippets"
+relative = true
+variants = [
+  { os = "macos", target = "~/Library/Application Support/Code/User/snippets" },
+]
+
+# A link never replaces a real file, and VS Code (or Settings Sync) writes real ones on first launch. Move
+# them aside, never delete, so the links above apply. Also runs before mise dot apply.
+[bootstrap.hooks.pre-dotfiles]
+description = "Move VS Code's own settings.json and snippets aside for the dots links"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+[ "$(uname)" = Darwin ] || exit 0
+user="${DOTS_VSCODE_USER:-$HOME/Library/Application Support/Code/User}"
+mkdir -p "$user"
+stamp="$(date +%Y%m%d%H%M%S)"
+for p in "$user/settings.json" "$user/snippets"; do
+  if [ -e "$p" ] && [ ! -L "$p" ]; then
+    mv "$p" "$p.pre-dots-$stamp"
+    echo "bootstrap: moved $p to $p.pre-dots-$stamp; dots links it to the repo" >&2
+  fi
+done
+'''
