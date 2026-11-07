@@ -60,6 +60,8 @@ if (domain === "query") {
 
 const needsSa = (domain === "space" && (rest[0] === "--create" || rest[1] === "--destroy" || rest[1] === "--display"));
 if (needsSa && process.env.FAKE_NO_SA === "1") fail("cannot focus space due to an error with the scripting-addition.");
+// yabai 7.1.25 on macOS 27: the addition loads but rejects the OS, so these exit 0 and change nothing.
+if (needsSa && process.env.FAKE_NOOP_SA === "1") process.exit(0);
 
 if (domain === "space" && rest[0] === "--create") {
   state.spaces.push({ id: state.nextId++, label: "", display: display(rest[1] ?? "1"), windows: [] });

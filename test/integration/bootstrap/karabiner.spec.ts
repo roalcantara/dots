@@ -70,6 +70,7 @@ describe("karabiner fn layer", () => {
       expect(m.to[0]!.shell_command).toStartWith('PATH=/opt/homebrew/bin:/usr/bin:/bin "$HOME/.local/bin/yb" ');
     }
     expect(command("return_or_enter", "shift")).toEndWith("yb\" app 'Google Chrome'");
+    expect(command("return_or_enter")).toEndWith('yb" term');
   });
 
   it("writes one hotkey entry per binding", () => {

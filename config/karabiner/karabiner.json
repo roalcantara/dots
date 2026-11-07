@@ -1381,7 +1381,7 @@
             "manipulators": [
               {
                 "type": "basic",
-                "description": "Ghostty",
+                "description": "New Ghostty window",
                 "from": {
                   "key_code": "return_or_enter",
                   "modifiers": {
@@ -1395,7 +1395,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" app Ghostty"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin \"$HOME/.local/bin/yb\" term"
                   }
                 ]
               },

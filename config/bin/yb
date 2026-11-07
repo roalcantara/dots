@@ -65,6 +65,7 @@
 #USAGE cmd "app" help="Open an app by name" {
 #USAGE   arg "<name>"
 #USAGE }
+#USAGE cmd "term" help="Open a new Ghostty window (launches Ghostty when it is not running)"
 #USAGE cmd "nvim" help="Open Neovim in a new Ghostty window"
 #USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
 #USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
@@ -96,7 +97,7 @@ Y() {
 Yq() { "$yabai" -m "$@" 2>/dev/null; }
 
 case "$1" in
-  app | nvim | system | hotkeys | sa | update) ;;
+  app | term | nvim | system | hotkeys | sa | update) ;;
   *)
     if [[ ! -x $yabai ]]; then
       log "yabai not found at $yabai"
@@ -107,6 +108,22 @@ case "$1" in
 esac
 
 kb() { open "raycast://extensions/roalcantara/kb/$1"; }
+
+# A new Ghostty window through its AppleScript dictionary (`open -a` only brings the app forward, and
+# `ghostty +new-window` is Linux-only). Neovim starts through the user's shell, so it gets their PATH.
+ghostty_window() {
+  if [[ "$(osascript -e 'application "Ghostty" is running' 2>/dev/null)" != true ]]; then
+    open -a Ghostty
+    [[ -z ${1:-} ]] && return
+    sleep 1
+  fi
+  if [[ -n ${1:-} ]]; then
+    osascript -e 'tell application "Ghostty"' -e 'set cfg to new surface configuration' \
+      -e "set initial input of cfg to \"$1\" & return" -e 'new window with configuration cfg' -e 'end tell' >/dev/null
+  else
+    osascript -e 'tell application "Ghostty" to new window' >/dev/null
+  fi
+}
 
 # The next yabai command (one argument per line) that brings the spaces closer to the plan, or nothing
 # when they match. Input: {spaces: <query --spaces>, windows: <query --windows>, plan: [{display, lo, hi}],
@@ -232,7 +249,8 @@ sync_spaces() {
     next=("${(@f)$(jq -nr --argjson spaces "$spaces" --argjson windows "$windows" --argjson plan "$plan" --argjson lo "$labels_only" \
       "{spaces: \$spaces, windows: \$windows, plan: \$plan, labelsOnly: \$lo} | $SPACES_NEXT")}")
     [[ -n ${next[1]:-} ]] || return 0
-    if ! Y "${next[@]}"; then
+    # yabai 7.1.25 on macOS 27 accepts create/destroy/move and changes nothing; count that as a failure.
+    if ! Y "${next[@]}" || { [[ ${next[3]:-} != --label ]] && [[ "$(Y query --spaces)" == "$spaces" ]] && log "yabai -m ${next[*]} had no effect"; }; then
       [[ ${next[1]} == space && ${next[3]:-} == --label ]] && return 1
       # Without the scripting addition spaces cannot be created, removed or moved; label what exists.
       $labels_only && return 1
@@ -310,7 +328,8 @@ case "$1" in
   rotate) Y space --rotate 90 ;;
   close) Y window --close ;;
   app) open -a "$usage_name" ;;
-  nvim) open -na Ghostty --args -e nvim ;;
+  term) ghostty_window ;;
+  nvim) ghostty_window nvim ;;
   system) kb system.screen ;;
   hotkeys) kb hotkeys.screen ;;
   spaces) sync_spaces ;;

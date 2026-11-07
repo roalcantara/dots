@@ -16,13 +16,21 @@ case "$2" in query) printf '%s\\n' "\${YB_STUB_QUERY:-{\\}}" ;; esac
 exit 0
 `;
 const OPEN = `#!/bin/sh\nprintf 'open %s\\n' "$*" >> "$YB_STUB_LOG"\n`;
+// osascript stand-in: answers "is running" from GHOSTTY_RUNNING and records new-window requests.
+const OSASCRIPT = `#!/bin/sh
+case "$*" in
+  *"is running"*) echo "\${GHOSTTY_RUNNING:-true}" ;;
+  *nvim*"new window"*) echo "osascript Ghostty new window nvim" >> "$YB_STUB_LOG" ;;
+  *"new window"*) echo "osascript Ghostty new window" >> "$YB_STUB_LOG" ;;
+esac
+`;
 
 let dir = "";
 let log = "";
 let home = "";
 beforeAll(() => {
   dir = mkdtempSync(join(tmpdir(), "yb-stub-"));
-  for (const [name, body] of [["yabai", STUB], ["open", OPEN]] as const) {
+  for (const [name, body] of [["yabai", STUB], ["open", OPEN], ["osascript", OSASCRIPT]] as const) {
     writeFileSync(join(dir, name), body);
     chmodSync(join(dir, name), 0o755);
   }
@@ -160,7 +168,9 @@ describe("yb", () => {
   describe("apps and Raycast", () => {
     it("opens apps, Neovim in Ghostty, and the kb commands", () => {
       expect(yb(["app", "Google Chrome"]).calls).toEqual(["open -a Google Chrome"]);
-      expect(yb(["nvim"]).calls).toEqual(["open -na Ghostty --args -e nvim"]);
+      expect(yb(["term"]).calls).toEqual(["osascript Ghostty new window"]);
+      expect(yb(["nvim"]).calls).toEqual(["osascript Ghostty new window nvim"]);
+      expect(yb(["term"], { GHOSTTY_RUNNING: "false" }).calls).toEqual(["open -a Ghostty"]);
       expect(yb(["system"]).calls).toEqual(["open raycast://extensions/roalcantara/kb/system.screen"]);
       expect(yb(["hotkeys"]).calls).toEqual(["open raycast://extensions/roalcantara/kb/hotkeys.screen"]);
     });
@@ -418,6 +428,12 @@ describe("yb spaces in the real world", () => {
   it("without the scripting addition, still labels the spaces that exist", () => {
     setup([1, 3], [sp(100, 1), sp(101, 1), sp(102, 2)]);
     run({ FAKE_NO_SA: "1" });
+    expect(read().spaces.map((s) => s.label)).toEqual(["s1", "s2", "s6"]);
+  });
+
+  it("treats a step that exits 0 but changes nothing as failed, and still labels", () => {
+    setup([1, 3], [sp(100, 1), sp(101, 1), sp(102, 2)]);
+    expect(run({ FAKE_NOOP_SA: "1" }).code).toBe(0);
     expect(read().spaces.map((s) => s.label)).toEqual(["s1", "s2", "s6"]);
   });
 
