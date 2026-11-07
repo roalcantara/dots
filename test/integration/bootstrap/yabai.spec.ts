@@ -99,6 +99,7 @@ describe("yabai and borders services", () => {
     expect(yabairc).toMatch(/window_insertion_point last/);
     expect(yabairc).toMatch(/window_placement second_child/);
     expect(yabairc).toMatch(/split_type auto/);
+  });
 
   it("uses Omarchy's gaps: 10 between windows and at the screen edges", () => {
     for (const key of ["top_padding", "bottom_padding", "left_padding", "right_padding", "window_gap"]) {
