@@ -276,7 +276,12 @@
   },
   {
     "keys": "fn G",
-    "label": "Stack with the neighbouring window",
+    "label": "Stack with the neighbour, or split a stack back into tiles",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⌥ G",
+    "label": "Take the window out of its stack",
     "group": "Windows"
   },
   {

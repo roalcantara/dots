@@ -59,9 +59,9 @@
 #USAGE     choices "w-" "w+" "h-" "h+"
 #USAGE   }
 #USAGE }
-#USAGE cmd "stack" help="Stack onto the neighbour that way (or the sibling), or focus next/prev in the stack" {
+#USAGE cmd "stack" help="Stack onto the neighbour that way (or the sibling); focus next/prev in the stack; toggle the stack; take the window out" {
 #USAGE   arg "<target>" {
-#USAGE     choices "west" "east" "north" "south" "sibling" "next" "prev"
+#USAGE     choices "west" "east" "north" "south" "sibling" "next" "prev" "toggle" "out"
 #USAGE   }
 #USAGE }
 #USAGE cmd "balance" help="Balance the split sizes"
@@ -472,6 +472,32 @@ arrange() {
   fi
 }
 
+# Stacked windows share one tile (stack-index > 0, same frame). yabai has no unstack: floating a window and
+# tiling it again puts it back in the layout as a tile of its own.
+unstack() { Y window "$1" --toggle float && Y window "$1" --toggle float; }
+
+stack_toggle() {
+  local mode="$1" windows focused members id
+  # the whole space in the stack layout (fn + l): back to tiling
+  if [[ "$(Y query --spaces --space | jq -r '.type? // ""' 2>/dev/null)" == stack ]]; then
+    Y space --layout bsp
+    return
+  fi
+  windows="$(Y query --windows --space)" || return
+  focused="$(jq -c 'first(.[] | select(."has-focus")) // empty' <<<"$windows")"
+  [[ -n $focused ]] || return 0
+  if [[ "$(jq '."stack-index" // 0' <<<"$focused")" == 0 ]]; then
+    [[ $mode == toggle ]] && Y window --stack sibling
+    return
+  fi
+  if [[ $mode == out ]]; then
+    unstack "$(jq '.id' <<<"$focused")"
+    return
+  fi
+  members="$(jq -r --argjson f "$focused" '[.[] | select(."stack-index" > 0 and .frame == $f.frame)] | sort_by(."stack-index") | .[].id' <<<"$windows")"
+  for id in ${(f)members}; do unstack "$id" || return; done
+}
+
 resize() {
   local far near
   case "$1" in
@@ -514,6 +540,7 @@ main() {
     stack)
       case "$usage_target" in
         next | prev) Y window --focus "stack.$usage_target" ;;
+        toggle | out) stack_toggle "$usage_target" ;;
         *) Y window --stack "$usage_target" ;;
       esac
       ;;

@@ -75,6 +75,9 @@ describe("karabiner fn layer", () => {
     expect(command("right_arrow", "shift", "option")).toEndWith('yb" rotate cw');
     expect(command("left_arrow", "shift", "option")).toEndWith('yb" rotate ccw');
     expect(command("r")).toEndWith('yb" rotate');
+    // Omarchy's grouping: Super+G toggles, Super+Alt+G takes the window out
+    expect(command("g")).toEndWith('yb" stack toggle');
+    expect(command("g", "option")).toEndWith('yb" stack out');
     // fn + ⌃ + arrow: the focused window and its neighbour, arranged the way the arrow points
     for (const [key, dir] of [["left_arrow", "left"], ["right_arrow", "right"], ["up_arrow", "up"], ["down_arrow", "down"]]) {
       expect(command(key!, "control")).toEndWith(`yb" arrange ${dir}`);

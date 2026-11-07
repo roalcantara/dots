@@ -16,6 +16,7 @@ case "$2 $3 $4" in
   "query --displays --display") printf '%s\\n' "\${YB_STUB_DISPLAY:-{\\"index\\":1\\}}" ;;
   "query --windows ") n=$(cat "$YB_STUB_LOG.n" 2>/dev/null || echo 0); echo $((n + 1)) > "$YB_STUB_LOG.n"
     if [ "$n" -eq 0 ]; then printf '%s\\n' "\${YB_STUB_WINDOWS_1:-[]}"; else printf '%s\\n' "\${YB_STUB_WINDOWS_2:-[]}"; fi ;;
+  "query --spaces --space") printf '%s\\n' "\${YB_STUB_SPACE:-\${YB_STUB_QUERY:-{\\}}}" ;;
   query*) printf '%s\\n' "\${YB_STUB_QUERY:-{\\}}" ;;
 esac
 exit 0
@@ -162,6 +163,38 @@ describe("yb", () => {
         "-m window --toggle float",
         "-m window --sub-layer auto",
       ]);
+    });
+  });
+
+  describe("stack toggle and out", () => {
+    const F = { x: 0, y: 0, w: 100, h: 100 };
+    const W = (id: number, idx: number, focus = false, frame = F) => ({ id, "stack-index": idx, "has-focus": focus, frame });
+    const Q = "-m query --windows --space";
+    const back = (id: number) => [`-m window ${id} --toggle float`, `-m window ${id} --toggle float`];
+
+    it("fn + g on a stacked window splits the whole stack back into tiles", () => {
+      const q = JSON.stringify([W(1, 1, true), W(2, 2), W(3, 3), W(4, 0, false, { x: 200, y: 0, w: 100, h: 100 })]);
+      expect(yb(["stack", "toggle"], { YB_STUB_QUERY: q, YB_STUB_SPACE: '{"type":"bsp"}' }).calls).toEqual(["-m query --spaces --space", Q, ...back(1), ...back(2), ...back(3)]);
+    });
+
+    it("fn + g on a tiled window stacks it with its neighbour", () => {
+      const q = JSON.stringify([W(1, 0, true), W(2, 0, false, { x: 200, y: 0, w: 100, h: 100 })]);
+      expect(yb(["stack", "toggle"], { YB_STUB_QUERY: q, YB_STUB_SPACE: '{"type":"bsp"}' }).calls).toEqual(["-m query --spaces --space", Q, "-m window --stack sibling"]);
+    });
+
+    it("fn + ⌥g takes only the focused window out of its stack", () => {
+      const q = JSON.stringify([W(1, 1), W(2, 2, true), W(3, 3)]);
+      expect(yb(["stack", "out"], { YB_STUB_QUERY: q, YB_STUB_SPACE: '{"type":"bsp"}' }).calls).toEqual(["-m query --spaces --space", Q, ...back(2)]);
+    });
+
+    it("fn + g on a space in the stack layout brings it back to tiling", () => {
+      const r = yb(["stack", "toggle"], { YB_STUB_SPACE: '{"type":"stack"}' });
+      expect(r.calls).toEqual(["-m query --spaces --space", "-m space --layout bsp"]);
+    });
+
+    it("fn + ⌥g on a window that is not stacked does nothing", () => {
+      const q = JSON.stringify([W(1, 0, true)]);
+      expect(yb(["stack", "out"], { YB_STUB_QUERY: q, YB_STUB_SPACE: '{"type":"bsp"}' }).calls).toEqual(["-m query --spaces --space", Q]);
     });
   });
 

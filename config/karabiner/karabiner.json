@@ -1165,7 +1165,7 @@
               },
               {
                 "type": "basic",
-                "description": "Stack with the neighbouring window",
+                "description": "Stack with the neighbour, or split a stack back into tiles",
                 "from": {
                   "key_code": "g",
                   "modifiers": {
@@ -1179,7 +1179,28 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn G' \"$HOME/.local/bin/yb\" stack sibling"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn G' \"$HOME/.local/bin/yb\" stack toggle"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Take the window out of its stack",
+                "from": {
+                  "key_code": "g",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ G' \"$HOME/.local/bin/yb\" stack out"
                   }
                 ]
               },
