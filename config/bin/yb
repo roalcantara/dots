@@ -69,7 +69,8 @@
 #USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
 #USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
 #USAGE cmd "spaces" help="Keep ten labelled spaces: s1-s5 built-in, s6-s10 external (all ten on one screen)"
-#USAGE cmd "update" help="Update the hash in sudoers"
+#USAGE cmd "sa" help="Set up the scripting addition: sudoers rule for --load-sa and the arm64e boot argument"
+#USAGE cmd "update" help="Alias of sa"
 #USAGE example "yb space 6"
 #USAGE example "yb move 3 --stay"
 #USAGE example "yb focus west"
@@ -95,7 +96,7 @@ Y() {
 Yq() { "$yabai" -m "$@" 2>/dev/null; }
 
 case "$1" in
-  app | nvim | system | hotkeys | update) ;;
+  app | nvim | system | hotkeys | sa | update) ;;
   *)
     if [[ ! -x $yabai ]]; then
       log "yabai not found at $yabai"
@@ -145,6 +146,50 @@ def lastof: .[length - 1];
       | ["space", ($todo[0].value.index | tostring), "--label", "s\($missing[0])"] ] | first )
   // empty
 | .[]'
+
+# The scripting addition needs SIP partly off, the arm64e boot argument, and a sudoers rule pinned to
+# yabai's hash so `sudo -n yabai --load-sa` works at login. Only warns; never fails the bootstrap.
+setup_sa() {
+  local sudo="${DOTS_SUDO:-sudo}" visudo="${DOTS_VISUDO:-visudo}"
+  local target="${DOTS_SUDOERS:-/private/etc/sudoers.d/yabai}" stamp="$HOME/.local/state/dots/yabai-sudoers.sha256"
+  local hash rule tmp sip bootargs
+  if [[ ! -x $yabai ]]; then
+    print -u2 "yb sa: yabai not found at $yabai; install it first"
+    return 0
+  fi
+  hash="$(shasum -a 256 "$yabai" | cut -d' ' -f1)"
+  rule="${USER:-$(id -un)} ALL=(root) NOPASSWD: sha256:$hash $yabai --load-sa"
+  if [[ -e $target && -r $stamp && "$(<"$stamp")" == "$hash" ]]; then
+    :
+  else
+    tmp="$(mktemp)"
+    print -r -- "$rule" >"$tmp"
+    if ! "$visudo" -cf "$tmp" >/dev/null 2>&1; then
+      print -u2 "yb sa: visudo rejected the rule; $target left as it was"
+    elif "$sudo" install -m 0440 -o root -g wheel "$tmp" "$target"; then
+      mkdir -p "${stamp:h}" && print -r -- "$hash" >"$stamp"
+      print "yb sa: sudoers rule written for yabai $hash"
+    else
+      print -u2 "yb sa: could not write $target"
+    fi
+    rm -f "$tmp"
+  fi
+  sip="$("${DOTS_CSRUTIL:-csrutil}" status 2>/dev/null)"
+  if [[ $sip == *"status: enabled"* ]]; then
+    print -u2 "yb sa: SIP is fully on. Boot into Recovery, run: csrutil enable --without fs --without debug --without nvram, then reboot"
+    return 0
+  fi
+  bootargs="$("${DOTS_NVRAM:-nvram}" boot-args 2>/dev/null | cut -f2-)"
+  if [[ " $bootargs " != *" -arm64e_preview_abi "* ]]; then
+    bootargs="${bootargs:+$bootargs }-arm64e_preview_abi"
+    if "$sudo" nvram "boot-args=$bootargs"; then
+      print "yb sa: added -arm64e_preview_abi to boot-args; reboot for the scripting addition"
+    else
+      print -u2 "yb sa: could not set boot-args"
+    fi
+  fi
+  return 0
+}
 
 sync_spaces() {
   local profiler builtin displays plan step
@@ -236,11 +281,5 @@ case "$1" in
   system) kb system.screen ;;
   hotkeys) kb hotkeys.screen ;;
   spaces) sync_spaces ;;
-  update)
-    # this script assumes a single user installation!
-    YABAI="$(which yabai)"
-    SHA256=$(shasum -a 256 "$YABAI" | cut -d' ' -f 1)
-    echo "New yabai hash: $SHA256"
-    (echo "$(whoami) ALL=(root) NOPASSWD: sha256:${SHA256} ${YABAI} --load-sa" | sudo tee /private/etc/sudoers.d/yabai) || (echo "failed" && exit 1)
-    ;;
+  sa | update) setup_sa ;;
 esac

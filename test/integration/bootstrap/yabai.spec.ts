@@ -128,3 +128,25 @@ describe("yabai and borders services", () => {
     }
   });
 });
+
+describe("scripting addition hook", () => {
+  const hook: string = toml("config/mise/conf.d/yabai.toml").bootstrap.hooks["post-packages"].run;
+
+  it("runs the repo's yb sa after Homebrew, on macOS only, and never fails the bootstrap", () => {
+    expect(hook).toContain('[ "$(uname)" = Darwin ] || exit 0');
+    expect(hook).toContain('"$HOME/.local/share/dots/config/bin/yb" sa || true');
+  });
+
+  it("does nothing off macOS", () => {
+    const t = mkdtempSync(join(tmpdir(), "yabai-sa-hook-"));
+    try {
+      writeFileSync(join(t, "uname"), "#!/bin/sh\necho Linux\n");
+      chmodSync(join(t, "uname"), 0o755);
+      const r = Bun.spawnSync(["sh", "-o", "errexit", "-c", hook], { env: { PATH: `${t}:/usr/bin:/bin`, HOME: t }, stdout: "pipe", stderr: "pipe" });
+      expect(r.exitCode).toBe(0);
+      expect(r.stdout.toString() + r.stderr.toString()).toBe("");
+    } finally {
+      rmSync(t, { recursive: true, force: true });
+    }
+  });
+});

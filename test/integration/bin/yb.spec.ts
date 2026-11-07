@@ -291,3 +291,99 @@ describe("yb spaces", () => {
     expect(read().calls).toHaveLength(calls);
   });
 });
+
+describe("yb sa", () => {
+  // sudo stub: records the call; `install … <src> <dst>` copies the file (owner flags ignored).
+  const SUDO = `#!/bin/sh
+printf 'sudo %s\\n' "$*" >> "$YB_STUB_LOG"
+if [ "$1" = install ]; then eval "src=\\\${$(($# - 1))}"; eval "dst=\\\${$#}"; cp "$src" "$dst"; fi
+exit 0
+`;
+  let sa = "";
+  let target = "";
+  let yabaiBin = "";
+  const stub = (name: string, body: string) => {
+    writeFileSync(join(sa, name), body);
+    chmodSync(join(sa, name), 0o755);
+    return join(sa, name);
+  };
+
+  beforeAll(() => {
+    sa = mkdtempSync(join(tmpdir(), "yb-sa-"));
+    stub("sudo", SUDO);
+    stub("visudo", `#!/bin/sh\nexit "\${VISUDO_EXIT:-0}"\n`);
+    stub("csrutil", `#!/bin/sh\nprintf '%s\\n' "\${CSRUTIL_STATUS:-System Integrity Protection status: unknown (Custom Configuration).}"\n`);
+    stub("nvram", `#!/bin/sh\nprintf 'boot-args\\t%s\\n' "\${NVRAM_ARGS:-}"\n`);
+    yabaiBin = stub("yabai-bin", "#!/bin/sh\n# v1\n");
+    target = join(sa, "sudoers-yabai");
+  });
+  afterAll(() => rmSync(sa, { recursive: true, force: true }));
+
+  function runSa(env: Record<string, string> = {}) {
+    writeFileSync(log, "");
+    const r = Bun.spawnSync([script, "sa"], {
+      stdout: "pipe",
+      stderr: "pipe",
+      env: {
+        PATH: `${realUsageDir()}:${dirname(findRealBin("jq"))}:/usr/bin:/bin`,
+        HOME: home,
+        USER: "tester",
+        YB_STUB_LOG: log,
+        DOTS_YABAI: yabaiBin,
+        DOTS_SUDO: join(sa, "sudo"),
+        DOTS_VISUDO: join(sa, "visudo"),
+        DOTS_CSRUTIL: join(sa, "csrutil"),
+        DOTS_NVRAM: join(sa, "nvram"),
+        DOTS_SUDOERS: target,
+        ...env,
+      },
+    });
+    const calls = readFileSync(log, "utf8").trim().split("\n").filter(Boolean);
+    return { code: r.exitCode, out: r.stdout.toString() + r.stderr.toString(), calls };
+  }
+  const hash = () => new Bun.CryptoHasher("sha256").update(readFileSync(yabaiBin)).digest("hex");
+
+  it("writes the sudoers rule for the current yabai hash", () => {
+    rmSync(join(home, ".local/state/dots"), { recursive: true, force: true });
+    const r = runSa({ NVRAM_ARGS: "-arm64e_preview_abi" });
+    expect(r.code).toBe(0);
+    expect(readFileSync(target, "utf8")).toBe(`tester ALL=(root) NOPASSWD: sha256:${hash()} ${yabaiBin} --load-sa\n`);
+    expect(r.calls.some((c) => c.startsWith("sudo install -m 0440 -o root -g wheel "))).toBe(true);
+  });
+
+  it("does nothing, and never asks for sudo, when the hash is unchanged", () => {
+    const r = runSa({ NVRAM_ARGS: "-arm64e_preview_abi" });
+    expect(r.code).toBe(0);
+    expect(r.calls).toEqual([]);
+  });
+
+  it("rewrites the rule after yabai changes (brew upgrade)", () => {
+    writeFileSync(yabaiBin, "#!/bin/sh\n# v2\n");
+    const r = runSa({ NVRAM_ARGS: "-arm64e_preview_abi" });
+    expect(r.calls.some((c) => c.startsWith("sudo install"))).toBe(true);
+    expect(readFileSync(target, "utf8")).toContain(`sha256:${hash()}`);
+  });
+
+  it("installs nothing when visudo rejects the rule, and still exits 0", () => {
+    writeFileSync(yabaiBin, "#!/bin/sh\n# v3\n");
+    const r = runSa({ NVRAM_ARGS: "-arm64e_preview_abi", VISUDO_EXIT: "1" });
+    expect(r.code).toBe(0);
+    expect(r.calls.some((c) => c.startsWith("sudo install"))).toBe(false);
+    expect(r.out).toContain("visudo");
+  });
+
+  it("with SIP fully on, prints the Recovery command and leaves NVRAM alone", () => {
+    const r = runSa({ CSRUTIL_STATUS: "System Integrity Protection status: enabled." });
+    expect(r.code).toBe(0);
+    expect(r.out).toContain("csrutil enable --without fs --without debug --without nvram");
+    expect(r.calls.some((c) => c.includes("nvram"))).toBe(false);
+  });
+
+  it("adds the arm64e boot argument once, keeping the others", () => {
+    const add = runSa({ NVRAM_ARGS: "-v" });
+    expect(add.calls).toContain("sudo nvram boot-args=-v -arm64e_preview_abi");
+    expect(add.out).toContain("reboot");
+    const again = runSa({ NVRAM_ARGS: "-v -arm64e_preview_abi" });
+    expect(again.calls.some((c) => c.includes("nvram"))).toBe(false);
+  });
+});

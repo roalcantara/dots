@@ -14,3 +14,14 @@ program = "/opt/homebrew/bin/borders"
 run_at_load = true
 keep_alive = true
 environment = { PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
+
+# After Homebrew (bootstrap.toml's post-packages hook runs first: conf.d loads in name order): the
+# sudoers rule for `yabai --load-sa` and the arm64e boot argument. `yb sa` only warns. ~/.local/bin is
+# linked later (dotfiles), so call the repo copy.
+[bootstrap.hooks.post-packages]
+description = "Set up yabai's scripting addition (sudoers rule, boot argument)"
+run = '''
+#!/usr/bin/env bash
+[ "$(uname)" = Darwin ] || exit 0
+PATH="/opt/homebrew/bin:$PATH" "$HOME/.local/share/dots/config/bin/yb" sa || true
+'''
