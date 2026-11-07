@@ -38,7 +38,11 @@
 #USAGE   }
 #USAGE }
 #USAGE cmd "border" help="Colour the outline: amber while the focused window is zoomed (fn + f / fn + ⌥f), else the gradient"
-#USAGE cmd "split" help="Toggle the split orientation"
+#USAGE cmd "split" help="Set the split the focused window shares with its neighbour: vertical = side by side, horizontal = one above the other; toggle without one" {
+#USAGE   arg "[orientation]" {
+#USAGE     choices "vertical" "horizontal"
+#USAGE   }
+#USAGE }
 #USAGE cmd "arrange" help="Arrange the focused window and its neighbour: side by side (left/right) or one above the other (up/down), focused on that side" {
 #USAGE   arg "<dir>" {
 #USAGE     choices "left" "right" "up" "down"
@@ -545,7 +549,14 @@ main() {
     swap) Y window --swap "$usage_dir" ;;
     send-display) Y window --display "$usage_dir" && Y display --focus "$usage_dir" ;;
     screen) Y display --focus "$usage_dir" ;;
-    split) Y window --toggle split ;;
+    split)
+      if [[ -z ${usage_orientation:-} ]]; then
+        Y window --toggle split
+      else
+        current="$(Y query --windows --window | jq -r '."split-type" // "none"')" || return
+        [[ $current == none || $current == "$usage_orientation" ]] || Y window --toggle split
+      fi
+      ;;
     arrange) arrange "$usage_dir" ;;
     layout) toggle_layout ;;
     float) Y window --toggle float ;;

@@ -25,6 +25,7 @@ const KEYS: Readonly<Record<string, string>> = {
   grave_accent_and_tilde: '`',
   open_bracket: '[',
   close_bracket: ']',
+  backslash: '\\',
   hyphen: '−',
   equal_sign: '=',
 }

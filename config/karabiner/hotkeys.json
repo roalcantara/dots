@@ -280,8 +280,13 @@
     "group": "Windows"
   },
   {
-    "keys": "fn J",
-    "label": "Toggle split orientation",
+    "keys": "fn ⇧ \\",
+    "label": "Focused window and its neighbour side by side (|)",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn \\",
+    "label": "Focused window and its neighbour one above the other (\\)",
     "group": "Layout"
   },
   {

@@ -66,7 +66,8 @@ export const bindings: readonly Binding[] = [
   b('Windows', 'hyphen', ['shift'], 'Shorter', ['resize', 'h-']),
   b('Windows', 'equal_sign', ['shift'], 'Taller', ['resize', 'h+']),
 
-  b('Layout', 'j', [], 'Toggle split orientation', ['split']),
+  b('Layout', 'backslash', ['shift'], 'Focused window and its neighbour side by side (|)', ['split', 'vertical']),
+  b('Layout', 'backslash', [], 'Focused window and its neighbour one above the other (\\)', ['split', 'horizontal']),
   ...ARROWS.map(([key]) => {
     const dir = ({ left_arrow: 'left', right_arrow: 'right', up_arrow: 'up', down_arrow: 'down' } as const)[key]
     const how = dir === 'left' || dir === 'right' ? 'side by side' : 'one above the other'

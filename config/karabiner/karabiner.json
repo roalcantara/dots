@@ -1188,9 +1188,30 @@
             "manipulators": [
               {
                 "type": "basic",
-                "description": "Toggle split orientation",
+                "description": "Focused window and its neighbour side by side (|)",
                 "from": {
-                  "key_code": "j",
+                  "key_code": "backslash",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ \\' \"$HOME/.local/bin/yb\" split vertical"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focused window and its neighbour one above the other (\\)",
+                "from": {
+                  "key_code": "backslash",
                   "modifiers": {
                     "mandatory": [
                       "fn"
@@ -1202,7 +1223,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn J' \"$HOME/.local/bin/yb\" split"
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn \\' \"$HOME/.local/bin/yb\" split horizontal"
                   }
                 ]
               },

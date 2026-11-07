@@ -172,6 +172,22 @@ describe("yb", () => {
     });
   });
 
+  describe("split", () => {
+    const q = (split: string) => ({ YB_STUB_QUERY: `{"split-type":"${split}"}` });
+    const Q = "-m query --windows --window";
+
+    it("fn + | sets the pair side by side, fn + \\ one above the other, only when they are not already", () => {
+      expect(yb(["split", "vertical"], q("horizontal")).calls).toEqual([Q, "-m window --toggle split"]);
+      expect(yb(["split", "vertical"], q("vertical")).calls).toEqual([Q]);
+      expect(yb(["split", "horizontal"], q("vertical")).calls).toEqual([Q, "-m window --toggle split"]);
+      expect(yb(["split", "horizontal"], q("horizontal")).calls).toEqual([Q]);
+    });
+
+    it("leaves a window alone on its space", () => {
+      expect(yb(["split", "vertical"], q("none")).calls).toEqual([Q]);
+    });
+  });
+
   describe("arrange", () => {
     const q = (split: string, child: string) => ({ YB_STUB_QUERY: `{"split-type":"${split}","split-child":"${child}"}` });
     const Q = "-m query --windows --window";

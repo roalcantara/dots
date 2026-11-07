@@ -79,6 +79,10 @@ describe("karabiner fn layer", () => {
       expect(find(key!, ...mods)).toBeUndefined();
     }
     expect(command("l")).toEndWith('yb" layout');
+    // one key per orientation instead of the fn + j toggle: | side by side, \\ one above the other
+    expect(find("j")).toBeUndefined();
+    expect(command("backslash", "shift")).toEndWith('yb" split vertical');
+    expect(command("backslash")).toEndWith('yb" split horizontal');
     // removed: fn+⇧a (ChatGPT), fn+⇧d (Discord), fn+r (rotate; the ⌥⇧ arrows remain), fn+` and fn+⇧⌃←/→ (now [ and ])
     for (const [key, ...mods] of [["a", "shift"], ["d", "shift"], ["r"], ["grave_accent_and_tilde"], ["left_arrow", "shift", "control"], ["right_arrow", "shift", "control"]]) {
       expect(find(key!, ...mods)).toBeUndefined();
