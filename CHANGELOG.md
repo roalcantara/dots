@@ -1,3 +1,10 @@
+# [1.41.0](https://github.com/roalcantara/dots/compare/v1.40.0...v1.41.0) (2026-11-07)
+
+
+### Features
+
+* **macos:** Declare macOS defaults, Touch ID and SSH key via mise ([#107](https://github.com/roalcantara/dots/issues/107)) ([e3902d8](https://github.com/roalcantara/dots/commit/e3902d849764ddfff2b294dfefc71148b8dc2052))
+
 # [1.40.0](https://github.com/roalcantara/dots/compare/v1.39.1...v1.40.0) (2026-11-06)
 
 
