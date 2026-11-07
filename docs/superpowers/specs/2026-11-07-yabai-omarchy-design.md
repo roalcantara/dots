@@ -148,6 +148,11 @@ keeps the launcher (⌘Space) and Hyper on right ⌘. A single `fn` tap stays un
 
 Kept as macOS has them: ⌘Tab, ⌘C/⌘V/⌘X, ⌃⌘Q (lock), ⌘Space (Raycast), screenshots.
 
+Changed after the owner's validation (2026-11-07): stacking is removed (fn + g, fn + ⌥ + ← / →, fn + ⌥Tab,
+fn + ⌥⇧Tab and the stack layout in fn + l). yabai shows no sign of a stack, so stacked windows simply vanished;
+fn + l toggles tiled ↔ floating. fn + ⌥⇧ + ← / → rotate the layout and fn + ⌃ + arrows arrange a window with
+its neighbour (docs/TILING.md has the current keys).
+
 ### Look and behaviour
 
 - bsp layout, new windows split the focused one, `auto_balance` on, gaps and padding as in the current

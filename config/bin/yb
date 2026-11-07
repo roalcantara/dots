@@ -34,16 +34,12 @@
 #USAGE }
 #USAGE cmd "display-other" help="Focus the other screen"
 #USAGE cmd "split" help="Toggle the split orientation"
-#USAGE cmd "arrange" help="Arrange the focused window and its neighbour: side by side (left/right) or stacked (up/down), focused on that side" {
+#USAGE cmd "arrange" help="Arrange the focused window and its neighbour: side by side (left/right) or one above the other (up/down), focused on that side" {
 #USAGE   arg "<dir>" {
 #USAGE     choices "left" "right" "up" "down"
 #USAGE   }
 #USAGE }
-#USAGE cmd "layout" help="Cycle the space layout bsp, stack, float" {
-#USAGE   arg "<step>" {
-#USAGE     choices "next" "prev"
-#USAGE   }
-#USAGE }
+#USAGE cmd "layout" help="Toggle the space between tiled (bsp) and floating; a stacked space goes back to tiled"
 #USAGE cmd "float" help="Toggle tiled or floating"
 #USAGE cmd "pin" help="Toggle floating, on top, on every space of its screen"
 #USAGE cmd "zoom" help="Fill the space (full) or the parent split (parent)" {
@@ -57,11 +53,6 @@
 #USAGE cmd "resize" help="Narrower (w-), wider (w+), shorter (h-) or taller (h+)" {
 #USAGE   arg "<step>" {
 #USAGE     choices "w-" "w+" "h-" "h+"
-#USAGE   }
-#USAGE }
-#USAGE cmd "stack" help="Stack onto the neighbour that way (or the sibling); focus next/prev in the stack; toggle the stack; take the window out" {
-#USAGE   arg "<target>" {
-#USAGE     choices "west" "east" "north" "south" "sibling" "next" "prev" "toggle" "out"
 #USAGE   }
 #USAGE }
 #USAGE cmd "balance" help="Balance the split sizes"
@@ -427,15 +418,10 @@ sync_spaces() {
   return 1
 }
 
-cycle_layout() {
-  local current next
+toggle_layout() {
+  local current
   current="$(Y query --spaces --space | jq -r '.type // "bsp"')"
-  case "$1:$current" in
-    next:bsp | prev:float) next=stack ;;
-    next:stack | prev:bsp) next=float ;;
-    *) next=bsp ;;
-  esac
-  Y space --layout "$next"
+  Y space --layout "$([[ $current == bsp ]] && print float || print bsp)"
 }
 
 toggle_pin() {
@@ -447,7 +433,7 @@ toggle_pin() {
 }
 
 # yabai describes each window by the split it shares with its neighbour: split-type vertical = side by
-# side, horizontal = stacked; split-child first = left/top, second = right/bottom.
+# side, horizontal = one above the other; split-child first = left/top, second = right/bottom.
 arrange() {
   local dir="$1" want_split want_child info split child
   case "$dir" in
@@ -470,32 +456,6 @@ arrange() {
     local -A toward=(left west right east up north down south)
     Yq window --swap sibling || Y window --swap "${toward[$dir]}"
   fi
-}
-
-# Stacked windows share one tile (stack-index > 0, same frame). yabai has no unstack: floating a window and
-# tiling it again puts it back in the layout as a tile of its own.
-unstack() { Y window "$1" --toggle float && Y window "$1" --toggle float; }
-
-stack_toggle() {
-  local mode="$1" windows focused members id
-  # the whole space in the stack layout (fn + l): back to tiling
-  if [[ "$(Y query --spaces --space | jq -r '.type? // ""' 2>/dev/null)" == stack ]]; then
-    Y space --layout bsp
-    return
-  fi
-  windows="$(Y query --windows --space)" || return
-  focused="$(jq -c 'first(.[] | select(."has-focus")) // empty' <<<"$windows")"
-  [[ -n $focused ]] || return 0
-  if [[ "$(jq '."stack-index" // 0' <<<"$focused")" == 0 ]]; then
-    [[ $mode == toggle ]] && Y window --stack sibling
-    return
-  fi
-  if [[ $mode == out ]]; then
-    unstack "$(jq '.id' <<<"$focused")"
-    return
-  fi
-  members="$(jq -r --argjson f "$focused" '[.[] | select(."stack-index" > 0 and .frame == $f.frame)] | sort_by(."stack-index") | .[].id' <<<"$windows")"
-  for id in ${(f)members}; do unstack "$id" || return; done
 }
 
 resize() {
@@ -529,7 +489,7 @@ main() {
     display-other) Y display --focus recent ;;
     split) Y window --toggle split ;;
     arrange) arrange "$usage_dir" ;;
-    layout) cycle_layout "$usage_step" ;;
+    layout) toggle_layout ;;
     float) Y window --toggle float ;;
     pin) toggle_pin ;;
     zoom) Y window --toggle "zoom-${usage_kind/full/fullscreen}" ;;
@@ -537,13 +497,6 @@ main() {
       if [[ ${usage_send:-false} == true ]]; then Y window --scratchpad scratch; else Y window --toggle scratch; fi
       ;;
     resize) resize "$usage_step" ;;
-    stack)
-      case "$usage_target" in
-        next | prev) Y window --focus "stack.$usage_target" ;;
-        toggle | out) stack_toggle "$usage_target" ;;
-        *) Y window --stack "$usage_target" ;;
-      esac
-      ;;
     balance) Y space --balance ;;
     # yabai's --rotate 90 turns the layout counter-clockwise on screen, so clockwise is 270.
     rotate) Y space --rotate "$([[ ${usage_direction:-cw} == ccw ]] && print 90 || print 270)" ;;

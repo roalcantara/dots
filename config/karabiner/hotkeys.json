@@ -275,36 +275,6 @@
     "group": "Windows"
   },
   {
-    "keys": "fn G",
-    "label": "Stack with the neighbour, or split a stack back into tiles",
-    "group": "Windows"
-  },
-  {
-    "keys": "fn ⌥ G",
-    "label": "Take the window out of its stack",
-    "group": "Windows"
-  },
-  {
-    "keys": "fn ⌥ ←",
-    "label": "Stack onto the window west",
-    "group": "Windows"
-  },
-  {
-    "keys": "fn ⌥ →",
-    "label": "Stack onto the window east",
-    "group": "Windows"
-  },
-  {
-    "keys": "fn ⌥ Tab",
-    "label": "Next window in the stack",
-    "group": "Windows"
-  },
-  {
-    "keys": "fn ⌥ ⇧ Tab",
-    "label": "Previous window in the stack",
-    "group": "Windows"
-  },
-  {
     "keys": "fn J",
     "label": "Toggle split orientation",
     "group": "Layout"
@@ -321,22 +291,17 @@
   },
   {
     "keys": "fn ⌃ ↑",
-    "label": "Focused and its neighbour stacked, focused on top",
+    "label": "Focused and its neighbour one above the other, focused on top",
     "group": "Layout"
   },
   {
     "keys": "fn ⌃ ↓",
-    "label": "Focused and its neighbour stacked, focused at the bottom",
+    "label": "Focused and its neighbour one above the other, focused at the bottom",
     "group": "Layout"
   },
   {
     "keys": "fn L",
-    "label": "Next layout (bsp, stack, float)",
-    "group": "Layout"
-  },
-  {
-    "keys": "fn ⌥ L",
-    "label": "Previous layout",
+    "label": "Toggle tiled / floating layout",
     "group": "Layout"
   },
   {

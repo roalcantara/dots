@@ -67,21 +67,14 @@ export const bindings: readonly Binding[] = [
   b('Windows', 'equal_sign', [], 'Wider', ['resize', 'w+']),
   b('Windows', 'hyphen', ['shift'], 'Shorter', ['resize', 'h-']),
   b('Windows', 'equal_sign', ['shift'], 'Taller', ['resize', 'h+']),
-  b('Windows', 'g', [], 'Stack with the neighbour, or split a stack back into tiles', ['stack', 'toggle']),
-  b('Windows', 'g', ['option'], 'Take the window out of its stack', ['stack', 'out']),
-  b('Windows', 'left_arrow', ['option'], 'Stack onto the window west', ['stack', 'west']),
-  b('Windows', 'right_arrow', ['option'], 'Stack onto the window east', ['stack', 'east']),
-  b('Windows', 'tab', ['option'], 'Next window in the stack', ['stack', 'next']),
-  b('Windows', 'tab', ['shift', 'option'], 'Previous window in the stack', ['stack', 'prev']),
 
   b('Layout', 'j', [], 'Toggle split orientation', ['split']),
   ...ARROWS.map(([key]) => {
     const dir = ({ left_arrow: 'left', right_arrow: 'right', up_arrow: 'up', down_arrow: 'down' } as const)[key]
-    const how = dir === 'left' || dir === 'right' ? 'side by side' : 'stacked'
+    const how = dir === 'left' || dir === 'right' ? 'side by side' : 'one above the other'
     return b('Layout', key, ['control'], `Focused and its neighbour ${how}, focused ${dir === 'up' ? 'on top' : dir === 'down' ? 'at the bottom' : `on the ${dir}`}`, ['arrange', dir])
   }),
-  b('Layout', 'l', [], 'Next layout (bsp, stack, float)', ['layout', 'next']),
-  b('Layout', 'l', ['option'], 'Previous layout', ['layout', 'prev']),
+  b('Layout', 'l', [], 'Toggle tiled / floating layout', ['layout']),
   b('Layout', 'b', [], 'Balance the splits', ['balance']),
   b('Layout', 'r', [], 'Rotate the layout clockwise', ['rotate']),
   b('Layout', 'right_arrow', ['shift', 'option'], 'Rotate the layout clockwise', ['rotate', 'cw']),

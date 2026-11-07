@@ -123,10 +123,6 @@ describe("yb", () => {
         [["zoom", "parent"], ["-m window --toggle zoom-parent"]],
         [["scratchpad"], ["-m window --toggle scratch"]],
         [["scratchpad", "--send"], ["-m window --scratchpad scratch"]],
-        [["stack", "west"], ["-m window --stack west"]],
-        [["stack", "sibling"], ["-m window --stack sibling"]],
-        [["stack", "next"], ["-m window --focus stack.next"]],
-        [["stack", "prev"], ["-m window --focus stack.prev"]],
         [["balance"], ["-m space --balance"]],
         // yabai's --rotate 90 turns the layout counter-clockwise on screen (measured: right half -> top)
         [["rotate"], ["-m space --rotate 270"]],
@@ -166,35 +162,9 @@ describe("yb", () => {
     });
   });
 
-  describe("stack toggle and out", () => {
-    const F = { x: 0, y: 0, w: 100, h: 100 };
-    const W = (id: number, idx: number, focus = false, frame = F) => ({ id, "stack-index": idx, "has-focus": focus, frame });
-    const Q = "-m query --windows --space";
-    const back = (id: number) => [`-m window ${id} --toggle float`, `-m window ${id} --toggle float`];
-
-    it("fn + g on a stacked window splits the whole stack back into tiles", () => {
-      const q = JSON.stringify([W(1, 1, true), W(2, 2), W(3, 3), W(4, 0, false, { x: 200, y: 0, w: 100, h: 100 })]);
-      expect(yb(["stack", "toggle"], { YB_STUB_QUERY: q, YB_STUB_SPACE: '{"type":"bsp"}' }).calls).toEqual(["-m query --spaces --space", Q, ...back(1), ...back(2), ...back(3)]);
-    });
-
-    it("fn + g on a tiled window stacks it with its neighbour", () => {
-      const q = JSON.stringify([W(1, 0, true), W(2, 0, false, { x: 200, y: 0, w: 100, h: 100 })]);
-      expect(yb(["stack", "toggle"], { YB_STUB_QUERY: q, YB_STUB_SPACE: '{"type":"bsp"}' }).calls).toEqual(["-m query --spaces --space", Q, "-m window --stack sibling"]);
-    });
-
-    it("fn + ⌥g takes only the focused window out of its stack", () => {
-      const q = JSON.stringify([W(1, 1), W(2, 2, true), W(3, 3)]);
-      expect(yb(["stack", "out"], { YB_STUB_QUERY: q, YB_STUB_SPACE: '{"type":"bsp"}' }).calls).toEqual(["-m query --spaces --space", Q, ...back(2)]);
-    });
-
-    it("fn + g on a space in the stack layout brings it back to tiling", () => {
-      const r = yb(["stack", "toggle"], { YB_STUB_SPACE: '{"type":"stack"}' });
-      expect(r.calls).toEqual(["-m query --spaces --space", "-m space --layout bsp"]);
-    });
-
-    it("fn + ⌥g on a window that is not stacked does nothing", () => {
-      const q = JSON.stringify([W(1, 0, true)]);
-      expect(yb(["stack", "out"], { YB_STUB_QUERY: q, YB_STUB_SPACE: '{"type":"bsp"}' }).calls).toEqual(["-m query --spaces --space", Q]);
+  describe("no stacks", () => {
+    it("has no stack command: stacked windows hide without a trace", () => {
+      expect(yb(["stack", "west"]).code).not.toBe(0);
     });
   });
 
@@ -230,15 +200,13 @@ describe("yb", () => {
   });
 
   describe("layout", () => {
-    it("cycles bsp → stack → float and back", () => {
-      expect(yb(["layout", "next"], { YB_STUB_QUERY: '{"type":"bsp"}' }).calls).toEqual([
-        "-m query --spaces --space",
-        "-m space --layout stack",
-      ]);
-      expect(yb(["layout", "next"], { YB_STUB_QUERY: '{"type":"float"}' }).calls.at(-1)).toBe("-m space --layout bsp");
-      expect(yb(["layout", "prev"], { YB_STUB_QUERY: '{"type":"bsp"}' }).calls.at(-1)).toBe("-m space --layout float");
+    it("fn + l toggles tiled and floating, and brings a stacked space back to tiling", () => {
+      expect(yb(["layout"], { YB_STUB_QUERY: '{"type":"bsp"}' }).calls).toEqual(["-m query --spaces --space", "-m space --layout float"]);
+      expect(yb(["layout"], { YB_STUB_QUERY: '{"type":"float"}' }).calls.at(-1)).toBe("-m space --layout bsp");
+      expect(yb(["layout"], { YB_STUB_QUERY: '{"type":"stack"}' }).calls.at(-1)).toBe("-m space --layout bsp");
     });
   });
+
 
   describe("apps and Raycast", () => {
     it("opens apps, Neovim in Ghostty, and the kb commands", () => {
