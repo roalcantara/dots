@@ -1592,7 +1592,6 @@ commands:
           esac
 
 
-
           # Multiple patterns with fallthrough
 
           animal="cat"

@@ -6,7 +6,7 @@
 # same 16-point square.
 
 # Wrong same-name matches
-medium = "-"          # LeetCode's difficulty, not the blog
+medium = "-"                         # LeetCode's difficulty, not the blog
 easy = "-"
 hard = "-"
 shell = "lucide:terminal"
@@ -100,7 +100,7 @@ maven = "simple-icons:apachemaven"
 java = "simple-icons:openjdk"
 ktlint = "simple-icons:kotlin"
 firestore = "simple-icons:firebase"
-dynamodb = "lucide:database"     # Simple Icons dropped the AWS logos
+dynamodb = "lucide:database"           # Simple Icons dropped the AWS logos
 s3 = "lucide:archive"
 rds = "lucide:database"
 mcp = "lucide:plug-2"
@@ -253,7 +253,7 @@ bcb = "lucide:landmark"
 
 # Second pass
 mise = "lucide:wrench"
-amazon = "-"          # the companies asking a LeetCode problem
+amazon = "-"                                      # the companies asking a LeetCode problem
 google = "-"
 pre-commit = "simple-icons:precommit"
 semantic-release = "simple-icons:semanticrelease"

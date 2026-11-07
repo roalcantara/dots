@@ -229,12 +229,12 @@ LangGraph has a concept of graph with 3 core components:
 - it maintains information that can be updated and accessed by different parts of the graph
 - a typical state might include user inputs, agent outcomes, and a list of actions taken throughout the workflow
 
-2. nodes:
+1. nodes:
 
 - represent the individual components or actions within the graph
 - each node can perform a specific task, such as executing an LLM, running a function, or interacting with external tools
 
-3. edges:
+1. edges:
 
 - connect nodes and define the flow of execution within the graph
 - they determine how data moves from one node to another

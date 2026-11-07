@@ -29,7 +29,8 @@ local stagingLinters = new Mapping<String, Step> {
     check = "zsh -n {{files}}"
   }
   ["markdownlint"] = (Builtins.markdown_lint) {
-    exclude = List("README.md", "config/git/README.md")
+    // CHANGELOG.md is written by semantic-release (.releaserc.yml) on every release.
+    exclude = List("README.md", "config/git/README.md", "CHANGELOG.md")
   }
   ["hadolint"] = (Builtins.hadolint) {
     glob = List("**/Dockerfile", "**/Dockerfile.*")
