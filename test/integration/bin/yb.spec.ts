@@ -107,6 +107,7 @@ describe("yb", () => {
         [["scratchpad"], ["-m window --toggle scratch"]],
         [["scratchpad", "--send"], ["-m window --scratchpad scratch"]],
         [["stack", "west"], ["-m window --stack west"]],
+        [["stack", "sibling"], ["-m window --stack sibling"]],
         [["stack", "next"], ["-m window --focus stack.next"]],
         [["stack", "prev"], ["-m window --focus stack.prev"]],
         [["balance"], ["-m space --balance"]],

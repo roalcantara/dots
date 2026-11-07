@@ -54,9 +54,9 @@
 #USAGE     choices "w-" "w+" "h-" "h+"
 #USAGE   }
 #USAGE }
-#USAGE cmd "stack" help="Stack onto the neighbour that way, or focus next/prev in the stack" {
+#USAGE cmd "stack" help="Stack onto the neighbour that way (or the sibling), or focus next/prev in the stack" {
 #USAGE   arg "<target>" {
-#USAGE     choices "west" "east" "north" "south" "next" "prev"
+#USAGE     choices "west" "east" "north" "south" "sibling" "next" "prev"
 #USAGE   }
 #USAGE }
 #USAGE cmd "balance" help="Balance the split sizes"
