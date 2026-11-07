@@ -145,8 +145,8 @@ describe("yabai and borders services", () => {
     const rc = read("config/borders/bordersrc");
     expect(rc).toContain('active_color="gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)"');
     expect(rc).toContain("inactive_color=0xaa595959");
-    // 2.0 was barely visible next to Omarchy's outline
-    expect(rc).toMatch(/width=5\.0/);
+    // JankyBorders draws one width for every outline: 5.0 thickened the unfocused ones too
+    expect(rc).toMatch(/width=2\.0/);
   });
 
   it("runs yabai and borders as LaunchAgents that restart on exit", () => {

@@ -3,6 +3,6 @@
 # https://github.com/FelixKratz/JankyBorders — the LaunchAgent in config/mise/conf.d/yabai.toml runs
 # `borders`, which reads this file.
 # Omarchy's colours: cyan to green when focused (rgba(33ccffee) rgba(00ff99ee) 45deg), translucent grey
-# (rgba(595959aa)) otherwise; 5 wide (2.0 was barely visible). Colours are 0xAARRGGBB. yb border turns the
+# (rgba(595959aa)) otherwise; 2 wide (one width for every outline). Colours are 0xAARRGGBB. yb border turns the
 # focused outline amber while the window is zoomed.
-borders active_color="gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)" inactive_color=0xaa595959 width=5.0 style=round hidpi=on
+borders active_color="gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)" inactive_color=0xaa595959 width=2.0 style=round hidpi=on
