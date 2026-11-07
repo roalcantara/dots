@@ -64,7 +64,8 @@ beforeAll(() => {
   expect(install.exitCode).toBe(0);
   git(["add", "-A"]);
   expect(commit("ok: initial configuration").exitCode).toBe(0);
-});
+  // A cold first run (mise resolving hk, hk fetching its pkl packages) can take longer than bun's 5 s default.
+}, 60_000);
 
 afterAll(() => {
   rmSync(repo, { recursive: true, force: true });
