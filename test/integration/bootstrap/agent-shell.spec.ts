@@ -26,6 +26,19 @@ describe("agent shell", () => {
     });
   });
 
+  it("links ~/.claude/agents to config/claude/agents, through ~/.config/claude", () => {
+    expect(links["~/.claude/agents"]).toEqual({ source: "~/.config/claude/agents", relative: true });
+    expect(links["~/.config/claude"].source).toBe("~/.local/share/dots/config/claude");
+  });
+
+  it("the lookup agent runs on Haiku with read-only tools", () => {
+    const front = read("config/claude/agents/lookup.md").match(/^---\n([\s\S]*?)\n---\n/)?.[1] ?? "";
+    const field = (k: string) => front.match(new RegExp(`^${k}: (.*)$`, "m"))?.[1];
+    expect(field("name")).toBe("lookup");
+    expect(field("model")).toBe("haiku");
+    expect(field("tools")?.split(/,\s*/).sort()).toEqual(["Glob", "Grep", "Read"]);
+  });
+
   it("Copilot chat runs terminal commands in a bash login shell", () => {
     expect(vscode["chat.tools.terminal.terminalProfile.osx"]).toEqual({ path: "/opt/homebrew/bin/bash", args: ["-l"] });
     expect(vscode["chat.tools.terminal.terminalProfile.linux"]).toEqual({ path: "bash", args: ["-l"] });
