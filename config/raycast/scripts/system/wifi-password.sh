@@ -24,13 +24,15 @@
 airport="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport"
 
 # get current ssid
-ssid="`$airport -I | awk '/ SSID/ {print substr($0, index($0, $2))}'`"
+ssid="$($airport -I | awk '/ SSID/ {print substr($0, index($0, $2))}')"
 
 # get keychain access
-pwd="`security find-generic-password -D 'AirPort network password' -ga \"$ssid\" 2>&1 >/dev/null`"
+pwd="$(security find-generic-password -D 'AirPort network password' -ga "$ssid"  2>&1 > /dev/null)"
 
 # password cleanup
-pwd=$(echo "$pwd" | sed -e "s/^.*\"\(.*\)\".*$/\1/")
+# keep what is between the first and last double quote: password: "<value>"
+pwd="${pwd#*\"}"
+pwd="${pwd%\"*}"
 
 # copy the password
 echo $pwd | pbcopy
