@@ -37,6 +37,7 @@
 #USAGE     choices "west" "east" "north" "south"
 #USAGE   }
 #USAGE }
+#USAGE cmd "border" help="Colour the outline: amber while the focused window is zoomed (fn + f / fn + ⌥f), else the gradient"
 #USAGE cmd "split" help="Toggle the split orientation"
 #USAGE cmd "arrange" help="Arrange the focused window and its neighbour: side by side (left/right) or one above the other (up/down), focused on that side" {
 #USAGE   arg "<dir>" {
@@ -504,6 +505,17 @@ arrange() {
   fi
 }
 
+# The outline (JankyBorders, config/borders/bordersrc) turns amber while the focused window is zoomed, so a
+# window covering the others is visible as such. Runs after each zoom and on focus changes (yabairc).
+BORDER_NORMAL='gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)'
+BORDER_ZOOMED='0xffffb000'
+border() {
+  local borders="${DOTS_BORDERS:-/opt/homebrew/bin/borders}" zoomed
+  [[ -x $borders ]] || return 0
+  zoomed="$("$yabai" -m query --windows --window 2>/dev/null | jq -r '(."has-fullscreen-zoom" // false) or (."has-parent-zoom" // false)' 2>/dev/null)"
+  "$borders" "active_color=$([[ $zoomed == true ]] && print -r -- "$BORDER_ZOOMED" || print -r -- "$BORDER_NORMAL")"
+}
+
 resize() {
   local far near
   case "$1" in
@@ -538,7 +550,8 @@ main() {
     layout) toggle_layout ;;
     float) Y window --toggle float ;;
     pin) toggle_pin ;;
-    zoom) Y window --toggle "zoom-${usage_kind/full/fullscreen}" ;;
+    zoom) Y window --toggle "zoom-${usage_kind/full/fullscreen}" && border ;;
+    border) border ;;
     scratchpad)
       if [[ ${usage_send:-false} == true ]]; then Y window --scratchpad scratch; else Y window --toggle scratch; fi
       ;;

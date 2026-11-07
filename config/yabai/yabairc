@@ -62,6 +62,10 @@ yabai -m signal --add event=window_created label=bar_window_created action="$BAR
 yabai -m signal --add event=window_destroyed label=bar_window_destroyed action="$BAR"
 yabai -m signal --add event=application_front_switched label=bar_front action="$BAR"
 
+# The outline turns amber while the focused window is zoomed (yb border).
+yabai -m signal --add event=window_focused label=border_window_focused action="$HOME/.local/bin/yb border"
+yabai -m signal --add event=application_front_switched label=border_application_front_switched action="$HOME/.local/bin/yb border"
+
 # The tiling trace (yb log): yabai's own events, next to the keys yb logs.
 yabai -m signal --add event=window_created label=trace_window_created action="$HOME/.local/bin/yb event window_created"
 yabai -m signal --add event=window_destroyed label=trace_window_destroyed action="$HOME/.local/bin/yb event window_destroyed"

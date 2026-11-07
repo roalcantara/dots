@@ -128,6 +128,12 @@ describe("yabai and borders services", () => {
     }
   });
 
+  it("re-colours the outline on every focus change (amber while zoomed)", () => {
+    for (const event of ["window_focused", "application_front_switched"]) {
+      expect(yabairc).toContain(`yabai -m signal --add event=${event} label=border_${event} action="$HOME/.local/bin/yb border"`);
+    }
+  });
+
   it("leaves settings windows, dialogs and launchers floating", () => {
     for (const app of ["System Settings", "Calculator", "Archive Utility", "Raycast", "Karabiner-Elements"]) {
       expect(yabairc).toContain(`app="^${app}$" manage=off`);
@@ -139,7 +145,8 @@ describe("yabai and borders services", () => {
     const rc = read("config/borders/bordersrc");
     expect(rc).toContain('active_color="gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)"');
     expect(rc).toContain("inactive_color=0xaa595959");
-    expect(rc).toMatch(/width=2\.0/);
+    // 2.0 was barely visible next to Omarchy's outline
+    expect(rc).toMatch(/width=5\.0/);
   });
 
   it("runs yabai and borders as LaunchAgents that restart on exit", () => {

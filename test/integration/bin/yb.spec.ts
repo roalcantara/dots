@@ -60,6 +60,7 @@ function yb(args: string[], env: Record<string, string> = {}) {
       YB_STUB_LOG: log,
       YB_TRACE_WHERE: "0",
       YB_WAIT_STEPS: "2",
+      DOTS_BORDERS: join(dir, "no-borders"),
       ...env,
     },
   });
@@ -710,5 +711,38 @@ describe("yb browser", () => {
     });
     expect(r.calls).toContain("-m window 9 --display 2");
     expect(r.calls).toContain("-m window --focus 9");
+  });
+});
+
+describe("yb border", () => {
+  const NORMAL = 'active_color=gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)';
+  const AMBER = "active_color=0xffffb000";
+  let borders = "";
+  beforeAll(() => {
+    borders = join(dir, "borders");
+    writeFileSync(borders, '#!/bin/sh\nprintf \'borders %s\\n\' "$*" >> "$YB_STUB_LOG"\n');
+    chmodSync(borders, 0o755);
+  });
+  const drawn = (args: string[], query: string) =>
+    yb(args, { DOTS_BORDERS: borders, YB_STUB_QUERY: query }).calls.filter((c) => c.startsWith("borders "));
+
+  it("turns the outline amber while the focused window is zoomed", () => {
+    expect(drawn(["border"], '{"has-fullscreen-zoom":true,"has-parent-zoom":false}')).toEqual([`borders ${AMBER}`]);
+    expect(drawn(["border"], '{"has-fullscreen-zoom":false,"has-parent-zoom":true}')).toEqual([`borders ${AMBER}`]);
+  });
+
+  it("goes back to the cyan-green gradient otherwise", () => {
+    expect(drawn(["border"], '{"has-fullscreen-zoom":false,"has-parent-zoom":false}')).toEqual([`borders ${NORMAL}`]);
+  });
+
+  it("re-checks right after fn + f and fn + ⌥f", () => {
+    for (const kind of ["full", "parent"]) {
+      expect(drawn(["zoom", kind], '{"has-fullscreen-zoom":true}')).toEqual([`borders ${AMBER}`]);
+    }
+  });
+
+  it("uses the same normal colour as config/borders/bordersrc", () => {
+    const rc = readFileSync(join(import.meta.dir, "../../../config/borders/bordersrc"), "utf8");
+    expect(rc).toContain('active_color="gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)"');
   });
 });
