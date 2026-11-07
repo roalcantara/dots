@@ -9,13 +9,15 @@ sudo -n /opt/homebrew/bin/yabai --load-sa
 yabai -m signal --add event=dock_did_restart label=load_sa action="sudo -n /opt/homebrew/bin/yabai --load-sa"
 
 # Omarchy's look (default/hypr/looknfeel): 10 between windows and at the edges, no shadows.
+# Dwindle tiling: each new window splits the newest tile (insertion point last), along its longer side
+# (split_type auto), and takes the right or bottom half (second_child).
 yabai -m config \
   layout bsp \
   split_type auto \
   split_ratio 0.50 \
   auto_balance on \
   window_placement second_child \
-  window_insertion_point focused \
+  window_insertion_point last \
   window_zoom_persist on \
   top_padding 10 \
   bottom_padding 10 \
