@@ -1,26 +1,602 @@
 #!/usr/bin/env -S usage zsh
 # shellcheck shell=bash disable=SC2154,SC2168,SC2046
+# yb — the yabai CLI behind the Karabiner fn layer (config/karabiner, docs/TILING.md).
+# Spaces are labelled s1…s10: s1–s5 on the built-in screen, s6–s10 on the external one.
+# DOTS_YABAI overrides the yabai binary (tests); failures go to ~/.local/state/dots/yb.log.
 
-#USAGE version "0.1.0"
-#USAGE about "Yabai wrapper"
-#USAGE arg "<action>" {
-#USAGE   choices ignore_case=#true {
-#USAGE     choice "update" help="Update the hash in sudoers"
+#USAGE version "0.2.0"
+#USAGE about "Yabai actions for the fn layer"
+#USAGE cmd "space" help="Focus a space: 1-10 (labels s1-s10), next, prev or recent" {
+#USAGE   arg "<target>" {
+#USAGE     choices "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "next" "prev" "recent"
 #USAGE   }
 #USAGE }
-#USAGE example "yb update"
+#USAGE cmd "move" help="Move the focused window to a space and follow it" {
+#USAGE   arg "<n>" {
+#USAGE     choices "1" "2" "3" "4" "5" "6" "7" "8" "9" "10"
+#USAGE   }
+#USAGE   flag "--stay" help="Stay on the current space"
+#USAGE }
+#USAGE cmd "focus" help="Focus the window that way, or the screen that way at the edge" {
+#USAGE   arg "<dir>" {
+#USAGE     choices "west" "east" "north" "south"
+#USAGE   }
+#USAGE }
+#USAGE cmd "swap" help="Swap the focused window with its neighbour" {
+#USAGE   arg "<dir>" {
+#USAGE     choices "west" "east" "north" "south"
+#USAGE   }
+#USAGE }
+#USAGE cmd "send-display" help="Send the focused window to the screen that way and follow it" {
+#USAGE   arg "<dir>" {
+#USAGE     choices "west" "east" "north" "south"
+#USAGE   }
+#USAGE }
+#USAGE cmd "screen" help="Focus the screen that way" {
+#USAGE   arg "<dir>" {
+#USAGE     choices "west" "east" "north" "south"
+#USAGE   }
+#USAGE }
+#USAGE cmd "border" help="Colour the outline: amber while the focused window is zoomed (fn + f / fn + ⌥f), else the gradient"
+#USAGE cmd "split" help="Set the split the focused window shares with its neighbour: vertical = side by side, horizontal = one above the other; toggle without one" {
+#USAGE   arg "[orientation]" {
+#USAGE     choices "vertical" "horizontal"
+#USAGE   }
+#USAGE }
+#USAGE cmd "arrange" help="Arrange the focused window and its neighbour: side by side (left/right) or one above the other (up/down), focused on that side" {
+#USAGE   arg "<dir>" {
+#USAGE     choices "left" "right" "up" "down"
+#USAGE   }
+#USAGE }
+#USAGE cmd "layout" help="Toggle the space between tiled (bsp) and floating; a stacked space goes back to tiled"
+#USAGE cmd "float" help="Toggle tiled or floating"
+#USAGE cmd "pin" help="Toggle floating, on top, on every space of its screen"
+#USAGE cmd "zoom" help="Fill the space (full) or the parent split (parent)" {
+#USAGE   arg "<kind>" {
+#USAGE     choices "full" "parent"
+#USAGE   }
+#USAGE }
+#USAGE cmd "scratchpad" help="Toggle the scratchpad window" {
+#USAGE   flag "--send" help="Send the focused window to the scratchpad instead"
+#USAGE }
+#USAGE cmd "resize" help="Narrower (w-), wider (w+), shorter (h-) or taller (h+)" {
+#USAGE   arg "<step>" {
+#USAGE     choices "w-" "w+" "h-" "h+"
+#USAGE   }
+#USAGE }
+#USAGE cmd "balance" help="Balance the split sizes"
+#USAGE cmd "rotate" help="Rotate the layout 90 degrees, clockwise (cw, default) or counter-clockwise (ccw)" {
+#USAGE   arg "[direction]" default="cw" {
+#USAGE     choices "cw" "ccw"
+#USAGE   }
+#USAGE }
+#USAGE cmd "close" help="Close the focused window"
+#USAGE cmd "app" help="Open an app by name" {
+#USAGE   arg "<name>"
+#USAGE }
+#USAGE cmd "browser" help="Open a new tab in the default browser's front window, or a new window of it" {
+#USAGE   flag "--window" help="Open a new browser window on the focused screen"
+#USAGE }
+#USAGE cmd "term" help="Open a new Ghostty window (launches Ghostty when it is not running)"
+#USAGE cmd "nvim" help="Open Neovim in a new Ghostty window"
+#USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
+#USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
+#USAGE cmd "log" help="Show the tiling trace (~/.local/state/dots/tiling.log): keys, yb calls, yabai events" {
+#USAGE   flag "-f --follow" help="Keep following new lines"
+#USAGE }
+#USAGE cmd "event" help="Trace a yabai event (yabairc signals call this)" {
+#USAGE   arg "<name>"
+#USAGE }
+#USAGE cmd "bar" help="Print the space strip for the SwiftBar plugin (config/swiftbar)" {
+#USAGE   flag "--svg <colour>" help="Print the strip as SVG in this colour instead (for checks)"
+#USAGE }
+#USAGE cmd "spaces" help="Keep ten labelled spaces: s1-s5 built-in, s6-s10 external (all ten on one screen)"
+#USAGE cmd "sa" help="Set up the scripting addition: sudoers rule for --load-sa and the arm64e boot argument"
+#USAGE cmd "update" help="Alias of sa"
+#USAGE example "yb space 6"
+#USAGE example "yb move 3 --stay"
+#USAGE example "yb focus west"
 
-command -V yabai >/dev/null || exit 1
+setopt no_unset pipe_fail
 
-if $usage_update; then
-  # this script assumes a single user installation!
-  YABAI="$(which yabai)"
+yabai="${DOTS_YABAI:-/opt/homebrew/bin/yabai}"
+logfile="$HOME/.local/state/dots/yb.log"
+args="$*"
 
-  # calculate new hash for the binary
-  SHA256=$(shasum -a 256 "$YABAI" | cut -d' ' -f 1)
-  echo "New yabai hash: $SHA256"
+log() {
+  mkdir -p "${logfile:h}"
+  print -r -- "$(date '+%F %T') yb $args: $*" >>"$logfile"
+}
 
-  # replace the hash in-place in the sudoers file
-  #sudo sed -i '' -e 's/sha256:[[:alnum:]]*/sha256:'${SHA256}'/' /private/etc/sudoers.d/yabai || (echo "failed" && exit 1)
-  (echo "$(whoami) ALL=(root) NOPASSWD: sha256:${SHA256} ${YABAI} --load-sa" | sudo tee /private/etc/sudoers.d/yabai) || (echo "failed" && exit 1)
-fi
+# Y runs a yabai command and logs a failure; Yq is for first attempts that have a fallback.
+Y() {
+  "$yabai" -m "$@" && return 0
+  local rc=$?
+  log "yabai -m $* exited $rc"
+  return $rc
+}
+Yq() { "$yabai" -m "$@" 2>/dev/null; }
+
+case "$1" in
+  app | browser | term | nvim | system | hotkeys | bar | log | sa | update) ;;
+  *)
+    if [[ ! -x $yabai ]]; then
+      log "yabai not found at $yabai"
+      print -u2 "yb: yabai not found at $yabai"
+      exit 1
+    fi
+    ;;
+esac
+
+kb() { open "raycast://extensions/roalcantara/kb/$1"; }
+
+# The tiling trace: one line per key (YB_KEY, set by the Karabiner rules) and per yabai event, so what happened
+# can be read back in order with `yb log`. Kept under ~512 KB.
+tracefile="$HOME/.local/state/dots/tiling.log"
+trace() {
+  mkdir -p "${tracefile:h}"
+  print -r -- "[$(date '+%F %T')] $*" >>"$tracefile"
+  if [[ $(stat -f %z "$tracefile" 2>/dev/null || echo 0) -gt 524288 ]]; then
+    tail -n 2000 "$tracefile" >"$tracefile.tmp" && mv "$tracefile.tmp" "$tracefile"
+  fi
+}
+
+# Where the keyboard is: "<label> on display <n>".
+where() {
+  "$yabai" -m query --spaces --space 2>/dev/null |
+    jq -r '"\(if (.label // "") != "" then .label else (.index | tostring) end) on display \(.display)"' 2>/dev/null
+}
+
+trace_event() {
+  local name="$1" detail
+  case "$name" in
+    window_created | window_focused | application_front_switched)
+      detail="$("$yabai" -m query --windows --window "${YABAI_WINDOW_ID:-}" 2>/dev/null |
+        jq -r '"\(.app) #\(.id) on space \(.space), display \(.display)"' 2>/dev/null)" ;;
+    window_destroyed) detail="#${YABAI_WINDOW_ID:-?}" ;;
+    *) detail="now $(where)" ;;
+  esac
+  trace "[yabai] [$name] ${detail:-?}"
+}
+
+# A new Ghostty window through its AppleScript dictionary (`open -a` only brings the app forward, and
+# `ghostty +new-window` is Linux-only). Neovim starts through the user's shell, so it gets their PATH.
+ghostty_window() {
+  local display before
+  if [[ -x $yabai ]]; then
+    display="$("$yabai" -m query --displays --display 2>/dev/null | jq -r '.index' 2>/dev/null)"
+    before="$("$yabai" -m query --windows 2>/dev/null | jq -c '[.[] | select(.app == "Ghostty") | .id]' 2>/dev/null)"
+  fi
+  ghostty_open "$@"
+  [[ -n ${display:-} && -n ${before:-} ]] && follow_new_window Ghostty "$before" "$display"
+}
+
+# macOS opens an app's new window where the app last was, not on the screen with the keyboard: wait for the new
+# window and bring it to the focused screen.
+follow_new_window() {
+  local app="$1" before="$2" display="$3" step found
+  for step in {1..${YB_WAIT_STEPS:-20}}; do
+    found="$("$yabai" -m query --windows 2>/dev/null |
+      jq -r --arg app "$app" --argjson before "$before" \
+        '[.[] | select(($app == "" or .app == $app) and ([.id] | inside($before) | not))] | first | select(. != null) | "\(.id) \(.display)"' 2>/dev/null)"
+    [[ -n $found ]] && break
+    sleep 0.1
+  done
+  [[ -n $found ]] || return 0
+  if [[ ${found#* } != "$display" ]]; then
+    Y window "${found%% *}" --display "$display"
+  fi
+  Y window --focus "${found%% *}"
+}
+
+# The default browser's bundle id (what opens https links); DOTS_BROWSER_ID overrides it (tests).
+browser_id() {
+  [[ -n ${DOTS_BROWSER_ID:-} ]] && { print -r -- "$DOTS_BROWSER_ID"; return; }
+  plutil -convert json -o - "$HOME/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist" 2>/dev/null |
+    jq -r 'first(.LSHandlers[]? | select(.LSHandlerURLScheme == "https") | .LSHandlerRoleAll) // "com.apple.safari"' 2>/dev/null ||
+    print com.apple.safari
+}
+
+# A new tab in the default browser's front window (a first window when it has none). Safari and Chromium
+# browsers take AppleScript; Firefox takes --new-tab.
+browser_tab() {
+  local id="$1"
+  case "${id:l}" in
+    org.mozilla.firefox*) open -b "$id" --args --new-tab about:newtab ;;
+    com.apple.safari)
+      osascript -e "tell application id \"$id\"" -e 'if (count of windows) = 0 then make new document' \
+        -e 'tell front window to set current tab to (make new tab)' -e 'activate' -e 'end tell' >/dev/null ;;
+    *)
+      osascript -e "tell application id \"$id\"" -e 'if (count of windows) = 0 then make new window' \
+        -e 'tell front window to make new tab' -e 'activate' -e 'end tell' >/dev/null ;;
+  esac
+}
+
+# A new window of the default browser on the focused screen. Safari takes AppleScript; Chromium browsers
+# (Chrome, Edge, Brave, Arc…) and Firefox take --new-window and hand it to the running instance.
+browser_window() {
+  local id="$1" display before
+  if [[ -x $yabai ]]; then
+    display="$("$yabai" -m query --displays --display 2>/dev/null | jq -r '.index' 2>/dev/null)"
+    before="$("$yabai" -m query --windows 2>/dev/null | jq -c '[.[].id]' 2>/dev/null)"
+  fi
+  if [[ ${id:l} == com.apple.safari ]]; then
+    osascript -e "tell application id \"$id\" to make new document" -e "tell application id \"$id\" to activate" >/dev/null
+  else
+    open -nb "$id" --args --new-window
+  fi
+  [[ -n ${display:-} && -n ${before:-} ]] && follow_new_window "" "$before" "$display"
+}
+
+ghostty_open() {
+  if [[ "$(osascript -e 'application "Ghostty" is running' 2>/dev/null)" != true ]]; then
+    open -a Ghostty
+    [[ -z ${1:-} ]] && return
+    sleep 1
+  fi
+  if [[ -n ${1:-} ]]; then
+    osascript -e 'tell application "Ghostty"' -e 'set cfg to new surface configuration' \
+      -e "set initial input of cfg to \"$1\" & return" -e 'new window with configuration cfg' -e 'end tell' >/dev/null
+  else
+    osascript -e 'tell application "Ghostty" to new window' >/dev/null
+  fi
+}
+
+# The next yabai command (one argument per line) that brings the spaces closer to the plan, or nothing
+# when they match. Input: {spaces: <query --spaces>, windows: <query --windows>, plan: [{display, lo, hi}],
+# labelsOnly}. Native-fullscreen spaces are left out, and sticky windows (listed on every space of their
+# screen) do not count as a space's windows. labelsOnly skips moving, creating and destroying spaces,
+# which need the scripting addition.
+SPACES_NEXT='
+def slot: (.label | capture("^s(?<n>[0-9]+)$").n | tonumber) // 0;
+def inrange($p): slot as $n | $n >= $p.lo and $n <= $p.hi;
+def on($p; $s): [$s[] | select(.display == $p.display)];
+def want($p): $p.hi - $p.lo + 1;
+def lastof: .[length - 1];
+[.windows[] | select(."is-sticky") | .id] as $sticky
+| [.spaces[] | select(."is-native-fullscreen" != true) | .windows -= $sticky] as $s
+| .plan as $plan | .labelsOnly as $lo
+| ( if $lo then null else [ $plan as [$a, $b] | select($b != null)
+      | [[$a, $b], [$b, $a]][] as [$from, $to]
+      | on($from; $s) as $l | select(($l | length) > 1)
+      | [$l[] | select(inrange($to))] | first | select(. != null)
+      | ["space", (.index | tostring), "--display", ($to.display | tostring)] ] | first end )
+  // ( if $lo then null else [ $plan as [$a, $b] | select($b != null)
+      | [[$a, $b], [$b, $a]][] as [$from, $to]
+      | select((on($from; $s) | length) > want($from) and (on($to; $s) | length) < want($to))
+      | on($from; $s) as $l
+      | (([$l[] | select(inrange($to))] | first) // ([$l[] | select(inrange($from) | not)] | first) // ($l | lastof))
+      | ["space", (.index | tostring), "--display", ($to.display | tostring)] ] | first end )
+  // ( if $lo then null else [ $plan[] | select((on(.; $s) | length) < want(.)) | ["space", "--create", (.display | tostring)] ] | first end )
+  // ( if $lo then null else [ $plan[] as $p | on($p; $s) as $l | select(($l | length) > want($p))
+      | [$l[] | select(inrange($p) | not)] as $c
+      | (([$c[] | select(.windows == [])] | first) // ($c | first) // ($l | lastof)) as $x
+      | if ($x.windows | length) > 0 then
+          ((([$l[] | select(inrange($p))] | first) // ([$l[] | select(.index != $x.index)] | first)) as $keep
+           | ["window", ($x.windows[0] | tostring), "--space", ($keep.index | tostring)])
+        else ["space", ($x.index | tostring), "--destroy"] end ] | first end )
+  // ( [ $plan[] as $p | on($p; $s) as $l
+      | [range($p.lo; $p.hi + 1)] as $range
+      | [$l | to_entries[] | . as $e
+         | select(($e.value | inrange($p)) and ([$l[:$e.key][] | .label] | any(. == $e.value.label) | not))] as $ok
+      | ($range - [$ok[] | .value | slot]) as $missing
+      | ($l | to_entries | map(. as $e | select([$ok[].key] | any(. == $e.key) | not))) as $todo
+      | select(($missing | length) > 0 and ($todo | length) > 0)
+      | ["space", ($todo[0].value.index | tostring), "--label", "s\($missing[0])"] ] | first )
+  // empty
+| .[]'
+
+# The scripting addition needs SIP partly off, the arm64e boot argument, and a sudoers rule pinned to
+# yabai's hash so `sudo -n yabai --load-sa` works at login. Only warns; never fails the bootstrap.
+setup_sa() {
+  local sudo="${DOTS_SUDO:-sudo}" visudo="${DOTS_VISUDO:-visudo}"
+  local target="${DOTS_SUDOERS:-/private/etc/sudoers.d/yabai}" stamp="$HOME/.local/state/dots/yabai-sudoers.sha256"
+  local hash rule tmp sip bootargs
+  if [[ ! -x $yabai ]]; then
+    print -u2 "yb sa: yabai not found at $yabai; install it first"
+    return 0
+  fi
+  hash="$(shasum -a 256 "$yabai" | cut -d' ' -f1)"
+  rule="${USER:-$(id -un)} ALL=(root) NOPASSWD: sha256:$hash $yabai --load-sa"
+  if [[ -e $target && -r $stamp && "$(<"$stamp")" == "$hash" ]]; then
+    :
+  else
+    tmp="$(mktemp)"
+    print -r -- "$rule" >"$tmp"
+    if ! "$visudo" -cf "$tmp" >/dev/null 2>&1; then
+      print -u2 "yb sa: visudo rejected the rule; $target left as it was"
+    elif "$sudo" install -m 0440 -o root -g wheel "$tmp" "$target"; then
+      mkdir -p "${stamp:h}" && print -r -- "$hash" >"$stamp"
+      print "yb sa: sudoers rule written for yabai $hash"
+    else
+      print -u2 "yb sa: could not write $target"
+    fi
+    rm -f "$tmp"
+  fi
+  sip="$("${DOTS_CSRUTIL:-csrutil}" status 2>/dev/null)"
+  if [[ $sip == *"status: enabled"* ]]; then
+    print -u2 "yb sa: SIP is fully on. Boot into Recovery, run: csrutil enable --without fs --without debug --without nvram, then reboot"
+    return 0
+  fi
+  bootargs="$("${DOTS_NVRAM:-nvram}" boot-args 2>/dev/null | cut -f2-)"
+  if [[ " $bootargs " != *" -arm64e_preview_abi "* ]]; then
+    bootargs="${bootargs:+$bootargs }-arm64e_preview_abi"
+    if "$sudo" nvram "boot-args=$bootargs"; then
+      print "yb sa: added -arm64e_preview_abi to boot-args; reboot for the scripting addition"
+    else
+      print -u2 "yb sa: could not set boot-args"
+    fi
+  fi
+  return 0
+}
+
+# The built-in screen's display id ('' with the lid closed); yabai reports the same id.
+builtin_display() {
+  local profiler
+  if [[ -n ${DOTS_DISPLAYS_JSON:-} ]]; then profiler="$(<"$DOTS_DISPLAYS_JSON")"; else profiler="$(system_profiler SPDisplaysDataType -json 2>/dev/null)"; fi
+  jq -r '[.SPDisplaysDataType[]?.spdisplays_ndrvs[]? | select(.spdisplays_connection_type == "spdisplays_internal") | ._spdisplays_displayID][0] // ""' <<<"$profiler"
+}
+
+# SwiftBar output for the space strip (config/swiftbar/plugins/spaces.sh): a square per space, built-in screen
+# first, a dot before the external one. Filled = on screen and focused, outline = on screen not focused,
+# translucent = not on screen. Drawn as a colour PNG (resvg): macOS shows menu bar items on the unfocused screen
+# as one-colour templates, which would flatten SF Symbol colours. Without resvg, SF Symbols stand in.
+# BAR_MODEL: the spaces in strip order, [{g: screen, n: number, s: focused|visible|hidden, apps}].
+BAR_MODEL='
+def num: (.label | capture("^s(?<n>[0-9]+)$").n) // (.index | tostring);
+def state: if ."has-focus" then "focused" elif ."is-visible" then "visible" else "hidden" end;
+($displays | sort_by(if (.id | tostring) == $builtin then 0 else 1 end, .index) | map(.index)) as $order
+| [ $order | to_entries[] | .key as $g | .value as $d
+    | $spaces[] | select(.display == $d and ."is-native-fullscreen" != true)
+    | {g: $g, n: num, s: state, apps: ([.windows[] as $w | $windows[] | select(.id == $w) | .app] | unique | join(", "))} ]'
+
+# BAR_SVG: the model as a 36 px high SVG (2x; the PNG is marked 144 dpi), marks in $c.
+BAR_SVG='
+. as $all
+| reduce ($all | to_entries[]) as $e ({x: 0, out: "", masks: ""};
+    (if $e.key > 0 and $e.value.g != $all[$e.key - 1].g
+     then .out += "<circle cx=\"\(.x + 5)\" cy=\"18\" r=\"2.6\" fill=\"\($c)\"/>" | .x += 14 else . end)
+    | (if ($e.value.n | length) > 1 then 46 else 34 end) as $w
+    | "<text x=\"\(.x + $w / 2)\" y=\"26.5\" text-anchor=\"middle\" font-family=\"Helvetica Neue, Helvetica, Arial\" font-size=\"23\" font-weight=\"700\"" as $t
+    | if $e.value.s == "visible" then
+        .out += "<rect x=\"\(.x + 1.6)\" y=\"1.6\" width=\"\($w - 3.2)\" height=\"32.8\" rx=\"7\" fill=\"none\" stroke=\"\($c)\" stroke-width=\"3.2\"/>\($t) fill=\"\($c)\">\($e.value.n)</text>"
+      else
+        .masks += "<mask id=\"m\($e.key)\"><rect x=\"\(.x)\" y=\"0\" width=\"\($w)\" height=\"36\" fill=\"white\"/>\($t) fill=\"black\">\($e.value.n)</text></mask>"
+        | .out += "<rect x=\"\(.x)\" y=\"0\" width=\"\($w)\" height=\"36\" rx=\"7\" fill=\"\($c)\" fill-opacity=\"\(if $e.value.s == "focused" then 1 else 0.42 end)\" mask=\"url(#m\($e.key))\"/>"
+      end
+    | .x += $w + 8)
+| "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\([.x - 8, 0] | max)\" height=\"36\" viewBox=\"0 0 \([.x - 8, 0] | max) 36\"><defs>\(.masks)</defs>\(.out)</svg>"'
+
+# BAR_SYMBOLS: the fallback title, one SF Symbols numbered square per space.
+BAR_SYMBOLS='
+. as $all
+| ([ $all | to_entries[]
+     | (if .key > 0 and .value.g != $all[.key - 1].g then "·" else empty end),
+       ":\(.value.n).square\(if .value.s == "visible" then "" else ".fill" end):" ] | join(" ")) as $title
+| ([ $all | to_entries[] | "sfcolor\(if .key == 0 then "" else (.key + 1 | tostring) end)=\(if .value.s == "hidden" then "#8A8A8E,#A9B0C2" else "#000000,#FFFFFF" end)" ] | join(" ")) as $colors
+| "\($title) | symbolize=true sfsize=17 sfconfig=\($cfg) \($colors)"'
+
+BAR_MENU='.[] | "Space \(.n)\(if .apps != "" then " — " + .apps else "" end) | bash=\($yb) param1=space param2=\(.n) terminal=false refresh=true sfimage=\(.n).square\(if .s == "visible" then "" else ".fill" end)"'
+
+bar_model() {
+  local spaces displays windows
+  spaces="$("$yabai" -m query --spaces 2>/dev/null)" && displays="$("$yabai" -m query --displays 2>/dev/null)" || return 1
+  windows="$("$yabai" -m query --windows 2>/dev/null)" || windows='[]'
+  jq -nc --argjson spaces "$spaces" --argjson displays "$displays" --argjson windows "$windows" \
+    --arg builtin "$(builtin_display)" "$BAR_MODEL"
+}
+
+# A light and a dark PNG, base64, as SwiftBar's image=light,dark; fails without resvg.
+bar_image() {
+  local model="$1" resvg="${DOTS_RESVG:-/opt/homebrew/bin/resvg}" tmp out=() colour
+  [[ -x $resvg ]] || return 1
+  tmp="$(mktemp -d)" || return 1
+  for colour in '#000000' '#ffffff'; do
+    jq -r --arg c "$colour" "$BAR_SVG" <<<"$model" >"$tmp/strip.svg" &&
+      "$resvg" "$tmp/strip.svg" "$tmp/strip.png" 2>/dev/null || { rm -rf "$tmp"; return 1; }
+    sips -s dpiWidth 144 -s dpiHeight 144 "$tmp/strip.png" >/dev/null 2>&1
+    out+=("$(base64 -i "$tmp/strip.png" | tr -d '\n')")
+  done
+  rm -rf "$tmp"
+  print -r -- "| image=${out[1]},${out[2]}"
+}
+
+render_bar() {
+  local model cfg
+  if [[ ! -x $yabai ]] || ! model="$(bar_model)"; then
+    print -r -- "· | symbolize=false"
+    print -r -- "---"
+    print -r -- "yabai is not answering"
+    return 0
+  fi
+  if [[ -n ${usage_svg:-} ]]; then
+    jq -r --arg c "$usage_svg" "$BAR_SVG" <<<"$model"
+    return
+  fi
+  if ! bar_image "$model"; then
+    cfg="$(print -rn -- '{"renderingMode":"Palette","scale":"large","weight":"bold"}' | base64)"
+    jq -r --arg cfg "$cfg" "$BAR_SYMBOLS" <<<"$model"
+  fi
+  print -r -- "---"
+  jq -r --arg yb "$HOME/.local/bin/yb" "$BAR_MENU" <<<"$model"
+}
+
+sync_spaces() {
+  local builtin displays plan step
+  local -a next
+  builtin="$(builtin_display)"
+  displays="$(Y query --displays)" || return
+  # Built-in first; with no built-in screen (lid closed), the lowest arrangement index stands in for it.
+  plan="$(jq -c --arg b "$builtin" '
+    sort_by(if (.id | tostring) == $b then 0 else 1 end, .index) | map(.index)
+    | if length == 1 then [{display: .[0], lo: 1, hi: 10}]
+      else [{display: .[0], lo: 1, hi: 5}, {display: .[1], lo: 6, hi: 10}] end' <<<"$displays")"
+  # One run at a time: plugging a screen in fires several display signals at once, and a run working from
+  # stale space indexes could act on the wrong space.
+  local lock="$HOME/.local/state/dots/yb-spaces.lock" spaces windows labels_only=false tries=0
+  mkdir -p "${lock:h}" && : >>"$lock"
+  zmodload zsh/system
+  if ! zsystem flock -t 30 "$lock"; then
+    log "another yb spaces run held the lock for 30 s"
+    return 1
+  fi
+  for step in {1..60}; do
+    spaces="$(Y query --spaces)" || return
+    windows="$(Y query --windows)" || return
+    # Right after a screen goes, its spaces can still name it; wait for macOS to move them.
+    if [[ "$(jq --argjson d "$displays" '[.[].display] - [$d[].index] | length' <<<"$spaces")" != 0 ]]; then
+      if ((++tries > 6)); then
+        log "spaces still on a screen yabai no longer reports"
+        return 1
+      fi
+      sleep "${DOTS_SPACES_WAIT:-0.5}"
+      displays="$(Y query --displays)" || return
+      continue
+    fi
+    next=("${(@f)$(jq -nr --argjson spaces "$spaces" --argjson windows "$windows" --argjson plan "$plan" --argjson lo "$labels_only" \
+      "{spaces: \$spaces, windows: \$windows, plan: \$plan, labelsOnly: \$lo} | $SPACES_NEXT")}")
+    [[ -n ${next[1]:-} ]] || return 0
+    # yabai 7.1.25 on macOS 27 accepts create/destroy/move and changes nothing; count that as a failure.
+    if ! Y "${next[@]}" || { [[ ${next[3]:-} != --label ]] && [[ "$(Y query --spaces)" == "$spaces" ]] && log "yabai -m ${next[*]} had no effect"; }; then
+      [[ ${next[1]} == space && ${next[3]:-} == --label ]] && return 1
+      # Without the scripting addition spaces cannot be created, removed or moved; label what exists.
+      $labels_only && return 1
+      log "falling back to labelling the existing spaces"
+      labels_only=true
+    fi
+  done
+  log "spaces did not settle after 60 steps"
+  return 1
+}
+
+toggle_layout() {
+  local current
+  current="$(Y query --spaces --space | jq -r '.type // "bsp"')"
+  Y space --layout "$([[ $current == bsp ]] && print float || print bsp)"
+}
+
+toggle_pin() {
+  if [[ "$(Y query --windows --window | jq -r '."is-sticky" // false')" == true ]]; then
+    Y window --toggle sticky && Y window --toggle float && Y window --sub-layer auto
+  else
+    Y window --toggle float && Y window --toggle sticky && Y window --sub-layer above
+  fi
+}
+
+# yabai describes each window by the split it shares with its neighbour: split-type vertical = side by
+# side, horizontal = one above the other; split-child first = left/top, second = right/bottom.
+arrange() {
+  local dir="$1" want_split want_child info split child
+  case "$dir" in
+    left | right) want_split=vertical ;;
+    *) want_split=horizontal ;;
+  esac
+  case "$dir" in
+    left | up) want_child=first_child ;;
+    *) want_child=second_child ;;
+  esac
+  info="$(Y query --windows --window)" || return
+  split="$(jq -r '."split-type" // "none"' <<<"$info")"
+  child="$(jq -r '."split-child" // ""' <<<"$info")"
+  [[ $split == none ]] && return 0
+  if [[ $split != "$want_split" ]]; then
+    Y window --toggle split || return
+  fi
+  if [[ $child != "$want_child" ]]; then
+    # a neighbour that is a group of windows is no swappable sibling: swap toward the arrow instead
+    local -A toward=(left west right east up north down south)
+    Yq window --swap sibling || Y window --swap "${toward[$dir]}"
+  fi
+}
+
+# The outline (JankyBorders, config/borders/bordersrc) turns amber while the focused window is zoomed, so a
+# window covering the others is visible as such. Runs after each zoom and on focus changes (yabairc).
+BORDER_NORMAL='gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)'
+BORDER_ZOOMED='0xffffb000'
+border() {
+  local borders="${DOTS_BORDERS:-/opt/homebrew/bin/borders}" zoomed
+  [[ -x $borders ]] || return 0
+  zoomed="$("$yabai" -m query --windows --window 2>/dev/null | jq -r '(."has-fullscreen-zoom" // false) or (."has-parent-zoom" // false)' 2>/dev/null)"
+  "$borders" "active_color=$([[ $zoomed == true ]] && print -r -- "$BORDER_ZOOMED" || print -r -- "$BORDER_NORMAL")"
+}
+
+resize() {
+  local far near
+  case "$1" in
+    w-) far=right:-40:0 near=left:40:0 ;;
+    w+) far=right:40:0 near=left:-40:0 ;;
+    h-) far=bottom:0:-40 near=top:0:40 ;;
+    h+) far=bottom:0:40 near=top:0:-40 ;;
+  esac
+  Yq window --resize "$far" || Y window --resize "$near"
+}
+
+main() {
+  case "$1" in
+    space)
+      case "$usage_target" in
+        next) Yq space --focus next || Y space --focus first ;;
+        prev) Yq space --focus prev || Y space --focus last ;;
+        recent) Y space --focus recent ;;
+        *) Y space --focus "s$usage_target" ;;
+      esac
+      ;;
+    move)
+      Y window --space "s$usage_n" || return
+      [[ ${usage_stay:-false} == true ]] || Y space --focus "s$usage_n"
+      ;;
+    focus) Yq window --focus "$usage_dir" || Y display --focus "$usage_dir" ;;
+    swap) Y window --swap "$usage_dir" ;;
+    send-display) Y window --display "$usage_dir" && Y display --focus "$usage_dir" ;;
+    screen) Y display --focus "$usage_dir" ;;
+    split)
+      if [[ -z ${usage_orientation:-} ]]; then
+        Y window --toggle split
+      else
+        current="$(Y query --windows --window | jq -r '."split-type" // "none"')" || return
+        [[ $current == none || $current == "$usage_orientation" ]] || Y window --toggle split
+      fi
+      ;;
+    arrange) arrange "$usage_dir" ;;
+    layout) toggle_layout ;;
+    float) Y window --toggle float ;;
+    pin) toggle_pin ;;
+    zoom) Y window --toggle "zoom-${usage_kind/full/fullscreen}" && border ;;
+    border) border ;;
+    scratchpad)
+      if [[ ${usage_send:-false} == true ]]; then Y window --scratchpad scratch; else Y window --toggle scratch; fi
+      ;;
+    resize) resize "$usage_step" ;;
+    balance) Y space --balance ;;
+    # yabai's --rotate 90 turns the layout counter-clockwise on screen, so clockwise is 270.
+    rotate) Y space --rotate "$([[ ${usage_direction:-cw} == ccw ]] && print 90 || print 270)" ;;
+    close) Y window --close ;;
+    app) open -a "$usage_name" ;;
+    browser)
+      if [[ ${usage_window:-false} == true ]]; then browser_window "$(browser_id)"; else browser_tab "$(browser_id)"; fi
+      ;;
+    term) ghostty_window ;;
+    nvim) ghostty_window nvim ;;
+    system) kb system.screen ;;
+    hotkeys) kb hotkeys.screen ;;
+    log)
+      if [[ ${usage_follow:-false} == true ]]; then tail -n 50 -f "$tracefile"; else tail -n 50 "$tracefile" 2>/dev/null; fi
+      ;;
+    event) trace_event "$usage_name" ;;
+    bar) render_bar ;;
+    spaces) sync_spaces ;;
+    sa | update) setup_sa ;;
+  esac
+}
+
+main "$@"
+rc=$?
+case "$1" in
+  bar | log | event) ;;
+  *)
+    now=""
+    [[ ${YB_TRACE_WHERE:-1} != 0 && -x $yabai ]] && now="$(where)"
+    trace "[${YB_KEY:-cli}] [yb $args] $([[ $rc == 0 ]] && print ok || print "exit $rc")${now:+ · now $now}"
+    ;;
+esac
+exit $rc

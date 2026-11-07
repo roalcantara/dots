@@ -1,0 +1,38 @@
+# Tiling: yabai with ten labelled spaces, JankyBorders, and the Karabiner fn layer (docs/TILING.md).
+# Spec: docs/superpowers/specs/2026-11-07-yabai-omarchy-design.md.
+
+# yabai and borders run as LaunchAgents (dev.mise.<name>) and restart if they exit. PATH reaches
+# Homebrew, where yb's usage and zsh, and jq, live.
+[bootstrap.macos.launchd.agents.yabai]
+program = "/opt/homebrew/bin/yabai"
+run_at_load = true
+keep_alive = true
+environment = { PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
+
+[bootstrap.macos.launchd.agents.borders]
+program = "/opt/homebrew/bin/borders"
+run_at_load = true
+keep_alive = true
+environment = { PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
+
+# After Homebrew (bootstrap.toml's post-packages hook runs first: conf.d loads in name order): the
+# sudoers rule for `yabai --load-sa` and the arm64e boot argument. `yb sa` only warns. ~/.local/bin is
+# linked later (dotfiles), so call the repo copy.
+[bootstrap.hooks.post-packages]
+description = "Set up yabai's scripting addition (sudoers rule, boot argument)"
+run = '''
+#!/usr/bin/env bash
+[ "$(uname)" = Darwin ] || exit 0
+PATH="/opt/homebrew/bin:$PATH" "$HOME/.local/share/dots/config/bin/yb" sa || true
+'''
+
+# SwiftBar draws the space strip (config/swiftbar/plugins/spaces.sh runs `yb bar`). Point it at the plugin
+# folder before its first launch, so it never asks; mise writes defaults verbatim and this path needs $HOME.
+[bootstrap.hooks.post-defaults]
+description = "Point SwiftBar at ~/.config/swiftbar/plugins"
+run = '''
+#!/usr/bin/env bash
+[ "$(uname)" = Darwin ] || exit 0
+defaults write com.ameba.SwiftBar PluginDirectory -string "$HOME/.config/swiftbar/plugins" || true
+defaults write com.ameba.SwiftBar SUHasLaunchedBefore -bool true || true
+'''

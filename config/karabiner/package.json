@@ -1,0 +1,12 @@
+{
+  "name": "dots-karabiner",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun src/build.ts",
+    "check": "bun src/build.ts --check"
+  },
+  "dependencies": {
+    "karabiner.ts": "1.38.0"
+  }
+}

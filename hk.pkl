@@ -55,6 +55,11 @@ local stagingLinters = new Mapping<String, Step> {
     exclude = List("test/integration/backup/fixtures/**")
     check   = "tombi lint --error-on-warnings {{files}}"
   }
+  // The generated fn layer must match config/karabiner/src/bindings.ts (mise run karabiner:build).
+  ["karabiner"] {
+    glob  = List("config/karabiner/src/**/*.ts", "config/karabiner/karabiner.json", "config/karabiner/hotkeys.json")
+    check = "bun install --frozen-lockfile --cwd config/karabiner >/dev/null && bun config/karabiner/src/build.ts --check"
+  }
   ["taplo-schema"] {
     // Validates manifests that declare `#:schema` (taplo fmt does not); scoped so taplo
     // never fetches remote schemas for other TOML files.

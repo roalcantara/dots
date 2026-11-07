@@ -61,4 +61,5 @@ Keep every gate green before declaring work complete:
 - [`docs/DOCKER.md`](docs/DOCKER.md) — container images, CST testing, and GitHub Actions CI pipelines.
 - [`docs/REINSTALL.md`](docs/REINSTALL.md) — backup runbook and clean-machine reinstall procedure.
 - [`docs/MACOS.md`](docs/MACOS.md) — macOS preferences (`config/mise/conf.d/macos.toml`), drift checks, and undo.
+- [`docs/TILING.md`](docs/TILING.md) — yabai tiling, the fn layer (`config/karabiner`, `config/bin/yb`), and their setup.
 - [`docs/GLOSSARY.md`](docs/GLOSSARY.md) — repository-wide definitions and domain terminology.

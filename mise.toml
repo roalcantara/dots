@@ -325,6 +325,14 @@ run = ["./script/zsh-verify.sh syntax", "./script/zsh-verify.sh parity"]
 description = "Benchmark zsh startup across terminal contexts"
 run = "./script/zsh-verify.sh bench"
 
+# The Karabiner fn layer: regenerate config/karabiner/karabiner.json and hotkeys.json from src/bindings.ts.
+[tasks."karabiner:build"]
+description = "Generate the Karabiner fn layer (config/karabiner) from src/bindings.ts"
+run = [
+  "bun install --frozen-lockfile --cwd config/karabiner",
+  "bun config/karabiner/src/build.ts",
+]
+
 # Agent skills from config/agents/skill-lock.json.
 [tasks."skills:audit"]
 description = "Classify installed agent skills against the lock and write config/agents/review.csv (-- --apply re-adds confirmed ones)"

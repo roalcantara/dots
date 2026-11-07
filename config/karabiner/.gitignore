@@ -1,0 +1,5 @@
+node_modules/
+# Karabiner-Elements writes these into ~/.config/karabiner (this folder).
+automatic_backups/
+assets/
+!bun.lock

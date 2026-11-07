@@ -13,11 +13,12 @@ bootstraps and the Docker images ignore them.
 
 ## What is managed
 
-Items marked † are there for Raycast (launcher on ⌘Space) or yabai (tiling window manager, planned).
+Items marked † are there for Raycast (launcher on ⌘Space) or yabai (tiling with the fn layer; see the
+[tiling guide](TILING.md)).
 
 | Area | Settings |
 | --- | --- |
-| Keyboard | Fastest key repeat System Settings allows (`2`/`15`); held keys repeat instead of opening the accent menu; no auto-capitalize, autocorrect, smart quotes, smart dashes or double-space period; Tab reaches every control. |
+| Keyboard | Fastest key repeat System Settings allows (`2`/`15`); held keys repeat instead of opening the accent menu; no auto-capitalize, autocorrect, smart quotes, smart dashes or double-space period; Tab reaches every control; † the 🌐/fn key does nothing on its own, so the fn layer owns it. |
 | Spotlight † | Moved to ⌥Space, so ⌘Space is free for Raycast. |
 | Trackpad and mouse | Tap to click (login window included), light click on built-in and Magic trackpads, natural scrolling, maximum tracking speed for both; three-finger drag off (keeps three-finger Space swipes). |
 | Dock and Spaces | Eight pinned apps (Chrome, Ghostty, VS Code, Claude, ChatGPT, WhatsApp, Discord, System Settings); auto-hides at once, no recent apps, "scale" minimize; † Spaces never rearranged, one set per display. |
@@ -59,6 +60,7 @@ Log out and back in after the first apply for:
 - Key repeat (`KeyRepeat`, `InitialKeyRepeat`) and press-and-hold.
 - Tap to click.
 - Separate Spaces per display (`spans-displays`); restarting the Dock does not apply it.
+- "Press 🌐 key to: Do Nothing" (`AppleFnUsageType`).
 
 ## Undo a setting
 
@@ -130,7 +132,8 @@ These need `sudo`, a choice of taste, or an app's own settings, so the bootstrap
 - [ ] Sleep and power: `pmset` or System Settings → Battery.
 - [ ] Raycast: set its hotkey to ⌘Space in Raycast's settings.
 - [ ] Hot corners, appearance (light/dark).
-- [ ] Caps Lock remapping: planned with the yabai setup.
+- [ ] Tiling: partly disable SIP, approve Karabiner-Elements, grant yabai Accessibility, register the kb
+      extension ([tiling guide](TILING.md#once-per-machine-by-hand)).
 
 ## Dropped keys
 

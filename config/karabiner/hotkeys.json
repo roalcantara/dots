@@ -1,0 +1,392 @@
+[
+  {
+    "keys": "fn 1",
+    "label": "Go to space 1",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn 2",
+    "label": "Go to space 2",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn 3",
+    "label": "Go to space 3",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn 4",
+    "label": "Go to space 4",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn 5",
+    "label": "Go to space 5",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn 6",
+    "label": "Go to space 6",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn 7",
+    "label": "Go to space 7",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn 8",
+    "label": "Go to space 8",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn 9",
+    "label": "Go to space 9",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn 0",
+    "label": "Go to space 10",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ 1",
+    "label": "Move window to space 1",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ 2",
+    "label": "Move window to space 2",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ 3",
+    "label": "Move window to space 3",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ 4",
+    "label": "Move window to space 4",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ 5",
+    "label": "Move window to space 5",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ 6",
+    "label": "Move window to space 6",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ 7",
+    "label": "Move window to space 7",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ 8",
+    "label": "Move window to space 8",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ 9",
+    "label": "Move window to space 9",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ 0",
+    "label": "Move window to space 10",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌥ ⇧ 1",
+    "label": "Move window to space 1, stay here",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌥ ⇧ 2",
+    "label": "Move window to space 2, stay here",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌥ ⇧ 3",
+    "label": "Move window to space 3, stay here",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌥ ⇧ 4",
+    "label": "Move window to space 4, stay here",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌥ ⇧ 5",
+    "label": "Move window to space 5, stay here",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌥ ⇧ 6",
+    "label": "Move window to space 6, stay here",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌥ ⇧ 7",
+    "label": "Move window to space 7, stay here",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌥ ⇧ 8",
+    "label": "Move window to space 8, stay here",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌥ ⇧ 9",
+    "label": "Move window to space 9, stay here",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌥ ⇧ 0",
+    "label": "Move window to space 10, stay here",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn Tab",
+    "label": "Next space on this screen",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⇧ Tab",
+    "label": "Previous space on this screen",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ⌃ Tab",
+    "label": "Last space you were on",
+    "group": "Spaces"
+  },
+  {
+    "keys": "fn ←",
+    "label": "Focus window west",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn →",
+    "label": "Focus window east",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ↑",
+    "label": "Focus window north",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ↓",
+    "label": "Focus window south",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⇧ ←",
+    "label": "Swap window west",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⇧ →",
+    "label": "Swap window east",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⇧ ↑",
+    "label": "Swap window north",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⇧ ↓",
+    "label": "Swap window south",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn [",
+    "label": "Focus the screen west",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ]",
+    "label": "Focus the screen east",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⇧ [",
+    "label": "Send window to the screen west",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⇧ ]",
+    "label": "Send window to the screen east",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn W",
+    "label": "Close window",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn T",
+    "label": "Toggle tiled / floating",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn F",
+    "label": "Fullscreen inside the space",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⌥ F",
+    "label": "Full width (fill the parent split)",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn O",
+    "label": "Pin: floating, on top, on every space",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn S",
+    "label": "Toggle the scratchpad",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⌥ S",
+    "label": "Send window to the scratchpad",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn −",
+    "label": "Narrower",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn =",
+    "label": "Wider",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⇧ −",
+    "label": "Shorter",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⇧ =",
+    "label": "Taller",
+    "group": "Windows"
+  },
+  {
+    "keys": "fn ⇧ \\",
+    "label": "Focused window and its neighbour side by side (|)",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn \\",
+    "label": "Focused window and its neighbour one above the other (\\)",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌃ ←",
+    "label": "Focused and its neighbour side by side, focused on the left",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌃ →",
+    "label": "Focused and its neighbour side by side, focused on the right",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌃ ↑",
+    "label": "Focused and its neighbour one above the other, focused on top",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌃ ↓",
+    "label": "Focused and its neighbour one above the other, focused at the bottom",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn L",
+    "label": "Toggle tiled / floating layout",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn B",
+    "label": "Balance the splits",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌥ ⇧ →",
+    "label": "Rotate the layout clockwise",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn ⌥ ⇧ ←",
+    "label": "Rotate the layout counter-clockwise",
+    "group": "Layout"
+  },
+  {
+    "keys": "fn Return",
+    "label": "New Ghostty window",
+    "group": "Apps"
+  },
+  {
+    "keys": "fn ⇧ Return",
+    "label": "New tab in the default browser",
+    "group": "Apps"
+  },
+  {
+    "keys": "fn ⌥ ⇧ Return",
+    "label": "New default browser window",
+    "group": "Apps"
+  },
+  {
+    "keys": "fn ⇧ F",
+    "label": "Finder",
+    "group": "Apps"
+  },
+  {
+    "keys": "fn ⇧ C",
+    "label": "Claude",
+    "group": "Apps"
+  },
+  {
+    "keys": "fn ⇧ V",
+    "label": "Visual Studio Code",
+    "group": "Apps"
+  },
+  {
+    "keys": "fn ⇧ G",
+    "label": "Gemini",
+    "group": "Apps"
+  },
+  {
+    "keys": "fn ⇧ N",
+    "label": "Neovim",
+    "group": "Apps"
+  },
+  {
+    "keys": "fn K",
+    "label": "Show these hotkeys",
+    "group": "System"
+  },
+  {
+    "keys": "fn Esc",
+    "label": "System: lock, sleep, restart",
+    "group": "System"
+  },
+  {
+    "keys": "fn ⌥ ↑",
+    "label": "Page Up",
+    "group": "System"
+  },
+  {
+    "keys": "fn ⌥ ↓",
+    "label": "Page Down",
+    "group": "System"
+  }
+]
