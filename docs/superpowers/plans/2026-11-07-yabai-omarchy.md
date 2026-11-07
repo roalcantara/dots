@@ -83,15 +83,15 @@ plan in `roalcantara/kb-raycast` (`docs/superpowers/plans/2026-11-07-yabai-strip
 - Produces: links `~/.config/karabiner` → `config/karabiner`, `~/.config/borders` → `config/borders`;
   the existing `pre-dotfiles` hook also moves a real `~/.config/karabiner` aside.
 
-- [ ] **Step 1: Write the failing tests** in `yabai.spec.ts` (`describe("tiling packages and links")`):
+- [x] **Step 1: Write the failing tests** in `yabai.spec.ts` (`describe("tiling packages and links")`):
   - `brew "FelixKratz/formulae/borders"` with `if OS.mac?`, and `cask "karabiner-elements" if OS.mac?`, are in the Brewfile; `brew "asmvik/formulae/yabai"` stays.
   - `macos.toml` declares `bootstrap.macos.defaults."com.apple.HIToolbox".AppleFnUsageType === 0`.
   - `dotfiles["~/.config/karabiner"]` and `dotfiles["~/.config/borders"]` equal `{ source: "~/.local/share/dots/config/<name>", relative: true }`.
   - Running the `pre-dotfiles` hook (reuse the `vscode-links.spec.ts` harness: stub `uname`, temp `HOME`) with a real `~/.config/karabiner/karabiner.json` moves the folder to `karabiner.pre-dots-<14 digits>` and leaves a link alone.
-- [ ] **Step 2: Run** `bun test test/integration/bootstrap/yabai.spec.ts` — Expected: FAIL.
-- [ ] **Step 3: Implement** the Brewfile lines (alphabetical, with the usual trailing comment), the HIToolbox default, the two links, and add `"$HOME/.config/karabiner"` to the hook's loop (the hook's `$user` loop gains a second loop over `~/.config/karabiner`; keep `DOTS_VSCODE_USER` behaviour). `.gitignore`: `node_modules/`, `automatic_backups/`.
-- [ ] **Step 4: Run** the spec and `bun test test/integration/bootstrap` — Expected: PASS.
-- [ ] **Step 5: Commit** `feat(macos): Install the tiling tools and set the fn key`.
+- [x] **Step 2: Run** `bun test test/integration/bootstrap/yabai.spec.ts` — Expected: FAIL.
+- [x] **Step 3: Implement** the Brewfile lines (alphabetical, with the usual trailing comment), the HIToolbox default, the two links, and add `"$HOME/.config/karabiner"` to the hook's loop (the hook's `$user` loop gains a second loop over `~/.config/karabiner`; keep `DOTS_VSCODE_USER` behaviour). `.gitignore`: `node_modules/`, `automatic_backups/`.
+- [x] **Step 4: Run** the spec and `bun test test/integration/bootstrap` — Expected: PASS.
+- [x] **Step 5: Commit** `feat(macos): Install the tiling tools and set the fn key`.
 
 ### Task 2: The `wm` helper
 
@@ -126,11 +126,11 @@ plan in `roalcantara/kb-raycast` (`docs/superpowers/plans/2026-11-07-yabai-strip
   `wm` sets `PATH=/opt/homebrew/bin:/usr/bin:/bin`, honours `DOTS_YABAI` (yabai path) for tests, and
   appends failures to `~/.local/state/dots/wm.log`.
 
-- [ ] **Step 1: Write the failing tests**: a stub `yabai` on `PATH` (via `DOTS_YABAI`) records its argv to a file; for each table row assert the exact calls; `space 0` and `space 11` exit 2 with "usage"; `move 6` calls `window --space s6` then `space --focus s6`, `move-stay 6` only the first; when the stub for `window --focus east` exits 1, `focus east` calls `display --focus east`; **yabai missing** (`DOTS_YABAI=/nonexistent`): exit 1 in under 1 s and one line in the log.
-- [ ] **Step 2: Run** `bun test test/integration/bootstrap/wm.spec.ts` — Expected: FAIL.
-- [ ] **Step 3: Implement `wm`** as a `case` over the action, one function per row.
-- [ ] **Step 4: Run** the spec and `shellcheck config/yabai/wm` — Expected: PASS, clean.
-- [ ] **Step 5: Commit** `feat(yabai): Add the wm helper the fn layer calls`.
+- [x] **Step 1: Write the failing tests**: a stub `yabai` on `PATH` (via `DOTS_YABAI`) records its argv to a file; for each table row assert the exact calls; `space 0` and `space 11` exit 2 with "usage"; `move 6` calls `window --space s6` then `space --focus s6`, `move-stay 6` only the first; when the stub for `window --focus east` exits 1, `focus east` calls `display --focus east`; **yabai missing** (`DOTS_YABAI=/nonexistent`): exit 1 in under 1 s and one line in the log.
+- [x] **Step 2: Run** `bun test test/integration/bootstrap/wm.spec.ts` — Expected: FAIL.
+- [x] **Step 3: Implement `wm`** as a `case` over the action, one function per row.
+- [x] **Step 4: Run** the spec and `shellcheck config/yabai/wm` — Expected: PASS, clean.
+- [x] **Step 5: Commit** `feat(yabai): Add the wm helper the fn layer calls`.
 
 ### Task 3: The `spaces` script
 
@@ -145,11 +145,11 @@ plan in `roalcantara/kb-raycast` (`docs/superpowers/plans/2026-11-07-yabai-strip
 
 Algorithm (the part the tests do not fully determine): resolve the built-in display; wanted = `{builtin: 5, external: 5}` with two screens or `{builtin: 10}` with one. Move surplus spaces from the built-in screen to the external one (`space --display`) before creating any; create missing spaces; for each screen with too many, move windows from the surplus spaces to that screen's last kept space, then destroy them; finally label in display order (built-in first) by space index: `s1…`.
 
-- [ ] **Step 1: Write the failing tests** against the fake: two screens with 1+1 spaces → 5+5, labels `s1`–`s5` on the built-in ID, `s6`–`s10` on the external one; **one screen** with 3 spaces → 10, labelled `s1`–`s10`; one screen with 10 → plug the external in (add it to state) → 5+5 with `s6`–`s10` moved, not recreated (same space `id`s); **keeps windows**: built-in with 7 spaces, space 7 holds window 42 → window 42 ends on a kept space and no space with windows was destroyed; second run makes no mutating call; the external screen listed first by yabai still gets `s6`–`s10`.
-- [ ] **Step 2: Run** `bun test test/integration/bootstrap/spaces.spec.ts` — Expected: FAIL.
-- [ ] **Step 3: Implement `spaces`** per the algorithm.
-- [ ] **Step 4: Run** the spec and shellcheck — Expected: PASS, clean.
-- [ ] **Step 5: Commit** `feat(yabai): Keep ten labelled spaces across one or two screens`.
+- [x] **Step 1: Write the failing tests** against the fake: two screens with 1+1 spaces → 5+5, labels `s1`–`s5` on the built-in ID, `s6`–`s10` on the external one; **one screen** with 3 spaces → 10, labelled `s1`–`s10`; one screen with 10 → plug the external in (add it to state) → 5+5 with `s6`–`s10` moved, not recreated (same space `id`s); **keeps windows**: built-in with 7 spaces, space 7 holds window 42 → window 42 ends on a kept space and no space with windows was destroyed; second run makes no mutating call; the external screen listed first by yabai still gets `s6`–`s10`.
+- [x] **Step 2: Run** `bun test test/integration/bootstrap/spaces.spec.ts` — Expected: FAIL.
+- [x] **Step 3: Implement `spaces`** per the algorithm.
+- [x] **Step 4: Run** the spec and shellcheck — Expected: PASS, clean.
+- [x] **Step 5: Commit** `feat(yabai): Keep ten labelled spaces across one or two screens`.
 
 ### Task 4: yabairc, borders and the services
 
@@ -167,11 +167,11 @@ Algorithm (the part the tests do not fully determine): resolve the built-in disp
 
 `yabai.toml`: `[bootstrap.macos.launchd.agents.yabai]` program `/opt/homebrew/bin/yabai`, `keep_alive = true`, `environment = { PATH = "/opt/homebrew/bin:/usr/bin:/bin" }`; `.borders` program `/opt/homebrew/bin/borders`, same keys.
 
-- [ ] **Step 1: Write the failing tests**: `sh -n` and `shellcheck -s sh` pass on `yabairc` and `bordersrc`; `yabairc` contains `sudo -n yabai --load-sa` and no bare `sudo yabai`; `focus_follows_mouse off`; each listed signal event appears with the right action; each listed app has `manage=off`; the two agents are declared as above.
-- [ ] **Step 2: Run** — Expected: FAIL.
-- [ ] **Step 3: Implement** the three files.
-- [ ] **Step 4: Run** the spec, `hk check` on the files — Expected: PASS.
-- [ ] **Step 5: Commit** `feat(yabai): Run yabai and borders as services with the new rules`.
+- [x] **Step 1: Write the failing tests**: `sh -n` and `shellcheck -s sh` pass on `yabairc` and `bordersrc`; `yabairc` contains `sudo -n yabai --load-sa` and no bare `sudo yabai`; `focus_follows_mouse off`; each listed signal event appears with the right action; each listed app has `manage=off`; the two agents are declared as above.
+- [x] **Step 2: Run** — Expected: FAIL.
+- [x] **Step 3: Implement** the three files.
+- [x] **Step 4: Run** the spec, `hk check` on the files — Expected: PASS.
+- [x] **Step 5: Commit** `feat(yabai): Run yabai and borders as services with the new rules`.
 
 ### Task 5: The Karabiner fn layer
 
@@ -190,11 +190,11 @@ Algorithm (the part the tests do not fully determine): resolve the built-in disp
 
 The bindings are exactly the spec's key table (Key layout section), with `fn` + ⌥↑/↓ → Page Up/Down and `fn` + Esc → `wm system`, `fn` + k → `wm hotkeys`.
 
-- [ ] **Step 1: Write the failing tests**: `build.ts --check` exits 0 on the committed files; after changing one label in a temp copy it exits 1; **ignores other fields**: adding a `devices` array and another profile to a temp `karabiner.json` keeps `--check` at 0; every manipulator has `fn` in `mandatory`; no two manipulators share `key_code` + sorted modifiers; `fn`+1…0, `fn`+⇧+1…0 and `fn`+⇧⌥+1…0 call `wm space|move|move-stay 1…10`; no binding on ⌘ alone; `hotkeys.json` has one entry per binding.
-- [ ] **Step 2: Run** `bun test test/integration/bootstrap/karabiner.spec.ts` — Expected: FAIL.
-- [ ] **Step 3: Implement** `bindings.ts`, `build.ts`, the task; run `mise run karabiner:build` to generate the two JSON files.
-- [ ] **Step 4: Run** the spec; tombi/taplo on `mise.toml` — Expected: PASS.
-- [ ] **Step 5: Commit** `feat(karabiner): Generate the fn layer from a bindings table`.
+- [x] **Step 1: Write the failing tests**: `build.ts --check` exits 0 on the committed files; after changing one label in a temp copy it exits 1; **ignores other fields**: adding a `devices` array and another profile to a temp `karabiner.json` keeps `--check` at 0; every manipulator has `fn` in `mandatory`; no two manipulators share `key_code` + sorted modifiers; `fn`+1…0, `fn`+⇧+1…0 and `fn`+⇧⌥+1…0 call `wm space|move|move-stay 1…10`; no binding on ⌘ alone; `hotkeys.json` has one entry per binding.
+- [x] **Step 2: Run** `bun test test/integration/bootstrap/karabiner.spec.ts` — Expected: FAIL.
+- [x] **Step 3: Implement** `bindings.ts`, `build.ts`, the task; run `mise run karabiner:build` to generate the two JSON files.
+- [x] **Step 4: Run** the spec; tombi/taplo on `mise.toml` — Expected: PASS.
+- [x] **Step 5: Commit** `feat(karabiner): Generate the fn layer from a bindings table`.
 
 ### Task 6: Scripting addition setup
 
@@ -207,11 +207,11 @@ The bindings are exactly the spec's key table (Key layout section), with `fn` + 
 
 Behaviour: off Darwin, exit 0. Rule line: `<user> ALL=(root) NOPASSWD: sha256:<shasum -a 256 of yabai> <yabai path> --load-sa`. Write `/etc/sudoers.d/yabai` (0440 root:wheel) through `visudo -cf` on a temp file, only when the current file differs; if `csrutil status` shows SIP fully enabled, print the Recovery command and skip the boot argument; otherwise add `-arm64e_preview_abi` to `nvram boot-args` when missing and say a reboot is needed. Never fail the bootstrap: warn and exit 0.
 
-- [ ] **Step 1: Write the failing tests** (stubs record calls): first run writes the rule with the stub hash; second run with the same hash makes no `sudo` write; **hash changed** → rewrites; invalid rule (stub `visudo` exits 1) → no install, warning, exit 0; SIP enabled → no `nvram` call, message contains `csrutil enable --without fs --without debug --without nvram`; boot-arg present → no `nvram` write.
-- [ ] **Step 2: Run** — Expected: FAIL.
-- [ ] **Step 3: Implement** `setup-sa` and the hook.
-- [ ] **Step 4: Run** the spec and shellcheck — Expected: PASS.
-- [ ] **Step 5: Commit** `feat(yabai): Set up the scripting addition from bootstrap`.
+- [x] **Step 1: Write the failing tests** (stubs record calls): first run writes the rule with the stub hash; second run with the same hash makes no `sudo` write; **hash changed** → rewrites; invalid rule (stub `visudo` exits 1) → no install, warning, exit 0; SIP enabled → no `nvram` call, message contains `csrutil enable --without fs --without debug --without nvram`; boot-arg present → no `nvram` write.
+- [x] **Step 2: Run** — Expected: FAIL.
+- [x] **Step 3: Implement** `setup-sa` and the hook.
+- [x] **Step 4: Run** the spec and shellcheck — Expected: PASS.
+- [x] **Step 5: Commit** `feat(yabai): Set up the scripting addition from bootstrap`.
 
 ### Task 7: kb clone, bootstrap checks, docs, gates
 
@@ -224,8 +224,8 @@ Checks snippet (macOS desktop only, warnings only): `~/Work/kb` missing → `git
 
 `docs/TILING.md`: the key table (generated hotkeys are the source; the doc links `config/karabiner/src/bindings.ts`), spaces and screens, the four manual steps, troubleshooting (`wm.log`, `sudo -n yabai --load-sa`, re-run `mise run karabiner:build`).
 
-- [ ] **Step 1: Write the failing tests**: with a stub `git`, a missing `~/Work/kb` is cloned from `git@github.com:roalcantara/kb-raycast.git` and an existing one is left alone; the checks snippet sits after `# ssh-keychain: end` and, with stubs, prints each warning in its condition and nothing when all pass.
-- [ ] **Step 2: Run** — Expected: FAIL.
-- [ ] **Step 3: Implement** the entry, the snippet and the docs; link `docs/TILING.md` from README and AGENTS.
-- [ ] **Step 4: Gates**: `hk check --all`, `mise run test:specs`, `mise bootstrap --only dotfiles,macos-defaults,macos-launchd-agents,task` on this Mac, then walk every row of the key table on both screens and with the lid alone.
-- [ ] **Step 5: Commit** `docs(tiling): Document the fn layer and its setup`, tick this plan, push, open the PR.
+- [x] **Step 1: Write the failing tests**: with a stub `git`, a missing `~/Work/kb` is cloned from `git@github.com:roalcantara/kb-raycast.git` and an existing one is left alone; the checks snippet sits after `# ssh-keychain: end` and, with stubs, prints each warning in its condition and nothing when all pass.
+- [x] **Step 2: Run** — Expected: FAIL.
+- [x] **Step 3: Implement** the entry, the snippet and the docs; link `docs/TILING.md` from README and AGENTS.
+- [x] **Step 4: Gates**: `hk check --all`, `mise run test:specs`, `mise bootstrap --only dotfiles,macos-defaults,macos-launchd-agents,task` on this Mac, then walk every row of the key table on both screens and with the lid alone.
+- [x] **Step 5: Commit** `docs(tiling): Document the fn layer and its setup`, tick this plan, push, open the PR.
