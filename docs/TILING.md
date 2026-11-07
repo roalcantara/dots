@@ -196,6 +196,7 @@ OS), so expect them to fail there until yabai is replaced or updated.
 
 | Symptom                                              | Check                                                                                                   |
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Which key did what                                   | `yb log -f`: each fn key, its yb call and result, and yabai's window events                             |
 | A fn key does nothing                                | `~/.local/state/dots/yb.log` has the failed yabai call; `yb space 1` in a terminal shows the error      |
 | fn + E opens emoji, or fn + F goes native fullscreen | Karabiner is not running or the `dots` profile is not selected (Karabiner-Elements → Profiles)          |
 | Spaces still slide, or the scratchpad does nothing   | The scripting addition is not loaded: `sudo -n yabai --load-sa`; if it asks for a password, run `yb sa` |
