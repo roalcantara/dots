@@ -69,6 +69,7 @@
 #USAGE cmd "nvim" help="Open Neovim in a new Ghostty window"
 #USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
 #USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
+#USAGE cmd "bar" help="Print the space strip for the SwiftBar plugin (config/swiftbar)"
 #USAGE cmd "spaces" help="Keep ten labelled spaces: s1-s5 built-in, s6-s10 external (all ten on one screen)"
 #USAGE cmd "sa" help="Set up the scripting addition: sudoers rule for --load-sa and the arm64e boot argument"
 #USAGE cmd "update" help="Alias of sa"
@@ -97,7 +98,7 @@ Y() {
 Yq() { "$yabai" -m "$@" 2>/dev/null; }
 
 case "$1" in
-  app | term | nvim | system | hotkeys | sa | update) ;;
+  app | term | nvim | system | hotkeys | bar | sa | update) ;;
   *)
     if [[ ! -x $yabai ]]; then
       log "yabai not found at $yabai"
@@ -213,11 +214,50 @@ setup_sa() {
   return 0
 }
 
-sync_spaces() {
-  local profiler builtin displays plan step
-  local -a next
+# The built-in screen's display id ('' with the lid closed); yabai reports the same id.
+builtin_display() {
+  local profiler
   if [[ -n ${DOTS_DISPLAYS_JSON:-} ]]; then profiler="$(<"$DOTS_DISPLAYS_JSON")"; else profiler="$(system_profiler SPDisplaysDataType -json 2>/dev/null)"; fi
-  builtin="$(jq -r '[.SPDisplaysDataType[]?.spdisplays_ndrvs[]? | select(.spdisplays_connection_type == "spdisplays_internal") | ._spdisplays_displayID][0] // ""' <<<"$profiler")"
+  jq -r '[.SPDisplaysDataType[]?.spdisplays_ndrvs[]? | select(.spdisplays_connection_type == "spdisplays_internal") | ._spdisplays_displayID][0] // ""' <<<"$profiler"
+}
+
+# SwiftBar output for the space strip (config/swiftbar/plugins/spaces.sh): one SF Symbols numbered square per
+# space, built-in screen first, a dot before the external one. Filled white = on screen and focused, outline =
+# on screen not focused, dimmed = not on screen. The dropdown lists the spaces with their apps.
+BAR_JQ='
+def num: (.label | capture("^s(?<n>[0-9]+)$").n) // (.index | tostring);
+def state: if ."has-focus" then "focused" elif ."is-visible" then "visible" else "hidden" end;
+($displays | sort_by(if (.id | tostring) == $builtin then 0 else 1 end, .index) | map(.index)) as $order
+| [ $order | to_entries[] | .key as $g | .value as $d
+    | $spaces[] | select(.display == $d and ."is-native-fullscreen" != true)
+    | {g: $g, n: num, s: state, apps: ([.windows[] as $w | $windows[] | select(.id == $w) | .app] | unique | join(", "))} ] as $all
+| ([ $all | to_entries[]
+     | (if .key > 0 and .value.g != $all[.key - 1].g then "·" else empty end),
+       ":\(.value.n).square\(if .value.s == "visible" then "" else ".fill" end):" ] | join(" ")) as $title
+| ([ $all | to_entries[] | "sfcolor\(if .key == 0 then "" else (.key + 1 | tostring) end)=\(if .value.s == "hidden" then $dim else $on end)" ] | join(" ")) as $colors
+| "\($title) | symbolize=true sfsize=17 sfconfig=\($cfg) \($colors)",
+  "---",
+  ($all[] | "Space \(.n)\(if .apps != "" then " — " + .apps else "" end) | bash=\($yb) param1=space param2=\(.n) terminal=false refresh=true sfimage=\(.n).square\(if .s == "visible" then "" else ".fill" end)")'
+
+render_bar() {
+  local spaces displays windows cfg
+  if [[ ! -x $yabai ]] || ! spaces="$("$yabai" -m query --spaces 2>/dev/null)" || ! displays="$("$yabai" -m query --displays 2>/dev/null)"; then
+    print -r -- "· | symbolize=false"
+    print -r -- "---"
+    print -r -- "yabai is not answering"
+    return 0
+  fi
+  windows="$("$yabai" -m query --windows 2>/dev/null)" || windows='[]'
+  cfg="$(print -rn -- '{"renderingMode":"Palette","scale":"large","weight":"bold"}' | base64)"
+  jq -nr --argjson spaces "$spaces" --argjson displays "$displays" --argjson windows "$windows" \
+    --arg builtin "$(builtin_display)" --arg cfg "$cfg" --arg on '#000000,#FFFFFF' --arg dim '#8A8A8E,#A9B0C2' \
+    --arg yb "$HOME/.local/bin/yb" "$BAR_JQ"
+}
+
+sync_spaces() {
+  local builtin displays plan step
+  local -a next
+  builtin="$(builtin_display)"
   displays="$(Y query --displays)" || return
   # Built-in first; with no built-in screen (lid closed), the lowest arrangement index stands in for it.
   plan="$(jq -c --arg b "$builtin" '
@@ -332,6 +372,7 @@ case "$1" in
   nvim) ghostty_window nvim ;;
   system) kb system.screen ;;
   hotkeys) kb hotkeys.screen ;;
+  bar) render_bar ;;
   spaces) sync_spaces ;;
   sa | update) setup_sa ;;
 esac

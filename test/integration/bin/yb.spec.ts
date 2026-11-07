@@ -471,3 +471,71 @@ describe("yb spaces in the real world", () => {
     holder.kill();
   });
 });
+
+describe("yb bar", () => {
+  const FAKE = join(import.meta.dir, "support/fake-yabai.ts");
+  let state = "";
+  let profiler = "";
+  let shim = "";
+  beforeAll(() => {
+    state = join(dir, "bar-state.json");
+    profiler = join(dir, "bar-displays.json");
+    shim = join(dir, "bar-yabai");
+    writeFileSync(shim, `#!/bin/sh\nexec "${process.execPath}" "${FAKE}" "$FAKE_STATE" "$@"\n`);
+    chmodSync(shim, 0o755);
+  });
+  type Sp = { id: number; label: string; display: number; windows: number[]; focus?: boolean; visible?: boolean };
+  const sp = (id: number, display: number, label: string, extra: Partial<Sp> = {}): Sp => ({ id, label, display, windows: [], ...extra });
+  function setup(displays: number[], spaces: Sp[], apps: Record<string, string> = {}) {
+    writeFileSync(state, JSON.stringify({ displays: displays.map((id, i) => ({ id, index: i + 1 })), spaces, nextId: 900, calls: [], apps }));
+    writeFileSync(profiler, JSON.stringify({ SPDisplaysDataType: [{ spdisplays_ndrvs: displays.map((id) => ({ _spdisplays_displayID: String(id), ...(id === 1 ? { spdisplays_connection_type: "spdisplays_internal" } : {}) })) }] }));
+  }
+  const bar = (env: Record<string, string> = {}) => {
+    const r = Bun.spawnSync([script, "bar"], {
+      stdout: "pipe", stderr: "pipe",
+      env: { PATH: `${realUsageDir()}:${dirname(findRealBin("jq"))}:/usr/bin:/bin`, HOME: home, DOTS_YABAI: shim, DOTS_DISPLAYS_JSON: profiler, FAKE_STATE: state, ...env },
+    });
+    return { code: r.exitCode, lines: r.stdout.toString().trimEnd().split("\n") };
+  };
+  const CFG = Buffer.from('{"renderingMode":"Palette","scale":"large","weight":"bold"}').toString("base64");
+  const ON = "#000000,#FFFFFF";
+  const DIM = "#8A8A8E,#A9B0C2";
+
+  it("draws one square per space: filled focused, outlined on screen, dimmed elsewhere, a dot between screens", () => {
+    setup([1, 3], [
+      sp(100, 1, "s1", { visible: true }), sp(101, 1, "s2"),
+      sp(102, 2, "s6"), sp(103, 2, "s7", { focus: true }), sp(104, 2, "s8", { windows: [42] }), sp(105, 2, "s9"),
+    ], { "42": "Code" });
+    const { code, lines } = bar();
+    expect(code).toBe(0);
+    expect(lines[0]).toBe(
+      ":1.square: :2.square.fill: · :6.square.fill: :7.square.fill: :8.square.fill: :9.square.fill: | " +
+      `symbolize=true sfsize=17 sfconfig=${CFG} sfcolor=${ON} sfcolor2=${DIM} sfcolor3=${DIM} sfcolor4=${ON} sfcolor5=${DIM} sfcolor6=${DIM}`,
+    );
+    expect(lines[1]).toBe("---");
+    expect(lines).toContain(`Space 8 — Code | bash=${home}/.local/bin/yb param1=space param2=8 terminal=false refresh=true sfimage=8.square.fill`);
+    expect(lines).toContain(`Space 1 | bash=${home}/.local/bin/yb param1=space param2=1 terminal=false refresh=true sfimage=1.square`);
+  });
+
+  it("puts the built-in screen first even when yabai lists the external one first", () => {
+    setup([3, 1], [sp(100, 1, "s6", { focus: true }), sp(101, 2, "s1", { visible: true })]);
+    expect(bar().lines[0]).toStartWith(":1.square: · :6.square.fill: |");
+  });
+
+  it("has no dot with one screen, and numbers unlabelled spaces by index", () => {
+    setup([1], [sp(100, 1, "", { focus: true }), sp(101, 1, "")]);
+    expect(bar().lines[0]).toStartWith(":1.square.fill: :2.square.fill: |");
+  });
+
+  it("joins many apps on one line", () => {
+    setup([1], [sp(100, 1, "s1", { focus: true, windows: [1, 2, 3] })], { "1": "Code", "2": "Arc", "3": "Code" });
+    expect(bar().lines[2]).toStartWith("Space 1 — Arc, Code |");
+  });
+
+  it("shows a dot and says so when yabai is not answering", () => {
+    const { code, lines } = bar({ DOTS_YABAI: join(dir, "missing-yabai") });
+    expect(code).toBe(0);
+    expect(lines[0]).toStartWith("·");
+    expect(lines).toContain("yabai is not answering");
+  });
+});

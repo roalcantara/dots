@@ -8,8 +8,8 @@
 // sticky windows, which yabai lists on every space of their screen.
 import { readFileSync, writeFileSync } from "node:fs";
 
-export interface FakeSpace { id: number; label: string; display: number; windows: number[]; fullscreen?: boolean }
-export interface FakeState { displays: { id: number; index: number }[]; spaces: FakeSpace[]; nextId: number; calls: string[]; sticky?: number[] }
+export interface FakeSpace { id: number; label: string; display: number; windows: number[]; fullscreen?: boolean; focus?: boolean; visible?: boolean }
+export interface FakeState { displays: { id: number; index: number }[]; spaces: FakeSpace[]; nextId: number; calls: string[]; sticky?: number[]; apps?: Record<string, string> }
 
 const [statePath, , domain, ...rest] = process.argv.slice(2);
 const state: FakeState = JSON.parse(readFileSync(statePath!, "utf8"));
@@ -50,10 +50,10 @@ if (domain === "query") {
   if (rest[0] === "--displays") {
     console.log(JSON.stringify(state.displays.map((d) => ({ id: d.id, index: d.index, spaces: ordered().filter((s) => s.display === d.index).map(indexOf) }))));
   } else if (rest[0] === "--spaces") {
-    console.log(JSON.stringify(ordered().map((s) => ({ id: s.id, index: indexOf(s), label: s.label, display: s.display, windows: s.windows, "is-native-fullscreen": s.fullscreen ?? false }))));
+    console.log(JSON.stringify(ordered().map((s) => ({ id: s.id, index: indexOf(s), label: s.label, display: s.display, windows: s.windows, "is-native-fullscreen": s.fullscreen ?? false, "has-focus": s.focus ?? false, "is-visible": s.visible ?? s.focus ?? false }))));
   } else if (rest[0] === "--windows") {
     const ids = [...new Set(state.spaces.flatMap((s) => s.windows))];
-    console.log(JSON.stringify(ids.map((id) => ({ id, "is-sticky": (state.sticky ?? []).includes(id) }))));
+    console.log(JSON.stringify(ids.map((id) => ({ id, app: state.apps?.[String(id)] ?? "App", "is-sticky": (state.sticky ?? []).includes(id) }))));
   } else fail(`unsupported query ${rest.join(" ")}`);
   process.exit(0);
 }
