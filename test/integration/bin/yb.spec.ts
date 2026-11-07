@@ -182,3 +182,111 @@ describe("yb", () => {
     });
   });
 });
+
+describe("yb spaces", () => {
+  const FAKE = join(import.meta.dir, "support/fake-yabai.ts");
+  const BUILTIN = 1;
+  const EXTERNAL = 3;
+  let state = "";
+  let profiler = "";
+  let shim = "";
+  type Space = { id: number; label: string; display: number; windows: number[] };
+
+  beforeAll(() => {
+    state = join(dir, "state.json");
+    profiler = join(dir, "displays.json");
+    shim = join(dir, "fake-yabai");
+    writeFileSync(shim, `#!/bin/sh\nexec "${process.execPath}" "${FAKE}" "$FAKE_STATE" "$@"\n`);
+    chmodSync(shim, 0o755);
+  });
+
+  // displays: [id, arrangement index]; spaces: [display index, label, windows]
+  function setup(displays: Array<[number, number]>, spaces: Array<[number, string, number[]?]>) {
+    let id = 100;
+    writeFileSync(state, JSON.stringify({
+      displays: displays.map(([i, index]) => ({ id: i, index })),
+      spaces: spaces.map(([display, label, windows]) => ({ id: id++, label, display, windows: windows ?? [] })),
+      nextId: 500,
+      calls: [],
+    }));
+    writeFileSync(profiler, JSON.stringify({
+      SPDisplaysDataType: [{ spdisplays_ndrvs: displays.map(([i]) => ({
+        _spdisplays_displayID: String(i),
+        ...(i === BUILTIN ? { spdisplays_connection_type: "spdisplays_internal" } : {}),
+      })) }],
+    }));
+  }
+  const read = () => JSON.parse(readFileSync(state, "utf8")) as { displays: { id: number; index: number }[]; spaces: Space[]; calls: string[] };
+  const run = () => {
+    const r = Bun.spawnSync([script, "spaces"], {
+      stdout: "pipe",
+      stderr: "pipe",
+      env: {
+        PATH: `${realUsageDir()}:${dirname(findRealBin("jq"))}:/usr/bin:/bin`,
+        HOME: home,
+        DOTS_YABAI: shim,
+        DOTS_DISPLAYS_JSON: profiler,
+        FAKE_STATE: state,
+      },
+    });
+    return { code: r.exitCode, err: r.stderr.toString() };
+  };
+  const labelsOn = (displayId: number) => {
+    const s = read();
+    const index = s.displays.find((d) => d.id === displayId)!.index;
+    return s.spaces.filter((x) => x.display === index).map((x) => x.label);
+  };
+  const S = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => `s${from + i}`);
+
+  it("two screens: s1-s5 on the built-in one, s6-s10 on the external one", () => {
+    setup([[BUILTIN, 1], [EXTERNAL, 2]], [[1, ""], [2, ""]]);
+    expect(run().code).toBe(0);
+    expect(labelsOn(BUILTIN)).toEqual(S(1, 5));
+    expect(labelsOn(EXTERNAL)).toEqual(S(6, 10));
+  });
+
+  it("puts s6-s10 on the external screen even when yabai lists it first", () => {
+    setup([[EXTERNAL, 1], [BUILTIN, 2]], [[1, ""], [2, ""]]);
+    expect(run().code).toBe(0);
+    expect(labelsOn(BUILTIN)).toEqual(S(1, 5));
+    expect(labelsOn(EXTERNAL)).toEqual(S(6, 10));
+  });
+
+  it("one screen: all ten on it", () => {
+    setup([[BUILTIN, 1]], [[1, ""], [1, ""], [1, ""]]);
+    expect(run().code).toBe(0);
+    expect(labelsOn(BUILTIN)).toEqual(S(1, 10));
+  });
+
+  it("plugging the external screen in moves s6-s10 there instead of recreating them", () => {
+    setup([[BUILTIN, 1]], S(1, 10).map((l) => [1, l] as [number, string]));
+    expect(run().code).toBe(0);
+    const before = new Map(read().spaces.map((s) => [s.label, s.id]));
+    // macOS gives a newly attached screen one space of its own
+    const s = read();
+    s.displays.push({ id: EXTERNAL, index: 2 });
+    s.spaces.push({ id: 900, label: "", display: 2, windows: [] });
+    writeFileSync(state, JSON.stringify(s));
+    expect(run().code).toBe(0);
+    expect(labelsOn(BUILTIN)).toEqual(S(1, 5));
+    expect([...labelsOn(EXTERNAL)].sort()).toEqual(S(6, 10).sort());
+    for (const label of S(6, 10)) expect(read().spaces.find((x) => x.label === label)!.id).toBe(before.get(label)!);
+  });
+
+  it("keeps windows: a surplus space's windows move before it goes", () => {
+    setup([[BUILTIN, 1]], [...S(1, 10).map((l) => [1, l] as [number, string]), [1, "", [42]]]);
+    const r = run();
+    expect(r.code).toBe(0);
+    const after = read();
+    expect(after.spaces.filter((x) => x.display === 1)).toHaveLength(10);
+    expect(after.spaces.some((x) => x.windows.includes(42))).toBe(true);
+  });
+
+  it("a second run changes nothing", () => {
+    setup([[BUILTIN, 1], [EXTERNAL, 2]], [[1, ""], [2, ""]]);
+    run();
+    const calls = read().calls.length;
+    expect(run().code).toBe(0);
+    expect(read().calls).toHaveLength(calls);
+  });
+});

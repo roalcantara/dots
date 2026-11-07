@@ -68,6 +68,7 @@
 #USAGE cmd "nvim" help="Open Neovim in a new Ghostty window"
 #USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
 #USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
+#USAGE cmd "spaces" help="Keep ten labelled spaces: s1-s5 built-in, s6-s10 external (all ten on one screen)"
 #USAGE cmd "update" help="Update the hash in sudoers"
 #USAGE example "yb space 6"
 #USAGE example "yb move 3 --stay"
@@ -105,6 +106,65 @@ case "$1" in
 esac
 
 kb() { open "raycast://extensions/roalcantara/kb/$1"; }
+
+# The next yabai command (one argument per line) that brings the spaces closer to the plan, or nothing
+# when they match. Input: {spaces: <query --spaces>, plan: [{display, lo, hi}]}.
+SPACES_NEXT='
+def slot: (.label | capture("^s(?<n>[0-9]+)$").n | tonumber) // 0;
+def inrange($p): slot as $n | $n >= $p.lo and $n <= $p.hi;
+def on($p; $s): [$s[] | select(.display == $p.display)];
+def want($p): $p.hi - $p.lo + 1;
+def lastof: .[length - 1];
+.spaces as $s | .plan as $plan
+| ( [ $plan as [$a, $b] | select($b != null)
+      | [[$a, $b], [$b, $a]][] as [$from, $to]
+      | on($from; $s) as $l | select(($l | length) > 1)
+      | [$l[] | select(inrange($to))] | first | select(. != null)
+      | ["space", (.index | tostring), "--display", ($to.display | tostring)] ] | first )
+  // ( [ $plan as [$a, $b] | select($b != null)
+      | [[$a, $b], [$b, $a]][] as [$from, $to]
+      | select((on($from; $s) | length) > want($from) and (on($to; $s) | length) < want($to))
+      | on($from; $s) as $l
+      | (([$l[] | select(inrange($to))] | first) // ([$l[] | select(inrange($from) | not)] | first) // ($l | lastof))
+      | ["space", (.index | tostring), "--display", ($to.display | tostring)] ] | first )
+  // ( [ $plan[] | select((on(.; $s) | length) < want(.)) | ["space", "--create", (.display | tostring)] ] | first )
+  // ( [ $plan[] as $p | on($p; $s) as $l | select(($l | length) > want($p))
+      | [$l[] | select(inrange($p) | not)] as $c
+      | (([$c[] | select(.windows == [])] | first) // ($c | first) // ($l | lastof)) as $x
+      | if ($x.windows | length) > 0 then
+          ((([$l[] | select(inrange($p))] | first) // ([$l[] | select(.index != $x.index)] | first)) as $keep
+           | ["window", ($x.windows[0] | tostring), "--space", ($keep.index | tostring)])
+        else ["space", ($x.index | tostring), "--destroy"] end ] | first )
+  // ( [ $plan[] as $p | on($p; $s) as $l
+      | [range($p.lo; $p.hi + 1)] as $range
+      | [$l | to_entries[] | . as $e
+         | select(($e.value | inrange($p)) and ([$l[:$e.key][] | .label] | any(. == $e.value.label) | not))] as $ok
+      | ($range - [$ok[] | .value | slot]) as $missing
+      | ($l | to_entries | map(. as $e | select([$ok[].key] | any(. == $e.key) | not))) as $todo
+      | select(($missing | length) > 0 and ($todo | length) > 0)
+      | ["space", ($todo[0].value.index | tostring), "--label", "s\($missing[0])"] ] | first )
+  // empty
+| .[]'
+
+sync_spaces() {
+  local profiler builtin displays plan step
+  local -a next
+  if [[ -n ${DOTS_DISPLAYS_JSON:-} ]]; then profiler="$(<"$DOTS_DISPLAYS_JSON")"; else profiler="$(system_profiler SPDisplaysDataType -json 2>/dev/null)"; fi
+  builtin="$(jq -r '[.SPDisplaysDataType[]?.spdisplays_ndrvs[]? | select(.spdisplays_connection_type == "spdisplays_internal") | ._spdisplays_displayID][0] // ""' <<<"$profiler")"
+  displays="$(Y query --displays)" || return
+  # Built-in first; with no built-in screen (lid closed), the lowest arrangement index stands in for it.
+  plan="$(jq -c --arg b "$builtin" '
+    sort_by(if (.id | tostring) == $b then 0 else 1 end, .index) | map(.index)
+    | if length == 1 then [{display: .[0], lo: 1, hi: 10}]
+      else [{display: .[0], lo: 1, hi: 5}, {display: .[1], lo: 6, hi: 10}] end' <<<"$displays")"
+  for step in {1..60}; do
+    next=("${(@f)$(Y query --spaces | jq -r --argjson plan "$plan" "{spaces: ., plan: \$plan} | $SPACES_NEXT")}")
+    [[ -n ${next[1]:-} ]] || return 0
+    Y "${next[@]}" || return
+  done
+  log "spaces did not settle after 60 steps"
+  return 1
+}
 
 cycle_layout() {
   local current next
@@ -175,6 +235,7 @@ case "$1" in
   nvim) open -na Ghostty --args -e nvim ;;
   system) kb system.screen ;;
   hotkeys) kb hotkeys.screen ;;
+  spaces) sync_spaces ;;
   update)
     # this script assumes a single user installation!
     YABAI="$(which yabai)"
