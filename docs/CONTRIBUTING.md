@@ -85,6 +85,7 @@ Commit messages follow the Conventional Commits specification. No hook enforces 
 
 - All TOML files (`mise.toml`, `config/**/*.toml`) must be formatted using `taplo fmt`.
 - Backups and schema-checked files are validated using `taplo check`.
+- `tombi lint --error-on-warnings` must pass on every TOML file: keep each parent's tables together (`tables-out-of-order`). Its rules live in `config/tombi/config.toml`.
 
 ## 4. Mise task conventions
 

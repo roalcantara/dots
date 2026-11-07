@@ -28,7 +28,7 @@ and builds reproducible development Docker images under `distros/`.
 Keep every gate green before declaring work complete:
 
 - `mise run test:specs` — runs BDD scenarios and all Bun integration test domains (`bin`, `backup`, `bootstrap`, `agents`, `hooks`).
-- `hk check --all` — runs repository linters (shellcheck, shfmt, taplo, hadolint, markdownlint, yamllint, zsh-syntax).
+- `hk check --all` — runs repository linters (shellcheck, shfmt, taplo, tombi, hadolint, markdownlint, yamllint, zsh-syntax).
 - `mise run zsh:verify` — runs syntax checks and benchmark verification for Zsh configuration changes.
 - `mise run build --local --distro <d>` and `mise run test --image dots:<d>-<tag> --config distros/<d>/container-structure-test.yml` — required for Dockerfile, CST, or bootstrap changes.
 

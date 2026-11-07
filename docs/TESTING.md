@@ -7,7 +7,7 @@ Verification gates, test suite architecture, BDD specifications, Container Struc
 Every change must keep all relevant quality gates clean before merge:
 
 - `mise run test:specs` — runs BDD scenarios and all integration test domains (`bin`, `backup`, `bootstrap`, `agents`, `hooks`).
-- `hk check --all` — runs repository linters (`shellcheck`, `shfmt`, `taplo`, `hadolint`, `markdownlint`, `yamllint`, `zsh-syntax`).
+- `hk check --all` — runs repository linters (`shellcheck`, `shfmt`, `taplo`, `tombi`, `hadolint`, `markdownlint`, `yamllint`, `zsh-syntax`).
 - `mise run zsh:verify` — verifies Zsh syntax and benchmarks startup time when editing `config/zsh/`.
 - `mise run build --local --distro <d>` and `mise run test --image dots:<d>-<tag> --config distros/<d>/container-structure-test.yml` — required for Dockerfile, CST, or bootstrap changes.
 
