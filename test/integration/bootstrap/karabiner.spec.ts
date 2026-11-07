@@ -41,6 +41,10 @@ describe("karabiner fn layer", () => {
   it("every binding needs fn, and no two bindings share a combination", () => {
     expect(manipulators.length).toBeGreaterThan(50);
     for (const m of manipulators) expect(m.from.modifiers.mandatory).toContain("fn");
+  });
+
+  it("still works with Caps Lock on", () => {
+    for (const m of manipulators) expect((m.from.modifiers as { optional?: string[] }).optional).toEqual(["caps_lock"]);
     expect(new Set(manipulators.map(combo)).size).toBe(manipulators.length);
   });
 

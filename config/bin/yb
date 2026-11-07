@@ -109,33 +109,38 @@ esac
 kb() { open "raycast://extensions/roalcantara/kb/$1"; }
 
 # The next yabai command (one argument per line) that brings the spaces closer to the plan, or nothing
-# when they match. Input: {spaces: <query --spaces>, plan: [{display, lo, hi}]}.
+# when they match. Input: {spaces: <query --spaces>, windows: <query --windows>, plan: [{display, lo, hi}],
+# labelsOnly}. Native-fullscreen spaces are left out, and sticky windows (listed on every space of their
+# screen) do not count as a space's windows. labelsOnly skips moving, creating and destroying spaces,
+# which need the scripting addition.
 SPACES_NEXT='
 def slot: (.label | capture("^s(?<n>[0-9]+)$").n | tonumber) // 0;
 def inrange($p): slot as $n | $n >= $p.lo and $n <= $p.hi;
 def on($p; $s): [$s[] | select(.display == $p.display)];
 def want($p): $p.hi - $p.lo + 1;
 def lastof: .[length - 1];
-.spaces as $s | .plan as $plan
-| ( [ $plan as [$a, $b] | select($b != null)
+[.windows[] | select(."is-sticky") | .id] as $sticky
+| [.spaces[] | select(."is-native-fullscreen" != true) | .windows -= $sticky] as $s
+| .plan as $plan | .labelsOnly as $lo
+| ( if $lo then null else [ $plan as [$a, $b] | select($b != null)
       | [[$a, $b], [$b, $a]][] as [$from, $to]
       | on($from; $s) as $l | select(($l | length) > 1)
       | [$l[] | select(inrange($to))] | first | select(. != null)
-      | ["space", (.index | tostring), "--display", ($to.display | tostring)] ] | first )
-  // ( [ $plan as [$a, $b] | select($b != null)
+      | ["space", (.index | tostring), "--display", ($to.display | tostring)] ] | first end )
+  // ( if $lo then null else [ $plan as [$a, $b] | select($b != null)
       | [[$a, $b], [$b, $a]][] as [$from, $to]
       | select((on($from; $s) | length) > want($from) and (on($to; $s) | length) < want($to))
       | on($from; $s) as $l
       | (([$l[] | select(inrange($to))] | first) // ([$l[] | select(inrange($from) | not)] | first) // ($l | lastof))
-      | ["space", (.index | tostring), "--display", ($to.display | tostring)] ] | first )
-  // ( [ $plan[] | select((on(.; $s) | length) < want(.)) | ["space", "--create", (.display | tostring)] ] | first )
-  // ( [ $plan[] as $p | on($p; $s) as $l | select(($l | length) > want($p))
+      | ["space", (.index | tostring), "--display", ($to.display | tostring)] ] | first end )
+  // ( if $lo then null else [ $plan[] | select((on(.; $s) | length) < want(.)) | ["space", "--create", (.display | tostring)] ] | first end )
+  // ( if $lo then null else [ $plan[] as $p | on($p; $s) as $l | select(($l | length) > want($p))
       | [$l[] | select(inrange($p) | not)] as $c
       | (([$c[] | select(.windows == [])] | first) // ($c | first) // ($l | lastof)) as $x
       | if ($x.windows | length) > 0 then
           ((([$l[] | select(inrange($p))] | first) // ([$l[] | select(.index != $x.index)] | first)) as $keep
            | ["window", ($x.windows[0] | tostring), "--space", ($keep.index | tostring)])
-        else ["space", ($x.index | tostring), "--destroy"] end ] | first )
+        else ["space", ($x.index | tostring), "--destroy"] end ] | first end )
   // ( [ $plan[] as $p | on($p; $s) as $l
       | [range($p.lo; $p.hi + 1)] as $range
       | [$l | to_entries[] | . as $e
@@ -202,10 +207,38 @@ sync_spaces() {
     sort_by(if (.id | tostring) == $b then 0 else 1 end, .index) | map(.index)
     | if length == 1 then [{display: .[0], lo: 1, hi: 10}]
       else [{display: .[0], lo: 1, hi: 5}, {display: .[1], lo: 6, hi: 10}] end' <<<"$displays")"
+  # One run at a time: plugging a screen in fires several display signals at once, and a run working from
+  # stale space indexes could act on the wrong space.
+  local lock="$HOME/.local/state/dots/yb-spaces.lock" spaces windows labels_only=false tries=0
+  mkdir -p "${lock:h}" && : >>"$lock"
+  zmodload zsh/system
+  if ! zsystem flock -t 30 "$lock"; then
+    log "another yb spaces run held the lock for 30 s"
+    return 1
+  fi
   for step in {1..60}; do
-    next=("${(@f)$(Y query --spaces | jq -r --argjson plan "$plan" "{spaces: ., plan: \$plan} | $SPACES_NEXT")}")
+    spaces="$(Y query --spaces)" || return
+    windows="$(Y query --windows)" || return
+    # Right after a screen goes, its spaces can still name it; wait for macOS to move them.
+    if [[ "$(jq --argjson d "$displays" '[.[].display] - [$d[].index] | length' <<<"$spaces")" != 0 ]]; then
+      if ((++tries > 6)); then
+        log "spaces still on a screen yabai no longer reports"
+        return 1
+      fi
+      sleep "${DOTS_SPACES_WAIT:-0.5}"
+      displays="$(Y query --displays)" || return
+      continue
+    fi
+    next=("${(@f)$(jq -nr --argjson spaces "$spaces" --argjson windows "$windows" --argjson plan "$plan" --argjson lo "$labels_only" \
+      "{spaces: \$spaces, windows: \$windows, plan: \$plan, labelsOnly: \$lo} | $SPACES_NEXT")}")
     [[ -n ${next[1]:-} ]] || return 0
-    Y "${next[@]}" || return
+    if ! Y "${next[@]}"; then
+      [[ ${next[1]} == space && ${next[3]:-} == --label ]] && return 1
+      # Without the scripting addition spaces cannot be created, removed or moved; label what exists.
+      $labels_only && return 1
+      log "falling back to labelling the existing spaces"
+      labels_only=true
+    fi
   done
   log "spaces did not settle after 60 steps"
   return 1

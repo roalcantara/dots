@@ -387,3 +387,71 @@ exit 0
     expect(again.calls.some((c) => c.includes("nvram"))).toBe(false);
   });
 });
+
+describe("yb spaces in the real world", () => {
+  const FAKE = join(import.meta.dir, "support/fake-yabai.ts");
+  let state = "";
+  let profiler = "";
+  let shim = "";
+  beforeAll(() => {
+    state = join(dir, "state2.json");
+    profiler = join(dir, "displays2.json");
+    shim = join(dir, "fake-yabai2");
+    writeFileSync(shim, `#!/bin/sh\nexec "${process.execPath}" "${FAKE}" "$FAKE_STATE" "$@"\n`);
+    chmodSync(shim, 0o755);
+  });
+  type Space = { id: number; label: string; display: number; windows: number[]; fullscreen?: boolean };
+  function setup(displays: number[], spaces: Space[], extra: Record<string, unknown> = {}) {
+    writeFileSync(state, JSON.stringify({ displays: displays.map((id, i) => ({ id, index: i + 1 })), spaces, nextId: 500, calls: [], ...extra }));
+    writeFileSync(profiler, JSON.stringify({ SPDisplaysDataType: [{ spdisplays_ndrvs: displays.map((id) => ({ _spdisplays_displayID: String(id), ...(id === 1 ? { spdisplays_connection_type: "spdisplays_internal" } : {}) })) }] }));
+  }
+  const read = () => JSON.parse(readFileSync(state, "utf8")) as { spaces: Space[]; calls: string[] };
+  const run = (env: Record<string, string> = {}) => {
+    const r = Bun.spawnSync([script, "spaces"], {
+      stdout: "pipe", stderr: "pipe",
+      env: { PATH: `${realUsageDir()}:${dirname(findRealBin("jq"))}:/usr/bin:/bin`, HOME: home, DOTS_YABAI: shim, DOTS_DISPLAYS_JSON: profiler, FAKE_STATE: state, DOTS_SPACES_WAIT: "0", ...env },
+    });
+    return { code: r.exitCode, err: r.stderr.toString() };
+  };
+  const sp = (id: number, display: number, label = "", windows: number[] = [], fullscreen = false): Space => ({ id, label, display, windows, fullscreen });
+
+  it("without the scripting addition, still labels the spaces that exist", () => {
+    setup([1, 3], [sp(100, 1), sp(101, 1), sp(102, 2)]);
+    run({ FAKE_NO_SA: "1" });
+    expect(read().spaces.map((s) => s.label)).toEqual(["s1", "s2", "s6"]);
+  });
+
+  it("leaves native-fullscreen spaces out of the count and the labels", () => {
+    setup([1], [...Array.from({ length: 10 }, (_, i) => sp(100 + i, 1, `s${i + 1}`)), sp(200, 1, "", [7], true)]);
+    expect(run().code).toBe(0);
+    const after = read();
+    expect(after.calls).toEqual([]);
+    expect(after.spaces.find((s) => s.id === 200)?.label).toBe("");
+  });
+
+  it("removes a surplus space whose only window is pinned on every space", () => {
+    const labelled = Array.from({ length: 10 }, (_, i) => sp(100 + i, 1, `s${i + 1}`, [42]));
+    setup([1], [...labelled, sp(300, 1, "", [42])], { sticky: [42] });
+    expect(run().code).toBe(0);
+    expect(read().spaces).toHaveLength(10);
+  });
+
+  it("does not plan while a space still points at a screen yabai no longer reports", () => {
+    setup([1], [sp(100, 1, "s1"), sp(101, 2, "s6")]);
+    const r = run();
+    expect(r.code).not.toBe(0);
+    expect(read().calls).toEqual([]);
+  });
+
+  it("waits for a run already in progress", () => {
+    setup([1], Array.from({ length: 10 }, (_, i) => sp(100 + i, 1, `s${i + 1}`)));
+    const lock = join(home, ".local/state/dots/yb-spaces.lock");
+    Bun.spawnSync(["mkdir", "-p", dirname(lock)]);
+    const holder = Bun.spawn(["zsh", "-c", `zmodload zsh/system; : >> ${lock}; zsystem flock ${lock}; print ready; sleep 1.5`], { stdout: "pipe" });
+    Bun.sleepSync(400);
+    const started = performance.now();
+    expect(run().code).toBe(0);
+    expect(performance.now() - started).toBeGreaterThan(800);
+    holder.kill();
+  });
+});

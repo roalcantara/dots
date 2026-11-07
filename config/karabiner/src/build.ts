@@ -17,7 +17,8 @@ const quote = (arg: string) => (/^[\w.+-]+$/.test(arg) ? arg : `'${arg.replaceAl
 const manipulator = (binding: Binding) => ({
   type: 'basic' as const,
   description: binding.label,
-  from: { key_code: binding.key, modifiers: { mandatory: ['fn', ...binding.mods] } },
+  // Caps Lock counts as a modifier to Karabiner; optional keeps every key working while it is on.
+  from: { key_code: binding.key, modifiers: { mandatory: ['fn', ...binding.mods], optional: ['caps_lock'] } },
   to: binding.sends
     ? [{ key_code: binding.sends }]
     : [{ shell_command: `PATH=/opt/homebrew/bin:/usr/bin:/bin "$HOME/.local/bin/yb" ${(binding.yb ?? []).map(quote).join(' ')}` }],

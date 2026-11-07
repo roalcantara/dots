@@ -3,19 +3,25 @@
 // check what `yb spaces` leaves behind. Usage: bun fake-yabai.ts <state.json> -m <domain> ...
 // Selectors: a space is a number (index) or a label; a display is its arrangement index.
 // Every mutating call is appended to state.calls. Destroying a space that holds windows fails, like
-// losing them would.
+// losing them would. FAKE_NO_SA=1 refuses what needs the scripting addition (create, destroy, move a
+// space). A space with fullscreen: true is a native-fullscreen app's space; ids in state.sticky are
+// sticky windows, which yabai lists on every space of their screen.
 import { readFileSync, writeFileSync } from "node:fs";
 
-export interface FakeSpace { id: number; label: string; display: number; windows: number[] }
-export interface FakeState { displays: { id: number; index: number }[]; spaces: FakeSpace[]; nextId: number; calls: string[] }
+export interface FakeSpace { id: number; label: string; display: number; windows: number[]; fullscreen?: boolean }
+export interface FakeState { displays: { id: number; index: number }[]; spaces: FakeSpace[]; nextId: number; calls: string[]; sticky?: number[] }
 
 const [statePath, , domain, ...rest] = process.argv.slice(2);
 const state: FakeState = JSON.parse(readFileSync(statePath!, "utf8"));
 
-const ordered = () =>
-  [...state.displays]
-    .sort((a, b) => a.index - b.index)
-    .flatMap((d) => state.spaces.filter((s) => s.display === d.index));
+// Spaces of a screen yabai no longer reports (it was just unplugged) come last, as they briefly do in yabai.
+const ordered = () => {
+  const known = new Set(state.displays.map((d) => d.index));
+  return [
+    ...[...state.displays].sort((a, b) => a.index - b.index).flatMap((d) => state.spaces.filter((s) => s.display === d.index)),
+    ...state.spaces.filter((s) => !known.has(s.display)),
+  ];
+};
 const indexOf = (s: FakeSpace) => ordered().indexOf(s) + 1;
 const space = (sel: string): FakeSpace => {
   const list = ordered();
@@ -44,10 +50,16 @@ if (domain === "query") {
   if (rest[0] === "--displays") {
     console.log(JSON.stringify(state.displays.map((d) => ({ id: d.id, index: d.index, spaces: ordered().filter((s) => s.display === d.index).map(indexOf) }))));
   } else if (rest[0] === "--spaces") {
-    console.log(JSON.stringify(ordered().map((s) => ({ id: s.id, index: indexOf(s), label: s.label, display: s.display, windows: s.windows }))));
+    console.log(JSON.stringify(ordered().map((s) => ({ id: s.id, index: indexOf(s), label: s.label, display: s.display, windows: s.windows, "is-native-fullscreen": s.fullscreen ?? false }))));
+  } else if (rest[0] === "--windows") {
+    const ids = [...new Set(state.spaces.flatMap((s) => s.windows))];
+    console.log(JSON.stringify(ids.map((id) => ({ id, "is-sticky": (state.sticky ?? []).includes(id) }))));
   } else fail(`unsupported query ${rest.join(" ")}`);
   process.exit(0);
 }
+
+const needsSa = (domain === "space" && (rest[0] === "--create" || rest[1] === "--destroy" || rest[1] === "--display"));
+if (needsSa && process.env.FAKE_NO_SA === "1") fail("cannot focus space due to an error with the scripting-addition.");
 
 if (domain === "space" && rest[0] === "--create") {
   state.spaces.push({ id: state.nextId++, label: "", display: display(rest[1] ?? "1"), windows: [] });
@@ -55,7 +67,7 @@ if (domain === "space" && rest[0] === "--create") {
 }
 if (domain === "space" && rest[1] === "--destroy") {
   const s = space(rest[0]!);
-  if (s.windows.length > 0) fail(`space ${rest[0]} holds windows`);
+  if (s.windows.some((w) => !(state.sticky ?? []).includes(w))) fail(`space ${rest[0]} holds windows`);
   if (state.spaces.filter((x) => x.display === s.display).length === 1) fail("cannot destroy the last space");
   state.spaces = state.spaces.filter((x) => x !== s);
   done();
