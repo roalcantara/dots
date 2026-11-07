@@ -490,10 +490,11 @@ describe("yb bar", () => {
     writeFileSync(state, JSON.stringify({ displays: displays.map((id, i) => ({ id, index: i + 1 })), spaces, nextId: 900, calls: [], apps }));
     writeFileSync(profiler, JSON.stringify({ SPDisplaysDataType: [{ spdisplays_ndrvs: displays.map((id) => ({ _spdisplays_displayID: String(id), ...(id === 1 ? { spdisplays_connection_type: "spdisplays_internal" } : {}) })) }] }));
   }
-  const bar = (env: Record<string, string> = {}) => {
-    const r = Bun.spawnSync([script, "bar"], {
+  // Without resvg (DOTS_RESVG missing) yb bar falls back to SF Symbols; the image path has its own tests.
+  const bar = (env: Record<string, string> = {}, args: string[] = []) => {
+    const r = Bun.spawnSync([script, "bar", ...args], {
       stdout: "pipe", stderr: "pipe",
-      env: { PATH: `${realUsageDir()}:${dirname(findRealBin("jq"))}:/usr/bin:/bin`, HOME: home, DOTS_YABAI: shim, DOTS_DISPLAYS_JSON: profiler, FAKE_STATE: state, ...env },
+      env: { PATH: `${realUsageDir()}:${dirname(findRealBin("jq"))}:/usr/bin:/bin`, HOME: home, DOTS_YABAI: shim, DOTS_DISPLAYS_JSON: profiler, FAKE_STATE: state, DOTS_RESVG: join(dir, "no-resvg"), ...env },
     });
     return { code: r.exitCode, lines: r.stdout.toString().trimEnd().split("\n") };
   };
@@ -530,6 +531,43 @@ describe("yb bar", () => {
   it("joins many apps on one line", () => {
     setup([1], [sp(100, 1, "s1", { focus: true, windows: [1, 2, 3] })], { "1": "Code", "2": "Arc", "3": "Code" });
     expect(bar().lines[2]).toStartWith("Space 1 — Arc, Code |");
+  });
+
+  describe("as an image, so it keeps its colours on every screen", () => {
+    const twoScreens = () =>
+      setup([1, 3], [
+        sp(100, 1, "s1", { visible: true }), sp(101, 1, "s2"),
+        sp(102, 2, "s6"), sp(103, 2, "s7", { focus: true }), sp(104, 2, "s10"),
+      ]);
+
+    it("draws focused solid, on-screen outlined, the rest translucent, a dot between screens", () => {
+      twoScreens();
+      const svg = bar({}, ["--svg", "#ffffff"]).lines.join("\n");
+      expect(svg).toStartWith('<svg xmlns="http://www.w3.org/2000/svg"');
+      expect(svg.match(/<circle /g)).toHaveLength(1);
+      expect(svg.match(/fill-opacity="1"/g)).toHaveLength(1); // s7, focused
+      expect(svg.match(/fill-opacity="0.42"/g)).toHaveLength(3); // s2, s6, s10
+      expect(svg).toContain('fill="none" stroke="#ffffff"'); // s1, on screen
+      for (const n of ["1", "2", "6", "7", "10"]) expect(svg).toContain(`>${n}</text>`);
+    });
+
+    it("sizes the image to the squares: 34 per digit square, 46 for two digits, 8 apart, 14 for the dot", () => {
+      twoScreens();
+      const width = 34 + 8 + 34 + 8 + 14 + 34 + 8 + 34 + 8 + 46;
+      expect(bar({}, ["--svg", "#000000"]).lines[0]).toContain(`width="${width}" height="36"`);
+    });
+
+    it("hands SwiftBar a light and a dark PNG", () => {
+      twoScreens();
+      const resvg = join(dir, "stub-resvg");
+      writeFileSync(resvg, '#!/bin/sh\ncp "$1" "$2"\n');
+      chmodSync(resvg, 0o755);
+      const { lines } = bar({ DOTS_RESVG: resvg });
+      const [light, dark] = lines[0]!.replace(/^\| image=/, "").split(",");
+      expect(Buffer.from(light!, "base64").toString()).toContain('fill="#000000"');
+      expect(Buffer.from(dark!, "base64").toString()).toContain('fill="#ffffff"');
+      expect(lines[1]).toBe("---");
+    });
   });
 
   it("shows a dot and says so when yabai is not answering", () => {

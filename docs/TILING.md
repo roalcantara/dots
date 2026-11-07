@@ -44,7 +44,9 @@ One numbered square per space that exists, built-in screen first, a dot, then th
 | Filled dimmed | Not on any screen |
 
 Click it for the spaces with their apps; choose one to go there. SwiftBar runs `yb bar`, and yabai refreshes it
-on every space, screen, window and focus change.
+on every space, screen, window and focus change. The strip is a small colour image (drawn with `resvg`), so it
+looks the same on both screens; without `resvg` it falls back to SF Symbols, which turn all white on the unfocused
+screen.
 
 ## Keys
 

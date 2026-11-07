@@ -167,6 +167,8 @@ describe("SwiftBar space strip", () => {
 
   it("installs SwiftBar and links ~/.config/swiftbar", () => {
     expect(brewfile).toMatch(/^cask "swiftbar" if OS\.mac\?/m);
+    // yb bar draws the strip as a PNG with resvg, so it keeps its colours on the unfocused screen too
+    expect(brewfile).toMatch(/^brew "resvg" if OS\.mac\?/m);
     expect(dotfiles.dotfiles["~/.config/swiftbar"]).toEqual({ source: "~/.local/share/dots/config/swiftbar", relative: true });
   });
 

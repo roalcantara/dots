@@ -69,7 +69,9 @@
 #USAGE cmd "nvim" help="Open Neovim in a new Ghostty window"
 #USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
 #USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
-#USAGE cmd "bar" help="Print the space strip for the SwiftBar plugin (config/swiftbar)"
+#USAGE cmd "bar" help="Print the space strip for the SwiftBar plugin (config/swiftbar)" {
+#USAGE   flag "--svg <colour>" help="Print the strip as SVG in this colour instead (for checks)"
+#USAGE }
 #USAGE cmd "spaces" help="Keep ten labelled spaces: s1-s5 built-in, s6-s10 external (all ten on one screen)"
 #USAGE cmd "sa" help="Set up the scripting addition: sudoers rule for --load-sa and the arm64e boot argument"
 #USAGE cmd "update" help="Alias of sa"
@@ -221,37 +223,88 @@ builtin_display() {
   jq -r '[.SPDisplaysDataType[]?.spdisplays_ndrvs[]? | select(.spdisplays_connection_type == "spdisplays_internal") | ._spdisplays_displayID][0] // ""' <<<"$profiler"
 }
 
-# SwiftBar output for the space strip (config/swiftbar/plugins/spaces.sh): one SF Symbols numbered square per
-# space, built-in screen first, a dot before the external one. Filled white = on screen and focused, outline =
-# on screen not focused, dimmed = not on screen. The dropdown lists the spaces with their apps.
-BAR_JQ='
+# SwiftBar output for the space strip (config/swiftbar/plugins/spaces.sh): a square per space, built-in screen
+# first, a dot before the external one. Filled = on screen and focused, outline = on screen not focused,
+# translucent = not on screen. Drawn as a colour PNG (resvg): macOS shows menu bar items on the unfocused screen
+# as one-colour templates, which would flatten SF Symbol colours. Without resvg, SF Symbols stand in.
+# BAR_MODEL: the spaces in strip order, [{g: screen, n: number, s: focused|visible|hidden, apps}].
+BAR_MODEL='
 def num: (.label | capture("^s(?<n>[0-9]+)$").n) // (.index | tostring);
 def state: if ."has-focus" then "focused" elif ."is-visible" then "visible" else "hidden" end;
 ($displays | sort_by(if (.id | tostring) == $builtin then 0 else 1 end, .index) | map(.index)) as $order
 | [ $order | to_entries[] | .key as $g | .value as $d
     | $spaces[] | select(.display == $d and ."is-native-fullscreen" != true)
-    | {g: $g, n: num, s: state, apps: ([.windows[] as $w | $windows[] | select(.id == $w) | .app] | unique | join(", "))} ] as $all
+    | {g: $g, n: num, s: state, apps: ([.windows[] as $w | $windows[] | select(.id == $w) | .app] | unique | join(", "))} ]'
+
+# BAR_SVG: the model as a 36 px high SVG (2x; the PNG is marked 144 dpi), marks in $c.
+BAR_SVG='
+. as $all
+| reduce ($all | to_entries[]) as $e ({x: 0, out: "", masks: ""};
+    (if $e.key > 0 and $e.value.g != $all[$e.key - 1].g
+     then .out += "<circle cx=\"\(.x + 5)\" cy=\"18\" r=\"2.6\" fill=\"\($c)\"/>" | .x += 14 else . end)
+    | (if ($e.value.n | length) > 1 then 46 else 34 end) as $w
+    | "<text x=\"\(.x + $w / 2)\" y=\"26.5\" text-anchor=\"middle\" font-family=\"Helvetica Neue, Helvetica, Arial\" font-size=\"23\" font-weight=\"700\"" as $t
+    | if $e.value.s == "visible" then
+        .out += "<rect x=\"\(.x + 1.6)\" y=\"1.6\" width=\"\($w - 3.2)\" height=\"32.8\" rx=\"7\" fill=\"none\" stroke=\"\($c)\" stroke-width=\"3.2\"/>\($t) fill=\"\($c)\">\($e.value.n)</text>"
+      else
+        .masks += "<mask id=\"m\($e.key)\"><rect x=\"\(.x)\" y=\"0\" width=\"\($w)\" height=\"36\" fill=\"white\"/>\($t) fill=\"black\">\($e.value.n)</text></mask>"
+        | .out += "<rect x=\"\(.x)\" y=\"0\" width=\"\($w)\" height=\"36\" rx=\"7\" fill=\"\($c)\" fill-opacity=\"\(if $e.value.s == "focused" then 1 else 0.42 end)\" mask=\"url(#m\($e.key))\"/>"
+      end
+    | .x += $w + 8)
+| "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\([.x - 8, 0] | max)\" height=\"36\" viewBox=\"0 0 \([.x - 8, 0] | max) 36\"><defs>\(.masks)</defs>\(.out)</svg>"'
+
+# BAR_SYMBOLS: the fallback title, one SF Symbols numbered square per space.
+BAR_SYMBOLS='
+. as $all
 | ([ $all | to_entries[]
      | (if .key > 0 and .value.g != $all[.key - 1].g then "·" else empty end),
        ":\(.value.n).square\(if .value.s == "visible" then "" else ".fill" end):" ] | join(" ")) as $title
-| ([ $all | to_entries[] | "sfcolor\(if .key == 0 then "" else (.key + 1 | tostring) end)=\(if .value.s == "hidden" then $dim else $on end)" ] | join(" ")) as $colors
-| "\($title) | symbolize=true sfsize=17 sfconfig=\($cfg) \($colors)",
-  "---",
-  ($all[] | "Space \(.n)\(if .apps != "" then " — " + .apps else "" end) | bash=\($yb) param1=space param2=\(.n) terminal=false refresh=true sfimage=\(.n).square\(if .s == "visible" then "" else ".fill" end)")'
+| ([ $all | to_entries[] | "sfcolor\(if .key == 0 then "" else (.key + 1 | tostring) end)=\(if .value.s == "hidden" then "#8A8A8E,#A9B0C2" else "#000000,#FFFFFF" end)" ] | join(" ")) as $colors
+| "\($title) | symbolize=true sfsize=17 sfconfig=\($cfg) \($colors)"'
+
+BAR_MENU='.[] | "Space \(.n)\(if .apps != "" then " — " + .apps else "" end) | bash=\($yb) param1=space param2=\(.n) terminal=false refresh=true sfimage=\(.n).square\(if .s == "visible" then "" else ".fill" end)"'
+
+bar_model() {
+  local spaces displays windows
+  spaces="$("$yabai" -m query --spaces 2>/dev/null)" && displays="$("$yabai" -m query --displays 2>/dev/null)" || return 1
+  windows="$("$yabai" -m query --windows 2>/dev/null)" || windows='[]'
+  jq -nc --argjson spaces "$spaces" --argjson displays "$displays" --argjson windows "$windows" \
+    --arg builtin "$(builtin_display)" "$BAR_MODEL"
+}
+
+# A light and a dark PNG, base64, as SwiftBar's image=light,dark; fails without resvg.
+bar_image() {
+  local model="$1" resvg="${DOTS_RESVG:-/opt/homebrew/bin/resvg}" tmp out=() colour
+  [[ -x $resvg ]] || return 1
+  tmp="$(mktemp -d)" || return 1
+  for colour in '#000000' '#ffffff'; do
+    jq -r --arg c "$colour" "$BAR_SVG" <<<"$model" >"$tmp/strip.svg" &&
+      "$resvg" "$tmp/strip.svg" "$tmp/strip.png" 2>/dev/null || { rm -rf "$tmp"; return 1; }
+    sips -s dpiWidth 144 -s dpiHeight 144 "$tmp/strip.png" >/dev/null 2>&1
+    out+=("$(base64 -i "$tmp/strip.png" | tr -d '\n')")
+  done
+  rm -rf "$tmp"
+  print -r -- "| image=${out[1]},${out[2]}"
+}
 
 render_bar() {
-  local spaces displays windows cfg
-  if [[ ! -x $yabai ]] || ! spaces="$("$yabai" -m query --spaces 2>/dev/null)" || ! displays="$("$yabai" -m query --displays 2>/dev/null)"; then
+  local model cfg
+  if [[ ! -x $yabai ]] || ! model="$(bar_model)"; then
     print -r -- "· | symbolize=false"
     print -r -- "---"
     print -r -- "yabai is not answering"
     return 0
   fi
-  windows="$("$yabai" -m query --windows 2>/dev/null)" || windows='[]'
-  cfg="$(print -rn -- '{"renderingMode":"Palette","scale":"large","weight":"bold"}' | base64)"
-  jq -nr --argjson spaces "$spaces" --argjson displays "$displays" --argjson windows "$windows" \
-    --arg builtin "$(builtin_display)" --arg cfg "$cfg" --arg on '#000000,#FFFFFF' --arg dim '#8A8A8E,#A9B0C2' \
-    --arg yb "$HOME/.local/bin/yb" "$BAR_JQ"
+  if [[ -n ${usage_svg:-} ]]; then
+    jq -r --arg c "$usage_svg" "$BAR_SVG" <<<"$model"
+    return
+  fi
+  if ! bar_image "$model"; then
+    cfg="$(print -rn -- '{"renderingMode":"Palette","scale":"large","weight":"bold"}' | base64)"
+    jq -r --arg cfg "$cfg" "$BAR_SYMBOLS" <<<"$model"
+  fi
+  print -r -- "---"
+  jq -r --arg yb "$HOME/.local/bin/yb" "$BAR_MENU" <<<"$model"
 }
 
 sync_spaces() {
