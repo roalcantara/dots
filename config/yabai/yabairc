@@ -65,9 +65,6 @@ yabai -m signal --add event=application_front_switched label=bar_front action="$
 # The outline turns amber while the focused window is zoomed (yb border).
 yabai -m signal --add event=window_focused label=border_window_focused action="$HOME/.local/bin/yb border"
 yabai -m signal --add event=application_front_switched label=border_application_front_switched action="$HOME/.local/bin/yb border"
-# Mission Control moves the windows but not the outline: hide it there, restore it after.
-yabai -m signal --add event=mission_control_enter label=border_mission_control_enter action="$HOME/.local/bin/yb border hide"
-yabai -m signal --add event=mission_control_exit label=border_mission_control_exit action="$HOME/.local/bin/yb border"
 
 # The tiling trace (yb log): yabai's own events, next to the keys yb logs.
 yabai -m signal --add event=window_created label=trace_window_created action="$HOME/.local/bin/yb event window_created"

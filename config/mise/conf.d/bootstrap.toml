@@ -280,6 +280,26 @@ if [ "$(uname)" = Darwin ]; then
 fi
 # tiling-checks: end
 
+# janky-borders: begin
+# JankyBorders from qeesung's fork, built at a pinned commit: upstream leaves outlines behind in Mission Control
+# on macOS 27 (FelixKratz/JankyBorders#209). Moving the pin rebuilds it; a failed build keeps the old one.
+if [ "$(uname)" = Darwin ]; then
+  jb="$HOME/.local/share/janky-borders"
+  jb_rev=f56533701a3ce0fae1801f2c11586a62098fe727
+  if [ ! -d "$jb/.git" ]; then
+    git clone -q https://github.com/qeesung/JankyBorders.git "$jb" || warn "clone JankyBorders"
+  fi
+  if [ -d "$jb/.git" ] && [ "$(cat "$jb/bin/.rev" 2>/dev/null)" != "$jb_rev" ]; then
+    if git -C "$jb" fetch -q origin && git -C "$jb" checkout -q "$jb_rev" && make -C "$jb" -s >/dev/null; then
+      echo "$jb_rev" >"$jb/bin/.rev"
+      launchctl kickstart -k "gui/$(id -u)/dev.mise.borders" >/dev/null 2>&1 || true
+    else
+      warn "build JankyBorders"
+    fi
+  fi
+fi
+# janky-borders: end
+
 # oMLX models (macOS, once the app is installed by hand): download only the missing ones.
 if [ -d /Applications/oMLX.app ] && command -v hf >/dev/null; then
   for model in mlx-community/parakeet-tdt-0.6b-v3 Jundot/gemma-4-E2B-it-oQ4e-mtp \

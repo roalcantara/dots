@@ -82,7 +82,9 @@ event level as skhd.
 [karabiner.ts](https://github.com/evan-liu/karabiner.ts). Every rule calls yabai by absolute path. Raycast
 keeps the launcher (⌘Space) and Hyper on right ⌘. A single `fn` tap stays unbound (deferred).
 
-**Highlight.** JankyBorders (`FelixKratz/formulae/borders`), the common choice in every setup reviewed.
+**Highlight.** JankyBorders, the common choice in every setup reviewed. Changed after validation: built from
+[qeesung's fork](https://github.com/qeesung/JankyBorders) at a pinned commit, since upstream (last release May
+2026) leaves outlines behind in Mission Control on macOS 27 (FelixKratz/JankyBorders#209).
 
 ## Design
 
@@ -190,7 +192,7 @@ Changes to `apps/kb/src/yabai.screen.tsx` and `packages/core/src/yabai`:
 
 | What | Where |
 | --- | --- |
-| `yabai` (`asmvik/formulae`), `borders` (`FelixKratz/formulae`), `karabiner-elements` (cask) | `config/homebrew/Brewfile` |
+| `yabai` (`asmvik/formulae`), `karabiner-elements` (cask); JankyBorders built from qeesung's fork | `config/homebrew/Brewfile`; the bootstrap task |
 | `AppleFnUsageType = 0` | `config/mise/conf.d/macos.toml` |
 | `~/.config/yabai`, `~/.config/karabiner`, `~/.config/borders` linked into the repo (whole folders) | `config/mise/conf.d/dotfiles.toml` |
 | `karabiner.json` generated from `config/karabiner/src/*.ts` (karabiner.ts) and committed | a mise task; a test fails when the committed file is stale |

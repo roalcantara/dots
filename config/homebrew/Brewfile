@@ -77,7 +77,6 @@ brew "zsh-autosuggestions"  # Predictive inline shell autosuggestions for zsh
 brew "helix"  # Post-modern modal text editor
 brew "zsh-patina"  # Blazingly fast Zsh syntax highlighter
 brew "asmvik/formulae/yabai", trusted: true if OS.mac?  # A tiling window manager for macos
-brew "FelixKratz/formulae/borders", trusted: true if OS.mac?  # Outline around the focused window (config/borders)
 brew "mole" if OS.mac? # Deep clean and optimize your Mac
 brew "hyperfine"  # Command-line benchmarking tool
 # Desktop: casks

@@ -37,11 +37,7 @@
 #USAGE     choices "west" "east" "north" "south"
 #USAGE   }
 #USAGE }
-#USAGE cmd "border" help="Colour the outline: amber while the focused window is zoomed (fn + f / fn + ⌥f), else the gradient; hide hides it (Mission Control)" {
-#USAGE   arg "[state]" {
-#USAGE     choices "hide"
-#USAGE   }
-#USAGE }
+#USAGE cmd "border" help="Colour the outline: amber while the focused window is zoomed (fn + f / fn + ⌥f), else the gradient"
 #USAGE cmd "split" help="Set the split the focused window shares with its neighbour: vertical = side by side, horizontal = one above the other; toggle without one" {
 #USAGE   arg "[orientation]" {
 #USAGE     choices "vertical" "horizontal"
@@ -514,19 +510,20 @@ arrange() {
 }
 
 # The outline (JankyBorders, config/borders/bordersrc) turns amber while the focused window is zoomed, so a
-# window covering the others is visible as such. Runs after each zoom and on focus changes (yabairc).
+# window covering the others is visible as such. Runs after each zoom and on focus changes (yabairc), but only
+# messages borders when the colour must change: a message while Mission Control has the outlines hidden left
+# them hidden afterwards. The last colour is kept with borders' pid, so a restarted borders gets it again.
 BORDER_NORMAL='gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)'
 BORDER_ZOOMED='0xffffb000'
 border() {
-  local borders="${DOTS_BORDERS:-/opt/homebrew/bin/borders}" zoomed
+  local borders="${DOTS_BORDERS:-$HOME/.local/share/janky-borders/bin/borders}" zoomed colour want state
   [[ -x $borders ]] || return 0
-  # Mission Control shrinks and moves the windows, but the outline stays where the window was
-  if [[ ${1:-} == hide ]]; then
-    "$borders" "active_color=0x00000000"
-    return
-  fi
   zoomed="$("$yabai" -m query --windows --window 2>/dev/null | jq -r '(."has-fullscreen-zoom" // false) or (."has-parent-zoom" // false)' 2>/dev/null)"
-  "$borders" "active_color=$([[ $zoomed == true ]] && print -r -- "$BORDER_ZOOMED" || print -r -- "$BORDER_NORMAL")"
+  colour="$([[ $zoomed == true ]] && print -r -- "$BORDER_ZOOMED" || print -r -- "$BORDER_NORMAL")"
+  state="$HOME/.local/state/dots/border"
+  want="$(pgrep -x borders 2>/dev/null | head -n 1) $colour"
+  [[ -r $state && "$(<"$state")" == "$want" ]] && return 0
+  "$borders" "active_color=$colour" && mkdir -p "${state:h}" && print -r -- "$want" >"$state"
 }
 
 resize() {
@@ -571,7 +568,7 @@ main() {
     float) Y window --toggle float ;;
     pin) toggle_pin ;;
     zoom) Y window --toggle "zoom-${usage_kind/full/fullscreen}" && border ;;
-    border) border "${usage_state:-}" ;;
+    border) border ;;
     scratchpad)
       if [[ ${usage_send:-false} == true ]]; then Y window --scratchpad scratch; else Y window --toggle scratch; fi
       ;;

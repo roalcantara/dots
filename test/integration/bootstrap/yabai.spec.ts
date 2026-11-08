@@ -15,9 +15,10 @@ describe("tiling packages and links", () => {
   const macos = toml("config/mise/conf.d/macos.toml");
   const dotfiles = toml("config/mise/conf.d/dotfiles.toml");
 
-  it("installs yabai, JankyBorders and Karabiner-Elements on macOS", () => {
+  it("installs yabai and Karabiner-Elements on macOS (JankyBorders is built from a fork)", () => {
     expect(brewfile).toMatch(/^brew "asmvik\/formulae\/yabai", trusted: true if OS\.mac\?/m);
-    expect(brewfile).toMatch(/^brew "FelixKratz\/formulae\/borders", trusted: true if OS\.mac\?/m);
+    // borders comes from qeesung's fork, built by the bootstrap task (janky-borders.spec.ts)
+    expect(brewfile).not.toContain("FelixKratz/formulae/borders");
     expect(brewfile).toMatch(/^cask "karabiner-elements" if OS\.mac\?/m);
   });
 
@@ -134,9 +135,8 @@ describe("yabai and borders services", () => {
     }
   });
 
-  it("hides the outline in Mission Control and brings it back after", () => {
-    expect(yabairc).toContain('yabai -m signal --add event=mission_control_enter label=border_mission_control_enter action="$HOME/.local/bin/yb border hide"');
-    expect(yabairc).toContain('yabai -m signal --add event=mission_control_exit label=border_mission_control_exit action="$HOME/.local/bin/yb border"');
+  it("leaves Mission Control to borders (the fork hides outlines there; messages during it broke that)", () => {
+    expect(yabairc).not.toContain("mission_control");
   });
 
   it("leaves settings windows, dialogs and launchers floating", () => {
@@ -148,6 +148,7 @@ describe("yabai and borders services", () => {
 
   it("outlines only the focused window: Omarchy's cyan-to-green gradient, 5 wide", () => {
     const rc = read("config/borders/bordersrc");
+    expect(rc).toMatch(/^"\$HOME\/\.local\/share\/janky-borders\/bin\/borders" active_color=/m);
     expect(rc).toContain('active_color="gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)"');
     // no outline on unfocused windows, so the focused one can be thick on its own
     expect(rc).toContain("inactive_color=0x00000000");
@@ -157,7 +158,7 @@ describe("yabai and borders services", () => {
 
   it("runs yabai and borders as LaunchAgents that restart on exit", () => {
     const agents = toml("config/mise/conf.d/yabai.toml").bootstrap.macos.launchd.agents;
-    for (const [name, program] of [["yabai", "/opt/homebrew/bin/yabai"], ["borders", "/opt/homebrew/bin/borders"]]) {
+    for (const [name, program] of [["yabai", "/opt/homebrew/bin/yabai"], ["borders", "~/.local/share/janky-borders/bin/borders"]]) {
       expect(agents[name!]).toMatchObject({ program, keep_alive: true, run_at_load: true });
       expect(agents[name!].environment.PATH).toStartWith("/opt/homebrew/bin:");
     }

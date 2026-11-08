@@ -9,8 +9,9 @@ run_at_load = true
 keep_alive = true
 environment = { PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
 
+# borders: JankyBorders from qeesung's fork, built by the bootstrap task (janky-borders snippet).
 [bootstrap.macos.launchd.agents.borders]
-program = "/opt/homebrew/bin/borders"
+program = "~/.local/share/janky-borders/bin/borders"
 run_at_load = true
 keep_alive = true
 environment = { PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }

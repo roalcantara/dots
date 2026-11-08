@@ -734,30 +734,45 @@ describe("yb border", () => {
   const NORMAL = 'active_color=gradient(top_left=0xee33ccff,bottom_right=0xee00ff99)';
   const AMBER = "active_color=0xffffb000";
   let borders = "";
+  let pgrep = "";
   beforeAll(() => {
     borders = join(dir, "borders");
     writeFileSync(borders, '#!/bin/sh\nprintf \'borders %s\\n\' "$*" >> "$YB_STUB_LOG"\n');
     chmodSync(borders, 0o755);
+    pgrep = join(dir, "pgrep");
+    writeFileSync(pgrep, '#!/bin/sh\necho "${BORDERS_PID:-100}"\n');
+    chmodSync(pgrep, 0o755);
   });
-  const drawn = (args: string[], query: string) =>
-    yb(args, { DOTS_BORDERS: borders, YB_STUB_QUERY: query }).calls.filter((c) => c.startsWith("borders "));
+  const state = () => join(home, ".local/state/dots/border");
+  const drawn = (args: string[], query: string, pid = "100") =>
+    yb(args, { DOTS_BORDERS: borders, YB_STUB_QUERY: query, BORDERS_PID: pid }).calls.filter((c) => c.startsWith("borders "));
+  const ZOOMED = '{"has-fullscreen-zoom":true,"has-parent-zoom":false}';
+  const PLAIN = '{"has-fullscreen-zoom":false,"has-parent-zoom":false}';
 
-  it("turns the outline amber while the focused window is zoomed", () => {
-    expect(drawn(["border"], '{"has-fullscreen-zoom":true,"has-parent-zoom":false}')).toEqual([`borders ${AMBER}`]);
-    expect(drawn(["border"], '{"has-fullscreen-zoom":false,"has-parent-zoom":true}')).toEqual([`borders ${AMBER}`]);
+  it("turns the outline amber while the focused window is zoomed, the gradient otherwise", () => {
+    rmSync(state(), { force: true });
+    expect(drawn(["border"], ZOOMED)).toEqual([`borders ${AMBER}`]);
+    expect(drawn(["border"], '{"has-parent-zoom":true}')).toEqual([]);
+    expect(drawn(["border"], PLAIN)).toEqual([`borders ${NORMAL}`]);
   });
 
-  it("goes back to the cyan-green gradient otherwise", () => {
-    expect(drawn(["border"], '{"has-fullscreen-zoom":false,"has-parent-zoom":false}')).toEqual([`borders ${NORMAL}`]);
+  it("stays silent while the colour is already right (Mission Control floods focus events)", () => {
+    rmSync(state(), { force: true });
+    drawn(["border"], PLAIN);
+    expect(drawn(["border"], PLAIN)).toEqual([]);
+    expect(drawn(["border"], PLAIN)).toEqual([]);
   });
 
-  it("hides the outline while Mission Control is open (it would stay where the window was)", () => {
-    expect(drawn(["border", "hide"], "{}")).toEqual(["borders active_color=0x00000000"]);
+  it("sends the colour again after borders restarts", () => {
+    rmSync(state(), { force: true });
+    drawn(["border"], PLAIN, "100");
+    expect(drawn(["border"], PLAIN, "200")).toEqual([`borders ${NORMAL}`]);
   });
 
   it("re-checks right after fn + f and fn + ⌥f", () => {
     for (const kind of ["full", "parent"]) {
-      expect(drawn(["zoom", kind], '{"has-fullscreen-zoom":true}')).toEqual([`borders ${AMBER}`]);
+      rmSync(state(), { force: true });
+      expect(drawn(["zoom", kind], ZOOMED)).toEqual([`borders ${AMBER}`]);
     }
   });
 
