@@ -751,6 +751,10 @@ describe("yb border", () => {
     expect(drawn(["border"], '{"has-fullscreen-zoom":false,"has-parent-zoom":false}')).toEqual([`borders ${NORMAL}`]);
   });
 
+  it("hides the outline while Mission Control is open (it would stay where the window was)", () => {
+    expect(drawn(["border", "hide"], "{}")).toEqual(["borders active_color=0x00000000"]);
+  });
+
   it("re-checks right after fn + f and fn + ⌥f", () => {
     for (const kind of ["full", "parent"]) {
       expect(drawn(["zoom", kind], '{"has-fullscreen-zoom":true}')).toEqual([`borders ${AMBER}`]);

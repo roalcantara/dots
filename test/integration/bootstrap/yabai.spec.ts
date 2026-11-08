@@ -134,6 +134,11 @@ describe("yabai and borders services", () => {
     }
   });
 
+  it("hides the outline in Mission Control and brings it back after", () => {
+    expect(yabairc).toContain('yabai -m signal --add event=mission_control_enter label=border_mission_control_enter action="$HOME/.local/bin/yb border hide"');
+    expect(yabairc).toContain('yabai -m signal --add event=mission_control_exit label=border_mission_control_exit action="$HOME/.local/bin/yb border"');
+  });
+
   it("leaves settings windows, dialogs and launchers floating", () => {
     for (const app of ["System Settings", "Calculator", "Archive Utility", "Raycast", "Karabiner-Elements"]) {
       expect(yabairc).toContain(`app="^${app}$" manage=off`);
