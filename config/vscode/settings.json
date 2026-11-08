@@ -801,8 +801,18 @@
   },
   "terminal.integrated.defaultProfile.linux": "zsh",
   "terminal.integrated.defaultProfile.osx": "zsh",
-  "chat.tools.terminal.terminalProfile.linux": { "path": "bash", "args": ["-l"] },
-  "chat.tools.terminal.terminalProfile.osx": { "path": "/opt/homebrew/bin/bash", "args": ["-l"] },
+  "chat.tools.terminal.terminalProfile.linux": {
+    "path": "bash",
+    "args": [
+      "-l"
+    ]
+  },
+  "chat.tools.terminal.terminalProfile.osx": {
+    "path": "/opt/homebrew/bin/bash",
+    "args": [
+      "-l"
+    ]
+  },
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.inheritEnv": true,
   "terminal.integrated.shellIntegration.enabled": true,
@@ -1681,7 +1691,7 @@
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "workbench.editor.enablePreview": false,
   "google.cloud.project": "evo-staging-361013",
-  "workbench.iconTheme": "catppuccin-latte",
+  "workbench.iconTheme": "material-icon-theme",
   "mise.enableTaskSymbolProvider": true,
   "gherkinRunner.showCodeLens": true,
   "gherkinRunner.showVisualCodeLens": true,
@@ -1735,5 +1745,6 @@
       "approveResponse": true
     }
   },
-  "dprint.showNoConfigNotification": false
+  "dprint.showNoConfigNotification": false,
+  "workbench.productIconTheme": "macos-modern"
 }
