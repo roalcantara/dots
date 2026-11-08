@@ -26,8 +26,11 @@ describe("agent shell", () => {
     });
   });
 
-  it("links ~/.claude/agents to config/claude/agents, through ~/.config/claude", () => {
-    expect(links["~/.claude/agents"]).toEqual({ source: "~/.config/claude/agents", relative: true });
+  it("links ~/.claude/agents to config/claude/agents", () => {
+    expect(links["~/.claude/agents"]).toEqual({
+      source: "~/.local/share/dots/config/claude/agents",
+      relative: true,
+    });
     expect(links["~/.config/claude"].source).toBe("~/.local/share/dots/config/claude");
   });
 

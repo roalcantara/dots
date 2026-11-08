@@ -5,7 +5,7 @@
 #      DOTS_PROFILE (desktop | container), DOTS_AGE_KEY (the key, for tests; otherwise it is read from the terminal).
 set -euo pipefail
 
-MISE_VERSION="2026.10.22"
+MISE_VERSION="2026.11.4"
 DOTS="$HOME/.local/share/dots"
 KEY="$DOTS/config/age/keys.txt"
 BRANCH="${DOTS_BRANCH:-main}"

@@ -34,7 +34,7 @@ COPY --chown=$USERNAME:$USERNAME . /home/$USERNAME/.local/share/dots
 # hadolint ignore=DL4006
 RUN --mount=type=secret,id=github_token,uid=1000 \
     export GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)"; \
-    curl -fsSL https://mise.run | MISE_VERSION=v2026.10.22 sh && \
+    curl -fsSL https://mise.run | MISE_VERSION=v2026.11.4 sh && \
     mkdir -p ~/.config && ln -sfn ../.local/share/dots/config/mise ~/.config/mise && \
     ~/.local/bin/mise bootstrap -E container --force-dotfiles --skip user --yes
 WORKDIR /home/$USERNAME
@@ -48,7 +48,7 @@ USER $USERNAME
 RUN --mount=type=secret,id=github_token,uid=1000 \
     export GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)"; \
     git clone --branch "$BRANCH" "https://github.com/${GITHUB_REPO}.git" "/home/$USERNAME/.local/share/dots" && \
-    curl -fsSL https://mise.run | MISE_VERSION=v2026.10.22 sh && \
+    curl -fsSL https://mise.run | MISE_VERSION=v2026.11.4 sh && \
     mkdir -p ~/.config && ln -sfn ../.local/share/dots/config/mise ~/.config/mise && \
     ~/.local/bin/mise bootstrap -E container --force-dotfiles --skip user --yes
 WORKDIR /home/$USERNAME
