@@ -12,15 +12,15 @@ role of Super: ⌘ keeps copy, paste and app shortcuts, and every window, space 
 The design and its trade-offs are in the
 [spec](superpowers/specs/2026-11-07-yabai-omarchy-design.md).
 
-| Part                 | What it does                                                  | Where                                                                             |
-| -------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| yabai                | Tiles windows (bsp), keeps ten labelled spaces                | [`config/yabai/yabairc`](../config/yabai/yabairc)                                 |
-| `yb`                 | The yabai actions every fn key calls (`yb --help`)            | [`config/bin/yb`](../config/bin/yb)                                               |
-| Karabiner-Elements   | Turns fn combinations into `yb` calls, before macOS sees them | [`config/karabiner/src/bindings.ts`](../config/karabiner/src/bindings.ts)         |
-| JankyBorders         | Outlines the focused window                                   | [`config/borders/bordersrc`](../config/borders/bordersrc)                         |
-| SwiftBar             | The space strip in the menu bar (`yb bar`)                    | [`config/swiftbar/plugins/spaces.sh`](../config/swiftbar/plugins/spaces.sh)       |
-| kb Raycast extension | Hotkeys and System commands                                   | `~/Work/kb` ([roalcantara/kb-raycast](https://github.com/roalcantara/kb-raycast)) |
-| mise bootstrap       | Installs, links and starts all of it                          | [`config/mise/conf.d/yabai.toml`](../config/mise/conf.d/yabai.toml)               |
+| Part                 | What it does                                                    | Where                                                                             |
+| -------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| yabai                | Tiles windows (bsp), keeps ten labelled spaces                  | [`config/yabai/yabairc`](../config/yabai/yabairc)                                 |
+| `yb`                 | The yabai actions every fn key calls (`yb --help`)              | [`config/bin/yb`](../config/bin/yb)                                               |
+| Karabiner-Elements   | Turns fn combinations into `yb` calls, before macOS sees them   | [`config/karabiner/src/bindings.ts`](../config/karabiner/src/bindings.ts)         |
+| JankyBorders         | Outlines the focused window (qeesung's fork, built from source) | [`config/borders/bordersrc`](../config/borders/bordersrc)                         |
+| SwiftBar             | The space strip in the menu bar (`yb bar`)                      | [`config/swiftbar/plugins/spaces.sh`](../config/swiftbar/plugins/spaces.sh)       |
+| kb Raycast extension | Hotkeys and System commands                                     | `~/Work/kb` ([roalcantara/kb-raycast](https://github.com/roalcantara/kb-raycast)) |
+| mise bootstrap       | Installs, links and starts all of it                            | [`config/mise/conf.d/yabai.toml`](../config/mise/conf.d/yabai.toml)               |
 
 ## Spaces and screens
 
@@ -53,26 +53,25 @@ screen.
 Press **fn + k** for the full list (the kb Hotkeys command, read from `config/karabiner/hotkeys.json`). The
 everyday ones:
 
-| Keys                         | Action                                                                                                         |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| fn + 1…0                     | Go to space 1…10                                                                                               |
-| fn + ⇧ + 1…0 / fn + ⇧⌥ + 1…0 | Move the window there and follow / and stay                                                                    |
-| fn + Tab / ⇧Tab / ⌃Tab       | Next / previous / last space                                                                                   |
-| fn + ←↓↑→                    | Focus the window that way; at the edge, the other screen                                                       |
-| fn + ⇧ + ←↓↑→                | Swap with the window that way                                                                                  |
-| fn + ⇧⌃ + ← / →              | Send the window to the other screen                                                                            |
-| fn + \`                      | Focus the other screen                                                                                         |
-| fn + w / t / f / ⌥f          | Close / tiled↔floating / fullscreen in place / full width                                                      |
-| fn + o / s / ⌥s              | Pin on top of every space / scratchpad / send to scratchpad                                                    |
-| fn + − / = (⇧ for height)    | Narrower / wider (shorter / taller)                                                                            |
-| fn + g / ⌥ + ← → / ⌥Tab      | Stack with the neighbour / stack that way / next in the stack                                                  |
-| fn + j / l / b / r           | Split orientation / next layout / balance / rotate clockwise                                                   |
-| fn + ⌥⇧ + → / ←              | Rotate the layout clockwise / counter-clockwise                                                                |
-| fn + ⌃ + ← / → / ↑ / ↓       | Focused window and its neighbour side by side (← →) or stacked (↑ ↓), focused that way                         |
-| fn + ⌥ + ↑ / ↓               | Page Up / Page Down (fn + ↑/↓ now move focus)                                                                  |
-| fn + Return / ⇧Return        | Ghostty / Chrome; fn + ⇧ + f, a, c, v, g, d, n for Finder, ChatGPT, Claude, VS Code, WhatsApp, Discord, Neovim |
-| fn + Esc                     | Lock, sleep, restart (kb System command)                                                                       |
-| fn + drag / right-drag       | Move / resize a window with the mouse                                                                          |
+| Keys                         | Action                                                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| fn + 1…0                     | Go to space 1…10                                                                                                          |
+| fn + ⇧ + 1…0 / fn + ⇧⌥ + 1…0 | Move the window there and follow / and stay                                                                               |
+| fn + Tab / ⇧Tab / ⌃Tab       | Next / previous / last space                                                                                              |
+| fn + ←↓↑→                    | Focus the window that way; at the edge, the other screen                                                                  |
+| fn + ⇧ + ←↓↑→                | Swap with the window that way                                                                                             |
+| fn + ⇧ + [ / ]               | Send the window to the screen west / east                                                                                 |
+| fn + [ / ]                   | Focus the screen west / east                                                                                              |
+| fn + w / t / f / ⌥f          | Close / tiled↔floating / fullscreen in place / full width                                                                 |
+| fn + o / s / ⌥s              | Pin on top of every space / scratchpad / send to scratchpad                                                               |
+| fn + − / = (⇧ for height)    | Narrower / wider (shorter / taller)                                                                                       |
+| fn + ⇧\\ / \\ / l / b        | Pair side by side / one above the other / tiled ↔ floating / balance                                                      |
+| fn + ⌥⇧ + → / ←              | Rotate the layout clockwise / counter-clockwise                                                                           |
+| fn + ⌃ + ← / → / ↑ / ↓       | Focused window and its neighbour side by side (← →) or one above the other (↑ ↓), focused that way                        |
+| fn + ⌥ + ↑ / ↓               | Page Up / Page Down (fn + ↑/↓ now move focus)                                                                             |
+| fn + Return / ⇧Return        | Ghostty / new browser tab (⌥⇧Return: new browser window); fn + ⇧ + f, c, v, g, n: Finder, Claude, VS Code, Gemini, Neovim |
+| fn + Esc                     | Lock, sleep, restart (kb System command)                                                                                  |
+| fn + drag / right-drag       | Move / resize a window with the mouse                                                                                     |
 
 macOS's own fn shortcuts (fn + E emoji, fn + F fullscreen, fn + A, C, N, Q) are replaced: Karabiner acts first.
 
@@ -87,10 +86,12 @@ macOS's own fn shortcuts (fn + E emoji, fn + F fullscreen, fn + A, C, N, Q) are 
 
 ### Done by `mise bootstrap`
 
-- Installs yabai, JankyBorders, Karabiner-Elements and SwiftBar; links `~/.config/yabai`, `~/.config/karabiner`,
+- Installs yabai, Karabiner-Elements and SwiftBar; links `~/.config/yabai`, `~/.config/karabiner`,
   `~/.config/borders` and `~/.config/swiftbar`, moving a real `~/.config/karabiner` aside first.
 - Starts SwiftBar at login, pointed at `~/.config/swiftbar/plugins`.
 - Sets "Press 🌐 key to" to Do Nothing (`AppleFnUsageType = 0`; takes effect after a logout).
+- Builds JankyBorders from [qeesung's fork](https://github.com/qeesung/JankyBorders) at a pinned commit into
+  `~/.local/share/janky-borders` (upstream leaves outlines behind in Mission Control on macOS 27).
 - Runs yabai and borders as LaunchAgents (`dev.mise.yabai`, `dev.mise.borders`) that restart if they exit.
 - `yb sa` writes `/etc/sudoers.d/yabai` (pinned to yabai's hash, rewritten after `brew upgrade yabai`) and adds
   the `-arm64e_preview_abi` boot argument once SIP is partly off.
@@ -110,8 +111,8 @@ macOS's own fn shortcuts (fn + E emoji, fn + F fullscreen, fn + A, C, N, Q) are 
 
 ## Validation checklist
 
-Walk this after a fresh setup or a change. Items marked `[SA]` need yabai's scripting addition and those
-marked `[SS]` need space switching; both fail silently on macOS 27 with yabai 7.1.25 (it rejects the
+Walk this after a fresh setup or a change. Items marked A need yabai's scripting addition and those
+marked S need space switching; both fail silently on macOS 27 with yabai 7.1.25 (it rejects the
 OS), so expect them to fail there until yabai is replaced or updated.
 
 ### Setup
@@ -125,10 +126,10 @@ OS), so expect them to fail there until yabai is replaced or updated.
 ### Look
 
 - [x] Two tiled windows have a 10-point gap between them and at the screen edges.
-- [o] The focused window has a cyan-to-green outline; the others a faint grey one.
+- [o] Only the focused window has an outline: cyan to green, 5 wide; amber while it is zoomed (fn + f / ⌥f).
 - [o] A new window splits the focused one instead of covering it.
 - [x] System Settings, Calculator, Raycast and dialogs float above the tiles.
-- [x] `[SA]` Window shadows are gone
+- [x] A Window shadows are gone
 
 ### Menu bar strip (SwiftBar)
 
@@ -136,52 +137,50 @@ OS), so expect them to fail there until yabai is replaced or updated.
 - [x] Filled white = on screen and focused; outline = on screen, not focused; dimmed = not on screen.
 - [x] Clicking into the other screen swaps the filled and outlined squares at once.
 - [x] The strip redraws when a window opens or closes and when the space changes.
-- [?] `[SS]` The dropdown lists each space with its apps; choosing one goes there
+- [?] S The dropdown lists each space with its apps; choosing one goes there
 - [-] White on a dark menu bar, black on a light one.
 
 ### Spaces
 
 - [x] `yabai -m query --spaces | jq '.[] | {index, label, display}'`: every space is labelled; `s1`… on the
       built-in screen, `s6`… on the external one.
-- [ ] `[SA]` Five spaces on each screen; with SIP-only yabai, add them in Mission Control and run `yb spaces`.
-- [ ] `[SS]` fn + 1…0 go to that space.
-- [ ] `[SS]` fn + ⇧ + 1…0 move the window and follow; fn + ⇧⌥ + 1…0 move it and stay.
-- [ ] `[SS]` fn + Tab / ⇧Tab / ⌃Tab: next / previous / last space.
-- [ ] `[SA]` Unplug the external screen: all spaces land on the built-in one, labels intact (`s1`–`s10` with ).
-- [ ] `[SA]` Plug it back in: `s6`… return to it with their windows
+- [ ] A Five spaces on each screen; with SIP-only yabai, add them in Mission Control and run `yb spaces`.
+- [ ] S fn + 1…0 go to that space.
+- [ ] S fn + ⇧ + 1…0 move the window and follow; fn + ⇧⌥ + 1…0 move it and stay.
+- [ ] S fn + Tab / ⇧Tab / ⌃Tab: next / previous / last space.
+- [ ] A Unplug the external screen: all spaces land on the built-in one, labels intact (`s1`–`s10` with ).
+- [ ] A Plug it back in: `s6`… return to it with their windows
 
 ### Windows
 
 - [x] fn + ←↓↑→ move focus; at the edge, focus crosses to the other screen.
 - [ ] fn + ⇧ + ←↓↑→ swap with the neighbour.
-- [ ] fn + ⇧⌃ + ← / → send the window to the other screen and follow it.
-- [ ] fn + \` focuses the other screen (may need one screen switch after login).
+- [ ] fn + ⇧ + [ / ] send the window to the screen west / east and follow it.
+- [ ] fn + [ / ] focus the screen west / east.
 - [ ] fn + w closes;
 - [ ] fn + t toggles floating;
 - [ ] fn + f fills the space;
 - [ ] fn + ⌥f fills the parent split.
 - [x] fn + − / = narrower / wider; with ⇧, shorter / taller.
-- [ ] fn + g stacks with the neighbour;
-- [ ] fn + ⌥ + ← / → stack that way;
-- [ ] fn + ⌥Tab / ⇧⌥Tab cycle the stack.
 - [ ] fn + drag moves a window; fn + right-drag resizes it.
-- [ ] `[SA]` fn + o pins a window on top of every space; again to unpin.
-- [ ] `[SA]` fn + s toggles the scratchpad; fn + ⌥s sends a window to it.
+- [ ] A fn + o pins a window on top of every space; again to unpin.
+- [ ] A fn + s toggles the scratchpad; fn + ⌥s sends a window to it.
 
 ### Layout
 
-- [ ] fn + j flips the split orientation.
-- [ ] fn + l / ⌥l cycle bsp → stack → float (float stops tiling: cycle back to bsp).
-- [ ] fn + b balances the splits; fn + r rotates them clockwise.
+- [ ] fn + ⇧ + \\ (|) puts the focused window and its neighbour side by side; fn + \\ one above the other.
+- [ ] fn + l toggles tiled ↔ floating; a space left in the stack layout goes back to tiled.
+- [ ] fn + b balances the splits.
 - [ ] fn + ⌥⇧ + → rotates the layout clockwise, fn + ⌥⇧ + ← counter-clockwise; focus stays on the same window.
 - [ ] fn + ⌃ + ← / →: the focused window and its neighbour side by side, focused on the left / right;
-      fn + ⌃ + ↑ / ↓: stacked, focused on top / at the bottom.
+      fn + ⌃ + ↑ / ↓: one above the other, focused on top / at the bottom.
 
 ### Apps
 
 - [ ] fn + Return opens a new Ghostty window, also while Ghostty is in front.
 - [ ] fn + ⇧n opens Neovim in a new Ghostty window.
-- [ ] fn + ⇧Return Chrome, ⇧f Finder, ⇧a ChatGPT, ⇧c Claude, ⇧v VS Code, ⇧g WhatsApp, ⇧d Discord.
+- [ ] fn + ⇧Return opens a new tab in the default browser's front window; fn + ⌥⇧Return opens a new browser window on the focused screen.
+- [ ] fn + ⇧f Finder, ⇧c Claude, ⇧v VS Code, ⇧g Gemini.
 
 ### System and keyboard
 
@@ -196,6 +195,94 @@ OS), so expect them to fail there until yabai is replaced or updated.
 
 - [ ] `pkill yabai`: it is back within seconds (LaunchAgent).
 - [ ] A failing key leaves a line in `~/.local/state/dots/yb.log`.
+
+## QUICK REFERENCE
+
+Every shortcut, one per row, from `config/karabiner/hotkeys.json` (what fn + k shows).
+CHECK: `S` needs space switching; `A` needs the scripting addition; `D` disabled now, `✓` should work today.
+
+| CHECK |  SCOPE  | SHORTCUT            | ACTION                                                               |
+| :---: | :-----: | ------------------- | -------------------------------------------------------------------- |
+|   ✓   | System  | fn + Esc            | System: lock, sleep, restart                                         |
+|   ✓   | System  | fn + ⌥ + ↑          | Page Up                                                              |
+|   ✓   | System  | fn + ⌥ + ↓          | Page Down                                                            |
+|   ✓   | System  | fn + k              | Show these hotkeys                                                   |
+|   ✓   |  Apps   | fn + Return         | new Ghostty window, also while Ghostty is in front                   |
+|   ✓   |  Apps   | fn + ⇧ + c          | Claude                                                               |
+|   ✓   |  Apps   | fn + ⇧ + n          | Neovim                                                               |
+|   ✓   |  Apps   | fn + ⇧ + v          | Visual Studio Code                                                   |
+|   ✓   |  Apps   | fn + ⇧ + g          | Gemini                                                               |
+|   ✓   |  Apps   | fn + ⇧ + f          | Finder                                                               |
+|   ✓   |  Apps   | fn + ⇧ + Return     | New tab in the default browser's front window                        |
+|   ✓   |  Apps   | fn + ⌥ + ⇧ + Return | New default browser window, on the focused screen                    |
+|   ✓   | Layout  | fn + ⌥⇧ + →         | Rotate the layout clockwise                                          |
+|   ✓   | Layout  | fn + ⌥⇧ + ←         | Rotate the layout counter-clockwise                                  |
+|   ✓   | Layout  | fn + ⌃ + ↑          | Focused and its neighbour one above the other, focused on top        |
+|   ✓   | Layout  | fn + ⌃ + ↓          | Focused and its neighbour one above the other, focused at the bottom |
+|   ✓   | Layout  | fn + ⌃ + ←          | Focused and its neighbour side by side, focused on the left          |
+|   ✓   | Layout  | fn + ⌃ + →          | Focused and its neighbour side by side, focused on the right         |
+|   ✓   | Layout  | fn + l              | Toggle tiled on space (floating layout)                              |
+|   ✓   | Layout  | fn + b              | Balance the splits                                                   |
+|   ✓   | Layout  | fn + ⇧ + \\         | Focused window and its neighbour side by side (\|)                   |
+|   ✓   | Layout  | fn + \\             | Focused window and its neighbour one above the other                 |
+|   ✓   | Windows | fn + ←              | Focus window west                                                    |
+|   ✓   | Windows | fn + →              | Focus window east                                                    |
+|   ✓   | Windows | fn + ↑              | Focus window north                                                   |
+|   ✓   | Windows | fn + ↓              | Focus window south                                                   |
+|   ✓   | Windows | fn + ⇧ + ↑          | Swap window north                                                    |
+|   ✓   | Windows | fn + ⇧ + ↓          | Swap window south                                                    |
+|   ✓   | Windows | fn + ⇧ + ←          | Swap window west                                                     |
+|   ✓   | Windows | fn + ⇧ + →          | Swap window east                                                     |
+|   ✓   | Windows | fn + w              | Close window                                                         |
+|   ✓   | Windows | fn + −              | Narrower                                                             |
+|   ✓   | Windows | fn + =              | Wider                                                                |
+|   ✓   | Windows | fn + ⇧ + −          | Shorter                                                              |
+|   ✓   | Windows | fn + ⇧ + =          | Taller                                                               |
+|   ✓   | Windows | fn + [              | Focus the screen west                                                |
+|   ✓   | Windows | fn + ]              | Focus the screen east                                                |
+|   ✓   | Windows | fn + ⇧ + [          | Send window to the screen west                                       |
+|   ✓   | Windows | fn + ⇧ + ]          | Send window to the screen east                                       |
+|   ✓   | Windows | fn + t              | Toggle tiled on window (floating window)                             |
+|   ✓   | Windows | fn + f              | Toggle Fullscreen inside the space                                   |
+|   ✓   | Windows | fn + ⌥ + f          | Full width (fill the parent split)                                   |
+|   D   | Windows | fn + drag           | Move a window with the mouse                                         |
+|   D   | Windows | fn + right-drag     | Resize a window with the mouse                                       |
+|   A   | Windows | fn + o              | Pin: floating, on top, on every space                                |
+|   A   | Windows | fn + s              | Toggle the scratchpad                                                |
+|   A   | Windows | fn + ⌥ + s          | Send window to the scratchpad                                        |
+|   S   | Spaces  | fn + Tab            | Next space on this screen                                            |
+|   S   | Spaces  | fn + ⇧ + Tab        | Previous space on this screen                                        |
+|   S   | Spaces  | fn + ⌃ + Tab        | Last space you were on                                               |
+|   S   | Spaces  | fn + 1              | Go to space 1                                                        |
+|   S   | Spaces  | fn + 2              | Go to space 2                                                        |
+|   S   | Spaces  | fn + 3              | Go to space 3                                                        |
+|   S   | Spaces  | fn + 4              | Go to space 4                                                        |
+|   S   | Spaces  | fn + 5              | Go to space 5                                                        |
+|   S   | Spaces  | fn + 6              | Go to space 6                                                        |
+|   S   | Spaces  | fn + 7              | Go to space 7                                                        |
+|   S   | Spaces  | fn + 8              | Go to space 8                                                        |
+|   S   | Spaces  | fn + 9              | Go to space 9                                                        |
+|   S   | Spaces  | fn + 0              | Go to space 10                                                       |
+|   A   | Spaces  | fn + ⇧ + 1          | Move window to space 1                                               |
+|   A   | Spaces  | fn + ⇧ + 2          | Move window to space 2                                               |
+|   A   | Spaces  | fn + ⇧ + 3          | Move window to space 3                                               |
+|   A   | Spaces  | fn + ⇧ + 4          | Move window to space 4                                               |
+|   A   | Spaces  | fn + ⇧ + 5          | Move window to space 5                                               |
+|   A   | Spaces  | fn + ⇧ + 6          | Move window to space 6                                               |
+|   A   | Spaces  | fn + ⇧ + 7          | Move window to space 7                                               |
+|   A   | Spaces  | fn + ⇧ + 8          | Move window to space 8                                               |
+|   A   | Spaces  | fn + ⇧ + 9          | Move window to space 9                                               |
+|   A   | Spaces  | fn + ⇧ + 0          | Move window to space 10                                              |
+|   A   | Spaces  | fn + ⌥⇧ + 1         | Move window to space 1, stay here                                    |
+|   A   | Spaces  | fn + ⌥⇧ + 2         | Move window to space 2, stay here                                    |
+|   A   | Spaces  | fn + ⌥⇧ + 3         | Move window to space 3, stay here                                    |
+|   A   | Spaces  | fn + ⌥⇧ + 4         | Move window to space 4, stay here                                    |
+|   A   | Spaces  | fn + ⌥⇧ + 5         | Move window to space 5, stay here                                    |
+|   A   | Spaces  | fn + ⌥⇧ + 6         | Move window to space 6, stay here                                    |
+|   A   | Spaces  | fn + ⌥⇧ + 7         | Move window to space 7, stay here                                    |
+|   A   | Spaces  | fn + ⌥⇧ + 8         | Move window to space 8, stay here                                    |
+|   A   | Spaces  | fn + ⌥⇧ + 9         | Move window to space 9, stay here                                    |
+|   A   | Spaces  | fn + ⌥⇧ + 0         | Move window to space 10, stay here                                   |
 
 ## Troubleshooting
 
