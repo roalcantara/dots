@@ -1,115 +1,77 @@
 #!/usr/bin/env sh
-
-# yabai - window manager
-# https://github.com/asmvik/yabai/blob/master/examples/yabairc
+# yabai: the tiling window manager behind the fn layer (docs/TILING.md).
 # https://github.com/asmvik/yabai/blob/master/doc/yabai.asciidoc
 #
-# for this to work you must configure sudo such that
-# it will be able to run the command without password
-#
-# see this wiki page for information:
-#  - https://github.com/asmvik/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
-yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
-sudo yabai --load-sa
+# Started by the LaunchAgent in config/mise/conf.d/yabai.toml. The scripting addition needs SIP partly
+# off and the sudoers rule `yb sa` writes; `sudo -n` never waits for a password, so a stale rule only
+# costs the addition's extras (instant switching, scratchpad, pinning), never a hung login.
+sudo -n /opt/homebrew/bin/yabai --load-sa
+yabai -m signal --add event=dock_did_restart label=load_sa action="sudo -n /opt/homebrew/bin/yabai --load-sa"
 
-# global settings
+# Omarchy's look (default/hypr/looknfeel): 10 between windows and at the edges, no shadows.
+# Dwindle tiling: each new window splits the newest tile (insertion point last), along its longer side
+# (split_type auto), and takes the right or bottom half (second_child). Sizes set with fn + − / = stay put
+# (auto_balance off); fn + b balances on demand.
 yabai -m config \
-  external_bar off:40:0 \
-  menubar_opacity 1.0 \
+  layout bsp \
+  split_type auto \
+  split_ratio 0.50 \
+  auto_balance off \
+  window_placement second_child \
+  window_insertion_point last \
+  window_zoom_persist on \
+  top_padding 10 \
+  bottom_padding 10 \
+  left_padding 10 \
+  right_padding 10 \
+  window_gap 10 \
+  window_shadow off \
+  window_opacity off \
+  window_animation_duration 0.0 \
+  insert_feedback_color 0xffd75f5f \
   mouse_follows_focus on \
-  focus_follows_mouse autofocus \
+  focus_follows_mouse off \
   display_arrangement_order default \
   window_origin_display default \
-  window_placement second_child \
-  window_insertion_point focused \
-  window_zoom_persist on \
-  window_shadow on \
-  skip_window_focus_animation off \
-  window_animation_duration 0.0 \
-  window_animation_easing ease_out_circ \
-  window_opacity_duration 0.0 \
-  active_window_opacity 1.0 \
-  normal_window_opacity 0.90 \
-  window_opacity off \
-  insert_feedback_color 0xffd75f5f \
-  split_ratio 0.50 \
-  split_type auto \
-  auto_balance on \
-  top_padding 12 \
-  bottom_padding 12 \
-  left_padding 12 \
-  right_padding 12 \
-  window_gap 06 \
-  layout bsp \
   mouse_modifier fn \
   mouse_action1 move \
   mouse_action2 resize \
   mouse_drop_action swap
 
-echo "yabai configuration loaded.."
+# Windows that should float: settings, small utilities, launchers and dialogs.
+yabai -m rule --add app="^System Settings$" manage=off
+yabai -m rule --add app="^Calculator$" manage=off
+yabai -m rule --add app="^Archive Utility$" manage=off
+yabai -m rule --add app="^Raycast$" manage=off
+yabai -m rule --add app="^Karabiner-Elements$" manage=off
+yabai -m rule --add subrole="^AXDialog$" manage=off
+yabai -m rule --apply
 
-# yabai -m window_shadow on
-# yabai -m active_window_opacity 1.0
-# yabai -m normal_window_opacity 0.90
+# Ten labelled spaces: s1-s5 on the built-in screen, s6-s10 on the external one (yb spaces).
+SPACES="$HOME/.local/bin/yb spaces"
+yabai -m signal --add event=display_added label=spaces_added action="$SPACES"
+yabai -m signal --add event=display_removed label=spaces_removed action="$SPACES"
+yabai -m signal --add event=display_moved label=spaces_moved action="$SPACES"
 
-# Padding
-# yabai -m config top_padding 10
-# yabai -m config bottom_padding 10
-# yabai -m config right_padding 10
-# yabai -m config left_padding 10
-# yabai -m config window_gap 10
+# The space strip in the menu bar (SwiftBar, config/swiftbar): redraw on every change, including focus
+# moving between screens (application_front_switched).
+BAR="open -g 'swiftbar://refreshplugin?name=spaces'"
+yabai -m signal --add event=space_changed label=bar_space action="$BAR"
+yabai -m signal --add event=display_changed label=bar_display action="$BAR"
+yabai -m signal --add event=window_created label=bar_window_created action="$BAR"
+yabai -m signal --add event=window_destroyed label=bar_window_destroyed action="$BAR"
+yabai -m signal --add event=application_front_switched label=bar_front action="$BAR"
 
-# mouse settings
-# yabai -m config mouse_follows_focus on
-# yabai -m config mouse_modifier alt
-# yabai -m config mouse_action1 move
-# yabai -m config mouse_action2 resize
-# yabai -m config mouse_drop_action swap
+# The outline turns amber while the focused window is zoomed (yb border).
+yabai -m signal --add event=window_focused label=border_window_focused action="$HOME/.local/bin/yb border"
+yabai -m signal --add event=application_front_switched label=border_application_front_switched action="$HOME/.local/bin/yb border"
 
-# Disable specific apps
-# yabai -m rule --add app="^System Settings$" manage=off
-# yabai -m rule --add app="^Calculator$" manage=off
-# yabai -m rule --add app="^Karabiner-Element$" manage=off
-# yabai -m rule --add app="^App Store$" manage=off
-# yabai -m rule --add app="^Calendar$" manage=off
-# yabai -m rule --add app="^Finder$" manage=off
-# yabai -m rule --add app="^DBeaver$" manage=off
-# yabai -m rule --add app="^Discord$" manage=off
+# The tiling trace (yb log): yabai's own events, next to the keys yb logs.
+yabai -m signal --add event=window_created label=trace_window_created action="$HOME/.local/bin/yb event window_created"
+yabai -m signal --add event=window_destroyed label=trace_window_destroyed action="$HOME/.local/bin/yb event window_destroyed"
+yabai -m signal --add event=space_changed label=trace_space_changed action="$HOME/.local/bin/yb event space_changed"
+yabai -m signal --add event=display_changed label=trace_display_changed action="$HOME/.local/bin/yb event display_changed"
+yabai -m signal --add event=application_front_switched label=trace_application_front_switched action="$HOME/.local/bin/yb event application_front_switched"
 
-# # AEGIS_INTEGRATION_START
-# # Aegis window manager integration - DO NOT EDIT THIS SECTION
-# AEGIS_NOTIFY="$HOME/.config/aegis/aegis-yabai-notify"
-# yabai -m signal --remove aegis_space_changed 2>/dev/null || true
-# yabai -m signal --remove aegis_space_created 2>/dev/null || true
-# yabai -m signal --remove aegis_space_destroyed 2>/dev/null || true
-# yabai -m signal --remove aegis_window_focused 2>/dev/null || true
-# yabai -m signal --remove aegis_window_created 2>/dev/null || true
-# yabai -m signal --remove aegis_window_destroyed 2>/dev/null || true
-# yabai -m signal --remove aegis_window_moved 2>/dev/null || true
-# yabai -m signal --remove aegis_window_minimized 2>/dev/null || true
-# yabai -m signal --remove aegis_window_deminimized 2>/dev/null || true
-# yabai -m signal --remove aegis_application_launched 2>/dev/null || true
-# yabai -m signal --remove aegis_application_terminated 2>/dev/null || true
-# yabai -m signal --remove aegis_application_front_switched 2>/dev/null || true
-# yabai -m signal --remove aegis_application_hidden 2>/dev/null || true
-# yabai -m signal --remove aegis_application_visible 2>/dev/null || true
-# yabai -m signal --add event=space_changed action="YABAI_EVENT_TYPE=space_changed $AEGIS_NOTIFY" label=aegis_space_changed
-# yabai -m signal --add event=space_created action="YABAI_EVENT_TYPE=space_created $AEGIS_NOTIFY" label=aegis_space_created
-# yabai -m signal --add event=space_destroyed action="YABAI_EVENT_TYPE=space_destroyed $AEGIS_NOTIFY" label=aegis_space_destroyed
-# yabai -m signal --add event=window_focused action="YABAI_EVENT_TYPE=window_focused $AEGIS_NOTIFY" label=aegis_window_focused
-# yabai -m signal --add event=window_created action="YABAI_EVENT_TYPE=window_created $AEGIS_NOTIFY" label=aegis_window_created
-# yabai -m signal --add event=window_destroyed action="YABAI_EVENT_TYPE=window_destroyed $AEGIS_NOTIFY" label=aegis_window_destroyed
-# yabai -m signal --add event=window_moved action="YABAI_EVENT_TYPE=window_moved $AEGIS_NOTIFY" label=aegis_window_moved
-# yabai -m signal --add event=window_minimized action="YABAI_EVENT_TYPE=window_minimized $AEGIS_NOTIFY" label=aegis_window_minimized
-# yabai -m signal --add event=window_deminimized action="YABAI_EVENT_TYPE=window_deminimized $AEGIS_NOTIFY" label=aegis_window_deminimized
-# yabai -m signal --add event=application_launched action="YABAI_EVENT_TYPE=application_launched $AEGIS_NOTIFY" label=aegis_application_launched
-# yabai -m signal --add event=application_terminated action="YABAI_EVENT_TYPE=application_terminated $AEGIS_NOTIFY" label=aegis_application_terminated
-# yabai -m signal --add event=application_front_switched action="YABAI_EVENT_TYPE=application_front_switched $AEGIS_NOTIFY" label=aegis_application_front_switched
-# yabai -m signal --add event=application_hidden action="YABAI_EVENT_TYPE=application_hidden $AEGIS_NOTIFY" label=aegis_application_hidden
-# yabai -m signal --add event=application_visible action="YABAI_EVENT_TYPE=application_visible $AEGIS_NOTIFY" label=aegis_application_visible
-# # AEGIS_INTEGRATION_END
-
-# Yabai Indicator Extension Integration
-KB="nohup open -g 'raycast://extensions/roalcantara/kb/yabai.screen?launchType=background' >/dev/null 2>&1 &"
-yabai -m signal --add event=space_changed label=kb_space action="$KB"
-yabai -m signal --add event=display_changed label=kb_display action="$KB"
+$HOME/.local/bin/yb spaces
+echo "yabai configuration loaded"

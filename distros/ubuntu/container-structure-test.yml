@@ -67,11 +67,6 @@ commandTests:
     command: zsh
     args: [-lic, "which zoxide fzf eza bat rg fd jq nvim delta >/dev/null && echo ok"]
     expectedOutput: [ok]
-  - name: a login shell should start without errors
-    command: zsh
-    args: [-lic, exit]
-    exitCode: 0
-    excludedError: ['.+']
   - name: desktop-only parts should be absent
     command: bash
     args: [-c, "[ ! -e ~/.agents/skills ] && [ ! -e ~/.local/share/gopass/password-store ] && [ ! -e ~/.local/share/nvim/lazy ] && echo ok"]

@@ -13,6 +13,7 @@
 "~/.config/atlassian" = { source = "~/.local/share/dots/config/atlassian", relative = true }
 "~/.config/bash" = { source = "~/.local/share/dots/config/bash", relative = true }
 "~/.config/bat" = { source = "~/.local/share/dots/config/bat", relative = true }
+"~/.config/borders" = { source = "~/.local/share/dots/config/borders", relative = true }
 "~/.config/bin" = { source = "~/.local/share/dots/config/bin", relative = true }
 "~/.config/claude" = { source = "~/.local/share/dots/config/claude", relative = true }
 "~/.config/dinky" = { source = "~/.local/share/dots/config/dinky", relative = true }
@@ -27,6 +28,7 @@
 "~/.config/gortex" = { source = "~/.local/share/dots/config/gortex", relative = true }
 "~/.config/helix" = { source = "~/.local/share/dots/config/helix", relative = true }
 "~/.config/homebrew" = { source = "~/.local/share/dots/config/homebrew", relative = true }
+"~/.config/karabiner" = { source = "~/.local/share/dots/config/karabiner", relative = true }
 "~/.config/kodexb" = { source = "~/.local/share/dots/config/kodexb", relative = true }
 "~/.config/kb" = { source = "~/.local/share/dots/config/kodexb", relative = true }                           # alias
 "~/.config/npm" = { source = "~/.local/share/dots/config/npm", relative = true }
@@ -35,6 +37,7 @@
 "~/.config/ripgrep" = { source = "~/.local/share/dots/config/ripgrep", relative = true }
 "~/.config/snippets" = { source = "~/.local/share/dots/config/snippets", relative = true }
 "~/.config/sops" = { source = "~/.local/share/dots/config/sops", relative = true }
+"~/.config/swiftbar" = { source = "~/.local/share/dots/config/swiftbar", relative = true }
 "~/.config/television" = { source = "~/.local/share/dots/config/television", relative = true }
 "~/.config/tombi" = { source = "~/.local/share/dots/config/tombi", relative = true }
 "~/.config/vscode" = { source = "~/.local/share/dots/config/vscode", relative = true }
@@ -49,8 +52,8 @@
 "~/.profile" = { source = "~/.local/share/dots/config/.profile", relative = true }
 # Claude Code user settings: runs the Bash tool in bash, not the login zsh (word splitting).
 "~/.claude/settings.json" = { source = "~/.local/share/dots/config/claude/settings.json", relative = true }
-# Claude Code user agents (config/claude/agents), through the ~/.config/claude link.
-"~/.claude/agents" = { source = "~/.config/claude/agents", relative = true }
+# Claude Code user agents (config/claude/agents).
+"~/.claude/agents" = { source = "~/.local/share/dots/config/claude/agents", relative = true }
 # ~/.config/ssh and ~/.config/gnupg are real folders: synced encrypted by mise dot history (config.toml). Everything else in ~/.config links into config/; secret files there are SOPS-encrypted (.sops.yaml).
 "~/.ssh" = { source = "~/.config/ssh", relative = true }
 "~/.gnupg" = { source = "~/.config/gnupg", relative = true }
@@ -98,10 +101,10 @@ variants = [
   { os = "macos", target = "~/Library/Application Support/Code/User/snippets" },
 ]
 
-# A link never replaces a real file, and VS Code (or Settings Sync) writes real ones on first launch. Move
-# them aside, never delete, so the links above apply. Also runs before mise dot apply.
+# A link never replaces a real file, and VS Code (or Settings Sync) and Karabiner-Elements write real ones on
+# first launch. Move them aside, never delete, so the links apply. Also runs before mise dot apply.
 [bootstrap.hooks.pre-dotfiles]
-description = "Move VS Code's own settings.json, keybindings.json and snippets aside for the dots links"
+description = "Move app-written copies (VS Code settings, keybindings, snippets; ~/.config/karabiner) aside for the dots links"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
@@ -109,7 +112,7 @@ set -euo pipefail
 user="${DOTS_VSCODE_USER:-$HOME/Library/Application Support/Code/User}"
 mkdir -p "$user"
 stamp="$(date +%Y%m%d%H%M%S)"
-for p in "$user/settings.json" "$user/keybindings.json" "$user/snippets"; do
+for p in "$user/settings.json" "$user/keybindings.json" "$user/snippets" "$HOME/.config/karabiner"; do
   if [ -e "$p" ] && [ ! -L "$p" ]; then
     mv "$p" "$p.pre-dots-$stamp"
     echo "bootstrap: moved $p to $p.pre-dots-$stamp; dots links it to the repo" >&2

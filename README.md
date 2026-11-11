@@ -185,6 +185,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | Prepare a reinstall (backups, new-Mac runbook)         | [Reinstall guide](docs/REINSTALL.md)                                                              |
 | Reinstall a Mac                                        | [Reinstall guide](docs/REINSTALL.md)                                                              |
 | Set or check macOS preferences                         | [macOS guide](docs/MACOS.md)                                                                      |
+| Tile windows with the fn keys                          | [Tiling guide](docs/TILING.md)                                                                    |
 | Work on this repo with an agent                        | [AGENTS.md](AGENTS.md)                                                                            |
 
 ## Gotchas
@@ -226,6 +227,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 - [`docs/DOCKER.md`](docs/DOCKER.md) — Container images, CST testing, and GitHub Actions CI pipelines.
 - [`docs/REINSTALL.md`](docs/REINSTALL.md) — Backup runbook and clean-machine reinstall procedure.
 - [`docs/MACOS.md`](docs/MACOS.md) — macOS preferences applied by the bootstrap, drift checks, undo, and the manual checklist.
+- [`docs/TILING.md`](docs/TILING.md) — yabai tiling, the ten spaces, the fn keys (Karabiner), setup and troubleshooting.
 - [`docs/GLOSSARY.md`](docs/GLOSSARY.md) — Common terms and domain glossary.
 
 ## License

@@ -1,0 +1,1671 @@
+{
+  "global": {
+    "show_in_menu_bar": true
+  },
+  "profiles": [
+    {
+      "name": "dots",
+      "selected": true,
+      "virtual_hid_keyboard": {
+        "keyboard_type_v2": "ansi"
+      },
+      "complex_modifications": {
+        "rules": [
+          {
+            "description": "fn layer: Spaces",
+            "manipulators": [
+              {
+                "type": "basic",
+                "description": "Go to space 1",
+                "from": {
+                  "key_code": "1",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 1' \"$HOME/.local/bin/yb\" space 1"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Go to space 2",
+                "from": {
+                  "key_code": "2",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 2' \"$HOME/.local/bin/yb\" space 2"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Go to space 3",
+                "from": {
+                  "key_code": "3",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 3' \"$HOME/.local/bin/yb\" space 3"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Go to space 4",
+                "from": {
+                  "key_code": "4",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 4' \"$HOME/.local/bin/yb\" space 4"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Go to space 5",
+                "from": {
+                  "key_code": "5",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 5' \"$HOME/.local/bin/yb\" space 5"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Go to space 6",
+                "from": {
+                  "key_code": "6",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 6' \"$HOME/.local/bin/yb\" space 6"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Go to space 7",
+                "from": {
+                  "key_code": "7",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 7' \"$HOME/.local/bin/yb\" space 7"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Go to space 8",
+                "from": {
+                  "key_code": "8",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 8' \"$HOME/.local/bin/yb\" space 8"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Go to space 9",
+                "from": {
+                  "key_code": "9",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 9' \"$HOME/.local/bin/yb\" space 9"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Go to space 10",
+                "from": {
+                  "key_code": "0",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn 0' \"$HOME/.local/bin/yb\" space 10"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 1",
+                "from": {
+                  "key_code": "1",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 1' \"$HOME/.local/bin/yb\" move 1"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 2",
+                "from": {
+                  "key_code": "2",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 2' \"$HOME/.local/bin/yb\" move 2"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 3",
+                "from": {
+                  "key_code": "3",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 3' \"$HOME/.local/bin/yb\" move 3"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 4",
+                "from": {
+                  "key_code": "4",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 4' \"$HOME/.local/bin/yb\" move 4"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 5",
+                "from": {
+                  "key_code": "5",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 5' \"$HOME/.local/bin/yb\" move 5"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 6",
+                "from": {
+                  "key_code": "6",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 6' \"$HOME/.local/bin/yb\" move 6"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 7",
+                "from": {
+                  "key_code": "7",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 7' \"$HOME/.local/bin/yb\" move 7"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 8",
+                "from": {
+                  "key_code": "8",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 8' \"$HOME/.local/bin/yb\" move 8"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 9",
+                "from": {
+                  "key_code": "9",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 9' \"$HOME/.local/bin/yb\" move 9"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 10",
+                "from": {
+                  "key_code": "0",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ 0' \"$HOME/.local/bin/yb\" move 10"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 1, stay here",
+                "from": {
+                  "key_code": "1",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 1' \"$HOME/.local/bin/yb\" move 1 --stay"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 2, stay here",
+                "from": {
+                  "key_code": "2",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 2' \"$HOME/.local/bin/yb\" move 2 --stay"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 3, stay here",
+                "from": {
+                  "key_code": "3",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 3' \"$HOME/.local/bin/yb\" move 3 --stay"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 4, stay here",
+                "from": {
+                  "key_code": "4",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 4' \"$HOME/.local/bin/yb\" move 4 --stay"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 5, stay here",
+                "from": {
+                  "key_code": "5",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 5' \"$HOME/.local/bin/yb\" move 5 --stay"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 6, stay here",
+                "from": {
+                  "key_code": "6",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 6' \"$HOME/.local/bin/yb\" move 6 --stay"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 7, stay here",
+                "from": {
+                  "key_code": "7",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 7' \"$HOME/.local/bin/yb\" move 7 --stay"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 8, stay here",
+                "from": {
+                  "key_code": "8",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 8' \"$HOME/.local/bin/yb\" move 8 --stay"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 9, stay here",
+                "from": {
+                  "key_code": "9",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 9' \"$HOME/.local/bin/yb\" move 9 --stay"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Move window to space 10, stay here",
+                "from": {
+                  "key_code": "0",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ 0' \"$HOME/.local/bin/yb\" move 10 --stay"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Next space on this screen",
+                "from": {
+                  "key_code": "tab",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn Tab' \"$HOME/.local/bin/yb\" space next"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Previous space on this screen",
+                "from": {
+                  "key_code": "tab",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ Tab' \"$HOME/.local/bin/yb\" space prev"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Last space you were on",
+                "from": {
+                  "key_code": "tab",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ Tab' \"$HOME/.local/bin/yb\" space recent"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "description": "fn layer: Windows",
+            "manipulators": [
+              {
+                "type": "basic",
+                "description": "Focus window west",
+                "from": {
+                  "key_code": "left_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ←' \"$HOME/.local/bin/yb\" focus west"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focus window east",
+                "from": {
+                  "key_code": "right_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn →' \"$HOME/.local/bin/yb\" focus east"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focus window north",
+                "from": {
+                  "key_code": "up_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ↑' \"$HOME/.local/bin/yb\" focus north"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focus window south",
+                "from": {
+                  "key_code": "down_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ↓' \"$HOME/.local/bin/yb\" focus south"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Swap window west",
+                "from": {
+                  "key_code": "left_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ ←' \"$HOME/.local/bin/yb\" swap west"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Swap window east",
+                "from": {
+                  "key_code": "right_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ →' \"$HOME/.local/bin/yb\" swap east"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Swap window north",
+                "from": {
+                  "key_code": "up_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ ↑' \"$HOME/.local/bin/yb\" swap north"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Swap window south",
+                "from": {
+                  "key_code": "down_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ ↓' \"$HOME/.local/bin/yb\" swap south"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focus the screen west",
+                "from": {
+                  "key_code": "open_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn [' \"$HOME/.local/bin/yb\" screen west"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focus the screen east",
+                "from": {
+                  "key_code": "close_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ]' \"$HOME/.local/bin/yb\" screen east"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Send window to the screen west",
+                "from": {
+                  "key_code": "open_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ [' \"$HOME/.local/bin/yb\" send-display west"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Send window to the screen east",
+                "from": {
+                  "key_code": "close_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ ]' \"$HOME/.local/bin/yb\" send-display east"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Close window",
+                "from": {
+                  "key_code": "w",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn W' \"$HOME/.local/bin/yb\" close"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Toggle tiled / floating",
+                "from": {
+                  "key_code": "t",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn T' \"$HOME/.local/bin/yb\" float"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Fullscreen inside the space",
+                "from": {
+                  "key_code": "f",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn F' \"$HOME/.local/bin/yb\" zoom full"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Full width (fill the parent split)",
+                "from": {
+                  "key_code": "f",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ F' \"$HOME/.local/bin/yb\" zoom parent"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Pin: floating, on top, on every space",
+                "from": {
+                  "key_code": "o",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn O' \"$HOME/.local/bin/yb\" pin"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Toggle the scratchpad",
+                "from": {
+                  "key_code": "s",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn S' \"$HOME/.local/bin/yb\" scratchpad"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Send window to the scratchpad",
+                "from": {
+                  "key_code": "s",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ S' \"$HOME/.local/bin/yb\" scratchpad --send"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Narrower",
+                "from": {
+                  "key_code": "hyphen",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn −' \"$HOME/.local/bin/yb\" resize w-"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Wider",
+                "from": {
+                  "key_code": "equal_sign",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn =' \"$HOME/.local/bin/yb\" resize w+"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Shorter",
+                "from": {
+                  "key_code": "hyphen",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ −' \"$HOME/.local/bin/yb\" resize h-"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Taller",
+                "from": {
+                  "key_code": "equal_sign",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ =' \"$HOME/.local/bin/yb\" resize h+"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "description": "fn layer: Layout",
+            "manipulators": [
+              {
+                "type": "basic",
+                "description": "Focused window and its neighbour side by side (|)",
+                "from": {
+                  "key_code": "backslash",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ \\' \"$HOME/.local/bin/yb\" split vertical"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focused window and its neighbour one above the other (\\)",
+                "from": {
+                  "key_code": "backslash",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn \\' \"$HOME/.local/bin/yb\" split horizontal"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focused and its neighbour side by side, focused on the left",
+                "from": {
+                  "key_code": "left_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ ←' \"$HOME/.local/bin/yb\" arrange left"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focused and its neighbour side by side, focused on the right",
+                "from": {
+                  "key_code": "right_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ →' \"$HOME/.local/bin/yb\" arrange right"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focused and its neighbour one above the other, focused on top",
+                "from": {
+                  "key_code": "up_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ ↑' \"$HOME/.local/bin/yb\" arrange up"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Focused and its neighbour one above the other, focused at the bottom",
+                "from": {
+                  "key_code": "down_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌃ ↓' \"$HOME/.local/bin/yb\" arrange down"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Toggle tiled / floating layout",
+                "from": {
+                  "key_code": "l",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn L' \"$HOME/.local/bin/yb\" layout"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Balance the splits",
+                "from": {
+                  "key_code": "b",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn B' \"$HOME/.local/bin/yb\" balance"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Rotate the layout clockwise",
+                "from": {
+                  "key_code": "right_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ →' \"$HOME/.local/bin/yb\" rotate cw"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Rotate the layout counter-clockwise",
+                "from": {
+                  "key_code": "left_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ ←' \"$HOME/.local/bin/yb\" rotate ccw"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "description": "fn layer: Apps",
+            "manipulators": [
+              {
+                "type": "basic",
+                "description": "New Ghostty window",
+                "from": {
+                  "key_code": "return_or_enter",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn Return' \"$HOME/.local/bin/yb\" term"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "New tab in the default browser",
+                "from": {
+                  "key_code": "return_or_enter",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ Return' \"$HOME/.local/bin/yb\" browser"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "New default browser window",
+                "from": {
+                  "key_code": "return_or_enter",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⌥ ⇧ Return' \"$HOME/.local/bin/yb\" browser --window"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Finder",
+                "from": {
+                  "key_code": "f",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ F' \"$HOME/.local/bin/yb\" app Finder"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Claude",
+                "from": {
+                  "key_code": "c",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ C' \"$HOME/.local/bin/yb\" app Claude"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Visual Studio Code",
+                "from": {
+                  "key_code": "v",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ V' \"$HOME/.local/bin/yb\" app 'Visual Studio Code'"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Gemini",
+                "from": {
+                  "key_code": "g",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ G' \"$HOME/.local/bin/yb\" app Gemini"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Neovim",
+                "from": {
+                  "key_code": "n",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ N' \"$HOME/.local/bin/yb\" nvim"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "description": "fn layer: System",
+            "manipulators": [
+              {
+                "type": "basic",
+                "description": "Show these hotkeys",
+                "from": {
+                  "key_code": "k",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn K' \"$HOME/.local/bin/yb\" hotkeys"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "System: lock, sleep, restart",
+                "from": {
+                  "key_code": "escape",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn Esc' \"$HOME/.local/bin/yb\" system"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Page Up",
+                "from": {
+                  "key_code": "up_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "page_up"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "description": "Page Down",
+                "from": {
+                  "key_code": "down_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "page_down"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "parameters": {
+          "basic.to_if_alone_timeout_milliseconds": 1000,
+          "basic.to_if_held_down_threshold_milliseconds": 500,
+          "basic.to_delayed_action_delay_milliseconds": 500,
+          "basic.simultaneous_threshold_milliseconds": 50,
+          "mouse_motion_to_scroll.speed": 100
+        }
+      }
+    }
+  ]
+}
