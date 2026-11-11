@@ -165,3 +165,7 @@ npm "bun-dap-x"
 npm "react-devtools"
 npm "@vscode/js-debug-browsers"
 
+# Open-source BitTorrent client
+cask "transmission"
+# Open-source BitTorrent client
+cask "transmission"
