@@ -1,3 +1,10 @@
+# [1.43.0](https://github.com/roalcantara/dots/compare/v1.42.0...v1.43.0) (2026-11-11)
+
+
+### Features
+
+* **yabai:** Omarchy-style tiling with an fn layer ([#109](https://github.com/roalcantara/dots/issues/109)) ([ab1871b](https://github.com/roalcantara/dots/commit/ab1871b3bef6ea9cdb118a61766127be9d9bcf02)), closes [FelixKratz/JankyBorders#209](https://github.com/FelixKratz/JankyBorders/issues/209)
+
 # [1.42.0](https://github.com/roalcantara/dots/compare/v1.41.0...v1.42.0) (2026-11-07)
 
 
