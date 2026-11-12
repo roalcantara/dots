@@ -229,7 +229,8 @@ tui_open() {
     -e 'set name override of focused terminal of selected tab of w to item 2 of argv' \
     -e 'end tell' -e 'end run' "$line" "$title" >/dev/null || return
   [[ -n $display ]] || return 0
-  found="$(new_window Ghostty "$(jq -c '[.[]?.id]' <<<"${windows:-[]}")")"
+  # By title: launching Ghostty may open a plain window of its own, which must not be the one floated.
+  found="$(new_window Ghostty '[]' "$title")"
   [[ -n $found ]] || return 0
   id="${found%% *}"
   local on="${${found#* }%% *}" floating="${found##* }" index
@@ -242,14 +243,14 @@ tui_open() {
   Y window --focus "$id"
 }
 
-# Wait for a window of app (any app when empty) whose id is not in before (a JSON array); prints
-# "<id> <display> <is-floating>", or nothing when none shows up.
+# Wait for a window of app (any app when empty) whose id is not in before (a JSON array), and titled title
+# when one is given; prints "<id> <display> <is-floating>", or nothing when none shows up.
 new_window() {
-  local app="$1" before="$2" step found
+  local app="$1" before="$2" title="${3:-}" step found
   for step in {1..${YB_WAIT_STEPS:-20}}; do
     found="$("$yabai" -m query --windows 2>/dev/null |
-      jq -r --arg app "$app" --argjson before "$before" \
-        '[.[] | select(($app == "" or .app == $app) and ([.id] | inside($before) | not))] | first | select(. != null) | "\(.id) \(.display) \(."is-floating" // false)"' 2>/dev/null)"
+      jq -r --arg app "$app" --argjson before "$before" --arg title "$title" \
+        '[.[] | select(($app == "" or .app == $app) and ($title == "" or .title == $title) and ([.id] | inside($before) | not))] | first | select(. != null) | "\(.id) \(.display) \(."is-floating" // false)"' 2>/dev/null)"
     [[ -n $found ]] && break
     sleep 0.1
   done

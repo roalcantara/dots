@@ -246,7 +246,7 @@ describe("yb", () => {
   describe("tui", () => {
     const DISPLAY = '{"index":1,"frame":{"x":0,"y":25,"w":1512,"h":957}}';
     const win = (extra: Record<string, unknown> = {}) =>
-      JSON.stringify([{ id: 42, app: "Ghostty", title: "", display: 1, "is-floating": false, ...extra }]);
+      JSON.stringify([{ id: 42, app: "Ghostty", title: "tui:psc", display: 1, "is-floating": false, ...extra }]);
     const tui = (args: string[], env: Record<string, string> = {}) =>
       yb(["tui", "psc", ...args], { YB_STUB_DISPLAY: DISPLAY, YB_STUB_WINDOWS_2: win(), ...env });
     const osa = (calls: string[]) => calls.find((c) => c.startsWith("osascript tui")) ?? "";
@@ -310,6 +310,16 @@ describe("yb", () => {
       const open = r.calls.indexOf("open -a Ghostty");
       expect(open).toBeGreaterThanOrEqual(0);
       expect(open).toBeLessThan(r.calls.findIndex((c) => c.startsWith("osascript tui")));
+    });
+
+    it("floats the TUI window, not another new Ghostty window", () => {
+      const both = JSON.stringify([
+        { id: 41, app: "Ghostty", title: "~", display: 1, "is-floating": false },
+        { id: 42, app: "Ghostty", title: "tui:psc", display: 1, "is-floating": false },
+      ]);
+      const r = tui(["--command", "psc"], { GHOSTTY_RUNNING: "false", YB_TUI_LAUNCH_WAIT: "0", YB_STUB_WINDOWS_2: both });
+      expect(r.calls.filter((c) => c.includes("41"))).toEqual([]);
+      expect(r.calls).toContain("-m window 42 --toggle float");
     });
 
     it("opens without yabai", () => {
