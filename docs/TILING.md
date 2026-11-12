@@ -217,40 +217,40 @@ CHECK: `✓` works today; `S` needs space switching; `A` needs the scripting add
 
 | CHECK |  SCOPE  | SHORTCUT            | ACTION                                                               |
 | :---: | :-----: | ------------------- | -------------------------------------------------------------------- |
-|   S   |  Spaces | fn + 1              | Go to space 1                                                        |
-|   S   |  Spaces | fn + 2              | Go to space 2                                                        |
-|   S   |  Spaces | fn + 3              | Go to space 3                                                        |
-|   S   |  Spaces | fn + 4              | Go to space 4                                                        |
-|   S   |  Spaces | fn + 5              | Go to space 5                                                        |
-|   S   |  Spaces | fn + 6              | Go to space 6                                                        |
-|   S   |  Spaces | fn + 7              | Go to space 7                                                        |
-|   S   |  Spaces | fn + 8              | Go to space 8                                                        |
-|   S   |  Spaces | fn + 9              | Go to space 9                                                        |
-|   S   |  Spaces | fn + 0              | Go to space 10                                                       |
-|   A   |  Spaces | fn + ⇧ + 1          | Move window to space 1                                               |
-|   A   |  Spaces | fn + ⇧ + 2          | Move window to space 2                                               |
-|   A   |  Spaces | fn + ⇧ + 3          | Move window to space 3                                               |
-|   A   |  Spaces | fn + ⇧ + 4          | Move window to space 4                                               |
-|   A   |  Spaces | fn + ⇧ + 5          | Move window to space 5                                               |
-|   A   |  Spaces | fn + ⇧ + 6          | Move window to space 6                                               |
-|   A   |  Spaces | fn + ⇧ + 7          | Move window to space 7                                               |
-|   A   |  Spaces | fn + ⇧ + 8          | Move window to space 8                                               |
-|   A   |  Spaces | fn + ⇧ + 9          | Move window to space 9                                               |
-|   A   |  Spaces | fn + ⇧ + 0          | Move window to space 10                                              |
-|   A   |  Spaces | fn + ⌥ + ⇧ + 1      | Move window to space 1, stay here                                    |
-|   A   |  Spaces | fn + ⌥ + ⇧ + 2      | Move window to space 2, stay here                                    |
-|   A   |  Spaces | fn + ⌥ + ⇧ + 3      | Move window to space 3, stay here                                    |
-|   A   |  Spaces | fn + ⌥ + ⇧ + 4      | Move window to space 4, stay here                                    |
-|   A   |  Spaces | fn + ⌥ + ⇧ + 5      | Move window to space 5, stay here                                    |
-|   A   |  Spaces | fn + ⌥ + ⇧ + 6      | Move window to space 6, stay here                                    |
-|   A   |  Spaces | fn + ⌥ + ⇧ + 7      | Move window to space 7, stay here                                    |
-|   A   |  Spaces | fn + ⌥ + ⇧ + 8      | Move window to space 8, stay here                                    |
-|   A   |  Spaces | fn + ⌥ + ⇧ + 9      | Move window to space 9, stay here                                    |
-|   A   |  Spaces | fn + ⌥ + ⇧ + 0      | Move window to space 10, stay here                                   |
-|   S   |  Spaces | fn + Tab            | Next space on this screen                                            |
-|   S   |  Spaces | fn + ⇧ + Tab        | Previous space on this screen                                        |
-|   S   |  Spaces | fn + ⌃ + Tab        | Last space you were on                                               |
-|   S   |  Spaces | click the strip     | Menu bar: the spaces with their apps; choose one to go there         |
+|   ✓   | Spaces  | fn + 1              | Go to space 1                                                        |
+|   ✓   | Spaces  | fn + 2              | Go to space 2                                                        |
+|   ✓   | Spaces  | fn + 3              | Go to space 3                                                        |
+|   ✓   | Spaces  | fn + 4              | Go to space 4                                                        |
+|   ✓   | Spaces  | fn + 5              | Go to space 5                                                        |
+|   ✓   | Spaces  | fn + 6              | Go to space 6                                                        |
+|   ✓   | Spaces  | fn + 7              | Go to space 7                                                        |
+|   ✓   | Spaces  | fn + 8              | Go to space 8                                                        |
+|   ✓   | Spaces  | fn + 9              | Go to space 9                                                        |
+|   ✓   | Spaces  | fn + 0              | Go to space 10                                                       |
+|   ✓   | Spaces  | fn + ⇧ + 1          | Move window to space 1                                               |
+|   ✓   | Spaces  | fn + ⇧ + 2          | Move window to space 2                                               |
+|   ✓   | Spaces  | fn + ⇧ + 3          | Move window to space 3                                               |
+|   ✓   | Spaces  | fn + ⇧ + 4          | Move window to space 4                                               |
+|   ✓   | Spaces  | fn + ⇧ + 5          | Move window to space 5                                               |
+|   ✓   | Spaces  | fn + ⇧ + 6          | Move window to space 6                                               |
+|   ✓   | Spaces  | fn + ⇧ + 7          | Move window to space 7                                               |
+|   ✓   | Spaces  | fn + ⇧ + 8          | Move window to space 8                                               |
+|   ✓   | Spaces  | fn + ⇧ + 9          | Move window to space 9                                               |
+|   ✓   | Spaces  | fn + ⇧ + 0          | Move window to space 10                                              |
+|   ✓   | Spaces  | fn + ⌥ + ⇧ + 1      | Move window to space 1, stay here                                    |
+|   ✓   | Spaces  | fn + ⌥ + ⇧ + 2      | Move window to space 2, stay here                                    |
+|   ✓   | Spaces  | fn + ⌥ + ⇧ + 3      | Move window to space 3, stay here                                    |
+|   ✓   | Spaces  | fn + ⌥ + ⇧ + 4      | Move window to space 4, stay here                                    |
+|   ✓   | Spaces  | fn + ⌥ + ⇧ + 5      | Move window to space 5, stay here                                    |
+|   ✓   | Spaces  | fn + ⌥ + ⇧ + 6      | Move window to space 6, stay here                                    |
+|   ✓   | Spaces  | fn + ⌥ + ⇧ + 7      | Move window to space 7, stay here                                    |
+|   ✓   | Spaces  | fn + ⌥ + ⇧ + 8      | Move window to space 8, stay here                                    |
+|   ✓   | Spaces  | fn + ⌥ + ⇧ + 9      | Move window to space 9, stay here                                    |
+|   ✓   | Spaces  | fn + ⌥ + ⇧ + 0      | Move window to space 10, stay here                                   |
+|   ✓   | Spaces  | fn + Tab            | Next space on this screen                                            |
+|   ✓   | Spaces  | fn + ⇧ + Tab        | Previous space on this screen                                        |
+|   ✓   | Spaces  | fn + ⌃ + Tab        | Last space you were on                                               |
+|   ✓   | Spaces  | click the strip     | Menu bar: the spaces with their apps; choose one to go there         |
 |   ✓   | Windows | fn + ←              | Focus window west                                                    |
 |   ✓   | Windows | fn + →              | Focus window east                                                    |
 |   ✓   | Windows | fn + ↑              | Focus window north                                                   |
@@ -267,47 +267,47 @@ CHECK: `✓` works today; `S` needs space switching; `A` needs the scripting add
 |   ✓   | Windows | fn + t              | Toggle tiled / floating                                              |
 |   ✓   | Windows | fn + f              | Fullscreen inside the space                                          |
 |   ✓   | Windows | fn + ⌥ + f          | Full width (fill the parent split)                                   |
-|   A   | Windows | fn + o              | Pin: floating, on top, on every space                                |
-|   A   | Windows | fn + s              | Toggle the scratchpad                                                |
-|   A   | Windows | fn + ⌥ + s          | Send window to the scratchpad                                        |
+|   ✓   | Windows | fn + o              | Pin: floating, on top, on every space                                |
 |   ✓   | Windows | fn + −              | Narrower                                                             |
 |   ✓   | Windows | fn + =              | Wider                                                                |
 |   ✓   | Windows | fn + ⇧ + −          | Shorter                                                              |
 |   ✓   | Windows | fn + ⇧ + =          | Taller                                                               |
 |   D   | Windows | fn + drag           | Move a window with the mouse (yabairc)                               |
 |   D   | Windows | fn + right-drag     | Resize a window with the mouse (yabairc)                             |
-|   ✓   |  Layout | fn + ⇧ + \\         | Focused window and its neighbour side by side (\|)                   |
-|   ✓   |  Layout | fn + \\             | Focused window and its neighbour one above the other (\)             |
-|   ✓   |  Layout | fn + ⌃ + ←          | Focused and its neighbour side by side, focused on the left          |
-|   ✓   |  Layout | fn + ⌃ + →          | Focused and its neighbour side by side, focused on the right         |
-|   ✓   |  Layout | fn + ⌃ + ↑          | Focused and its neighbour one above the other, focused on top        |
-|   ✓   |  Layout | fn + ⌃ + ↓          | Focused and its neighbour one above the other, focused at the bottom |
-|   ✓   |  Layout | fn + l              | Toggle tiled / floating layout                                       |
-|   ✓   |  Layout | fn + b              | Balance the splits                                                   |
-|   ✓   |  Layout | fn + ⌥ + ⇧ + →      | Rotate the layout clockwise                                          |
-|   ✓   |  Layout | fn + ⌥ + ⇧ + ←      | Rotate the layout counter-clockwise                                  |
-|   ✓   |   Apps  | fn + Return         | New Ghostty window, also while Ghostty is in front                   |
-|   ✓   |   Apps  | fn + ⇧ + Return     | New tab in the default browser's front window                        |
-|   ✓   |   Apps  | fn + ⌥ + ⇧ + Return | New default browser window, on the focused screen                    |
-|   ✓   |   Apps  | fn + ⇧ + f          | Finder                                                               |
-|   ✓   |   Apps  | fn + ⇧ + c          | Claude                                                               |
-|   ✓   |   Apps  | fn + ⇧ + v          | Visual Studio Code                                                   |
-|   ✓   |   Apps  | fn + ⇧ + g          | Gemini                                                               |
-|   ✓   |   Apps  | fn + ⇧ + n          | Neovim                                                               |
-|   ✓   |  System | fn + k              | Show these hotkeys                                                   |
-|   ✓   |  System | fn + Esc            | System: lock, sleep, restart                                         |
-|   ✓   |  System | fn + ⌥ + ↑          | Page Up                                                              |
-|   ✓   |  System | fn + ⌥ + ↓          | Page Down                                                            |
-|   ?   |  System | fn                  | Alone: nothing (Keyboard → Press Globe key to: Do Nothing)           |
-|   ?   |  System | fn + e              | Unbound: should not open macOS's emoji picker                        |
-|   ?   |  System | fn + a              | Unbound: should not show the Dock                                    |
-|   ?   |  System | fn + c              | Unbound: should not open Control Center                              |
-|   ?   |  System | fn + n              | Unbound: should not open Notification Center                         |
-|   ?   |  System | fn + q              | Unbound: should not open Quick Note                                  |
-|   ?   |  System | ⌘ + Space           | Raycast (Spotlight's shortcut is off)                                |
-|   ?   |  System | ⌘ + Tab             | macOS app switcher, unchanged                                        |
-|   ?   |  System | ⌘ + c               | Copy, unchanged                                                      |
-|   ?   |  System | ⌘ + v               | Paste, unchanged                                                     |
+|   ✓   | Layout  | fn + ⇧ + \\         | Focused window and its neighbour side by side (\|)                   |
+|   ✓   | Layout  | fn + \\             | Focused window and its neighbour one above the other (\)             |
+|   ✓   | Layout  | fn + ⌃ + ←          | Focused and its neighbour side by side, focused on the left          |
+|   ✓   | Layout  | fn + ⌃ + →          | Focused and its neighbour side by side, focused on the right         |
+|   ✓   | Layout  | fn + ⌃ + ↑          | Focused and its neighbour one above the other, focused on top        |
+|   ✓   | Layout  | fn + ⌃ + ↓          | Focused and its neighbour one above the other, focused at the bottom |
+|   ✓   | Layout  | fn + l              | Toggle tiled / floating layout                                       |
+|   ✓   | Layout  | fn + b              | Balance the splits                                                   |
+|   ✓   | Layout  | fn + ⌥ + ⇧ + →      | Rotate the layout clockwise                                          |
+|   ✓   | Layout  | fn + ⌥ + ⇧ + ←      | Rotate the layout counter-clockwise                                  |
+|   ✓   |  Apps   | fn + Return         | New Ghostty window, also while Ghostty is in front                   |
+|   ✓   |  Apps   | fn + ⇧ + Return     | New tab in the default browser's front window                        |
+|   ✓   |  Apps   | fn + ⌥ + ⇧ + Return | New default browser window, on the focused screen                    |
+|   ✓   |  Apps   | fn + ⇧ + f          | Finder                                                               |
+|   ✓   |  Apps   | fn + ⇧ + c          | Claude                                                               |
+|   ✓   |  Apps   | fn + ⇧ + v          | Visual Studio Code                                                   |
+|   ✓   |  Apps   | fn + ⇧ + g          | Gemini                                                               |
+|   ✓   |  Apps   | fn + ⇧ + n          | Neovim                                                               |
+|   ✓   | System  | fn + k              | Show these hotkeys                                                   |
+|   ✓   | System  | fn + Esc            | System: lock, sleep, restart                                         |
+|   ✓   | System  | fn + ⌥ + ↑          | Page Up                                                              |
+|   ✓   | System  | fn + ⌥ + ↓          | Page Down                                                            |
+|   ✓   | System  | fn                  | Alone: nothing (Keyboard → Press Globe key to: Do Nothing)           |
+|   ✓   | System  | fn + a              | show the Dock                                                        |
+|   ✓   | System  | fn + c              | open Control Center                                                  |
+|   ✓   | System  | fn + n              | Notification Center                                                  |
+|   ✓   | System  | ⌘ + Space           | Raycast (Spotlight's shortcut is off)                                |
+|   ✓   | System  | ⌘ + Tab             | macOS app switcher, unchanged                                        |
+|   ✓   | System  | ⌘ + c               | Copy, unchanged                                                      |
+|   ✓   | System  | ⌘ + v               | Paste, unchanged                                                     |
+|   ✓   | System  | fn + e              | macOS's emoji picker                                                 |
+|   ✓   | System  | fn + q              | macOS's Quick Note                                                   |
+|   ✓   | Windows | fn + s              | Toggle the scratchpad                                                |
+|   ✓   | Windows | fn + ⌥ + s          | Send window to the scratchpad                                        |
 
 ## Troubleshooting
 
