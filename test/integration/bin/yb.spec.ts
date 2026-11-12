@@ -3,7 +3,7 @@
 // A stub yabai (DOTS_YABAI) records each call; YB_STUB_FAIL makes calls matching a regex exit 1, and
 // YB_STUB_QUERY is what `query` prints.
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { findRealBin, realUsageDir, scriptPath } from "./support/paths";
@@ -293,7 +293,7 @@ describe("yb spaces", () => {
     }));
   }
   const read = () => JSON.parse(readFileSync(state, "utf8")) as { displays: { id: number; index: number }[]; spaces: Space[]; calls: string[] };
-  const run = () => {
+  const run = (env: Record<string, string> = {}) => {
     const r = Bun.spawnSync([script, "spaces"], {
       stdout: "pipe",
       stderr: "pipe",
@@ -303,6 +303,7 @@ describe("yb spaces", () => {
         DOTS_YABAI: shim,
         DOTS_DISPLAYS_JSON: profiler,
         FAKE_STATE: state,
+        ...env,
       },
     });
     return { code: r.exitCode, err: r.stderr.toString() };
@@ -365,6 +366,25 @@ describe("yb spaces", () => {
     expect(run().code).toBe(0);
     expect(read().calls).toHaveLength(calls);
   });
+
+  // Labels stay with their spaces (fn + 7 always reaches the same one), so a space that drifted out of
+  // place moves back instead of being relabelled.
+  it("puts each screen's spaces back in label order, keeping every label on its space", () => {
+    const shuffled: Array<[number, string]> = [[1, "s1"], [1, "s3"], [1, "s2"], [1, "s5"], [1, "s4"], [2, "s6"], [2, "s8"], [2, "s7"], [2, "s10"], [2, "s9"]];
+    setup([[BUILTIN, 1], [EXTERNAL, 2]], shuffled);
+    const ids = new Map(read().spaces.map((s) => [s.label, s.id]));
+    expect(run().code).toBe(0);
+    expect(labelsOn(BUILTIN)).toEqual(S(1, 5));
+    expect(labelsOn(EXTERNAL)).toEqual(S(6, 10));
+    for (const s of read().spaces) expect(s.id).toBe(ids.get(s.label)!);
+    expect(read().calls.every((c) => / --move prev$/.test(c))).toBe(true);
+  });
+
+  it("without the scripting addition, leaves the order alone and still succeeds", () => {
+    setup([[BUILTIN, 1], [EXTERNAL, 2]], [[1, "s1"], [1, "s3"], [1, "s2"], [1, "s4"], [1, "s5"], ...S(6, 10).map((l) => [2, l] as [number, string])]);
+    expect(run({ FAKE_NO_SA: "1" }).code).toBe(0);
+    expect(labelsOn(BUILTIN)).toEqual(["s1", "s3", "s2", "s4", "s5"]);
+  });
 });
 
 describe("yb sa", () => {
@@ -394,9 +414,9 @@ exit 0
   });
   afterAll(() => rmSync(sa, { recursive: true, force: true }));
 
-  function runSa(env: Record<string, string> = {}) {
+  function runSa(env: Record<string, string> = {}, args = ["sa"]) {
     writeFileSync(log, "");
-    const r = Bun.spawnSync([script, "sa"], {
+    const r = Bun.spawnSync([script, ...args], {
       stdout: "pipe",
       stderr: "pipe",
       env: {
@@ -460,6 +480,51 @@ exit 0
     expect(add.out).toContain("reboot");
     const again = runSa({ NVRAM_ARGS: "-v -arm64e_preview_abi" });
     expect(again.calls.some((c) => c.includes("nvram"))).toBe(false);
+  });
+
+  describe("use: another yabai build", () => {
+    // No DOTS_YABAI: yb reads the choice `yb use` records.
+    const chosen = { DOTS_YABAI: "", NVRAM_ARGS: "-arm64e_preview_abi" };
+    const binfile = () => join(home, ".local/state/dots/yabai-bin");
+    let fork = "";
+    beforeAll(() => {
+      fork = stub("yabai-fork", "#!/bin/sh\necho \"fork $*\"\n");
+    });
+
+    it("records the build and writes the sudoers rule for it", () => {
+      const r = runSa(chosen, ["use", fork]);
+      expect(r.code).toBe(0);
+      expect(readFileSync(binfile(), "utf8").trim()).toBe(fork);
+      const forkHash = new Bun.CryptoHasher("sha256").update(readFileSync(fork)).digest("hex");
+      expect(readFileSync(target, "utf8")).toBe(`tester ALL=(root) NOPASSWD: sha256:${forkHash} ${fork} --load-sa\n`);
+      expect(r.out).toContain("launchctl kickstart -k");
+    });
+
+    it("rewrites the rule on every switch between builds", () => {
+      const r = runSa({ ...chosen, DOTS_YABAI: yabaiBin }, ["sa"]);
+      expect(r.calls.some((c) => c.startsWith("sudo install"))).toBe(true);
+      expect(readFileSync(target, "utf8")).toContain(` ${yabaiBin} --load-sa`);
+      runSa(chosen, ["sa"]);
+      expect(readFileSync(target, "utf8")).toContain(` ${fork} --load-sa`);
+    });
+
+    it("load-sa and run follow the choice", () => {
+      expect(runSa(chosen, ["load-sa"]).calls).toEqual([`sudo -n ${fork} --load-sa`]);
+      expect(runSa(chosen, ["run"]).out).toContain("fork");
+    });
+
+    it("refuses a path that is not an executable file, keeping the choice", () => {
+      const r = runSa(chosen, ["use", join(sa, "nope")]);
+      expect(r.code).not.toBe(0);
+      expect(readFileSync(binfile(), "utf8").trim()).toBe(fork);
+    });
+
+    it("brew goes back to Homebrew's yabai", () => {
+      const r = runSa(chosen, ["use", "brew"]);
+      expect(r.code).toBe(0);
+      expect(existsSync(binfile())).toBe(false);
+      expect(r.out).toContain("yabai is now /opt/homebrew/bin/yabai");
+    });
   });
 });
 

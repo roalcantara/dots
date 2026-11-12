@@ -109,17 +109,46 @@ macOS's own fn shortcuts (fn + E emoji, fn + F fullscreen, fn + A, C, N, Q) are 
 4. **Register the kb extension** with Raycast once: `bun install && bun run dev` in `~/Work/kb`.
 5. **Log out once** so the fn setting applies.
 
+### Another yabai build (macOS 27)
+
+yabai 7.1.25 rejects macOS 27, so its scripting addition loads and does nothing. Until a release supports
+it, a fork can stand in ([asmvik/yabai#2802](https://github.com/asmvik/yabai/issues/2802) lists the offsets;
+read the fork's diff before building it). The agent runs `yb run` and yabairc `yb load-sa`, and both use the
+binary `yb use` chose on this machine (`~/.local/state/dots/yabai-bin`), so switching is:
+
+1. Build the fork outside the repo and copy `bin/yabai` somewhere that lasts, e.g. `~/.local/share/yabai-fork/`.
+2. Stop yabai first: `launchctl bootout gui/$(id -u)/dev.mise.yabai`. Changing Accessibility while yabai runs
+   freezes the screen until it exits.
+3. Grant the new binary Accessibility (System Settings → Privacy & Security → Accessibility, **+**).
+4. `yb use ~/.local/share/yabai-fork/yabai` (asks for your password once, for the sudoers rule), then
+   `launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/dev.mise.yabai.plist` and `killall Dock`.
+5. Check `/usr/bin/log show --last 5m --style compact --predicate 'process == "Dock" AND eventMessage CONTAINS "[yabai-sa]"'`
+   shows "Detected Golden Gate" and every target found.
+
+**To go back to Homebrew's yabai**
+
+`yb use brew` goes back to Homebrew's yabai, the same way.
+
+```sh
+yb use brew
+launchctl kickstart -k gui/$(id -u)/dev.mise.yabai
+killall Dock.
+```
+
+After a macOS update, check the fork still matches
+the new Dock before trusting it.
+
 ## Validation checklist
 
 Walk this after a fresh setup or a change. Items marked A need yabai's scripting addition and those
 marked S need space switching; both fail silently on macOS 27 with yabai 7.1.25 (it rejects the
-OS), so expect them to fail there until yabai is replaced or updated.
+OS), so expect them to fail there unless `yb use` runs a build that supports it (below).
 
 ### Setup
 
 - [ ] `csrutil status` shows "Custom Configuration" with Filesystem, Debugging and NVRAM protections disabled.
 - [ ] `nvram boot-args` includes `-arm64e_preview_abi`.
-- [ ] `sudo -n /opt/homebrew/bin/yabai --load-sa` exits 0 without asking for a password.
+- [ ] `yb load-sa` exits 0 without asking for a password.
 - [ ] `launchctl list | grep dev.mise` shows `dev.mise.yabai` and `dev.mise.borders` running.
 - [ ] Karabiner-Elements → Profiles: `dots` is selected; pressing 🌐/fn alone does nothing.
 
@@ -286,12 +315,15 @@ CHECK: `S` needs space switching; `A` needs the scripting addition; `D` disabled
 
 ## Troubleshooting
 
-| Symptom                                              | Check                                                                                                   |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| Which key did what                                   | `yb log -f`: each fn key, its yb call and result, and yabai's window events                             |
-| A fn key does nothing                                | `~/.local/state/dots/yb.log` has the failed yabai call; `yb space 1` in a terminal shows the error      |
-| fn + E opens emoji, or fn + F goes native fullscreen | Karabiner is not running or the `dots` profile is not selected (Karabiner-Elements → Profiles)          |
-| Spaces still slide, or the scratchpad does nothing   | The scripting addition is not loaded: `sudo -n yabai --load-sa`; if it asks for a password, run `yb sa` |
-| Wrong number of spaces, or labels missing            | `yb spaces`, then `yabai -m query --spaces \| jq '.[] \| {index, label, display}'`                      |
-| The menu bar strip is stale or missing               | `open -g 'swiftbar://refreshplugin?name=spaces'`; `yb bar` in a terminal shows what SwiftBar gets       |
-| yabai stopped                                        | `launchctl kickstart -k gui/$(id -u)/dev.mise.yabai`                                                    |
+| Symptom                                              | Check                                                                                                               |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Which key did what                                   | `yb log -f`: each fn key, its yb call and result, and yabai's window events                                         |
+| A fn key does nothing                                | `~/.local/state/dots/yb.log` has the failed yabai call; `yb space 1` in a terminal shows the error                  |
+| fn + E opens emoji, or fn + F goes native fullscreen | Karabiner is not running or the `dots` profile is not selected (Karabiner-Elements → Profiles)                      |
+| Spaces still slide, or the scratchpad does nothing   | The scripting addition is not loaded: `yb load-sa`; if it fails, run `yb sa` (or see the macOS 27 section)          |
+| Spaces out of order on a screen                      | `yb spaces` moves them back into label order (needs the scripting addition)                                         |
+| The menu bar shows "SwiftBar" instead of the strip   | SwiftBar lost its plugin folder (e.g. a branch switch): `osascript -e 'quit app "SwiftBar"' && open -g -a SwiftBar` |
+| The screen froze after changing Accessibility        | yabai was running: kill it, then stop the agent before changing Accessibility (macOS 27 section)                    |
+| Wrong number of spaces, or labels missing            | `yb spaces`, then `yabai -m query --spaces \| jq '.[] \| {index, label, display}'`                                  |
+| The menu bar strip is stale or missing               | `open -g 'swiftbar://refreshplugin?name=spaces'`; `yb bar` in a terminal shows what SwiftBar gets                   |
+| yabai stopped                                        | `launchctl kickstart -k gui/$(id -u)/dev.mise.yabai`                                                                |

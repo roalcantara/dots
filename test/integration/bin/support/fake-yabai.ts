@@ -4,7 +4,7 @@
 // Selectors: a space is a number (index) or a label; a display is its arrangement index.
 // Every mutating call is appended to state.calls. Destroying a space that holds windows fails, like
 // losing them would. FAKE_NO_SA=1 refuses what needs the scripting addition (create, destroy, move a
-// space). A space with fullscreen: true is a native-fullscreen app's space; ids in state.sticky are
+// space to a screen or within one). A space with fullscreen: true is a native-fullscreen app's space; ids in state.sticky are
 // sticky windows, which yabai lists on every space of their screen.
 import { readFileSync, writeFileSync } from "node:fs";
 
@@ -58,7 +58,7 @@ if (domain === "query") {
   process.exit(0);
 }
 
-const needsSa = (domain === "space" && (rest[0] === "--create" || rest[1] === "--destroy" || rest[1] === "--display"));
+const needsSa = (domain === "space" && (rest[0] === "--create" || rest[1] === "--destroy" || rest[1] === "--display" || rest[1] === "--move"));
 if (needsSa && process.env.FAKE_NO_SA === "1") fail("cannot focus space due to an error with the scripting-addition.");
 // yabai 7.1.25 on macOS 27: the addition loads but rejects the OS, so these exit 0 and change nothing.
 if (needsSa && process.env.FAKE_NOOP_SA === "1") process.exit(0);
@@ -78,6 +78,16 @@ if (domain === "space" && rest[1] === "--display") {
   const s = space(rest[0]!);
   if (state.spaces.filter((x) => x.display === s.display).length === 1) fail("cannot move the last space");
   state.spaces = [...state.spaces.filter((x) => x !== s), { ...s, display: display(rest[2]!) }];
+  done();
+}
+// --move prev|next swaps a space with its neighbour on the same screen.
+if (domain === "space" && rest[1] === "--move") {
+  const s = space(rest[0]!);
+  const mates = ordered().filter((x) => x.display === s.display);
+  const other = mates[mates.indexOf(s) + (rest[2] === "prev" ? -1 : 1)];
+  if (!other) fail(`cannot move space ${rest[0]} ${rest[2]}`);
+  const [i, j] = [state.spaces.indexOf(s), state.spaces.indexOf(other!)];
+  [state.spaces[i], state.spaces[j]] = [other!, s];
   done();
 }
 if (domain === "space" && rest[1] === "--label") {

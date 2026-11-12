@@ -2,7 +2,8 @@
 # shellcheck shell=bash disable=SC2154,SC2168,SC2046
 # yb — the yabai CLI behind the Karabiner fn layer (config/karabiner, docs/TILING.md).
 # Spaces are labelled s1…s10: s1–s5 on the built-in screen, s6–s10 on the external one.
-# DOTS_YABAI overrides the yabai binary (tests); failures go to ~/.local/state/dots/yb.log.
+# The yabai binary: DOTS_YABAI (tests), else the one `yb use` chose (~/.local/state/dots/yabai-bin), else
+# Homebrew's. Failures go to ~/.local/state/dots/yb.log.
 
 #USAGE version "0.2.0"
 #USAGE about "Yabai actions for the fn layer"
@@ -93,13 +94,21 @@
 #USAGE cmd "spaces" help="Keep ten labelled spaces: s1-s5 built-in, s6-s10 external (all ten on one screen)"
 #USAGE cmd "sa" help="Set up the scripting addition: sudoers rule for --load-sa and the arm64e boot argument"
 #USAGE cmd "update" help="Alias of sa"
+#USAGE cmd "use" help="Choose the yabai binary the agent runs and --load-sa loads, then refresh the sudoers rule" {
+#USAGE   arg "<bin>" help="brew (the default), or the path of a yabai build"
+#USAGE }
+#USAGE cmd "run" help="Run the chosen yabai (the launchd agent's program)"
+#USAGE cmd "load-sa" help="Load the chosen yabai's scripting addition, never waiting for a password (yabairc)"
 #USAGE example "yb space 6"
 #USAGE example "yb move 3 --stay"
 #USAGE example "yb focus west"
 
 setopt no_unset pipe_fail
 
-yabai="${DOTS_YABAI:-/opt/homebrew/bin/yabai}"
+binfile="$HOME/.local/state/dots/yabai-bin"
+yabai="${DOTS_YABAI:-}"
+[[ -z $yabai && -r $binfile ]] && yabai="$(<"$binfile")"
+: "${yabai:=/opt/homebrew/bin/yabai}"
 logfile="$HOME/.local/state/dots/yb.log"
 args="$*"
 
@@ -118,7 +127,7 @@ Y() {
 Yq() { "$yabai" -m "$@" 2>/dev/null; }
 
 case "$1" in
-  app | browser | term | nvim | system | hotkeys | bar | log | sa | update) ;;
+  app | browser | term | nvim | system | hotkeys | bar | log | sa | update | use) ;;
   *)
     if [[ ! -x $yabai ]]; then
       log "yabai not found at $yabai"
@@ -283,11 +292,36 @@ def lastof: .[length - 1];
       | ($l | to_entries | map(. as $e | select([$ok[].key] | any(. == $e.key) | not))) as $todo
       | select(($missing | length) > 0 and ($todo | length) > 0)
       | ["space", ($todo[0].value.index | tostring), "--label", "s\($missing[0])"] ] | first )
+  # Last, with every label in place: on each screen, move a space ahead of a neighbour with a higher label
+  # (one step of a bubble sort), so the strip and Mission Control read s1, s2, … in order.
+  // ( if $lo then null else [ $plan[] as $p | on($p; $s) as $l
+      | [range(1; $l | length) | select(($l[. - 1] | slot) > ($l[.] | slot))] | first | select(. != null)
+      | ["space", ($l[.].index | tostring), "--move", "prev"] ] | first end )
   // empty
 | .[]'
 
 # The scripting addition needs SIP partly off, the arm64e boot argument, and a sudoers rule pinned to
 # yabai's hash so `sudo -n yabai --load-sa` works at login. Only warns; never fails the bootstrap.
+# Homebrew's yabai is the default; a build of another fork (e.g. one with macOS support upstream lacks)
+# is chosen per machine. The launchd agent runs `yb run` and yabairc `yb load-sa`, so both follow.
+use_yabai() {
+  if [[ $1 == brew ]]; then
+    rm -f "$binfile"
+    yabai=/opt/homebrew/bin/yabai
+  else
+    if [[ ! -f $1 || ! -x $1 ]]; then
+      print -u2 "yb use: $1 is not an executable file"
+      return 1
+    fi
+    mkdir -p "${binfile:h}"
+    print -r -- "${1:a}" >"$binfile"
+    yabai="${1:a}"
+  fi
+  print "yb use: yabai is now $yabai"
+  setup_sa
+  print "yb use: restart it with: launchctl kickstart -k gui/$(id -u)/dev.mise.yabai"
+}
+
 setup_sa() {
   local sudo="${DOTS_SUDO:-sudo}" visudo="${DOTS_VISUDO:-visudo}"
   local target="${DOTS_SUDOERS:-/private/etc/sudoers.d/yabai}" stamp="$HOME/.local/state/dots/yabai-sudoers.sha256"
@@ -298,7 +332,7 @@ setup_sa() {
   fi
   hash="$(shasum -a 256 "$yabai" | cut -d' ' -f1)"
   rule="${USER:-$(id -un)} ALL=(root) NOPASSWD: sha256:$hash $yabai --load-sa"
-  if [[ -e $target && -r $stamp && "$(<"$stamp")" == "$hash" ]]; then
+  if [[ -e $target && -r $stamp && "$(<"$stamp")" == "$hash $yabai" ]]; then
     :
   else
     tmp="$(mktemp)"
@@ -306,7 +340,7 @@ setup_sa() {
     if ! "$visudo" -cf "$tmp" >/dev/null 2>&1; then
       print -u2 "yb sa: visudo rejected the rule; $target left as it was"
     elif "$sudo" install -m 0440 -o root -g wheel "$tmp" "$target"; then
-      mkdir -p "${stamp:h}" && print -r -- "$hash" >"$stamp"
+      mkdir -p "${stamp:h}" && print -r -- "$hash $yabai" >"$stamp"
       print "yb sa: sudoers rule written for yabai $hash"
     else
       print -u2 "yb sa: could not write $target"
@@ -592,13 +626,16 @@ main() {
     bar) render_bar ;;
     spaces) sync_spaces ;;
     sa | update) setup_sa ;;
+    use) use_yabai "$usage_bin" ;;
+    run) exec "$yabai" ;;
+    load-sa) "${DOTS_SUDO:-sudo}" -n "$yabai" --load-sa ;;
   esac
 }
 
 main "$@"
 rc=$?
 case "$1" in
-  bar | log | event) ;;
+  bar | log | event | load-sa) ;;
   *)
     now=""
     [[ ${YB_TRACE_WHERE:-1} != 0 && -x $yabai ]] && now="$(where)"

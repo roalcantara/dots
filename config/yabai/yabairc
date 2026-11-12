@@ -2,11 +2,12 @@
 # yabai: the tiling window manager behind the fn layer (docs/TILING.md).
 # https://github.com/asmvik/yabai/blob/master/doc/yabai.asciidoc
 #
-# Started by the LaunchAgent in config/mise/conf.d/yabai.toml. The scripting addition needs SIP partly
-# off and the sudoers rule `yb sa` writes; `sudo -n` never waits for a password, so a stale rule only
-# costs the addition's extras (instant switching, scratchpad, pinning), never a hung login.
-sudo -n /opt/homebrew/bin/yabai --load-sa
-yabai -m signal --add event=dock_did_restart label=load_sa action="sudo -n /opt/homebrew/bin/yabai --load-sa"
+# Started by the LaunchAgent in config/mise/conf.d/yabai.toml (`yb run`: Homebrew's yabai, or the build
+# `yb use` chose). The scripting addition needs SIP partly off and the sudoers rule `yb sa` writes for that
+# binary; `yb load-sa` runs `sudo -n`, which never waits for a password, so a stale rule only costs the
+# addition's extras (instant switching, scratchpad, pinning, moving spaces), never a hung login.
+"$HOME/.local/bin/yb" load-sa
+yabai -m signal --add event=dock_did_restart label=load_sa action="$HOME/.local/bin/yb load-sa"
 
 # Omarchy's look (default/hypr/looknfeel): 10 between windows and at the edges, no shadows.
 # Dwindle tiling: each new window splits the newest tile (insertion point last), along its longer side
