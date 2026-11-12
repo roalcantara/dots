@@ -141,3 +141,22 @@ describe("karabiner fn layer", () => {
     });
   });
 });
+
+// docs/TILING.md's QUICK REFERENCE is the one list of shortcuts: every binding has exactly one row there.
+describe("the QUICK REFERENCE in docs/TILING.md", () => {
+  const doc = readFileSync(join(REPO, "docs/TILING.md"), "utf8");
+  const section = doc.slice(doc.indexOf("## QUICK REFERENCE"), doc.indexOf("\n## ", doc.indexOf("## QUICK REFERENCE") + 1));
+  const cells = section.split("\n").filter((l) => /^\|\s*\S+\s*\|/.test(l) && !/^\|\s*:?-/.test(l)).map((l) => l.split(/(?<!\\)\|/).map((c) => c.trim()));
+  // "fn + ⌥ + ⇧ + w" → "fn ⌥ ⇧ W", the form hotkeys.json uses
+  const keysOf = (shortcut: string) => shortcut.replaceAll("\\\\", "\\").split(" + ").map((k) => (/^[a-z]$/.test(k) ? k.toUpperCase() : k)).join(" ");
+  const shortcuts = cells.slice(1).map((c) => keysOf(c[3] ?? ""));
+
+  it("has one row for every binding in hotkeys.json", () => {
+    const hotkeys: Array<{ keys: string }> = json(join(DIR, "hotkeys.json"));
+    for (const { keys } of hotkeys) expect(shortcuts.filter((s) => s === keys)).toEqual([keys]);
+  });
+
+  it("has no shortcut twice", () => {
+    expect(shortcuts.length).toBe(new Set(shortcuts).size);
+  });
+});
