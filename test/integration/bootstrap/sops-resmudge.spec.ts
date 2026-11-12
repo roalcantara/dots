@@ -8,7 +8,7 @@ import { join } from "node:path";
 const REPO = join(import.meta.dir, "../../..");
 type MiseConfig = { tasks: Record<string, { run: string }> };
 const parsed = Bun.TOML.parse(readFileSync(join(REPO, "mise.toml"), "utf8")) as MiseConfig;
-const task = parsed.tasks["setup:git:filters"].run;
+const task = parsed.tasks["setup:git:filters"]?.run ?? "";
 const SNIPPET = task.match(/# sops-resmudge: begin\n[\s\S]*?# sops-resmudge: end\n/)?.[0] ?? "";
 const tools = ["git", "sops", "age-keygen", "age"].every((c) => Bun.which(c) !== null);
 

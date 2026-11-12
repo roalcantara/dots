@@ -24,6 +24,6 @@
     "noPropertyAccessFromIndexSignature": false,
     "paths": {}
   },
-  "include": ["specs/**/*.ts"],
+  "include": ["integration/**/*.ts", "features/**/*.ts"],
   "exclude": ["node_modules", "dist", "build"]
 }

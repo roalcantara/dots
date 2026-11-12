@@ -35,14 +35,14 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
     expect(macos.keyboard.key_repeat).toBe(2);
     expect(macos.keyboard.initial_key_repeat).toBe(15);
     expect(macos.keyboard.press_and_hold).toBe(false);
-    expect(macos.defaults.NSGlobalDomain.AppleKeyboardUIMode).toBe(3);
+    expect(macos.defaults.NSGlobalDomain!.AppleKeyboardUIMode).toBe(3);
   });
 
   it("auto-hides the Dock and never rearranges Spaces (yabai)", () => {
     expect(macos.dock.autohide).toBe(true);
     expect(macos.dock.mru_spaces).toBe(false);
     expect(macos.dock.show_recents).toBe(false);
-    expect(macos.defaults["com.apple.spaces"]["spans-displays"]).toBe(false);
+    expect(macos.defaults["com.apple.spaces"]!["spans-displays"]).toBe(false);
   });
 
   it("taps to click and keeps three-finger swipes for Spaces", () => {
@@ -51,7 +51,7 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
   });
 
   it("writes pointer speeds as reals", () => {
-    const g = macos.defaults.NSGlobalDomain;
+    const g = macos.defaults.NSGlobalDomain!;
     expect(g["com.apple.trackpad.scaling"]).toBe(3);
     expect(g["com.apple.mouse.scaling"]).toBe(3);
     // Bun parses `3.0` and `3` alike; the source must say 3.0 so mise writes a real.
@@ -61,7 +61,7 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
   });
 
   it("turns off the window tiling and Stage Manager that fight yabai", () => {
-    const wm = macos.defaults["com.apple.WindowManager"];
+    const wm = macos.defaults["com.apple.WindowManager"]!;
     for (const k of ["EnableTilingByEdgeDrag", "EnableTopTilingByEdgeDrag", "EnableTilingOptionAccelerator",
       "GloballyEnabled", "EnableStandardClickToShowDesktop"]) expect(wm[k]).toBe(false);
   });
@@ -89,8 +89,8 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
 
   it("sets the light click on built-in and Bluetooth trackpads", () => {
     for (const d of ["com.apple.AppleMultitouchTrackpad", "com.apple.driver.AppleBluetoothMultitouch.trackpad"]) {
-      expect(macos.defaults[d].FirstClickThreshold).toBe(0);
-      expect(macos.defaults[d].SecondClickThreshold).toBe(0);
+      expect(macos.defaults[d]!.FirstClickThreshold).toBe(0);
+      expect(macos.defaults[d]!.SecondClickThreshold).toBe(0);
     }
   });
 
@@ -101,7 +101,7 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
   });
 
   it("loads the SSH keys from Keychain at every login (Apple's ssh-add)", () => {
-    const agent = macos.launchd.agents["ssh-add"];
+    const agent = macos.launchd.agents["ssh-add"]!;
     expect(agent.program).toBe("/usr/bin/ssh-add");
     expect(agent.args).toEqual(["--apple-load-keychain"]);
     expect(agent.run_at_load).toBe(true);
@@ -136,7 +136,7 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
   });
 
   it("enables Touch ID for sudo in the file macOS updates keep", () => {
-    const f = config.bootstrap.files["/etc/pam.d/sudo_local"];
+    const f = config.bootstrap.files["/etc/pam.d/sudo_local"]!;
     expect(f).toMatchObject({ os: "macos", owner: "root", group: "wheel", mode: "0444", phase: "pre-packages" });
     expect(f.content as string).toMatch(/^auth\s+sufficient\s+pam_tid\.so$/m);
   });

@@ -85,10 +85,11 @@ export function matchCandidates(
   localHash: string,
   candidates: { source: string; entry: TreeEntry }[],
 ): Pick<Row, "status" | "candidateSource" | "upstreamHash"> {
-  if (candidates.length === 0) return { status: "unknown", candidateSource: "", upstreamHash: "" };
+  const first = candidates[0];
+  if (!first) return { status: "unknown", candidateSource: "", upstreamHash: "" };
   const hit = candidates.find((c) => c.entry.sha === localHash);
   if (hit) return { status: "confirmed", candidateSource: hit.source, upstreamHash: hit.entry.sha };
-  return { status: "differs", candidateSource: candidates[0].source, upstreamHash: candidates[0].entry.sha };
+  return { status: "differs", candidateSource: first.source, upstreamHash: first.entry.sha };
 }
 
 /** Why a lock must not be restored, or null when it is safe. */
@@ -265,7 +266,7 @@ function audit(apply: boolean): void {
       if (candidates.some((c) => c.entry.sha === localHash)) break;
     }
     rows.push({ name, localHash, ...matchCandidates(localHash, candidates) });
-    console.log(`${name}: ${rows[rows.length - 1].status}`);
+    console.log(`${name}: ${rows.at(-1)?.status}`);
   }
 
   // 3. Report.
