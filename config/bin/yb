@@ -83,6 +83,14 @@
 #USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
 #USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
 #USAGE cmd "notes" help="Open Raycast Notes"
+#USAGE cmd "tui" help="Open a TUI in a floating Ghostty window centred on the focused screen (config/tuis.toml)" {
+#USAGE   long_help "The window is titled tui:<name>; a second call focuses it. It closes when the tool exits."
+#USAGE   arg "<name>" help="The TUI's name, as in config/tuis.toml"
+#USAGE   flag "--command <command>" required=#true help="What to run, through the login shell"
+#USAGE   flag "--width <width>" default="875" help="Window width in points"
+#USAGE   flag "--height <height>" default="600" help="Window height in points"
+#USAGE   flag "--pause" help="Wait for a key before the window closes (for one-shot commands)"
+#USAGE }
 #USAGE cmd "log" help="Show the tiling trace (~/.local/state/dots/tiling.log): keys, yb calls, yabai events" {
 #USAGE   flag "-f --follow" help="Keep following new lines"
 #USAGE }
@@ -128,7 +136,7 @@ Y() {
 Yq() { "$yabai" -m "$@" 2>/dev/null; }
 
 case "$1" in
-  app | browser | term | nvim | system | hotkeys | notes | bar | log | sa | update | use) ;;
+  app | browser | term | nvim | system | hotkeys | notes | tui | bar | log | sa | update | use) ;;
   *)
     if [[ ! -x $yabai ]]; then
       log "yabai not found at $yabai"
@@ -184,19 +192,68 @@ ghostty_window() {
 # macOS opens an app's new window where the app last was, not on the screen with the keyboard: wait for the new
 # window and bring it to the focused screen.
 follow_new_window() {
-  local app="$1" before="$2" display="$3" step found
+  local found
+  found="$(new_window "$1" "$2")"
+  [[ -n $found ]] || return 0
+  found="${found% *}"
+  if [[ ${found#* } != "$3" ]]; then
+    Y window "${found%% *}" --display "$3"
+  fi
+  Y window --focus "${found%% *}"
+}
+
+# A TUI in its own Ghostty window, titled tui:<name> so the next call finds and focuses it. Ghostty runs the
+# command through the login shell (the user's PATH) and closes the window when it exits. With yabai, the
+# window is brought to the focused screen, floated, sized and centred.
+tui_open() {
+  local name="$1" command="$2" width="$3" height="$4" pause="$5" title="tui:$1" windows="" display="" frame="" line found id
+  if [[ -x $yabai ]]; then
+    windows="$("$yabai" -m query --windows 2>/dev/null)"
+    id="$(jq -r --arg t "$title" 'first(.[]? | select(.app == "Ghostty" and .title == $t) | .id) // empty' <<<"${windows:-[]}" 2>/dev/null)"
+    if [[ -n $id ]]; then
+      Y window --focus "$id"
+      return
+    fi
+    display="$("$yabai" -m query --displays --display 2>/dev/null)"
+  fi
+  [[ $pause == true ]] && command+="; read -k1 -s"
+  local q="'\\''"
+  line="${SHELL:-/bin/zsh} -lic '${command//\'/$q}'"
+  if [[ "$(osascript -e 'application "Ghostty" is running' 2>/dev/null)" != true ]]; then
+    open -a Ghostty
+    sleep "${YB_TUI_LAUNCH_WAIT:-1}"
+  fi
+  osascript -e 'on run argv' -e 'tell application "Ghostty"' -e 'set cfg to new surface configuration' \
+    -e 'set command of cfg to item 1 of argv' -e 'set wait after command of cfg to false' \
+    -e 'set w to new window with configuration cfg' \
+    -e 'set name override of focused terminal of selected tab of w to item 2 of argv' \
+    -e 'end tell' -e 'end run' "$line" "$title" >/dev/null || return
+  [[ -n $display ]] || return 0
+  found="$(new_window Ghostty "$(jq -c '[.[]?.id]' <<<"${windows:-[]}")")"
+  [[ -n $found ]] || return 0
+  id="${found%% *}"
+  local on="${${found#* }%% *}" floating="${found##* }" index
+  index="$(jq -r '.index' <<<"$display")"
+  [[ $on == "$index" ]] || Y window "$id" --display "$index"
+  [[ $floating == true ]] || Y window "$id" --toggle float
+  Y window "$id" --resize "abs:$width:$height"
+  Y window "$id" --move "$(jq -r --argjson w "$width" --argjson h "$height" \
+    '.frame | "abs:\((.x + (.w - $w) / 2) | floor):\((.y + (.h - $h) / 2) | floor)"' <<<"$display")"
+  Y window --focus "$id"
+}
+
+# Wait for a window of app (any app when empty) whose id is not in before (a JSON array); prints
+# "<id> <display> <is-floating>", or nothing when none shows up.
+new_window() {
+  local app="$1" before="$2" step found
   for step in {1..${YB_WAIT_STEPS:-20}}; do
     found="$("$yabai" -m query --windows 2>/dev/null |
       jq -r --arg app "$app" --argjson before "$before" \
-        '[.[] | select(($app == "" or .app == $app) and ([.id] | inside($before) | not))] | first | select(. != null) | "\(.id) \(.display)"' 2>/dev/null)"
+        '[.[] | select(($app == "" or .app == $app) and ([.id] | inside($before) | not))] | first | select(. != null) | "\(.id) \(.display) \(."is-floating" // false)"' 2>/dev/null)"
     [[ -n $found ]] && break
     sleep 0.1
   done
-  [[ -n $found ]] || return 0
-  if [[ ${found#* } != "$display" ]]; then
-    Y window "${found%% *}" --display "$display"
-  fi
-  Y window --focus "${found%% *}"
+  print -r -- "$found"
 }
 
 # The default browser's bundle id (what opens https links); DOTS_BROWSER_ID overrides it (tests).
@@ -621,6 +678,16 @@ main() {
     system) kb system.screen ;;
     hotkeys) kb hotkeys.screen ;;
     notes) open "raycast://extensions/raycast/raycast-notes/raycast-notes" ;;
+    tui)
+      local size
+      for size in width height; do
+        if [[ ${(P)${:-usage_$size}} != <1-> ]]; then
+          print -u2 "yb tui: --$size must be a whole number of points"
+          exit 1
+        fi
+      done
+      tui_open "$usage_name" "$usage_command" "$usage_width" "$usage_height" "${usage_pause:-false}"
+      ;;
     log)
       if [[ ${usage_follow:-false} == true ]]; then tail -n 50 -f "$tracefile"; else tail -n 50 "$tracefile" 2>/dev/null; fi
       ;;
