@@ -291,7 +291,8 @@ CHECK: `✓` works today; `S` needs space switching; `A` needs the scripting add
 |   ✓   |  Apps   | fn + ⇧ + v          | Visual Studio Code                                                   |
 |   ✓   |  Apps   | fn + ⇧ + g          | Gemini                                                               |
 |   ✓   |  Apps   | fn + ⇧ + n          | Neovim                                                               |
-|   ?   |  Apps   | fn + q              | Raycast Notes (instead of Quick Note)                                |
+|   ✓   |  Apps   | fn + q              | Raycast Notes (instead of Quick Note)                                |
+|   ✓   |  Apps   | fn + e              | Raycast emoji picker (instead of macOS emoji picker)                 |
 |   ✓   | System  | fn + k              | Show these hotkeys                                                   |
 |   ✓   | System  | fn + Esc            | System: lock, sleep, restart                                         |
 |   ✓   | System  | fn + ⌥ + ↑          | Page Up                                                              |
@@ -304,7 +305,6 @@ CHECK: `✓` works today; `S` needs space switching; `A` needs the scripting add
 |   ✓   | System  | ⌘ + Tab             | macOS app switcher, unchanged                                        |
 |   ✓   | System  | ⌘ + c               | Copy, unchanged                                                      |
 |   ✓   | System  | ⌘ + v               | Paste, unchanged                                                     |
-|   ✓   | System  | fn + e              | macOS's emoji picker                                                 |
 |   ✓   | Windows | fn + s              | Toggle the scratchpad                                                |
 |   ✓   | Windows | fn + ⌥ + s          | Send window to the scratchpad                                        |
 
