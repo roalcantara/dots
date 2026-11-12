@@ -1,3 +1,10 @@
+# [1.44.0](https://github.com/roalcantara/dots/compare/v1.43.0...v1.44.0) (2026-11-12)
+
+
+### Features
+
+* **tiling:** Refactor TUI launcher, update shortcuts, and clean up plans ([#110](https://github.com/roalcantara/dots/issues/110)) ([995940a](https://github.com/roalcantara/dots/commit/995940a02fa72c7c153b5c5ac8fb84149ace36da))
+
 # [1.43.0](https://github.com/roalcantara/dots/compare/v1.42.0...v1.43.0) (2026-11-11)
 
 
