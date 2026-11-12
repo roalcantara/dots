@@ -333,6 +333,12 @@ run = [
   "bun config/karabiner/src/build.ts",
 ]
 
+# The TUI launcher: one Raycast Script Command per entry of config/tuis.toml (config/raycast/scripts/tuis).
+[tasks."tuis:build"]
+description = "Generate the Raycast commands for the TUIs in config/tuis.toml"
+usage = 'flag "--check" help="Exit 1 when a committed script differs from config/tuis.toml, without writing"'
+run = 'bun script/tuis-build.ts ${usage_check:+--check}'
+
 # Agent skills from config/agents/skill-lock.json.
 [tasks."skills:audit"]
 description = "Classify installed agent skills against the lock and write config/agents/review.csv (-- --apply re-adds confirmed ones)"

@@ -27,7 +27,7 @@ describe("bootstrap log", () => {
     const text = readFileSync(join(logs(), files[0] as string), "utf8");
     expect(text).toContain("hello out");
     expect(text).toContain("hello err");
-    expect(readlinkSync(join(logs(), "latest.log"))).toBe(files[0]);
+    expect(readlinkSync(join(logs(), "latest.log"))).toBe(files[0] as string);
   });
 
   // mise runs hooks with `sh`: bash 3.2 in POSIX mode on macOS (no process substitution), dash on Linux.

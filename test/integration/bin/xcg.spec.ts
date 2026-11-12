@@ -92,7 +92,7 @@ function rows(view: string): Row[] {
   expect(r.code).toBe(0);
   return r.out.trim().split("\n").filter(Boolean).map((line) => {
     const [kind, ref, display] = line.split("\t");
-    return { kind, ref, display };
+    return { kind: kind ?? "", ref: ref ?? "", display: display ?? "" };
   });
 }
 

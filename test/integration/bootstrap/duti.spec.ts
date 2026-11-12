@@ -17,7 +17,7 @@ describe("default apps (config/duti/defaults.duti)", () => {
 
   it("names real UTIs only, never a video type such as .ts's", () => {
     for (const l of lines) {
-      const uti = l.split("\t")[1];
+      const uti = l.split("\t")[1] ?? "";
       expect(uti.startsWith("dyn.")).toBe(false);
       expect(uti).not.toBe("public.mpeg-2-transport-stream");
     }

@@ -1,0 +1,19 @@
+# TUIs opened from Raycast in a floating Ghostty window (docs/TILING.md, "TUIs"). One table per TUI; the
+# table name is what `yb tui` and the window title (tui:<name>) use. After editing, run `mise run tuis:build`.
+#
+#   title   = Raycast title (default: the name)
+#   command = what to run, through the login shell (required)
+#   icon    = emoji, or a file under config/raycast/scripts/images (optional)
+#   size    = [width, height] in points (default [875, 600])
+#   pause   = true to wait for a key before the window closes, for one-shot commands (default false)
+
+[psc]
+title = "Copy a secret"
+command = "psc"
+icon = "🔑"
+
+[pss]
+title = "Reveal a secret"
+command = "pss"
+icon = "👁️"
+pause = true

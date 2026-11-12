@@ -4,14 +4,15 @@
 // Claude Code reads CLAUDE_CODE_SHELL from ~/.claude/settings.json; Copilot chat reads
 // chat.tools.terminal.terminalProfile.<platform> from the VS Code settings.
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const REPO = join(import.meta.dir, "../../..");
 const read = (p: string) => readFileSync(join(REPO, p), "utf8");
 const claude = JSON.parse(read("config/claude/settings.json"));
 const vscode = Bun.JSONC.parse(read("config/vscode/settings.json")) as Record<string, any>;
-const links = (Bun.TOML.parse(read("config/mise/conf.d/dotfiles.toml")) as any).dotfiles;
+const boot = Bun.TOML.parse(read("config/mise/conf.d/dotfiles.toml")) as any;
+const links = boot.dotfiles;
 const bashrc = read("config/bash/bashrc");
 
 describe("agent shell", () => {
@@ -32,6 +33,31 @@ describe("agent shell", () => {
       relative: true,
     });
     expect(links["~/.config/claude"].source).toBe("~/.local/share/dots/config/claude");
+  });
+
+  // Claude Code reads user commands and skills only from ~/.claude; the skills CLI and the owner's
+  // commands live in ~/.agents, shared with the other agents.
+  it("links ~/.claude/commands to the shared agent commands", () => {
+    expect(links["~/.claude/commands"]).toEqual({
+      source: "~/.local/share/dots/config/agents/commands",
+      relative: true,
+    });
+    expect(links["~/.agents/commands"].source).toBe("~/.local/share/dots/config/agents/commands");
+  });
+
+  // mise refuses a missing source, and the images carry no ~/.agents/skills: macOS only, folder made first.
+  it("links ~/.claude/skills to the skills CLI's global folder on macOS", () => {
+    expect(links["claude-skills"]).toEqual({
+      source: "~/.agents/skills",
+      relative: true,
+      variants: [{ os: "macos", target: "~/.claude/skills" }],
+    });
+    expect(boot.bootstrap.directories["~/.agents/skills"]).toEqual({ os: "macos" });
+  });
+
+  it("keeps every command in config/agents/commands", () => {
+    expect(existsSync(join(REPO, "config/claude/commands"))).toBe(false);
+    expect(existsSync(join(REPO, "config/agents/commands/opsx/apply.md"))).toBe(true);
   });
 
   it("the lookup agent runs on Haiku with read-only tools", () => {

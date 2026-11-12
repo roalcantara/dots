@@ -1,4 +1,6 @@
 #:schema ../../../../config/restic/backup.schema.json
+# Invalid on purpose: backup.spec.ts expects taplo to reject it, so the editor's Tombi skips it.
+#:tombi lint.disabled = true
 [repository]
 path = "r"
 

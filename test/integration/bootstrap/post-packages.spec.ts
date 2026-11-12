@@ -80,7 +80,7 @@ describe("post-packages hook", () => {
   });
 
   it("CI or DOTS_STRICT makes a failed entry fatal", () => {
-    for (const strict of [{ CI: "true" }, { DOTS_STRICT: "1" }]) {
+    for (const strict of [{ CI: "true" }, { DOTS_STRICT: "1" }] as Record<string, string>[]) {
       const r = hook({ MISE_ENV: "desktop", STUB_FAIL: "desktop", ...strict });
       expect(r.code).toBe(1);
       expect(r.err).toContain("brew bundle failed: can1357/tap com.discordapp.Discord");

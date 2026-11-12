@@ -12,7 +12,7 @@ type CommandEnvironment = Record<string, string | undefined>;
 export const RunCommand = {
   with(command: readonly string[], env: CommandEnvironment = {}): Action {
     return (actor: Actor) => {
-      const result = spawnSync(command[0], command.slice(1), {
+      const result = spawnSync(command[0] as string, command.slice(1), {
         encoding: "utf8",
         env: {
           ...process.env,

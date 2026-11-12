@@ -1,3 +1,7 @@
+# The following lines were added by Docker Desktop to add commands to your PATH.
+export PATH="$PATH:/Users/roalcantara/.docker/bin"
+# End of Docker Desktop section.
+
 ## 🚀 XDG|ZSH ENVIRONMENT SETUP & OPTIMIZATION {
 # ⚡️ XDG ENVIRONMENT SETUP - Smart caching system for BLAZING FAST shell startup
 export XDG_CONFIG_HOME=$HOME/.config

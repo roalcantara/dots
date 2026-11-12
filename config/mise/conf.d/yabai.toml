@@ -2,9 +2,11 @@
 # Spec: docs/superpowers/specs/2026-11-07-yabai-omarchy-design.md.
 
 # yabai and borders run as LaunchAgents (dev.mise.<name>) and restart if they exit. PATH reaches
-# Homebrew, where yb's usage and zsh, and jq, live.
+# Homebrew, where yb's usage and zsh, and jq, live. `yb run` execs Homebrew's yabai, or the build
+# `yb use` chose on this machine, so the Accessibility grant belongs to that binary.
 [bootstrap.macos.launchd.agents.yabai]
-program = "/opt/homebrew/bin/yabai"
+program = "~/.local/bin/yb"
+args = ["run"]
 run_at_load = true
 keep_alive = true
 environment = { PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }

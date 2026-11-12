@@ -85,9 +85,10 @@ describe("yabai and borders services", () => {
   });
 
   it("loads the scripting addition without ever waiting for a password", () => {
-    // the sudoers rule names /opt/homebrew/bin/yabai; sudo matches that path exactly
-    expect(yabairc).toContain("sudo -n /opt/homebrew/bin/yabai --load-sa");
-    expect(yabairc).not.toMatch(/sudo yabai/);
+    // `yb load-sa` runs `sudo -n <the chosen yabai> --load-sa`, the path the sudoers rule names
+    expect(yabairc).toContain('"$HOME/.local/bin/yb" load-sa');
+    expect(yabairc).toContain('label=load_sa action="$HOME/.local/bin/yb load-sa"');
+    expect(yabairc).not.toMatch(/^[^#]*\bsudo /m);
   });
 
   it("keeps focus where the keyboard puts it, without animations", () => {
@@ -158,10 +159,12 @@ describe("yabai and borders services", () => {
 
   it("runs yabai and borders as LaunchAgents that restart on exit", () => {
     const agents = toml("config/mise/conf.d/yabai.toml").bootstrap.macos.launchd.agents;
-    for (const [name, program] of [["yabai", "/opt/homebrew/bin/yabai"], ["borders", "~/.local/share/janky-borders/bin/borders"]]) {
+    for (const [name, program] of [["yabai", "~/.local/bin/yb"], ["borders", "~/.local/share/janky-borders/bin/borders"]]) {
       expect(agents[name!]).toMatchObject({ program, keep_alive: true, run_at_load: true });
       expect(agents[name!].environment.PATH).toStartWith("/opt/homebrew/bin:");
     }
+    // `yb run` execs the chosen yabai (Homebrew's unless `yb use` picked another build)
+    expect(agents.yabai.args).toEqual(["run"]);
   });
 });
 

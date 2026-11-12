@@ -3,7 +3,7 @@
 // A stub yabai (DOTS_YABAI) records each call; YB_STUB_FAIL makes calls matching a regex exit 1, and
 // YB_STUB_QUERY is what `query` prints.
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { findRealBin, realUsageDir, scriptPath } from "./support/paths";
@@ -25,7 +25,10 @@ const OPEN = `#!/bin/sh\nprintf 'open %s\\n' "$*" >> "$YB_STUB_LOG"\n`;
 // osascript stand-in: answers "is running" from GHOSTTY_RUNNING and records new-window requests.
 const OSASCRIPT = `#!/bin/sh
 case "$*" in
+  *exists*"tui:"*) printf 'osascript tui-lookup %s\\n' "$*" >> "$YB_STUB_LOG"; echo "\${GHOSTTY_TUI_OPEN:-false}" ;;
   *"is running"*) echo "\${GHOSTTY_RUNNING:-true}" ;;
+  *"focus ("*"tui:"*) printf 'osascript tui-focus %s\\n' "$*" >> "$YB_STUB_LOG" ;;
+  *"tui:"*) printf 'osascript tui-new %s\\n' "$*" >> "$YB_STUB_LOG"; exit "\${OSA_FAIL:-0}" ;;
   *nvim*"new window"*) echo "osascript Ghostty new window nvim" >> "$YB_STUB_LOG" ;;
   *"make new tab"*) echo "osascript new tab" >> "$YB_STUB_LOG" ;;
   *"make new document"*) echo "osascript Safari new document" >> "$YB_STUB_LOG" ;;
@@ -238,6 +241,117 @@ describe("yb", () => {
       expect(opened(["term"], { GHOSTTY_RUNNING: "false" })).toEqual(["open -a Ghostty"]);
       expect(yb(["system"]).calls).toEqual(["open raycast://extensions/roalcantara/kb/system.screen"]);
       expect(yb(["hotkeys"]).calls).toEqual(["open raycast://extensions/roalcantara/kb/hotkeys.screen"]);
+      expect(yb(["notes"]).calls).toEqual(["open raycast://extensions/raycast/raycast-notes/raycast-notes"]);
+    });
+  });
+
+  describe("tui", () => {
+    const DISPLAY = '{"index":1,"frame":{"x":0,"y":25,"w":1512,"h":957}}';
+    const tui = (args: string[], env: Record<string, string> = {}) =>
+      yb(["tui", "psc", ...args], { YB_STUB_DISPLAY: DISPLAY, YB_TUI_SETTLE: "0", ...env });
+    const osa = (calls: string[]) => calls.find((c) => c.startsWith("osascript tui-new")) ?? "";
+    const rules = (calls: string[]) => calls.filter((c) => c.startsWith("-m rule"));
+
+    it("opens the tool floating and centred on the focused screen, focused", () => {
+      const r = tui(["--command", "psc"]);
+      expect(r.code).toBe(0);
+      expect(rules(r.calls)).toEqual([
+        "-m rule --add --one-shot label=tui-psc app=^Ghostty$ manage=off display=1 grid=957:1512:318:178:875:600",
+      ]);
+      const o = osa(r.calls);
+      for (const part of ["/bin/zsh -lc 'psc; ", "tui:psc", "activate window", "PATH="]) expect(o).toContain(part);
+      // the window is placed by the rule, not moved afterwards
+      expect(r.calls.filter((c) => c.startsWith("-m window"))).toEqual([]);
+    });
+
+    it("focuses the new window through yabai, and again if something took the focus", () => {
+      const env = { YB_STUB_WINDOWS_1: '[{"id":42,"app":"Ghostty","title":"tui:psc"}]', YB_TUI_SETTLE: "0" };
+      const kept = tui(["--command", "psc"], { ...env, YB_STUB_QUERY: '{"id":42}' });
+      expect(kept.calls.filter((c) => c === "-m window --focus 42")).toHaveLength(1);
+      const lost = tui(["--command", "psc"], { ...env, YB_STUB_QUERY: '{"id":7}' });
+      expect(lost.calls.filter((c) => c === "-m window --focus 42")).toHaveLength(2);
+    });
+
+    it("closes any other TUI first, so only one is shown", () => {
+      const r = tui(["--command", "psc"]);
+      const lookup = r.calls.find((c) => c.startsWith("osascript tui-lookup")) ?? "";
+      expect(lookup).toContain('close (every terminal whose name starts with "tui:" and name is not (item 1 of argv))');
+      expect(r.calls.indexOf(lookup)).toBeLessThan(r.calls.indexOf(osa(r.calls)));
+    });
+
+    it("puts the window right when it lands on the wrong screen or at the wrong size", () => {
+      const env = { YB_STUB_QUERY: '{"id":42}' };
+      const good = '[{"id":42,"app":"Ghostty","title":"tui:psc","display":1,"frame":{"x":323,"y":206,"w":863,"h":575}}]';
+      expect(tui(["--command", "psc"], { ...env, YB_STUB_WINDOWS_1: good }).calls.filter((c) => /--(display|resize|move) /.test(c))).toEqual([]);
+      const off = '[{"id":42,"app":"Ghostty","title":"tui:psc","display":2,"frame":{"x":611,"y":393,"w":486,"h":366}}]';
+      expect(tui(["--command", "psc"], { ...env, YB_STUB_WINDOWS_1: off }).calls.filter((c) => /--(display|resize|move) /.test(c))).toEqual([
+        "-m window 42 --display 1",
+        "-m window 42 --resize abs:875:600",
+        "-m window 42 --move abs:318:203",
+      ]);
+    });
+
+    it("adds the rule before asking Ghostty for the window", () => {
+      const r = tui(["--command", "psc"]);
+      expect(r.calls.indexOf(rules(r.calls)[0]!)).toBeLessThan(r.calls.indexOf(osa(r.calls)));
+    });
+
+    it("uses the given size", () => {
+      const r = tui(["--command", "psc", "--width", "1000", "--height", "700"]);
+      expect(rules(r.calls)[0]).toEndWith("grid=957:1512:256:128:1000:700");
+    });
+
+    it("refuses a size that is not a number", () => {
+      const r = tui(["--command", "psc", "--width", "wide"]);
+      expect(r.code).toBe(1);
+      expect(r.out).toContain("--width");
+      expect(osa(r.calls)).toBe("");
+    });
+
+    it("focuses the open window instead of opening another", () => {
+      const r = tui(["--command", "psc"], { GHOSTTY_TUI_OPEN: "true" });
+      expect(r.calls.some((c) => c.startsWith("osascript tui-focus") && c.includes("tui:psc"))).toBe(true);
+      expect(osa(r.calls)).toBe("");
+      expect(rules(r.calls)).toEqual([]);
+    });
+
+    it("closes its own window when the tool exits", () => {
+      expect(osa(tui(["--command", "psc"]).calls)).toContain("close (every terminal whose name is");
+    });
+
+    it("keeps quotes in the command", () => {
+      const o = osa(tui(["--command", "bash -c 'dust; read -n 1 -s'"]).calls);
+      expect(o).toContain(String.raw`-lc 'bash -c '\''dust; read -n 1 -s'\''; `);
+    });
+
+    it("pauses before closing when asked", () => {
+      expect(osa(tui(["--command", "brew outdated", "--pause"]).calls)).toContain("-lc 'brew outdated; read -k1 -s; ");
+    });
+
+    it("launches Ghostty before adding the rule, so its own first window is not taken", () => {
+      const r = tui(["--command", "psc"], { GHOSTTY_RUNNING: "false", YB_TUI_LAUNCH_WAIT: "0" });
+      const open = r.calls.indexOf("open -a Ghostty");
+      expect(open).toBeGreaterThanOrEqual(0);
+      expect(open).toBeLessThan(r.calls.indexOf(rules(r.calls)[0]!));
+    });
+
+    it("drops the rule when Ghostty could not open the window", () => {
+      const r = tui(["--command", "psc"], { OSA_FAIL: "1" });
+      expect(r.code).not.toBe(0);
+      expect(r.calls).toContain("-m rule --remove tui-psc");
+    });
+
+    it("opens without yabai", () => {
+      const r = tui(["--command", "psc"], { DOTS_YABAI: join(dir, "no-yabai") });
+      expect(r.code).toBe(0);
+      expect(osa(r.calls)).not.toBe("");
+      expect(r.calls.filter((c) => c.startsWith("-m"))).toEqual([]);
+    });
+
+    it("needs a command", () => {
+      const r = yb(["tui", "psc"]);
+      expect(r.code).not.toBe(0);
+      expect(r.out).toContain("--command");
     });
   });
 
@@ -293,7 +407,7 @@ describe("yb spaces", () => {
     }));
   }
   const read = () => JSON.parse(readFileSync(state, "utf8")) as { displays: { id: number; index: number }[]; spaces: Space[]; calls: string[] };
-  const run = () => {
+  const run = (env: Record<string, string> = {}) => {
     const r = Bun.spawnSync([script, "spaces"], {
       stdout: "pipe",
       stderr: "pipe",
@@ -303,6 +417,7 @@ describe("yb spaces", () => {
         DOTS_YABAI: shim,
         DOTS_DISPLAYS_JSON: profiler,
         FAKE_STATE: state,
+        ...env,
       },
     });
     return { code: r.exitCode, err: r.stderr.toString() };
@@ -365,6 +480,25 @@ describe("yb spaces", () => {
     expect(run().code).toBe(0);
     expect(read().calls).toHaveLength(calls);
   });
+
+  // Labels stay with their spaces (fn + 7 always reaches the same one), so a space that drifted out of
+  // place moves back instead of being relabelled.
+  it("puts each screen's spaces back in label order, keeping every label on its space", () => {
+    const shuffled: Array<[number, string]> = [[1, "s1"], [1, "s3"], [1, "s2"], [1, "s5"], [1, "s4"], [2, "s6"], [2, "s8"], [2, "s7"], [2, "s10"], [2, "s9"]];
+    setup([[BUILTIN, 1], [EXTERNAL, 2]], shuffled);
+    const ids = new Map(read().spaces.map((s) => [s.label, s.id]));
+    expect(run().code).toBe(0);
+    expect(labelsOn(BUILTIN)).toEqual(S(1, 5));
+    expect(labelsOn(EXTERNAL)).toEqual(S(6, 10));
+    for (const s of read().spaces) expect(s.id).toBe(ids.get(s.label)!);
+    expect(read().calls.every((c) => / --move prev$/.test(c))).toBe(true);
+  });
+
+  it("without the scripting addition, leaves the order alone and still succeeds", () => {
+    setup([[BUILTIN, 1], [EXTERNAL, 2]], [[1, "s1"], [1, "s3"], [1, "s2"], [1, "s4"], [1, "s5"], ...S(6, 10).map((l) => [2, l] as [number, string])]);
+    expect(run({ FAKE_NO_SA: "1" }).code).toBe(0);
+    expect(labelsOn(BUILTIN)).toEqual(["s1", "s3", "s2", "s4", "s5"]);
+  });
 });
 
 describe("yb sa", () => {
@@ -394,9 +528,9 @@ exit 0
   });
   afterAll(() => rmSync(sa, { recursive: true, force: true }));
 
-  function runSa(env: Record<string, string> = {}) {
+  function runSa(env: Record<string, string> = {}, args = ["sa"]) {
     writeFileSync(log, "");
-    const r = Bun.spawnSync([script, "sa"], {
+    const r = Bun.spawnSync([script, ...args], {
       stdout: "pipe",
       stderr: "pipe",
       env: {
@@ -460,6 +594,51 @@ exit 0
     expect(add.out).toContain("reboot");
     const again = runSa({ NVRAM_ARGS: "-v -arm64e_preview_abi" });
     expect(again.calls.some((c) => c.includes("nvram"))).toBe(false);
+  });
+
+  describe("use: another yabai build", () => {
+    // No DOTS_YABAI: yb reads the choice `yb use` records.
+    const chosen = { DOTS_YABAI: "", NVRAM_ARGS: "-arm64e_preview_abi" };
+    const binfile = () => join(home, ".local/state/dots/yabai-bin");
+    let fork = "";
+    beforeAll(() => {
+      fork = stub("yabai-fork", "#!/bin/sh\necho \"fork $*\"\n");
+    });
+
+    it("records the build and writes the sudoers rule for it", () => {
+      const r = runSa(chosen, ["use", fork]);
+      expect(r.code).toBe(0);
+      expect(readFileSync(binfile(), "utf8").trim()).toBe(fork);
+      const forkHash = new Bun.CryptoHasher("sha256").update(readFileSync(fork)).digest("hex");
+      expect(readFileSync(target, "utf8")).toBe(`tester ALL=(root) NOPASSWD: sha256:${forkHash} ${fork} --load-sa\n`);
+      expect(r.out).toContain("launchctl kickstart -k");
+    });
+
+    it("rewrites the rule on every switch between builds", () => {
+      const r = runSa({ ...chosen, DOTS_YABAI: yabaiBin }, ["sa"]);
+      expect(r.calls.some((c) => c.startsWith("sudo install"))).toBe(true);
+      expect(readFileSync(target, "utf8")).toContain(` ${yabaiBin} --load-sa`);
+      runSa(chosen, ["sa"]);
+      expect(readFileSync(target, "utf8")).toContain(` ${fork} --load-sa`);
+    });
+
+    it("load-sa and run follow the choice", () => {
+      expect(runSa(chosen, ["load-sa"]).calls).toEqual([`sudo -n ${fork} --load-sa`]);
+      expect(runSa(chosen, ["run"]).out).toContain("fork");
+    });
+
+    it("refuses a path that is not an executable file, keeping the choice", () => {
+      const r = runSa(chosen, ["use", join(sa, "nope")]);
+      expect(r.code).not.toBe(0);
+      expect(readFileSync(binfile(), "utf8").trim()).toBe(fork);
+    });
+
+    it("brew goes back to Homebrew's yabai", () => {
+      const r = runSa(chosen, ["use", "brew"]);
+      expect(r.code).toBe(0);
+      expect(existsSync(binfile())).toBe(false);
+      expect(r.out).toContain("yabai is now /opt/homebrew/bin/yabai");
+    });
   });
 });
 

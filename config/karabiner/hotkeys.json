@@ -2,391 +2,781 @@
   {
     "keys": "fn 1",
     "label": "Go to space 1",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Shows space 1, on the built-in screen.",
+    "picture": {
+      "kind": "space",
+      "n": 1
+    }
   },
   {
     "keys": "fn 2",
     "label": "Go to space 2",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Shows space 2, on the built-in screen.",
+    "picture": {
+      "kind": "space",
+      "n": 2
+    }
   },
   {
     "keys": "fn 3",
     "label": "Go to space 3",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Shows space 3, on the built-in screen.",
+    "picture": {
+      "kind": "space",
+      "n": 3
+    }
   },
   {
     "keys": "fn 4",
     "label": "Go to space 4",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Shows space 4, on the built-in screen.",
+    "picture": {
+      "kind": "space",
+      "n": 4
+    }
   },
   {
     "keys": "fn 5",
     "label": "Go to space 5",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Shows space 5, on the built-in screen.",
+    "picture": {
+      "kind": "space",
+      "n": 5
+    }
   },
   {
     "keys": "fn 6",
     "label": "Go to space 6",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Shows space 6, on the external screen.",
+    "picture": {
+      "kind": "space",
+      "n": 6
+    }
   },
   {
     "keys": "fn 7",
     "label": "Go to space 7",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Shows space 7, on the external screen.",
+    "picture": {
+      "kind": "space",
+      "n": 7
+    }
   },
   {
     "keys": "fn 8",
     "label": "Go to space 8",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Shows space 8, on the external screen.",
+    "picture": {
+      "kind": "space",
+      "n": 8
+    }
   },
   {
     "keys": "fn 9",
     "label": "Go to space 9",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Shows space 9, on the external screen.",
+    "picture": {
+      "kind": "space",
+      "n": 9
+    }
   },
   {
     "keys": "fn 0",
     "label": "Go to space 10",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Shows space 10, on the external screen.",
+    "picture": {
+      "kind": "space",
+      "n": 10
+    }
   },
   {
     "keys": "fn ⇧ 1",
     "label": "Move window to space 1",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 1 and follows it there.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 1,
+      "stay": false
+    }
   },
   {
     "keys": "fn ⇧ 2",
     "label": "Move window to space 2",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 2 and follows it there.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 2,
+      "stay": false
+    }
   },
   {
     "keys": "fn ⇧ 3",
     "label": "Move window to space 3",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 3 and follows it there.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 3,
+      "stay": false
+    }
   },
   {
     "keys": "fn ⇧ 4",
     "label": "Move window to space 4",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 4 and follows it there.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 4,
+      "stay": false
+    }
   },
   {
     "keys": "fn ⇧ 5",
     "label": "Move window to space 5",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 5 and follows it there.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 5,
+      "stay": false
+    }
   },
   {
     "keys": "fn ⇧ 6",
     "label": "Move window to space 6",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 6 and follows it there.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 6,
+      "stay": false
+    }
   },
   {
     "keys": "fn ⇧ 7",
     "label": "Move window to space 7",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 7 and follows it there.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 7,
+      "stay": false
+    }
   },
   {
     "keys": "fn ⇧ 8",
     "label": "Move window to space 8",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 8 and follows it there.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 8,
+      "stay": false
+    }
   },
   {
     "keys": "fn ⇧ 9",
     "label": "Move window to space 9",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 9 and follows it there.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 9,
+      "stay": false
+    }
   },
   {
     "keys": "fn ⇧ 0",
     "label": "Move window to space 10",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 10 and follows it there.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 10,
+      "stay": false
+    }
   },
   {
     "keys": "fn ⌥ ⇧ 1",
     "label": "Move window to space 1, stay here",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 1 and keeps you on the space you are on.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 1,
+      "stay": true
+    }
   },
   {
     "keys": "fn ⌥ ⇧ 2",
     "label": "Move window to space 2, stay here",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 2 and keeps you on the space you are on.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 2,
+      "stay": true
+    }
   },
   {
     "keys": "fn ⌥ ⇧ 3",
     "label": "Move window to space 3, stay here",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 3 and keeps you on the space you are on.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 3,
+      "stay": true
+    }
   },
   {
     "keys": "fn ⌥ ⇧ 4",
     "label": "Move window to space 4, stay here",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 4 and keeps you on the space you are on.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 4,
+      "stay": true
+    }
   },
   {
     "keys": "fn ⌥ ⇧ 5",
     "label": "Move window to space 5, stay here",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 5 and keeps you on the space you are on.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 5,
+      "stay": true
+    }
   },
   {
     "keys": "fn ⌥ ⇧ 6",
     "label": "Move window to space 6, stay here",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 6 and keeps you on the space you are on.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 6,
+      "stay": true
+    }
   },
   {
     "keys": "fn ⌥ ⇧ 7",
     "label": "Move window to space 7, stay here",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 7 and keeps you on the space you are on.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 7,
+      "stay": true
+    }
   },
   {
     "keys": "fn ⌥ ⇧ 8",
     "label": "Move window to space 8, stay here",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 8 and keeps you on the space you are on.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 8,
+      "stay": true
+    }
   },
   {
     "keys": "fn ⌥ ⇧ 9",
     "label": "Move window to space 9, stay here",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 9 and keeps you on the space you are on.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 9,
+      "stay": true
+    }
   },
   {
     "keys": "fn ⌥ ⇧ 0",
     "label": "Move window to space 10, stay here",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Sends the focused window to space 10 and keeps you on the space you are on.",
+    "picture": {
+      "kind": "send-to-space",
+      "n": 10,
+      "stay": true
+    }
   },
   {
     "keys": "fn Tab",
     "label": "Next space on this screen",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Goes to the next space on the screen you are on, back to the first after the last.",
+    "picture": {
+      "kind": "space-cycle",
+      "dir": "next"
+    }
   },
   {
     "keys": "fn ⇧ Tab",
     "label": "Previous space on this screen",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Goes to the previous space on the screen you are on, round to the last from the first.",
+    "picture": {
+      "kind": "space-cycle",
+      "dir": "prev"
+    }
   },
   {
     "keys": "fn ⌃ Tab",
     "label": "Last space you were on",
-    "group": "Spaces"
+    "group": "Spaces",
+    "description": "Goes back to the space you were on before, like ⌘ Tab does for apps.",
+    "picture": {
+      "kind": "space-cycle",
+      "dir": "recent"
+    }
   },
   {
     "keys": "fn ←",
     "label": "Focus window west",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Moves the focus to the window to the left of the focused one; at the edge it moves to the next screen.",
+    "picture": {
+      "kind": "focus",
+      "dir": "west"
+    }
   },
   {
     "keys": "fn →",
     "label": "Focus window east",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Moves the focus to the window to the right of the focused one; at the edge it moves to the next screen.",
+    "picture": {
+      "kind": "focus",
+      "dir": "east"
+    }
   },
   {
     "keys": "fn ↑",
     "label": "Focus window north",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Moves the focus to the window above the focused one; at the edge it moves to the next screen.",
+    "picture": {
+      "kind": "focus",
+      "dir": "north"
+    }
   },
   {
     "keys": "fn ↓",
     "label": "Focus window south",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Moves the focus to the window below the focused one; at the edge it moves to the next screen.",
+    "picture": {
+      "kind": "focus",
+      "dir": "south"
+    }
   },
   {
     "keys": "fn ⇧ ←",
     "label": "Swap window west",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Swaps the focused window with the one to the left of it; the focus stays on your window.",
+    "picture": {
+      "kind": "swap",
+      "dir": "west"
+    }
   },
   {
     "keys": "fn ⇧ →",
     "label": "Swap window east",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Swaps the focused window with the one to the right of it; the focus stays on your window.",
+    "picture": {
+      "kind": "swap",
+      "dir": "east"
+    }
   },
   {
     "keys": "fn ⇧ ↑",
     "label": "Swap window north",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Swaps the focused window with the one above it; the focus stays on your window.",
+    "picture": {
+      "kind": "swap",
+      "dir": "north"
+    }
   },
   {
     "keys": "fn ⇧ ↓",
     "label": "Swap window south",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Swaps the focused window with the one below it; the focus stays on your window.",
+    "picture": {
+      "kind": "swap",
+      "dir": "south"
+    }
   },
   {
     "keys": "fn [",
     "label": "Focus the screen west",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Moves the focus to the screen on the left.",
+    "picture": {
+      "kind": "screen",
+      "dir": "west"
+    }
   },
   {
     "keys": "fn ]",
     "label": "Focus the screen east",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Moves the focus to the screen on the right.",
+    "picture": {
+      "kind": "screen",
+      "dir": "east"
+    }
   },
   {
     "keys": "fn ⇧ [",
     "label": "Send window to the screen west",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Sends the focused window to the screen on the left and follows it.",
+    "picture": {
+      "kind": "send-screen",
+      "dir": "west"
+    }
   },
   {
     "keys": "fn ⇧ ]",
     "label": "Send window to the screen east",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Sends the focused window to the screen on the right and follows it.",
+    "picture": {
+      "kind": "send-screen",
+      "dir": "east"
+    }
   },
   {
     "keys": "fn W",
     "label": "Close window",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Closes the focused window, like ⌘ W in most apps.",
+    "picture": {
+      "kind": "close"
+    }
   },
   {
     "keys": "fn T",
     "label": "Toggle tiled / floating",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Lifts the focused window out of the tiling so it floats; press again to tile it back.",
+    "picture": {
+      "kind": "float"
+    }
   },
   {
     "keys": "fn F",
     "label": "Fullscreen inside the space",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Makes the focused window fill the space while the others wait behind it; the outline turns amber. Press again to restore.",
+    "picture": {
+      "kind": "zoom",
+      "scope": "full"
+    }
   },
   {
     "keys": "fn ⌥ F",
     "label": "Full width (fill the parent split)",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Makes the focused window fill its parent split, such as the whole width of a stack. Press again to restore.",
+    "picture": {
+      "kind": "zoom",
+      "scope": "parent"
+    }
   },
   {
     "keys": "fn O",
     "label": "Pin: floating, on top, on every space",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Keeps the focused window floating, above the others and on every space. Press again to unpin. Needs the scripting addition.",
+    "picture": {
+      "kind": "pin"
+    }
   },
   {
     "keys": "fn S",
     "label": "Toggle the scratchpad",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Shows or hides the scratchpad window, a window kept out of the way until you call it. Needs the scripting addition.",
+    "picture": {
+      "kind": "scratchpad",
+      "send": false
+    }
   },
   {
     "keys": "fn ⌥ S",
     "label": "Send window to the scratchpad",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Makes the focused window the scratchpad window and hides it until fn + s brings it back.",
+    "picture": {
+      "kind": "scratchpad",
+      "send": true
+    }
   },
   {
     "keys": "fn −",
     "label": "Narrower",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Makes the focused window narrower by moving its side split.",
+    "picture": {
+      "kind": "resize",
+      "step": "w-"
+    }
   },
   {
     "keys": "fn =",
     "label": "Wider",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Makes the focused window wider by moving its side split.",
+    "picture": {
+      "kind": "resize",
+      "step": "w+"
+    }
   },
   {
     "keys": "fn ⇧ −",
     "label": "Shorter",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Makes the focused window shorter by moving the split above or below it.",
+    "picture": {
+      "kind": "resize",
+      "step": "h-"
+    }
   },
   {
     "keys": "fn ⇧ =",
     "label": "Taller",
-    "group": "Windows"
+    "group": "Windows",
+    "description": "Makes the focused window taller by moving the split above or below it.",
+    "picture": {
+      "kind": "resize",
+      "step": "h+"
+    }
   },
   {
     "keys": "fn ⇧ \\",
     "label": "Focused window and its neighbour side by side (|)",
-    "group": "Layout"
+    "group": "Layout",
+    "description": "Places the focused window and its neighbour side by side, split by a vertical line.",
+    "picture": {
+      "kind": "split",
+      "orientation": "vertical"
+    }
   },
   {
     "keys": "fn \\",
     "label": "Focused window and its neighbour one above the other (\\)",
-    "group": "Layout"
+    "group": "Layout",
+    "description": "Places the focused window and its neighbour one above the other, split by a horizontal line.",
+    "picture": {
+      "kind": "split",
+      "orientation": "horizontal"
+    }
   },
   {
     "keys": "fn ⌃ ←",
     "label": "Focused and its neighbour side by side, focused on the left",
-    "group": "Layout"
+    "group": "Layout",
+    "description": "Arranges the focused window and its neighbour side by side, with the focused one on the left.",
+    "picture": {
+      "kind": "arrange",
+      "dir": "left"
+    }
   },
   {
     "keys": "fn ⌃ →",
     "label": "Focused and its neighbour side by side, focused on the right",
-    "group": "Layout"
+    "group": "Layout",
+    "description": "Arranges the focused window and its neighbour side by side, with the focused one on the right.",
+    "picture": {
+      "kind": "arrange",
+      "dir": "right"
+    }
   },
   {
     "keys": "fn ⌃ ↑",
     "label": "Focused and its neighbour one above the other, focused on top",
-    "group": "Layout"
+    "group": "Layout",
+    "description": "Arranges the focused window and its neighbour one above the other, with the focused one on top.",
+    "picture": {
+      "kind": "arrange",
+      "dir": "up"
+    }
   },
   {
     "keys": "fn ⌃ ↓",
     "label": "Focused and its neighbour one above the other, focused at the bottom",
-    "group": "Layout"
+    "group": "Layout",
+    "description": "Arranges the focused window and its neighbour one above the other, with the focused one at the bottom.",
+    "picture": {
+      "kind": "arrange",
+      "dir": "down"
+    }
   },
   {
     "keys": "fn L",
     "label": "Toggle tiled / floating layout",
-    "group": "Layout"
+    "group": "Layout",
+    "description": "Switches this space between tiled (windows share the screen) and floating (windows stay where you put them).",
+    "picture": {
+      "kind": "layout"
+    }
   },
   {
     "keys": "fn B",
     "label": "Balance the splits",
-    "group": "Layout"
+    "group": "Layout",
+    "description": "Gives every window in this space an equal share again after resizing.",
+    "picture": {
+      "kind": "balance"
+    }
   },
   {
     "keys": "fn ⌥ ⇧ →",
     "label": "Rotate the layout clockwise",
-    "group": "Layout"
+    "group": "Layout",
+    "description": "Turns the whole layout of this space a quarter clockwise: side by side becomes one above the other.",
+    "picture": {
+      "kind": "rotate",
+      "dir": "cw"
+    }
   },
   {
     "keys": "fn ⌥ ⇧ ←",
     "label": "Rotate the layout counter-clockwise",
-    "group": "Layout"
+    "group": "Layout",
+    "description": "Turns the whole layout of this space a quarter counter-clockwise.",
+    "picture": {
+      "kind": "rotate",
+      "dir": "ccw"
+    }
   },
   {
     "keys": "fn Return",
     "label": "New Ghostty window",
-    "group": "Apps"
+    "group": "Apps",
+    "description": "Opens a new Ghostty window on the focused screen, also when Ghostty is already in front.",
+    "picture": {
+      "kind": "new-window"
+    }
   },
   {
     "keys": "fn ⇧ Return",
     "label": "New tab in the default browser",
-    "group": "Apps"
+    "group": "Apps",
+    "description": "Opens a new tab in the default browser's front window, or a first window when it has none.",
+    "picture": {
+      "kind": "new-window"
+    }
   },
   {
     "keys": "fn ⌥ ⇧ Return",
     "label": "New default browser window",
-    "group": "Apps"
+    "group": "Apps",
+    "description": "Opens a new window of the default browser on the focused screen.",
+    "picture": {
+      "kind": "new-window"
+    }
   },
   {
     "keys": "fn ⇧ F",
     "label": "Finder",
-    "group": "Apps"
+    "group": "Apps",
+    "description": "Opens Finder, or brings it to the front when it is already running.",
+    "picture": {
+      "kind": "new-window"
+    }
   },
   {
     "keys": "fn ⇧ C",
     "label": "Claude",
-    "group": "Apps"
+    "group": "Apps",
+    "description": "Opens Claude, or brings it to the front when it is already running.",
+    "picture": {
+      "kind": "new-window"
+    }
   },
   {
     "keys": "fn ⇧ V",
     "label": "Visual Studio Code",
-    "group": "Apps"
+    "group": "Apps",
+    "description": "Opens Visual Studio Code, or brings it to the front when it is already running.",
+    "picture": {
+      "kind": "new-window"
+    }
   },
   {
     "keys": "fn ⇧ G",
     "label": "Gemini",
-    "group": "Apps"
+    "group": "Apps",
+    "description": "Opens Gemini, or brings it to the front when it is already running.",
+    "picture": {
+      "kind": "new-window"
+    }
   },
   {
     "keys": "fn ⇧ N",
     "label": "Neovim",
-    "group": "Apps"
+    "group": "Apps",
+    "description": "Opens Neovim in a new Ghostty window.",
+    "picture": {
+      "kind": "new-window"
+    }
+  },
+  {
+    "keys": "fn Q",
+    "label": "Raycast Notes (instead of Quick Note)",
+    "group": "Apps",
+    "description": "Opens Raycast Notes; this key no longer opens macOS's Quick Note.",
+    "picture": {
+      "kind": "new-window"
+    }
   },
   {
     "keys": "fn K",
     "label": "Show these hotkeys",
-    "group": "System"
+    "group": "System",
+    "description": "Opens this list: every fn-layer hotkey, searchable, with what it does."
   },
   {
     "keys": "fn Esc",
     "label": "System: lock, sleep, restart",
-    "group": "System"
+    "group": "System",
+    "description": "Opens the kb System list: lock the screen, sleep or restart."
   },
   {
     "keys": "fn ⌥ ↑",
     "label": "Page Up",
-    "group": "System"
+    "group": "System",
+    "description": "Scrolls one page up, for keyboards without a Page Up key."
   },
   {
     "keys": "fn ⌥ ↓",
     "label": "Page Down",
-    "group": "System"
+    "group": "System",
+    "description": "Scrolls one page down, for keyboards without a Page Down key."
   }
 ]
