@@ -64,6 +64,26 @@ to: Do Nothing); macOS's other fn shortcuts (fn + E emoji, fn + A, C, N) are not
    `hotkeys.json`; Karabiner reloads at once.
 3. Commit both. An `hk` step and `test/integration/bootstrap/karabiner.spec.ts` fail while they are stale.
 
+## TUIs
+
+Terminal tools listed in [`config/tuis.toml`](../config/tuis.toml) open from Raycast (⌘ + Space, then the
+tool's title, such as "Copy a secret" for `psc`) in their own Ghostty window: floating, centred on the
+focused screen, 875×600 unless the entry sets `size`. The window closes when the tool quits (`q`, or Esc
+in tools that quit on Esc, such as psc's picker); Esc is never taken away from the tool. Running it again
+while its window is open focuses that window (it is titled `tui:<name>`). The work is `yb tui`; without
+yabai the window still opens, just not floated or moved.
+
+To add one:
+
+1. Add a table to `config/tuis.toml`: `command` (run through your login shell), and optionally `title`,
+   `icon`, `size = [width, height]` and `pause = true` (wait for a key before closing, for one-shot
+   commands like `brew outdated`).
+2. Run `mise run tuis:build`. It writes `config/raycast/scripts/tuis/<name>.sh` and removes the scripts of
+   entries that are gone; `mise run tuis:build --check` and `test/integration/bootstrap/tuis.spec.ts` fail
+   while they are stale.
+3. Commit both. Raycast lists the new command under the TUIs package; if it does not, add
+   `config/raycast/scripts` under Raycast → Settings → Extensions → Script Commands → Add Directories.
+
 ## Setup
 
 ### Done by `mise bootstrap`
@@ -192,6 +212,8 @@ OS), so expect them to fail there unless `yb use` runs a build that supports it 
 - [ ] fn + ⇧n opens Neovim in a new Ghostty window.
 - [ ] fn + ⇧Return opens a new tab in the default browser's front window; fn + ⌥⇧Return opens a new browser window on the focused screen.
 - [ ] fn + ⇧f Finder, ⇧c Claude, ⇧v VS Code, ⇧g Gemini.
+- [ ] ⌘ + Space → "Copy a secret" opens psc floating and centred on the focused screen; running it
+      again focuses that window; picking a secret (or Esc) closes it.
 
 ### System and keyboard
 
@@ -292,6 +314,7 @@ CHECK: `✓` works today; `S` needs space switching; `A` needs the scripting add
 |   ✓   |  Apps   | fn + ⇧ + g          | Gemini                                                               |
 |   ✓   |  Apps   | fn + ⇧ + n          | Neovim                                                               |
 |   ✓   |  Apps   | fn + q              | Raycast Notes (instead of Quick Note)                                |
+|   ?   |  Apps   | ⌘ + Space, a TUI    | Open that TUI floating and centred (config/tuis.toml)                |
 |   ✓   |  Apps   | fn + e              | Raycast emoji picker (instead of macOS emoji picker)                 |
 |   ✓   | System  | fn + k              | Show these hotkeys                                                   |
 |   ✓   | System  | fn + Esc            | System: lock, sleep, restart                                         |
