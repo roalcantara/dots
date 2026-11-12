@@ -11,3 +11,9 @@
 title = "Copy a secret"
 command = "psc"
 icon = "🔑"
+
+[pss]
+title = "Reveal a secret"
+command = "pss"
+icon = "👁️"
+pause = true
