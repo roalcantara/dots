@@ -75,8 +75,10 @@
 "~/.local/state/skills/.skill-lock.json" = { source = "~/.local/share/dots/config/agents/skill-lock.json", relative = true }
 "~/.agents/.skill-lock.json" = { source = "~/.local/share/dots/config/agents/skill-lock.json", relative = true }
 
-# The owner's agent commands.
+# The owner's agent commands. Claude Code reads user commands only from ~/.claude, so link them there too.
+# (~/.claude/skills is linked further down, on macOS only.)
 "~/.agents/commands" = { source = "~/.local/share/dots/config/agents/commands", relative = true }
+"~/.claude/commands" = { source = "~/.local/share/dots/config/agents/commands", relative = true }
 
 # VS Code reads its user settings, keybindings and snippets from Application Support on macOS, so link them to
 # the repo; the pre-dotfiles hook below clears the way. Linux machines (the Docker images) have no VS Code.
@@ -100,6 +102,13 @@ relative = true
 variants = [
   { os = "macos", target = "~/Library/Application Support/Code/User/snippets" },
 ]
+
+# Claude Code reads user skills only from ~/.claude/skills; link it to the skills CLI's global folder.
+# macOS only: the images carry no skills (the folder is created below, before the dotfiles step).
+[dotfiles.claude-skills]
+source = "~/.agents/skills"
+relative = true
+variants = [{ os = "macos", target = "~/.claude/skills" }]
 
 # A link never replaces a real file, and VS Code (or Settings Sync) and Karabiner-Elements write real ones on
 # first launch. Move them aside, never delete, so the links apply. Also runs before mise dot apply.
@@ -138,3 +147,8 @@ INSERT INTO ItemTable (key, value) VALUES
   ('sync.enable.settings', 'false'), ('sync.enable.keybindings', 'false'), ('sync.enable.snippets', 'false');
 " || echo "bootstrap: could not turn off VS Code Settings Sync for settings, keybindings and snippets" >&2
 '''
+
+# The source of [dotfiles.claude-skills]: mise refuses a link whose source is missing, and `skills:restore`
+# fills ~/.agents/skills only after the dotfiles step, so the files step creates it first.
+[bootstrap.directories."~/.agents/skills"]
+os = "macos"
