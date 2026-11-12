@@ -370,6 +370,11 @@
     "group": "Apps"
   },
   {
+    "keys": "fn Q",
+    "label": "Raycast Notes (instead of Quick Note)",
+    "group": "Apps"
+  },
+  {
     "keys": "fn K",
     "label": "Show these hotkeys",
     "group": "System"

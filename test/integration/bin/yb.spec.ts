@@ -238,6 +238,7 @@ describe("yb", () => {
       expect(opened(["term"], { GHOSTTY_RUNNING: "false" })).toEqual(["open -a Ghostty"]);
       expect(yb(["system"]).calls).toEqual(["open raycast://extensions/roalcantara/kb/system.screen"]);
       expect(yb(["hotkeys"]).calls).toEqual(["open raycast://extensions/roalcantara/kb/hotkeys.screen"]);
+      expect(yb(["notes"]).calls).toEqual(["open raycast://extensions/raycast/raycast-notes/raycast-notes"]);
     });
   });
 

@@ -83,6 +83,7 @@ export const bindings: readonly Binding[] = [
   b('Apps', 'return_or_enter', ['shift', 'option'], 'New default browser window', ['browser', '--window']),
   ...APPS.map(([key, mods, app]) => b('Apps', key, mods, app, ['app', app])),
   b('Apps', 'n', ['shift'], 'Neovim', ['nvim']),
+  b('Apps', 'q', [], 'Raycast Notes (instead of Quick Note)', ['notes']),
 
   b('System', 'k', [], 'Show these hotkeys', ['hotkeys']),
   b('System', 'escape', [], 'System: lock, sleep, restart', ['system']),

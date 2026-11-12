@@ -82,6 +82,7 @@
 #USAGE cmd "nvim" help="Open Neovim in a new Ghostty window"
 #USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
 #USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
+#USAGE cmd "notes" help="Open Raycast Notes"
 #USAGE cmd "log" help="Show the tiling trace (~/.local/state/dots/tiling.log): keys, yb calls, yabai events" {
 #USAGE   flag "-f --follow" help="Keep following new lines"
 #USAGE }
@@ -127,7 +128,7 @@ Y() {
 Yq() { "$yabai" -m "$@" 2>/dev/null; }
 
 case "$1" in
-  app | browser | term | nvim | system | hotkeys | bar | log | sa | update | use) ;;
+  app | browser | term | nvim | system | hotkeys | notes | bar | log | sa | update | use) ;;
   *)
     if [[ ! -x $yabai ]]; then
       log "yabai not found at $yabai"
@@ -619,6 +620,7 @@ main() {
     nvim) ghostty_window nvim ;;
     system) kb system.screen ;;
     hotkeys) kb hotkeys.screen ;;
+    notes) open "raycast://extensions/raycast/raycast-notes/raycast-notes" ;;
     log)
       if [[ ${usage_follow:-false} == true ]]; then tail -n 50 -f "$tracefile"; else tail -n 50 "$tracefile" 2>/dev/null; fi
       ;;

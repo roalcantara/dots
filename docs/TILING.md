@@ -53,9 +53,9 @@ screen.
 Every shortcut is in the [QUICK REFERENCE](#quick-reference) below; press **fn + k** for the same list on
 screen (the kb Hotkeys command, read from `config/karabiner/hotkeys.json`).
 
-Karabiner acts on a fn combination only when the layer binds it, so fn + F is yabai's fullscreen, not
-macOS's. fn alone does nothing (Keyboard → Press 🌐 key to: Do Nothing); macOS's other fn shortcuts
-(fn + E emoji, fn + A, C, N, Q) are not bound, and the reference marks them `?` until checked.
+Karabiner acts on a fn combination only when the layer binds it, so fn + F is yabai's fullscreen and
+fn + Q opens Raycast Notes instead of macOS's Quick Note. fn alone does nothing (Keyboard → Press 🌐 key
+to: Do Nothing); macOS's other fn shortcuts (fn + E emoji, fn + A, C, N) are not bound and keep working.
 
 ### Change a key
 
@@ -197,8 +197,7 @@ OS), so expect them to fail there unless `yb use` runs a build that supports it 
 
 - [ ] fn + k opens the kb Hotkeys list; fn + Esc opens the kb System list.
 - [ ] fn + ⌥↑ / ⌥↓ page up / down.
-- [ ] fn + E, F, A, C, N, Q do not open macOS's emoji picker, fullscreen, Dock, Control Center,
-      Notification Center or Quick Note.
+- [ ] fn + F is yabai's fullscreen, not macOS's; fn + Q opens Raycast Notes, not Quick Note.
 - [ ] Every fn key still works with Caps Lock on.
 - [ ] ⌘C / ⌘V / ⌘Tab / ⌘Space (Raycast) behave as before.
 
@@ -292,6 +291,7 @@ CHECK: `✓` works today; `S` needs space switching; `A` needs the scripting add
 |   ✓   |  Apps   | fn + ⇧ + v          | Visual Studio Code                                                   |
 |   ✓   |  Apps   | fn + ⇧ + g          | Gemini                                                               |
 |   ✓   |  Apps   | fn + ⇧ + n          | Neovim                                                               |
+|   ?   |  Apps   | fn + q              | Raycast Notes (instead of Quick Note)                                |
 |   ✓   | System  | fn + k              | Show these hotkeys                                                   |
 |   ✓   | System  | fn + Esc            | System: lock, sleep, restart                                         |
 |   ✓   | System  | fn + ⌥ + ↑          | Page Up                                                              |
@@ -305,7 +305,6 @@ CHECK: `✓` works today; `S` needs space switching; `A` needs the scripting add
 |   ✓   | System  | ⌘ + c               | Copy, unchanged                                                      |
 |   ✓   | System  | ⌘ + v               | Paste, unchanged                                                     |
 |   ✓   | System  | fn + e              | macOS's emoji picker                                                 |
-|   ✓   | System  | fn + q              | macOS's Quick Note                                                   |
 |   ✓   | Windows | fn + s              | Toggle the scratchpad                                                |
 |   ✓   | Windows | fn + ⌥ + s          | Send window to the scratchpad                                        |
 

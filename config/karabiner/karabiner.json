@@ -1567,6 +1567,26 @@
                     "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ N' \"$HOME/.local/bin/yb\" nvim"
                   }
                 ]
+              },
+              {
+                "type": "basic",
+                "description": "Raycast Notes (instead of Quick Note)",
+                "from": {
+                  "key_code": "q",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn Q' \"$HOME/.local/bin/yb\" notes"
+                  }
+                ]
               }
             ]
           },
