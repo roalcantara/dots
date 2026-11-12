@@ -25,8 +25,10 @@ const OPEN = `#!/bin/sh\nprintf 'open %s\\n' "$*" >> "$YB_STUB_LOG"\n`;
 // osascript stand-in: answers "is running" from GHOSTTY_RUNNING and records new-window requests.
 const OSASCRIPT = `#!/bin/sh
 case "$*" in
+  *exists*"tui:"*) echo "\${GHOSTTY_TUI_OPEN:-false}" ;;
   *"is running"*) echo "\${GHOSTTY_RUNNING:-true}" ;;
-  *"tui:"*) printf 'osascript tui %s\\n' "$*" >> "$YB_STUB_LOG" ;;
+  *"focus ("*"tui:"*) printf 'osascript tui-focus %s\\n' "$*" >> "$YB_STUB_LOG" ;;
+  *"tui:"*) printf 'osascript tui-new %s\\n' "$*" >> "$YB_STUB_LOG"; exit "\${OSA_FAIL:-0}" ;;
   *nvim*"new window"*) echo "osascript Ghostty new window nvim" >> "$YB_STUB_LOG" ;;
   *"make new tab"*) echo "osascript new tab" >> "$YB_STUB_LOG" ;;
   *"make new document"*) echo "osascript Safari new document" >> "$YB_STUB_LOG" ;;
@@ -245,30 +247,31 @@ describe("yb", () => {
 
   describe("tui", () => {
     const DISPLAY = '{"index":1,"frame":{"x":0,"y":25,"w":1512,"h":957}}';
-    const win = (extra: Record<string, unknown> = {}) =>
-      JSON.stringify([{ id: 42, app: "Ghostty", title: "tui:psc", display: 1, "is-floating": false, ...extra }]);
     const tui = (args: string[], env: Record<string, string> = {}) =>
-      yb(["tui", "psc", ...args], { YB_STUB_DISPLAY: DISPLAY, YB_STUB_WINDOWS_2: win(), ...env });
-    const osa = (calls: string[]) => calls.find((c) => c.startsWith("osascript tui")) ?? "";
-    const moves = (calls: string[]) => calls.filter((c) => c.startsWith("-m window"));
+      yb(["tui", "psc", ...args], { YB_STUB_DISPLAY: DISPLAY, ...env });
+    const osa = (calls: string[]) => calls.find((c) => c.startsWith("osascript tui-new")) ?? "";
+    const rules = (calls: string[]) => calls.filter((c) => c.startsWith("-m rule"));
 
-    it("opens the tool in a floating, centred window", () => {
+    it("opens the tool floating and centred on the focused screen, focused", () => {
       const r = tui(["--command", "psc"]);
       expect(r.code).toBe(0);
-      const o = osa(r.calls);
-      for (const part of ["command", "-lic 'psc'", "wait after command", "tui:psc"]) expect(o).toContain(part);
-      expect(moves(r.calls)).toEqual([
-        "-m window 42 --toggle float",
-        "-m window 42 --resize abs:875:600",
-        "-m window 42 --move abs:318:203",
-        "-m window --focus 42",
+      expect(rules(r.calls)).toEqual([
+        "-m rule --add --one-shot label=tui-psc app=^Ghostty$ manage=off display=1 grid=957:1512:318:178:875:600",
       ]);
+      const o = osa(r.calls);
+      for (const part of ["/bin/zsh -lc 'psc; ", "tui:psc", "activate window", "PATH="]) expect(o).toContain(part);
+      // the window is placed by the rule, not moved afterwards
+      expect(r.calls.filter((c) => c.startsWith("-m window"))).toEqual([]);
+    });
+
+    it("adds the rule before asking Ghostty for the window", () => {
+      const r = tui(["--command", "psc"]);
+      expect(r.calls.indexOf(rules(r.calls)[0]!)).toBeLessThan(r.calls.indexOf(osa(r.calls)));
     });
 
     it("uses the given size", () => {
       const r = tui(["--command", "psc", "--width", "1000", "--height", "700"]);
-      expect(r.calls).toContain("-m window 42 --resize abs:1000:700");
-      expect(r.calls).toContain("-m window 42 --move abs:256:153");
+      expect(rules(r.calls)[0]).toEndWith("grid=957:1512:256:128:1000:700");
     });
 
     it("refuses a size that is not a number", () => {
@@ -278,48 +281,37 @@ describe("yb", () => {
       expect(osa(r.calls)).toBe("");
     });
 
-    it("does not re-tile a window that is already floating", () => {
-      const r = tui(["--command", "psc"], { YB_STUB_WINDOWS_2: win({ "is-floating": true }) });
-      expect(r.calls).not.toContain("-m window 42 --toggle float");
-      expect(r.calls).toContain("-m window 42 --resize abs:875:600");
-    });
-
-    it("brings the window to the focused screen", () => {
-      const m = moves(tui(["--command", "psc"], { YB_STUB_WINDOWS_2: win({ display: 2 }) }).calls);
-      expect(m.indexOf("-m window 42 --display 1")).toBeGreaterThanOrEqual(0);
-      expect(m.indexOf("-m window 42 --display 1")).toBeLessThan(m.indexOf("-m window 42 --toggle float"));
-    });
-
     it("focuses the open window instead of opening another", () => {
-      const r = tui(["--command", "psc"], { YB_STUB_WINDOWS_1: '[{"id":7,"app":"Ghostty","title":"tui:psc"}]' });
-      expect(r.calls).toContain("-m window --focus 7");
+      const r = tui(["--command", "psc"], { GHOSTTY_TUI_OPEN: "true" });
+      expect(r.calls.some((c) => c.startsWith("osascript tui-focus") && c.includes("tui:psc"))).toBe(true);
       expect(osa(r.calls)).toBe("");
+      expect(rules(r.calls)).toEqual([]);
+    });
+
+    it("closes its own window when the tool exits", () => {
+      expect(osa(tui(["--command", "psc"]).calls)).toContain("close (every terminal whose name is");
     });
 
     it("keeps quotes in the command", () => {
       const o = osa(tui(["--command", "bash -c 'dust; read -n 1 -s'"]).calls);
-      expect(o).toContain(String.raw`-lic 'bash -c '\''dust; read -n 1 -s'\'''`);
+      expect(o).toContain(String.raw`-lc 'bash -c '\''dust; read -n 1 -s'\''; `);
     });
 
     it("pauses before closing when asked", () => {
-      expect(osa(tui(["--command", "brew outdated", "--pause"]).calls)).toContain("-lic 'brew outdated; read -k1 -s'");
+      expect(osa(tui(["--command", "brew outdated", "--pause"]).calls)).toContain("-lc 'brew outdated; read -k1 -s; ");
     });
 
-    it("launches Ghostty first when it is not running", () => {
+    it("launches Ghostty before adding the rule, so its own first window is not taken", () => {
       const r = tui(["--command", "psc"], { GHOSTTY_RUNNING: "false", YB_TUI_LAUNCH_WAIT: "0" });
       const open = r.calls.indexOf("open -a Ghostty");
       expect(open).toBeGreaterThanOrEqual(0);
-      expect(open).toBeLessThan(r.calls.findIndex((c) => c.startsWith("osascript tui")));
+      expect(open).toBeLessThan(r.calls.indexOf(rules(r.calls)[0]!));
     });
 
-    it("floats the TUI window, not another new Ghostty window", () => {
-      const both = JSON.stringify([
-        { id: 41, app: "Ghostty", title: "~", display: 1, "is-floating": false },
-        { id: 42, app: "Ghostty", title: "tui:psc", display: 1, "is-floating": false },
-      ]);
-      const r = tui(["--command", "psc"], { GHOSTTY_RUNNING: "false", YB_TUI_LAUNCH_WAIT: "0", YB_STUB_WINDOWS_2: both });
-      expect(r.calls.filter((c) => c.includes("41"))).toEqual([]);
-      expect(r.calls).toContain("-m window 42 --toggle float");
+    it("drops the rule when Ghostty could not open the window", () => {
+      const r = tui(["--command", "psc"], { OSA_FAIL: "1" });
+      expect(r.code).not.toBe(0);
+      expect(r.calls).toContain("-m rule --remove tui-psc");
     });
 
     it("opens without yabai", () => {

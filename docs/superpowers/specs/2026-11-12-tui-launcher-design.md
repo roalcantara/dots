@@ -51,16 +51,22 @@ size = [875, 600]         # optional, points; default 875×600 like Omarchy
 pause = false             # optional: wait for a key before closing (for one-shot commands)
 ```
 
-**`yb tui <name>`** (config/bin/yb) reads the entry and:
+**`yb tui <name> --command … [--width] [--height] [--pause]`** (config/bin/yb, a usage command) — revised
+after the first real run, where the window showed up tiled, then floated, and stayed open after the tool exited:
 
-1. Looks for an open Ghostty window titled `tui:<name>`; if found, focuses it and stops.
-2. Otherwise opens a Ghostty window through AppleScript with a `surface configuration` whose `command`
-   runs the entry's command in the login shell, `wait after command` false (the window closes when the
-   tool exits), and sets the terminal's `name override` to `tui:<name>` so step 1 can find it.
-3. Waits for the new window (`follow_new_window`), brings it to the focused screen, makes it float,
-   resizes it to `size` and centres it on that screen.
+1. Asks Ghostty (AppleScript) for a terminal titled `tui:<name>`; if there is one, focuses it and stops.
+2. With yabai, adds a one-shot rule just before the window exists:
+   `rule --add --one-shot label=tui-<name> app=^Ghostty$ manage=off display=<focused> grid=<h>:<w>:<x>:<y>:<W>:<H>`
+   (a grid as fine as the screen, so the size is in points, centred). yabai rules apply only at creation and
+   the title is set after it, so the rule matches the app, not the title. Ghostty is launched first when it
+   is not running, so its own first window does not take the rule; the rule is removed if the window fails.
+3. Opens the window: `command` is `/bin/zsh -lc '<command>[; read -k1 -s]; <close>'` (login zsh without the
+   interactive config, ~14 ms instead of ~110 ms) with `PATH` (~/.local/bin, mise shims, Homebrew) in the
+   surface's environment; `name override` is `tui:<name>`; `activate window` focuses it, so the focus outline
+   is on it. `<close>` closes the terminal through AppleScript, because Ghostty keeps a window open after an
+   AppleScript command ends, whatever `wait after command` says.
 
-Without yabai (or its scripting addition) the window still opens; it just isn't moved or floated.
+Measured: 0.48 s from `yb tui` to a floating, focused window. Without yabai the window still opens, unplaced.
 
 **Generator** — `mise run tuis:build` writes `config/raycast/scripts/tuis/<name>.sh` per entry: a Raycast
 Script Command (`mode silent`, `packageName TUIs`, title, icon) that runs `~/.local/bin/yb tui <name>`.
