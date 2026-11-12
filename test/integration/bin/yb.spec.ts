@@ -25,7 +25,7 @@ const OPEN = `#!/bin/sh\nprintf 'open %s\\n' "$*" >> "$YB_STUB_LOG"\n`;
 // osascript stand-in: answers "is running" from GHOSTTY_RUNNING and records new-window requests.
 const OSASCRIPT = `#!/bin/sh
 case "$*" in
-  *exists*"tui:"*) echo "\${GHOSTTY_TUI_OPEN:-false}" ;;
+  *exists*"tui:"*) printf 'osascript tui-lookup %s\\n' "$*" >> "$YB_STUB_LOG"; echo "\${GHOSTTY_TUI_OPEN:-false}" ;;
   *"is running"*) echo "\${GHOSTTY_RUNNING:-true}" ;;
   *"focus ("*"tui:"*) printf 'osascript tui-focus %s\\n' "$*" >> "$YB_STUB_LOG" ;;
   *"tui:"*) printf 'osascript tui-new %s\\n' "$*" >> "$YB_STUB_LOG"; exit "\${OSA_FAIL:-0}" ;;
@@ -270,6 +270,25 @@ describe("yb", () => {
       expect(kept.calls.filter((c) => c === "-m window --focus 42")).toHaveLength(1);
       const lost = tui(["--command", "psc"], { ...env, YB_STUB_QUERY: '{"id":7}' });
       expect(lost.calls.filter((c) => c === "-m window --focus 42")).toHaveLength(2);
+    });
+
+    it("closes any other TUI first, so only one is shown", () => {
+      const r = tui(["--command", "psc"]);
+      const lookup = r.calls.find((c) => c.startsWith("osascript tui-lookup")) ?? "";
+      expect(lookup).toContain('close (every terminal whose name starts with "tui:" and name is not (item 1 of argv))');
+      expect(r.calls.indexOf(lookup)).toBeLessThan(r.calls.indexOf(osa(r.calls)));
+    });
+
+    it("puts the window right when it lands on the wrong screen or at the wrong size", () => {
+      const env = { YB_STUB_QUERY: '{"id":42}' };
+      const good = '[{"id":42,"app":"Ghostty","title":"tui:psc","display":1,"frame":{"x":323,"y":206,"w":863,"h":575}}]';
+      expect(tui(["--command", "psc"], { ...env, YB_STUB_WINDOWS_1: good }).calls.filter((c) => /--(display|resize|move) /.test(c))).toEqual([]);
+      const off = '[{"id":42,"app":"Ghostty","title":"tui:psc","display":2,"frame":{"x":611,"y":393,"w":486,"h":366}}]';
+      expect(tui(["--command", "psc"], { ...env, YB_STUB_WINDOWS_1: off }).calls.filter((c) => /--(display|resize|move) /.test(c))).toEqual([
+        "-m window 42 --display 1",
+        "-m window 42 --resize abs:875:600",
+        "-m window 42 --move abs:318:203",
+      ]);
     });
 
     it("adds the rule before asking Ghostty for the window", () => {

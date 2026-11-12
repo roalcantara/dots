@@ -70,7 +70,8 @@ Terminal tools listed in [`config/tuis.toml`](../config/tuis.toml) open from Ray
 tool's title, such as "Copy a secret" for `psc`) in their own Ghostty window: floating, centred on the
 focused screen, 875×600 unless the entry sets `size`. The window closes when the tool quits (`q`, or Esc
 in tools that quit on Esc, such as psc's picker); Esc is never taken away from the tool. Running it again
-while its window is open focuses that window (it is titled `tui:<name>`). The work is `yb tui`; without
+while its window is open focuses that window (it is titled `tui:<name>`); opening another TUI closes it,
+so one is shown at a time. The work is `yb tui`; without
 yabai the window still opens, just not floated or moved.
 
 To add one:

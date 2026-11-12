@@ -54,7 +54,9 @@ pause = false             # optional: wait for a key before closing (for one-sho
 **`yb tui <name> --command … [--width] [--height] [--pause]`** (config/bin/yb, a usage command) — revised
 after the first real run, where the window showed up tiled, then floated, and stayed open after the tool exited:
 
-1. Asks Ghostty (AppleScript) for a terminal titled `tui:<name>`; if there is one, focuses it and stops.
+1. Asks Ghostty (AppleScript) to close every other `tui:*` terminal (one TUI at a time, chosen after
+   trying both psc and pss open together), then for a terminal titled `tui:<name>`; if there is one, focuses it
+   and stops.
 2. With yabai, adds a one-shot rule just before the window exists:
    `rule --add --one-shot label=tui-<name> app=^Ghostty$ manage=off display=<focused> grid=<h>:<w>:<x>:<y>:<W>:<H>`
    (a grid as fine as the screen, so the size is in points, centred). yabai rules apply only at creation and
@@ -65,6 +67,9 @@ after the first real run, where the window showed up tiled, then floated, and st
    surface's environment; `name override` is `tui:<name>`; `activate window` focuses it, so the focus outline
    is on it. `<close>` closes the terminal through AppleScript, because Ghostty keeps a window open after an
    AppleScript command ends, whatever `wait after command` says.
+
+4. Finds the window by title through yabai, puts it right if the rule did not (another screen, or a size
+   off by more than the gaps), and focuses it; once more after 0.25 s if Raycast handed the focus back.
 
 Measured: 0.48 s from `yb tui` to a floating, focused window. Without yabai the window still opens, unplaced.
 

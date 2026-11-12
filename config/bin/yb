@@ -208,9 +208,11 @@ follow_new_window() {
 # without the interactive config (fast), with ~/.local/bin and the mise shims on PATH, and closes its own
 # window when it exits (Ghostty keeps a window open after an AppleScript command, wait after command or not).
 tui_open() {
-  local name="$1" command="$2" width="$3" height="$4" pause="$5" title="tui:$1" display index w h q="'\\''" line
-  if [[ "$(osascript -e 'on run argv' -e 'tell application "Ghostty" to if it is running then return exists (first terminal whose name is (item 1 of argv))' \
-    -e 'return false' -e 'end run' "$title" 2>/dev/null)" == true ]]; then
+  local name="$1" command="$2" width="$3" height="$4" pause="$5" title="tui:$1" display index x0 y0 w h q="'\\''" line
+  # One TUI at a time: close the others; focus this one when it is already open.
+  if [[ "$(osascript -e 'on run argv' -e 'tell application "Ghostty"' -e 'if not running then return false' \
+    -e 'close (every terminal whose name starts with "tui:" and name is not (item 1 of argv))' \
+    -e 'return exists (first terminal whose name is (item 1 of argv))' -e 'end tell' -e 'end run' "$title" 2>/dev/null)" == true ]]; then
     osascript -e 'on run argv' -e 'tell application "Ghostty"' -e 'focus (first terminal whose name is (item 1 of argv))' \
       -e 'activate' -e 'end tell' -e 'end run' "$title" >/dev/null
     return
@@ -220,7 +222,7 @@ tui_open() {
     sleep "${YB_TUI_LAUNCH_WAIT:-1}"
   fi
   if [[ -x $yabai ]] && display="$("$yabai" -m query --displays --display 2>/dev/null)" && [[ -n $display ]]; then
-    read -r index w h < <(jq -r '"\(.index) \(.frame.w | floor) \(.frame.h | floor)"' <<<"$display")
+    read -r index x0 y0 w h < <(jq -r '.index as $i | .frame | "\($i) \(.x | floor) \(.y | floor) \(.w | floor) \(.h | floor)"' <<<"$display")
     Y rule --add --one-shot "label=tui-$name" 'app=^Ghostty$' manage=off "display=$index" \
       "grid=$h:$w:$(((w - width) / 2)):$(((h - height) / 2)):$width:$height"
   fi
@@ -239,14 +241,21 @@ tui_open() {
   # Ghostty's own activation can lose to the app that had the focus before Raycast (Raycast hands it back as
   # it closes): focus the window through yabai, and once more if something took the focus right after.
   [[ -n ${index:-} ]] || return 0
-  local id step
+  local found id on fw fh step
   for step in {1..${YB_WAIT_STEPS:-20}}; do
-    id="$("$yabai" -m query --windows 2>/dev/null |
-      jq -r --arg t "$title" 'first(.[]? | select(.app == "Ghostty" and .title == $t) | .id) // empty' 2>/dev/null)"
-    [[ -n $id ]] && break
+    found="$("$yabai" -m query --windows 2>/dev/null | jq -r --arg t "$title" \
+      'first(.[]? | select(.app == "Ghostty" and .title == $t) | "\(.id) \(.display) \(.frame.w // 0 | floor) \(.frame.h // 0 | floor)") // empty' 2>/dev/null)"
+    [[ -n $found ]] && break
     sleep 0.05
   done
-  [[ -n $id ]] || return 0
+  [[ -n $found ]] || return 0
+  read -r id on fw fh <<<"$found"
+  # The rule normally places it; put it right when it did not (another screen, or sized for another screen).
+  if [[ $on != "$index" ]] || ((fw < width - 40 || fw > width + 40 || fh < height - 60 || fh > height + 60)); then
+    [[ $on == "$index" ]] || Y window "$id" --display "$index"
+    Y window "$id" --resize "abs:$width:$height"
+    Y window "$id" --move "abs:$((x0 + (w - width) / 2)):$((y0 + (h - height) / 2))"
+  fi
   Y window --focus "$id"
   sleep "${YB_TUI_SETTLE:-0.25}"
   [[ "$("$yabai" -m query --windows --window 2>/dev/null | jq -r '.id' 2>/dev/null)" == "$id" ]] || Y window --focus "$id"
