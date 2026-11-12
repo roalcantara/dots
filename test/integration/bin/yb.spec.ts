@@ -248,7 +248,7 @@ describe("yb", () => {
   describe("tui", () => {
     const DISPLAY = '{"index":1,"frame":{"x":0,"y":25,"w":1512,"h":957}}';
     const tui = (args: string[], env: Record<string, string> = {}) =>
-      yb(["tui", "psc", ...args], { YB_STUB_DISPLAY: DISPLAY, ...env });
+      yb(["tui", "psc", ...args], { YB_STUB_DISPLAY: DISPLAY, YB_TUI_SETTLE: "0", ...env });
     const osa = (calls: string[]) => calls.find((c) => c.startsWith("osascript tui-new")) ?? "";
     const rules = (calls: string[]) => calls.filter((c) => c.startsWith("-m rule"));
 
@@ -262,6 +262,14 @@ describe("yb", () => {
       for (const part of ["/bin/zsh -lc 'psc; ", "tui:psc", "activate window", "PATH="]) expect(o).toContain(part);
       // the window is placed by the rule, not moved afterwards
       expect(r.calls.filter((c) => c.startsWith("-m window"))).toEqual([]);
+    });
+
+    it("focuses the new window through yabai, and again if something took the focus", () => {
+      const env = { YB_STUB_WINDOWS_1: '[{"id":42,"app":"Ghostty","title":"tui:psc"}]', YB_TUI_SETTLE: "0" };
+      const kept = tui(["--command", "psc"], { ...env, YB_STUB_QUERY: '{"id":42}' });
+      expect(kept.calls.filter((c) => c === "-m window --focus 42")).toHaveLength(1);
+      const lost = tui(["--command", "psc"], { ...env, YB_STUB_QUERY: '{"id":7}' });
+      expect(lost.calls.filter((c) => c === "-m window --focus 42")).toHaveLength(2);
     });
 
     it("adds the rule before asking Ghostty for the window", () => {

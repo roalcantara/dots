@@ -236,6 +236,20 @@ tui_open() {
     [[ -n ${index:-} ]] && Yq rule --remove "tui-$name"
     return 1
   fi
+  # Ghostty's own activation can lose to the app that had the focus before Raycast (Raycast hands it back as
+  # it closes): focus the window through yabai, and once more if something took the focus right after.
+  [[ -n ${index:-} ]] || return 0
+  local id step
+  for step in {1..${YB_WAIT_STEPS:-20}}; do
+    id="$("$yabai" -m query --windows 2>/dev/null |
+      jq -r --arg t "$title" 'first(.[]? | select(.app == "Ghostty" and .title == $t) | .id) // empty' 2>/dev/null)"
+    [[ -n $id ]] && break
+    sleep 0.05
+  done
+  [[ -n $id ]] || return 0
+  Y window --focus "$id"
+  sleep "${YB_TUI_SETTLE:-0.25}"
+  [[ "$("$yabai" -m query --windows --window 2>/dev/null | jq -r '.id' 2>/dev/null)" == "$id" ]] || Y window --focus "$id"
 }
 # Run by the TUI's shell when the tool exits: close the terminal titled $YB_TUI (set by tui_open).
 TUI_CLOSE='osascript -e "on run argv" -e "tell application \"Ghostty\" to close (every terminal whose name is (item 1 of argv))" -e "end run" "$YB_TUI"'
