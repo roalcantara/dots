@@ -103,7 +103,7 @@ describe("karabiner fn layer", () => {
   it("writes one hotkey entry per binding", () => {
     const hotkeys = json(join(DIR, "hotkeys.json"));
     expect(hotkeys).toHaveLength(manipulators.length);
-    expect(hotkeys).toContainEqual({ keys: "fn ⇧ 1", label: "Move window to space 1", group: "Spaces" });
+    expect(hotkeys).toContainEqual(expect.objectContaining({ keys: "fn ⇧ 1", label: "Move window to space 1", group: "Spaces" }));
   });
 
   describe("--check", () => {
@@ -143,6 +143,43 @@ describe("karabiner fn layer", () => {
 });
 
 // docs/TILING.md's QUICK REFERENCE is the one list of shortcuts: every binding has exactly one row there.
+// The kb Hotkeys command draws these (kb: specs/006-hotkey-pictures/spec.md); the kinds are the contract.
+const KINDS = [
+  "space", "send-to-space", "space-cycle", "focus", "swap", "screen", "send-screen", "close", "float", "zoom", "pin",
+  "scratchpad", "resize", "split", "arrange", "layout", "balance", "rotate", "new-window",
+];
+type Entry = { keys: string; label: string; description?: string; picture?: { kind: string } & Record<string, unknown> };
+
+describe("hotkeys.json for the kb Hotkeys command", () => {
+  const hotkeys: Entry[] = json(join(DIR, "hotkeys.json"));
+  const entry = (keys: string) => hotkeys.find((h) => h.keys === keys);
+
+  it("every hotkey has a description", () => {
+    for (const h of hotkeys) {
+      expect(typeof h.description, h.keys).toBe("string");
+      expect(h.description!.trim(), h.keys).not.toBe("");
+      expect(h.description, h.keys).not.toBe(h.label);
+    }
+  });
+
+  it("pictures use only the agreed kinds", () => {
+    for (const h of hotkeys) if (h.picture) expect(KINDS, h.keys).toContain(h.picture.kind);
+  });
+
+  it("the families get the expected pictures", () => {
+    expect(entry("fn 3")?.picture).toEqual({ kind: "space", n: 3 });
+    expect(entry("fn ⇧ 3")?.picture).toEqual({ kind: "send-to-space", n: 3, stay: false });
+    expect(entry("fn ⌥ ⇧ 3")?.picture).toEqual({ kind: "send-to-space", n: 3, stay: true });
+    expect(entry("fn 0")?.picture).toEqual({ kind: "space", n: 10 });
+    expect(entry("fn ⌃ ←")?.picture).toEqual({ kind: "arrange", dir: "left" });
+    expect(entry("fn ⇧ \\")?.picture).toEqual({ kind: "split", orientation: "vertical" });
+    expect(entry("fn →")?.picture).toEqual({ kind: "focus", dir: "east" });
+    expect(entry("fn Return")?.picture).toEqual({ kind: "new-window" });
+    expect(entry("fn K")?.picture).toBeUndefined();
+    expect(entry("fn Esc")?.picture).toBeUndefined();
+  });
+});
+
 describe("the QUICK REFERENCE in docs/TILING.md", () => {
   const doc = readFileSync(join(REPO, "docs/TILING.md"), "utf8");
   const section = doc.slice(doc.indexOf("## QUICK REFERENCE"), doc.indexOf("\n## ", doc.indexOf("## QUICK REFERENCE") + 1));

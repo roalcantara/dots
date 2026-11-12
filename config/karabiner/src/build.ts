@@ -56,6 +56,8 @@ const hotkeys = () =>
     keys: keysOf(x),
     label: x.label,
     group: x.group,
+    description: x.description,
+    ...(x.picture ? { picture: x.picture } : {}),
   }))
 
 const hotkeysText = () => `${JSON.stringify(hotkeys(), null, 2)}\n`
