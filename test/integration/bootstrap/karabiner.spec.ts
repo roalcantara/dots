@@ -148,6 +148,39 @@ const KINDS = [
   "space", "send-to-space", "space-cycle", "focus", "swap", "screen", "send-screen", "close", "float", "zoom", "pin",
   "scratchpad", "resize", "split", "arrange", "layout", "balance", "rotate", "new-window",
 ];
+// Each kind's parameters and their allowed values, as kb's parsePicture (packages/core/src/yabai/picture.ts)
+// checks them: a picture kb would reject is dropped there without a word, so it is caught here instead.
+const oneOf = (...values: unknown[]) => (v: unknown) => values.includes(v);
+const space = (v: unknown) => Number.isInteger(v) && (v as number) >= 1 && (v as number) <= 10;
+const bool = (v: unknown) => typeof v === "boolean";
+const compass = oneOf("west", "east", "north", "south");
+const PARAMS: Record<string, Record<string, (v: unknown) => boolean>> = {
+  space: { n: space },
+  "send-to-space": { n: space, stay: bool },
+  "space-cycle": { dir: oneOf("next", "prev", "recent") },
+  focus: { dir: compass },
+  swap: { dir: compass },
+  screen: { dir: oneOf("west", "east") },
+  "send-screen": { dir: oneOf("west", "east") },
+  close: {},
+  float: {},
+  zoom: { scope: oneOf("full", "parent") },
+  pin: {},
+  scratchpad: { send: bool },
+  resize: { step: oneOf("w-", "w+", "h-", "h+") },
+  split: { orientation: oneOf("vertical", "horizontal") },
+  arrange: { dir: oneOf("left", "right", "up", "down") },
+  layout: {},
+  balance: {},
+  rotate: { dir: oneOf("cw", "ccw") },
+  "new-window": {},
+};
+const validPicture = ({ kind, ...params }: { kind: string } & Record<string, unknown>): boolean => {
+  const rules = PARAMS[kind];
+  if (!rules) return false;
+  const names = Object.keys(params).sort();
+  return names.join() === Object.keys(rules).sort().join() && names.every((n) => rules[n]!(params[n]));
+};
 type Entry = { keys: string; label: string; description?: string; picture?: { kind: string } & Record<string, unknown> };
 
 describe("hotkeys.json for the kb Hotkeys command", () => {
@@ -164,6 +197,20 @@ describe("hotkeys.json for the kb Hotkeys command", () => {
 
   it("pictures use only the agreed kinds", () => {
     for (const h of hotkeys) if (h.picture) expect(KINDS, h.keys).toContain(h.picture.kind);
+  });
+
+  it("picture parameters match what kb accepts", () => {
+    for (const h of hotkeys) if (h.picture) expect(validPicture(h.picture), `${h.keys} ${JSON.stringify(h.picture)}`).toBe(true);
+  });
+
+  it("the parameter check rejects what kb would drop", () => {
+    expect(validPicture({ kind: "space", n: 11 })).toBe(false);
+    expect(validPicture({ kind: "space", n: 1.5 })).toBe(false);
+    expect(validPicture({ kind: "resize", step: "w" })).toBe(false);
+    expect(validPicture({ kind: "screen", dir: "north" })).toBe(false);
+    expect(validPicture({ kind: "send-to-space", n: 3 })).toBe(false);
+    expect(validPicture({ kind: "close", extra: 1 })).toBe(false);
+    expect(validPicture({ kind: "zoom", scope: "parent" })).toBe(true);
   });
 
   it("the families get the expected pictures", () => {
