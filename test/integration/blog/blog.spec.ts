@@ -75,11 +75,12 @@ describe("checkPost", () => {
     for (const r of [
       "block:tags-max-4",
       "block:description-missing",
-      "block:recipe-missing",
-      "block:recipe-use-it-when",
+      "block:tldr-missing",
+      "block:ai-disclosure",
       "block:raw-image",
       "block:linkedin-missing",
       "warn:hype-word",
+      "warn:sections",
       "warn:gotchas-over-3",
     ]) expect(got).toContain(r);
   });
@@ -560,5 +561,37 @@ describe("leaks and escapes", () => {
     const tpl = readFileSync(join(REPO, "docs/blog/tools/cover.html"), "utf8");
     const html = coverHtml(tpl, { series: "<img src=x>" as unknown as number, title: ["a", "b"], highlight: "c", subtitle: "d", window: { kind: "app", lines: [] } }, { series: 0, tags: [] });
     expect(html).not.toContain("<img src=x>");
+  });
+});
+
+describe("wiki layout", () => {
+  const rulesIn = (dir: string) => checkPost(dir, HYPE).map((f) => `${f.level}:${f.rule}`);
+  const withPost = (edit: (text: string) => string) => {
+    const dir = mkdtempSync(join(tmpdir(), "post-"));
+    cpSync(join(FIX, "good"), dir, { recursive: true });
+    writeFileSync(join(dir, "post.md"), edit(readFileSync(join(dir, "post.md"), "utf8")));
+    return dir;
+  };
+
+  it("finds Use it when only inside the TL;DR section", () => {
+    const dir = withPost((t) => t.replace("> **Use it when:** an agent's loop runs once.\n", "").replace("## 🧠 Lessons", "## 🧠 Lessons\n\n> **Use it when:** later"));
+    expect(rulesIn(dir)).toEqual(["block:tldr-use-it-when"]);
+  });
+
+  it("warns about sections out of order, and allows skipping Alternatives", () => {
+    expect(rulesIn(withPost((t) => t))).toEqual([]);
+    const swapped = withPost((t) => t.replace("## 🔍 Why it happens", "## 🔍 WHY").replace("## 🛠️ The fix", "## 🔍 Why it happens\n\n## 🛠️ The fix").replace("## 🔍 WHY\n\n", ""));
+    expect(rulesIn(withPost((t) => t.replace("## 🧪 Check it works\n\n", "")))).toEqual(["warn:sections"]);
+    expect(rulesIn(swapped)).toEqual([]);
+  });
+
+  it("blocks a post without the AI disclosure", () => {
+    expect(rulesIn(withPost((t) => t.replace("Drafted with AI help; every claim was checked by me, and the story is mine.", "")))).toEqual(["block:ai-disclosure"]);
+  });
+
+  it("exempts a legacy post from the layout and the disclosure", () => {
+    const dir = mkdtempSync(join(tmpdir(), "post-"));
+    writeFileSync(join(dir, "post.md"), "---\ntitle: Old\ndescription: d\ntags: a\nlegacy: true\n---\n**OVERVIEW**\n");
+    expect(rulesIn(dir)).toEqual([]);
   });
 });

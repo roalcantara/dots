@@ -72,18 +72,36 @@ export function linkedinHook(text: string): string {
   return after.trim().split(/\n\s*\n/)[0]?.trim() ?? "";
 }
 
-const gotchaCount = (body: string): number => {
+// The gotchas are the `###` headings inside `## ⚠️ Gotchas`.
+const gotchaCount = (body: string): number =>
+  (sectionBody(body, "## ⚠️ Gotchas") ?? "").split("\n").filter((l) => /^### /.test(l)).length;
+
+// The wiki layout (docs/blog/STYLE.md, "Post layout"): every post's `##` sections, in this order.
+export const SECTIONS = [
+  "## ⚡ TL;DR", "## 🪲 The problem", "## 🔍 Why it happens", "## 🛠️ The fix", "## 🧪 Check it works",
+  "## ⚠️ Gotchas", "## ⚖️ Alternatives", "## 🧠 Lessons", "## 📚 References",
+] as const;
+const OPTIONAL = new Set(["## ⚖️ Alternatives"]);
+
+// The text of one `##` section (up to the next `## `), or undefined when it is missing.
+export function sectionBody(body: string, heading: string): string | undefined {
   const lines = body.split("\n");
-  const at = lines.findIndex((l) => /\*\*Gotchas:\*\*/.test(l));
-  if (at < 0) return 0;
-  const inline = (lines[at]?.split(/\*\*Gotchas:\*\*/)[1] ?? "").split(/\s+·\s+|;\s+/).filter((s) => s.trim()).length;
-  let bullets = 0;
-  for (const l of lines.slice(at + 1)) {
-    if (!/^\s*[-*]\s+/.test(l)) break;
-    bullets++;
-  }
-  return inline + bullets;
-};
+  const at = lines.findIndex((l) => l.trim() === heading);
+  if (at < 0) return undefined;
+  const end = lines.findIndex((l, i) => i > at && /^## /.test(l));
+  return lines.slice(at + 1, end < 0 ? undefined : end).join("\n");
+}
+
+// A message when a required section is missing or the sections are out of order; undefined when all is well.
+export function sectionsOrder(body: string): string | undefined {
+  const present = body.split("\n").map((l) => l.trim()).filter((l) => (SECTIONS as readonly string[]).includes(l));
+  const missing = SECTIONS.filter((s) => !OPTIONAL.has(s) && !present.includes(s));
+  const expected = SECTIONS.filter((s) => present.includes(s));
+  const outOfOrder = present.some((s, i) => s !== expected[i]);
+  if (!missing.length && !outOfOrder) return undefined;
+  return [missing.length ? `missing ${missing.map((m) => m.slice(3)).join(", ")}` : "", outOfOrder ? "sections out of order" : ""]
+    .filter(Boolean).join("; ");
+}
 
 export function checkPost(dir: string, hypeWords: string[]): Finding[] {
   const out: Finding[] = [];
@@ -103,8 +121,14 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
   if (/\]\(\.?\/?raw\//.test(text)) block("raw-image", "an image points at raw/ (unblurred captures)");
   // A post published before the tooling (front matter `legacy: true`) skips the content rules, never safety.
   if (fm.legacy === true) return out;
-  if (!/^\*\*RECIPE\*\*\s*$/m.test(body)) block("recipe-missing", "no **RECIPE** block");
-  if (!/\*\*Use it when:\*\*/.test(body)) block("recipe-use-it-when", "the RECIPE has no **Use it when:** line");
+  const tldr = sectionBody(body, "## ⚡ TL;DR");
+  if (tldr === undefined) block("tldr-missing", "no `## ⚡ TL;DR` section (the RECIPE lives there)");
+  else if (!/\*\*Use it when:\*\*/.test(tldr)) block("tldr-use-it-when", "the TL;DR has no **Use it when:** line");
+  if (!/\bAI\b[^\n]*\b(help|assist|drafted|generated)|\b(help|assist|drafted|generated)[^\n]*\bAI\b/i.test(body)) {
+    block("ai-disclosure", 'no AI disclosure line (dev.to requires one): "Drafted with AI help; every claim was checked by me…"');
+  }
+  const order = sectionsOrder(body);
+  if (order) warn("sections", order);
   if (!existsSync(join(dir, "linkedin.md"))) block("linkedin-missing", "no linkedin.md next to post.md");
   if (!existsSync(join(dir, "cover.json"))) block("cover-missing", "no cover.json (the cover's text and window)");
   if (/<!-- hook options/.test(text)) block("hook-options", "unpicked hook options are still in post.md: pick one, then delete the comment");

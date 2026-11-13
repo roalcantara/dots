@@ -8,14 +8,37 @@ cover_image: ./images/00-cover.png
 
 > **DISCLAIMER** Not a tutorial.
 
-**RECIPE**
+## ⚡ TL;DR
+
+An agent's loop runs once in zsh; give it bash.
 
 > **Use it when:** an agent's loop runs once.
 > **You need:** bash.
 
-1. Set the shell — `CLAUDE_CODE_SHELL`
+```json
+{ "env": { "CLAUDE_CODE_SHELL": "/opt/homebrew/bin/bash" } }
+```
 
-⚠️ **Gotchas:** one · two · three
 📁 **In dots:** [settings](https://github.com/roalcantara/dots)
 
-![cover](./images/00-cover.png)
+## 🪲 The problem
+
+### Symptoms
+
+## 🔍 Why it happens
+
+## 🛠️ The fix
+
+## 🧪 Check it works
+
+## ⚠️ Gotchas
+
+### One
+
+### Two
+
+## 🧠 Lessons
+
+## 📚 References
+
+Drafted with AI help; every claim was checked by me, and the story is mine.

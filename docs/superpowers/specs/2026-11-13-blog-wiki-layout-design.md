@@ -49,8 +49,8 @@ Commands, settings, file excerpts and outputs go in fenced blocks with a languag
 
 dev.to requires disclosing AI assistance ([guidelines](https://dev.to/guidelines-for-ai-assisted-articles-on-dev)).
 Every post ends with: "Drafted with AI help; every claim was checked by me, and the story is mine." `blog:check`
-blocks a non-legacy post without a line mentioning AI help; the published Omarchy post gets the same line if it was
-AI-assisted (the author confirms). Comments are never written by agents.
+blocks a non-legacy post without a line mentioning AI help. The published Omarchy post stays as it is (author's
+decision): as a `legacy` post it is exempt. Comments are never written by agents.
 
 ### 5. What follows
 

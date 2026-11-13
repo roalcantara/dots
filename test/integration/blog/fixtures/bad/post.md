@@ -6,6 +6,16 @@ tags: [a, b, c, d, e]
 
 This is a game-changer.
 
-⚠️ **Gotchas:** one · two · three · four
+## 🔍 Why it happens
+
+## ⚠️ Gotchas
+
+### One
+
+### Two
+
+### Three
+
+### Four
 
 ![raw](./raw/01.png)
