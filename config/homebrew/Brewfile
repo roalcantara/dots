@@ -169,3 +169,5 @@ npm "@vscode/js-debug-browsers"
 cask "transmission"
 # Open-source BitTorrent client
 cask "transmission"
+# AI coding agent, built for the terminal
+brew "opencode"
