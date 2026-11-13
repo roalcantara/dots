@@ -41,6 +41,7 @@ Keep every gate green before declaring work complete:
 - **Never print or commit secrets:** Files such as `config/.env`, `config/ssh/keys/*.key`, `config/ssh/keys/*.pem`, and `config/age/keys.txt` must never be displayed or committed unencrypted.
 - **No unrequested push or PR:** Do not push to remote or open a pull request unless explicitly instructed by the user.
 - **Conventional Commits:** Write commit messages following Conventional Commits with a capitalized description; see [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
+- **`.agents` over `.claude`:** Put agent files (commands, skills, agent-agnostic config) in `.agents/` for this project and `~/.agents/` for the user (here `config/agents/`), not in `.claude/` or `~/.claude/`. Add a `.claude/` entry only when Claude Code cannot read the `.agents/` path, and then as a symlink to it (for example `.claude/commands` → `../.agents/commands`, `~/.claude/commands` → `config/agents/commands`). Files only Claude Code reads (`settings.json`) stay in `.claude/`.
 
 ## Useful skills
 
