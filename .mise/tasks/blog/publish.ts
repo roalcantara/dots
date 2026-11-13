@@ -4,8 +4,8 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  authorMarkers, changedAt, commitLocal, gitState, parseFrontMatter, pick, POSTS, publishBlockers, pushBranch,
-  reviewFresh, reviewVerdict, setPublished,
+  authorMarkers, commitLocal, gitState, parseFrontMatter, pick, POSTS, publishBlockers, pushBranch,
+  reviewIsFresh, reviewVerdict, setPublished,
 } from "./_lib";
 
 const { post } = pick(process.argv[2]);
@@ -14,7 +14,7 @@ const dir = join(POSTS, post.dir);
 const read = (f: string) => { try { return readFileSync(join(dir, f), "utf8"); } catch { return ""; } };
 const blockers = publishBlockers({
   review: reviewVerdict(read("review.md")),
-  reviewFresh: reviewFresh(changedAt(join(dir, "review.md")), changedAt(join(dir, "post.md"))),
+  reviewFresh: reviewIsFresh(dir),
   markers: authorMarkers(read("post.md") + read("linkedin.md")).length,
   dirty: gitState().dirty,
 });

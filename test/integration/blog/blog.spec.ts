@@ -26,6 +26,7 @@ import {
   pushPreconditions,
   resolveArticleId,
   reviewFresh,
+  reviewVerdict,
   rewriteImages,
   rowsFromArticles,
   rowsFromReferrers,
@@ -373,6 +374,17 @@ describe("post helpers", () => {
     const text = "<one line> <author: how I noticed> <!-- dots:x --> <img src=a> <https://e.com> `<post>`\n```\n<x>\n```\n";
     expect(placeholders(text)).toEqual(["<one line>"]);
     expect(authorMarkers(text)).toEqual(["<author: how I noticed>"]);
+  });
+
+  it("finds markers and placeholders wrapped onto two lines", () => {
+    expect(authorMarkers("a <author: how you noticed the\nloop ran once> b")).toHaveLength(1);
+    expect(placeholders("<Next week: the RECIPE as a\ncarousel>")).toHaveLength(1);
+  });
+
+  it("reads a filled-in verdict, not the template's", () => {
+    expect(reviewVerdict("**Verdict:** PASS\n")).toBe("PASS");
+    expect(reviewVerdict("**Verdict:** BLOCKED (published)\n")).toBe("BLOCKED");
+    expect(reviewVerdict("**Verdict:** PASS | BLOCKED\n")).toBeUndefined();
   });
 
   it("copies the community post only from topic 2", () => {

@@ -404,7 +404,7 @@ export const topicNumber = (t: TodoTask): number => Number((t.tags ?? []).find((
 
 const TAGS = /^\/?(a|abbr|b|br|code|details|div|em|hr|i|img|kbd|li|ol|p|pre|span|strong|sub|summary|sup|table|tbody|td|th|thead|tr|u|ul)\b/i;
 const outsideCode = (text: string) => text.replace(/```[\s\S]*?```/g, "").replace(/`[^`\n]*`/g, "");
-const angles = (text: string) => [...outsideCode(text).matchAll(/<([^<>\n]+)>/g)].map((m) => m[0]);
+const angles = (text: string) => [...outsideCode(text).matchAll(/<([^<>]+)>/g)].map((m) => m[0]);
 
 // Template text still waiting to be written: any <…> outside code that isn't an author marker, a comment, a known
 // HTML tag or an autolink.
@@ -418,6 +418,21 @@ export const authorMarkers = (text: string): string[] => angles(text).filter((t)
 
 export const reviewFresh = (reviewTime?: number, postTime?: number): boolean =>
   reviewTime !== undefined && postTime !== undefined && reviewTime >= postTime;
+
+// A review is fresh when no commit touching post.md came after the one that last touched review.md (timestamps lie
+// across rebases and checkouts). While either file has uncommitted changes, its mtime is the only evidence.
+export function reviewIsFresh(dir: string): boolean {
+  const reviewPath = join(dir, "review.md");
+  const postPath = join(dir, "post.md");
+  if (!existsSync(reviewPath) || !existsSync(postPath)) return false;
+  const dirty = (path: string) => git("status", "--porcelain", "--", path).out !== "";
+  if (dirty(postPath)) return dirty(reviewPath) && Bun.file(reviewPath).lastModified >= Bun.file(postPath).lastModified;
+  if (dirty(reviewPath)) return true;
+  const reviewed = git("log", "-1", "--format=%H", "--", reviewPath);
+  if (!reviewed.ok || !reviewed.out) return false;
+  const after = git("rev-list", "--count", `${reviewed.out}..HEAD`, "--", postPath);
+  return after.ok && after.out === "0";
+}
 
 export const scaffoldFiles = (topic: number): string[] =>
   topic >= 2 ? ["post.md", "linkedin.md", "community.md"] : ["post.md", "linkedin.md"];
@@ -555,13 +570,13 @@ export function prState(branch: string): "open" | "merged" | "unknown" | undefin
   return p.out === "OPEN" ? "open" : p.out === "MERGED" ? "merged" : undefined;
 }
 
+// The filled-in verdict; the template's "PASS | BLOCKED" line is not a verdict.
 export const reviewVerdict = (text: string): "PASS" | "BLOCKED" | undefined =>
-  (text.match(/\*\*Verdict:\*\*\s*(PASS|BLOCKED)/)?.[1] as "PASS" | "BLOCKED" | undefined);
+  (text.match(/\*\*Verdict:\*\*[ \t]*(PASS|BLOCKED)[ \t]*(?=\n|\(|$)/m)?.[1] as "PASS" | "BLOCKED" | undefined);
 
 export function factsFor(p: Post): Facts {
   const dir = join(POSTS, p.dir);
   const postPath = join(dir, "post.md");
-  const reviewPath = join(dir, "review.md");
   const hasFolder = existsSync(postPath);
   const read = (f: string) => (existsSync(join(dir, f)) ? readFileSync(join(dir, f), "utf8") : "");
   const text = read("post.md");
@@ -569,7 +584,7 @@ export function factsFor(p: Post): Facts {
     hasFolder,
     checkBlocks: hasFolder && checkPost(dir, hypeWords()).some((f) => f.level === "block"),
     review: reviewVerdict(read("review.md")),
-    reviewFresh: reviewFresh(changedAt(reviewPath), changedAt(postPath)),
+    reviewFresh: reviewIsFresh(dir),
     pr: prState(postBranch(p.dir)),
     published: parseFrontMatter(text).fm.published === true,
     markers: authorMarkers(text + read("linkedin.md")).length,
