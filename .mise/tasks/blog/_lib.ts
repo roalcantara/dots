@@ -189,6 +189,42 @@ export type Article = {
   main_image?: string;
 };
 
+// dev.to turns every newline into a line break, unlike GitHub; the repo wraps prose at 120 columns. Before pushing,
+// each wrapped paragraph, list item and quote line is joined back into one line. Code fences (indented ones too),
+// tables, headings, comments and images stay as they are; so do blank lines, blank quote separators and hard breaks.
+export function unwrapProse(markdown: string): string {
+  const out: string[] = [];
+  let fence = false;
+  const isFence = (l: string) => /^\s*(```|~~~)/.test(l);
+  const isList = (l: string) => /^\s*([-*+]|\d+[.)])\s/.test(l);
+  const standsAlone = (l: string) => /^\s*(#{1,6}\s|\||<!--|-->|!\[|---\s*$|\*\*\*\s*$)/.test(l) || isFence(l);
+  for (const line of markdown.split("\n")) {
+    if (isFence(line)) {
+      out.push(line);
+      fence = !fence;
+      continue;
+    }
+    const prev = out[out.length - 1];
+    if (fence || prev === undefined || !line.trim() || !prev.trim() || standsAlone(prev) || standsAlone(line) || / {2}$/.test(prev)) {
+      out.push(line);
+      continue;
+    }
+    const quote = /^\s*>/.test(line);
+    const prevQuote = /^\s*>/.test(prev);
+    if (quote !== prevQuote) {
+      out.push(line);
+      continue;
+    }
+    const content = quote ? line.replace(/^\s*>\s?/, "") : line;
+    if (!content.trim() || (quote && prev.replace(/^\s*>\s?/, "").trim() === "") || isList(content)) {
+      out.push(line);
+      continue;
+    }
+    out[out.length - 1] = `${prev.trimEnd()} ${content.trim()}`;
+  }
+  return out.join("\n");
+}
+
 // An invisible marker in every article's markdown ties it to its folder, so a post renamed during its pull request
 // (CI records no id) still finds its article instead of creating another draft.
 export const marker = (post: string): string => `<!-- dots:${post} -->`;
@@ -203,7 +239,7 @@ export function articlePayload(
 ): { article: Article } {
   const article: Article = {
     title: fm.title ?? "",
-    body_markdown: `${rewriteImages(body, o.slug, o.ref).replace(/\s*$/, "")}\n\n${marker(o.slug)}\n`,
+    body_markdown: `${unwrapProse(rewriteImages(body, o.slug, o.ref)).replace(/\s*$/, "")}\n\n${marker(o.slug)}\n`,
     tags: fm.tags,
   };
   const published = o.draft ? false : fm.published === true;

@@ -57,7 +57,7 @@ sub-topics inside them, without emoji ([template](templates/post.md)).
 
 | Section | Holds |
 | --- | --- |
-| ⚡ TL;DR | The fix in two lines, then the RECIPE: **Use it when**, **You need**, the steps as one code block, **In dots** links |
+| ⚡ TL;DR | The fix in two lines, then the RECIPE as plain bullets (**Use it when**, **You need**), the steps as one short code block, **In dots** links |
 | 🪲 The problem | The hook (the author's moment), then `### Symptoms` |
 | 💡 But how? | Why it happens: the mechanism as nested bullets, each proven by a snippet or a link |
 | 🛠️ The fix | One `###` per tool or step, each with its snippet |
@@ -70,7 +70,9 @@ sub-topics inside them, without emoji ([template](templates/post.md)).
 - **Emoji lead the `##` section headings only**, the same one for each section in every post; nowhere else as
   structure (no emoji on `###`, bullets or paragraphs). The one geeky wink and an occasional 💡 callout remain.
 - **Code snippets wherever possible:** commands, settings, excerpts and outputs in fenced blocks with a language
-  (`console`, `json`, `zsh`, `bash`, `toml`…); inline code only inside sentences.
+  (`console`, `json`, `zsh`, `bash`, `toml`…); inline code only inside sentences. **Code lines stay under about 70
+  characters** (60 in the TL;DR), so they don't scroll sideways on dev.to.
+- Prose may wrap in the repo: `blog:push` joins wrapped lines, because dev.to turns every newline into a line break.
 - **AI disclosure** (dev.to requires it): the post ends with "Drafted with AI help; every claim was checked by me,
   and the story is mine." Comments are never written by agents.
 - **The author's habits are the style:** nested bullets for every point, `jsonc` snippets with a comment naming the

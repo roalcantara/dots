@@ -38,6 +38,7 @@ import {
   setPublished,
   stageOf,
   type Todo,
+  unwrapProse,
   topicNumber,
   visibleLength,
 } from "../../../.mise/tasks/blog/_lib";
@@ -593,5 +594,62 @@ describe("wiki layout", () => {
     const dir = mkdtempSync(join(tmpdir(), "post-"));
     writeFileSync(join(dir, "post.md"), "---\ntitle: Old\ndescription: d\ntags: a\nlegacy: true\n---\n**OVERVIEW**\n");
     expect(rulesIn(dir)).toEqual([]);
+  });
+});
+
+describe("unwrapProse (dev.to turns every newline into a line break)", () => {
+  it("joins wrapped paragraphs, list items and quotes, and leaves code, tables and headings alone", () => {
+    const md = [
+      "> **DISCLAIMER**",
+      "> This is not a tutorial, and the fix lives in",
+      "> [my dotfiles](x).",
+      "",
+      "📁 **In dots:** [a](a) ·",
+      "[b](b) ·",
+      "[c](c)",
+      "",
+      "## 🪲 The problem",
+      "",
+      "- **Why**",
+      "  - Claude Code runs its commands unless",
+      "    `CLAUDE_CODE_SHELL` says otherwise.",
+      "  - In zsh:",
+      "",
+      "    ```zsh",
+      "    for x in ${=list}; do …",
+      "    setopt SH_WORD_SPLIT",
+      "    ```",
+      "",
+      "| a | b |",
+      "| --- | --- |",
+      "",
+      "<!-- dots:x -->",
+    ].join("\n");
+    expect(unwrapProse(md).split("\n")).toEqual([
+      "> **DISCLAIMER** This is not a tutorial, and the fix lives in [my dotfiles](x).",
+      "",
+      "📁 **In dots:** [a](a) · [b](b) · [c](c)",
+      "",
+      "## 🪲 The problem",
+      "",
+      "- **Why**",
+      "  - Claude Code runs its commands unless `CLAUDE_CODE_SHELL` says otherwise.",
+      "  - In zsh:",
+      "",
+      "    ```zsh",
+      "    for x in ${=list}; do …",
+      "    setopt SH_WORD_SPLIT",
+      "    ```",
+      "",
+      "| a | b |",
+      "| --- | --- |",
+      "",
+      "<!-- dots:x -->",
+    ]);
+  });
+
+  it("keeps a quote's separate items and a hard line break", () => {
+    expect(unwrapProse("> **Use it when:** a\n>\n> **You need:** b")).toBe("> **Use it when:** a\n>\n> **You need:** b");
+    expect(unwrapProse("line one  \nline two")).toBe("line one  \nline two");
   });
 });

@@ -16,16 +16,11 @@ cover_image: ./images/00-cover.png
 
 <The fix in two lines.>
 
-> **Use it when:**
->
-> - <one line>
->
-> **You need:**
->
-> - <tools>
+- **Use it when:** <one line>
+- **You need:** <tools, one line>
 
-```<language>
-<the steps, as one copy-pasteable block>
+```text
+<the steps, short lines (≤ 60 characters): what to set, where>
 ```
 
 📁 **In dots:** [<file>](https://github.com/roalcantara/dots/blob/main/<path>) · [<file>](<link>)

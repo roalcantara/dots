@@ -16,20 +16,12 @@ cover_image: ./images/00-cover.png
 
 My agents' bash-style loops ran once in my zsh. Point the agents at bash; keep zsh for yourself.
 
-> **Use it when:**
->
-> - an AI agent's shell loops on macOS run once, or do less than they report.
->
-> **You need:**
->
-> - bash from Homebrew (`brew install bash`); macOS's own `/bin/bash` is 3.2 (`/bin/bash --version`).
+- **Use it when:** an AI agent's shell loops on macOS run once, or do less than they report.
+- **You need:** bash from Homebrew (`brew install bash`); macOS's own `/bin/bash` is 3.2.
 
-```jsonc
-// Claude Code: ~/.claude/settings.json
-{ "env": { "CLAUDE_CODE_SHELL": "/opt/homebrew/bin/bash" } }
-
-// GitHub Copilot chat: VS Code's user settings.json
-"chat.tools.terminal.terminalProfile.osx": { "path": "/opt/homebrew/bin/bash", "args": ["-l"] }
+```text
+Claude Code    CLAUDE_CODE_SHELL=/opt/homebrew/bin/bash
+Copilot chat   terminal profile → /opt/homebrew/bin/bash
 ```
 
 📁 **In dots:** [config/claude/settings.json](https://github.com/roalcantara/dots/blob/main/config/claude/settings.json) ·
@@ -52,11 +44,8 @@ $ bash -c 'list="a b c"; for x in $list; do echo "[$x]"; done'
 [c]
 ```
 
-🤔 Same line, two shells, one silent difference.
-
-💡 That is a zsh feature, not a bug (see 💡 But how?).
-
-😬 It just isn't what the agent meant.
+🤔 Same line, two shells, one silent difference. 💡 It's a zsh feature, not a bug (see 💡 But how?). 😬 It
+just isn't what the agent meant.
 
 ## 💡 But how?
 
@@ -88,7 +77,8 @@ $ bash -c 'list="a b c"; for x in $list; do echo "[$x]"; done'
 ### GitHub Copilot chat: give its terminal a bash profile
 
 ```jsonc
-// VS Code's user settings.json (in dots: config/vscode/settings.json)
+// VS Code's user settings.json
+// (in dots: config/vscode/settings.json)
 "chat.tools.terminal.terminalProfile.osx": {
   "path": "/opt/homebrew/bin/bash", "args": ["-l"]
 }
