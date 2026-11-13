@@ -404,7 +404,10 @@ export const topicNumber = (t: TodoTask): number => Number((t.tags ?? []).find((
 
 const TAGS = /^\/?(a|abbr|b|br|code|details|div|em|hr|i|img|kbd|li|ol|p|pre|span|strong|sub|summary|sup|table|tbody|td|th|thead|tr|u|ul)\b/i;
 const outsideCode = (text: string) => text.replace(/```[\s\S]*?```/g, "").replace(/`[^`\n]*`/g, "");
-const angles = (text: string) => [...outsideCode(text).matchAll(/<([^<>]+)>/g)].map((m) => m[0]);
+// A <…> span: no space right inside the brackets (so "x < y … a > b" in prose isn't one) and no blank line in it
+// (a marker may wrap onto the next line).
+const angles = (text: string) =>
+  [...outsideCode(text).matchAll(/<(?!\s)((?:[^<>\n]|\n(?![ \t]*\n))+?)(?<!\s)>/g)].map((m) => m[0]);
 
 // Template text still waiting to be written: any <…> outside code that isn't an author marker, a comment, a known
 // HTML tag or an autolink.
@@ -415,9 +418,6 @@ export function placeholders(text: string): string[] {
   });
 }
 export const authorMarkers = (text: string): string[] => angles(text).filter((t) => t.slice(1).trim().startsWith("author:"));
-
-export const reviewFresh = (reviewTime?: number, postTime?: number): boolean =>
-  reviewTime !== undefined && postTime !== undefined && reviewTime >= postTime;
 
 // A review is fresh when no commit touching post.md came after the one that last touched review.md (timestamps lie
 // across rebases and checkouts). While either file has uncommitted changes, its mtime is the only evidence.
@@ -555,14 +555,6 @@ export const addComment = (taskId: string, text: string): void => void todo("add
 
 export const hypeWords = (): string[] =>
   readFileSync(join(SERIES, "hype-words.txt"), "utf8").split("\n").map((l) => l.trim()).filter(Boolean);
-
-// When a file last changed: its last commit, or its mtime while it has uncommitted changes.
-export function changedAt(path: string): number | undefined {
-  if (!existsSync(path)) return undefined;
-  if (git("status", "--porcelain", "--", path).out) return Math.floor(Bun.file(path).lastModified / 1000);
-  const t = Number(git("log", "-1", "--format=%ct", "--", path).out);
-  return Number.isFinite(t) && t > 0 ? t : Math.floor(Bun.file(path).lastModified / 1000);
-}
 
 export function prState(branch: string): "open" | "merged" | "unknown" | undefined {
   const p = run(["gh", "pr", "list", "--head", branch, "--state", "all", "--json", "state", "-q", ".[0].state"]);

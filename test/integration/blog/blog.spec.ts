@@ -25,7 +25,6 @@ import {
   pushAction,
   pushPreconditions,
   resolveArticleId,
-  reviewFresh,
   reviewVerdict,
   rewriteImages,
   rowsFromArticles,
@@ -376,6 +375,11 @@ describe("post helpers", () => {
     expect(authorMarkers(text)).toEqual(["<author: how I noticed>"]);
   });
 
+  it("doesn't read comparisons in prose as placeholders", () => {
+    expect(placeholders("when x < y holds,\nand later a > b, the loop runs")).toEqual([]);
+    expect(placeholders("a <b\n\nc> d")).toEqual([]);
+  });
+
   it("finds markers and placeholders wrapped onto two lines", () => {
     expect(authorMarkers("a <author: how you noticed the\nloop ran once> b")).toHaveLength(1);
     expect(placeholders("<Next week: the RECIPE as a\ncarousel>")).toHaveLength(1);
@@ -390,12 +394,6 @@ describe("post helpers", () => {
   it("copies the community post only from topic 2", () => {
     expect(scaffoldFiles(1)).toEqual(["post.md", "linkedin.md"]);
     expect(scaffoldFiles(2)).toEqual(["post.md", "linkedin.md", "community.md"]);
-  });
-
-  it("trusts a review only when it is at least as new as the post", () => {
-    expect(reviewFresh(10, 10)).toBe(true);
-    expect(reviewFresh(9, 10)).toBe(false);
-    expect(reviewFresh(undefined, 10)).toBe(false);
   });
 
   it("blocks publishing on a stale or blocked review, author markers or a dirty tree", () => {
