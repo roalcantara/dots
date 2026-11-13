@@ -1,5 +1,8 @@
 # Content series: dots recipes on dev.to, LinkedIn and communities — design
 
+> **Status:** historical design record. The current rules are in [`docs/blog/PLAYBOOK.md`](../../blog/PLAYBOOK.md) and
+> [`docs/blog/STYLE.md`](../../blog/STYLE.md).
+
 ## Intent
 
 Turn what this repo already solves into a regular series: for each topic, a **dev.to post** (detailed, not a

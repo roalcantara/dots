@@ -1,5 +1,8 @@
 # Blog: voice, brevity, cover and a leaner playbook — design
 
+> **Status:** historical design record. The current rules are in [`docs/blog/PLAYBOOK.md`](../../blog/PLAYBOOK.md) and
+> [`docs/blog/STYLE.md`](../../blog/STYLE.md).
+
 Fourth pass on the blog series, after the preflight post was drafted ([first design](2026-11-13-content-series-design.md),
 [DRY](2026-11-13-content-series-dry-design.md), [commands](2026-11-13-blog-commands-design.md)). Asked by the author:
 judge the posts through the `contagious` (STEPPS) lens and fix four notes, slim the playbook, and run an independent

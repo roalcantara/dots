@@ -1,5 +1,9 @@
 # Blog: one command per step — design
 
+> **Status:** historical design record. The current rules are in [`docs/blog/PLAYBOOK.md`](../../blog/PLAYBOOK.md) and
+> [`docs/blog/STYLE.md`](../../blog/STYLE.md); since then `<author: …>` markers **block**
+> `blog:check` (they only warned here).
+
 Third pass on the blog series ([first design](2026-11-13-content-series-design.md),
 [DRY pass](2026-11-13-content-series-dry-design.md)). Asked by the author: turn every step of the QUICK REFERENCE in
 `docs/blog/README.md` into a command, so running a post means calling commands instead of following a recipe.

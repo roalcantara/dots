@@ -54,14 +54,17 @@ rewrite the post yourself: you report. Work in the repository root, in this orde
    `docs/blog/posts/<post>/images/`.
 
 4. **Scores.** Fill the **Scores** table from STYLE.md's rubric, each check 0–2 with a short note:
+   - **The hook:** a real moment, first person, with at most one geeky wink that fits (STYLE.md, "The hook").
+   - **Lived or proven:** list each general claim about a tool or behaviour and its link or `sources:` entry; a
+     first-person statement the author wrote counts as lived. Each fact once.
    - **Information gain:** write the one sentence on what this post adds that the usual articles on the topic
      don't. If you can't, score 0 and say so.
    - **RECIPE self-test:** could the author redo the thing from the RECIPE alone, months from now?
    - **STEPPS:** score Social currency, Triggers, Emotion, Public, Practical value, Stories (0–2 each) and the raw
      total. The bars: raw ≥ 6, Practical value = 2, one of Social currency or Stories = 2.
    - **Voice:** list any hype words (`docs/blog/hype-words.txt` and anything like them); is a mistake or limit stated?
-   - **LinkedIn hook:** its length in characters and whether it makes sense alone with a specific detail (0 when
-     `linkedin.md` is missing).
+   - **LinkedIn:** the hook's length (≤ 210) and whether it stands alone; the insight in one sentence; 250–450
+     characters in all (0 when `linkedin.md` is missing).
    - **Images:** phone test (readable at 400 px wide), one point each, the series look.
    - **Goals 1–5:** 0–2 each, by the criteria in STYLE.md's rubric.
    - **Language:** English by default; any PT-BR text follows the playbook's rules.
@@ -73,6 +76,8 @@ rewrite the post yourself: you report. Work in the repository root, in this orde
      with `gh repo view <owner>/<name> --json visibility`. Tool names (`psc`, "Copy a secret") are fine.
    - **Anti-goals:** hype, spam patterns, hate, rage bait, or takes aimed at people or tools.
    - **The RECIPE:** missing, or impossible to follow as written.
+   - **An unproven claim:** a general claim about a tool or behaviour with no link to the repo and no `sources:`
+     entry. (Doubtful first-person statements go to **Consider**, not here.)
    - **A failed `blog:check`.**
    List each problem once, however many rules it breaks. Everything else, however important, goes in
    **Consider**. The verdict is **BLOCKED** if Must fix has any item,

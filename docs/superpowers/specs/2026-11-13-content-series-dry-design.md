@@ -1,5 +1,8 @@
 # Content series: DRY the structure — design
 
+> **Status:** historical design record. The current rules are in [`docs/blog/PLAYBOOK.md`](../../blog/PLAYBOOK.md) and
+> [`docs/blog/STYLE.md`](../../blog/STYLE.md).
+
 Follow-up to [the content series design](2026-11-13-content-series-design.md), after the preflight setup proved the
 structure. Asked by the author: fnox for secrets, mise arguments over environment variables, chronological post
 folders, and one place for every post's metadata (`docs/blog/TODO.yaml`).

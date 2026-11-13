@@ -1,80 +1,97 @@
-# Content series style
+# Blog style
 
-How the posts sound and look, and how the gate scores them. The rules come from the
-[playbook](PLAYBOOK.md); this file is what a writer or reviewer keeps open. Voice, look and rubric are tuned
-variables: each recalibration re-evaluates them from the results recorded in [`TODO.yaml`](TODO.yaml) (`mise run blog:report`) and records the change in the
-playbook's Decisions log.
+How the posts sound and look, and how the gate scores them: what a writer or reviewer keeps open. The goals behind
+it are in [PLAYBOOK.md](PLAYBOOK.md). Voice, look and rubric are tuned at each recalibration from the results in
+[`TODO.yaml`](TODO.yaml) (`mise run blog:report`).
 
 ## Voice
 
-**A colleague's notebook, made public.** The voice is the same everywhere; only the length changes. On LinkedIn it
-is the notebook's front page.
+**A colleague's notebook, made public.** Same voice everywhere; only the length changes.
 
 | The voice is | It is not |
 | --- | --- |
-| First person, specific, with numbers ("606,863 files, 541 GiB") | "We", vague, adjectives ("huge") |
+| First person, specific, with numbers from the repo ("606,863 files, 541 GiB") | "We", vague, adjectives ("huge") |
 | Honest about mistakes ("it took 54 fixes") | Polished success stories |
 | Calmly confident: "this works for me, here's why" | Hype ("game-changer", "10x") or modesty that hides the point |
 | Opinionated with reasons, fair to alternatives | Takes aimed at other tools or people |
-| Light humour, rare (the Omarchy post's ":(" and "NO, SERIOUSLY" are the ceiling) | Memes, rage bait |
+| **One geeky wink per post, always tied to a real moment** | Jokes that need explaining, memes, rage bait |
 
-- Plain words, short sentences, one idea per paragraph, one claim per bullet.
-- At least one mistake or limit stated in every post.
-- No hype words: [`hype-words.txt`](hype-words.txt) is the list `blog:check` and the gate use; add to it when a new
-  one slips through. Hype is about the author's own work ("my game-changing setup"); honest praise for someone
-  else's tool ("Omarchy is a joy to drive") is fine.
+### The hook
+
+Every post, and every LinkedIn post, opens with **a real moment** (what happened to the author, how they noticed,
+what it cost) or a pain readers share, in one to three sentences, first person. At most **one geeky wink** frames
+it, from the author's interests: technology and gadgets, AI and machine learning, productivity hacks, comic books,
+Harry Potter, The Lord of the Rings and fantasy, cinema, science, science fiction. The wink frames the moment ("I
+felt like Ron with a broken wand"); it never replaces it. It may echo once more: the cover's emoji and the terminal's
+"← aside". The author's own tics are welcome: the DISCLAIMER, "**YOU HAVE BEEN WARNED!**", "**NO, SERIOUSLY!**".
+
+`/blog:draft` suggests 3–5 hook options from the repo's evidence; the author picks, edits or writes their own. Until
+then the post carries `<author: the moment …>` (and the options in a `<!-- hook options -->` comment below it).
+
+### Lived or proven
+
+- **Every claim is lived or proven.** Lived: a first-person statement the author wrote. Proven: a general claim
+  about a tool or behaviour, linked to a file, command or commit in the repo, or to a source recorded as a
+  `sources:` comment on the task. Anything else is cut: no setups the author doesn't use, no "agents usually…".
+- **Each fact once.** A screenshot doesn't repeat a code block; the RECIPE doesn't repeat HOW IT WORKS.
+
+### Writing rules
+
+- Plain words, short sentences, one idea per paragraph, one claim per bullet; at least one mistake or limit stated.
+- No hype words: [`hype-words.txt`](hype-words.txt) is the list `blog:check` and the gate use. Hype is about the
+  author's own work; honest praise for someone else's tool is fine.
 - dev.to conventions: a DISCLAIMER note, bold ALL-CAPS section labels, 💡 callouts, "vs." tables, references at the
   end, "Corrections and ideas are very welcome. :)".
-- **Titles:** draft 10, keep the most specific. Patterns that work on dev.to: a number ("5 things…"), a confession
-  ("It took 54 fixes to…"), an opinion with a reason. dots is the example, never the headline.
+- **Titles:** draft 10, keep the most specific (a number, a confession, an opinion with a reason). dots is the
+  example, never the headline.
 - **Tags** (max 4): the large ones that fit first (`git`, `devops`, `productivity`, `terminal`, `ai`, `docker`,
-  `security`, `macos`); `dotfiles` only as the fourth, if at all.
-- **LinkedIn:** hook ≤ 210 characters with a specific detail; the recipe in 3 bullets; one honest lesson; a question
-  that invites people's own setups; 3 hashtags; the dev.to link in the first comment.
+  `security`, `macos`); `dotfiles` only as the fourth, if at all. They are also the cover's hashtags.
+- **LinkedIn:** the hook (≤ 210 characters), then **one sentence with the insight** (what a reader keeps without
+  clicking), then "→ first comment". 250–450 characters, no bullet list, 1–3 hashtags. The first comment is one
+  line with the dev.to link (`{devto.url}`). **Write alt text** for the image when posting.
 
 ## Visual identity
 
-**One series look**, so readers recognise a post in the feed before reading it.
+**One series look** (approved 2026-11-13): Catppuccin Mocha, a Charm-style layout, OmniWM windows. Reference:
+[the design](../superpowers/specs/2026-11-13-blog-voice-design.md) and its renders in
+[`specs/assets/`](../superpowers/specs/assets).
 
 | Element | Value |
 | --- | --- |
-| Background | vertical gradient `#0e121c` → `#181e2c` |
-| Accent | gradient `#33ccff` → `#00ff99` (the focus outline of the fn layer); amber `#ffb000` for a single highlight |
-| Ink | `#f2f2f2` text, `#9aa4b2` secondary |
-| Font | SF Pro (system); code in SF Mono |
-| Cover (dev.to and LinkedIn) | 1000 × 420: series tag `dots · #<n>` top right; title on the left (first line ink, second line accent green), a subtitle, 2–4 key caps under it; a stylised terminal or window on the right with the accent outline. Made with `tools/header.py`. |
-| Screenshots | a clean Ghostty window, cropped to the point, sensitive regions blurred, framed by `tools/frame.py` (rounded corners, shadow, the background gradient) |
-| Carousel (LinkedIn, optional) | 1080 × 1350, 4–6 slides, one point per slide, same palette; the RECIPE is the usual content |
-| Diagrams | Mermaid in the post when a picture shows a mechanism; never decoration |
+| Base | `#1e1e2e`, two soft circles: mauve `#cba6f7` (18 %) top right, teal `#94e2d5` (16 %) bottom |
+| Text | `#cdd6f4`; secondary `#a6adc8`; code `#f9e2af` |
+| Accents | pink `#f5c2e7` (series pill, title highlight); hashtags cycle mauve `#cba6f7`, green `#a6e3a1`, peach `#fab387`, sky `#89dceb` |
+| Font | SF Pro (700 for titles); code in SF Mono |
+| Windows | OmniWM style: title bar `#2a2a2f` with traffic lights and the app's name; terminal body `#111116`, app body `#222226`; skeleton bars `#3d3d43`, one highlight bar `#7f7150`; **focused** windows get a cyan `#62e6f0` border and glow |
+| Cover | 1000 × 420 (rendered at 2×): pill `dots #<n>`, two title lines with the key phrase on pink, a subtitle with one emoji wink, plain coloured hashtags, one window (`terminal` or `app`). From `cover.json` by `mise run blog:cover` ([template](tools/cover.html)) |
+| Screenshots | a clean capture, cropped to the point, sensitive regions blurred, framed by `tools/frame.py --app <name> [--focus]` in the same window style on the same base |
+| Carousel (LinkedIn, optional) | 1080 × 1350, 4–6 slides, one point per slide, same palette and windows |
+| Diagrams | Mermaid when a picture shows a mechanism; never decoration |
 
-Every image passes the **phone test** and makes **one point**. Phone test: scaled to 400 px wide, every piece of
-text the image is there to show is still readable (roughly 8 px or taller at that width); decorative text may blur.
-The series tag is `dots · #<n>` with the topic number; the preflight and any post outside the numbered topics use
-`#0`.
+Every image passes the **phone test** (scaled to 400 px wide, the text it's there to show is still readable,
+roughly 8 px or taller) and makes **one point**. The pill number is the topic's (`topic-<n>`); the preflight and
+posts outside the numbered topics use `#0`.
 
 ## Rubric
 
-The gate (`/blog:gate`, [`.agents/commands/blog/gate.md`](../../.agents/commands/blog/gate.md)) fills this in `review.md`. Each check scores **0** (absent or
-wrong), **1** (present, weak) or **2** (strong, deliberate).
+The gate (`/blog:gate`) fills this in `review.md`. Each check scores **0** (absent or wrong), **1** (present, weak) or
+**2** (strong, deliberate).
 
 | Check | What earns a 2 | Blocks when |
 | --- | --- | --- |
-| Information gain | One true sentence on what this adds that the top existing articles don't | — |
+| The hook | A real moment, first person, at most one wink that fits | — |
+| Lived or proven | Every claim lived or linked; each fact once | A general claim with no link or source |
+| Information gain | One true sentence on what this adds that the usual articles don't | — |
 | RECIPE self-test | The author could redo it from the RECIPE alone, months later | The RECIPE is missing or can't be followed |
 | Cold read | A mid-level developer names the one point and would save it | — |
 | STEPPS (six drivers) | Social currency, Triggers, Emotion, Public, Practical value, Stories, each 0–2 | — |
-| Voice | Zero hype words; a mistake or limit stated; first person, specific | Hype, takes aimed at people or tools, hate |
-| LinkedIn hook | ≤ 210 characters, makes sense alone, a specific detail | — |
-| Images | Phone test, one point each, the series look, nothing sensitive | Anything sensitive is visible |
-| Goal 1, knowledge base | A RECIPE worth linking to; the dots files linked | — |
-| Goal 2, lesson as a recipe | A real mistake or surprise, and what changed because of it | — |
-| Goal 3, skills shown | The working repo, tests or numbers prove it; no unproven claims | — |
-| Goal 4, presence | A LinkedIn post and a community angle that stand on their own | — |
-| Goal 5, contagious | A hook and an image someone would forward; STEPPS bars met | — |
+| Voice | Zero hype words; a mistake or limit stated | Hype, takes aimed at people or tools, hate |
+| LinkedIn | Hook ≤ 210 characters; the insight in one sentence; 250–450 characters in all | — |
+| Images | Phone test, one point each, the series look, alt text | Anything sensitive is visible |
+| Goals 1–5 | Knowledge base, lesson as a recipe, skills shown, presence, contagious (0–2 each) | — |
 | Language | English default; PT-BR text follows the playbook's rules | — |
 | Safety | No secret, key, token name, email, client or private repo name | Any of them, in text or images |
 | `blog:check` | No blocks | Any block |
 
-**Bars:** STEPPS raw ≥ 6 of 12, with Practical value = 2 and one of Social currency or Stories = 2. A post under a
-bar gets **Consider** items, not a block; only the "Blocks when" column blocks (the gate is mixed: blocking for
-safety and anti-goals, advisory for the rest).
+**Bars:** STEPPS raw ≥ 6 of 12, with Practical value = 2 and one of Social currency or Stories = 2. Under a bar a
+post gets **Consider** items, not a block; only the "Blocks when" column blocks.

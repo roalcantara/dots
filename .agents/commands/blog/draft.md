@@ -1,7 +1,7 @@
 ---
-description: Draft a blog post (dev.to post, LinkedIn post, community post, shot list) from its roadmap topic
+description: Draft a blog post (hook options to pick, dev.to post, LinkedIn post, community post, cover) from its roadmap topic
 argument-hint: Optional post folder (YYYY-MM-DD-slug), note="…" (angle, story, constraints), then free notes
-allowed-tools: Bash(mise run -q blog:status:*), Bash(mise run blog:new:*), Bash(mise run blog:check:*), Bash(mise run blog:cover:*), Bash(mise run -q blog:todo:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat log:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat show:*)
+allowed-tools: AskUserQuestion, Bash(mise run -q blog:report:*), Bash(mise run -q blog:status:*), Bash(mise run blog:new:*), Bash(mise run blog:check:*), Bash(mise run blog:cover:*), Bash(mise run -q blog:todo:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat log:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat show:*)
 ---
 
 <task>
@@ -9,7 +9,7 @@ Write the first draft of one post of the dots blog, in its folder, ready for the
 </task>
 
 <context>
-- Rules and the topic table (hook, RECIPE, sources): @docs/blog/PLAYBOOK.md
+- Rules: @docs/blog/PLAYBOOK.md; the topic's own data (`hook:`, `recipe:`, `sources:`) are comments on its task
 - Voice, look and rubric: @docs/blog/STYLE.md
 - Templates: @docs/blog/templates/post.md @docs/blog/templates/linkedin.md @docs/blog/templates/community.md
 - Where things stand: !`mise run -q blog:status $1`
@@ -17,26 +17,34 @@ Write the first draft of one post of the dots blog, in its folder, ready for the
 
 <workflow>
 1. Name the post (argument, else the current `feat/post-*` branch). Its folder must exist (`mise run blog:new`
-   first); find its topic row in PLAYBOOK.md ("Topics") and its task in `mise run -q blog:todo -- list`.
-2. Read every source the topic row names, and the commits behind them (`git log`), until each claim in the draft is
-   backed by the repo. Write the information-gain sentence first; if it can't be written, stop and say so.
-3. Draft `post.md` with the `technical-article-writer` skill (objective: personal branding / authority; audience:
-   peer developers; 800–1,300 words), in the template's structure and STYLE.md's voice. Ten title options; keep the
-   most specific. Tags: the large ones first.
-4. Draft `linkedin.md` with the `linkedin-ghostwriting` skill (hook ≤ 210 characters, 900–1,300 characters, the
-   recipe in 3 bullets, one honest lesson, a question; the first comment keeps `{devto.url}`).
-5. From topic 2, draft `community.md` with the `reddit-posts` skill for the community the topic table names.
-6. **Never invent a story, number or quote.** Where only the author knows (how they noticed, what it cost, a real
-   anecdote), write `<author: what is needed>`; `blog:check` **blocks** on these, and `blog:publish` refuses until
-   they are gone.
-7. Add a shot list (2–4 images) as a comment at the end of `post.md`, and propose the cover command:
-   `mise run blog:cover <post> --title … --highlight … --subtitle … --keys …`.
-8. Run `mise run blog:check <post>` until it has no blocks. Do not commit; end with: "Next: /blog:gate".
+   first). Find its task and read the topic's `hook:`, `recipe:` and `sources:` comments (`mise run -q blog:report`,
+   `mise run -q blog:todo -- list`).
+2. Read every source, and the commits behind them (`git log`, `git show`), until each claim in the draft is **lived
+   or proven** (STYLE.md). Write the information-gain sentence first; if it can't be written, stop and say so.
+3. **Hook options.** From that evidence, propose **3–5 hooks** of different kinds: a relatable pain, a small
+   confession, a surprising number from the repo, and one or two framed by a geeky wink from the author's
+   interests (STYLE.md, "The hook"). For each, name the repo fact it rests on and what the author must confirm
+   ("did you notice it in a real run?"). Ask the author (AskUserQuestion) to pick one, edit it, or write their own.
+   - Picked or edited: it opens OVERVIEW in the author's words; a shortened form opens the LinkedIn post.
+   - Skipped: keep `<author: the moment — how you noticed, what it cost>` and write the options right below it as
+     `<!-- hook options: 1. … 2. … -->`, so a later session picks up from them.
+   No option goes into the post without the author's pick.
+4. Draft `post.md` with the `technical-article-writer` skill (objective: personal branding / authority; audience:
+   peer developers; 800–1,300 words), in the template's structure and STYLE.md's voice: each fact once, nothing the
+   author hasn't lived or the repo doesn't show. Ten title options; keep the most specific. Tags: large ones first.
+5. Draft `linkedin.md`: the hook (≤ 210 characters), **one sentence with the insight**, "→ the first comment";
+   250–450 characters, no bullet list, 1–3 hashtags; the first comment is `{devto.url}`.
+6. From topic 2, draft `community.md` with the `reddit-posts` skill for the community its task names.
+7. Write `cover.json` (from `docs/blog/templates/cover.json`): two title lines, the highlight, a subtitle with one
+   emoji wink, and the window (`terminal` with the post's real moment in 3–5 lines, or `app` with code and/or
+   skeleton bars). Run `mise run blog:cover <post>` and look at the image. List any screenshots worth taking (2–4).
+8. Run `mise run blog:check <post>` until it has no blocks (markers block until the author replaces them). Do not
+   commit; end with: "Next: /blog:gate" (or "replace the <author: …> markers first").
 </workflow>
 
 <checklist>
-- [ ] Every claim backed by the repo; no invented stories.
-- [ ] `post.md`, `linkedin.md` (and `community.md` from topic 2) drafted; `<author: …>` where needed.
-- [ ] `blog:check` has no blocks.
+- [ ] Hook options proposed; only the author's pick (or a marker) is in the post.
+- [ ] Every claim lived or proven; each fact once.
+- [ ] `post.md`, `linkedin.md` (and `community.md` from topic 2), `cover.json` and the cover done.
 - [ ] Nothing committed, pushed or published.
 </checklist>

@@ -14,7 +14,9 @@ cover_image: ./images/00-cover.png
 
 **OVERVIEW**
 
-<The problem, as a small story: why I needed this.>
+<author: the hook — your real moment (how you noticed, what it cost), with at most one geeky wink>
+
+<The problem it points at, in one or two sentences.>
 
 **RECIPE**
 

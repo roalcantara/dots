@@ -2,7 +2,8 @@
 
 Short write-ups of how things are done in this repo: each post tells the story of a problem and ends in a
 **RECIPE**, a TL;DR you can follow without reading the rest. They are published on
-[dev.to](https://dev.to/roalcantara) and shared on LinkedIn; this folder is the original.
+[dev.to](https://dev.to/roalcantara) (the canonical public article) and shared on LinkedIn; this folder is the
+source: every post, its files and its numbers.
 
 <!-- index:start -->
 | Date | Post | What it is | dev.to | LinkedIn |
@@ -25,10 +26,11 @@ One command per step; `mise run blog:status` (or `/blog:next`) says where each p
 1. `/blog:pick [note=…]`: choose the next topic (schedule, news, comments); you decide keep or swap.
 2. `mise run blog:new <slug> [--task <id>]`: branch `feat/post-<slug>`, copy the templates, point the task at the
    folder.
-3. `/blog:draft [note=…]`: draft the post, the LinkedIn post and the community post; `<author: …>` marks what only
-   you can write, and `blog:check` blocks until they are replaced.
-4. `mise run blog:cover <post> --title … [--highlight …] [--subtitle …] --keys …`: the cover; captures go in
-   `posts/<post>/raw/`, framed with `docs/blog/tools/frame.py`.
+3. `/blog:draft [note=…]`: draft the post, the LinkedIn post (hook + one insight), the community post and
+   `cover.json`; it suggests 3–5 hooks for you to pick. `<author: …>` marks what only you can write, and
+   `blog:check` blocks until they are replaced.
+4. `mise run blog:cover <post>`: the cover from `cover.json`; captures go in `posts/<post>/raw/`, framed with
+   `uv run --with pillow docs/blog/tools/frame.py <raw> <out> --app <name> [--focus]`.
 5. `mise run blog:check <post>`: until there are no blocks.
 6. `/blog:gate`: a fresh agent reviews the post and records the verdict.
 7. `/blog:pr`: commit, push the branch and open the PR (title and body written); check the dev.to draft preview.

@@ -1,79 +1,15 @@
-# Content series playbook
+# Blog playbook
 
-The living rules of the series. It starts as the design in [the spec](../superpowers/specs/2026-11-13-content-series-design.md) (the record of how it was decided)
-and changes only at recalibrations, with each change written in the **Decisions log** at the end. Voice and
-visuals live in [`STYLE.md`](STYLE.md). [`TODO.yaml`](TODO.yaml) holds the roadmap **and every post's metadata**
-(see **Metadata in TODO.yaml**): `mise run blog:report` prints it, `mise run blog:todo -- dashboard` shows the board.
-
-## How a post moves
-
-Each step is one command: `mise run blog:<task>` for the mechanical ones, `/blog:<command>` (agent commands in
-[`.agents/commands/blog/`](../../.agents/commands/blog)) for the ones that need judgment. `mise run blog:status`
-(or `/blog:next`) tells where every post stands and what comes next.
-
-1. **Pick** (the Tuesday before): `/blog:pick [note=…]` weighs the schedule, the news and the comments, the author
-   decides keep or swap, and it records a `pick:` comment.
-2. **Start:** `mise run blog:new <slug> [--task <id>]` branches `feat/post-<slug>` from `main`, copies the templates
-   into `docs/blog/posts/<YYYY-MM-DD>-<slug>/` (the date is the planned publish date, never renamed once published:
-   it is in the image URLs) and points the task at the folder.
-3. **Draft:** `/blog:draft [note=…]` writes `post.md`, `linkedin.md` and, from topic 2, `community.md` from the
-   topic's sources, leaving `<author: …>` where only the author knows the story; `blog:check` blocks until those
-   markers are replaced.
-4. **Images:** `mise run blog:cover <post> --title … --keys …`; captures in `raw/` (never committed), framed with
-   [`tools/frame.py`](tools/frame.py).
-5. **Check and gate:** `mise run blog:check <post>` until there are no blocks, then `/blog:gate`: a fresh agent
-   writes `review.md` (blocking only for safety, anti-goals and a broken RECIPE) and the verdict is recorded.
-6. **Pull request:** `/blog:pr` (only after a fresh PASS) commits, pushes the post branch and opens the PR with its
-   title and body. The `Blog` workflow pushes a dev.to draft (images from the branch) and comments the preview
-   link; every push updates the same draft. CI never writes the repo: the article is found by its
-   `<!-- dots:<post> -->` marker, then by title, until a local `blog:push` or `blog:stats` records its `devto.id:`.
-7. **Publish:** `mise run blog:publish` (checks the gate, sets `published: true`, pushes), then **merge** (yours).
-   The run on `main` publishes the article with images from `main`.
-8. **Share:** `/blog:share` prints the LinkedIn post (copied) and the first comment with the dev.to link; post them by
-   hand and stay for replies. `/blog:share linkedin=<url>` (or `mise run blog:done <post> --linkedin <url>`) records
-   the URLs and numbers, closes the task and refreshes the README index. Community post a few days later.
-9. **Measure:** `mise run blog:stats` at 48 h; `/blog:retro` at 7 days records the numbers (LinkedIn's read by hand)
-   and the `log.*` lessons.
-
-Writes after the merge (`blog:done`, `blog:stats`, `blog:record`, `/blog:retro`, `/blog:pick`) commit locally on the
-current branch and stop: you push. Agent commands never merge, push to `main` or publish.
-
-The tooling never takes a live article offline: to unpublish, do it by hand on dev.to.
-
-## Metadata in TODO.yaml
-
-Every fact about a post lives in [`TODO.yaml`](TODO.yaml), on the post's task: the task is tagged `post`, its
-`position` is the post's folder (`docs/blog/posts/<YYYY-MM-DD>-<slug>`), its status and due date are the post's.
-Facts are comments on that task, one `key: value` each, appended (never edited) with
-`mise run blog:todo -- add --comment "<key>: <value>" --task-id <id>` or by the tasks. A task tagged `series` holds
-account-wide numbers. The todo CLI drops any field it doesn't know, which is why nothing else is stored there.
-The post's files (`post.md`, `linkedin.md`, `community.md`, `review.md`, `images/`) are found by convention in its
-folder. `mise run blog:report` prints everything and flags any comment outside the schema.
-
-| Key | Value | Written by |
-| --- | --- | --- |
-| `devto.id`, `devto.url` | the article id and URL | `blog:push` and `blog:stats` (when it finds one by title) |
-| `linkedin.url`, `community.url` | a URL | the author |
-| `stats` | `<YYYY-MM-DD> <platform> <metric>=<n> [<metric>=<n>…] (<api\|manual>)` | `blog:stats`, `blog:record` |
-| `gate` | `<YYYY-MM-DD> <PASS\|BLOCKED> stepps=<n>/12` | the gate run |
-| `vars` | `hook=… cover=… images=… linkedin=… lang=… day=… tags=…` | the author / the gate |
-| `log.keep`, `log.change`, `log.best-comment` | text | the author at 7 days |
-| `pick` | `<YYYY-MM-DD> keep\|swap <reason> <source>` | `/blog:pick`, after the author decides |
-| `decision` | `<YYYY-MM-DD> <text>` | recalibrations (series or recal tasks) |
-
-Locally, `mise run blog:push <post>` sends a draft from a pushed branch (or publishes from `main`); the token comes
-from `DEVTO_TOKEN` or gopass `tokens/dev.to`.
+The rules of the dots blog that don't change from post to post. What's next and when lives in
+[`TODO.yaml`](TODO.yaml) (`mise run blog:status`, `mise run blog:todo -- dashboard`); how a post moves, step by step,
+is the QUICK REFERENCE in [`README.md`](README.md); how posts sound and look is [`STYLE.md`](STYLE.md). The designs
+that led here are in `docs/superpowers/specs/` (historical records). Changes to this file happen at recalibrations.
 
 ## Intent
 
-Turn what this repo already solves into a regular series: for each topic, a **dev.to post** (detailed, not a
-tutorial), a **LinkedIn post** that stands on its own and points to it, and, from topic 2, one **community post**.
-The Omarchy-ish post ([dev.to](https://dev.to/roalcantara/omarchy-ish-macos-tiling-an-fn-layer-and-raycast-3fd8)) is
-the model; its LinkedIn reception was positive.
-
-The why: **show know-how and lessons learned, not chase clicks.** Every dev.to post carries a **RECIPE**, a TL;DR
-the author (and readers) can come back to and point at. Together, the recipes become a public "TLDR knowledge base"
-of how things are done in dots.
+Turn what dots already solves into a series of posts, each a story and a **RECIPE** (a TL;DR the author and readers
+come back to): a dev.to article, a short LinkedIn post that points to it, and, from topic 2, one community post. The
+aim is to show know-how and lessons learned, not to chase clicks; engagement follows usefulness and honesty.
 
 ## Goals, in priority order
 
@@ -98,32 +34,8 @@ The order means **higher wins when two goals conflict**, not "lower matters less
 **Audience order** mirrors the goals: future author → peer developers → hiring managers and clients. It settles how
 much to explain: enough for a peer who has not used the tool, no more.
 
-**Ownership:** the repo is the original. dev.to, LinkedIn and communities are copies that point back to it.
-
-## Delivery goals
-
-- One topic per fortnight, published as a pair (dev.to + LinkedIn), with a lighter LinkedIn-only post in the week
-  between: about one LinkedIn post a week.
-- Each topic can be adopted without adopting dots. The most widely applicable topics come first; dots-specific
-  tools (`xcg`, `gitx`, `yb`) come last or not at all.
-- **dots is the example, never the headline.** Titles lead with the problem (git, secrets, AI agents, backups);
-  dots appears in the body as the working proof.
-- Each dev.to post has a RECIPE block that works on its own. A recipes index in the repo (`docs/blog/README.md`)
-  links every RECIPE.
-- From topic 2, each topic gets **one community post**, written natively for that community, never as spam.
-- dev.to publishing (drafts on PRs, publishing on merge) and dev.to numbers are automated from the repo; LinkedIn and Reddit are posted and measured by
-  hand.
-- Each post is checked before publishing, measured after, and the series is adjusted on a fixed rhythm.
-
-## Non-goals
-
-- Full tutorials or install guides. Whoever wants every step follows the links into dots.
-- Growth tactics: engagement pods, hashtag stuffing, a cadence the author cannot keep, comment bait.
-- Covering every folder in `config/`. The topic list is a backlog, not a commitment.
-- LinkedIn profile work. It helps (see **Notes for the author**), but is out of scope here.
-- Curated lists and directories (awesome-dotfiles and similar). Kept for later.
-- Automating LinkedIn or Reddit posting or analytics (LinkedIn's member post analytics needs an approved Community
-  Management API app; schedulers such as Postiz or Buffer add a service and need the LinkedIn login).
+**Ownership:** the repo is the **source** (it holds every post, its files and its numbers); dev.to is the **canonical
+public article**; LinkedIn and communities point to dev.to.
 
 ## Anti-goals
 
@@ -135,51 +47,37 @@ much to explain: enough for a peer who has not used the tool, no more.
 - Hate, rage bait, or takes aimed at other people or tools to provoke. Comparisons stay factual ("vs." tables).
 - A RECIPE that cannot be followed without reading the whole post.
 - Dropping the honest "what I (think I) learned" part to make a post look more polished.
+- An invented anecdote, quote, number or experience, even to make a hook work.
+- A LinkedIn post that teases without giving the insight.
 
-## Constraints
+## Cadence and themes
 
-- The author writes and publishes. Claude drafts posts, captures and frames images, and keeps the log; nothing is
-  published or committed without the author.
-- dots is public (github.com/roalcantara/dots). Links point to files on `main` or to PRs.
-- dev.to front matter: `title`, `published: false` until the author publishes, `description`, `tags` (max 4),
-  `cover_image`. Cover 1000 × 420.
-- LinkedIn: about 210 characters show before "see more"; posts with outside links tend to get less reach, so the
-  dev.to link goes in the first comment.
-- Images go through the existing pipeline: unblurred captures in `docs/blog/posts/<post>/raw/` (git-ignored), framed
-  output in `images/`.
+- **One topic every two weeks, on Tuesdays** (author's time zone, working-week morning): the dev.to article and the
+  LinkedIn post the same day; the community post Thursday–Saturday; a lighter LinkedIn-only post the Tuesday after.
+  December holidays are skipped. The dates are the tasks' due dates.
+- **Four themes**, alternated so neighbouring posts differ (a task's `theme-a` … `theme-d` tag): **A** a machine you
+  can rebuild; **B** a repo that checks itself; **C** working with AI agents; **D** desktop and terminal.
+- Topics that apply to almost anyone come first; dots-specific tools come last or not at all. dots is the example,
+  never the headline.
+
+## Formats
+
+- **dev.to article** (800–1,300 words): the hook, then the RECIPE near the top; the structure is
+  [`templates/post.md`](templates/post.md).
+- **LinkedIn post:** the hook plus one insight, 250–450 characters, the link in the first comment
+  ([STYLE.md](STYLE.md), [`templates/linkedin.md`](templates/linkedin.md)).
+- **Community post:** the story and the RECIPE written for one community, disclosed as the author's
+  ([`templates/community.md`](templates/community.md)).
+- **Cover and images:** the series look ([STYLE.md](STYLE.md), "Visual identity"); `cover.json` per post.
 
 ## Language
 
-**English everywhere by default; LinkedIn's own feed translation covers part of the Portuguese-speaking network.**
-Chosen by the author from an independent evaluation (2026-11-13). Inputs: the author writes technical posts most
-comfortably in English; the LinkedIn network is mixed, probably mostly Brazilian; opportunities from both Brazil and
-abroad matter; acceptable extra effort is "Claude translates, the author reviews".
-
-Ranked options considered:
-
-1. **English everywhere** (chosen): one RECIPE per topic (goals 1–2), one consistent signal abroad (goal 3), no
-   extra effort. LinkedIn auto-translates feed posts for some members whose interface is in Portuguese.
-2. **English, with the LinkedIn post in PT-BR:** best if the network is mostly Brazilian; weaker international
-   signal; 10–15 minutes of review per post.
-3. **One bilingual LinkedIn post (EN, then PT):** dense; only one language gets the hook. Fallback.
-4. **Separate EN and PT LinkedIn posts:** doubles posting, splits engagement. Rejected.
-
-Dropped: PT-BR dev.to copies or TabNews (two versions of every RECIPE work against goal 1); r/brdev (self-promotion
-needs moderator approval). A single native PT post for the strongest topic stays possible later; dev.to's
-`canonical_url` would keep it from competing with the original.
-
-**Test in topics 1–4:** topics 1 and 3 get the LinkedIn post in English, topics 2 and 4 in PT-BR (option 2); the
-in-between posts alternate. At 7 days, record impressions, engagement, comments, profile views, and the viewers'
-location and job titles from LinkedIn analytics. At recalibration 1:
-
-| If | Then |
-| --- | --- |
-| PT-BR gets ≥ 1.5× the engagement and international viewers stay ≥ 15% | Switch to option 2 |
-| PT-BR wins on engagement but international viewers drop below 15% | Switch to option 3 |
-| Otherwise | Stay on option 1 |
-
-Four posts on a small account are directional only; comment quality and inbound messages weigh as much as counts.
-No primary data was found on whether LinkedIn reduces reach by post language.
+**English everywhere by default**; LinkedIn's own feed translation covers part of the Portuguese-speaking network.
+PT-BR is tested on the LinkedIn post of the topics whose task title says "LinkedIn in PT-BR". At a recalibration,
+switch the default to PT-BR LinkedIn posts if they get at least 1.5× the engagement while international viewers stay
+at 15 % or more; to one bilingual post (EN, then PT) if PT-BR wins but international viewers drop below 15 %;
+otherwise keep English. A few posts on a small account are directional only; comment quality and inbound messages
+weigh as much as counts. dev.to stays English: one RECIPE per topic.
 
 **Rules for any PT-BR text:**
 
@@ -190,74 +88,13 @@ No primary data was found on whether LinkedIn reduces reach by post language.
 - Hashtags: 2–3 English tool or topic tags, at most one PT/BR tag.
 - A short EN↔PT glossary in `docs/blog/GLOSSARY.pt.md` keeps the reviews consistent.
 
-## The formats
-
-### dev.to post
-
-800–1,300 words.
-
-```text
-front matter (published: false)
-> DISCLAIMER  — not a tutorial; it lives in dots; grain of salt
-cover image
-**OVERVIEW**            — the problem, as a small story (why I needed this)
-**RECIPE**              — the TL;DR (format below); the part people bookmark
-**HOW IT WORKS**        — the pieces, a picture or two, the one diagram if needed
-**vs. <the usual way>** — a small table: what most people do, what I do, the trade-off
-**WHAT I (THINK I) LEARNED** — 3–5 bullets, each a lesson, at least one mistake
-**REFERENCES**          — tools, the dots files and PRs
-"Corrections and ideas are very welcome. :)"
-```
-
-The RECIPE block, modelled on tldr pages:
-
-```markdown
-**RECIPE**
-
-> **Use it when:** <one line>
-> **You need:** <tools, one line>
-
-1. <step> — `command or file`
-2. <step> — `command or file`
-3. <step> — `command or file`
-
-⚠️ **Gotchas:** <one line each, at most 3>
-📁 **In dots:** [file](link) · [file](link)
-```
-
-**Titles and tags.** Draft 10 titles, keep the most specific. Patterns that work on dev.to: a number ("5 things…"),
-a confession ("It took 54 fixes to…"), an opinion with a reason. Tags (max 4): lead with the large tags that fit
-(`git`, `devops`, `productivity`, `terminal`, `ai`, `docker`, `security`, `macos`); `dotfiles` only as the fourth,
-if at all.
-
-### LinkedIn post
-
-Useful without clicking. 900–1,300 characters.
-
-```text
-Hook (≤ 210 chars): a number, a surprise or a small confession from the topic.
-2–4 short lines: the problem and the decision.
-The recipe in 3 bullets (→ …).
-One honest lesson ("What I got wrong: …").
-A question that invites people's own setups ("How do you …?").
-Image: the cover, one framed screenshot, or a 4–6 slide carousel of the RECIPE (PDF).
-3 hashtags. dev.to link in the first comment, posted right after.
-```
-
-The in-between LinkedIn-only post takes one piece of the same topic (a gotcha, a before/after number, the RECIPE as
-a carousel) and links back to the dev.to post in the first comment.
-
-### Community post
-
-The story and the RECIPE written natively for one community, in plain markdown, with the dev.to link at the end
-("I wrote this up here") or in a comment where links in posts are frowned on. Rules in **Communities**.
-
 ## Choosing the next topic
 
 The schedule is the default, not a contract. At the start of each cycle (the Tuesday before publishing), an agent
 re-evaluates the next pick against the current context, and the author approves the result.
 
-**Inputs:** the scheduled topic; the ready topics in the schedule and the backlog; the latest metadata of the past posts (`mise run blog:report`)
+**Inputs:** the scheduled topic; the other open topics and the backlog (`topic-backlog` tasks), with their `hook:`,
+`recipe:` and `sources:` comments and theme tags; the latest metadata of the past posts (`mise run blog:report`)
 (questions from comments, what worked); and a news check: a web search over the past two weeks for each candidate's
 subject (for example "secrets leaked GitHub", "restic", "Conventional Commits", "AI coding agents"), plus the
 release notes of the tools involved.
@@ -287,88 +124,17 @@ release notes of the tools involved.
 Reddit first; a tool's own forum or GitHub Discussions where the topic belongs to one tool. The rule is
 **contribute first, link second**:
 
-- **Runway:** the author's Reddit account (u/roalcantara) has some history. From 2026-11-17 to 2026-11-30, comment
-  and answer in the target subreddits only, no own links. Community posts start with topic 2.
+- **Runway:** before the first community post, two weeks of comments and answers in the target subreddits, no own
+  links (the roadmap's "Reddit runway" task).
 - **90/10:** at most one in six of the author's posts or comments in a community links to their own work.
 - **One community per topic.** Read its sidebar rules and recent top posts first, use the required flair and title
   format. Never the same post in two communities.
 - **Disclose:** "I wrote this up on dev.to".
 - **Stay 2 hours** after posting to answer; thank corrections.
-- **Never repost** a topic that sank; record it in the log instead.
+- **Never repost** a topic that sank; record it as a `note:` on the topic's task instead.
 
-| Topic | First choice | Alternatives |
-| --- | --- | --- |
-| Omarchy-ish macOS (published) | r/unixporn (strict screenshot format) | r/macos, yabai GitHub Discussions |
-| 1. SOPS + age secrets | r/devops (later, if a slot opens) | r/git |
-| 2. Commit conventions | r/git | r/programming |
-| 3. Back up a list | r/selfhosted | r/DataHoarder, restic forum |
-| 4. hk hooks | r/commandline | hk GitHub Discussions |
-| 5. Bootstrap, 54 fixes | r/dotfiles | r/commandline |
-| 6. Spec → plan → agents | r/ClaudeAI | r/ExperiencedDevs; Hacker News once, if the post is strong |
-| 7. mise profiles | r/commandline | mise GitHub Discussions |
-| 8. Docker images with CST | r/docker | r/devops |
-
-Subreddit names and rules are checked before each post; the table is a starting point. Each community post is
-drafted with the `reddit-posts` skill and kept in the topic's `community.md`.
-
-## Topics
-
-Four themes; neighbouring posts come from different themes. Each topic must pass the **information-gain gate**
-before drafting: one sentence on what it adds that the top existing articles don't (usually the decision, the
-mistakes and the real numbers). If that sentence cannot be written, the topic moves down or merges.
-
-| Theme | Topics |
-| --- | --- |
-| **A. A machine you can rebuild** | mise bootstrap end to end · mise profiles · one Brewfile · macOS settings as code · back up a list · secrets with SOPS + age |
-| **B. A repo that checks itself** | commit conventions · hk hooks · testing dotfiles (BDD) · Docker images verified by CST |
-| **C. Working with AI agents** | superpowers: spec → plan → worktree · agent skills in a lock file · "my agents ran zsh and lied to me" |
-| **D. Desktop and terminal** | Omarchy-ish (published) · zsh startup, measured · later: the fzf tools |
-
-### Scheduled (topics 1–8)
-
-| # | Topic | Hook from the repo | RECIPE in one line | Drivers | Sources |
-| --- | --- | --- | --- | --- | --- |
-| 1 | **Secrets in git with SOPS + age** (A) | Secrets live in the repo, encrypted on commit, decrypted on checkout | git clean/smudge filters + `.gitattributes` + an age key outside the repo | Practical value, social currency | `script/{clean,smudge}.sops.sh`, `.sops.yaml`, `.gitattributes`, `docs/CONTRIBUTING.md` |
-| 2 | **Commit conventions that write your release notes** (B) | Every commit in dots follows one format, and the changelog writes itself | Conventional Commits + a capitalised description + a commit-msg check + semantic-release | Practical value | `docs/CONTRIBUTING.md`, `.github/workflows/release.yml`, `CHANGELOG.md`, the locale fix in `hk` |
-| 3 | **Back up a list, not your home folder** (A) | A full-home run read 606,863 files, 541 GiB, mostly VMs | restic + an allowlist manifest; rebuildable things come back from dots, Homebrew and lock files | Emotion (surprise), practical value | `docs/REINSTALL.md`, `script/backup.ts` |
-| 4 | **One linter config for pre-commit and CI with hk** (B) | Eight linters, one file, the same checks locally and in CI | `hk.pkl` steps, `hk check --all`, hooks installed by the bootstrap | Practical value | `hk.pkl`, `config/hk/`, `docs/TESTING.md` |
-| 5 | **It took 54 fixes to make my bootstrap boring** (A) | One command from a clean Mac or Linux box to a working machine | `install` → `mise bootstrap`; core group must pass, the rest warns; logs in `~/.local/state/dots/` | Stories, emotion | `install`, `config/mise/conf.d/bootstrap.toml`, README, `git log --grep 'fix(install)'` |
-| 6 | **Spec → plan → agents on a personal repo** (C) | 14 design specs, 336 pinned agent skills, every change through a worktree | brainstorm → spec → plan with checkboxes → agent implements in a worktree → quality gate | Social currency, stories | `AGENTS.md`, `docs/superpowers/`, `config/agents/skill-lock.json` |
-| 7 | **mise profiles: one repo, four kinds of machine** (A) | Desktop vs container, macOS vs Linux, from the same config | mise env profiles, `miserc.local.toml` written by `install`, per-profile tools | Practical value | `config/mise/`, README "Gotchas" |
-| 8 | **Test your Docker images like code (CST)** (B) | The dev images are built and checked by Container Structure Tests in CI | multi-stage Dockerfile + CST manifest + `mise run build/test` + GitHub Actions | Practical value, social currency | `distros/`, `docs/DOCKER.md`, `.github/workflows/` |
-
-### Backlog (ordered at recalibration 2)
-
-- One Brewfile for macOS and Linux (A): `config/homebrew/Brewfile`.
-- macOS settings as code (A): `config/mise/conf.d/macos.toml`, `docs/MACOS.md`.
-- Testing dotfiles with BDD (B): `docs/TESTING.md`, `test/`.
-- Agent skills pinned in a lock file (C): `config/agents/skill-lock.json`, `script/agent-skills.ts`.
-- "My agents ran zsh and lied to me" (C): the silent one-pass loop and the switch to bash; also a strong in-between
-  post for topic 6.
-- Zsh startup, measured (D): `script/zsh-verify.sh`.
-- The gotchas list (all): README "Gotchas" and the fix commits above.
-- The fzf tools (`xcg`, `gitx fza`) (D).
-
-## Timeline
-
-One topic every two weeks, Tuesdays (author's time zone, working-week morning). The community post goes out
-Thursday–Saturday of the same week; the in-between LinkedIn post the Tuesday after. December holidays are skipped.
-
-| Week of | Pair (dev.to + LinkedIn) | Community post | In-between LinkedIn post |
-| --- | --- | --- | --- |
-| 2026-11-17 | 1. Secrets with SOPS + age | — Reddit runway: comment only | the RECIPE as a carousel |
-| 2026-12-01 | 2. Commit conventions | r/git | the locale bug in the commit linter |
-| 2026-12-15 | — light: year-end "what I automated" | Omarchy-ish → r/unixporn | holiday break |
-| 2027-01-05 | 3. Back up a list | r/selfhosted | the 606,863 files number |
-| 2027-01-19 | 4. hk hooks | r/commandline | one config, eight linters, shown |
-| 2027-02-02 | 5. Bootstrap, 54 fixes | r/dotfiles | **recalibration 1 is due before this** |
-| 2027-02-16 | 6. Spec → plan → agents | r/ClaudeAI | "my agents ran zsh and lied to me" |
-| 2027-03-02 | 7. mise profiles | r/commandline | the `miserc.local.toml` gotcha |
-| 2027-03-16 | 8. Docker images with CST | r/docker | **recalibration 2: order the backlog** |
-
-Per topic, work starts the Tuesday before publishing: `/blog:pick` (see **Choosing the next topic**) → plan →
-draft and images → cold read → author review → publish. Before topic 1, a one-off setup: the stats task, the devto-cli wiring, the shared image tools, and
-the baseline recorded as comments on the Omarchy post task and the series task.
+Which community a topic goes to is the title of its `community` task in `TODO.yaml`; the subreddit's rules are
+checked again before each post.
 
 ## Success criteria
 
@@ -392,10 +158,9 @@ the goals.
 **Baseline.** Numbers only need to be honest, not impressive: every comparison is with the series' own past, never
 with other creators.
 
-- dev.to: the Omarchy post's numbers, read by `mise run blog:stats` during setup (no manual step).
-- LinkedIn: no API is available for personal posts. The baseline is the **median of topics 1 and 2**; until then,
-  targets are not applied. If the author has the Omarchy post's LinkedIn numbers, or LinkedIn's analytics export
-  for it, they are recorded as context, not as a target.
+- dev.to: the numbers already recorded on the posts' and the series task (`mise run blog:report`).
+- LinkedIn: no API is available for personal posts, so the baseline is the **median of the first two series
+  posts**; targets apply from the third.
 
 Signals:
 
@@ -403,20 +168,24 @@ Signals:
 | --- | --- | --- |
 | Impressions; impressions per follower | LinkedIn | 4–5 |
 | Engagement rate = (reactions + comments + reposts) ÷ impressions | LinkedIn | 5 |
-| Comments with substance (a question, a setup, a correction) | All | 2–3 (worth more than reactions) |
-| Saves and reposts | LinkedIn | 2, 5 |
+| Comments with substance (`substantive_comments`: a question, a setup, a correction), counted by hand | All | 2–3 (worth more than reactions) |
+| Saves, reposts and sends | LinkedIn | 2, 5 |
 | Views, reactions, comments | dev.to | 3–4 |
 | Visitors referred from linkedin.com and reddit.com | dev.to referrers | 4 (do the copies send readers to the original?) |
 | Upvote ratio, comments with substance, removals | Reddit | 4–5 |
 | Repo views and stars | GitHub traffic | 3 |
 
-Starting targets, from topic 3, reset at recalibration 1: per topic, at least the baseline's LinkedIn impressions,
-an engagement rate at or above the baseline, and at least 3 comments with substance across all platforms.
+Starting targets, from the third post, reset at each recalibration: per topic, at least the baseline's LinkedIn
+impressions, an engagement rate at or above the baseline, and at least 3 comments with substance across all
+platforms. A number that can't be read is recorded as `note: <date> <platform> <metric> unknown`, never guessed.
 
 ### 3. Over the series (monthly)
 
-- Recipes reused: times the author linked a RECIPE to answer someone (goal 1, the clearest sign).
-- Inbound conversations: messages or comments that ask for help, invite a talk, or mention work (goals 3–4).
+Recorded on the series task (`mise run blog:record series series recipe_reuse=… inbound=…`, and LinkedIn's
+`followers`/`profile_views`):
+
+- Recipes reused (`recipe_reuse`): times the author linked a RECIPE to answer someone (goal 1, the clearest sign).
+- Inbound conversations (`inbound`): messages or comments that ask for help, invite a talk, or mention work (goals 3–4).
 - Followers and profile views month over month (goal 4).
 
 ## Tuning each element
@@ -428,11 +197,11 @@ Each post's task records its variables (`vars:`), the hypothesis for the one tha
 | Element | Variables recorded | Measured by | Rule |
 | --- | --- | --- | --- |
 | Title / hook | type (number, confession, opinion, question), length | LinkedIn impressions per follower; dev.to views in 48 h | A type that wins twice becomes the default |
-| Cover / banner | style (generated, screenshot, text-only) | dev.to views relative to the tag's usual | Alternate until one wins twice |
+| Cover | window kind (terminal, app), the wink | dev.to views relative to the tag's usual | Keep the series look; tune the window and wink |
 | Screenshots | count, kind (terminal, desktop, diagram) | LinkedIn saves; "how did you…" comments | Fewer, clearer images if saves don't move |
 | LinkedIn copy | length, bullets vs prose, image vs carousel | Engagement rate; dev.to referrers from linkedin.com | Keep what sends readers, not only reactions |
 | Day and time | weekday, hour (author's time zone), and the time zone of most viewers | Impressions in the first 2 hours and at 48 h; LinkedIn viewer locations | Tuesday morning to start; reviewed at every recalibration, and tried against one alternative (e.g. Thursday, or a later hour if most viewers are abroad) for two topics before switching |
-| Tone | voice-check result, humour yes/no | Comments with substance vs reactions; corrections | Corrections are good: they mean people read closely |
+| Hook and wink | the hook's kind (moment, pain, confession, number), the wink's universe | Comments with substance vs reactions; corrections | Corrections are good: they mean people read closely |
 | Tags | the 4 dev.to tags | dev.to views | Drop a tag that never brings views |
 | Community | subreddit, title format, link placement | Upvote ratio, referrers from reddit.com, removals | See recalibration rules |
 
@@ -454,97 +223,27 @@ Each post's task records its variables (`vars:`), the hypothesis for the one tha
 - **Recalibration 2 (after topic 8):** order the backlog; keep the cadence, step up to weekly, slow down, or end
   the series. Write the decision in the log.
 
-## Automation and skills
+## Metadata in TODO.yaml
 
-| Step | How | Notes |
+Every fact about a post lives in [`TODO.yaml`](TODO.yaml), on the post's task: the task is tagged `post`, its
+`position` is the post's folder (`docs/blog/posts/<YYYY-MM-DD>-<slug>`), its status and due date are the post's.
+Facts are comments on that task, one `key: value` each, appended (never edited) with
+`mise run blog:todo -- add --comment "<key>: <value>" --task-id <id>` or by the tasks. A task tagged `series` holds
+account-wide numbers. The todo CLI drops any field it doesn't know, which is why nothing else is stored there.
+The post's files (`post.md`, `linkedin.md`, `community.md`, `review.md`, `images/`) are found by convention in its
+folder. `mise run blog:report` prints everything and flags any comment outside the schema.
+
+| Key | Value | Written by |
 | --- | --- | --- |
-| Draft the dev.to post | `technical-article-writer` (installed) | Its intake and title steps fit; its objective is "personal branding / authority", and the spec's voice overrides its defaults |
-| Draft the LinkedIn post | `samber/cc-skills@linkedin-ghostwriting` (installed 2026-11-13) | Quantified, results-first posts; 5.8K installs, audits pass |
-| Hooks, titles, closing line | `copywriting-hooks`, `copywriting-cta` (installed 2026-11-13) | Used by `technical-article-writer`; the CTA stays "corrections welcome", no signup asks |
-| Draft the community post | `reddit-posts` (installed) | 90/10, flair, subreddit format |
-| Check shareability | `contagious` (installed) | STEPPS score in the log |
-| Cold read | A fresh agent playing a mid-level developer | See **Success criteria** |
-| Publish to dev.to | The Forem API directly, from bun file tasks in `.mise/tasks/blog/`, run locally (`mise run blog:push`) and by `.github/workflows/blog.yml` | A PR that touches a `post.md` creates or updates a **draft** (images from the PR branch), comments the preview link; the merge to `main` updates the article with images from `main` and the front matter's `published` value. **Merging a PR with `published: true` is the author's publish button.** |
-| dev.to numbers | `mise run blog:stats`: Forem API (`/api/articles/me/all`, `/api/analytics/referrers?article_id=` when available) | Token from gopass `tokens/dev.to` locally and the `DEVTO_TOKEN` repo secret in CI, never in the repo; recorded as `stats:` comments on the posts' tasks in `TODO.yaml` |
-| LinkedIn and Reddit numbers | By hand at 48 h and 7 days, about 2 minutes per post | `mise run blog:record <post> linkedin impressions=… …` |
-| Repo traffic | `gh api repos/roalcantara/dots/traffic/views` in the same stats task | |
+| `devto.id`, `devto.url` | the article id and URL | `blog:push` and `blog:stats` (when it finds one by title) |
+| `linkedin.url`, `community.url` | a URL | the author |
+| `stats` | `<YYYY-MM-DD> <platform> <metric>=<n> [<metric>=<n>…] (<api\|manual>)` | `blog:stats`, `blog:record` |
+| `gate` | `<YYYY-MM-DD> <PASS\|BLOCKED> stepps=<n>/12` | the gate run |
+| `vars` | `hook=… cover=… images=… linkedin=… lang=… day=… tags=…` | the author / the gate |
+| `log.keep`, `log.change`, `log.best-comment` | text | the author at 7 days |
+| `pick` | `<YYYY-MM-DD> keep\|swap <reason> <source>` | `/blog:pick`, after the author decides |
+| `hook`, `recipe`, `sources` | the topic's angle, its RECIPE in one line, the repo files and links it rests on | the roadmap (topic tasks), `/blog:draft` |
+| `decision` | `<YYYY-MM-DD> <text>` | recalibrations (series or recal tasks) |
 
-The okou `devto` skill was considered and dropped: publish-only, its own tooling, 60 installs, a Snyk warning.
-devto-cli and the `sinedied/publish-devto` Action were considered and dropped: the Action publishes whatever the
-front matter says (a PR with `published: true` would go live before the merge), devto-cli was last released in
-July 2024, and the direct API needs no extra tool. Prior art for draft-on-PR, publish-on-merge:
-[shihanng's workflow](https://dev.to/shihanng/publishing-dev-articles-from-github-3jc2).
-
-## Evidence behind the choices (2026-11-13)
-
-- **The author's dev.to baseline is low:** the Omarchy post has 0 reactions, 0 comments; the best earlier post
-  ("Tidy Up Your VSCode Explorer with File Nesting", a one-minute single tip) has 7 reactions.
-- **The `#dotfiles` tag is nearly empty on dev.to:** its top posts of the past year have 0–5 reactions. Large tags
-  do far better: `#git` (top post 263 reactions, 113 comments), `#devops`, `#productivity`, `#terminal`.
-- **What wins there:** numbered practical lists ("Five Git Config Settings Every Dev Needs", 48 reactions,
-  27 comments), confessions of failure ("How I Almost Deleted My Entire Project", 112 / 45), clear opinions
-  ("Don't Write Markdown Files for Your Coding Agent. Write Scripts.", 60 / 48).
-- **The git history holds the stories:** 54 `fix(install)` commits behind the bootstrap; agents that ran
-  `for x in $list` in zsh and silently looped once; a `mise.toml` that would have been trusted silently; a commit
-  linter that missed lowercase subjects in other locales; a bootstrap that now warns instead of aborting; CI
-  workflows that needed their own concurrency groups.
-
-Source: dev.to public API (`/api/articles?tag=<t>&top=365`, `?username=roalcantara`) and `git log` on 2026-11-13.
-
-## Decisions log
-
-Newest last. Each recalibration adds its decisions here; the spec is never edited for them.
-
-### 2026-11-13 · decided by the author
-
-- The goal order and tiebreaks, the voice, the audience order, ownership.
-- Topics: mise bootstrap, commit conventions, hk, CST/Docker, mise profiles and superpowers added; four themes.
-- Tuning per element, with one change at a time and the cold read.
-- LinkedIn and Reddit: posted and measured by hand; no scheduler, no API application.
-- Reddit presence, never spam or hate; the community rules above.
-- awesome-dotfiles and similar lists: later.
-- Installing skills: allowed once agreed.
-- Language: English by default, PT-BR tested on LinkedIn in topics 2 and 4 (the agent's recommendation).
-- Re-evaluating the next topic against current context (news, comments), with the news as a brief hook only.
-- Skills installed: `linkedin-ghostwriting`, `copywriting-hooks`, `copywriting-cta`.
-- Start on 2026-11-17; publishing day and time are reviewed at each recalibration.
-- Baseline: dev.to read by the stats task; LinkedIn from the series' own first two posts.
-- Tooling: bun file tasks instead of a script; every tool from the Brewfile whenever possible; the token in gopass
-  at `tokens/dev.to` and as the `DEVTO_TOKEN` repo secret; drafts on PRs, publishing on merge.
-
-### 2026-11-13 · proposed by Claude, accepted with the spec
-
-- Fortnightly pairs plus one in-between LinkedIn post, Tuesdays, starting 2026-11-17, December holidays skipped.
-- The order of topics 1–8 and the theme alternation; the rest ordered at recalibration 2.
-- The RECIPE format (tldr-style) near the top of the dev.to post; the dev.to link in LinkedIn's first comment.
-- Tag strategy: large tags first, `dotfiles` at most fourth.
-- STEPPS ≥ 6 with Practical value = 2 as the pre-publish bar; LinkedIn targets applied from topic 3.
-- A two-week Reddit runway; the Omarchy post to r/unixporn in the December light week.
-- The Forem API from bun file tasks (`.mise/tasks/blog/`) and a CI workflow: drafts on PRs, publish on merge.
-- A `blog:stats` task for dev.to numbers, referrers and repo traffic.
-- Moving the image tools to `docs/blog/tools/`; `README.md` and `LOG.md` in `docs/blog/`.
-
-### 2026-11-13 · during setup
-
-- The backlog item "my agents ran zsh and lied to me" became the **preflight post** (`2026-11-13-zsh-word-split`), published
-  before topic 1 to prove the flow end to end. Topic 6's in-between post is now "336 agent skills in a lock file".
-- Publishing runs on the Forem API from bun file tasks (`.mise/tasks/blog/`) and the `Blog` workflow: drafts on
-  pull requests, publishing on merge. devto-cli is not used.
-- The roadmap is `TODO.yaml` (todo CLI, YAML), read by `/wip:resume`. `todo` is pinned in its mise task: it has no
-  Homebrew formula, and cargo's `todo-cli` is another crate.
-
-### 2026-11-13 · DRY pass ([design](../superpowers/specs/2026-11-13-content-series-dry-design.md))
-
-- The dev.to token resolves through fnox (`fnox.toml`: gopass `tokens/dev.to`, first line); CI uses the repo secret.
-- Tasks parse their arguments from argv (`parseArgs`), not mise's `usage_*` variables.
-- Posts live in `docs/blog/posts/<YYYY-MM-DD>-<slug>/`; the folder name is the post's id.
-- Every post's metadata is comments on its task in `TODO.yaml`; `stats.csv`, `LOG.md` and the front matter `id:` are
-  gone, and CI no longer commits to the repo. `blog:report` replaces the log and writes the README index.
-
-### 2026-11-13 · one command per step ([design](../superpowers/specs/2026-11-13-blog-commands-design.md))
-
-- Mise tasks are `blog:*` (`.mise/tasks/blog/`); agent commands `/blog:*` live in `.agents/commands/blog/` (read
-  through a `.claude/commands` symlink); `docs/blog/prompts/` moved into `/blog:pick` and `/blog:gate`.
-- `blog:status` and `/blog:next` compute each post's stage; `/blog:pr` opens the PR with its title and body; merging
-  and LinkedIn stay the author's; writes after the merge commit locally and stop.
-- Enforcement is the commands' instructions plus `allowed-tools` (no deny rules), by the author's choice.
+Locally, `mise run blog:push <post>` sends a draft from a pushed branch (or publishes from `main`); the token comes
+from `DEVTO_TOKEN` or gopass `tokens/dev.to`.

@@ -16,8 +16,12 @@ Arguments: $ARGUMENTS
 
 <workflow>
 1. Name the post (argument, else the latest post that isn't closed); its stage should be `measure`.
-2. Run `mise run blog:stats`. If LinkedIn numbers were given (`impressions=… reactions=… comments=… reposts=…`),
-   run `mise run blog:record <post> linkedin <pairs>`; else ask the author to read them from LinkedIn's analytics.
+2. Run `mise run blog:stats`. Then the numbers read by hand, with `mise run blog:record <post> <platform> <pairs>`:
+   LinkedIn `impressions`, `reactions`, `comments`, `reposts`, `saves`, `sends`, `profile_views`, `followers`;
+   `substantive_comments` per platform (a question, a correction or a shared setup, counted by hand); the
+   community's `upvote_ratio`. Ask the author for any not given. A number that can't be read is recorded as
+   `note: <YYYY-MM-DD> <platform> <metric> unknown`, never guessed. Monthly, the series numbers:
+   `mise run blog:record series series recipe_reuse=… inbound=…`.
 3. Show the post's numbers against the baseline and the previous posts (`mise run -q blog:report`), in a few lines:
    what moved, which variable changed on purpose (`vars:`), and whether the playbook's rules for changing the
    backlog apply.
