@@ -62,6 +62,9 @@ export function assertPost(post: string): string {
 }
 export const isPost = (post: string): boolean => POST.test(post);
 
+// The "## Post" section of linkedin.md (up to the next "## " heading).
+export const linkedinPost = (text: string): string => (text.split(/^## Post\s*$/m)[1] ?? "").split(/^## /m)[0]!.trim();
+
 // The first paragraph after "## Post" in linkedin.md: what shows before "see more".
 export function linkedinHook(text: string): string {
   const after = text.split(/^## Post\s*$/m)[1] ?? "";
@@ -96,10 +99,13 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
   if (!fm.title) block("title-missing", "front matter has no title");
   if (!fm.description) block("description-missing", "front matter has no description");
   if (fm.tags.length > 4) block("tags-max-4", `dev.to takes at most 4 tags, found ${fm.tags.length}`);
+  if (/\]\(\.?\/?raw\//.test(text)) block("raw-image", "an image points at raw/ (unblurred captures)");
+  // A post published before the tooling (front matter `legacy: true`) skips the content rules, never safety.
+  if (fm.legacy === true) return out;
   if (!/^\*\*RECIPE\*\*\s*$/m.test(body)) block("recipe-missing", "no **RECIPE** block");
   if (!/\*\*Use it when:\*\*/.test(body)) block("recipe-use-it-when", "the RECIPE has no **Use it when:** line");
-  if (/\]\(\.?\/?raw\//.test(text)) block("raw-image", "an image points at raw/ (unblurred captures)");
   if (!existsSync(join(dir, "linkedin.md"))) block("linkedin-missing", "no linkedin.md next to post.md");
+  if (!existsSync(join(dir, "cover.json"))) block("cover-missing", "no cover.json (the cover's text and window)");
   const li0 = join(dir, "linkedin.md");
   const texts = [text, existsSync(li0) ? readFileSync(li0, "utf8") : ""];
   const holes = texts.flatMap(placeholders);
@@ -119,6 +125,9 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
     const hook = linkedinHook(readFileSync(li, "utf8"));
     const n = visibleLength(hook);
     if (n > 210) warn("hook-over-210", `LinkedIn hook is ${n} characters; at most 210 show before "see more"`);
+    const post = linkedinPost(readFileSync(li, "utf8"));
+    const len = visibleLength(post);
+    if (len > 450) warn("linkedin-long", `LinkedIn post is ${len} characters; keep it to a hook and one insight (≤ 450)`);
   }
   return out;
 }
@@ -206,11 +215,11 @@ export function resolveArticleId(
 
 // ---- numbers ----------------------------------------------------------------------------------------------------
 
-export const PLATFORMS = ["devto", "linkedin", "reddit", "github"] as const;
+export const PLATFORMS = ["devto", "linkedin", "reddit", "github", "series"] as const;
 export const METRICS = [
   "views", "reactions", "comments", "impressions", "engagement_rate", "reposts", "saves", "profile_views",
   "followers", "upvote_ratio", "removed", "referrer_linkedin", "referrer_reddit", "repo_views", "repo_uniques",
-  "stars",
+  "stars", "substantive_comments", "sends", "recipe_reuse", "inbound",
 ] as const;
 export type StatRow = { date: string; slug: string; platform: string; metric: string; value: number; source: "api" | "manual" };
 
@@ -275,7 +284,7 @@ export function parseRecordArgs(argv: string[], date: string): StatRow[] {
 
 export const KEYS = [
   "devto.id", "devto.url", "linkedin.url", "community.url", "stats", "gate", "vars", "log.keep", "log.change",
-  "log.best-comment", "pick", "decision", "note",
+  "log.best-comment", "pick", "decision", "note", "hook", "recipe", "sources",
 ] as const;
 export type Comment = { id: string; text: string; task_id: string };
 export type TodoTask = {
@@ -421,21 +430,46 @@ export const authorMarkers = (text: string): string[] => angles(text).filter((t)
 
 // A review is fresh when no commit touching post.md came after the one that last touched review.md (timestamps lie
 // across rebases and checkouts). While either file has uncommitted changes, its mtime is the only evidence.
+// The files a review covers. A review is fresh when none changed after it, ignoring the commit that only flips
+// `published:` (blog:publish), so any merge strategy keeps a PASS valid.
+export const REVIEWED = ["post.md", "linkedin.md", "community.md", "cover.json", "images"];
 export function reviewIsFresh(dir: string): boolean {
   const reviewPath = join(dir, "review.md");
-  const postPath = join(dir, "post.md");
-  if (!existsSync(reviewPath) || !existsSync(postPath)) return false;
-  const dirty = (path: string) => git("status", "--porcelain", "--", path).out !== "";
-  if (dirty(postPath)) return dirty(reviewPath) && Bun.file(reviewPath).lastModified >= Bun.file(postPath).lastModified;
-  if (dirty(reviewPath)) return true;
+  if (!existsSync(reviewPath) || !existsSync(join(dir, "post.md"))) return false;
+  const watched = REVIEWED.map((f) => join(dir, f)).filter((f) => existsSync(f));
+  const dirty = (paths: string[]) => git("status", "--porcelain", "--", ...paths).out !== "";
+  if (dirty(watched)) {
+    if (!dirty([reviewPath])) return false;
+    const reviewTime = Bun.file(reviewPath).lastModified;
+    return watched.every((f) => !dirty([f]) || statTime(f) <= reviewTime);
+  }
+  if (dirty([reviewPath])) return true;
   const reviewed = git("log", "-1", "--format=%H", "--", reviewPath);
   if (!reviewed.ok || !reviewed.out) return false;
-  const after = git("rev-list", "--count", `${reviewed.out}..HEAD`, "--", postPath);
-  return after.ok && after.out === "0";
+  // Merge commits carry no changes of their own; only real commits after the review count.
+  const later = git("rev-list", "--no-merges", `${reviewed.out}..HEAD`, "--", ...watched).out.split("\n").filter(Boolean);
+  return later.every((sha) => onlyPublishedChanged(git("show", "--format=", sha, "--", ...watched).out));
 }
+const statTime = (path: string): number => {
+  try { return Bun.file(path).lastModified; } catch { return 0; }
+};
 
 export const scaffoldFiles = (topic: number): string[] =>
   topic >= 2 ? ["post.md", "linkedin.md", "community.md"] : ["post.md", "linkedin.md"];
+
+// A diff whose only changed lines are the front matter's `published:` (the commit blog:publish makes).
+export function onlyPublishedChanged(diff: string): boolean {
+  const changed = diff.split("\n").filter((l) => /^[+-]/.test(l) && !/^(\+\+\+|---)( |$)/.test(l));
+  return changed.length > 0 && changed.every((l) => /^[+-]published:/.test(l));
+}
+
+// Publishing (CI on main included) needs a fresh PASS from the gate, except for posts published before the tooling.
+export function publishGate(f: { legacy: boolean; review?: string; fresh: boolean }): Finding[] {
+  if (f.legacy) return [];
+  if (f.review !== "PASS") return [{ level: "block", rule: "review-not-pass", message: `the gate's verdict is ${f.review ?? "missing"}` }];
+  if (!f.fresh) return [{ level: "block", rule: "review-stale", message: "the post changed after its review" }];
+  return [];
+}
 
 export function publishBlockers(f: { review?: string; reviewFresh: boolean; markers: number; dirty: boolean }): Finding[] {
   const out: Finding[] = [];

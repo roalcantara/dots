@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { describe, expect, it } from "bun:test";
-import { appendFileSync, cpSync, mkdtempSync, readFileSync } from "node:fs";
+import { appendFileSync, cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -15,6 +15,7 @@ import {
   postBranch,
   parseComment,
   parseFrontMatter,
+  onlyPublishedChanged,
   parseRecordArgs,
   parseStats,
   placeholders,
@@ -22,6 +23,7 @@ import {
   postOptions,
   postsFromTodo,
   resolvePost,
+  publishGate,
   pushAction,
   pushPreconditions,
   resolveArticleId,
@@ -435,5 +437,53 @@ describe("task helpers", () => {
       t("e", ["topic-4"], "2026-11-10T09:00:00", undefined, "Done"),
     ] } as Todo;
     expect(nextTopicTask(todo)?.id).toBe("d");
+  });
+});
+
+describe("voice pass rules", () => {
+  const copyGood = () => {
+    const dir = mkdtempSync(join(tmpdir(), "post-"));
+    cpSync(join(FIX, "good"), dir, { recursive: true });
+    return dir;
+  };
+  const rulesIn = (dir: string) => checkPost(dir, HYPE).map((f) => `${f.level}:${f.rule}`);
+
+  it("lets a legacy post skip the content rules, never the raw-image rule", () => {
+    const dir = mkdtempSync(join(tmpdir(), "post-"));
+    writeFileSync(join(dir, "post.md"), "---\ntitle: Old\ndescription: d\ntags: a\nlegacy: true\n---\n<one line> ![x](./raw/a.png)\n");
+    expect(rulesIn(dir)).toEqual(["block:raw-image"]);
+  });
+
+  it("blocks a new post without cover.json", () => {
+    const dir = copyGood();
+    rmSync(join(dir, "cover.json"));
+    expect(rulesIn(dir)).toEqual(["block:cover-missing"]);
+  });
+
+  it("warns when the LinkedIn post is longer than 450 characters", () => {
+    const dir = copyGood();
+    writeFileSync(join(dir, "linkedin.md"), `## Post\n\nShort hook.\n\n${"word ".repeat(100)}\n\n## First comment\n\n{devto.url}\n`);
+    expect(rulesIn(dir)).toEqual(["warn:linkedin-long"]);
+  });
+
+  it("accepts the topic keys and the new metrics", () => {
+    for (const k of ["hook", "recipe", "sources"]) expect(parseComment(`${k}: x`)?.key).toBe(k);
+    expect(parseRecordArgs(["series", "series", "recipe_reuse=2", "inbound=1"], "d").length).toBe(2);
+    expect(parseRecordArgs(["p", "linkedin", "substantive_comments=3", "sends=4"], "d").length).toBe(2);
+  });
+
+  it("knows a commit that only flips published", () => {
+    const flip = "--- a/post.md\n+++ b/post.md\n@@ -2,3 +2,3 @@\n title: T\n-published: false\n+published: true\n";
+    expect(onlyPublishedChanged(flip)).toBe(true);
+    expect(onlyPublishedChanged(flip + "-old line\n+new line\n")).toBe(false);
+    expect(onlyPublishedChanged("")).toBe(false);
+  });
+
+  it("refuses to publish a new post without a fresh PASS", () => {
+    const r = (f: Parameters<typeof publishGate>[0]) => publishGate(f).map((x) => x.rule);
+    expect(r({ legacy: false, review: "PASS", fresh: true })).toEqual([]);
+    expect(r({ legacy: false, review: "PASS", fresh: false })).toEqual(["review-stale"]);
+    expect(r({ legacy: false, review: undefined, fresh: false })).toEqual(["review-not-pass"]);
+    expect(r({ legacy: true, review: undefined, fresh: false })).toEqual([]);
   });
 });

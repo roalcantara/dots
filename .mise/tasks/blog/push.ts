@@ -3,11 +3,11 @@
 //USAGE arg "<post>" help="Post folder under docs/blog/posts (YYYY-MM-DD-slug)"
 //USAGE flag "--ref <ref>" help="Git ref the images are served from (default: the current branch)"
 //USAGE flag "--draft" help="Always send a draft, whatever the front matter says (pull requests)"
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   addComment, articlePayload, assertPost, checkPost, devto, gitState, myArticles, parseFrontMatter, POSTS,
-  postOptions, postsFromTodo, pushAction, pushPreconditions, readTodo, resolveArticleId, SERIES,
+  postOptions, postsFromTodo, publishGate, pushAction, reviewIsFresh, reviewVerdict, pushPreconditions, readTodo, resolveArticleId, SERIES,
 } from "./_lib";
 
 const fail = (lines: string[]): never => { for (const l of lines) console.error(l); process.exit(1); };
@@ -22,6 +22,14 @@ if (blocks.length) fail(blocks.map((f) => `BLOCK ${f.rule}: ${f.message}`));
 
 const { fm, body } = parseFrontMatter(readFileSync(join(dir, "post.md"), "utf8"));
 const draft = opts.draft || fm.published !== true;
+if (!draft) {
+  const gate = publishGate({
+    legacy: fm.legacy === true,
+    review: reviewVerdict(existsSync(join(dir, "review.md")) ? readFileSync(join(dir, "review.md"), "utf8") : ""),
+    fresh: reviewIsFresh(dir),
+  });
+  if (gate.length) fail(gate.map((f) => `BLOCK ${f.rule}: ${f.message} (nothing sent to dev.to)`));
+}
 const state = gitState();
 if (!ci) {
   const pre = pushPreconditions(state, draft);
