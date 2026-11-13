@@ -24,6 +24,7 @@ tasks:
   - lnZA
   - Wsy2
   - Qjd5
+  - nXNH
   blocked_reason: null
   tags:
   - post
@@ -776,6 +777,10 @@ comments:
   task_id: 6ThC
 - id: Qjd5
   text: 'gate: 2026-11-13 BLOCKED stepps=8/12'
+  actors: []
+  task_id: 6ThC
+- id: nXNH
+  text: 'gate: 2026-11-13 PASS stepps=8/12'
   actors: []
   task_id: 6ThC
 project: posts
