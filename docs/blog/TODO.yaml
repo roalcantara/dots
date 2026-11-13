@@ -73,9 +73,13 @@ tasks:
   actors:
   - 7lt7
   - JTps
-  comments: []
+  comments:
+  - rLqj
+  - bnIo
+  - oQ6H
   blocked_reason: null
   tags:
+  - theme-a
   - topic-1
   priority: High
   created: 2026-11-13T13:29:54.061941
@@ -100,9 +104,13 @@ tasks:
   actors:
   - 7lt7
   - JTps
-  comments: []
+  comments:
+  - pdyq
+  - 81gh
+  - pm2q
   blocked_reason: null
   tags:
+  - theme-b
   - topic-2
   priority: High
   created: 2026-11-13T13:29:54.172565
@@ -165,9 +173,13 @@ tasks:
   actors:
   - 7lt7
   - JTps
-  comments: []
+  comments:
+  - FJqJ
+  - 4VoQ
+  - Zi7o
   blocked_reason: null
   tags:
+  - theme-a
   - topic-3
   priority: High
   created: 2026-11-13T13:29:54.450566
@@ -205,9 +217,13 @@ tasks:
   actors:
   - 7lt7
   - JTps
-  comments: []
+  comments:
+  - 0UU1
+  - cGts
+  - 3VOu
   blocked_reason: null
   tags:
+  - theme-b
   - topic-4
   priority: High
   created: 2026-11-13T13:29:54.617603
@@ -258,9 +274,13 @@ tasks:
   actors:
   - 7lt7
   - JTps
-  comments: []
+  comments:
+  - u1vm
+  - 82Az
+  - q4LL
   blocked_reason: null
   tags:
+  - theme-a
   - topic-5
   priority: High
   created: 2026-11-13T13:29:54.840192
@@ -298,9 +318,13 @@ tasks:
   actors:
   - 7lt7
   - JTps
-  comments: []
+  comments:
+  - hNnk
+  - JGgs
+  - XES0
   blocked_reason: null
   tags:
+  - theme-c
   - topic-6
   priority: High
   created: 2026-11-13T13:29:55.008875
@@ -338,9 +362,13 @@ tasks:
   actors:
   - 7lt7
   - JTps
-  comments: []
+  comments:
+  - qNYU
+  - Xqc1
+  - QJa5
   blocked_reason: null
   tags:
+  - theme-a
   - topic-7
   priority: High
   created: 2026-11-13T13:29:55.176768
@@ -378,9 +406,13 @@ tasks:
   actors:
   - 7lt7
   - JTps
-  comments: []
+  comments:
+  - iKGG
+  - Bg7S
+  - 0RuO
   blocked_reason: null
   tags:
+  - theme-b
   - topic-8
   priority: High
   created: 2026-11-13T13:29:55.343883
@@ -457,6 +489,110 @@ tasks:
   - series
   priority: Low
   created: 2026-11-13T13:58:35.500847
+- id: 7UIn
+  status: Todo
+  description: 'Backlog: One Brewfile for macOS and Linux'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - hV5R
+  blocked_reason: null
+  tags:
+  - theme-a
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:55.430368
+- id: VoGF
+  status: Todo
+  description: 'Backlog: macOS settings as code'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - ohJT
+  blocked_reason: null
+  tags:
+  - theme-a
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:55.554049
+- id: Uz84
+  status: Todo
+  description: 'Backlog: Testing dotfiles with BDD'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - Lkv6
+  blocked_reason: null
+  tags:
+  - theme-b
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:55.793396
+- id: B05v
+  status: Todo
+  description: 'Backlog: Agent skills pinned in a lock file'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - PaoV
+  blocked_reason: null
+  tags:
+  - theme-c
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:55.938476
+- id: 5iqf
+  status: Todo
+  description: 'Backlog: Zsh startup, measured'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - 5Zxd
+  blocked_reason: null
+  tags:
+  - theme-d
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:56.070316
+- id: DQYx
+  status: Todo
+  description: 'Backlog: The fzf tools (xcg, gitx fza)'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - 77Lz
+  blocked_reason: null
+  tags:
+  - theme-d
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:56.207174
+- id: tSJE
+  status: Todo
+  description: 'Backlog: The gotchas list'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - I8WA
+  blocked_reason: null
+  tags:
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:56.329500
 actors:
 - id: 7lt7
   pseudo: roalcantara
@@ -503,4 +639,128 @@ comments:
   text: 'note: 2026-11-13 the repo name is blurred in 01-desktop and 04-zoom (03-tui hides it); it still appears as text in docs/TILING.md, bootstrap.toml and specs, so it was already public'
   actors: []
   task_id: 6eS8
+- id: rLqj
+  text: 'hook: Secrets live in the repo, encrypted on commit, decrypted on checkout'
+  actors: []
+  task_id: EFly
+- id: bnIo
+  text: 'recipe: git clean/smudge filters + `.gitattributes` + an age key outside the repo'
+  actors: []
+  task_id: EFly
+- id: oQ6H
+  text: 'sources: `script/{clean,smudge}.sops.sh`, `.sops.yaml`, `.gitattributes`, `docs/CONTRIBUTING.md`'
+  actors: []
+  task_id: EFly
+- id: pdyq
+  text: 'hook: Every commit in dots follows one format, and the changelog writes itself'
+  actors: []
+  task_id: yg3s
+- id: 81gh
+  text: 'recipe: Conventional Commits + a capitalised description + a commit-msg check + semantic-release'
+  actors: []
+  task_id: yg3s
+- id: pm2q
+  text: 'sources: `docs/CONTRIBUTING.md`, `.github/workflows/release.yml`, `CHANGELOG.md`, the locale fix in `hk`'
+  actors: []
+  task_id: yg3s
+- id: FJqJ
+  text: 'hook: A full-home run read 606,863 files, 541 GiB, mostly VMs'
+  actors: []
+  task_id: VS93
+- id: 4VoQ
+  text: 'recipe: restic + an allowlist manifest; rebuildable things come back from dots, Homebrew and lock files'
+  actors: []
+  task_id: VS93
+- id: Zi7o
+  text: 'sources: `docs/REINSTALL.md`, `script/backup.ts`'
+  actors: []
+  task_id: VS93
+- id: 0UU1
+  text: 'hook: Eight linters, one file, the same checks locally and in CI'
+  actors: []
+  task_id: fHDI
+- id: cGts
+  text: 'recipe: `hk.pkl` steps, `hk check --all`, hooks installed by the bootstrap'
+  actors: []
+  task_id: fHDI
+- id: 3VOu
+  text: 'sources: `hk.pkl`, `config/hk/`, `docs/TESTING.md`'
+  actors: []
+  task_id: fHDI
+- id: u1vm
+  text: 'hook: One command from a clean Mac or Linux box to a working machine'
+  actors: []
+  task_id: E1rF
+- id: 82Az
+  text: 'recipe: `install` → `mise bootstrap`; core group must pass, the rest warns; logs in `~/.local/state/dots/`'
+  actors: []
+  task_id: E1rF
+- id: q4LL
+  text: 'sources: `install`, `config/mise/conf.d/bootstrap.toml`, README, `git log --grep ''fix(install)''`'
+  actors: []
+  task_id: E1rF
+- id: hNnk
+  text: 'hook: 14 design specs, 336 pinned agent skills, every change through a worktree'
+  actors: []
+  task_id: h4z7
+- id: JGgs
+  text: 'recipe: brainstorm → spec → plan with checkboxes → agent implements in a worktree → quality gate'
+  actors: []
+  task_id: h4z7
+- id: XES0
+  text: 'sources: `AGENTS.md`, `docs/superpowers/`, `config/agents/skill-lock.json`'
+  actors: []
+  task_id: h4z7
+- id: qNYU
+  text: 'hook: Desktop vs container, macOS vs Linux, from the same config'
+  actors: []
+  task_id: csdp
+- id: Xqc1
+  text: 'recipe: mise env profiles, `miserc.local.toml` written by `install`, per-profile tools'
+  actors: []
+  task_id: csdp
+- id: QJa5
+  text: 'sources: `config/mise/`, README "Gotchas"'
+  actors: []
+  task_id: csdp
+- id: iKGG
+  text: 'hook: The dev images are built and checked by Container Structure Tests in CI'
+  actors: []
+  task_id: NISc
+- id: Bg7S
+  text: 'recipe: multi-stage Dockerfile + CST manifest + `mise run build/test` + GitHub Actions'
+  actors: []
+  task_id: NISc
+- id: 0RuO
+  text: 'sources: `distros/`, `docs/DOCKER.md`, `.github/workflows/`'
+  actors: []
+  task_id: NISc
+- id: hV5R
+  text: 'sources: `config/homebrew/Brewfile`'
+  actors: []
+  task_id: 7UIn
+- id: ohJT
+  text: 'sources: `config/mise/conf.d/macos.toml`, `docs/MACOS.md`'
+  actors: []
+  task_id: VoGF
+- id: Lkv6
+  text: 'sources: `docs/TESTING.md`, `test/`'
+  actors: []
+  task_id: Uz84
+- id: PaoV
+  text: 'sources: `config/agents/skill-lock.json`, `script/agent-skills.ts`'
+  actors: []
+  task_id: B05v
+- id: 5Zxd
+  text: 'sources: `script/zsh-verify.sh`'
+  actors: []
+  task_id: 5iqf
+- id: 77Lz
+  text: 'sources: `config/bin/xcg`, `config/bin/gitx`'
+  actors: []
+  task_id: DQYx
+- id: I8WA
+  text: 'sources: README "Gotchas", the fix commits'
+  actors: []
+  task_id: tSJE
 project: posts

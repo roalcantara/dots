@@ -17,8 +17,8 @@ Write the first draft of one post of the dots blog, in its folder, ready for the
 
 <workflow>
 1. Name the post (argument, else the current `feat/post-*` branch). Its folder must exist (`mise run blog:new`
-   first). Find its task and read the topic's `hook:`, `recipe:` and `sources:` comments (`mise run -q blog:report`,
-   `mise run -q blog:todo -- list`).
+   first). Find its task in `docs/blog/TODO.yaml` and read the topic's `hook:`, `recipe:` and `sources:` comments
+   there (the comments whose `task_id` is the task's).
 2. Read every source, and the commits behind them (`git log`, `git show`), until each claim in the draft is **lived
    or proven** (STYLE.md). Write the information-gain sentence first; if it can't be written, stop and say so.
 3. **Hook options.** From that evidence, propose **3–5 hooks** of different kinds: a relatable pain, a small

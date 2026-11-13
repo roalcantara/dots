@@ -18,8 +18,8 @@ Notes from the author: $ARGUMENTS
 1. Run `mise run -q blog:todo -- list`: the next open topic task (one `topic-<n>` tag, not `in-between` or
    `community`) is the **scheduled** topic; the next two scheduled topics and the backlog are the **candidates**.
 2. Run `mise run -q blog:report`: the last posts' numbers, `log.*` lessons and notes (questions asked in comments,
-   what worked, what to change), and each candidate topic's `hook:`, `recipe:`, `sources:` and theme tag
-   (`theme-a` … `theme-d`; backlog topics are tagged `topic-backlog`).
+   what worked, what to change). Then read `docs/blog/TODO.yaml` for each candidate topic's `hook:`, `recipe:` and
+   `sources:` comments and its theme tag (`theme-a` … `theme-d`; backlog topics are tagged `topic-backlog`).
 3. For the scheduled topic and each candidate, search the web for the past 14 days: news about the subject (for
    example "secrets leaked GitHub", "restic", "Conventional Commits", "AI coding agents") and releases of the tools
    involved. Keep only credible sources.
