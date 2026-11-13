@@ -23,6 +23,7 @@ tasks:
   - rdkc
   - lnZA
   - Wsy2
+  - Qjd5
   blocked_reason: null
   tags:
   - post
@@ -771,6 +772,10 @@ comments:
   task_id: 6ThC
 - id: Wsy2
   text: 'vars: hook=confession cover=series-terminal images=1-cover linkedin=prose lang=en day=<author> tags=ai,zsh,bash,productivity'
+  actors: []
+  task_id: 6ThC
+- id: Qjd5
+  text: 'gate: 2026-11-13 BLOCKED stepps=8/12'
   actors: []
   task_id: 6ThC
 project: posts
