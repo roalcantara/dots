@@ -4,12 +4,17 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  authorMarkers, commitLocal, gitState, parseFrontMatter, pick, POSTS, publishBlockers, pushBranch,
+  authorMarkers, commitLocal, git, gitState, parseFrontMatter, pick, POSTS, postBranch, publishBlockers, pushBranch,
   reviewIsFresh, reviewVerdict, setPublished,
 } from "./_lib";
 
 const { post } = pick(process.argv[2]);
 if (!post) throw new Error("which post? pass its folder, or run this on its feat/post-<slug> branch");
+const branch = postBranch(post.dir);
+if (git("branch", "--show-current").out !== branch) {
+  console.error(`BLOCK wrong-branch: switch to ${branch} first`);
+  process.exit(1);
+}
 const dir = join(POSTS, post.dir);
 const read = (f: string) => { try { return readFileSync(join(dir, f), "utf8"); } catch { return ""; } };
 const blockers = publishBlockers({

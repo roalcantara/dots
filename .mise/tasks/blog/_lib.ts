@@ -598,8 +598,8 @@ export function factsFor(p: Post): Facts {
 // Commit named paths on the current branch and stop: the author pushes (writes after the merge land on main).
 export function commitLocal(paths: string[], message: string): boolean {
   git("add", "--", ...paths);
-  if (!git("diff", "--cached", "--name-only").out) return false;
-  const c = git("commit", "-q", "-m", message);
+  if (!git("diff", "--cached", "--name-only", "--", ...paths).out) return false;
+  const c = git("commit", "-q", "-m", message, "--", ...paths);
   if (!c.ok) throw new Error(`git commit failed for: ${message}`);
   console.log(`committed: ${message} (push when ready)`);
   return true;
