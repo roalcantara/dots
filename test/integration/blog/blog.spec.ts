@@ -338,6 +338,11 @@ describe("stageOf", () => {
     expect(stage({ pr: "merged", published: true, linkedinUrl: true, logKeep: true })).toBe("closed");
   });
 
+  it("says so when the pull request state is unknown (gh failed)", () => {
+    expect(stage({ review: "PASS", reviewFresh: true, pr: "unknown" })).toBe("unknown");
+    expect(stage({ pr: "unknown", taskDone: true })).toBe("measure");
+  });
+
   it("never sends a merged post back to the pull request step", () => {
     expect(stage({ review: "PASS", reviewFresh: true, pr: "merged" })).toBe("share");
   });
@@ -394,6 +399,8 @@ describe("post helpers", () => {
     expect(resolvePost({ arg: "2026-11-12-a", posts, stages })).toBe("2026-11-12-a");
     expect(resolvePost({ branch: "feat/post-c", posts, stages })).toBe("2026-11-24-c");
     expect(resolvePost({ branch: "main", posts, stages })).toBe("2026-11-13-b");
+    expect(resolvePost({ arg: "linkedin=https://x", branch: "main", posts, stages })).toBe("2026-11-13-b");
+    expect(resolvePost({ branch: "feat/post-c", posts: [...posts, { dir: "2026-11-30-b-c" }], stages })).toBe("2026-11-24-c");
   });
 });
 

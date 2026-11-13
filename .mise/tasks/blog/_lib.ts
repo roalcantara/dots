@@ -60,6 +60,7 @@ export function assertPost(post: string): string {
   if (!POST.test(post)) throw new Error(`not a post folder (YYYY-MM-DD-slug): "${post}"`);
   return post;
 }
+export const isPost = (post: string): boolean => POST.test(post);
 
 // The first paragraph after "## Post" in linkedin.md: what shows before "see more".
 export function linkedinHook(text: string): string {
@@ -366,10 +367,10 @@ export function seriesFromTodo(todo: Todo): { taskId?: string; stats: StatRow[];
 // End states first, so a merged post never falls back to an earlier step.
 
 export type Stage =
-  | "closed" | "measure" | "share" | "merge" | "publish" | "pr" | "blocked" | "gate" | "drafting" | "planned";
+  | "closed" | "measure" | "unknown" | "share" | "merge" | "publish" | "pr" | "blocked" | "gate" | "drafting" | "planned";
 export type Facts = {
   hasFolder: boolean; checkBlocks: boolean; review?: "PASS" | "BLOCKED"; reviewFresh: boolean;
-  pr?: "open" | "merged"; published: boolean; markers: number; devtoUrl: boolean; linkedinUrl: boolean;
+  pr?: "open" | "merged" | "unknown"; published: boolean; markers: number; devtoUrl: boolean; linkedinUrl: boolean;
   taskDone: boolean; logKeep: boolean;
 };
 
@@ -377,6 +378,9 @@ export function stageOf(f: Facts): { stage: Stage; next: string } {
   if (f.logKeep) return { stage: "closed", next: "nothing: the post is closed" };
   if (f.taskDone || (f.pr === "merged" && f.linkedinUrl)) {
     return { stage: "measure", next: "mise run blog:stats (48 h), then /blog:retro (7 days)" };
+  }
+  if (f.pr === "unknown") {
+    return { stage: "unknown", next: "gh failed: check gh auth status, then mise run blog:status" };
   }
   if (f.pr === "merged" || (f.published && !f.pr && f.devtoUrl)) {
     return { stage: "share", next: f.devtoUrl ? "/blog:share" : "mise run blog:stats (records the dev.to URL), then /blog:share" };
@@ -433,9 +437,10 @@ export function publishBlockers(f: { review?: string; reviewFresh: boolean; mark
 export function resolvePost(o: {
   arg?: string; branch?: string; posts: { dir: string }[]; stages: Map<string, string>;
 }): string | undefined {
-  if (o.arg) return assertPost(o.arg);
+  // A note or a URL is not a post folder: treat it as no argument, so a command never crashes on it.
+  if (o.arg && isPost(o.arg)) return o.arg;
   const slug = o.branch?.match(/^feat\/post-(.+)$/)?.[1];
-  if (slug) return o.posts.find((p) => p.dir.endsWith(`-${slug}`))?.dir;
+  if (slug) return o.posts.find((p) => p.dir.slice(11) === slug)?.dir;
   return [...o.posts]
     .sort((a, b) => b.dir.localeCompare(a.dir))
     .find((p) => !["closed", "planned"].includes(o.stages.get(p.dir) ?? ""))?.dir;
@@ -544,8 +549,9 @@ export function changedAt(path: string): number | undefined {
   return Number.isFinite(t) && t > 0 ? t : Math.floor(Bun.file(path).lastModified / 1000);
 }
 
-export function prState(branch: string): "open" | "merged" | undefined {
+export function prState(branch: string): "open" | "merged" | "unknown" | undefined {
   const p = run(["gh", "pr", "list", "--head", branch, "--state", "all", "--json", "state", "-q", ".[0].state"]);
+  if (!p.ok) return "unknown";
   return p.out === "OPEN" ? "open" : p.out === "MERGED" ? "merged" : undefined;
 }
 

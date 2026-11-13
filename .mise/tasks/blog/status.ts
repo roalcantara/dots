@@ -1,9 +1,11 @@
 #!/usr/bin/env bun
 //MISE description="Where each post stands and the next command (one post when given)"
 //USAGE arg "[post]" help="Post folder (YYYY-MM-DD-slug); default: every post, plus the next topic"
-import { factsFor, nextTopicTask, pick, readTodo, stageOf } from "./_lib";
+import { factsFor, isPost, nextTopicTask, pick, readTodo, stageOf } from "./_lib";
 
-const arg = process.argv[2];
+// Notes and URLs are not post folders: show every post, as with no argument.
+const raw = process.argv[2];
+const arg = raw && isPost(raw) ? raw : undefined;
 const { post, posts } = pick(arg);
 const show = arg ? (post ? [post] : []) : posts.sort((a, b) => a.dir.localeCompare(b.dir));
 for (const p of show) {
