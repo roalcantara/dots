@@ -1,27 +1,18 @@
 ## Post
 
-My AI agent's for-loop ran once. No error, exit 0, a confident summary. The agent wasn't wrong, and neither was my shell: they just spoke different dialects.
+<author: the LinkedIn hook, a shorter form of the post's hook (at most 210 characters)>
 
-Coding agents write bash. On macOS, they may run it in your login shell: zsh. And zsh doesn't split an unquoted
-$var into words, so `for x in $list` loops once over the whole string. That's a zsh feature (it spares humans a class
-of quoting bugs); it just isn't what the agent meant.
+zsh doesn't split an unquoted $var into words, so the bash-style loops my agents write ran once; one setting per
+tool (CLAUDE_CODE_SHELL for Claude Code) gave them bash and my terminal stays zsh.
 
-The fix took two settings, and my terminal stays zsh:
-→ Claude Code: CLAUDE_CODE_SHELL=/opt/homebrew/bin/bash
-→ Copilot chat: a bash terminal profile for its tools
-→ Homebrew's bash 5, not macOS's bash 3.2 from 2006
+→ the fix in the first comment
 
-What I got wrong: my first fix was quoting "$list". In zsh that changes nothing; in bash it turns the three items into one on purpose. The lesson I keep: "it ran without errors" is not "it worked".
-
-Has an agent ever "succeeded" at something it didn't do for you? How did you catch it?
-
-Hashtags: #AI #DeveloperTools #macOS
+Hashtags: #AI #zsh #DeveloperTools
 
 ## First comment
 
-The full write-up, with the recipe and the exact settings: {devto.url}
+{devto.url}
 
 ## In-between post
 
-Next week: the RECIPE as a 4-slide carousel (the two loops, the two settings, the gotchas), dev.to link in the first
-comment.
+Next week: "quoting $list doesn't fix it" (the gotcha), same shape: a hook from that moment and its one insight.
