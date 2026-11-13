@@ -12,7 +12,7 @@ folders, and one place for every post's metadata (`docs/blog/TODO.yaml`).
    task calls gopass directly.
 2. **Arguments, not environment variables.** Every task parses its argv with `node:util`'s `parseArgs` (mise passes
    the arguments it validated through `#USAGE` to the script). The `usage_*` variables are not read; CI runs the
-   same command line (`bun mise-tasks/posts/push.ts <post> --ref main`). The only environment variables left are
+   same command line (`bun .mise/tasks/posts/push.ts <post> --ref main`). The only environment variables left are
    the token and `CI`.
 3. **Chronological folders.** `docs/blog/posts/<YYYY-MM-DD>-<slug>/`, the date being the planned publish date,
    fixed once published (renaming a published post's folder moves its image URLs). ISO dates sort, read without

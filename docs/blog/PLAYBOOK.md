@@ -455,7 +455,7 @@ Each post's task records its variables (`vars:`), the hypothesis for the one tha
 | Draft the community post | `reddit-posts` (installed) | 90/10, flair, subreddit format |
 | Check shareability | `contagious` (installed) | STEPPS score in the log |
 | Cold read | A fresh agent playing a mid-level developer | See **Success criteria** |
-| Publish to dev.to | The Forem API directly, from bun file tasks in `mise-tasks/posts/`, run locally (`mise run posts:push`) and by `.github/workflows/posts.yml` | A PR that touches a `post.md` creates or updates a **draft** (images from the PR branch), comments the preview link; the merge to `main` updates the article with images from `main` and the front matter's `published` value. **Merging a PR with `published: true` is the author's publish button.** |
+| Publish to dev.to | The Forem API directly, from bun file tasks in `.mise/tasks/posts/`, run locally (`mise run posts:push`) and by `.github/workflows/posts.yml` | A PR that touches a `post.md` creates or updates a **draft** (images from the PR branch), comments the preview link; the merge to `main` updates the article with images from `main` and the front matter's `published` value. **Merging a PR with `published: true` is the author's publish button.** |
 | dev.to numbers | `mise run posts:stats`: Forem API (`/api/articles/me/all`, `/api/analytics/referrers?article_id=` when available) | Token from gopass `tokens/dev.to` locally and the `DEVTO_TOKEN` repo secret in CI, never in the repo; recorded as `stats:` comments on the posts' tasks in `TODO.yaml` |
 | LinkedIn and Reddit numbers | By hand at 48 h and 7 days, about 2 minutes per post | `mise run posts:record <post> linkedin impressions=… …` |
 | Repo traffic | `gh api repos/roalcantara/dots/traffic/views` in the same stats task | |
@@ -511,7 +511,7 @@ Newest last. Each recalibration adds its decisions here; the spec is never edite
 - Tag strategy: large tags first, `dotfiles` at most fourth.
 - STEPPS ≥ 6 with Practical value = 2 as the pre-publish bar; LinkedIn targets applied from topic 3.
 - A two-week Reddit runway; the Omarchy post to r/unixporn in the December light week.
-- The Forem API from bun file tasks (`mise-tasks/posts/`) and a CI workflow: drafts on PRs, publish on merge.
+- The Forem API from bun file tasks (`.mise/tasks/posts/`) and a CI workflow: drafts on PRs, publish on merge.
 - A `posts:stats` task for dev.to numbers, referrers and repo traffic.
 - Moving the image tools to `docs/blog/tools/`; `README.md` and `LOG.md` in `docs/blog/`.
 
@@ -519,7 +519,7 @@ Newest last. Each recalibration adds its decisions here; the spec is never edite
 
 - The backlog item "my agents ran zsh and lied to me" became the **preflight post** (`2026-11-13-zsh-word-split`), published
   before topic 1 to prove the flow end to end. Topic 6's in-between post is now "336 agent skills in a lock file".
-- Publishing runs on the Forem API from bun file tasks (`mise-tasks/posts/`) and the `Posts` workflow: drafts on
+- Publishing runs on the Forem API from bun file tasks (`.mise/tasks/posts/`) and the `Posts` workflow: drafts on
   pull requests, publishing on merge. devto-cli is not used.
 - The roadmap is `TODO.yaml` (todo CLI, YAML), read by `/wip:resume`. `todo` is pinned in its mise task: it has no
   Homebrew formula, and cargo's `todo-cli` is another crate.

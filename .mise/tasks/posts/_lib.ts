@@ -347,7 +347,7 @@ export function seriesFromTodo(todo: Todo): { taskId?: string; stats: StatRow[];
 
 // ---- shell side (used by the task files; not unit-tested) -----------------------------------------------------
 
-export const ROOT = join(import.meta.dir, "../..");
+export const ROOT = join(import.meta.dir, "../../..");
 export const SERIES = join(ROOT, "docs/blog");
 export const POSTS = join(SERIES, "posts");
 

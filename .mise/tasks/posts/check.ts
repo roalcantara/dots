@@ -3,12 +3,11 @@
 //USAGE arg "<post>" help="Post folder under docs/blog/posts (YYYY-MM-DD-slug)"
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { assertPost, checkPost } from "./_lib";
+import { assertPost, checkPost, POSTS, SERIES } from "./_lib";
 
-const root = join(import.meta.dir, "../..");
 const slug = assertPost(process.argv[2] ?? "");
-const hype = readFileSync(join(root, "docs/blog/hype-words.txt"), "utf8").split("\n").map((l) => l.trim()).filter(Boolean);
-const findings = checkPost(join(root, "docs/blog/posts", slug), hype);
+const hype = readFileSync(join(SERIES, "hype-words.txt"), "utf8").split("\n").map((l) => l.trim()).filter(Boolean);
+const findings = checkPost(join(POSTS, slug), hype);
 for (const f of findings) console.log(`${f.level === "block" ? "BLOCK" : "warn "} ${f.rule}: ${f.message}`);
 const blocks = findings.filter((f) => f.level === "block").length;
 console.log(blocks ? `${slug}: ${blocks} blocking finding(s)` : `${slug}: ok (${findings.length} warning(s))`);

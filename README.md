@@ -214,7 +214,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | [`config/`](config)                          | Everything linked into `~/.config`, plus the mise config             |
 | [`distros/`](distros)                        | Debian and Ubuntu Dockerfiles and structure tests                    |
 | [`docs/`](docs)                              | Canonical documentation, agent specs/plans, and the blog (`docs/blog`) |
-| [`mise-tasks/`](mise-tasks)                  | Bun file tasks run by mise (the blog's `posts:*` tasks)              |
+| [`.mise/tasks/`](.mise/tasks)                  | Bun file tasks run by mise (the blog's `posts:*` tasks)              |
 | [`script/`](script)                          | Repo scripts: SOPS filters, zsh checks, backup, logging, skills      |
 | [`test/`](test)                              | BDD living documentation and Bun integration specs                   |
 | [`mise.toml`](mise.toml), [`hk.pkl`](hk.pkl) | Repo tasks and git hooks                                             |

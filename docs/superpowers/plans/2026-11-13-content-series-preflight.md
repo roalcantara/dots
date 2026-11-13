@@ -7,8 +7,8 @@
 tooling (bun mise file tasks and a CI workflow on the Forem API), then publish one small real post end to end to
 prove the flow before topic 1.
 
-**Architecture:** Bun file tasks in `mise-tasks/posts/` (`posts:check`, `posts:push`, `posts:stats`,
-`posts:record`, `posts:todo`) share pure, tested functions in a non-executable `mise-tasks/posts/_lib.ts`.
+**Architecture:** Bun file tasks in `.mise/tasks/posts/` (`posts:check`, `posts:push`, `posts:stats`,
+`posts:record`, `posts:todo`) share pure, tested functions in a non-executable `.mise/tasks/posts/_lib.ts`.
 `.github/workflows/posts.yml` runs the same push task: a PR creates or updates a dev.to **draft**, the merge to
 `main` publishes according to the front matter. Documents, templates and agent prompts live in `docs/blog/`.
 
@@ -57,7 +57,7 @@ Pillow via `uv` for images, gopass.
 ## File Structure
 
 ```text
-mise-tasks/posts/
+.mise/tasks/posts/
 ├── _lib.ts            # pure functions (not a task: not executable)
 ├── check.ts           # posts:check <slug>
 ├── push.ts            # posts:push <slug> [--ref <ref>] [--draft]
@@ -79,7 +79,7 @@ docs/blog/
 ```
 
 Each file task reads its arguments from mise's `usage_*` environment variables and falls back to `process.argv`, so
-CI can run `bun mise-tasks/posts/push.ts <slug> --ref <ref> --draft` without mise.
+CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mise.
 
 ## Artifact shapes
 
@@ -127,7 +127,7 @@ CI can run `bun mise-tasks/posts/push.ts <slug> --ref <ref> --draft` without mis
 
 **Files:**
 
-- Create: `mise-tasks/posts/_lib.ts`, `mise-tasks/posts/check.ts`, `test/integration/posts/posts.spec.ts`,
+- Create: `.mise/tasks/posts/_lib.ts`, `.mise/tasks/posts/check.ts`, `test/integration/posts/posts.spec.ts`,
   `test/integration/posts/fixtures/{good,bad}/{post,linkedin}.md`, `docs/blog/hype-words.txt`
 - Modify: `test/mise.toml` (add `posts` to the `all` loop)
 
@@ -171,8 +171,8 @@ CI can run `bun mise-tasks/posts/push.ts <slug> --ref <ref> --draft` without mis
 
 **Files:**
 
-- Modify: `mise-tasks/posts/_lib.ts`, `test/integration/posts/posts.spec.ts`
-- Create: `mise-tasks/posts/{push,stats,record}.ts`, `test/integration/posts/fixtures/articles-me.json` (real shape,
+- Modify: `.mise/tasks/posts/_lib.ts`, `test/integration/posts/posts.spec.ts`
+- Create: `.mise/tasks/posts/{push,stats,record}.ts`, `test/integration/posts/fixtures/articles-me.json` (real shape,
   fake values), `docs/blog/stats.csv` (header only)
 
 **Interfaces:**
@@ -242,7 +242,7 @@ CI can run `bun mise-tasks/posts/push.ts <slug> --ref <ref> --draft` without mis
 
 **Interfaces:**
 
-- Consumes: `push.ts` (Task 2) run as `bun mise-tasks/posts/push.ts <slug> --ref <ref> [--draft]`.
+- Consumes: `push.ts` (Task 2) run as `bun .mise/tasks/posts/push.ts <slug> --ref <ref> [--draft]`.
 
 - [ ] **Step 1: Write the workflow:**
   - `on: pull_request` (types `opened`, `synchronize`, `reopened`; paths `docs/blog/*/post.md`,
@@ -269,7 +269,7 @@ CI can run `bun mise-tasks/posts/push.ts <slug> --ref <ref> --draft` without mis
 **Files:**
 
 - Create: `docs/blog/{README,PLAYBOOK,STYLE,LOG}.md`, `docs/blog/TODO.yaml`, `docs/blog/templates/*.md`,
-  `mise-tasks/posts/todo`
+  `.mise/tasks/posts/todo`
 - Modify: `config/agents/commands/wip/resume.md`, `config/homebrew/Brewfile` (comment only)
 
 - [ ] **Step 1: `PLAYBOOK.md`** — the living version of the spec: Intent; Goals in order and tiebreaks; Audience
@@ -290,10 +290,10 @@ CI can run `bun mise-tasks/posts/push.ts <slug> --ref <ref> --draft` without mis
   above; `post.md` with `published: false`, the outline and RECIPE block; `linkedin.md` with `## Post`,
   `## First comment`, `## In-between post`; `community.md` with Where, Title, Flair, Body, Rules checked on).
 
-- [ ] **Step 4: `posts:todo` and the roadmap** — `mise-tasks/posts/todo` (bash, executable,
+- [ ] **Step 4: `posts:todo` and the roadmap** — `.mise/tasks/posts/todo` (bash, executable,
   `#MISE description="The series roadmap (todo CLI) in docs/blog"`, `#MISE tools={"github:RayanBO/todo"="0.2.9"}`,
   runs `cd "$MISE_PROJECT_ROOT/docs/blog" && todo "$@"`). Brewfile comment in the `npm`/`uv` area:
-  `# todo (github.com/RayanBO/todo): no formula; cargo's todo-cli is another crate. Pinned in mise-tasks/posts/todo.`
+  `# todo (github.com/RayanBO/todo): no formula; cargo's todo-cli is another crate. Pinned in .mise/tasks/posts/todo.`
   Then `mise run posts:todo init --yaml`, add the actors, and one task per timeline row with tags and due dates
   (preflight today; Reddit runway 2026-11-17 → 2026-11-30; topics 1–8 on their Tuesdays with community and
   in-between posts; recalibrations). `mise run posts:todo list` shows them.

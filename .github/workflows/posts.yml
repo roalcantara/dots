@@ -90,7 +90,7 @@ jobs:
           : > "${RUNNER_TEMP}/results.txt"
           while IFS= read -r slug; do
             [[ -f "docs/blog/posts/${slug}/post.md" ]] || continue
-            bun mise-tasks/posts/push.ts "${slug}" --ref "${REF}" "${draft[@]}" | tee -a "${RUNNER_TEMP}/results.txt"
+            bun .mise/tasks/posts/push.ts "${slug}" --ref "${REF}" "${draft[@]}" | tee -a "${RUNNER_TEMP}/results.txt"
           done <<< "${SLUGS}"
 
       - name: Comment the preview links

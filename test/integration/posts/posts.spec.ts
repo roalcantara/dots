@@ -23,7 +23,7 @@ import {
   rowsFromTraffic,
   type Todo,
   visibleLength,
-} from "../../../mise-tasks/posts/_lib";
+} from "../../../.mise/tasks/posts/_lib";
 
 const REPO = join(import.meta.dir, "../../..");
 const FIX = join(import.meta.dir, "fixtures");
