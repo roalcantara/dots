@@ -26,13 +26,13 @@ One command per step; `mise run blog:status` (or `/blog:next`) says where each p
 2. `mise run blog:new <slug> [--task <id>]`: branch `feat/post-<slug>`, copy the templates, point the task at the
    folder.
 3. `/blog:draft [note=…]`: draft the post, the LinkedIn post and the community post; `<author: …>` marks what only
-   you can write.
+   you can write, and `blog:check` blocks until they are replaced.
 4. `mise run blog:cover <post> --title … [--highlight …] [--subtitle …] --keys …`: the cover; captures go in
    `posts/<post>/raw/`, framed with `docs/blog/tools/frame.py`.
 5. `mise run blog:check <post>`: until there are no blocks.
 6. `/blog:gate`: a fresh agent reviews the post and records the verdict.
 7. `/blog:pr`: commit, push the branch and open the PR (title and body written); check the dev.to draft preview.
-8. `mise run blog:publish`: after replacing any `<author: …>` markers; then **merge the PR** (that publishes it).
+8. `mise run blog:publish`: then **merge the PR** (that publishes it).
 9. `/blog:share`: the LinkedIn post (copied) and the first comment, to post by hand; then
    `/blog:share linkedin=<url>` records it and closes the task.
 10. `mise run blog:stats` at 48 hours; `/blog:retro` at 7 days (numbers and lessons).

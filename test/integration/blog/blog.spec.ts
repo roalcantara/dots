@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { describe, expect, it } from "bun:test";
-import { mkdtempSync, readFileSync } from "node:fs";
+import { appendFileSync, cpSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -82,6 +82,13 @@ describe("checkPost", () => {
 
   it("warns about a LinkedIn hook over 210 characters", () => {
     expect(rules("long-hook")).toEqual(["warn:hook-over-210"]);
+  });
+
+  it("blocks <author: …> markers", () => {
+    const dir = join(mkdtempSync(join(tmpdir(), "post-")), "good");
+    cpSync(join(FIX, "good"), dir, { recursive: true });
+    appendFileSync(join(dir, "post.md"), "\n<author: how I noticed the loop ran once>\n");
+    expect(checkPost(dir, HYPE).map((f) => `${f.level}:${f.rule}`)).toContain("block:author-marker");
   });
 });
 

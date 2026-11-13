@@ -104,7 +104,7 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
   const holes = texts.flatMap(placeholders);
   if (holes.length) block("placeholder", `template text left: ${holes.slice(0, 3).join(" ")}${holes.length > 3 ? " …" : ""}`);
   const marks = texts.flatMap(authorMarkers).length;
-  if (marks) warn("author-marker", `${marks} <author: …> marker(s) for the author to write`);
+  if (marks) block("author-marker", `${marks} <author: …> marker(s) for the author to write`);
 
   const lower = body.toLowerCase();
   for (const word of hypeWords) {

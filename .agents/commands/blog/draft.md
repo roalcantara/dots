@@ -27,7 +27,7 @@ Write the first draft of one post of the dots blog, in its folder, ready for the
    recipe in 3 bullets, one honest lesson, a question; the first comment keeps `{devto.url}`).
 5. From topic 2, draft `community.md` with the `reddit-posts` skill for the community the topic table names.
 6. **Never invent a story, number or quote.** Where only the author knows (how they noticed, what it cost, a real
-   anecdote), write `<author: what is needed>`; `blog:check` warns about these, and `blog:publish` refuses until
+   anecdote), write `<author: what is needed>`; `blog:check` **blocks** on these, and `blog:publish` refuses until
    they are gone.
 7. Add a shot list (2–4 images) as a comment at the end of `post.md`, and propose the cover command:
    `mise run blog:cover <post> --title … --highlight … --subtitle … --keys …`.

@@ -17,7 +17,8 @@ Each step is one command: `mise run blog:<task>` for the mechanical ones, `/blog
    into `docs/blog/posts/<YYYY-MM-DD>-<slug>/` (the date is the planned publish date, never renamed once published:
    it is in the image URLs) and points the task at the folder.
 3. **Draft:** `/blog:draft [note=…]` writes `post.md`, `linkedin.md` and, from topic 2, `community.md` from the
-   topic's sources, leaving `<author: …>` where only the author knows the story.
+   topic's sources, leaving `<author: …>` where only the author knows the story; `blog:check` blocks until those
+   markers are replaced.
 4. **Images:** `mise run blog:cover <post> --title … --keys …`; captures in `raw/` (never committed), framed with
    [`tools/frame.py`](tools/frame.py).
 5. **Check and gate:** `mise run blog:check <post>` until there are no blocks, then `/blog:gate`: a fresh agent
@@ -26,8 +27,8 @@ Each step is one command: `mise run blog:<task>` for the mechanical ones, `/blog
    title and body. The `Blog` workflow pushes a dev.to draft (images from the branch) and comments the preview
    link; every push updates the same draft. CI never writes the repo: the article is found by its
    `<!-- dots:<post> -->` marker, then by title, until a local `blog:push` or `blog:stats` records its `devto.id:`.
-7. **Publish:** replace any `<author: …>` markers, `mise run blog:publish` (checks the gate, sets `published: true`,
-   pushes), then **merge** (yours). The run on `main` publishes the article with images from `main`.
+7. **Publish:** `mise run blog:publish` (checks the gate, sets `published: true`, pushes), then **merge** (yours).
+   The run on `main` publishes the article with images from `main`.
 8. **Share:** `/blog:share` prints the LinkedIn post (copied) and the first comment with the dev.to link; post them by
    hand and stay for replies. `/blog:share linkedin=<url>` (or `mise run blog:done <post> --linkedin <url>`) records
    the URLs and numbers, closes the task and refreshes the README index. Community post a few days later.

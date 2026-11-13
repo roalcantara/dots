@@ -1,7 +1,7 @@
 ---
 description: Review a blog post before its pull request with a fresh agent (cold read, rubric, safety) and record the verdict
 argument-hint: Optional post folder (YYYY-MM-DD-slug), then free notes for the reviewer
-allowed-tools: Agent, Bash(mise run -q blog:status:*), Bash(mise run blog:check:*), Bash(mise run -q blog:todo:*)
+allowed-tools: Agent, Bash(mise run -q blog:status:*), Bash(mise run blog:check:*), Bash(mise run -q blog:todo:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat add:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat commit:*)
 ---
 
 <task>
@@ -14,21 +14,24 @@ Where things stand: !`mise run -q blog:status $1`
 </context>
 
 <workflow>
-1. Name the post (argument, else the current `feat/post-*` branch). Its stage must be `gate`, `blocked` or `pr`.
+1. Name the post (argument, else the current `feat/post-*` branch). Its stage must be `gate`, `blocked`, `pr` or
+   `publish`: the gate can run again after the pull request is open.
 2. Dispatch one fresh general-purpose subagent with this prompt, and nothing else: "Work in the repository root.
    Read `.agents/commands/blog/gate.md` and follow its `<gate_prompt>` section exactly, with `<post>` =
    `<the post folder>`. Notes from the author: <notes, if any>."
 3. When it returns, read `docs/blog/posts/<post>/review.md`. Record on the post's task:
    `gate: <YYYY-MM-DD> <PASS|BLOCKED> stepps=<n>/12` and the `vars:` line from the review
    (`mise run -q blog:todo -- add --comment "…" --task-id <id>`).
-4. Report the verdict, the Must fix items and the top three Consider items. Do not edit the post; do not commit.
+4. On the post branch, commit `docs/blog/posts/<post>/review.md` and `docs/blog/TODO.yaml` locally, through the SOPS
+   git wrapper, with the message `docs(blog): Gate "<post>"` and the Co-Authored-By line from the session; never push.
+5. Report the verdict, the Must fix items and the top three Consider items. Do not edit the post.
    Next: fix and run `/blog:gate` again (BLOCKED), or `/blog:pr` (PASS).
 </workflow>
 
 <checklist>
 - [ ] The review came from a fresh agent, not from this conversation.
 - [ ] `gate:` and `vars:` recorded.
-- [ ] Nothing committed or pushed.
+- [ ] `review.md` and `docs/blog/TODO.yaml` committed locally, not pushed.
 </checklist>
 
 <gate_prompt>
