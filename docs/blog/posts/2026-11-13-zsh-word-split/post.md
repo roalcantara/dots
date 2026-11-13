@@ -115,6 +115,7 @@ $ echo "${BASH_VERSION:-not bash}"
 
 - `setopt SH_WORD_SPLIT` also fixes it
   - but in your `~/.zshrc` it changes every interactive zsh, and scripts never read that file
+    ([zsh startup files](https://zsh.sourceforge.io/Doc/Release/Files.html))
 
 ## 🥷🏼 vs. making the agent write zsh
 
