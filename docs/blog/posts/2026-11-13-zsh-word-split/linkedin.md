@@ -1,6 +1,6 @@
 ## Post
 
-<author: the LinkedIn hook, a shorter form of the post's hook (at most 210 characters)>
+One string to rule them all: my agent's for-loop found one item where I had three.
 
 zsh doesn't split an unquoted $var into words, so the bash-style loops my agents write ran once; one setting per
 tool (CLAUDE_CODE_SHELL for Claude Code) gave them bash and my terminal stays zsh.
