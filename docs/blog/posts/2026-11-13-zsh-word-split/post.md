@@ -55,7 +55,7 @@ $ bash -c 'list="a b c"; for x in $list; do echo "[$x]"; done'
 
 🤔 Same line, two shells, one silent difference.
 
-💡 That is a zsh [feature](https://zsh.sourceforge.io/FAQ/zshfaq03.html#l18), not a bug.
+💡 That is a zsh feature, not a bug (see 💡 But how?).
 
 😬 It just isn't what the agent meant.
 
@@ -63,9 +63,9 @@ $ bash -c 'list="a b c"; for x in $list; do echo "[$x]"; done'
 
 - **Why the agent's command ran in zsh**
   - Claude Code runs its commands in your shell unless `CLAUDE_CODE_SHELL` says otherwise
-    ([settings](https://docs.anthropic.com/en/docs/claude-code/settings)).
+    ([environment variables](https://code.claude.com/docs/en/env-vars)).
   - Copilot chat runs them in a VS Code terminal, whose profile was zsh in my setup until I gave its tools a bash
-    one ([terminal profiles](https://code.visualstudio.com/docs/terminal/profiles)). My login shell is zsh.
+    one ([Copilot settings](https://code.visualstudio.com/docs/copilot/reference/copilot-settings)). My login shell is zsh.
 - **Why zsh does this**
   - In zsh, an unquoted `$list` stays one word unless you ask for splitting:
 
@@ -136,8 +136,8 @@ $ echo "${BASH_VERSION:-not bash}"
 ## 📚 References
 
 - zsh FAQ: [Why does `$var` where `var="foo bar"` not do what I expect?](https://zsh.sourceforge.io/FAQ/zshfaq03.html#l18)
-- [Claude Code settings](https://docs.anthropic.com/en/docs/claude-code/settings) ·
-  [VS Code terminal profiles](https://code.visualstudio.com/docs/terminal/profiles)
+- [Claude Code environment variables](https://code.claude.com/docs/en/env-vars) ·
+  [VS Code Copilot settings](https://code.visualstudio.com/docs/copilot/reference/copilot-settings)
 - My dotfiles: [the PR that moved my agents to bash (#108)](https://github.com/roalcantara/dots/pull/108)
 
 ---
