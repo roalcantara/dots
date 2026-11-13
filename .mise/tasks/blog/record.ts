@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-//MISE description="Record numbers read by hand as a stats comment: posts:record <post|series> <platform> metric=value…"
+//MISE description="Record numbers read by hand as a stats comment: blog:record <post|series> <platform> metric=value…"
 //USAGE arg "<target>" help="A post folder (YYYY-MM-DD-slug) or 'series'"
 //USAGE arg "<platform>" help="linkedin, reddit, devto or github"
 //USAGE arg "<pairs>..." help="metric=value pairs"

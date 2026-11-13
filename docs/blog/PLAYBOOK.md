@@ -3,7 +3,7 @@
 The living rules of the series. It starts as the design in [the spec](../superpowers/specs/2026-11-13-content-series-design.md) (the record of how it was decided)
 and changes only at recalibrations, with each change written in the **Decisions log** at the end. Voice and
 visuals live in [`STYLE.md`](STYLE.md). [`TODO.yaml`](TODO.yaml) holds the roadmap **and every post's metadata**
-(see **Metadata in TODO.yaml**): `mise run posts:report` prints it, `mise run posts:todo -- dashboard` shows the board.
+(see **Metadata in TODO.yaml**): `mise run blog:report` prints it, `mise run blog:todo -- dashboard` shows the board.
 
 ## How a post moves
 
@@ -13,20 +13,20 @@ visuals live in [`STYLE.md`](STYLE.md). [`TODO.yaml`](TODO.yaml) holds the roadm
    the date being the planned publish date (never renamed once published: it is in the image URLs).
 3. **Draft:** `post.md` (skill `technical-article-writer`), `linkedin.md` (`linkedin-ghostwriting`), `community.md`
    (`reddit-posts`), images with [`tools/`](tools/) (unblurred captures in `raw/`, never committed).
-4. **Check:** `mise run posts:check <post>` until there are no blocks.
+4. **Check:** `mise run blog:check <post>` until there are no blocks.
 5. **Gate:** a fresh agent runs [`prompts/gate.md`](prompts/gate.md) and writes `review.md`; fix every **Must fix**,
    take the **Consider** items you agree with.
-6. **Draft on dev.to:** open a PR. The `Posts` workflow pushes a dev.to draft (images from the branch) and comments
+6. **Draft on dev.to:** open a PR. The `Blog` workflow pushes a dev.to draft (images from the branch) and comments
    the preview link; every push updates the same draft. CI never writes the repo: the article is found by title
-   until a local `posts:push` or `posts:stats` records its `devto.id:`.
+   until a local `blog:push` or `blog:stats` records its `devto.id:`.
 7. **Publish:** set `published: true`, push, merge. The run on `main` publishes the article with images from `main`.
 8. **LinkedIn (by hand):** the post, then the first comment with the dev.to link; stay for replies. Community post a
    few days later.
 9. **Record:** on the post's task, `linkedin.url:` (and `community.url:`), `gate:` and `vars:` comments
-   (`mise run posts:todo -- add --comment "<key>: <value>" --task-id <id>`); the task done
-   (`mise run posts:todo -- status <id> --set done`); `mise run posts:report --write` refreshes the README index.
-10. **Measure:** at 48 h and 7 days, `mise run posts:stats` (dev.to, referrers, repo traffic) and
-    `mise run posts:record <post> linkedin impressions=… reactions=… comments=… reposts=…` (read by hand); at 7 days
+   (`mise run blog:todo -- add --comment "<key>: <value>" --task-id <id>`); the task done
+   (`mise run blog:todo -- status <id> --set done`); `mise run blog:report --write` refreshes the README index.
+10. **Measure:** at 48 h and 7 days, `mise run blog:stats` (dev.to, referrers, repo traffic) and
+    `mise run blog:record <post> linkedin impressions=… reactions=… comments=… reposts=…` (read by hand); at 7 days
     the `log.*` comments.
 
 The tooling never takes a live article offline: to unpublish, do it by hand on dev.to.
@@ -36,23 +36,23 @@ The tooling never takes a live article offline: to unpublish, do it by hand on d
 Every fact about a post lives in [`TODO.yaml`](TODO.yaml), on the post's task: the task is tagged `post`, its
 `position` is the post's folder (`docs/blog/posts/<YYYY-MM-DD>-<slug>`), its status and due date are the post's.
 Facts are comments on that task, one `key: value` each, appended (never edited) with
-`mise run posts:todo -- add --comment "<key>: <value>" --task-id <id>` or by the tasks. A task tagged `series` holds
+`mise run blog:todo -- add --comment "<key>: <value>" --task-id <id>` or by the tasks. A task tagged `series` holds
 account-wide numbers. The todo CLI drops any field it doesn't know, which is why nothing else is stored there.
 The post's files (`post.md`, `linkedin.md`, `community.md`, `review.md`, `images/`) are found by convention in its
-folder. `mise run posts:report` prints everything and flags any comment outside the schema.
+folder. `mise run blog:report` prints everything and flags any comment outside the schema.
 
 | Key | Value | Written by |
 | --- | --- | --- |
-| `devto.id` | the article id | `posts:push` (when it creates one), `posts:stats` (when it finds one by title) |
-| `devto.url`, `linkedin.url`, `community.url` | a URL | `posts:push` / the author |
-| `stats` | `<YYYY-MM-DD> <platform> <metric>=<n> [<metric>=<n>…] (<api\|manual>)` | `posts:stats`, `posts:record` |
+| `devto.id` | the article id | `blog:push` (when it creates one), `blog:stats` (when it finds one by title) |
+| `devto.url`, `linkedin.url`, `community.url` | a URL | `blog:push` / the author |
+| `stats` | `<YYYY-MM-DD> <platform> <metric>=<n> [<metric>=<n>…] (<api\|manual>)` | `blog:stats`, `blog:record` |
 | `gate` | `<YYYY-MM-DD> <PASS\|BLOCKED> stepps=<n>/12` | the gate run |
 | `vars` | `hook=… cover=… images=… linkedin=… lang=… day=… tags=…` | the author / the gate |
 | `log.keep`, `log.change`, `log.best-comment` | text | the author at 7 days |
 | `pick` | `<YYYY-MM-DD> keep\|swap <reason> <source>` | the next-pick run, after the author decides |
 | `decision` | `<YYYY-MM-DD> <text>` | recalibrations (series or recal tasks) |
 
-Locally, `mise run posts:push <post>` sends a draft from a pushed branch (or publishes from `main`); the token comes
+Locally, `mise run blog:push <post>` sends a draft from a pushed branch (or publishes from `main`); the token comes
 from `DEVTO_TOKEN` or gopass `tokens/dev.to`.
 
 ## Intent
@@ -248,7 +248,7 @@ The story and the RECIPE written natively for one community, in plain markdown, 
 The schedule is the default, not a contract. At the start of each cycle (the Tuesday before publishing), an agent
 re-evaluates the next pick against the current context, and the author approves the result.
 
-**Inputs:** the scheduled topic; the ready topics in the schedule and the backlog; the latest metadata of the past posts (`mise run posts:report`)
+**Inputs:** the scheduled topic; the ready topics in the schedule and the backlog; the latest metadata of the past posts (`mise run blog:report`)
 (questions from comments, what worked); and a news check: a web search over the past two weeks for each candidate's
 subject (for example "secrets leaked GitHub", "restic", "Conventional Commits", "AI coding agents"), plus the
 release notes of the tools involved.
@@ -383,7 +383,7 @@ the goals.
 **Baseline.** Numbers only need to be honest, not impressive: every comparison is with the series' own past, never
 with other creators.
 
-- dev.to: the Omarchy post's numbers, read by `mise run posts:stats` during setup (no manual step).
+- dev.to: the Omarchy post's numbers, read by `mise run blog:stats` during setup (no manual step).
 - LinkedIn: no API is available for personal posts. The baseline is the **median of topics 1 and 2**; until then,
   targets are not applied. If the author has the Omarchy post's LinkedIn numbers, or LinkedIn's analytics export
   for it, they are recorded as context, not as a target.
@@ -455,9 +455,9 @@ Each post's task records its variables (`vars:`), the hypothesis for the one tha
 | Draft the community post | `reddit-posts` (installed) | 90/10, flair, subreddit format |
 | Check shareability | `contagious` (installed) | STEPPS score in the log |
 | Cold read | A fresh agent playing a mid-level developer | See **Success criteria** |
-| Publish to dev.to | The Forem API directly, from bun file tasks in `.mise/tasks/posts/`, run locally (`mise run posts:push`) and by `.github/workflows/posts.yml` | A PR that touches a `post.md` creates or updates a **draft** (images from the PR branch), comments the preview link; the merge to `main` updates the article with images from `main` and the front matter's `published` value. **Merging a PR with `published: true` is the author's publish button.** |
-| dev.to numbers | `mise run posts:stats`: Forem API (`/api/articles/me/all`, `/api/analytics/referrers?article_id=` when available) | Token from gopass `tokens/dev.to` locally and the `DEVTO_TOKEN` repo secret in CI, never in the repo; recorded as `stats:` comments on the posts' tasks in `TODO.yaml` |
-| LinkedIn and Reddit numbers | By hand at 48 h and 7 days, about 2 minutes per post | `mise run posts:record <post> linkedin impressions=… …` |
+| Publish to dev.to | The Forem API directly, from bun file tasks in `.mise/tasks/blog/`, run locally (`mise run blog:push`) and by `.github/workflows/blog.yml` | A PR that touches a `post.md` creates or updates a **draft** (images from the PR branch), comments the preview link; the merge to `main` updates the article with images from `main` and the front matter's `published` value. **Merging a PR with `published: true` is the author's publish button.** |
+| dev.to numbers | `mise run blog:stats`: Forem API (`/api/articles/me/all`, `/api/analytics/referrers?article_id=` when available) | Token from gopass `tokens/dev.to` locally and the `DEVTO_TOKEN` repo secret in CI, never in the repo; recorded as `stats:` comments on the posts' tasks in `TODO.yaml` |
+| LinkedIn and Reddit numbers | By hand at 48 h and 7 days, about 2 minutes per post | `mise run blog:record <post> linkedin impressions=… …` |
 | Repo traffic | `gh api repos/roalcantara/dots/traffic/views` in the same stats task | |
 
 The okou `devto` skill was considered and dropped: publish-only, its own tooling, 60 installs, a Snyk warning.
@@ -511,15 +511,15 @@ Newest last. Each recalibration adds its decisions here; the spec is never edite
 - Tag strategy: large tags first, `dotfiles` at most fourth.
 - STEPPS ≥ 6 with Practical value = 2 as the pre-publish bar; LinkedIn targets applied from topic 3.
 - A two-week Reddit runway; the Omarchy post to r/unixporn in the December light week.
-- The Forem API from bun file tasks (`.mise/tasks/posts/`) and a CI workflow: drafts on PRs, publish on merge.
-- A `posts:stats` task for dev.to numbers, referrers and repo traffic.
+- The Forem API from bun file tasks (`.mise/tasks/blog/`) and a CI workflow: drafts on PRs, publish on merge.
+- A `blog:stats` task for dev.to numbers, referrers and repo traffic.
 - Moving the image tools to `docs/blog/tools/`; `README.md` and `LOG.md` in `docs/blog/`.
 
 ### 2026-11-13 · during setup
 
 - The backlog item "my agents ran zsh and lied to me" became the **preflight post** (`2026-11-13-zsh-word-split`), published
   before topic 1 to prove the flow end to end. Topic 6's in-between post is now "336 agent skills in a lock file".
-- Publishing runs on the Forem API from bun file tasks (`.mise/tasks/posts/`) and the `Posts` workflow: drafts on
+- Publishing runs on the Forem API from bun file tasks (`.mise/tasks/blog/`) and the `Blog` workflow: drafts on
   pull requests, publishing on merge. devto-cli is not used.
 - The roadmap is `TODO.yaml` (todo CLI, YAML), read by `/wip:resume`. `todo` is pinned in its mise task: it has no
   Homebrew formula, and cargo's `todo-cli` is another crate.
@@ -530,4 +530,4 @@ Newest last. Each recalibration adds its decisions here; the spec is never edite
 - Tasks parse their arguments from argv (`parseArgs`), not mise's `usage_*` variables.
 - Posts live in `docs/blog/posts/<YYYY-MM-DD>-<slug>/`; the folder name is the post's id.
 - Every post's metadata is comments on its task in `TODO.yaml`; `stats.csv`, `LOG.md` and the front matter `id:` are
-  gone, and CI no longer commits to the repo. `posts:report` replaces the log and writes the README index.
+  gone, and CI no longer commits to the repo. `blog:report` replaces the log and writes the README index.

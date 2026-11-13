@@ -45,8 +45,8 @@ const saved = (await devto(id ? `/articles/${id}` : "/articles", { method: id ? 
   id: number; url: string;
 };
 if (task && task.devtoId !== saved.id) {
-  // CI never writes the repo: a later local posts:push or posts:stats records the id (found by title meanwhile).
-  if (ci) console.error(`note: ${post} has dev.to id ${saved.id}; posts:stats records it`);
+  // CI never writes the repo: a later local blog:push or blog:stats records the id (found by title meanwhile).
+  if (ci) console.error(`note: ${post} has dev.to id ${saved.id}; blog:stats records it`);
   else {
     addComment(task.taskId, `devto.id: ${saved.id}`);
     addComment(task.taskId, `devto.url: ${saved.url}`);

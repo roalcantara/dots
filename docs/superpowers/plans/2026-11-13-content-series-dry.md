@@ -6,7 +6,7 @@
 folders, and every post's metadata as comments on its `TODO.yaml` task.
 
 **Architecture:** `_lib.ts` gains a `TODO.yaml` reader (`Bun.YAML`), the comment schema (parse/format), and a todo
-CLI writer; tasks parse argv with `parseArgs`; `posts:report` regenerates the README index.
+CLI writer; tasks parse argv with `parseArgs`; `blog:report` regenerates the README index.
 
 **Spec:** `docs/superpowers/specs/2026-11-13-content-series-dry-design.md`
 
@@ -30,7 +30,7 @@ Conventional Commits, no push without the author). Quality gate: `mise run test:
 - [ ] Tests: `postOptions(["2026-11-13-x","--ref","main","--draft"])` → `{ post, ref: "main", draft: true }`;
   `postOptions(["--ref=main","2026-11-13-x"])` → same ref; unknown flag throws.
 - [ ] `fnox.toml` (references only); `token()` → `DEVTO_TOKEN` env, else `fnox get DEVTO_TOKEN`; tasks parse argv
-  with `parseArgs`; no `usage_*` reads. Verify `mise run posts:stats` resolves the token through fnox.
+  with `parseArgs`; no `usage_*` reads. Verify `mise run blog:stats` resolves the token through fnox.
 - [ ] Commit `refactor(posts): Read the token through fnox and arguments from argv`.
 
 ### Task 2: Chronological folders
@@ -47,8 +47,8 @@ Conventional Commits, no push without the author). Quality gate: `mise run test:
   views=30 reactions=0 (api)")` → 2 rows; malformed → `undefined` and listed by `invalidComments`;
   `formatStats(rows)` round-trips; `postsFromTodo(yaml)` maps a task with tag `post` and a `position` to
   `{ dir, taskId, title, status, due, meta }`.
-- [ ] `posts:push` reads/writes `devto.id` comments (no front matter id); `posts:stats` records rows and missing
-  ids; `posts:record` writes `stats … (manual)`; the workflow drops its write-back step; `posts:report` prints and
+- [ ] `blog:push` reads/writes `devto.id` comments (no front matter id); `blog:stats` records rows and missing
+  ids; `blog:record` writes `stats … (manual)`; the workflow drops its write-back step; `blog:report` prints and
   rewrites the README index. Migrate: baseline and repo traffic → series task; Omarchy and preflight post tasks with
   positions and `devto.id`; remove `stats.csv`, `LOG.md`, the front matter `id:` lines.
 - [ ] PLAYBOOK (flow, schema, decisions log), STYLE/gate/next-pick/templates references updated.

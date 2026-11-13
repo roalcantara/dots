@@ -4,7 +4,7 @@
 
 ## Must fix
 
-<!-- Blocking only: safety, anti-goals, a missing or broken RECIPE, a failed posts:check. Empty means none. -->
+<!-- Blocking only: safety, anti-goals, a missing or broken RECIPE, a failed blog:check. Empty means none. -->
 
 None.
 
@@ -31,7 +31,7 @@ None.
 | Goals 1–5 | 7/10 | 1 2 · 2 2 · 3 1 · 4 1 · 5 1 |
 | Language | 2 | English throughout; no PT-BR text |
 | Safety | ok | No secrets, token names, emails, clients; `CLAUDE_CODE_SHELL` is a setting, not a secret; `roalcantara/dots` is public (`gh repo view`), PR #108 is public and merged |
-| `posts:check` | ok | `zsh-word-split: ok (0 warning(s))` |
+| `blog:check` | ok | `zsh-word-split: ok (0 warning(s))` |
 
 ## Consider
 

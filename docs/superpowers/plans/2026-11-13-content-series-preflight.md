@@ -7,9 +7,9 @@
 tooling (bun mise file tasks and a CI workflow on the Forem API), then publish one small real post end to end to
 prove the flow before topic 1.
 
-**Architecture:** Bun file tasks in `.mise/tasks/posts/` (`posts:check`, `posts:push`, `posts:stats`,
-`posts:record`, `posts:todo`) share pure, tested functions in a non-executable `.mise/tasks/posts/_lib.ts`.
-`.github/workflows/posts.yml` runs the same push task: a PR creates or updates a dev.to **draft**, the merge to
+**Architecture:** Bun file tasks in `.mise/tasks/blog/` (`blog:check`, `blog:push`, `blog:stats`,
+`blog:record`, `blog:todo`) share pure, tested functions in a non-executable `.mise/tasks/blog/_lib.ts`.
+`.github/workflows/blog.yml` runs the same push task: a PR creates or updates a dev.to **draft**, the merge to
 `main` publishes according to the front matter. Documents, templates and agent prompts live in `docs/blog/`.
 
 **Tech Stack:** Bun (from the Brewfile; `bun:test`), mise file tasks (`//MISE`, `//USAGE` headers), Forem API v1
@@ -57,17 +57,17 @@ Pillow via `uv` for images, gopass.
 ## File Structure
 
 ```text
-.mise/tasks/posts/
+.mise/tasks/blog/
 ├── _lib.ts            # pure functions (not a task: not executable)
-├── check.ts           # posts:check <slug>
-├── push.ts            # posts:push <slug> [--ref <ref>] [--draft]
-├── stats.ts           # posts:stats
-├── record.ts          # posts:record <slug> <platform> k=v…
-└── todo               # posts:todo [args…] (bash; the todo CLI pinned in its #MISE tools header)
-test/integration/posts/posts.spec.ts   # bun tests for _lib.ts
-test/integration/posts/fixtures/       # good/ and bad/ post folders, articles-me.json
+├── check.ts           # blog:check <slug>
+├── push.ts            # blog:push <slug> [--ref <ref>] [--draft]
+├── stats.ts           # blog:stats
+├── record.ts          # blog:record <slug> <platform> k=v…
+└── todo               # blog:todo [args…] (bash; the todo CLI pinned in its #MISE tools header)
+test/integration/blog/posts.spec.ts   # bun tests for _lib.ts
+test/integration/blog/fixtures/       # good/ and bad/ post folders, articles-me.json
 test/mise.toml                         # add "posts" to the `all` scope
-.github/workflows/posts.yml            # drafts on PRs, publish on merge
+.github/workflows/blog.yml            # drafts on PRs, publish on merge
 config/agents/commands/wip/resume.md   # probe reads docs/blog/TODO.yaml
 config/homebrew/Brewfile               # the todo comment
 docs/blog/
@@ -79,7 +79,7 @@ docs/blog/
 ```
 
 Each file task reads its arguments from mise's `usage_*` environment variables and falls back to `process.argv`, so
-CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mise.
+CI can run `bun .mise/tasks/blog/push.ts <slug> --ref <ref> --draft` without mise.
 
 ## Artifact shapes
 
@@ -110,7 +110,7 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
 
 **Verdict:** PASS | BLOCKED
 
-## Must fix     <!-- blocking only: safety, anti-goals, missing/broken RECIPE, failed posts:check -->
+## Must fix     <!-- blocking only: safety, anti-goals, missing/broken RECIPE, failed blog:check -->
 ## Cold read    <!-- the one point · would I save it, why · where I got lost -->
 ## Scores       <!-- table: information gain · RECIPE self-test · STEPPS 6×(0–2) + raw · voice · hook ≤ 210 ·
                      images (phone test, one point, series look) · goals 1–5 (0–2 each) · language rules -->
@@ -123,12 +123,12 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
 
 ---
 
-### Task 1: `posts:check`
+### Task 1: `blog:check`
 
 **Files:**
 
-- Create: `.mise/tasks/posts/_lib.ts`, `.mise/tasks/posts/check.ts`, `test/integration/posts/posts.spec.ts`,
-  `test/integration/posts/fixtures/{good,bad}/{post,linkedin}.md`, `docs/blog/hype-words.txt`
+- Create: `.mise/tasks/blog/_lib.ts`, `.mise/tasks/blog/check.ts`, `test/integration/blog/posts.spec.ts`,
+  `test/integration/blog/fixtures/{good,bad}/{post,linkedin}.md`, `docs/blog/hype-words.txt`
 - Modify: `test/mise.toml` (add `posts` to the `all` loop)
 
 **Interfaces:**
@@ -152,7 +152,7 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
   - `visibleLength("você 👋🏽") === 6`.
   - `assertSlug("zsh-word-split")` returns it; `"templates"`, `"../x"`, `"a/b"` throw.
 
-- [ ] **Step 2: Run to fail** — `mise run -C test integration posts all` → FAIL (module not found).
+- [ ] **Step 2: Run to fail** — `mise run -C test integration blog all` → FAIL (module not found).
 
 - [ ] **Step 3: Implement** in `_lib.ts`. `hype-words.txt`: `game-changer`, `game changer`, `10x`, `ultimate`,
   `must-have`, `revolutionary`, `supercharge`, `blazing fast`, `seamless`, `effortless`, `unlock`,
@@ -163,16 +163,16 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
   `//USAGE arg "<slug>"`; prints findings, exits 1 on any block. `chmod +x`. `_lib.ts` stays non-executable.
 
 - [ ] **Step 5: Run to pass** → PASS; add `posts` to `test/mise.toml`'s `all` loop; `mise run test:specs` → PASS;
-  `mise run posts:check omarchy-on-macos` reports findings (it predates the RECIPE rule) without crashing.
+  `mise run blog:check omarchy-on-macos` reports findings (it predates the RECIPE rule) without crashing.
 
 - [ ] **Step 6: Commit** — `feat(posts): Check a post's shape, RECIPE and voice`.
 
-### Task 2: `posts:push`, `posts:stats`, `posts:record`
+### Task 2: `blog:push`, `blog:stats`, `blog:record`
 
 **Files:**
 
-- Modify: `.mise/tasks/posts/_lib.ts`, `test/integration/posts/posts.spec.ts`
-- Create: `.mise/tasks/posts/{push,stats,record}.ts`, `test/integration/posts/fixtures/articles-me.json` (real shape,
+- Modify: `.mise/tasks/blog/_lib.ts`, `test/integration/blog/posts.spec.ts`
+- Create: `.mise/tasks/blog/{push,stats,record}.ts`, `test/integration/blog/fixtures/articles-me.json` (real shape,
   fake values), `docs/blog/stats.csv` (header only)
 
 **Interfaces:**
@@ -210,7 +210,7 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
     `["x","myspace","views=1"]` throws.
 
 - [ ] **Step 2: Run to fail**, **Step 3: implement**, **Step 4: run to pass** —
-  `mise run -C test integration posts all`.
+  `mise run -C test integration blog all`.
 
 - [ ] **Step 5: `push.ts`** — `//MISE description="Push a post to dev.to (draft unless publishing from main)"`,
   `//USAGE arg "<slug>"`, `//USAGE flag "--ref <ref>"` (default: current branch), `//USAGE flag "--draft"`. Order:
@@ -218,7 +218,7 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
   out a pushed ref) → `GET /api/articles/me/all?per_page=1000` → `resolveArticleId` → `PUT /api/articles/<id>` or
   `POST /api/articles` with `articlePayload` → when the id is new, write it with `setFrontMatterId` → print
   `<slug> <draft|published> <url>`. Token from `DEVTO_TOKEN`; locally the task header runs nothing else, so the
-  `mise run` wrapper is: `DEVTO_TOKEN="$(gopass show -o tokens/dev.to)" mise run posts:push <slug>` documented in
+  `mise run` wrapper is: `DEVTO_TOKEN="$(gopass show -o tokens/dev.to)" mise run blog:push <slug>` documented in
   PLAYBOOK, and the script exits with "DEVTO_TOKEN is not set" when absent.
 
 - [ ] **Step 6: `stats.ts` and `record.ts`** — `stats` reads `/api/articles/me/all`, maps ids to slugs from each
@@ -228,7 +228,7 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
   `parseRecordArgs` rows. Both executable with `//MISE` / `//USAGE` headers.
 
 - [ ] **Step 7: Live check (needs the token)** —
-  `DEVTO_TOKEN="$(gopass show -o tokens/dev.to)" mise run posts:stats` appends the Omarchy rows to `stats.csv`.
+  `DEVTO_TOKEN="$(gopass show -o tokens/dev.to)" mise run blog:stats` appends the Omarchy rows to `stats.csv`.
   Then record the Omarchy post's id in its front matter with `setFrontMatterId` (found by title), so it can never be
   duplicated.
 
@@ -238,11 +238,11 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
 
 **Files:**
 
-- Create: `.github/workflows/posts.yml`
+- Create: `.github/workflows/blog.yml`
 
 **Interfaces:**
 
-- Consumes: `push.ts` (Task 2) run as `bun .mise/tasks/posts/push.ts <slug> --ref <ref> [--draft]`.
+- Consumes: `push.ts` (Task 2) run as `bun .mise/tasks/blog/push.ts <slug> --ref <ref> [--draft]`.
 
 - [ ] **Step 1: Write the workflow:**
   - `on: pull_request` (types `opened`, `synchronize`, `reopened`; paths `docs/blog/*/post.md`,
@@ -256,10 +256,10 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
     `--draft` and `--ref ${{ github.head_ref }}` on PRs, `--ref main` on `main`.
   - PRs only: if any `post.md` changed (an id was written), commit with the Actions bot and the default
     `GITHUB_TOKEN` (`chore(posts): Record dev.to ids`), push to the PR branch; comment each `<slug> <url>` on the PR
-    with `gh pr comment` (update one comment marked `<!-- posts-bot -->` instead of adding new ones).
+    with `gh pr comment` (update one comment marked `<!-- blog-bot -->` instead of adding new ones).
   - `main`: no commits.
 
-- [ ] **Step 2: Verify** — `actionlint .github/workflows/posts.yml` if available, else `hk check --all`; YAML lint
+- [ ] **Step 2: Verify** — `actionlint .github/workflows/blog.yml` if available, else `hk check --all`; YAML lint
   green.
 
 - [ ] **Step 3: Commit** — `ci(posts): Draft posts on pull requests and publish them on merge`.
@@ -269,11 +269,11 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
 **Files:**
 
 - Create: `docs/blog/{README,PLAYBOOK,STYLE,LOG}.md`, `docs/blog/TODO.yaml`, `docs/blog/templates/*.md`,
-  `.mise/tasks/posts/todo`
+  `.mise/tasks/blog/todo`
 - Modify: `config/agents/commands/wip/resume.md`, `config/homebrew/Brewfile` (comment only)
 
 - [ ] **Step 1: `PLAYBOOK.md`** — the living version of the spec: Intent; Goals in order and tiebreaks; Audience
-  and ownership; Formats; How a post moves (branch → `posts:check` → gate → PR = draft + preview → author review →
+  and ownership; Formats; How a post moves (branch → `blog:check` → gate → PR = draft + preview → author review →
   set `published: true` → merge = publish → LinkedIn by hand → stats at 48 h / 7 d); Communities rules; Choosing the
   next topic; Success criteria and baseline; Tuning; Recalibration; Language; **Decisions log** (dated one-liners,
   seeded from the spec's "Decided by the author"). Exact values from the spec; the spec linked as origin.
@@ -290,13 +290,13 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
   above; `post.md` with `published: false`, the outline and RECIPE block; `linkedin.md` with `## Post`,
   `## First comment`, `## In-between post`; `community.md` with Where, Title, Flair, Body, Rules checked on).
 
-- [ ] **Step 4: `posts:todo` and the roadmap** — `.mise/tasks/posts/todo` (bash, executable,
+- [ ] **Step 4: `blog:todo` and the roadmap** — `.mise/tasks/blog/todo` (bash, executable,
   `#MISE description="The series roadmap (todo CLI) in docs/blog"`, `#MISE tools={"github:RayanBO/todo"="0.2.9"}`,
   runs `cd "$MISE_PROJECT_ROOT/docs/blog" && todo "$@"`). Brewfile comment in the `npm`/`uv` area:
-  `# todo (github.com/RayanBO/todo): no formula; cargo's todo-cli is another crate. Pinned in .mise/tasks/posts/todo.`
-  Then `mise run posts:todo init --yaml`, add the actors, and one task per timeline row with tags and due dates
+  `# todo (github.com/RayanBO/todo): no formula; cargo's todo-cli is another crate. Pinned in .mise/tasks/blog/todo.`
+  Then `mise run blog:todo init --yaml`, add the actors, and one task per timeline row with tags and due dates
   (preflight today; Reddit runway 2026-11-17 → 2026-11-30; topics 1–8 on their Tuesdays with community and
-  in-between posts; recalibrations). `mise run posts:todo list` shows them.
+  in-between posts; recalibrations). `mise run blog:todo list` shows them.
 
 - [ ] **Step 5: `/wip:resume`** — in the probe, before the `TODO.md` branch, add a `docs/blog/TODO.yaml` branch
   printing at most 5 open tasks as `- <title> (<due>)` with `grep`/`awk` on the YAML the CLI wrote. Run the probe:
@@ -311,7 +311,7 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
 **Files:**
 
 - Move: `docs/blog/omarchy-on-macos/tools/{frame,header}.py` → `docs/blog/tools/` (`g mv`)
-- Modify: `docs/blog/tools/header.py`; Test: `test/integration/posts/posts.spec.ts`
+- Modify: `docs/blog/tools/header.py`; Test: `test/integration/blog/posts.spec.ts`
 
 **Interfaces:**
 
@@ -330,14 +330,14 @@ CI can run `bun .mise/tasks/posts/push.ts <slug> --ref <ref> --draft` without mi
 
 - Create: `docs/blog/prompts/gate.md`, `docs/blog/prompts/next-pick.md`
 
-- [ ] **Step 1: `gate.md`** — for a fresh agent with no other context: (1) `mise run posts:check <slug>`, blocks go
+- [ ] **Step 1: `gate.md`** — for a fresh agent with no other context: (1) `mise run blog:check <slug>`, blocks go
   to **Must fix**; (2) **cold read** of `post.md` and `linkedin.md` only, as a mid-level developer who doesn't know
   dots: the one point, would I save it and why, where I got lost; (3) read PLAYBOOK.md and STYLE.md, fill
   **Scores**; (4) **Must fix** only for safety (secret, key, token name, email, client or private repo name, in text
   or images), anti-goals (hype, spam, hate, takes aimed at people or tools), a missing or broken RECIPE, a failed
   check; (5) **Consider**: at most 7, most valuable first, each naming its goal, visual and tone ones explicit;
   (6) prefill **Variables**. Writes `docs/blog/<slug>/review.md` from the template; edits nothing else.
-- [ ] **Step 2: `next-pick.md`** — reads PLAYBOOK.md "Choosing the next topic", `mise run posts:todo list`, the
+- [ ] **Step 2: `next-pick.md`** — reads PLAYBOOK.md "Choosing the next topic", `mise run blog:todo list`, the
   last three LOG.md entries; web search over the past 14 days per candidate; applies the spec's scoring and
   guardrails; outputs a `### Next pick · <date>` block (keep or swap, one line of reason, source link) for the author.
 - [ ] **Step 3: Dry-run the gate** on `omarchy-on-macos` with a fresh agent → a complete `review.md`, verdict
@@ -366,7 +366,7 @@ stays on zsh.
   lesson, a question; `## First comment` with the dev.to link placeholder).
 - [ ] **Step 4: Images** — `header.py --title "<title>" --series 0 --keys "zsh,bash"`; one framed capture of a
   clean Ghostty window running Step 1's commands.
-- [ ] **Step 5: Check and gate** — `mise run posts:check zsh-word-split` → no blocks; gate with a fresh agent →
+- [ ] **Step 5: Check and gate** — `mise run blog:check zsh-word-split` → no blocks; gate with a fresh agent →
   `review.md` PASS; apply what the author accepts.
 - [ ] **Step 6: Commit** — `docs(posts): Draft the zsh word-splitting preflight post`.
 
@@ -382,8 +382,8 @@ stays on zsh.
   push; then merge. The `main` run updates the article with `main` image links and publishes it. Open the URL.
 - [ ] **Step 5: LinkedIn (author)** — post `## Post`, then the first comment with the dev.to URL; stay for replies.
 - [ ] **Step 6: Record** — on `main` (or a follow-up branch): a `LOG.md` entry from the template, the post in the
-  `README.md` index, `mise run posts:todo status <id> --set done` for the preflight tasks.
-- [ ] **Step 7: Measure at 48 h and 7 d** — `posts:stats`, and `mise run posts:record zsh-word-split linkedin
+  `README.md` index, `mise run blog:todo status <id> --set done` for the preflight tasks.
+- [ ] **Step 7: Measure at 48 h and 7 d** — `blog:stats`, and `mise run blog:record zsh-word-split linkedin
   impressions=… reactions=… comments=… reposts=…` from LinkedIn analytics; fill Numbers, Best comment, Keep/Change.
 - [ ] **Step 8: Preflight retro** — what broke or slowed the flow, in `LOG.md`; small fixes now, the rest as
   `setup` tasks in `TODO.yaml`. Next: a separate plan for topic 1 (SOPS + age), starting with `prompts/next-pick.md`.

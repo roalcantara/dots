@@ -4,7 +4,7 @@
 
 ## Must fix
 
-<!-- Blocking only: safety, anti-goals, a missing or broken RECIPE, a failed posts:check. Empty means none. -->
+<!-- Blocking only: safety, anti-goals, a missing or broken RECIPE, a failed blog:check. Empty means none. -->
 
 ## Cold read
 
@@ -26,7 +26,7 @@
 | Goals 1–5 | <n>/10 | 1 <n> · 2 <n> · 3 <n> · 4 <n> · 5 <n> |
 | Language | 0–2 | |
 | Safety | ok / issue | <what, where> |
-| `posts:check` | ok / blocks | <blocks and warnings> |
+| `blog:check` | ok / blocks | <blocks and warnings> |
 
 ## Consider
 

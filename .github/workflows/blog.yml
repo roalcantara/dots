@@ -4,7 +4,7 @@
 # - the merge to main updates the article from main: published when its front matter says `published: true`.
 # Merging a pull request with `published: true` is the publish button.
 ---
-name: Posts
+name: Blog
 
 on:
   pull_request:
@@ -17,7 +17,7 @@ on:
 # One queue for every run: a pull request run and the run of its merge must never overlap.
 concurrency:
   cancel-in-progress: false
-  group: posts
+  group: blog
 
 defaults:
   run:
@@ -32,7 +32,7 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     permissions:
-      contents: read # CI never writes the repo; ids are recorded locally (posts:push, posts:stats)
+      contents: read # CI never writes the repo; ids are recorded locally (blog:push, blog:stats)
       pull-requests: write # comment the preview links
     env:
       GH_TOKEN: ${{ github.token }}
@@ -90,7 +90,7 @@ jobs:
           : > "${RUNNER_TEMP}/results.txt"
           while IFS= read -r slug; do
             [[ -f "docs/blog/posts/${slug}/post.md" ]] || continue
-            bun .mise/tasks/posts/push.ts "${slug}" --ref "${REF}" "${draft[@]}" | tee -a "${RUNNER_TEMP}/results.txt"
+            bun .mise/tasks/blog/push.ts "${slug}" --ref "${REF}" "${draft[@]}" | tee -a "${RUNNER_TEMP}/results.txt"
           done <<< "${SLUGS}"
 
       - name: Comment the preview links
@@ -99,7 +99,7 @@ jobs:
           PR: ${{ github.event.pull_request.number }}
         run: |
           {
-            echo '<!-- posts-bot -->'
+            echo '<!-- blog-bot -->'
             echo "**dev.to drafts** (open while signed in to dev.to; merging publishes the posts whose front matter says \`published: true\`):"
             echo
             while read -r slug state url; do echo "- \`${slug}\` · ${state} · ${url}"; done < "${RUNNER_TEMP}/results.txt"

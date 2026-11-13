@@ -12,7 +12,7 @@ folders, and one place for every post's metadata (`docs/blog/TODO.yaml`).
    task calls gopass directly.
 2. **Arguments, not environment variables.** Every task parses its argv with `node:util`'s `parseArgs` (mise passes
    the arguments it validated through `#USAGE` to the script). The `usage_*` variables are not read; CI runs the
-   same command line (`bun .mise/tasks/posts/push.ts <post> --ref main`). The only environment variables left are
+   same command line (`bun .mise/tasks/blog/push.ts <post> --ref main`). The only environment variables left are
    the token and `CI`.
 3. **Chronological folders.** `docs/blog/posts/<YYYY-MM-DD>-<slug>/`, the date being the planned publish date,
    fixed once published (renaming a published post's folder moves its image URLs). ISO dates sort, read without
@@ -29,16 +29,16 @@ folders, and one place for every post's metadata (`docs/blog/TODO.yaml`).
    dev.to id becomes a `devto.id` comment), and the workflow's id write-back commit (CI never writes the repo).
    **What stays a file:** the post itself, `linkedin.md`, `community.md`, `review.md` and images. They are
    artifacts found by convention in the post's folder, so references to them would only repeat the folder.
-6. **Reports are generated.** `posts:report` prints each post's metadata (what LOG.md held) and rewrites the index
+6. **Reports are generated.** `blog:report` prints each post's metadata (what LOG.md held) and rewrites the index
    table in `docs/blog/README.md` between `<!-- index:start -->` and `<!-- index:end -->`.
 
 ## Comment schema
 
 | Key | Value | Written by |
 | --- | --- | --- |
-| `devto.id` | the article id | `posts:push` (when it creates one), `posts:stats` (when it finds one by title) |
-| `devto.url`, `linkedin.url`, `community.url` | a URL | `posts:push` / the author |
-| `stats` | `<YYYY-MM-DD> <platform> <metric>=<n> [<metric>=<n>…] (<api\|manual>)` | `posts:stats`, `posts:record` |
+| `devto.id` | the article id | `blog:push` (when it creates one), `blog:stats` (when it finds one by title) |
+| `devto.url`, `linkedin.url`, `community.url` | a URL | `blog:push` / the author |
+| `stats` | `<YYYY-MM-DD> <platform> <metric>=<n> [<metric>=<n>…] (<api\|manual>)` | `blog:stats`, `blog:record` |
 | `gate` | `<YYYY-MM-DD> <PASS\|BLOCKED> stepps=<n>/12` | the gate run |
 | `vars` | `hook=… cover=… images=… linkedin=… lang=… day=… tags=…` | the author / the gate |
 | `log.keep`, `log.change`, `log.best-comment` | text | the author at 7 days |
@@ -46,7 +46,7 @@ folders, and one place for every post's metadata (`docs/blog/TODO.yaml`).
 | `decision` | `<YYYY-MM-DD> <text>` | recalibrations (series or recal tasks) |
 
 Platforms and metrics are the ones the first design lists. A line that doesn't match the schema is reported by
-`posts:report`, never dropped.
+`blog:report`, never dropped.
 
 ## Approaches considered
 

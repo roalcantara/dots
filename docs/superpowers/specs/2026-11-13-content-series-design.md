@@ -373,8 +373,8 @@ draft and images → cold read → author review → publish. Before topic 1, a 
 | Draft the community post | `reddit-posts` (installed) | 90/10, flair, subreddit format |
 | Check shareability | `contagious` (installed) | STEPPS score in the log |
 | Cold read | A fresh agent playing a mid-level developer | See **Success criteria** |
-| Publish to dev.to | The Forem API directly, from bun file tasks in `.mise/tasks/posts/`, run locally (`mise run posts:push`) and by `.github/workflows/posts.yml` | A PR that touches a `post.md` creates or updates a **draft** (images from the PR branch), records the `id` on the branch and comments the preview link; the merge to `main` updates the article with images from `main` and the front matter's `published` value. **Merging a PR with `published: true` is the author's publish button.** |
-| dev.to numbers | `mise run posts:stats`: Forem API (`/api/articles/me/all`, `/api/analytics/referrers?article_id=` when available) | Token from gopass `tokens/dev.to` locally and the `DEVTO_TOKEN` repo secret in CI, never in the repo; appends to `docs/blog/stats.csv` |
+| Publish to dev.to | The Forem API directly, from bun file tasks in `.mise/tasks/blog/`, run locally (`mise run blog:push`) and by `.github/workflows/blog.yml` | A PR that touches a `post.md` creates or updates a **draft** (images from the PR branch), records the `id` on the branch and comments the preview link; the merge to `main` updates the article with images from `main` and the front matter's `published` value. **Merging a PR with `published: true` is the author's publish button.** |
+| dev.to numbers | `mise run blog:stats`: Forem API (`/api/articles/me/all`, `/api/analytics/referrers?article_id=` when available) | Token from gopass `tokens/dev.to` locally and the `DEVTO_TOKEN` repo secret in CI, never in the repo; appends to `docs/blog/stats.csv` |
 | LinkedIn and Reddit numbers | By hand at 48 h and 7 days, about 2 minutes per post | Entered into `LOG.md` |
 | Repo traffic | `gh api repos/roalcantara/dots/traffic/views` in the same stats task | |
 
@@ -406,7 +406,7 @@ the goals.
 **Baseline.** Numbers only need to be honest, not impressive: every comparison is with the series' own past, never
 with other creators.
 
-- dev.to: the Omarchy post's numbers, read by `mise run posts:stats` during setup (no manual step).
+- dev.to: the Omarchy post's numbers, read by `mise run blog:stats` during setup (no manual step).
 - LinkedIn: no API is available for personal posts. The baseline is the **median of topics 1 and 2**; until then,
   targets are not applied. If the author has the Omarchy post's LinkedIn numbers, or LinkedIn's analytics export
   for it, they are recorded as context, not as a target.
@@ -517,8 +517,8 @@ Per topic, a single plan under `docs/superpowers/plans/`; a spec only when a top
 - Tag strategy: large tags first, `dotfiles` at most fourth.
 - STEPPS ≥ 6 with Practical value = 2 as the pre-publish bar; LinkedIn targets applied from topic 3.
 - A two-week Reddit runway; the Omarchy post to r/unixporn in the December light week.
-- The Forem API from bun file tasks (`.mise/tasks/posts/`) and a CI workflow: drafts on PRs, publish on merge.
-- A `posts:stats` task for dev.to numbers, referrers and repo traffic.
+- The Forem API from bun file tasks (`.mise/tasks/blog/`) and a CI workflow: drafts on PRs, publish on merge.
+- A `blog:stats` task for dev.to numbers, referrers and repo traffic.
 - Moving the image tools to `docs/blog/tools/`; `README.md` and `LOG.md` in `docs/blog/`.
 
 ## Left to the builder

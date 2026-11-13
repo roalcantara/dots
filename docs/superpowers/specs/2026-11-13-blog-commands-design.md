@@ -156,11 +156,11 @@ commits what's pending on the post branch.
 - QUICK REFERENCE becomes the stage table's "Next" column as a short numbered list of commands.
 - PLAYBOOK "How a post moves" points at the commands; the workflow, tests and docs follow the `blog:*` rename
   (test domain `blog`, workflow `blog.yml`, name `Blog`).
-- `posts:check` gains the `<author: …>` rule (warn); `blog:publish` blocks on it.
+- `blog:check` gains the `<author: …>` rule (warn); `blog:publish` blocks on it.
 - **Every doc and reference follows** (author's requirement): `docs/blog/` (README, PLAYBOOK, STYLE, templates),
   `README.md`, `AGENTS.md`, `hk.pkl`, `fnox.toml`, the Brewfile comment, `.gitignore`, the workflow, tests, and the
-  content-series specs and plans; a repo-wide search for `posts:`, `.mise/tasks/posts`, `prompts/gate.md`,
-  `prompts/next-pick.md` and `posts.yml` comes back empty except for history (commit messages, the decisions log).
+  content-series specs and plans; a repo-wide search for `posts:`, `.mise/tasks/blog`, `prompts/gate.md`,
+  `prompts/next-pick.md` and `blog.yml` comes back empty except for history (commit messages, the decisions log).
 
 ## Constraints
 

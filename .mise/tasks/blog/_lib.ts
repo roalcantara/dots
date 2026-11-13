@@ -390,7 +390,7 @@ export function token(): string {
   throw new Error("DEVTO_TOKEN is not set and `fnox get DEVTO_TOKEN` resolved nothing (see fnox.toml)");
 }
 
-// argv of posts:push (mise passes the arguments its #USAGE spec validated; CI runs the same command line).
+// argv of blog:push (mise passes the arguments its #USAGE spec validated; CI runs the same command line).
 export function postOptions(argv: string[]): { post: string; ref: string | undefined; draft: boolean } {
   const { values, positionals } = parseArgs({
     args: argv,
@@ -423,7 +423,7 @@ export const readTodo = (): Todo => Bun.YAML.parse(readFileSync(TODO, "utf8")) a
 
 // Append a comment through the todo CLI (the file's owner), never by editing TODO.yaml.
 export function addComment(taskId: string, text: string): void {
-  const p = Bun.spawnSync(["mise", "run", "-q", "posts:todo", "--", "add", "--comment", text, "--task-id", taskId], {
+  const p = Bun.spawnSync(["mise", "run", "-q", "blog:todo", "--", "add", "--comment", text, "--task-id", taskId], {
     cwd: ROOT, stdout: "pipe", stderr: "pipe",
   });
   if (p.exitCode !== 0) throw new Error(`todo add --comment failed: ${p.stderr.toString().trim()}`);

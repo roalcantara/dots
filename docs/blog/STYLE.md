@@ -2,7 +2,7 @@
 
 How the posts sound and look, and how the gate scores them. The rules come from the
 [playbook](PLAYBOOK.md); this file is what a writer or reviewer keeps open. Voice, look and rubric are tuned
-variables: each recalibration re-evaluates them from the results recorded in [`TODO.yaml`](TODO.yaml) (`mise run posts:report`) and records the change in the
+variables: each recalibration re-evaluates them from the results recorded in [`TODO.yaml`](TODO.yaml) (`mise run blog:report`) and records the change in the
 playbook's Decisions log.
 
 ## Voice
@@ -20,7 +20,7 @@ is the notebook's front page.
 
 - Plain words, short sentences, one idea per paragraph, one claim per bullet.
 - At least one mistake or limit stated in every post.
-- No hype words: [`hype-words.txt`](hype-words.txt) is the list `posts:check` and the gate use; add to it when a new
+- No hype words: [`hype-words.txt`](hype-words.txt) is the list `blog:check` and the gate use; add to it when a new
   one slips through. Hype is about the author's own work ("my game-changing setup"); honest praise for someone
   else's tool ("Omarchy is a joy to drive") is fine.
 - dev.to conventions: a DISCLAIMER note, bold ALL-CAPS section labels, 💡 callouts, "vs." tables, references at the
@@ -73,7 +73,7 @@ wrong), **1** (present, weak) or **2** (strong, deliberate).
 | Goal 5, contagious | A hook and an image someone would forward; STEPPS bars met | — |
 | Language | English default; PT-BR text follows the playbook's rules | — |
 | Safety | No secret, key, token name, email, client or private repo name | Any of them, in text or images |
-| `posts:check` | No blocks | Any block |
+| `blog:check` | No blocks | Any block |
 
 **Bars:** STEPPS raw ≥ 6 of 12, with Practical value = 2 and one of Social currency or Stories = 2. A post under a
 bar gets **Consider** items, not a block; only the "Blocks when" column blocks (the gate is mixed: blocking for

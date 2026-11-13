@@ -15,7 +15,7 @@ rewrite the post yourself: you report. Work in the repository root, in this orde
    - **Would I save it, and why?**
    - **Where I got lost:** the first sentence, step or term that lost me (or "nowhere").
 
-2. **Mechanical check.** Run `mise run posts:check <post>`. Every `BLOCK` line goes into **Must fix**; each warning
+2. **Mechanical check.** Run `mise run blog:check <post>`. Every `BLOCK` line goes into **Must fix**; each warning
    goes into the note of the Scores row it concerns (hype word → Voice, hook → LinkedIn hook, gotchas → RECIPE).
 
 3. **Rules.** Read `docs/blog/PLAYBOOK.md` (goals in priority order, formats, anti-goals, language rules) and
@@ -42,7 +42,7 @@ rewrite the post yourself: you report. Work in the repository root, in this orde
      with `gh repo view <owner>/<name> --json visibility`. Tool names (`psc`, "Copy a secret") are fine.
    - **Anti-goals:** hype, spam patterns, hate, rage bait, or takes aimed at people or tools.
    - **The RECIPE:** missing, or impossible to follow as written.
-   - **A failed `posts:check`.**
+   - **A failed `blog:check`.**
    List each problem once, however many rules it breaks. Everything else, however important, goes in
    **Consider**. The verdict is **BLOCKED** if Must fix has any item,
    else **PASS**.
