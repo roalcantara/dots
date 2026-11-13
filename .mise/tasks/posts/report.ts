@@ -34,7 +34,7 @@ problems += series.invalid.length;
 if (values.write) {
   const readme = join(SERIES, "README.md");
   const text = readFileSync(readme, "utf8");
-  const rows = posts.map((p) => {
+  const rows = posts.filter((p) => existsSync(join(POSTS, p.dir, "post.md"))).map((p) => {
     const fm = parseFrontMatter(readFileSync(join(POSTS, p.dir, "post.md"), "utf8")).fm;
     const link = (key: string, label: string) => (p.meta[key]?.at(-1) ? `[${label}](${p.meta[key]!.at(-1)})` : "—");
     return `| ${p.dir.slice(0, 10)} | [${fm.title}](posts/${p.dir}/post.md) | ${fm.description ?? ""} | ${link("devto.url", "dev.to")} | ${link("linkedin.url", "LinkedIn")} |`;

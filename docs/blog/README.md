@@ -28,8 +28,9 @@ its task in `TODO.yaml`. The details are in [PLAYBOOK.md](PLAYBOOK.md), "How a p
    `mise run posts:todo -- update <id> --tag post,topic-<n> --position docs/blog/posts/<post>`.
 4. Draft `post.md` (skill `technical-article-writer`), `linkedin.md` (`linkedin-ghostwriting`) and, from topic 2,
    `community.md` (`reddit-posts`).
-5. Make the images: `uv run --with pillow docs/blog/tools/header.py posts/<post>/images/00-cover.png --title … --series <n>
-   --keys …`, and captures in `posts/<post>/raw/` framed with `tools/frame.py` (blur anything sensitive).
+5. Make the images, from the repo root: `uv run --with pillow docs/blog/tools/header.py
+   docs/blog/posts/<post>/images/00-cover.png --title … --series <n> --keys …`; captures go in
+   `docs/blog/posts/<post>/raw/`, framed (and blurred where sensitive) with `docs/blog/tools/frame.py`.
 6. Check until there are no blocks: `mise run posts:check <post>`.
 7. Have a fresh agent run [`prompts/gate.md`](prompts/gate.md) → `posts/<post>/review.md`; fix every **Must fix**,
    take the **Consider** items you agree with, and record `gate:` and `vars:` comments on the task.

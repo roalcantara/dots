@@ -30,8 +30,10 @@ if (!ci) {
 const ref = opts.ref || state.branch || fail(["BLOCK no-ref: detached HEAD; pass --ref <branch>"]);
 
 const task = postsFromTodo(readTodo()).find((p) => p.dir === post);
-const mine = (await myArticles()).map((a) => ({ id: a.id as number, title: a.title as string, published: a.published === true }));
-const id = resolveArticleId(task?.devtoId, fm.title, mine);
+const mine = (await myArticles()).map((a) => ({
+  id: a.id as number, title: a.title as string, body_markdown: a.body_markdown as string, published: a.published === true,
+}));
+const id = resolveArticleId(task?.devtoId, post, fm.title, mine);
 const live = mine.find((a) => a.id === id)?.published === true;
 if (id && pushAction({ draft, live }) === "skip") {
   console.log(`${post} live (updated from main on merge)`);
@@ -44,11 +46,11 @@ const saved = (await devto(id ? `/articles/${id}` : "/articles", { method: id ? 
 };
 if (task && task.devtoId !== saved.id) {
   // CI never writes the repo: a later local posts:push or posts:stats records the id (found by title meanwhile).
-  if (ci) console.log(`note: ${post} has dev.to id ${saved.id}; posts:stats records it`);
+  if (ci) console.error(`note: ${post} has dev.to id ${saved.id}; posts:stats records it`);
   else {
     addComment(task.taskId, `devto.id: ${saved.id}`);
     addComment(task.taskId, `devto.url: ${saved.url}`);
   }
 }
-if (!task) console.log(`note: no post task points at docs/blog/posts/${post} (tag it "post", set its position)`);
+if (!task) console.error(`note: no post task points at docs/blog/posts/${post} (tag it "post", set its position)`);
 console.log(`${post} ${payload.article.published ?? live ? "published" : "draft"} ${saved.url}`);

@@ -122,6 +122,11 @@ describe("articlePayload", () => {
     expect(articlePayload(fm, "b", { ...live, ref: "main", draft: false }).article.published).toBe(true);
   });
 
+  it("marks the body with the post's folder, so a renamed post still finds its article", () => {
+    const { article } = articlePayload(fm, "b", { slug: "2026-11-13-p", ref: "main", draft: true });
+    expect(article.body_markdown.endsWith("\n\n<!-- dots:2026-11-13-p -->\n")).toBe(true);
+  });
+
   it("is a draft when the front matter says nothing", () => {
     expect(articlePayload({ title: "T", tags: [] }, "b", { slug: "s", ref: "main", draft: false }).article.published).toBe(false);
   });
@@ -156,10 +161,16 @@ describe("pushAction", () => {
 });
 
 describe("resolveArticleId", () => {
-  it("prefers the recorded id, then the same title", () => {
-    expect(resolveArticleId(undefined, "T", [{ id: 7, title: "T" }])).toBe(7);
-    expect(resolveArticleId(3, "T", [{ id: 7, title: "T" }])).toBe(3);
-    expect(resolveArticleId(undefined, "New", [{ id: 7, title: "T" }])).toBeUndefined();
+  const mine = [
+    { id: 7, title: "T", body_markdown: "x" },
+    { id: 9, title: "Old title", body_markdown: "body\n\n<!-- dots:2026-11-13-p -->\n" },
+  ];
+
+  it("prefers the recorded id, then the post's marker, then the same title", () => {
+    expect(resolveArticleId(3, "2026-11-13-p", "T", mine)).toBe(3);
+    expect(resolveArticleId(undefined, "2026-11-13-p", "Renamed", mine)).toBe(9);
+    expect(resolveArticleId(undefined, "2026-01-01-q", "T", mine)).toBe(7);
+    expect(resolveArticleId(undefined, "2026-01-01-q", "New", mine)).toBeUndefined();
   });
 });
 
@@ -276,5 +287,11 @@ describe("TODO.yaml metadata", () => {
       "2026-11-13 views=30", "2026-11-13 reactions=0", "2026-11-13 referrer_linkedin=10", "2026-11-14 views=41",
     ]);
     expect(p!.invalid).toEqual(["great post, loved it"]);
+  });
+
+  it("keeps a comment the task's own list lost (a merge that kept one side), and survives no comments at all", () => {
+    const merged = { ...todo, tasks: todo.tasks.map((t) => (t.id === "P1" ? { ...t, comments: ["c1"] } : t)) };
+    expect(postsFromTodo(merged)[0]!.stats.length).toBe(4);
+    expect(postsFromTodo({ tasks: todo.tasks } as Todo)[0]!.stats).toEqual([]);
   });
 });

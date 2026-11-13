@@ -139,6 +139,10 @@ export type Article = {
   main_image?: string;
 };
 
+// An invisible marker in every article's markdown ties it to its folder, so a post renamed during its pull request
+// (CI records no id) still finds its article instead of creating another draft.
+export const marker = (post: string): string => `<!-- dots:${post} -->`;
+
 // A pull request always sends a draft; only the front matter of what reached main can publish. The tooling never
 // takes a live article offline: for one that is already published, `published` is sent only to keep it true
 // (unpublishing is done by hand on dev.to).
@@ -149,7 +153,7 @@ export function articlePayload(
 ): { article: Article } {
   const article: Article = {
     title: fm.title ?? "",
-    body_markdown: rewriteImages(body, o.slug, o.ref),
+    body_markdown: `${rewriteImages(body, o.slug, o.ref).replace(/\s*$/, "")}\n\n${marker(o.slug)}\n`,
     tags: fm.tags,
   };
   const published = o.draft ? false : fm.published === true;
@@ -179,15 +183,18 @@ export function pushAction(o: { draft: boolean; live: boolean }): "skip" | "send
   return o.draft && o.live ? "skip" : "send";
 }
 
-// The recorded id (a devto.id comment) wins; otherwise an article of mine with the same title (a post published by
-// hand, or one created by a run whose id isn't recorded yet), so a push updates it instead of creating a duplicate.
+// The recorded id (a devto.id comment) wins; then the article carrying the post's marker (created by CI, whose id
+// isn't recorded yet, even if renamed since); then one with the same title (a post published by hand, before
+// markers). A push updates that article instead of creating a duplicate.
+export type Mine = { id: number; title: string; body_markdown?: string };
 export function resolveArticleId(
   recorded: number | undefined,
+  post: string,
   title: string | undefined,
-  mine: { id: number; title: string }[],
+  mine: Mine[],
 ): number | undefined {
   if (typeof recorded === "number") return recorded;
-  return mine.find((a) => a.title === title)?.id;
+  return (mine.find((a) => a.body_markdown?.includes(marker(post))) ?? mine.find((a) => a.title === title))?.id;
 }
 
 // ---- numbers ----------------------------------------------------------------------------------------------------
@@ -311,11 +318,14 @@ export function formatStats(rows: StatRow[]): string[] {
 const day = (v: unknown): string | undefined => (v ? String(v instanceof Date ? v.toISOString() : v).slice(0, 10) : undefined);
 
 function metaOf(todo: Todo, task: TodoTask, slug: string) {
-  const byId = new Map(todo.comments.map((c) => [c.id, c]));
+  const all = todo.comments ?? [];
+  const byId = new Map(all.map((c) => [c.id, c]));
+  // The task's own list, plus any comment pointing at the task that the list lost (a merge that kept one side).
+  const ids = [...new Set([...(task.comments ?? []), ...all.filter((c) => c.task_id === task.id).map((c) => c.id)])];
   const meta: Record<string, string[]> = {};
   const stats: StatRow[] = [];
   const invalid: string[] = [];
-  for (const id of task.comments ?? []) {
+  for (const id of ids) {
     const text = byId.get(id)?.text ?? "";
     const kv = parseComment(text);
     const rows = kv?.key === "stats" ? parseStats(kv.value, slug) : undefined;
@@ -367,12 +377,16 @@ export function gitState(): GitState {
   };
 }
 
-// DEVTO_TOKEN from the environment (CI: the repo secret), else fnox (fnox.toml: gopass tokens/dev.to). Never printed.
+// DEVTO_TOKEN from the environment (CI: the repo secret), else fnox (fnox.toml: gopass tokens/dev.to), resolved once
+// per run. Never printed.
+let cached: string | undefined;
 export function token(): string {
+  if (cached) return cached;
   const env = process.env.DEVTO_TOKEN?.trim();
-  if (env) return env;
+  if (env) return (cached = env);
+  if (!Bun.which("fnox")) throw new Error("DEVTO_TOKEN is not set and fnox is not installed (brew bundle)");
   const fx = run(["fnox", "get", "DEVTO_TOKEN"]);
-  if (fx.ok && fx.out) return fx.out;
+  if (fx.ok && fx.out) return (cached = fx.out);
   throw new Error("DEVTO_TOKEN is not set and `fnox get DEVTO_TOKEN` resolved nothing (see fnox.toml)");
 }
 

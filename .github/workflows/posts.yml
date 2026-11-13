@@ -1,6 +1,6 @@
 # The content series' dev.to flow (docs/blog/PLAYBOOK.md):
-# - a pull request that touches a post creates or updates its dev.to article as a DRAFT, records the article id on
-#   the branch and comments the preview links;
+# - a pull request that touches a post creates or updates its dev.to article as a DRAFT (found again by the
+#   <!-- dots:<post> --> marker in its markdown) and comments the preview links; CI never writes the repo;
 # - the merge to main updates the article from main: published when its front matter says `published: true`.
 # Merging a pull request with `published: true` is the publish button.
 ---

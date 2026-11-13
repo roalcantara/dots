@@ -8,12 +8,16 @@ import {
 const date = today();
 const todo = readTodo();
 const mine = await myArticles();
-const titles = mine.map((a) => ({ id: a.id as number, title: a.title as string }));
+const known = mine.map((a) => ({ id: a.id as number, title: a.title as string, body_markdown: a.body_markdown as string }));
 
 for (const p of postsFromTodo(todo)) {
-  const { fm } = parseFrontMatter(await Bun.file(`${POSTS}/${p.dir}/post.md`).text());
-  const title = fm.title;
-  const id = resolveArticleId(p.devtoId, title, titles);
+  const file = Bun.file(`${POSTS}/${p.dir}/post.md`);
+  if (!(await file.exists())) {
+    console.log(`note: ${p.dir}: no post.md, skipped`);
+    continue;
+  }
+  const { fm } = parseFrontMatter(await file.text());
+  const id = resolveArticleId(p.devtoId, p.dir, fm.title, known);
   if (!id) continue;
   if (!p.devtoId) {
     addComment(p.taskId, `devto.id: ${id}`);
