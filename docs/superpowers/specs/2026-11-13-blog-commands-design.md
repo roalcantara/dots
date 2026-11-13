@@ -41,8 +41,9 @@ tested once, instead of in the author's head.
     post branch and run `gh pr create`. It may never merge.
   - Merging (which publishes) and the LinkedIn post stay the author's.
   - The other agent commands never push, open PRs or merge.
-- **Location:** project-level commands in dots, `.claude/commands/blog/*.md` (`/blog:<name>`), not
-  `~/.agents/commands` (which would show them in every project).
+- **Location:** project-level commands in dots, `.agents/commands/blog/*.md` (`/blog:<name>`), not
+  `~/.agents/commands` (which would show them in every project). Claude Code reads project commands only from
+  `.claude/commands/`, so that path is a symlink to `../.agents/commands` (AGENTS.md: `.agents` over `.claude`).
 - **Rename:** mise tasks `posts:*` → `blog:*` (`.mise/tasks/posts/` → `.mise/tasks/blog/`).
 - Commands follow the `create-command` skill and the repo's command style: YAML front matter (`description`,
   `argument-hint`, `allowed-tools`), then `<task>`, `<context>`, `<workflow>`, `<checklist>`; `key=value` arguments
@@ -73,7 +74,7 @@ tested once, instead of in the author's head.
 | `blog:done <post> [--linkedin <url>] [--community <url>]` | Records the URLs, runs the stats, sets the task done, rewrites the README index | step 11 |
 | `blog:stats`, `blog:record`, `blog:report`, `blog:todo`, `blog:push` | As today, renamed | steps 11–12, CI |
 
-### Agent commands (`.claude/commands/blog/`)
+### Agent commands (`.agents/commands/blog/`)
 
 | Command | Arguments | Does | Allowed beyond reading |
 | --- | --- | --- | --- |
@@ -146,7 +147,7 @@ commits what's pending on the post branch.
 - **Rename reach:** test domain and fixture paths (`test/integration/blog/`, `hk.pkl`'s exclude), the workflow
   (`blog.yml`, name `Blog`, concurrency group `blog`, the task path, the `blog-bot` comment marker), AGENTS.md's
   test domain list; the repo has no branch protection to update.
-- **Lint:** `.claude/commands/blog/*.md` are linted like other markdown; any rule their XML-style sections break is
+- **Lint:** `.agents/commands/blog/*.md` are linted like other markdown; any rule their XML-style sections break is
   excluded for that folder only.
 
 ## Other changes
