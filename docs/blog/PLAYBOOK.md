@@ -62,8 +62,9 @@ public article**; LinkedIn and communities point to dev.to.
 
 ## Formats
 
-- **dev.to article** (800–1,300 words): the hook, then the RECIPE near the top; the structure is
-  [`templates/post.md`](templates/post.md).
+- **dev.to article** (800–1,300 words): the wiki layout (⚡ TL;DR with the RECIPE first, then 🪲 the problem with
+  the hook, 🔍 why, 🛠️ the fix, 🧪 check, ⚠️ gotchas, ⚖️ alternatives, 🧠 lessons, 📚 references) and the AI
+  disclosure; [STYLE.md](STYLE.md), "Post layout", and [`templates/post.md`](templates/post.md).
 - **LinkedIn post:** the hook plus one insight, 250–450 characters, the link in the first comment
   ([STYLE.md](STYLE.md), [`templates/linkedin.md`](templates/linkedin.md)).
 - **Community post:** the story and the RECIPE written for one community, disclosed as the author's

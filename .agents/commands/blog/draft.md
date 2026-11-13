@@ -25,13 +25,14 @@ Write the first draft of one post of the dots blog, in its folder, ready for the
    confession, a surprising number from the repo, and one or two framed by a geeky wink from the author's
    interests (STYLE.md, "The hook"). For each, name the repo fact it rests on and what the author must confirm
    ("did you notice it in a real run?"). Ask the author (AskUserQuestion) to pick one, edit it, or write their own.
-   - Picked or edited: it opens OVERVIEW in the author's words; a shortened form opens the LinkedIn post.
+   - Picked or edited: it opens `## 🪲 The problem` in the author's words; a shortened form opens the LinkedIn post.
    - Skipped: keep `<author: the moment — how you noticed, what it cost>` and write the options right below it as
      `<!-- hook options: 1. … 2. … -->`, so a later session picks up from them.
    No option goes into the post without the author's pick.
 4. Draft `post.md` with the `technical-article-writer` skill (objective: personal branding / authority; audience:
-   peer developers; 800–1,300 words), in the template's structure and STYLE.md's voice: each fact once, nothing the
-   author hasn't lived or the repo doesn't show. Ten title options; keep the most specific. Tags: large ones first.
+   peer developers; 800–1,300 words) in the **wiki layout** (STYLE.md, "Post layout"; the template's sections, in
+   order, emoji on `##` only), STYLE.md's voice, and a **code snippet for every command, setting and output**: each
+   fact once, nothing the author hasn't lived or the repo doesn't show. Keep the AI disclosure line at the end. Ten title options; keep the most specific. Tags: large ones first.
 5. Draft `linkedin.md`: the hook (≤ 210 characters), **one sentence with the insight**, "→ the first comment";
    250–450 characters, no bullet list, 1–3 hashtags; the first comment is `{devto.url}`.
 6. From topic 2, draft `community.md` with the `reddit-posts` skill for the community its task names.

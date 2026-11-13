@@ -10,45 +10,73 @@ cover_image: ./images/00-cover.png
 > This is not a tutorial. It is what I (think I) learned, and it lives in [my dotfiles](https://github.com/roalcantara/dots);
 > use it with a grain of salt!
 
-![<what the cover shows>](./images/00-cover.png)
+![<what the cover shows, in one sentence>](./images/00-cover.png)
 
-**OVERVIEW**
+## ⚡ TL;DR
 
-<author: the hook — your real moment (how you noticed, what it cost), with at most one geeky wink>
-
-<The problem it points at, in one or two sentences.>
-
-**RECIPE**
+<The fix in two lines.>
 
 > **Use it when:** <one line>
 > **You need:** <tools, one line>
 
-1. <step> — `<command or file>`
-2. <step> — `<command or file>`
-3. <step> — `<command or file>`
+```<language>
+<the steps, as one copy-pasteable block>
+```
 
-⚠️ **Gotchas:** <one> · <two> · <three>
 📁 **In dots:** [<file>](https://github.com/roalcantara/dots/blob/main/<path>) · [<file>](<link>)
 
-**HOW IT WORKS**
+## 🪲 The problem
 
-<The pieces, a picture or two; one diagram if a mechanism needs it.>
+<author: the hook — your real moment (how you noticed, what it cost), with at most one geeky wink>
 
-**vs. <THE USUAL WAY>**
+### Symptoms
 
-| | The usual way | What I do |
+<What it looks like, ideally as a snippet of the real output.>
+
+## 🔍 Why it happens
+
+### <The cause>
+
+<The mechanism, with a snippet or a link that proves it.>
+
+## 🛠️ The fix
+
+### <Tool or step>
+
+```<language>
+<the setting or command>
+```
+
+## 🧪 Check it works
+
+```console
+$ <a command>
+<the expected output>
+```
+
+## ⚠️ Gotchas
+
+### <Gotcha>
+
+<One or two lines; a snippet when it helps.>
+
+## ⚖️ Alternatives
+
+| | <The usual way> | <What I do> |
 | --- | --- | --- |
 | <aspect> | <…> | <…> |
 
-**WHAT I (THINK I) LEARNED**
+## 🧠 Lessons
 
 - <a lesson>
-- <a mistake I made>
+- <a mistake or limit>
+
+## 📚 References
+
+- <tool docs> · <the dots files and PRs>
 
 ---
 
-**REFERENCES**
-
-- <tool> · <the dots files and PRs>
-
 Corrections and ideas are very welcome. :)
+
+Drafted with AI help; every claim was checked by me, and the story is mine.
