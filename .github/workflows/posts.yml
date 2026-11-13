@@ -1,0 +1,104 @@
+# The content series' dev.to flow (docs/posts/PLAYBOOK.md):
+# - a pull request that touches a post creates or updates its dev.to article as a DRAFT, records the article id on
+#   the branch and comments the preview links;
+# - the merge to main updates the article from main: published when its front matter says `published: true`.
+# Merging a pull request with `published: true` is the publish button.
+---
+name: Posts
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths: ['docs/posts/*/post.md', 'docs/posts/*/images/**']
+  push:
+    branches: [main]
+    paths: ['docs/posts/*/post.md', 'docs/posts/*/images/**']
+
+concurrency:
+  cancel-in-progress: false
+  group: 'posts-${{ github.ref }}'
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+jobs:
+  devto:
+    # Forks have no access to the DEVTO_TOKEN secret.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # record the article ids on the pull request branch
+      pull-requests: write # comment the preview links
+    env:
+      DEVTO_TOKEN: ${{ secrets.DEVTO_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+          fetch-depth: 0
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Find the changed posts
+        id: changed
+        env:
+          BEFORE: ${{ github.event.before }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [[ '${{ github.event_name }}' == 'pull_request' ]]; then
+            base="$(git merge-base "origin/${BASE_REF}" HEAD)"
+          elif [[ -n "${BEFORE}" && "${BEFORE}" != 0000000000000000000000000000000000000000 ]]; then
+            base="${BEFORE}"
+          else
+            base="HEAD~1"
+          fi
+          slugs="$(git diff --name-only "${base}" HEAD -- 'docs/posts/*/post.md' 'docs/posts/*/images/*' \
+            | cut -d/ -f3 | sort -u | grep -vxE 'templates|tools|prompts' || true)"
+          echo "Posts: ${slugs:-none}"
+          { echo 'slugs<<EOF'; echo "${slugs}"; echo 'EOF'; } >> "${GITHUB_OUTPUT}"
+
+      - name: Push to dev.to
+        if: steps.changed.outputs.slugs != ''
+        env:
+          SLUGS: ${{ steps.changed.outputs.slugs }}
+          REF: ${{ github.head_ref || 'main' }}
+        run: |
+          draft=()
+          [[ '${{ github.event_name }}' == 'pull_request' ]] && draft=(--draft)
+          : > "${RUNNER_TEMP}/results.txt"
+          while IFS= read -r slug; do
+            [[ -f "docs/posts/${slug}/post.md" ]] || continue
+            bun mise-tasks/posts/push.ts "${slug}" --ref "${REF}" "${draft[@]}" | tee -a "${RUNNER_TEMP}/results.txt"
+          done <<< "${SLUGS}"
+
+      - name: Record the article ids on the branch
+        if: github.event_name == 'pull_request' && steps.changed.outputs.slugs != ''
+        run: |
+          git add docs/posts/*/post.md
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'chore(posts): Record dev.to ids'
+          git push
+
+      - name: Comment the preview links
+        if: github.event_name == 'pull_request' && steps.changed.outputs.slugs != ''
+        env:
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          {
+            echo '<!-- posts-bot -->'
+            echo "**dev.to drafts** (open while signed in to dev.to; merging publishes the posts whose front matter says \`published: true\`):"
+            echo
+            while read -r slug state url; do echo "- \`${slug}\` · ${state} · ${url}"; done < "${RUNNER_TEMP}/results.txt"
+          } > "${RUNNER_TEMP}/comment.md"
+          gh pr comment "${PR}" --body-file "${RUNNER_TEMP}/comment.md" --edit-last --create-if-none
