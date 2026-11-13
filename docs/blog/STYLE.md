@@ -59,12 +59,12 @@ sub-topics inside them, without emoji ([template](templates/post.md)).
 | --- | --- |
 | ⚡ TL;DR | The fix in two lines, then the RECIPE: **Use it when**, **You need**, the steps as one code block, **In dots** links |
 | 🪲 The problem | The hook (the author's moment), then `### Symptoms` |
-| 🔍 Why it happens | The mechanism, one `###` per cause, each proven by a snippet or a link |
+| 💡 But how? | Why it happens: the mechanism as nested bullets, each proven by a snippet or a link |
 | 🛠️ The fix | One `###` per tool or step, each with its snippet |
 | 🧪 Check it works | A command and its expected output |
-| ⚠️ Gotchas | One `###` per gotcha, at most three |
-| ⚖️ Alternatives | The "vs." table (skip it when there is no real alternative) |
-| 🧠 Lessons | What I (think I) learned, with at least one mistake or limit |
+| ⚠️ Gotchas | At most three, as bullets with a nested why |
+| 🥷🏼 vs. \<the usual way\> | The comparison table (skip it when there is no real alternative) |
+| 🤓 What I (think I) learned | Bold lessons with a nested why, at least one mistake or limit |
 | 📚 References | Links |
 
 - **Emoji lead the `##` section headings only**, the same one for each section in every post; nowhere else as
@@ -73,6 +73,8 @@ sub-topics inside them, without emoji ([template](templates/post.md)).
   (`console`, `json`, `zsh`, `bash`, `toml`…); inline code only inside sentences.
 - **AI disclosure** (dev.to requires it): the post ends with "Drafted with AI help; every claim was checked by me,
   and the story is mine." Comments are never written by agents.
+- **The author's habits are the style:** nested bullets for every point, `jsonc` snippets with a comment naming the
+  file, short emoji-led lines for asides (🤔, 💡, 😬). The section set above is the author's own.
 - The DISCLAIMER note stays above TL;DR; "Corrections and ideas are very welcome. :)" stays at the end.
 
 ## Visual identity

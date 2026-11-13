@@ -16,8 +16,13 @@ cover_image: ./images/00-cover.png
 
 <The fix in two lines.>
 
-> **Use it when:** <one line>
-> **You need:** <tools, one line>
+> **Use it when:**
+>
+> - <one line>
+>
+> **You need:**
+>
+> - <tools>
 
 ```<language>
 <the steps, as one copy-pasteable block>
@@ -33,17 +38,17 @@ cover_image: ./images/00-cover.png
 
 <What it looks like, ideally as a snippet of the real output.>
 
-## 🔍 Why it happens
+## 💡 But how?
 
-### <The cause>
-
-<The mechanism, with a snippet or a link that proves it.>
+- **<Why it happens>**
+  - <the mechanism, with a snippet or a link that proves it>
 
 ## 🛠️ The fix
 
 ### <Tool or step>
 
 ```<language>
+// <the file it goes in>
 <the setting or command>
 ```
 
@@ -56,20 +61,21 @@ $ <a command>
 
 ## ⚠️ Gotchas
 
-### <Gotcha>
+- <a gotcha>
+  - <why it bites, a snippet when it helps>
 
-<One or two lines; a snippet when it helps.>
-
-## ⚖️ Alternatives
+## 🥷🏼 vs. <the usual way>
 
 | | <The usual way> | <What I do> |
 | --- | --- | --- |
 | <aspect> | <…> | <…> |
 
-## 🧠 Lessons
+## 🤓 What I (think I) learned
 
-- <a lesson>
-- <a mistake or limit>
+- **<A lesson>**
+  - <why, in one line>
+- **<A mistake or limit>**
+  - <what changed because of it>
 
 ## 📚 References
 

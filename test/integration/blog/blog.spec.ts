@@ -574,13 +574,13 @@ describe("wiki layout", () => {
   };
 
   it("finds Use it when only inside the TL;DR section", () => {
-    const dir = withPost((t) => t.replace("> **Use it when:** an agent's loop runs once.\n", "").replace("## 🧠 Lessons", "## 🧠 Lessons\n\n> **Use it when:** later"));
+    const dir = withPost((t) => t.replace("> **Use it when:** an agent's loop runs once.\n", "").replace("## 🤓 What I (think I) learned", "## 🤓 What I (think I) learned\n\n> **Use it when:** later"));
     expect(rulesIn(dir)).toEqual(["block:tldr-use-it-when"]);
   });
 
   it("warns about sections out of order, and allows skipping Alternatives", () => {
     expect(rulesIn(withPost((t) => t))).toEqual([]);
-    const swapped = withPost((t) => t.replace("## 🔍 Why it happens", "## 🔍 WHY").replace("## 🛠️ The fix", "## 🔍 Why it happens\n\n## 🛠️ The fix").replace("## 🔍 WHY\n\n", ""));
+    const swapped = withPost((t) => t.replace("## 💡 But how?", "## 🔍 WHY").replace("## 🛠️ The fix", "## 💡 But how?\n\n## 🛠️ The fix").replace("## 🔍 WHY\n\n", ""));
     expect(rulesIn(withPost((t) => t.replace("## 🧪 Check it works\n\n", "")))).toEqual(["warn:sections"]);
     expect(rulesIn(swapped)).toEqual([]);
   });

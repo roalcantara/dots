@@ -72,21 +72,23 @@ export function linkedinHook(text: string): string {
   return after.trim().split(/\n\s*\n/)[0]?.trim() ?? "";
 }
 
-// The gotchas are the `###` headings inside `## ⚠️ Gotchas`.
+// The gotchas are the top-level bullets (or `###` headings) inside `## ⚠️ Gotchas`.
 const gotchaCount = (body: string): number =>
-  (sectionBody(body, "## ⚠️ Gotchas") ?? "").split("\n").filter((l) => /^### /.test(l)).length;
+  (sectionBody(body, "## ⚠️ Gotchas") ?? "").split("\n").filter((l) => /^(### |[-*] )/.test(l)).length;
 
-// The wiki layout (docs/blog/STYLE.md, "Post layout"): every post's `##` sections, in this order.
+// The wiki layout (docs/blog/STYLE.md, "Post layout"; the author's own section set): every post's `##` sections, in
+// this order. A heading matches when it starts with one of these ("## 🥷🏼 vs." names a different usual way per post).
 export const SECTIONS = [
-  "## ⚡ TL;DR", "## 🪲 The problem", "## 🔍 Why it happens", "## 🛠️ The fix", "## 🧪 Check it works",
-  "## ⚠️ Gotchas", "## ⚖️ Alternatives", "## 🧠 Lessons", "## 📚 References",
+  "## ⚡ TL;DR", "## 🪲 The problem", "## 💡 But how?", "## 🛠️ The fix", "## 🧪 Check it works",
+  "## ⚠️ Gotchas", "## 🥷🏼 vs.", "## 🤓 What I (think I) learned", "## 📚 References",
 ] as const;
-const OPTIONAL = new Set(["## ⚖️ Alternatives"]);
+const OPTIONAL = new Set(["## 🥷🏼 vs."]);
+const sectionOf = (line: string): string | undefined => SECTIONS.find((s) => line.trim().startsWith(s));
 
 // The text of one `##` section (up to the next `## `), or undefined when it is missing.
 export function sectionBody(body: string, heading: string): string | undefined {
   const lines = body.split("\n");
-  const at = lines.findIndex((l) => l.trim() === heading);
+  const at = lines.findIndex((l) => l.trim().startsWith(heading));
   if (at < 0) return undefined;
   const end = lines.findIndex((l, i) => i > at && /^## /.test(l));
   return lines.slice(at + 1, end < 0 ? undefined : end).join("\n");
@@ -94,7 +96,7 @@ export function sectionBody(body: string, heading: string): string | undefined {
 
 // A message when a required section is missing or the sections are out of order; undefined when all is well.
 export function sectionsOrder(body: string): string | undefined {
-  const present = body.split("\n").map((l) => l.trim()).filter((l) => (SECTIONS as readonly string[]).includes(l));
+  const present = body.split("\n").filter((l) => /^## /.test(l)).map(sectionOf).filter((x): x is (typeof SECTIONS)[number] => Boolean(x));
   const missing = SECTIONS.filter((s) => !OPTIONAL.has(s) && !present.includes(s));
   const expected = SECTIONS.filter((s) => present.includes(s));
   const outOfOrder = present.some((s, i) => s !== expected[i]);

@@ -25,7 +25,7 @@ An agent's loop runs once in zsh; give it bash.
 
 ### Symptoms
 
-## 🔍 Why it happens
+## 💡 But how?
 
 ## 🛠️ The fix
 
@@ -37,7 +37,7 @@ An agent's loop runs once in zsh; give it bash.
 
 ### Two
 
-## 🧠 Lessons
+## 🤓 What I (think I) learned
 
 ## 📚 References
 

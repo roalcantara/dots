@@ -6,7 +6,7 @@ tags: [a, b, c, d, e]
 
 This is a game-changer.
 
-## 🔍 Why it happens
+## 💡 But how?
 
 ## ⚠️ Gotchas
 

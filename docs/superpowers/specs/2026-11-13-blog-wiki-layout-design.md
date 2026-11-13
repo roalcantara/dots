@@ -67,3 +67,9 @@ decision): as a `legacy` post it is exempt. Comments are never written by agents
 ## Left to the builder
 
 The exact wording of section intros; whether `blog:check` lists the missing sections in one finding or several.
+
+## Revision (author)
+
+After editing the preflight post, the author made their own section set the standard: 💡 **But how?** (why it
+happens), 🥷🏼 **vs. <the usual way>** (alternatives) and 🤓 **What I (think I) learned** (lessons), with nested bullets
+and `jsonc` snippets that name their file. Template, STYLE and checks follow.
