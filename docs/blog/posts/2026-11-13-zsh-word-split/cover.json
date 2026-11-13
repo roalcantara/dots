@@ -1,12 +1,21 @@
 {
-  "title": ["My AI agent's", "for-loop"],
+  "title": [
+    "My AI agent's",
+    "for-loop"
+  ],
   "highlight": "ran once",
   "subtitle": "zsh doesn't split {y:$vars} {wink} and agents write bash",
-  "wink": "🪄",
+  "wink": "💍",
   "window": {
     "kind": "terminal",
     "name": "Ghostty",
     "focused": true,
-    "lines": ["{p} for x in {y:$list}; do", "  echo \"[$x]\"; done", "{r:[a b c]} {c:← once?!}", "{c:# bash: [a] [b] [c]}", "{p}"]
+    "lines": [
+      "{p} for x in {y:$list}; do",
+      "  echo \"[$x]\"; done",
+      "{r:[a b c]} {c:← once?!}",
+      "{c:# bash: [a] [b] [c]}",
+      "{p}"
+    ]
   }
 }

@@ -10,9 +10,7 @@ cover_image: ./images/00-cover.png
 > This is not a tutorial. It is a small bug I (think I) understood, and the fix lives in
 > [my dotfiles](https://github.com/roalcantara/dots). Use it with a grain of salt!
 
-![The cover: "My AI agent's for-loop ran once", a Ghostty terminal showing the loop print [a b c] once](./images/00-cover.png)
-
-> One string to rule them all: my agent's for-loop found one item where I had three.
+**One string to rule them all:** my agent's for-loop found one item where I had three.
 
 ## ⚡ TL;DR
 
@@ -36,7 +34,8 @@ My agents' bash-style loops ran once in my zsh. Point the agents at bash; keep z
 
 📁 **In dots:** [config/claude/settings.json](https://github.com/roalcantara/dots/blob/main/config/claude/settings.json) ·
 [config/vscode/settings.json](https://github.com/roalcantara/dots/blob/main/config/vscode/settings.json) ·
-[the PR (#108)](https://github.com/roalcantara/dots/pull/108)
+[the PR (#108)](https://github.com/roalcantara/dots/pull/108) ·
+[the test that checks both settings](https://github.com/roalcantara/dots/blob/main/test/integration/bootstrap/agent-shell.spec.ts)
 
 ## 🪲 The problem
 
@@ -112,7 +111,15 @@ $ echo "${BASH_VERSION:-not bash}"
 ## ⚠️ Gotchas
 
 - quoting (`"$list"`) doesn't help
-  - it makes it one word in both shells
+  - it makes it one word in both shells:
+
+    ```console
+    $ zsh -c 'list="a b c"; for x in "$list"; do echo "[$x]"; done'
+    [a b c]
+    $ bash -c 'list="a b c"; for x in "$list"; do echo "[$x]"; done'
+    [a b c]
+    ```
+
 - `setopt SH_WORD_SPLIT` also fixes it
   - but for every script you run
 
