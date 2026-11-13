@@ -16,7 +16,7 @@ Hashtags: #<tag> #<tag> #<tag>
 
 ## First comment
 
-The full write-up, with the recipe and the files: <dev.to URL>
+The full write-up, with the recipe and the files: {devto.url}
 
 ## In-between post
 

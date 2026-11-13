@@ -5,23 +5,33 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   articlePayload,
+  authorMarkers,
   assertPost,
   checkPost,
+  type Facts,
   formatStats,
+  isTopicTask,
   parseComment,
   parseFrontMatter,
   parseRecordArgs,
   parseStats,
+  placeholders,
+  publishBlockers,
   postOptions,
   postsFromTodo,
+  resolvePost,
   pushAction,
   pushPreconditions,
   resolveArticleId,
+  reviewFresh,
   rewriteImages,
   rowsFromArticles,
   rowsFromReferrers,
   rowsFromTraffic,
+  scaffoldFiles,
+  stageOf,
   type Todo,
+  topicNumber,
   visibleLength,
 } from "../../../.mise/tasks/blog/_lib";
 
@@ -293,5 +303,86 @@ describe("TODO.yaml metadata", () => {
     const merged = { ...todo, tasks: todo.tasks.map((t) => (t.id === "P1" ? { ...t, comments: ["c1"] } : t)) };
     expect(postsFromTodo(merged)[0]!.stats.length).toBe(4);
     expect(postsFromTodo({ tasks: todo.tasks } as Todo)[0]!.stats).toEqual([]);
+  });
+});
+
+describe("stageOf", () => {
+  const base: Facts = {
+    hasFolder: true, checkBlocks: false, review: undefined, reviewFresh: false, pr: undefined, published: false,
+    markers: 0, devtoUrl: false, linkedinUrl: false, taskDone: false, logKeep: false,
+  };
+  const stage = (f: Partial<Facts>) => stageOf({ ...base, ...f }).stage;
+
+  it("walks a post from plan to close", () => {
+    expect(stage({ hasFolder: false })).toBe("planned");
+    expect(stage({ checkBlocks: true })).toBe("drafting");
+    expect(stage({})).toBe("gate");
+    expect(stage({ review: "PASS", reviewFresh: false })).toBe("gate");
+    expect(stage({ review: "BLOCKED", reviewFresh: true })).toBe("blocked");
+    expect(stage({ review: "PASS", reviewFresh: true })).toBe("pr");
+    expect(stage({ review: "PASS", reviewFresh: true, pr: "open" })).toBe("publish");
+    expect(stage({ review: "PASS", reviewFresh: true, pr: "open", published: true, markers: 1 })).toBe("publish");
+    expect(stage({ review: "PASS", reviewFresh: true, pr: "open", published: true })).toBe("merge");
+    expect(stage({ review: "PASS", reviewFresh: true, pr: "merged", published: true })).toBe("share");
+    expect(stage({ pr: "merged", published: true, linkedinUrl: true })).toBe("measure");
+    expect(stage({ pr: "merged", published: true, linkedinUrl: true, logKeep: true })).toBe("closed");
+  });
+
+  it("never sends a merged post back to the pull request step", () => {
+    expect(stage({ review: "PASS", reviewFresh: true, pr: "merged" })).toBe("share");
+  });
+
+  it("treats a post published before the tooling as measured, whatever check says", () => {
+    expect(stage({ checkBlocks: true, published: true, taskDone: true })).toBe("measure");
+  });
+
+  it("asks for stats before sharing when the dev.to URL is missing", () => {
+    expect(stageOf({ ...base, pr: "merged", published: true }).next).toContain("blog:stats");
+    expect(stageOf({ ...base, pr: "merged", published: true, devtoUrl: true }).next).toContain("/blog:share");
+  });
+});
+
+describe("post helpers", () => {
+  const task = (tags: string[]) => ({ id: "x", status: "Todo", description: "d", tags });
+
+  it("knows a topic task from in-between, community and preflight tasks", () => {
+    expect(isTopicTask(task(["topic-3"]))).toBe(true);
+    expect(isTopicTask(task(["topic-3", "in-between"]))).toBe(false);
+    expect(isTopicTask(task(["topic-3", "community"]))).toBe(false);
+    expect(isTopicTask(task(["preflight", "post"]))).toBe(false);
+    expect(topicNumber(task(["topic-3", "post"]))).toBe(3);
+    expect(topicNumber(task(["preflight", "post"]))).toBe(0);
+  });
+
+  it("finds template placeholders, not markers, comments, tags or code", () => {
+    const text = "<one line> <author: how I noticed> <!-- dots:x --> <img src=a> <https://e.com> `<post>`\n```\n<x>\n```\n";
+    expect(placeholders(text)).toEqual(["<one line>"]);
+    expect(authorMarkers(text)).toEqual(["<author: how I noticed>"]);
+  });
+
+  it("copies the community post only from topic 2", () => {
+    expect(scaffoldFiles(1)).toEqual(["post.md", "linkedin.md"]);
+    expect(scaffoldFiles(2)).toEqual(["post.md", "linkedin.md", "community.md"]);
+  });
+
+  it("trusts a review only when it is at least as new as the post", () => {
+    expect(reviewFresh(10, 10)).toBe(true);
+    expect(reviewFresh(9, 10)).toBe(false);
+    expect(reviewFresh(undefined, 10)).toBe(false);
+  });
+
+  it("blocks publishing on a stale or blocked review, author markers or a dirty tree", () => {
+    const r = (f: Parameters<typeof publishBlockers>[0]) => publishBlockers(f).map((x) => x.rule);
+    expect(r({ review: "PASS", reviewFresh: true, markers: 0, dirty: false })).toEqual([]);
+    expect(r({ review: "PASS", reviewFresh: false, markers: 0, dirty: false })).toEqual(["review-stale"]);
+    expect(r({ review: "BLOCKED", reviewFresh: true, markers: 2, dirty: true })).toEqual(["review-not-pass", "author-markers", "dirty"]);
+  });
+
+  it("picks the post: argument, branch, then the latest one still open after the merge", () => {
+    const posts = ["2026-11-12-a", "2026-11-13-b", "2026-11-24-c"].map((dir) => ({ dir }));
+    const stages = new Map([["2026-11-12-a", "closed"], ["2026-11-13-b", "measure"], ["2026-11-24-c", "planned"]]);
+    expect(resolvePost({ arg: "2026-11-12-a", posts, stages })).toBe("2026-11-12-a");
+    expect(resolvePost({ branch: "feat/post-c", posts, stages })).toBe("2026-11-24-c");
+    expect(resolvePost({ branch: "main", posts, stages })).toBe("2026-11-13-b");
   });
 });

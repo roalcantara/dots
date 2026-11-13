@@ -19,9 +19,9 @@ Hashtags: #AI #DeveloperTools #macOS
 
 ## First comment
 
-The full write-up, with the recipe and the exact settings: <dev.to URL>
+The full write-up, with the recipe and the exact settings: {devto.url}
 
 ## In-between post
 
-<Next week: the RECIPE as a 4-slide carousel (the two loops, the two settings, the gotchas), dev.to link in the first
-comment.>
+Next week: the RECIPE as a 4-slide carousel (the two loops, the two settings, the gotchas), dev.to link in the first
+comment.

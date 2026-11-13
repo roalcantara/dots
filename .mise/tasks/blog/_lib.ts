@@ -99,6 +99,12 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
   if (!/\*\*Use it when:\*\*/.test(body)) block("recipe-use-it-when", "the RECIPE has no **Use it when:** line");
   if (/\]\(\.?\/?raw\//.test(text)) block("raw-image", "an image points at raw/ (unblurred captures)");
   if (!existsSync(join(dir, "linkedin.md"))) block("linkedin-missing", "no linkedin.md next to post.md");
+  const li0 = join(dir, "linkedin.md");
+  const texts = [text, existsSync(li0) ? readFileSync(li0, "utf8") : ""];
+  const holes = texts.flatMap(placeholders);
+  if (holes.length) block("placeholder", `template text left: ${holes.slice(0, 3).join(" ")}${holes.length > 3 ? " …" : ""}`);
+  const marks = texts.flatMap(authorMarkers).length;
+  if (marks) warn("author-marker", `${marks} <author: …> marker(s) for the author to write`);
 
   const lower = body.toLowerCase();
   for (const word of hypeWords) {
@@ -353,6 +359,86 @@ export function postsFromTodo(todo: Todo): Post[] {
 export function seriesFromTodo(todo: Todo): { taskId?: string; stats: StatRow[]; invalid: string[] } {
   const t = todo.tasks.find((x) => x.tags?.includes("series"));
   return t ? { taskId: t.id, ...metaOf(todo, t, "-") } : { stats: [], invalid: [] };
+}
+
+// ---- stages ---------------------------------------------------------------------------------------------------
+// Where a post stands and which command comes next (docs/superpowers/specs/2026-11-13-blog-commands-design.md).
+// End states first, so a merged post never falls back to an earlier step.
+
+export type Stage =
+  | "closed" | "measure" | "share" | "merge" | "publish" | "pr" | "blocked" | "gate" | "drafting" | "planned";
+export type Facts = {
+  hasFolder: boolean; checkBlocks: boolean; review?: "PASS" | "BLOCKED"; reviewFresh: boolean;
+  pr?: "open" | "merged"; published: boolean; markers: number; devtoUrl: boolean; linkedinUrl: boolean;
+  taskDone: boolean; logKeep: boolean;
+};
+
+export function stageOf(f: Facts): { stage: Stage; next: string } {
+  if (f.logKeep) return { stage: "closed", next: "nothing: the post is closed" };
+  if (f.taskDone || (f.pr === "merged" && f.linkedinUrl)) {
+    return { stage: "measure", next: "mise run blog:stats (48 h), then /blog:retro (7 days)" };
+  }
+  if (f.pr === "merged" || (f.published && !f.pr && f.devtoUrl)) {
+    return { stage: "share", next: f.devtoUrl ? "/blog:share" : "mise run blog:stats (records the dev.to URL), then /blog:share" };
+  }
+  if (f.pr === "open" && f.published && f.markers === 0) return { stage: "merge", next: "merge the pull request (yours)" };
+  if (f.pr === "open") {
+    return { stage: "publish", next: f.markers ? "replace the <author: …> markers, then mise run blog:publish" : "mise run blog:publish" };
+  }
+  if (f.review === "PASS" && f.reviewFresh) return { stage: "pr", next: "/blog:pr" };
+  if (f.review === "BLOCKED" && f.reviewFresh) return { stage: "blocked", next: "fix review.md's Must fix, then /blog:gate" };
+  if (f.hasFolder && !f.checkBlocks) return { stage: "gate", next: "/blog:gate" };
+  if (f.hasFolder) return { stage: "drafting", next: "/blog:draft, then mise run blog:check" };
+  return { stage: "planned", next: "/blog:pick, then mise run blog:new <slug>" };
+}
+
+export const isTopicTask = (t: TodoTask): boolean => {
+  const tags = t.tags ?? [];
+  return tags.filter((x) => /^topic-\d+$/.test(x)).length === 1 && !tags.includes("in-between") && !tags.includes("community");
+};
+export const topicNumber = (t: TodoTask): number => Number((t.tags ?? []).find((x) => /^topic-\d+$/.test(x))?.slice(6) ?? 0);
+
+const TAGS = /^\/?(a|abbr|b|br|code|details|div|em|hr|i|img|kbd|li|ol|p|pre|span|strong|sub|summary|sup|table|tbody|td|th|thead|tr|u|ul)\b/i;
+const outsideCode = (text: string) => text.replace(/```[\s\S]*?```/g, "").replace(/`[^`\n]*`/g, "");
+const angles = (text: string) => [...outsideCode(text).matchAll(/<([^<>\n]+)>/g)].map((m) => m[0]);
+
+// Template text still waiting to be written: any <…> outside code that isn't an author marker, a comment, a known
+// HTML tag or an autolink.
+export function placeholders(text: string): string[] {
+  return angles(text).filter((t) => {
+    const inner = t.slice(1, -1).trim();
+    return !inner.startsWith("author:") && !inner.startsWith("!--") && !TAGS.test(inner) && !/^[a-z]+:\/\//i.test(inner);
+  });
+}
+export const authorMarkers = (text: string): string[] => angles(text).filter((t) => t.slice(1).trim().startsWith("author:"));
+
+export const reviewFresh = (reviewTime?: number, postTime?: number): boolean =>
+  reviewTime !== undefined && postTime !== undefined && reviewTime >= postTime;
+
+export const scaffoldFiles = (topic: number): string[] =>
+  topic >= 2 ? ["post.md", "linkedin.md", "community.md"] : ["post.md", "linkedin.md"];
+
+export function publishBlockers(f: { review?: string; reviewFresh: boolean; markers: number; dirty: boolean }): Finding[] {
+  const out: Finding[] = [];
+  const block = (rule: string, message: string) => out.push({ level: "block", rule, message });
+  if (f.review !== "PASS") block("review-not-pass", `the gate's verdict is ${f.review ?? "missing"}: run /blog:gate`);
+  else if (!f.reviewFresh) block("review-stale", "post.md changed after review.md: run /blog:gate again");
+  if (f.markers) block("author-markers", `${f.markers} <author: …> marker(s) left in post.md or linkedin.md`);
+  if (f.dirty) block("dirty", "commit or stash your changes first");
+  return out;
+}
+
+// Which post a command means: the argument; else the post of a feat/post-<slug> branch; else the latest post with
+// a folder that isn't closed (the steps after the merge run on main).
+export function resolvePost(o: {
+  arg?: string; branch?: string; posts: { dir: string }[]; stages: Map<string, string>;
+}): string | undefined {
+  if (o.arg) return assertPost(o.arg);
+  const slug = o.branch?.match(/^feat\/post-(.+)$/)?.[1];
+  if (slug) return o.posts.find((p) => p.dir.endsWith(`-${slug}`))?.dir;
+  return [...o.posts]
+    .sort((a, b) => b.dir.localeCompare(a.dir))
+    .find((p) => !["closed", "planned"].includes(o.stages.get(p.dir) ?? ""))?.dir;
 }
 
 // ---- shell side (used by the task files; not unit-tested) -----------------------------------------------------
