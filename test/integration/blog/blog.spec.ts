@@ -8,6 +8,7 @@ import {
   authorMarkers,
   assertPost,
   checkPost,
+  contentHash,
   coverHtml,
   type Facts,
   formatStats,
@@ -16,7 +17,6 @@ import {
   postBranch,
   parseComment,
   parseFrontMatter,
-  onlyPublishedChanged,
   parseRecordArgs,
   parseStats,
   placeholders,
@@ -28,6 +28,7 @@ import {
   pushAction,
   pushPreconditions,
   resolveArticleId,
+  reviewStamp,
   reviewVerdict,
   rewriteImages,
   rowsFromArticles,
@@ -456,13 +457,6 @@ describe("voice pass rules", () => {
     expect(parseRecordArgs(["p", "linkedin", "substantive_comments=3", "sends=4"], "d").length).toBe(2);
   });
 
-  it("knows a commit that only flips published", () => {
-    const flip = "--- a/post.md\n+++ b/post.md\n@@ -2,3 +2,3 @@\n title: T\n-published: false\n+published: true\n";
-    expect(onlyPublishedChanged(flip)).toBe(true);
-    expect(onlyPublishedChanged(flip + "-old line\n+new line\n")).toBe(false);
-    expect(onlyPublishedChanged("")).toBe(false);
-  });
-
   it("refuses to publish a new post without a fresh PASS", () => {
     const r = (f: Parameters<typeof publishGate>[0]) => publishGate(f).map((x) => x.rule);
     expect(r({ legacy: false, review: "PASS", fresh: true })).toEqual([]);
@@ -509,5 +503,62 @@ describe("coverHtml", () => {
     expect(html).toContain("&lt;script&gt;");
     expect(html).toContain("a &amp; b");
     expect(html).toContain("#&quot;&gt;&lt;b&gt;");
+  });
+});
+
+describe("review fingerprint", () => {
+  const copyGood = () => {
+    const dir = mkdtempSync(join(tmpdir(), "post-"));
+    cpSync(join(FIX, "good"), dir, { recursive: true });
+    return dir;
+  };
+
+  it("ignores the published line and nothing else", () => {
+    const dir = copyGood();
+    const before = contentHash(dir);
+    const post = readFileSync(join(dir, "post.md"), "utf8");
+    writeFileSync(join(dir, "post.md"), post.replace("published: false", "published: true"));
+    expect(contentHash(dir)).toBe(before);
+    writeFileSync(join(dir, "post.md"), post.replace("A good post", "A good post!"));
+    expect(contentHash(dir)).not.toBe(before);
+  });
+
+  it("changes when an image changes, appears or goes, and when a reviewed file is deleted", () => {
+    const dir = copyGood();
+    const a = contentHash(dir);
+    cpSync(join(FIX, "good", "post.md"), join(dir, "images-x"));
+    expect(contentHash(dir)).toBe(a);
+    const { mkdirSync } = require("node:fs");
+    mkdirSync(join(dir, "images"), { recursive: true });
+    writeFileSync(join(dir, "images", "c.png"), "one");
+    const b = contentHash(dir);
+    expect(b).not.toBe(a);
+    writeFileSync(join(dir, "images", "c.png"), "two");
+    expect(contentHash(dir)).not.toBe(b);
+    rmSync(join(dir, "cover.json"));
+    expect(contentHash(dir)).not.toBe(b);
+  });
+
+  it("reads the stamp the gate writes into review.md", () => {
+    expect(reviewStamp("**Verdict:** PASS\n\n<!-- reviewed: abc123 -->\n")).toBe("abc123");
+    expect(reviewStamp("no stamp")).toBeUndefined();
+  });
+});
+
+describe("leaks and escapes", () => {
+  const rulesIn = (dir: string) => checkPost(dir, HYPE).map((f) => `${f.level}:${f.rule}`);
+
+  it("blocks leftover hook options and unfilled cover placeholders", () => {
+    const dir = mkdtempSync(join(tmpdir(), "post-"));
+    cpSync(join(FIX, "good"), dir, { recursive: true });
+    appendFileSync(join(dir, "post.md"), "\n<!-- hook options:\n1. a\n-->\n");
+    writeFileSync(join(dir, "cover.json"), JSON.stringify({ title: ["<first title line>", "b"], highlight: "c", subtitle: "d", window: { kind: "app", lines: [] } }));
+    expect(rulesIn(dir)).toEqual(["block:hook-options", "block:cover-placeholder"]);
+  });
+
+  it("escapes the series number too", () => {
+    const tpl = readFileSync(join(REPO, "docs/blog/tools/cover.html"), "utf8");
+    const html = coverHtml(tpl, { series: "<img src=x>" as unknown as number, title: ["a", "b"], highlight: "c", subtitle: "d", window: { kind: "app", lines: [] } }, { series: 0, tags: [] });
+    expect(html).not.toContain("<img src=x>");
   });
 });

@@ -1,5 +1,6 @@
 // Shared code for the blog:* file tasks (docs/blog/PLAYBOOK.md). Not a task: this file is not executable.
-import { existsSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
 import { parseArgs } from "node:util";
 
@@ -106,10 +107,17 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
   if (!/\*\*Use it when:\*\*/.test(body)) block("recipe-use-it-when", "the RECIPE has no **Use it when:** line");
   if (!existsSync(join(dir, "linkedin.md"))) block("linkedin-missing", "no linkedin.md next to post.md");
   if (!existsSync(join(dir, "cover.json"))) block("cover-missing", "no cover.json (the cover's text and window)");
+  if (/<!-- hook options/.test(text)) block("hook-options", "unpicked hook options are still in post.md: pick one, then delete the comment");
   const li0 = join(dir, "linkedin.md");
   const texts = [text, existsSync(li0) ? readFileSync(li0, "utf8") : ""];
   const holes = texts.flatMap(placeholders);
   if (holes.length) block("placeholder", `template text left: ${holes.slice(0, 3).join(" ")}${holes.length > 3 ? " …" : ""}`);
+  const coverPath = join(dir, "cover.json");
+  if (existsSync(coverPath)) {
+    const values = JSON.stringify(JSON.parse(readFileSync(coverPath, "utf8")), (_k, v) => v).match(/"(?:[^"\\]|\\.)*"/g) ?? [];
+    const coverHoles = values.flatMap((v) => placeholders(JSON.parse(v) as string));
+    if (coverHoles.length) block("cover-placeholder", `cover.json still has template text: ${coverHoles.slice(0, 2).join(" ")}`);
+  }
   const marks = texts.flatMap(authorMarkers).length;
   if (marks) block("author-marker", `${marks} <author: …> marker(s) for the author to write`);
 
@@ -430,38 +438,39 @@ export const authorMarkers = (text: string): string[] => angles(text).filter((t)
 
 // A review is fresh when no commit touching post.md came after the one that last touched review.md (timestamps lie
 // across rebases and checkouts). While either file has uncommitted changes, its mtime is the only evidence.
-// The files a review covers. A review is fresh when none changed after it, ignoring the commit that only flips
-// `published:` (blog:publish), so any merge strategy keeps a PASS valid.
-export const REVIEWED = ["post.md", "linkedin.md", "community.md", "cover.json", "images"];
-export function reviewIsFresh(dir: string): boolean {
-  const reviewPath = join(dir, "review.md");
-  if (!existsSync(reviewPath) || !existsSync(join(dir, "post.md"))) return false;
-  const watched = REVIEWED.map((f) => join(dir, f)).filter((f) => existsSync(f));
-  const dirty = (paths: string[]) => git("status", "--porcelain", "--", ...paths).out !== "";
-  if (dirty(watched)) {
-    if (!dirty([reviewPath])) return false;
-    const reviewTime = Bun.file(reviewPath).lastModified;
-    return watched.every((f) => !dirty([f]) || statTime(f) <= reviewTime);
+// The files a review covers. The gate stamps review.md with their fingerprint (`blog:stamp`); the review is fresh
+// while the fingerprint still matches. The post's `published:` line is left out, so publishing keeps a PASS valid;
+// any other change (text, cover.json, an image's bytes, a file added or deleted) makes it stale, whatever the merge
+// strategy (squash included) and whatever git history says.
+export const REVIEWED = ["post.md", "linkedin.md", "community.md", "cover.json"];
+
+const filesUnder = (dir: string): string[] =>
+  existsSync(dir)
+    ? readdirSync(dir).sort().flatMap((f) => (statSync(join(dir, f)).isDirectory() ? filesUnder(join(dir, f)).map((x) => `${f}/${x}`) : [f]))
+    : [];
+
+export function contentHash(dir: string): string {
+  const h = createHash("sha256");
+  for (const f of REVIEWED) {
+    const path = join(dir, f);
+    let body = existsSync(path) ? readFileSync(path, "utf8") : "<absent>";
+    if (f === "post.md") body = body.replace(/^published:.*\n/m, "");
+    h.update(`${f}\0${body}\0`);
   }
-  if (dirty([reviewPath])) return true;
-  const reviewed = git("log", "-1", "--format=%H", "--", reviewPath);
-  if (!reviewed.ok || !reviewed.out) return false;
-  // Merge commits carry no changes of their own; only real commits after the review count.
-  const later = git("rev-list", "--no-merges", `${reviewed.out}..HEAD`, "--", ...watched).out.split("\n").filter(Boolean);
-  return later.every((sha) => onlyPublishedChanged(git("show", "--format=", sha, "--", ...watched).out));
+  for (const f of filesUnder(join(dir, "images"))) h.update(`images/${f}\0`).update(readFileSync(join(dir, "images", f))).update("\0");
+  return h.digest("hex").slice(0, 16);
 }
-const statTime = (path: string): number => {
-  try { return Bun.file(path).lastModified; } catch { return 0; }
-};
+
+export const reviewStamp = (text: string): string | undefined => text.match(/<!-- reviewed: ([0-9a-f]+) -->/)?.[1];
+
+export function reviewIsFresh(dir: string): boolean {
+  const review = join(dir, "review.md");
+  if (!existsSync(review) || !existsSync(join(dir, "post.md"))) return false;
+  return reviewStamp(readFileSync(review, "utf8")) === contentHash(dir);
+}
 
 export const scaffoldFiles = (topic: number): string[] =>
   topic >= 2 ? ["post.md", "linkedin.md", "community.md"] : ["post.md", "linkedin.md"];
-
-// A diff whose only changed lines are the front matter's `published:` (the commit blog:publish makes).
-export function onlyPublishedChanged(diff: string): boolean {
-  const changed = diff.split("\n").filter((l) => /^[+-]/.test(l) && !/^(\+\+\+|---)( |$)/.test(l));
-  return changed.length > 0 && changed.every((l) => /^[+-]published:/.test(l));
-}
 
 // Publishing (CI on main included) needs a fresh PASS from the gate, except for posts published before the tooling.
 export function publishGate(f: { legacy: boolean; review?: string; fresh: boolean }): Finding[] {
@@ -550,7 +559,7 @@ export function coverHtml(template: string, spec: CoverSpec, o: { series: number
   const win = `<div class="win${w.focused ? " focus" : ""}"><div class="bar"><i class="tr"></i><i class="ty"></i><i class="tg"></i>` +
     `<span class="name">${name}</span></div><div class="${w.kind === "terminal" ? "term" : "app"}">${body}</div></div>`;
   const fill: Record<string, string> = {
-    series: String(spec.series ?? o.series),
+    series: escapeHtml(String(spec.series ?? o.series)),
     title: `${escapeHtml(first)}<br>${escapeHtml(second)} <span class="hl">${escapeHtml(spec.highlight)}</span>`,
     subtitle, tags, window: win,
   };

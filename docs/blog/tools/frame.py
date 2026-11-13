@@ -65,7 +65,11 @@ def main() -> None:
 
     src = Image.open(a.src).convert("RGBA")
     # Captures of rounded windows have transparent corners: fill them with the window's own background, not black.
-    fill = src.getpixel((src.width // 2, min(30, src.height - 1)))[:3]
+    # The fill is the most common opaque colour in the middle of the capture (its background), not a fixed pixel that
+    # may sit in a shadow margin or a title bar.
+    mid = src.crop((src.width // 4, src.height // 4, 3 * src.width // 4, 3 * src.height // 4))
+    counts = sorted(((n, c) for n, c in (mid.getcolors(mid.width * mid.height) or []) if c[3] == 255), reverse=True)
+    fill = counts[0][1][:3] if counts else (17, 17, 22)
     img = Image.new("RGB", src.size, fill)
     img.paste(src, (0, 0), src)
     if a.crop:

@@ -230,8 +230,9 @@ Every fact about a post lives in [`TODO.yaml`](TODO.yaml), on the post's task: t
 Facts are comments on that task, one `key: value` each, appended (never edited) with
 `mise run blog:todo -- add --comment "<key>: <value>" --task-id <id>` or by the tasks. A task tagged `series` holds
 account-wide numbers. The todo CLI drops any field it doesn't know, which is why nothing else is stored there.
-The post's files (`post.md`, `linkedin.md`, `community.md`, `review.md`, `images/`) are found by convention in its
-folder. `mise run blog:report` prints everything and flags any comment outside the schema.
+The post's files (`post.md`, `linkedin.md`, `community.md`, `cover.json`, `review.md`, `images/`) are found by
+convention in its folder. A post published before the tooling carries `legacy: true` in its front matter: it skips
+the content checks and the publish gate, never the safety ones; no new post uses it. `mise run blog:report` prints everything and flags any comment outside the schema.
 
 | Key | Value | Written by |
 | --- | --- | --- |
@@ -243,7 +244,8 @@ folder. `mise run blog:report` prints everything and flags any comment outside t
 | `log.keep`, `log.change`, `log.best-comment` | text | the author at 7 days |
 | `pick` | `<YYYY-MM-DD> keep\|swap <reason> <source>` | `/blog:pick`, after the author decides |
 | `hook`, `recipe`, `sources` | the topic's angle, its RECIPE in one line, the repo files and links it rests on | the roadmap (topic tasks), `/blog:draft` |
+| `note` | free text: a hypothesis, a follow-up, an unknown metric (`<date> <platform> <metric> unknown`) | anyone |
 | `decision` | `<YYYY-MM-DD> <text>` | recalibrations (series or recal tasks) |
 
 Locally, `mise run blog:push <post>` sends a draft from a pushed branch (or publishes from `main`); the token comes
-from `DEVTO_TOKEN` or gopass `tokens/dev.to`.
+from `DEVTO_TOKEN` in CI, or through fnox (`fnox.toml`: gopass `tokens/dev.to`) locally.

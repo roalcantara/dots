@@ -8,6 +8,8 @@
 
 Hashtags: #<tag> #<tag>
 
+Image: the cover. Alt text (write it when posting): <what the cover shows, in one sentence>
+
 ## First comment
 
 {devto.url}

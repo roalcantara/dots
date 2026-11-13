@@ -1,7 +1,7 @@
 ---
 description: Review a blog post before its pull request with a fresh agent (cold read, rubric, safety) and record the verdict
 argument-hint: Optional post folder (YYYY-MM-DD-slug), then free notes for the reviewer
-allowed-tools: Agent, Bash(mise run -q blog:status:*), Bash(mise run blog:check:*), Bash(mise run -q blog:todo:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat add:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat commit:*)
+allowed-tools: Agent, Bash(mise run -q blog:status:*), Bash(mise run blog:check:*), Bash(mise run blog:stamp:*), Bash(mise run -q blog:todo:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat add:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat commit:*)
 ---
 
 <task>
@@ -19,7 +19,9 @@ Where things stand: !`mise run -q blog:status $1`
 2. Dispatch one fresh general-purpose subagent with this prompt, and nothing else: "Work in the repository root.
    Read `.agents/commands/blog/gate.md` and follow its `<gate_prompt>` section exactly, with `<post>` =
    `<the post folder>`. Notes from the author: <notes, if any>."
-3. When it returns, read `docs/blog/posts/<post>/review.md`. Record on the post's task:
+3. When it returns, read `docs/blog/posts/<post>/review.md` and run `mise run blog:stamp <post>`: it records the
+   fingerprint of what was reviewed, so any later change to the post, its LinkedIn post, cover or images makes the
+   review stale. Record on the post's task:
    `gate: <YYYY-MM-DD> <PASS|BLOCKED> stepps=<n>/12` and the `vars:` line from the review
    (`mise run -q blog:todo -- add --comment "…" --task-id <id>`).
 4. On the post branch, commit `docs/blog/posts/<post>/review.md` and `docs/blog/TODO.yaml` locally, through the SOPS
