@@ -37,6 +37,17 @@ echo "## recent"; git log --oneline -8
 echo "## handoff"; f="$(git rev-parse --git-common-dir)/wip/$(echo "$branch" | tr / -).md"; [ -f "$f" ] && cat "$f"
 echo "## tasks"
 if command -v bd >/dev/null && [ -d .beads ]; then bd ready 2>/dev/null | head -5
+elif y=$(git ls-files 'TODO.yaml' '*/TODO.yaml' 2>/dev/null | head -1); [ -n "$y" ]; then
+  # todo CLI (RayanBO/todo) YAML: open tasks, in progress first, then by due date.
+  echo "($y)"
+  awk -v q="'" '
+    function out() { if (s == "Todo" || s == "InProgress") printf "%s%s\t%s%s (%s)\n", (s == "InProgress" ? 0 : 1), u, (s == "InProgress" ? "[~] " : "- "), d, u }
+    /^- id:/ { out(); s = ""; d = ""; u = "" }
+    /^[a-z]+:/ && !/^tasks:/ { out(); s = "" }
+    /^  status:/ { s = $2 }
+    /^  description:/ { sub(/^  description: /, ""); if (substr($0, 1, 1) == q) { $0 = substr($0, 2, length($0) - 2); gsub(q q, q) } d = $0 }
+    /^  due:/ { u = substr($2, 1, 10) }
+    END { out() }' "$y" | sort | head -5 | cut -f2
 elif [ -f TODO.md ]; then grep -n -m 5 -E '^\s*[-*] \[ \]|^\s*[-*] \[~\]' TODO.md
 else
   # No task list: fall back to plans with unticked boxes, newest first (noisy where executors do not tick them).

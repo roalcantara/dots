@@ -36,8 +36,10 @@ local stagingLinters = new Mapping<String, Step> {
     glob = List("**/Dockerfile", "**/Dockerfile.*")
   }
   ["yamllint"] {
-    glob  = List("**/*.yml", "**/*.yaml")
-    check = "yamllint {{files}}"
+    glob    = List("**/*.yml", "**/*.yaml")
+    // Written by the todo CLI (mise-tasks/posts/todo) in its own layout; editing it by hand would fight the tool.
+    exclude = List("docs/posts/TODO.yaml")
+    check   = "yamllint {{files}}"
   }
   ["taplo"] {
     glob    = List("**/*.toml")

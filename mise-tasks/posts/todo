@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="The series roadmap in docs/posts/TODO.yaml (todo CLI): list, add, status, dashboard…"
+#MISE tools={"github:RayanBO/todo"="0.2.9"}
+# todo has no Homebrew formula (and cargo's todo-cli is another crate), so it is pinned here.
+set -euo pipefail
+cd "${MISE_PROJECT_ROOT:-$(git rev-parse --show-toplevel)}/docs/posts"
+exec todo "$@"

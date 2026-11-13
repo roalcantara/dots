@@ -161,6 +161,7 @@ uv "pynvim"
 uv "debugpy"
 uv "commit-check"
 # DEVTOOLS: JavaScript tools
+# todo (github.com/RayanBO/todo): no formula, and cargo's todo-cli is another crate. Pinned in mise-tasks/posts/todo.
 npm "bun-dap-x"
 npm "react-devtools"
 npm "@vscode/js-debug-browsers"

@@ -1,0 +1,419 @@
+tasks:
+- id: 55MD
+  status: InProgress
+  description: 'Setup: posts tooling, docs, roadmap and gate'
+  due: 2026-11-13T18:00:00
+  actors:
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - setup
+  priority: High
+  created: 2026-11-13T13:29:53.777185
+- id: 6ThC
+  status: Todo
+  description: 'Preflight: publish ''zsh doesn''t split $vars'' (dev.to + LinkedIn) end to end'
+  due: 2026-11-13T20:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - preflight
+  priority: High
+  created: 2026-11-13T13:29:53.839233
+- id: BnIE
+  status: Todo
+  description: 'Preflight: measure at 48 h'
+  due: 2026-11-15T20:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - preflight
+  priority: Medium
+  created: 2026-11-13T13:29:53.894416
+- id: 9ggB
+  status: Todo
+  description: 'Preflight: measure at 7 days and retro'
+  due: 2026-11-20T20:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - preflight
+  priority: Medium
+  created: 2026-11-13T13:29:53.951066
+- id: 7GvK
+  status: Todo
+  description: 'Reddit runway: comment and answer only, no own links'
+  due: 2026-11-30T20:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  priority: Medium
+  created: 2026-11-13T13:29:54.006211
+- id: EFly
+  status: Todo
+  description: 'Topic 1: Secrets in git with SOPS + age (LinkedIn in EN)'
+  due: 2026-11-17T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - topic-1
+  priority: High
+  created: 2026-11-13T13:29:54.061941
+- id: H3RC
+  status: Todo
+  description: 'Topic 1 in-between: the RECIPE as a carousel'
+  due: 2026-11-24T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-1
+  priority: Low
+  created: 2026-11-13T13:29:54.117227
+- id: yg3s
+  status: Todo
+  description: 'Topic 2: Commit conventions that write your release notes (LinkedIn in PT-BR)'
+  due: 2026-12-01T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - topic-2
+  priority: High
+  created: 2026-11-13T13:29:54.172565
+- id: 1GMr
+  status: Todo
+  description: 'Topic 2 community: r/git'
+  due: 2026-12-03T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-2
+  priority: Medium
+  created: 2026-11-13T13:29:54.228299
+- id: xMCs
+  status: Todo
+  description: 'Topic 2 in-between: the locale bug in the commit linter'
+  due: 2026-12-08T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-2
+  priority: Low
+  created: 2026-11-13T13:29:54.283876
+- id: Je4e
+  status: Todo
+  description: 'Light week: year-end ''what I automated'''
+  due: 2026-12-15T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  priority: Low
+  created: 2026-11-13T13:29:54.339694
+- id: sJ3U
+  status: Todo
+  description: 'Omarchy-ish community: r/unixporn'
+  due: 2026-12-17T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  priority: Medium
+  created: 2026-11-13T13:29:54.394779
+- id: VS93
+  status: Todo
+  description: 'Topic 3: Back up a list, not your home folder (LinkedIn in EN)'
+  due: 2027-01-05T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - topic-3
+  priority: High
+  created: 2026-11-13T13:29:54.450566
+- id: CCOT
+  status: Todo
+  description: 'Topic 3 community: r/selfhosted'
+  due: 2027-01-07T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-3
+  priority: Medium
+  created: 2026-11-13T13:29:54.506300
+- id: vzYw
+  status: Todo
+  description: 'Topic 3 in-between: the 606,863 files number'
+  due: 2027-01-12T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-3
+  priority: Low
+  created: 2026-11-13T13:29:54.562222
+- id: fHDI
+  status: Todo
+  description: 'Topic 4: One linter config for pre-commit and CI with hk (LinkedIn in PT-BR)'
+  due: 2027-01-19T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - topic-4
+  priority: High
+  created: 2026-11-13T13:29:54.617603
+- id: ngug
+  status: Todo
+  description: 'Topic 4 community: r/commandline'
+  due: 2027-01-21T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-4
+  priority: Medium
+  created: 2026-11-13T13:29:54.673342
+- id: uikg
+  status: Todo
+  description: 'Topic 4 in-between: one config, eight linters'
+  due: 2027-01-26T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-4
+  priority: Low
+  created: 2026-11-13T13:29:54.728770
+- id: 1CN1
+  status: Todo
+  description: 'Recalibration 1: targets, language test, day/time, topics 5-8, in-between posts'
+  due: 2027-01-30T12:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - recal
+  priority: High
+  created: 2026-11-13T13:29:54.784464
+- id: E1rF
+  status: Todo
+  description: 'Topic 5: It took 54 fixes to make my bootstrap boring'
+  due: 2027-02-02T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - topic-5
+  priority: High
+  created: 2026-11-13T13:29:54.840192
+- id: uVH9
+  status: Todo
+  description: 'Topic 5 community: r/dotfiles'
+  due: 2027-02-04T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-5
+  priority: Medium
+  created: 2026-11-13T13:29:54.896460
+- id: LQ8F
+  status: Todo
+  description: 'Topic 5 in-between: (picked at recalibration 1)'
+  due: 2027-02-09T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-5
+  priority: Low
+  created: 2026-11-13T13:29:54.952506
+- id: h4z7
+  status: Todo
+  description: 'Topic 6: Spec, plan, agents on a personal repo'
+  due: 2027-02-16T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - topic-6
+  priority: High
+  created: 2026-11-13T13:29:55.008875
+- id: Rc5u
+  status: Todo
+  description: 'Topic 6 community: r/ClaudeAI'
+  due: 2027-02-18T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-6
+  priority: Medium
+  created: 2026-11-13T13:29:55.064853
+- id: QfGl
+  status: Todo
+  description: 'Topic 6 in-between: 336 agent skills in a lock file'
+  due: 2027-02-23T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-6
+  priority: Low
+  created: 2026-11-13T13:29:55.120096
+- id: csdp
+  status: Todo
+  description: 'Topic 7: mise profiles, one repo, four kinds of machine'
+  due: 2027-03-02T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - topic-7
+  priority: High
+  created: 2026-11-13T13:29:55.176768
+- id: btNP
+  status: Todo
+  description: 'Topic 7 community: r/commandline'
+  due: 2027-03-04T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-7
+  priority: Medium
+  created: 2026-11-13T13:29:55.232045
+- id: lEde
+  status: Todo
+  description: 'Topic 7 in-between: the miserc.local.toml gotcha'
+  due: 2027-03-09T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-7
+  priority: Low
+  created: 2026-11-13T13:29:55.288139
+- id: NISc
+  status: Todo
+  description: 'Topic 8: Test your Docker images like code (CST)'
+  due: 2027-03-16T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - topic-8
+  priority: High
+  created: 2026-11-13T13:29:55.343883
+- id: RoY2
+  status: Todo
+  description: 'Topic 8 community: r/docker'
+  due: 2027-03-18T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-8
+  priority: Medium
+  created: 2026-11-13T13:29:55.399856
+- id: mhmi
+  status: Todo
+  description: 'Recalibration 2: order the backlog; keep, change or stop the cadence'
+  due: 2027-03-23T12:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - recal
+  priority: High
+  created: 2026-11-13T13:29:55.456117
+actors:
+- id: 7lt7
+  pseudo: roalcantara
+  pic: null
+  actor_type: Human
+- id: JTps
+  pseudo: Claude
+  pic: null
+  actor_type: AgentIa
+comments: []
+project: posts
