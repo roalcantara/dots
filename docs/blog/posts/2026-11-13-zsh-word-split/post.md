@@ -12,6 +12,8 @@ cover_image: ./images/00-cover.png
 
 ![The cover: "My AI agent's for-loop ran once", a Ghostty terminal showing the loop print [a b c] once](./images/00-cover.png)
 
+> One string to rule them all: my agent's for-loop found one item where I had three.
+
 ## ⚡ TL;DR
 
 My agents' bash-style loops ran once in my zsh. Point the agents at bash; keep zsh for yourself.
@@ -37,8 +39,6 @@ My agents' bash-style loops ran once in my zsh. Point the agents at bash; keep z
 [the PR (#108)](https://github.com/roalcantara/dots/pull/108)
 
 ## 🪲 The problem
-
-> One string to rule them all: my agent's for-loop found one item where I had three.
 
 The shell my agents write is bash-style (`for x in $list; do …`), and on my Mac they ran it in my login shell, zsh.
 
