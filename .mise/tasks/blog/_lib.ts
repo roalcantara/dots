@@ -1,4 +1,4 @@
-// Shared code for the posts:* file tasks (docs/blog/PLAYBOOK.md). Not a task: this file is not executable.
+// Shared code for the blog:* file tasks (docs/blog/PLAYBOOK.md). Not a task: this file is not executable.
 import { existsSync, readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { parseArgs } from "node:util";

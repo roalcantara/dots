@@ -1,7 +1,7 @@
 ---
 description: Get a published post's LinkedIn post and first comment ready to paste; with URLs, record them and close the post
 argument-hint: Optional post folder, linkedin=<url>, community=<url>, then free notes
-allowed-tools: Bash(mise run -q blog:status:*), Bash(mise run blog:stats:*), Bash(mise run blog:done:*), Bash(pbcopy)
+allowed-tools: Bash(mise run -q blog:status:*), Bash(mise run blog:stats:*), Bash(mise run blog:done:*), Bash(mise run -q blog:report:*), Bash(mise run blog:report:*), Bash(pbcopy:*)
 ---
 
 <task>

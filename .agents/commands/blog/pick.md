@@ -1,7 +1,7 @@
 ---
 description: Choose the next blog topic from the schedule, recent news and comments; record the author's decision
 argument-hint: Optional note="…" (anything to weigh, e.g. note="secrets leak in the news"), then free notes
-allowed-tools: Bash(mise run -q blog:status:*), Bash(mise run blog:report:*), Bash(mise run -q blog:report:*), Bash(mise run blog:todo:*), Bash(mise run -q blog:todo:*), WebSearch, WebFetch
+allowed-tools: Bash(mise run -q blog:status:*), Bash(mise run blog:report:*), Bash(mise run -q blog:report:*), Bash(mise run blog:todo:*), Bash(mise run -q blog:todo:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat add:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat commit:*), WebSearch, WebFetch
 ---
 
 <task>

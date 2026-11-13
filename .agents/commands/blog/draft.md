@@ -1,7 +1,7 @@
 ---
 description: Draft a blog post (dev.to post, LinkedIn post, community post, shot list) from its roadmap topic
 argument-hint: Optional post folder (YYYY-MM-DD-slug), note="…" (angle, story, constraints), then free notes
-allowed-tools: Bash(mise run -q blog:status:*), Bash(mise run blog:check:*), Bash(mise run blog:cover:*), Bash(mise run -q blog:todo:*), Bash(git log:*), Bash(git show:*)
+allowed-tools: Bash(mise run -q blog:status:*), Bash(mise run blog:new:*), Bash(mise run blog:check:*), Bash(mise run blog:cover:*), Bash(mise run -q blog:todo:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat log:*), Bash(git -c filter.sops.clean=cat -c filter.sops.smudge=cat show:*)
 ---
 
 <task>

@@ -52,8 +52,8 @@ folder. `mise run blog:report` prints everything and flags any comment outside t
 
 | Key | Value | Written by |
 | --- | --- | --- |
-| `devto.id` | the article id | `blog:push` (when it creates one), `blog:stats` (when it finds one by title) |
-| `devto.url`, `linkedin.url`, `community.url` | a URL | `blog:push` / the author |
+| `devto.id`, `devto.url` | the article id and URL | `blog:push` and `blog:stats` (when it finds one by title) |
+| `linkedin.url`, `community.url` | a URL | the author |
 | `stats` | `<YYYY-MM-DD> <platform> <metric>=<n> [<metric>=<n>…] (<api\|manual>)` | `blog:stats`, `blog:record` |
 | `gate` | `<YYYY-MM-DD> <PASS\|BLOCKED> stepps=<n>/12` | the gate run |
 | `vars` | `hook=… cover=… images=… linkedin=… lang=… day=… tags=…` | the author / the gate |
