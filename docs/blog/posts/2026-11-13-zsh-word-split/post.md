@@ -20,8 +20,11 @@ My agents' bash-style loops ran once in my zsh. Point the agents at bash; keep z
 - **You need:** bash from Homebrew (`brew install bash`); macOS's own `/bin/bash` is 3.2.
 
 ```text
-Claude Code    CLAUDE_CODE_SHELL=/opt/homebrew/bin/bash
-Copilot chat   terminal profile → /opt/homebrew/bin/bash
+Claude Code   ~/.claude/settings.json
+  env.CLAUDE_CODE_SHELL = /opt/homebrew/bin/bash
+Copilot chat  VS Code's user settings.json
+  chat.tools.terminal.terminalProfile.osx.path
+    = /opt/homebrew/bin/bash
 ```
 
 📁 **In dots:** [config/claude/settings.json](https://github.com/roalcantara/dots/blob/main/config/claude/settings.json) ·
@@ -52,8 +55,8 @@ just isn't what the agent meant.
 - **Why the agent's command ran in zsh**
   - Claude Code runs its commands in your shell unless `CLAUDE_CODE_SHELL` says otherwise
     ([environment variables](https://code.claude.com/docs/en/env-vars)).
-  - Copilot chat runs them in a VS Code terminal, whose profile was zsh in my setup until I gave its tools a bash
-    one ([Copilot settings](https://code.visualstudio.com/docs/copilot/reference/copilot-settings)). My login shell is zsh.
+  - Copilot chat runs them in a VS Code terminal, whose profile was zsh in my setup
+    ([Copilot settings](https://code.visualstudio.com/docs/copilot/reference/copilot-settings)). My login shell is zsh.
 - **Why zsh does this**
   - In zsh, an unquoted `$list` stays one word unless you ask for splitting:
 
@@ -111,7 +114,7 @@ $ echo "${BASH_VERSION:-not bash}"
     ```
 
 - `setopt SH_WORD_SPLIT` also fixes it
-  - but for every script you run
+  - but in your `~/.zshrc` it changes every interactive zsh, and scripts never read that file
 
 ## 🥷🏼 vs. making the agent write zsh
 
