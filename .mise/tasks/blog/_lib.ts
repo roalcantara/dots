@@ -441,17 +441,35 @@ export function resolvePost(o: {
     .find((p) => !["closed", "planned"].includes(o.stages.get(p.dir) ?? ""))?.dir;
 }
 
+export function setPublished(text: string): string {
+  const m = text.match(FENCE);
+  if (!m) throw new Error("no front matter");
+  const lines = (m[1] ?? "").split("\n").filter((l) => !/^published:/.test(l));
+  const title = lines.findIndex((l) => /^title:/.test(l));
+  lines.splice(title + 1, 0, "published: true");
+  return `---\n${lines.join("\n")}\n---\n${text.slice(m[0].length)}`;
+}
+
+export const postBranch = (post: string): string => `feat/post-${post.slice(11)}`;
+
+// The next topic to start: an open topic task with no folder yet, earliest due date first.
+export function nextTopicTask(todo: Todo): TodoTask | undefined {
+  return todo.tasks
+    .filter((t) => isTopicTask(t) && t.status !== "Done" && !t.position)
+    .sort((a, b) => String(day(a.due) ?? "9").localeCompare(String(day(b.due) ?? "9")))[0];
+}
+
 // ---- shell side (used by the task files; not unit-tested) -----------------------------------------------------
 
 export const ROOT = join(import.meta.dir, "../../..");
 export const SERIES = join(ROOT, "docs/blog");
 export const POSTS = join(SERIES, "posts");
 
-const run = (cmd: string[]): { ok: boolean; out: string } => {
+export const run = (cmd: string[]): { ok: boolean; out: string } => {
   const p = Bun.spawnSync(cmd, { cwd: ROOT, stdout: "pipe", stderr: "pipe" });
   return { ok: p.exitCode === 0, out: p.stdout.toString().trim() };
 };
-const git = (...args: string[]) => run(["git", "-c", "filter.sops.clean=cat", "-c", "filter.sops.smudge=cat", ...args]);
+export const git = (...args: string[]) => run(["git", "-c", "filter.sops.clean=cat", "-c", "filter.sops.smudge=cat", ...args]);
 
 export function gitState(): GitState {
   const upstream = git("rev-parse", "--abbrev-ref", "@{u}").ok;
@@ -507,10 +525,78 @@ export const today = (): string => new Date().toLocaleDateString("sv-SE");
 export const TODO = join(ROOT, "docs/blog/TODO.yaml");
 export const readTodo = (): Todo => Bun.YAML.parse(readFileSync(TODO, "utf8")) as Todo;
 
-// Append a comment through the todo CLI (the file's owner), never by editing TODO.yaml.
-export function addComment(taskId: string, text: string): void {
-  const p = Bun.spawnSync(["mise", "run", "-q", "blog:todo", "--", "add", "--comment", text, "--task-id", taskId], {
-    cwd: ROOT, stdout: "pipe", stderr: "pipe",
-  });
-  if (p.exitCode !== 0) throw new Error(`todo add --comment failed: ${p.stderr.toString().trim()}`);
+// TODO.yaml is written only through the todo CLI (its owner), never edited directly.
+export function todo(...args: string[]): string {
+  const p = Bun.spawnSync(["mise", "run", "-q", "blog:todo", "--", ...args], { cwd: ROOT, stdout: "pipe", stderr: "pipe" });
+  if (p.exitCode !== 0) throw new Error(`todo ${args[0]} failed: ${p.stderr.toString().trim()}`);
+  return p.stdout.toString().trim();
+}
+export const addComment = (taskId: string, text: string): void => void todo("add", "--comment", text, "--task-id", taskId);
+
+export const hypeWords = (): string[] =>
+  readFileSync(join(SERIES, "hype-words.txt"), "utf8").split("\n").map((l) => l.trim()).filter(Boolean);
+
+// When a file last changed: its last commit, or its mtime while it has uncommitted changes.
+export function changedAt(path: string): number | undefined {
+  if (!existsSync(path)) return undefined;
+  if (git("status", "--porcelain", "--", path).out) return Math.floor(Bun.file(path).lastModified / 1000);
+  const t = Number(git("log", "-1", "--format=%ct", "--", path).out);
+  return Number.isFinite(t) && t > 0 ? t : Math.floor(Bun.file(path).lastModified / 1000);
+}
+
+export function prState(branch: string): "open" | "merged" | undefined {
+  const p = run(["gh", "pr", "list", "--head", branch, "--state", "all", "--json", "state", "-q", ".[0].state"]);
+  return p.out === "OPEN" ? "open" : p.out === "MERGED" ? "merged" : undefined;
+}
+
+export const reviewVerdict = (text: string): "PASS" | "BLOCKED" | undefined =>
+  (text.match(/\*\*Verdict:\*\*\s*(PASS|BLOCKED)/)?.[1] as "PASS" | "BLOCKED" | undefined);
+
+export function factsFor(p: Post): Facts {
+  const dir = join(POSTS, p.dir);
+  const postPath = join(dir, "post.md");
+  const reviewPath = join(dir, "review.md");
+  const hasFolder = existsSync(postPath);
+  const read = (f: string) => (existsSync(join(dir, f)) ? readFileSync(join(dir, f), "utf8") : "");
+  const text = read("post.md");
+  return {
+    hasFolder,
+    checkBlocks: hasFolder && checkPost(dir, hypeWords()).some((f) => f.level === "block"),
+    review: reviewVerdict(read("review.md")),
+    reviewFresh: reviewFresh(changedAt(reviewPath), changedAt(postPath)),
+    pr: prState(postBranch(p.dir)),
+    published: parseFrontMatter(text).fm.published === true,
+    markers: authorMarkers(text + read("linkedin.md")).length,
+    devtoUrl: Boolean(p.meta["devto.url"]?.length),
+    linkedinUrl: Boolean(p.meta["linkedin.url"]?.length),
+    taskDone: p.status === "Done",
+    logKeep: Boolean(p.meta["log.keep"]?.length),
+  };
+}
+
+// Commit named paths on the current branch and stop: the author pushes (writes after the merge land on main).
+export function commitLocal(paths: string[], message: string): boolean {
+  git("add", "--", ...paths);
+  if (!git("diff", "--cached", "--name-only").out) return false;
+  const c = git("commit", "-q", "-m", message);
+  if (!c.ok) throw new Error(`git commit failed for: ${message}`);
+  console.log(`committed: ${message} (push when ready)`);
+  return true;
+}
+
+// Push the current post branch, never main.
+export function pushBranch(): string {
+  const branch = git("branch", "--show-current").out;
+  if (!/^feat\/post-/.test(branch)) throw new Error(`not a post branch: "${branch}" (feat/post-<slug>)`);
+  const p = git("push", "-u", "origin", branch);
+  if (!p.ok) throw new Error(`git push failed for ${branch}`);
+  return branch;
+}
+
+// The post a command means (argument, branch, or the latest open one), with every post's stage.
+export function pick(arg?: string): { post?: Post; posts: Post[]; stages: Map<string, Stage> } {
+  const posts = postsFromTodo(readTodo());
+  const stages = new Map(posts.map((p) => [p.dir, stageOf(factsFor(p)).stage] as const));
+  const dir = resolvePost({ arg, branch: git("branch", "--show-current").out, posts, stages });
+  return { post: posts.find((p) => p.dir === dir), posts, stages };
 }

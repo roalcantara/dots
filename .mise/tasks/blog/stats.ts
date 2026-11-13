@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
-//MISE description="Record dev.to numbers, referrers and repo traffic as stats comments in docs/blog/TODO.yaml"
+//MISE description="Record dev.to numbers, referrers and repo traffic as stats comments in docs/blog/TODO.yaml (commits locally)"
+//USAGE flag "--no-commit" help="Leave TODO.yaml uncommitted (used by blog:done)"
 import {
-  addComment, devto, formatStats, parseFrontMatter, POSTS, myArticles, postsFromTodo, readTodo, resolveArticleId, rowsFromArticles,
+  addComment, commitLocal, devto, formatStats, parseFrontMatter, POSTS, myArticles, postsFromTodo, readTodo, resolveArticleId, rowsFromArticles,
   rowsFromReferrers, rowsFromTraffic, seriesFromTodo, today, type StatRow,
 } from "./_lib";
 
@@ -46,3 +47,5 @@ else {
     console.log(`series: ${line}`);
   }
 }
+
+if (!process.argv.includes("--no-commit")) commitLocal(["docs/blog/TODO.yaml"], `chore(blog): Record stats (${date})`);

@@ -11,6 +11,8 @@ import {
   type Facts,
   formatStats,
   isTopicTask,
+  nextTopicTask,
+  postBranch,
   parseComment,
   parseFrontMatter,
   parseRecordArgs,
@@ -29,6 +31,7 @@ import {
   rowsFromReferrers,
   rowsFromTraffic,
   scaffoldFiles,
+  setPublished,
   stageOf,
   type Todo,
   topicNumber,
@@ -384,5 +387,29 @@ describe("post helpers", () => {
     expect(resolvePost({ arg: "2026-11-12-a", posts, stages })).toBe("2026-11-12-a");
     expect(resolvePost({ branch: "feat/post-c", posts, stages })).toBe("2026-11-24-c");
     expect(resolvePost({ branch: "main", posts, stages })).toBe("2026-11-13-b");
+  });
+});
+
+describe("task helpers", () => {
+  it("publishes through the front matter only", () => {
+    const text = "---\ntitle: T\npublished: false\n---\n\npublished: false stays in the body\n";
+    expect(setPublished(text)).toBe("---\ntitle: T\npublished: true\n---\n\npublished: false stays in the body\n");
+    expect(setPublished("---\ntitle: T\n---\nb\n")).toBe("---\ntitle: T\npublished: true\n---\nb\n");
+  });
+
+  it("names a post's branch from its slug", () => {
+    expect(postBranch("2026-11-24-sops-age")).toBe("feat/post-sops-age");
+  });
+
+  it("finds the next open topic without a folder", () => {
+    const t = (id: string, tags: string[], due: string, position?: string, status = "Todo") => ({ id, status, description: id, tags, due, position });
+    const todo = { comments: [], tasks: [
+      t("a", ["topic-1", "post"], "2026-11-17T09:00:00", "docs/blog/posts/x"),
+      t("b", ["topic-2", "in-between"], "2026-11-20T09:00:00"),
+      t("c", ["topic-3"], "2026-12-01T09:00:00"),
+      t("d", ["topic-2"], "2026-11-24T09:00:00"),
+      t("e", ["topic-4"], "2026-11-10T09:00:00", undefined, "Done"),
+    ] } as Todo;
+    expect(nextTopicTask(todo)?.id).toBe("d");
   });
 });
