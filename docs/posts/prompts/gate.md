@@ -51,7 +51,8 @@ rewrite the post yourself: you report. Work in the repository root, in this orde
    enough to apply ("cut the second paragraph of OVERVIEW: it repeats the hook", not "tighten the intro"). Include at
    least one on the **visuals** and one on the **tone** when there is anything to say about them.
 
-7. **Variables.** Prefill the line for LOG.md: hook type (number, confession, opinion or question), cover style,
+7. **Variables.** Prefill the `vars:` comment for the post's task (`hook=… cover=… images=… linkedin=… lang=…
+   day=<author> tags=…`): hook type (number, confession, opinion or question), cover style,
    images (count and kind), LinkedIn format, language, tags; leave day/time as `<author>`.
 
 **A post that is already published** gets the same review; title the verdict `PASS (published)` or

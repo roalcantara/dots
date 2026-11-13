@@ -1,6 +1,5 @@
 ---
 title: "Omarchy-ish macOS: tiling, an fn layer and Raycast"
-id: 5021431
 published: true
 description: How I got most of Omarchy's keyboard-first desktop on a Mac, with yabai, Karabiner-Elements, SwiftBar and Raycast.
 tags: macos, productivity, dotfiles, linux

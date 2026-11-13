@@ -34,6 +34,6 @@
 
 1. …
 
-## Variables
+## Variables (the `vars:` comment)
 
 hook type: … · cover style: … · images: … · LinkedIn format: … · language: … · day/time: <author> · tags: …

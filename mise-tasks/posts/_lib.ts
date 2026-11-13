@@ -1,6 +1,6 @@
 // Shared code for the posts:* file tasks (docs/posts/PLAYBOOK.md). Not a task: this file is not executable.
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { basename, join } from "node:path";
 import { parseArgs } from "node:util";
 
 export type FrontMatter = {
@@ -48,19 +48,6 @@ export function parseFrontMatter(text: string): { fm: FrontMatter; body: string 
     } else fm[key] = scalar(value);
   }
   return { fm, body: text.slice(m[0].length) };
-}
-
-export function setFrontMatterId(text: string, id: number): string {
-  const m = text.match(FENCE);
-  if (!m) throw new Error("no front matter");
-  const lines = (m[1] ?? "").split("\n");
-  const at = lines.findIndex((l) => /^id:/.test(l));
-  if (at >= 0) lines[at] = `id: ${id}`;
-  else {
-    const title = lines.findIndex((l) => /^title:/.test(l));
-    lines.splice(title + 1, 0, `id: ${id}`);
-  }
-  return `---\n${lines.join("\n")}\n---\n${text.slice(m[0].length)}`;
 }
 
 export function visibleLength(text: string): number {
@@ -192,11 +179,15 @@ export function pushAction(o: { draft: boolean; live: boolean }): "skip" | "send
   return o.draft && o.live ? "skip" : "send";
 }
 
-// The recorded id wins; otherwise an article of mine with the same title (a post published by hand, or a merge that
-// beat the PR job), so the push updates it instead of creating a duplicate.
-export function resolveArticleId(fm: FrontMatter, mine: { id: number; title: string }[]): number | undefined {
-  if (typeof fm.id === "number") return fm.id;
-  return mine.find((a) => a.title === fm.title)?.id;
+// The recorded id (a devto.id comment) wins; otherwise an article of mine with the same title (a post published by
+// hand, or one created by a run whose id isn't recorded yet), so a push updates it instead of creating a duplicate.
+export function resolveArticleId(
+  recorded: number | undefined,
+  title: string | undefined,
+  mine: { id: number; title: string }[],
+): number | undefined {
+  if (typeof recorded === "number") return recorded;
+  return mine.find((a) => a.title === title)?.id;
 }
 
 // ---- numbers ----------------------------------------------------------------------------------------------------
@@ -208,7 +199,6 @@ export const METRICS = [
   "stars",
 ] as const;
 export type StatRow = { date: string; slug: string; platform: string; metric: string; value: number; source: "api" | "manual" };
-const HEADER = "date,slug,platform,metric,value,source\n";
 
 const num = (v: unknown): number | undefined => (typeof v === "number" && Number.isFinite(v) ? v : undefined);
 
@@ -250,12 +240,6 @@ export function rowsFromTraffic(json: unknown, date: string): StatRow[] {
   return rows;
 }
 
-export function appendRows(csvPath: string, rows: StatRow[]): void {
-  if (!existsSync(csvPath)) writeFileSync(csvPath, HEADER);
-  const lines = rows.map((r) => `${r.date},${r.slug},${r.platform},${r.metric},${r.value},${r.source}\n`).join("");
-  if (lines) appendFileSync(csvPath, lines);
-}
-
 export function parseRecordArgs(argv: string[], date: string): StatRow[] {
   const [slug = "", platform = "", ...pairs] = argv;
   if (!slug) throw new Error("usage: record <slug|-> <platform> metric=value…");
@@ -268,6 +252,97 @@ export function parseRecordArgs(argv: string[], date: string): StatRow[] {
     if (raw === undefined || raw === "" || !Number.isFinite(value)) throw new Error(`not a number: ${pair}`);
     return { date, slug, platform, metric, value, source: "manual" as const };
   });
+}
+
+// ---- metadata in TODO.yaml ---------------------------------------------------------------------------------
+// Each post has one task tagged `post` whose `position` is its folder; facts about it are comments on that task,
+// one `key: value` each (schema: docs/posts/PLAYBOOK.md, "Metadata in TODO.yaml"). The todo CLI keeps comments and
+// drops unknown fields, so nothing else is stored in the file.
+
+export const KEYS = [
+  "devto.id", "devto.url", "linkedin.url", "community.url", "stats", "gate", "vars", "log.keep", "log.change",
+  "log.best-comment", "pick", "decision", "note",
+] as const;
+export type Comment = { id: string; text: string; task_id: string };
+export type TodoTask = {
+  id: string; status: string; description: string; due?: string | null; tags?: string[]; position?: string | null;
+  comments?: string[];
+};
+export type Todo = { tasks: TodoTask[]; comments: Comment[] };
+export type Post = {
+  dir: string; taskId: string; label: string; status: string; due?: string; devtoId?: number;
+  meta: Record<string, string[]>; stats: StatRow[]; invalid: string[];
+};
+
+export function parseComment(text: string): { key: string; value: string } | undefined {
+  const m = text.match(/^([a-z][a-z.-]*):\s+(.+)$/s);
+  if (!m || !(KEYS as readonly string[]).includes(m[1] ?? "")) return undefined;
+  return { key: m[1] ?? "", value: (m[2] ?? "").trim() };
+}
+
+// "<YYYY-MM-DD> <platform> <metric>=<n> [<metric>=<n>…] (<api|manual>)"
+export function parseStats(value: string, slug: string): StatRow[] | undefined {
+  const m = value.match(/^(\d{4}-\d{2}-\d{2}) ([a-z]+) ((?:[a-z_]+=-?[\d.]+ ?)+)\((api|manual)\)$/);
+  if (!m) return undefined;
+  const [, date = "", platform = "", pairs = "", source = "api"] = m;
+  if (!(PLATFORMS as readonly string[]).includes(platform)) return undefined;
+  const rows: StatRow[] = [];
+  for (const pair of pairs.trim().split(/\s+/)) {
+    const [metric = "", raw = ""] = pair.split("=");
+    const value = Number(raw);
+    if (!(METRICS as readonly string[]).includes(metric) || !Number.isFinite(value)) return undefined;
+    rows.push({ date, slug, platform, metric, value, source: source as "api" | "manual" });
+  }
+  return rows;
+}
+
+export function formatStats(rows: StatRow[]): string[] {
+  const groups = new Map<string, string[]>();
+  for (const r of rows) {
+    const k = `${r.date} ${r.platform}\u0000${r.source}`;
+    groups.set(k, [...(groups.get(k) ?? []), `${r.metric}=${r.value}`]);
+  }
+  return [...groups].map(([k, pairs]) => {
+    const [head, source] = k.split("\u0000");
+    return `${head} ${pairs.join(" ")} (${source})`;
+  });
+}
+
+const day = (v: unknown): string | undefined => (v ? String(v instanceof Date ? v.toISOString() : v).slice(0, 10) : undefined);
+
+function metaOf(todo: Todo, task: TodoTask, slug: string) {
+  const byId = new Map(todo.comments.map((c) => [c.id, c]));
+  const meta: Record<string, string[]> = {};
+  const stats: StatRow[] = [];
+  const invalid: string[] = [];
+  for (const id of task.comments ?? []) {
+    const text = byId.get(id)?.text ?? "";
+    const kv = parseComment(text);
+    const rows = kv?.key === "stats" ? parseStats(kv.value, slug) : undefined;
+    if (!kv || (kv.key === "stats" && !rows)) invalid.push(text);
+    else if (rows) stats.push(...rows);
+    else (meta[kv.key] ??= []).push(kv.value);
+  }
+  return { meta, stats, invalid };
+}
+
+export function postsFromTodo(todo: Todo): Post[] {
+  return todo.tasks
+    .filter((t) => t.tags?.includes("post") && t.position)
+    .map((t) => {
+      const dir = basename(String(t.position));
+      const { meta, stats, invalid } = metaOf(todo, t, dir);
+      const id = Number(meta["devto.id"]?.at(-1));
+      return {
+        dir, taskId: t.id, label: t.description, status: t.status, due: day(t.due),
+        devtoId: Number.isInteger(id) && id > 0 ? id : undefined, meta, stats, invalid,
+      };
+    });
+}
+
+export function seriesFromTodo(todo: Todo): { taskId?: string; stats: StatRow[]; invalid: string[] } {
+  const t = todo.tasks.find((x) => x.tags?.includes("series"));
+  return t ? { taskId: t.id, ...metaOf(todo, t, "-") } : { stats: [], invalid: [] };
 }
 
 // ---- shell side (used by the task files; not unit-tested) -----------------------------------------------------
@@ -328,3 +403,14 @@ export const myArticles = async (): Promise<Record<string, unknown>[]> =>
   (await devto("/articles/me/all?per_page=1000")) as Record<string, unknown>[];
 
 export const today = (): string => new Date().toLocaleDateString("sv-SE");
+
+export const TODO = join(ROOT, "docs/posts/TODO.yaml");
+export const readTodo = (): Todo => Bun.YAML.parse(readFileSync(TODO, "utf8")) as Todo;
+
+// Append a comment through the todo CLI (the file's owner), never by editing TODO.yaml.
+export function addComment(taskId: string, text: string): void {
+  const p = Bun.spawnSync(["mise", "run", "-q", "posts:todo", "--", "add", "--comment", text, "--task-id", taskId], {
+    cwd: ROOT, stdout: "pipe", stderr: "pipe",
+  });
+  if (p.exitCode !== 0) throw new Error(`todo add --comment failed: ${p.stderr.toString().trim()}`);
+}

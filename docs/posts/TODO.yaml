@@ -18,12 +18,16 @@ tasks:
   actors:
   - 7lt7
   - JTps
-  comments: []
+  comments:
+  - hy0I
+  - rdkc
   blocked_reason: null
   tags:
+  - post
   - preflight
   priority: High
   created: 2026-11-13T13:29:53.839233
+  position: docs/posts/articles/2026-11-13-zsh-word-split
 - id: BnIE
   status: Todo
   description: 'Preflight: measure at 48 h'
@@ -408,7 +412,7 @@ tasks:
   created: 2026-11-13T13:29:55.456117
 - id: hjWv
   status: Todo
-  description: 'Omarchy post: blur the private repo name in the table of 01-desktop and 04-zoom, then republish (see LOG.md)'
+  description: 'Omarchy post: blur the private repo name in the table of 01-desktop and 04-zoom, then republish (see the Omarchy post task)'
   due: 2026-11-14T12:00:00
   actors:
   - 7lt7
@@ -419,6 +423,39 @@ tasks:
   - safety
   priority: High
   created: 2026-11-13T13:34:45.255859
+- id: 6eS8
+  status: Done
+  description: 'Omarchy-ish macOS: tiling, an fn layer and Raycast'
+  due: 2026-11-12T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - 7u8X
+  - mm33
+  - vvf7
+  - oV6I
+  blocked_reason: null
+  tags:
+  - post
+  priority: High
+  created: 2026-11-13T13:58:35.288069
+  position: docs/posts/articles/2026-11-12-omarchy-on-macos
+- id: Yaw4
+  status: InProgress
+  description: 'Series: account-wide numbers and decisions'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - mrFr
+  - boaP
+  blocked_reason: null
+  tags:
+  - series
+  priority: Low
+  created: 2026-11-13T13:58:35.500847
 actors:
 - id: 7lt7
   pseudo: roalcantara
@@ -428,5 +465,37 @@ actors:
   pseudo: Claude
   pic: null
   actor_type: AgentIa
-comments: []
+comments:
+- id: 7u8X
+  text: 'devto.id: 5021431'
+  actors: []
+  task_id: 6eS8
+- id: mm33
+  text: 'devto.url: https://dev.to/roalcantara/omarchy-ish-macos-tiling-an-fn-layer-and-raycast-3fd8'
+  actors: []
+  task_id: 6eS8
+- id: vvf7
+  text: 'stats: 2026-11-13 devto views=30 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  actors: []
+  task_id: 6eS8
+- id: oV6I
+  text: 'note: published before the series tooling; its images show a private repo name in a table (01-desktop, 04-zoom): follow-up task hjWv'
+  actors: []
+  task_id: 6eS8
+- id: mrFr
+  text: 'stats: 2026-11-13 github repo_views=334 repo_uniques=12 (api)'
+  actors: []
+  task_id: Yaw4
+- id: boaP
+  text: 'note: baseline recorded 2026-11-13 before the series started; LinkedIn has no API for personal posts, so its baseline is the median of the first two series posts'
+  actors: []
+  task_id: Yaw4
+- id: hy0I
+  text: 'gate: 2026-11-13 PASS stepps=8/12'
+  actors: []
+  task_id: 6ThC
+- id: rdkc
+  text: 'vars: hook=confession cover=series images=1-terminal linkedin=image lang=en day=<author> tags=ai,zsh,bash,productivity'
+  actors: []
+  task_id: 6ThC
 project: posts

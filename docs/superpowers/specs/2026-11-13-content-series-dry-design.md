@@ -39,7 +39,7 @@ folders, and one place for every post's metadata (`docs/posts/TODO.yaml`).
 | `devto.id` | the article id | `posts:push` (when it creates one), `posts:stats` (when it finds one by title) |
 | `devto.url`, `linkedin.url`, `community.url` | a URL | `posts:push` / the author |
 | `stats` | `<YYYY-MM-DD> <platform> <metric>=<n> [<metric>=<n>…] (<api\|manual>)` | `posts:stats`, `posts:record` |
-| `gate` | `<YYYY-MM-DD> <PASS\|BLOCKED> steps=<n>/12` | the gate run |
+| `gate` | `<YYYY-MM-DD> <PASS\|BLOCKED> stepps=<n>/12` | the gate run |
 | `vars` | `hook=… cover=… images=… linkedin=… lang=… day=… tags=…` | the author / the gate |
 | `log.keep`, `log.change`, `log.best-comment` | text | the author at 7 days |
 | `pick` | `<YYYY-MM-DD> keep\|swap <reason> <source>` | the next-pick run, after the author decides |

@@ -2,13 +2,13 @@
 
 The living rules of the series. It starts as the design in [the spec](../superpowers/specs/2026-11-13-content-series-design.md) (the record of how it was decided)
 and changes only at recalibrations, with each change written in the **Decisions log** at the end. Voice and
-visuals live in [`STYLE.md`](STYLE.md); numbers in [`stats.csv`](stats.csv) and [`LOG.md`](LOG.md); the
-roadmap in [`TODO.yaml`](TODO.yaml) (`mise run posts:todo -- list`, or `mise run posts:todo -- dashboard`).
+visuals live in [`STYLE.md`](STYLE.md). [`TODO.yaml`](TODO.yaml) holds the roadmap **and every post's metadata**
+(see **Metadata in TODO.yaml**): `mise run posts:report` prints it, `mise run posts:todo -- dashboard` shows the board.
 
 ## How a post moves
 
 1. **Pick:** run [`prompts/next-pick.md`](prompts/next-pick.md) the Tuesday before; the author approves keep or
-   swap; the decision goes into [`LOG.md`](LOG.md).
+   swap; the decision becomes a `pick:` comment on the topic's task.
 2. **Branch:** `feat/post-<slug>`; copy [`templates/`](templates/) into `docs/posts/articles/<YYYY-MM-DD>-<slug>/`,
    the date being the planned publish date (never renamed once published: it is in the image URLs).
 3. **Draft:** `post.md` (skill `technical-article-writer`), `linkedin.md` (`linkedin-ghostwriting`), `community.md`
@@ -16,18 +16,41 @@ roadmap in [`TODO.yaml`](TODO.yaml) (`mise run posts:todo -- list`, or `mise run
 4. **Check:** `mise run posts:check <post>` until there are no blocks.
 5. **Gate:** a fresh agent runs [`prompts/gate.md`](prompts/gate.md) and writes `review.md`; fix every **Must fix**,
    take the **Consider** items you agree with.
-6. **Draft on dev.to:** open a PR. The `Posts` workflow pushes a dev.to draft (images from the branch), records the
-   article id on the branch and comments the preview link. Every push updates the same draft.
+6. **Draft on dev.to:** open a PR. The `Posts` workflow pushes a dev.to draft (images from the branch) and comments
+   the preview link; every push updates the same draft. CI never writes the repo: the article is found by title
+   until a local `posts:push` or `posts:stats` records its `devto.id:`.
 7. **Publish:** set `published: true`, push, merge. The run on `main` publishes the article with images from `main`.
 8. **LinkedIn (by hand):** the post, then the first comment with the dev.to link; stay for replies. Community post a
    few days later.
-9. **Record:** a [`LOG.md`](LOG.md) entry from [`templates/log-entry.md`](templates/log-entry.md); the post in the
-   [`README.md`](README.md) index; the roadmap task done (`mise run posts:todo -- status <id> --set done`).
+9. **Record:** on the post's task, `linkedin.url:` (and `community.url:`), `gate:` and `vars:` comments
+   (`mise run posts:todo -- add --comment "<key>: <value>" --task-id <id>`); the task done
+   (`mise run posts:todo -- status <id> --set done`); `mise run posts:report --write` refreshes the README index.
 10. **Measure:** at 48 h and 7 days, `mise run posts:stats` (dev.to, referrers, repo traffic) and
-    `mise run posts:record -- <slug> linkedin impressions=… reactions=… comments=… reposts=…` (read by hand).
+    `mise run posts:record <post> linkedin impressions=… reactions=… comments=… reposts=…` (read by hand); at 7 days
+    the `log.*` comments.
 
-After the workflow records an article id on your branch, run `git pull` before your next push. The tooling never
-takes a live article offline: to unpublish, do it by hand on dev.to.
+The tooling never takes a live article offline: to unpublish, do it by hand on dev.to.
+
+## Metadata in TODO.yaml
+
+Every fact about a post lives in [`TODO.yaml`](TODO.yaml), on the post's task: the task is tagged `post`, its
+`position` is the post's folder (`docs/posts/articles/<YYYY-MM-DD>-<slug>`), its status and due date are the post's.
+Facts are comments on that task, one `key: value` each, appended (never edited) with
+`mise run posts:todo -- add --comment "<key>: <value>" --task-id <id>` or by the tasks. A task tagged `series` holds
+account-wide numbers. The todo CLI drops any field it doesn't know, which is why nothing else is stored there.
+The post's files (`post.md`, `linkedin.md`, `community.md`, `review.md`, `images/`) are found by convention in its
+folder. `mise run posts:report` prints everything and flags any comment outside the schema.
+
+| Key | Value | Written by |
+| --- | --- | --- |
+| `devto.id` | the article id | `posts:push` (when it creates one), `posts:stats` (when it finds one by title) |
+| `devto.url`, `linkedin.url`, `community.url` | a URL | `posts:push` / the author |
+| `stats` | `<YYYY-MM-DD> <platform> <metric>=<n> [<metric>=<n>…] (<api\|manual>)` | `posts:stats`, `posts:record` |
+| `gate` | `<YYYY-MM-DD> <PASS\|BLOCKED> stepps=<n>/12` | the gate run |
+| `vars` | `hook=… cover=… images=… linkedin=… lang=… day=… tags=…` | the author / the gate |
+| `log.keep`, `log.change`, `log.best-comment` | text | the author at 7 days |
+| `pick` | `<YYYY-MM-DD> keep\|swap <reason> <source>` | the next-pick run, after the author decides |
+| `decision` | `<YYYY-MM-DD> <text>` | recalibrations (series or recal tasks) |
 
 Locally, `mise run posts:push <post>` sends a draft from a pushed branch (or publishes from `main`); the token comes
 from `DEVTO_TOKEN` or gopass `tokens/dev.to`.
@@ -225,7 +248,7 @@ The story and the RECIPE written natively for one community, in plain markdown, 
 The schedule is the default, not a contract. At the start of each cycle (the Tuesday before publishing), an agent
 re-evaluates the next pick against the current context, and the author approves the result.
 
-**Inputs:** the scheduled topic; the ready topics in the schedule and the backlog; the latest `LOG.md` entries
+**Inputs:** the scheduled topic; the ready topics in the schedule and the backlog; the latest metadata of the past posts (`mise run posts:report`)
 (questions from comments, what worked); and a news check: a web search over the past two weeks for each candidate's
 subject (for example "secrets leaked GitHub", "restic", "Conventional Commits", "AI coding agents"), plus the
 release notes of the tools involved.
@@ -248,7 +271,7 @@ release notes of the tools involved.
 - **No pick for news alone:** a timely topic that fails the information-gain gate or isn't ready waits; an
   in-between LinkedIn post can react to the news instead.
 - **The author decides.** The agent proposes: keep or swap, with one line of reason and the source. The decision
-  goes into `LOG.md`.
+  becomes a `pick:` comment on the topic's task.
 
 ## Communities
 
@@ -336,7 +359,7 @@ Thursday–Saturday of the same week; the in-between LinkedIn post the Tuesday a
 
 Per topic, work starts the Tuesday before publishing: next-pick check (see **Choosing the next topic**) → plan →
 draft and images → cold read → author review → publish. Before topic 1, a one-off setup: the stats task, the devto-cli wiring, the shared image tools, and
-`LOG.md` seeded with the Omarchy post's dev.to numbers.
+the baseline recorded as comments on the Omarchy post task and the series task.
 
 ## Success criteria
 
@@ -390,7 +413,8 @@ an engagement rate at or above the baseline, and at least 3 comments with substa
 ## Tuning each element
 
 With one post a fortnight, nothing here is statistically sound: **change one thing at a time, and write it down**.
-Each `LOG.md` entry records the variables of the post, the hypothesis for the one that changed, and the numbers.
+Each post's task records its variables (`vars:`), the hypothesis for the one that changed (`note:`), and the numbers
+(`stats:`).
 
 | Element | Variables recorded | Measured by | Rule |
 | --- | --- | --- | --- |
@@ -405,8 +429,8 @@ Each `LOG.md` entry records the variables of the post, the hypothesis for the on
 
 ## Recalibration
 
-- **Per post (10 minutes, at the 7-day mark):** a `LOG.md` entry: date, links, variables, STEPPS score, the numbers,
-  the best comment, one thing to keep, one thing to change.
+- **Per post (10 minutes, at the 7-day mark):** comments on the post's task: links, `vars:`, `gate:`, the numbers,
+  `log.best-comment:`, `log.keep:` and `log.change:`.
 - **When a post underperforms the baseline by half or more,** diagnose in this order: hook → image/format →
   publishing time → topic. The topic is the last suspect.
 - **Rules that change the backlog:**
@@ -431,9 +455,9 @@ Each `LOG.md` entry records the variables of the post, the hypothesis for the on
 | Draft the community post | `reddit-posts` (installed) | 90/10, flair, subreddit format |
 | Check shareability | `contagious` (installed) | STEPPS score in the log |
 | Cold read | A fresh agent playing a mid-level developer | See **Success criteria** |
-| Publish to dev.to | The Forem API directly, from bun file tasks in `mise-tasks/posts/`, run locally (`mise run posts:push`) and by `.github/workflows/posts.yml` | A PR that touches a `post.md` creates or updates a **draft** (images from the PR branch), records the `id` on the branch and comments the preview link; the merge to `main` updates the article with images from `main` and the front matter's `published` value. **Merging a PR with `published: true` is the author's publish button.** |
-| dev.to numbers | `mise run posts:stats`: Forem API (`/api/articles/me/all`, `/api/analytics/referrers?article_id=` when available) | Token from gopass `tokens/dev.to` locally and the `DEVTO_TOKEN` repo secret in CI, never in the repo; appends to `docs/posts/stats.csv` |
-| LinkedIn and Reddit numbers | By hand at 48 h and 7 days, about 2 minutes per post | Entered into `LOG.md` |
+| Publish to dev.to | The Forem API directly, from bun file tasks in `mise-tasks/posts/`, run locally (`mise run posts:push`) and by `.github/workflows/posts.yml` | A PR that touches a `post.md` creates or updates a **draft** (images from the PR branch), comments the preview link; the merge to `main` updates the article with images from `main` and the front matter's `published` value. **Merging a PR with `published: true` is the author's publish button.** |
+| dev.to numbers | `mise run posts:stats`: Forem API (`/api/articles/me/all`, `/api/analytics/referrers?article_id=` when available) | Token from gopass `tokens/dev.to` locally and the `DEVTO_TOKEN` repo secret in CI, never in the repo; recorded as `stats:` comments on the posts' tasks in `TODO.yaml` |
+| LinkedIn and Reddit numbers | By hand at 48 h and 7 days, about 2 minutes per post | `mise run posts:record <post> linkedin impressions=… …` |
 | Repo traffic | `gh api repos/roalcantara/dots/traffic/views` in the same stats task | |
 
 The okou `devto` skill was considered and dropped: publish-only, its own tooling, 60 installs, a Snyk warning.
@@ -499,3 +523,11 @@ Newest last. Each recalibration adds its decisions here; the spec is never edite
   pull requests, publishing on merge. devto-cli is not used.
 - The roadmap is `TODO.yaml` (todo CLI, YAML), read by `/wip:resume`. `todo` is pinned in its mise task: it has no
   Homebrew formula, and cargo's `todo-cli` is another crate.
+
+### 2026-11-13 · DRY pass ([design](../superpowers/specs/2026-11-13-content-series-dry-design.md))
+
+- The dev.to token resolves through fnox (`fnox.toml`: gopass `tokens/dev.to`, first line); CI uses the repo secret.
+- Tasks parse their arguments from argv (`parseArgs`), not mise's `usage_*` variables.
+- Posts live in `docs/posts/articles/<YYYY-MM-DD>-<slug>/`; the folder name is the post's id.
+- Every post's metadata is comments on its task in `TODO.yaml`; `stats.csv`, `LOG.md` and the front matter `id:` are
+  gone, and CI no longer commits to the repo. `posts:report` replaces the log and writes the README index.

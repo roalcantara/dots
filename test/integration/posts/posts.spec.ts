@@ -1,16 +1,19 @@
 #!/usr/bin/env bun
 import { describe, expect, it } from "bun:test";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  appendRows,
   articlePayload,
   assertPost,
   checkPost,
+  formatStats,
+  parseComment,
   parseFrontMatter,
   parseRecordArgs,
+  parseStats,
   postOptions,
+  postsFromTodo,
   pushAction,
   pushPreconditions,
   resolveArticleId,
@@ -18,7 +21,7 @@ import {
   rowsFromArticles,
   rowsFromReferrers,
   rowsFromTraffic,
-  setFrontMatterId,
+  type Todo,
   visibleLength,
 } from "../../../mise-tasks/posts/_lib";
 
@@ -42,19 +45,6 @@ describe("parseFrontMatter", () => {
 
   it("returns empty tags and the whole text without front matter", () => {
     expect(parseFrontMatter("no front matter\n")).toEqual({ fm: { tags: [] }, body: "no front matter\n" });
-  });
-});
-
-describe("setFrontMatterId", () => {
-  const text = "---\ntitle: T\npublished: false\n---\n\nbody: keep me\n";
-
-  it("adds the id after the title and keeps the body", () => {
-    const out = setFrontMatterId(text, 123);
-    expect(out).toBe("---\ntitle: T\nid: 123\npublished: false\n---\n\nbody: keep me\n");
-  });
-
-  it("replaces an existing id", () => {
-    expect(setFrontMatterId("---\ntitle: T\nid: 9\n---\nb\n", 10)).toBe("---\ntitle: T\nid: 10\n---\nb\n");
   });
 });
 
@@ -167,9 +157,9 @@ describe("pushAction", () => {
 
 describe("resolveArticleId", () => {
   it("prefers the recorded id, then the same title", () => {
-    expect(resolveArticleId({ tags: [], title: "T" }, [{ id: 7, title: "T" }])).toBe(7);
-    expect(resolveArticleId({ tags: [], title: "T", id: 3 }, [{ id: 7, title: "T" }])).toBe(3);
-    expect(resolveArticleId({ tags: [], title: "New" }, [{ id: 7, title: "T" }])).toBeUndefined();
+    expect(resolveArticleId(undefined, "T", [{ id: 7, title: "T" }])).toBe(7);
+    expect(resolveArticleId(3, "T", [{ id: 7, title: "T" }])).toBe(3);
+    expect(resolveArticleId(undefined, "New", [{ id: 7, title: "T" }])).toBeUndefined();
   });
 });
 
@@ -201,21 +191,6 @@ describe("stats rows", () => {
       .toEqual(["- repo_views=40", "- repo_uniques=9"]);
   });
 
-  it("appends without touching earlier lines", () => {
-    const csv = join(mkdtempSync(join(tmpdir(), "posts-")), "stats.csv");
-    const before = "date,slug,platform,metric,value,source\n2026-01-01,a,devto,views,1,api\n";
-    writeFileSync(csv, before);
-    appendRows(csv, [{ date: "2026-11-13", slug: "b", platform: "devto", metric: "views", value: 2, source: "api" }]);
-    const after = readFileSync(csv, "utf8");
-    expect(after.startsWith(before)).toBe(true);
-    expect(after.slice(before.length)).toBe("2026-11-13,b,devto,views,2,api\n");
-  });
-
-  it("writes the header for a new file", () => {
-    const csv = join(mkdtempSync(join(tmpdir(), "posts-")), "stats.csv");
-    appendRows(csv, []);
-    expect(readFileSync(csv, "utf8")).toBe("date,slug,platform,metric,value,source\n");
-  });
 });
 
 describe("parseRecordArgs", () => {
@@ -262,5 +237,44 @@ describe("postOptions", () => {
   it("rejects unknown flags and a missing post", () => {
     expect(() => postOptions(["2026-11-13-x", "--publish"])).toThrow();
     expect(() => postOptions([])).toThrow();
+  });
+});
+
+describe("TODO.yaml metadata", () => {
+  const todo = Bun.YAML.parse(readFileSync(join(FIX, "TODO.yaml"), "utf8")) as Todo;
+
+  it("reads a comment as key: value, only for known keys", () => {
+    expect(parseComment("devto.id: 5")).toEqual({ key: "devto.id", value: "5" });
+    expect(parseComment("log.best-comment: a: b")).toEqual({ key: "log.best-comment", value: "a: b" });
+    expect(parseComment("great post, loved it")).toBeUndefined();
+    expect(parseComment("colour: blue")).toBeUndefined();
+  });
+
+  it("reads and writes stats lines", () => {
+    const rows = parseStats("2026-11-13 devto views=30 reactions=0 (api)", "p");
+    expect(rows).toEqual([
+      { date: "2026-11-13", slug: "p", platform: "devto", metric: "views", value: 30, source: "api" },
+      { date: "2026-11-13", slug: "p", platform: "devto", metric: "reactions", value: 0, source: "api" },
+    ]);
+    expect(formatStats(rows!)).toEqual(["2026-11-13 devto views=30 reactions=0 (api)"]);
+    for (const bad of ["2026-11-13 myspace views=1 (api)", "2026-11-13 devto likes=1 (api)", "devto views=1 (api)", "2026-11-13 devto (api)"]) {
+      expect(parseStats(bad, "p")).toBeUndefined();
+    }
+  });
+
+  it("groups stats by date, platform and source", () => {
+    const rows = parseStats("2026-11-13 devto views=30 (api)", "p")!.concat(parseStats("2026-11-13 github stars=2 (api)", "-")!);
+    expect(formatStats(rows)).toEqual(["2026-11-13 devto views=30 (api)", "2026-11-13 github stars=2 (api)"]);
+  });
+
+  it("finds the post tasks and their metadata", () => {
+    const posts = postsFromTodo(todo);
+    expect(posts.map((p) => p.dir)).toEqual(["2026-11-12-omarchy-on-macos"]);
+    const [p] = posts;
+    expect(p).toMatchObject({ taskId: "P1", status: "Done", due: "2026-11-12", devtoId: 5021431 });
+    expect(p!.stats.map((r) => `${r.date} ${r.metric}=${r.value}`)).toEqual([
+      "2026-11-13 views=30", "2026-11-13 reactions=0", "2026-11-13 referrer_linkedin=10", "2026-11-14 views=41",
+    ]);
+    expect(p!.invalid).toEqual(["great post, loved it"]);
   });
 });

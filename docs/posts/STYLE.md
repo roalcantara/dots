@@ -2,7 +2,7 @@
 
 How the posts sound and look, and how the gate scores them. The rules come from the
 [playbook](PLAYBOOK.md); this file is what a writer or reviewer keeps open. Voice, look and rubric are tuned
-variables: each recalibration re-evaluates them from the results in [`LOG.md`](LOG.md) and records the change in the
+variables: each recalibration re-evaluates them from the results recorded in [`TODO.yaml`](TODO.yaml) (`mise run posts:report`) and records the change in the
 playbook's Decisions log.
 
 ## Voice

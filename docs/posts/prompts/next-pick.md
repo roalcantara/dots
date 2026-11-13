@@ -10,7 +10,8 @@ You help choose the next post of the dots content series. Work in the repository
 1. Read `docs/posts/PLAYBOOK.md`, the sections "Choosing the next topic", "Topics" and "Communities".
 2. Run `mise run posts:todo -- list` and find the next open `topic-<n>` task (the **scheduled** topic) and the
    other topics that are not done (the **candidates**: the next two scheduled topics and the backlog).
-3. Read the last three entries of `docs/posts/LOG.md`: questions asked in comments, what worked, what to change.
+3. Run `mise run posts:report`: the last posts' numbers, `log.*` lessons and notes (questions asked in comments,
+   what worked, what to change).
 4. For the scheduled topic and each candidate, search the web for the past 14 days: news about the subject (for
    example "secrets leaked GitHub", "restic", "Conventional Commits", "AI coding agents") and releases of the tools
    involved. Keep only credible sources.
@@ -22,7 +23,8 @@ You help choose the next post of the dots content series. Work in the repository
    the theme alternation may break once in a row, never twice; a timely topic that isn't ready or adds nothing new
    waits, and an in-between LinkedIn post can react to the news instead.
 
-Reply with this block, for the author to approve and paste into `docs/posts/LOG.md`:
+Reply with this block, for the author to approve; the decision is then recorded as a `pick:` comment on the topic's
+task:
 
 ```markdown
 ### Next pick · <YYYY-MM-DD>

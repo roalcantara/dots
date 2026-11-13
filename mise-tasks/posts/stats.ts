@@ -1,32 +1,44 @@
 #!/usr/bin/env bun
-//MISE description="Append dev.to and GitHub numbers for every post to docs/posts/stats.csv"
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
-import { appendRows, devto, myArticles, parseFrontMatter, POSTS, SERIES, rowsFromArticles, rowsFromReferrers, rowsFromTraffic, type StatRow, today } from "./_lib";
+//MISE description="Record dev.to numbers, referrers and repo traffic as stats comments in docs/posts/TODO.yaml"
+import {
+  addComment, devto, formatStats, parseFrontMatter, POSTS, myArticles, postsFromTodo, readTodo, resolveArticleId, rowsFromArticles,
+  rowsFromReferrers, rowsFromTraffic, seriesFromTodo, today, type StatRow,
+} from "./_lib";
 
 const date = today();
-const slugById = new Map<number, string>();
-for (const slug of readdirSync(POSTS)) {
-  const p = join(POSTS, slug, "post.md");
-  if (!existsSync(p)) continue;
-  const { fm } = parseFrontMatter(readFileSync(p, "utf8"));
-  if (typeof fm.id === "number") slugById.set(fm.id, slug);
-}
+const todo = readTodo();
+const mine = await myArticles();
+const titles = mine.map((a) => ({ id: a.id as number, title: a.title as string }));
 
-const rows: StatRow[] = rowsFromArticles(await myArticles(), date, slugById);
-for (const [id, slug] of slugById) {
+for (const p of postsFromTodo(todo)) {
+  const { fm } = parseFrontMatter(await Bun.file(`${POSTS}/${p.dir}/post.md`).text());
+  const title = fm.title;
+  const id = resolveArticleId(p.devtoId, title, titles);
+  if (!id) continue;
+  if (!p.devtoId) {
+    addComment(p.taskId, `devto.id: ${id}`);
+    const url = mine.find((a) => a.id === id)?.url;
+    if (url) addComment(p.taskId, `devto.url: ${url}`);
+  }
+  const rows: StatRow[] = rowsFromArticles(mine, date, new Map([[id, p.dir]]));
   try {
-    const found = rowsFromReferrers(await devto(`/analytics/referrers?article_id=${id}`), date, slug);
-    if (!found.length) console.log(`note: no referrer data for ${slug}`);
-    rows.push(...found);
+    rows.push(...rowsFromReferrers(await devto(`/analytics/referrers?article_id=${id}`), date, p.dir));
   } catch {
-    console.log(`note: no referrer data for ${slug}`);
+    console.log(`note: no referrer data for ${p.dir}`);
+  }
+  for (const line of formatStats(rows)) {
+    addComment(p.taskId, `stats: ${line}`);
+    console.log(`${p.dir}: ${line}`);
   }
 }
-const gh = Bun.spawnSync(["gh", "api", "repos/roalcantara/dots/traffic/views"], { stdout: "pipe", stderr: "pipe" });
-if (gh.exitCode === 0) rows.push(...rowsFromTraffic(JSON.parse(gh.stdout.toString()), date));
-else console.log("note: no GitHub traffic (gh api failed)");
 
-appendRows(join(SERIES, "stats.csv"), rows);
-for (const r of rows) console.log(`${r.slug.padEnd(24)} ${r.platform.padEnd(7)} ${r.metric.padEnd(18)} ${r.value}`);
-console.log(`${rows.length} row(s) appended to docs/posts/stats.csv`);
+const series = seriesFromTodo(todo);
+const gh = Bun.spawnSync(["gh", "api", "repos/roalcantara/dots/traffic/views"], { stdout: "pipe", stderr: "pipe" });
+if (!series.taskId) console.log('note: no task tagged "series"; repo traffic not recorded');
+else if (gh.exitCode !== 0) console.log("note: no GitHub traffic (gh api failed)");
+else {
+  for (const line of formatStats(rowsFromTraffic(JSON.parse(gh.stdout.toString()), date))) {
+    addComment(series.taskId, `stats: ${line}`);
+    console.log(`series: ${line}`);
+  }
+}
