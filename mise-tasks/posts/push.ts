@@ -6,7 +6,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  articlePayload, assertSlug, checkPost, devto, gitState, myArticles, parseFrontMatter, POSTS, pushPreconditions,
+  articlePayload, assertSlug, checkPost, devto, gitState, myArticles, parseFrontMatter, POSTS, pushAction, pushPreconditions,
   resolveArticleId, setFrontMatterId,
 } from "./_lib";
 
@@ -34,11 +34,16 @@ if (process.env.CI !== "true") {
 }
 const ref = process.env.usage_ref ?? opt("ref") ?? state.branch;
 
-const mine = (await myArticles()).map((a) => ({ id: a.id as number, title: a.title as string }));
+const mine = (await myArticles()).map((a) => ({ id: a.id as number, title: a.title as string, published: a.published === true }));
 const id = resolveArticleId(fm, mine);
-const payload = articlePayload(fm, body, { slug, ref, draft });
+const live = mine.find((a) => a.id === id)?.published === true;
+if (id && pushAction({ draft, live }) === "skip") {
+  console.log(`${slug} live https://dev.to/api/articles/${id} (published: updated from main on merge)`);
+  process.exit(0);
+}
+const payload = articlePayload(fm, body, { slug, ref, draft, live });
 const saved = (await devto(id ? `/articles/${id}` : "/articles", { method: id ? "PUT" : "POST", body: payload })) as {
   id: number; url: string;
 };
 if (fm.id !== saved.id) writeFileSync(path, setFrontMatterId(text, saved.id));
-console.log(`${slug} ${payload.article.published ? "published" : "draft"} ${saved.url}`);
+console.log(`${slug} ${payload.article.published ?? live ? "published" : "draft"} ${saved.url}`);

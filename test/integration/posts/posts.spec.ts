@@ -10,10 +10,12 @@ import {
   checkPost,
   parseFrontMatter,
   parseRecordArgs,
+  pushAction,
   pushPreconditions,
   resolveArticleId,
   rewriteImages,
   rowsFromArticles,
+  rowsFromReferrers,
   rowsFromTraffic,
   setFrontMatterId,
   visibleLength,
@@ -119,6 +121,14 @@ describe("articlePayload", () => {
     expect(article).toMatchObject({ title: "T", description: "D", tags: ["ai"] });
   });
 
+  it("never takes a live article offline", () => {
+    const live = { slug: "s", ref: "feat/x", draft: true, live: true };
+    expect("published" in articlePayload(fm, "b", live).article).toBe(false);
+    expect("published" in articlePayload({ ...fm, published: false }, "b", { ...live, ref: "main", draft: false }).article)
+      .toBe(false);
+    expect(articlePayload(fm, "b", { ...live, ref: "main", draft: false }).article.published).toBe(true);
+  });
+
   it("is a draft when the front matter says nothing", () => {
     expect(articlePayload({ title: "T", tags: [] }, "b", { slug: "s", ref: "main", draft: false }).article.published).toBe(false);
   });
@@ -144,6 +154,14 @@ describe("pushPreconditions", () => {
   });
 });
 
+describe("pushAction", () => {
+  it("leaves a live article alone on a pull request; the merge updates it", () => {
+    expect(pushAction({ draft: true, live: true })).toBe("skip");
+    expect(pushAction({ draft: true, live: false })).toBe("send");
+    expect(pushAction({ draft: false, live: true })).toBe("send");
+  });
+});
+
 describe("resolveArticleId", () => {
   it("prefers the recorded id, then the same title", () => {
     expect(resolveArticleId({ tags: [], title: "T" }, [{ id: 7, title: "T" }])).toBe(7);
@@ -165,6 +183,14 @@ describe("stats rows", () => {
     ]);
     expect(rows.filter((x) => x.slug === "no-views").map((x) => x.metric)).toEqual(["reactions", "comments"]);
     expect(rows.every((x) => x.platform === "devto" && x.source === "api")).toBe(true);
+  });
+
+  it("reads referrers only when dev.to returns them", () => {
+    const refs = { domains: [{ domain: "www.linkedin.com", count: 4 }, { domain: "lnkd.in", count: 1 }, { domain: "old.reddit.com", count: 2 }, { domain: "google.com", count: 9 }] };
+    expect(rowsFromReferrers(refs, "2026-11-13", "s").map((x) => `${x.metric}=${x.value}`))
+      .toEqual(["referrer_linkedin=5", "referrer_reddit=2"]);
+    expect(rowsFromReferrers({}, "2026-11-13", "s")).toEqual([]);
+    expect(rowsFromReferrers(null, "2026-11-13", "s")).toEqual([]);
   });
 
   it("reads repo traffic as account-wide rows", () => {

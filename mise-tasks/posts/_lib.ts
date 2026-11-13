@@ -146,24 +146,27 @@ export function rewriteImages(markdown: string, slug: string, ref: string): stri
 export type Article = {
   title: string;
   body_markdown: string;
-  published: boolean;
+  published?: boolean;
   tags: string[];
   description?: string;
   main_image?: string;
 };
 
-// A pull request always sends a draft; only the front matter of what reached main can publish.
+// A pull request always sends a draft; only the front matter of what reached main can publish. The tooling never
+// takes a live article offline: for one that is already published, `published` is sent only to keep it true
+// (unpublishing is done by hand on dev.to).
 export function articlePayload(
   fm: FrontMatter,
   body: string,
-  o: { slug: string; ref: string; draft: boolean },
+  o: { slug: string; ref: string; draft: boolean; live?: boolean },
 ): { article: Article } {
   const article: Article = {
     title: fm.title ?? "",
     body_markdown: rewriteImages(body, o.slug, o.ref),
-    published: o.draft ? false : fm.published === true,
     tags: fm.tags,
   };
+  const published = o.draft ? false : fm.published === true;
+  if (published || !o.live) article.published = published;
   if (fm.description) article.description = fm.description;
   if (fm.cover_image) {
     article.main_image = relative(fm.cover_image) ? resolve(fm.cover_image, o.slug, o.ref) : fm.cover_image;
@@ -181,6 +184,12 @@ export function pushPreconditions(state: GitState, draft: boolean): Finding[] {
   else if (state.ahead > 0) block("unpushed", `${state.ahead} commit(s) not pushed yet`);
   if (!draft && state.branch !== "main") block("publish-from-main", "publish only from main (merge the PR)");
   return out;
+}
+
+// A pull request never touches a live article: its text would change in public before the merge. The merge's run
+// updates it from main.
+export function pushAction(o: { draft: boolean; live: boolean }): "skip" | "send" {
+  return o.draft && o.live ? "skip" : "send";
 }
 
 // The recorded id wins; otherwise an article of mine with the same title (a post published by hand, or a merge that
@@ -215,6 +224,20 @@ export function rowsFromArticles(json: unknown, date: string, slugById: Map<numb
     }
   }
   return rows;
+}
+
+// Visitors to one article from LinkedIn and Reddit; no rows when dev.to returns no referrer list.
+export function rowsFromReferrers(json: unknown, date: string, slug: string): StatRow[] {
+  const domains = (json as { domains?: unknown } | null)?.domains;
+  if (!Array.isArray(domains)) return [];
+  const sum = (re: RegExp) =>
+    (domains as { domain?: unknown; count?: unknown }[])
+      .filter((d) => typeof d.domain === "string" && re.test(d.domain))
+      .reduce((n, d) => n + (num(d.count) ?? 0), 0);
+  return [
+    { date, slug, platform: "devto", metric: "referrer_linkedin", value: sum(/(^|\.)(linkedin\.com|lnkd\.in)$/), source: "api" },
+    { date, slug, platform: "devto", metric: "referrer_reddit", value: sum(/(^|\.)reddit\.com$/), source: "api" },
+  ];
 }
 
 export function rowsFromTraffic(json: unknown, date: string): StatRow[] {

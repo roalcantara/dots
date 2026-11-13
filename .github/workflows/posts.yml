@@ -14,9 +14,10 @@ on:
     branches: [main]
     paths: ['docs/posts/*/post.md', 'docs/posts/*/images/**']
 
+# One queue for every run: a pull request run and the run of its merge must never overlap.
 concurrency:
   cancel-in-progress: false
-  group: 'posts-${{ github.ref }}'
+  group: posts
 
 defaults:
   run:
@@ -31,10 +32,9 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     permissions:
-      contents: write # record the article ids on the pull request branch
+      contents: write # record the article ids on the branch (or main)
       pull-requests: write # comment the preview links
     env:
-      DEVTO_TOKEN: ${{ secrets.DEVTO_TOKEN }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout
@@ -42,6 +42,18 @@ jobs:
         with:
           ref: ${{ github.head_ref || github.ref }}
           fetch-depth: 0
+
+      - name: Stop if the pull request is no longer open
+        id: open
+        env:
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          state=open
+          if [[ '${{ github.event_name }}' == 'pull_request' ]]; then
+            [[ "$(gh pr view "${PR}" --json state -q .state)" == OPEN ]] || state=closed
+          fi
+          echo "Pull request: ${state}"
+          echo "state=${state}" >> "${GITHUB_OUTPUT}"
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
@@ -67,8 +79,9 @@ jobs:
           { echo 'slugs<<EOF'; echo "${slugs}"; echo 'EOF'; } >> "${GITHUB_OUTPUT}"
 
       - name: Push to dev.to
-        if: steps.changed.outputs.slugs != ''
+        if: steps.open.outputs.state == 'open' && steps.changed.outputs.slugs != ''
         env:
+          DEVTO_TOKEN: ${{ secrets.DEVTO_TOKEN }}
           SLUGS: ${{ steps.changed.outputs.slugs }}
           REF: ${{ github.head_ref || 'main' }}
         run: |
@@ -80,18 +93,28 @@ jobs:
             bun mise-tasks/posts/push.ts "${slug}" --ref "${REF}" "${draft[@]}" | tee -a "${RUNNER_TEMP}/results.txt"
           done <<< "${SLUGS}"
 
-      - name: Record the article ids on the branch
-        if: github.event_name == 'pull_request' && steps.changed.outputs.slugs != ''
+      # On a pull request the ids land on its branch (pull before your next push); on main, when an article was
+      # created there (a fork, a direct push, or a merge that beat the pull request run). Pushes made with the
+      # default token start no workflow, so this never loops.
+      - name: Record the article ids
+        if: steps.open.outputs.state == 'open' && steps.changed.outputs.slugs != ''
+        env:
+          BRANCH: ${{ github.head_ref || 'main' }}
         run: |
           git add docs/posts/*/post.md
           if git diff --cached --quiet; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'chore(posts): Record dev.to ids'
-          git push
+          git commit -m 'chore(posts): Record dev.to ids [skip ci]'
+          for attempt in 1 2 3; do
+            git push origin "HEAD:${BRANCH}" && exit 0
+            echo "push rejected (attempt ${attempt}); rebasing on ${BRANCH}"
+            git pull --rebase origin "${BRANCH}"
+          done
+          exit 1
 
       - name: Comment the preview links
-        if: github.event_name == 'pull_request' && steps.changed.outputs.slugs != ''
+        if: github.event_name == 'pull_request' && steps.open.outputs.state == 'open' && steps.changed.outputs.slugs != ''
         env:
           PR: ${{ github.event.pull_request.number }}
         run: |

@@ -25,6 +25,9 @@ roadmap in [`TODO.yaml`](TODO.yaml) (`mise run posts:todo -- list`, or `mise run
 10. **Measure:** at 48 h and 7 days, `mise run posts:stats` (dev.to, referrers, repo traffic) and
     `mise run posts:record -- <slug> linkedin impressions=… reactions=… comments=… reposts=…` (read by hand).
 
+After the workflow records an article id on your branch, run `git pull` before your next push. The tooling never
+takes a live article offline: to unpublish, do it by hand on dev.to.
+
 Locally, `mise run posts:push <slug>` sends a draft from a pushed branch (or publishes from `main`); the token comes
 from `DEVTO_TOKEN` or gopass `tokens/dev.to`.
 

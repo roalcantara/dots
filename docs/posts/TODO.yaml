@@ -408,7 +408,7 @@ tasks:
   created: 2026-11-13T13:29:55.456117
 - id: hjWv
   status: Todo
-  description: 'Omarchy post: blur the private repo name (kb-raycast, ~/Work/kb) in 01-desktop and 04-zoom, then republish'
+  description: 'Omarchy post: blur the private repo name in the table of 01-desktop and 04-zoom, then republish (see LOG.md)'
   due: 2026-11-14T12:00:00
   actors:
   - 7lt7

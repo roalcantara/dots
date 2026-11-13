@@ -2,7 +2,7 @@
 //MISE description="Append dev.to and GitHub numbers for every post to docs/posts/stats.csv"
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { appendRows, devto, myArticles, parseFrontMatter, POSTS, rowsFromArticles, rowsFromTraffic, type StatRow, today } from "./_lib";
+import { appendRows, devto, myArticles, parseFrontMatter, POSTS, rowsFromArticles, rowsFromReferrers, rowsFromTraffic, type StatRow, today } from "./_lib";
 
 const date = today();
 const slugById = new Map<number, string>();
@@ -16,10 +16,9 @@ for (const slug of readdirSync(POSTS)) {
 const rows: StatRow[] = rowsFromArticles(await myArticles(), date, slugById);
 for (const [id, slug] of slugById) {
   try {
-    const refs = (await devto(`/analytics/referrers?article_id=${id}`)) as { domains?: { domain: string; count: number }[] };
-    const sum = (re: RegExp) => (refs.domains ?? []).filter((d) => re.test(d.domain)).reduce((n, d) => n + d.count, 0);
-    rows.push({ date, slug, platform: "devto", metric: "referrer_linkedin", value: sum(/(^|\.)(linkedin\.com|lnkd\.in)$/), source: "api" });
-    rows.push({ date, slug, platform: "devto", metric: "referrer_reddit", value: sum(/(^|\.)reddit\.com$/), source: "api" });
+    const found = rowsFromReferrers(await devto(`/analytics/referrers?article_id=${id}`), date, slug);
+    if (!found.length) console.log(`note: no referrer data for ${slug}`);
+    rows.push(...found);
   } catch {
     console.log(`note: no referrer data for ${slug}`);
   }
