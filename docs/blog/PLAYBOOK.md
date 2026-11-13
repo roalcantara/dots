@@ -7,27 +7,35 @@ visuals live in [`STYLE.md`](STYLE.md). [`TODO.yaml`](TODO.yaml) holds the roadm
 
 ## How a post moves
 
-1. **Pick:** run [`prompts/next-pick.md`](prompts/next-pick.md) the Tuesday before; the author approves keep or
-   swap; the decision becomes a `pick:` comment on the topic's task.
-2. **Branch:** `feat/post-<slug>`; copy [`templates/`](templates/) into `docs/blog/posts/<YYYY-MM-DD>-<slug>/`,
-   the date being the planned publish date (never renamed once published: it is in the image URLs).
-3. **Draft:** `post.md` (skill `technical-article-writer`), `linkedin.md` (`linkedin-ghostwriting`), `community.md`
-   (`reddit-posts`), images with [`tools/`](tools/) (unblurred captures in `raw/`, never committed).
-4. **Check:** `mise run blog:check <post>` until there are no blocks.
-5. **Gate:** a fresh agent runs [`prompts/gate.md`](prompts/gate.md) and writes `review.md`; fix every **Must fix**,
-   take the **Consider** items you agree with.
-6. **Draft on dev.to:** open a PR. The `Blog` workflow pushes a dev.to draft (images from the branch) and comments
-   the preview link; every push updates the same draft. CI never writes the repo: the article is found by title
-   until a local `blog:push` or `blog:stats` records its `devto.id:`.
-7. **Publish:** set `published: true`, push, merge. The run on `main` publishes the article with images from `main`.
-8. **LinkedIn (by hand):** the post, then the first comment with the dev.to link; stay for replies. Community post a
-   few days later.
-9. **Record:** on the post's task, `linkedin.url:` (and `community.url:`), `gate:` and `vars:` comments
-   (`mise run blog:todo -- add --comment "<key>: <value>" --task-id <id>`); the task done
-   (`mise run blog:todo -- status <id> --set done`); `mise run blog:report --write` refreshes the README index.
-10. **Measure:** at 48 h and 7 days, `mise run blog:stats` (dev.to, referrers, repo traffic) and
-    `mise run blog:record <post> linkedin impressions=… reactions=… comments=… reposts=…` (read by hand); at 7 days
-    the `log.*` comments.
+Each step is one command: `mise run blog:<task>` for the mechanical ones, `/blog:<command>` (agent commands in
+[`.agents/commands/blog/`](../../.agents/commands/blog)) for the ones that need judgment. `mise run blog:status`
+(or `/blog:next`) tells where every post stands and what comes next.
+
+1. **Pick** (the Tuesday before): `/blog:pick [note=…]` weighs the schedule, the news and the comments, the author
+   decides keep or swap, and it records a `pick:` comment.
+2. **Start:** `mise run blog:new <slug> [--task <id>]` branches `feat/post-<slug>` from `main`, copies the templates
+   into `docs/blog/posts/<YYYY-MM-DD>-<slug>/` (the date is the planned publish date, never renamed once published:
+   it is in the image URLs) and points the task at the folder.
+3. **Draft:** `/blog:draft [note=…]` writes `post.md`, `linkedin.md` and, from topic 2, `community.md` from the
+   topic's sources, leaving `<author: …>` where only the author knows the story.
+4. **Images:** `mise run blog:cover <post> --title … --keys …`; captures in `raw/` (never committed), framed with
+   [`tools/frame.py`](tools/frame.py).
+5. **Check and gate:** `mise run blog:check <post>` until there are no blocks, then `/blog:gate`: a fresh agent
+   writes `review.md` (blocking only for safety, anti-goals and a broken RECIPE) and the verdict is recorded.
+6. **Pull request:** `/blog:pr` (only after a fresh PASS) commits, pushes the post branch and opens the PR with its
+   title and body. The `Blog` workflow pushes a dev.to draft (images from the branch) and comments the preview
+   link; every push updates the same draft. CI never writes the repo: the article is found by its
+   `<!-- dots:<post> -->` marker, then by title, until a local `blog:push` or `blog:stats` records its `devto.id:`.
+7. **Publish:** replace any `<author: …>` markers, `mise run blog:publish` (checks the gate, sets `published: true`,
+   pushes), then **merge** (yours). The run on `main` publishes the article with images from `main`.
+8. **Share:** `/blog:share` prints the LinkedIn post (copied) and the first comment with the dev.to link; post them by
+   hand and stay for replies. `/blog:share linkedin=<url>` (or `mise run blog:done <post> --linkedin <url>`) records
+   the URLs and numbers, closes the task and refreshes the README index. Community post a few days later.
+9. **Measure:** `mise run blog:stats` at 48 h; `/blog:retro` at 7 days records the numbers (LinkedIn's read by hand)
+   and the `log.*` lessons.
+
+Writes after the merge (`blog:done`, `blog:stats`, `blog:record`, `/blog:retro`, `/blog:pick`) commit locally on the
+current branch and stop: you push. Agent commands never merge, push to `main` or publish.
 
 The tooling never takes a live article offline: to unpublish, do it by hand on dev.to.
 
@@ -49,7 +57,7 @@ folder. `mise run blog:report` prints everything and flags any comment outside t
 | `gate` | `<YYYY-MM-DD> <PASS\|BLOCKED> stepps=<n>/12` | the gate run |
 | `vars` | `hook=… cover=… images=… linkedin=… lang=… day=… tags=…` | the author / the gate |
 | `log.keep`, `log.change`, `log.best-comment` | text | the author at 7 days |
-| `pick` | `<YYYY-MM-DD> keep\|swap <reason> <source>` | the next-pick run, after the author decides |
+| `pick` | `<YYYY-MM-DD> keep\|swap <reason> <source>` | `/blog:pick`, after the author decides |
 | `decision` | `<YYYY-MM-DD> <text>` | recalibrations (series or recal tasks) |
 
 Locally, `mise run blog:push <post>` sends a draft from a pushed branch (or publishes from `main`); the token comes
@@ -357,7 +365,7 @@ Thursday–Saturday of the same week; the in-between LinkedIn post the Tuesday a
 | 2027-03-02 | 7. mise profiles | r/commandline | the `miserc.local.toml` gotcha |
 | 2027-03-16 | 8. Docker images with CST | r/docker | **recalibration 2: order the backlog** |
 
-Per topic, work starts the Tuesday before publishing: next-pick check (see **Choosing the next topic**) → plan →
+Per topic, work starts the Tuesday before publishing: `/blog:pick` (see **Choosing the next topic**) → plan →
 draft and images → cold read → author review → publish. Before topic 1, a one-off setup: the stats task, the devto-cli wiring, the shared image tools, and
 the baseline recorded as comments on the Omarchy post task and the series task.
 
@@ -531,3 +539,11 @@ Newest last. Each recalibration adds its decisions here; the spec is never edite
 - Posts live in `docs/blog/posts/<YYYY-MM-DD>-<slug>/`; the folder name is the post's id.
 - Every post's metadata is comments on its task in `TODO.yaml`; `stats.csv`, `LOG.md` and the front matter `id:` are
   gone, and CI no longer commits to the repo. `blog:report` replaces the log and writes the README index.
+
+### 2026-11-13 · one command per step ([design](../superpowers/specs/2026-11-13-blog-commands-design.md))
+
+- Mise tasks are `blog:*` (`.mise/tasks/blog/`); agent commands `/blog:*` live in `.agents/commands/blog/` (read
+  through a `.claude/commands` symlink); `docs/blog/prompts/` moved into `/blog:pick` and `/blog:gate`.
+- `blog:status` and `/blog:next` compute each post's stage; `/blog:pr` opens the PR with its title and body; merging
+  and LinkedIn stay the author's; writes after the merge commit locally and stop.
+- Enforcement is the commands' instructions plus `allowed-tools` (no deny rules), by the author's choice.

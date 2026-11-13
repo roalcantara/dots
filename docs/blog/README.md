@@ -18,31 +18,24 @@ rubric) · [TODO.yaml](TODO.yaml) (the roadmap, and every post's links, numbers 
 
 ### QUICK REFERENCE
 
-From a topic on the roadmap to its numbers a week later. `<post>` is the post's folder, `YYYY-MM-DD-slug`; `<id>` is
-its task in `TODO.yaml`. The details are in [PLAYBOOK.md](PLAYBOOK.md), "How a post moves".
+One command per step; `mise run blog:status` (or `/blog:next`) says where each post stands and which comes next.
+`<post>` is the post's folder, `YYYY-MM-DD-slug`; inside its `feat/post-<slug>` branch it can be left out. Details:
+[PLAYBOOK.md](PLAYBOOK.md), "How a post moves".
 
-1. See what's next: `mise run blog:todo -- list` (or `mise run blog:todo -- dashboard`).
-2. The Tuesday before, have an agent run [`prompts/next-pick.md`](prompts/next-pick.md); decide keep or swap and record
-   it: `mise run blog:todo -- add --comment "pick: <date> keep <reason>" --task-id <id>`.
-3. Branch `feat/post-<slug>`, copy [`templates/`](templates/) into `posts/<post>/`, and point the task at it:
-   `mise run blog:todo -- update <id> --tag post,topic-<n> --position docs/blog/posts/<post>`.
-4. Draft `post.md` (skill `technical-article-writer`), `linkedin.md` (`linkedin-ghostwriting`) and, from topic 2,
-   `community.md` (`reddit-posts`).
-5. Make the images, from the repo root: `uv run --with pillow docs/blog/tools/header.py
-   docs/blog/posts/<post>/images/00-cover.png --title … --series <n> --keys …`; captures go in
-   `docs/blog/posts/<post>/raw/`, framed (and blurred where sensitive) with `docs/blog/tools/frame.py`.
-6. Check until there are no blocks: `mise run blog:check <post>`.
-7. Have a fresh agent run [`prompts/gate.md`](prompts/gate.md) → `posts/<post>/review.md`; fix every **Must fix**,
-   take the **Consider** items you agree with, and record `gate:` and `vars:` comments on the task.
-8. Open a pull request: the `Blog` workflow creates the dev.to draft and comments its preview link; every push
-   updates it.
-9. Publish: set `published: true` in `post.md`, push, merge. The run on `main` publishes it with images from `main`.
-10. Post on LinkedIn (`linkedin.md`), then the first comment with the dev.to link; stay for replies. Community post a
-    few days later.
-11. Record: `mise run blog:stats` (dev.to id and numbers), `linkedin.url:` and `community.url:` comments, the task
-    done (`mise run blog:todo -- status <id> --set done`), and `mise run blog:report --write` for the index above.
-12. At 48 hours and 7 days: `mise run blog:stats` and
-    `mise run blog:record <post> linkedin impressions=… reactions=… comments=… reposts=…`; at 7 days, the
-    `log.keep:`, `log.change:` and `log.best-comment:` comments.
+1. `/blog:pick [note=…]`: choose the next topic (schedule, news, comments); you decide keep or swap.
+2. `mise run blog:new <slug> [--task <id>]`: branch `feat/post-<slug>`, copy the templates, point the task at the
+   folder.
+3. `/blog:draft [note=…]`: draft the post, the LinkedIn post and the community post; `<author: …>` marks what only
+   you can write.
+4. `mise run blog:cover <post> --title … [--highlight …] [--subtitle …] --keys …`: the cover; captures go in
+   `posts/<post>/raw/`, framed with `docs/blog/tools/frame.py`.
+5. `mise run blog:check <post>`: until there are no blocks.
+6. `/blog:gate`: a fresh agent reviews the post and records the verdict.
+7. `/blog:pr`: commit, push the branch and open the PR (title and body written); check the dev.to draft preview.
+8. `mise run blog:publish`: after replacing any `<author: …>` markers; then **merge the PR** (that publishes it).
+9. `/blog:share`: the LinkedIn post (copied) and the first comment, to post by hand; then
+   `/blog:share linkedin=<url>` records it and closes the task.
+10. `mise run blog:stats` at 48 hours; `/blog:retro` at 7 days (numbers and lessons).
 
-The token comes from [`fnox.toml`](../../fnox.toml) (gopass `tokens/dev.to`); nothing else needs setting up.
+Writes after the merge commit locally and stop: push them when ready. The token comes from
+[`fnox.toml`](../../fnox.toml) (gopass `tokens/dev.to`); nothing else needs setting up.

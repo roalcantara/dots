@@ -13,7 +13,8 @@ and builds reproducible development Docker images under `distros/`.
 | `config/` | Application configurations linked into `~/.config`, Homebrew `Brewfile`, shell helpers (`config/bin`), and mise bootstrap fragments (`config/mise/conf.d/`) |
 | `distros/` | Dockerfiles and Container Structure Test manifests for Debian and Ubuntu images |
 | `docs/` | Canonical documentation, agent specs/plans (`docs/superpowers/`), and the blog (`docs/blog/`: posts, playbook, roadmap) |
-| `.mise/tasks/` | Bun file tasks run by mise (`.mise/tasks/blog/`: `blog:check`, `blog:push`, `blog:stats`, `blog:report`, …) |
+| `.mise/tasks/` | Bun file tasks run by mise (`.mise/tasks/blog/`: `blog:status`, `blog:new`, `blog:check`, `blog:publish`, …) |
+| `.agents/` | Project agent commands (`.agents/commands/blog/`: `/blog:next`, `/blog:pick`, `/blog:draft`, …); `.claude/commands` is a symlink to them |
 | `script/` | Automation scripts (agent skills, restic backups, bootstrap logging, SOPS filter hooks) |
 | `test/` | Verification suite: BDD features (`test/features/`) and Bun integration specs (`test/integration/`) |
 | `.github/` | CI/CD GitHub Actions workflows (`preview.yml`, `publish.yml`, `release.yml`, `blog.yml`) |
@@ -28,7 +29,7 @@ and builds reproducible development Docker images under `distros/`.
 
 Keep every gate green before declaring work complete:
 
-- `mise run test:specs` — runs BDD scenarios and all Bun integration test domains (`bin`, `backup`, `bootstrap`, `agents`, `hooks`).
+- `mise run test:specs` — runs BDD scenarios and all Bun integration test domains (`bin`, `backup`, `bootstrap`, `agents`, `hooks`, `blog`).
 - `hk check --all` — runs repository linters (shellcheck, shfmt, taplo, tombi, hadolint, markdownlint, yamllint, zsh-syntax).
 - `mise run zsh:verify` — runs syntax checks and benchmark verification for Zsh configuration changes.
 - `mise run build --local --distro <d>` and `mise run test --image dots:<d>-<tag> --config distros/<d>/container-structure-test.yml` — required for Dockerfile, CST, or bootstrap changes.

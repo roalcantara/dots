@@ -20,8 +20,8 @@ Code through a `.claude/commands` → `../.agents/commands` symlink. `docs/blog/
   Claude co-author line.
 - Agent commands never merge, push to `main` or publish (prompt + `allowed-tools`, the author's choice).
 - Writes after the merge commit locally (`chore(blog): …`) and stop; the author pushes.
-- Every doc and reference follows the rename; a final search finds no `posts:`, `.mise/tasks/blog`,
-  `prompts/gate.md`, `prompts/next-pick.md` or `blog.yml` outside history.
+- Every doc and reference follows the rename; a final search finds no `posts:`, `.mise/tasks/posts`,
+  `prompts/gate.md`, `prompts/next-pick.md` or `posts.yml` outside history.
 - Gates: `mise run test:specs`, `hk check --all`, actionlint on the workflow.
 
 ## Review Focus

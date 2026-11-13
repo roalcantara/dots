@@ -54,7 +54,7 @@ The series tag is `dots · #<n>` with the topic number; the preflight and any po
 
 ## Rubric
 
-The gate ([`prompts/gate.md`](prompts/gate.md)) fills this in `review.md`. Each check scores **0** (absent or
+The gate (`/blog:gate`, [`.agents/commands/blog/gate.md`](../../.agents/commands/blog/gate.md)) fills this in `review.md`. Each check scores **0** (absent or
 wrong), **1** (present, weak) or **2** (strong, deliberate).
 
 | Check | What earns a 2 | Blocks when |
