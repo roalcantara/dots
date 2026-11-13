@@ -1,5 +1,5 @@
 // Shared code for the posts:* file tasks (docs/posts/PLAYBOOK.md). Not a task: this file is not executable.
-import { existsSync, readFileSync } from "node:fs";
+import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 export type FrontMatter = {
@@ -30,15 +30,16 @@ export function parseFrontMatter(text: string): { fm: FrontMatter; body: string 
   if (!m) return { fm: { tags: [] }, body: text };
   const fm: FrontMatter = { tags: [] };
   let listKey = "";
-  for (const line of m[1].split("\n")) {
+  for (const line of (m[1] ?? "").split("\n")) {
     const item = line.match(/^\s+-\s+(.*)$/);
     if (item && listKey) {
-      (fm[listKey] as string[]).push(String(scalar(item[1])));
+      (fm[listKey] as string[]).push(String(scalar(item[1] ?? "")));
       continue;
     }
     const kv = line.match(/^([A-Za-z_][\w-]*):\s*(.*)$/);
     if (!kv) continue;
-    const [, key, value] = kv;
+    const key = kv[1] ?? "";
+    const value = kv[2] ?? "";
     listKey = "";
     if (key === "tags") fm.tags = list(value);
     else if (value === "") {
@@ -52,7 +53,7 @@ export function parseFrontMatter(text: string): { fm: FrontMatter; body: string 
 export function setFrontMatterId(text: string, id: number): string {
   const m = text.match(FENCE);
   if (!m) throw new Error("no front matter");
-  const lines = m[1].split("\n");
+  const lines = (m[1] ?? "").split("\n");
   const at = lines.findIndex((l) => /^id:/.test(l));
   if (at >= 0) lines[at] = `id: ${id}`;
   else {
@@ -83,7 +84,7 @@ const gotchaCount = (body: string): number => {
   const lines = body.split("\n");
   const at = lines.findIndex((l) => /\*\*Gotchas:\*\*/.test(l));
   if (at < 0) return 0;
-  const inline = lines[at].split(/\*\*Gotchas:\*\*/)[1].split(/\s+·\s+|;\s+/).filter((s) => s.trim()).length;
+  const inline = (lines[at]?.split(/\*\*Gotchas:\*\*/)[1] ?? "").split(/\s+·\s+|;\s+/).filter((s) => s.trim()).length;
   let bullets = 0;
   for (const l of lines.slice(at + 1)) {
     if (!/^\s*[-*]\s+/.test(l)) break;
@@ -127,3 +128,166 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
   }
   return out;
 }
+
+// ---- push -------------------------------------------------------------------------------------------------------
+
+export const REPO = "roalcantara/dots";
+const RAW = (ref: string, slug: string) => `https://raw.githubusercontent.com/${REPO}/${ref}/docs/posts/${slug}`;
+const relative = (url: string) => !/^[a-z][a-z0-9+.-]*:/i.test(url) && !url.startsWith("/") && !url.startsWith("#");
+const resolve = (url: string, slug: string, ref: string) => `${RAW(ref, slug)}/${url.replace(/^\.\//, "")}`;
+
+// Relative image links work in the repo; dev.to needs absolute ones, served from the pushed ref on GitHub.
+export function rewriteImages(markdown: string, slug: string, ref: string): string {
+  return markdown.replace(/(!\[[^\]]*\]\()([^)\s]+)(\))/g, (all, open, url, close) =>
+    relative(url) ? `${open}${resolve(url, slug, ref)}${close}` : all,
+  );
+}
+
+export type Article = {
+  title: string;
+  body_markdown: string;
+  published: boolean;
+  tags: string[];
+  description?: string;
+  main_image?: string;
+};
+
+// A pull request always sends a draft; only the front matter of what reached main can publish.
+export function articlePayload(
+  fm: FrontMatter,
+  body: string,
+  o: { slug: string; ref: string; draft: boolean },
+): { article: Article } {
+  const article: Article = {
+    title: fm.title ?? "",
+    body_markdown: rewriteImages(body, o.slug, o.ref),
+    published: o.draft ? false : fm.published === true,
+    tags: fm.tags,
+  };
+  if (fm.description) article.description = fm.description;
+  if (fm.cover_image) {
+    article.main_image = relative(fm.cover_image) ? resolve(fm.cover_image, o.slug, o.ref) : fm.cover_image;
+  }
+  return { article };
+}
+
+export type GitState = { branch: string; dirty: boolean; ahead: number; upstream: boolean };
+
+export function pushPreconditions(state: GitState, draft: boolean): Finding[] {
+  const out: Finding[] = [];
+  const block = (rule: string, message: string) => out.push({ level: "block", rule, message });
+  if (state.dirty) block("dirty", "commit or stash your changes first: dev.to reads the images from GitHub");
+  if (!state.upstream) block("no-upstream", `push ${state.branch} first: dev.to reads the images from GitHub`);
+  else if (state.ahead > 0) block("unpushed", `${state.ahead} commit(s) not pushed yet`);
+  if (!draft && state.branch !== "main") block("publish-from-main", "publish only from main (merge the PR)");
+  return out;
+}
+
+// The recorded id wins; otherwise an article of mine with the same title (a post published by hand, or a merge that
+// beat the PR job), so the push updates it instead of creating a duplicate.
+export function resolveArticleId(fm: FrontMatter, mine: { id: number; title: string }[]): number | undefined {
+  if (typeof fm.id === "number") return fm.id;
+  return mine.find((a) => a.title === fm.title)?.id;
+}
+
+// ---- numbers ----------------------------------------------------------------------------------------------------
+
+export const PLATFORMS = ["devto", "linkedin", "reddit", "github"] as const;
+export const METRICS = [
+  "views", "reactions", "comments", "impressions", "engagement_rate", "reposts", "saves", "profile_views",
+  "followers", "upvote_ratio", "removed", "referrer_linkedin", "referrer_reddit", "repo_views", "repo_uniques",
+  "stars",
+] as const;
+export type StatRow = { date: string; slug: string; platform: string; metric: string; value: number; source: "api" | "manual" };
+const HEADER = "date,slug,platform,metric,value,source\n";
+
+const num = (v: unknown): number | undefined => (typeof v === "number" && Number.isFinite(v) ? v : undefined);
+
+export function rowsFromArticles(json: unknown, date: string, slugById: Map<number, string>): StatRow[] {
+  if (!Array.isArray(json)) return [];
+  const rows: StatRow[] = [];
+  for (const a of json as Record<string, unknown>[]) {
+    const slug = slugById.get(a.id as number);
+    if (!slug) continue;
+    for (const [metric, field] of [["views", "page_views_count"], ["reactions", "public_reactions_count"], ["comments", "comments_count"]] as const) {
+      const value = num(a[field]);
+      if (value !== undefined) rows.push({ date, slug, platform: "devto", metric, value, source: "api" });
+    }
+  }
+  return rows;
+}
+
+export function rowsFromTraffic(json: unknown, date: string): StatRow[] {
+  const t = (json ?? {}) as Record<string, unknown>;
+  const rows: StatRow[] = [];
+  for (const [metric, field] of [["repo_views", "count"], ["repo_uniques", "uniques"]] as const) {
+    const value = num(t[field]);
+    if (value !== undefined) rows.push({ date, slug: "-", platform: "github", metric, value, source: "api" });
+  }
+  return rows;
+}
+
+export function appendRows(csvPath: string, rows: StatRow[]): void {
+  if (!existsSync(csvPath)) writeFileSync(csvPath, HEADER);
+  const lines = rows.map((r) => `${r.date},${r.slug},${r.platform},${r.metric},${r.value},${r.source}\n`).join("");
+  if (lines) appendFileSync(csvPath, lines);
+}
+
+export function parseRecordArgs(argv: string[], date: string): StatRow[] {
+  const [slug = "", platform = "", ...pairs] = argv;
+  if (!slug) throw new Error("usage: record <slug|-> <platform> metric=value…");
+  if (!(PLATFORMS as readonly string[]).includes(platform)) throw new Error(`unknown platform "${platform}" (${PLATFORMS.join(", ")})`);
+  if (!pairs.length) throw new Error("give at least one metric=value");
+  return pairs.map((pair) => {
+    const [metric = "", raw] = pair.split("=");
+    if (!(METRICS as readonly string[]).includes(metric)) throw new Error(`unknown metric "${metric}" (${METRICS.join(", ")})`);
+    const value = Number(raw);
+    if (raw === undefined || raw === "" || !Number.isFinite(value)) throw new Error(`not a number: ${pair}`);
+    return { date, slug, platform, metric, value, source: "manual" as const };
+  });
+}
+
+// ---- shell side (used by the task files; not unit-tested) -----------------------------------------------------
+
+export const ROOT = join(import.meta.dir, "../..");
+export const POSTS = join(ROOT, "docs/posts");
+
+const run = (cmd: string[]): { ok: boolean; out: string } => {
+  const p = Bun.spawnSync(cmd, { cwd: ROOT, stdout: "pipe", stderr: "pipe" });
+  return { ok: p.exitCode === 0, out: p.stdout.toString().trim() };
+};
+const git = (...args: string[]) => run(["git", "-c", "filter.sops.clean=cat", "-c", "filter.sops.smudge=cat", ...args]);
+
+export function gitState(): GitState {
+  const upstream = git("rev-parse", "--abbrev-ref", "@{u}").ok;
+  return {
+    branch: git("branch", "--show-current").out,
+    dirty: git("status", "--porcelain").out !== "",
+    upstream,
+    ahead: upstream ? Number(git("rev-list", "--count", "@{u}..HEAD").out || 0) : 0,
+  };
+}
+
+// DEVTO_TOKEN from the environment (CI: the repo secret), else gopass. Never printed.
+export function token(): string {
+  const env = process.env.DEVTO_TOKEN?.trim();
+  if (env) return env;
+  const gp = run(["gopass", "show", "-o", "tokens/dev.to"]);
+  if (gp.ok && gp.out) return gp.out;
+  throw new Error("DEVTO_TOKEN is not set and gopass has no tokens/dev.to");
+}
+
+export async function devto(path: string, init: { method?: string; body?: unknown } = {}): Promise<unknown> {
+  const res = await fetch(`https://dev.to/api${path}`, {
+    method: init.method ?? "GET",
+    headers: { "api-key": token(), accept: "application/vnd.forem.api-v1+json", "content-type": "application/json" },
+    body: init.body === undefined ? undefined : JSON.stringify(init.body),
+  });
+  if (!res.ok) throw new Error(`dev.to ${init.method ?? "GET"} ${path}: ${res.status} ${(await res.text()).slice(0, 300)}`);
+  return res.json();
+}
+
+export const myArticles = async (): Promise<Record<string, unknown>[]> =>
+  (await devto("/articles/me/all?per_page=1000")) as Record<string, unknown>[];
+
+export const today = (): string => new Date().toLocaleDateString("sv-SE");

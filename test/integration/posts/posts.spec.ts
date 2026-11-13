@@ -1,11 +1,20 @@
 #!/usr/bin/env bun
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
+  appendRows,
+  articlePayload,
   assertSlug,
   checkPost,
   parseFrontMatter,
+  parseRecordArgs,
+  pushPreconditions,
+  resolveArticleId,
+  rewriteImages,
+  rowsFromArticles,
+  rowsFromTraffic,
   setFrontMatterId,
   visibleLength,
 } from "../../../mise-tasks/posts/_lib";
@@ -84,5 +93,114 @@ describe("assertSlug", () => {
 
   it("rejects folders that are not posts and paths", () => {
     for (const s of ["templates", "tools", "prompts", "", "../x", "a/b"]) expect(() => assertSlug(s)).toThrow();
+  });
+});
+
+describe("rewriteImages", () => {
+  it("points relative images at the ref on GitHub and leaves absolute links alone", () => {
+    const out = rewriteImages("![a](images/x.png) ![c](./images/z.png) ![b](https://e.com/y.png)", "s", "main");
+    const base = "https://raw.githubusercontent.com/roalcantara/dots/main/docs/posts/s/images";
+    expect(out).toBe(`![a](${base}/x.png) ![c](${base}/z.png) ![b](https://e.com/y.png)`);
+  });
+});
+
+describe("articlePayload", () => {
+  const fm = { title: "T", published: true, description: "D", tags: ["ai"], cover_image: "./images/c.png" };
+
+  it("always sends a draft for a pull request", () => {
+    expect(articlePayload(fm, "b", { slug: "s", ref: "feat/x", draft: true }).article.published).toBe(false);
+  });
+
+  it("follows the front matter otherwise, with the cover and images from the ref", () => {
+    const { article } = articlePayload(fm, "![a](images/x.png)", { slug: "s", ref: "main", draft: false });
+    expect(article.published).toBe(true);
+    expect(article.main_image).toBe("https://raw.githubusercontent.com/roalcantara/dots/main/docs/posts/s/images/c.png");
+    expect(article.body_markdown).toContain("/main/docs/posts/s/images/x.png");
+    expect(article).toMatchObject({ title: "T", description: "D", tags: ["ai"] });
+  });
+
+  it("is a draft when the front matter says nothing", () => {
+    expect(articlePayload({ title: "T", tags: [] }, "b", { slug: "s", ref: "main", draft: false }).article.published).toBe(false);
+  });
+});
+
+describe("pushPreconditions", () => {
+  const clean = { branch: "feat/x", dirty: false, ahead: 0, upstream: true };
+  const r = (s: typeof clean, draft: boolean) => pushPreconditions(s, draft).map((f) => f.rule);
+
+  it("publishes only from main", () => {
+    expect(r(clean, false)).toEqual(["publish-from-main"]);
+    expect(r({ ...clean, branch: "main" }, false)).toEqual([]);
+  });
+
+  it("allows a draft from a pushed branch", () => {
+    expect(r(clean, true)).toEqual([]);
+  });
+
+  it("needs a clean, pushed tree either way", () => {
+    expect(r({ ...clean, dirty: true }, true)).toContain("dirty");
+    expect(r({ ...clean, ahead: 2 }, true)).toContain("unpushed");
+    expect(r({ ...clean, upstream: false }, true)).toContain("no-upstream");
+  });
+});
+
+describe("resolveArticleId", () => {
+  it("prefers the recorded id, then the same title", () => {
+    expect(resolveArticleId({ tags: [], title: "T" }, [{ id: 7, title: "T" }])).toBe(7);
+    expect(resolveArticleId({ tags: [], title: "T", id: 3 }, [{ id: 7, title: "T" }])).toBe(3);
+    expect(resolveArticleId({ tags: [], title: "New" }, [{ id: 7, title: "T" }])).toBeUndefined();
+  });
+});
+
+describe("stats rows", () => {
+  const articles = JSON.parse(readFileSync(join(FIX, "articles-me.json"), "utf8"));
+  const slugs = new Map([[101, "good"], [102, "no-views"]]);
+
+  it("records what the API returns and never invents a zero", () => {
+    const rows = rowsFromArticles(articles, "2026-11-13", slugs);
+    expect(rows.filter((x) => x.slug === "good").map((x) => `${x.metric}=${x.value}`)).toEqual([
+      "views=120",
+      "reactions=7",
+      "comments=2",
+    ]);
+    expect(rows.filter((x) => x.slug === "no-views").map((x) => x.metric)).toEqual(["reactions", "comments"]);
+    expect(rows.every((x) => x.platform === "devto" && x.source === "api")).toBe(true);
+  });
+
+  it("reads repo traffic as account-wide rows", () => {
+    expect(rowsFromTraffic({ count: 40, uniques: 9 }, "2026-11-13").map((x) => `${x.slug} ${x.metric}=${x.value}`))
+      .toEqual(["- repo_views=40", "- repo_uniques=9"]);
+  });
+
+  it("appends without touching earlier lines", () => {
+    const csv = join(mkdtempSync(join(tmpdir(), "posts-")), "stats.csv");
+    const before = "date,slug,platform,metric,value,source\n2026-01-01,a,devto,views,1,api\n";
+    writeFileSync(csv, before);
+    appendRows(csv, [{ date: "2026-11-13", slug: "b", platform: "devto", metric: "views", value: 2, source: "api" }]);
+    const after = readFileSync(csv, "utf8");
+    expect(after.startsWith(before)).toBe(true);
+    expect(after.slice(before.length)).toBe("2026-11-13,b,devto,views,2,api\n");
+  });
+
+  it("writes the header for a new file", () => {
+    const csv = join(mkdtempSync(join(tmpdir(), "posts-")), "stats.csv");
+    appendRows(csv, []);
+    expect(readFileSync(csv, "utf8")).toBe("date,slug,platform,metric,value,source\n");
+  });
+});
+
+describe("parseRecordArgs", () => {
+  it("turns metric=value pairs into manual rows", () => {
+    const rows = parseRecordArgs(["zsh-word-split", "linkedin", "impressions=812", "reactions=14"], "2026-11-15");
+    expect(rows).toEqual([
+      { date: "2026-11-15", slug: "zsh-word-split", platform: "linkedin", metric: "impressions", value: 812, source: "manual" },
+      { date: "2026-11-15", slug: "zsh-word-split", platform: "linkedin", metric: "reactions", value: 14, source: "manual" },
+    ]);
+  });
+
+  it("rejects unknown platforms, metrics and values", () => {
+    expect(() => parseRecordArgs(["x", "myspace", "views=1"], "d")).toThrow();
+    expect(() => parseRecordArgs(["x", "linkedin", "likes=1"], "d")).toThrow();
+    expect(() => parseRecordArgs(["x", "linkedin", "impressions=lots"], "d")).toThrow();
   });
 });
