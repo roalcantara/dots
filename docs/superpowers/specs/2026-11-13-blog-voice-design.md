@@ -46,8 +46,15 @@ playbook keeps only what doesn't date; everything that changes lives in `TODO.ya
   science fiction. It frames the real moment ("I felt like Ron with a broken wand"); it never replaces it. The same
   wink can echo once more: the cover's emoji and the terminal's "← aside".
 - The author's existing tics stay welcome (the DISCLAIMER, "**YOU HAVE BEEN WARNED!**", "**NO, SERIOUSLY!**").
-- When the moment isn't known, `/blog:draft` writes `<author: the moment — how you noticed, what it cost>`; a draft
-  never invents it.
+- **`/blog:draft` suggests hooks; the author picks** (author's request). From the repo's evidence (the commits,
+  fixes and notes behind the topic), it proposes **3–5 hook options** of different kinds: a relatable pain, a small
+  confession, a "you won't believe" number from the repo, and one or two framed by a geeky wink from the author's
+  interests. Each option says which repo fact it rests on and what the author must confirm ("did you notice it in a
+  real run?"). It asks the author to pick one, edit it or write their own:
+  - the picked or edited hook goes into the post (and, shortened, into the LinkedIn hook) as the author's own words;
+  - if the author skips, the post keeps `<author: the moment — how you noticed, what it cost>` and the options are
+    kept right below it as an HTML comment (`<!-- hook options: … -->`), so the next session can pick up from them.
+  Options are suggestions, never facts: none goes into the post without the author's pick.
 - STYLE.md's voice table changes "Light humour, rare" to "**One geeky wink per post, always tied to a real moment**".
 
 ### 2. Lived or proven (STEPPS: Practical value; trust)
