@@ -13,7 +13,7 @@ tasks:
   tags:
   - post
   priority: High
-  position: docs/posts/articles/2026-11-12-omarchy-on-macos
+  position: docs/blog/posts/2026-11-12-omarchy-on-macos
 - id: S1
   status: InProgress
   description: 'Series: account-wide numbers and decisions'

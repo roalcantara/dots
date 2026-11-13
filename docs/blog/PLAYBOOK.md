@@ -9,7 +9,7 @@ visuals live in [`STYLE.md`](STYLE.md). [`TODO.yaml`](TODO.yaml) holds the roadm
 
 1. **Pick:** run [`prompts/next-pick.md`](prompts/next-pick.md) the Tuesday before; the author approves keep or
    swap; the decision becomes a `pick:` comment on the topic's task.
-2. **Branch:** `feat/post-<slug>`; copy [`templates/`](templates/) into `docs/posts/articles/<YYYY-MM-DD>-<slug>/`,
+2. **Branch:** `feat/post-<slug>`; copy [`templates/`](templates/) into `docs/blog/posts/<YYYY-MM-DD>-<slug>/`,
    the date being the planned publish date (never renamed once published: it is in the image URLs).
 3. **Draft:** `post.md` (skill `technical-article-writer`), `linkedin.md` (`linkedin-ghostwriting`), `community.md`
    (`reddit-posts`), images with [`tools/`](tools/) (unblurred captures in `raw/`, never committed).
@@ -34,7 +34,7 @@ The tooling never takes a live article offline: to unpublish, do it by hand on d
 ## Metadata in TODO.yaml
 
 Every fact about a post lives in [`TODO.yaml`](TODO.yaml), on the post's task: the task is tagged `post`, its
-`position` is the post's folder (`docs/posts/articles/<YYYY-MM-DD>-<slug>`), its status and due date are the post's.
+`position` is the post's folder (`docs/blog/posts/<YYYY-MM-DD>-<slug>`), its status and due date are the post's.
 Facts are comments on that task, one `key: value` each, appended (never edited) with
 `mise run posts:todo -- add --comment "<key>: <value>" --task-id <id>` or by the tasks. A task tagged `series` holds
 account-wide numbers. The todo CLI drops any field it doesn't know, which is why nothing else is stored there.
@@ -73,7 +73,7 @@ The order means **higher wins when two goals conflict**, not "lower matters less
 
 | # | Goal | What it means | Serves first | One sign it works |
 | --- | --- | --- | --- | --- |
-| 1 | **Knowledge base** | Everything lives in dots: `docs/posts/` and the recipes index, owned and permanent | Future author | The author links a recipe to answer someone instead of re-explaining |
+| 1 | **Knowledge base** | Everything lives in dots: `docs/blog/` and the recipes index, owned and permanent | Future author | The author links a recipe to answer someone instead of re-explaining |
 | 2 | **Lessons learned, as recipes** | Each post is one recipe plus the story of what went wrong | Author, then peers | The author can redo the thing from the RECIPE alone, months later |
 | 3 | **Showing tech skills** | The working repo, tests and decisions are the evidence, not claims | Peers, hiring managers, clients | Comments ask how something works; profile views from posts |
 | 4 | **Personal brand and presence** | Showing up steadily on LinkedIn, dev.to and communities | The network | Followers and inbound messages, month over month |
@@ -99,7 +99,7 @@ much to explain: enough for a peer who has not used the tool, no more.
   tools (`xcg`, `gitx`, `yb`) come last or not at all.
 - **dots is the example, never the headline.** Titles lead with the problem (git, secrets, AI agents, backups);
   dots appears in the body as the working proof.
-- Each dev.to post has a RECIPE block that works on its own. A recipes index in the repo (`docs/posts/README.md`)
+- Each dev.to post has a RECIPE block that works on its own. A recipes index in the repo (`docs/blog/README.md`)
   links every RECIPE.
 - From topic 2, each topic gets **one community post**, written natively for that community, never as spam.
 - dev.to publishing (drafts on PRs, publishing on merge) and dev.to numbers are automated from the repo; LinkedIn and Reddit are posted and measured by
@@ -136,7 +136,7 @@ much to explain: enough for a peer who has not used the tool, no more.
   `cover_image`. Cover 1000 × 420.
 - LinkedIn: about 210 characters show before "see more"; posts with outside links tend to get less reach, so the
   dev.to link goes in the first comment.
-- Images go through the existing pipeline: unblurred captures in `docs/posts/articles/<post>/raw/` (git-ignored), framed
+- Images go through the existing pipeline: unblurred captures in `docs/blog/posts/<post>/raw/` (git-ignored), framed
   output in `images/`.
 
 ## Language
@@ -179,7 +179,7 @@ No primary data was found on whether LinkedIn reduces reach by post language.
 - Keep the loanwords Brazilian developers use (commit, deploy, backup, hook, secrets, dotfiles, pipeline).
 - Same voice: first person, "você", the honest mistakes kept; rewrite the hook naturally, not word for word.
 - Hashtags: 2–3 English tool or topic tags, at most one PT/BR tag.
-- A short EN↔PT glossary in `docs/posts/GLOSSARY.pt.md` keeps the reviews consistent.
+- A short EN↔PT glossary in `docs/blog/GLOSSARY.pt.md` keeps the reviews consistent.
 
 ## The formats
 
@@ -513,7 +513,7 @@ Newest last. Each recalibration adds its decisions here; the spec is never edite
 - A two-week Reddit runway; the Omarchy post to r/unixporn in the December light week.
 - The Forem API from bun file tasks (`mise-tasks/posts/`) and a CI workflow: drafts on PRs, publish on merge.
 - A `posts:stats` task for dev.to numbers, referrers and repo traffic.
-- Moving the image tools to `docs/posts/tools/`; `README.md` and `LOG.md` in `docs/posts/`.
+- Moving the image tools to `docs/blog/tools/`; `README.md` and `LOG.md` in `docs/blog/`.
 
 ### 2026-11-13 · during setup
 
@@ -528,6 +528,6 @@ Newest last. Each recalibration adds its decisions here; the spec is never edite
 
 - The dev.to token resolves through fnox (`fnox.toml`: gopass `tokens/dev.to`, first line); CI uses the repo secret.
 - Tasks parse their arguments from argv (`parseArgs`), not mise's `usage_*` variables.
-- Posts live in `docs/posts/articles/<YYYY-MM-DD>-<slug>/`; the folder name is the post's id.
+- Posts live in `docs/blog/posts/<YYYY-MM-DD>-<slug>/`; the folder name is the post's id.
 - Every post's metadata is comments on its task in `TODO.yaml`; `stats.csv`, `LOG.md` and the front matter `id:` are
   gone, and CI no longer commits to the repo. `posts:report` replaces the log and writes the README index.

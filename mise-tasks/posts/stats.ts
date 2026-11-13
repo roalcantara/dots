@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-//MISE description="Record dev.to numbers, referrers and repo traffic as stats comments in docs/posts/TODO.yaml"
+//MISE description="Record dev.to numbers, referrers and repo traffic as stats comments in docs/blog/TODO.yaml"
 import {
   addComment, devto, formatStats, parseFrontMatter, POSTS, myArticles, postsFromTodo, readTodo, resolveArticleId, rowsFromArticles,
   rowsFromReferrers, rowsFromTraffic, seriesFromTodo, today, type StatRow,

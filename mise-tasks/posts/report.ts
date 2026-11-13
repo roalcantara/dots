@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-//MISE description="Report every post's metadata from docs/posts/TODO.yaml; --write regenerates the README index"
-//USAGE flag "--write" help="Rewrite the index table in docs/posts/README.md"
+//MISE description="Report every post's metadata from docs/blog/TODO.yaml; --write regenerates the README index"
+//USAGE flag "--write" help="Rewrite the index table in docs/blog/README.md"
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
@@ -37,7 +37,7 @@ if (values.write) {
   const rows = posts.map((p) => {
     const fm = parseFrontMatter(readFileSync(join(POSTS, p.dir, "post.md"), "utf8")).fm;
     const link = (key: string, label: string) => (p.meta[key]?.at(-1) ? `[${label}](${p.meta[key]!.at(-1)})` : "—");
-    return `| ${p.dir.slice(0, 10)} | [${fm.title}](articles/${p.dir}/post.md) | ${fm.description ?? ""} | ${link("devto.url", "dev.to")} | ${link("linkedin.url", "LinkedIn")} |`;
+    return `| ${p.dir.slice(0, 10)} | [${fm.title}](posts/${p.dir}/post.md) | ${fm.description ?? ""} | ${link("devto.url", "dev.to")} | ${link("linkedin.url", "LinkedIn")} |`;
   });
   const table = ["| Date | Post | What it is | dev.to | LinkedIn |", "| --- | --- | --- | --- | --- |", ...rows].join("\n");
   const next = text.replace(/<!-- index:start -->[\s\S]*<!-- index:end -->/, `<!-- index:start -->\n${table}\n<!-- index:end -->`);

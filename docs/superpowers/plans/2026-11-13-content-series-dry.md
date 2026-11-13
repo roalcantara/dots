@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans. Steps use checkbox (`- [ ]`) syntax.
 
-**Goal:** fnox for the token, argv instead of `usage_*` variables, `docs/posts/articles/<YYYY-MM-DD>-<slug>/`
+**Goal:** fnox for the token, argv instead of `usage_*` variables, `docs/blog/posts/<YYYY-MM-DD>-<slug>/`
 folders, and every post's metadata as comments on its `TODO.yaml` task.
 
 **Architecture:** `_lib.ts` gains a `TODO.yaml` reader (`Bun.YAML`), the comment schema (parse/format), and a todo
@@ -17,7 +17,7 @@ Conventional Commits, no push without the author). Quality gate: `mise run test:
 
 ## Review Focus
 
-1. A published post moved to `articles/` must keep working: its next push from main serves images from the new path.
+1. A published post moved to `posts/` must keep working: its next push from main serves images from the new path.
 2. A malformed comment must be reported, not crash a report or vanish.
 3. `assertPost` must accept only `YYYY-MM-DD-<slug>` folder names.
 4. CI must never write to the repo.
@@ -36,10 +36,10 @@ Conventional Commits, no push without the author). Quality gate: `mise run test:
 ### Task 2: Chronological folders
 
 - [ ] Tests: `assertPost("2026-11-13-zsh-word-split")` passes; `"zsh-word-split"`, `"templates"`, `"2026-13-01-x"`,
-  `"../x"` throw; `rewriteImages(…, "2026-11-13-x", "main")` → `…/docs/posts/articles/2026-11-13-x/images/…`.
-- [ ] `g mv` the two posts to `articles/2026-11-12-omarchy-on-macos` and `articles/2026-11-13-zsh-word-split` (their
-  `raw/` moved by hand); `.gitignore` → `docs/posts/articles/*/raw/`; the workflow's paths and folder cut; docs.
-- [ ] Commit `refactor(posts): Keep posts in dated folders under docs/posts/articles`.
+  `"../x"` throw; `rewriteImages(…, "2026-11-13-x", "main")` → `…/docs/blog/posts/2026-11-13-x/images/…`.
+- [ ] `g mv` the two posts to `posts/2026-11-12-omarchy-on-macos` and `posts/2026-11-13-zsh-word-split` (their
+  `raw/` moved by hand); `.gitignore` → `docs/blog/posts/*/raw/`; the workflow's paths and folder cut; docs.
+- [ ] Commit `refactor(posts): Keep posts in dated folders under docs/blog/posts`.
 
 ### Task 3: Metadata in TODO.yaml
 

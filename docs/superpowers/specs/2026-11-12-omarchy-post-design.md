@@ -59,7 +59,7 @@ the dots PRs). About 1,200–1,500 words.
 
 ## Where it goes
 
-`docs/posts/omarchy-on-macos/` in dots: `post.md`, `images/*.png` (final), `raw/` (unblurred captures, git-ignored),
+`docs/blog/omarchy-on-macos/` in dots: `post.md`, `images/*.png` (final), `raw/` (unblurred captures, git-ignored),
 `tools/frame.py`. Committing is the user's call.
 
 ## Left to the builder

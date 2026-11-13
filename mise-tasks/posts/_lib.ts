@@ -1,4 +1,4 @@
-// Shared code for the posts:* file tasks (docs/posts/PLAYBOOK.md). Not a task: this file is not executable.
+// Shared code for the posts:* file tasks (docs/blog/PLAYBOOK.md). Not a task: this file is not executable.
 import { existsSync, readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { parseArgs } from "node:util";
@@ -54,7 +54,7 @@ export function visibleLength(text: string): number {
   return [...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text)].length;
 }
 
-// A post is a folder docs/posts/articles/<YYYY-MM-DD>-<slug>, the date being its (planned) publish date.
+// A post is a folder docs/blog/posts/<YYYY-MM-DD>-<slug>, the date being its (planned) publish date.
 const POST = /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export function assertPost(post: string): string {
   if (!POST.test(post)) throw new Error(`not a post folder (YYYY-MM-DD-slug): "${post}"`);
@@ -119,7 +119,7 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
 // ---- push -------------------------------------------------------------------------------------------------------
 
 export const REPO = "roalcantara/dots";
-const RAW = (ref: string, post: string) => `https://raw.githubusercontent.com/${REPO}/${ref}/docs/posts/articles/${post}`;
+const RAW = (ref: string, post: string) => `https://raw.githubusercontent.com/${REPO}/${ref}/docs/blog/posts/${post}`;
 const relative = (url: string) => !/^[a-z][a-z0-9+.-]*:/i.test(url) && !url.startsWith("/") && !url.startsWith("#");
 const resolve = (url: string, slug: string, ref: string) => `${RAW(ref, slug)}/${url.replace(/^\.\//, "")}`;
 
@@ -256,7 +256,7 @@ export function parseRecordArgs(argv: string[], date: string): StatRow[] {
 
 // ---- metadata in TODO.yaml ---------------------------------------------------------------------------------
 // Each post has one task tagged `post` whose `position` is its folder; facts about it are comments on that task,
-// one `key: value` each (schema: docs/posts/PLAYBOOK.md, "Metadata in TODO.yaml"). The todo CLI keeps comments and
+// one `key: value` each (schema: docs/blog/PLAYBOOK.md, "Metadata in TODO.yaml"). The todo CLI keeps comments and
 // drops unknown fields, so nothing else is stored in the file.
 
 export const KEYS = [
@@ -348,8 +348,8 @@ export function seriesFromTodo(todo: Todo): { taskId?: string; stats: StatRow[];
 // ---- shell side (used by the task files; not unit-tested) -----------------------------------------------------
 
 export const ROOT = join(import.meta.dir, "../..");
-export const SERIES = join(ROOT, "docs/posts");
-export const POSTS = join(SERIES, "articles");
+export const SERIES = join(ROOT, "docs/blog");
+export const POSTS = join(SERIES, "posts");
 
 const run = (cmd: string[]): { ok: boolean; out: string } => {
   const p = Bun.spawnSync(cmd, { cwd: ROOT, stdout: "pipe", stderr: "pipe" });
@@ -404,7 +404,7 @@ export const myArticles = async (): Promise<Record<string, unknown>[]> =>
 
 export const today = (): string => new Date().toLocaleDateString("sv-SE");
 
-export const TODO = join(ROOT, "docs/posts/TODO.yaml");
+export const TODO = join(ROOT, "docs/blog/TODO.yaml");
 export const readTodo = (): Todo => Bun.YAML.parse(readFileSync(TODO, "utf8")) as Todo;
 
 // Append a comment through the todo CLI (the file's owner), never by editing TODO.yaml.

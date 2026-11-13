@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-# The series cover (1000 × 420, dev.to and LinkedIn; docs/posts/STYLE.md): a stylised screen of tiled windows, the
+# The series cover (1000 × 420, dev.to and LinkedIn; docs/blog/STYLE.md): a stylised screen of tiled windows, the
 # focused one outlined with the fn layer's focus gradient (#33ccff → #00ff99), the series tag, the title, a subtitle
 # and a row of key caps. Drawn at 2× and scaled down. Defaults draw the Omarchy-ish cover.
-#   uv run --with pillow docs/posts/tools/header.py images/00-cover.png \
+#   uv run --with pillow docs/blog/tools/header.py images/00-cover.png \
 #     --title "My AI agent's loop" --highlight "ran once" --subtitle "zsh · bash · Claude Code" --series 1 --keys zsh,bash
 import argparse
 

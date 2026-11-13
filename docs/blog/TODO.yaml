@@ -27,7 +27,7 @@ tasks:
   - preflight
   priority: High
   created: 2026-11-13T13:29:53.839233
-  position: docs/posts/articles/2026-11-13-zsh-word-split
+  position: docs/blog/posts/2026-11-13-zsh-word-split
 - id: BnIE
   status: Todo
   description: 'Preflight: measure at 48 h'
@@ -440,7 +440,7 @@ tasks:
   - post
   priority: High
   created: 2026-11-13T13:58:35.288069
-  position: docs/posts/articles/2026-11-12-omarchy-on-macos
+  position: docs/blog/posts/2026-11-12-omarchy-on-macos
 - id: Yaw4
   status: InProgress
   description: 'Series: account-wide numbers and decisions'

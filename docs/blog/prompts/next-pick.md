@@ -7,7 +7,7 @@ swapping the next topic; **the author decides**. It edits no file.
 
 You help choose the next post of the dots content series. Work in the repository root.
 
-1. Read `docs/posts/PLAYBOOK.md`, the sections "Choosing the next topic", "Topics" and "Communities".
+1. Read `docs/blog/PLAYBOOK.md`, the sections "Choosing the next topic", "Topics" and "Communities".
 2. Run `mise run posts:todo -- list` and find the next open `topic-<n>` task (the **scheduled** topic) and the
    other topics that are not done (the **candidates**: the next two scheduled topics and the backlog).
 3. Run `mise run posts:report`: the last posts' numbers, `log.*` lessons and notes (questions asked in comments,

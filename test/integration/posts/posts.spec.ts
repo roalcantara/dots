@@ -27,7 +27,7 @@ import {
 
 const REPO = join(import.meta.dir, "../../..");
 const FIX = join(import.meta.dir, "fixtures");
-const HYPE = readFileSync(join(REPO, "docs/posts/hype-words.txt"), "utf8")
+const HYPE = readFileSync(join(REPO, "docs/blog/hype-words.txt"), "utf8")
   .split("\n")
   .map((l) => l.trim())
   .filter(Boolean);
@@ -94,7 +94,7 @@ describe("assertPost", () => {
 describe("rewriteImages", () => {
   it("points relative images at the ref on GitHub and leaves absolute links alone", () => {
     const out = rewriteImages("![a](images/x.png) ![c](./images/z.png) ![b](https://e.com/y.png)", "2026-11-13-s", "main");
-    const base = "https://raw.githubusercontent.com/roalcantara/dots/main/docs/posts/articles/2026-11-13-s/images";
+    const base = "https://raw.githubusercontent.com/roalcantara/dots/main/docs/blog/posts/2026-11-13-s/images";
     expect(out).toBe(`![a](${base}/x.png) ![c](${base}/z.png) ![b](https://e.com/y.png)`);
   });
 });
@@ -109,8 +109,8 @@ describe("articlePayload", () => {
   it("follows the front matter otherwise, with the cover and images from the ref", () => {
     const { article } = articlePayload(fm, "![a](images/x.png)", { slug: "s", ref: "main", draft: false });
     expect(article.published).toBe(true);
-    expect(article.main_image).toBe("https://raw.githubusercontent.com/roalcantara/dots/main/docs/posts/articles/s/images/c.png");
-    expect(article.body_markdown).toContain("/main/docs/posts/articles/s/images/x.png");
+    expect(article.main_image).toBe("https://raw.githubusercontent.com/roalcantara/dots/main/docs/blog/posts/s/images/c.png");
+    expect(article.body_markdown).toContain("/main/docs/blog/posts/s/images/x.png");
     expect(article).toMatchObject({ title: "T", description: "D", tags: ["ai"] });
   });
 
@@ -215,7 +215,7 @@ describe("header.py (series cover)", () => {
   it.skipIf(!uv)("draws a 1000 × 420 PNG from a title, a series number and key caps", () => {
     const out = join(mkdtempSync(join(tmpdir(), "posts-")), "cover.png");
     const p = Bun.spawnSync(
-      ["uv", "run", "--quiet", "--with", "pillow", join(REPO, "docs/posts/tools/header.py"), out,
+      ["uv", "run", "--quiet", "--with", "pillow", join(REPO, "docs/blog/tools/header.py"), out,
         "--title", "Test", "--highlight", "cover", "--series", "0", "--keys", "zsh,bash"],
       { stdout: "pipe", stderr: "pipe" },
     );

@@ -1,4 +1,4 @@
-# The content series' dev.to flow (docs/posts/PLAYBOOK.md):
+# The content series' dev.to flow (docs/blog/PLAYBOOK.md):
 # - a pull request that touches a post creates or updates its dev.to article as a DRAFT, records the article id on
 #   the branch and comments the preview links;
 # - the merge to main updates the article from main: published when its front matter says `published: true`.
@@ -9,10 +9,10 @@ name: Posts
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths: ['docs/posts/articles/*/post.md', 'docs/posts/articles/*/images/**']
+    paths: ['docs/blog/posts/*/post.md', 'docs/blog/posts/*/images/**']
   push:
     branches: [main]
-    paths: ['docs/posts/articles/*/post.md', 'docs/posts/articles/*/images/**']
+    paths: ['docs/blog/posts/*/post.md', 'docs/blog/posts/*/images/**']
 
 # One queue for every run: a pull request run and the run of its merge must never overlap.
 concurrency:
@@ -73,7 +73,7 @@ jobs:
           else
             base="HEAD~1"
           fi
-          slugs="$(git diff --name-only "${base}" HEAD -- 'docs/posts/articles/*/post.md' 'docs/posts/articles/*/images/*' \
+          slugs="$(git diff --name-only "${base}" HEAD -- 'docs/blog/posts/*/post.md' 'docs/blog/posts/*/images/*' \
             | cut -d/ -f4 | sort -u || true)"
           echo "Posts: ${slugs:-none}"
           { echo 'slugs<<EOF'; echo "${slugs}"; echo 'EOF'; } >> "${GITHUB_OUTPUT}"
@@ -89,7 +89,7 @@ jobs:
           [[ '${{ github.event_name }}' == 'pull_request' ]] && draft=(--draft)
           : > "${RUNNER_TEMP}/results.txt"
           while IFS= read -r slug; do
-            [[ -f "docs/posts/articles/${slug}/post.md" ]] || continue
+            [[ -f "docs/blog/posts/${slug}/post.md" ]] || continue
             bun mise-tasks/posts/push.ts "${slug}" --ref "${REF}" "${draft[@]}" | tee -a "${RUNNER_TEMP}/results.txt"
           done <<< "${SLUGS}"
 

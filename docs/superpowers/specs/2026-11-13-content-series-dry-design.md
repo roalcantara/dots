@@ -2,7 +2,7 @@
 
 Follow-up to [the content series design](2026-11-13-content-series-design.md), after the preflight setup proved the
 structure. Asked by the author: fnox for secrets, mise arguments over environment variables, chronological post
-folders, and one place for every post's metadata (`docs/posts/TODO.yaml`).
+folders, and one place for every post's metadata (`docs/blog/TODO.yaml`).
 
 ## Decisions
 
@@ -14,13 +14,13 @@ folders, and one place for every post's metadata (`docs/posts/TODO.yaml`).
    the arguments it validated through `#USAGE` to the script). The `usage_*` variables are not read; CI runs the
    same command line (`bun mise-tasks/posts/push.ts <post> --ref main`). The only environment variables left are
    the token and `CI`.
-3. **Chronological folders.** `docs/posts/articles/<YYYY-MM-DD>-<slug>/`, the date being the planned publish date,
+3. **Chronological folders.** `docs/blog/posts/<YYYY-MM-DD>-<slug>/`, the date being the planned publish date,
    fixed once published (renaming a published post's folder moves its image URLs). ISO dates sort, read without
    ambiguity and match the spec and plan file names. The folder name is the post's id everywhere (tasks, CI,
-   metadata). Series-wide files (PLAYBOOK, STYLE, TODO.yaml, prompts, templates, tools) stay in `docs/posts/`.
+   metadata). Series-wide files (PLAYBOOK, STYLE, TODO.yaml, prompts, templates, tools) stay in `docs/blog/`.
 4. **Metadata in `TODO.yaml`, through the todo CLI's own model.** The CLI drops unknown fields when it rewrites the
    file (verified), so the metadata uses what it keeps:
-   - one **post task** per post, tagged `post`, with `position` = the post's folder (`docs/posts/articles/<dir>`);
+   - one **post task** per post, tagged `post`, with `position` = the post's folder (`docs/blog/posts/<dir>`);
      its status, due date (publish date) and tags are the post's;
    - **comments** on that task, one fact each, `key: value` with a small schema (below), added with
      `todo add --comment` (by the tasks or by hand) and never edited;
@@ -30,7 +30,7 @@ folders, and one place for every post's metadata (`docs/posts/TODO.yaml`).
    **What stays a file:** the post itself, `linkedin.md`, `community.md`, `review.md` and images. They are
    artifacts found by convention in the post's folder, so references to them would only repeat the folder.
 6. **Reports are generated.** `posts:report` prints each post's metadata (what LOG.md held) and rewrites the index
-   table in `docs/posts/README.md` between `<!-- index:start -->` and `<!-- index:end -->`.
+   table in `docs/blog/README.md` between `<!-- index:start -->` and `<!-- index:end -->`.
 
 ## Comment schema
 

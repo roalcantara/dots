@@ -18,7 +18,7 @@ The order means **higher wins when two goals conflict**, not "lower matters less
 
 | # | Goal | What it means | Serves first | One sign it works |
 | --- | --- | --- | --- | --- |
-| 1 | **Knowledge base** | Everything lives in dots: `docs/posts/` and the recipes index, owned and permanent | Future author | The author links a recipe to answer someone instead of re-explaining |
+| 1 | **Knowledge base** | Everything lives in dots: `docs/blog/` and the recipes index, owned and permanent | Future author | The author links a recipe to answer someone instead of re-explaining |
 | 2 | **Lessons learned, as recipes** | Each post is one recipe plus the story of what went wrong | Author, then peers | The author can redo the thing from the RECIPE alone, months later |
 | 3 | **Showing tech skills** | The working repo, tests and decisions are the evidence, not claims | Peers, hiring managers, clients | Comments ask how something works; profile views from posts |
 | 4 | **Personal brand and presence** | Showing up steadily on LinkedIn, dev.to and communities | The network | Followers and inbound messages, month over month |
@@ -44,7 +44,7 @@ much to explain: enough for a peer who has not used the tool, no more.
   tools (`xcg`, `gitx`, `yb`) come last or not at all.
 - **dots is the example, never the headline.** Titles lead with the problem (git, secrets, AI agents, backups);
   dots appears in the body as the working proof.
-- Each dev.to post has a RECIPE block that works on its own. A recipes index in the repo (`docs/posts/README.md`)
+- Each dev.to post has a RECIPE block that works on its own. A recipes index in the repo (`docs/blog/README.md`)
   links every RECIPE.
 - From topic 2, each topic gets **one community post**, written natively for that community, never as spam.
 - dev.to publishing (drafts on PRs, publishing on merge) and dev.to numbers are automated from the repo; LinkedIn and Reddit are posted and measured by
@@ -81,7 +81,7 @@ much to explain: enough for a peer who has not used the tool, no more.
   `cover_image`. Cover 1000 × 420.
 - LinkedIn: about 210 characters show before "see more"; posts with outside links tend to get less reach, so the
   dev.to link goes in the first comment.
-- Images go through the existing pipeline: unblurred captures in `docs/posts/<slug>/raw/` (git-ignored), framed
+- Images go through the existing pipeline: unblurred captures in `docs/blog/<slug>/raw/` (git-ignored), framed
   output in `images/`.
 
 ## Evidence behind the choices (2026-11-13)
@@ -167,7 +167,7 @@ No primary data was found on whether LinkedIn reduces reach by post language.
 - Keep the loanwords Brazilian developers use (commit, deploy, backup, hook, secrets, dotfiles, pipeline).
 - Same voice: first person, "você", the honest mistakes kept; rewrite the hook naturally, not word for word.
 - Hashtags: 2–3 English tool or topic tags, at most one PT/BR tag.
-- A short EN↔PT glossary in `docs/posts/GLOSSARY.pt.md` keeps the reviews consistent.
+- A short EN↔PT glossary in `docs/blog/GLOSSARY.pt.md` keeps the reviews consistent.
 
 ## The formats
 
@@ -233,12 +233,12 @@ The story and the RECIPE written natively for one community, in plain markdown, 
 
 ## Screenshots and images
 
-1. Move `docs/posts/omarchy-on-macos/tools/{frame,header}.py` to `docs/posts/tools/` and update the Omarchy post's
+1. Move `docs/blog/omarchy-on-macos/tools/{frame,header}.py` to `docs/blog/tools/` and update the Omarchy post's
    references; `header.py` takes the title, key caps and palette as arguments instead of constants.
 2. Per post, a shot list in the post's plan (2–4 images; CLI topics need fewer).
-3. Capture into `docs/posts/<slug>/raw/` (git-ignored): `screencapture` of a clean Ghostty window, with a throwaway
+3. Capture into `docs/blog/<slug>/raw/` (git-ignored): `screencapture` of a clean Ghostty window, with a throwaway
    demo repo or fixture data for anything secret-adjacent; never the real store.
-4. Frame with `uv run --with pillow docs/posts/tools/frame.py …`, blurring any remaining sensitive region.
+4. Frame with `uv run --with pillow docs/blog/tools/frame.py …`, blurring any remaining sensitive region.
 5. Cover with `header.py` at 1000 × 420; the same image works on LinkedIn.
 6. Optional carousel: the RECIPE as 4–6 slides at 1080 × 1350, exported to PDF (builder's choice of tool, nothing
    installed globally).
@@ -374,7 +374,7 @@ draft and images → cold read → author review → publish. Before topic 1, a 
 | Check shareability | `contagious` (installed) | STEPPS score in the log |
 | Cold read | A fresh agent playing a mid-level developer | See **Success criteria** |
 | Publish to dev.to | The Forem API directly, from bun file tasks in `mise-tasks/posts/`, run locally (`mise run posts:push`) and by `.github/workflows/posts.yml` | A PR that touches a `post.md` creates or updates a **draft** (images from the PR branch), records the `id` on the branch and comments the preview link; the merge to `main` updates the article with images from `main` and the front matter's `published` value. **Merging a PR with `published: true` is the author's publish button.** |
-| dev.to numbers | `mise run posts:stats`: Forem API (`/api/articles/me/all`, `/api/analytics/referrers?article_id=` when available) | Token from gopass `tokens/dev.to` locally and the `DEVTO_TOKEN` repo secret in CI, never in the repo; appends to `docs/posts/stats.csv` |
+| dev.to numbers | `mise run posts:stats`: Forem API (`/api/articles/me/all`, `/api/analytics/referrers?article_id=` when available) | Token from gopass `tokens/dev.to` locally and the `DEVTO_TOKEN` repo secret in CI, never in the repo; appends to `docs/blog/stats.csv` |
 | LinkedIn and Reddit numbers | By hand at 48 h and 7 days, about 2 minutes per post | Entered into `LOG.md` |
 | Repo traffic | `gh api repos/roalcantara/dots/traffic/views` in the same stats task | |
 
@@ -470,7 +470,7 @@ Each `LOG.md` entry records the variables of the post, the hypothesis for the on
 ## Repo layout
 
 ```text
-docs/posts/
+docs/blog/
 ├── README.md              # recipes index: one line per post, links to the RECIPE on dev.to and the dots files
 ├── LOG.md                 # per-post log, variables, numbers and recalibration decisions
 ├── tools/                 # frame.py, header.py (shared)
@@ -519,7 +519,7 @@ Per topic, a single plan under `docs/superpowers/plans/`; a spec only when a top
 - A two-week Reddit runway; the Omarchy post to r/unixporn in the December light week.
 - The Forem API from bun file tasks (`mise-tasks/posts/`) and a CI workflow: drafts on PRs, publish on merge.
 - A `posts:stats` task for dev.to numbers, referrers and repo traffic.
-- Moving the image tools to `docs/posts/tools/`; `README.md` and `LOG.md` in `docs/posts/`.
+- Moving the image tools to `docs/blog/tools/`; `README.md` and `LOG.md` in `docs/blog/`.
 
 ## Left to the builder
 

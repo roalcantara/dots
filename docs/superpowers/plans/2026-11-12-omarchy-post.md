@@ -34,7 +34,7 @@ Pillow-drawn header (no extra tools).
 
 ### Task 1: Tooling and folders
 
-- [ ] `docs/posts/omarchy-on-macos/{images,raw,tools}`; `raw/` added to `.gitignore` (named path).
+- [ ] `docs/blog/omarchy-on-macos/{images,raw,tools}`; `raw/` added to `.gitignore` (named path).
 - [ ] `tools/frame.py <in> <out> [--crop x,y,w,h] [--blur x,y,w,h ...] [--width 1600]`: crop → blur boxes (Gaussian,
   radius 18) → scale to width → rounded corners (24) → shadow → centred on a 64 px dark gradient margin.
 - [ ] `tools/header.py <out>`: 1000 × 420, dark gradient, a stylised screen with tiled windows (one outlined with the

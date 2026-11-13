@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 //MISE description="Push a post to dev.to: a draft, or published when its front matter says so and it is on main"
-//USAGE arg "<post>" help="Post folder under docs/posts/articles (YYYY-MM-DD-slug)"
+//USAGE arg "<post>" help="Post folder under docs/blog/posts (YYYY-MM-DD-slug)"
 //USAGE flag "--ref <ref>" help="Git ref the images are served from (default: the current branch)"
 //USAGE flag "--draft" help="Always send a draft, whatever the front matter says (pull requests)"
 import { readFileSync } from "node:fs";
@@ -50,5 +50,5 @@ if (task && task.devtoId !== saved.id) {
     addComment(task.taskId, `devto.url: ${saved.url}`);
   }
 }
-if (!task) console.log(`note: no post task points at docs/posts/articles/${post} (tag it "post", set its position)`);
+if (!task) console.log(`note: no post task points at docs/blog/posts/${post} (tag it "post", set its position)`);
 console.log(`${post} ${payload.article.published ?? live ? "published" : "draft"} ${saved.url}`);
