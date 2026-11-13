@@ -411,7 +411,7 @@ tasks:
   priority: High
   created: 2026-11-13T13:29:55.456117
 - id: hjWv
-  status: Todo
+  status: Done
   description: 'Omarchy post: blur the private repo name in the table of 01-desktop and 04-zoom, then republish (see the Omarchy post task)'
   due: 2026-11-14T12:00:00
   actors:
@@ -435,6 +435,7 @@ tasks:
   - mm33
   - vvf7
   - oV6I
+  - zGEn
   blocked_reason: null
   tags:
   - post
@@ -498,4 +499,8 @@ comments:
   text: 'vars: hook=confession cover=series images=1-terminal linkedin=image lang=en day=<author> tags=ai,zsh,bash,productivity'
   actors: []
   task_id: 6ThC
+- id: zGEn
+  text: 'note: 2026-11-13 the repo name is blurred in 01-desktop and 04-zoom (03-tui hides it); it still appears as text in docs/TILING.md, bootstrap.toml and specs, so it was already public'
+  actors: []
+  task_id: 6eS8
 project: posts
