@@ -1,6 +1,7 @@
 // Shared code for the posts:* file tasks (docs/posts/PLAYBOOK.md). Not a task: this file is not executable.
 import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { parseArgs } from "node:util";
 
 export type FrontMatter = {
   title?: string;
@@ -291,13 +292,26 @@ export function gitState(): GitState {
   };
 }
 
-// DEVTO_TOKEN from the environment (CI: the repo secret), else gopass. Never printed.
+// DEVTO_TOKEN from the environment (CI: the repo secret), else fnox (fnox.toml: gopass tokens/dev.to). Never printed.
 export function token(): string {
   const env = process.env.DEVTO_TOKEN?.trim();
   if (env) return env;
-  const gp = run(["gopass", "show", "-o", "tokens/dev.to"]);
-  if (gp.ok && gp.out) return gp.out;
-  throw new Error("DEVTO_TOKEN is not set and gopass has no tokens/dev.to");
+  const fx = run(["fnox", "get", "DEVTO_TOKEN"]);
+  if (fx.ok && fx.out) return fx.out;
+  throw new Error("DEVTO_TOKEN is not set and `fnox get DEVTO_TOKEN` resolved nothing (see fnox.toml)");
+}
+
+// argv of posts:push (mise passes the arguments its #USAGE spec validated; CI runs the same command line).
+export function postOptions(argv: string[]): { post: string; ref: string | undefined; draft: boolean } {
+  const { values, positionals } = parseArgs({
+    args: argv,
+    options: { ref: { type: "string" }, draft: { type: "boolean", default: false } },
+    allowPositionals: true,
+    strict: true,
+  });
+  const post = positionals[0];
+  if (!post || positionals.length > 1) throw new Error("usage: push <post> [--ref <ref>] [--draft]");
+  return { post, ref: values.ref, draft: values.draft ?? false };
 }
 
 export async function devto(path: string, init: { method?: string; body?: unknown } = {}): Promise<unknown> {

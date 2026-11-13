@@ -6,15 +6,12 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  articlePayload, assertSlug, checkPost, devto, gitState, myArticles, parseFrontMatter, POSTS, pushAction, pushPreconditions,
+  articlePayload, assertSlug, checkPost, devto, gitState, myArticles, parseFrontMatter, POSTS, postOptions, pushAction, pushPreconditions,
   resolveArticleId, setFrontMatterId,
 } from "./_lib";
 
-const argv = process.argv.slice(2);
-const flag = (name: string) => argv.includes(`--${name}`);
-const opt = (name: string) => { const i = argv.indexOf(`--${name}`); return i >= 0 ? argv[i + 1] : undefined; };
-
-const slug = assertSlug(process.env.usage_slug ?? argv.find((a, i) => !a.startsWith("--") && argv[i - 1] !== "--ref") ?? "");
+const opts = postOptions(process.argv.slice(2));
+const slug = assertSlug(opts.post);
 const dir = join(POSTS, slug);
 const hype = readFileSync(join(POSTS, "hype-words.txt"), "utf8").split("\n").map((l) => l.trim()).filter(Boolean);
 const fail = (lines: string[]) => { for (const l of lines) console.error(l); process.exit(1); };
@@ -25,14 +22,15 @@ if (blocks.length) fail(blocks.map((f) => `BLOCK ${f.rule}: ${f.message}`));
 const path = join(dir, "post.md");
 const text = readFileSync(path, "utf8");
 const { fm, body } = parseFrontMatter(text);
-const draft = process.env.usage_draft === "true" || flag("draft") || fm.published !== true;
+const draft = opts.draft || fm.published !== true;
 
 const state = gitState();
 if (process.env.CI !== "true") {
   const pre = pushPreconditions(state, draft);
   if (pre.length) fail(pre.map((f) => `BLOCK ${f.rule}: ${f.message}`));
 }
-const ref = process.env.usage_ref ?? opt("ref") ?? state.branch;
+const ref = opts.ref || state.branch;
+if (!ref) fail(["BLOCK no-ref: detached HEAD; pass --ref <branch>"]);
 
 const mine = (await myArticles()).map((a) => ({ id: a.id as number, title: a.title as string, published: a.published === true }));
 const id = resolveArticleId(fm, mine);

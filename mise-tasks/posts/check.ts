@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { assertSlug, checkPost } from "./_lib";
 
 const root = join(import.meta.dir, "../..");
-const slug = assertSlug(process.env.usage_slug ?? process.argv[2] ?? "");
+const slug = assertSlug(process.argv[2] ?? "");
 const hype = readFileSync(join(root, "docs/posts/hype-words.txt"), "utf8").split("\n").map((l) => l.trim()).filter(Boolean);
 const findings = checkPost(join(root, "docs/posts", slug), hype);
 for (const f of findings) console.log(`${f.level === "block" ? "BLOCK" : "warn "} ${f.rule}: ${f.message}`);

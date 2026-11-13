@@ -10,6 +10,7 @@ import {
   checkPost,
   parseFrontMatter,
   parseRecordArgs,
+  postOptions,
   pushAction,
   pushPreconditions,
   resolveArticleId,
@@ -247,4 +248,17 @@ describe("header.py (series cover)", () => {
     expect(png.subarray(1, 4).toString()).toBe("PNG");
     expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1000, 420]);
   }, 60_000);
+});
+
+describe("postOptions", () => {
+  it("reads the post, --ref and --draft from argv", () => {
+    expect(postOptions(["2026-11-13-x", "--ref", "main", "--draft"])).toEqual({ post: "2026-11-13-x", ref: "main", draft: true });
+    expect(postOptions(["--ref=main", "2026-11-13-x"])).toEqual({ post: "2026-11-13-x", ref: "main", draft: false });
+    expect(postOptions(["2026-11-13-x"])).toEqual({ post: "2026-11-13-x", ref: undefined, draft: false });
+  });
+
+  it("rejects unknown flags and a missing post", () => {
+    expect(() => postOptions(["2026-11-13-x", "--publish"])).toThrow();
+    expect(() => postOptions([])).toThrow();
+  });
 });
