@@ -1,9 +1,37 @@
-# Pre-release gate
-
-A prompt for a **fresh agent with no other context**, run on a post before its pull request is opened or merged.
-Replace `<post>` (the post's folder, `YYYY-MM-DD-slug`) and hand the agent this whole file. It writes `docs/blog/posts/<post>/review.md` and edits nothing else.
-
 ---
+description: Review a blog post before its pull request with a fresh agent (cold read, rubric, safety) and record the verdict
+argument-hint: Optional post folder (YYYY-MM-DD-slug), then free notes for the reviewer
+allowed-tools: Agent, Bash(mise run -q blog:status:*), Bash(mise run blog:check:*), Bash(mise run -q blog:todo:*)
+---
+
+<task>
+Have a fresh agent, with no other context, review one post of the dots blog and write its `review.md`; then record
+the verdict on the post's task. Arguments: $ARGUMENTS
+</task>
+
+<context>
+Where things stand: !`mise run -q blog:status $1`
+</context>
+
+<workflow>
+1. Name the post (argument, else the current `feat/post-*` branch). Its stage must be `gate`, `blocked` or `pr`.
+2. Dispatch one fresh general-purpose subagent with this prompt, and nothing else: "Work in the repository root.
+   Read `.agents/commands/blog/gate.md` and follow its `<gate_prompt>` section exactly, with `<post>` =
+   `<the post folder>`. Notes from the author: <notes, if any>."
+3. When it returns, read `docs/blog/posts/<post>/review.md`. Record on the post's task:
+   `gate: <YYYY-MM-DD> <PASS|BLOCKED> stepps=<n>/12` and the `vars:` line from the review
+   (`mise run -q blog:todo -- add --comment "…" --task-id <id>`).
+4. Report the verdict, the Must fix items and the top three Consider items. Do not edit the post; do not commit.
+   Next: fix and run `/blog:gate` again (BLOCKED), or `/blog:pr` (PASS).
+</workflow>
+
+<checklist>
+- [ ] The review came from a fresh agent, not from this conversation.
+- [ ] `gate:` and `vars:` recorded.
+- [ ] Nothing committed or pushed.
+</checklist>
+
+<gate_prompt>
 
 You review one post of the dots content series before it is published. You are thorough and kind, and you never
 rewrite the post yourself: you report. Work in the repository root, in this order.
@@ -60,3 +88,4 @@ rewrite the post yourself: you report. Work in the repository root, in this orde
 
 Write the result to `docs/blog/posts/<post>/review.md` using `docs/blog/templates/review.md`, dated today. Then reply
 with the verdict and the Must fix items, nothing else.
+</gate_prompt>
