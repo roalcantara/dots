@@ -2,7 +2,7 @@
 //MISE description="Append dev.to and GitHub numbers for every post to docs/posts/stats.csv"
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { appendRows, devto, myArticles, parseFrontMatter, POSTS, rowsFromArticles, rowsFromReferrers, rowsFromTraffic, type StatRow, today } from "./_lib";
+import { appendRows, devto, myArticles, parseFrontMatter, POSTS, SERIES, rowsFromArticles, rowsFromReferrers, rowsFromTraffic, type StatRow, today } from "./_lib";
 
 const date = today();
 const slugById = new Map<number, string>();
@@ -27,6 +27,6 @@ const gh = Bun.spawnSync(["gh", "api", "repos/roalcantara/dots/traffic/views"], 
 if (gh.exitCode === 0) rows.push(...rowsFromTraffic(JSON.parse(gh.stdout.toString()), date));
 else console.log("note: no GitHub traffic (gh api failed)");
 
-appendRows(join(POSTS, "stats.csv"), rows);
+appendRows(join(SERIES, "stats.csv"), rows);
 for (const r of rows) console.log(`${r.slug.padEnd(24)} ${r.platform.padEnd(7)} ${r.metric.padEnd(18)} ${r.value}`);
 console.log(`${rows.length} row(s) appended to docs/posts/stats.csv`);

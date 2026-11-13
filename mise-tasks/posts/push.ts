@@ -1,19 +1,19 @@
 #!/usr/bin/env bun
 //MISE description="Push a post to dev.to: a draft, or published when its front matter says so and it is on main"
-//USAGE arg "<slug>" help="Post folder under docs/posts"
+//USAGE arg "<post>" help="Post folder under docs/posts/articles (YYYY-MM-DD-slug)"
 //USAGE flag "--ref <ref>" help="Git ref the images are served from (default: the current branch)"
 //USAGE flag "--draft" help="Always send a draft, whatever the front matter says (pull requests)"
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  articlePayload, assertSlug, checkPost, devto, gitState, myArticles, parseFrontMatter, POSTS, postOptions, pushAction, pushPreconditions,
+  articlePayload, assertPost, checkPost, devto, gitState, myArticles, parseFrontMatter, POSTS, SERIES, postOptions, pushAction, pushPreconditions,
   resolveArticleId, setFrontMatterId,
 } from "./_lib";
 
 const opts = postOptions(process.argv.slice(2));
-const slug = assertSlug(opts.post);
+const slug = assertPost(opts.post);
 const dir = join(POSTS, slug);
-const hype = readFileSync(join(POSTS, "hype-words.txt"), "utf8").split("\n").map((l) => l.trim()).filter(Boolean);
+const hype = readFileSync(join(SERIES, "hype-words.txt"), "utf8").split("\n").map((l) => l.trim()).filter(Boolean);
 const fail = (lines: string[]) => { for (const l of lines) console.error(l); process.exit(1); };
 
 const blocks = checkPost(dir, hype).filter((f) => f.level === "block");

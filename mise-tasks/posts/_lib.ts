@@ -15,7 +15,6 @@ export type FrontMatter = {
 export type Finding = { level: "block" | "warn"; rule: string; message: string };
 
 const FENCE = /^---\n([\s\S]*?)\n---\n?/;
-const NOT_POSTS = new Set(["templates", "tools", "prompts"]);
 
 const scalar = (raw: string): unknown => {
   const v = raw.trim().replace(/^(["'])(.*)\1$/, "$2");
@@ -68,11 +67,11 @@ export function visibleLength(text: string): number {
   return [...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text)].length;
 }
 
-export function assertSlug(slug: string): string {
-  if (!slug || NOT_POSTS.has(slug) || slug.includes("/") || slug.includes("..")) {
-    throw new Error(`not a post folder: "${slug}"`);
-  }
-  return slug;
+// A post is a folder docs/posts/articles/<YYYY-MM-DD>-<slug>, the date being its (planned) publish date.
+const POST = /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export function assertPost(post: string): string {
+  if (!POST.test(post)) throw new Error(`not a post folder (YYYY-MM-DD-slug): "${post}"`);
+  return post;
 }
 
 // The first paragraph after "## Post" in linkedin.md: what shows before "see more".
@@ -133,7 +132,7 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
 // ---- push -------------------------------------------------------------------------------------------------------
 
 export const REPO = "roalcantara/dots";
-const RAW = (ref: string, slug: string) => `https://raw.githubusercontent.com/${REPO}/${ref}/docs/posts/${slug}`;
+const RAW = (ref: string, post: string) => `https://raw.githubusercontent.com/${REPO}/${ref}/docs/posts/articles/${post}`;
 const relative = (url: string) => !/^[a-z][a-z0-9+.-]*:/i.test(url) && !url.startsWith("/") && !url.startsWith("#");
 const resolve = (url: string, slug: string, ref: string) => `${RAW(ref, slug)}/${url.replace(/^\.\//, "")}`;
 
@@ -274,7 +273,8 @@ export function parseRecordArgs(argv: string[], date: string): StatRow[] {
 // ---- shell side (used by the task files; not unit-tested) -----------------------------------------------------
 
 export const ROOT = join(import.meta.dir, "../..");
-export const POSTS = join(ROOT, "docs/posts");
+export const SERIES = join(ROOT, "docs/posts");
+export const POSTS = join(SERIES, "articles");
 
 const run = (cmd: string[]): { ok: boolean; out: string } => {
   const p = Bun.spawnSync(cmd, { cwd: ROOT, stdout: "pipe", stderr: "pipe" });

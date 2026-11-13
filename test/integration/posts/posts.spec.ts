@@ -6,7 +6,7 @@ import { join } from "node:path";
 import {
   appendRows,
   articlePayload,
-  assertSlug,
+  assertPost,
   checkPost,
   parseFrontMatter,
   parseRecordArgs,
@@ -89,20 +89,22 @@ describe("visibleLength", () => {
   });
 });
 
-describe("assertSlug", () => {
-  it("accepts a post folder name", () => {
-    expect(assertSlug("zsh-word-split")).toBe("zsh-word-split");
+describe("assertPost", () => {
+  it("accepts a dated post folder", () => {
+    expect(assertPost("2026-11-13-zsh-word-split")).toBe("2026-11-13-zsh-word-split");
   });
 
-  it("rejects folders that are not posts and paths", () => {
-    for (const s of ["templates", "tools", "prompts", "", "../x", "a/b"]) expect(() => assertSlug(s)).toThrow();
+  it("rejects anything else", () => {
+    for (const s of ["zsh-word-split", "templates", "2026-13-01-x", "2026-11-13-", "2026-11-13-A", "", "../x", "2026-11-13-a/b"]) {
+      expect(() => assertPost(s)).toThrow();
+    }
   });
 });
 
 describe("rewriteImages", () => {
   it("points relative images at the ref on GitHub and leaves absolute links alone", () => {
-    const out = rewriteImages("![a](images/x.png) ![c](./images/z.png) ![b](https://e.com/y.png)", "s", "main");
-    const base = "https://raw.githubusercontent.com/roalcantara/dots/main/docs/posts/s/images";
+    const out = rewriteImages("![a](images/x.png) ![c](./images/z.png) ![b](https://e.com/y.png)", "2026-11-13-s", "main");
+    const base = "https://raw.githubusercontent.com/roalcantara/dots/main/docs/posts/articles/2026-11-13-s/images";
     expect(out).toBe(`![a](${base}/x.png) ![c](${base}/z.png) ![b](https://e.com/y.png)`);
   });
 });
@@ -117,8 +119,8 @@ describe("articlePayload", () => {
   it("follows the front matter otherwise, with the cover and images from the ref", () => {
     const { article } = articlePayload(fm, "![a](images/x.png)", { slug: "s", ref: "main", draft: false });
     expect(article.published).toBe(true);
-    expect(article.main_image).toBe("https://raw.githubusercontent.com/roalcantara/dots/main/docs/posts/s/images/c.png");
-    expect(article.body_markdown).toContain("/main/docs/posts/s/images/x.png");
+    expect(article.main_image).toBe("https://raw.githubusercontent.com/roalcantara/dots/main/docs/posts/articles/s/images/c.png");
+    expect(article.body_markdown).toContain("/main/docs/posts/articles/s/images/x.png");
     expect(article).toMatchObject({ title: "T", description: "D", tags: ["ai"] });
   });
 

@@ -9,10 +9,11 @@ roadmap in [`TODO.yaml`](TODO.yaml) (`mise run posts:todo -- list`, or `mise run
 
 1. **Pick:** run [`prompts/next-pick.md`](prompts/next-pick.md) the Tuesday before; the author approves keep or
    swap; the decision goes into [`LOG.md`](LOG.md).
-2. **Branch:** `feat/post-<slug>`; copy [`templates/`](templates/) into `docs/posts/<slug>/`.
+2. **Branch:** `feat/post-<slug>`; copy [`templates/`](templates/) into `docs/posts/articles/<YYYY-MM-DD>-<slug>/`,
+   the date being the planned publish date (never renamed once published: it is in the image URLs).
 3. **Draft:** `post.md` (skill `technical-article-writer`), `linkedin.md` (`linkedin-ghostwriting`), `community.md`
    (`reddit-posts`), images with [`tools/`](tools/) (unblurred captures in `raw/`, never committed).
-4. **Check:** `mise run posts:check <slug>` until there are no blocks.
+4. **Check:** `mise run posts:check <post>` until there are no blocks.
 5. **Gate:** a fresh agent runs [`prompts/gate.md`](prompts/gate.md) and writes `review.md`; fix every **Must fix**,
    take the **Consider** items you agree with.
 6. **Draft on dev.to:** open a PR. The `Posts` workflow pushes a dev.to draft (images from the branch), records the
@@ -28,7 +29,7 @@ roadmap in [`TODO.yaml`](TODO.yaml) (`mise run posts:todo -- list`, or `mise run
 After the workflow records an article id on your branch, run `git pull` before your next push. The tooling never
 takes a live article offline: to unpublish, do it by hand on dev.to.
 
-Locally, `mise run posts:push <slug>` sends a draft from a pushed branch (or publishes from `main`); the token comes
+Locally, `mise run posts:push <post>` sends a draft from a pushed branch (or publishes from `main`); the token comes
 from `DEVTO_TOKEN` or gopass `tokens/dev.to`.
 
 ## Intent
@@ -112,7 +113,7 @@ much to explain: enough for a peer who has not used the tool, no more.
   `cover_image`. Cover 1000 × 420.
 - LinkedIn: about 210 characters show before "see more"; posts with outside links tend to get less reach, so the
   dev.to link goes in the first comment.
-- Images go through the existing pipeline: unblurred captures in `docs/posts/<slug>/raw/` (git-ignored), framed
+- Images go through the existing pipeline: unblurred captures in `docs/posts/articles/<post>/raw/` (git-ignored), framed
   output in `images/`.
 
 ## Language
@@ -492,7 +493,7 @@ Newest last. Each recalibration adds its decisions here; the spec is never edite
 
 ### 2026-11-13 · during setup
 
-- The backlog item "my agents ran zsh and lied to me" became the **preflight post** (`zsh-word-split`), published
+- The backlog item "my agents ran zsh and lied to me" became the **preflight post** (`2026-11-13-zsh-word-split`), published
   before topic 1 to prove the flow end to end. Topic 6's in-between post is now "336 agent skills in a lock file".
 - Publishing runs on the Forem API from bun file tasks (`mise-tasks/posts/`) and the `Posts` workflow: drafts on
   pull requests, publishing on merge. devto-cli is not used.

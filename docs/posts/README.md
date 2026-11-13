@@ -6,7 +6,7 @@ Short write-ups of how things are done in this repo: each post tells the story o
 
 | # | Title | RECIPE in one line | dev.to | In dots |
 | --- | --- | --- | --- | --- |
-| — | [Omarchy-ish macOS: tiling, an fn layer and Raycast](omarchy-on-macos/post.md) | yabai + Karabiner fn layer + SwiftBar + Raycast | [post](https://dev.to/roalcantara/omarchy-ish-macos-tiling-an-fn-layer-and-raycast-3fd8) | [TILING.md](../TILING.md) |
+| — | [Omarchy-ish macOS: tiling, an fn layer and Raycast](articles/2026-11-12-omarchy-on-macos/post.md) | yabai + Karabiner fn layer + SwiftBar + Raycast | [post](https://dev.to/roalcantara/omarchy-ish-macos-tiling-an-fn-layer-and-raycast-3fd8) | [TILING.md](../TILING.md) |
 
 **How the series works:** [PLAYBOOK.md](PLAYBOOK.md) (goals, rules, decisions) · [STYLE.md](STYLE.md) (voice, look,
 rubric) · [LOG.md](LOG.md) (what each post taught) · [stats.csv](stats.csv) (every number) ·

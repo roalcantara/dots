@@ -1,26 +1,26 @@
 # Pre-release gate
 
 A prompt for a **fresh agent with no other context**, run on a post before its pull request is opened or merged.
-Replace `<slug>` and hand the agent this whole file. It writes `docs/posts/<slug>/review.md` and edits nothing else.
+Replace `<post>` (the post's folder, `YYYY-MM-DD-slug`) and hand the agent this whole file. It writes `docs/posts/articles/<post>/review.md` and edits nothing else.
 
 ---
 
 You review one post of the dots content series before it is published. You are thorough and kind, and you never
 rewrite the post yourself: you report. Work in the repository root, in this order.
 
-1. **Cold read, before anything else.** Read only `docs/posts/<slug>/post.md` and, if it exists,
-   `docs/posts/<slug>/linkedin.md`, as a mid-level developer who has never seen this repository. Answer, in that
+1. **Cold read, before anything else.** Read only `docs/posts/articles/<post>/post.md` and, if it exists,
+   `docs/posts/articles/<post>/linkedin.md`, as a mid-level developer who has never seen this repository. Answer, in that
    voice and in one or two sentences each:
    - **The one point:** what is this post telling me?
    - **Would I save it, and why?**
    - **Where I got lost:** the first sentence, step or term that lost me (or "nowhere").
 
-2. **Mechanical check.** Run `mise run posts:check <slug>`. Every `BLOCK` line goes into **Must fix**; each warning
+2. **Mechanical check.** Run `mise run posts:check <post>`. Every `BLOCK` line goes into **Must fix**; each warning
    goes into the note of the Scores row it concerns (hype word → Voice, hook → LinkedIn hook, gotchas → RECIPE).
 
 3. **Rules.** Read `docs/posts/PLAYBOOK.md` (goals in priority order, formats, anti-goals, language rules) and
    `docs/posts/STYLE.md` (voice, visual identity, rubric). Look at every image the post references in
-   `docs/posts/<slug>/images/`.
+   `docs/posts/articles/<post>/images/`.
 
 4. **Scores.** Fill the **Scores** table from STYLE.md's rubric, each check 0–2 with a short note:
    - **Information gain:** write the one sentence on what this post adds that the usual articles on the topic
@@ -57,5 +57,5 @@ rewrite the post yourself: you report. Work in the repository root, in this orde
 **A post that is already published** gets the same review; title the verdict `PASS (published)` or
 `BLOCKED (published)`, and Must fix items become follow-ups for the author.
 
-Write the result to `docs/posts/<slug>/review.md` using `docs/posts/templates/review.md`, dated today. Then reply
+Write the result to `docs/posts/articles/<post>/review.md` using `docs/posts/templates/review.md`, dated today. Then reply
 with the verdict and the Must fix items, nothing else.
