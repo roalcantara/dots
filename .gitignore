@@ -178,3 +178,6 @@ config/mise/*.local.toml
 
 # Blog post captures before blurring (docs/blog/posts/*/raw): never committed.
 docs/blog/posts/*/raw/
+
+# Agent workspaces (plans, reviews, brainstorm mockups): never committed.
+.superpowers/
