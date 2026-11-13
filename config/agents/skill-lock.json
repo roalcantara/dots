@@ -3055,6 +3055,132 @@
       "skillFolderHash": "81282fec0f3f707743281a058aff2c8b90cf1f72",
       "installedAt": "2026-11-03T23:19:57.190Z",
       "updatedAt": "2026-11-03T23:19:57.190Z"
+    },
+    "technical-article-writer": {
+      "source": "samber/cc-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/samber/cc-skills.git",
+      "skillPath": "skills/technical-article-writer/SKILL.md",
+      "skillFolderHash": "4029a7044741170850199ccc96d59249f44b6705",
+      "installedAt": "2026-11-13T14:28:31.267Z",
+      "updatedAt": "2026-11-13T14:28:31.267Z"
+    },
+    "copywriting-cta": {
+      "source": "samber/cc-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/samber/cc-skills.git",
+      "skillPath": "skills/copywriting-cta/SKILL.md",
+      "skillFolderHash": "564f3cc26b03c2a9c5a4a1d6a97a273b8b1e3bf4",
+      "installedAt": "2026-11-13T15:29:59.483Z",
+      "updatedAt": "2026-11-13T15:29:59.483Z"
+    },
+    "copywriting-hooks": {
+      "source": "samber/cc-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/samber/cc-skills.git",
+      "skillPath": "skills/copywriting-hooks/SKILL.md",
+      "skillFolderHash": "46550a4b6238016fe4ba4b668eef0af3a869da55",
+      "installedAt": "2026-11-13T15:29:59.486Z",
+      "updatedAt": "2026-11-13T15:29:59.486Z"
+    },
+    "linkedin-ghostwriting": {
+      "source": "samber/cc-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/samber/cc-skills.git",
+      "skillPath": "skills/linkedin-ghostwriting/SKILL.md",
+      "skillFolderHash": "b6a7c0d04690e086284a0b1d736b2b0dc8f33025",
+      "installedAt": "2026-11-13T15:29:59.487Z",
+      "updatedAt": "2026-11-13T15:29:59.487Z"
+    },
+    "todo": {
+      "source": "RayanBO/todo",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/RayanBO/todo.git",
+      "skillPath": "skills/SKILL.md",
+      "skillFolderHash": "8dd5ab4f954b42292bedc5e5efd1013601fb0d3b",
+      "installedAt": "2026-11-13T15:47:28.491Z",
+      "updatedAt": "2026-11-13T15:47:28.491Z"
+    },
+    "mise-task-configuration": {
+      "source": "TheBushidoCollective/han",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/TheBushidoCollective/han.git",
+      "skillPath": "plugins/tools/mise/skills/task-configuration/SKILL.md",
+      "skillFolderHash": "e685f1c450bc71fd2ca2be93c069539429c18c6f",
+      "installedAt": "2026-11-13T16:16:57.099Z",
+      "updatedAt": "2026-11-13T16:16:57.099Z"
+    },
+    "fnox": {
+      "source": "jdx/fnox",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/jdx/fnox.git",
+      "skillPath": "skills/fnox/SKILL.md",
+      "skillFolderHash": "5b05196064c85d951dd88bdec2da69d6afc9ef80",
+      "installedAt": "2026-11-13T16:34:13.798Z",
+      "updatedAt": "2026-11-13T16:34:13.798Z"
+    },
+    "fnox-security-best-practices": {
+      "source": "TheBushidoCollective/han",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/TheBushidoCollective/han.git",
+      "skillPath": "plugins/specialized/fnox/skills/security-best-practices/SKILL.md",
+      "skillFolderHash": "725e820e2a7578e32dff7f92265d86aadc06a69e",
+      "installedAt": "2026-11-13T16:35:09.252Z",
+      "updatedAt": "2026-11-13T16:35:09.252Z"
+    },
+    "fnox-configuration": {
+      "source": "TheBushidoCollective/han",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/TheBushidoCollective/han.git",
+      "skillPath": "plugins/specialized/fnox/skills/configuration/SKILL.md",
+      "skillFolderHash": "f7ea34cc87982e02d9c8328f966ec3b45f8b22fe",
+      "installedAt": "2026-11-13T16:35:38.860Z",
+      "updatedAt": "2026-11-13T16:35:38.860Z"
+    },
+    "hk-configure": {
+      "source": "jdx/hk",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/jdx/hk.git",
+      "skillPath": "skills/hk-configure/SKILL.md",
+      "skillFolderHash": "b30f19fa634af9b13dd1b1004ed7af51b2dfc6ae",
+      "installedAt": "2026-11-13T16:36:42.384Z",
+      "updatedAt": "2026-11-13T16:36:42.384Z"
+    },
+    "hk-debug": {
+      "source": "jdx/hk",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/jdx/hk.git",
+      "skillPath": "skills/hk-debug/SKILL.md",
+      "skillFolderHash": "8bb19f3dcb6a1eab5a9e3e936645658b54eb237c",
+      "installedAt": "2026-11-13T16:36:42.391Z",
+      "updatedAt": "2026-11-13T16:36:42.391Z"
+    },
+    "entire-search": {
+      "source": "jdx/hk",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/jdx/hk.git",
+      "skillPath": ".agents/skills/entire-search/SKILL.md",
+      "skillFolderHash": "0f1cfdb6b71dc2e66b46bcf99655311d9ac55ac2",
+      "installedAt": "2026-11-13T16:36:42.392Z",
+      "updatedAt": "2026-11-13T16:36:42.392Z"
+    },
+    "jouet-init": {
+      "source": "jdx/hk",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/jdx/hk.git",
+      "skillPath": ".agents/skills/jouet-init/SKILL.md",
+      "skillFolderHash": "ffc2ea851d2c2fb42cca477a0f80f180d898c691",
+      "installedAt": "2026-11-13T16:36:42.393Z",
+      "updatedAt": "2026-11-13T16:36:42.393Z"
+    },
+    "fnox-providers": {
+      "source": "TheBushidoCollective/han",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/TheBushidoCollective/han.git",
+      "skillPath": "plugins/specialized/fnox/skills/providers/SKILL.md",
+      "skillFolderHash": "0c29f54dc75012f79480d9dd89cc18cdabf66ae4",
+      "installedAt": "2026-11-13T16:37:55.184Z",
+      "updatedAt": "2026-11-13T16:37:55.184Z"
     }
   },
   "dismissed": {

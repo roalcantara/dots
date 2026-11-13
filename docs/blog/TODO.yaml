@@ -1,0 +1,791 @@
+tasks:
+- id: 55MD
+  status: InProgress
+  description: 'Setup: posts tooling, docs, roadmap and gate'
+  due: 2026-11-13T18:00:00
+  actors:
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - setup
+  priority: High
+  created: 2026-11-13T13:29:53.777185
+- id: 6ThC
+  status: Todo
+  description: 'Preflight: publish ''zsh doesn''t split $vars'' (dev.to + LinkedIn) end to end'
+  due: 2026-11-13T20:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - hy0I
+  - rdkc
+  - lnZA
+  - Wsy2
+  - Qjd5
+  - nXNH
+  - Rx7e
+  blocked_reason: null
+  tags:
+  - post
+  - preflight
+  priority: High
+  created: 2026-11-13T13:29:53.839233
+  position: docs/blog/posts/2026-11-13-zsh-word-split
+- id: BnIE
+  status: Todo
+  description: 'Preflight: measure at 48 h'
+  due: 2026-11-15T20:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - preflight
+  priority: Medium
+  created: 2026-11-13T13:29:53.894416
+- id: 9ggB
+  status: Todo
+  description: 'Preflight: measure at 7 days and retro'
+  due: 2026-11-20T20:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - preflight
+  priority: Medium
+  created: 2026-11-13T13:29:53.951066
+- id: 7GvK
+  status: Todo
+  description: 'Reddit runway: comment and answer only, no own links'
+  due: 2026-11-30T20:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  priority: Medium
+  created: 2026-11-13T13:29:54.006211
+- id: EFly
+  status: Todo
+  description: 'Topic 1: Secrets in git with SOPS + age (LinkedIn in EN)'
+  due: 2026-11-17T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - rLqj
+  - bnIo
+  - oQ6H
+  blocked_reason: null
+  tags:
+  - theme-a
+  - topic-1
+  priority: High
+  created: 2026-11-13T13:29:54.061941
+- id: H3RC
+  status: Todo
+  description: 'Topic 1 in-between: the RECIPE as a carousel'
+  due: 2026-11-24T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-1
+  priority: Low
+  created: 2026-11-13T13:29:54.117227
+- id: yg3s
+  status: Todo
+  description: 'Topic 2: Commit conventions that write your release notes (LinkedIn in PT-BR)'
+  due: 2026-12-01T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - pdyq
+  - 81gh
+  - pm2q
+  blocked_reason: null
+  tags:
+  - theme-b
+  - topic-2
+  priority: High
+  created: 2026-11-13T13:29:54.172565
+- id: 1GMr
+  status: Todo
+  description: 'Topic 2 community: r/git'
+  due: 2026-12-03T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-2
+  priority: Medium
+  created: 2026-11-13T13:29:54.228299
+- id: xMCs
+  status: Todo
+  description: 'Topic 2 in-between: the locale bug in the commit linter'
+  due: 2026-12-08T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-2
+  priority: Low
+  created: 2026-11-13T13:29:54.283876
+- id: Je4e
+  status: Todo
+  description: 'Light week: year-end ''what I automated'''
+  due: 2026-12-15T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  priority: Low
+  created: 2026-11-13T13:29:54.339694
+- id: sJ3U
+  status: Todo
+  description: 'Omarchy-ish community: r/unixporn'
+  due: 2026-12-17T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  priority: Medium
+  created: 2026-11-13T13:29:54.394779
+- id: VS93
+  status: Todo
+  description: 'Topic 3: Back up a list, not your home folder (LinkedIn in EN)'
+  due: 2027-01-05T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - FJqJ
+  - 4VoQ
+  - Zi7o
+  blocked_reason: null
+  tags:
+  - theme-a
+  - topic-3
+  priority: High
+  created: 2026-11-13T13:29:54.450566
+- id: CCOT
+  status: Todo
+  description: 'Topic 3 community: r/selfhosted'
+  due: 2027-01-07T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-3
+  priority: Medium
+  created: 2026-11-13T13:29:54.506300
+- id: vzYw
+  status: Todo
+  description: 'Topic 3 in-between: the 606,863 files number'
+  due: 2027-01-12T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-3
+  priority: Low
+  created: 2026-11-13T13:29:54.562222
+- id: fHDI
+  status: Todo
+  description: 'Topic 4: One linter config for pre-commit and CI with hk (LinkedIn in PT-BR)'
+  due: 2027-01-19T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - 0UU1
+  - cGts
+  - 3VOu
+  blocked_reason: null
+  tags:
+  - theme-b
+  - topic-4
+  priority: High
+  created: 2026-11-13T13:29:54.617603
+- id: ngug
+  status: Todo
+  description: 'Topic 4 community: r/commandline'
+  due: 2027-01-21T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-4
+  priority: Medium
+  created: 2026-11-13T13:29:54.673342
+- id: uikg
+  status: Todo
+  description: 'Topic 4 in-between: one config, eight linters'
+  due: 2027-01-26T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-4
+  priority: Low
+  created: 2026-11-13T13:29:54.728770
+- id: 1CN1
+  status: Todo
+  description: 'Recalibration 1: targets, language test, day/time, topics 5-8, in-between posts'
+  due: 2027-01-30T12:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - recal
+  priority: High
+  created: 2026-11-13T13:29:54.784464
+- id: E1rF
+  status: Todo
+  description: 'Topic 5: It took 54 fixes to make my bootstrap boring'
+  due: 2027-02-02T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - u1vm
+  - 82Az
+  - q4LL
+  blocked_reason: null
+  tags:
+  - theme-a
+  - topic-5
+  priority: High
+  created: 2026-11-13T13:29:54.840192
+- id: uVH9
+  status: Todo
+  description: 'Topic 5 community: r/dotfiles'
+  due: 2027-02-04T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-5
+  priority: Medium
+  created: 2026-11-13T13:29:54.896460
+- id: LQ8F
+  status: Todo
+  description: 'Topic 5 in-between: (picked at recalibration 1)'
+  due: 2027-02-09T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-5
+  priority: Low
+  created: 2026-11-13T13:29:54.952506
+- id: h4z7
+  status: Todo
+  description: 'Topic 6: Spec, plan, agents on a personal repo'
+  due: 2027-02-16T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - hNnk
+  - JGgs
+  - XES0
+  blocked_reason: null
+  tags:
+  - theme-c
+  - topic-6
+  priority: High
+  created: 2026-11-13T13:29:55.008875
+- id: Rc5u
+  status: Todo
+  description: 'Topic 6 community: r/ClaudeAI'
+  due: 2027-02-18T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-6
+  priority: Medium
+  created: 2026-11-13T13:29:55.064853
+- id: QfGl
+  status: Todo
+  description: 'Topic 6 in-between: 336 agent skills in a lock file'
+  due: 2027-02-23T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-6
+  priority: Low
+  created: 2026-11-13T13:29:55.120096
+- id: csdp
+  status: Todo
+  description: 'Topic 7: mise profiles, one repo, four kinds of machine'
+  due: 2027-03-02T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - qNYU
+  - Xqc1
+  - QJa5
+  blocked_reason: null
+  tags:
+  - theme-a
+  - topic-7
+  priority: High
+  created: 2026-11-13T13:29:55.176768
+- id: btNP
+  status: Todo
+  description: 'Topic 7 community: r/commandline'
+  due: 2027-03-04T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-7
+  priority: Medium
+  created: 2026-11-13T13:29:55.232045
+- id: lEde
+  status: Todo
+  description: 'Topic 7 in-between: the miserc.local.toml gotcha'
+  due: 2027-03-09T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - in-between
+  - topic-7
+  priority: Low
+  created: 2026-11-13T13:29:55.288139
+- id: NISc
+  status: Todo
+  description: 'Topic 8: Test your Docker images like code (CST)'
+  due: 2027-03-16T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - iKGG
+  - Bg7S
+  - 0RuO
+  blocked_reason: null
+  tags:
+  - theme-b
+  - topic-8
+  priority: High
+  created: 2026-11-13T13:29:55.343883
+- id: RoY2
+  status: Todo
+  description: 'Topic 8 community: r/docker'
+  due: 2027-03-18T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - community
+  - topic-8
+  priority: Medium
+  created: 2026-11-13T13:29:55.399856
+- id: mhmi
+  status: Todo
+  description: 'Recalibration 2: order the backlog; keep, change or stop the cadence'
+  due: 2027-03-23T12:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments: []
+  blocked_reason: null
+  tags:
+  - recal
+  priority: High
+  created: 2026-11-13T13:29:55.456117
+- id: hjWv
+  status: Done
+  description: 'Omarchy post: blur the private repo name in the table of 01-desktop and 04-zoom, then republish (see the Omarchy post task)'
+  due: 2026-11-14T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - follow-up
+  - safety
+  priority: High
+  created: 2026-11-13T13:34:45.255859
+- id: 6eS8
+  status: Done
+  description: 'Omarchy-ish macOS: tiling, an fn layer and Raycast'
+  due: 2026-11-12T09:00:00
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - 7u8X
+  - mm33
+  - vvf7
+  - oV6I
+  - zGEn
+  blocked_reason: null
+  tags:
+  - post
+  priority: High
+  created: 2026-11-13T13:58:35.288069
+  position: docs/blog/posts/2026-11-12-omarchy-on-macos
+- id: Yaw4
+  status: InProgress
+  description: 'Series: account-wide numbers and decisions'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - mrFr
+  - boaP
+  blocked_reason: null
+  tags:
+  - series
+  priority: Low
+  created: 2026-11-13T13:58:35.500847
+- id: 7UIn
+  status: Todo
+  description: 'Backlog: One Brewfile for macOS and Linux'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - hV5R
+  blocked_reason: null
+  tags:
+  - theme-a
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:55.430368
+- id: VoGF
+  status: Todo
+  description: 'Backlog: macOS settings as code'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - ohJT
+  blocked_reason: null
+  tags:
+  - theme-a
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:55.554049
+- id: Uz84
+  status: Todo
+  description: 'Backlog: Testing dotfiles with BDD'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - Lkv6
+  blocked_reason: null
+  tags:
+  - theme-b
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:55.793396
+- id: B05v
+  status: Todo
+  description: 'Backlog: Agent skills pinned in a lock file'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - PaoV
+  blocked_reason: null
+  tags:
+  - theme-c
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:55.938476
+- id: 5iqf
+  status: Todo
+  description: 'Backlog: Zsh startup, measured'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - 5Zxd
+  blocked_reason: null
+  tags:
+  - theme-d
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:56.070316
+- id: DQYx
+  status: Todo
+  description: 'Backlog: The fzf tools (xcg, gitx fza)'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - 77Lz
+  blocked_reason: null
+  tags:
+  - theme-d
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:56.207174
+- id: tSJE
+  status: Todo
+  description: 'Backlog: The gotchas list'
+  due: null
+  actors:
+  - 7lt7
+  - JTps
+  comments:
+  - I8WA
+  blocked_reason: null
+  tags:
+  - topic-backlog
+  priority: Low
+  created: 2026-11-13T17:24:56.329500
+actors:
+- id: 7lt7
+  pseudo: roalcantara
+  pic: null
+  actor_type: Human
+- id: JTps
+  pseudo: Claude
+  pic: null
+  actor_type: AgentIa
+comments:
+- id: 7u8X
+  text: 'devto.id: 5021431'
+  actors: []
+  task_id: 6eS8
+- id: mm33
+  text: 'devto.url: https://dev.to/roalcantara/omarchy-ish-macos-tiling-an-fn-layer-and-raycast-3fd8'
+  actors: []
+  task_id: 6eS8
+- id: vvf7
+  text: 'stats: 2026-11-13 devto views=30 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  actors: []
+  task_id: 6eS8
+- id: oV6I
+  text: 'note: published before the series tooling; its images show a private repo name in a table (01-desktop, 04-zoom): follow-up task hjWv'
+  actors: []
+  task_id: 6eS8
+- id: mrFr
+  text: 'stats: 2026-11-13 github repo_views=334 repo_uniques=12 (api)'
+  actors: []
+  task_id: Yaw4
+- id: boaP
+  text: 'note: baseline recorded 2026-11-13 before the series started; LinkedIn has no API for personal posts, so its baseline is the median of the first two series posts'
+  actors: []
+  task_id: Yaw4
+- id: hy0I
+  text: 'gate: 2026-11-13 PASS stepps=8/12'
+  actors: []
+  task_id: 6ThC
+- id: rdkc
+  text: 'vars: hook=confession cover=series images=1-terminal linkedin=image lang=en day=<author> tags=ai,zsh,bash,productivity'
+  actors: []
+  task_id: 6ThC
+- id: zGEn
+  text: 'note: 2026-11-13 the repo name is blurred in 01-desktop and 04-zoom (03-tui hides it); it still appears as text in docs/TILING.md, bootstrap.toml and specs, so it was already public'
+  actors: []
+  task_id: 6eS8
+- id: rLqj
+  text: 'hook: Secrets live in the repo, encrypted on commit, decrypted on checkout'
+  actors: []
+  task_id: EFly
+- id: bnIo
+  text: 'recipe: git clean/smudge filters + `.gitattributes` + an age key outside the repo'
+  actors: []
+  task_id: EFly
+- id: oQ6H
+  text: 'sources: `script/{clean,smudge}.sops.sh`, `.sops.yaml`, `.gitattributes`, `docs/CONTRIBUTING.md`'
+  actors: []
+  task_id: EFly
+- id: pdyq
+  text: 'hook: Every commit in dots follows one format, and the changelog writes itself'
+  actors: []
+  task_id: yg3s
+- id: 81gh
+  text: 'recipe: Conventional Commits + a capitalised description + a commit-msg check + semantic-release'
+  actors: []
+  task_id: yg3s
+- id: pm2q
+  text: 'sources: `docs/CONTRIBUTING.md`, `.github/workflows/release.yml`, `CHANGELOG.md`, the locale fix in `hk`'
+  actors: []
+  task_id: yg3s
+- id: FJqJ
+  text: 'hook: A full-home run read 606,863 files, 541 GiB, mostly VMs'
+  actors: []
+  task_id: VS93
+- id: 4VoQ
+  text: 'recipe: restic + an allowlist manifest; rebuildable things come back from dots, Homebrew and lock files'
+  actors: []
+  task_id: VS93
+- id: Zi7o
+  text: 'sources: `docs/REINSTALL.md`, `script/backup.ts`'
+  actors: []
+  task_id: VS93
+- id: 0UU1
+  text: 'hook: Eight linters, one file, the same checks locally and in CI'
+  actors: []
+  task_id: fHDI
+- id: cGts
+  text: 'recipe: `hk.pkl` steps, `hk check --all`, hooks installed by the bootstrap'
+  actors: []
+  task_id: fHDI
+- id: 3VOu
+  text: 'sources: `hk.pkl`, `config/hk/`, `docs/TESTING.md`'
+  actors: []
+  task_id: fHDI
+- id: u1vm
+  text: 'hook: One command from a clean Mac or Linux box to a working machine'
+  actors: []
+  task_id: E1rF
+- id: 82Az
+  text: 'recipe: `install` → `mise bootstrap`; core group must pass, the rest warns; logs in `~/.local/state/dots/`'
+  actors: []
+  task_id: E1rF
+- id: q4LL
+  text: 'sources: `install`, `config/mise/conf.d/bootstrap.toml`, README, `git log --grep ''fix(install)''`'
+  actors: []
+  task_id: E1rF
+- id: hNnk
+  text: 'hook: 14 design specs, 336 pinned agent skills, every change through a worktree'
+  actors: []
+  task_id: h4z7
+- id: JGgs
+  text: 'recipe: brainstorm → spec → plan with checkboxes → agent implements in a worktree → quality gate'
+  actors: []
+  task_id: h4z7
+- id: XES0
+  text: 'sources: `AGENTS.md`, `docs/superpowers/`, `config/agents/skill-lock.json`'
+  actors: []
+  task_id: h4z7
+- id: qNYU
+  text: 'hook: Desktop vs container, macOS vs Linux, from the same config'
+  actors: []
+  task_id: csdp
+- id: Xqc1
+  text: 'recipe: mise env profiles, `miserc.local.toml` written by `install`, per-profile tools'
+  actors: []
+  task_id: csdp
+- id: QJa5
+  text: 'sources: `config/mise/`, README "Gotchas"'
+  actors: []
+  task_id: csdp
+- id: iKGG
+  text: 'hook: The dev images are built and checked by Container Structure Tests in CI'
+  actors: []
+  task_id: NISc
+- id: Bg7S
+  text: 'recipe: multi-stage Dockerfile + CST manifest + `mise run build/test` + GitHub Actions'
+  actors: []
+  task_id: NISc
+- id: 0RuO
+  text: 'sources: `distros/`, `docs/DOCKER.md`, `.github/workflows/`'
+  actors: []
+  task_id: NISc
+- id: hV5R
+  text: 'sources: `config/homebrew/Brewfile`'
+  actors: []
+  task_id: 7UIn
+- id: ohJT
+  text: 'sources: `config/mise/conf.d/macos.toml`, `docs/MACOS.md`'
+  actors: []
+  task_id: VoGF
+- id: Lkv6
+  text: 'sources: `docs/TESTING.md`, `test/`'
+  actors: []
+  task_id: Uz84
+- id: PaoV
+  text: 'sources: `config/agents/skill-lock.json`, `script/agent-skills.ts`'
+  actors: []
+  task_id: B05v
+- id: 5Zxd
+  text: 'sources: `script/zsh-verify.sh`'
+  actors: []
+  task_id: 5iqf
+- id: 77Lz
+  text: 'sources: `config/bin/xcg`, `config/bin/gitx`'
+  actors: []
+  task_id: DQYx
+- id: I8WA
+  text: 'sources: README "Gotchas", the fix commits'
+  actors: []
+  task_id: tSJE
+- id: lnZA
+  text: 'gate: 2026-11-13 PASS stepps=8/12'
+  actors: []
+  task_id: 6ThC
+- id: Wsy2
+  text: 'vars: hook=confession cover=series-terminal images=1-cover linkedin=prose lang=en day=<author> tags=ai,zsh,bash,productivity'
+  actors: []
+  task_id: 6ThC
+- id: Qjd5
+  text: 'gate: 2026-11-13 BLOCKED stepps=8/12'
+  actors: []
+  task_id: 6ThC
+- id: nXNH
+  text: 'gate: 2026-11-13 PASS stepps=8/12'
+  actors: []
+  task_id: 6ThC
+- id: Rx7e
+  text: 'gate: 2026-11-13 PASS stepps=8/12'
+  actors: []
+  task_id: 6ThC
+project: posts

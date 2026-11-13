@@ -1,0 +1,60 @@
+tasks:
+- id: P1
+  status: Done
+  description: 'Omarchy-ish macOS'
+  due: 2026-11-12T09:00:00
+  actors: []
+  comments:
+  - c1
+  - c2
+  - c3
+  - c4
+  blocked_reason: null
+  tags:
+  - post
+  priority: High
+  position: docs/blog/posts/2026-11-12-omarchy-on-macos
+- id: S1
+  status: InProgress
+  description: 'Series: account-wide numbers and decisions'
+  due: null
+  actors: []
+  comments:
+  - c5
+  blocked_reason: null
+  tags:
+  - series
+  priority: Low
+- id: T1
+  status: Todo
+  description: 'Topic 1: not started'
+  due: 2026-11-17T09:00:00
+  actors: []
+  comments: []
+  blocked_reason: null
+  tags:
+  - topic-1
+  priority: High
+actors: []
+comments:
+- id: c1
+  text: 'devto.id: 5021431'
+  actors: []
+  task_id: P1
+- id: c2
+  text: 'stats: 2026-11-13 devto views=30 reactions=0 referrer_linkedin=10 (api)'
+  actors: []
+  task_id: P1
+- id: c3
+  text: 'stats: 2026-11-14 devto views=41 (api)'
+  actors: []
+  task_id: P1
+- id: c4
+  text: 'great post, loved it'
+  actors: []
+  task_id: P1
+- id: c5
+  text: 'stats: 2026-11-13 github repo_views=334 repo_uniques=12 (api)'
+  actors: []
+  task_id: S1
+project: posts

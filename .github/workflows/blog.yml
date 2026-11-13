@@ -1,0 +1,107 @@
+# The content series' dev.to flow (docs/blog/PLAYBOOK.md):
+# - a pull request that touches a post creates or updates its dev.to article as a DRAFT (found again by the
+#   <!-- dots:<post> --> marker in its markdown) and comments the preview links; CI never writes the repo;
+# - the merge to main updates the article from main: published when its front matter says `published: true`.
+# Merging a pull request with `published: true` is the publish button.
+---
+name: Blog
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths: ['docs/blog/posts/*/post.md', 'docs/blog/posts/*/images/**']
+  push:
+    branches: [main]
+    paths: ['docs/blog/posts/*/post.md', 'docs/blog/posts/*/images/**']
+
+# One queue for every run: a pull request run and the run of its merge must never overlap.
+concurrency:
+  cancel-in-progress: false
+  group: blog
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+jobs:
+  devto:
+    # Forks have no access to the DEVTO_TOKEN secret.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read # CI never writes the repo; ids are recorded locally (blog:push, blog:stats)
+      pull-requests: write # comment the preview links
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+          fetch-depth: 0
+
+      - name: Stop if the pull request is no longer open
+        id: open
+        env:
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          state=open
+          if [[ '${{ github.event_name }}' == 'pull_request' ]]; then
+            [[ "$(gh pr view "${PR}" --json state -q .state)" == OPEN ]] || state=closed
+          fi
+          echo "Pull request: ${state}"
+          echo "state=${state}" >> "${GITHUB_OUTPUT}"
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Find the changed posts
+        id: changed
+        env:
+          BEFORE: ${{ github.event.before }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [[ '${{ github.event_name }}' == 'pull_request' ]]; then
+            base="$(git merge-base "origin/${BASE_REF}" HEAD)"
+          elif [[ -n "${BEFORE}" && "${BEFORE}" != 0000000000000000000000000000000000000000 ]]; then
+            base="${BEFORE}"
+          else
+            base="HEAD~1"
+          fi
+          slugs="$(git diff --name-only "${base}" HEAD -- 'docs/blog/posts/*/post.md' 'docs/blog/posts/*/images/*' \
+            | cut -d/ -f4 | sort -u || true)"
+          echo "Posts: ${slugs:-none}"
+          { echo 'slugs<<EOF'; echo "${slugs}"; echo 'EOF'; } >> "${GITHUB_OUTPUT}"
+
+      - name: Push to dev.to
+        if: steps.open.outputs.state == 'open' && steps.changed.outputs.slugs != ''
+        env:
+          DEVTO_TOKEN: ${{ secrets.DEVTO_TOKEN }}
+          SLUGS: ${{ steps.changed.outputs.slugs }}
+          REF: ${{ github.head_ref || 'main' }}
+        run: |
+          draft=()
+          [[ '${{ github.event_name }}' == 'pull_request' ]] && draft=(--draft)
+          : > "${RUNNER_TEMP}/results.txt"
+          while IFS= read -r slug; do
+            [[ -f "docs/blog/posts/${slug}/post.md" ]] || continue
+            bun .mise/tasks/blog/push.ts "${slug}" --ref "${REF}" "${draft[@]}" | tee -a "${RUNNER_TEMP}/results.txt"
+          done <<< "${SLUGS}"
+
+      - name: Comment the preview links
+        if: github.event_name == 'pull_request' && steps.open.outputs.state == 'open' && steps.changed.outputs.slugs != ''
+        env:
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          {
+            echo '<!-- blog-bot -->'
+            echo "**dev.to drafts** (open while signed in to dev.to; merging publishes the posts whose front matter says \`published: true\`):"
+            echo
+            while read -r slug state url; do echo "- \`${slug}\` · ${state} · ${url}"; done < "${RUNNER_TEMP}/results.txt"
+          } > "${RUNNER_TEMP}/comment.md"
+          gh pr comment "${PR}" --body-file "${RUNNER_TEMP}/comment.md" --edit-last --create-if-none
