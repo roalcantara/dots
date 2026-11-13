@@ -21,6 +21,8 @@ tasks:
   comments:
   - hy0I
   - rdkc
+  - lnZA
+  - Wsy2
   blocked_reason: null
   tags:
   - post
@@ -763,4 +765,12 @@ comments:
   text: 'sources: README "Gotchas", the fix commits'
   actors: []
   task_id: tSJE
+- id: lnZA
+  text: 'gate: 2026-11-13 PASS stepps=8/12'
+  actors: []
+  task_id: 6ThC
+- id: Wsy2
+  text: 'vars: hook=confession cover=series-terminal images=1-cover linkedin=prose lang=en day=<author> tags=ai,zsh,bash,productivity'
+  actors: []
+  task_id: 6ThC
 project: posts
