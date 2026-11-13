@@ -513,6 +513,50 @@ export function nextTopicTask(todo: Todo): TodoTask | undefined {
     .sort((a, b) => String(day(a.due) ?? "9").localeCompare(String(day(b.due) ?? "9")))[0];
 }
 
+// ---- cover --------------------------------------------------------------------------------------------------
+// The post's cover.json filled into docs/blog/tools/cover.html (STYLE.md, "Visual identity"). Every string is
+// escaped first; then a small markup adds colour: {p} prompt, {y:…} yellow, {r:…} red, {g:…} green, {c:…} comment,
+// {k:…} mauve, {wink} the emoji; a line that is only {bar:N} or {bar:N:hl} becomes a skeleton bar of N% width.
+
+export type CoverSpec = {
+  series?: number; title: [string, string] | string[]; highlight: string; subtitle: string; wink?: string;
+  window: { kind: "terminal" | "app"; name?: string; focused?: boolean; lines: string[] };
+};
+
+export const escapeHtml = (text: string): string =>
+  text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
+function markup(text: string, wink = ""): string {
+  return escapeHtml(text)
+    .replace(/\{p\}/g, '<span class="pr">❯</span>')
+    .replace(/\{wink\}/g, escapeHtml(wink))
+    .replace(/\{([yrgck]):([^{}]*)\}/g, (_, cls: string, inner: string) => `<span class="${cls}">${inner}</span>`);
+}
+
+export function coverHtml(template: string, spec: CoverSpec, o: { series: number; tags: string[] }): string {
+  const [first = "", second = ""] = spec.title;
+  const subtitle = markup(spec.subtitle, spec.wink) + (spec.wink && !spec.subtitle.includes("{wink}") ? ` ${escapeHtml(spec.wink)}` : "");
+  const tags = o.tags.map((t, i) => `<span class="h h${(i % 4) + 1}">#${escapeHtml(t)}</span>`).join("");
+  const w = spec.window;
+  const body = w.lines
+    .map((line) => {
+      const bar = line.trim().match(/^\{bar:(\d{1,3})(:hl)?\}$/);
+      if (bar) return `<div class="sk${bar[2] ? " hlbar" : ""}" style="width:${Math.min(Number(bar[1]), 100)}%"></div>`;
+      const indent = line.match(/^ */)![0].length; // HTML collapses leading spaces; keep the indent
+      return `<div>${"&nbsp;".repeat(indent)}${markup(line.slice(indent), spec.wink)}</div>`;
+    })
+    .join("");
+  const name = escapeHtml(w.name ?? (w.kind === "terminal" ? "Ghostty" : "Notes"));
+  const win = `<div class="win${w.focused ? " focus" : ""}"><div class="bar"><i class="tr"></i><i class="ty"></i><i class="tg"></i>` +
+    `<span class="name">${name}</span></div><div class="${w.kind === "terminal" ? "term" : "app"}">${body}</div></div>`;
+  const fill: Record<string, string> = {
+    series: String(spec.series ?? o.series),
+    title: `${escapeHtml(first)}<br>${escapeHtml(second)} <span class="hl">${escapeHtml(spec.highlight)}</span>`,
+    subtitle, tags, window: win,
+  };
+  return template.replace(/\{\{(\w+)\}\}/g, (all, key: string) => fill[key] ?? all);
+}
+
 // ---- shell side (used by the task files; not unit-tested) -----------------------------------------------------
 
 export const ROOT = join(import.meta.dir, "../../..");

@@ -8,6 +8,7 @@ import {
   authorMarkers,
   assertPost,
   checkPost,
+  coverHtml,
   type Facts,
   formatStats,
   isTopicTask,
@@ -242,23 +243,6 @@ describe("parseRecordArgs", () => {
   });
 });
 
-describe("header.py (series cover)", () => {
-  const uv = Bun.which("uv");
-
-  it.skipIf(!uv)("draws a 1000 × 420 PNG from a title, a series number and key caps", () => {
-    const out = join(mkdtempSync(join(tmpdir(), "posts-")), "cover.png");
-    const p = Bun.spawnSync(
-      ["uv", "run", "--quiet", "--with", "pillow", join(REPO, "docs/blog/tools/header.py"), out,
-        "--title", "Test", "--highlight", "cover", "--series", "0", "--keys", "zsh,bash"],
-      { stdout: "pipe", stderr: "pipe" },
-    );
-    expect(p.stderr.toString()).toBe("");
-    expect(p.exitCode).toBe(0);
-    const png = readFileSync(out);
-    expect(png.subarray(1, 4).toString()).toBe("PNG");
-    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1000, 420]);
-  }, 60_000);
-});
 
 describe("postOptions", () => {
   it("reads the post, --ref and --draft from argv", () => {
@@ -485,5 +469,45 @@ describe("voice pass rules", () => {
     expect(r({ legacy: false, review: "PASS", fresh: false })).toEqual(["review-stale"]);
     expect(r({ legacy: false, review: undefined, fresh: false })).toEqual(["review-not-pass"]);
     expect(r({ legacy: true, review: undefined, fresh: false })).toEqual([]);
+  });
+});
+
+describe("coverHtml", () => {
+  const tpl = readFileSync(join(REPO, "docs/blog/tools/cover.html"), "utf8");
+  const spec = {
+    title: ["My AI agent's", "for-loop"], highlight: "ran once", subtitle: "zsh doesn't split {y:$vars} {wink} and agents write bash",
+    wink: "🪄", window: { kind: "terminal" as const, focused: true, lines: ["{p} for x in {y:$list}; do", "{r:[a b c]} {c:← once?!}", "{bar:60}", "{bar:40:hl}"] },
+  };
+
+  it("fills the series, both title lines, the highlight, the wink and the hashtags in their colours", () => {
+    const html = coverHtml(tpl, spec, { series: 0, tags: ["zsh", "bash", "ai", "productivity", "macos"] });
+    expect(html).toContain("dots #0");
+    expect(html).toContain("My AI agent&#39;s<br>for-loop <span class=\"hl\">ran once</span>");
+    expect(html).toContain("🪄");
+    expect(html).toContain('<span class="h h1">#zsh</span><span class="h h2">#bash</span><span class="h h3">#ai</span><span class="h h4">#productivity</span><span class="h h1">#macos</span>');
+  });
+
+  it("draws the window: kind, name, focus, prompt, colours and bars", () => {
+    const html = coverHtml(tpl, spec, { series: 0, tags: [] });
+    expect(html).toContain('<div class="win focus">');
+    expect(html).toContain('<span class="name">Ghostty</span>');
+    expect(html).toContain('<span class="pr">❯</span> for x in <span class="y">$list</span>; do');
+    expect(html).toContain('<div class="sk" style="width:60%"></div>');
+    expect(coverHtml(tpl, { ...spec, window: { kind: "terminal", lines: ["  echo"] } }, { series: 0, tags: [] }))
+      .toContain("<div>&nbsp;&nbsp;echo</div>");
+    expect(html).toContain('<div class="sk hlbar" style="width:40%"></div>');
+    const app = coverHtml(tpl, { ...spec, window: { kind: "app", name: "Notes", lines: ["{bar:50}"] } }, { series: 3, tags: [] });
+    expect(app).toContain('<div class="win">');
+    expect(app).toContain('<div class="app">');
+    expect(app).toContain('<span class="name">Notes</span>');
+  });
+
+  it("escapes every author string, markup included", () => {
+    const html = coverHtml(tpl, { ...spec, title: ["<script>", "a & b"], subtitle: "{y:<img src=x>}" }, { series: 1, tags: ['"><b>'] });
+    expect(html).not.toContain("<script>");
+    expect(html).not.toContain("<img src=x>");
+    expect(html).toContain("&lt;script&gt;");
+    expect(html).toContain("a &amp; b");
+    expect(html).toContain("#&quot;&gt;&lt;b&gt;");
   });
 });
