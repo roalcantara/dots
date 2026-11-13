@@ -175,3 +175,6 @@ config/mise/*.local.toml
 
 # Encrypted archives (the retired secrets archive flow); never commit them.
 *.zip.enc
+
+# Blog post captures before blurring (docs/posts/*/raw): never committed.
+docs/posts/*/raw/
