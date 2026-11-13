@@ -41,7 +41,7 @@ is the notebook's front page.
 | Accent | gradient `#33ccff` → `#00ff99` (the focus outline of the fn layer); amber `#ffb000` for a single highlight |
 | Ink | `#f2f2f2` text, `#9aa4b2` secondary |
 | Font | SF Pro (system); code in SF Mono |
-| Cover (dev.to and LinkedIn) | 1000 × 420: series tag `dots · #<n>` top right; title bottom left; 2–4 key caps under the title; a stylised terminal or window on the right with the accent outline. Made with `tools/header.py`. |
+| Cover (dev.to and LinkedIn) | 1000 × 420: series tag `dots · #<n>` top right; title on the left (first line ink, second line accent green), a subtitle, 2–4 key caps under it; a stylised terminal or window on the right with the accent outline. Made with `tools/header.py`. |
 | Screenshots | a clean Ghostty window, cropped to the point, sensitive regions blurred, framed by `tools/frame.py` (rounded corners, shadow, the background gradient) |
 | Carousel (LinkedIn, optional) | 1080 × 1350, 4–6 slides, one point per slide, same palette; the RECIPE is the usual content |
 | Diagrams | Mermaid in the post when a picture shows a mechanism; never decoration |

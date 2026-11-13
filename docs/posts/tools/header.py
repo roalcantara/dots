@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-# The post's cover (1000 × 420, dev.to): a stylised screen of tiled windows, the focused one outlined with the fn
-# layer's focus gradient (#33ccff → #00ff99), a row of key caps and the title. Drawn at 2× and scaled down.
-#   uv run --with pillow tools/header.py images/00-header.png
-import sys
+# The series cover (1000 × 420, dev.to and LinkedIn; docs/posts/STYLE.md): a stylised screen of tiled windows, the
+# focused one outlined with the fn layer's focus gradient (#33ccff → #00ff99), the series tag, the title, a subtitle
+# and a row of key caps. Drawn at 2× and scaled down. Defaults draw the Omarchy-ish cover.
+#   uv run --with pillow docs/posts/tools/header.py images/00-cover.png \
+#     --title "My AI agent's loop" --highlight "ran once" --subtitle "zsh · bash · Claude Code" --series 1 --keys zsh,bash
+import argparse
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
@@ -83,7 +85,13 @@ def cap(canvas, x, y, label, globe=False):
     return w
 
 
-def main(out):
+def fit(d, text, size, width):
+    while size > 40 and d.textlength(text, font=ImageFont.truetype(FONT, size)) > width:
+        size -= 4
+    return ImageFont.truetype(FONT, size)
+
+
+def main(out, title, highlight, subtitle, keys, series):
     canvas = diagonal((W, H), (12, 16, 26), (28, 22, 48))
     # soft colour blooms
     bloom = Image.new("L", (W, H), 0)
@@ -106,16 +114,30 @@ def main(out):
 
     # title, subtitle and key caps on the left
     d = ImageDraw.Draw(canvas, "RGBA")
-    d.text((90, 150), "Omarchy-ish", font=ImageFont.truetype(FONT, 104), fill=INK)
-    d.text((90, 268), "macOS", font=ImageFont.truetype(FONT, 104), fill=(*GREEN, 255))
-    d.text((94, 410), "yabai · Karabiner · Raycast · SwiftBar", font=ImageFont.truetype(FONT, 34),
-           fill=(255, 255, 255, 150))
+    width = sx - 90 - 60  # the left column, up to the screen
+    d.text((90, 150), title, font=fit(d, title, 104, width), fill=INK)
+    if highlight:
+        d.text((90, 268), highlight, font=fit(d, highlight, 104, width), fill=(*GREEN, 255))
+    if subtitle:
+        d.text((94, 410), subtitle, font=fit(d, subtitle, 34, width), fill=(255, 255, 255, 150))
     x = 94
-    for label, globe in (("fn", True), ("⇧", False), ("3", False)):
-        x += cap(canvas, x, 520, label, globe) + 18
+    for label in keys:
+        x += cap(canvas, x, 520, label, label == "fn") + 18
+    if series is not None:  # the series tag, top right
+        tag = f"dots · #{series}"
+        d.text((W - 60, 56), tag, font=ImageFont.truetype(FONT, 32), fill=(255, 255, 255, 170), anchor="ra")
 
     canvas.resize((1000, 420), Image.LANCZOS).save(out, optimize=True)
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    p = argparse.ArgumentParser(description="Draw a series cover (1000 × 420).")
+    p.add_argument("out", help="output PNG")
+    p.add_argument("--title", default="Omarchy-ish", help="first title line (ink)")
+    p.add_argument("--highlight", default="macOS", help="second title line (accent green); empty for none")
+    p.add_argument("--subtitle", default="yabai · Karabiner · Raycast · SwiftBar", help="small line under the title")
+    p.add_argument("--keys", default="fn,⇧,3", help="comma-separated key caps; fn draws the globe key")
+    p.add_argument("--series", type=int, default=None, help="series number for the 'dots · #n' tag")
+    a = p.parse_args()
+    keys = [k for k in a.keys.split(",") if k]
+    main(a.out, a.title, a.highlight, a.subtitle, keys, a.series)

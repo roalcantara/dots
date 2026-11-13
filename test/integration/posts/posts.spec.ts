@@ -204,3 +204,21 @@ describe("parseRecordArgs", () => {
     expect(() => parseRecordArgs(["x", "linkedin", "impressions=lots"], "d")).toThrow();
   });
 });
+
+describe("header.py (series cover)", () => {
+  const uv = Bun.which("uv");
+
+  it.skipIf(!uv)("draws a 1000 × 420 PNG from a title, a series number and key caps", () => {
+    const out = join(mkdtempSync(join(tmpdir(), "posts-")), "cover.png");
+    const p = Bun.spawnSync(
+      ["uv", "run", "--quiet", "--with", "pillow", join(REPO, "docs/posts/tools/header.py"), out,
+        "--title", "Test", "--highlight", "cover", "--series", "0", "--keys", "zsh,bash"],
+      { stdout: "pipe", stderr: "pipe" },
+    );
+    expect(p.stderr.toString()).toBe("");
+    expect(p.exitCode).toBe(0);
+    const png = readFileSync(out);
+    expect(png.subarray(1, 4).toString()).toBe("PNG");
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1000, 420]);
+  }, 60_000);
+});

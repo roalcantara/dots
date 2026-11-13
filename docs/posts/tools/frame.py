@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Frames a screenshot for the post: crop, blur sensitive boxes, scale, round the corners, drop a shadow and centre it
 # on the header's dark gradient. Boxes are in the input's pixels (x,y,w,h), applied after the crop.
-#   uv run --with pillow tools/frame.py raw/01.png images/01.png --crop 0,0,3000,1800 --blur 100,200,400,60
+#   uv run --with pillow docs/posts/tools/frame.py raw/01.png images/01.png --crop 0,0,3000,1800 --blur 100,200,400,60
 import argparse
 
 from PIL import Image, ImageDraw, ImageFilter
