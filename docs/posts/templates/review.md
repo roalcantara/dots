@@ -16,6 +16,7 @@
 
 | Check | Score | Note |
 | --- | --- | --- |
+| Cold read | 0–2 | <one point found? would save?> |
 | Information gain | 0–2 | <the sentence> |
 | RECIPE self-test | 0–2 | |
 | STEPPS | <raw>/12 | Social currency <n> · Triggers <n> · Emotion <n> · Public <n> · Practical value <n> · Stories <n> |
@@ -24,6 +25,8 @@
 | Images | 0–2 | phone test · one point · series look |
 | Goals 1–5 | <n>/10 | 1 <n> · 2 <n> · 3 <n> · 4 <n> · 5 <n> |
 | Language | 0–2 | |
+| Safety | ok / issue | <what, where> |
+| `posts:check` | ok / blocks | <blocks and warnings> |
 
 ## Consider
 
@@ -33,4 +36,4 @@
 
 ## Variables
 
-hook type: … · cover style: … · images: … · LinkedIn format: … · language: … · day/time: … · tags: …
+hook type: … · cover style: … · images: … · LinkedIn format: … · language: … · day/time: <author> · tags: …

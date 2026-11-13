@@ -406,6 +406,19 @@ tasks:
   - recal
   priority: High
   created: 2026-11-13T13:29:55.456117
+- id: hjWv
+  status: Todo
+  description: 'Omarchy post: blur the private repo name (kb-raycast, ~/Work/kb) in 01-desktop and 04-zoom, then republish'
+  due: 2026-11-14T12:00:00
+  actors:
+  - 7lt7
+  comments: []
+  blocked_reason: null
+  tags:
+  - follow-up
+  - safety
+  priority: High
+  created: 2026-11-13T13:34:45.255859
 actors:
 - id: 7lt7
   pseudo: roalcantara

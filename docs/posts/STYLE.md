@@ -21,7 +21,8 @@ is the notebook's front page.
 - Plain words, short sentences, one idea per paragraph, one claim per bullet.
 - At least one mistake or limit stated in every post.
 - No hype words: [`hype-words.txt`](hype-words.txt) is the list `posts:check` and the gate use; add to it when a new
-  one slips through.
+  one slips through. Hype is about the author's own work ("my game-changing setup"); honest praise for someone
+  else's tool ("Omarchy is a joy to drive") is fine.
 - dev.to conventions: a DISCLAIMER note, bold ALL-CAPS section labels, 💡 callouts, "vs." tables, references at the
   end, "Corrections and ideas are very welcome. :)".
 - **Titles:** draft 10, keep the most specific. Patterns that work on dev.to: a number ("5 things…"), a confession
@@ -46,7 +47,10 @@ is the notebook's front page.
 | Carousel (LinkedIn, optional) | 1080 × 1350, 4–6 slides, one point per slide, same palette; the RECIPE is the usual content |
 | Diagrams | Mermaid in the post when a picture shows a mechanism; never decoration |
 
-Every image passes the **phone test** (readable at 400 px wide) and makes **one point**.
+Every image passes the **phone test** and makes **one point**. Phone test: scaled to 400 px wide, every piece of
+text the image is there to show is still readable (roughly 8 px or taller at that width); decorative text may blur.
+The series tag is `dots · #<n>` with the topic number; the preflight and any post outside the numbered topics use
+`#0`.
 
 ## Rubric
 
@@ -62,7 +66,11 @@ wrong), **1** (present, weak) or **2** (strong, deliberate).
 | Voice | Zero hype words; a mistake or limit stated; first person, specific | Hype, takes aimed at people or tools, hate |
 | LinkedIn hook | ≤ 210 characters, makes sense alone, a specific detail | — |
 | Images | Phone test, one point each, the series look, nothing sensitive | Anything sensitive is visible |
-| Goals 1–5 | Knowledge base, recipe, skills shown, presence, contagious: each 0–2 | — |
+| Goal 1, knowledge base | A RECIPE worth linking to; the dots files linked | — |
+| Goal 2, lesson as a recipe | A real mistake or surprise, and what changed because of it | — |
+| Goal 3, skills shown | The working repo, tests or numbers prove it; no unproven claims | — |
+| Goal 4, presence | A LinkedIn post and a community angle that stand on their own | — |
+| Goal 5, contagious | A hook and an image someone would forward; STEPPS bars met | — |
 | Language | English default; PT-BR text follows the playbook's rules | — |
 | Safety | No secret, key, token name, email, client or private repo name | Any of them, in text or images |
 | `posts:check` | No blocks | Any block |
