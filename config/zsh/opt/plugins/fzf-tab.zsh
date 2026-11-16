@@ -151,7 +151,7 @@ zstyle ':fzf-tab:complete:brew-(install|uninstall|search|info):*-argument-rest' 
 
 # Preview for todo: a task ID shows the task, a subcommand its help
 zstyle ':fzf-tab:complete:todo*:*' fzf-preview '
-  out=$(todo list --tasks 2>/dev/null | awk -v w=" $word — " '\''$0 ~ w { p=1 } p { if (p > 1 && /^  \[/) exit; print; p++ }'\'')
+  out=$(todo list --tasks 2>/dev/null | awk -v w=" $word — " '\''index($0, w) { p=1 } p { if (p > 1 && /^ *\[/) exit; print; p++ }'\'')
   if [[ -n "$out" ]]; then
     printf "%s\n" "$out"
   else

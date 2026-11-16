@@ -72,6 +72,7 @@ zim::overrides() {
   # escape sequences in the descriptions format disable its groups) and ZIM overrides.
   zstyle ':completion:*' menu no
   zstyle ':completion:*:descriptions' format '[%d]'
+  # Here, not in env.zsh: theme.zsh exports LS_COLORS after env::options runs.
   zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
   zstyle ':completion:*' squeeze-slashes no
   zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'

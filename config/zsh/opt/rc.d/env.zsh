@@ -96,7 +96,6 @@ env::options() {
   # }
 
   # ZSH COMPLETIONS SETTINGS | http://zsh.sourceforge.io/Doc/Release/Options.html#Completion-4 {
-  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
   zstyle ':completion:*' auto-description 'specify: %d'                                                        # Auto description
   zstyle ':completion:*' completer _expand _complete _correct _approximate _expand_alias _extensions _match    # Completers
   zstyle ':completion:*' format 'Completing %d'                                                                # Format
