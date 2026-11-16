@@ -1,0 +1,13 @@
+#autoload
+
+local -a tags
+local raw line re
+raw="$(todo tags 2>/dev/null)" || return 1
+re='^[[:space:]]+([^[:space:]]+)[[:space:]]+[0-9]+$'
+for line in ${(f)raw}; do
+  if [[ $line =~ $re ]]; then
+    tags+=("${match[1]}")
+  fi
+done
+(( ${#tags} )) || return 1
+_values -s , 'tag' "${tags[@]}"

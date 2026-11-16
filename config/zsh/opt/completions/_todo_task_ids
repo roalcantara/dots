@@ -1,0 +1,13 @@
+#autoload
+
+local -a tasks
+local raw line re
+raw="$(todo list --tasks 2>/dev/null)" || return 1
+re='^[[:space:]]*\[[^]]*\]( \[[^]]*\])? ([^ ]+) — (.*)$'
+for line in ${(f)raw}; do
+  if [[ $line =~ $re ]]; then
+    tasks+=("${match[2]}:${match[3]}")
+  fi
+done
+(( ${#tasks} )) || return 1
+_describe -t tasks 'task' tasks
