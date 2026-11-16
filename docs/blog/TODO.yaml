@@ -93,6 +93,8 @@ tasks:
   - bnIo
   - oQ6H
   - xeug
+  - N2Jw
+  - kBiV
   blocked_reason: null
   tags:
   - post
@@ -858,6 +860,14 @@ comments:
   task_id: Yaw4
 - id: xeug
   text: 'pick: 2026-11-16 keep secrets leaked from public GitHub repos this month (Claude Code settings files; the wfx-loot CI stealer) https://www.helpnetsecurity.com/2026/11/12/wfx-loot-github-actions-secret-stealer/'
+  actors: []
+  task_id: EFly
+- id: N2Jw
+  text: 'gate: 2026-11-16 BLOCKED stepps=10/12'
+  actors: []
+  task_id: EFly
+- id: kBiV
+  text: 'vars: hook=confession cover=terminal-ghostty-focused images=1-cover linkedin=quote-pointer-linkcard lang=en day=<author> tags=git,security,devops,productivity'
   actors: []
   task_id: EFly
 project: posts
