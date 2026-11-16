@@ -561,6 +561,13 @@ describe("coverHtml", () => {
     expect(html).toContain('<span class="h h1">#zsh</span><span class="h h2">#bash</span><span class="h h3">#ai</span><span class="h h4">#productivity</span><span class="h h1">#macos</span>');
   });
 
+  it("draws diff lines whole, escaped, as the wink card does", () => {
+    const html = coverHtml(tpl, { ...spec, window: { kind: "terminal", lines: ["{c:# in git vs on my disk}", "{del:-KEY=ENC[…]}", "{add:+KEY=\"x\"}"] } }, { series: 1, tags: [] });
+    expect(html).toContain('<div class="del">-KEY=ENC[…]</div>');
+    expect(html).toContain('<div class="add">+KEY=&quot;x&quot;</div>');
+    expect(tpl).toMatch(/\.del\{[^}]*background/);
+  });
+
   it("draws the window: kind, name, focus, prompt, colours and bars", () => {
     const html = coverHtml(tpl, spec, { series: 0, tags: [] });
     expect(html).toContain('<div class="win focus">');

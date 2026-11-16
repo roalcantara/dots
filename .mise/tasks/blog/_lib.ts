@@ -685,6 +685,9 @@ export function coverHtml(template: string, spec: CoverSpec, o: { series: number
     .map((line) => {
       const bar = line.trim().match(/^\{bar:(\d{1,3})(:hl)?\}$/);
       if (bar) return `<div class="sk${bar[2] ? " hlbar" : ""}" style="width:${Math.min(Number(bar[1]), 100)}%"></div>`;
+      // A whole diff line, as on the wink card: the cover may echo the card's before/after (STYLE.md, "Cover").
+      const diff = line.match(/^\{(del|add):(.*)\}$/);
+      if (diff) return `<div class="${diff[1]}">${escapeHtml(diff[2]!)}</div>`;
       const indent = line.match(/^ */)![0].length; // HTML collapses leading spaces; keep the indent
       return `<div>${"&nbsp;".repeat(indent)}${markup(line.slice(indent), spec.wink)}</div>`;
     })
