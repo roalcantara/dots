@@ -203,6 +203,24 @@ export type Article = {
   main_image?: string;
 };
 
+// A short last word on a line of its own ("0.") reads as a stray fragment, and where lines break depends on the
+// reader's screen. So, on the way to dev.to, a prose line whose last word is 4 characters or fewer gets a
+// non-breaking space before it: the two last words always break together. Code, headings, tables, one-word lines
+// and a last word inside inline code stay as they are.
+export function bindLastWords(markdown: string): string {
+  let fence = false;
+  return markdown.split("\n").map((line) => {
+    if (/^\s*(```|~~~)/.test(line)) {
+      fence = !fence;
+      return line;
+    }
+    if (fence || /^\s*(#{1,6}\s|\||<!--|!\[)/.test(line)) return line;
+    const m = line.match(/^(.*\S) (\S{1,4})$/);
+    if (!m || /^\s*([-*+>]|\d+[.)])$/.test(m[1]!) || m[2]!.includes("`")) return line;
+    return `${m[1]}\u00A0${m[2]}`;
+  }).join("\n");
+}
+
 // dev.to turns every newline into a line break, unlike GitHub; the repo wraps prose at 120 columns. Before pushing,
 // each wrapped paragraph, list item and quote line is joined back into one line. Code fences (indented ones too),
 // tables, headings, comments and images stay as they are; so do blank lines, blank quote separators and hard breaks.
@@ -253,7 +271,7 @@ export function articlePayload(
 ): { article: Article } {
   const article: Article = {
     title: fm.title ?? "",
-    body_markdown: `${unwrapProse(rewriteImages(body, o.slug, o.ref)).replace(/\s*$/, "")}\n\n${marker(o.slug)}\n`,
+    body_markdown: `${bindLastWords(unwrapProse(rewriteImages(body, o.slug, o.ref))).replace(/\s*$/, "")}\n\n${marker(o.slug)}\n`,
     tags: fm.tags,
   };
   const published = o.draft ? false : fm.published === true;
