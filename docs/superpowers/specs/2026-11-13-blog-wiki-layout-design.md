@@ -1,6 +1,6 @@
 # Blog: a wiki layout for posts — design
 
-> **Status:** historical design record. The current rules are in [`docs/blog/PLAYBOOK.md`](../../blog/PLAYBOOK.md) and
+> **Status:** superseded by [2026-11-16-blog-story-layout-design.md](2026-11-16-blog-story-layout-design.md). The current rules are in [`docs/blog/PLAYBOOK.md`](../../blog/PLAYBOOK.md) and
 > [`docs/blog/STYLE.md`](../../blog/STYLE.md).
 
 Asked by the author: posts structured like a wiki page (nested topics, the same standard sections in every post,

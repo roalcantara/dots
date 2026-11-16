@@ -1,7 +1,7 @@
 # Recipes from dots
 
 Short write-ups of how things are done in this repo: each post tells the story of a problem and ends in a
-**RECIPE**, a TL;DR you can follow without reading the rest. They are published on
+**RECIPE**, the `## The fix…` section you can follow without reading the rest. They are published on
 [dev.to](https://dev.to/roalcantara) (the canonical public article) and shared on LinkedIn; this folder is the
 source: every post, its files and its numbers.
 

@@ -56,8 +56,9 @@ rewrite the post yourself: you report. Work in the repository root, in this orde
    `docs/blog/posts/<post>/images/`.
 
 4. **Scores.** Fill the **Scores** table from STYLE.md's rubric, each check 0–2 with a short note:
-   - **Layout:** the wiki sections in order, each doing its job (STYLE.md, "Post layout"); snippets for every
-     command, setting and output; the AI disclosure line at the end.
+   - **Layout:** the story layout's sections in order (headings matched by how they start), each doing its job
+     (STYLE.md, "Post layout"); the opening says who this hits; snippets for every command, setting and output; the
+     closing in order: Corrections, the DISCLAIMER, the AI disclosure line.
    - **The hook:** a real moment, first person, with at most one geeky wink that fits (STYLE.md, "The hook").
    - **Lived or proven:** list each general claim about a tool or behaviour and its link or `sources:` entry; a
      first-person statement the author wrote counts as lived. Each fact once.

@@ -7,8 +7,8 @@ that led here are in `docs/superpowers/specs/` (historical records). Changes to 
 
 ## Intent
 
-Turn what dots already solves into a series of posts, each a story and a **RECIPE** (a TL;DR the author and readers
-come back to): a dev.to article, a short LinkedIn post that points to it, and, from topic 2, one community post. The
+Turn what dots already solves into a series of posts, each a story and a **RECIPE** (the `## The fix…` section the
+author and readers come back to): a dev.to article, a short LinkedIn post that points to it, and, from topic 2, one community post. The
 aim is to show know-how and lessons learned, not to chase clicks; engagement follows usefulness and honesty.
 
 ## Goals, in priority order
@@ -62,9 +62,9 @@ public article**; LinkedIn and communities point to dev.to.
 
 ## Formats
 
-- **dev.to article** (800–1,300 words): the wiki layout (⚡ TL;DR with the RECIPE first, then 🪲 the problem with
-  the hook, 💡 but how?, 🛠️ the fix, 🧪 check, ⚠️ gotchas, 🥷🏼 vs., 🤓 what I (think I) learned, 📚 references) and the AI
-  disclosure; [STYLE.md](STYLE.md), "Post layout", and [`templates/post.md`](templates/post.md).
+- **dev.to article** (length a guideline, about 600–1,300 words): the story layout (an opening on who this hits,
+  then How I ran into it, The fix, Why not, What I (think I) learned, and the fixed closing: Corrections, the
+  DISCLAIMER, the AI disclosure); [STYLE.md](STYLE.md), "Post layout", and [`templates/post.md`](templates/post.md).
 - **LinkedIn post:** the hook plus one insight, 250–450 characters, the link in the first comment
   ([STYLE.md](STYLE.md), [`templates/linkedin.md`](templates/linkedin.md)).
 - **Community post:** the story and the RECIPE written for one community, disclosed as the author's

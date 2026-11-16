@@ -1,83 +1,56 @@
 ---
-title: <specific title: a number, a confession or an opinion with a reason>
+title: <specific title: who it hits, a number, a confession or an opinion with a reason>
 published: false
-description: <one sentence: the problem and what the reader gets>
+description: <one sentence: who this hits and what the reader gets>
 tags: <large tag>, <large tag>, <tag>, <tag>
 cover_image: ./images/00-cover.png
 ---
 
-> **DISCLAIMER**
-> This is not a tutorial. It is what I (think I) learned, and it lives in [my dotfiles](https://github.com/roalcantara/dots);
-> use it with a grain of salt!
+<Who this hits and why, in about three sentences, each claim linked. End on the gap readers will recognise..>
 
-![<what the cover shows, in one sentence>](./images/00-cover.png)
-
-## ⚡ TL;DR
-
-<The fix in two lines.>
-
-- **Use it when:** <one line>
-- **You need:** <tools, one line>
-
-```text
-<the steps, short lines (≤ 60 characters): what to set, where>
+```console
+<the demo: the same command in the two cases, and what each prints>
 ```
 
-📁 **In dots:** [<file>](https://github.com/roalcantara/dots/blob/main/<path>) · [<file>](<link>)
+<One line on what the demo shows.>
 
-## 🪲 The problem
+## How I ran into it
 
-<author: the hook — your real moment (how you noticed, what it cost), with at most one geeky wink>
+<author: the moment — what happened, how you noticed, what it cost; at most one geeky wink>
 
-### Symptoms
+## The fix: <what it takes, e.g. "two settings">
 
-<What it looks like, ideally as a snippet of the real output.>
+<One line per step, then its snippet.>
 
-## 💡 But how?
-
-- **<Why it happens>**
-  - <the mechanism, with a snippet or a link that proves it>
-
-## 🛠️ The fix
-
-### <Tool or step>
-
-```<language>
+```jsonc
 // <the file it goes in>
 <the setting or command>
 ```
 
-## 🧪 Check it works
+<How to check it:>
 
 ```console
 $ <a command>
 <the expected output>
 ```
 
-## ⚠️ Gotchas
+## Why not <the usual way>?
 
-- <a gotcha>
-  - <why it bites, a snippet when it helps>
+<The alternatives and their catch, the gotchas among them. Skip the section when there is no real alternative.>
 
-## 🥷🏼 vs. <the usual way>
+## What I (think I) learned
 
-| | <The usual way> | <What I do> |
-| --- | --- | --- |
-| <aspect> | <…> | <…> |
+- **<A lesson>** <why, in one line>
+- **<A mistake or limit>** <what changed because of it>
 
-## 🤓 What I (think I) learned
-
-- **<A lesson>**
-  - <why, in one line>
-- **<A mistake or limit>**
-  - <what changed because of it>
-
-## 📚 References
-
-- <tool docs> · <the dots files and PRs>
+<The dots files and PRs, in one line.>
 
 ---
 
-Corrections and ideas are very welcome. :)
+Corrections and ideas are very welcome. **NO, SERIOUSLY!** :)
+
+> **DISCLAIMER**
+> This is not a tutorial. It is what I (think I) learned, and it lives in [my dotfiles](https://github.com/roalcantara/dots).
+> **PLEASE:** use it with a grain of salt! **YOU HAVE BEEN WARNED!**
 
 Drafted with AI help; every claim was checked by me, and the story is mine.
