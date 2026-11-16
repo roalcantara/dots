@@ -1,3 +1,35 @@
+# [1.45.0](https://github.com/roalcantara/dots/compare/v1.44.0...v1.45.0) (2026-11-16)
+
+### Bug Fixes
+
+* **blog:** Allow the commands' own steps and tidy references ([21035f6](https://github.com/roalcantara/dots/commit/21035f60a2afd9f830b0f46bd07ad5e5a275323a))
+* **blog:** Block author markers before the gate and let the gate rerun ([7ec657f](https://github.com/roalcantara/dots/commit/7ec657fbb21117c4bc9279f0a6c50c9fd85fa1c3))
+* **blog:** Blur a private repository name in the Omarchy screenshots ([94548be](https://github.com/roalcantara/dots/commit/94548bead7f8b9adc3791968fa58022f0ff5d67b))
+* **blog:** Don't read prose comparisons as placeholders ([a3e0c3a](https://github.com/roalcantara/dots/commit/a3e0c3a221b1bb71a247a9fa501756c28cbe387c))
+* **blog:** Find wrapped markers and judge review freshness by history ([f6c4c05](https://github.com/roalcantara/dots/commit/f6c4c05f8fed19aea8b47176cb0ba5a7a125ed9b))
+* **blog:** Ignore non-post arguments and report unknown PR state ([8ac0bce](https://github.com/roalcantara/dots/commit/8ac0bceecd370b0cbb425002216e3c0a343195b2))
+* **blog:** Join wrapped lines for dev.to and lighten the TL;DR ([ccf7cfb](https://github.com/roalcantara/dots/commit/ccf7cfbf968bb9b4c31d2f979614cc9b1bebaeea))
+* **blog:** Judge reviews by a fingerprint and block leftover hook options ([4486c8e](https://github.com/roalcantara/dots/commit/4486c8e5285bc46ac3f728df97cc15c936af1eb0))
+* **blog:** Publish a post from any branch but main ([c681f2b](https://github.com/roalcantara/dots/commit/c681f2b415fb129d5bc6230a21fa6b2c727b6a4b))
+* **blog:** Publish only from the post's branch and commit only named paths ([df78307](https://github.com/roalcantara/dots/commit/df7830704e19602f3c7a6710720c52b004aede58))
+* **posts:** Find a renamed post's article and keep every comment in reports ([cc1ca2e](https://github.com/roalcantara/dots/commit/cc1ca2e5199e9692f7645c4e8f565476216600e5))
+* **posts:** Never take a live article offline or change it before the merge ([92e232c](https://github.com/roalcantara/dots/commit/92e232c6bd1af2790b3b9e723ec2a329065cc220))
+
+### Features
+
+* **blog:** Add status, new, cover, publish, done and push-branch tasks ([099dc91](https://github.com/roalcantara/dots/commit/099dc911e2ff24b62e18dbf4dbfa235d472864b5))
+* **blog:** Add the /blog agent commands ([f0bf009](https://github.com/roalcantara/dots/commit/f0bf009830ee425eb7fabece14d388d5d7f05a2e))
+* **blog:** Check the story layout instead of the wiki layout ([9ac7e79](https://github.com/roalcantara/dots/commit/9ac7e799237255b658da2e4172984b8eb5775cdc))
+* **blog:** Check the wiki layout and the AI disclosure ([5cf9348](https://github.com/roalcantara/dots/commit/5cf9348e78c27f51c3dc35dc70ee712e952311a9))
+* **blog:** Compute a post's stage and its next step ([9100d14](https://github.com/roalcantara/dots/commit/9100d14c74355bb7397a9160ab9221735a263854))
+* **blog:** Keep a short last word with the one before it on dev.to ([9a03002](https://github.com/roalcantara/dots/commit/9a0300298648ceee5615083f56a8f3c45d38aa6a))
+* **blog:** Legacy posts, cover and LinkedIn checks, a publish gate in CI ([04af833](https://github.com/roalcantara/dots/commit/04af833ca354e9a69ad4d9b082766d7712abddde))
+* **blog:** Make the author's section set the standard ([2113097](https://github.com/roalcantara/dots/commit/2113097373ce7eb86e425751c675c74f3695159f))
+* **blog:** Render covers from the approved Catppuccin template ([12bd70c](https://github.com/roalcantara/dots/commit/12bd70ce9fc97540dee2408b2215f151e21110d0))
+* **posts:** Check a post's shape, RECIPE and voice ([32ce51a](https://github.com/roalcantara/dots/commit/32ce51af682433e9ce327ae19058d77681f33fbd))
+* **posts:** Push to dev.to and record numbers through the Forem API ([c5b5ef8](https://github.com/roalcantara/dots/commit/c5b5ef8e8aadeb9a8d5d36c957209f91bbba0e51))
+* **posts:** Share the image tools and draw the series cover ([dbacb2d](https://github.com/roalcantara/dots/commit/dbacb2da2615637139378f2171d58a08b2e6d552))
+
 # [1.44.0](https://github.com/roalcantara/dots/compare/v1.43.0...v1.44.0) (2026-11-12)
 
 
