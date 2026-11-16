@@ -737,10 +737,25 @@ export const addComment = (taskId: string, text: string): void => void todo("add
 export const hypeWords = (): string[] =>
   readFileSync(join(SERIES, "hype-words.txt"), "utf8").split("\n").map((l) => l.trim()).filter(Boolean);
 
+// A post's pull request counts as merged only once it reached main (merging into main publishes). One merged into
+// another branch (a PR that carries several changes) is still on its way, so it counts as open.
+export function prStateOf(state: string, base: string): "open" | "merged" | undefined {
+  if (state === "OPEN") return "open";
+  if (state === "MERGED") return base === "main" ? "merged" : "open";
+  return undefined;
+}
+
 export function prState(branch: string): "open" | "merged" | "unknown" | undefined {
-  const p = run(["gh", "pr", "list", "--head", branch, "--state", "all", "--json", "state", "-q", ".[0].state"]);
+  const p = run(["gh", "pr", "list", "--head", branch, "--state", "all", "--json", "state,baseRefName", "-q",
+    '.[0] | "\\(.state) \\(.baseRefName)"']);
   if (!p.ok) return "unknown";
-  return p.out === "OPEN" ? "open" : p.out === "MERGED" ? "merged" : undefined;
+  const [state = "", base = ""] = p.out.split(" ");
+  // Merged into another branch: the post reaches main with that branch's own pull request, so follow it.
+  if (state === "MERGED" && base && base !== "main") {
+    const up = prState(base);
+    return up === "merged" || up === "unknown" ? up : "open";
+  }
+  return prStateOf(state, base);
 }
 
 // The filled-in verdict; the template's "PASS | BLOCKED" line is not a verdict.
@@ -778,10 +793,19 @@ export function commitLocal(paths: string[], message: string): boolean {
   return true;
 }
 
-// Push the current post branch, never main.
+// A post is published by merging its pull request, so it may sit on any branch (its own feat/post-<slug>, or one
+// that carries several changes) but never main, and never a detached HEAD. A message when the branch won't do.
+export function branchBlocker(branch: string): string | undefined {
+  if (!branch) return "detached HEAD: switch to the branch of the post's pull request";
+  if (branch === "main") return "on main: work on the branch of the post's pull request (merging it publishes)";
+  return undefined;
+}
+
+// Push the current branch, never main.
 export function pushBranch(): string {
   const branch = git("branch", "--show-current").out;
-  if (!/^feat\/post-/.test(branch)) throw new Error(`not a post branch: "${branch}" (feat/post-<slug>)`);
+  const blocked = branchBlocker(branch);
+  if (blocked) throw new Error(blocked);
   const p = git("push", "-u", "origin", branch);
   if (!p.ok) throw new Error(`git push failed for ${branch}`);
   return branch;

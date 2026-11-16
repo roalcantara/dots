@@ -40,6 +40,8 @@ import {
   type Todo,
   unwrapProse,
   bindLastWords,
+  branchBlocker,
+  prStateOf,
   topicNumber,
   visibleLength,
 } from "../../../.mise/tasks/blog/_lib";
@@ -413,6 +415,20 @@ describe("task helpers", () => {
 
   it("names a post's branch from its slug", () => {
     expect(postBranch("2026-11-24-sops-age")).toBe("feat/post-sops-age");
+  });
+
+  it("counts a post's pull request as merged only when it merged into main", () => {
+    expect(prStateOf("MERGED", "main")).toBe("merged");
+    expect(prStateOf("MERGED", "feat/content-series")).toBe("open");
+    expect(prStateOf("OPEN", "main")).toBe("open");
+    expect(prStateOf("CLOSED", "main")).toBeUndefined();
+  });
+
+  it("lets a post be published or pushed from any branch but main", () => {
+    expect(branchBlocker("feat/post-sops-age")).toBeUndefined();
+    expect(branchBlocker("feat/content-series")).toBeUndefined();
+    expect(branchBlocker("main")).toMatch(/main/);
+    expect(branchBlocker("")).toMatch(/detached/);
   });
 
   it("finds the next open topic without a folder", () => {
