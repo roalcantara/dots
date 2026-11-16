@@ -1,18 +1,15 @@
 ## Post
 
-One string to rule them all: my agent's for-loop found one item where I had three.
+My AI agent writes bash. My Mac runs zsh. On a fresh install, that meant a loop over 16 file types ran once.. and
+still exited 0. :(
 
-zsh doesn't split an unquoted $var into words, so the bash-style loops my agents write ran once; one setting per
-tool (CLAUDE_CODE_SHELL for Claude Code) gave them bash and my terminal stays zsh.
+Since Catalina, new Mac accounts use zsh, and Claude Code runs in your shell. zsh doesn't split an unquoted $var;
+setting CLAUDE_CODE_SHELL to Homebrew's bash gives the agents bash, and my terminal stays zsh.
 
-→ the fix in the first comment
+→ first comment
 
-Hashtags: #AI #zsh #DeveloperTools
+Hashtags: #AI #zsh #macOS
 
 ## First comment
 
 {devto.url}
-
-## In-between post
-
-Next week: "quoting $list doesn't fix it" (the gotcha), same shape: a hook from that moment and its one insight.
