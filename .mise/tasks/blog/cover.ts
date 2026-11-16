@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 //MISE description="Render a post's cover (images/00-cover.png) from its cover.json in the series look (needs Chrome)"
 //USAGE arg "[post]" help="Post folder (default: the current post branch)"
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { type CoverSpec, coverHtml, parseFrontMatter, pick, POSTS, readTodo, SERIES, topicNumber } from "./_lib";
+import { type CoverSpec, coverHtml, linkedinCropWidth, parseFrontMatter, pick, POSTS, readTodo, SERIES, topicNumber } from "./_lib";
 
 const { post } = pick(process.argv[2]);
 if (!post) throw new Error("which post? pass its folder, or run this on its feat/post-<slug> branch");
@@ -34,3 +34,15 @@ const r = Bun.spawnSync([
 ], { stdout: "pipe", stderr: "pipe" });
 if (r.exitCode !== 0 || !existsSync(out)) throw new Error(`Chrome failed to render the cover (exit ${r.exitCode})`);
 console.log(`cover: ${out} (2000 × 840)`);
+
+// Two previews for the author, in raw/ (never published): what LinkedIn's link card keeps (the center at 1.91 : 1)
+// and the phone test (400 px wide). sips ships with macOS, like the Chrome and SF fonts the cover needs.
+const raw = join(dir, "raw");
+mkdirSync(raw, { recursive: true });
+const linkedin = join(raw, "00-cover-linkedin.png");
+const phone = join(raw, "00-cover-phone.png");
+for (const args of [["-c", "840", String(linkedinCropWidth(840)), out, "--out", linkedin], ["-Z", "400", out, "--out", phone]]) {
+  const s = Bun.spawnSync(["sips", ...args], { stdout: "pipe", stderr: "pipe" });
+  if (s.exitCode !== 0) throw new Error(`sips failed: ${s.stderr.toString().trim()}`);
+}
+console.log(`look before posting: ${linkedin} (LinkedIn's card) · ${phone} (phone test)`);

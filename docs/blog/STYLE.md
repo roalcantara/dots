@@ -110,13 +110,14 @@ finishes them in its own words ("## The fix: two settings", "## Why not change z
 | Accents | pink `#f5c2e7` (series pill, title highlight); hashtags cycle mauve `#cba6f7`, green `#a6e3a1`, peach `#fab387`, sky `#89dceb` |
 | Font | SF Pro (700 for titles); code in SF Mono |
 | Windows | OmniWM style: title bar `#2a2a2f` with traffic lights and the app's name; terminal body `#111116`, app body `#222226`; skeleton bars `#3d3d43`, one highlight bar `#7f7150`; **focused** windows get a cyan `#62e6f0` border and glow |
-| Cover | 1000 × 420 (rendered at 2×): pill `dots #<n>`, two title lines with the key phrase on pink, a subtitle with one emoji wink, plain coloured hashtags, one window (`terminal` or `app`). From `cover.json` by `mise run blog:cover` ([template](tools/cover.html)) |
+| Cover | 1000 × 420 (rendered at 2×): pill `dots #<n>`, two title lines with the key phrase on pink, a subtitle with one emoji wink, plain coloured hashtags, one window (`terminal` or `app`). From `cover.json` by `mise run blog:cover` ([template](tools/cover.html)). **Safe area** (2026-11-16): content inside x 120–880, because LinkedIn's link card keeps only the center at 1.91 : 1; readable text ≥ 20 px, title 40 px. **Limits:** title lines ~18 characters, subtitle ~45, window 3–5 lines of ~24. `blog:cover` also writes `raw/00-cover-linkedin.png` and `raw/00-cover-phone.png`: look at both before posting |
 | Screenshots | a clean capture, cropped to the point, sensitive regions blurred, framed by `tools/frame.py --app <name> [--focus]` in the same window style on the same base |
 | Carousel (LinkedIn, optional) | 1080 × 1350, 4–6 slides, one point per slide, same palette and windows |
 | Diagrams | Mermaid when a picture shows a mechanism; never decoration |
 
 Every image passes the **phone test** (scaled to 400 px wide, the text it's there to show is still readable,
-roughly 8 px or taller) and makes **one point**. The pill number is the topic's (`topic-<n>`); the preflight and
+roughly 8 px or taller, which is 20 px on the 1000 px cover) and makes **one point**. The cover also passes the
+**LinkedIn crop** (nothing it shows is cut in `raw/00-cover-linkedin.png`). The pill number is the topic's (`topic-<n>`); the preflight and
 posts outside the numbered topics use `#0`.
 
 ## Rubric
@@ -135,7 +136,7 @@ The gate (`/blog:gate`) fills this in `review.md`. Each check scores **0** (abse
 | STEPPS (six drivers) | Social currency, Triggers, Emotion, Public, Practical value, Stories, each 0–2 | — |
 | Voice | Zero hype words; a mistake or limit stated | Hype, takes aimed at people or tools, hate |
 | LinkedIn | A lived opening ≤ 210 characters; the dev.to URL in the post; ≤ 250 characters without it; the post's title states the insight | No dev.to link in the post |
-| Images | Phone test, one point each, the series look, alt text | Anything sensitive is visible |
+| Images | Phone test, the cover passes the LinkedIn crop, one point each, the series look, alt text | Anything sensitive is visible |
 | Goals 1–5 | Knowledge base, lesson as a recipe, skills shown, presence, contagious (0–2 each) | — |
 | Language | English default; PT-BR text follows the playbook's rules | — |
 | Safety | No secret, key, token name, email, client or private repo name | Any of them, in text or images |

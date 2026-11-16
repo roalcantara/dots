@@ -641,6 +641,9 @@ function markup(text: string, wink = ""): string {
     .replace(/\{([yrgck]):([^{}]*)\}/g, (_, cls: string, inner: string) => `<span class="${cls}">${inner}</span>`);
 }
 
+// LinkedIn (like most link cards) shows the cover at 1.91 : 1, cropped from the center: the width it keeps.
+export const linkedinCropWidth = (height: number): number => Math.round(height * 1.91);
+
 export function coverHtml(template: string, spec: CoverSpec, o: { series: number; tags: string[] }): string {
   const [first = "", second = ""] = spec.title;
   const subtitle = markup(spec.subtitle, spec.wink) + (spec.wink && !spec.subtitle.includes("{wink}") ? ` ${escapeHtml(spec.wink)}` : "");

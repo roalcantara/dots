@@ -10,6 +10,7 @@ import {
   checkPost,
   contentHash,
   coverHtml,
+  linkedinCropWidth,
   type Facts,
   formatStats,
   isTopicTask,
@@ -530,6 +531,17 @@ describe("coverHtml", () => {
     expect(html).toContain("&lt;script&gt;");
     expect(html).toContain("a &amp; b");
     expect(html).toContain("#&quot;&gt;&lt;b&gt;");
+  });
+
+  it("keeps readable text at 20 px or more and inside LinkedIn's crop", () => {
+    const size = (sel: string) => Number(tpl.match(new RegExp(`\\${sel}\\{[^}]*?(?:font-size:|font:[^;]*?)(\\d+(?:\\.\\d+)?)px`))?.[1]);
+    for (const sel of [".sub", ".h", ".term", ".app", ".tag"]) expect(size(sel)).toBeGreaterThanOrEqual(20);
+    const pad = tpl.match(/\.bn\{[^}]*padding:0 (\d+)px[;}]/)?.[1];
+    expect(Number(pad)).toBeGreaterThanOrEqual(120);
+  });
+
+  it("crops the cover to LinkedIn's 1.91 : 1 card", () => {
+    expect(linkedinCropWidth(840)).toBe(1604);
   });
 });
 
