@@ -1,6 +1,6 @@
 ---
 title: "Secrets in git, encrypted on every commit (SOPS + age)"
-published: false
+published: true
 description: A git filter runs my dotfiles' secrets through SOPS + age, encrypted in every commit and plain on my disk. Three things broke it, and each has a fix.
 tags: git, security, devops, productivity
 cover_image: ./images/00-cover.png
