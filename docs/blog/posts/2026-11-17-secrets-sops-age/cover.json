@@ -1,7 +1,7 @@
 {
   "title": ["Secrets in git,", "encrypted"],
   "highlight": "on commit",
-  "subtitle": "{y:sops} + {y:age} {wink} mischief managed",
+  "subtitle": "{y:sops} + {y:age}, encrypted on commit {wink}",
   "wink": "🗺️",
   "window": {
     "kind": "terminal",

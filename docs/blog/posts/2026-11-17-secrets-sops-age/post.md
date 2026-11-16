@@ -23,8 +23,7 @@ Every commit holds ciphertext (14 values of my `.env` are `ENC[AES256_GCM,…]` 
 
 ## How I ran into it
 
-*"I solemnly swear that I am up to no good."* My repo is a Marauder's Map: on a fresh Mac it shows nothing but
-ciphertext.. until the age key says the words.
+![The same .env in git and on my disk: an encrypted value against the plain one](./images/01-wink.png)
 
 On a brand-new Mac, the install cloned dots before it had asked for the age key, so every secret came out
 encrypted. Then, with the key in place, every SOPS file still failed with `Failed to get the data key`: my scripts
