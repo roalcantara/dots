@@ -12,7 +12,7 @@ tasks:
   priority: High
   created: 2026-11-13T13:29:53.777185
 - id: 6ThC
-  status: Todo
+  status: Done
   description: 'Preflight: publish ''zsh doesn''t split $vars'' (dev.to + LinkedIn) end to end'
   due: 2026-11-13T20:00:00
   actors:
@@ -34,6 +34,8 @@ tasks:
   - drfT
   - CCGy
   - k6kR
+  - bTDV
+  - Dldn
   blocked_reason: null
   tags:
   - post
@@ -481,6 +483,7 @@ tasks:
   - vvf7
   - oV6I
   - zGEn
+  - t8EY
   blocked_reason: null
   tags:
   - post
@@ -498,6 +501,7 @@ tasks:
   - mrFr
   - boaP
   - HVZM
+  - pGh8
   blocked_reason: null
   tags:
   - series
@@ -831,6 +835,22 @@ comments:
   task_id: 6ThC
 - id: HVZM
   text: 'decision: 2026-11-16 LinkedIn: the dev.to link goes in the post (no first comment); the post is the lived moment, a beat and the link (≤ 250 characters), and the title carries the insight via the link card. Revisit at recalibration 1 with linkedin.com referrers.'
+  actors: []
+  task_id: Yaw4
+- id: bTDV
+  text: 'linkedin.url: https://www.linkedin.com/posts/roalcantara_ai-zsh-macos-share-7528029537318887424-TuIX/'
+  actors: []
+  task_id: 6ThC
+- id: Dldn
+  text: 'stats: 2026-11-16 devto views=0 reactions=0 comments=0 referrer_linkedin=0 referrer_reddit=0 (api)'
+  actors: []
+  task_id: 6ThC
+- id: t8EY
+  text: 'stats: 2026-11-16 devto views=40 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  actors: []
+  task_id: 6eS8
+- id: pGh8
+  text: 'stats: 2026-11-16 github repo_views=335 repo_uniques=12 (api)'
   actors: []
   task_id: Yaw4
 project: posts

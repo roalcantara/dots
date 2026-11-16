@@ -9,7 +9,7 @@ source: every post, its files and its numbers.
 | Date | Post | What it is | dev.to | LinkedIn |
 | --- | --- | --- | --- | --- |
 | 2026-11-12 | [Omarchy-ish macOS: tiling, an fn layer and Raycast](posts/2026-11-12-omarchy-on-macos/post.md) | How I got most of Omarchy's keyboard-first desktop on a Mac, with yabai, Karabiner-Elements, SwiftBar and Raycast. | [dev.to](https://dev.to/roalcantara/omarchy-ish-macos-tiling-an-fn-layer-and-raycast-3fd8) | — |
-| 2026-11-13 | [Your AI agent writes bash. Your Mac runs zsh.](posts/2026-11-13-zsh-word-split/post.md) | Since Catalina, a new Mac's shell is zsh, and Claude Code runs its commands in it. One unquoted $var later, an agent's loop over 16 file types ran once and exited 0. | [dev.to](https://dev.to/roalcantara/your-ai-agent-writes-bash-your-mac-runs-zsh-43dh) | — |
+| 2026-11-13 | [Your AI agent writes bash. Your Mac runs zsh.](posts/2026-11-13-zsh-word-split/post.md) | Since Catalina, a new Mac's shell is zsh, and Claude Code runs its commands in it. One unquoted $var later, an agent's loop over 16 file types ran once and exited 0. | [dev.to](https://dev.to/roalcantara/your-ai-agent-writes-bash-your-mac-runs-zsh-43dh) | [LinkedIn](https://www.linkedin.com/posts/roalcantara_ai-zsh-macos-share-7528029537318887424-TuIX/) |
 <!-- index:end -->
 
 The table is generated from `TODO.yaml` by `mise run blog:report --write`.
