@@ -5,3 +5,5 @@ More than once!
 
 Here is how I fixed it:
 {devto.url}
+
+\#AI \#zsh \#macOS

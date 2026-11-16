@@ -55,8 +55,8 @@ the post carries `<author: the moment …>` (and the options in a `<!-- hook opt
 - **LinkedIn** (decided 2026-11-16, from the author's own draft): the lived moment, quoted when there is a line worth
   quoting (≤ 210 characters), one short beat on why it mattered, a plain pointer ("Here is how I fixed it:") and the
   dev.to URL (`{devto.url}`) in the post. LinkedIn turns the URL into a card with the cover and the title, and the
-  title carries the insight, so the post doesn't repeat it: no first comment, no image to upload, hashtags optional
-  (0–1). About 80–250 characters, not counting the URL; no bullet list.
+  title carries the insight, so the post doesn't repeat it: no first comment, no image to upload. 1–3 topic
+  hashtags on their own line at the end. About 80–250 characters, not counting the URL; no bullet list.
 
   ```text
   "My loop didn't split the list, a zsh word-splitting quirk." - my AI agent said..
@@ -64,6 +64,8 @@ the post carries `<author: the moment …>` (and the options in a `<!-- hook opt
 
   Here is how I fixed it:
   {devto.url}
+
+  #AI #zsh #macOS
   ```
 
 ## Post layout

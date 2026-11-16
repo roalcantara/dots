@@ -37,7 +37,7 @@ Write the first draft of one post of the dots blog, in its folder, ready for the
    as is: Corrections, the DISCLAIMER, the AI disclosure line. Ten title options; keep the most specific. Tags: large ones first.
 5. Draft `linkedin.md` from its template (STYLE.md, "LinkedIn"): the lived moment, quoted when there is a line worth
    quoting (≤ 210 characters), one short beat, a plain pointer and `{devto.url}` in the post; ≤ 250 characters
-   without the URL; no first comment, hashtags optional. Check the post's title states the insight: the link card
+   without the URL; no first comment; 1–3 topic hashtags on the last line. Check the post's title states the insight: the link card
    shows it.
 6. From topic 2, draft `community.md` with the `reddit-posts` skill for the community its task names.
 7. Write `cover.json` (from `docs/blog/templates/cover.json`): two title lines, the highlight, a subtitle with one

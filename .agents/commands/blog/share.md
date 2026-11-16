@@ -19,7 +19,8 @@ author gives the URLs, record them. Arguments: $ARGUMENTS
    status says the dev.to URL is missing, run `mise run blog:stats` first.
 2. Read `docs/blog/posts/<post>/linkedin.md`. Replace `{devto.url}` with the post's `devto.url` (from
    `mise run -q blog:report`, its latest). Print **the post** as one block and copy it to the clipboard with
-   `pbcopy`, wrapped lines joined within each paragraph.
+   `pbcopy`, wrapped lines joined within each paragraph and Markdown escapes dropped (`\#AI` → `#AI`: the escape
+   only keeps markdownlint from reading a hashtag line as a heading).
 3. Remind the author: post it as is (LinkedIn turns the link into a card with the cover, so no image to upload),
    check the card appears before posting, and stay an hour or two for replies; the community post (if any) goes out
    a few days later.
