@@ -92,6 +92,7 @@ tasks:
   - rLqj
   - bnIo
   - oQ6H
+  - xeug
   blocked_reason: null
   tags:
   - post
@@ -855,4 +856,8 @@ comments:
   text: 'stats: 2026-11-16 github repo_views=335 repo_uniques=12 (api)'
   actors: []
   task_id: Yaw4
+- id: xeug
+  text: 'pick: 2026-11-16 keep secrets leaked from public GitHub repos this month (Claude Code settings files; the wfx-loot CI stealer) https://www.helpnetsecurity.com/2026/11/12/wfx-loot-github-actions-secret-stealer/'
+  actors: []
+  task_id: EFly
 project: posts
