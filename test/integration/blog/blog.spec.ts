@@ -39,6 +39,7 @@ import {
   stageOf,
   type Todo,
   unwrapProse,
+  bindLastWords,
   topicNumber,
   visibleLength,
 } from "../../../.mise/tasks/blog/_lib";
@@ -667,5 +668,30 @@ describe("unwrapProse (dev.to turns every newline into a line break)", () => {
   it("keeps a quote's separate items and a hard line break", () => {
     expect(unwrapProse("> **Use it when:** a\n>\n> **You need:** b")).toBe("> **Use it when:** a\n>\n> **You need:** b");
     expect(unwrapProse("line one  \nline two")).toBe("line one  \nline two");
+  });
+});
+
+describe("bindLastWords (no lone short word at the end of a paragraph)", () => {
+  const NBSP = " ";
+
+  it("binds a short last word to the one before it", () => {
+    expect(bindLastWords("duti said unrecognized.. and exited 0.")).toBe(`duti said unrecognized.. and exited${NBSP}0.`);
+    expect(bindLastWords("- **Exit 0 is not it.** Only the output told me.")).toBe(`- **Exit 0 is not it.** Only the output told${NBSP}me.`);
+    expect(bindLastWords("> bash runs it too.")).toBe(`> bash runs it${NBSP}too.`);
+  });
+
+  it("leaves longer last words, code, headings, tables and one-word lines alone", () => {
+    const md = [
+      "the paragraph ends here.",
+      "```console",
+      "$ echo it is 0",
+      "```",
+      "## The fix: two settings",
+      "| a | b |",
+      "Alone.",
+      "ends in `a b`",
+      "",
+    ].join("\n");
+    expect(bindLastWords(md)).toBe(md);
   });
 });

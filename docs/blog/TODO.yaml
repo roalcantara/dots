@@ -26,6 +26,11 @@ tasks:
   - Qjd5
   - nXNH
   - Rx7e
+  - At3o
+  - SKyX
+  - Vwtx
+  - hW38
+  - f9vT
   blocked_reason: null
   tags:
   - post
@@ -786,6 +791,26 @@ comments:
   task_id: 6ThC
 - id: Rx7e
   text: 'gate: 2026-11-13 PASS stepps=8/12'
+  actors: []
+  task_id: 6ThC
+- id: At3o
+  text: 'gate: 2026-11-16 PASS stepps=9/12'
+  actors: []
+  task_id: 6ThC
+- id: SKyX
+  text: 'vars: hook=confession cover=series-terminal images=1-cover linkedin=prose lang=en day=<author> tags=ai,zsh,bash,productivity'
+  actors: []
+  task_id: 6ThC
+- id: Vwtx
+  text: 'gate: 2026-11-16 PASS stepps=9/12'
+  actors: []
+  task_id: 6ThC
+- id: hW38
+  text: 'vars: hook=number cover=series-terminal images=1-cover linkedin=prose lang=en day=<author> tags=ai,zsh,bash,productivity'
+  actors: []
+  task_id: 6ThC
+- id: f9vT
+  text: 'gate: 2026-11-16 PASS stepps=9/12'
   actors: []
   task_id: 6ThC
 project: posts

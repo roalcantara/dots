@@ -1,10 +1,10 @@
 {
   "title": [
-    "My AI agent's",
-    "for-loop"
+    "AI agents write bash.",
+    "Your Mac runs"
   ],
-  "highlight": "ran once",
-  "subtitle": "zsh doesn't split {y:$vars} {wink} and agents write bash",
+  "highlight": "zsh.",
+  "subtitle": "16 file types, {y:one string} {wink} and still exit 0",
   "wink": "💍",
   "window": {
     "kind": "terminal",

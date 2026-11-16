@@ -1,148 +1,106 @@
 ---
-title: "My AI agent's for-loop ran once: zsh doesn't split $vars"
+title: "Your AI agent writes bash. Your Mac runs zsh."
 published: false
-description: My coding agents write bash-style loops, but on macOS they ran them in my zsh. One unquoted variable later, a loop ran once and reported success.
+description: Since Catalina, a new Mac's shell is zsh, and Claude Code runs its commands in it. One unquoted $var later, an agent's loop over 16 file types ran once and exited 0.
 tags: ai, zsh, bash, productivity
 cover_image: ./images/00-cover.png
 ---
 
-> **DISCLAIMER**
-> This is not a tutorial. It is a small bug I (think I) understood, and the fix lives in
-> [my dotfiles](https://github.com/roalcantara/dots). Use it with a grain of salt!
+Since macOS Catalina, new Mac accounts get zsh as their shell ([Apple](https://support.apple.com/en-us/102360)).
+Claude Code runs its commands in your shell unless told otherwise
+([Claude Code docs](https://code.claude.com/docs/en/env-vars)). And the shell code it writes is.. bash.
 
-**One string to rule them all:** my agent's for-loop found one item where I had three.
-
-## ⚡ TL;DR
-
-My agents' bash-style loops ran once in my zsh. Point the agents at bash; keep zsh for yourself.
-
-- **Use it when:** an AI agent's shell loops on macOS run once, or do less than they report.
-- **You need:** bash from Homebrew (`brew install bash`); macOS's own `/bin/bash` is 3.2.
-
-```text
-Claude Code   ~/.claude/settings.json
-  env.CLAUDE_CODE_SHELL = /opt/homebrew/bin/bash
-Copilot chat  VS Code's user settings.json
-  chat.tools.terminal.terminalProfile.osx.path
-    = /opt/homebrew/bin/bash
-```
-
-📁 **In dots:** [config/claude/settings.json](https://github.com/roalcantara/dots/blob/main/config/claude/settings.json) ·
-[config/vscode/settings.json](https://github.com/roalcantara/dots/blob/main/config/vscode/settings.json) ·
-[the PR (#108)](https://github.com/roalcantara/dots/pull/108) ·
-[the test that checks both settings](https://github.com/roalcantara/dots/blob/main/test/integration/bootstrap/agent-shell.spec.ts)
-
-## 🪲 The problem
-
-The shell my agents write is bash-style (`for x in $list; do …`), and on my Mac they ran it in my login shell, zsh.
-
-### Symptoms
+Most days the gap doesn't show. Loops over a list are where it does:
 
 ```console
-$ zsh -c 'list="a b c"; for x in $list; do echo "[$x]"; done'
-[a b c]
-$ bash -c 'list="a b c"; for x in $list; do echo "[$x]"; done'
-[a]
-[b]
-[c]
+$ bash -c 'v="a b c"; for x in $v; do echo "$x"; done'
+a
+b
+c
+$ zsh -c 'v="a b c"; for x in $v; do echo "$x"; done'
+a b c
 ```
 
-🤔 Same line, two shells, one silent difference. 💡 It's a zsh feature, not a bug (see 💡 But how?). 😬 It
-just isn't what the agent meant.
+bash splits `$v` and loops three times. zsh keeps it whole and loops once. Neither says a word. :(
 
-## 💡 But how?
+## How I ran into it
 
-- **Why the agent's command ran in zsh**
-  - Claude Code runs its commands in your shell unless `CLAUDE_CODE_SHELL` says otherwise
-    ([environment variables](https://code.claude.com/docs/en/env-vars)).
-  - Copilot chat runs them in a VS Code terminal, whose profile was zsh in my setup
-    ([Copilot settings](https://code.visualstudio.com/docs/copilot/reference/copilot-settings)). My login shell is zsh.
-- **Why zsh does this**
-  - In zsh, an unquoted `$list` stays one word unless you ask for splitting:
+Setting up a fresh Mac, I had Claude Code make VS Code the app for 16 kinds of text files, feeding a list of types
+to `duti` in a loop. One string to rule them all: in zsh, the loop ran once with all 16 glued together. `duti` said
+`unrecognized`.. and exited 0.
 
-    ```zsh
-    for x in ${=list}; do …   # splits once
-    setopt SH_WORD_SPLIT      # splits always
-    list=(a b c)              # the zsh way: an array
-    ```
+The agent caught it on its own:
 
-  - It is a deliberate design ([zsh FAQ 3.1](https://zsh.sourceforge.io/FAQ/zshfaq03.html#l18)).
+> *"My loop didn't split the list, a zsh word-splitting quirk."*
 
-## 🛠️ The fix
+I had read that same line before. Twice is a pattern. Time for a setting.
 
-### Claude Code: run its commands in bash
+## The fix: two settings
+
+Claude Code reads its shell from `CLAUDE_CODE_SHELL`:
 
 ```jsonc
 // ~/.claude/settings.json
 { "env": { "CLAUDE_CODE_SHELL": "/opt/homebrew/bin/bash" } }
 ```
 
-### GitHub Copilot chat: give its terminal a bash profile
+GitHub Copilot chat runs commands in a VS Code terminal, which opened zsh too. It takes a profile of its own:
 
 ```jsonc
 // VS Code's user settings.json
-// (in dots: config/vscode/settings.json)
 "chat.tools.terminal.terminalProfile.osx": {
   "path": "/opt/homebrew/bin/bash", "args": ["-l"]
 }
 ```
 
-### Keep zsh for yourself
+Both point at Homebrew's bash 5 (`brew install bash`), because macOS's own `/bin/bash` is much older:
 
-- Your interactive terminal doesn't change: both tools now run their commands in Homebrew's bash 5
-  ([#108](https://github.com/roalcantara/dots/pull/108)).
+```console
+$ /bin/bash --version | head -1
+GNU bash, version 3.2.57(1)-release (arm64-apple-darwin26)
+```
 
-## 🧪 Check it works
-
-Ask the agent to run this; it should print a bash version, not the fallback:
+Ask the agent to run:
 
 ```console
 $ echo "${BASH_VERSION:-not bash}"
 5.3.20(1)-release
 ```
 
-## ⚠️ Gotchas
+And **presto!** My own terminal still opens zsh; only the agents moved.
 
-- quoting (`"$list"`) doesn't help
-  - it makes it one word in both shells:
+## Why not change zsh instead?
 
-    ```console
-    $ zsh -c 'list="a b c"; for x in "$list"; do echo "[$x]"; done'
-    [a b c]
-    $ bash -c 'list="a b c"; for x in "$list"; do echo "[$x]"; done'
-    [a b c]
-    ```
+zsh does this on purpose ([zsh FAQ 3.1](https://zsh.sourceforge.io/FAQ/zshfaq03.html#l18)). `setopt SH_WORD_SPLIT`
+would change every zsh I open, and scripts never read `~/.zshrc` anyway
+([zsh startup files](https://zsh.sourceforge.io/Doc/Release/Files.html)). Quoting doesn't help either: `"$v"` is one
+word in bash too.
 
-- `setopt SH_WORD_SPLIT` also fixes it
-  - but in your `~/.zshrc` it changes every interactive zsh, and scripts never read that file
-    ([zsh startup files](https://zsh.sourceforge.io/Doc/Release/Files.html))
+```console
+$ bash -c 'v="a b c"; for x in "$v"; do echo "$x"; done'
+a b c
+```
 
-## 🥷🏼 vs. making the agent write zsh
+Telling the agent to write zsh works until it forgets. A setting has nothing to forget.
 
-|            | Tell the agent "this is zsh"               | Give the agent bash                 |
-| ---------- | ------------------------------------------ | ----------------------------------- |
-| Effort     | A line in every prompt or instruction file | One setting per tool, once          |
-| Depends on | The agent remembering, every time          | Nothing: bash idioms run as written |
-| Your shell | Unchanged                                  | Unchanged                           |
+## What I (think I) learned
 
-## 🤓 What I (think I) learned
+- **Exit 0 is not "it worked".** `duti` complained and exited 0; only the output told.
+- **Agents inherit your machine, not your intentions.** Including choices I made for me, not for them.
+- **The fix came from the same agent** (err.. Claude found `CLAUDE_CODE_SHELL`, actually).
 
-- **"It ran without errors" is not "it worked".**
-  - The loop exited 0. Only the result told me.
-- **Agents inherit your environment, not your intentions.**
-  - Whatever your login shell does, they do.
-- **Check which bash you get.**
-  - On macOS, a bare `bash` can be the old 3.2; point the setting at Homebrew's.
-
-## 📚 References
-
-- zsh FAQ: [Why does `$var` where `var="foo bar"` not do what I expect?](https://zsh.sourceforge.io/FAQ/zshfaq03.html#l18)
-- [Claude Code environment variables](https://code.claude.com/docs/en/env-vars) ·
-  [VS Code Copilot settings](https://code.visualstudio.com/docs/copilot/reference/copilot-settings)
-- My dotfiles: [the PR that moved my agents to bash (#108)](https://github.com/roalcantara/dots/pull/108)
+The settings live in my dotfiles:
+[Claude Code](https://github.com/roalcantara/dots/blob/main/config/claude/settings.json),
+[VS Code](https://github.com/roalcantara/dots/blob/main/config/vscode/settings.json), and
+[the PR (#108)](https://github.com/roalcantara/dots/pull/108).
 
 ---
 
-Corrections and ideas are very welcome. :)
+Corrections and ideas are very welcome. **NO, SERIOUSLY!** :)
+
+> **DISCLAIMER**
+> This is not a tutorial. It is a small bug I (think I) understood, and the fix lives in
+> [my dotfiles](https://github.com/roalcantara/dots).
+> **PLEASE:** use it with a grain of salt! **YOU HAVE BEEN WARNED!**
 
 Drafted with AI help; every claim was checked by me, and the story is mine.
