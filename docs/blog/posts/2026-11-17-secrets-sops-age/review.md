@@ -10,15 +10,15 @@ None.
 
 ## Cold read
 
-- **The one point:** I can keep secrets in git on purpose if a clean/smudge filter encrypts them with SOPS + age on
-  commit and decrypts them on checkout, with the age key kept out of git; and here are the three ways that setup broke
-  for the author (a new IV made files look modified, a fresh Mac cloned before the key and looked for it in the wrong
-  place, a copied diff setting hung `git diff`).
-- **Would I save it, and why:** Yes. The snippets are copy-paste sized, the "always modified" trick and the
-  `textconv` warning are things I would otherwise learn the hard way, and the check at the end tells me when I am done.
-- **Where I got lost:** Briefly at "My dotfiles commit theirs on purpose" (theirs = their own secrets, not the
-  `.claude` file); after that, nowhere. The key paragraph now reads clearly: a git-ignored file in the repo folder,
-  reached through a symlink.
+- **The one point:** I can commit my secrets on purpose if a git clean/smudge filter runs them through SOPS + age, so
+  git only ever stores ciphertext and my disk holds plain text, with the age key kept out of git; and the author shows
+  the three ways it broke (a new IV every run made files look modified, a fresh Mac cloned before the key and looked
+  for it in another folder, a copied diff setting hung `git diff`) and the fix for each.
+- **Would I save it, and why:** Yes. Each step is a small snippet I can paste, the "always modified" trick and the
+  "never cache textconv" warning are things I'd otherwise learn the hard way, and the closing check tells me when
+  I'm done. The diff image right under "How I ran into it" made the idea click before I read the fix.
+- **Where I got lost:** Still briefly at "My dotfiles commit theirs on purpose" (theirs = their own secrets, not the
+  `.claude` file); after that, nowhere.
 
 ## Scores
 
@@ -26,39 +26,47 @@ None.
 | --- | --- | --- |
 | Cold read | 2 | One point found at once; would save it for the snippets and the three gotchas |
 | Information gain | 2 | Beyond the usual clean/smudge how-to, it shows how the setup breaks in real use (new IVs mark files modified, a fresh Mac clones before the key and macOS sops looks for the key elsewhere, `diff.command` hangs `git diff`) and the fix for each |
-| RECIPE self-test | 2 | `.gitattributes`, `.sops.yaml`, filter and textconv config, key path, re-checkout and the check all have snippets matching the repo (verified: 9 filtered files, 14 `ENC[` values in `HEAD:config/.env`, `.sops.yaml` rule, `setup:git:filters`, `config/age/keys.txt` ignored by `.gitignore`, `~/.config/sops/age/keys.txt` resolving to it). Remaining gaps for a stranger: no `age-keygen` line, and the textconv script is described, not shown |
-| Layout | 2 | Opening (news, demo snippet, one line) → How I ran into it → The fix (snippets, then the check) → Why not → What I (think I) learned → links, `---`, Corrections, DISCLAIMER, AI disclosure, in order. The opening implies rather than says who this hits |
-| The hook | 2 | Real moment (fresh Mac of 2026-11-06, PR #102 / dbe14bc, merged that day), first person, one wink (Marauder's Map) that fits and echoes on the cover ("mischief managed", 🗺️) |
-| Lived or proven | 2 | Leak count → dev.to explainer; IV / always modified → getsops/sops#1137; seven arguments → git's `GIT_EXTERNAL_DIFF` docs (new); textconv and never caching → gitattributes docs and the task's `sources:`; key location → `install`, `.gitignore`, `sources:`; fresh-Mac key path → PR #102 and the scripts; clean/smudge → Red Hat; alternatives → GitGuardian, git-agecrypt, the comparison; global ignore → `config/git/ignore`. "Ten months" is first-person lived. Each fact once |
-| STEPPS | 8/12 | Social currency 2 · Triggers 1 · Emotion 1 · Public 1 · Practical value 2 · Stories 1. Bars met (raw ≥ 6, Practical value 2, Social currency 2) |
+| RECIPE self-test | 2 | `.gitattributes`, `.sops.yaml`, filter and textconv config, key path, re-checkout and the check all have snippets matching the repo (re-verified: `check-attr` → `sops`, 9 filtered files, 14 `ENC[AES256_GCM` values in `HEAD:config/.env`). Remaining gaps for a stranger: no `age-keygen` line, and the textconv script is described, not shown |
+| Layout | 2 | Opening (news, demo snippet, one line) → How I ran into it (wink card on top, then the moment) → The fix (snippets, then the check) → Why not → What I (think I) learned → links, `---`, Corrections, DISCLAIMER, AI disclosure, in order. All code lines ≤ 70 characters. The opening still implies rather than says who this hits |
+| The hook | 2 | Real moment (fresh Mac, PR #102 / dbe14bc), first person, with a cost (`Failed to get the data key`, ":("). The wink now lives only in the card; the article's text has no pop-culture line (no Marauder / mischief / solemnly / map left in `post.md`) |
+| Lived or proven | 2 | Leak count → dev.to explainer; IV / always modified → getsops/sops#1137; seven arguments → git's `GIT_EXTERNAL_DIFF` docs; textconv and never caching → gitattributes docs and the task's `sources:`; key location → `install`, `.gitignore`; fresh-Mac key path → PR #102 and the scripts; clean/smudge → Red Hat; alternatives → GitGuardian, git-agecrypt, the comparison; global ignore → `config/git/ignore`. "Ten months" is first-person lived. The one repeated fact is "git holds ciphertext, my disk holds plain text" (opening line, wink card, cover): see Consider 2 |
+| STEPPS | 8/12 | Social currency 2 · Triggers 1 · Emotion 1 · Public 1 · Practical value 2 · Stories 1. Bars met (raw ≥ 6, Practical value 2, Social currency 2). The card gives Public a shareable object, but LinkedIn uses the link card, so it stays 1 for now |
 | Voice | 2 | hype words: none ("presto" is the author's habit) · mistake stated: yes (cloned before the key; a copied line hung `git diff` for ten months) |
-| LinkedIn hook | 2 | Opening 163 characters, stands alone with a specific detail (fresh Mac, ciphertext, age key); about 228 characters without the URL; `{devto.url}` in the post; the title states the insight |
-| Images | 2 | One image (cover). Phone test passes at 400 px (title and terminal readable, subtitle small but legible); LinkedIn crop keeps everything; one point (git holds ciphertext, disk holds plain text); series look, pill `dots #1` matches topic-1 |
+| LinkedIn hook | 2 | Opening 163 characters; 230 characters without the URL; `{devto.url}` in the post; the title states the insight. The quote opening is the author's choice (noted by the author); it is a wink, not the lived moment, but the second sentence carries the moment (fresh Mac, ciphertext, age key) |
+| Images | 2 | Two images. **Wink card:** real command (`diff -u <(git show HEAD:config/.env) config/.env`), real shape of its output (`/dev/fd/63`, one encrypted value against its plain one, a non-secret key unchanged, the 6 `sops_` metadata lines trimmed as a grey comment — `HEAD:config/.env` has 6), dummy key and value (`APP_SECRET` and `DEBUG` are not in the real file; dummy values are allowed); teaches without the text (git holds ciphertext, the disk plain, non-secret values stay readable); alt text present. Phone test: terminal lines legible at 400 px, the subtitle and footer are at the limit. **Cover:** passes the phone test and the LinkedIn crop (nothing cut), subtitle keeps only the 🗺️ wink, pill `dots #1`, series look |
 | Goals 1–5 | 8/10 | 1 2 · 2 2 · 3 2 · 4 1 · 5 1 |
 | Language | 2 | English throughout; no PT-BR text |
-| Safety | ok | No secret, key or private name. The recipient is elided (`age1…`); `config/age/keys.txt`, `~/.config/sops/age/keys.txt` and `SOPS_AGE_KEY_FILE` are paths and sops' own variable, already public in the repo, not the name of a stored secret; `config/.env` is public (encrypted) in the repo; the password manager is unnamed. Repo `roalcantara/dots` is PUBLIC |
+| Safety | ok | No secret, key or private name. The card's `APP_SECRET="mischief-managed"` is a dummy, not a stored secret's name (absent from `config/.env`); the ciphertext is truncated (`9xQ…`); the recipient is elided (`age1…`); `config/age/keys.txt`, `~/.config/sops/age/keys.txt` and `SOPS_AGE_KEY_FILE` are paths and sops' own variable, already public in the repo; the password manager is unnamed. Repo `roalcantara/dots` is PUBLIC |
 | `blog:check` | ok | 0 blocks, 0 warnings |
 
 ## Consider
 
-1. **Show the textconv one-liner** (goal 2): as with the smudge script, one line makes the diff step reproducible
-   without opening the repo: `sops --decrypt "$1" 2>/dev/null || cat "$1"`. Optionally add
+1. **Smooth the second sentence and name the reader** (goal 5, tone): "My dotfiles commit theirs on purpose" still
+   trips a cold reader, and the layout asks the opening to say who this hits. Something like "If your repo holds
+   secrets, you can commit them on purpose instead: my dotfiles do, nine files run through a git filter…".
+2. **Make the cover say something the card doesn't** (visuals, goal 5): the opening line, the wink card and the cover
+   all show "ciphertext in git, plain on disk". The card now owns that point; the cover's window could show the
+   setup instead (`git check-attr filter -- config/.env` → `filter: sops`, or the `git status --short` clean check),
+   and its subtitle drop the second "encrypted on commit", which repeats the title.
+3. **Show the textconv one-liner** (goal 2): as with the smudge script, one line makes the diff step reproducible
+   without opening the repo (`sops --decrypt "$1" 2>/dev/null || cat "$1"`). Optionally add
    `age-keygen -o config/age/keys.txt` before the `.sops.yaml` step for a reader who has no key yet.
-2. **Smooth the second sentence and name the reader** (goal 5, tone): "My dotfiles commit theirs on purpose" still
-   trips a cold reader. Something like "If your repo holds secrets, you can commit them on purpose instead: mine has
-   nine files…" also says who this hits, which the layout asks the opening to do.
-3. **Date the news instead of "This month"** (goal 1): "In November 2026, researchers found…" keeps the opening true
-   once the news is old (the playbook: the post must still make sense after the news is forgotten).
-4. **Align the cover with the post** (visuals, goal 5): the terminal shows `git show HEAD:.env` and `cat .env`, the
-   post `HEAD:config/.env`. Either is fine alone; matching them lets the cover read as the post's own check.
-5. **Name the second symlink, or say "through symlinks"** (goal 2): `~/.config/sops/age/keys.txt` reaches
-   `config/age/keys.txt` through two links (`~/.config/sops` → `config/sops`, then `config/sops/age` → `../age`). "a
-   symlink" is close enough for the reader; a copier who makes one link by hand gets the same result, so this is
-   optional.
+4. **Bridge the card to the moment** (visuals, tone, goal 2): the card shows the end state (disk plain), the text
+   right under it starts with the failure (everything stayed encrypted). One short lead-in such as "This is what it
+   should look like. On a brand-new Mac, it didn't:" lets the card set up the hook instead of sitting beside it.
+5. **Date the news instead of "This month"** (goal 1): "In November 2026, researchers found…" keeps the opening true
+   once the news is old.
+6. **Raise the card's small text** (visuals, goal 4): at 400 px the subtitle and the footer title are at the edge of
+   legible; one size up for both, or a shorter subtitle ("The repo is a Marauder's Map: ciphertext until the key
+   says the words."), keeps the phone test comfortable.
+7. **Try the card as the LinkedIn image once** (goal 5): it teaches on its own and matches the quote opening; an
+   image post (`linkedin=image`, the link in the text) would test the series' link-vs-image question on its first
+   post. Optional; the link card is fine.
 
 ## Variables (the `vars:` comment)
 
-hook type: confession · cover style: series, terminal (Ghostty, focused), wink 🗺️ · images: 1 (cover only) · LinkedIn
-format: link card, quote opening, no image · language: en · day/time: <author> · tags: git,security,devops,productivity
+hook type: confession · cover style: series, terminal (Ghostty, focused), wink 🗺️ · images: 2 (cover, wink card:
+diff) · LinkedIn format: link card, quote opening, no image · language: en · day/time: <author> · tags:
+git,security,devops,productivity
 
-<!-- reviewed: b3ed36f1a57def1e -->
+<!-- reviewed: bb43556381fa71de -->
