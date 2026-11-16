@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 // The Brewfile's groups per profile: HOMEBREW_DOTS_PROFILE is a comma-separated list (container | desktop | desktop,dev).
 import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const BREWFILE = join(import.meta.dir, "../../../config/homebrew/Brewfile");
@@ -29,4 +30,12 @@ describe.skipIf(!brew)("Brewfile profiles", () => {
     expect(dev).toContain("shellcheck");
   });
   it("dev alone implies desktop", () => expect(list("dev")).toContain("gopass"));
+  it("todo CLI (todo-cli from RayanBO/todo) for desktop,dev only, after rust", () => {
+    expect(container).not.toContain("todo-cli");
+    expect(desktop).not.toContain("todo-cli");
+    expect(dev).toContain("todo-cli");
+    for (const l of [container, desktop, dev]) expect(l).not.toContain("todo"); // crates.io `todo` is another crate
+    const text = readFileSync(BREWFILE, "utf8"); // install order is file order: cargo needs rust first
+    expect(text.indexOf('cargo "todo-cli"')).toBeGreaterThan(text.indexOf('brew "rust"'));
+  });
 });

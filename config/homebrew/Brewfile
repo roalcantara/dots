@@ -147,6 +147,7 @@ brew "shellspec" if OS.mac?  # BDD framework for shells
 brew "tombi"  # TOML formatter, linter, and language server
 brew "typescript-language-server" if OS.mac?  # LSP for TypeScript
 brew "rust"  # Rust toolchain
+cargo "todo-cli", source: "https://github.com/RayanBO/todo?tag=v0.2.9"  # todo: project TODO.md/TODO.yaml CLI (not on crates.io; built from git, needs rust above)
 brew "opencode" # AI coding agent, built for the terminal
 cask "opencode-desktop" if OS.mac? # AI coding agent desktop app
 cask "android-studio" if OS.mac?  # Tools for building Android applications
@@ -164,7 +165,6 @@ uv "pynvim"
 uv "debugpy"
 uv "commit-check"
 # DEVTOOLS: JavaScript tools
-# todo (github.com/RayanBO/todo): no formula, and cargo's todo-cli is another crate. Pinned in .mise/tasks/blog/todo.
 npm "bun-dap-x"
 npm "react-devtools"
 npm "@vscode/js-debug-browsers"
