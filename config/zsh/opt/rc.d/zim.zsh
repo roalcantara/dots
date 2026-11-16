@@ -68,8 +68,11 @@ zim::overrides() {
   # Set once here; .zshenv previously set the same option three times.
   setopt no_mail_warning
 
-  # Completion styles ZIM's completion module would otherwise win.
-  zstyle ':completion:*' menu select=2
+  # Completion styles per fzf-tab's README (zsh's menu would compete with fzf-tab;
+  # escape sequences in the descriptions format disable its groups) and ZIM overrides.
+  zstyle ':completion:*' menu no
+  zstyle ':completion:*:descriptions' format '[%d]'
+  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
   zstyle ':completion:*' squeeze-slashes no
   zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 

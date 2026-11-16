@@ -92,7 +92,6 @@ export FZF_ALT_C_OPTS="
 # https://github.com/Aloxaf/fzf-tab
 # https://github.com/Aloxaf/fzf-tab/wiki/Configuration
 # c-x h -> get context of the completion
-zstyle ':fzf-tab:complete:*' menu no
 zstyle -d ':completion:*' format
 
 # Disable group headers
@@ -102,7 +101,6 @@ zstyle ':fzf-tab:*' prefix ''
 
 # Preview window settings
 zstyle ':fzf-tab:*' fzf-command fzf
-zstyle ':fzf-tab:*' list-colors ${(s.:.)LS_COLORS}
 # It specifies the key to trigger a continuous completion (accept the result and start another completion immediately). It's useful when completing a long path.
 zstyle ':fzf-tab:*' continuous-trigger 'tab'
 zstyle ':fzf-tab:*' switch-group ',' '.'
@@ -114,7 +112,7 @@ zstyle ':fzf-tab:*' accept-line enter
 # Pressing this key will use the currently entered user input as the final completion output
 zstyle ':fzf-tab:*' print-query alt-enter
 # NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
-zstyle ':fzf-tab:*' fzf-flags --bind=tab:accept --bind=right:accept --bind=enter:accept \
+zstyle ':fzf-tab:*' fzf-flags --bind=right:accept --bind=enter:accept \
     --cycle \
     --ansi \
     --inline-info \
@@ -151,11 +149,20 @@ zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl
 # Preview for brew (https://github.com/Aloxaf/fzf-tab/wiki/Preview#homebrew)
 zstyle ':fzf-tab:complete:brew-(install|uninstall|search|info):*-argument-rest' fzf-preview 'brew info $word'
 
+# Preview for todo: a task ID shows the task, a subcommand its help
+zstyle ':fzf-tab:complete:todo*:*' fzf-preview '
+  out=$(todo list --tasks 2>/dev/null | awk -v w=" $word — " '\''$0 ~ w { p=1 } p { if (p > 1 && /^  \[/) exit; print; p++ }'\'')
+  if [[ -n "$out" ]]; then
+    printf "%s\n" "$out"
+  else
+    todo $word --help 2>/dev/null
+  fi'
+
 # tags in context :completion::complete:mise:: argument-rest  (_arguments _mise)
 # tags in context :completion::complete:mise:argument-rest: argument-rest  (_arguments _mise)
-# Preview for mise install command with registry information
-# Create the preview function in your .zshrc
-zstyle ':fzf-tab:complete:mise:argument-rest' fzf-preview 'mise_tool_preview $word'
+# Preview for mise install command with tool information
+# Run mise tool $word for tool details
+zstyle ':fzf-tab:complete:mise:argument-rest' fzf-preview 'mise tool $word'
 
 # GIT (https://github.com/Aloxaf/fzf-tab/wiki/Preview#git)
 zstyle ':fzf-tab:complete:git-log:*' fzf-preview 'git show --color=always $word | bat --color=always -l diff -p' # Preview for git log
