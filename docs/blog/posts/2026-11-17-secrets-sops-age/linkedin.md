@@ -1,19 +1,9 @@
 ## Post
 
-<The hook, at most 210 characters: your real moment (or a pain readers share), first person, with at most one geeky wink.>
+"I solemnly swear that I am up to no good." My dotfiles are a Marauder's Map: on a fresh Mac, their secrets are
+just ciphertext.. until the age key says the words.
 
-<One sentence with the insight: what a reader keeps without clicking.>
-
-→ the fix (and the files) in the first comment
-
-Hashtags: #<tag> #<tag>
-
-Image: the cover. Alt text (write it when posting): <what the cover shows, in one sentence>
-
-## First comment
-
+Here is how git encrypts them on every commit:
 {devto.url}
 
-## In-between post
-
-<For the week after, the same shape: a hook from one piece of the topic (a gotcha, a number) and its one insight.>
+\#git \#security
