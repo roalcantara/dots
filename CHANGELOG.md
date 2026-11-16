@@ -1,3 +1,16 @@
+# [1.46.0](https://github.com/roalcantara/dots/compare/v1.45.0...v1.46.0) (2026-11-16)
+
+### Bug Fixes
+
+* **sops:** Decrypt diffs through a textconv instead of a hanging command ([8205d91](https://github.com/roalcantara/dots/commit/8205d91d601781b86fd4ba55e5809a05d4fe92e0))
+
+### Features
+
+* **blog:** Keep the cover inside LinkedIn's crop and readable on a phone ([ff9165c](https://github.com/roalcantara/dots/commit/ff9165c4d10a625d7ed14f4ff4e6fca19a0c2277))
+* **blog:** Let the cover echo the wink card's diff ([740b687](https://github.com/roalcantara/dots/commit/740b68711e29ee47b09cd24d291e1066606c1aad))
+* **blog:** Move the wink from the text into a wink card ([6908eeb](https://github.com/roalcantara/dots/commit/6908eeb93e096da1338c5043d16ad96c5c55ec4b))
+* **blog:** Put the dev.to link in the LinkedIn post ([9fd5b94](https://github.com/roalcantara/dots/commit/9fd5b94e507d7d46054b2e8484121987a28d69de))
+
 # [1.45.0](https://github.com/roalcantara/dots/compare/v1.44.0...v1.45.0) (2026-11-16)
 
 ### Bug Fixes
