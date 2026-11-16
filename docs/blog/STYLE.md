@@ -47,13 +47,24 @@ the post carries `<author: the moment …>` (and the options in a `<!-- hook opt
   author's own work; honest praise for someone else's tool is fine.
 - dev.to conventions: the story layout below, an occasional 💡 callout or "vs." table where it earns its place, and
   the closing (Corrections, the DISCLAIMER, the AI disclosure) at the end.
-- **Titles:** draft 10, keep the most specific (a number, a confession, an opinion with a reason). dots is the
-  example, never the headline.
+- **Titles:** draft 10, keep the most specific (a number, a confession, an opinion with a reason). **The title states
+  the insight** (the cause, in one line): the LinkedIn link card shows it, so the LinkedIn post doesn't repeat it.
+  dots is the example, never the headline.
 - **Tags** (max 4): the large ones that fit first (`git`, `devops`, `productivity`, `terminal`, `ai`, `docker`,
   `security`, `macos`); `dotfiles` only as the fourth, if at all. They are also the cover's hashtags.
-- **LinkedIn:** the hook (≤ 210 characters), then **one sentence with the insight** (what a reader keeps without
-  clicking), then "→ first comment". 250–450 characters, no bullet list, 1–3 hashtags. The first comment is one
-  line with the dev.to link (`{devto.url}`). **Write alt text** for the image when posting.
+- **LinkedIn** (decided 2026-11-16, from the author's own draft): the lived moment, quoted when there is a line worth
+  quoting (≤ 210 characters), one short beat on why it mattered, a plain pointer ("Here is how I fixed it:") and the
+  dev.to URL (`{devto.url}`) in the post. LinkedIn turns the URL into a card with the cover and the title, and the
+  title carries the insight, so the post doesn't repeat it: no first comment, no image to upload, hashtags optional
+  (0–1). About 80–250 characters, not counting the URL; no bullet list.
+
+  ```text
+  "My loop didn't split the list, a zsh word-splitting quirk." - my AI agent said..
+  More than once!
+
+  Here is how I fixed it:
+  {devto.url}
+  ```
 
 ## Post layout
 
@@ -121,7 +132,7 @@ The gate (`/blog:gate`) fills this in `review.md`. Each check scores **0** (abse
 | Cold read | A mid-level developer names the one point and would save it | — |
 | STEPPS (six drivers) | Social currency, Triggers, Emotion, Public, Practical value, Stories, each 0–2 | — |
 | Voice | Zero hype words; a mistake or limit stated | Hype, takes aimed at people or tools, hate |
-| LinkedIn | Hook ≤ 210 characters; the insight in one sentence; 250–450 characters in all | — |
+| LinkedIn | A lived opening ≤ 210 characters; the dev.to URL in the post; ≤ 250 characters without it; the post's title states the insight | No dev.to link in the post |
 | Images | Phone test, one point each, the series look, alt text | Anything sensitive is visible |
 | Goals 1–5 | Knowledge base, lesson as a recipe, skills shown, presence, contagious (0–2 each) | — |
 | Language | English default; PT-BR text follows the playbook's rules | — |

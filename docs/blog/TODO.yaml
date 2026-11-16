@@ -497,6 +497,7 @@ tasks:
   comments:
   - mrFr
   - boaP
+  - HVZM
   blocked_reason: null
   tags:
   - series
@@ -828,4 +829,8 @@ comments:
   text: 'devto.url: https://dev.to/roalcantara/your-ai-agent-writes-bash-your-mac-runs-zsh-43dh'
   actors: []
   task_id: 6ThC
+- id: HVZM
+  text: 'decision: 2026-11-16 LinkedIn: the dev.to link goes in the post (no first comment); the post is the lived moment, a beat and the link (≤ 250 characters), and the title carries the insight via the link card. Revisit at recalibration 1 with linkedin.com referrers.'
+  actors: []
+  task_id: Yaw4
 project: posts

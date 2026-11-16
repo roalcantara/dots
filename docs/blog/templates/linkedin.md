@@ -1,19 +1,11 @@
 ## Post
 
-<The hook, at most 210 characters: your real moment (or a pain readers share), first person, with at most one geeky wink.>
+<The lived moment, quoted when there is a line worth quoting, at most 210 characters, first person>..
+<One short beat: why it mattered>
 
-<One sentence with the insight: what a reader keeps without clicking.>
-
-→ the fix (and the files) in the first comment
-
-Hashtags: #<tag> #<tag>
-
-Image: the cover. Alt text (write it when posting): <what the cover shows, in one sentence>
-
-## First comment
-
+<A plain pointer, e.g. "Here is how I fixed it:">
 {devto.url}
 
 ## In-between post
 
-<For the week after, the same shape: a hook from one piece of the topic (a gotcha, a number) and its one insight.>
+<For the week after, the same shape: a moment from one piece of the topic (a gotcha, a number), a beat, the link.>

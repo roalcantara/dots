@@ -28,7 +28,7 @@ create the PR with a written title and body. Arguments: $ARGUMENTS
      `- [ ] Replace any <author: …> markers`,
      `- [ ] mise run blog:publish`,
      `- [ ] Merge (this publishes the post)`,
-     `- [ ] /blog:share (LinkedIn, then the first comment)`;
+     `- [ ] /blog:share (LinkedIn, the dev.to link in the post)`;
      end with the session's PR attribution line.
 5. Print the PR URL. **Never merge, never push to `main`, never set `published: true`.**
 </workflow>

@@ -464,10 +464,18 @@ describe("voice pass rules", () => {
     expect(rulesIn(dir)).toEqual(["block:cover-missing"]);
   });
 
-  it("warns when the LinkedIn post is longer than 450 characters", () => {
+  it("warns when the LinkedIn post is longer than 250 characters, not counting the link", () => {
     const dir = copyGood();
-    writeFileSync(join(dir, "linkedin.md"), `## Post\n\nShort hook.\n\n${"word ".repeat(100)}\n\n## First comment\n\n{devto.url}\n`);
+    writeFileSync(join(dir, "linkedin.md"), `## Post\n\nShort hook.\n\n${"word ".repeat(50)}\n\n{devto.url}\n`);
     expect(rulesIn(dir)).toEqual(["warn:linkedin-long"]);
+    writeFileSync(join(dir, "linkedin.md"), `## Post\n\nShort hook.\n\n${"word ".repeat(40)}\n\n{devto.url}\n`);
+    expect(rulesIn(dir)).toEqual([]);
+  });
+
+  it("blocks a LinkedIn post without the dev.to link in it", () => {
+    const dir = copyGood();
+    writeFileSync(join(dir, "linkedin.md"), `## Post\n\nShort hook.\n\n## First comment\n\n{devto.url}\n`);
+    expect(rulesIn(dir)).toEqual(["block:linkedin-link"]);
   });
 
   it("accepts the topic keys and the new metrics", () => {

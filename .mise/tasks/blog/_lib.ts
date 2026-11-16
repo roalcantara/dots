@@ -173,9 +173,14 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
     const hook = linkedinHook(readFileSync(li, "utf8"));
     const n = visibleLength(hook);
     if (n > 210) warn("hook-over-210", `LinkedIn hook is ${n} characters; at most 210 show before "see more"`);
+    // The dev.to link goes in the post: LinkedIn turns it into a card with the cover and the title, which carries the
+    // insight. It doesn't count toward the length.
     const post = linkedinPost(readFileSync(li, "utf8"));
-    const len = visibleLength(post);
-    if (len > 450) warn("linkedin-long", `LinkedIn post is ${len} characters; keep it to a hook and one insight (≤ 450)`);
+    if (!post.includes("{devto.url}") && !/https:\/\/dev\.to\//.test(post)) {
+      block("linkedin-link", "the LinkedIn post has no dev.to link ({devto.url}): it goes in the post, not in a comment");
+    }
+    const len = visibleLength(post.replace(/\{devto\.url\}|https:\/\/dev\.to\/\S+/g, "").trim());
+    if (len > 250) warn("linkedin-long", `LinkedIn post is ${len} characters; keep it to the moment, a beat and the link (≤ 250)`);
   }
   return out;
 }

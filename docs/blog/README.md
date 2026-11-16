@@ -35,7 +35,7 @@ One command per step; `mise run blog:status` (or `/blog:next`) says where each p
 6. `/blog:gate`: a fresh agent reviews the post and records the verdict.
 7. `/blog:pr`: commit, push the branch and open the PR (title and body written); check the dev.to draft preview.
 8. `mise run blog:publish`: then **merge the PR** (that publishes it).
-9. `/blog:share`: the LinkedIn post (copied) and the first comment, to post by hand; then
+9. `/blog:share`: the LinkedIn post, its dev.to link in it (copied), to post by hand; then
    `/blog:share linkedin=<url>` records it and closes the task.
 10. `mise run blog:stats` at 48 hours; `/blog:retro` at 7 days (numbers and lessons).
 
