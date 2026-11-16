@@ -31,6 +31,8 @@ tasks:
   - Vwtx
   - hW38
   - f9vT
+  - drfT
+  - CCGy
   blocked_reason: null
   tags:
   - post
@@ -811,6 +813,14 @@ comments:
   task_id: 6ThC
 - id: f9vT
   text: 'gate: 2026-11-16 PASS stepps=9/12'
+  actors: []
+  task_id: 6ThC
+- id: drfT
+  text: 'devto.id: 5032084'
+  actors: []
+  task_id: 6ThC
+- id: CCGy
+  text: 'devto.url: https://dev.to/roalcantara/my-ai-agents-for-loop-ran-once-zsh-doesnt-split-vars-1pg2-temp-slug-2454686'
   actors: []
   task_id: 6ThC
 project: posts
