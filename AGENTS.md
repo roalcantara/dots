@@ -25,6 +25,10 @@ and builds reproducible development Docker images under `distros/`.
 2. **Plan:** Draft an implementation plan with step-by-step checkboxes under `docs/superpowers/plans/YYYY-MM-DD-<topic>.md`.
 3. **Implement:** Work in an isolated worktree. Old specs and plans live in git history only.
 
+The repo's next tasks live in the root [`TODO.yaml`](TODO.yaml), managed with `todo` (RayanBO/todo, Brewfile
+dev profile) run from the repo root; the blog's are separate in [`docs/blog/TODO.yaml`](docs/blog/TODO.yaml)
+(`mise run blog:todo`).
+
 ## Quality gate
 
 Keep every gate green before declaring work complete:
