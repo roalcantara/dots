@@ -10,6 +10,8 @@ import {
   checkPost,
   contentHash,
   coverHtml,
+  winkHtml,
+  linkedinCropWidth,
   type Facts,
   formatStats,
   isTopicTask,
@@ -72,6 +74,23 @@ describe("parseFrontMatter", () => {
 describe("checkPost", () => {
   it("accepts a complete post", () => {
     expect(rules("good")).toEqual([]);
+  });
+
+  it("blocks a new post without its wink card, and lets a published one be", () => {
+    const copy = () => {
+      const dir = join(mkdtempSync(join(tmpdir(), "post-")), "good");
+      cpSync(join(FIX, "good"), dir, { recursive: true });
+      return dir;
+    };
+    const ruleNames = (dir: string) => checkPost(dir, HYPE).map((f) => `${f.level}:${f.rule}`);
+    const noRef = copy();
+    writeFileSync(join(noRef, "post.md"), readFileSync(join(noRef, "post.md"), "utf8").replace(/^!\[.*01-wink\.png\)\n\n/m, ""));
+    expect(ruleNames(noRef)).toEqual(["block:wink-missing"]);
+    const noSpec = copy();
+    rmSync(join(noSpec, "wink.json"));
+    expect(ruleNames(noSpec)).toEqual(["block:wink-missing"]);
+    writeFileSync(join(noRef, "post.md"), readFileSync(join(noRef, "post.md"), "utf8").replace("published: false", "published: true"));
+    expect(ruleNames(noRef)).toEqual([]);
   });
 
   it("blocks a broken post and warns about its voice", () => {
@@ -464,10 +483,18 @@ describe("voice pass rules", () => {
     expect(rulesIn(dir)).toEqual(["block:cover-missing"]);
   });
 
-  it("warns when the LinkedIn post is longer than 450 characters", () => {
+  it("warns when the LinkedIn post is longer than 250 characters, not counting the link", () => {
     const dir = copyGood();
-    writeFileSync(join(dir, "linkedin.md"), `## Post\n\nShort hook.\n\n${"word ".repeat(100)}\n\n## First comment\n\n{devto.url}\n`);
+    writeFileSync(join(dir, "linkedin.md"), `## Post\n\nShort hook.\n\n${"word ".repeat(50)}\n\n{devto.url}\n`);
     expect(rulesIn(dir)).toEqual(["warn:linkedin-long"]);
+    writeFileSync(join(dir, "linkedin.md"), `## Post\n\nShort hook.\n\n${"word ".repeat(40)}\n\n{devto.url}\n`);
+    expect(rulesIn(dir)).toEqual([]);
+  });
+
+  it("blocks a LinkedIn post without the dev.to link in it", () => {
+    const dir = copyGood();
+    writeFileSync(join(dir, "linkedin.md"), `## Post\n\nShort hook.\n\n## First comment\n\n{devto.url}\n`);
+    expect(rulesIn(dir)).toEqual(["block:linkedin-link"]);
   });
 
   it("accepts the topic keys and the new metrics", () => {
@@ -485,6 +512,40 @@ describe("voice pass rules", () => {
   });
 });
 
+describe("winkHtml (the wink card)", () => {
+  const tpl = readFileSync(join(REPO, "docs/blog/tools/wink.html"), "utf8");
+  const spec = {
+    title: ["“I solemnly swear that", "I am up to"], highlight: "no good.”", subtitle: "The repo is a Marauder's Map.",
+    label: "revelio", window: { name: "Ghostty", lines: [
+      "{p} diff -u <(git show HEAD:.env) .env", "{c:--- /dev/fd/63  ← in git}",
+      "{del:-APP_SECRET=ENC[AES256_GCM,…]}", "{add:+APP_SECRET=\"mischief-managed\"}", " {b:DEBUG}={o:true}",
+    ] },
+  };
+
+  it("fills the title, highlight, subtitle, label, footer and the pill", () => {
+    const html = winkHtml(tpl, spec, { series: 1, footer: "Secrets in git" });
+    expect(html).toContain("“I solemnly swear that<br>I am up to <span class=\"hl\">no good.”</span>");
+    expect(html).toContain("The repo is a Marauder&#39;s Map.");
+    expect(html).toContain('<span class="lbl">revelio</span>');
+    expect(html).toContain("Secrets in git");
+    expect(html).toContain("dots #1");
+  });
+
+  it("colours diff lines whole and keeps the code escaped", () => {
+    const html = winkHtml(tpl, spec, { series: 1, footer: "x" });
+    expect(html).toContain('<div class="del">-APP_SECRET=ENC[AES256_GCM,…]</div>');
+    expect(html).toContain('<div class="add">+APP_SECRET=&quot;mischief-managed&quot;</div>');
+    expect(html).toContain("diff -u &lt;(git show HEAD:.env) .env");
+    expect(html).toContain('&nbsp;<span class="b">DEBUG</span>=<span class="o">true</span>');
+  });
+
+  it("adds the caption only when the card is an illustration", () => {
+    expect(winkHtml(tpl, spec, { series: 1, footer: "x" })).not.toContain('class="cap"');
+    expect(winkHtml(tpl, { ...spec, caption: "* revelio, for illustration" }, { series: 1, footer: "x" }))
+      .toContain('<div class="cap">* revelio, for illustration</div>');
+  });
+});
+
 describe("coverHtml", () => {
   const tpl = readFileSync(join(REPO, "docs/blog/tools/cover.html"), "utf8");
   const spec = {
@@ -498,6 +559,13 @@ describe("coverHtml", () => {
     expect(html).toContain("My AI agent&#39;s<br>for-loop <span class=\"hl\">ran once</span>");
     expect(html).toContain("🪄");
     expect(html).toContain('<span class="h h1">#zsh</span><span class="h h2">#bash</span><span class="h h3">#ai</span><span class="h h4">#productivity</span><span class="h h1">#macos</span>');
+  });
+
+  it("draws diff lines whole, escaped, as the wink card does", () => {
+    const html = coverHtml(tpl, { ...spec, window: { kind: "terminal", lines: ["{c:# in git vs on my disk}", "{del:-KEY=ENC[…]}", "{add:+KEY=\"x\"}"] } }, { series: 1, tags: [] });
+    expect(html).toContain('<div class="del">-KEY=ENC[…]</div>');
+    expect(html).toContain('<div class="add">+KEY=&quot;x&quot;</div>');
+    expect(tpl).toMatch(/\.del\{[^}]*background/);
   });
 
   it("draws the window: kind, name, focus, prompt, colours and bars", () => {
@@ -522,6 +590,17 @@ describe("coverHtml", () => {
     expect(html).toContain("&lt;script&gt;");
     expect(html).toContain("a &amp; b");
     expect(html).toContain("#&quot;&gt;&lt;b&gt;");
+  });
+
+  it("keeps readable text at 20 px or more and inside LinkedIn's crop", () => {
+    const size = (sel: string) => Number(tpl.match(new RegExp(`\\${sel}\\{[^}]*?(?:font-size:|font:[^;]*?)(\\d+(?:\\.\\d+)?)px`))?.[1]);
+    for (const sel of [".sub", ".h", ".term", ".app", ".tag"]) expect(size(sel)).toBeGreaterThanOrEqual(20);
+    const pad = tpl.match(/\.bn\{[^}]*padding:0 (\d+)px[;}]/)?.[1];
+    expect(Number(pad)).toBeGreaterThanOrEqual(120);
+  });
+
+  it("crops the cover to LinkedIn's 1.91 : 1 card", () => {
+    expect(linkedinCropWidth(840)).toBe(1604);
   });
 });
 

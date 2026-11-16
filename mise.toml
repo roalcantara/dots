@@ -242,13 +242,20 @@ depends = ["setup:age"]
 run = '''
 #!/usr/bin/env bash
 set -e
+# sops-diff: begin
+# git diff and git log -p show SOPS files decrypted through a textconv. Set on every run, so clones configured
+# before 2026-11-16 drop diff.sops.command, which hung git diff (git calls a diff command with seven arguments and
+# nothing on stdin). Never cache it: cachetextconv would store the decrypted text in git.
+git config --local diff.sops.textconv "script/textconv.sops.sh"
+git config --local diff.sops.cachetextconv false
+git config --local --unset diff.sops.command || true
+# sops-diff: end
 # Only configure filters if not already done
 if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/null; then
   echo "  ==> Configuring Git filters for SOPS"
   git config --local filter.sops.smudge "script/smudge.sops.sh %f"
   git config --local filter.sops.required true
   git config --local filter.sops.clean "script/clean.sops.sh %f"
-  git config --local diff.sops.command "script/smudge.sops.sh %f"
   # sops-resmudge: begin
   # install clones before the age key exists, so filter=sops files were checked out encrypted: check them out
   # again through the filter now, and make the decrypted secrets private.

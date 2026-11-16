@@ -35,12 +35,18 @@ Write the first draft of one post of the dots blog, in its folder, ready for the
    (think I) learned), STYLE.md's voice and the author's habits, and a **code snippet for every command, setting and
    output**: each fact once, nothing the author hasn't lived or the repo doesn't show. Keep the template's closing
    as is: Corrections, the DISCLAIMER, the AI disclosure line. Ten title options; keep the most specific. Tags: large ones first.
-5. Draft `linkedin.md`: the hook (≤ 210 characters), **one sentence with the insight**, "→ the first comment";
-   250–450 characters, no bullet list, 1–3 hashtags; the first comment is `{devto.url}`.
+5. Draft `linkedin.md` from its template (STYLE.md, "LinkedIn"): the lived moment, quoted when there is a line worth
+   quoting (≤ 210 characters), one short beat, a plain pointer and `{devto.url}` in the post; ≤ 250 characters
+   without the URL; no first comment; 1–3 topic hashtags on the last line. Check the post's title states the insight: the link card
+   shows it.
 6. From topic 2, draft `community.md` with the `reddit-posts` skill for the community its task names.
 7. Write `cover.json` (from `docs/blog/templates/cover.json`): two title lines, the highlight, a subtitle with one
    emoji wink, and the window (`terminal` with the post's real moment in 3–5 lines, or `app` with code and/or
-   skeleton bars). Run `mise run blog:cover <post>` and look at the image. List any screenshots worth taking (2–4).
+   skeleton bars). Write `wink.json` (from `docs/blog/templates/wink.json`; STYLE.md, "Wink card"): the post's one
+   pop-culture reference as the title, framing a **real command and its real output** (run it; dummy values only),
+   the wink word as the label. Propose 2–3 references for the author to pick; none goes in the article's text. Run
+   `mise run blog:cover <post>` and look at both images and their previews in `raw/`. List any screenshots worth
+   taking (2–4).
 8. Run `mise run blog:check <post>` until it has no blocks (markers block until the author replaces them). Do not
    commit; end with: "Next: /blog:gate" (or "replace the <author: …> markers first").
 </workflow>

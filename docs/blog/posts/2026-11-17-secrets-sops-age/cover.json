@@ -1,0 +1,16 @@
+{
+  "title": ["Secrets in git,", "encrypted"],
+  "highlight": "on commit",
+  "subtitle": "{y:sops} + {y:age}, in a git filter {wink}",
+  "wink": "🗺️",
+  "window": {
+    "kind": "terminal",
+    "name": "Ghostty",
+    "focused": true,
+    "lines": [
+      "{c:# in git  vs  on my disk}",
+      "{del:-KEY=ENC[AES256_GCM,…]}",
+      "{add:+KEY=\"mischief-managed\"}"
+    ]
+  }
+}

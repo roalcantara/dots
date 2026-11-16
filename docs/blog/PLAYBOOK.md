@@ -65,11 +65,14 @@ public article**; LinkedIn and communities point to dev.to.
 - **dev.to article** (length a guideline, about 600–1,300 words): the story layout (an opening on who this hits,
   then How I ran into it, The fix, Why not, What I (think I) learned, and the fixed closing: Corrections, the
   DISCLAIMER, the AI disclosure); [STYLE.md](STYLE.md), "Post layout", and [`templates/post.md`](templates/post.md).
-- **LinkedIn post:** the hook plus one insight, 250–450 characters, the link in the first comment
+- **LinkedIn post:** the lived moment, a beat and the dev.to link in the post (its card carries the title, and the
+  title the insight), ≤ 250 characters
   ([STYLE.md](STYLE.md), [`templates/linkedin.md`](templates/linkedin.md)).
 - **Community post:** the story and the RECIPE written for one community, disclosed as the author's
   ([`templates/community.md`](templates/community.md)).
-- **Cover and images:** the series look ([STYLE.md](STYLE.md), "Visual identity"); `cover.json` per post.
+- **Cover and images:** the series look ([STYLE.md](STYLE.md), "Visual identity"); two images per post, the cover
+  (`cover.json`) and the wink card (`wink.json`: the post's one pop-culture reference, framing a real command and its
+  output), which also serves, now and then, as the LinkedIn image.
 
 ## Language
 

@@ -68,9 +68,11 @@ rewrite the post yourself: you report. Work in the repository root, in this orde
    - **STEPPS:** score Social currency, Triggers, Emotion, Public, Practical value, Stories (0–2 each) and the raw
      total. The bars: raw ≥ 6, Practical value = 2, one of Social currency or Stories = 2.
    - **Voice:** list any hype words (`docs/blog/hype-words.txt` and anything like them); is a mistake or limit stated?
-   - **LinkedIn:** the hook's length (≤ 210) and whether it stands alone; the insight in one sentence; 250–450
-     characters in all (0 when `linkedin.md` is missing).
-   - **Images:** phone test (readable at 400 px wide), one point each, the series look.
+   - **LinkedIn:** a lived opening (≤ 210) that stands alone; the dev.to URL in the post; ≤ 250 characters without
+     it; the post's title states the insight (the link card shows it). 0 when `linkedin.md` is missing.
+   - **Images:** phone test (readable at 400 px wide), one point each, the series look. The wink card: its command
+     and output are real (or it carries a caption saying it's an illustration), it teaches without the text, and the
+     article's text has no pop-culture line.
    - **Goals 1–5:** 0–2 each, by the criteria in STYLE.md's rubric.
    - **Language:** English by default; any PT-BR text follows the playbook's rules.
 

@@ -1,0 +1,19 @@
+{
+  "title": ["“I solemnly swear that", "I am up to"],
+  "highlight": "no good.”",
+  "subtitle": "The repo is a Marauder's Map: nothing but ciphertext, until the key says the words.",
+  "label": "revelio",
+  "height": 740,
+  "window": {
+    "name": "Ghostty",
+    "lines": [
+      "{p} diff -u <(git show HEAD:config/.env) config/.env",
+      "{c:--- /dev/fd/63   ← in git}",
+      "{c:+++ config/.env  ← on my disk}",
+      "{del:-APP_SECRET=ENC[AES256_GCM,data:9xQ…]}",
+      "{add:+APP_SECRET=\"mischief-managed\"}",
+      " {b:DEBUG}={o:true}",
+      "{c:-sops_mac=…  (and 5 more lines of sops metadata)}"
+    ]
+  }
+}

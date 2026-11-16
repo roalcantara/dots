@@ -12,7 +12,7 @@ tasks:
   priority: High
   created: 2026-11-13T13:29:53.777185
 - id: 6ThC
-  status: Todo
+  status: Done
   description: 'Preflight: publish ''zsh doesn''t split $vars'' (dev.to + LinkedIn) end to end'
   due: 2026-11-13T20:00:00
   actors:
@@ -33,6 +33,9 @@ tasks:
   - f9vT
   - drfT
   - CCGy
+  - k6kR
+  - bTDV
+  - Dldn
   blocked_reason: null
   tags:
   - post
@@ -89,12 +92,26 @@ tasks:
   - rLqj
   - bnIo
   - oQ6H
+  - xeug
+  - N2Jw
+  - kBiV
+  - dEjh
+  - c4fx
+  - 4Xyc
+  - rrqm
+  - QTS4
+  - 4kLd
+  - Orot
+  - h87M
+  - 4upJ
   blocked_reason: null
   tags:
+  - post
   - theme-a
   - topic-1
   priority: High
   created: 2026-11-13T13:29:54.061941
+  position: docs/blog/posts/2026-11-17-secrets-sops-age
 - id: H3RC
   status: Todo
   description: 'Topic 1 in-between: the RECIPE as a carousel'
@@ -480,6 +497,7 @@ tasks:
   - vvf7
   - oV6I
   - zGEn
+  - t8EY
   blocked_reason: null
   tags:
   - post
@@ -496,6 +514,8 @@ tasks:
   comments:
   - mrFr
   - boaP
+  - HVZM
+  - pGh8
   blocked_reason: null
   tags:
   - series
@@ -823,4 +843,76 @@ comments:
   text: 'devto.url: https://dev.to/roalcantara/my-ai-agents-for-loop-ran-once-zsh-doesnt-split-vars-1pg2-temp-slug-2454686'
   actors: []
   task_id: 6ThC
+- id: k6kR
+  text: 'devto.url: https://dev.to/roalcantara/your-ai-agent-writes-bash-your-mac-runs-zsh-43dh'
+  actors: []
+  task_id: 6ThC
+- id: HVZM
+  text: 'decision: 2026-11-16 LinkedIn: the dev.to link goes in the post (no first comment); the post is the lived moment, a beat and the link (≤ 250 characters), and the title carries the insight via the link card. Revisit at recalibration 1 with linkedin.com referrers.'
+  actors: []
+  task_id: Yaw4
+- id: bTDV
+  text: 'linkedin.url: https://www.linkedin.com/posts/roalcantara_ai-zsh-macos-share-7528029537318887424-TuIX/'
+  actors: []
+  task_id: 6ThC
+- id: Dldn
+  text: 'stats: 2026-11-16 devto views=0 reactions=0 comments=0 referrer_linkedin=0 referrer_reddit=0 (api)'
+  actors: []
+  task_id: 6ThC
+- id: t8EY
+  text: 'stats: 2026-11-16 devto views=40 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  actors: []
+  task_id: 6eS8
+- id: pGh8
+  text: 'stats: 2026-11-16 github repo_views=335 repo_uniques=12 (api)'
+  actors: []
+  task_id: Yaw4
+- id: xeug
+  text: 'pick: 2026-11-16 keep secrets leaked from public GitHub repos this month (Claude Code settings files; the wfx-loot CI stealer) https://www.helpnetsecurity.com/2026/11/12/wfx-loot-github-actions-secret-stealer/'
+  actors: []
+  task_id: EFly
+- id: N2Jw
+  text: 'gate: 2026-11-16 BLOCKED stepps=10/12'
+  actors: []
+  task_id: EFly
+- id: kBiV
+  text: 'vars: hook=confession cover=terminal-ghostty-focused images=1-cover linkedin=quote-pointer-linkcard lang=en day=<author> tags=git,security,devops,productivity'
+  actors: []
+  task_id: EFly
+- id: dEjh
+  text: 'gate: 2026-11-16 PASS stepps=8/12'
+  actors: []
+  task_id: EFly
+- id: c4fx
+  text: 'vars: hook=confession cover=series-terminal-ghostty images=1-cover linkedin=link-card-quote lang=en day=<author> tags=git,security,devops,productivity'
+  actors: []
+  task_id: EFly
+- id: 4Xyc
+  text: 'sources: `script/textconv.sops.sh`, `mise.toml` (setup:git:filters), `test/integration/bootstrap/sops-diff.spec.ts`, `config/age/keys.txt` via `.gitignore`, git''s GIT_EXTERNAL_DIFF and gitattributes textconv docs'
+  actors: []
+  task_id: EFly
+- id: rrqm
+  text: 'gate: 2026-11-16 PASS stepps=8/12'
+  actors: []
+  task_id: EFly
+- id: QTS4
+  text: 'vars: hook=confession cover=series-terminal-ghostty-focused images=1-cover linkedin=link-card-quote lang=en day=<author> tags=git,security,devops,productivity'
+  actors: []
+  task_id: EFly
+- id: 4kLd
+  text: 'gate: 2026-11-16 PASS stepps=8/12'
+  actors: []
+  task_id: EFly
+- id: Orot
+  text: 'vars: hook=confession cover=series-terminal-ghostty images=2-cover+wink-diff linkedin=link lang=en day=<author> tags=git,security,devops,productivity'
+  actors: []
+  task_id: EFly
+- id: h87M
+  text: 'gate: 2026-11-16 PASS stepps=8/12'
+  actors: []
+  task_id: EFly
+- id: 4upJ
+  text: 'vars: hook=confession cover=series-terminal-diff-echo images=2-cover+wink-diff linkedin=link lang=en day=<author> tags=git,security,devops,productivity'
+  actors: []
+  task_id: EFly
 project: posts

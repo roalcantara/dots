@@ -16,7 +16,9 @@ cover_image: ./images/00-cover.png
 
 ## How I ran into it
 
-<author: the moment — what happened, how you noticed, what it cost; at most one geeky wink>
+![<what the wink card shows, in one sentence>](./images/01-wink.png)
+
+<author: the moment — what happened, how you noticed, what it cost; the wink lives in the card, not here>
 
 ## The fix: <what it takes, e.g. "two settings">
 

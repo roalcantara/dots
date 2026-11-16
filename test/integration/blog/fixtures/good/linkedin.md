@@ -1,9 +1,6 @@
 ## Post
 
-My AI agent's loop ran once. zsh doesn't split unquoted variables.
+"My loop didn't split the list." - my AI agent said.. More than once!
 
-More lines.
-
-## First comment
-
-<https://dev.to/x>
+Here is how I fixed it:
+{devto.url}
