@@ -332,6 +332,10 @@ run = ["./script/zsh-verify.sh syntax", "./script/zsh-verify.sh parity"]
 description = "Benchmark zsh startup across terminal contexts"
 run = "./script/zsh-verify.sh bench"
 
+[tasks."zsh:completions:todo"]
+description = "Regenerate config/zsh/opt/completions/_todo from the todo CLI"
+run = "./script/todo-completion.sh config/zsh/opt/completions/_todo"
+
 # The Karabiner fn layer: regenerate config/karabiner/karabiner.json and hotkeys.json from src/bindings.ts.
 [tasks."karabiner:build"]
 description = "Generate the Karabiner fn layer (config/karabiner) from src/bindings.ts"
