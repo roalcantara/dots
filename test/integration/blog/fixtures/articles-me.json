@@ -1,0 +1,4 @@
+[
+  { "type_of": "article", "id": 101, "title": "A good post", "published": true, "url": "https://dev.to/u/a-good-post-1", "page_views_count": 120, "public_reactions_count": 7, "comments_count": 2, "tag_list": ["ai"] },
+  { "type_of": "article", "id": 102, "title": "No views field", "published": true, "url": "https://dev.to/u/no-views-2", "public_reactions_count": 1, "comments_count": 0, "tag_list": [] }
+]

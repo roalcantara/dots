@@ -1,0 +1,21 @@
+{
+  "title": [
+    "AI agents write bash.",
+    "Your Mac runs"
+  ],
+  "highlight": "zsh.",
+  "subtitle": "16 file types, {y:one string} {wink} and still exit 0",
+  "wink": "💍",
+  "window": {
+    "kind": "terminal",
+    "name": "Ghostty",
+    "focused": true,
+    "lines": [
+      "{p} for x in {y:$list}; do",
+      "  echo \"[$x]\"; done",
+      "{r:[a b c]} {c:← once?!}",
+      "{c:# bash: [a] [b] [c]}",
+      "{p}"
+    ]
+  }
+}

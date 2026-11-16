@@ -1,0 +1,12 @@
+{
+  "title": ["<first title line>", "<second line, before the highlight>"],
+  "highlight": "<the key phrase, on pink>",
+  "subtitle": "<one line, {y:$code} in yellow> {wink} <the rest>",
+  "wink": "<one emoji>",
+  "window": {
+    "kind": "terminal",
+    "name": "Ghostty",
+    "focused": true,
+    "lines": ["{p} <a command>", "{r:<the surprising output>} {c:← <an aside>}", "{c:# <a comment>}"]
+  }
+}

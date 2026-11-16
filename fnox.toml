@@ -1,0 +1,8 @@
+# Secrets for this repo's tasks: references only, never values. The values stay in gopass.
+# Used by .mise/tasks/blog (`fnox get DEVTO_TOKEN`); CI sets DEVTO_TOKEN from the repo secret instead.
+
+[providers.gopass]
+type = "gopass"
+
+[secrets]
+DEVTO_TOKEN = { provider = "gopass", value = "tokens/dev.to", line = 1, description = "dev.to API key (blog:push, blog:stats)" }
