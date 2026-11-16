@@ -33,6 +33,7 @@ tasks:
   - f9vT
   - drfT
   - CCGy
+  - k6kR
   blocked_reason: null
   tags:
   - post
@@ -821,6 +822,10 @@ comments:
   task_id: 6ThC
 - id: CCGy
   text: 'devto.url: https://dev.to/roalcantara/my-ai-agents-for-loop-ran-once-zsh-doesnt-split-vars-1pg2-temp-slug-2454686'
+  actors: []
+  task_id: 6ThC
+- id: k6kR
+  text: 'devto.url: https://dev.to/roalcantara/your-ai-agent-writes-bash-your-mac-runs-zsh-43dh'
   actors: []
   task_id: 6ThC
 project: posts
