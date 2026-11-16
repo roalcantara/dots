@@ -99,6 +99,7 @@ cask "visual-studio-code" if OS.mac?  # VS Code editor
 brew "resvg" if OS.mac?  # SVG to PNG: yb bar draws the menu bar space strip with it
 cask "swiftbar" if OS.mac?  # Menu bar from scripts: the yabai space strip (config/swiftbar)
 cask "karabiner-elements" if OS.mac?  # Keyboard customiser: the fn layer (config/karabiner)
+cask "transmission" if OS.mac? # Open-source BitTorrent client
 # Off: 1.44.761's installer script fails on a fresh Mac ("editor-restore-unconfirmed / Registration failed").
 # brew install --cask xykong/tap/flux-markdown by hand once a release fixes it.
 # cask "xykong/tap/flux-markdown", trusted: true if OS.mac?  # Markdown previews in Finder QuickLook with diagrams and math
@@ -146,6 +147,8 @@ brew "shellspec" if OS.mac?  # BDD framework for shells
 brew "tombi"  # TOML formatter, linter, and language server
 brew "typescript-language-server" if OS.mac?  # LSP for TypeScript
 brew "rust"  # Rust toolchain
+brew "opencode" # AI coding agent, built for the terminal
+cask "opencode-desktop" if OS.mac? # AI coding agent desktop app
 cask "android-studio" if OS.mac?  # Tools for building Android applications
 cask "antigravity-cli" if OS.mac?  # Terminal interface for Antigravity agents
 cask "antigravity-ide" if OS.mac?  # AI coding agent IDE
@@ -165,10 +168,3 @@ uv "commit-check"
 npm "bun-dap-x"
 npm "react-devtools"
 npm "@vscode/js-debug-browsers"
-
-# Open-source BitTorrent client
-cask "transmission"
-# Open-source BitTorrent client
-cask "transmission"
-# AI coding agent, built for the terminal
-brew "opencode"
