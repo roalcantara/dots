@@ -1,0 +1,11 @@
+{
+  "title": ["<the reference, first line>", "<second line, before the highlight>"],
+  "highlight": "<the key words, on pink>",
+  "subtitle": "<one line tying the reference to the topic>",
+  "label": "<the wink word, on the window's bar>",
+  "height": 800,
+  "window": {
+    "name": "Ghostty",
+    "lines": ["{p} <a real command>", "{c:<a note, as a comment>}", "{del:-<the before line>}", "{add:+<the after line>}"]
+  }
+}

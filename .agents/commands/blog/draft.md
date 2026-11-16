@@ -42,7 +42,11 @@ Write the first draft of one post of the dots blog, in its folder, ready for the
 6. From topic 2, draft `community.md` with the `reddit-posts` skill for the community its task names.
 7. Write `cover.json` (from `docs/blog/templates/cover.json`): two title lines, the highlight, a subtitle with one
    emoji wink, and the window (`terminal` with the post's real moment in 3–5 lines, or `app` with code and/or
-   skeleton bars). Run `mise run blog:cover <post>` and look at the image. List any screenshots worth taking (2–4).
+   skeleton bars). Write `wink.json` (from `docs/blog/templates/wink.json`; STYLE.md, "Wink card"): the post's one
+   pop-culture reference as the title, framing a **real command and its real output** (run it; dummy values only),
+   the wink word as the label. Propose 2–3 references for the author to pick; none goes in the article's text. Run
+   `mise run blog:cover <post>` and look at both images and their previews in `raw/`. List any screenshots worth
+   taking (2–4).
 8. Run `mise run blog:check <post>` until it has no blocks (markers block until the author replaces them). Do not
    commit; end with: "Next: /blog:gate" (or "replace the <author: …> markers first").
 </workflow>

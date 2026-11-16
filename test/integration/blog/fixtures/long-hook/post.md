@@ -10,6 +10,8 @@ On a new Mac, an agent's bash runs in zsh, and a loop over a list runs once.
 
 ## How I ran into it on a fresh Mac
 
+![The wink card: the diff of the committed file and the one on disk](./images/01-wink.png)
+
 The agent's loop over 16 file types ran once.
 
 ## The fix: two settings

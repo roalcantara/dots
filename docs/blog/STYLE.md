@@ -20,11 +20,14 @@ it are in [PLAYBOOK.md](PLAYBOOK.md). Voice, look and rubric are tuned at each r
 
 Every post tells **a real moment** (what happened to the author, how they noticed, what it cost) under
 `## How I ran into it`, and every LinkedIn post opens with it, in one to three sentences, first person. The post
-itself opens with who this hits and why, so a stranger knows in three sentences whether to read on. At most **one geeky wink** frames
-it, from the author's interests: technology and gadgets, AI and machine learning, productivity hacks, comic books,
-Harry Potter, The Lord of the Rings and fantasy, cinema, science, science fiction. The wink frames the moment ("I
-felt like Ron with a broken wand"); it never replaces it. It may echo once more: the cover's emoji and the terminal's
-"← aside". The author's own tics are welcome: the DISCLAIMER, "**YOU HAVE BEEN WARNED!**", "**NO, SERIOUSLY!**".
+itself opens with who this hits and why, so a stranger knows in three sentences whether to read on.
+
+**One geeky wink per post, and it lives in the wink card, never in the article's text** (decided 2026-11-16: in the
+prose it read as trying too hard and competed with the author's own beats). It comes from the author's interests:
+technology and gadgets, AI and machine learning, productivity hacks, comic books, Harry Potter, The Lord of the Rings
+and fantasy, cinema, science, science fiction. The card frames a real command and its output with the reference
+(see "Wink card"); the cover may echo it once, with its emoji. The author's own tics stay in the text: "..",
+"And **presto!**", ":(", the DISCLAIMER, "**YOU HAVE BEEN WARNED!**", "**NO, SERIOUSLY!**".
 
 **The story is lived, never invented.** Before drafting, `/blog:draft` looks for the moment in the session
 transcripts, the PR and the commits. If none turns up, the post opens with the symptom instead (the Symptoms snippet
@@ -67,6 +70,10 @@ the post carries `<author: the moment …>` (and the options in a `<!-- hook opt
 
   #AI #zsh #macOS
   ```
+
+  **Now and then, an image post instead** (so the posts don't all look alike): the wink card attached as the image,
+  only when it teaches on its own; the dev.to link stays in the text (LinkedIn then shows no link card). Record it
+  as `linkedin=image` (or `linkedin=link`) in the post's `vars:`, so recalibrations can compare the two.
 
 ## Post layout
 
@@ -111,6 +118,7 @@ finishes them in its own words ("## The fix: two settings", "## Why not change z
 | Font | SF Pro (700 for titles); code in SF Mono |
 | Windows | OmniWM style: title bar `#2a2a2f` with traffic lights and the app's name; terminal body `#111116`, app body `#222226`; skeleton bars `#3d3d43`, one highlight bar `#7f7150`; **focused** windows get a cyan `#62e6f0` border and glow |
 | Cover | 1000 × 420 (rendered at 2×): pill `dots #<n>`, two title lines with the key phrase on pink, a subtitle with one emoji wink, plain coloured hashtags, one window (`terminal` or `app`). From `cover.json` by `mise run blog:cover` ([template](tools/cover.html)). **Safe area** (2026-11-16): content inside x 120–880, because LinkedIn's link card keeps only the center at 1.91 : 1; readable text ≥ 20 px, title 40 px. **Limits:** title lines ~18 characters, subtitle ~45, window 3–5 lines of ~24. `blog:cover` also writes `raw/00-cover-linkedin.png` and `raw/00-cover-phone.png`: look at both before posting |
+| Wink card | 1080 wide, height from `wink.json` (default 800, at most 1080): the reference as the title (key words on pink), a one-line subtitle tying it to the topic, one focused window with a **real command and its real output** (`{b:}` keys, `{g:}` strings, `{o:}` values, `{r:}` ciphertext, `{c:}` comments, whole-line `{del:}` / `{add:}`), the wink word as the window's label, the post's title and `dots #<n>` in the footer. Trims and notes are grey comments; a card that can't be real output carries a small italic `caption`. Dummy values only. In every post at the top of `## How I ran into it`, as `images/01-wink.png`; `blog:cover` renders it with `raw/01-wink-phone.png` ([template](tools/wink.html)) |
 | Screenshots | a clean capture, cropped to the point, sensitive regions blurred, framed by `tools/frame.py --app <name> [--focus]` in the same window style on the same base |
 | Carousel (LinkedIn, optional) | 1080 × 1350, 4–6 slides, one point per slide, same palette and windows |
 | Diagrams | Mermaid when a picture shows a mechanism; never decoration |
@@ -136,7 +144,7 @@ The gate (`/blog:gate`) fills this in `review.md`. Each check scores **0** (abse
 | STEPPS (six drivers) | Social currency, Triggers, Emotion, Public, Practical value, Stories, each 0–2 | — |
 | Voice | Zero hype words; a mistake or limit stated | Hype, takes aimed at people or tools, hate |
 | LinkedIn | A lived opening ≤ 210 characters; the dev.to URL in the post; ≤ 250 characters without it; the post's title states the insight | No dev.to link in the post |
-| Images | Phone test, the cover passes the LinkedIn crop, one point each, the series look, alt text | Anything sensitive is visible |
+| Images | Phone test, the cover passes the LinkedIn crop, the wink card shows real output (or says it doesn't) and teaches without the text, one point each, the series look, alt text | Anything sensitive is visible |
 | Goals 1–5 | Knowledge base, lesson as a recipe, skills shown, presence, contagious (0–2 each) | — |
 | Language | English default; PT-BR text follows the playbook's rules | — |
 | Safety | No secret, key, token name, email, client or private repo name | Any of them, in text or images |

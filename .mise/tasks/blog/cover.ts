@@ -1,10 +1,13 @@
 #!/usr/bin/env bun
-//MISE description="Render a post's cover (images/00-cover.png) from its cover.json in the series look (needs Chrome)"
+//MISE description="Render a post's cover (images/00-cover.png) and wink card (images/01-wink.png) in the series look (needs Chrome)"
 //USAGE arg "[post]" help="Post folder (default: the current post branch)"
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { type CoverSpec, coverHtml, linkedinCropWidth, parseFrontMatter, pick, POSTS, readTodo, SERIES, topicNumber } from "./_lib";
+import {
+  type CoverSpec, coverHtml, linkedinCropWidth, parseFrontMatter, pick, POSTS, readTodo, SERIES, topicNumber, type WinkSpec,
+  winkHtml,
+} from "./_lib";
 
 const { post } = pick(process.argv[2]);
 if (!post) throw new Error("which post? pass its folder, or run this on its feat/post-<slug> branch");
@@ -46,3 +49,25 @@ for (const args of [["-c", "840", String(linkedinCropWidth(840)), out, "--out", 
   if (s.exitCode !== 0) throw new Error(`sips failed: ${s.stderr.toString().trim()}`);
 }
 console.log(`look before posting: ${linkedin} (LinkedIn's card) · ${phone} (phone test)`);
+
+// The wink card (STYLE.md, "Wink card"), from wink.json: 1080 wide, its height from the spec (default 800, at most
+// 1080), and a phone preview in raw/.
+const winkPath = join(dir, "wink.json");
+if (existsSync(winkPath)) {
+  const wink = JSON.parse(readFileSync(winkPath, "utf8")) as WinkSpec;
+  const height = Math.min(Math.max(wink.height ?? 800, 400), 1080);
+  const winkPage = join(mkdtempSync(join(tmpdir(), "wink-")), "wink.html");
+  writeFileSync(winkPage, winkHtml(readFileSync(join(SERIES, "tools", "wink.html"), "utf8"), wink, {
+    series: task ? topicNumber(task) : 0, footer: String(fm.title ?? ""),
+  }));
+  const winkOut = join(dir, "images", "01-wink.png");
+  const w = Bun.spawnSync([
+    chrome, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--force-device-scale-factor=2",
+    `--window-size=1080,${height}`, `--screenshot=${winkOut}`, `file://${winkPage}`,
+  ], { stdout: "pipe", stderr: "pipe" });
+  if (w.exitCode !== 0 || !existsSync(winkOut)) throw new Error(`Chrome failed to render the wink card (exit ${w.exitCode})`);
+  const winkPhone = join(raw, "01-wink-phone.png");
+  const s = Bun.spawnSync(["sips", "-Z", "400", winkOut, "--out", winkPhone], { stdout: "pipe", stderr: "pipe" });
+  if (s.exitCode !== 0) throw new Error(`sips failed: ${s.stderr.toString().trim()}`);
+  console.log(`wink card: ${winkOut} (2160 × ${height * 2}) · phone test: ${winkPhone}`);
+}

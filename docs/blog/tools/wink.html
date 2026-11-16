@@ -1,0 +1,34 @@
+<!doctype html>
+<!-- The wink card (docs/blog/STYLE.md, "Wink card"), approved 2026-11-16: the post's pop-culture reference framing a
+     real command and its real output, in the series look. Filled by `mise run blog:cover <post>` from wink.json;
+     {{…}} are replaced, already escaped. 1080 wide; the height comes from wink.json. -->
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0;overflow:hidden}
+*{box-sizing:border-box}
+.bn{width:1080px;height:100vh;position:relative;overflow:hidden;background:#1e1e2e;font-family:-apple-system,"SF Pro Display",system-ui,sans-serif;color:#cdd6f4;padding:64px 60px 56px;display:flex;flex-direction:column;gap:30px}
+.blob{position:absolute;border-radius:50%}
+.q{position:relative;font-weight:700;font-size:52px;line-height:1.12;letter-spacing:-.5px}
+.hl{color:#f5c2e7}
+.sub{position:relative;font-size:24px;color:#a6adc8;margin-top:-10px}
+.win{position:relative;border-radius:14px;overflow:hidden;background:#232327;border:2.5px solid #62e6f0;box-shadow:0 0 24px rgba(98,230,240,.35),0 20px 50px rgba(10,10,16,.6)}
+.bar{height:40px;display:flex;align-items:center;gap:9px;padding:0 16px;background:#2a2a2f;border-bottom:1px solid #1d1d21}
+.bar i{width:12px;height:12px;border-radius:50%}.tr{background:#ec6a5f}.ty{background:#f4bf4f}.tg{background:#61c554}
+.name{margin-left:10px;font-size:18px;color:#a8a8b0}
+.lbl{margin-left:auto;font:700 16px "SF Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#62e6f0}
+.term{background:#111116;padding:18px 22px 20px;font:22px/1.6 "SF Mono",ui-monospace,monospace;color:#d6d6dc;white-space:pre}
+.pr{color:#a6e3a1}.y{color:#f9e2af}.r{color:#f38ba8}.g{color:#a6e3a1}.c{color:#7f849c;font-style:italic}.k{color:#cba6f7}.b{color:#89b4fa}.o{color:#fab387}
+.del,.add{margin:0 -22px;padding:0 22px}
+.del{background:rgba(243,139,168,.12);color:#f38ba8}.add{background:rgba(166,227,161,.12);color:#a6e3a1}
+.cap{position:relative;font-size:18px;font-style:italic;color:#7f849c;margin-top:-16px}
+.foot{position:relative;margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:24px}
+.ft{font-size:22px;color:#a6adc8}
+.tag{font:700 18px "SF Mono",ui-monospace,monospace;background:#f5c2e7;color:#1e1e2e;padding:5px 14px;border-radius:999px}
+</style></head><body><div class="bn">
+<div class="blob" style="right:-80px;top:-100px;width:380px;height:380px;background:#cba6f7;opacity:.18"></div>
+<div class="blob" style="left:-90px;bottom:-130px;width:300px;height:300px;background:#94e2d5;opacity:.16"></div>
+<div class="q">{{title}}</div>
+<div class="sub">{{subtitle}}</div>
+{{window}}
+{{caption}}
+<div class="foot"><span class="ft">{{footer}}</span><span class="tag">dots #{{series}}</span></div>
+</div></body></html>

@@ -1,0 +1,7 @@
+{
+  "title": ["A quote that frames", "the moment,"],
+  "highlight": "on pink",
+  "subtitle": "One line tying the reference to the topic.",
+  "label": "revelio",
+  "window": { "name": "Ghostty", "lines": ["{p} diff -u a b", "{del:-old}", "{add:+new}"] }
+}

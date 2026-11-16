@@ -70,7 +70,9 @@ public article**; LinkedIn and communities point to dev.to.
   ([STYLE.md](STYLE.md), [`templates/linkedin.md`](templates/linkedin.md)).
 - **Community post:** the story and the RECIPE written for one community, disclosed as the author's
   ([`templates/community.md`](templates/community.md)).
-- **Cover and images:** the series look ([STYLE.md](STYLE.md), "Visual identity"); `cover.json` per post.
+- **Cover and images:** the series look ([STYLE.md](STYLE.md), "Visual identity"); two images per post, the cover
+  (`cover.json`) and the wink card (`wink.json`: the post's one pop-culture reference, framing a real command and its
+  output), which also serves, now and then, as the LinkedIn image.
 
 ## Language
 

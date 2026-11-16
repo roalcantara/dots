@@ -10,6 +10,7 @@ import {
   checkPost,
   contentHash,
   coverHtml,
+  winkHtml,
   linkedinCropWidth,
   type Facts,
   formatStats,
@@ -73,6 +74,23 @@ describe("parseFrontMatter", () => {
 describe("checkPost", () => {
   it("accepts a complete post", () => {
     expect(rules("good")).toEqual([]);
+  });
+
+  it("blocks a new post without its wink card, and lets a published one be", () => {
+    const copy = () => {
+      const dir = join(mkdtempSync(join(tmpdir(), "post-")), "good");
+      cpSync(join(FIX, "good"), dir, { recursive: true });
+      return dir;
+    };
+    const ruleNames = (dir: string) => checkPost(dir, HYPE).map((f) => `${f.level}:${f.rule}`);
+    const noRef = copy();
+    writeFileSync(join(noRef, "post.md"), readFileSync(join(noRef, "post.md"), "utf8").replace(/^!\[.*01-wink\.png\)\n\n/m, ""));
+    expect(ruleNames(noRef)).toEqual(["block:wink-missing"]);
+    const noSpec = copy();
+    rmSync(join(noSpec, "wink.json"));
+    expect(ruleNames(noSpec)).toEqual(["block:wink-missing"]);
+    writeFileSync(join(noRef, "post.md"), readFileSync(join(noRef, "post.md"), "utf8").replace("published: false", "published: true"));
+    expect(ruleNames(noRef)).toEqual([]);
   });
 
   it("blocks a broken post and warns about its voice", () => {
@@ -491,6 +509,40 @@ describe("voice pass rules", () => {
     expect(r({ legacy: false, review: "PASS", fresh: false })).toEqual(["review-stale"]);
     expect(r({ legacy: false, review: undefined, fresh: false })).toEqual(["review-not-pass"]);
     expect(r({ legacy: true, review: undefined, fresh: false })).toEqual([]);
+  });
+});
+
+describe("winkHtml (the wink card)", () => {
+  const tpl = readFileSync(join(REPO, "docs/blog/tools/wink.html"), "utf8");
+  const spec = {
+    title: ["“I solemnly swear that", "I am up to"], highlight: "no good.”", subtitle: "The repo is a Marauder's Map.",
+    label: "revelio", window: { name: "Ghostty", lines: [
+      "{p} diff -u <(git show HEAD:.env) .env", "{c:--- /dev/fd/63  ← in git}",
+      "{del:-APP_SECRET=ENC[AES256_GCM,…]}", "{add:+APP_SECRET=\"mischief-managed\"}", " {b:DEBUG}={o:true}",
+    ] },
+  };
+
+  it("fills the title, highlight, subtitle, label, footer and the pill", () => {
+    const html = winkHtml(tpl, spec, { series: 1, footer: "Secrets in git" });
+    expect(html).toContain("“I solemnly swear that<br>I am up to <span class=\"hl\">no good.”</span>");
+    expect(html).toContain("The repo is a Marauder&#39;s Map.");
+    expect(html).toContain('<span class="lbl">revelio</span>');
+    expect(html).toContain("Secrets in git");
+    expect(html).toContain("dots #1");
+  });
+
+  it("colours diff lines whole and keeps the code escaped", () => {
+    const html = winkHtml(tpl, spec, { series: 1, footer: "x" });
+    expect(html).toContain('<div class="del">-APP_SECRET=ENC[AES256_GCM,…]</div>');
+    expect(html).toContain('<div class="add">+APP_SECRET=&quot;mischief-managed&quot;</div>');
+    expect(html).toContain("diff -u &lt;(git show HEAD:.env) .env");
+    expect(html).toContain('&nbsp;<span class="b">DEBUG</span>=<span class="o">true</span>');
+  });
+
+  it("adds the caption only when the card is an illustration", () => {
+    expect(winkHtml(tpl, spec, { series: 1, footer: "x" })).not.toContain('class="cap"');
+    expect(winkHtml(tpl, { ...spec, caption: "* revelio, for illustration" }, { series: 1, footer: "x" }))
+      .toContain('<div class="cap">* revelio, for illustration</div>');
   });
 });
 

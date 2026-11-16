@@ -147,6 +147,10 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
   if (order) warn("sections", order);
   if (!existsSync(join(dir, "linkedin.md"))) block("linkedin-missing", "no linkedin.md next to post.md");
   if (!existsSync(join(dir, "cover.json"))) block("cover-missing", "no cover.json (the cover's text and window)");
+  // The wink card (STYLE.md, "Wink card"): every new post has one; posts published before it existed don't.
+  if (fm.published !== true && (!existsSync(join(dir, "wink.json")) || !/\]\(\.\/images\/01-wink\.png\)/.test(body))) {
+    block("wink-missing", "no wink card: wink.json and ![…](./images/01-wink.png) at the top of ## How I ran into it");
+  }
   if (/<!-- hook options/.test(text)) block("hook-options", "unpicked hook options are still in post.md: pick one, then delete the comment");
   const li0 = join(dir, "linkedin.md");
   const texts = [text, existsSync(li0) ? readFileSync(li0, "utf8") : ""];
@@ -638,7 +642,35 @@ function markup(text: string, wink = ""): string {
   return escapeHtml(text)
     .replace(/\{p\}/g, '<span class="pr">❯</span>')
     .replace(/\{wink\}/g, escapeHtml(wink))
-    .replace(/\{([yrgck]):([^{}]*)\}/g, (_, cls: string, inner: string) => `<span class="${cls}">${inner}</span>`);
+    .replace(/\{([yrgckbo]):([^{}]*)\}/g, (_, cls: string, inner: string) => `<span class="${cls}">${inner}</span>`);
+}
+
+// The wink card (docs/blog/STYLE.md, "Wink card"): the post's pop-culture reference framing a real command and its
+// real output. Lines use the cover's markup plus {b:} keys and {o:} values; a whole line {del:…} or {add:…} is a
+// diff line. `caption` marks a card that isn't real output.
+export type WinkSpec = {
+  title: string[]; highlight: string; subtitle: string; label: string; caption?: string; height?: number;
+  window: { name?: string; lines: string[] };
+};
+
+export function winkHtml(template: string, spec: WinkSpec, o: { series: number; footer: string }): string {
+  const lines = spec.window.lines.map((line) => {
+    const diff = line.match(/^\{(del|add):(.*)\}$/);
+    if (diff) return `<div class="${diff[1]}">${escapeHtml(diff[2]!)}</div>`;
+    const indent = line.match(/^ */)![0].length;
+    return `<div>${"&nbsp;".repeat(indent)}${markup(line.slice(indent))}</div>`;
+  }).join("");
+  const win = `<div class="win"><div class="bar"><i class="tr"></i><i class="ty"></i><i class="tg"></i>` +
+    `<span class="name">${escapeHtml(spec.window.name ?? "Ghostty")}</span><span class="lbl">${escapeHtml(spec.label)}</span>` +
+    `</div><div class="term">${lines}</div></div>`;
+  const head = spec.title.slice(0, -1).map(escapeHtml).join("<br>");
+  const last = escapeHtml(spec.title.at(-1) ?? "");
+  const fill: Record<string, string> = {
+    title: `${head ? `${head}<br>` : ""}${last} <span class="hl">${escapeHtml(spec.highlight)}</span>`,
+    subtitle: escapeHtml(spec.subtitle), window: win, footer: escapeHtml(o.footer), series: escapeHtml(String(o.series)),
+    caption: spec.caption ? `<div class="cap">${escapeHtml(spec.caption)}</div>` : "",
+  };
+  return template.replace(/\{\{(\w+)\}\}/g, (all, key: string) => fill[key] ?? all);
 }
 
 // LinkedIn (like most link cards) shows the cover at 1.91 : 1, cropped from the center: the width it keeps.
