@@ -72,17 +72,31 @@ export function linkedinHook(text: string): string {
   return after.trim().split(/\n\s*\n/)[0]?.trim() ?? "";
 }
 
-// The gotchas are the top-level bullets (or `###` headings) inside `## ⚠️ Gotchas`.
+// The gotchas are the top-level bullets (or `###` headings) inside `## Why not …`.
 const gotchaCount = (body: string): number =>
-  (sectionBody(body, "## ⚠️ Gotchas") ?? "").split("\n").filter((l) => /^(### |[-*] )/.test(l)).length;
+  (sectionBody(body, "## Why not") ?? "").split("\n").filter((l) => /^(### |[-*] )/.test(l)).length;
 
-// The wiki layout (docs/blog/STYLE.md, "Post layout"; the author's own section set): every post's `##` sections, in
-// this order. A heading matches when it starts with one of these ("## 🥷🏼 vs." names a different usual way per post).
+// The story layout (docs/blog/STYLE.md, "Post layout"): every post's `##` sections, in this order. A heading matches
+// when it starts with one of these, so each post finishes it in its own words ("## The fix: two settings").
 export const SECTIONS = [
-  "## ⚡ TL;DR", "## 🪲 The problem", "## 💡 But how?", "## 🛠️ The fix", "## 🧪 Check it works",
-  "## ⚠️ Gotchas", "## 🥷🏼 vs.", "## 🤓 What I (think I) learned", "## 📚 References",
+  "## How I ran into it", "## The fix", "## Why not", "## What I (think I) learned",
 ] as const;
-const OPTIONAL = new Set(["## 🥷🏼 vs."]);
+const OPTIONAL = new Set(["## Why not"]);
+
+const AI_LINE = /\bAI\b[^\n]*\b(help|assist|drafted|generated)|\b(help|assist|drafted|generated)[^\n]*\bAI\b/i;
+
+// The fixed closing, after the last section: Corrections → DISCLAIMER → the AI line. True when it is in order.
+export function closingInOrder(body: string): boolean {
+  const lines = body.split("\n");
+  const lastSection = lines.reduce((at, l, i) => (/^## /.test(l) ? i : at), -1);
+  const corrections = lines.findIndex((l) => /Corrections and ideas are very welcome/.test(l));
+  const disclaimers = lines.flatMap((l, i) => (/\*\*DISCLAIMER\*\*/.test(l) ? [i] : []));
+  const ai = lines.findLastIndex((l) => AI_LINE.test(l));
+  if (corrections < 0 || !disclaimers.length || ai < 0) return false;
+  if (disclaimers.some((i) => i < lastSection)) return false;
+  const disclaimer = disclaimers.at(-1)!;
+  return lastSection < corrections && corrections < disclaimer && disclaimer < ai;
+}
 const sectionOf = (line: string): string | undefined => SECTIONS.find((s) => line.trim().startsWith(s));
 
 // The text of one `##` section (up to the next `## `), or undefined when it is missing.
@@ -123,11 +137,11 @@ export function checkPost(dir: string, hypeWords: string[]): Finding[] {
   if (/\]\(\.?\/?raw\//.test(text)) block("raw-image", "an image points at raw/ (unblurred captures)");
   // A post published before the tooling (front matter `legacy: true`) skips the content rules, never safety.
   if (fm.legacy === true) return out;
-  const tldr = sectionBody(body, "## ⚡ TL;DR");
-  if (tldr === undefined) block("tldr-missing", "no `## ⚡ TL;DR` section (the RECIPE lives there)");
-  else if (!/\*\*Use it when:\*\*/.test(tldr)) block("tldr-use-it-when", "the TL;DR has no **Use it when:** line");
-  if (!/\bAI\b[^\n]*\b(help|assist|drafted|generated)|\b(help|assist|drafted|generated)[^\n]*\bAI\b/i.test(body)) {
+  if (sectionBody(body, "## The fix") === undefined) block("fix-missing", "no `## The fix` section (the RECIPE lives there)");
+  if (!AI_LINE.test(body)) {
     block("ai-disclosure", 'no AI disclosure line (dev.to requires one): "Drafted with AI help; every claim was checked by me…"');
+  } else if (!closingInOrder(body)) {
+    block("closing-order", "the closing must be Corrections → DISCLAIMER → AI line, after the last section");
   }
   const order = sectionsOrder(body);
   if (order) warn("sections", order);

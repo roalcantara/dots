@@ -76,7 +76,7 @@ describe("checkPost", () => {
     for (const r of [
       "block:tags-max-4",
       "block:description-missing",
-      "block:tldr-missing",
+      "block:fix-missing",
       "block:ai-disclosure",
       "block:raw-image",
       "block:linkedin-missing",
@@ -565,7 +565,7 @@ describe("leaks and escapes", () => {
   });
 });
 
-describe("wiki layout", () => {
+describe("story layout", () => {
   const rulesIn = (dir: string) => checkPost(dir, HYPE).map((f) => `${f.level}:${f.rule}`);
   const withPost = (edit: (text: string) => string) => {
     const dir = mkdtempSync(join(tmpdir(), "post-"));
@@ -574,16 +574,32 @@ describe("wiki layout", () => {
     return dir;
   };
 
-  it("finds Use it when only inside the TL;DR section", () => {
-    const dir = withPost((t) => t.replace("> **Use it when:** an agent's loop runs once.\n", "").replace("## 🤓 What I (think I) learned", "## 🤓 What I (think I) learned\n\n> **Use it when:** later"));
-    expect(rulesIn(dir)).toEqual(["block:tldr-use-it-when"]);
+  const STORY = "## How I ran into it on a fresh Mac\n\nThe agent's loop over 16 file types ran once.\n\n";
+  const DISCLAIMER = "> **DISCLAIMER** Not a tutorial.\n\n";
+  const CORRECTIONS = "Corrections and ideas are very welcome. **NO, SERIOUSLY!** :)\n\n";
+
+  it("accepts headings that start with the section names", () => {
+    expect(rulesIn(withPost((t) => t))).toEqual([]);
   });
 
-  it("warns about sections out of order, and allows skipping Alternatives", () => {
-    expect(rulesIn(withPost((t) => t))).toEqual([]);
-    const swapped = withPost((t) => t.replace("## 💡 But how?", "## 🔍 WHY").replace("## 🛠️ The fix", "## 💡 But how?\n\n## 🛠️ The fix").replace("## 🔍 WHY\n\n", ""));
-    expect(rulesIn(withPost((t) => t.replace("## 🧪 Check it works\n\n", "")))).toEqual(["warn:sections"]);
-    expect(rulesIn(swapped)).toEqual([]);
+  it("blocks a post without The fix", () => {
+    expect(rulesIn(withPost((t) => t.replace("## The fix: two settings\n", "")))).toEqual(["block:fix-missing", "warn:sections"]);
+  });
+
+  it("warns about sections out of order, and allows skipping Why not", () => {
+    const moved = withPost((t) => t.replace(STORY, "").replace("## Why not", `${STORY}## Why not`));
+    expect(rulesIn(moved)).toEqual(["warn:sections"]);
+    const noWhyNot = withPost((t) => t.replace(/## Why not[\s\S]*?(?=## What I)/, ""));
+    expect(rulesIn(noWhyNot)).toEqual([]);
+  });
+
+  it("blocks the closing out of order", () => {
+    const swapped = withPost((t) => t.replace(CORRECTIONS + DISCLAIMER, DISCLAIMER + CORRECTIONS));
+    expect(rulesIn(swapped)).toEqual(["block:closing-order"]);
+    const onTopToo = withPost((t) => t.replace("On a new Mac", `${DISCLAIMER}On a new Mac`));
+    expect(rulesIn(onTopToo)).toEqual(["block:closing-order"]);
+    const noDisclaimer = withPost((t) => t.replace(DISCLAIMER, ""));
+    expect(rulesIn(noDisclaimer)).toEqual(["block:closing-order"]);
   });
 
   it("blocks a post without the AI disclosure", () => {

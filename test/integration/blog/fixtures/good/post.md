@@ -6,39 +6,31 @@ tags: ai, zsh, bash, productivity
 cover_image: ./images/00-cover.png
 ---
 
-> **DISCLAIMER** Not a tutorial.
+On a new Mac, an agent's bash runs in zsh, and a loop over a list runs once.
 
-## ⚡ TL;DR
+## How I ran into it on a fresh Mac
 
-An agent's loop runs once in zsh; give it bash.
+The agent's loop over 16 file types ran once.
 
-> **Use it when:** an agent's loop runs once.
-> **You need:** bash.
+## The fix: two settings
 
 ```json
 { "env": { "CLAUDE_CODE_SHELL": "/opt/homebrew/bin/bash" } }
 ```
 
-📁 **In dots:** [settings](https://github.com/roalcantara/dots)
+## Why not change zsh instead?
 
-## 🪲 The problem
+- Quoting doesn't help.
+- `SH_WORD_SPLIT` changes every zsh.
 
-### Symptoms
+## What I (think I) learned
 
-## 💡 But how?
+- **Exit 0 is not "it worked".**
 
-## 🛠️ The fix
+---
 
-## 🧪 Check it works
+Corrections and ideas are very welcome. **NO, SERIOUSLY!** :)
 
-## ⚠️ Gotchas
-
-### One
-
-### Two
-
-## 🤓 What I (think I) learned
-
-## 📚 References
+> **DISCLAIMER** Not a tutorial.
 
 Drafted with AI help; every claim was checked by me, and the story is mine.

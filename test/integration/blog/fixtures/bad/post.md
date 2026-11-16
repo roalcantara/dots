@@ -8,7 +8,7 @@ This is a game-changer.
 
 ## 💡 But how?
 
-## ⚠️ Gotchas
+## Why not just quote it?
 
 ### One
 
