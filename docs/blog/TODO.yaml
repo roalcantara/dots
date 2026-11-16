@@ -102,6 +102,8 @@ tasks:
   - QTS4
   - 4kLd
   - Orot
+  - h87M
+  - 4upJ
   blocked_reason: null
   tags:
   - post
@@ -903,6 +905,14 @@ comments:
   task_id: EFly
 - id: Orot
   text: 'vars: hook=confession cover=series-terminal-ghostty images=2-cover+wink-diff linkedin=link lang=en day=<author> tags=git,security,devops,productivity'
+  actors: []
+  task_id: EFly
+- id: h87M
+  text: 'gate: 2026-11-16 PASS stepps=8/12'
+  actors: []
+  task_id: EFly
+- id: 4upJ
+  text: 'vars: hook=confession cover=series-terminal-diff-echo images=2-cover+wink-diff linkedin=link lang=en day=<author> tags=git,security,devops,productivity'
   actors: []
   task_id: EFly
 project: posts
