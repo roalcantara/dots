@@ -117,7 +117,7 @@ git config filter.sops.required true
 # CHECK ALL FILTER CONFIGS
 git config --get filter.sops.clean      # secures secrets on commit
 git config --get filter.sops.smudge     # restores secrets on checkout
-git config --get diff.sops.textconv     # shows decrypted content in diffs (NOT IMPLEMENTED IN THIS REPO!!!)
+git config --get diff.sops.textconv     # shows decrypted content in diffs (script/textconv.sops.sh; never cache it)
 git config --get-regexp "\.sops\."      # check if sops filters are configured
 cat .git/config                         # cat the git config file
 
@@ -139,7 +139,7 @@ git status                              # check git status - SHOULD BE CLEAN!
 echo "# Test comment" >> config/.env    # make a small change
 cat config/.env                         # check that the file is decrypted - IT SHOWS THE CONTENT! YAY!
 git status                              # check git status - SHOULD SHOW MODIFIED!
-git diff config/.env                    # shows decrypted diff (ONLY IF WE ADD THE DIFF FILTER - which we didn't do in this repo!)
+git diff config/.env                    # shows the decrypted diff (diff.sops.textconv, set by mise run setup:git:filters)
 ```
 
 ### SCRIPT WHICH ENCRYPT/DECRYPT THE FILE (EXAMPLE)
