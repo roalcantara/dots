@@ -95,6 +95,8 @@ tasks:
   - xeug
   - N2Jw
   - kBiV
+  - dEjh
+  - c4fx
   blocked_reason: null
   tags:
   - post
@@ -868,6 +870,14 @@ comments:
   task_id: EFly
 - id: kBiV
   text: 'vars: hook=confession cover=terminal-ghostty-focused images=1-cover linkedin=quote-pointer-linkcard lang=en day=<author> tags=git,security,devops,productivity'
+  actors: []
+  task_id: EFly
+- id: dEjh
+  text: 'gate: 2026-11-16 PASS stepps=8/12'
+  actors: []
+  task_id: EFly
+- id: c4fx
+  text: 'vars: hook=confession cover=series-terminal-ghostty images=1-cover linkedin=link-card-quote lang=en day=<author> tags=git,security,devops,productivity'
   actors: []
   task_id: EFly
 project: posts

@@ -1,87 +1,70 @@
-# Review: 2026-11-17-secrets-sops-age · 2026-11-16
+# Review: secrets-sops-age · 2026-11-16
 
-**Verdict:** BLOCKED
+**Verdict:** PASS
 
 ## Must fix
 
-1. **The opening's claim says more than its source.** "researchers found thousands of working credentials in
-   public `.claude/settings.local.json` files" is not what the linked explainer says. It reports 1,122 of 104,185
-   public copies of that file (about 1.1 %) holding a real secret, 2,539 distinct secrets across 1,994 repos once
-   history and other files are counted, and it says plainly that Apiiro "did not test the credentials": the
-   research "proves exposure, not compromise". Drop "working" and use the source's own number, for example "found
-   real secrets in over a thousand public `.claude/settings.local.json` files on GitHub". The fix is one word and
-   one number, but as it stands the first sentence of a security post overstates its evidence (goal 2 over 5).
+<!-- Blocking only: safety, anti-goals, a missing or broken RECIPE, a failed blog:check. Empty means none. -->
+
+None.
 
 ## Cold read
 
-- **The one point:** You can commit secrets to a public repo safely when a git clean/smudge filter encrypts them
-  with SOPS + age: ciphertext in every commit, plain text on disk, the key outside the repo. Two things break it
-  in practice: re-encryption makes every file look modified, and on a fresh Mac sops looks for the key somewhere
-  else.
-- **Would I save it, and why:** Yes. The "compare the plain texts and reuse the committed blob" trick and the
-  `~/Library/Application Support` key path are the two things I'd otherwise have to find out the hard way.
-- **Where I got lost:** "the setup task checks the filtered files out again" (which task? I don't have it), and
-  then `git -c filter.sops.clean=cat checkout`: why turn off the *clean* filter to make a checkout decrypt? Before
-  that, `$AGE_KEY_FILE` in the `export` line and `$hash_index`/`$enc_file` in the clean excerpt are never defined.
+- **The one point:** I can commit my secrets to git safely if a clean/smudge filter encrypts them with SOPS + age on
+  the way in and decrypts them on the way out, with the age key kept out of git; and here are the three ways that
+  setup bit the author (a new IV on every run, a fresh Mac with no key or the wrong key path, a diff setting that hung).
+- **Would I save it, and why:** Yes. The config snippets are copy-paste sized, the "always modified" trick and the
+  `textconv` (not `diff.command`) setting are things I would otherwise find the hard way, and the check commands
+  tell me when I am done.
+- **Where I got lost:** Barely, in the second sentence: "My dotfiles commit theirs on purpose" made me read twice
+  (theirs = the `.claude` settings file? no: their own secrets). After that, nowhere.
 
 ## Scores
 
 | Check | Score | Note |
 | --- | --- | --- |
-| Cold read | 2 | One point found right away; would save it. Lost at the re-checkout step (see Cold read) |
-| Information gain | 2 | Most SOPS-in-git guides stop at the filter; this one shows the two things that break it on a real machine, non-deterministic encryption making `git status` dirty (fixed by comparing plain texts in the clean filter) and sops on macOS looking for the age key in `~/Library/Application Support` (fixed with `SOPS_AGE_KEY_FILE`) |
-| Layout | 2 | Opening (who this hits, news link, demo snippet), How I ran into it, The fix, Why not, What I (think I) learned, dots links, `---`, Corrections, DISCLAIMER, AI disclosure: all in order. Snippets for every setting and the check command with output |
-| The hook | 2 | Lived (fresh Mac of 2026-11-06, PR #102 / dbe14bc), first person, one wink (Marauder's Map) echoed on the cover's 🗺️ and "mischief managed" |
-| Lived or proven | 1 | IV / dirty status → getsops/sops#1137; manual SOPS → GitGuardian guide; git-crypt one key → comparison link; key path → lived + PR #102; counts 9 and 14 verified (`git ls-files ':(attr:filter=sops)'`, `git show HEAD:config/.env`). Weak: "thousands of working credentials" (Must fix); "Secrets leak from public repos every day" has no link (the `pick:` source is not in `sources:`) |
-| RECIPE self-test | 1 | Followable for the core, but gaps a reader hits: `diff.sops.command '… %f'` is broken (see Consider 1); the `.gitattributes` snippet filters `config/ssh/keys/*.key` while the `.sops.yaml` snippet has only an `.env` rule, so encrypting a key fails with no matching creation rule; `$AGE_KEY_FILE` undefined in the snippet; the "setup task" is unnamed |
-| STEPPS | 10/12 | Social currency 2 · Triggers 2 · Emotion 1 · Public 1 · Practical value 2 · Stories 2. Bars met (raw ≥ 6, Practical value 2, Stories 2) |
-| Voice | 2 | hype words: none · mistake stated: yes (cloned before the key existed; key path mismatch; ":(") |
-| LinkedIn hook | 1 | Opening 163 characters, 225 without the URL; dev.to URL in the post; 2 hashtags. But the opening is the wink and a general statement, not the lived moment in first person, there is no beat on why it mattered, and the title (the link card) states the what, not the insight |
-| Images | 2 | Cover only. Phone test passes (`raw/00-cover-phone.png`: title, terminal and hashtags legible); LinkedIn crop keeps everything (`raw/00-cover-linkedin.png`); one point (ciphertext in git vs plain on disk); series look (Mocha, focused Ghostty, pill `dots #1`) |
-| Goals 1–5 | 8/10 | 1 2 · 2 1 · 3 2 · 4 1 · 5 2 |
-| Language | 2 | English throughout |
-| Safety | ok | No secret, key, email, client or private repo. The age public key is elided (`age1…`); paths shown are tool conventions or public-repo globs; `roalcantara/dots` is PUBLIC (`gh repo view`); `SOPS_AGE_KEY_FILE` is sops's own setting, not a stored secret |
-| AI disclosure | ok | Closing line present, last |
+| Cold read | 2 | One point found at once; would save it for the snippets and the gotchas |
+| Information gain | 2 | Beyond the usual clean/smudge how-to, it shows how the setup breaks in real use (new IVs mark files modified, a fresh Mac clones before the key and macOS sops looks for the key elsewhere, `diff.command` hangs `git diff`) and the fix for each |
+| RECIPE self-test | 2 | `.gitattributes`, `.sops.yaml`, the filter and diff config, the key path, the re-checkout and the check all have snippets that match the repo (verified: 9 filtered files, 14 `ENC[` values in `HEAD:config/.env`, `script/textconv.sops.sh`, `setup:git:filters`). Gaps a stranger would hit: no `age-keygen` line, and the textconv script itself is not shown |
+| Layout | 2 | Opening (news, demo snippet, one line) → How I ran into it → The fix (snippets, then the check) → Why not → What I (think I) learned → links, `---`, Corrections, DISCLAIMER, AI disclosure, in order. The opening implies rather than says who this hits |
+| The hook | 2 | Real moment (fresh Mac of 2026-11-06, PR #102), first person, one wink (Marauder's Map) that fits and echoes on the cover ("mischief managed", 🗺️) |
+| Lived or proven | 2 | Leak number → dev.to explainer; IV / always-modified → getsops/sops#1137; `textconv` and never caching it → git docs; fresh-Mac key path → PR #102 and the scripts; `required true`, clean/smudge → Red Hat article; alternatives → GitGuardian, git-agecrypt, the comparison. Weakest: "git calls a diff command with seven arguments" has no link of its own (true, documented under `GIT_EXTERNAL_DIFF` in git(1)). Each fact once |
+| STEPPS | 8/12 | Social currency 2 · Triggers 1 · Emotion 1 · Public 1 · Practical value 2 · Stories 1. Bars met (raw ≥ 6, Practical value 2, Social currency 2) |
+| Voice | 2 | hype words: none ("presto" is the author's habit) · mistake stated: yes (cloned before the key; a copied line hung `git diff` for ten months) |
+| LinkedIn hook | 2 | Opening 164 characters, stands alone with a specific detail (fresh Mac, ciphertext, age key); about 220 characters without the URL; `{devto.url}` in the post; the title states the insight |
+| Images | 2 | One image (cover). Phone test passes at 400 px (title and terminal readable, subtitle small but legible); LinkedIn crop keeps everything; one point (git holds ciphertext, disk holds plain text); series look, pill `dots #1` matches topic 1 |
+| Goals 1–5 | 8/10 | 1 2 · 2 2 · 3 2 · 4 1 · 5 1 |
+| Language | 2 | English throughout; no PT-BR text |
+| Safety | ok | No secret, key or private name. The public recipient is elided (`age1…`); `~/.config/sops/age/keys.txt` and `SOPS_AGE_KEY_FILE` are sops' own documented defaults, not the name of a stored secret; `config/.env` is already public in the repo; the password manager is unnamed. Repo `roalcantara/dots` is PUBLIC |
 | `blog:check` | ok | 0 blocks, 0 warnings |
 
 ## Consider
 
-1. **Goal 2 (RECIPE):** `git config --local diff.sops.command 'script/smudge.sops.sh %f'` doesn't do what it
-   suggests. Git doesn't expand `%f` in a diff driver's `command`; it appends its seven external-diff arguments
-   (checked here with a stub driver: it received `%f t.env /tmp/…/t.env <sha> 100644 t.env <sha> 100644`). So the
-   smudge script gets `%f` as its path and reads stdin, and `git diff` on a changed secret fails or hangs. Use
-   `diff.sops.textconv 'sops --decrypt'` (or a small wrapper that takes the file as `$1`), or drop the line and
-   `diff=sops` from the snippet. Fix it in the repo too (`mise.toml` `setup:git:filters`). Readers will copy that
-   line as written.
-2. **Goal 2 (RECIPE):** make the two config snippets match. Either add a rule for `config/ssh/keys/.*\.key$`
-   (`age: age1…`, no `encrypted_regex`) to the `.sops.yaml` snippet, or cut that line from the `.gitattributes`
-   snippet. As they are now, a reader who copies both gets a failed commit on the first key file.
-3. **Goal 2 (RECIPE, cold read):** in the key paragraph, define the variable in the snippet
-   (`AGE_KEY_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/sops/age/keys.txt"` above the `export`). Name the setup task
-   (`mise run setup:git:filters`, which `mise bootstrap` runs). Add one clause on the re-checkout: "`clean=cat` so
-   git doesn't re-encrypt the file to compare it; the smudge filter, now with the key, writes it out plain". That
-   is the exact place the cold read got lost.
-4. **Goal 5 (LinkedIn, tone):** open with the lived moment in first person, then the wink, then a beat:
-   `On a fresh Mac, my dotfiles showed me nothing but ciphertext.. "I solemnly swear that I am up to no good" didn't help; the age key did.` /
-   `Secrets versioned, nothing readable in history.` / `Here is how:` + URL. That stays under 250 characters and
-   follows the 2026-11-16 shape (moment, beat, pointer).
-5. **Goal 5 (title):** the link card shows the title, and the title should state the insight. Consider
-   `Secrets in git, encrypted on commit: the two things that broke it (SOPS + age)` or
-   `My secrets live in git, encrypted. A fresh Mac broke it twice (SOPS + age)`. The cover can keep its two lines.
-6. **Goal 2 (proof):** "Secrets leak from public repos every day" needs a link (GitGuardian's State of Secrets
-   Sprawl, or the Help Net Security piece from the `pick:` comment, added as a `sources:` entry) or the softer "and
-   it keeps happening". It would also help to say what the RECIPE leaves out: the key is a single point of failure
-   (a lost password manager means lost secrets), and anyone with the key can read every past commit, so rotating a
-   leaked key means re-encrypting.
-7. **Goal 5 (visuals):** the cover's terminal reads `git show HEAD:.env` while the post uses `config/.env`. Matching
-   them, and adding alt text in the front matter or the opening, would help. Optional: the wink runs in the
-   opposite direction. "Mischief managed" is what *blanks* the map, so it fits the "ciphertext in git" side; if
-   that's intended, it's a nice touch.
+1. **Fix the front-matter description's count** (goal 2): it says "Two things broke it, and both have a fix", but the
+   post now shows three (the always-modified status, the fresh Mac, the hanging `git diff`). Say "Three things broke
+   it" or drop the count; dev.to shows this line under the title.
+2. **Say where the key really lives** (goal 2): "The key lives outside the repo" and "`install` … writes
+   `~/.config/sops/age/keys.txt`" are true through two symlinks, but `install` writes `config/age/keys.txt` inside the
+   dots working tree, kept out of git by `config/.gitignore`. Either "outside git (an ignored path)" or one line on
+   the symlink, so a reader who copies the layout knows the ignore rule is what protects it.
+3. **Link the "seven arguments" claim** (goal 1): add the git(1) `GIT_EXTERNAL_DIFF` link (or the fix commit / its
+   spec) to the last lesson, and update the task's `sources:` comment, which still lists only the two filter scripts,
+   to include `script/textconv.sops.sh` and the external links the post rests on.
+4. **Show the textconv one-liner** (goal 2): as with the smudge script, one line makes the diff step reproducible
+   without opening the repo: `sops --decrypt "$1" 2>/dev/null || cat "$1"`. Optionally add `age-keygen -o …` before
+   the `.sops.yaml` step for a reader with no key yet.
+5. **Smooth the second sentence and name the reader** (goal 5, tone): "My dotfiles commit theirs on purpose" trips a
+   cold reader. Something like "If your repo holds secrets, you can commit them on purpose instead: mine has nine
+   files…" also says who this hits, which the layout asks the opening to do.
+6. **Date the news instead of "This month"** (goal 1): "In November 2026, researchers found…" keeps the opening true
+   once the news is old (the playbook's "the post must still make sense after the news is forgotten").
+7. **Align the cover with the post** (visuals, goal 5): the terminal shows `git show HEAD:.env`, the post
+   `HEAD:config/.env`; and the LinkedIn post could add one beat on what it cost ("…and `Failed to get the data key`
+   on every file") so the moment carries its pain, not only the wink.
 
 ## Variables (the `vars:` comment)
 
-hook type: confession · cover style: terminal (Ghostty, focused, 🗺️ wink) · images: 1 (cover only) · LinkedIn format: quote + pointer + link card, prose · language: en · day/time: <author> · tags: git, security, devops, productivity
+hook type: confession · cover style: series, terminal (Ghostty), wink 🗺️ · images: 1 (cover only) · LinkedIn format:
+link card, quote opening, no image · language: en · day/time: <author> · tags: git,security,devops,productivity
 
-`vars: hook=confession cover=terminal-ghostty-focused images=1-cover linkedin=quote-pointer-linkcard lang=en day=<author> tags=git,security,devops,productivity`
-
-<!-- reviewed: 20daac9fb57cf96d -->
+<!-- reviewed: b7f2a9a089260869 -->
