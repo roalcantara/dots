@@ -1,6 +1,6 @@
 ---
 title: "Your AI agent writes bash. Your Mac runs zsh."
-published: false
+published: true
 description: Since Catalina, a new Mac's shell is zsh, and Claude Code runs its commands in it. One unquoted $var later, an agent's loop over 16 file types ran once and exited 0.
 tags: ai, zsh, bash, productivity
 cover_image: ./images/00-cover.png
