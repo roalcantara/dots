@@ -82,6 +82,21 @@ describe("risky commands get the warning colour", () => {
     expect(warnRegion("echo hi; rm -rf x")).toMatch(/^9 15 /);
   });
   it("sudo rm cues rm, not sudo", () => expect(warnRegion("sudo rm x")).toMatch(/^5 7 /));
+  it("flags of a later command never count for the risky one", () => {
+    expect(marked("rm -r d; ls -f")).toBe(false);
+    expect(marked("chmod -R 755 x; echo 777")).toBe(false);
+    expect(warnRegion("git push -f && ls -la")).toMatch(/^0 11 /);
+  });
+  it("keywords as arguments do not start a command", () => {
+    expect(marked("echo sudo rm x")).toBe(false);
+    expect(marked("echo do rm -rf x")).toBe(false);
+    expect(warnRegion("if true; then rm -rf x; fi")).toMatch(/^14 20 /);
+  });
+  it("a risky command on a later line is cued there", () => {
+    // $'…' so zsh gets a real newline; a double-quoted "\n" stays two characters.
+    const out = zsh(`BUFFER=$'ls\\nrm -rf x'; _dots_warn_highlight; print -rl -- $region_highlight`);
+    expect(out.split("\n").find((line) => line.toLowerCase().includes(WARN_STYLE))).toMatch(/^3 9 /);
+  });
   it("a bare git stays quiet", () => {
     expect(hookErrors("git")).toEqual([]);
     expect(hookErrors("git ")).toEqual([]);

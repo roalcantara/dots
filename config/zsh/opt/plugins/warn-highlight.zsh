@@ -77,8 +77,9 @@ _dots_warn_offsets() {
   local pos=1 rest off token
   for token in "${words[@]}"; do
     rest=${1[pos,-1]}
-    off=${rest[(i)${(b)token}]}
-    if (( off )); then
+    # (z) reports a newline as `;`; (i) returns past the end, not 0, when nothing matches.
+    if [[ $token == ';' ]]; then off=${rest[(i)[;$'\n']]}; else off=${rest[(i)${(b)token}]}; fi
+    if (( off <= ${#rest} )); then
       starts+=( $(( pos + off - 1 )) )
       ends+=( $(( pos + off + ${#token} - 2 )) )
       pos=$(( pos + off + ${#token} - 1 ))
@@ -110,26 +111,34 @@ _dots_warn_risky() {
   starts=( "${(@)reply[1,$n]}" )
   ends=( "${(@)reply[$(( n + 1 )),-1]}" )
 
-  local i=1 expect_cmd=1 is_sudo=0 w j k
+  local i=1 expect_cmd=1 is_sudo=0 w j k e
   while (( i <= n )); do
     w=${words[i]}
     case $w in
-      ';' | '&&' | '||' | '|' | '(' | ')' | '{' | '}' | 'then' | 'do' | '!')
+      ';' | '&&' | '||' | '|' | '|&' | '&')
         expect_cmd=1
         is_sudo=0
         ;;
-      'sudo')
-        expect_cmd=1
-        is_sudo=1
-        ;;
-      'command' | 'builtin' | 'exec' | 'nohup' | 'time')
-        expect_cmd=1
-        ;;
-      [A-Za-z_]*=*)
-        ;; # VAR=value before the command: the command is still to come
       *)
+        # Keywords, precommands and VAR=value only keep the command still to come; as arguments they are words.
         if (( expect_cmd )); then
+          case $w in
+            '(' | '{' | 'then' | 'do' | 'else' | '!' | 'command' | 'builtin' | 'exec' | 'nohup' | 'time' | [A-Za-z_]*=*)
+              (( i++ ))
+              continue
+              ;;
+            'sudo')
+              is_sudo=1
+              (( i++ ))
+              continue
+              ;;
+          esac
           expect_cmd=0
+          # The command's own words end at the next separator: a later command's flags never count for this one.
+          for (( e = i + 1; e <= n; e++ )); do
+            [[ ${words[e]} == (';'|'&&'|'||'|'|'|'|&'|'&') ]] && break
+          done
+          (( e-- ))
           case $w in
             rm)
               # sudo can do damage even without -rf, so any sudo rm is worth the cue.
@@ -137,9 +146,9 @@ _dots_warn_risky() {
                 _dots_warn_span "${starts[i]}" "${ends[i]}"
                 return 0
               fi
-              if _dots_warn_rm "${(@)words[i + 1, -1]}"; then
+              if _dots_warn_rm "${(@)words[i + 1, e]}"; then
                 j=$i
-                for (( k = i + 1; k <= n; k++ )); do
+                for (( k = i + 1; k <= e; k++ )); do
                   [[ ${words[k]} == -* ]] || break
                   j=$k
                 done
@@ -148,9 +157,9 @@ _dots_warn_risky() {
               fi
               ;;
             git)
-              if _dots_warn_git "${(@)words[i + 1, -1]}"; then
+              if _dots_warn_git "${(@)words[i + 1, e]}"; then
                 j=$(( i + 1 ))
-                for (( k = i + 1; k <= n; k++ )); do
+                for (( k = i + 1; k <= e; k++ )); do
                   [[ ${words[k]} == -* ]] && j=$k
                 done
                 _dots_warn_span "${starts[i]}" "${ends[j]}"
@@ -158,9 +167,9 @@ _dots_warn_risky() {
               fi
               ;;
             chmod)
-              if _dots_warn_chmod "${(@)words[i + 1, -1]}"; then
+              if _dots_warn_chmod "${(@)words[i + 1, e]}"; then
                 j=$i
-                for (( k = i + 1; k <= n; k++ )); do
+                for (( k = i + 1; k <= e; k++ )); do
                   case ${words[k]} in
                     -*) j=$k ;;
                     777 | [0-7]777) j=$k; break ;;
@@ -172,9 +181,9 @@ _dots_warn_risky() {
               fi
               ;;
             dd)
-              if _dots_warn_dd "${(@)words[i + 1, -1]}"; then
+              if _dots_warn_dd "${(@)words[i + 1, e]}"; then
                 j=$i
-                for (( k = i + 1; k <= n; k++ )); do
+                for (( k = i + 1; k <= e; k++ )); do
                   [[ ${words[k]} == of=/dev/* ]] && { j=$k; break; }
                 done
                 _dots_warn_span "${starts[i]}" "${ends[j]}"
