@@ -29,6 +29,11 @@ describe.skipIf(!brew)("Brewfile profiles", () => {
     expect(desktop).not.toContain("shellcheck");
     expect(dev).toContain("shellcheck");
   });
+  it("gemini-cli for desktop,dev only", () => {
+    expect(container).not.toContain("gemini-cli");
+    expect(desktop).not.toContain("gemini-cli");
+    expect(dev).toContain("gemini-cli");
+  });
   it("dev alone implies desktop", () => expect(list("dev")).toContain("gopass"));
   it("todo CLI (todo-cli from RayanBO/todo) for desktop,dev only, after rust", () => {
     expect(container).not.toContain("todo-cli");
