@@ -24,7 +24,7 @@
 #USAGE }
 #USAGE cmd "theme" help="Show or switch the shell theme" {
 #USAGE   arg "[name]" help="Theme to activate" {
-#USAGE     choices "catppuccin-mocha" "catppuccin-macchiato" "tokyonight-storm"
+#USAGE     choices "catppuccin-mocha" "catppuccin-macchiato" "dracula" "tokyonight-storm"
 #USAGE   }
 #USAGE }
 #USAGE example "dots env"

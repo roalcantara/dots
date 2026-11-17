@@ -17,7 +17,7 @@ import { join } from "node:path";
 import { realUsageDir, repoRoot } from "./support/paths";
 
 const THEMES = join(repoRoot, "config/theme/themes");
-const NAMES = ["catppuccin-mocha", "catppuccin-macchiato", "tokyonight-storm"];
+const NAMES = ["catppuccin-mocha", "catppuccin-macchiato", "dracula", "tokyonight-storm"];
 
 // One file per tool, plus the vendored eza theme and its licence.
 const FILES = [
@@ -77,15 +77,13 @@ describe("theme folders", () => {
     }
   });
 
-  it.skipIf(!vivid)("theme:build reproduces the committed ls_colors", () => {
+  it.skipIf(!vivid)("theme:build reproduces every ls_colors", () => {
+    // Compared with the files as they are, not with git, so an unrelated edit under config/theme cannot fail it.
+    const read = () => Object.fromEntries(NAMES.map((name) => [name, readFileSync(join(THEMES, name, "ls_colors"), "utf8")]));
+    const before = read();
     const build = Bun.spawnSync(["mise", "run", "theme:build"], { cwd: repoRoot, stdout: "pipe", stderr: "pipe" });
     expect(build.exitCode).toBe(0);
-    const diff = Bun.spawnSync(["git", "diff", "--exit-code", "--", "config/theme"], {
-      cwd: repoRoot,
-      stdout: "pipe",
-      stderr: "pipe",
-    });
-    expect(diff.exitCode).toBe(0);
+    expect(read()).toEqual(before);
   });
 
   it("theme:build rejects an unknown name", () => {
@@ -145,6 +143,7 @@ describe("Lig's config", () => {
     expect(ligConfig("catppuccin-mocha").colors.bg.toLowerCase()).toBe("#1e1e2e");
     expect(ligConfig("catppuccin-macchiato").colors.bg.toLowerCase()).toBe("#24273a");
     expect(ligConfig("tokyonight-storm").colors.bg.toLowerCase()).toBe("#1f2335");
+    expect(ligConfig("dracula").colors.bg.toLowerCase()).toBe("#282a36");
   });
 
   it("config/lig/config.toml points at the state link's lig.toml", () => {

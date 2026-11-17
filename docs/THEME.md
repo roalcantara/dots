@@ -16,6 +16,8 @@ and how to add a theme. The design and its trade-offs are in the
 [`config/theme/themes/`](../config/theme/themes/) holds one folder per theme:
 
 - `catppuccin-mocha`, the default when no theme is chosen, and `catppuccin-macchiato`.
+- `dracula`: [Dracula](https://draculatheme.com), the colours fzf and bat used before themes. zsh-patina ships no
+  Dracula, so its `zsh-patina.toml` maps zsh-patina's scopes onto the Dracula palette.
 - `tokyonight-storm`: Tokyo Night ([folke/tokyonight.nvim](https://github.com/folke/tokyonight.nvim)) around the
   hand-made palette the shell had before themes: its `ls_colors` and `EZA_COLORS` are that palette, unchanged, so
   `la` looks as it did. bat reads its theme from [`config/bat/themes/`](../config/bat/themes/) (Apache-2.0).

@@ -386,7 +386,7 @@ echo "zsh:lig: wrote $cache/pre.zsh and post.zsh"
 description = "Regenerate a theme's ls_colors with vivid"
 usage = '''
   arg "[name]" help="Theme to rebuild (default: every theme)" {
-    choices "catppuccin-mocha" "catppuccin-macchiato" "tokyonight-storm"
+    choices "catppuccin-mocha" "catppuccin-macchiato" "dracula" "tokyonight-storm"
   }
 '''
 run = '''
