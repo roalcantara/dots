@@ -37,7 +37,33 @@ describe.skipIf(!existsSync(join(HOME, ".config/zsh/.zshrc")))("fzf-tab effectiv
   it("any other command previews files, else coloured --help via cmdhelp; specific previews still win", () => {
     const generic = styles(`zstyle -s ':fzf-tab:complete:vim:argument-rest' fzf-preview p; print -r -- $p`);
     expect(generic).toContain("cmdhelp");
-    expect(generic).toContain("bat --style=plain");
+    expect(generic).toContain("DOTS_LA_CMD");
+    expect(generic).toContain("bat --style=numbers,changes");
     expect(styles(`zstyle -s ':fzf-tab:complete:git-log:argument-1' fzf-preview p; print -r -- $p`)).toContain("git show");
+  });
+  it("menus are framed and themed", () => {
+    const flags = styles(`zstyle -a ':fzf-tab:*' fzf-flags f; print -rl -- $f`);
+    expect(flags).toContain("--style=full");
+    const theme = styles(`print -r -- $FZF_THEME_OPTS`);
+    const bg = theme.split(/\s+/).find((flag) => flag.startsWith("--color=bg:"));
+    expect(bg).toBeString();
+    expect(flags).toContain(bg as string);
+  });
+  it("no ls -l rows", () => {
+    const value = styles(`zstyle -s ':completion:*' file-list v && print -r -- $v || print unset`).trim();
+    expect(value).not.toBe("all");
+  });
+  it("la and the directory preview share one command", () => {
+    const command = styles("print -r -- $DOTS_LA_CMD").trim();
+    expect(command).toContain("eza");
+    expect(command).toContain("--color=always");
+    expect(styles("alias la").trim()).toContain(command);
+    expect(styles(`zstyle -s ':fzf-tab:complete:cd:*' fzf-preview p; print -r -- $p`)).toContain("DOTS_LA_CMD");
+  });
+  it("group colours follow the theme", () => {
+    const theme = styles(`print -r -- \${(j:|:)DOTS_FZF_TAB_GROUP_COLORS}`).trim();
+    const groups = styles(`zstyle -a ':fzf-tab:*' group-colors c; print -r -- \${(j:|:)c}`).trim();
+    expect(theme.length).toBeGreaterThan(0);
+    expect(groups).toBe(theme);
   });
 });

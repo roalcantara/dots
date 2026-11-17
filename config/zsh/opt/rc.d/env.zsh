@@ -105,7 +105,6 @@ env::options() {
   zstyle ':completion:*' use-compctl false                                                                     # Disable compctl
   zstyle ':completion:*' complete yes                                                                          # Enable completion
   zstyle ':completion:*' case-sensitive no                                                                     # Case-sensitive completion
-  zstyle ':completion:*' file-list all                                                                         # List all files
   zstyle ':completion:*' file-sort name                                                                        # Sort files by name
   zstyle ':completion:*' accept-exact '*(N)'                                                                   # Allows completion to work on empty directories
   zstyle ':completion:*' accept-exact-dirs 'yes'                                                               # Accept exact matches for directories

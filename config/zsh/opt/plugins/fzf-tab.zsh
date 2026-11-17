@@ -30,13 +30,10 @@ export FZF_DEFAULT_OPTS="
       --pointer '▶'
       --margin 1,1
       --color dark
+      $FZF_THEME_OPTS
       --prompt '❯ '
       --height=40%
       --tiebreak 'chunk'
-      --color fg:#f8f8f2,bg:-1,hl:#5f87af
-      --color fg+:#5beec4,bg+:#44475a,hl+:#bd93f9
-      --color info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6
-      --color marker:#ff79c6,spinner:#ffb86c,header:#6272a4
       --bind 'tab:down,btab:up'"
 
 # - [CTRL-T] $($FZF_CTRL_T_COMMAND) to get a list of files and directories and paste them onto the command-line
@@ -94,12 +91,17 @@ export FZF_ALT_C_OPTS="
 # c-x h -> get context of the completion
 zstyle -d ':completion:*' format
 
-# Group headers ([commands], [options]…) and one theme colour per group; `,` and `.` switch groups.
-# fzf-tab colours a whole candidate line per group, never the description alone (it ignores pattern list-colors).
+# Group headers ([commands], [options]…) and one theme colour per group, from the active theme's
+# DOTS_FZF_TAB_GROUP_COLORS; `,` and `.` switch groups. fzf-tab colours a whole candidate line per group, never the
+# description alone (it ignores pattern list-colors).
 zstyle ':fzf-tab:*' show-group full
-zstyle ':fzf-tab:*' group-colors \
-  $'\e[38;2;189;147;249m' $'\e[38;2;139;233;253m' $'\e[38;2;80;250;123m' \
-  $'\e[38;2;255;184;108m' $'\e[38;2;255;121;198m' $'\e[38;2;241;250;140m'
+if (( ${#DOTS_FZF_TAB_GROUP_COLORS} )); then
+  zstyle ':fzf-tab:*' group-colors "${DOTS_FZF_TAB_GROUP_COLORS[@]}"
+else
+  zstyle ':fzf-tab:*' group-colors \
+    $'\e[38;2;189;147;249m' $'\e[38;2;139;233;253m' $'\e[38;2;80;250;123m' \
+    $'\e[38;2;255;184;108m' $'\e[38;2;255;121;198m' $'\e[38;2;241;250;140m'
+fi
 zstyle ':fzf-tab:*' prefix ''
 
 # Preview window settings
@@ -114,7 +116,8 @@ zstyle ':fzf-tab:*' fzf-bindings 'space:accept'
 zstyle ':fzf-tab:*' accept-line enter
 # Pressing this key will use the currently entered user input as the final completion output
 zstyle ':fzf-tab:*' print-query alt-enter
-# NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
+# NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default, so it repeats the flags and takes its colours from
+# the theme's FZF_THEME_OPTS. --style=full frames the list and the preview.
 zstyle ':fzf-tab:*' fzf-flags --bind=right:accept --bind=enter:accept \
     --cycle \
     --ansi \
@@ -126,12 +129,10 @@ zstyle ':fzf-tab:*' fzf-flags --bind=right:accept --bind=enter:accept \
     --height=40% \
     --tiebreak='chunk' \
     --layout=reverse \
-    --color='bg:-1,fg:#f8f8f2' \
-    --color='bg+:#44475a,fg+:#f8f8f2' \
-    --color='hl:#bd93f9,hl+:#ff79c6' \
-    --color='info:#6272a4,border:#6272a4' \
-    --color='prompt:#50fa7b,pointer:#ff79c6' \
-    --color='marker:#ff79c6,spinner:#ffb86c,header:#6272a4'
+    --style=full \
+    --list-label=' matches ' \
+    --preview-label=' preview ' \
+    ${(z)FZF_THEME_OPTS}
 
 # Environment Variables completion configuration
 zstyle ':fzf-tab:complete:*:*:*:*:variables' \
@@ -203,32 +204,32 @@ else
  fi
 fi'
 
-if _has_command eza; then
-  fzf_dir_preview='
-  if [ -d $realpath ]; then
-    eza --color=always --classify --group-directories-first --binary --long --icons --header --no-permissions --no-user --modified --time-style=iso -a --git $realpath
-  elif [[ $realpath =~ \.(jpg|jpeg|png|gif|bmp)$ ]]; then
-    chafa -c 256 --size=40x40 "$realpath"
+# One preview for a path, shared by the directory completions and the generic file branch: a directory lists as `la`
+# lists it ($DOTS_LA_CMD, set in config/zsh/opt/aliases/ls.zsh), a text file shows in bat, anything else (images,
+# binaries) shows what `file` says it is. Previews run in a child shell, so this is a string inlined into the
+# zstyles, not a function.
+_dots_preview_path='
+  if [[ -d $realpath ]]; then
+    eval "$DOTS_LA_CMD \"$realpath\""
+  elif [[ -f $realpath ]] && file -b --mime-type "$realpath" 2>/dev/null | grep -q "^text/"; then
+    bat --style=numbers,changes --color=always --line-range :300 "$realpath" 2>/dev/null || file -b "$realpath"
   else
-    bat --style=full --language=sh --color=always --line-range :500 <(eval echo $realpath) 2>/dev/null || echo $realpath
+    file -b "$realpath"
   fi'
-  zstyle ':fzf-tab:complete:eza:*' fzf-preview "$fzf_dir_preview"
-else
-  fzf_dir_preview='ls -1 --color=always $realpath'
-fi
 
-# preview directory's content with eza when completing cd (https://github.com/Aloxaf/fzf-tab/wiki/Preview)
-zstyle ':fzf-tab:complete:cd:*' fzf-preview "$fzf_dir_preview"
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview "$fzf_dir_preview"
-zstyle ':fzf-tab:complete:z:*' fzf-preview "$fzf_dir_preview"
+# Preview the directory's contents as `la` when completing eza, cd, z or __zoxide_z
+# (https://github.com/Aloxaf/fzf-tab/wiki/Preview)
+zstyle ':fzf-tab:complete:eza:*' fzf-preview "$_dots_preview_path"
+zstyle ':fzf-tab:complete:cd:*' fzf-preview "$_dots_preview_path"
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview "$_dots_preview_path"
+zstyle ':fzf-tab:complete:z:*' fzf-preview "$_dots_preview_path"
 
-# Every other completion, least specific so the previews above win: a file shows itself; a subcommand or flag,
-# its --help coloured by bat (config/bin/cmdhelp, which runs only subcommands the parent's help lists).
+# Every other completion, least specific so the previews above win: a path shows through the shared helper; a
+# subcommand or flag, its --help coloured by bat (config/bin/cmdhelp, which runs only subcommands the parent's help
+# lists).
 zstyle ':fzf-tab:complete:*' fzf-preview "
-  if [[ -d \$realpath ]]; then
-    $fzf_dir_preview
-  elif [[ -f \$realpath ]]; then
-    bat --style=plain --color=always --line-range :300 \$realpath 2>/dev/null
+  if [[ -e \$realpath ]]; then
+    $_dots_preview_path
   else
     cmdhelp \$word \"\${words[@]}\"
   fi"

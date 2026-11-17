@@ -58,6 +58,20 @@ When the link is missing or dangling, everything falls back to `catppuccin-mocha
 | powerlevel10k | `env.zsh` | `DOTS_P10K_*` |
 | Ghostty | `theme.ghostty` | its `config-file = ?auto/theme.ghostty` include |
 
+## Tab menus
+
+`Tab` opens [fzf-tab](https://github.com/Aloxaf/fzf-tab)'s menu, framed by `--style=full` and coloured by the theme's
+`FZF_THEME_OPTS`; its group headers take `DOTS_FZF_TAB_GROUP_COLORS`. The preview window shows:
+
+- a directory through `$DOTS_LA_CMD` — the same command `la` expands to (`config/zsh/opt/aliases/ls.zsh`), so the
+  preview and a typed `la` match;
+- a text file in `bat`;
+- anything else (an image, a binary) as `file -b` describes it;
+- a command, flag or other candidate through `cmdhelp` when it is not a path.
+
+`file-list all` is gone from `config/zsh/opt/rc.d/env.zsh`, so file candidates stay one row per name instead of
+`ls -l` lines.
+
 ## Regenerate the colours
 
 `ls_colors` comes from [vivid](https://github.com/sharkdp/vivid) and is committed, so no shell start runs vivid:

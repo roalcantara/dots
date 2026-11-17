@@ -2,11 +2,14 @@
 # A modern replacement for ls
 # https://eza.rocks
 if (( $+commands[eza] )); then
+  # The full `la` command, shared with fzf-tab's directory preview. It is exported because previews run in a
+  # child shell (see config/zsh/opt/plugins/fzf-tab.zsh).
+  export DOTS_LA_CMD='eza --color=always --icons=always --classify --group-directories-first --binary --long --header --modified --created --group --time-style=iso -a --git'
   alias ls='eza --color=always --classify --group-directories-first'                            # List non-hidden folders and files inline
   alias l='ls --oneline'                                                                        # List non-hidden folders and files in columns
   alias ll='ls --binary --icons --long --header --modified --created --group --time-style=iso'  # List non-hidden folders and files in columns (human readable)
   alias lt='ls --tree --level=2'                                                                # tree
-  alias la='ll -a --git'                                                                       # List all files in columns
+  alias la="$DOTS_LA_CMD"                                                                      # List all files in columns
   alias lam='la --sort=modified'                                                                 # List all files, sorted by modified date
   alias lac='la --sort=created'                                                                  # List all files, sorted by created date
   alias lal='la -Sa@ --color-scale=all'                                                             # List all files in columns (extended)
@@ -33,12 +36,13 @@ if (( $+commands[eza] )); then
   alias lu!='ls! -lur'
   alias sl!='ls! -l'
 else
+  export DOTS_LA_CMD='ls -la'
   alias ls='/bin/ls --color=auto'
   alias l='ls -l'
   alias ll='ls -lh'
   alias llg='ls -lh --git'
   alias lr='ls -lrt'
-  alias la='ls -la'
+  alias la="$DOTS_LA_CMD"
   alias lm='ls -al | "$PAGER"'
   alias lx='ls -X'
   alias lk='ls -lSr'
