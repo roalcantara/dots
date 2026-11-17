@@ -118,7 +118,7 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
     name means both. For each theme it writes `config/theme/themes/<name>/ls_colors` from `vivid generate <name>`.
     It fails with `theme:build: vivid not found (brew install vivid)` when vivid is missing.
 
-- [ ] **Step 1: Write the failing spec** `test/integration/bin/theme.spec.ts`, `describe("theme folders")`:
+- [x] **Step 1: Write the failing spec** `test/integration/bin/theme.spec.ts`, `describe("theme folders")`:
   - `it("each theme has every file")`: for both names, the files listed above exist and are non-empty.
   - `it("ls_colors is one export line")`: it matches `/^export LS_COLORS='[^']+'\n$/`.
   - `it.skipIf(!Bun.which("vivid"))("theme:build reproduces the committed ls_colors")`: run
@@ -126,14 +126,14 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
   - `it("theme:build rejects an unknown name")`: `mise run theme:build nope` exits non-zero and stderr names both
     choices.
   - Add a case to `brewfile-profiles.spec.ts`: `vivid` appears on `desktop,dev` only.
-- [ ] **Step 2: Run, expect FAIL:** `mise run -C test integration bin theme`.
-- [ ] **Step 3: Create the folders and files:**
+- [x] **Step 2: Run, expect FAIL:** `mise run -C test integration bin theme`.
+- [x] **Step 3: Create the folders and files:**
   - Colour values come from Catppuccin's palette (<https://catppuccin.com/palette>) and catppuccin/fzf.
   - Generate `ls_colors` with the new task once vivid is installed (`brew install vivid`).
   - Add the link, the Brewfile line, and `docs/THEME.md` (layout, `theme:build`, and how to add a theme: a folder,
     the files above, and a `choices` entry in both usage specs).
-- [ ] **Step 4: Run, expect PASS:** the same command, plus `mise run -C test integration bootstrap brewfile-profiles`.
-- [ ] **Step 5: Commit** `feat(theme): Add Catppuccin Mocha and Macchiato theme folders and theme:build`.
+- [x] **Step 4: Run, expect PASS:** the same command, plus `mise run -C test integration bootstrap brewfile-profiles`.
+- [x] **Step 5: Commit** `feat(theme): Add Catppuccin Mocha and Macchiato theme folders and theme:build`.
 
 ### Task 2: `dots theme` and Ghostty
 
@@ -162,7 +162,7 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
   - With no name: print each folder name in `DOTS_THEMES_DIR`, with `* ` before the active one and two spaces before
     the others. Exit 0.
 
-- [ ] **Step 1: Add failing cases** to `theme.spec.ts`, `describe("dots theme")`, running `config/bin/dots` with
+- [x] **Step 1: Add failing cases** to `theme.spec.ts`, `describe("dots theme")`, running `config/bin/dots` with
   `DOTS_THEMES_DIR=<repo>/config/theme/themes` and `DOTS_THEME_LINK=<tmp>/current`:
   - `it("switches the link")`: `dots theme catppuccin-macchiato` exits 0, and `readlink(<tmp>/current)` ends with
     `/catppuccin-macchiato`.
@@ -174,10 +174,10 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
     `restart`.
   - `it("choices match the theme folders")`: parse the `choices` line of `dots`'s `theme` block and the
     `theme:build` usage in `mise.toml`. Both sorted lists equal the sorted folder names.
-- [ ] **Step 2: Run, expect FAIL:** `mise run -C test integration bin theme`.
-- [ ] **Step 3: Implement** the subcommand, the symlink, the Ghostty and Brewfile edits, and the docs.
-- [ ] **Step 4: Run, expect PASS.** Also check `mise run -C test integration bin dots` still passes.
-- [ ] **Step 5: Commit** `feat(dots): Switch the shell theme with dots theme`.
+- [x] **Step 2: Run, expect FAIL:** `mise run -C test integration bin theme`.
+- [x] **Step 3: Implement** the subcommand, the symlink, the Ghostty and Brewfile edits, and the docs.
+- [x] **Step 4: Run, expect PASS.** Also check `mise run -C test integration bin dots` still passes.
+- [x] **Step 5: Commit** `feat(dots): Switch the shell theme with dots theme`.
 
 ### Task 3: The shell reads the theme
 
@@ -213,7 +213,7 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
 - Consumes: Task 1's files.
 - Produces: `DOTS_THEME_DIR` and the exports listed in Task 1, in every interactive zsh and bash.
 
-- [ ] **Step 1: Write the failing spec.**
+- [x] **Step 1: Write the failing spec.**
   - `envOf(themeLink, script)` runs `env -i HOME TERM=xterm-256color ZDOTDIR=$HOME/.config/zsh DOTS_THEME_LINK=<link> DOTS_THEMES_DIR=<repo>/config/theme/themes script -q /dev/null zsh -ic <script>`.
     Strip `\r` and the leading `^D` from the output. `script` is what makes fzf and zim load, as they would in a
     terminal.
@@ -226,12 +226,12 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
   - `it("no Dracula left")`: case-insensitive, no `dracula` under `config/zsh`, `config/bash`, `config/bin`,
     `config/bat`, `config/git`, `config/mise` or `config/television`, and no bat `--theme=` in those folders. Skip
     `*.zwc` files.
-- [ ] **Step 2: Run, expect FAIL:** `mise run -C test integration bootstrap theme-env`.
-- [ ] **Step 3: Implement.** Update `docs/THEME.md` ("What reads the theme": a table of tool → file → variable) and
+- [x] **Step 2: Run, expect FAIL:** `mise run -C test integration bootstrap theme-env`.
+- [x] **Step 3: Implement.** Update `docs/THEME.md` ("What reads the theme": a table of tool → file → variable) and
   `docs/GLOSSARY.md` ("theme", "current theme").
-- [ ] **Step 4: Run, expect PASS.** Also check `mise run zsh:verify`: syntax OK. Note the parity diff in the commit
+- [x] **Step 4: Run, expect PASS.** Also check `mise run zsh:verify`: syntax OK. Note the parity diff in the commit
   body; expected changes are the new theme env vars, plus `EXA_COLORS` and `LSCOLORS` gone.
-- [ ] **Step 5: Commit** `feat(theme): Read every shell tool's colours from the active theme`.
+- [x] **Step 5: Commit** `feat(theme): Read every shell tool's colours from the active theme`.
 
 ### Task 4: Framed Tab menus and matching previews
 
@@ -265,7 +265,7 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
 - Consumes: `FZF_THEME_OPTS` and `DOTS_FZF_TAB_GROUP_COLORS` (Task 1, exported by Task 3).
 - Produces: `DOTS_LA_CMD` (string) and the preview string `_dots_preview_path`.
 
-- [ ] **Step 1: Add failing cases** to `fzf-tab-styles.spec.ts`:
+- [x] **Step 1: Add failing cases** to `fzf-tab-styles.spec.ts`:
   - `it("menus are framed and themed")`: `fzf-flags` include `--style=full` and the Mocha `bg` value from
     `FZF_THEME_OPTS`.
   - `it("no ls -l rows")`: `zstyle -s ':completion:*' file-list v` returns false or a value that isn't `all`.
@@ -273,11 +273,11 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
     `$DOTS_LA_CMD`'s value, and the `cd` preview contains `DOTS_LA_CMD`.
   - `it("group colours follow the theme")`: `group-colors` equals `DOTS_FZF_TAB_GROUP_COLORS`.
   - Update the existing generic-preview case to the new helper.
-- [ ] **Step 2: Run, expect FAIL:** `mise run -C test integration bootstrap fzf-tab-styles`.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run, expect PASS.** In a real terminal, check that `rm <Tab>` shows names (no `ls -l` rows) in a
+- [x] **Step 2: Run, expect FAIL:** `mise run -C test integration bootstrap fzf-tab-styles`.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run, expect PASS.** In a real terminal, check that `rm <Tab>` shows names (no `ls -l` rows) in a
   framed Mocha menu.
-- [ ] **Step 5: Commit** `feat(zsh): Frame fzf-tab menus in the theme and preview directories like la`.
+- [x] **Step 5: Commit** `feat(zsh): Frame fzf-tab menus in the theme and preview directories like la`.
 
 ### Task 5: Warning colour for risky commands
 
@@ -303,7 +303,7 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
   - `dd` with an `of=/dev/` argument;
   - `mkfs`.
 
-- [ ] **Step 1: Write the failing spec.** The harness is a temporary `ZDOTDIR` whose `.zshrc` sources the real one,
+- [x] **Step 1: Write the failing spec.** The harness is a temporary `ZDOTDIR` whose `.zshrc` sources the real one,
   then adds:
 
   ```zsh
@@ -318,13 +318,13 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
   - `it("rm x is not marked")`.
   - `it("rm-rf-notes.txt is not marked")`, for the buffer `cat rm-rf-notes.txt`.
   - If `zle -R` doesn't run the pre-redraw hooks, call `zle .redisplay`, or trigger the hooks directly.
-- [ ] **Step 2: Run, expect FAIL:** `mise run -C test integration bootstrap warn-highlight`.
-- [ ] **Step 3: Try option (a)**, zsh-syntax-highlighting's pattern highlighter only, loaded after zsh-patina.
+- [x] **Step 2: Run, expect FAIL:** `mise run -C test integration bootstrap warn-highlight`.
+- [x] **Step 3: Try option (a)**, zsh-syntax-highlighting's pattern highlighter only, loaded after zsh-patina.
   - If the spec passes and `mise run zsh:bench` stays within 10% of the baseline, keep it.
   - Otherwise remove it and write option (b): a `line-pre-redraw` hook via `add-zle-hook-widget`, registered after
     zsh-patina. It drops its own previous entries (tag them with `memo=dots-warn`) and appends new ones.
-- [ ] **Step 4: Run, expect PASS.**
-- [ ] **Step 5: Commit** `feat(zsh): Colour risky commands like rm -rf while typing`. The body says which option was
+- [x] **Step 4: Run, expect PASS.**
+- [x] **Step 5: Commit** `feat(zsh): Colour risky commands like rm -rf while typing`. The body says which option was
   kept, and the bench numbers.
 
 ### Task 6: gomi as `rm` in interactive shells
@@ -342,22 +342,22 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
 - Modify: `test/integration/bootstrap/brewfile-profiles.spec.ts` (gomi on desktop and dev, not container).
 - Test: `test/integration/bootstrap/theme-env.spec.ts` (new cases).
 
-- [ ] **Step 1: Add failing cases:**
+- [x] **Step 1: Add failing cases:**
   - `it("rm is gomi in an interactive shell")`: with a fake `gomi` on `PATH`, `zsh -ic 'whence -w rm'` prints
     `rm: alias`, and `alias rm` contains `gomi`.
   - `it("rm stays rm in zsh -c and bash -c")`: `zsh -c 'whence -p rm'` and `bash -c 'type -P rm'` print the real
     path (`/bin/rm` on macOS).
   - `it("no gomi, no alias")`: without gomi on `PATH`, `whence -w rm` prints `rm: command`.
   - The Brewfile case.
-- [ ] **Step 2: Run, expect FAIL.**
-- [ ] **Step 3: Implement.** Install gomi (`brew install gomi`) to confirm where it puts files on macOS; record that in
+- [x] **Step 2: Run, expect FAIL.**
+- [x] **Step 3: Implement.** Install gomi (`brew install gomi`) to confirm where it puts files on macOS; record that in
   `docs/THEME.md`.
-- [ ] **Step 4: Run, expect PASS.**
-- [ ] **Step 5: Commit** `feat(shell): Send rm to gomi's trash in interactive shells`.
+- [x] **Step 4: Run, expect PASS.**
+- [x] **Step 5: Commit** `feat(shell): Send rm to gomi's trash in interactive shells`.
 
 ### Task 7: Gates, docs check and the owner's look
 
-- [ ] **Step 1: Gates.**
+- [x] **Step 1: Gates.**
   - `mise run test:specs` exits 0.
   - `hk check --all` exits 0.
   - `script -q /dev/null mise run zsh:verify` passes syntax; the parity diff contains only the changes Tasks 3–6
@@ -366,7 +366,7 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
   - Then `mise run build --local --distro debian` and
     `mise run test --image dots:debian-<tag> --config distros/debian/container-structure-test.yml` both pass (the
     bashrc, Brewfile and link changes touch bootstrap).
-- [ ] **Step 2: Docs check.**
+- [x] **Step 2: Docs check.**
   - `grep -rniE 'dracula|tokyonight storm' README.md AGENTS.md docs/*.md config/bin/README.md` finds nothing stale.
   - The research note's status line reads "Adopted: see `docs/superpowers/specs/2026-11-17-shell-ux-theme-design.md`".
   - `docs/THEME.md` has a "Future: full integration" section copied from the spec.
@@ -379,5 +379,5 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
   - `touch /tmp/x && rm /tmp/x && gomi --restore` brings it back;
   - `dots theme catppuccin-macchiato`, then a new shell and cmd+shift+, re-themes everything;
   - `dots theme catppuccin-mocha` returns.
-- [ ] **Step 4:** After the owner approves, run `mise run zsh:baseline`. Tick this plan's boxes, except Step 3, and
+- [x] **Step 4:** After the owner approves, run `mise run zsh:baseline`. Tick this plan's boxes, except Step 3, and
   commit (`docs(plans): Tick the shell UX theme plan`). Then run `/wip:handoff plan=docs/superpowers/plans/2026-11-17-shell-ux-theme.md`.
