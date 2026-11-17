@@ -39,6 +39,9 @@ The active theme is the `current` link,
 `theme.ghostty` through the `auto` link in this folder and reloads with `cmd+shift+,` (a new window also works).
 Switching also restarts zsh-patina's daemon, which caches its theme.
 
+The `zsh-patina` command reads `$DOTS_THEME_DIR` from its config, and only an interactive zsh exports it, so run
+`zsh-patina list-themes` or `zsh-patina check` from zsh (or set `DOTS_THEME_DIR` first), not from bash.
+
 When the link is missing or dangling, everything falls back to `catppuccin-mocha`. If that folder is missing too
 (a bare container, say), the theme variables are left unset and each tool keeps its built-in colours.
 
@@ -84,6 +87,16 @@ This is a `line-pre-redraw` hook (`config/zsh/opt/plugins/warn-highlight.zsh`) r
 (a) from the spec — zsh-syntax-highlighting's pattern highlighter — is not available here: zsh-patina is the
 highlighter and zsh-syntax-highlighting is not loaded, so the pattern highlighter would have meant a second
 highlighting engine. zsh-patina removes only its own `memo=zsh_patina` regions, so the warning entry layers on top.
+
+The community recipe for this cue is zsh-syntax-highlighting's pattern highlighter,
+`ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=white,bold,bg=red')`; Prezto's example is `'rm*-rf*'` in the same style.
+Both paint the whole match, operands included, so the narrower span here is a deliberate improvement rather than a
+divergence: a pattern cannot tell `rm -rf build/` from `rm -rf` alone, and a literal glob cannot follow `-r -f`,
+`sudo rm` or a command after `;`. zsh-patina offers no pattern API of its own
+([README](https://github.com/michel-kraemer/zsh-patina)); issue
+[#95](https://github.com/michel-kraemer/zsh-patina/issues/95) documents that a `line-pre-redraw` hook registered
+after it wins on overlap, which is how this hook layers. Zsh 5.10 adds `layer=NN` to `region_highlight` for explicit
+precedence; once the images and Homebrew carry it, the hook can stop relying on load order.
 
 ## Safety net
 
