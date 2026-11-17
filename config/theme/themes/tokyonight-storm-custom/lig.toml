@@ -1,0 +1,27 @@
+# Lig's whole config for this theme (https://github.com/KevenGoncalves/lig). Lig reads only
+# ~/.config/lig/config.toml, which links here through the active theme (config/lig/config.toml, config/dots/config.toml),
+# and recolours open tabs when [ui] or [colors] change. Every section but [ui] and [colors] must be the same in
+# every theme: test/integration/bin/theme.spec.ts checks it.
+
+[ui]
+theme = "tokyonight"
+
+# Tokyo Night Storm (folke/tokyonight.nvim), the fzf colours' values, so the popup matches the Tab menu.
+[colors]
+bg = "#1f2335"                      # bg_dark
+fg = "#c0caf5"                      # fg
+selected_bg = "#2e3c64"             # fzf's bg+
+selected_fg = "#c0caf5"             # fg
+match_fg = "#2ac3de"                # blue1, as fzf's matches
+description_fg = "#737aa2"          # dark5
+selected_description_fg = "#a9b1d6" # fg_dark
+border_fg = "#29a4bd"               # fzf's border
+scrollbar_fg = "#3b4261"            # fg_gutter
+info_fg = "#bb9af7"                 # magenta
+
+[behavior]
+completers = [
+  "shell",
+] # a command with no Fig spec asks zsh's own completion (_todo, _dots, …)
+online = false # no package registry searches while typing
+history = false # Ctrl-R stays the shell's own binding

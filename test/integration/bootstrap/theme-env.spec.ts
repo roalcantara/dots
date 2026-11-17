@@ -117,9 +117,9 @@ describe("the shell reads the theme", () => {
     expect(readlinkSync(env.DOTS_THEME_LINK)).toBe(join(THEMES, "catppuccin-macchiato"));
   });
 
-  it("the committed config is the owner's: Tokyo Night Storm, with Dracula's eza colours", () => {
+  it("the committed config is the owner's: Tokyo Night Storm, with its own hand-tuned eza colours", () => {
     const config = Bun.TOML.parse(readFileSync(join(repoRoot, "config/dots/config.toml"), "utf8")) as any;
-    expect(config.theme).toEqual({ name: "tokyonight-storm", eza: "dracula" });
+    expect(config.theme).toEqual({ name: "tokyonight-storm", eza: "tokyonight-storm-custom" });
     expect(existsSync(join(THEMES, config.theme.name))).toBe(true);
     expect(existsSync(join(THEMES, config.theme.eza))).toBe(true);
   });

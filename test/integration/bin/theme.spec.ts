@@ -17,7 +17,7 @@ import { join } from "node:path";
 import { realUsageDir, repoRoot } from "./support/paths";
 
 const THEMES = join(repoRoot, "config/theme/themes");
-const NAMES = ["catppuccin-mocha", "catppuccin-macchiato", "dracula", "tokyonight-storm"];
+const NAMES = ["catppuccin-mocha", "catppuccin-macchiato", "tokyonight-storm-custom", "dracula", "tokyonight-storm"];
 
 // One file per tool, plus the vendored eza theme and its licence.
 const FILES = [

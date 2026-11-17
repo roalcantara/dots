@@ -156,10 +156,25 @@ mise run theme:build                 # every theme
 mise run theme:build catppuccin-mocha
 ```
 
-A file whose first line starts with `# hand-made` (`tokyonight-storm`'s) is skipped: it is edited by hand.
+A file whose first line starts with `# hand-made` (`tokyonight-storm`'s and `tokyonight-storm-custom`'s) is skipped: it is edited by hand.
 
 The task writes `config/theme/themes/<name>/ls_colors`. Run it after editing a theme's palette, then commit the
 file.
+
+### Icon colours
+
+`tokyonight-storm-custom` colours eza's icons per file, the VS Code way, from
+[nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) (MIT). File names keep their `ls_colors`
+colours:
+
+```sh
+mise run theme:icons                          # tokyonight-storm-custom
+mise run theme:icons catppuccin-mocha
+```
+
+The task downloads the colours and rewrites the block between `# BEGIN devicons` and `# END devicons` in the
+theme's `eza/theme.yml`. A rerun replaces hand edits inside the block. To give a name its icon's colour, add it to
+`ls_colors` (`*.gitignore=0;38;2;245;77;39`).
 
 ## Add a theme
 
