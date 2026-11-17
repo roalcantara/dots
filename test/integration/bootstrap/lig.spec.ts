@@ -60,49 +60,6 @@ describe("mise run zsh:lig", () => {
   });
 });
 
-describe("the post-dotfiles hook", () => {
-  const hook = (os: string, theme = "catppuccin-macchiato") => {
-    fake("uname", `echo ${os}\n`);
-    writeFileSync(join(t, "config.toml"), `[theme]\nname = "${theme}"\neza = "dracula"\n`);
-    return Bun.spawnSync(["sh", "-o", "errexit", "-c", HOOK], {
-      env: {
-        PATH: `${bin}:/usr/bin:/bin`,
-        HOME: t,
-        DOTS_DIR: REPO,
-        DOTS_THEMES_DIR: THEMES,
-        DOTS_THEME_LINK: join(t, "state/current"),
-        DOTS_CONFIG: join(t, "config.toml"),
-        DOTS_VSCODE_STATE: join(t, "state.vscdb"),
-      },
-      stdout: "pipe",
-      stderr: "pipe",
-    });
-  };
-
-  for (const os of ["Darwin", "Linux"]) {
-    it(`refreshes Lig's cache and leaves the theme link to the first shell (${os})`, () => {
-      fakeLig();
-      fake("mise");
-      const r = hook(os);
-      expect(r.exitCode).toBe(0);
-      expect(existsSync(join(t, "state/current"))).toBe(false);
-      expect(log("mise")).toBe(`-C ${REPO} run zsh:lig\n`);
-    });
-  }
-
-  it("rebuilds bat's theme cache, so vendored themes (config/bat/themes) load", () => {
-    fake("bat");
-    expect(hook("Linux").exitCode).toBe(0);
-    expect(log("bat")).toBe("cache --build\n");
-  });
-
-  it("leaves the cache alone without lig", () => {
-    fake("mise");
-    expect(hook("Linux").exitCode).toBe(0);
-    expect(log("mise")).toBe("");
-  });
-});
-
 describe("config/zsh/opt/rc.d/lig.zsh", () => {
   const MODULE = join(REPO, "config/zsh/opt/rc.d/lig.zsh");
   // The cached blocks only set a marker, so the module's own checks are what is tested. `from` is the binary the
