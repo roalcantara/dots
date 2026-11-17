@@ -117,22 +117,20 @@ zstyle ':fzf-tab:*' accept-line enter
 # Pressing this key will use the currently entered user input as the final completion output
 zstyle ':fzf-tab:*' print-query alt-enter
 # NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default, so it repeats the flags and takes its colours from
-# the theme's FZF_THEME_OPTS. --style=full frames the list and the preview.
-zstyle ':fzf-tab:*' fzf-flags --bind=right:accept --bind=enter:accept \
-    --cycle \
-    --ansi \
-    --inline-info \
-    --keep-right \
-    --marker '✔' \
-    --pointer '▶' \
-    --prompt '❯ ' \
-    --height=40% \
-    --tiebreak='chunk' \
-    --layout=reverse \
-    --style=full \
-    --list-label=' matches ' \
-    --preview-label=' preview ' \
-    ${(z)FZF_THEME_OPTS}
+# the theme's FZF_THEME_OPTS. A menu with a preview is framed (--style=full: input, list and preview boxes, theme
+# backgrounds); a plain list of values (dots theme <Tab>) keeps the bare look: a prompt line, no boxes, the terminal's
+# background. zstyle -e decides per menu: the flags follow whether this menu's fzf-preview resolves to anything.
+typeset -ga _dots_ftb_flags=(
+  --bind=right:accept --bind=enter:accept --cycle --ansi --inline-info --keep-right
+  --marker '✔' --pointer '▶' --prompt '❯ ' --height=40% --tiebreak='chunk' --layout=reverse
+)
+typeset -ga _dots_ftb_framed=( --style=full --list-label=' matches ' --preview-label=' preview ' ${(z)FZF_THEME_OPTS} )
+typeset -ga _dots_ftb_plain=( ${(z)FZF_THEME_OPTS} --color=bg:-1,list-bg:-1,input-bg:-1 --no-separator --no-scrollbar )
+zstyle -e ':fzf-tab:*' fzf-flags '
+  local _dots_ftb_preview
+  zstyle -s ":fzf-tab:$_ftb_curcontext" fzf-preview _dots_ftb_preview
+  if [[ -n $_dots_ftb_preview ]]; then reply=( "${_dots_ftb_flags[@]}" "${_dots_ftb_framed[@]}" )
+  else reply=( "${_dots_ftb_flags[@]}" "${_dots_ftb_plain[@]}" ); fi'
 
 # Environment Variables completion configuration
 zstyle ':fzf-tab:complete:*:*:*:*:variables' \
@@ -224,12 +222,26 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview "$_dots_preview_path"
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview "$_dots_preview_path"
 zstyle ':fzf-tab:complete:z:*' fzf-preview "$_dots_preview_path"
 
+# True when this menu has something to preview: a path, a flag, or a described candidate (a subcommand's help). A plain
+# list of values (the theme names of `dots theme <Tab>`) has none, so it gets no preview pane. fzf-tab looks the
+# zstyles up while its candidates are in $_ftb_compcap: "display\2…\0realdir\0dir…\0word\0word" per candidate.
+_dots_ftb_previewable() {
+  local entry word
+  for entry in "${_ftb_compcap[@]}"; do
+    [[ $entry == *$'\0realdir\0'* ]] && return 0
+    word=${entry##*$'\0word\0'}
+    [[ $word == -* || ${entry%%$'\2'*} != $word ]] && return 0
+  done
+  return 1
+}
+
 # Every other completion, least specific so the previews above win: a path shows through the shared helper; a
 # subcommand or flag, its --help coloured by bat (config/bin/cmdhelp, which runs only subcommands the parent's help
-# lists).
-zstyle ':fzf-tab:complete:*' fzf-preview "
+# lists); a plain list of values, no preview at all.
+typeset -g _dots_ftb_generic_preview="
   if [[ -e \$realpath ]]; then
     $_dots_preview_path
   else
     cmdhelp \$word \"\${words[@]}\"
   fi"
+zstyle -e ':fzf-tab:complete:*' fzf-preview '_dots_ftb_previewable && reply=( "$_dots_ftb_generic_preview" ) || reply=()'

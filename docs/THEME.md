@@ -65,14 +65,22 @@ When the link is missing or dangling, everything falls back to `catppuccin-mocha
 
 ## Tab menus
 
-`Tab` opens [fzf-tab](https://github.com/Aloxaf/fzf-tab)'s menu, framed by `--style=full` and coloured by the theme's
-`FZF_THEME_OPTS`; its group headers take `DOTS_FZF_TAB_GROUP_COLORS`. The preview window shows:
+`Tab` opens [fzf-tab](https://github.com/Aloxaf/fzf-tab)'s menu, coloured by the theme's `FZF_THEME_OPTS`; its group
+headers take `DOTS_FZF_TAB_GROUP_COLORS`. The look depends on the menu:
+
+- **Something to preview** (a path, a flag, a subcommand with a description): framed by `--style=full`, with the
+  input, list and preview in boxes on the theme's backgrounds.
+- **A plain list of values** (`dots theme <Tab>`, any usage `choices`): the bare look, a prompt line and the list on
+  the terminal's own background, with no boxes and no preview pane.
+
+`config/zsh/opt/plugins/fzf-tab.zsh` decides per menu with `zstyle -e`, from the candidates fzf-tab holds while it
+looks its styles up. The preview window shows:
 
 - a directory through `$DOTS_LA_CMD` — the same command `la` expands to (`config/zsh/opt/aliases/ls.zsh`), so the
   preview and a typed `la` match;
 - a text file in `bat`;
 - anything else (an image, a binary) as `file -b` describes it;
-- a command, flag or other candidate through `cmdhelp` when it is not a path.
+- a subcommand or flag through `cmdhelp`, its `--help` coloured by `bat`.
 
 `file-list all` is gone from `config/zsh/opt/rc.d/env.zsh`, so file candidates stay one row per name instead of
 `ls -l` lines.
