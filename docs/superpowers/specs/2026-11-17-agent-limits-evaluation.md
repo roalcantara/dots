@@ -11,7 +11,7 @@ Read in the same minute as each candidate:
 | Claude | VS Code Claude Code panel: session (5h), weekly (7d), Fable limit |
 | Codex | `omp usage`: 30-day window (free plan) |
 | Copilot | `omp usage`: monthly premium requests |
-| Gemini | `gemini`, then `/stats` |
+| Gemini | `agy -p /usage`: Gemini 5h and weekly, Claude-and-GPT 5h and weekly, per-model weekly (Google AI Pro) |
 | Tokens and cost | `npx ccusage@latest daily`, `weekly`, `monthly` (Claude Code); `npx @ccusage/codex@latest daily` (Codex) |
 
 ## Cut on paper
@@ -33,9 +33,9 @@ Rule: no release in the last 6 months, paid with no trial, or missing two or mor
 | --- | --- | --- | --- | --- | --- | --- |
 | [CodexBar](https://github.com/steipete/CodexBar) | `brew install --cask codexbar` | v0.84.0, 2026-11-07 | MIT | all four | WidgetKit | yes |
 | [ClaudeBar](https://github.com/tddworks/ClaudeBar) | `brew install --cask claudebar` | v0.5.27, 2026-11-13 | Apache-2.0 | all four | no (notch, Touch Bar) | unknown |
-| [AgentLimits](https://github.com/Nihondo/AgentLimits) | zip release | v1.3.2, 2026-10-31 | MIT | Claude, Codex, Copilot | Notification Center | ccusage |
-| [QuotaBar](https://github.com/QuotaBar/QuotaBar) | `gentpan/tap/quotabar` cask | v0.6.1, 2026-10-30 | MIT | Claude, Codex, Copilot; Gemini via Antigravity | desktop cards | estimated from logs |
-| [OpenUsage](https://github.com/robinebers/openusage) | `brew install --cask openusage` | v0.8.0, 2026-11-12 | MIT | Claude, ChatGPT/Codex, Copilot; Gemini via Antigravity | no | partial |
+| [AgentLimits](https://github.com/Nihondo/AgentLimits) | zip release | v1.3.2, 2026-10-31 | MIT | Claude, Codex, Copilot; Antigravity only via a custom script | Notification Center | ccusage |
+| [QuotaBar](https://github.com/QuotaBar/QuotaBar) | `gentpan/tap/quotabar` cask | v0.6.1, 2026-10-30 | MIT | all four (Gemini through Antigravity) | desktop cards | estimated from logs |
+| [OpenUsage](https://github.com/robinebers/openusage) | `brew install --cask openusage` | v0.8.0, 2026-11-12 | MIT | all four (Gemini through Antigravity) | no | partial |
 
 ## Scored
 

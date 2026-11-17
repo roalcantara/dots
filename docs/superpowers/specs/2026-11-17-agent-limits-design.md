@@ -68,7 +68,7 @@ A fresh search during the shortlist step adds anything newer.
 
 1. **Correct numbers** per agent vs the reference sources, read at the same minute. Must pass for Claude and Codex.
 2. **Coverage:** Claude (session + weekly; Fable is extra credit), Codex (30-day free window), Copilot (monthly),
-   Gemini (via Gemini CLI, scored like the others).
+   Gemini (Google AI Pro through Antigravity: `agy`, already in the Brewfile; scored like the others).
 3. **macOS integration:** menu bar item (required); Notification Center or desktop widgets (scores higher, not
    required); refresh interval.
 4. **Credentials:** what it reads (OAuth file, Keychain, browser cookies), and whether macOS prompts for it.
@@ -107,10 +107,8 @@ Each fallback step is a new design decision brought back to the user, not done a
 
 ## My calls (correct if wrong)
 
-- Reference sources are `omp usage` (Copilot, Codex), the VS Code panel (Claude) and Gemini CLI's own `/stats`
-  (Gemini). For tokens and cost, `npx ccusage@latest` (not added to the Brewfile; run only for comparison).
-- Gemini CLI is installed and signed in before testing starts: `gemini-cli` in the Brewfile (kept whatever the
-  winner), signed in by the user.
+- Reference sources are `omp usage` (Copilot, Codex), the VS Code panel (Claude) and `agy -p /usage` (Gemini).
+  For tokens and cost, `npx ccusage@latest` (not added to the Brewfile; run only for comparison).
 - One candidate installed at a time, to keep Keychain prompts and menu bar items attributable.
 - Raycast's Agent Usage extension is a reference, not a candidate: it isn't a menu bar or widget surface.
 - The agent drives installs and readings and pauses for every Keychain prompt, sign-in or permission dialog,

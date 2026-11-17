@@ -42,7 +42,10 @@ repo's config linking or a mise bootstrap fragment, and the docs.
 
 ---
 
-### Task 1: Gemini CLI as a reference source
+### Task 1: Gemini CLI as a reference source (superseded)
+
+> Superseded: Gemini is Google AI Pro through Antigravity, so `agy -p /usage` (antigravity-cli, already in the
+> Brewfile) is the reference. Done, then reverted.
 
 **Files:**
 - Modify: `config/homebrew/Brewfile` (DEVTOOLS agents block, next to `cask "codex"`)
@@ -95,7 +98,7 @@ releases page, README and license. Starting list: CodexBar, ClaudeBar, AgentLimi
 Usage4Claude, Claude Usage Tracker, TokenBar. Expected: 3–5 left; every cut has a reason in the table.
 
 - [ ] **Step 3: Record the references** at the top of the doc: how each is read (`omp usage`; VS Code Claude
-panel; `gemini` `/stats`; `npx ccusage@latest daily`, `weekly`, `monthly`).
+panel; `agy -p /usage`; `npx ccusage@latest daily`, `weekly`, `monthly`).
 
 - [ ] **Step 4: Run `hk check --all`.** Expected: markdownlint green.
 
@@ -120,7 +123,7 @@ whether Gatekeeper accepts it (`spctl -a -vv <app>`).
 over cookies; stop for every prompt (Global Constraints). Log each prompt: what asked, for what.
 
 - [ ] **Step 4: Read and compare** in the same minute: tool vs `omp usage` (Codex, Copilot), VS Code panel (Claude),
-`gemini` `/stats`, and the tool's tokens/cost vs `npx ccusage@latest` for today and this week. A difference of
+`agy -p /usage`, and the tool's tokens/cost vs `npx ccusage@latest` for today and this week. A difference of
 1 percentage point or less passes. Codex shown as a 5h/weekly pair: `wrong`.
 
 - [ ] **Step 5: Expired credential check**: for one agent, have the user sign out of its CLI (Codex:
