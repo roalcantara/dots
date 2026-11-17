@@ -34,4 +34,10 @@ describe.skipIf(!existsSync(join(HOME, ".config/zsh/.zshrc")))("fzf-tab effectiv
     expect(styles(`zstyle -L ':fzf-tab:complete:todo*:*' fzf-preview`)).toContain("todo list --tasks");
     expect(styles(`zstyle -L ':fzf-tab:complete:mise:argument-rest' fzf-preview`)).toContain("mise tool");
   });
+  it("any other command previews files, else coloured --help via cmdhelp; specific previews still win", () => {
+    const generic = styles(`zstyle -s ':fzf-tab:complete:vim:argument-rest' fzf-preview p; print -r -- $p`);
+    expect(generic).toContain("cmdhelp");
+    expect(generic).toContain("bat --style=plain");
+    expect(styles(`zstyle -s ':fzf-tab:complete:git-log:argument-1' fzf-preview p; print -r -- $p`)).toContain("git show");
+  });
 });

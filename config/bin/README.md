@@ -27,6 +27,7 @@ During `mise bootstrap`, all executable scripts in `config/bin/` are symlinked i
 | [`psc`](psc) / [`pss`](pss) | Gopass secret copier (`psc`) and revealer (`pss`) | `psc github/token` |
 | [`zsys`](zsys) | Path, environment, and system diagnostics | `zsys --help` |
 | [`yb`](yb) | macOS Yabai tiling manager helper | `yb --help` |
+| [`cmdhelp`](cmdhelp) | fzf-tab preview: a subcommand's or flag's `--help`, coloured by bat | `cmdhelp --tag todo list --t` |
 
 ## Authoring conventions
 

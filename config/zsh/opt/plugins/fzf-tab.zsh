@@ -147,15 +147,16 @@ zstyle ':fzf-tab:complete:(\\|)run-help:*' fzf-preview 'MANPAGER="sh -c \"col -b
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
 
 # Preview for brew (https://github.com/Aloxaf/fzf-tab/wiki/Preview#homebrew)
-zstyle ':fzf-tab:complete:brew-(install|uninstall|search|info):*-argument-rest' fzf-preview 'brew info $word'
+zstyle ':fzf-tab:complete:brew-(install|uninstall|search|info):*-argument-rest' fzf-preview '
+  if [[ $word == -* ]]; then cmdhelp $word "${words[@]}"; else brew info $word; fi'
 
-# Preview for todo: a task ID shows the task, a subcommand its help
+# Preview for todo: a task ID shows the task; anything else, the help (cmdhelp)
 zstyle ':fzf-tab:complete:todo*:*' fzf-preview '
   out=$(todo list --tasks 2>/dev/null | awk -v w=" $word — " '\''index($0, w) { p=1 } p { if (p > 1 && /^ *\[/) exit; print; p++ }'\'')
   if [[ -n "$out" ]]; then
     printf "%s\n" "$out"
   else
-    todo $word --help 2>/dev/null
+    cmdhelp $word "${words[@]}"
   fi'
 
 # tags in context :completion::complete:mise:: argument-rest  (_arguments _mise)
@@ -187,7 +188,9 @@ fi'
 # Checkout with branch/remote preview
 zstyle ':fzf-tab:complete:*:git-checkout:*' fzf-completion-opts '--preview-window=right:60%' fzf-preview '
 branch=$word
-if [[ $branch == *//* ]]; then
+if [[ $branch == -* ]]; then
+ cmdhelp $word "${words[@]}"
+elif [[ $branch == *//* ]]; then
  git log --color=always -n 50 --graph --pretty=format:"%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" $branch
 else
  if git show-ref --verify --quiet refs/heads/$branch; then
@@ -215,3 +218,14 @@ fi
 zstyle ':fzf-tab:complete:cd:*' fzf-preview "$fzf_dir_preview"
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview "$fzf_dir_preview"
 zstyle ':fzf-tab:complete:z:*' fzf-preview "$fzf_dir_preview"
+
+# Every other completion, least specific so the previews above win: a file shows itself; a subcommand or flag,
+# its --help coloured by bat (config/bin/cmdhelp, which runs only subcommands the parent's help lists).
+zstyle ':fzf-tab:complete:*' fzf-preview "
+  if [[ -d \$realpath ]]; then
+    $fzf_dir_preview
+  elif [[ -f \$realpath ]]; then
+    bat --style=plain --color=always --theme=Dracula --line-range :300 \$realpath 2>/dev/null
+  else
+    cmdhelp \$word \"\${words[@]}\"
+  fi"

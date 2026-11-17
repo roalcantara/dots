@@ -1,0 +1,53 @@
+#!/usr/bin/env zsh
+# fzf-tab preview for any command: a candidate's --help, coloured by bat (config/zsh/opt/plugins/fzf-tab.zsh).
+#   cmdhelp <candidate> <command line words…>   (fzf-tab's $word and $words; the last word is the one being completed)
+# A subcommand candidate shows `<command…> <candidate> --help`; a flag shows its lines from `<command…> --help`,
+# then that help. Only words the parent's --help lists as subcommands are ever run, and never a bare command name,
+# so scrolling cannot run `reboot`, or pass --help into `docker run <image>`.
+emulate -L zsh
+setopt extended_glob pipe_fail
+
+(( $# >= 2 )) || { print -u2 "usage: cmdhelp <candidate> <command line words…>"; exit 2 }
+local word=$1; shift
+local -a words=("$@") chain=($1)
+local help w
+
+# Help text, plain: no colour, no pager, bounded in time and size.
+gethelp() {
+  local -a cmd=("$@" --help)
+  [[ $* == git ]] && cmd=(git help -a)   # `git --help` lists only the common commands
+  NO_COLOR=1 CLICOLOR_FORCE= PAGER=cat MANPAGER=cat GIT_PAGER=cat \
+    timeout 2 $cmd 2>&1 </dev/null | col -bx | head -n 400
+}
+# True when the help in $1 lists $2 as a subcommand: a line starting with it (`  run   Run a thing`), or with the
+# command so far (`  brew install FORMULA`). Never a mere mention: `cp --help` naming `file` must not run `cp file`.
+lists() { [[ $'\n'$1 == *$'\n'[[:space:]]#(${(b)chain[*]} |)${(b)2}([[:space:],:]*|)($'\n'*|) ]] }
+show() {
+  if [[ -n ${NO_COLOR-} ]] || ! command -v bat >/dev/null; then cat
+  else bat --language=help --style=plain --color=always --theme=Dracula
+  fi
+}
+
+(( ${#words} >= 2 )) || exit 0          # completing the command name itself: run nothing
+command -v $chain[1] >/dev/null || exit 0
+help=$(gethelp $chain)
+
+# Extend the command with each later word its parent lists as a subcommand; flags are skipped, anything else stops.
+for w in ${words[2,-2]}; do
+  [[ $w == -* ]] && continue
+  lists $help $w || break
+  chain+=($w); help=$(gethelp $chain)
+done
+
+if [[ $word == -* ]]; then
+  # The flag's own line and its deeper-indented continuation lines, then the whole help.
+  print -r -- $help | awk -v f="$word" '
+    function indent(s) { match(s, /^ */); return RLENGTH }
+    p && NF && indent($0) <= n { p = 0 }
+    !p && /^ *-/ && index($0, f) && match($0, "(^|[ ,])" f "([ =,<\\[]|$)") { p = 1; n = indent($0); hit = 1 }
+    p { print }
+    END { if (hit) print "" }' | show
+  print -r -- $help | show
+elif lists $help $word; then
+  gethelp $chain $word | show
+fi
