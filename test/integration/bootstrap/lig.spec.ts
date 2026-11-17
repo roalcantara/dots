@@ -95,6 +95,12 @@ describe("the post-dotfiles hook", () => {
     expect(readlinkSync(join(t, "state/current"))).toBe(join(THEMES, "catppuccin-macchiato"));
   });
 
+  it("rebuilds bat's theme cache, so vendored themes (config/bat/themes) load", () => {
+    fake("bat");
+    expect(hook("Linux").exitCode).toBe(0);
+    expect(log("bat")).toBe("cache --build\n");
+  });
+
   it("leaves the cache alone without lig", () => {
     fake("mise");
     expect(hook("Linux").exitCode).toBe(0);

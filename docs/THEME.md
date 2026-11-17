@@ -13,8 +13,14 @@ and how to add a theme. The design and its trade-offs are in the
 
 ## Theme folders
 
-[`config/theme/themes/`](../config/theme/themes/) holds one folder per theme; `catppuccin-mocha` is the default and
-`catppuccin-macchiato` proves switching works. Each folder carries one small file per tool:
+[`config/theme/themes/`](../config/theme/themes/) holds one folder per theme:
+
+- `catppuccin-mocha`, the default when no theme is chosen, and `catppuccin-macchiato`.
+- `tokyonight-storm`: Tokyo Night ([folke/tokyonight.nvim](https://github.com/folke/tokyonight.nvim)) around the
+  hand-made palette the shell had before themes: its `ls_colors` and `EZA_COLORS` are that palette, unchanged, so
+  `la` looks as it did. bat reads its theme from [`config/bat/themes/`](../config/bat/themes/) (Apache-2.0).
+
+Each folder carries one small file per tool:
 
 | File | Read by |
 | --- | --- |
@@ -139,9 +145,11 @@ Nothing empties the trash on a schedule; `gomi --prune=<duration>` does, and `--
 `ls_colors` comes from [vivid](https://github.com/sharkdp/vivid) and is committed, so no shell start runs vivid:
 
 ```sh
-mise run theme:build                 # both themes
+mise run theme:build                 # every theme
 mise run theme:build catppuccin-mocha
 ```
+
+A file whose first line starts with `# hand-made` (`tokyonight-storm`'s) is skipped: it is edited by hand.
 
 The task writes `config/theme/themes/<name>/ls_colors`. Run it after editing a theme's palette, then commit the
 file.
@@ -153,6 +161,8 @@ file.
    keeps the two lists in step with the folders.
 3. Run `mise run theme:build <name>` and `mise run zsh:completions:usage dots`, then commit the folder, the two
    `choices` entries and `_dots`.
+4. A `BAT_THEME` bat does not ship goes in `config/bat/themes/` as a `.tmTheme`; bootstrap runs `bat cache --build`
+   (run it once by hand on this machine).
 
 ## Future: full integration
 

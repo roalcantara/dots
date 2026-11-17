@@ -1,0 +1,6 @@
+# zsh-patina's colours for this theme. config/zsh-patina/config.toml loads it through
+# `theme = "file:$DOTS_THEME_DIR/zsh-patina.toml"`, so switching themes needs `zsh-patina restart`
+# (`dots theme` does it). Extending the built-in keeps zsh-patina's own theme file as the source.
+
+[metadata]
+extends = "tokyonight"

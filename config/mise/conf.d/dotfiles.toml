@@ -157,6 +157,11 @@ if [ ! -e "$link" ] && [ ! -L "$link" ]; then
   ln -s "${DOTS_THEMES_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/theme/themes}/catppuccin-mocha" "$link"
 fi
 
+# bat loads the themes vendored in config/bat/themes (tokyonight_storm) only from its cache.
+if command -v bat >/dev/null; then
+  bat cache --build >/dev/null
+fi
+
 # Lig's cached zsh integration (config/zsh/opt/rc.d/lig.zsh), on desktops where Lig is installed.
 if command -v lig >/dev/null; then
   mise -C "${DOTS_DIR:-$HOME/.local/share/dots}" run zsh:lig

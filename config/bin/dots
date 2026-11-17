@@ -24,13 +24,13 @@
 #USAGE }
 #USAGE cmd "theme" help="Show or switch the shell theme" {
 #USAGE   arg "[name]" help="Theme to activate" {
-#USAGE     choices "catppuccin-mocha" "catppuccin-macchiato"
+#USAGE     choices "catppuccin-mocha" "catppuccin-macchiato" "tokyonight-storm"
 #USAGE   }
 #USAGE }
 #USAGE example "dots env"
 #USAGE example "dots path"
 #USAGE example "dots palette"
-#USAGE example "dots theme catppuccin-macchiato"
+#USAGE example "dots theme tokyonight-storm"
 #USAGE example "dots xdg check_runtime_perms"
 
 emulate -L zsh

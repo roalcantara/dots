@@ -17,7 +17,7 @@ import { join } from "node:path";
 import { realUsageDir, repoRoot } from "./support/paths";
 
 const THEMES = join(repoRoot, "config/theme/themes");
-const NAMES = ["catppuccin-mocha", "catppuccin-macchiato"];
+const NAMES = ["catppuccin-mocha", "catppuccin-macchiato", "tokyonight-storm"];
 
 // One file per tool, plus the vendored eza theme and its licence.
 const FILES = [
@@ -44,9 +44,36 @@ describe("theme folders", () => {
     }
   });
 
-  it("ls_colors is one export line", () => {
+  it("ls_colors is one export line, after a comment when hand-made", () => {
     for (const name of NAMES) {
-      expect(readFileSync(join(THEMES, name, "ls_colors"), "utf8")).toMatch(/^export LS_COLORS='[^']+'\n$/);
+      expect(readFileSync(join(THEMES, name, "ls_colors"), "utf8")).toMatch(/^(# hand-made[^\n]*\n)?export LS_COLORS='[^']+'\n$/);
+    }
+  });
+
+  it("tokyonight-storm keeps the pre-theme palette: the old LS_COLORS and eza colours", () => {
+    // The hand-made palette theme.zsh exported before the switchable theme (796affa).
+    const old = Bun.spawnSync(["git", "show", "796affa:config/zsh/opt/rc.d/theme.zsh"], { cwd: repoRoot, stdout: "pipe" }).stdout.toString();
+    const value = (key: string) => old.match(new RegExp(`export ${key}="([^"]+)"`))?.[1] as string;
+    const dir = join(THEMES, "tokyonight-storm");
+    expect(readFileSync(join(dir, "ls_colors"), "utf8")).toContain(`export LS_COLORS='${value("LS_COLORS")}'`);
+    for (const env of ["env.zsh", "env.bash"]) {
+      expect(readFileSync(join(dir, env), "utf8")).toContain(`export EZA_COLORS="${value("EXA_COLORS")}"`);
+    }
+  });
+
+  it("theme:build leaves a hand-made ls_colors alone", () => {
+    const before = readFileSync(join(THEMES, "tokyonight-storm/ls_colors"), "utf8");
+    const r = Bun.spawnSync(["mise", "run", "theme:build", "tokyonight-storm"], { cwd: repoRoot, stdout: "pipe", stderr: "pipe" });
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout.toString() + r.stderr.toString()).toContain("hand-made");
+    expect(readFileSync(join(THEMES, "tokyonight-storm/ls_colors"), "utf8")).toBe(before);
+  });
+
+  it("each BAT_THEME is built into bat or vendored in config/bat/themes", () => {
+    const builtIn = Bun.spawnSync(["bat", "--list-themes", "--color=never"], { stdout: "pipe" }).stdout.toString().split("\n");
+    for (const name of NAMES) {
+      const theme = readFileSync(join(THEMES, name, "env.zsh"), "utf8").match(/export BAT_THEME="([^"]+)"/)?.[1] as string;
+      expect({ name, theme, found: builtIn.includes(theme) || existsSync(join(repoRoot, `config/bat/themes/${theme}.tmTheme`)) }).toEqual({ name, theme, found: true });
     }
   });
 
@@ -112,11 +139,12 @@ describe("Lig's config", () => {
   it("each lig.toml sets the colours explicitly", () => {
     for (const name of NAMES) {
       const { ui, colors } = ligConfig(name);
-      expect(ui.theme).toBe("catppuccin");
+      expect(["catppuccin", "tokyonight", "dracula", "nord", "gruvbox"]).toContain(ui.theme);
       for (const key of LIG_COLORS) expect({ name, key, value: colors[key] }).toEqual({ name, key, value: expect.stringMatching(/^#[0-9a-f]{6}$/i) });
     }
     expect(ligConfig("catppuccin-mocha").colors.bg.toLowerCase()).toBe("#1e1e2e");
     expect(ligConfig("catppuccin-macchiato").colors.bg.toLowerCase()).toBe("#24273a");
+    expect(ligConfig("tokyonight-storm").colors.bg.toLowerCase()).toBe("#1f2335");
   });
 
   it("config/lig/config.toml points at the state link's lig.toml", () => {

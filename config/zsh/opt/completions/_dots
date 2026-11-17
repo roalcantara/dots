@@ -25,7 +25,7 @@ about "Dotfiles manager, environment diagnostics, and workflow dispatcher"
 example "dots env"
 example "dots path"
 example "dots palette"
-example "dots theme catppuccin-macchiato"
+example "dots theme tokyonight-storm"
 example "dots xdg check_runtime_perms"
 cmd env help="Show environment variables"
 cmd path help="List PATH entries"
@@ -52,7 +52,7 @@ cmd git help="Forward commands to xc-git" {
 }
 cmd theme help="Show or switch the shell theme" {
     arg "[name]" help="Theme to activate" required=#false {
-        choices catppuccin-mocha catppuccin-macchiato
+        choices catppuccin-mocha catppuccin-macchiato tokyonight-storm
     }
 }
 __USAGE_EOF__

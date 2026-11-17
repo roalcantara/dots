@@ -386,7 +386,7 @@ echo "zsh:lig: wrote $cache/pre.zsh and post.zsh"
 description = "Regenerate a theme's ls_colors with vivid"
 usage = '''
   arg "[name]" help="Theme to rebuild (default: every theme)" {
-    choices "catppuccin-mocha" "catppuccin-macchiato"
+    choices "catppuccin-mocha" "catppuccin-macchiato" "tokyonight-storm"
   }
 '''
 run = '''
@@ -394,13 +394,21 @@ run = '''
 set -euo pipefail
 command -v vivid >/dev/null || { echo "theme:build: vivid not found (brew install vivid)" >&2; exit 1; }
 root="$(git rev-parse --show-toplevel)"
+themes="$root/config/theme/themes"
 if [ -n "${usage_name:-}" ]; then
   names=("$usage_name")
 else
-  names=(catppuccin-mocha catppuccin-macchiato)
+  names=()
+  for dir in "$themes"/*/; do names+=("$(basename "$dir")"); done
 fi
 for name in "${names[@]}"; do
-  printf "export LS_COLORS='%s'\n" "$(vivid generate "$name")" > "$root/config/theme/themes/$name/ls_colors"
+  file="$themes/$name/ls_colors"
+  # A hand-made palette (tokyonight-storm keeps the pre-theme one) is not vivid's to rewrite.
+  if head -n 1 "$file" 2>/dev/null | grep -q '^# hand-made'; then
+    echo "theme:build: skipped config/theme/themes/$name/ls_colors (hand-made)"
+    continue
+  fi
+  printf "export LS_COLORS='%s'\n" "$(vivid generate "$name")" > "$file"
   echo "theme:build: wrote config/theme/themes/$name/ls_colors"
 done
 '''
