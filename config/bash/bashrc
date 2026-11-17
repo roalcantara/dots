@@ -32,6 +32,8 @@ fi
 
 # THEME {
   # The active shell theme (dots theme): a missing or dangling link falls back to Catppuccin Mocha.
+  # eza prefers EZA_COLORS/EXA_COLORS to the theme's eza/theme.yml; drop any inherited from the pre-theme palette.
+  unset EZA_COLORS EXA_COLORS LSCOLORS
   _dots_theme="${DOTS_THEME_LINK:-${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current}"
   [ -d "$_dots_theme" ] || _dots_theme="${DOTS_THEMES_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/theme/themes}/catppuccin-mocha"
   if [ -r "$_dots_theme/env.bash" ]; then

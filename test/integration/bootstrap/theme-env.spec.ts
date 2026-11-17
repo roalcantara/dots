@@ -68,6 +68,16 @@ describe("the shell reads the theme", () => {
     expect(out).toContain("di=");
   });
 
+  it("colours inherited from the pre-theme palette never override the theme", () => {
+    // eza prefers EZA_COLORS/EXA_COLORS to its theme.yml; the old theme.zsh exported these, and apps started before
+    // the switch still pass them on.
+    const stale = { EXA_COLORS: "di=1;38;2;122;162;247", EZA_COLORS: "di=31", LSCOLORS: "EgCeDdEeCcghhahahacac" };
+    for (const shell of [zsh, bash]) {
+      const out = shell(join(THEMES, "catppuccin-mocha"), 'echo "[${EXA_COLORS-}|${EZA_COLORS-}|${LSCOLORS-}]"', stale);
+      expect(out).toContain("[||]");
+    }
+  });
+
   it("a dangling link falls back to mocha, silently", () => {
     const link = join(dir, "dangling");
     symlinkSync(join(dir, "missing"), link);

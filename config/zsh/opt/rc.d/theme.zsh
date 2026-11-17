@@ -12,6 +12,10 @@ theme::palette() {
   export MANROFFOPT=${MANROFFOPT:-"-c"}
   export CLICOLOR=${CLICOLOR:-1}
 
+  # eza prefers EZA_COLORS (and the legacy EXA_COLORS) to the theme's eza/theme.yml, and the pre-theme palette
+  # exported these: apps started before the switch still pass them on. The theme owns these colours.
+  unset EZA_COLORS EXA_COLORS LSCOLORS
+
   local themes_dir="${DOTS_THEMES_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/theme/themes}"
   local theme_link="${DOTS_THEME_LINK:-${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current}"
   local theme_dir=""
