@@ -1,3 +1,41 @@
+# [1.49.0](https://github.com/roalcantara/dots/compare/v1.48.0...v1.49.0) (2026-11-17)
+
+### Bug Fixes
+
+* **dots:** Mark Mocha as active when no theme link exists ([504d98e](https://github.com/roalcantara/dots/commit/504d98e333aaaa72e6d1abc8bb2141f689b1ac74))
+* **ghostty:** Point the auto theme link at the state link ([b076455](https://github.com/roalcantara/dots/commit/b0764554c054e0e32ac3cafb78b5a7976df8c5ac))
+* **theme:** Drop inherited eza colours so the theme's eza file applies ([fd0b30c](https://github.com/roalcantara/dots/commit/fd0b30c9cb3c47800ea5a4954a4430600fbe7e10))
+* **theme:** Use Dracula's own eza colours, not vivid's ([b1a4464](https://github.com/roalcantara/dots/commit/b1a4464583a5565d03760a00a505d05a1af18dfa))
+* **zsh:** Guard git's warning helper against a bare command ([b0391aa](https://github.com/roalcantara/dots/commit/b0391aa90a5472b4e3b84a8dd947e052dca58910))
+* **zsh:** Keep zsh -ic and zsh -i scripts out of Lig ([6fab2dc](https://github.com/roalcantara/dots/commit/6fab2dcce28db4c191b5dcc4520c48004da2f7c3))
+* **zsh:** Let the warning hook return 0 so later redraw hooks run ([2e96ba3](https://github.com/roalcantara/dots/commit/2e96ba3ecc2e62583313680b3d0f48b0509f2478))
+* **zsh:** Narrow the warning cue to the risky command ([0e2e677](https://github.com/roalcantara/dots/commit/0e2e6775c6984b205d4529113e97fdde6b42eda7))
+* **zsh:** Preview JSON and other non-binary files in bat ([664bd4c](https://github.com/roalcantara/dots/commit/664bd4c4051cd352ad6d747df11724efa647bd8e))
+* **zsh:** Scope the warning cue to one command ([b93afc8](https://github.com/roalcantara/dots/commit/b93afc8c1605c2b76ac5598d75a8bd106b5ea07b))
+* **zsh:** Word-split the directory preview instead of eval'ing it ([b8b2ddb](https://github.com/roalcantara/dots/commit/b8b2ddbc8e42b246056dcdc8f3cdda27d54cfada))
+
+### Features
+
+* **agents:** Add /wip:pr to open a pull request for the current branch ([1d1ae06](https://github.com/roalcantara/dots/commit/1d1ae0658c0cbdc04b8d40ac931e79677099a807))
+* **dots:** Switch the shell theme with dots theme ([fcfb29e](https://github.com/roalcantara/dots/commit/fcfb29edb6181b231ef245048602b4cf64a80374))
+* **settings:** Update theme and TUI settings for Claude ([5d8ab47](https://github.com/roalcantara/dots/commit/5d8ab47db0021dc38012c24a72b17b864ca6e86b))
+* **shell:** Send rm to gomi's trash in interactive shells ([4d960b3](https://github.com/roalcantara/dots/commit/4d960b356f2f009dd311c7566190be9e2c17a2fb))
+* **theme:** Add Catppuccin Mocha and Macchiato theme folders and theme:build ([8d849b4](https://github.com/roalcantara/dots/commit/8d849b4767546452382657c43ff10bfca3e85f66))
+* **theme:** Add the Dracula theme ([6bc97a0](https://github.com/roalcantara/dots/commit/6bc97a09fb4e0cbee0952ac883711ea0218eca72))
+* **theme:** Add tokyonight-storm-custom with per-file icon colours ([0384e46](https://github.com/roalcantara/dots/commit/0384e46630bdda3ed6b7c7ba12a24a0e7387a488))
+* **theme:** Add tokyonight-storm, keeping the pre-theme ls and eza palette ([95ed309](https://github.com/roalcantara/dots/commit/95ed3096c5dce93e29d0d0dd5a13f859c65d9079))
+* **theme:** Choose the theme in config/dots/config.toml ([d8cdbd9](https://github.com/roalcantara/dots/commit/d8cdbd9179bfd3fe8e562b500c1a2d85fcd573f3))
+* **theme:** Configure Lig from the active theme ([f4bd87a](https://github.com/roalcantara/dots/commit/f4bd87a5330c24fca5ee35ef1e153a42cc8ac8fd))
+* **theme:** Read every shell tool's colours from the active theme ([46366b8](https://github.com/roalcantara/dots/commit/46366b8a6ba909cd778ff57f7956ae6e2022203f))
+* **todo:** Enhance TODO commands with descriptions ([d9e369d](https://github.com/roalcantara/dots/commit/d9e369db56e67cf0f4b91b52d3b630095e088b91))
+* **zsh:** Cache Lig's shell integration ([7b02e03](https://github.com/roalcantara/dots/commit/7b02e03d4d1ed28f8ecb62fb298e30a046fa1d45))
+* **zsh:** Colour risky commands like rm -rf while typing ([8679a03](https://github.com/roalcantara/dots/commit/8679a03d986e8cf36cf07625ec7e56e019db2281))
+* **zsh:** Complete every usage script from its #USAGE spec ([31e1f92](https://github.com/roalcantara/dots/commit/31e1f92f6b4deced9c325609de68186ff733282d))
+* **zsh:** Frame fzf-tab menus in the theme and preview directories like la ([b3099fc](https://github.com/roalcantara/dots/commit/b3099fc52160799bd32c28c71d0e5fde885c1442))
+* **zsh:** Keep every Tab list bare, framing only the preview ([b0fd9fe](https://github.com/roalcantara/dots/commit/b0fd9fec038c95d18ccfb27f72e0145f6d645284))
+* **zsh:** Keep plain value lists bare and without a preview ([bea1976](https://github.com/roalcantara/dots/commit/bea1976fc7bee9a3cafb5304375f7e570525e306))
+* **zsh:** Start Lig's popup from its cached integration ([2b3ea9c](https://github.com/roalcantara/dots/commit/2b3ea9cc22e59cb72a383b4f42e442912e67261e))
+
 # [1.48.0](https://github.com/roalcantara/dots/compare/v1.47.0...v1.48.0) (2026-11-17)
 
 ### Features
