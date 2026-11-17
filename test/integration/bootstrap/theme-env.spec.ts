@@ -99,7 +99,7 @@ describe("the shell reads the theme", () => {
     it(`eza and ls colours come from the eza theme, the rest from the theme (${shell})`, () => {
       const env = configFor("tokyonight-storm", "dracula");
       const out = envOf(shell, "tokyonight-storm", 'echo "$BAT_THEME|$EZA_CONFIG_DIR|[${EZA_COLORS-}]"; echo "$LS_COLORS"', env);
-      expect(out).toContain(`tokyonight_storm|${THEMES}/dracula/eza|[]`);
+      expect(out).toContain(`tokyonight_storm|${THEMES}/dracula/eza|[ur=38;2;189;147;249:`);
       expect(out).toContain(lsColors("dracula"));
     });
 
