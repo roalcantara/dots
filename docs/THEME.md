@@ -76,9 +76,9 @@ When the link is missing or dangling, everything falls back to `catppuccin-mocha
 
 While you type, `rm -rf`, `sudo rm`, `git push --force`, `git reset --hard`, `git clean -f`, `chmod -R 777`,
 `dd of=/dev/…` and `mkfs` paint the command and its flags in the theme's `DOTS_WARN_STYLE` (red background,
-crust text, bold) over zsh-patina's own colours — `rm -rf` is cued in `rm -rf build/`, the path is not. For
-`sudo rm` the cue covers `rm` alone, so `sudo` keeps its usual colour. The cue leaves `rm x`, `rm -f x` and a
-name that merely mentions a command (`cat rm-rf-notes.txt`) alone.
+crust text, bold) over zsh-patina's own colours — `rm -rf` is cued in `rm -rf build/`, the path is not, and for
+`dd` the span ends at the `of=/dev/…` argument. For `sudo rm` the cue covers `rm` alone, so `sudo` keeps its usual
+colour. The cue leaves `rm x`, `rm -f x` and a name that merely mentions a command (`cat rm-rf-notes.txt`) alone.
 
 This is a `line-pre-redraw` hook (`config/zsh/opt/plugins/warn-highlight.zsh`) registered after zsh-patina. Option
 (a) from the spec — zsh-syntax-highlighting's pattern highlighter — is not available here: zsh-patina is the
