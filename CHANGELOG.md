@@ -1,3 +1,20 @@
+# [1.47.0](https://github.com/roalcantara/dots/compare/v1.46.0...v1.47.0) (2026-11-17)
+
+### Bug Fixes
+
+* **bash:** Put $CARGO_HOME/bin on PATH, after everything else ([77dc411](https://github.com/roalcantara/dots/commit/77dc4112902ccba619098e0ad0bdf072e24a93b3))
+* **zsh:** Align the fzf-tab setup with its README and preview todo tasks ([d983087](https://github.com/roalcantara/dots/commit/d9830875aa2b74c407e5ca570dc9c6de09bc5c77))
+* **zsh:** Match todo previews literally and set list-colors once ([90ca9c2](https://github.com/roalcantara/dots/commit/90ca9c232fe3f7b52f5f1ba5036836370a346cba))
+* **zsh:** Put $CARGO_HOME/bin on PATH, after everything else ([cd9aef6](https://github.com/roalcantara/dots/commit/cd9aef6f555095ed0137e0a69c3748798bb42adb))
+
+### Features
+
+* **brew:** Install the todo CLI from its git tag on the dev profile ([a7fed7b](https://github.com/roalcantara/dots/commit/a7fed7b518599da1c48b0d308dc5475f065f8a0c))
+* **zsh:** Colour fzf-tab completion groups and show their headers ([9f406c5](https://github.com/roalcantara/dots/commit/9f406c578bd46292100171c120996c0af275c96e))
+* **zsh:** Complete todo task IDs and tags from ./TODO.yaml ([cbf0a70](https://github.com/roalcantara/dots/commit/cbf0a708d5278d328662214c64fe9a2c2b6f4ee4))
+* **zsh:** Generate todo's completion, which replaces zsh's _devtodo ([5c6d400](https://github.com/roalcantara/dots/commit/5c6d4008162d69ab35a2f098eb6bef7149e73f66))
+* **zsh:** Preview any command's coloured --help in fzf-tab ([5042163](https://github.com/roalcantara/dots/commit/50421638b72c37c4176d36a81890ca8eda85a91a))
+
 # [1.46.0](https://github.com/roalcantara/dots/compare/v1.45.0...v1.46.0) (2026-11-16)
 
 ### Bug Fixes
