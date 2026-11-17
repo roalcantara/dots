@@ -64,7 +64,7 @@ tasks:
   priority: Low
   created: 2026-11-17T00:53:26.872320
 - id: Tyn0
-  status: Todo
+  status: Done
   description: 'Shell UX spike: atuin for Ctrl-R history'
   due: null
   actors: []
@@ -87,6 +87,18 @@ tasks:
   - try
   priority: Low
   created: 2026-11-17T00:53:26.879036
+- id: Zid2
+  status: Todo
+  description: 'Shell UX research: LLM on the zsh command line (plain English to an editable command, Warp-style)'
+  due: null
+  actors: []
+  comments: []
+  blocked_reason: null
+  tags:
+  - shell-ux
+  - research
+  priority: Low
+  created: 2026-11-17T15:43:58.587523
 actors: []
 comments: []
 project: dots
