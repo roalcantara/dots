@@ -39,6 +39,7 @@
 "~/.config/sops" = { source = "~/.local/share/dots/config/sops", relative = true }
 "~/.config/swiftbar" = { source = "~/.local/share/dots/config/swiftbar", relative = true }
 "~/.config/television" = { source = "~/.local/share/dots/config/television", relative = true }
+"~/.config/theme" = { source = "~/.local/share/dots/config/theme", relative = true }
 "~/.config/tombi" = { source = "~/.local/share/dots/config/tombi", relative = true }
 "~/.config/vscode" = { source = "~/.local/share/dots/config/vscode", relative = true }
 "~/.config/wakatime" = { source = "~/.local/share/dots/config/wakatime", relative = true }

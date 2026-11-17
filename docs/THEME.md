@@ -1,0 +1,45 @@
+---
+title: Shell theme
+description: One switchable dark theme for the shell-side tools, from the theme folders to dots theme
+---
+
+# Shell theme
+
+> Last reviewed: 2026-11-17
+
+Every shell-side tool takes its colours from one active theme. This page covers the folders, `mise run theme:build`
+and how to add a theme. The design and its trade-offs are in the
+[spec](superpowers/specs/2026-11-17-shell-ux-theme-design.md).
+
+## Theme folders
+
+[`config/theme/themes/`](../config/theme/themes/) holds one folder per theme; `catppuccin-mocha` is the default and
+`catppuccin-macchiato` proves switching works. Each folder carries one small file per tool:
+
+| File | Read by |
+| --- | --- |
+| `theme.ghostty` | Ghostty, through its `config-file = ?auto/theme.ghostty` include |
+| `env.zsh` | zsh, at startup |
+| `env.bash` | bash, at startup |
+| `ls_colors` | zsh and bash (`LS_COLORS`) |
+| `eza/theme.yml` | eza, through `EZA_CONFIG_DIR` (the vendored [catppuccin/eza](https://github.com/catppuccin/eza) theme, MIT) |
+| `zsh-patina.toml` | zsh-patina, through its `file:` theme |
+
+## Regenerate the colours
+
+`ls_colors` comes from [vivid](https://github.com/sharkdp/vivid) and is committed, so no shell start runs vivid:
+
+```sh
+mise run theme:build                 # both themes
+mise run theme:build catppuccin-mocha
+```
+
+The task writes `config/theme/themes/<name>/ls_colors`. Run it after editing a theme's palette, then commit the
+file.
+
+## Add a theme
+
+1. Copy a folder under `config/theme/themes/` and edit its files.
+2. Add the folder name to the `choices` of `dots theme` (`config/bin/dots`) and `theme:build` (`mise.toml`); a spec
+   keeps the two lists in step with the folders.
+3. Run `mise run theme:build <name>` and commit the folder with the two `choices` entries.

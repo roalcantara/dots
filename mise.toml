@@ -336,6 +336,30 @@ run = "./script/zsh-verify.sh bench"
 description = "Regenerate config/zsh/opt/completions/_todo from the todo CLI"
 run = "./script/todo-completion.sh config/zsh/opt/completions/_todo"
 
+# The shell theme's LS_COLORS. vivid writes the committed colours; shells only source the file.
+[tasks."theme:build"]
+description = "Regenerate a theme's ls_colors with vivid"
+usage = '''
+  arg "[name]" help="Theme to rebuild (default: every theme)" {
+    choices "catppuccin-mocha" "catppuccin-macchiato"
+  }
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+command -v vivid >/dev/null || { echo "theme:build: vivid not found (brew install vivid)" >&2; exit 1; }
+root="$(git rev-parse --show-toplevel)"
+if [ -n "${usage_name:-}" ]; then
+  names=("$usage_name")
+else
+  names=(catppuccin-mocha catppuccin-macchiato)
+fi
+for name in "${names[@]}"; do
+  printf "export LS_COLORS='%s'\n" "$(vivid generate "$name")" > "$root/config/theme/themes/$name/ls_colors"
+  echo "theme:build: wrote config/theme/themes/$name/ls_colors"
+done
+'''
+
 # The Karabiner fn layer: regenerate config/karabiner/karabiner.json and hotkeys.json from src/bindings.ts.
 [tasks."karabiner:build"]
 description = "Generate the Karabiner fn layer (config/karabiner) from src/bindings.ts"

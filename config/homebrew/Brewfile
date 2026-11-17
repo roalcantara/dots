@@ -145,6 +145,7 @@ brew "ruby-lsp"  # Ruby language server
 brew "shfmt"  # Shell script formatter
 brew "shellcheck"  # Shell script static analysis tool
 brew "shellspec" if OS.mac?  # BDD framework for shells
+brew "vivid"  # LS_COLORS generator: `mise run theme:build`
 brew "tombi"  # TOML formatter, linter, and language server
 brew "typescript-language-server" if OS.mac?  # LSP for TypeScript
 brew "rust"  # Rust toolchain

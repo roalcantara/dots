@@ -34,6 +34,11 @@ describe.skipIf(!brew)("Brewfile profiles", () => {
     expect(desktop).not.toContain("shellcheck");
     expect(dev).toContain("shellcheck");
   });
+  it("vivid (theme:build) is a dev tool, not on desktop or container", () => {
+    expect(container).not.toContain("vivid");
+    expect(desktop).not.toContain("vivid");
+    expect(dev).toContain("vivid");
+  });
   it("dev alone implies desktop", () => expect(list("dev")).toContain("gopass"));
   it("todo CLI (todo-cli from RayanBO/todo) for desktop,dev only, after rust", () => {
     expect(container).not.toContain("todo-cli");
