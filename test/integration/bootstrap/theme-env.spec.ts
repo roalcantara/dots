@@ -104,8 +104,9 @@ describe("the shell reads the theme", () => {
     });
     for (const file of files) {
       const text = readFileSync(file, "utf8");
-      // `dracula` is also a theme name (config/theme/themes/dracula), quoted in dots theme's usage choices.
-      expect({ file, dracula: /dracula/i.test(text.replaceAll('"dracula"', "")) }).toEqual({ file, dracula: false });
+      // `dracula` is also a theme name (config/theme/themes/dracula): dots theme's usage `choices` lines list it,
+      // quoted in config/bin/dots and bare in the generated _dots.
+      expect({ file, dracula: /dracula/i.test(text.replace(/^.*\bchoices\b.*$/gm, "")) }).toEqual({ file, dracula: false });
       // Markdown documents tools' own flags (bat's README shows --theme=TwoDark); settings must not set one.
       if (!file.endsWith(".md")) {
         expect({ file, batTheme: /--theme=/.test(text) }).toEqual({ file, batTheme: false });
