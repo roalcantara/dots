@@ -24,4 +24,4 @@ completers = [
   "shell",
 ] # a command with no Fig spec asks zsh's own completion (_todo, _dots, …)
 online = false # no package registry searches while typing
-history = false # Ctrl-R stays fzf's history widget
+history = false # Ctrl-R stays the shell's own binding

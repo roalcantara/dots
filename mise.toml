@@ -375,6 +375,9 @@ for block in pre post; do
   lig init zsh "$block" > "$cache/$block.zsh.tmp"
   mv "$cache/$block.zsh.tmp" "$cache/$block.zsh"
 done
+# The binary this cache came from, resolved as the shell resolves it (${commands[lig]:A}): a different one
+# (brew upgrade) makes lig.zsh skip the stale blocks. File dates cannot tell: bottles keep their build dates.
+zsh -fc 'print -r -- ${commands[lig]:A}' > "$cache/bin"
 echo "zsh:lig: wrote $cache/pre.zsh and post.zsh"
 '''
 

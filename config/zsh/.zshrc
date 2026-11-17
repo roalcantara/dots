@@ -8,15 +8,20 @@
 # zrc::<topic> function defined in opt/rc.d/*.zsh. Run `sys::bench` to measure
 # startup, or read the #ABOUT header of a module to see what a step does.
 
+# Each module is sourced immediately before the functions it declares, so the
+# file that defines every step below is visible at the call site.
+zrc=${ZDOTDIR:-$HOME/.config/zsh}/opt/rc.d
+
+# Lig's popup: restart this terminal's shell inside Lig, once, before anything prints.
+source $zrc/lig.zsh          # cached Lig integration (mise run zsh:lig); no lig process at startup
+
+lig::pre
+
 # Powerlevel10k instant prompt. Must stay near the top: anything that may
 # require console input (password prompts, [y/n] confirmations) goes above it.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
-# Each module is sourced immediately before the functions it declares, so the
-# file that defines every step below is visible at the call site.
-zrc=${ZDOTDIR:-$HOME/.config/zsh}/opt/rc.d
 
 # --- before the framework ---------------------------------------------------
 source $zrc/env.zsh          # shell identity, options, path, fpath, cdpath, manpath, brew, EDITOR, VISUAL, GIT_EDITOR, vim aliases
@@ -26,3 +31,6 @@ source $zrc/sys.zsh          # handles ~/.config/.env, private XDG_RUNTIME_DIR
 source $zrc/zim.zsh          # powerlevel10k configuration, zprof teardown, drop the one-shot setup functions, Android SDK Tools.
 
 unset zrc
+
+# Last, after every other zle widget and hook: connect the line editor to Lig's popup.
+lig::post
