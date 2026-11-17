@@ -38,13 +38,14 @@
   [[ $ZSH_VERSION == (5.<1->*|<6->.*) ]] || return
 
   # Prompt colors.
-  local grey='242'
-  local red='#FF5C57'
-  local yellow='#F3F99D'
-  local blue='#57C7FF'
-  local magenta='#FF6AC1'
-  local cyan='#9AEDFE'
-  local white='#F1F1F0'
+  # The shell theme's colours (DOTS_P10K_*, exported by theme.zsh); these are the pre-theme defaults.
+  local grey="${DOTS_P10K_GREY:-242}"
+  local red="${DOTS_P10K_RED:-#FF5C57}"
+  local yellow="${DOTS_P10K_YELLOW:-#F3F99D}"
+  local blue="${DOTS_P10K_BLUE:-#57C7FF}"
+  local magenta="${DOTS_P10K_MAGENTA:-#FF6AC1}"
+  local cyan="${DOTS_P10K_CYAN:-#9AEDFE}"
+  local white="${DOTS_P10K_WHITE:-#F1F1F0}"
 
   # Left prompt segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(

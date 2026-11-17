@@ -42,6 +42,22 @@ Switching also restarts zsh-patina's daemon, which caches its theme.
 When the link is missing or dangling, everything falls back to `catppuccin-mocha`. If that folder is missing too
 (a bare container, say), the theme variables are left unset and each tool keeps its built-in colours.
 
+## What reads the theme
+
+| Tool | File | How |
+| --- | --- | --- |
+| bat | `env.zsh`, `env.bash` | `BAT_THEME` |
+| delta | `env.zsh` | `BAT_THEME` (its own `syntax-theme` is gone) |
+| fzf, fzf-tab | `env.zsh` | `FZF_THEME_OPTS`, `DOTS_FZF_TAB_GROUP_COLORS` |
+| zsh-autosuggestions | `env.zsh` | `ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE` |
+| eza (and `la`) | `env.zsh`, `env.bash` | `EZA_CONFIG_DIR` → `eza/theme.yml` |
+| zsh and bash listings | `ls_colors` | `LS_COLORS` |
+| mise | `env.zsh`, `env.bash` | `MISE_COLOR_THEME` |
+| glow | `env.zsh`, `env.bash` | `GLOW_STYLE` |
+| zsh-patina | `zsh-patina.toml` | `theme = "file:$DOTS_THEME_DIR/zsh-patina.toml"` |
+| powerlevel10k | `env.zsh` | `DOTS_P10K_*` |
+| Ghostty | `theme.ghostty` | its `config-file = ?auto/theme.ghostty` include |
+
 ## Regenerate the colours
 
 `ls_colors` comes from [vivid](https://github.com/sharkdp/vivid) and is committed, so no shell start runs vivid:

@@ -24,7 +24,7 @@ gethelp() {
 lists() { [[ $'\n'$1 == *$'\n'[[:space:]]#(${(b)chain[*]} |)${(b)2}([[:space:],:]*|)($'\n'*|) ]] }
 show() {
   if [[ -n ${NO_COLOR-} ]] || ! command -v bat >/dev/null; then cat
-  else bat --language=help --style=plain --color=always --theme=Dracula
+  else bat --language=help --style=plain --color=always
   fi
 }
 

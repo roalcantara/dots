@@ -20,6 +20,8 @@ This glossary defines terms used across Dots configuration, documentation, and t
 | **Backup root** | Storage directory holding backups, `/Volumes/backups` by default; overridden by `DOTS_BACKUP_ROOT`. |
 | **Backup manifest** | `config/restic/backup.toml`: defines repository path, the allowlist of source paths, retention policy, and exclusions with reasons. |
 | **restic repository** | Encrypted, deduplicated restic storage at `<backup root>/machines/<host>/restic`. |
+| **Theme** | One folder under `config/theme/themes/` holding the shell-side tools' colours, one small file per tool (`env.zsh`, `ls_colors`, `theme.ghostty`, …). |
+| **Current theme** | The theme folder the `current` link under `~/.local/state/dots/theme` points at; a missing link means `catppuccin-mocha`. |
 | **Snapshot** | Point-in-time backup archive inside a restic repository, tagged with the machine host name and `home:<home>` (the folder `restore` maps from). |
 | **Export** | Dated folder under `machines/<host>/exports/` holding machine audit reports and manual exports. |
 | **Reinstall audit** | `mise run reinstall:audit`: read-only evaluation of uncommitted git state, non-cask apps, and machine risk (`MANIFEST.md`). |

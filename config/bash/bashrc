@@ -30,6 +30,17 @@ if [ -f $HOME/.profile ]; then
   source $HOME/.profile
 fi
 
+# THEME {
+  # The active shell theme (dots theme): a missing or dangling link falls back to Catppuccin Mocha.
+  _dots_theme="${DOTS_THEME_LINK:-${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current}"
+  [ -d "$_dots_theme" ] || _dots_theme="${DOTS_THEMES_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/theme/themes}/catppuccin-mocha"
+  if [ -r "$_dots_theme/env.bash" ]; then
+    export DOTS_THEME_DIR="$_dots_theme"
+    . "$_dots_theme/env.bash"
+  fi
+  unset _dots_theme
+# }
+
 # PATH; Where the shell searches for commands; set PATH so it includes user's private bin if it exists
 # cargo installs (brew bundle `cargo` entries) go to $CARGO_HOME/bin; last, so its rustup proxies never shadow `cargo`.
 export PATH="${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin}:${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm/bin}:${PNPM_HOME:-$XDG_DATA_HOME/pnpm}:/usr/local/bin:/usr/local/sbin:${PATH}:${CARGO_HOME:-$XDG_DATA_HOME/cargo}/bin"

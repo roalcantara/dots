@@ -224,9 +224,10 @@ case "$subcmd" in
     fi
     mkdir -p "${theme_link:h}"
     ln -sfn "$themes_dir/$name" "$theme_link"
-    # zsh-patina caches its theme in its daemon, so the new colours need a restart.
+    # zsh-patina caches its theme in its daemon, so the new colours need a restart; pass the new
+    # DOTS_THEME_DIR, since this shell still holds the old theme's path.
     if command -v zsh-patina &>/dev/null; then
-      zsh-patina restart &>/dev/null || true
+      DOTS_THEME_DIR="$themes_dir/$name" zsh-patina restart &>/dev/null || true
     fi
     _log_info "Theme: $name. Open a new shell; reload Ghostty with cmd+shift+,"
     ;;

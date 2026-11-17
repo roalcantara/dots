@@ -14,9 +14,9 @@ always_keep_install = false # deleted on failure by default
 # https://mise.jdx.dev/configuration/settings.html#color
 color = true # set to true to enable color output
 
-# Set the color theme for the terminal output: default |charm | base16 | catppuccin | dracula
+# The color theme for the terminal output comes from MISE_COLOR_THEME, which the active shell theme
+# exports (dots theme); mise maps `catppuccin` to its Catppuccin palette.
 # https://mise.jdx.dev/configuration/settings.html#color_theme
-color_theme = "dracula"
 
 # set to true to expand environment variables in the shell for example:
 #   [env]

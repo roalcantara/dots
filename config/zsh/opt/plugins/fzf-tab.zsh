@@ -84,7 +84,7 @@ export FZF_ALT_C_OPTS="
 # export FZF_CTRL_R_OPTS="
 #       --prompt 'Selected command from history ❯ '
 #       --header '[^ y] copy command into clipboard'
-#       --preview '(highlight -O ansi -l {} 2> /dev/null || bat --color=always --theme=Dracula --line-range :50 {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'
+#       --preview '(highlight -O ansi -l {} 2> /dev/null || bat --color=always --line-range :50 {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'
 #       --bind 'tab:down,btab:up'
 #       --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'"
 
@@ -94,7 +94,7 @@ export FZF_ALT_C_OPTS="
 # c-x h -> get context of the completion
 zstyle -d ':completion:*' format
 
-# Group headers ([commands], [options]…) and one Dracula colour per group; `,` and `.` switch groups.
+# Group headers ([commands], [options]…) and one theme colour per group; `,` and `.` switch groups.
 # fzf-tab colours a whole candidate line per group, never the description alone (it ignores pattern list-colors).
 zstyle ':fzf-tab:*' show-group full
 zstyle ':fzf-tab:*' group-colors \
@@ -135,16 +135,16 @@ zstyle ':fzf-tab:*' fzf-flags --bind=right:accept --bind=enter:accept \
 
 # Environment Variables completion configuration
 zstyle ':fzf-tab:complete:*:*:*:*:variables' \
-  fzf-preview 'bat --style=full --color=always --language=sh --theme=Dracula --line-range :500 <(echo ${(P)word}) 2>/dev/null || echo ${(P)word}'
+  fzf-preview 'bat --style=full --color=always --language=sh --line-range :500 <(echo ${(P)word}) 2>/dev/null || echo ${(P)word}'
 
 # Preview for environment variables (https://github.com/Aloxaf/fzf-tab/wiki/Preview#environment-variable)
 zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
-    fzf-preview 'bat --style=full --color=always --language=sh --theme=Dracula --line-range :500 <(echo ${(P)word}) 2>/dev/null || echo ${(P)word}'
+    fzf-preview 'bat --style=full --color=always --language=sh --line-range :500 <(echo ${(P)word}) 2>/dev/null || echo ${(P)word}'
 
 # Preview for man and run-help (https://github.com/Aloxaf/fzf-tab/wiki/Preview#other-tips)
 # Set up bat for man page previews in fzf-tab
-zstyle ':fzf-tab:complete:(\\|*/|)man:*' fzf-preview 'MANPAGER="sh -c \"col -bx | bat -l man --theme=Dracula -p --color=always\"" man ${word} 2>/dev/null || echo "No manual entry for ${word}"'
-zstyle ':fzf-tab:complete:(\\|)run-help:*' fzf-preview 'MANPAGER="sh -c \"col -bx | bat -l man --theme=Dracula -p --color=always\"" run-help ${word} 2>/dev/null || echo "No help for ${word}"'
+zstyle ':fzf-tab:complete:(\\|*/|)man:*' fzf-preview 'MANPAGER="sh -c \"col -bx | bat -l man -p --color=always\"" man ${word} 2>/dev/null || echo "No manual entry for ${word}"'
+zstyle ':fzf-tab:complete:(\\|)run-help:*' fzf-preview 'MANPAGER="sh -c \"col -bx | bat -l man -p --color=always\"" run-help ${word} 2>/dev/null || echo "No help for ${word}"'
 
 # Preview for systemctl (https://github.com/Aloxaf/fzf-tab/wiki/Preview#show-systemd-unit-status)
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
@@ -210,7 +210,7 @@ if _has_command eza; then
   elif [[ $realpath =~ \.(jpg|jpeg|png|gif|bmp)$ ]]; then
     chafa -c 256 --size=40x40 "$realpath"
   else
-    bat --style=full --language=sh --color=always --theme=Dracula --line-range :500 <(eval echo $realpath) 2>/dev/null || echo $realpath
+    bat --style=full --language=sh --color=always --line-range :500 <(eval echo $realpath) 2>/dev/null || echo $realpath
   fi'
   zstyle ':fzf-tab:complete:eza:*' fzf-preview "$fzf_dir_preview"
 else
@@ -228,7 +228,7 @@ zstyle ':fzf-tab:complete:*' fzf-preview "
   if [[ -d \$realpath ]]; then
     $fzf_dir_preview
   elif [[ -f \$realpath ]]; then
-    bat --style=plain --color=always --theme=Dracula --line-range :300 \$realpath 2>/dev/null
+    bat --style=plain --color=always --line-range :300 \$realpath 2>/dev/null
   else
     cmdhelp \$word \"\${words[@]}\"
   fi"
