@@ -117,20 +117,25 @@ zstyle ':fzf-tab:*' accept-line enter
 # Pressing this key will use the currently entered user input as the final completion output
 zstyle ':fzf-tab:*' print-query alt-enter
 # NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default, so it repeats the flags and takes its colours from
-# the theme's FZF_THEME_OPTS. A menu with a preview is framed (--style=full: input, list and preview boxes, theme
-# backgrounds); a plain list of values (dots theme <Tab>) keeps the bare look: a prompt line, no boxes, the terminal's
-# background. zstyle -e decides per menu: the flags follow whether this menu's fzf-preview resolves to anything.
-typeset -ga _dots_ftb_flags=(
-  --bind=right:accept --bind=enter:accept --cycle --ansi --inline-info --keep-right
-  --marker '✔' --pointer '▶' --prompt '❯ ' --height=40% --tiebreak='chunk' --layout=reverse
-)
-typeset -ga _dots_ftb_framed=( --style=full --list-label=' matches ' --preview-label=' preview ' ${(z)FZF_THEME_OPTS} )
-typeset -ga _dots_ftb_plain=( ${(z)FZF_THEME_OPTS} --color=bg:-1,list-bg:-1,input-bg:-1 --no-separator --no-scrollbar )
-zstyle -e ':fzf-tab:*' fzf-flags '
-  local _dots_ftb_preview
-  zstyle -s ":fzf-tab:$_ftb_curcontext" fzf-preview _dots_ftb_preview
-  if [[ -n $_dots_ftb_preview ]]; then reply=( "${_dots_ftb_flags[@]}" "${_dots_ftb_framed[@]}" )
-  else reply=( "${_dots_ftb_flags[@]}" "${_dots_ftb_plain[@]}" ); fi'
+# the theme's FZF_THEME_OPTS. The list stays bare (a prompt line, no boxes, the terminal's own background); only the
+# preview pane, shown when the menu has something to preview (_dots_ftb_previewable below), keeps its border, label
+# and the theme's preview background.
+zstyle ':fzf-tab:*' fzf-flags --bind=right:accept --bind=enter:accept \
+    --cycle \
+    --ansi \
+    --inline-info \
+    --keep-right \
+    --marker '✔' \
+    --pointer '▶' \
+    --prompt '❯ ' \
+    --height=40% \
+    --tiebreak='chunk' \
+    --layout=reverse \
+    --no-separator \
+    --no-scrollbar \
+    --preview-label=' preview ' \
+    ${(z)FZF_THEME_OPTS} \
+    --color=bg:-1,list-bg:-1,input-bg:-1
 
 # Environment Variables completion configuration
 zstyle ':fzf-tab:complete:*:*:*:*:variables' \

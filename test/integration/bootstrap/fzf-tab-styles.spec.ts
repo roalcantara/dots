@@ -50,23 +50,22 @@ describe.skipIf(!existsSync(join(HOME, ".config/zsh/.zshrc")))("fzf-tab effectiv
     expect(generic).toContain("bat --style=numbers,changes");
     expect(styles(`zstyle -s ':fzf-tab:complete:git-log:argument-1' fzf-preview p; print -r -- $p`)).toContain("git show");
   });
-  it("menus with a preview are framed and themed", () => {
-    const flags = styles(`${menu.file} zstyle -a ':fzf-tab:*' fzf-flags f; print -rl -- $f`);
-    expect(flags).toContain("--style=full");
-    const theme = styles(`print -r -- $FZF_THEME_OPTS`);
-    const bg = theme.split(/\s+/).find((flag) => flag.startsWith("--color=bg:"));
-    expect(bg).toBeString();
-    expect(flags).toContain(bg as string);
+  it("the list is bare in every menu; the preview keeps the theme's background", () => {
+    for (const setup of [menu.file, menu.values]) {
+      const flags = styles(`${setup} zstyle -a ':fzf-tab:*' fzf-flags f; print -rl -- $f`);
+      expect(flags).not.toContain("--style=full");
+      expect(flags).toContain("--color=bg:-1,list-bg:-1,input-bg:-1");
+      const theme = styles(`print -r -- $FZF_THEME_OPTS`);
+      const previewBg = theme.split(/\s+/).find((flag) => flag.startsWith("--color=preview-bg:"));
+      expect(previewBg).toBeString();
+      expect(flags).toContain(previewBg as string);
+    }
   });
   it("a described subcommand keeps its --help preview", () => {
     expect(styles(`${menu.subcommand} zstyle -s ':fzf-tab:complete:dots:' fzf-preview p; print -r -- $p`)).toContain("cmdhelp");
   });
-  it("a plain list of values has no preview and the bare look", () => {
-    const script = `${menu.values} zstyle -s ':fzf-tab:complete:dots:' fzf-preview p; print -r -- "[$p]"; zstyle -a ':fzf-tab:*' fzf-flags f; print -rl -- $f`;
-    const out = styles(script);
-    expect(out).toContain("[]");
-    expect(out).not.toContain("--style=full");
-    expect(out).toContain("--color=bg:-1,list-bg:-1,input-bg:-1");
+  it("a plain list of values has no preview", () => {
+    expect(styles(`${menu.values} zstyle -s ':fzf-tab:complete:dots:' fzf-preview p; print -r -- "[$p]"`)).toContain("[]");
   });
   it("no ls -l rows", () => {
     const value = styles(`zstyle -s ':completion:*' file-list v && print -r -- $v || print unset`).trim();
