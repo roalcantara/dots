@@ -56,6 +56,13 @@ const marked = (buffer: string) => regions(buffer).some((line) => line.toLowerCa
 const warnRegion = (buffer: string) =>
   regions(buffer).find((line) => line.toLowerCase().includes(WARN_STYLE)) ?? "";
 
+// The hook runs on every keystroke, so a function that errors would spray the terminal while typing. Merge stderr
+// and keep only the plugin's own complaints.
+const hookErrors = (buffer: string) =>
+  zsh(`{ BUFFER=${JSON.stringify(buffer)}; _dots_warn_highlight } 2>&1`)
+    .split("\n")
+    .filter((line) => line.includes("_dots_warn"));
+
 describe("risky commands get the warning colour", () => {
   it("the hook is registered", () => {
     const out = zsh('print -r -- "$+functions[_dots_warn_highlight]|${widgets[zle-line-pre-redraw]}"');
@@ -75,4 +82,9 @@ describe("risky commands get the warning colour", () => {
     expect(warnRegion("echo hi; rm -rf x")).toMatch(/^9 15 /);
   });
   it("sudo rm cues rm, not sudo", () => expect(warnRegion("sudo rm x")).toMatch(/^5 7 /));
+  it("a bare git stays quiet", () => {
+    expect(hookErrors("git")).toEqual([]);
+    expect(hookErrors("git ")).toEqual([]);
+    expect(marked("git")).toBe(false);
+  });
 });

@@ -24,7 +24,8 @@ _dots_warn_rm() {
 # git push --force, -f or --force-with-lease; git reset --hard; git clean -f….
 _dots_warn_git() {
   emulate -L zsh
-  local sub=${1:-} arg
+  (( $# )) || return 1 # a bare `git` has no subcommand to judge
+  local sub=$1 arg
   shift
   case $sub in
     push)
