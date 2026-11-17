@@ -79,6 +79,17 @@ killall Dock Finder SystemUIServer
   Change All).
 - **Touch ID for `sudo`:** remove the `sudo_local` entry, then `sudo rm /etc/pam.d/sudo_local`.
 
+## Agent limits in the menu bar
+
+[CodexBar](https://github.com/steipete/CodexBar) (`cask "codexbar"`, a login item) shows the usage limits of Claude,
+Codex, Copilot and Antigravity (Gemini) in the menu bar, with reset times, pace, and token cost from the local Claude
+and Codex logs. Its `codexbar` CLI prints the same as JSON (`codexbar usage --provider claude --json`,
+`codexbar cost --provider claude`). The comparison that picked it is in
+[`docs/superpowers/specs/2026-11-17-agent-limits-evaluation.md`](superpowers/specs/2026-11-17-agent-limits-evaluation.md).
+
+Its settings stay out of the repo: `~/.config/codexbar/config.json` holds the Copilot token. On first launch it
+detects Claude, Codex and Antigravity from their CLIs' sign-ins; the rest is in the manual checklist below.
+
 ## Dock, login items and default apps
 
 The Dock is short on purpose: it auto-hides and Raycast opens everything else. `apps` replaces Apple's tiles in that
@@ -131,6 +142,9 @@ These need `sudo`, a choice of taste, or an app's own settings, so the bootstrap
 - [ ] Firewall: System Settings → Network → Firewall.
 - [ ] Sleep and power: `pmset` or System Settings → Battery.
 - [ ] Raycast: set its hotkey to ⌘Space in Raycast's settings.
+- [ ] CodexBar: choose Always Allow on the "Claude Code-credentials" Keychain prompt (open its menu, ⌘R); sign in
+      to Codex (`codex login`); turn on Copilot in Settings → Providers and finish the GitHub device sign-in; add
+      its widget from Notification Center's Edit Widgets.
 - [ ] Hot corners, appearance (light/dark).
 - [ ] Tiling: partly disable SIP, approve Karabiner-Elements, grant yabai Accessibility, register the kb
       extension ([tiling guide](TILING.md#once-per-machine-by-hand)).
