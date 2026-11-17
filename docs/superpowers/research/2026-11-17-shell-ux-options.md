@@ -7,6 +7,9 @@ The illustrated version, with screenshots, is the artifact "Shell UX Field Guide
 (<https://claude.ai/code/artifact/c4a7a886-0af8-437e-bfa2-329395d81093>). Stars and last push are from the GitHub API
 on 2026-11-17.
 
+**Status:** Adopted: see
+[`docs/superpowers/specs/2026-11-17-shell-ux-theme-design.md`](../specs/2026-11-17-shell-ux-theme-design.md).
+
 ## Today
 
 - Three themes compete:

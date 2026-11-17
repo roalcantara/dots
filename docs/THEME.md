@@ -118,3 +118,13 @@ file.
 2. Add the folder name to the `choices` of `dots theme` (`config/bin/dots`) and `theme:build` (`mise.toml`); a spec
    keeps the two lists in step with the folders.
 3. Run `mise run theme:build <name>` and commit the folder with the two `choices` entries.
+
+## Future: full integration
+
+This round themes the shell. A later round may follow Omarchy all the way, where one `dots theme` re-themes
+everything: Neovim, VS Code, btop, television's UI, kodexb, dinky, zentty, Ghostty's window chrome, and the macOS
+wallpaper and accent.
+
+The layout is built for that. A tool joins by adding its own file to each theme folder (`nvim.lua`, `vscode.json`,
+`btop.theme`, …) plus a line in `dots theme` that links or reloads it, with no change to the folders that exist.
+This page lists these candidates so the next round starts from it.
