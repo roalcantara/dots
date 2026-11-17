@@ -371,7 +371,7 @@ Read it first: Goals, Anti-goals, the per-theme file table, and "Future: full in
   - The research note's status line reads "Adopted: see `docs/superpowers/specs/2026-11-17-shell-ux-theme-design.md`".
   - `docs/THEME.md` has a "Future: full integration" section copied from the spec.
   - Commit `docs(theme): Finish the theme docs`.
-- [ ] **Step 3: Owner checkpoint** (stop and ask; don't tick it for the owner). The owner opens a new Ghostty window
+- [x] **Step 3: Owner checkpoint** (stop and ask; don't tick it for the owner). The owner opens a new Ghostty window
   and checks:
   - `la`, `rm <Tab>` and `cd <Tab>` look alike;
   - Tab menus are framed in Mocha;
