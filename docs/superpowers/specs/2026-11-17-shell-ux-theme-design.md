@@ -23,9 +23,10 @@ fish 4); see `TODO.yaml` (tag `shell-ux`).
 ## Goals
 
 1. **One switchable theme.**
-   - Every tool takes its colours from one active theme, so all of them change together.
-   - `theme <name>` switches it; `theme` alone prints the active theme and the available ones.
-   - Ships `catppuccin-mocha` (the default) and `catppuccin-latte`.
+   - Every shell-side tool takes its colours from one active theme, so all of them change together.
+   - `dots theme <name>` switches it; `dots theme` alone prints the active theme and the available ones.
+   - Ships two dark themes: `catppuccin-mocha` (the default) and `catppuccin-macchiato`. Two themes prove that
+     switching works.
 2. **A framed, aligned Tab menu.**
    - fzf-tab uses fzf's framed style: section borders, labels and per-section backgrounds from the theme.
    - File candidates are plain coloured names, without `ls -l` rows.
@@ -41,10 +42,13 @@ fish 4); see `TODO.yaml` (tag `shell-ux`).
 ## Non-goals
 
 - The "Try" tier: Lig, atuin, television, fish, chafa and image previews, and Starship.
-- Following the OS light or dark appearance live. Switching is explicit (`theme catppuccin-latte`).
-- Themes beyond the two Catppuccin flavours. The layout must make adding one a folder, not code.
-- Re-theming tools outside the shell: kodexb, dinky, zentty, Neovim, VS Code. The same applies to television's cable
-  channels, except that their hard-coded `--theme=dracula` bat flags are dropped so they follow `BAT_THEME`.
+- Light themes, and following the OS light or dark appearance. Only dark themes ship. A light theme (Latte) is a later
+  folder, added only if one is ever needed, and the dark-only values (delta `--dark`, `GLOW_STYLE=dark`) would then
+  move into the theme.
+- Themes beyond the two dark Catppuccin flavours. The layout must make adding one a folder, not code.
+- Re-theming tools outside the shell: Neovim, VS Code, kodexb, dinky, zentty, television's UI, btop and others. This
+  round leaves them alone, apart from dropping the hard-coded `--theme=dracula` bat flags in television's cable
+  channels so they follow `BAT_THEME`. See "Future: full integration".
 - Changing key bindings, completion behaviour or zsh-patina's own highlighting rules.
 
 ## Anti-goals
@@ -61,9 +65,14 @@ fish 4); see `TODO.yaml` (tag `shell-ux`).
 - macOS and Linux (the `distros/` images too). Tools come from `config/homebrew/Brewfile`:
   - `vivid` and `gomi` are new;
   - a Nerd Font for icons (`font-cascadia-code-nf`, a desktop cask; the font family becomes `Cascadia Code NF`).
-- Versions installed today: fzf 0.75.0, bat 0.26.1, eza 0.23.5, delta 0.20.1, zsh-patina 1.12.0, Ghostty with
-  built-in `Catppuccin Mocha` and `Catppuccin Latte` themes. bat has `Catppuccin Mocha` and `Catppuccin Latte`
-  built in.
+- Versions installed today: fzf 0.75.0, bat 0.26.1, eza 0.23.5, delta 0.20.1, zsh-patina 1.12.0, Ghostty. Mocha and
+  Macchiato are built into Ghostty (`Catppuccin Mocha`, `Catppuccin Macchiato`), bat (same names) and zsh-patina
+  (`catppuccin-mocha`, `catppuccin-macchiato`). vivid ships both, and catppuccin/eza ships `themes/mocha` and
+  `themes/macchiato`.
+- New code goes in `config/bin/dots` (already on PATH) or in inline mise tasks, never in a new script. Every command
+  and task declares its inputs with [usage](https://usage.jdx.dev/cli/scripts): `choices`, defaults, flags and help
+  text, so usage validates them. `config/bin/yb` (`choices`) and the `build` task in `mise.toml` (`usage = '''…'''`)
+  are the models.
 - Repo rules (AGENTS.md):
   - the SOPS git wrapper;
   - named-path staging;
@@ -75,12 +84,12 @@ fish 4); see `TODO.yaml` (tag `shell-ux`).
 
 ## Approaches
 
-- **A. Fixed Catppuccin Mocha:** edit every tool's colours in place. It's the least code, but every later change (Latte
-  for daylight, another palette) repeats the edit across about 12 files.
+- **A. Fixed Catppuccin Mocha:** edit every tool's colours in place. It's the least code, but every later change (a
+  second palette, a new tool) repeats the edit across about 12 files.
 - **B. Switchable theme folders behind a `current` link (picked; the owner agreed).**
   - Each theme is a folder of small per-tool files.
   - A `current` symlink in the state dir points at the active one, and each tool reads its file through `current`.
-  - `theme <name>` repoints the link and regenerates the few caches.
+  - `dots theme <name>` repoints the link.
   - This is Omarchy's model (`~/.config/omarchy/current/theme`); adding a theme means adding a folder.
 - **C. One palette file plus templates rendered into each tool's config:** a single source of hex values, but it needs
   a template engine and a render step after every edit. Too much machinery for two themes.
@@ -111,18 +120,25 @@ fish 4); see `TODO.yaml` (tag `shell-ux`).
     (`HOMEBREW_BAT_THEME`) and `config/television/cable/*.toml`.
   - **mise:** `color_theme = "dracula"` goes from `config/mise/config.toml`; `MISE_COLOR_THEME` sets it. Check that mise
     reads that env var, and if it doesn't, use the closest supported mechanism and note it in the commit.
-  - **glow:** `config/bin/xc-fabric` keeps its `${GLOW_STYLE:-…}` default but falls back to `dark`, not `dracula`;
-    the theme sets `GLOW_STYLE`.
-  - **delta:** in `config/git/config`, `syntax-theme` goes (delta then uses `BAT_THEME`), and `--dark` becomes
-    automatic light/dark detection.
+  - **glow:** `config/bin/xc-fabric` keeps its `${GLOW_STYLE:-…}` default but falls back to `dark`, not `dracula`.
+    Both themes set `GLOW_STYLE=dark`.
+  - **delta:** in `config/git/config`, `syntax-theme` goes, so delta uses `BAT_THEME`. `--dark` stays, since only
+    dark themes ship.
 - `LS_COLORS`, `EXA_COLORS` and `LSCOLORS` in `config/zsh/opt/rc.d/theme.zsh` are replaced by the theme's `ls_colors`.
   The dead `FAST_HIGHLIGHT_STYLES` block goes too: fast-syntax-highlighting is disabled in `.zimrc`.
-- **`config/bin/theme [name]`** (on PATH via `config/bin`):
-  - It repoints `current` and writes `~/.config/ghostty/auto/theme.ghostty`, or links it.
-  - It prints `Theme: <name>. Open a new shell; reload Ghostty with cmd+shift+,`.
-  - With no argument it lists themes and marks the active one. An unknown name exits 1 and lists the valid ones.
-- **`mise run theme:build`** regenerates each theme's `ls_colors` with vivid. Contributors run it, and it's committed;
-  it never runs at shell start.
+- **`dots theme [name]`**, a new subcommand in `config/bin/dots`:
+  - USAGE: `cmd "theme" help=…`, with `arg "[name]"` and `choices "catppuccin-mocha" "catppuccin-macchiato"`, plus
+    `example` lines. usage rejects an unknown name and lists the valid ones (exit 1).
+  - A spec keeps the `choices` in step with the folders under `config/theme/themes/`.
+  - With a name, it repoints `current` and writes `~/.config/ghostty/auto/theme.ghostty` (or links it). It then logs
+    `Theme: <name>. Open a new shell; reload Ghostty with cmd+shift+,` through the script's `_log_info`.
+  - With no name, it lists the themes and marks the active one.
+  - It's added to the `gum choose` menu, the `#USAGE example` lines, and the `case` dispatch.
+- **`mise run theme:build`**, an inline task in `mise.toml` next to `zsh:completions:todo`:
+  - usage: `arg "[name]"` with the same `choices`; with no name it builds every theme.
+  - It regenerates a theme's `ls_colors` with vivid. Contributors run it, and the output is committed; it never runs
+    at shell start.
+  - `vivid` is a dev-profile Brewfile entry, since only contributors need it.
 
 ### Tab menu (fzf-tab)
 
@@ -160,20 +176,50 @@ fish 4); see `TODO.yaml` (tag `shell-ux`).
 
 ## My calls (correct if wrong)
 
-- Latte ships as the second theme because it's Catppuccin's light flavour. Frappé and Macchiato are left out to keep
-  the folder count honest.
+- Macchiato ships as the second theme: it's Catppuccin's other dark flavour, every tool here has it, and it proves
+  switching. Frappé is left out (it's the lightest of the dark three).
 - The Nerd Font change is in scope, since the icons in previews and `la` need it. Ghostty's `font-family` becomes
   `Cascadia Code NF`.
-- The warning style is `bg=<theme red>,fg=<theme crust>,bold`, not `fg=white`, so it reads in Latte too.
+- The warning style is `bg=<theme red>,fg=<theme crust>,bold`: the theme's own colours, not terminal white.
 - `la` keeps its current columns; only its colours change (via the eza theme).
 - With no theme folder at all, tools use their own built-in colours. Keeping a copy of today's look would mean
   carrying dead TokyoNight and Dracula values, and would conflict with the no-Dracula check.
 - mise and glow join the theme. "Every tool" covers them, and both have Catppuccin or light/dark styles.
 
+## Docs
+
+Every doc and reference that the changes make stale is updated in the same task as the change:
+
+- A new `docs/THEME.md`, in the style of `docs/TILING.md`, covering:
+  - the theme folders and the `current` link;
+  - `dots theme` and `mise run theme:build`;
+  - adding a theme (a folder plus a `choices` entry);
+  - the warning patterns;
+  - gomi, and restoring files with it;
+  - the future-integration list below.
+- `README.md`: day-to-day commands (`dots theme`, `gomi --restore`) and the docs list.
+- `AGENTS.md`: the Docs list (`docs/THEME.md`).
+- `config/bin/README.md`: the `dots` row mentions `theme`.
+- `docs/GLOSSARY.md`: "theme", "current theme" and "warning pattern".
+- The research note's status: adopted, with this spec's path.
+- Comments in the changed files: `theme.zsh`'s header, `fzf-tab.zsh`'s group-colours comment, and `bat.conf`.
+
+## Future: full integration
+
+This round themes the shell. A later round may follow Omarchy all the way, where one `dots theme` re-themes
+everything: Neovim, VS Code, btop, television's UI, kodexb, dinky, zentty, Ghostty's window chrome, and the macOS
+wallpaper and accent.
+
+The layout is built for that. A tool joins by adding its own file to each theme folder (`nvim.lua`, `vscode.json`,
+`btop.theme`, …) plus a line in `dots theme` that links or reloads it, with no change to the folders that exist.
+`docs/THEME.md` lists these candidates so the next round starts from it.
+
 ## Verification
 
 - **Specs** (`test/integration/`):
-  - `theme` switches `current` and the Ghostty include, lists themes, and rejects unknown names.
+  - `dots theme` switches `current` and the Ghostty include, lists themes, and rejects unknown names (usage's exit 1).
+  - Its `choices` match the folders in `config/theme/themes/`.
+  - `mise run theme:build` regenerates a theme's `ls_colors` byte-for-byte (skipped without vivid).
   - A shell started with a missing `current` gets `catppuccin-mocha`.
   - With each theme active, an interactive zsh exports the expected `BAT_THEME`, `LS_COLORS` (non-empty) and
     `EZA_CONFIG_DIR`.
@@ -191,8 +237,8 @@ fish 4); see `TODO.yaml` (tag `shell-ux`).
   - Tab menus are framed;
   - `rm -rf foo` shows the warning colour;
   - `rm` of a test file then `gomi --restore` recovers it;
-  - `theme catppuccin-latte` re-themes everything after a new shell and a Ghostty reload, and `theme catppuccin-mocha`
-    goes back.
+  - `dots theme catppuccin-macchiato` re-themes everything after a new shell and a Ghostty reload, and
+    `dots theme catppuccin-mocha` goes back.
 
 ## Left to the builder
 
