@@ -336,6 +336,30 @@ run = "./script/zsh-verify.sh bench"
 description = "Regenerate config/zsh/opt/completions/_todo from the todo CLI"
 run = "./script/todo-completion.sh config/zsh/opt/completions/_todo"
 
+# Tab completion for every config/bin script with a #USAGE spec (dots theme <Tab> offers the theme names). The spec is
+# embedded in each file, so completing never runs the script; rerun after editing a #USAGE block.
+[tasks."zsh:completions:usage"]
+description = "Regenerate config/zsh/opt/completions/_<script> for each config/bin script with a #USAGE spec"
+usage = '''
+  arg "[script]" help="One script to regenerate (default: all of them)"
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+root="$(git rev-parse --show-toplevel)"
+if [ -n "${usage_script:-}" ]; then
+  scripts=("$root/config/bin/$usage_script")
+else
+  mapfile -t scripts < <(grep -l -s "^#USAGE" "$root"/config/bin/* | grep -v "/README.md$")
+fi
+for script in "${scripts[@]}"; do
+  name="$(basename "$script")"
+  grep -q '^#USAGE' "$script" || { echo "zsh:completions:usage: $name has no #USAGE spec" >&2; exit 1; }
+  usage generate completion zsh "$name" -f "$script" > "$root/config/zsh/opt/completions/_$name"
+  echo "zsh:completions:usage: wrote config/zsh/opt/completions/_$name"
+done
+'''
+
 # The shell theme's LS_COLORS. vivid writes the committed colours; shells only source the file.
 [tasks."theme:build"]
 description = "Regenerate a theme's ls_colors with vivid"

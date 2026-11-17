@@ -34,6 +34,8 @@ dots theme                          # list, with * on the active theme
 dots theme catppuccin-macchiato     # switch
 ```
 
+`dots theme <Tab>` offers the theme names (`config/zsh/opt/completions/_dots`, from the `#USAGE` choices).
+
 The active theme is the `current` link,
 `${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current`. A new shell picks up its `env.zsh`; Ghostty reads
 `theme.ghostty` through the `auto` link in this folder and reloads with `cmd+shift+,` (a new window also works).
@@ -131,7 +133,8 @@ file.
 1. Copy a folder under `config/theme/themes/` and edit its files.
 2. Add the folder name to the `choices` of `dots theme` (`config/bin/dots`) and `theme:build` (`mise.toml`); a spec
    keeps the two lists in step with the folders.
-3. Run `mise run theme:build <name>` and commit the folder with the two `choices` entries.
+3. Run `mise run theme:build <name>` and `mise run zsh:completions:usage dots`, then commit the folder, the two
+   `choices` entries and `_dots`.
 
 ## Future: full integration
 

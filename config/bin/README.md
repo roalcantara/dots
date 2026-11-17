@@ -51,6 +51,10 @@ FORCE="${usage_force:-false}"
 # Command implementation
 ```
 
+Tab completion comes from the same spec: `mise run zsh:completions:usage [script]` writes
+`config/zsh/opt/completions/_<script>` with the spec embedded, so completing never runs the script. Rerun it after
+editing a `#USAGE` block; `test/integration/bin/usage-completions.spec.ts` fails on a stale completion.
+
 ## Tasks
 
 Tasks defined in `config/bin/mise.toml`:
