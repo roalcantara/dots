@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 import { describe, expect, it } from "bun:test";
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const HOME = process.env.HOME as string;
@@ -59,6 +60,16 @@ describe.skipIf(!existsSync(join(HOME, ".config/zsh/.zshrc")))("fzf-tab effectiv
     expect(command).toContain("--color=always");
     expect(styles("alias la").trim()).toContain(command);
     expect(styles(`zstyle -s ':fzf-tab:complete:cd:*' fzf-preview p; print -r -- $p`)).toContain("DOTS_LA_CMD");
+  });
+  it("a directory preview never runs code from the directory's name", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ftb-preview-"));
+    const hostile = join(dir, "a$(touch PWNED)");
+    mkdirSync(hostile);
+    styles(
+      `zstyle -s ':fzf-tab:complete:cd:*' fzf-preview p; cd ${JSON.stringify(dir)}; realpath=${JSON.stringify(hostile).replace(/\$/g, "\\$")}; eval "$p" >/dev/null 2>&1`,
+    );
+    expect(existsSync(join(dir, "PWNED"))).toBe(false);
+    rmSync(dir, { recursive: true, force: true });
   });
   it("group colours follow the theme", () => {
     const theme = styles(`print -r -- \${(j:|:)DOTS_FZF_TAB_GROUP_COLORS}`).trim();

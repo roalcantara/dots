@@ -207,10 +207,10 @@ fi'
 # One preview for a path, shared by the directory completions and the generic file branch: a directory lists as `la`
 # lists it ($DOTS_LA_CMD, set in config/zsh/opt/aliases/ls.zsh), a text file shows in bat, anything else (images,
 # binaries) shows what `file` says it is. Previews run in a child shell, so this is a string inlined into the
-# zstyles, not a function.
+# zstyles, not a function. The command is word-split, never eval'd: a directory named `a$(cmd)` must not run cmd.
 _dots_preview_path='
   if [[ -d $realpath ]]; then
-    eval "$DOTS_LA_CMD \"$realpath\""
+    ${=DOTS_LA_CMD} "$realpath"
   elif [[ -f $realpath ]] && file -b --mime-type "$realpath" 2>/dev/null | grep -q "^text/"; then
     bat --style=numbers,changes --color=always --line-range :300 "$realpath" 2>/dev/null || file -b "$realpath"
   else
