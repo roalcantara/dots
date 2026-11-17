@@ -203,12 +203,13 @@ _dots_warn_risky() {
   return 1
 }
 
-# Paint the risky command; drop the previous entry first so the regions never accumulate.
+# Paint the risky command; drop the previous entry first so the regions never accumulate. Always returns 0:
+# add-zle-hook-widget stops at the first widget that fails, which would skip every pre-redraw hook after this one.
 _dots_warn_highlight() {
   emulate -L zsh
   region_highlight=( "${region_highlight[@]:#*memo=dots-warn}" )
-  [[ -n $BUFFER && -n $DOTS_WARN_STYLE ]] || return
-  _dots_warn_risky "$BUFFER" || return
+  [[ -n $BUFFER && -n $DOTS_WARN_STYLE ]] || return 0
+  _dots_warn_risky "$BUFFER" || return 0
   region_highlight+=( "${reply[1]} ${reply[2]} ${DOTS_WARN_STYLE} memo=dots-warn" )
 }
 

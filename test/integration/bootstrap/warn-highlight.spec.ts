@@ -97,6 +97,12 @@ describe("risky commands get the warning colour", () => {
     const out = zsh(`BUFFER=$'ls\\nrm -rf x'; _dots_warn_highlight; print -rl -- $region_highlight`);
     expect(out.split("\n").find((line) => line.toLowerCase().includes(WARN_STYLE))).toMatch(/^3 9 /);
   });
+  it("the hook never fails, so the line-pre-redraw widgets after it still run", () => {
+    // add-zle-hook-widget's dispatcher stops at the first widget that returns non-zero (p10k's, Lig's…).
+    for (const buffer of ["", "ls", "rm -rf x"]) {
+      expect(zsh(`BUFFER=${JSON.stringify(buffer)}; _dots_warn_highlight; print -r -- "rc=$?"`)).toContain("rc=0");
+    }
+  });
   it("a bare git stays quiet", () => {
     expect(hookErrors("git")).toEqual([]);
     expect(hookErrors("git ")).toEqual([]);
