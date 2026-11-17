@@ -67,7 +67,17 @@ When the link is missing or dangling, everything falls back to `catppuccin-mocha
 
 ## Tab menus
 
-`Tab` opens [fzf-tab](https://github.com/Aloxaf/fzf-tab)'s menu, coloured by the theme's `FZF_THEME_OPTS`; its group
+Completions pop up under the cursor as you type, from [Lig](https://github.com/KevenGoncalves/lig): Fig's specs for
+about 800 commands, and zsh's own completion for the rest (`completers = ["shell"]`, so `todo` comes from `_todo` and
+the `config/bin` scripts from their usage completions). `Tab` and the arrows move through the popup, `Enter` accepts,
+`Esc` closes it.
+
+- `config/zsh/opt/rc.d/lig.zsh` sources Lig's integration from a cache (`mise run zsh:lig`, run by bootstrap): no
+  `lig` process at startup. After `brew upgrade lig` the shell starts without the popup and says to rerun the task.
+- Lig's history (`Ctrl-R`) and its online package search are off; `Ctrl-R` keeps the shell's own binding.
+- `LIG_DISABLE=1 zsh` starts a shell without Lig; scripts, `zsh -c` and the Docker images never enter it.
+
+With the popup closed or empty, `Tab` opens [fzf-tab](https://github.com/Aloxaf/fzf-tab)'s menu, coloured by the theme's `FZF_THEME_OPTS`; its group
 headers take `DOTS_FZF_TAB_GROUP_COLORS`. The list is always bare: a prompt line and the candidates on the terminal's
 own background, with no boxes. A preview pane, framed and on the theme's preview background, opens on the right only
 when the menu has something to preview: a path, a flag or a subcommand with a description. A plain list of values

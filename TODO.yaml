@@ -52,7 +52,7 @@ tasks:
   priority: Medium
   created: 2026-11-17T00:53:26.868239
 - id: wecN
-  status: Todo
+  status: Done
   description: 'Shell UX spike: Lig IDE-style autocomplete popup'
   due: null
   actors: []

@@ -46,7 +46,7 @@ fixed (`2e96ba3`) and not part of this work.
 | Topic | Decision |
 | --- | --- |
 | fzf-tab | Stays as the fallback: Tab once the popup is closed or empty (Lig's documented behaviour). |
-| Ctrl-R | Back to fzf's history widget: `[behavior] history = false` (Lig then leaves Ctrl-R to the shell). |
+| Ctrl-R | Left to the shell: `[behavior] history = false`. (Implementation found fzf's Ctrl-R widget is not bound here, so the shell's binding is `redisplay`; the owner decides at the checkpoint whether to turn Lig's history back on.) |
 | Online search | Off: `[behavior] online = false`. |
 | Theme | Each theme folder gets a `lig.toml`; `dots theme` switches it. |
 | Where | Desktop profile only (the Brewfile's desktop section); containers unchanged. |
@@ -76,7 +76,7 @@ The shared settings:
 [behavior]
 completers = ["shell"]   # commands with no Fig spec ask zsh's own completion (_todo, _dots, …)
 online = false           # no package registry searches
-history = false          # Ctrl-R stays fzf's
+history = false          # Ctrl-R stays the shell's
 ```
 
 Each theme's `[ui] theme = "catppuccin"` plus explicit `[colors]` from its palette, so the flavour never depends
@@ -131,4 +131,4 @@ line, and the spec names.
 - Gates: `mise run test:specs`, `hk check --all`, `zsh:verify` (under `script`), `zsh:bench`, and the Debian
   image build plus CST (bootstrap changes).
 - Owner checkpoint, in a new Ghostty tab: `git checkout `, `todo `, `dots theme `, `cd ` pop up; Tab on a closed
-  popup opens fzf-tab; Ctrl-R opens fzf; `dots theme catppuccin-macchiato` recolours the popup in the open tab.
+  popup opens fzf-tab; `dots theme catppuccin-macchiato` recolours the popup in the open tab.

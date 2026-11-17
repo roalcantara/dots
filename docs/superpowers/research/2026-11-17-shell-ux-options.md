@@ -67,7 +67,7 @@ Rationale:
 | Danger pattern over zsh-patina | rm -rf | Adopt | ✓ / ✓ | 23k | 2026-10-09 | Layering to be confirmed in a spike |
 | [gomi](https://github.com/babarot/gomi) | rm -rf | Adopt | ✓ / ✓ | 578 | 2026-11-17 | Alias only in interactive shells |
 | [chafa](https://github.com/hpjansson/chafa) / `kitten icat` | Preview | Try | ✓ / ✓ | 5.4k | 2026-11-15 | icat is pixel-exact in Ghostty but flaky in tmux |
-| [Lig](https://github.com/KevenGoncalves/lig) | Popup | Try | ✓ / ✓ | 283 | 2026-11-16 | Young; PTY proxy; competes with fzf-tab |
+| [Lig](https://github.com/KevenGoncalves/lig) | Popup | Adopted ([design](../specs/2026-11-17-lig-popup-design.md)) | ✓ / ✓ | 288 | 2026-11-16 | PTY proxy; fzf-tab stays as its fallback |
 | [atuin](https://github.com/atuinsh/atuin) | History | Try | ✓ / ✓ | 32.5k | 2026-11-17 | Replaces fzf Ctrl-R; sync optional |
 | [television](https://github.com/alexpasmantier/television) | Picker | Try | ✓ / ✓ | 6.4k | 2026-11-15 | Ctrl-T channels; not a Tab engine |
 | [fish 4](https://github.com/fish-shell/fish-shell) | Shell | Try alongside | ✓ / ✓ | 34k | 2026-11-16 | Polished out of the box; not POSIX |
