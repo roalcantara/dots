@@ -5,7 +5,7 @@ press Enter. Measured against today's zsh + zim + fzf-tab + Lig + p10k + Ghostty
 ([`2026-11-17-shell-ux-options.md`](2026-11-17-shell-ux-options.md)). Stars and last push are from the GitHub API on
 2026-11-17.
 
-**Status:** research; next step is a spike of zsh-ai (TODO `Zid2`).
+**Status:** spike in progress (TODO `Zid2`), outside the repo in `~/.cache/dots/llm-spike`.
 
 ## Criteria
 
@@ -29,6 +29,23 @@ press Enter. Measured against today's zsh + zim + fzf-tab + Lig + p10k + Ghostty
 2. **Fallback: [aichat](https://github.com/sigoden/aichat).** In Homebrew core, 20+ providers, a 10-line zsh widget
    on Alt-E (`aichat -e "$BUFFER"`) we would own. Also a chat REPL. Its last release (v0.30.0) is from 2025-07.
 3. **Skip the rest** (table).
+
+## Spike plan
+
+The owner holds several quotas: a Gemini API key (daily), DeepSeek (`DEEPSEEK_API_KEY`), Copilot and Codex
+(monthly), Claude (kept for planning and review) and local MLX models. zsh-ai talks to one provider, so routing goes
+behind its `custom` provider (`_zsh_ai_query_custom`: request in `$1`, the command alone on stdout, nonzero on
+failure). Two backends compete:
+
+| | A: omp | B: own chain |
+| --- | --- | --- |
+| Call | `omp -p --model @smol` with tools, skills, rules, context files, extensions, LSP and session off, and zsh-ai's system prompt | zsh-ai's own providers in turn: Gemini, DeepSeek (OpenAI-compatible URL), local MLX |
+| Routing | omp's `retry.fallbackChains` / `usageAwareFallback` for the `smol` role | ~20 lines of zsh |
+| Reaches | Every quota omp lists: google, deepseek, opencode-zen, github-copilot, openai-codex, apple (on-device) | Only providers with an API key |
+| Risk | An agent harness's start-up and prompt tokens on every request | Duplicates routing omp already has |
+
+Decided by: Enter-to-command latency (target under ~2 s), fallback on a usage limit, whether omp's role and chain
+config can live in the repository, and the zsh-ai checks above (Lig, history filter, context sent).
 
 ## Options
 
