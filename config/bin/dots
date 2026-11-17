@@ -204,8 +204,9 @@ case "$subcmd" in
     theme_link="${DOTS_THEME_LINK:-${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current}"
     name="${1:-}"
     if [[ -z "$name" ]]; then
-      active=""
-      [[ -L "$theme_link" ]] && active="$(readlink "$theme_link")"
+      # A missing or dangling link means the shell fell back to Mocha (theme.zsh), so that one is marked.
+      active="$themes_dir/catppuccin-mocha"
+      [[ -d "$theme_link" ]] && active="$(readlink "$theme_link")"
       for dir in "$themes_dir"/*(N/); do
         base="${dir:t}"
         if [[ "$active" == "$dir" || "$active" == */"$base" ]]; then

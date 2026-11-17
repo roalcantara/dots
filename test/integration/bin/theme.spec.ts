@@ -129,6 +129,13 @@ describe("dots theme", () => {
     expect(r.stdout.toString()).toContain("  catppuccin-mocha");
   });
 
+  it("with no link, marks Mocha, the theme the shell falls back to", () => {
+    const r = dots(["theme"], join(dir, "state/dots/theme/none"));
+    expect(r.exitCode).toBe(0);
+    expect(r.stdout.toString()).toContain("* catppuccin-mocha");
+    expect(r.stdout.toString()).toContain("  catppuccin-macchiato");
+  });
+
   it("rejects an unknown name", () => {
     const missing = join(dir, "state/dots/theme/unknown");
     const r = dots(["theme", "nope"], missing);
