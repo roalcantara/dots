@@ -106,6 +106,7 @@ cask "transmission" if OS.mac? # Open-source BitTorrent client
 # cask "xykong/tap/flux-markdown", trusted: true if OS.mac?  # Markdown previews in Finder QuickLook with diagrams and math
 # Desktop: fonts (font casks install on macOS and Linux)
 cask "font-cascadia-code"
+cask "font-cascadia-code-nf"
 cask "font-cascadia-code-pl"
 cask "font-caskaydia-mono-nerd-font"
 cask "font-fira-code"

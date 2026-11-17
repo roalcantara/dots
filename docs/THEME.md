@@ -25,6 +25,23 @@ and how to add a theme. The design and its trade-offs are in the
 | `eza/theme.yml` | eza, through `EZA_CONFIG_DIR` (the vendored [catppuccin/eza](https://github.com/catppuccin/eza) theme, MIT) |
 | `zsh-patina.toml` | zsh-patina, through its `file:` theme |
 
+## Switching
+
+`dots theme` lists the themes and marks the active one with `*`; `dots theme <name>` makes one active:
+
+```sh
+dots theme                          # list, with * on the active theme
+dots theme catppuccin-macchiato     # switch
+```
+
+The active theme is the `current` link,
+`${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current`. A new shell picks up its `env.zsh`; Ghostty reads
+`theme.ghostty` through the `auto` link in this folder and reloads with `cmd+shift+,` (a new window also works).
+Switching also restarts zsh-patina's daemon, which caches its theme.
+
+When the link is missing or dangling, everything falls back to `catppuccin-mocha`. If that folder is missing too
+(a bare container, say), the theme variables are left unset and each tool keeps its built-in colours.
+
 ## Regenerate the colours
 
 `ls_colors` comes from [vivid](https://github.com/sharkdp/vivid) and is committed, so no shell start runs vivid:

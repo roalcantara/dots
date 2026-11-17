@@ -22,7 +22,7 @@ During `mise bootstrap`, all executable scripts in `config/bin/` are symlinked i
 | [`barrel`](barrel) | TypeScript/JavaScript barrel (`index.ts`) export generator | `barrel ./src -r` |
 | [`recase`](recase) | File and string naming convention converter | `recase MyFile.ts --kebab` |
 | [`gen`](gen) | Shell completion generator from command usage specs | `gen mycmd` |
-| [`dots`](dots) | Dotfiles manager and runtime diagnostics | `dots doctor` |
+| [`dots`](dots) | Dotfiles manager, runtime diagnostics and shell theme | `dots theme` |
 | [`gitx`](gitx) | Interactive Git rebase and history dispatcher | `gitx fzl` |
 | [`psc`](psc) / [`pss`](pss) | Gopass secret copier (`psc`) and revealer (`pss`) | `psc github/token` |
 | [`zsys`](zsys) | Path, environment, and system diagnostics | `zsys --help` |
