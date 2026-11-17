@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { describe, expect, it } from "bun:test";
-import { existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -69,6 +69,15 @@ describe.skipIf(!existsSync(join(HOME, ".config/zsh/.zshrc")))("fzf-tab effectiv
       `zstyle -s ':fzf-tab:complete:cd:*' fzf-preview p; cd ${JSON.stringify(dir)}; realpath=${JSON.stringify(hostile).replace(/\$/g, "\\$")}; eval "$p" >/dev/null 2>&1`,
     );
     expect(existsSync(join(dir, "PWNED"))).toBe(false);
+    rmSync(dir, { recursive: true, force: true });
+  });
+  it("a JSON file previews its contents, a binary only its type", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ftb-preview-"));
+    const preview = (path: string) =>
+      styles(`zstyle -s ':fzf-tab:complete:vim:argument-rest' fzf-preview p; realpath=${JSON.stringify(path)}; eval "$p"`);
+    writeFileSync(join(dir, "package.json"), '{ "name": "probe-name" }\n');
+    expect(preview(join(dir, "package.json"))).toContain("probe-name");
+    expect(preview("/bin/ls")).not.toContain("\u0000");
     rmSync(dir, { recursive: true, force: true });
   });
   it("group colours follow the theme", () => {

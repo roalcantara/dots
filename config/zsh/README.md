@@ -30,7 +30,7 @@ Each file under `opt/rc.d/` defines isolated functions that `.zshrc` invokes in 
 | --- | --- | --- |
 | `env.zsh` | Shell options, PATH search order, Homebrew shell environment, and editor configuration | `env::core`, `env::options`, `env::paths`, `env::homebrew`, `env::editor`, `_has_command` |
 | `term.zsh` | Terminal detection (Ghostty, Warp, etc.), minimal terminal mode gates, and shell integration | `term::profile`, `term::prompt` |
-| `theme.zsh` | Color palettes (`LS_COLORS`, `EXA_COLORS`) and fast-syntax-highlighting themes | `theme::palette` |
+| `theme.zsh` | Sources the active shell theme's `env.zsh` (see [`docs/THEME.md`](../../docs/THEME.md)) | `theme::palette` |
 | `zim.zsh` | Zim completion dump location and atomic caching for `zim-mise` | `zim::dumpfile`, `zim::mise_cache`, `zim::load`, `zim::overrides` |
 | `sys.zsh` | Secrets loading (`~/.config/.env`), private runtime directory permissions, one-time error alerts, and startup benchmarks | `sys::dotenv`, `sys::fix_xdg_runtime_dir`, `sys::bench` |
 
