@@ -1,3 +1,14 @@
+# [1.48.0](https://github.com/roalcantara/dots/compare/v1.47.0...v1.48.0) (2026-11-17)
+
+### Features
+
+* **brew:** Add Gemini CLI, the Gemini usage reference ([ef7078d](https://github.com/roalcantara/dots/commit/ef7078d4c012f5a2ad2b02609ad337cd317bb59e))
+* **macos:** Show agent limits with CodexBar ([1120cbb](https://github.com/roalcantara/dots/commit/1120cbb636854902d11be0da7740c1c6ff2d0ec5))
+
+### Reverts
+
+* **brew:** Drop Gemini CLI; Antigravity CLI is the Gemini reference ([6d98b01](https://github.com/roalcantara/dots/commit/6d98b015a320b1b07dabd2ebb4fdbba436137fb0))
+
 # [1.47.0](https://github.com/roalcantara/dots/compare/v1.46.0...v1.47.0) (2026-11-17)
 
 ### Bug Fixes
