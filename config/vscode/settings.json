@@ -1746,5 +1746,31 @@
     }
   },
   "dprint.showNoConfigNotification": false,
-  "workbench.productIconTheme": "macos-modern"
+  "workbench.productIconTheme": "macos-modern",
+  "colorInfo.languages": [
+    {
+      "selector": "css",
+      "colors": "css"
+    },
+    {
+      "selector": "sass",
+      "colors": "css"
+    },
+    {
+      "selector": "scss",
+      "colors": "css"
+    },
+    {
+      "selector": "less",
+      "colors": "css"
+    },
+    {
+      "selector": "toml",
+      "colors": "css"
+    },
+    {
+      "selector": "yaml",
+      "colors": "css"
+    }
+  ]
 }
