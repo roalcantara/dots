@@ -43,15 +43,14 @@ Agent cells: `pass` / `wrong: <what>` / `missing`, with the tool's reading again
 
 | Candidate | Version | Claude | Codex | Copilot | Gemini | Fable | Tokens/cost | Menu bar | Widgets | Credentials read | Prompts | Install | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CodexBar | 0.84.0 | pass: CLI 41/24 = `/usage` 41/24 (02:11); menu bar app 43/24 in its widget snapshot (02:16) | pass: 30-day 34% = `omp` 34%, drawn as one window | pass: 0.3% = `omp` 21/7K | pass: Claude/GPT 28.6% used, Gemini 1.4% = `agy` 71%/99% left | pass: 0% | pass: Claude 30-day $309.38 / 909M vs ccusage $311.57 / 984M (window differs by 2 days); daily chart, per model | pass | WidgetKit (bundled) | Claude Code Keychain item (OAuth) or runs `claude /usage`; Codex CLI login; GitHub device flow; Antigravity sign-in | one Keychain approval for Claude (app prefs: direct Keychain read allowed; no credential failure after it); skips browser-cookie prompts in background | cask, Notarized Developer ID, CLI linked as `codexbar` | missing login: Codex showed "codex account authentication required" before `codex login`. Pending: expired-login check, 30-minute watch for repeat prompts, widget on screen |
+| CodexBar | 0.84.0 | pass: CLI 41/24 = `/usage` 41/24 (02:11); menu bar app 43/24 in its widget snapshot (02:16) | pass: 30-day 34% = `omp` 34%, drawn as one window | pass: 0.3% = `omp` 21/7K | pass: Claude/GPT 28.6% used, Gemini 1.4% = `agy` 71%/99% left | pass: 0% | pass: Claude 30-day $309.38 / 909M vs ccusage $311.57 / 984M (window differs by 2 days); daily chart, per model | pass | WidgetKit (bundled) | Claude Code Keychain item (OAuth) or runs `claude /usage`; Codex CLI login; GitHub device flow; Antigravity sign-in | one Keychain approval for Claude (app prefs: direct Keychain read allowed; no credential failure after it); skips browser-cookie prompts in background | cask, Notarized Developer ID, CLI linked as `codexbar` | pass. Signed out (`codex logout`): menu shows Codex signed out, CLI says "authentication required", widget drops Codex (no stale numbers); back at 34% after `codex login`. No repeat Keychain prompt over 60 minutes (the one at `codex login` is Codex's own). Widget matches `/usage` (53% left = 47% used, weekly 25%) |
 
 ## Verdict
 
 **CodexBar**, picked by the user on 2026-11-17 after its hands-on row. ClaudeBar, AgentLimits, QuotaBar and
-OpenUsage were not installed: CodexBar passed every criterion checked so far, including the preferred ones (all
-four agents, Fable, tokens and cost, a bundled WidgetKit extension), so the user chose to stop the comparison there.
-Still to check by hand: how it shows an expired login, whether the Keychain prompt returns over 30 minutes, and the
-widget on screen.
+OpenUsage were not installed: CodexBar passed every criterion, including the preferred ones (all four agents,
+Fable, tokens and cost, a Notification Center widget), and the expired-login, repeat-prompt and widget checks, so the
+user chose to stop the comparison there.
 
 - Settings stay out of the repo: `~/.config/codexbar/config.json` holds the Copilot token. CodexBar detects
   Claude, Codex and Antigravity on its own; Copilot's GitHub device sign-in is a manual step.
