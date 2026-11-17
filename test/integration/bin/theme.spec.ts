@@ -60,6 +60,19 @@ describe("theme folders", () => {
     expect(readFileSync(join(dir, "eza.sh"), "utf8")).toContain(`export EZA_COLORS="${value("EXA_COLORS")}"`);
   });
 
+  it("dracula's eza colours are Dracula's own (draculatheme.com/eza), in truecolor", () => {
+    // dracula/eza's EZA_COLORS uses the terminal's basic colours (34 = Dracula purple, 95 = bright pink, …); here they
+    // are Dracula's hex values, so they hold under any terminal palette. File names stay white: no per-extension colours.
+    const eza = readFileSync(join(THEMES, "dracula/eza.sh"), "utf8");
+    for (const key of ["ur=38;2;189;147;249", "uw=38;2;255;146;223", "ux=38;2;139;233;253", "gw=38;2;255;121;198", "da=2;38;2;189;147;249", "xx=38;2;255;146;223", "uu=38;2;139;233;253", "uR=38;2;255;85;85"]) {
+      expect(eza).toContain(key);
+    }
+    const ls = readFileSync(join(THEMES, "dracula/ls_colors"), "utf8");
+    expect(ls).toStartWith("# hand-made");
+    expect(ls).toContain("di=1;38;2;189;147;249");
+    expect(ls).not.toContain("*.");
+  });
+
   it("theme:build leaves a hand-made ls_colors alone", () => {
     const before = readFileSync(join(THEMES, "tokyonight-storm/ls_colors"), "utf8");
     const r = Bun.spawnSync(["mise", "run", "theme:build", "tokyonight-storm"], { cwd: repoRoot, stdout: "pipe", stderr: "pipe" });
