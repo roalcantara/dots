@@ -44,6 +44,12 @@ describe.skipIf(!brew)("Brewfile profiles", () => {
     expect(desktop).toContain("gomi");
     expect(dev).toContain("gomi");
   });
+  it("lig (the completion popup) is a desktop tool, not in containers", () => {
+    const lig = "kevengoncalves/tap/lig";
+    expect(container).not.toContain(lig);
+    expect(desktop).toContain(lig);
+    expect(dev).toContain(lig);
+  });
   it("dev alone implies desktop", () => expect(list("dev")).toContain("gopass"));
   it("todo CLI (todo-cli from RayanBO/todo) for desktop,dev only, after rust", () => {
     expect(container).not.toContain("todo-cli");

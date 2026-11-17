@@ -24,6 +24,7 @@ and how to add a theme. The design and its trade-offs are in the
 | `ls_colors` | zsh and bash (`LS_COLORS`) |
 | `eza/theme.yml` | eza, through `EZA_CONFIG_DIR` (the vendored [catppuccin/eza](https://github.com/catppuccin/eza) theme, MIT) |
 | `zsh-patina.toml` | zsh-patina, through its `file:` theme |
+| `lig.toml` | Lig, as its whole config: `~/.config/lig/config.toml` links to the active theme's copy |
 
 ## Switching
 
@@ -62,6 +63,7 @@ When the link is missing or dangling, everything falls back to `catppuccin-mocha
 | zsh-patina | `zsh-patina.toml` | `theme = "file:$DOTS_THEME_DIR/zsh-patina.toml"` |
 | powerlevel10k | `env.zsh` | `DOTS_P10K_*` |
 | Ghostty | `theme.ghostty` | its `config-file = ?auto/theme.ghostty` include |
+| Lig | `lig.toml` | [`config/lig/config.toml`](../config/lig/config.toml) links to `…/theme/current/lig.toml`; open tabs recolour live |
 
 ## Tab menus
 

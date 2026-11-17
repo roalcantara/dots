@@ -51,6 +51,7 @@ brew "gum"  # Tool for glamorous shell scripts
 brew "hf" if OS.mac?  # Hugging Face CLI (oMLX models)
 brew "less" if OS.mac?  # Pager program similar to more
 brew "lesspipe" if OS.mac?  # Input filter for less
+brew "kevengoncalves/tap/lig", trusted: true  # IDE-style completion popup (docs/THEME.md)
 brew "node"  # JavaScript runtime and package manager support
 brew "openjdk"  # Java development kit
 brew "openssl@3"  # Cryptography and TLS toolkit

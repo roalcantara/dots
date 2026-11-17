@@ -1,0 +1,27 @@
+# Lig's whole config for this theme (https://github.com/KevenGoncalves/lig). Lig reads only
+# ~/.config/lig/config.toml, which links here through the active theme (config/lig/config.toml, dots theme),
+# and recolours open tabs when [ui] or [colors] change. Every section but [ui] and [colors] must be the same in
+# every theme: test/integration/bin/theme.spec.ts checks it.
+
+[ui]
+theme = "catppuccin"
+
+# Catppuccin Mocha (https://catppuccin.com/palette), so the flavour never depends on Lig's built-in.
+[colors]
+bg = "#1e1e2e"                      # base
+fg = "#cdd6f4"                      # text
+selected_bg = "#45475a"             # surface1
+selected_fg = "#cdd6f4"             # text
+match_fg = "#f38ba8"                # red, as fzf's matches
+description_fg = "#a6adc8"          # subtext0
+selected_description_fg = "#bac2de" # subtext1
+border_fg = "#6c7086"               # overlay0
+scrollbar_fg = "#585b70"            # surface2
+info_fg = "#cba6f7"                 # mauve
+
+[behavior]
+completers = [
+  "shell",
+] # a command with no Fig spec asks zsh's own completion (_todo, _dots, …)
+online = false # no package registry searches while typing
+history = false # Ctrl-R stays fzf's history widget

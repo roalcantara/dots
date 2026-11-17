@@ -28,6 +28,7 @@ const FILES = [
   "eza/theme.yml",
   "eza/LICENSE",
   "zsh-patina.toml",
+  "lig.toml",
 ];
 
 const vivid = Bun.which("vivid");
@@ -74,6 +75,54 @@ const choicesIn = (text: string) =>
   [...text.matchAll(/choices((?:\s+"[^"]+")+)/g)]
     .flatMap((m) => [...m[1].matchAll(/"([^"]+)"/g)].map((c) => c[1]))
     .sort();
+
+// Lig reads one file and has no include, so every theme carries the whole config; only [ui] and [colors] differ.
+const ligConfig = (name: string) => Bun.TOML.parse(readFileSync(join(THEMES, name, "lig.toml"), "utf8")) as Record<string, any>;
+const LIG_COLORS = [
+  "bg",
+  "fg",
+  "selected_bg",
+  "selected_fg",
+  "match_fg",
+  "description_fg",
+  "selected_description_fg",
+  "border_fg",
+  "scrollbar_fg",
+  "info_fg",
+];
+
+describe("Lig's config", () => {
+  it("lig.toml is the same in every theme but [ui] and [colors]", () => {
+    const shared = NAMES.map((name) => {
+      const { ui: _ui, colors: _colors, ...rest } = ligConfig(name);
+      return rest;
+    });
+    for (const rest of shared) expect(rest).toEqual(shared[0]);
+  });
+
+  it("lig.toml asks zsh's completion, and leaves Ctrl-R and the network alone", () => {
+    for (const name of NAMES) {
+      const { behavior } = ligConfig(name);
+      expect(behavior.completers).toEqual(["shell"]);
+      expect(behavior.online).toBe(false);
+      expect(behavior.history).toBe(false);
+    }
+  });
+
+  it("each lig.toml sets the colours explicitly", () => {
+    for (const name of NAMES) {
+      const { ui, colors } = ligConfig(name);
+      expect(ui.theme).toBe("catppuccin");
+      for (const key of LIG_COLORS) expect({ name, key, value: colors[key] }).toEqual({ name, key, value: expect.stringMatching(/^#[0-9a-f]{6}$/i) });
+    }
+    expect(ligConfig("catppuccin-mocha").colors.bg.toLowerCase()).toBe("#1e1e2e");
+    expect(ligConfig("catppuccin-macchiato").colors.bg.toLowerCase()).toBe("#24273a");
+  });
+
+  it("config/lig/config.toml points at the state link's lig.toml", () => {
+    expect(readlinkSync(join(repoRoot, "config/lig/config.toml"))).toBe("../../../../state/dots/theme/current/lig.toml");
+  });
+});
 
 describe("the Ghostty include", () => {
   it("auto points at the state link, four levels up from the repo", () => {
