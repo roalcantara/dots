@@ -111,7 +111,7 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
   it("starts noTunes and the menu-bar helpers at login without removing other login items", () => {
     expect(macos.login_items.apps).toEqual(["/Applications/noTunes.app", "/Applications/Raycast.app",
       "/Applications/Vorssaint.app", "/Applications/Bitwarden.app", "/Applications/Google Drive.app",
-      "/Applications/SwiftBar.app"]);
+      "/Applications/SwiftBar.app", "/Applications/CodexBar.app"]);
     expect(macos.login_items.exclusive).not.toBe(true);
   });
 
@@ -126,7 +126,7 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
     const casks: Record<string, string> = { "Google Chrome": "google-chrome", Ghostty: "ghostty",
       "Visual Studio Code": "visual-studio-code", Claude: "claude", ChatGPT: "chatgpt", WhatsApp: "whatsapp",
       Discord: "discord", noTunes: "notunes", Raycast: "raycast", Vorssaint: "vorssaint", Bitwarden: "bitwarden",
-      "Google Drive": "google-drive", SwiftBar: "swiftbar" };
+      "Google Drive": "google-drive", SwiftBar: "swiftbar", CodexBar: "codexbar" };
     for (const app of [...(macos.dock.apps as string[]), ...macos.login_items.apps]) {
       if (app.startsWith("/System/")) continue;
       const name = app.replace(/^\/Applications\//, "").replace(/\.app$/, "");

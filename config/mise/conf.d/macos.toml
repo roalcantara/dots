@@ -55,7 +55,7 @@ save_new_documents_to_cloud = false
 
 # Added to Open at Login; others stay (not exclusive). noTunes closes Apple Music whenever it opens (a Bluetooth
 # headset's play key starts it; see docs/MACOS.md); Raycast (launcher), Vorssaint (keep-awake, monitor), Bitwarden
-# (passwords) and Google Drive (sync) live in the menu bar.
+# (passwords), Google Drive (sync) and CodexBar (agent limits) live in the menu bar.
 [bootstrap.macos.login_items]
 apps = [
   "/Applications/noTunes.app",
@@ -64,6 +64,7 @@ apps = [
   "/Applications/Bitwarden.app",
   "/Applications/Google Drive.app",
   "/Applications/SwiftBar.app",
+  "/Applications/CodexBar.app",
 ]
 
 [bootstrap.macos.defaults.NSGlobalDomain]

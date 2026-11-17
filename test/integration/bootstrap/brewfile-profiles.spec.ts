@@ -25,6 +25,11 @@ describe.skipIf(!brew)("Brewfile profiles", () => {
     expect(desktop).toContain("gopass");
     expect(dev).toContain("gopass");
   });
+  it("codexbar (agent limits in the menu bar) for desktop and desktop,dev", () => {
+    expect(container).not.toContain("codexbar");
+    expect(desktop).toContain("codexbar");
+    expect(dev).toContain("codexbar");
+  });
   it("DEVTOOLS entries for desktop,dev only", () => {
     expect(desktop).not.toContain("shellcheck");
     expect(dev).toContain("shellcheck");
