@@ -28,7 +28,6 @@ command = ["fd -t f", "fd -t f -H", "fd -t f -H -I"]
 
 [preview]
 command = "bat -n --color=always '{}'"
-env = { BAT_THEME = "dracula" }
 
 [keybindings]
 shortcut = "f1"

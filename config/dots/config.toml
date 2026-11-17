@@ -1,0 +1,9 @@
+# Dots settings, read when a shell starts: edit a value, then open a new shell (or reload Ghostty, cmd+shift+,).
+# Linked to ~/.config/dots/config.toml. The guide is docs/THEME.md.
+
+[theme]
+# Every tool's colours: Ghostty, bat, fzf and the Tab menu, the prompt, zsh-patina, Lig.
+# One of config/theme/themes/: catppuccin-mocha, catppuccin-macchiato, dracula, tokyonight-storm, tokyonight-storm-custom.
+name = "tokyonight-storm"
+# Optional: eza's and ls's colours from another theme (leave it out to use the theme's own).
+eza = "tokyonight-storm-custom"

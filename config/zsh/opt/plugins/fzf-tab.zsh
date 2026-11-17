@@ -30,13 +30,10 @@ export FZF_DEFAULT_OPTS="
       --pointer '▶'
       --margin 1,1
       --color dark
+      $FZF_THEME_OPTS
       --prompt '❯ '
       --height=40%
       --tiebreak 'chunk'
-      --color fg:#f8f8f2,bg:-1,hl:#5f87af
-      --color fg+:#5beec4,bg+:#44475a,hl+:#bd93f9
-      --color info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6
-      --color marker:#ff79c6,spinner:#ffb86c,header:#6272a4
       --bind 'tab:down,btab:up'"
 
 # - [CTRL-T] $($FZF_CTRL_T_COMMAND) to get a list of files and directories and paste them onto the command-line
@@ -84,7 +81,7 @@ export FZF_ALT_C_OPTS="
 # export FZF_CTRL_R_OPTS="
 #       --prompt 'Selected command from history ❯ '
 #       --header '[^ y] copy command into clipboard'
-#       --preview '(highlight -O ansi -l {} 2> /dev/null || bat --color=always --theme=Dracula --line-range :50 {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'
+#       --preview '(highlight -O ansi -l {} 2> /dev/null || bat --color=always --line-range :50 {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'
 #       --bind 'tab:down,btab:up'
 #       --bind 'ctrl-y:execute-silent(echo {+} | pbcopy)'"
 
@@ -94,12 +91,17 @@ export FZF_ALT_C_OPTS="
 # c-x h -> get context of the completion
 zstyle -d ':completion:*' format
 
-# Group headers ([commands], [options]…) and one Dracula colour per group; `,` and `.` switch groups.
-# fzf-tab colours a whole candidate line per group, never the description alone (it ignores pattern list-colors).
+# Group headers ([commands], [options]…) and one theme colour per group, from the active theme's
+# DOTS_FZF_TAB_GROUP_COLORS; `,` and `.` switch groups. fzf-tab colours a whole candidate line per group, never the
+# description alone (it ignores pattern list-colors).
 zstyle ':fzf-tab:*' show-group full
-zstyle ':fzf-tab:*' group-colors \
-  $'\e[38;2;189;147;249m' $'\e[38;2;139;233;253m' $'\e[38;2;80;250;123m' \
-  $'\e[38;2;255;184;108m' $'\e[38;2;255;121;198m' $'\e[38;2;241;250;140m'
+if (( ${#DOTS_FZF_TAB_GROUP_COLORS} )); then
+  zstyle ':fzf-tab:*' group-colors "${DOTS_FZF_TAB_GROUP_COLORS[@]}"
+else
+  zstyle ':fzf-tab:*' group-colors \
+    $'\e[38;2;189;147;249m' $'\e[38;2;139;233;253m' $'\e[38;2;80;250;123m' \
+    $'\e[38;2;255;184;108m' $'\e[38;2;255;121;198m' $'\e[38;2;241;250;140m'
+fi
 zstyle ':fzf-tab:*' prefix ''
 
 # Preview window settings
@@ -114,7 +116,10 @@ zstyle ':fzf-tab:*' fzf-bindings 'space:accept'
 zstyle ':fzf-tab:*' accept-line enter
 # Pressing this key will use the currently entered user input as the final completion output
 zstyle ':fzf-tab:*' print-query alt-enter
-# NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
+# NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default, so it repeats the flags and takes its colours from
+# the theme's FZF_THEME_OPTS. The list stays bare (a prompt line, no boxes, the terminal's own background); only the
+# preview pane, shown when the menu has something to preview (_dots_ftb_previewable below), keeps its border, label
+# and the theme's preview background.
 zstyle ':fzf-tab:*' fzf-flags --bind=right:accept --bind=enter:accept \
     --cycle \
     --ansi \
@@ -126,25 +131,24 @@ zstyle ':fzf-tab:*' fzf-flags --bind=right:accept --bind=enter:accept \
     --height=40% \
     --tiebreak='chunk' \
     --layout=reverse \
-    --color='bg:-1,fg:#f8f8f2' \
-    --color='bg+:#44475a,fg+:#f8f8f2' \
-    --color='hl:#bd93f9,hl+:#ff79c6' \
-    --color='info:#6272a4,border:#6272a4' \
-    --color='prompt:#50fa7b,pointer:#ff79c6' \
-    --color='marker:#ff79c6,spinner:#ffb86c,header:#6272a4'
+    --no-separator \
+    --no-scrollbar \
+    --preview-label=' preview ' \
+    ${(z)FZF_THEME_OPTS} \
+    --color=bg:-1,list-bg:-1,input-bg:-1
 
 # Environment Variables completion configuration
 zstyle ':fzf-tab:complete:*:*:*:*:variables' \
-  fzf-preview 'bat --style=full --color=always --language=sh --theme=Dracula --line-range :500 <(echo ${(P)word}) 2>/dev/null || echo ${(P)word}'
+  fzf-preview 'bat --style=full --color=always --language=sh --line-range :500 <(echo ${(P)word}) 2>/dev/null || echo ${(P)word}'
 
 # Preview for environment variables (https://github.com/Aloxaf/fzf-tab/wiki/Preview#environment-variable)
 zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
-    fzf-preview 'bat --style=full --color=always --language=sh --theme=Dracula --line-range :500 <(echo ${(P)word}) 2>/dev/null || echo ${(P)word}'
+    fzf-preview 'bat --style=full --color=always --language=sh --line-range :500 <(echo ${(P)word}) 2>/dev/null || echo ${(P)word}'
 
 # Preview for man and run-help (https://github.com/Aloxaf/fzf-tab/wiki/Preview#other-tips)
 # Set up bat for man page previews in fzf-tab
-zstyle ':fzf-tab:complete:(\\|*/|)man:*' fzf-preview 'MANPAGER="sh -c \"col -bx | bat -l man --theme=Dracula -p --color=always\"" man ${word} 2>/dev/null || echo "No manual entry for ${word}"'
-zstyle ':fzf-tab:complete:(\\|)run-help:*' fzf-preview 'MANPAGER="sh -c \"col -bx | bat -l man --theme=Dracula -p --color=always\"" run-help ${word} 2>/dev/null || echo "No help for ${word}"'
+zstyle ':fzf-tab:complete:(\\|*/|)man:*' fzf-preview 'MANPAGER="sh -c \"col -bx | bat -l man -p --color=always\"" man ${word} 2>/dev/null || echo "No manual entry for ${word}"'
+zstyle ':fzf-tab:complete:(\\|)run-help:*' fzf-preview 'MANPAGER="sh -c \"col -bx | bat -l man -p --color=always\"" run-help ${word} 2>/dev/null || echo "No help for ${word}"'
 
 # Preview for systemctl (https://github.com/Aloxaf/fzf-tab/wiki/Preview#show-systemd-unit-status)
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
@@ -203,32 +207,46 @@ else
  fi
 fi'
 
-if _has_command eza; then
-  fzf_dir_preview='
-  if [ -d $realpath ]; then
-    eza --color=always --classify --group-directories-first --binary --long --icons --header --no-permissions --no-user --modified --time-style=iso -a --git $realpath
-  elif [[ $realpath =~ \.(jpg|jpeg|png|gif|bmp)$ ]]; then
-    chafa -c 256 --size=40x40 "$realpath"
+# One preview for a path, shared by the directory completions and the generic file branch: a directory lists as `la`
+# lists it ($DOTS_LA_CMD, set in config/zsh/opt/aliases/ls.zsh), a text file (any encoding but binary, so JSON and
+# SVG too) shows in bat, anything else (images, binaries) shows what `file` says it is. Previews run in a child shell, so this is a string inlined into the
+# zstyles, not a function. The command is word-split, never eval'd: a directory named `a$(cmd)` must not run cmd.
+_dots_preview_path='
+  if [[ -d $realpath ]]; then
+    ${=DOTS_LA_CMD} "$realpath"
+  elif [[ -f $realpath && $(file -b --mime-encoding "$realpath" 2>/dev/null) != binary ]]; then
+    bat --style=numbers,changes --color=always --line-range :300 "$realpath" 2>/dev/null || file -b "$realpath"
   else
-    bat --style=full --language=sh --color=always --theme=Dracula --line-range :500 <(eval echo $realpath) 2>/dev/null || echo $realpath
+    file -b "$realpath"
   fi'
-  zstyle ':fzf-tab:complete:eza:*' fzf-preview "$fzf_dir_preview"
-else
-  fzf_dir_preview='ls -1 --color=always $realpath'
-fi
 
-# preview directory's content with eza when completing cd (https://github.com/Aloxaf/fzf-tab/wiki/Preview)
-zstyle ':fzf-tab:complete:cd:*' fzf-preview "$fzf_dir_preview"
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview "$fzf_dir_preview"
-zstyle ':fzf-tab:complete:z:*' fzf-preview "$fzf_dir_preview"
+# Preview the directory's contents as `la` when completing eza, cd, z or __zoxide_z
+# (https://github.com/Aloxaf/fzf-tab/wiki/Preview)
+zstyle ':fzf-tab:complete:eza:*' fzf-preview "$_dots_preview_path"
+zstyle ':fzf-tab:complete:cd:*' fzf-preview "$_dots_preview_path"
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview "$_dots_preview_path"
+zstyle ':fzf-tab:complete:z:*' fzf-preview "$_dots_preview_path"
 
-# Every other completion, least specific so the previews above win: a file shows itself; a subcommand or flag,
-# its --help coloured by bat (config/bin/cmdhelp, which runs only subcommands the parent's help lists).
-zstyle ':fzf-tab:complete:*' fzf-preview "
-  if [[ -d \$realpath ]]; then
-    $fzf_dir_preview
-  elif [[ -f \$realpath ]]; then
-    bat --style=plain --color=always --theme=Dracula --line-range :300 \$realpath 2>/dev/null
+# True when this menu has something to preview: a path, a flag, or a described candidate (a subcommand's help). A plain
+# list of values (the theme names of `mise run theme:build <Tab>`) has none, so it gets no preview pane. fzf-tab looks the
+# zstyles up while its candidates are in $_ftb_compcap: "display\2…\0realdir\0dir…\0word\0word" per candidate.
+_dots_ftb_previewable() {
+  local entry word
+  for entry in "${_ftb_compcap[@]}"; do
+    [[ $entry == *$'\0realdir\0'* ]] && return 0
+    word=${entry##*$'\0word\0'}
+    [[ $word == -* || ${entry%%$'\2'*} != $word ]] && return 0
+  done
+  return 1
+}
+
+# Every other completion, least specific so the previews above win: a path shows through the shared helper; a
+# subcommand or flag, its --help coloured by bat (config/bin/cmdhelp, which runs only subcommands the parent's help
+# lists); a plain list of values, no preview at all.
+typeset -g _dots_ftb_generic_preview="
+  if [[ -e \$realpath ]]; then
+    $_dots_preview_path
   else
     cmdhelp \$word \"\${words[@]}\"
   fi"
+zstyle -e ':fzf-tab:complete:*' fzf-preview '_dots_ftb_previewable && reply=( "$_dots_ftb_generic_preview" ) || reply=()'

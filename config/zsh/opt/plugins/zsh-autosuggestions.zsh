@@ -24,7 +24,7 @@ export ZSH_HIGHLIGHT_IGNORE=("${(@)ZSH_HIGHLIGHT_IGNORE:#grc}")
 # ```
 
 export ZSH_AUTOSUGGEST_STRATEGY=(history completion)           # SUGGESTION STRATEGY (https://bit.ly/4adKbyi)
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=magenta,bold'       # HIGHLIGHT STYLE https://bit.ly/3C8Yk3o)
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=${ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE:-'fg=magenta,bold'}  # HIGHLIGHT STYLE (the theme sets it) https://bit.ly/3C8Yk3o)
 export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20                      # MAX SIZE OF THE BUFFER (https://github.com/zsh-users/zsh-autosuggestions?tab=readme-ov-file#disabling-suggestion-for-large-buffers)
 export ZSH_AUTOSUGGEST_USE_ASYNC=true                          # SUGGESTIONS ARE FETCHED ASYNCHRONOUSLY BY DEFAULT IN ZSH VERSIONS 5.0.8 AND GREATER (https://github.com/zsh-users/zsh-autosuggestions?tab=readme-ov-file#asynchronous-mode)
 

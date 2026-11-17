@@ -34,7 +34,7 @@
 # font-family = "Fira Code Retina"
 # font-feature = "'cv01', 'cv02', 'cv06', 'cv09', 'cv13', 'cv14', 'cv17', 'cv22', 'cv25', 'cv26', 'cv28', 'cv29', 'cv30', 'cv31', 'cv32', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss09', 'ss10', 'zero', 'onum'"
 
-font-family = Cascadia Code PL
+font-family = Cascadia Code NF
 font-feature = "'ss01', 'ss02', 'ss03', 'ss19', 'ss20', 'calt'"
 
 # font-family = JetBrainsMonoNL NFM
@@ -76,7 +76,7 @@ adjust-cell-height = 10
 # Some themes are "Ayu Mirage" "Andromeda" "catppuccin-macchiato" "catppuccin-mocha" "catppuccin-frappe" "Kanagawa Wave" "tokyonight_moon"
 # https://ghostty.org/docs/config/reference#theme
 # https://ghostty.town
-theme = TokyoNight Storm
+theme = Catppuccin Mocha
 # Color palette for the 256 colors used by many terminal apps (https://ditig.com/256-colors-cheat-sheet). It is defined as N=COLOR where:
 # - N is 0-255 of the terminal color table. It can be decimal (default), binary (0b), octal (0o), or hexadecimal (0x).
 # - COLOR is a typical RGB color code such as #AABBCC or AABBCC, or a named X11 color
@@ -551,4 +551,5 @@ keybind = shift+enter=text:/n
 
 # CONFIGS IN MULTIPLE FILES ----------------------------------------------------
 # https://ghostty.org/docs/config#splitting-into-multiple-files
+# `auto` is a link to the active theme folder (dots theme); it falls back to Catppuccin Mocha above.
 config-file = ?auto/theme.ghostty

@@ -3,12 +3,14 @@
 # run zsh-patina restart to apply changes
 
 [highlighting]
+# The active shell theme's file (config/dots/config.toml). DOTS_THEME_DIR is exported by
+# config/zsh/opt/rc.d/theme.zsh before zsh-patina starts; a new shell restarts the daemon when the theme changes.
 # Either the name of a built-in theme (e.g. `"simple"`, `"patina"`) or a string
 # in the form `"file:/path/mytheme.toml"` pointing to a custom theme toml file.
 # catppuccin-frappe | catppuccin-latte | catppuccin-macchiato |
 # catppuccin-mocha | classic | kanagawa | lavender | nord | simple |
 # solarized | tokyonight | patina
-theme = "tokyonight"
+theme = "file:$DOTS_THEME_DIR/zsh-patina.toml"
 
 # Enable or disable dynamic highlighting. Can be `true` or `false` ...
 dynamic = true

@@ -27,8 +27,7 @@ requirements = ["fabric-ai", "glow"]
 command = ["fd system.md ~/.config/fabric/patterns"]
 
 [preview]
-command = "glow -s dracula '{}'"
-env = { BAT_THEME = "dracula" }
+command = "glow '{}'"
 
 [keybindings]
 enter = "actions:run_pattern"

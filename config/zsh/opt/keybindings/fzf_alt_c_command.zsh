@@ -9,7 +9,7 @@ __fzf_alt_c_command() {
         elif [[ \"\$file\" =~ \\.(jpg|jpeg|png|gif|bmp)\$ ]]; then \
           chafa -c 256 --size=40x40 \"\$file\"; \
         else \
-          bat --style=header,numbers --language=sh --color=always --theme=Dracula --line-range :500 \"\$file\" 2>/dev/null || echo \"\$file\"; \
+          bat --style=header,numbers --language=sh --color=always --line-range :500 \"\$file\" 2>/dev/null || echo \"\$file\"; \
         fi" \
         --preview-window="right:45%" \
         --header '[^ Y] copy path into clipboard' \

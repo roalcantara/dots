@@ -44,12 +44,14 @@ brew "git" if OS.mac?  # Distributed revision control system
 brew "git-extras" if OS.mac?  # Small git utilities
 brew "git-lfs"  # Git extension for versioning large files
 brew "glow"  # Render Markdown in the terminal
+brew "gomi"  # `rm` that moves files to a restorable trash
 brew "gnu-sed" if OS.mac?  # GNU sed implementation
 brew "gopass"  # Secrets management tool
 brew "gum"  # Tool for glamorous shell scripts
 brew "hf" if OS.mac?  # Hugging Face CLI (oMLX models)
 brew "less" if OS.mac?  # Pager program similar to more
 brew "lesspipe" if OS.mac?  # Input filter for less
+brew "kevengoncalves/tap/lig", trusted: true  # IDE-style completion popup (docs/THEME.md)
 brew "node"  # JavaScript runtime and package manager support
 brew "openjdk"  # Java development kit
 brew "openssl@3"  # Cryptography and TLS toolkit
@@ -106,6 +108,7 @@ cask "transmission" if OS.mac? # Open-source BitTorrent client
 # cask "xykong/tap/flux-markdown", trusted: true if OS.mac?  # Markdown previews in Finder QuickLook with diagrams and math
 # Desktop: fonts (font casks install on macOS and Linux)
 cask "font-cascadia-code"
+cask "font-cascadia-code-nf"
 cask "font-cascadia-code-pl"
 cask "font-caskaydia-mono-nerd-font"
 cask "font-fira-code"
@@ -145,6 +148,7 @@ brew "ruby-lsp"  # Ruby language server
 brew "shfmt"  # Shell script formatter
 brew "shellcheck"  # Shell script static analysis tool
 brew "shellspec" if OS.mac?  # BDD framework for shells
+brew "vivid"  # LS_COLORS generator: `mise run theme:build`
 brew "tombi"  # TOML formatter, linter, and language server
 brew "typescript-language-server" if OS.mac?  # LSP for TypeScript
 brew "rust"  # Rust toolchain

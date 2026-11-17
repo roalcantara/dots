@@ -1,0 +1,27 @@
+# Lig's whole config for this theme (https://github.com/KevenGoncalves/lig). Lig reads only
+# ~/.config/lig/config.toml, which links here through the active theme (config/lig/config.toml, config/dots/config.toml),
+# and recolours open tabs when [ui] or [colors] change. Every section but [ui] and [colors] must be the same in
+# every theme: test/integration/bin/theme.spec.ts checks it.
+
+[ui]
+theme = "dracula"
+
+# Dracula (https://draculatheme.com/spec), the fzf colours' values, so the popup matches the Tab menu.
+[colors]
+bg = "#282a36"                      # background
+fg = "#f8f8f2"                      # foreground
+selected_bg = "#44475a"             # current line
+selected_fg = "#f8f8f2"             # foreground
+match_fg = "#bd93f9"                # purple, as fzf's matches
+description_fg = "#6272a4"          # comment
+selected_description_fg = "#8be9fd" # cyan
+border_fg = "#6272a4"               # comment
+scrollbar_fg = "#44475a"            # current line
+info_fg = "#ffb86c"                 # orange
+
+[behavior]
+completers = [
+  "shell",
+] # a command with no Fig spec asks zsh's own completion (_todo, _dots, …)
+online = false # no package registry searches while typing
+history = false # Ctrl-R stays the shell's own binding

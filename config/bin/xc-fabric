@@ -170,7 +170,7 @@ _boot_preview_cmd() {
   [[ -n "$_PREVIEW_CMD" ]] && { _ui_print_line "$_PREVIEW_CMD"; return 0; }
   local q gs
   q=$(printf '%q' "$_PATTERNS_DIR")
-  gs="${GLOW_STYLE:-dracula}"
+  gs="${GLOW_STYLE:-dark}"
   _PREVIEW_CMD="(export CLICOLOR_FORCE=1; export COLORTERM=truecolor; export TERM=\"\${TERM:-xterm-256color}\"; glow -s ${(q)gs} -w \"\${FZF_PREVIEW_COLUMNS:-80}\" ${q}/{1}/system.md </dev/null 2>/dev/null) || (bat --language=md --style=plain --color=always --paging=never ${q}/{1}/system.md 2>/dev/null) || (sed -n '1,120p' ${q}/{1}/system.md 2>/dev/null)"
   _ui_print_line "$_PREVIEW_CMD"
 }

@@ -27,8 +27,7 @@ requirements = ["glow"]
 command = ["fd SKILL.md ~/.agents/skills"]
 
 [preview]
-command = "glow -s dracula '{}'"
-env = { BAT_THEME = "dracula" }
+command = "glow '{}'"
 
 [keybindings]
 enter = "actions:copy"

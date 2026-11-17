@@ -36,6 +36,8 @@ tasks:
   - k6kR
   - bTDV
   - Dldn
+  - 08YL
+  - RFbd
   blocked_reason: null
   tags:
   - post
@@ -82,7 +84,7 @@ tasks:
   priority: Medium
   created: 2026-11-13T13:29:54.006211
 - id: EFly
-  status: Todo
+  status: Done
   description: 'Topic 1: Secrets in git with SOPS + age (LinkedIn in EN)'
   due: 2026-11-17T09:00:00
   actors:
@@ -104,6 +106,12 @@ tasks:
   - Orot
   - h87M
   - 4upJ
+  - GVh6
+  - joYV
+  - nMmB
+  - I2Yn
+  - fP41
+  - gHzj
   blocked_reason: null
   tags:
   - post
@@ -498,6 +506,8 @@ tasks:
   - oV6I
   - zGEn
   - t8EY
+  - wqnb
+  - 7L5h
   blocked_reason: null
   tags:
   - post
@@ -516,6 +526,8 @@ tasks:
   - boaP
   - HVZM
   - pGh8
+  - 3ItE
+  - AtP7
   blocked_reason: null
   tags:
   - series
@@ -915,4 +927,52 @@ comments:
   text: 'vars: hook=confession cover=series-terminal-diff-echo images=2-cover+wink-diff linkedin=link lang=en day=<author> tags=git,security,devops,productivity'
   actors: []
   task_id: EFly
+- id: 08YL
+  text: 'stats: 2026-11-17 devto views=10 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  actors: []
+  task_id: 6ThC
+- id: GVh6
+  text: 'devto.id: 5048726'
+  actors: []
+  task_id: EFly
+- id: joYV
+  text: 'devto.url: https://dev.to/roalcantara/secrets-in-git-encrypted-on-every-commit-sops-age-3g56-temp-slug-6858018'
+  actors: []
+  task_id: EFly
+- id: nMmB
+  text: 'stats: 2026-11-17 devto views=0 reactions=0 comments=0 (api)'
+  actors: []
+  task_id: EFly
+- id: wqnb
+  text: 'stats: 2026-11-17 devto views=40 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  actors: []
+  task_id: 6eS8
+- id: 3ItE
+  text: 'stats: 2026-11-17 github repo_views=392 repo_uniques=14 (api)'
+  actors: []
+  task_id: Yaw4
+- id: I2Yn
+  text: 'devto.url: https://dev.to/roalcantara/secrets-in-git-encrypted-on-every-commit-sops-age-3ll4'
+  actors: []
+  task_id: EFly
+- id: fP41
+  text: 'linkedin.url: https://lnkd.in/p/dS2vPuHd'
+  actors: []
+  task_id: EFly
+- id: RFbd
+  text: 'stats: 2026-11-17 devto views=10 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  actors: []
+  task_id: 6ThC
+- id: gHzj
+  text: 'stats: 2026-11-17 devto views=0 reactions=0 comments=0 referrer_linkedin=0 referrer_reddit=0 (api)'
+  actors: []
+  task_id: EFly
+- id: 7L5h
+  text: 'stats: 2026-11-17 devto views=40 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  actors: []
+  task_id: 6eS8
+- id: AtP7
+  text: 'stats: 2026-11-17 github repo_views=392 repo_uniques=14 (api)'
+  actors: []
+  task_id: Yaw4
 project: posts

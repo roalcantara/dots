@@ -22,7 +22,7 @@ During `mise bootstrap`, all executable scripts in `config/bin/` are symlinked i
 | [`barrel`](barrel) | TypeScript/JavaScript barrel (`index.ts`) export generator | `barrel ./src -r` |
 | [`recase`](recase) | File and string naming convention converter | `recase MyFile.ts --kebab` |
 | [`gen`](gen) | Shell completion generator from command usage specs | `gen mycmd` |
-| [`dots`](dots) | Dotfiles manager and runtime diagnostics | `dots doctor` |
+| [`dots`](dots) | Dotfiles manager and runtime diagnostics | `dots env` |
 | [`gitx`](gitx) | Interactive Git rebase and history dispatcher | `gitx fzl` |
 | [`psc`](psc) / [`pss`](pss) | Gopass secret copier (`psc`) and revealer (`pss`) | `psc github/token` |
 | [`zsys`](zsys) | Path, environment, and system diagnostics | `zsys --help` |
@@ -50,6 +50,10 @@ FORCE="${usage_force:-false}"
 
 # Command implementation
 ```
+
+Tab completion comes from the same spec: `mise run zsh:completions:usage [script]` writes
+`config/zsh/opt/completions/_<script>` with the spec embedded, so completing never runs the script. Rerun it after
+editing a `#USAGE` block; `test/integration/bin/usage-completions.spec.ts` fails on a stale completion.
 
 ## Tasks
 

@@ -1,9 +1,18 @@
 #!/usr/bin/env bun
 import { describe, expect, it } from "bun:test";
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const HOME = process.env.HOME as string;
+
+// fzf-tab looks its zstyles up while the menu's candidates are in $_ftb_compcap ("display\2…\0word\0word"); these
+// set one up, as a file (realdir), a described subcommand, or a bare value from a choices list.
+const menu = {
+  file: `_ftb_curcontext=complete:vim:argument-rest; _ftb_compcap=( $'notes.txt\\2\\0realdir\\0./\\0word\\0notes.txt' );`,
+  subcommand: `_ftb_curcontext=complete:dots:; _ftb_compcap=( $'theme  -- Show or switch\\2\\0word\\0theme' );`,
+  values: `_ftb_curcontext=complete:dots:; _ftb_compcap=( $'catppuccin-mocha\\2\\0word\\0catppuccin-mocha' );`,
+};
 
 const styles = (script: string) => {
   const p = Bun.spawnSync(
@@ -35,9 +44,63 @@ describe.skipIf(!existsSync(join(HOME, ".config/zsh/.zshrc")))("fzf-tab effectiv
     expect(styles(`zstyle -L ':fzf-tab:complete:mise:argument-rest' fzf-preview`)).toContain("mise tool");
   });
   it("any other command previews files, else coloured --help via cmdhelp; specific previews still win", () => {
-    const generic = styles(`zstyle -s ':fzf-tab:complete:vim:argument-rest' fzf-preview p; print -r -- $p`);
+    const generic = styles(`${menu.file} zstyle -s ':fzf-tab:complete:vim:argument-rest' fzf-preview p; print -r -- $p`);
     expect(generic).toContain("cmdhelp");
-    expect(generic).toContain("bat --style=plain");
+    expect(generic).toContain("DOTS_LA_CMD");
+    expect(generic).toContain("bat --style=numbers,changes");
     expect(styles(`zstyle -s ':fzf-tab:complete:git-log:argument-1' fzf-preview p; print -r -- $p`)).toContain("git show");
+  });
+  it("the list is bare in every menu; the preview keeps the theme's background", () => {
+    for (const setup of [menu.file, menu.values]) {
+      const flags = styles(`${setup} zstyle -a ':fzf-tab:*' fzf-flags f; print -rl -- $f`);
+      expect(flags).not.toContain("--style=full");
+      expect(flags).toContain("--color=bg:-1,list-bg:-1,input-bg:-1");
+      const theme = styles(`print -r -- $FZF_THEME_OPTS`);
+      const previewBg = theme.split(/\s+/).find((flag) => flag.startsWith("--color=preview-bg:"));
+      expect(previewBg).toBeString();
+      expect(flags).toContain(previewBg as string);
+    }
+  });
+  it("a described subcommand keeps its --help preview", () => {
+    expect(styles(`${menu.subcommand} zstyle -s ':fzf-tab:complete:dots:' fzf-preview p; print -r -- $p`)).toContain("cmdhelp");
+  });
+  it("a plain list of values has no preview", () => {
+    expect(styles(`${menu.values} zstyle -s ':fzf-tab:complete:dots:' fzf-preview p; print -r -- "[$p]"`)).toContain("[]");
+  });
+  it("no ls -l rows", () => {
+    const value = styles(`zstyle -s ':completion:*' file-list v && print -r -- $v || print unset`).trim();
+    expect(value).not.toBe("all");
+  });
+  it("la and the directory preview share one command", () => {
+    const command = styles("print -r -- $DOTS_LA_CMD").trim();
+    expect(command).toContain("eza");
+    expect(command).toContain("--color=always");
+    expect(styles("alias la").trim()).toContain(command);
+    expect(styles(`zstyle -s ':fzf-tab:complete:cd:*' fzf-preview p; print -r -- $p`)).toContain("DOTS_LA_CMD");
+  });
+  it("a directory preview never runs code from the directory's name", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ftb-preview-"));
+    const hostile = join(dir, "a$(touch PWNED)");
+    mkdirSync(hostile);
+    styles(
+      `zstyle -s ':fzf-tab:complete:cd:*' fzf-preview p; cd ${JSON.stringify(dir)}; realpath=${JSON.stringify(hostile).replace(/\$/g, "\\$")}; eval "$p" >/dev/null 2>&1`,
+    );
+    expect(existsSync(join(dir, "PWNED"))).toBe(false);
+    rmSync(dir, { recursive: true, force: true });
+  });
+  it("a JSON file previews its contents, a binary only its type", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ftb-preview-"));
+    const preview = (path: string) =>
+      styles(`${menu.file} zstyle -s ':fzf-tab:complete:vim:argument-rest' fzf-preview p; realpath=${JSON.stringify(path)}; eval "$p"`);
+    writeFileSync(join(dir, "package.json"), '{ "name": "probe-name" }\n');
+    expect(preview(join(dir, "package.json"))).toContain("probe-name");
+    expect(preview("/bin/ls")).not.toContain("\u0000");
+    rmSync(dir, { recursive: true, force: true });
+  });
+  it("group colours follow the theme", () => {
+    const theme = styles(`print -r -- \${(j:|:)DOTS_FZF_TAB_GROUP_COLORS}`).trim();
+    const groups = styles(`zstyle -a ':fzf-tab:*' group-colors c; print -r -- \${(j:|:)c}`).trim();
+    expect(theme.length).toBeGreaterThan(0);
+    expect(groups).toBe(theme);
   });
 });
