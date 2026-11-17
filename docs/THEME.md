@@ -72,6 +72,18 @@ When the link is missing or dangling, everything falls back to `catppuccin-mocha
 `file-list all` is gone from `config/zsh/opt/rc.d/env.zsh`, so file candidates stay one row per name instead of
 `ls -l` lines.
 
+## Risky commands
+
+While you type, `rm -rf`, `sudo rm`, `git push --force`, `git reset --hard`, `git clean -f`, `chmod -R 777`,
+`dd of=/dev/…` and `mkfs` paint the whole line in the theme's `DOTS_WARN_STYLE` (red background, crust text, bold)
+over zsh-patina's own colours. The cue leaves `rm x`, `rm -f x` and a name that merely mentions a command
+(`cat rm-rf-notes.txt`) alone.
+
+This is a `line-pre-redraw` hook (`config/zsh/opt/plugins/warn-highlight.zsh`) registered after zsh-patina. Option
+(a) from the spec — zsh-syntax-highlighting's pattern highlighter — is not available here: zsh-patina is the
+highlighter and zsh-syntax-highlighting is not loaded, so the pattern highlighter would have meant a second
+highlighting engine. zsh-patina removes only its own `memo=zsh_patina` regions, so the warning entry layers on top.
+
 ## Regenerate the colours
 
 `ls_colors` comes from [vivid](https://github.com/sharkdp/vivid) and is committed, so no shell start runs vivid:
