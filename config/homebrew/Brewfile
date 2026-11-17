@@ -156,7 +156,6 @@ cask "antigravity-ide" if OS.mac?  # AI coding agent IDE
 cask "antigravity" if OS.mac?  # Agent orchestration platform
 cask "brave-browser" if OS.mac?  # Privacy-focused browser
 cask "codex"  # OpenAI coding agent
-brew "gemini-cli"  # Google Gemini coding agent CLI
 cask "copilot-cli@prerelease"  # Copilot coding agent CLI
 cask "docker-desktop" if OS.mac?  # Container tooling
 cask "google-gemini" if OS.mac?  # Google Gemini app
