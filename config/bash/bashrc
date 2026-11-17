@@ -114,6 +114,15 @@ if ! command -v brew >/dev/null && [ -x "$HOMEBREW_PREFIX/bin/brew" ]; then
 fi
 export HOMEBREW_BUNDLE_FILE="$HOME/.local/share/dots/config/homebrew/Brewfile"
 
+# GOMI {
+  # `rm` sends files to a restorable trash instead of deleting them.
+  # The real rm is `\rm` or `command rm`; scripts and `bash -c` keep it.
+  # https://gomi.dev
+  if command -v gomi >/dev/null; then
+    alias rm=gomi
+  fi
+# }
+
 # MISE | https://mise.jdx.dev/ {
   if command -v mise >/dev/null; then
     eval "$(mise activate bash)"

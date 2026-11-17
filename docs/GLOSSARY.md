@@ -22,6 +22,8 @@ This glossary defines terms used across Dots configuration, documentation, and t
 | **restic repository** | Encrypted, deduplicated restic storage at `<backup root>/machines/<host>/restic`. |
 | **Theme** | One folder under `config/theme/themes/` holding the shell-side tools' colours, one small file per tool (`env.zsh`, `ls_colors`, `theme.ghostty`, …). |
 | **Current theme** | The theme folder the `current` link under `~/.local/state/dots/theme` points at; a missing link means `catppuccin-mocha`. |
+| **Warning pattern** | A command shape (`rm -rf`, `sudo rm`, `git push --force`, …) whose whole typed line `warn-highlight.zsh` paints in `DOTS_WARN_STYLE`. |
+| **Safety net** | gomi aliased to `rm` in interactive shells: files move to a restorable trash, and `\rm` or `command rm` still delete. |
 | **Snapshot** | Point-in-time backup archive inside a restic repository, tagged with the machine host name and `home:<home>` (the folder `restore` maps from). |
 | **Export** | Dated folder under `machines/<host>/exports/` holding machine audit reports and manual exports. |
 | **Reinstall audit** | `mise run reinstall:audit`: read-only evaluation of uncommitted git state, non-cask apps, and machine risk (`MANIFEST.md`). |

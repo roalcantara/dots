@@ -39,6 +39,11 @@ describe.skipIf(!brew)("Brewfile profiles", () => {
     expect(desktop).not.toContain("vivid");
     expect(dev).toContain("vivid");
   });
+  it("gomi (the rm safety net) is a desktop tool, not in containers", () => {
+    expect(container).not.toContain("gomi");
+    expect(desktop).toContain("gomi");
+    expect(dev).toContain("gomi");
+  });
   it("dev alone implies desktop", () => expect(list("dev")).toContain("gopass"));
   it("todo CLI (todo-cli from RayanBO/todo) for desktop,dev only, after rust", () => {
     expect(container).not.toContain("todo-cli");

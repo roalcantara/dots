@@ -44,6 +44,7 @@ brew "git" if OS.mac?  # Distributed revision control system
 brew "git-extras" if OS.mac?  # Small git utilities
 brew "git-lfs"  # Git extension for versioning large files
 brew "glow"  # Render Markdown in the terminal
+brew "gomi"  # `rm` that moves files to a restorable trash
 brew "gnu-sed" if OS.mac?  # GNU sed implementation
 brew "gopass"  # Secrets management tool
 brew "gum"  # Tool for glamorous shell scripts

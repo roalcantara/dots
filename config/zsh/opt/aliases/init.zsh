@@ -1,5 +1,6 @@
 source "${ZDOTDIR:-$HOME/.config/zsh}/opt/aliases/docker.zsh"
 source "${ZDOTDIR:-$HOME/.config/zsh}/opt/aliases/git.zsh"
 source "${ZDOTDIR:-$HOME/.config/zsh}/opt/aliases/ls.zsh"
+source "${ZDOTDIR:-$HOME/.config/zsh}/opt/aliases/safety.zsh"
 source "${ZDOTDIR:-$HOME/.config/zsh}/opt/aliases/util.zsh"
 source "${ZDOTDIR:-$HOME/.config/zsh}/opt/aliases/zshell.zsh"

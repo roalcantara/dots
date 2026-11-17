@@ -69,5 +69,6 @@ Keep every gate green before declaring work complete:
 - [`docs/REINSTALL.md`](docs/REINSTALL.md) — backup runbook and clean-machine reinstall procedure.
 - [`docs/MACOS.md`](docs/MACOS.md) — macOS preferences (`config/mise/conf.d/macos.toml`), drift checks, and undo.
 - [`docs/TILING.md`](docs/TILING.md) — yabai tiling, the fn layer (`config/karabiner`, `config/bin/yb`), and their setup.
+- [`docs/THEME.md`](docs/THEME.md) — The switchable shell theme (`dots theme`), tab menus, risky-command highlighting, and the gomi `rm`.
 - [`docs/GLOSSARY.md`](docs/GLOSSARY.md) — repository-wide definitions and domain terminology.
 - [`docs/blog/PLAYBOOK.md`](docs/blog/PLAYBOOK.md) — the blog series: goals, how a post moves, metadata in `TODO.yaml`, and [`STYLE.md`](docs/blog/STYLE.md).

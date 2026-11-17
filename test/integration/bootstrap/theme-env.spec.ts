@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // The shell reads the active theme: zsh's theme.zsh and bash's bashrc export the theme folder's values.
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { repoRoot } from "../bin/support/paths";
@@ -10,13 +10,18 @@ const HOME = process.env.HOME as string;
 const THEMES = join(repoRoot, "config/theme/themes");
 
 let dir = "";
+// A fake gomi on PATH lets the rm safety net be tested without moving real files to the trash.
+let fakeBin = "";
 beforeAll(() => {
   dir = mkdtempSync(join(tmpdir(), "dots-theme-env-"));
+  fakeBin = join(dir, "bin");
+  mkdirSync(fakeBin, { recursive: true });
+  writeFileSync(join(fakeBin, "gomi"), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
 });
 afterAll(() => rmSync(dir, { recursive: true, force: true }));
 
 // `script` makes zim and fzf load, as they would in a terminal. The output carries \r and a leading ^D.
-const envOf = (shell: "zsh" | "bash", link: string, script: string) => {
+const envOf = (shell: "zsh" | "bash", link: string, script: string, extra: Record<string, string> = {}) => {
   const r = Bun.spawnSync(
     [
       "env",
@@ -26,6 +31,7 @@ const envOf = (shell: "zsh" | "bash", link: string, script: string) => {
       `ZDOTDIR=${HOME}/.config/zsh`,
       `DOTS_THEME_LINK=${link}`,
       `DOTS_THEMES_DIR=${THEMES}`,
+      ...Object.entries(extra).map(([name, value]) => `${name}=${value}`),
       "script",
       "-q",
       "/dev/null",
@@ -38,8 +44,8 @@ const envOf = (shell: "zsh" | "bash", link: string, script: string) => {
   return r.stdout.toString().replace(/\r/g, "").replace(/^\^D\n?/, "");
 };
 
-const zsh = (link: string, script: string) => envOf("zsh", link, script);
-const bash = (link: string, script: string) => envOf("bash", link, script);
+const zsh = (link: string, script: string, extra?: Record<string, string>) => envOf("zsh", link, script, extra);
+const bash = (link: string, script: string, extra?: Record<string, string>) => envOf("bash", link, script, extra);
 
 describe("the shell reads the theme", () => {
   it("mocha exports its values", () => {
@@ -94,5 +100,38 @@ describe("the shell reads the theme", () => {
         expect({ file, batTheme: /--theme=/.test(text) }).toEqual({ file, batTheme: false });
       }
     }
+  });
+});
+
+describe("the rm safety net", () => {
+  const withGomi = () => ({ PATH: `${fakeBin}:${process.env.PATH}` });
+
+  it("rm is gomi in an interactive shell", () => {
+    const out = zsh(join(THEMES, "catppuccin-mocha"), "whence -w rm; alias rm", withGomi());
+    expect(out).toContain("rm: alias");
+    expect(out).toMatch(/^rm=gomi$/m);
+  });
+
+  it("rm stays rm in zsh -c and bash -c", () => {
+    const realRm = (shell: "zsh" | "bash", script: string) =>
+      Bun.spawnSync(
+        ["env", "-i", `HOME=${HOME}`, `PATH=${withGomi().PATH}`, `ZDOTDIR=${HOME}/.config/zsh`, shell, "-c", script],
+        { stdout: "pipe", stderr: "pipe" },
+      )
+        .stdout.toString()
+        .trim();
+    expect(realRm("zsh", "whence -p rm")).toMatch(/^\/(bin|usr\/bin)\/rm$/);
+    expect(realRm("bash", "type -P rm")).toMatch(/^\/(bin|usr\/bin)\/rm$/);
+  });
+
+  it("no gomi, no alias", () => {
+    // A missing file would also leave rm unaliased: assert the safety net file itself loaded.
+    const out = zsh(
+      join(THEMES, "catppuccin-mocha"),
+      'unalias rm 2>/dev/null; path=(/usr/bin /bin); hash -r; source "$ZDOTDIR/opt/aliases/safety.zsh"; whence -w rm',
+    );
+    expect(out).toContain("rm: command");
+    expect(out).not.toContain("rm: alias");
+    expect(out).not.toContain("no such file");
   });
 });

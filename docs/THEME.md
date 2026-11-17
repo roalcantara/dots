@@ -84,6 +84,22 @@ This is a `line-pre-redraw` hook (`config/zsh/opt/plugins/warn-highlight.zsh`) r
 highlighter and zsh-syntax-highlighting is not loaded, so the pattern highlighter would have meant a second
 highlighting engine. zsh-patina removes only its own `memo=zsh_patina` regions, so the warning entry layers on top.
 
+## Safety net
+
+`rm` in an interactive shell is [gomi](https://gomi.dev): files move to a trash you can restore from instead of
+being unlinked. `config/zsh/opt/aliases/safety.zsh` and `config/bash/bashrc` alias it only when `gomi` is on
+`PATH`; scripts, `zsh -c` and `bash -c` keep the real `rm`, and `\rm` or `command rm` deletes immediately.
+
+```sh
+rm notes.md              # moves notes.md to the trash
+gomi --restore           # pick a trashed file and put it back
+gomi --dry-run=table --prune=30d   # what --prune=30d would remove
+```
+
+On macOS and on Linux gomi uses the freedesktop trash: `$XDG_DATA_HOME/Trash` (`~/.local/share/Trash` by default),
+the file under `files/` and its original path and deletion time under `info/`. On macOS it does not use `~/.Trash`.
+Nothing empties the trash on a schedule; `gomi --prune=<duration>` does, and `--dry-run` shows the list first.
+
 ## Regenerate the colours
 
 `ls_colors` comes from [vivid](https://github.com/sharkdp/vivid) and is committed, so no shell start runs vivid:
