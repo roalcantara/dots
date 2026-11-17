@@ -64,7 +64,7 @@ Bun test.
     `_values -s , 'tag' <names…>`.
   - Both: stderr of `todo` discarded; with no tasks or tags, return 1 without calling `_describe` / `_values`.
 
-- [ ] **Step 1: Write the failing spec.** Helpers: `TODO_BIN` = `Bun.which("todo", { PATH: process.env.PATH +
+- [x] **Step 1: Write the failing spec.** Helpers: `TODO_BIN` = `Bun.which("todo", { PATH: process.env.PATH +
   ":" + (process.env.CARGO_HOME ?? HOME + "/.local/share/cargo") + "/bin" })`; `fixtureDir()` makes a temp dir with
   a copy of `test/integration/blog/fixtures/TODO.yaml` and `.todo/config` containing `yaml`; `run(dir, script)`
   spawns `zsh -fc` with `cwd: dir`, `PATH` including `dirname(TODO_BIN)`, and a prelude:
@@ -91,12 +91,12 @@ it("both stay silent without a TODO file", () => {
 });
 ```
 
-- [ ] **Step 2: Run, expect FAIL** (functions not found).
+- [x] **Step 2: Run, expect FAIL** (functions not found).
   Run: `mise run -C test integration bootstrap todo-completion` → fails in all 3 cases.
-- [ ] **Step 3: Write `_todo_task_ids` and `_todo_tags`** to the interface above (zsh; `local` everything; parse with
+- [x] **Step 3: Write `_todo_task_ids` and `_todo_tags`** to the interface above (zsh; `local` everything; parse with
   a zsh pattern or `${(f)"$(todo … 2>/dev/null)"}` and `[[ $line =~ … ]]`).
-- [ ] **Step 4: Run, expect PASS.** Same command → 3 pass.
-- [ ] **Step 5: Commit**
+- [x] **Step 4: Run, expect PASS.** Same command → 3 pass.
+- [x] **Step 5: Commit**
 
 ```bash
 g add config/zsh/opt/completions/_todo_task_ids config/zsh/opt/completions/_todo_tags test/integration/bootstrap/todo-completion.spec.ts
@@ -134,7 +134,7 @@ Substitutions (literal text of `todo completion zsh` 0.2.9 → replacement):
 | `:SET:_default` | `:SET:(todo en-cours done bloqued)` |
 | `md or yaml:_default` | `md or yaml:(md yaml)` |
 
-- [ ] **Step 1: Add the failing cases** to the spec:
+- [x] **Step 1: Add the failing cases** to the spec:
 
 ```ts
 it("compinit binds todo to _todo, not zsh's _devtodo", () => {
@@ -161,14 +161,14 @@ it("the generator fails, naming the placeholder, when todo's output changes", ()
   `todo` dir, then `process.env.PATH`. The compinit case does not need `todo` (put it outside the `skipIf`, under
   `describe.skipIf(!Bun.which("zsh"))`).
 
-- [ ] **Step 2: Run, expect FAIL** → the 3 new cases fail (`_devtodo`; script missing).
-- [ ] **Step 3: Write `script/todo-completion.sh`**, make it executable (`chmod +x`), add the mise task.
-- [ ] **Step 4: Generate:** `mise run zsh:completions:todo`, then
+- [x] **Step 2: Run, expect FAIL** → the 3 new cases fail (`_devtodo`; script missing).
+- [x] **Step 3: Write `script/todo-completion.sh`**, make it executable (`chmod +x`), add the mise task.
+- [x] **Step 4: Generate:** `mise run zsh:completions:todo`, then
   `grep -c '_todo_task_ids\|_todo_tags\|(low medium high)\|(todo en-cours done bloqued)\|(md yaml)' config/zsh/opt/completions/_todo`
   → 12 (4 task-ID, 3 tag, 3 priority, 1 set, 1 format) and `grep -c ':_default' …/_todo` → 18 (of the 30
   generated; the free-text flags keep `_default`).
-- [ ] **Step 5: Run, expect PASS.** `mise run -C test integration bootstrap todo-completion` → 6 pass.
-- [ ] **Step 6: Commit**
+- [x] **Step 5: Run, expect PASS.** `mise run -C test integration bootstrap todo-completion` → 6 pass.
+- [x] **Step 6: Commit**
 
 ```bash
 g add script/todo-completion.sh config/zsh/opt/completions/_todo mise.toml test/integration/bootstrap/todo-completion.spec.ts
@@ -188,7 +188,7 @@ g commit -m "feat(zsh): Generate todo's completion, which replaces zsh's _devtod
 - Consumes: `todo list --tasks` output format (Task 1).
 - Produces: effective zstyles of an interactive zsh, as asserted below.
 
-- [ ] **Step 1: Write the failing spec.** `styles(script)` spawns
+- [x] **Step 1: Write the failing spec.** `styles(script)` spawns
   `env -i HOME=$HOME TERM=xterm-256color ZDOTDIR=$HOME/.config/zsh zsh -ic "<script>"` (as
   `script/zsh-verify.sh` does) and returns stdout; `describe.skipIf(!existsSync(join(HOME, ".config/zsh/.zshrc")))`.
 
@@ -212,9 +212,9 @@ it("previews: todo task details and mise tool info", () => {
 });
 ```
 
-- [ ] **Step 2: Run, expect FAIL.** `mise run -C test integration bootstrap fzf-tab-styles` → all but the
+- [x] **Step 2: Run, expect FAIL.** `mise run -C test integration bootstrap fzf-tab-styles` → all but the
   continuous-trigger half fail.
-- [ ] **Step 3: Edit.**
+- [x] **Step 3: Edit.**
   - `zim.zsh` `zim::overrides`: `zstyle ':completion:*' menu select=2` → `zstyle ':completion:*' menu no`, and add
     `zstyle ':completion:*:descriptions' format '[%d]'`; reword the comment above to say both follow fzf-tab's README
     (zsh's menu would compete with fzf-tab; escape sequences in the descriptions format disable its groups).
@@ -225,9 +225,9 @@ it("previews: todo task details and mise tool info", () => {
   - `fzf-tab.zsh`, new block after the brew preview: context `':fzf-tab:complete:todo*:*'`; preview prints the
     block of `todo list --tasks 2>/dev/null` from the line containing ` $word — ` up to the next task line, and
     otherwise `todo $word --help 2>/dev/null` (a subcommand); comment: a task ID shows the task, a subcommand its help.
-- [ ] **Step 4: Run, expect PASS.** Same command → 6 pass. Then `mise run zsh:verify`: syntax OK; parity may report
+- [x] **Step 4: Run, expect PASS.** Same command → 6 pass. Then `mise run zsh:verify`: syntax OK; parity may report
   diffs only under `### FUNCTIONS` (new `_todo*` names); anything else is a failure to fix.
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 g add config/zsh/opt/rc.d/zim.zsh config/zsh/opt/rc.d/env.zsh config/zsh/opt/plugins/fzf-tab.zsh test/integration/bootstrap/fzf-tab-styles.spec.ts
@@ -236,12 +236,12 @@ g commit -m "fix(zsh): Align the fzf-tab setup with its README and preview todo 
 
 ### Task 4: Gates and the owner's check
 
-- [ ] **Step 1:** `mise run test:specs` → exit 0; `hk check --all` → exit 0; `mise run zsh:verify` → syntax OK and
+- [x] **Step 1:** `mise run test:specs` → exit 0; `hk check --all` → exit 0; `mise run zsh:verify` → syntax OK and
   parity diffs only under `### FUNCTIONS` (quote the diff lines in the handoff).
-- [ ] **Step 2: Owner checkpoint (stop and ask; do not tick for the owner).** Ask the owner to open a new terminal in
+- [x] **Step 2: Owner checkpoint (stop and ask; do not tick for the owner).** Ask the owner to open a new terminal in
   the repo root and try, reporting what each shows: `todo <Tab>` (subcommands, no error), `todo status <Tab>`
   (tasks with descriptions, preview), `todo list --priority <Tab>` (`low medium high`), `todo add --tag <Tab>`,
   `git checkout <Tab>`, `cd <Tab>` (eza preview), `mise install <Tab>` (`mise tool` preview), and Tab inside a list
   (accepts and continues). Also `cd /tmp; todo status <Tab>`: nothing offered, no error.
-- [ ] **Step 3:** Tick this plan's boxes except Step 2, commit (`docs(plans): Tick the todo completion plan`),
+- [x] **Step 3:** Tick this plan's boxes except Step 2, commit (`docs(plans): Tick the todo completion plan`),
   then `/wip:handoff plan=docs/superpowers/plans/2026-11-16-todo-zsh-completion.md`.
