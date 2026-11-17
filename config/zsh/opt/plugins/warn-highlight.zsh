@@ -67,13 +67,49 @@ _dots_warn_dd() {
   return 1
 }
 
-# True when the buffer starts a risky command. Words are split as the shell parses them, so a separator resets the
-# command position and a file name that merely mentions rm (cat rm-rf-notes.txt) never counts.
+# Token offsets in the buffer: reply=(start end) per word, 1-based and inclusive (0 when a token is not found). `(z)`
+# keeps quotes, so every token can be searched for literally, in order.
+_dots_warn_offsets() {
+  emulate -L zsh
+  local -a words starts ends
+  words=( ${(z)1} )
+  local pos=1 rest off token
+  for token in "${words[@]}"; do
+    rest=${1[pos,-1]}
+    off=${rest[(i)${(b)token}]}
+    if (( off )); then
+      starts+=( $(( pos + off - 1 )) )
+      ends+=( $(( pos + off + ${#token} - 2 )) )
+      pos=$(( pos + off + ${#token} - 1 ))
+    else
+      starts+=( 0 )
+      ends+=( 0 )
+    fi
+  done
+  reply=( "${starts[@]}" "${ends[@]}" )
+}
+
+# reply=(start end) for the warning region: zle counts from 0, and the 1-based inclusive end doubles as the
+# exclusive end.
+_dots_warn_span() {
+  reply=( $(( $1 - 1 )) $2 )
+}
+
+# True when the buffer starts a risky command; reply=(start end) covers the command and its flags, not its operands.
+# Words are split as the shell parses them, so a separator resets the command position and a file name that merely
+# mentions rm (cat rm-rf-notes.txt) never counts.
 _dots_warn_risky() {
   emulate -L zsh
-  local -a words
-  words=( ${(z)1} ) 2>/dev/null
-  local n=${#words} i=1 expect_cmd=1 is_sudo=0 w
+  [[ -n $1 ]] || return 1
+  local -a words starts ends
+  words=( ${(z)1} )
+  local n=${#words}
+  (( n )) || return 1
+  _dots_warn_offsets "$1"
+  starts=( "${(@)reply[1,$n]}" )
+  ends=( "${(@)reply[$(( n + 1 )),-1]}" )
+
+  local i=1 expect_cmd=1 is_sudo=0 w j k
   while (( i <= n )); do
     w=${words[i]}
     case $w in
@@ -96,13 +132,58 @@ _dots_warn_risky() {
           case $w in
             rm)
               # sudo can do damage even without -rf, so any sudo rm is worth the cue.
-              (( is_sudo )) && return 0
-              _dots_warn_rm "${(@)words[i + 1, -1]}" && return 0
+              if (( is_sudo )); then
+                _dots_warn_span "${starts[i]}" "${ends[i]}"
+                return 0
+              fi
+              if _dots_warn_rm "${(@)words[i + 1, -1]}"; then
+                j=$i
+                for (( k = i + 1; k <= n; k++ )); do
+                  [[ ${words[k]} == -* ]] || break
+                  j=$k
+                done
+                _dots_warn_span "${starts[i]}" "${ends[j]}"
+                return 0
+              fi
               ;;
-            git) _dots_warn_git "${(@)words[i + 1, -1]}" && return 0 ;;
-            chmod) _dots_warn_chmod "${(@)words[i + 1, -1]}" && return 0 ;;
-            dd) _dots_warn_dd "${(@)words[i + 1, -1]}" && return 0 ;;
-            mkfs | mkfs.*) return 0 ;;
+            git)
+              if _dots_warn_git "${(@)words[i + 1, -1]}"; then
+                j=$(( i + 1 ))
+                for (( k = i + 1; k <= n; k++ )); do
+                  [[ ${words[k]} == -* ]] && j=$k
+                done
+                _dots_warn_span "${starts[i]}" "${ends[j]}"
+                return 0
+              fi
+              ;;
+            chmod)
+              if _dots_warn_chmod "${(@)words[i + 1, -1]}"; then
+                j=$i
+                for (( k = i + 1; k <= n; k++ )); do
+                  case ${words[k]} in
+                    -*) j=$k ;;
+                    777 | [0-7]777) j=$k; break ;;
+                    *) break ;;
+                  esac
+                done
+                _dots_warn_span "${starts[i]}" "${ends[j]}"
+                return 0
+              fi
+              ;;
+            dd)
+              if _dots_warn_dd "${(@)words[i + 1, -1]}"; then
+                j=$i
+                for (( k = i + 1; k <= n; k++ )); do
+                  [[ ${words[k]} == of=/dev/* ]] && { j=$k; break; }
+                done
+                _dots_warn_span "${starts[i]}" "${ends[j]}"
+                return 0
+              fi
+              ;;
+            mkfs | mkfs.*)
+              _dots_warn_span "${starts[i]}" "${ends[i]}"
+              return 0
+              ;;
           esac
         fi
         ;;
@@ -112,13 +193,13 @@ _dots_warn_risky() {
   return 1
 }
 
-# Paint the whole buffer; drop the previous entry first so the regions never accumulate.
+# Paint the risky command; drop the previous entry first so the regions never accumulate.
 _dots_warn_highlight() {
   emulate -L zsh
   region_highlight=( "${region_highlight[@]:#*memo=dots-warn}" )
   [[ -n $BUFFER && -n $DOTS_WARN_STYLE ]] || return
   _dots_warn_risky "$BUFFER" || return
-  region_highlight+=( "0 ${#BUFFER} ${DOTS_WARN_STYLE} memo=dots-warn" )
+  region_highlight+=( "${reply[1]} ${reply[2]} ${DOTS_WARN_STYLE} memo=dots-warn" )
 }
 
 autoload -Uz add-zle-hook-widget

@@ -53,6 +53,9 @@ const regions = (buffer: string) =>
 
 const marked = (buffer: string) => regions(buffer).some((line) => line.toLowerCase().includes(WARN_STYLE));
 
+const warnRegion = (buffer: string) =>
+  regions(buffer).find((line) => line.toLowerCase().includes(WARN_STYLE)) ?? "";
+
 describe("risky commands get the warning colour", () => {
   it("the hook is registered", () => {
     const out = zsh('print -r -- "$+functions[_dots_warn_highlight]|${widgets[zle-line-pre-redraw]}"');
@@ -63,4 +66,13 @@ describe("risky commands get the warning colour", () => {
   it("git push --force is marked", () => expect(marked("git push --force")).toBe(true));
   it("rm x is not marked", () => expect(marked("rm x")).toBe(false));
   it("rm-rf-notes.txt is not marked", () => expect(marked("cat rm-rf-notes.txt")).toBe(false));
+  it("the cue covers the command and its flags, not the operand", () => {
+    expect(warnRegion("rm -rf x")).toMatch(/^0 6 /);
+    expect(warnRegion("chmod -R 777 dir")).toMatch(/^0 12 /);
+    expect(warnRegion("git push --force origin")).toMatch(/^0 16 /);
+  });
+  it("the cue starts at the command after a separator", () => {
+    expect(warnRegion("echo hi; rm -rf x")).toMatch(/^9 15 /);
+  });
+  it("sudo rm cues rm, not sudo", () => expect(warnRegion("sudo rm x")).toMatch(/^5 7 /));
 });
