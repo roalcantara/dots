@@ -135,19 +135,32 @@ done
 # keybindings and snippets (the repo is their source) and leave it on for extensions, state and the rest.
 # VS Code keeps these choices in its state database, not settings.json; a running VS Code reads them at start.
 [bootstrap.hooks.post-dotfiles]
-description = "Turn off VS Code Settings Sync for settings, keybindings and snippets"
+description = "Turn off VS Code Settings Sync for settings, keybindings and snippets; set up the shell theme and Lig"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-[ "$(uname)" = Darwin ] || exit 0
-command -v sqlite3 >/dev/null || exit 0
-db="${DOTS_VSCODE_STATE:-$HOME/Library/Application Support/Code/User/globalStorage/state.vscdb}"
-mkdir -p "$(dirname "$db")"
-sqlite3 -cmd ".timeout 5000" "$db" "
+if [ "$(uname)" = Darwin ] && command -v sqlite3 >/dev/null; then
+  db="${DOTS_VSCODE_STATE:-$HOME/Library/Application Support/Code/User/globalStorage/state.vscdb}"
+  mkdir -p "$(dirname "$db")"
+  sqlite3 -cmd ".timeout 5000" "$db" "
 CREATE TABLE IF NOT EXISTS ItemTable (key TEXT UNIQUE ON CONFLICT REPLACE, value BLOB);
 INSERT INTO ItemTable (key, value) VALUES
   ('sync.enable.settings', 'false'), ('sync.enable.keybindings', 'false'), ('sync.enable.snippets', 'false');
 " || echo "bootstrap: could not turn off VS Code Settings Sync for settings, keybindings and snippets" >&2
+fi
+
+# The active shell theme link (dots theme). Without it the shell falls back to Mocha, but Lig's config link
+# (config/lig/config.toml) would dangle and Lig would run on its defaults, online search on.
+link="${DOTS_THEME_LINK:-${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current}"
+if [ ! -e "$link" ] && [ ! -L "$link" ]; then
+  mkdir -p "$(dirname "$link")"
+  ln -s "${DOTS_THEMES_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/theme/themes}/catppuccin-mocha" "$link"
+fi
+
+# Lig's cached zsh integration (config/zsh/opt/rc.d/lig.zsh), on desktops where Lig is installed.
+if command -v lig >/dev/null; then
+  mise -C "${DOTS_DIR:-$HOME/.local/share/dots}" run zsh:lig
+fi
 '''
 
 # The source of [dotfiles.claude-skills]: mise refuses a link whose source is missing, and `skills:restore`

@@ -88,16 +88,20 @@ mise dot status                  # secrets history: tracked files, unsaved chang
 todo list                        # the repo's next tasks (root TODO.yaml; run from the repo root)
 ```
 
-### Theme and deleting
+### Theme, completion and deleting
 
 ```sh
 dots theme                        # list themes; * marks the active one
 dots theme catppuccin-macchiato   # switch (a new shell and Ghostty follow)
+mise run zsh:lig                  # after `brew upgrade lig`: refresh Lig's cached shell integration
+LIG_DISABLE=1 zsh                 # a shell without Lig's popup
 gomi --restore                    # bring back a file deleted by mistake
 ```
 
-Every shell-side tool takes its colours from the active theme. `rm` in an interactive shell moves files to gomi's
-trash instead of deleting them; `\rm` and `command rm` still delete. See the [theme guide](docs/THEME.md).
+Every shell-side tool takes its colours from the active theme. Completions pop up under the cursor as you type
+([Lig](https://github.com/KevenGoncalves/lig)); Tab with the popup closed opens fzf-tab's menu. `rm` in an
+interactive shell moves files to gomi's trash instead of deleting them; `\rm` and `command rm` still delete. See the
+[theme guide](docs/THEME.md).
 
 ### Find, add and remove packages
 
