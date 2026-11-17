@@ -8,7 +8,7 @@ Read in the same minute as each candidate:
 
 | Agent | Reference |
 | --- | --- |
-| Claude | VS Code Claude Code panel: session (5h), weekly (7d), Fable limit |
+| Claude | `claude -p /usage`: session (5h), week (all models), week (Fable). The VS Code panel lagged it by 8 points, so it is not used |
 | Codex | `omp usage`: 30-day window (free plan) |
 | Copilot | `omp usage`: monthly premium requests |
 | Gemini | `agy -p /usage`: Gemini 5h and weekly, Claude-and-GPT 5h and weekly, per-model weekly (Google AI Pro) |
@@ -43,3 +43,4 @@ Agent cells: `pass` / `wrong: <what>` / `missing`, with the tool's reading again
 
 | Candidate | Version | Claude | Codex | Copilot | Gemini | Fable | Tokens/cost | Menu bar | Widgets | Credentials read | Prompts | Install | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| CodexBar | 0.84.0 | pass: 41/24 = `/usage` 41/24 | pass: 30-day 34% = `omp` 34%, drawn as one window | pass: 0.3% = `omp` 21/7K | pass: Claude/GPT 28.6% used, Gemini 1.4% = `agy` 71%/99% left | pass: 0% | pass: Claude 30-day $309.38 / 909M vs ccusage $311.57 / 984M (window differs by 2 days); daily chart, per model | pass | WidgetKit (bundled) | Claude Code Keychain item (OAuth) or runs `claude /usage`; Codex CLI login; GitHub device flow; Antigravity sign-in | one Keychain "Always Allow" for Claude; skips browser-cookie prompts in background | cask, Notarized Developer ID, CLI linked as `codexbar` | pending: expired-login check, 30-minute watch, widget |
