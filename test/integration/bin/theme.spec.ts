@@ -75,6 +75,19 @@ const choicesIn = (text: string) =>
     .flatMap((m) => [...m[1].matchAll(/"([^"]+)"/g)].map((c) => c[1]))
     .sort();
 
+describe("the Ghostty include", () => {
+  it("auto points at the state link, four levels up from the repo", () => {
+    // The repo is installed at ~/.local/share/dots: four levels up is ~/.local, then state/dots/theme/current.
+    expect(readlinkSync(join(repoRoot, "config/ghostty/auto"))).toBe("../../../../state/dots/theme/current");
+  });
+
+  it("config.ghostty includes it after its fallback theme", () => {
+    const config = readFileSync(join(repoRoot, "config/ghostty/config.ghostty"), "utf8");
+    expect(config).toContain("config-file = ?auto/theme.ghostty");
+    expect(config.indexOf("config-file = ?auto/theme.ghostty")).toBeGreaterThan(config.indexOf("theme = Catppuccin Mocha"));
+  });
+});
+
 describe("dots theme", () => {
   let dir = "";
   let link = "";
