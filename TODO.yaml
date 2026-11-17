@@ -1,0 +1,92 @@
+tasks:
+- id: zOaU
+  status: Todo
+  description: 'Shell UX: switchable theme (Catppuccin Mocha + Latte) across Ghostty, fzf, bat, zsh-patina, vivid LS_COLORS, eza, delta; Nerd Font'
+  due: null
+  actors: []
+  comments: []
+  blocked_reason: null
+  tags:
+  - adopt
+  - shell-ux
+  - theme
+  priority: High
+  created: 2026-11-17T00:53:26.855898
+- id: SEPc
+  status: Todo
+  description: 'Shell UX: fzf-tab --style full framed menus, drop file-list all, eza/bat previews matching la'
+  due: null
+  actors: []
+  comments: []
+  blocked_reason: null
+  tags:
+  - adopt
+  - fzf-tab
+  - shell-ux
+  priority: High
+  created: 2026-11-17T00:53:26.859897
+- id: oQ32
+  status: Todo
+  description: 'Shell UX: rm -rf / force-push warning colour over zsh-patina'
+  due: null
+  actors: []
+  comments: []
+  blocked_reason: null
+  tags:
+  - adopt
+  - safety
+  - shell-ux
+  priority: Medium
+  created: 2026-11-17T00:53:26.863820
+- id: 8J0f
+  status: Todo
+  description: 'Shell UX: gomi as rm in interactive shells (trash + restore)'
+  due: null
+  actors: []
+  comments: []
+  blocked_reason: null
+  tags:
+  - adopt
+  - safety
+  - shell-ux
+  priority: Medium
+  created: 2026-11-17T00:53:26.868239
+- id: wecN
+  status: Todo
+  description: 'Shell UX spike: Lig IDE-style autocomplete popup'
+  due: null
+  actors: []
+  comments: []
+  blocked_reason: null
+  tags:
+  - shell-ux
+  - try
+  priority: Low
+  created: 2026-11-17T00:53:26.872320
+- id: Tyn0
+  status: Todo
+  description: 'Shell UX spike: atuin for Ctrl-R history'
+  due: null
+  actors: []
+  comments: []
+  blocked_reason: null
+  tags:
+  - shell-ux
+  - try
+  priority: Low
+  created: 2026-11-17T00:53:26.875686
+- id: r74E
+  status: Todo
+  description: 'Shell UX spike: fish 4 in a second Ghostty profile'
+  due: null
+  actors: []
+  comments: []
+  blocked_reason: null
+  tags:
+  - shell-ux
+  - try
+  priority: Low
+  created: 2026-11-17T00:53:26.879036
+actors: []
+comments: []
+project: dots

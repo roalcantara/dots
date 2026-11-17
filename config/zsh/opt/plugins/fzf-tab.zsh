@@ -92,17 +92,18 @@ export FZF_ALT_C_OPTS="
 # https://github.com/Aloxaf/fzf-tab
 # https://github.com/Aloxaf/fzf-tab/wiki/Configuration
 # c-x h -> get context of the completion
-zstyle ':fzf-tab:complete:*' menu no
 zstyle -d ':completion:*' format
 
-# Disable group headers
-zstyle ':fzf-tab:*' show-group none
-zstyle ':fzf-tab:*' group-colors $'\e[0m'
+# Group headers ([commands], [options]…) and one Dracula colour per group; `,` and `.` switch groups.
+# fzf-tab colours a whole candidate line per group, never the description alone (it ignores pattern list-colors).
+zstyle ':fzf-tab:*' show-group full
+zstyle ':fzf-tab:*' group-colors \
+  $'\e[38;2;189;147;249m' $'\e[38;2;139;233;253m' $'\e[38;2;80;250;123m' \
+  $'\e[38;2;255;184;108m' $'\e[38;2;255;121;198m' $'\e[38;2;241;250;140m'
 zstyle ':fzf-tab:*' prefix ''
 
 # Preview window settings
 zstyle ':fzf-tab:*' fzf-command fzf
-zstyle ':fzf-tab:*' list-colors ${(s.:.)LS_COLORS}
 # It specifies the key to trigger a continuous completion (accept the result and start another completion immediately). It's useful when completing a long path.
 zstyle ':fzf-tab:*' continuous-trigger 'tab'
 zstyle ':fzf-tab:*' switch-group ',' '.'
@@ -114,7 +115,7 @@ zstyle ':fzf-tab:*' accept-line enter
 # Pressing this key will use the currently entered user input as the final completion output
 zstyle ':fzf-tab:*' print-query alt-enter
 # NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
-zstyle ':fzf-tab:*' fzf-flags --bind=tab:accept --bind=right:accept --bind=enter:accept \
+zstyle ':fzf-tab:*' fzf-flags --bind=right:accept --bind=enter:accept \
     --cycle \
     --ansi \
     --inline-info \
@@ -149,13 +150,23 @@ zstyle ':fzf-tab:complete:(\\|)run-help:*' fzf-preview 'MANPAGER="sh -c \"col -b
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
 
 # Preview for brew (https://github.com/Aloxaf/fzf-tab/wiki/Preview#homebrew)
-zstyle ':fzf-tab:complete:brew-(install|uninstall|search|info):*-argument-rest' fzf-preview 'brew info $word'
+zstyle ':fzf-tab:complete:brew-(install|uninstall|search|info):*-argument-rest' fzf-preview '
+  if [[ $word == -* ]]; then cmdhelp $word "${words[@]}"; else brew info $word; fi'
+
+# Preview for todo: a task ID shows the task; anything else, the help (cmdhelp)
+zstyle ':fzf-tab:complete:todo*:*' fzf-preview '
+  out=$(todo list --tasks 2>/dev/null | awk -v w=" $word — " '\''index($0, w) { p=1 } p { if (p > 1 && /^ *\[/) exit; print; p++ }'\'')
+  if [[ -n "$out" ]]; then
+    printf "%s\n" "$out"
+  else
+    cmdhelp $word "${words[@]}"
+  fi'
 
 # tags in context :completion::complete:mise:: argument-rest  (_arguments _mise)
 # tags in context :completion::complete:mise:argument-rest: argument-rest  (_arguments _mise)
-# Preview for mise install command with registry information
-# Create the preview function in your .zshrc
-zstyle ':fzf-tab:complete:mise:argument-rest' fzf-preview 'mise_tool_preview $word'
+# Preview for mise install command with tool information
+# Run mise tool $word for tool details
+zstyle ':fzf-tab:complete:mise:argument-rest' fzf-preview 'mise tool $word'
 
 # GIT (https://github.com/Aloxaf/fzf-tab/wiki/Preview#git)
 zstyle ':fzf-tab:complete:git-log:*' fzf-preview 'git show --color=always $word | bat --color=always -l diff -p' # Preview for git log
@@ -180,7 +191,9 @@ fi'
 # Checkout with branch/remote preview
 zstyle ':fzf-tab:complete:*:git-checkout:*' fzf-completion-opts '--preview-window=right:60%' fzf-preview '
 branch=$word
-if [[ $branch == *//* ]]; then
+if [[ $branch == -* ]]; then
+ cmdhelp $word "${words[@]}"
+elif [[ $branch == *//* ]]; then
  git log --color=always -n 50 --graph --pretty=format:"%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" $branch
 else
  if git show-ref --verify --quiet refs/heads/$branch; then
@@ -208,3 +221,14 @@ fi
 zstyle ':fzf-tab:complete:cd:*' fzf-preview "$fzf_dir_preview"
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview "$fzf_dir_preview"
 zstyle ':fzf-tab:complete:z:*' fzf-preview "$fzf_dir_preview"
+
+# Every other completion, least specific so the previews above win: a file shows itself; a subcommand or flag,
+# its --help coloured by bat (config/bin/cmdhelp, which runs only subcommands the parent's help lists).
+zstyle ':fzf-tab:complete:*' fzf-preview "
+  if [[ -d \$realpath ]]; then
+    $fzf_dir_preview
+  elif [[ -f \$realpath ]]; then
+    bat --style=plain --color=always --theme=Dracula --line-range :300 \$realpath 2>/dev/null
+  else
+    cmdhelp \$word \"\${words[@]}\"
+  fi"

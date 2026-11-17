@@ -96,7 +96,6 @@ env::options() {
   # }
 
   # ZSH COMPLETIONS SETTINGS | http://zsh.sourceforge.io/Doc/Release/Options.html#Completion-4 {
-  zstyle ':completion:*' list-colors "$LS_COLORS"
   zstyle ':completion:*' auto-description 'specify: %d'                                                        # Auto description
   zstyle ':completion:*' completer _expand _complete _correct _approximate _expand_alias _extensions _match    # Completers
   zstyle ':completion:*' format 'Completing %d'                                                                # Format
@@ -134,7 +133,8 @@ env::options() {
 #ORDER Before env::homebrew, which prepends to $path.
 env::paths() {
   # PATH; Where the shell searches for commands; set PATH so it includes user's private bin if it exists
-  declare -gaU path=(${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin} ${CARGO_HOME:-$XDG_DATA_HOME/cargo/bin} ${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm/bin} ${PNPM_HOME:-$XDG_DATA_HOME/pnpm} /usr/local/{bin,sbin} $HOME/.turso $path)
+  # cargo installs (brew bundle `cargo` entries) go to $CARGO_HOME/bin; last, so its rustup proxies never shadow `cargo`.
+  declare -gaU path=(${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin} ${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm/bin} ${PNPM_HOME:-$XDG_DATA_HOME/pnpm} /usr/local/{bin,sbin} $HOME/.turso $path ${CARGO_HOME:-$XDG_DATA_HOME/cargo}/bin)
   # FPATH; Where the shell searches to find shell functions
   declare -gaU fpath=($ZIM_HOME/functions $fpath)
   # CDPATH; Directories that the shell searches to find the current directory when the user changes directories using the cd command

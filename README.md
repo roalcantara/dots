@@ -85,6 +85,7 @@ mise bootstrap plan              # what applying would change
 brew bundle check --verbose        # packages: what the Brewfile wants but is missing
 mise outdated                    # mise tools with a newer version
 mise dot status                  # secrets history: tracked files, unsaved changes, last push
+todo list                        # the repo's next tasks (root TODO.yaml; run from the repo root)
 ```
 
 ### Find, add and remove packages
@@ -220,6 +221,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | [`test/`](test)                              | BDD living documentation and Bun integration specs                   |
 | [`mise.toml`](mise.toml), [`hk.pkl`](hk.pkl) | Repo tasks and git hooks                                             |
 | [`fnox.toml`](fnox.toml)                     | Secret references for repo tasks (values stay in gopass)             |
+| [`TODO.yaml`](TODO.yaml)                     | The repo's next tasks (`todo` CLI)                                   |
 
 ## Docs
 
