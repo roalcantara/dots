@@ -94,9 +94,12 @@ export FZF_ALT_C_OPTS="
 # c-x h -> get context of the completion
 zstyle -d ':completion:*' format
 
-# Disable group headers
-zstyle ':fzf-tab:*' show-group none
-zstyle ':fzf-tab:*' group-colors $'\e[0m'
+# Group headers ([commands], [options]…) and one Dracula colour per group; `,` and `.` switch groups.
+# fzf-tab colours a whole candidate line per group, never the description alone (it ignores pattern list-colors).
+zstyle ':fzf-tab:*' show-group full
+zstyle ':fzf-tab:*' group-colors \
+  $'\e[38;2;189;147;249m' $'\e[38;2;139;233;253m' $'\e[38;2;80;250;123m' \
+  $'\e[38;2;255;184;108m' $'\e[38;2;255;121;198m' $'\e[38;2;241;250;140m'
 zstyle ':fzf-tab:*' prefix ''
 
 # Preview window settings
