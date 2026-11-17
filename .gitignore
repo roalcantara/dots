@@ -181,3 +181,4 @@ docs/blog/posts/*/raw/
 
 # Agent workspaces (plans, reviews, brainstorm mockups): never committed.
 .superpowers/
+config/wakatime/ai-timestamps/
