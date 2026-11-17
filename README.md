@@ -91,8 +91,7 @@ todo list                        # the repo's next tasks (root TODO.yaml; run fr
 ### Theme, completion and deleting
 
 ```sh
-dots theme                        # list themes; * marks the active one
-dots theme catppuccin-macchiato   # switch (a new shell and Ghostty follow)
+$EDITOR ~/.config/dots/config.toml  # [theme] name (every tool) and eza: edit, then open a new shell
 mise run zsh:lig                  # after `brew upgrade lig`: refresh Lig's cached shell integration
 LIG_DISABLE=1 zsh                 # a shell without Lig's popup
 gomi --restore                    # bring back a file deleted by mistake
@@ -248,7 +247,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 - [`docs/REINSTALL.md`](docs/REINSTALL.md) — Backup runbook and clean-machine reinstall procedure.
 - [`docs/MACOS.md`](docs/MACOS.md) — macOS preferences applied by the bootstrap, drift checks, undo, and the manual checklist.
 - [`docs/TILING.md`](docs/TILING.md) — yabai tiling, the ten spaces, the fn keys (Karabiner), setup and troubleshooting.
-- [`docs/THEME.md`](docs/THEME.md) — The switchable shell theme: folders, `dots theme`, tab menus, risky-command highlighting, and the gomi `rm`.
+- [`docs/THEME.md`](docs/THEME.md) — The switchable shell theme: folders, `config/dots/config.toml`, tab menus, risky-command highlighting, and the gomi `rm`.
 - [`docs/GLOSSARY.md`](docs/GLOSSARY.md) — Common terms and domain glossary.
 - [`docs/blog/PLAYBOOK.md`](docs/blog/PLAYBOOK.md) — The blog series: goals, how a post moves from draft to dev.to and LinkedIn, and its metadata.
 

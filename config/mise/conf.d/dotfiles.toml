@@ -17,6 +17,7 @@
 "~/.config/bin" = { source = "~/.local/share/dots/config/bin", relative = true }
 "~/.config/claude" = { source = "~/.local/share/dots/config/claude", relative = true }
 "~/.config/dinky" = { source = "~/.local/share/dots/config/dinky", relative = true }
+"~/.config/dots" = { source = "~/.local/share/dots/config/dots", relative = true }
 "~/.config/dprint" = { source = "~/.local/share/dots/config/dprint", relative = true }
 "~/.config/duti" = { source = "~/.local/share/dots/config/duti", relative = true }
 "~/.config/fabric" = { source = "~/.local/share/dots/config/fabric", relative = true }
@@ -135,7 +136,7 @@ done
 # keybindings and snippets (the repo is their source) and leave it on for extensions, state and the rest.
 # VS Code keeps these choices in its state database, not settings.json; a running VS Code reads them at start.
 [bootstrap.hooks.post-dotfiles]
-description = "Turn off VS Code Settings Sync for settings, keybindings and snippets; set up the shell theme and Lig"
+description = "Turn off VS Code Settings Sync for settings, keybindings and snippets; set up bat's themes and Lig"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
@@ -147,14 +148,6 @@ CREATE TABLE IF NOT EXISTS ItemTable (key TEXT UNIQUE ON CONFLICT REPLACE, value
 INSERT INTO ItemTable (key, value) VALUES
   ('sync.enable.settings', 'false'), ('sync.enable.keybindings', 'false'), ('sync.enable.snippets', 'false');
 " || echo "bootstrap: could not turn off VS Code Settings Sync for settings, keybindings and snippets" >&2
-fi
-
-# The active shell theme link (dots theme). Without it the shell falls back to Mocha, but Lig's config link
-# (config/lig/config.toml) would dangle and Lig would run on its defaults, online search on.
-link="${DOTS_THEME_LINK:-${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current}"
-if [ ! -e "$link" ] && [ ! -L "$link" ]; then
-  mkdir -p "$(dirname "$link")"
-  ln -s "${DOTS_THEMES_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/theme/themes}/catppuccin-mocha" "$link"
 fi
 
 # bat loads the themes vendored in config/bat/themes (tokyonight_storm) only from its cache.

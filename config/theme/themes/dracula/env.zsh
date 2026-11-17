@@ -3,7 +3,6 @@
 # (https://draculatheme.com/spec) and dracula/fzf, the colours this shell used before themes.
 
 export BAT_THEME="Dracula"
-export EZA_CONFIG_DIR="$DOTS_THEME_DIR/eza"
 export MISE_COLOR_THEME=dracula
 export GLOW_STYLE=dracula
 
@@ -33,5 +32,3 @@ typeset -ga DOTS_FZF_TAB_GROUP_COLORS=(
   $'\e[38;2;255;121;198m'
   $'\e[38;2;241;250;140m'
 )
-
-source "$DOTS_THEME_DIR/ls_colors"

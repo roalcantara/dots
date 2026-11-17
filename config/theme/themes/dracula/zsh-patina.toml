@@ -1,6 +1,6 @@
 # zsh-patina's colours for this theme. config/zsh-patina/config.toml loads it through
 # `theme = "file:$DOTS_THEME_DIR/zsh-patina.toml"`, so switching themes needs `zsh-patina restart`
-# (`dots theme` does it). zsh-patina ships no Dracula, so this maps the scopes its built-in themes use
+# (a new shell does it when config/dots/config.toml changes). zsh-patina ships no Dracula, so this maps the scopes its built-in themes use
 # (themes/tokyonight.toml) onto the Dracula palette (https://draculatheme.com/spec, MIT).
 
 "comment" = "#6272A4"

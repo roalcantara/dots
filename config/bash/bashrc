@@ -31,16 +31,33 @@ if [ -f $HOME/.profile ]; then
 fi
 
 # THEME {
-  # The active shell theme (dots theme): a missing or dangling link falls back to Catppuccin Mocha.
+  # The theme in the dots config file (config/dots/config.toml): `name` for every tool, `eza` optionally for eza's and
+  # ls's colours. The same small reader as config/theme/config.zsh, in bash; without the file, the theme link.
   # eza prefers EZA_COLORS/EXA_COLORS to the theme's eza/theme.yml; drop any inherited from the pre-theme palette.
   unset EZA_COLORS EXA_COLORS LSCOLORS
-  _dots_theme="${DOTS_THEME_LINK:-${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current}"
-  [ -d "$_dots_theme" ] || _dots_theme="${DOTS_THEMES_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/theme/themes}/catppuccin-mocha"
-  if [ -r "$_dots_theme/env.bash" ]; then
-    export DOTS_THEME_DIR="$_dots_theme"
-    . "$_dots_theme/env.bash"
+  _dots_themes="${DOTS_THEMES_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/theme/themes}"
+  _dots_config="${DOTS_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/dots/config.toml}"
+  _dots_name="" _dots_eza="" _dots_section="" _dots_dir="" _dots_eza_dir=""
+  if [ -r "$_dots_config" ]; then
+    while IFS= read -r _dots_line || [ -n "$_dots_line" ]; do
+      if [[ $_dots_line =~ ^[[:space:]]*\[([^]]+)\][[:space:]]*(#.*)?$ ]]; then
+        _dots_section="${BASH_REMATCH[1]//[[:space:]]/}"
+      elif [ "$_dots_section" = theme ] && [[ $_dots_line =~ ^[[:space:]]*(name|eza)[[:space:]]*=[[:space:]]*\"([^\"]*)\" ]]; then
+        if [ "${BASH_REMATCH[1]}" = name ]; then _dots_name="${BASH_REMATCH[2]}"; else _dots_eza="${BASH_REMATCH[2]}"; fi
+      fi
+    done < "$_dots_config"
+    [ -n "$_dots_name" ] && [ -r "$_dots_themes/$_dots_name/env.bash" ] && _dots_dir="$_dots_themes/$_dots_name"
+    [ -n "$_dots_eza" ] && [ -r "$_dots_themes/$_dots_eza/eza.sh" ] && _dots_eza_dir="$_dots_themes/$_dots_eza"
+  else
+    _dots_link="${DOTS_THEME_LINK:-${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current}"
+    [ -r "$_dots_link/env.bash" ] && _dots_dir="$_dots_link"
   fi
-  unset _dots_theme
+  if [ -n "$_dots_dir" ]; then
+    export DOTS_THEME_DIR="$_dots_dir" DOTS_EZA_DIR="${_dots_eza_dir:-$_dots_dir}"
+    . "$_dots_dir/env.bash"
+    [ -r "$DOTS_EZA_DIR/eza.sh" ] && . "$DOTS_EZA_DIR/eza.sh"
+  fi
+  unset _dots_themes _dots_config _dots_name _dots_eza _dots_section _dots_dir _dots_eza_dir _dots_line _dots_link
 # }
 
 # PATH; Where the shell searches for commands; set PATH so it includes user's private bin if it exists

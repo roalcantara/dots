@@ -23,12 +23,10 @@ describe.skipIf(!Bun.which("usage"))("usage completions", () => {
     // A stale completion means a #USAGE block changed without `mise run zsh:completions:usage`.
     expect(readFileSync(file, "utf8")).toBe(generate(name));
   });
-  it("dots theme <Tab> offers the theme names, not files", () => {
-    const r = Bun.spawnSync(
-      ["usage", "complete-word", "--shell", "zsh", "-f", join(BIN, "dots"), "--", "dots", "theme", ""],
-      { stdout: "pipe" },
-    );
+  it("dots <Tab> offers its subcommands, not files", () => {
+    const r = Bun.spawnSync(["usage", "complete-word", "--shell", "zsh", "-f", join(BIN, "dots"), "--", "dots", ""], { stdout: "pipe" });
     const words = r.stdout.toString().split("\n").filter(Boolean).map((line) => line.split("\t")[0]);
-    expect(words.sort()).toEqual(readdirSync(join(repoRoot, "config/theme/themes")).sort());
+    expect(words).toContain("env");
+    expect(words).toContain("palette");
   });
 });

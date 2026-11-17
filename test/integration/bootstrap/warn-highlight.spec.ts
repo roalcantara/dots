@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Risky commands (rm -rf, git push --force, …) get the theme's warning colour while typed.
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { repoRoot } from "../bin/support/paths";
@@ -20,6 +20,7 @@ const WARN_STYLE = (() => {
 let dir = "";
 beforeAll(() => {
   dir = mkdtempSync(join(tmpdir(), "dots-warn-"));
+  writeFileSync(join(dir, "config.toml"), '[theme]\nname = "catppuccin-mocha"\n');
 });
 afterAll(() => rmSync(dir, { recursive: true, force: true }));
 
@@ -35,7 +36,9 @@ const zsh = (script: string) => {
       `ZIM_HOME=${process.env.ZIM_HOME ?? join(HOME, ".local/state/zim")}`,
       "TERM=xterm-256color",
       `ZDOTDIR=${HOME}/.config/zsh`,
-      `DOTS_THEME_LINK=${MOCHA}`,
+      `DOTS_CONFIG=${join(dir, "config.toml")}`,
+      `DOTS_THEME_LINK=${join(dir, "link")}`,
+      "DOTS_ZSH_PATINA=true",
       `DOTS_THEMES_DIR=${THEMES}`,
       "zsh",
       "-ic",

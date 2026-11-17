@@ -21,7 +21,8 @@ This glossary defines terms used across Dots configuration, documentation, and t
 | **Backup manifest** | `config/restic/backup.toml`: defines repository path, the allowlist of source paths, retention policy, and exclusions with reasons. |
 | **restic repository** | Encrypted, deduplicated restic storage at `<backup root>/machines/<host>/restic`. |
 | **Theme** | One folder under `config/theme/themes/` holding the shell-side tools' colours, one small file per tool (`env.zsh`, `ls_colors`, `theme.ghostty`, …). |
-| **Current theme** | The theme folder the `current` link under `~/.local/state/dots/theme` points at; a missing link means `catppuccin-mocha`. |
+| **Current theme** | The theme `config/dots/config.toml` names (`name`, plus `eza` for eza's and ls's colours); a new shell points the `current` link under `~/.local/state/dots/theme` at it for Ghostty and Lig. |
+| **Dots config** | `config/dots/config.toml`, linked to `~/.config/dots/config.toml`: settings read at shell start, today the theme. |
 | **Warning pattern** | A command shape (`rm -rf`, `sudo rm`, `git push --force`, …) whose whole typed line `warn-highlight.zsh` paints in `DOTS_WARN_STYLE`. |
 | **Lig** | The completion popup under the cursor (Fig's successor), started from `config/zsh/opt/rc.d/lig.zsh` and themed by the active theme's `lig.toml`; fzf-tab answers Tab when it is closed. |
 | **Safety net** | gomi aliased to `rm` in interactive shells: files move to a restorable trash, and `\rm` or `command rm` still delete. |

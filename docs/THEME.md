@@ -1,6 +1,6 @@
 ---
 title: Shell theme
-description: One switchable dark theme for the shell-side tools, from the theme folders to dots theme
+description: One switchable dark theme for the shell-side tools, chosen in config/dots/config.toml
 ---
 
 # Shell theme
@@ -29,32 +29,37 @@ Each folder carries one small file per tool:
 | `theme.ghostty` | Ghostty, through its `config-file = ?auto/theme.ghostty` include |
 | `env.zsh` | zsh, at startup |
 | `env.bash` | bash, at startup |
-| `ls_colors` | zsh and bash (`LS_COLORS`) |
+| `ls_colors` | zsh and bash (`LS_COLORS`), through `eza.sh` |
+| `eza.sh` | zsh and bash: `EZA_CONFIG_DIR`, `LS_COLORS` (and `EZA_COLORS` where a theme sets one); the `eza` theme's, when the config file names one |
 | `eza/theme.yml` | eza, through `EZA_CONFIG_DIR` (the vendored [catppuccin/eza](https://github.com/catppuccin/eza) theme, MIT) |
 | `zsh-patina.toml` | zsh-patina, through its `file:` theme |
 | `lig.toml` | Lig, as its whole config: `~/.config/lig/config.toml` links to the active theme's copy |
 
 ## Switching
 
-`dots theme` lists the themes and marks the active one with `*`; `dots theme <name>` makes one active:
+The theme is two strings in [`config/dots/config.toml`](../config/dots/config.toml), linked to
+`~/.config/dots/config.toml`. Edit them, then open a new shell (and reload Ghostty with `cmd+shift+,`):
 
-```sh
-dots theme                          # list, with * on the active theme
-dots theme catppuccin-macchiato     # switch
+```toml
+[theme]
+name = "tokyonight-storm"   # every tool
+eza = "dracula"             # optional: eza's and ls's colours from another theme
 ```
 
-`dots theme <Tab>` offers the theme names (`config/zsh/opt/completions/_dots`, from the `#USAGE` choices).
+The committed file is also what a new machine starts with. The theme names are the folders under
+`config/theme/themes/`.
 
-The active theme is the `current` link,
-`${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current`. A new shell picks up its `env.zsh`; Ghostty reads
-`theme.ghostty` through the `auto` link in this folder and reloads with `cmd+shift+,` (a new window also works).
-Switching also restarts zsh-patina's daemon, which caches its theme.
+A new shell reads the file with builtins (`config/theme/config.zsh`; bash has the same loop in `config/bash/bashrc`),
+sources `name`'s `env.zsh` and the `eza` theme's `eza.sh` (`name`'s own when `eza` is left out). Ghostty and Lig
+cannot read the file, so they follow a link, `${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current`: when the
+file names another theme, the shell points the link at it with zsh's own `ln` and restarts zsh-patina's daemon, which
+caches its theme. Nothing else runs at startup.
 
 The `zsh-patina` command reads `$DOTS_THEME_DIR` from its config, and only an interactive zsh exports it, so run
 `zsh-patina list-themes` or `zsh-patina check` from zsh (or set `DOTS_THEME_DIR` first), not from bash.
 
-When the link is missing or dangling, everything falls back to `catppuccin-mocha`. If that folder is missing too
-(a bare container, say), the theme variables are left unset and each tool keeps its built-in colours.
+A name that is not a theme folder is reported once, at the first prompt, and its tools keep their built-in colours.
+Without the file (a bare container, say), the shell uses the link a previous shell left, or no theme at all.
 
 ## What reads the theme
 
@@ -89,7 +94,7 @@ With the popup closed or empty, `Tab` opens [fzf-tab](https://github.com/Aloxaf/
 headers take `DOTS_FZF_TAB_GROUP_COLORS`. The list is always bare: a prompt line and the candidates on the terminal's
 own background, with no boxes. A preview pane, framed and on the theme's preview background, opens on the right only
 when the menu has something to preview: a path, a flag or a subcommand with a description. A plain list of values
-(`dots theme <Tab>`, any usage `choices`) has none, so it shows no pane; `config/zsh/opt/plugins/fzf-tab.zsh` decides
+(`mise run theme:build <Tab>`, any usage `choices`) has none, so it shows no pane; `config/zsh/opt/plugins/fzf-tab.zsh` decides
 per menu with `zstyle -e`, from the candidates fzf-tab holds while it looks its styles up.
 
 The preview window shows:
@@ -159,19 +164,19 @@ file.
 ## Add a theme
 
 1. Copy a folder under `config/theme/themes/` and edit its files.
-2. Add the folder name to the `choices` of `dots theme` (`config/bin/dots`) and `theme:build` (`mise.toml`); a spec
-   keeps the two lists in step with the folders.
-3. Run `mise run theme:build <name>` and `mise run zsh:completions:usage dots`, then commit the folder, the two
-   `choices` entries and `_dots`.
+2. Add the folder name to the `choices` of `theme:build` (`mise.toml`); a spec keeps the list in step with the
+   folders. Give it an `eza.sh` (eza's and ls's colours, so other themes can borrow them) like the others.
+3. Run `mise run theme:build <name>`, then commit the folder and the `choices` entry. Set `name` (or `eza`) in
+   `config/dots/config.toml` to try it.
 4. A `BAT_THEME` bat does not ship goes in `config/bat/themes/` as a `.tmTheme`; bootstrap runs `bat cache --build`
    (run it once by hand on this machine).
 
 ## Future: full integration
 
-This round themes the shell. A later round may follow Omarchy all the way, where one `dots theme` re-themes
+This round themes the shell. A later round may follow Omarchy all the way, where one `name` in the config file re-themes
 everything: Neovim, VS Code, btop, television's UI, kodexb, dinky, zentty, Ghostty's window chrome, and the macOS
 wallpaper and accent.
 
 The layout is built for that. A tool joins by adding its own file to each theme folder (`nvim.lua`, `vscode.json`,
-`btop.theme`, …) plus a line in `dots theme` that links or reloads it, with no change to the folders that exist.
+`btop.theme`, …) plus a line in the shell's theme loader that links or reloads it, with no change to the folders that exist.
 This page lists these candidates so the next round starts from it.

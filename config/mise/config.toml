@@ -15,7 +15,7 @@ always_keep_install = false # deleted on failure by default
 color = true # set to true to enable color output
 
 # The color theme for the terminal output comes from MISE_COLOR_THEME, which the active shell theme
-# exports (dots theme); mise maps `catppuccin` to its Catppuccin palette.
+# exports (config/dots/config.toml); mise maps `catppuccin` to its Catppuccin palette.
 # https://mise.jdx.dev/configuration/settings.html#color_theme
 
 # set to true to expand environment variables in the shell for example:

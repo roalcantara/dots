@@ -3,7 +3,6 @@
 # Mocha palette (https://catppuccin.com/palette) and catppuccin/fzf.
 
 export BAT_THEME="Catppuccin Mocha"
-export EZA_CONFIG_DIR="$DOTS_THEME_DIR/eza"
 export MISE_COLOR_THEME=catppuccin
 export GLOW_STYLE=dark
 
@@ -33,5 +32,3 @@ typeset -ga DOTS_FZF_TAB_GROUP_COLORS=(
   $'\e[38;2;245;194;231m'
   $'\e[38;2;249;226;175m'
 )
-
-source "$DOTS_THEME_DIR/ls_colors"

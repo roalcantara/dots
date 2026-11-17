@@ -22,15 +22,9 @@
 #USAGE cmd "git" help="Forward commands to xc-git" {
 #USAGE   arg "[args...]" help="Arguments forwarded to xc-git"
 #USAGE }
-#USAGE cmd "theme" help="Show or switch the shell theme" {
-#USAGE   arg "[name]" help="Theme to activate" {
-#USAGE     choices "catppuccin-mocha" "catppuccin-macchiato" "dracula" "tokyonight-storm"
-#USAGE   }
-#USAGE }
 #USAGE example "dots env"
 #USAGE example "dots path"
 #USAGE example "dots palette"
-#USAGE example "dots theme tokyonight-storm"
 #USAGE example "dots xdg check_runtime_perms"
 
 emulate -L zsh
@@ -62,7 +56,7 @@ if [[ $# -eq 0 ]]; then
     exit 1
   fi
   if _has_gum; then
-    cmd=$(gum choose "path" "fpath" "cdpath" "env" "palette" "xdg" "setup" "zsh" "git" "theme")
+    cmd=$(gum choose "path" "fpath" "cdpath" "env" "palette" "xdg" "setup" "zsh" "git")
     [[ -z "$cmd" ]] && exit 0
     set -- "$cmd"
   else
@@ -197,40 +191,6 @@ case "$subcmd" in
       echo "dots git: xc-git not found on PATH" >&2
       exit 127
     fi
-    ;;
-
-  theme)
-    themes_dir="${DOTS_THEMES_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/theme/themes}"
-    theme_link="${DOTS_THEME_LINK:-${XDG_STATE_HOME:-$HOME/.local/state}/dots/theme/current}"
-    name="${1:-}"
-    if [[ -z "$name" ]]; then
-      # A missing or dangling link means the shell fell back to Mocha (theme.zsh), so that one is marked.
-      active="$themes_dir/catppuccin-mocha"
-      [[ -d "$theme_link" ]] && active="$(readlink "$theme_link")"
-      for dir in "$themes_dir"/*(N/); do
-        base="${dir:t}"
-        if [[ "$active" == "$dir" || "$active" == */"$base" ]]; then
-          print -r -- "* $base"
-        else
-          print -r -- "  $base"
-        fi
-      done
-      exit 0
-    fi
-    if [[ ! -d "$themes_dir/$name" ]]; then
-      _log_error "Unknown theme: $name"
-      typeset -a available=("$themes_dir"/*(N/:t))
-      print -r -- "Available themes: ${(j:, :)available}" >&2
-      exit 1
-    fi
-    mkdir -p "${theme_link:h}"
-    ln -sfn "$themes_dir/$name" "$theme_link"
-    # zsh-patina caches its theme in its daemon, so the new colours need a restart; pass the new
-    # DOTS_THEME_DIR, since this shell still holds the old theme's path.
-    if command -v zsh-patina &>/dev/null; then
-      DOTS_THEME_DIR="$themes_dir/$name" zsh-patina restart &>/dev/null || true
-    fi
-    _log_info "Theme: $name. Open a new shell; reload Ghostty with cmd+shift+,"
     ;;
 
   *)

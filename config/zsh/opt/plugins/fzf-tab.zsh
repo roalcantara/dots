@@ -228,7 +228,7 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview "$_dots_preview_path"
 zstyle ':fzf-tab:complete:z:*' fzf-preview "$_dots_preview_path"
 
 # True when this menu has something to preview: a path, a flag, or a described candidate (a subcommand's help). A plain
-# list of values (the theme names of `dots theme <Tab>`) has none, so it gets no preview pane. fzf-tab looks the
+# list of values (the theme names of `mise run theme:build <Tab>`) has none, so it gets no preview pane. fzf-tab looks the
 # zstyles up while its candidates are in $_ftb_compcap: "display\2…\0realdir\0dir…\0word\0word" per candidate.
 _dots_ftb_previewable() {
   local entry word

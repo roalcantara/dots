@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // The shell reads the active theme: zsh's theme.zsh and bash's bashrc export the theme folder's values.
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, readlinkSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { repoRoot } from "../bin/support/paths";
@@ -20,8 +20,19 @@ beforeAll(() => {
 });
 afterAll(() => rmSync(dir, { recursive: true, force: true }));
 
+// The theme comes from a dots config file (config/dots/config.toml); each call writes its own, plus its own link path,
+// so a test never touches the real ones. `theme` is a theme name or folder; `eza` the optional eza override.
+let calls = 0;
+const configFor = (theme: string, eza?: string) => {
+  const name = theme.split("/").pop() as string;
+  const file = join(dir, `config-${++calls}.toml`);
+  writeFileSync(file, `[theme]\nname = "${name}"\n${eza ? `eza = "${eza}"\n` : ""}`);
+  return { DOTS_CONFIG: file, DOTS_THEME_LINK: join(dir, `link-${calls}`) };
+};
+
 // `script` makes zim and fzf load, as they would in a terminal. The output carries \r and a leading ^D.
-const envOf = (shell: "zsh" | "bash", link: string, script: string, extra: Record<string, string> = {}) => {
+const envOf = (shell: "zsh" | "bash", theme: string, script: string, extra: Record<string, string> = {}) => {
+  const env = { ...configFor(theme), DOTS_ZSH_PATINA: "true", ...extra };
   const r = Bun.spawnSync(
     [
       "env",
@@ -29,9 +40,8 @@ const envOf = (shell: "zsh" | "bash", link: string, script: string, extra: Recor
       `HOME=${HOME}`,
       "TERM=xterm-256color",
       `ZDOTDIR=${HOME}/.config/zsh`,
-      `DOTS_THEME_LINK=${link}`,
       `DOTS_THEMES_DIR=${THEMES}`,
-      ...Object.entries(extra).map(([name, value]) => `${name}=${value}`),
+      ...Object.entries(env).map(([name, value]) => `${name}=${value}`),
       "script",
       "-q",
       "/dev/null",
@@ -44,8 +54,9 @@ const envOf = (shell: "zsh" | "bash", link: string, script: string, extra: Recor
   return r.stdout.toString().replace(/\r/g, "").replace(/^\^D\n?/, "");
 };
 
-const zsh = (link: string, script: string, extra?: Record<string, string>) => envOf("zsh", link, script, extra);
-const bash = (link: string, script: string, extra?: Record<string, string>) => envOf("bash", link, script, extra);
+const zsh = (theme: string, script: string, extra?: Record<string, string>) => envOf("zsh", theme, script, extra);
+const bash = (theme: string, script: string, extra?: Record<string, string>) => envOf("bash", theme, script, extra);
+const lsColors = (theme: string) => (readFileSync(join(THEMES, theme, "ls_colors"), "utf8").match(/LS_COLORS='([^']+)'/) as string[])[1];
 
 describe("the shell reads the theme", () => {
   it("mocha exports its values", () => {
@@ -78,12 +89,39 @@ describe("the shell reads the theme", () => {
     }
   });
 
-  it("a dangling link falls back to mocha, silently", () => {
-    const link = join(dir, "dangling");
-    symlinkSync(join(dir, "missing"), link);
-    const out = zsh(link, 'print -r -- "$BAT_THEME"');
-    expect(out).toContain("Catppuccin Mocha");
-    expect(out.toLowerCase()).not.toContain("no such file");
+  it("an unknown theme name says so once and leaves the tools on their own colours", () => {
+    const out = zsh("nope", 'print -r -- "[$BAT_THEME|${DOTS_THEME_DIR-}]"');
+    expect(out).toContain("[|]");
+    expect(out.match(/unknown theme/g)).toHaveLength(1);
+  });
+
+  for (const shell of ["zsh", "bash"] as const) {
+    it(`eza and ls colours come from the eza theme, the rest from the theme (${shell})`, () => {
+      const env = configFor("tokyonight-storm", "dracula");
+      const out = envOf(shell, "tokyonight-storm", 'echo "$BAT_THEME|$EZA_CONFIG_DIR|[${EZA_COLORS-}]"; echo "$LS_COLORS"', env);
+      expect(out).toContain(`tokyonight_storm|${THEMES}/dracula/eza|[]`);
+      expect(out).toContain(lsColors("dracula"));
+    });
+
+    it(`without eza, the theme's own eza colours apply (${shell})`, () => {
+      const out = envOf(shell, "tokyonight-storm", 'echo "$EZA_CONFIG_DIR|${#EZA_COLORS}"; echo "$LS_COLORS"');
+      expect(out).toContain(`${THEMES}/tokyonight-storm/eza|`);
+      expect(out).not.toContain("/eza|0");
+      expect(out).toContain(lsColors("tokyonight-storm"));
+    });
+  }
+
+  it("a new shell points the theme link at the file's theme, for Ghostty and Lig", () => {
+    const env = configFor("catppuccin-macchiato");
+    zsh("catppuccin-macchiato", "true", env);
+    expect(readlinkSync(env.DOTS_THEME_LINK)).toBe(join(THEMES, "catppuccin-macchiato"));
+  });
+
+  it("the committed config is the owner's: Tokyo Night Storm, with Dracula's eza colours", () => {
+    const config = Bun.TOML.parse(readFileSync(join(repoRoot, "config/dots/config.toml"), "utf8")) as any;
+    expect(config.theme).toEqual({ name: "tokyonight-storm", eza: "dracula" });
+    expect(existsSync(join(THEMES, config.theme.name))).toBe(true);
+    expect(existsSync(join(THEMES, config.theme.eza))).toBe(true);
   });
 
   it("bash reads the theme", () => {

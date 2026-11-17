@@ -29,6 +29,7 @@ const FILES = [
   "eza/LICENSE",
   "zsh-patina.toml",
   "lig.toml",
+  "eza.sh",
 ];
 
 const vivid = Bun.which("vivid");
@@ -56,9 +57,7 @@ describe("theme folders", () => {
     const value = (key: string) => old.match(new RegExp(`export ${key}="([^"]+)"`))?.[1] as string;
     const dir = join(THEMES, "tokyonight-storm");
     expect(readFileSync(join(dir, "ls_colors"), "utf8")).toContain(`export LS_COLORS='${value("LS_COLORS")}'`);
-    for (const env of ["env.zsh", "env.bash"]) {
-      expect(readFileSync(join(dir, env), "utf8")).toContain(`export EZA_COLORS="${value("EXA_COLORS")}"`);
-    }
+    expect(readFileSync(join(dir, "eza.sh"), "utf8")).toContain(`export EZA_COLORS="${value("EXA_COLORS")}"`);
   });
 
   it("theme:build leaves a hand-made ls_colors alone", () => {
@@ -67,6 +66,15 @@ describe("theme folders", () => {
     expect(r.exitCode).toBe(0);
     expect(r.stdout.toString() + r.stderr.toString()).toContain("hand-made");
     expect(readFileSync(join(THEMES, "tokyonight-storm/ls_colors"), "utf8")).toBe(before);
+  });
+
+  it("eza and ls colours live only in eza.sh, so another theme's can stand in (config/dots/config.toml eza)", () => {
+    for (const name of NAMES) {
+      for (const env of ["env.zsh", "env.bash"]) {
+        expect({ name, env, text: /EZA_|ls_colors/.test(readFileSync(join(THEMES, name, env), "utf8")) }).toEqual({ name, env, text: false });
+      }
+      expect(readFileSync(join(THEMES, name, "eza.sh"), "utf8")).toContain('EZA_CONFIG_DIR="$DOTS_EZA_DIR/eza"');
+    }
   });
 
   it("each BAT_THEME is built into bat or vendored in config/bat/themes", () => {
@@ -164,79 +172,14 @@ describe("the Ghostty include", () => {
   });
 });
 
-describe("dots theme", () => {
-  let dir = "";
-  let link = "";
-  let patinaLog = "";
-
-  beforeAll(() => {
-    dir = mkdtempSync(join(tmpdir(), "dots-theme-"));
-    link = join(dir, "state/dots/theme/current");
-    patinaLog = join(dir, "patina.log");
-    // A fake zsh-patina: dots theme must restart the daemon so its cached theme does not linger.
-    writeFileSync(join(dir, "zsh-patina"), `#!/bin/sh\nprintf '%s\\n' "$*" >> "$DOTS_PATINA_LOG"\n`);
-    chmodSync(join(dir, "zsh-patina"), 0o755);
-  });
-  afterAll(() => rmSync(dir, { recursive: true, force: true }));
-
-  const dots = (args: string[], target = link) =>
-    Bun.spawnSync([join(repoRoot, "config/bin/dots"), ...args], {
-      env: {
-        PATH: `${dir}:${realUsageDir()}:/usr/bin:/bin`,
-        HOME: process.env.HOME as string,
-        DOTS_THEMES_DIR: THEMES,
-        DOTS_THEME_LINK: target,
-        DOTS_PATINA_LOG: patinaLog,
-      },
-      stdout: "pipe",
-      stderr: "pipe",
-    });
-
-  it("switches the link", () => {
-    const r = dots(["theme", "catppuccin-macchiato"]);
-    expect(r.exitCode).toBe(0);
-    expect(readlinkSync(link).endsWith("/catppuccin-macchiato")).toBe(true);
-  });
-
-  it("lists themes and marks the active one", () => {
-    const r = dots(["theme"]);
-    expect(r.exitCode).toBe(0);
-    expect(r.stdout.toString()).toContain("* catppuccin-macchiato");
-    expect(r.stdout.toString()).toContain("  catppuccin-mocha");
-  });
-
-  it("with no link, marks Mocha, the theme the shell falls back to", () => {
-    const r = dots(["theme"], join(dir, "state/dots/theme/none"));
-    expect(r.exitCode).toBe(0);
-    expect(r.stdout.toString()).toContain("* catppuccin-mocha");
-    expect(r.stdout.toString()).toContain("  catppuccin-macchiato");
-  });
-
-  it("rejects an unknown name", () => {
-    const missing = join(dir, "state/dots/theme/unknown");
-    const r = dots(["theme", "nope"], missing);
-    expect(r.exitCode).toBe(1);
-    expect(r.stderr.toString()).toContain("catppuccin-mocha");
-    expect(r.stderr.toString()).toContain("catppuccin-macchiato");
-    expect(existsSync(missing)).toBe(false);
-  });
-
-  it("restarts zsh-patina", () => {
-    writeFileSync(patinaLog, "");
-    expect(dots(["theme", "catppuccin-mocha"]).exitCode).toBe(0);
-    expect(readFileSync(patinaLog, "utf8").trim().split("\n")).toEqual(["restart"]);
-  });
-
+describe("theme:build", () => {
   it("choices match the theme folders", () => {
     const folders = readdirSync(THEMES, { withFileTypes: true })
       .filter((e) => e.isDirectory())
       .map((e) => e.name)
       .sort();
-    const source = readFileSync(join(repoRoot, "config/bin/dots"), "utf8");
-    const themeBlock = source.match(/#USAGE cmd "theme"[\s\S]*?#USAGE }/)?.[0] ?? "";
     const mise = readFileSync(join(repoRoot, "mise.toml"), "utf8");
     const buildBlock = mise.match(/\[tasks\."theme:build"\][\s\S]*?\nrun =/)?.[0] ?? "";
-    expect(choicesIn(themeBlock)).toEqual(folders);
     expect(choicesIn(buildBlock)).toEqual(folders);
   });
 });

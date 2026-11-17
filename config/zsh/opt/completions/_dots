@@ -25,7 +25,6 @@ about "Dotfiles manager, environment diagnostics, and workflow dispatcher"
 example "dots env"
 example "dots path"
 example "dots palette"
-example "dots theme tokyonight-storm"
 example "dots xdg check_runtime_perms"
 cmd env help="Show environment variables"
 cmd path help="List PATH entries"
@@ -49,11 +48,6 @@ cmd zsh help="Zsh diagnostic, benchmark, and profiling utilities" {
 }
 cmd git help="Forward commands to xc-git" {
     arg "[args]…" help="Arguments forwarded to xc-git" required=#false var=#true
-}
-cmd theme help="Show or switch the shell theme" {
-    arg "[name]" help="Theme to activate" required=#false {
-        choices catppuccin-mocha catppuccin-macchiato dracula tokyonight-storm
-    }
 }
 __USAGE_EOF__
   local -a values=() descs=() inserts=()

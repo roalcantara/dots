@@ -1,9 +1,6 @@
 # Sourced by bash's startup (config/bash/bashrc), which first sets DOTS_THEME_DIR to this folder.
-# The subset bash uses: bat, eza, mise, glow and the theme's LS_COLORS.
+# The subset bash uses: bat, mise and glow (eza and LS_COLORS come from eza.sh).
 
 export BAT_THEME="Dracula"
-export EZA_CONFIG_DIR="$DOTS_THEME_DIR/eza"
 export MISE_COLOR_THEME=dracula
 export GLOW_STYLE=dracula
-
-[ -r "$DOTS_THEME_DIR/ls_colors" ] && . "$DOTS_THEME_DIR/ls_colors"

@@ -1,5 +1,5 @@
 # Lig's whole config for this theme (https://github.com/KevenGoncalves/lig). Lig reads only
-# ~/.config/lig/config.toml, which links here through the active theme (config/lig/config.toml, dots theme),
+# ~/.config/lig/config.toml, which links here through the active theme (config/lig/config.toml, config/dots/config.toml),
 # and recolours open tabs when [ui] or [colors] change. Every section but [ui] and [colors] must be the same in
 # every theme: test/integration/bin/theme.spec.ts checks it.
 
