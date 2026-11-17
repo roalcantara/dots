@@ -112,11 +112,15 @@ describe("config/zsh/opt/rc.d/lig.zsh", () => {
     writeFileSync(join(t, "cache/post.zsh"), "LIG_POST_RAN=1\n");
     writeFileSync(join(t, "cache/bin"), `${from ?? realpathSync(join(bin, "lig"))}\n`);
   };
-  const shell = (path = `${bin}:/usr/bin:/bin`) => {
-    const p = Bun.spawnSync(
-      ["zsh", "-f", "-c", `source ${MODULE}; lig::pre; lig::post; print -r -- "pre=\${LIG_PRE_RAN:-0} post=\${LIG_POST_RAN:-0}"`],
-      { env: { PATH: path, HOME: t, DOTS_LIG_CACHE: join(t, "cache") }, stdout: "pipe", stderr: "pipe" },
-    );
+  // The script goes in on stdin: `zsh -c` and `zsh file` are exactly the shells lig::pre must leave alone.
+  const SCRIPT = `source ${MODULE}; lig::pre; lig::post; print -r -- "pre=\${LIG_PRE_RAN:-0} post=\${LIG_POST_RAN:-0}"`;
+  const shell = (path = `${bin}:/usr/bin:/bin`, argv = ["zsh", "-f"]) => {
+    const p = Bun.spawnSync(argv, {
+      env: { PATH: path, HOME: t, DOTS_LIG_CACHE: join(t, "cache") },
+      stdin: Buffer.from(SCRIPT),
+      stdout: "pipe",
+      stderr: "pipe",
+    });
     return { out: p.stdout.toString().trim(), err: p.stderr.toString() };
   };
 
@@ -132,6 +136,14 @@ describe("config/zsh/opt/rc.d/lig.zsh", () => {
     fakeLig();
     cache();
     expect(shell()).toEqual({ out: "pre=1 post=1", err: "" });
+  });
+
+  it("zsh -c and zsh <file> never enter Lig, so their command still runs", () => {
+    fakeLig();
+    cache();
+    expect(shell(undefined, ["zsh", "-f", "-c", SCRIPT]).out).toBe("pre=0 post=1");
+    writeFileSync(join(t, "script.zsh"), SCRIPT);
+    expect(shell(undefined, ["zsh", "-f", join(t, "script.zsh")]).out).toBe("pre=0 post=1");
   });
 
   it("skips a cache made by another lig (an upgrade) with one line", () => {

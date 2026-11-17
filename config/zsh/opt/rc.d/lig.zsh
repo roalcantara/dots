@@ -20,6 +20,9 @@ lig::_fresh() {
 #ABOUT Restart this interactive shell inside Lig's PTY (Lig's own guards skip scripts, `zsh -c` and non-terminals).
 #ORDER First in .zshrc, before p10k's instant prompt: the block execs `lig shell`, which starts zsh again.
 lig::pre() {
+  # `zsh -ic 'cmd'` and `zsh -i file` from a terminal pass Lig's own guards (interactive, a terminal), but the exec
+  # would start a fresh shell and drop the command or script: leave them alone.
+  [[ -z ${ZSH_EXECUTION_STRING-} && -z ${ZSH_SCRIPT-} ]] || return 0
   lig::_fresh pre && source ${DOTS_LIG_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/dots/lig}/pre.zsh
   return 0
 }
