@@ -3181,6 +3181,52 @@
       "skillFolderHash": "0c29f54dc75012f79480d9dd89cc18cdabf66ae4",
       "installedAt": "2026-11-13T16:37:55.184Z",
       "updatedAt": "2026-11-13T16:37:55.184Z"
+    },
+    "tui-design": {
+      "source": "hyperb1iss/hyperskills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/hyperb1iss/hyperskills.git",
+      "skillPath": "skills/tui-design/SKILL.md",
+      "skillFolderHash": "ee74d8596ac3dae4ababa85bb753a608d1b42d64",
+      "installedAt": "2026-11-18T04:08:25.043Z",
+      "updatedAt": "2026-11-18T04:08:25.043Z"
+    },
+    "game-feel": {
+      "source": "gamedev-skills/awesome-gamedev-agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills.git",
+      "skillPath": "skills/disciplines/game-feel/SKILL.md",
+      "skillFolderHash": "87af1d6063f396018e36e0edca78a48b7492f962",
+      "pluginName": "disciplines",
+      "installedAt": "2026-11-18T04:09:09.866Z",
+      "updatedAt": "2026-11-18T04:09:09.866Z"
+    },
+    "ratatui-tui": {
+      "source": "blacktop/dotfiles",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/blacktop/dotfiles.git",
+      "skillPath": "ai/skills/ratatui-tui/SKILL.md",
+      "skillFolderHash": "772daafb1e1f761f2e8a07723fab42de90170100",
+      "installedAt": "2026-11-18T04:09:47.157Z",
+      "updatedAt": "2026-11-18T04:09:47.157Z"
+    },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "skillFolderHash": "8a24d1965ce33f4b519907bf98c9aaa323fffcb6",
+      "installedAt": "2026-11-18T04:10:31.140Z",
+      "updatedAt": "2026-11-18T04:10:31.140Z"
+    },
+    "better-interface": {
+      "source": "jakubkrehel/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/jakubkrehel/skills.git",
+      "skillPath": "skills/better-interface/SKILL.md",
+      "skillFolderHash": "303dd9bd3717610c3f3c32de0ef79d8c6e1681b0",
+      "installedAt": "2026-11-18T04:11:03.622Z",
+      "updatedAt": "2026-11-18T04:11:03.622Z"
     }
   },
   "dismissed": {
