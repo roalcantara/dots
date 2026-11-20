@@ -429,10 +429,11 @@ describe("yb", () => {
 
     it("launches and preflights Ghostty before taking the rule", () => {
       const r = tui(["--command", "psc"], { GHOSTTY_RUNNING: "false", YB_TUI_LAUNCH_WAIT: "0" });
-      const openIdx = r.calls.indexOf("open -a Ghostty");
+      const openIdx = r.calls.findIndex((c) => c.startsWith("open -a Ghostty"));
       const preflightIdx = r.calls.findIndex((c) => c.startsWith("osascript tui-preflight"));
       const ruleIdx = r.calls.findIndex((c) => c.startsWith("-m rule --add"));
       expect(openIdx).toBeGreaterThanOrEqual(0);
+      expect(r.calls[openIdx]).toContain("--initial-window=false");
       expect(preflightIdx).toBeGreaterThan(openIdx);
       expect(ruleIdx).toBeGreaterThan(preflightIdx);
     });
@@ -475,7 +476,7 @@ describe("yb", () => {
 
     it("launches Ghostty before adding the rule, so its own first window is not taken", () => {
       const r = tui(["--command", "psc"], { GHOSTTY_RUNNING: "false", YB_TUI_LAUNCH_WAIT: "0" });
-      const open = r.calls.indexOf("open -a Ghostty");
+      const open = r.calls.findIndex((c) => c.startsWith("open -a Ghostty"));
       expect(open).toBeGreaterThanOrEqual(0);
       expect(open).toBeLessThan(r.calls.indexOf(rules(r.calls)[0]!));
     });

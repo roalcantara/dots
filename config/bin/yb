@@ -204,7 +204,7 @@ follow_new_window() {
 
 ghostty_tui_ready() {
   if [[ "$(osascript -e 'application "Ghostty" is running' 2>/dev/null)" != true ]]; then
-    open -a Ghostty
+    open -a Ghostty --args --initial-window=false
     sleep "${YB_TUI_LAUNCH_WAIT:-1}"
   fi
   if ! osascript -e 'tell application "Ghostty" to count windows' >/dev/null; then
