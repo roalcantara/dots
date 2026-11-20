@@ -747,6 +747,15 @@
     }
   },
   {
+    "keys": "fn ⇧ T",
+    "label": "Ghostty Quick Terminal",
+    "group": "Apps",
+    "description": "Toggles the Ghostty Quick Terminal overlay on the active screen.",
+    "picture": {
+      "kind": "new-window"
+    }
+  },
+  {
     "keys": "fn Q",
     "label": "Raycast Notes (instead of Quick Note)",
     "group": "Apps",

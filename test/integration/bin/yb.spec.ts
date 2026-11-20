@@ -55,6 +55,7 @@ case "$*" in
     printf 'osascript tui-focus %s\\n' "$*" >> "$YB_STUB_LOG"
     ;;
   *nvim*"new window"*) echo "osascript Ghostty new window nvim" >> "$YB_STUB_LOG" ;;
+  *keystroke*) echo "osascript Ghostty quick terminal" >> "$YB_STUB_LOG" ;;
   *"make new tab"*) echo "osascript new tab" >> "$YB_STUB_LOG" ;;
   *"make new document"*) echo "osascript Safari new document" >> "$YB_STUB_LOG" ;;
   *tui-new*|*new*surface*configuration*|*tui:*)
@@ -273,6 +274,7 @@ describe("yb", () => {
       expect(yb(["system"]).calls).toEqual(["open raycast://extensions/roalcantara/kb/system.screen"]);
       expect(yb(["hotkeys"]).calls).toEqual(["open raycast://extensions/roalcantara/kb/hotkeys.screen"]);
       expect(yb(["notes"]).calls).toEqual(["open raycast://extensions/raycast/raycast-notes/raycast-notes"]);
+      expect(yb(["quick"]).calls).toEqual(["osascript Ghostty quick terminal"]);
     });
   });
 

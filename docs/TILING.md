@@ -326,6 +326,7 @@ CHECK: `✓` works today; `S` needs space switching; `A` needs the scripting add
 |   ✓   |  Apps   | fn + ⇧ + v          | Visual Studio Code                                                   |
 |   ✓   |  Apps   | fn + ⇧ + g          | Gemini                                                               |
 |   ✓   |  Apps   | fn + ⇧ + n          | Neovim                                                               |
+|   ✓   |  Apps   | fn + ⇧ + t          | Ghostty Quick Terminal                                               |
 |   ✓   |  Apps   | fn + q              | Raycast Notes (instead of Quick Note)                                |
 |   ?   |  Apps   | ⌘ + Space, a TUI    | Open that TUI floating and centred (config/tuis.toml)                |
 |   ✓   |  Apps   | fn + e              | Raycast emoji picker (instead of macOS emoji picker)                 |

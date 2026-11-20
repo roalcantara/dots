@@ -178,6 +178,8 @@ export const bindings: readonly Binding[] = [
     b('Apps', key, mods, app, ['app', app], `Opens ${app}, or brings it to the front when it is already running.`, { kind: 'new-window' })
   ),
   b('Apps', 'n', ['shift'], 'Neovim', ['nvim'], 'Opens Neovim in a new Ghostty window.', { kind: 'new-window' }),
+  b('Apps', 't', ['shift'], 'Ghostty Quick Terminal', ['quick'],
+    'Toggles the Ghostty Quick Terminal overlay on the active screen.', { kind: 'new-window' }),
   b('Apps', 'q', [], 'Raycast Notes (instead of Quick Note)', ['notes'],
     "Opens Raycast Notes; this key no longer opens macOS's Quick Note.", { kind: 'new-window' }),
 

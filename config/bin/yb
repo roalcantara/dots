@@ -79,6 +79,7 @@
 #USAGE   flag "--window" help="Open a new browser window on the focused screen"
 #USAGE }
 #USAGE cmd "term" help="Open a new Ghostty window (launches Ghostty when it is not running)"
+#USAGE cmd "quick" help="Toggle the Ghostty Quick Terminal overlay"
 #USAGE cmd "nvim" help="Open Neovim in a new Ghostty window"
 #USAGE cmd "system" help="Open the kb System command (lock, sleep, restart)"
 #USAGE cmd "hotkeys" help="Open the kb Hotkeys command"
@@ -757,6 +758,10 @@ main() {
       if [[ ${usage_window:-false} == true ]]; then browser_window "$(browser_id)"; else browser_tab "$(browser_id)"; fi
       ;;
     term) ghostty_window ;;
+    quick)
+      osascript -e 'tell application "Ghostty" to activate' \
+        -e 'tell application "System Events" to keystroke "t" using {control down, option down}'
+      ;;
     nvim) ghostty_window nvim ;;
     system) kb system.screen ;;
     hotkeys) kb hotkeys.screen ;;
