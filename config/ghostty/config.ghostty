@@ -64,13 +64,11 @@ adjust-cell-height = 10
 # https://ghostty.org/docs/config/reference#adjust-font-baseline
 # adjust-font-baseline = 5
 
-
 ################################################################################
 ## THEME & COLORS ##############################################################
 ## To see all available themes run: ghostty +list-themes
 ## https://ghostty.org/docs/features/theme
 ################################################################################
-
 
 # A theme to use. It can be a built-in theme name, a custom theme name, or an absolute path to a custom theme file.
 # Some themes are "Ayu Mirage" "Andromeda" "catppuccin-macchiato" "catppuccin-mocha" "catppuccin-frappe" "Kanagawa Wave" "tokyonight_moon"
@@ -105,11 +103,9 @@ background = #1D212F
 # https://ghostty.org/docs/config/reference#alpha-blending
 alpha-blending = native
 
-
 ################################################################################
 ## WINDOW SETTINGS #############################################################
 ################################################################################
-
 
 # Horizontal window padding.
 # Applies padding between the terminal cells and the left and right window borders.
@@ -143,7 +139,6 @@ window-title-font-family = "JetBrainsMonoNL NFM Thin"
 # The text that will be displayed in the subtitle of the window
 # https://ghostty.org/docs/config/reference#window-subtitle
 window-subtitle = false
-
 
 ################################################################################
 ## MAIN SETTINGS
@@ -219,7 +214,7 @@ macos-auto-secure-input = true
 macos-secure-input-indication = true
 # The style of the macOS titlebar: native | transparent | tabs | hidden
 # https://ghostty.org/docs/config/reference#macos-titlebar-style
-macos-titlebar-style = hidden
+macos-titlebar-style = tabs
 # Use non-native fullscreen mode: visible-menu | true | false
 # https://ghostty.org/docs/config/reference#macos-non-native-fullscreen
 macos-non-native-fullscreen = true
@@ -251,7 +246,6 @@ macos-dock-drop-behavior = new-window
 ################################################################################
 ## CLIPBOARD & MOUSE SETTINGS
 ################################################################################
-
 
 # Allow programs running in the terminal to read to the system clipboard
 # https://ghostty.org/docs/config/reference#clipboard-read
