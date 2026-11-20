@@ -74,6 +74,8 @@ while its window is open focuses that window (it is titled `tui:<name>`); openin
 so one is shown at a time. The work is `yb tui`; without
 yabai the window still opens, just not floated or moved.
 
+Ghostty 1.3+ AppleScript Automation access is required for TUI lifecycle operations; an AppleScript denial prints an error before mutating any TUI or adding rules. Without yabai the TUI still opens, focuses, and closes natively through Ghostty, but is not placed. When yabai is present, exact placement waits for a uniquely matching `tui:<name>` window correlated against the pre-launch snapshot; an ambiguous or unconfirmed window is left open cleanly instead of geometry-correcting or focusing an unrelated Ghostty window.
+
 To add one:
 
 1. Add a table to `config/tuis.toml`: `command` (run through your login shell), and optionally `title`,
@@ -215,6 +217,16 @@ OS), so expect them to fail there unless `yb use` runs a build that supports it 
 - [ ] fn + ⇧f Finder, ⇧c Claude, ⇧v VS Code, ⇧g Gemini.
 - [ ] ⌘ + Space → "Copy a secret" opens psc floating and centred on the focused screen; running it
       again focuses that window; picking a secret (or Esc) closes it.
+- [ ] TUI first launch with Ghostty stopped: `psc` opens after one explicit launch and never tiles.
+- [ ] TUI repeated invocation: second invocation focuses the existing window with no duplicate.
+- [ ] TUI duplicate exact names: only one terminal remains after invocation.
+- [ ] TUI another tool: invoking another TUI closes `psc` and leaves only the new terminal open.
+- [ ] TUI single display: 875×600 and custom sizes are centred and floating.
+- [ ] TUI multiple displays: invocation lands on the focused display.
+- [ ] TUI concurrency: an unrelated Ghostty window opened concurrently is never moved, resized, or focused as the TUI.
+- [ ] TUI tool exit: closes only the matching terminal, including split/tab safety.
+- [ ] TUI Automation denial: fails visibly before closing any TUI or adding rules.
+- [ ] TUI without yabai: terminal still opens, focuses, and closes through Ghostty.
 
 ### System and keyboard
 
