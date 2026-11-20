@@ -253,6 +253,7 @@ ghostty_tui_create() {
     -e 'set command of cfg to item 1 of argv' \
     -e 'set environment variables of cfg to {"PATH=" & item 3 of argv, "YB_TUI=" & item 2 of argv}' \
     -e 'set w to new window with configuration cfg' \
+    -e 'set name override of (selected tab of w) to item 2 of argv' \
     -e 'set t to focused terminal of selected tab of w' \
     -e 'set name override of t to item 2 of argv' \
     -e 'activate window w' \

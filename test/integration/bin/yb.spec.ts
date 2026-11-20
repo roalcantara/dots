@@ -442,6 +442,7 @@ describe("yb", () => {
       const r = tui(["--command", "psc"]);
       const o = osa(r.calls);
       expect(o).toContain("set w to new window with configuration cfg");
+      expect(o).toContain("set name override of (selected tab of w) to");
       expect(o).toContain("set t to focused terminal of selected tab of w");
       expect(o).toContain("set name override of t to");
       expect(o).toContain("activate window w");
