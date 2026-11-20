@@ -205,3 +205,11 @@ killall Dock Finder SystemUIServer >/dev/null 2>&1 || true
 program = "/usr/bin/ssh-add"
 args = ["--apple-load-keychain"]
 run_at_load = true
+
+# At login, initialize Ghostty warm in the background without an initial window.
+# With quit-after-last-window-closed = false, Ghostty stays running warm so TUIs
+# launched via Raycast or yb tui open instantly without a cold-start flash or window jump.
+[bootstrap.macos.launchd.agents.ghostty]
+program = "/usr/bin/open"
+args = ["-g", "-a", "Ghostty", "--args", "--initial-window=false"]
+run_at_load = true

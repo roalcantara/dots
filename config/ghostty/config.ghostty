@@ -159,7 +159,7 @@ config-default-files = true
 confirm-close-surface = false
 # Quit after the last surface is closed
 # https://ghostty.org/docs/config/reference#quit-after-last-window-closed
-quit-after-last-window-closed = true
+quit-after-last-window-closed = false
 # Enable shell integration auto-injection
 # Shell integration greatly enhances the terminal experience:
 # - Working directory reporting so new tabs, splits inherit the previous terminal's working directory.
