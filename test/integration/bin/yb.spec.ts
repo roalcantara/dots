@@ -278,8 +278,15 @@ describe("yb", () => {
 
   describe("tui", () => {
     const DISPLAY = '{"index":1,"frame":{"x":0,"y":25,"w":1512,"h":957}}';
+    const DEFAULT_WINDOW =
+      '[{"id":42,"app":"Ghostty","title":"tui:psc","display":1,"frame":{"x":318,"y":178,"w":875,"h":600}}]';
     const tui = (args: string[], env: Record<string, string> = {}) =>
-      yb(["tui", "psc", ...args], { YB_STUB_DISPLAY: DISPLAY, YB_TUI_SETTLE: "0", ...env });
+      yb(["tui", "psc", ...args], {
+        YB_STUB_DISPLAY: DISPLAY,
+        YB_TUI_SETTLE: "0",
+        YB_STUB_WINDOWS_2: DEFAULT_WINDOW,
+        ...env,
+      });
     const osa = (calls: string[]) => calls.find((c) => c.startsWith("osascript tui-new")) ?? "";
     const rules = (calls: string[]) => calls.filter((c) => c.startsWith("-m rule"));
 
@@ -292,11 +299,11 @@ describe("yb", () => {
       const o = osa(r.calls);
       for (const part of ["/bin/zsh -lc 'psc; ", "tui:psc", "activate window", "PATH="]) expect(o).toContain(part);
       // the window is placed by the rule, not moved afterwards
-      expect(r.calls.filter((c) => c.startsWith("-m window"))).toEqual([]);
+      expect(r.calls.filter((c) => /--(display|resize|move) /.test(c))).toEqual([]);
     });
 
     it("focuses the new window through yabai, and again if something took the focus", () => {
-      const env = { YB_STUB_WINDOWS_1: '[{"id":42,"app":"Ghostty","title":"tui:psc"}]', YB_TUI_SETTLE: "0" };
+      const env = { YB_STUB_WINDOWS_2: '[{"id":42,"app":"Ghostty","title":"tui:psc"}]', YB_TUI_SETTLE: "0" };
       const kept = tui(["--command", "psc"], { ...env, YB_STUB_QUERY: '{"id":42}' });
       expect(kept.calls.filter((c) => c === "-m window --focus 42")).toHaveLength(1);
       const lost = tui(["--command", "psc"], { ...env, YB_STUB_QUERY: '{"id":7}' });
@@ -313,13 +320,68 @@ describe("yb", () => {
     it("puts the window right when it lands on the wrong screen or at the wrong size", () => {
       const env = { YB_STUB_QUERY: '{"id":42}' };
       const good = '[{"id":42,"app":"Ghostty","title":"tui:psc","display":1,"frame":{"x":323,"y":206,"w":863,"h":575}}]';
-      expect(tui(["--command", "psc"], { ...env, YB_STUB_WINDOWS_1: good }).calls.filter((c) => /--(display|resize|move) /.test(c))).toEqual([]);
+      expect(tui(["--command", "psc"], { ...env, YB_STUB_WINDOWS_2: good }).calls.filter((c) => /--(display|resize|move) /.test(c))).toEqual([]);
       const off = '[{"id":42,"app":"Ghostty","title":"tui:psc","display":2,"frame":{"x":611,"y":393,"w":486,"h":366}}]';
-      expect(tui(["--command", "psc"], { ...env, YB_STUB_WINDOWS_1: off }).calls.filter((c) => /--(display|resize|move) /.test(c))).toEqual([
+      expect(tui(["--command", "psc"], { ...env, YB_STUB_WINDOWS_2: off }).calls.filter((c) => /--(display|resize|move) /.test(c))).toEqual([
         "-m window 42 --display 1",
         "-m window 42 --resize abs:875:600",
         "-m window 42 --move abs:318:203",
       ]);
+    });
+
+    it("rejects a new title-less Ghostty window", () => {
+      const r = tui(["--command", "psc"], {
+        YB_STUB_WINDOWS_1: "[]",
+        YB_STUB_WINDOWS_2: '[{"id":42,"app":"Ghostty","title":""}]',
+      });
+      expect(r.calls.filter((c) => /--(display|resize|move|focus) /.test(c))).toEqual([]);
+      expect(r.calls.filter((c) => c === "-m rule --remove tui-psc")).toHaveLength(1);
+    });
+
+    it("accepts the named window after a delayed title", () => {
+      const r = tui(["--command", "psc"], {
+        YB_STUB_WINDOWS_1: "[]",
+        YB_STUB_WINDOWS_2: '[{"id":42,"app":"Ghostty","title":""}]',
+        YB_STUB_WINDOWS_3: '[{"id":42,"app":"Ghostty","title":"tui:psc"}]',
+        YB_STUB_QUERY: '{"id":42}',
+        YB_TUI_SETTLE: "0",
+      });
+      expect(r.calls.filter((c) => c === "-m window --focus 42")).toHaveLength(1);
+    });
+
+    it("does not select an unrelated concurrent Ghostty window", () => {
+      const r = tui(["--command", "psc"], {
+        YB_STUB_WINDOWS_1: "[]",
+        YB_STUB_WINDOWS_2:
+          '[{"id":41,"app":"Ghostty","title":"tui:other","display":1,"frame":{"x":323,"y":206,"w":863,"h":575}},{"id":42,"app":"Ghostty","title":"tui:psc","display":1,"frame":{"x":323,"y":206,"w":863,"h":575}}]',
+        YB_STUB_QUERY: '{"id":42}',
+        YB_TUI_SETTLE: "0",
+      });
+      expect(r.calls.filter((c) => c.includes("41"))).toEqual([]);
+      expect(r.calls.filter((c) => c === "-m window --focus 42")).toHaveLength(1);
+    });
+
+    it("requires both newness and title", () => {
+      const r = tui(["--command", "psc"], {
+        YB_STUB_WINDOWS_1: '[{"id":7,"app":"Ghostty","title":"tui:psc"}]',
+        YB_STUB_WINDOWS_2:
+          '[{"id":7,"app":"Ghostty","title":"tui:psc"},{"id":42,"app":"Ghostty","title":""}]',
+      });
+      expect(r.calls.filter((c) => c.startsWith("-m window"))).toEqual([]);
+    });
+
+    it("times out cleanly", () => {
+      rmSync(join(home, ".local/state/dots/tiling.log"), { force: true });
+      const r = tui(["--command", "psc"], {
+        YB_STUB_WINDOWS_1: "[]",
+        YB_STUB_WINDOWS_2: "[]",
+      });
+      expect(r.code).toBe(0);
+      expect(r.calls).toContain("-m rule --remove tui-psc");
+      expect(r.calls.filter((c) => c.startsWith("-m window"))).toEqual([]);
+      expect(readFileSync(join(home, ".local/state/dots/tiling.log"), "utf8")).toContain(
+        "tui: could not correlate tui:psc; Ghostty window left open",
+      );
     });
 
     it("adds the rule before asking Ghostty for the window", () => {

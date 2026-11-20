@@ -260,38 +260,28 @@ ghostty_tui_create() {
     "$line" "$title" "$tui_path" >/dev/null
 }
 
-# A TUI in its own Ghostty window, titled tui:<name> so the next call focuses it instead. yabai places it: a
-# one-shot rule, added just before the window exists, floats the next Ghostty window and sets its grid to
-# the size, centred on the focused screen, so it never shows up tiled. The command runs in a login zsh
-# without the interactive config (fast), with ~/.local/bin and the mise shims on PATH, and closes its own
-# window when it exits (Ghostty keeps a window open after an AppleScript command, wait after command or not).
-tui_open() {
-  local name="$1" command="$2" width="$3" height="$4" pause="$5" title="tui:$1" display index x0 y0 w h q="'\\''" line open_res
-  ghostty_tui_ready || return 1
-  open_res="$(ghostty_tui_prepare "$title")" || return $?
-  [[ $open_res == true ]] && return 0
-  if [[ -x $yabai ]] && display="$("$yabai" -m query --displays --display 2>/dev/null)" && [[ -n $display ]]; then
-    read -r index x0 y0 w h < <(jq -r '.index as $i | .frame | "\($i) \(.x | floor) \(.y | floor) \(.w | floor) \(.h | floor)"' <<<"$display")
-    Y rule --add --one-shot "label=tui-$name" 'app=^Ghostty$' manage=off "display=$index" \
-      "grid=$h:$w:$(((w - width) / 2)):$(((h - height) / 2)):$width:$height"
-  fi
-  [[ $pause == true ]] && command+="; read -k1 -s"
-  line="/bin/zsh -lc '${command//\'/$q}; $TUI_CLOSE'"
-  if ! ghostty_tui_create "$line" "$title" "$HOME/.local/bin:$HOME/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin"; then
-    [[ -n ${index:-} ]] && Yq rule --remove "tui-$name"
-    return 1
-  fi
-  # Ghostty's own activation can lose to the app that had the focus before Raycast (Raycast hands it back as
-  # it closes): focus the window through yabai, and once more if something took the focus right after.
-  [[ -n ${index:-} ]] || return 0
-  local found id on fw fh step
+tui_window() {
+  local title="$1" before_json="${2:-[]}" step found
   for step in {1..${YB_WAIT_STEPS:-20}}; do
-    found="$("$yabai" -m query --windows 2>/dev/null | jq -r --arg t "$title" \
-      'first(.[]? | select(.app == "Ghostty" and .title == $t) | "\(.id) \(.display) \(.frame.w // 0 | floor) \(.frame.h // 0 | floor)") // empty' 2>/dev/null)"
+    found="$("$yabai" -m query --windows 2>/dev/null | jq -r --arg t "$title" --argjson before "$before_json" '
+      [.[]? | select(.app == "Ghostty" and ([.id] | inside($before) | not) and .title == $t)]
+      | if length == 1 then first | "\(.id) \(.display) \(.frame.w // 0 | floor) \(.frame.h // 0 | floor)" else empty end
+    ' 2>/dev/null)"
     [[ -n $found ]] && break
     sleep 0.05
   done
-  [[ -n $found ]] || return 0
+  print -r -- "$found"
+}
+
+tui_place() {
+  local name="$1" title="$2" before_json="$3" index="$4" x0="$5" y0="$6" width="$7" height="$8" w="$9" h="${10}"
+  local found id on fw fh
+  found="$(tui_window "$title" "$before_json")"
+  if [[ -z $found ]]; then
+    Yq rule --remove "tui-$name"
+    trace "tui: could not correlate $title; Ghostty window left open"
+    return 0
+  fi
   read -r id on fw fh <<<"$found"
   # The rule normally places it; put it right when it did not (another screen, or sized for another screen).
   if [[ $on != "$index" ]] || ((fw < width - 40 || fw > width + 40 || fh < height - 60 || fh > height + 60)); then
@@ -302,6 +292,34 @@ tui_open() {
   Y window --focus "$id"
   sleep "${YB_TUI_SETTLE:-0.25}"
   [[ "$("$yabai" -m query --windows --window 2>/dev/null | jq -r '.id' 2>/dev/null)" == "$id" ]] || Y window --focus "$id"
+  return 0
+}
+
+# A TUI in its own Ghostty window, titled tui:<name> so the next call focuses it instead. yabai places it: a
+# one-shot rule, added just before the window exists, floats the next Ghostty window and sets its grid to
+# the size, centred on the focused screen, so it never shows up tiled. The command runs in a login zsh
+# without the interactive config (fast), with ~/.local/bin and the mise shims on PATH, and closes its own
+# window when it exits (Ghostty keeps a window open after an AppleScript command, wait after command or not).
+tui_open() {
+  local name="$1" command="$2" width="$3" height="$4" pause="$5" title="tui:$1" display index x0 y0 w h q="'\\''" line open_res before_json="[]"
+  ghostty_tui_ready || return 1
+  open_res="$(ghostty_tui_prepare "$title")" || return $?
+  [[ $open_res == true ]] && return 0
+  if [[ -x $yabai ]] && display="$("$yabai" -m query --displays --display 2>/dev/null)" && [[ -n $display ]]; then
+    read -r index x0 y0 w h < <(jq -r '.index as $i | .frame | "\($i) \(.x | floor) \(.y | floor) \(.w | floor) \(.h | floor)"' <<<"$display")
+    before_json="$("$yabai" -m query --windows 2>/dev/null | jq -c '[.[] | select(.app == "Ghostty") | .id]' 2>/dev/null)" || before_json="[]"
+    [[ -n $before_json ]] || before_json="[]"
+    Y rule --add --one-shot "label=tui-$name" 'app=^Ghostty$' manage=off "display=$index" \
+      "grid=$h:$w:$(((w - width) / 2)):$(((h - height) / 2)):$width:$height"
+  fi
+  [[ $pause == true ]] && command+="; read -k1 -s"
+  line="/bin/zsh -lc '${command//\'/$q}; $TUI_CLOSE'"
+  if ! ghostty_tui_create "$line" "$title" "$HOME/.local/bin:$HOME/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin"; then
+    [[ -n ${index:-} ]] && Yq rule --remove "tui-$name"
+    return 1
+  fi
+  [[ -n ${index:-} ]] || return 0
+  tui_place "$name" "$title" "$before_json" "$index" "$x0" "$y0" "$width" "$height" "$w" "$h"
 }
 # Run by the TUI's shell when the tool exits: close the terminal titled $YB_TUI (set by tui_open).
 TUI_CLOSE='osascript -e "on run argv" -e "tell application \"Ghostty\" to close (every terminal whose name is (item 1 of argv))" -e "end run" "$YB_TUI"'
