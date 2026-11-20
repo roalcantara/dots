@@ -14,8 +14,19 @@ printf '%s\\n' "$*" >> "$YB_STUB_LOG"
 if [ -n "\${YB_STUB_FAIL:-}" ] && printf '%s' "$*" | grep -Eq "$YB_STUB_FAIL"; then exit 1; fi
 case "$2 $3 $4" in
   "query --displays --display") printf '%s\\n' "\${YB_STUB_DISPLAY:-{\\"index\\":1\\}}" ;;
-  "query --windows ") n=$(cat "$YB_STUB_LOG.n" 2>/dev/null || echo 0); echo $((n + 1)) > "$YB_STUB_LOG.n"
-    if [ "$n" -eq 0 ]; then printf '%s\\n' "\${YB_STUB_WINDOWS_1:-[]}"; else printf '%s\\n' "\${YB_STUB_WINDOWS_2:-[]}"; fi ;;
+  "query --windows " | "query --windows")
+    n=$(cat "$YB_STUB_LOG.n" 2>/dev/null || echo 0)
+    n=$((n + 1))
+    echo "$n" > "$YB_STUB_LOG.n"
+    if [ "$n" -eq 1 ]; then
+      printf '%s\\n' "\${YB_STUB_WINDOWS_1:-[]}"
+    else
+      eval "val=\\\$YB_STUB_WINDOWS_$n"
+      if [ -z "$val" ]; then
+        val="\${YB_STUB_WINDOWS_2:-[]}"
+      fi
+      printf '%s\\n' "$val"
+    fi ;;
   "query --spaces --space") printf '%s\\n' "\${YB_STUB_SPACE:-\${YB_STUB_QUERY:-{\\}}}" ;;
   query*) printf '%s\\n' "\${YB_STUB_QUERY:-{\\}}" ;;
 esac
@@ -25,13 +36,33 @@ const OPEN = `#!/bin/sh\nprintf 'open %s\\n' "$*" >> "$YB_STUB_LOG"\n`;
 // osascript stand-in: answers "is running" from GHOSTTY_RUNNING and records new-window requests.
 const OSASCRIPT = `#!/bin/sh
 case "$*" in
-  *exists*"tui:"*) printf 'osascript tui-lookup %s\\n' "$*" >> "$YB_STUB_LOG"; echo "\${GHOSTTY_TUI_OPEN:-false}" ;;
-  *"is running"*) echo "\${GHOSTTY_RUNNING:-true}" ;;
-  *"focus ("*"tui:"*) printf 'osascript tui-focus %s\\n' "$*" >> "$YB_STUB_LOG" ;;
-  *"tui:"*) printf 'osascript tui-new %s\\n' "$*" >> "$YB_STUB_LOG"; exit "\${OSA_FAIL:-0}" ;;
+  *tui-preflight*|*Ghostty*count*)
+    printf 'osascript tui-preflight %s\\n' "$*" >> "$YB_STUB_LOG"
+    if [ "\${GHOSTTY_PREFLIGHT_FAIL:-0}" = "1" ]; then
+      printf '%s\\n' "Ghostty AppleScript is not available" >&2
+      exit 1
+    fi
+    echo 0
+    ;;
+  *tui-prepare*|*starts*tui:*|*exists*tui:*)
+    printf 'osascript tui-prepare %s\\n' "$*" >> "$YB_STUB_LOG"
+    echo "\${GHOSTTY_TUI_OPEN:-false}"
+    ;;
+  *"is running"*)
+    echo "\${GHOSTTY_RUNNING:-true}"
+    ;;
+  *"focus ("*tui:*)
+    printf 'osascript tui-focus %s\\n' "$*" >> "$YB_STUB_LOG"
+    ;;
   *nvim*"new window"*) echo "osascript Ghostty new window nvim" >> "$YB_STUB_LOG" ;;
   *"make new tab"*) echo "osascript new tab" >> "$YB_STUB_LOG" ;;
   *"make new document"*) echo "osascript Safari new document" >> "$YB_STUB_LOG" ;;
+  *tui-new*|*new*surface*configuration*|*tui:*)
+    printf 'osascript tui-new %s\\n' "$*" >> "$YB_STUB_LOG"
+    if [ "\${GHOSTTY_CREATE_FAIL:-0}" = "1" ] || [ "\${OSA_FAIL:-0}" = "1" ]; then
+      exit 1
+    fi
+    ;;
   *"new window"*) echo "osascript Ghostty new window" >> "$YB_STUB_LOG" ;;
 esac
 `;
@@ -274,7 +305,7 @@ describe("yb", () => {
 
     it("closes any other TUI first, so only one is shown", () => {
       const r = tui(["--command", "psc"]);
-      const lookup = r.calls.find((c) => c.startsWith("osascript tui-lookup")) ?? "";
+      const lookup = r.calls.find((c) => c.startsWith("osascript tui-prepare") || c.startsWith("osascript tui-lookup")) ?? "";
       expect(lookup).toContain('close (every terminal whose name starts with "tui:" and name is not (item 1 of argv))');
       expect(r.calls.indexOf(lookup)).toBeLessThan(r.calls.indexOf(osa(r.calls)));
     });
@@ -310,9 +341,61 @@ describe("yb", () => {
 
     it("focuses the open window instead of opening another", () => {
       const r = tui(["--command", "psc"], { GHOSTTY_TUI_OPEN: "true" });
-      expect(r.calls.some((c) => c.startsWith("osascript tui-focus") && c.includes("tui:psc"))).toBe(true);
+      const prepare = r.calls.find((c) => c.startsWith("osascript tui-prepare")) ?? "";
+      expect(prepare).toContain("activate window");
+      expect(prepare).toContain("foundWin");
+      expect(prepare).toContain("tui:psc");
       expect(osa(r.calls)).toBe("");
       expect(rules(r.calls)).toEqual([]);
+    });
+
+    it("reports a compatible running-state failure without a rule", () => {
+      const r = tui(["--command", "psc"], { GHOSTTY_PREFLIGHT_FAIL: "1" });
+      expect(r.code).toBe(1);
+      expect(r.out).toContain("Ghostty AppleScript is unavailable; allow Automation access and use Ghostty 1.3 or newer");
+      expect(rules(r.calls)).toEqual([]);
+    });
+
+    it("preflights Ghostty before mutating or adding a rule", () => {
+      const r = tui(["--command", "psc"], { GHOSTTY_PREFLIGHT_FAIL: "1" });
+      expect(r.code).toBe(1);
+      expect(r.out).toContain("Ghostty AppleScript is not available");
+      expect(r.calls.some((c) => c.startsWith("osascript tui-prepare"))).toBe(false);
+      expect(r.calls.some((c) => c.startsWith("osascript tui-new"))).toBe(false);
+      expect(r.calls.some((c) => c.startsWith("-m rule"))).toBe(false);
+    });
+
+    it("launches and preflights Ghostty before taking the rule", () => {
+      const r = tui(["--command", "psc"], { GHOSTTY_RUNNING: "false", YB_TUI_LAUNCH_WAIT: "0" });
+      const openIdx = r.calls.indexOf("open -a Ghostty");
+      const preflightIdx = r.calls.findIndex((c) => c.startsWith("osascript tui-preflight"));
+      const ruleIdx = r.calls.findIndex((c) => c.startsWith("-m rule --add"));
+      expect(openIdx).toBeGreaterThanOrEqual(0);
+      expect(preflightIdx).toBeGreaterThan(openIdx);
+      expect(ruleIdx).toBeGreaterThan(preflightIdx);
+    });
+
+    it("names and activates the returned creation object", () => {
+      const r = tui(["--command", "psc"]);
+      const o = osa(r.calls);
+      expect(o).toContain("set w to new window with configuration cfg");
+      expect(o).toContain("set t to focused terminal of selected tab of w");
+      expect(o).toContain("set name override of t to");
+      expect(o).toContain("activate window w");
+    });
+
+    it("reconciles a duplicate exact name while focusing once", () => {
+      const r = tui(["--command", "psc"], { GHOSTTY_TUI_OPEN: "true", GHOSTTY_TUI_DUPLICATES: "2" });
+      const prepare = r.calls.find((c) => c.startsWith("osascript tui-prepare")) ?? "";
+      expect(prepare).not.toBe("");
+      expect(prepare).toContain("activate window");
+      expect(osa(r.calls)).toBe("");
+      expect(rules(r.calls)).toEqual([]);
+    });
+
+    it("does not mutate TUI state until preflight succeeds", () => {
+      const r = tui(["--command", "psc"], { GHOSTTY_PREFLIGHT_FAIL: "1", GHOSTTY_TUI_OPEN: "true" });
+      expect(r.calls.some((c) => c.startsWith("osascript tui-prepare"))).toBe(false);
     });
 
     it("closes its own window when the tool exits", () => {
@@ -335,15 +418,17 @@ describe("yb", () => {
       expect(open).toBeLessThan(r.calls.indexOf(rules(r.calls)[0]!));
     });
 
-    it("drops the rule when Ghostty could not open the window", () => {
-      const r = tui(["--command", "psc"], { OSA_FAIL: "1" });
+    it("removes the rule when creation fails", () => {
+      const r = tui(["--command", "psc"], { GHOSTTY_CREATE_FAIL: "1" });
       expect(r.code).not.toBe(0);
       expect(r.calls).toContain("-m rule --remove tui-psc");
     });
 
-    it("opens without yabai", () => {
+    it("preserves opens without yabai", () => {
       const r = tui(["--command", "psc"], { DOTS_YABAI: join(dir, "no-yabai") });
       expect(r.code).toBe(0);
+      expect(r.calls.some((c) => c.startsWith("osascript tui-preflight"))).toBe(true);
+      expect(r.calls.some((c) => c.startsWith("osascript tui-prepare"))).toBe(true);
       expect(osa(r.calls)).not.toBe("");
       expect(r.calls.filter((c) => c.startsWith("-m"))).toEqual([]);
     });

@@ -202,25 +202,74 @@ follow_new_window() {
   Y window --focus "${found%% *}"
 }
 
+ghostty_tui_ready() {
+  if [[ "$(osascript -e 'application "Ghostty" is running' 2>/dev/null)" != true ]]; then
+    open -a Ghostty
+    sleep "${YB_TUI_LAUNCH_WAIT:-1}"
+  fi
+  if ! osascript -e 'tell application "Ghostty" to count windows' >/dev/null; then
+    print -u2 "yb tui: Ghostty AppleScript is unavailable; allow Automation access and use Ghostty 1.3 or newer"
+    trace "tui: Ghostty AppleScript is unavailable"
+    return 1
+  fi
+}
+
+ghostty_tui_prepare() {
+  local title="$1" res
+  res="$(osascript -e 'on run argv' \
+    -e 'set reqTitle to item 1 of argv' \
+    -e 'tell application "Ghostty"' \
+    -e 'close (every terminal whose name starts with "tui:" and name is not (item 1 of argv))' \
+    -e 'set foundWin to missing value' \
+    -e 'set foundTerm to missing value' \
+    -e 'repeat with w in (every window)' \
+    -e 'try' \
+    -e 'set t to focused terminal of selected tab of w' \
+    -e 'if name of t is reqTitle then' \
+    -e 'if foundTerm is missing value then' \
+    -e 'set foundTerm to t' \
+    -e 'set foundWin to w' \
+    -e 'else' \
+    -e 'close t' \
+    -e 'end if' \
+    -e 'end if' \
+    -e 'end try' \
+    -e 'end repeat' \
+    -e 'if foundTerm is not missing value then' \
+    -e 'focus foundTerm' \
+    -e 'activate window foundWin' \
+    -e 'return true' \
+    -e 'end if' \
+    -e 'return false' \
+    -e 'end tell' \
+    -e 'end run' "$title")" || return $?
+  print -r -- "$res"
+}
+
+ghostty_tui_create() {
+  local line="$1" title="$2" tui_path="$3"
+  osascript -e 'on run argv' -e 'tell application "Ghostty"' \
+    -e 'set cfg to new surface configuration' \
+    -e 'set command of cfg to item 1 of argv' \
+    -e 'set environment variables of cfg to {"PATH=" & item 3 of argv, "YB_TUI=" & item 2 of argv}' \
+    -e 'set w to new window with configuration cfg' \
+    -e 'set t to focused terminal of selected tab of w' \
+    -e 'set name override of t to item 2 of argv' \
+    -e 'activate window w' \
+    -e 'end tell' -e 'end run' \
+    "$line" "$title" "$tui_path" >/dev/null
+}
+
 # A TUI in its own Ghostty window, titled tui:<name> so the next call focuses it instead. yabai places it: a
 # one-shot rule, added just before the window exists, floats the next Ghostty window and sets its grid to
 # the size, centred on the focused screen, so it never shows up tiled. The command runs in a login zsh
 # without the interactive config (fast), with ~/.local/bin and the mise shims on PATH, and closes its own
 # window when it exits (Ghostty keeps a window open after an AppleScript command, wait after command or not).
 tui_open() {
-  local name="$1" command="$2" width="$3" height="$4" pause="$5" title="tui:$1" display index x0 y0 w h q="'\\''" line
-  # One TUI at a time: close the others; focus this one when it is already open.
-  if [[ "$(osascript -e 'on run argv' -e 'tell application "Ghostty"' -e 'if not running then return false' \
-    -e 'close (every terminal whose name starts with "tui:" and name is not (item 1 of argv))' \
-    -e 'return exists (first terminal whose name is (item 1 of argv))' -e 'end tell' -e 'end run' "$title" 2>/dev/null)" == true ]]; then
-    osascript -e 'on run argv' -e 'tell application "Ghostty"' -e 'focus (first terminal whose name is (item 1 of argv))' \
-      -e 'activate' -e 'end tell' -e 'end run' "$title" >/dev/null
-    return
-  fi
-  if [[ "$(osascript -e 'application "Ghostty" is running' 2>/dev/null)" != true ]]; then
-    open -a Ghostty
-    sleep "${YB_TUI_LAUNCH_WAIT:-1}"
-  fi
+  local name="$1" command="$2" width="$3" height="$4" pause="$5" title="tui:$1" display index x0 y0 w h q="'\\''" line open_res
+  ghostty_tui_ready || return 1
+  open_res="$(ghostty_tui_prepare "$title")" || return $?
+  [[ $open_res == true ]] && return 0
   if [[ -x $yabai ]] && display="$("$yabai" -m query --displays --display 2>/dev/null)" && [[ -n $display ]]; then
     read -r index x0 y0 w h < <(jq -r '.index as $i | .frame | "\($i) \(.x | floor) \(.y | floor) \(.w | floor) \(.h | floor)"' <<<"$display")
     Y rule --add --one-shot "label=tui-$name" 'app=^Ghostty$' manage=off "display=$index" \
@@ -228,13 +277,7 @@ tui_open() {
   fi
   [[ $pause == true ]] && command+="; read -k1 -s"
   line="/bin/zsh -lc '${command//\'/$q}; $TUI_CLOSE'"
-  if ! osascript -e 'on run argv' -e 'tell application "Ghostty"' -e 'set cfg to new surface configuration' \
-    -e 'set command of cfg to item 1 of argv' \
-    -e 'set environment variables of cfg to {"PATH=" & item 3 of argv, "YB_TUI=" & item 2 of argv}' \
-    -e 'set w to new window with configuration cfg' \
-    -e 'set name override of focused terminal of selected tab of w to item 2 of argv' \
-    -e 'activate window w' -e 'end tell' -e 'end run' \
-    "$line" "$title" "$HOME/.local/bin:$HOME/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin" >/dev/null; then
+  if ! ghostty_tui_create "$line" "$title" "$HOME/.local/bin:$HOME/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin"; then
     [[ -n ${index:-} ]] && Yq rule --remove "tui-$name"
     return 1
   fi
