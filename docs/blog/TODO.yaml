@@ -144,6 +144,8 @@ tasks:
   - pm2q
   - q4ae
   - nHqc
+  - loD8
+  - NVlT
   position: docs/blog/posts/2026-12-01-commit-conventions-release-notes
   tags:
   - theme-b
@@ -905,4 +907,10 @@ comments:
 - id: K7hc
   text: 'note: 2026-11-24 the posts so far went out 1-4 days apart, so weekly changes no clean baseline; do each 7-day retro before the next post, as it lands on the same Tuesday'
   task_id: Yaw4
+- id: loD8
+  text: 'gate: 2026-11-24 PASS stepps=9/12'
+  task_id: yg3s
+- id: NVlT
+  text: 'vars: hook=confession cover=terminal-diff images=3-cover+wink+diagram linkedin=link lang=pt-br day=<author> tags=git,devops,github,productivity'
+  task_id: yg3s
 project: posts
