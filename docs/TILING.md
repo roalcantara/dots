@@ -227,6 +227,10 @@ OS), so expect them to fail there unless `yb use` runs a build that supports it 
 - [ ] TUI tool exit: closes only the matching terminal, including split/tab safety.
 - [ ] TUI Automation denial: fails visibly before closing any TUI or adding rules.
 - [ ] TUI without yabai: terminal still opens, focuses, and closes through Ghostty.
+- [ ] fn + ⇧t drops the Ghostty Quick Terminal from the top of the focused screen, also while another app is in
+      front; pressing it again hides it.
+- [ ] After login, Ghostty is running with no window (`dev.mise.ghostty` LaunchAgent), and closing its last window
+      leaves it running, so the next TUI opens without a cold start.
 
 ### System and keyboard
 
