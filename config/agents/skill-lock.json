@@ -3227,6 +3227,16 @@
       "skillFolderHash": "303dd9bd3717610c3f3c32de0ef79d8c6e1681b0",
       "installedAt": "2026-11-18T04:11:03.622Z",
       "updatedAt": "2026-11-18T04:11:03.622Z"
+    },
+    "documentation-and-adrs": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "commit": "e997ac5b9a74eab332d5e9793bb38a38c8cfdd74",
+      "skillPath": "skills/documentation-and-adrs/SKILL.md",
+      "skillFolderHash": "09b6d9f338a00bdecfc62ba7cad3221c41b48560",
+      "installedAt": "2026-11-24T18:08:33.787Z",
+      "updatedAt": "2026-11-24T18:08:33.787Z"
     }
   },
   "dismissed": {
