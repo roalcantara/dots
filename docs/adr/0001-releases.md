@@ -33,8 +33,9 @@ GitHub Releases are the changelog; nothing is committed back to `main`.
 - `.releaserc.yml` keeps `@semantic-release/commit-analyzer`, `@semantic-release/release-notes-generator` and
   `@semantic-release/github`, with the `conventionalcommits` preset. `@semantic-release/changelog` and
   `@semantic-release/git` are gone, and `CHANGELOG.md` with them.
-- `.github/release/` pins the tooling (`semantic-release` 26.0.1, `conventional-changelog-conventionalcommits` 10.4.1)
-  behind a lockfile, installed with `npm ci`.
+- `.github/release/` pins the tooling (`semantic-release` 25.0.9, `conventional-changelog-conventionalcommits` 10.4.1)
+  behind a lockfile, installed with `npm ci`. Not 26 yet: semantic-release 26.0.1 depends on beta plugins
+  (`commit-analyzer` 14.0.0-beta.5, `release-notes-generator` 15.0.0-beta.4); 25.0.9 has only stable ones.
 - `release.yml` never cancels a release in progress (a newer run waits; GitHub keeps one waiting run per group, and
   it releases every commit since the last tag), pins `actions/checkout` and `actions/setup-node` by SHA, runs
   Node 26, and keeps the personal `GH_TOKEN`: a release created with `GITHUB_TOKEN` starts no workflow.
@@ -58,7 +59,7 @@ The alternatives lost for these reasons:
   with `comm -23 <(git tag -l 'v*' | sort) <(gh release list -L 1000 --json tagName -q '.[].tagName' | sort)` and
   create each by hand with the notes the failed run logged: `gh release create vX.Y.Z --verify-tag --notes-file <notes>`
   (semantic-release's tags are lightweight, so `--notes-from-tag` would give empty notes).
-- Previewing a release is a local dry run, with Node 26.13 or newer, in a throwaway clone where the branch is `main`:
+- Previewing a release is a local dry run, with Node 24.10 or newer, in a throwaway clone where the branch is `main`:
 
   ```bash
   tmp=$(mktemp -d) && git clone -q . "$tmp/dots" && cd "$tmp/dots"
