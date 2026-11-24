@@ -217,19 +217,19 @@ OS), so expect them to fail there unless `yb use` runs a build that supports it 
 - [ ] fn + ⇧f Finder, ⇧c Claude, ⇧v VS Code, ⇧g Gemini.
 - [ ] ⌘ + Space → "Copy a secret" opens psc floating and centred on the focused screen; running it
       again focuses that window; picking a secret (or Esc) closes it.
-- [ ] TUI first launch with Ghostty stopped: `psc` opens after one explicit launch and never tiles.
-- [ ] TUI repeated invocation: second invocation focuses the existing window with no duplicate.
-- [ ] TUI duplicate exact names: only one terminal remains after invocation.
-- [ ] TUI another tool: invoking another TUI closes `psc` and leaves only the new terminal open.
-- [ ] TUI single display: 875×600 and custom sizes are centred and floating.
-- [ ] TUI multiple displays: invocation lands on the focused display.
-- [ ] TUI concurrency: an unrelated Ghostty window opened concurrently is never moved, resized, or focused as the TUI.
-- [ ] TUI tool exit: closes only the matching terminal, including split/tab safety.
-- [ ] TUI Automation denial: fails visibly before closing any TUI or adding rules.
-- [ ] TUI without yabai: terminal still opens, focuses, and closes through Ghostty.
-- [ ] fn + ⇧t drops the Ghostty Quick Terminal from the top of the focused screen, also while another app is in
+- [x] TUI first launch with Ghostty stopped: `psc` opens after one explicit launch and never tiles.
+- [x] TUI repeated invocation: second invocation focuses the existing window with no duplicate.
+- [x] TUI duplicate exact names: only one terminal remains after invocation.
+- [x] TUI another tool: invoking another TUI closes `psc` and leaves only the new terminal open.
+- [x] TUI single display: 875×600 and custom sizes are centred and floating.
+- [x] TUI multiple displays: invocation lands on the focused display.
+- [x] TUI concurrency: an unrelated Ghostty window opened concurrently is never moved, resized, or focused as the TUI.
+- [x] TUI tool exit: closes only the matching terminal, including split/tab safety.
+- [x] TUI Automation denial: fails visibly before closing any TUI or adding rules.
+- [x] TUI without yabai: terminal still opens, focuses, and closes through Ghostty.
+- [x] fn + ⇧t drops the Ghostty Quick Terminal from the top of the focused screen, also while another app is in
       front; pressing it again hides it.
-- [ ] After login, Ghostty is running with no window (`dev.mise.ghostty` LaunchAgent), and closing its last window
+- [x] After login, Ghostty is running with no window (`dev.mise.ghostty` LaunchAgent), and closing its last window
       leaves it running, so the next TUI opens without a cold start.
 
 ### System and keyboard

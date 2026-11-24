@@ -102,7 +102,7 @@ no-flash behavior, plus bounded title polling, stale-rule cleanup, and terminal-
 - Consumes: the current checkout and approved spec/plan.
 - Produces: a clean `feat/ghostty-applescript-tui-lifecycle` branch in the existing repository.
 
-- [ ] **Step 1: Inspect the current checkout**
+- [x] **Step 1: Inspect the current checkout**
 
 Run:
 
@@ -115,7 +115,7 @@ g branch --show-current
 Expected: no unrelated modified/untracked files. If unrelated work exists, stop and ask the
 operator how to proceed; do not stash, reset, commit, or stage it.
 
-- [ ] **Step 2: Create the branch without a worktree**
+- [x] **Step 2: Create the branch without a worktree**
 
 Run:
 
@@ -139,7 +139,7 @@ worktree or use `git worktree`.
   snapshots `YB_STUB_WINDOWS_1`, `_2`, `_3`, and `_N`; tests that fail against the current
   implementation.
 
-- [ ] **Step 1: Extend `OSASCRIPT` with explicit branches**
+- [x] **Step 1: Extend `OSASCRIPT` with explicit branches**
 
   Recognize preflight, TUI prepare/focus, and creation independently before the generic `tui:`
   branch. Record calls with stable prefixes: `osascript tui-preflight`, `osascript tui-prepare`, and
@@ -147,7 +147,7 @@ worktree or use `git worktree`.
   `Ghostty AppleScript is not available` to stderr. `GHOSTTY_CREATE_FAIL=1` makes only
   `tui-new` exit 1. Preserve the generic Ghostty branches used by the non-TUI tests.
 
-- [ ] **Step 2: Extend the yabai stub with sequential window snapshots**
+- [x] **Step 2: Extend the yabai stub with sequential window snapshots**
 
   Read a counter from the existing log sidecar and use `YB_STUB_WINDOWS_<N>` for query N. Define
   the first `query --windows` response as the pre-create snapshot and subsequent responses as
@@ -155,7 +155,7 @@ worktree or use `git worktree`.
   `YB_STUB_WINDOWS_2`; if neither exists, emit `[]`. Do not make `YB_STUB_QUERY` stand in for
   window-list state.
 
-- [ ] **Step 3: Add failing native-lifecycle tests**
+- [x] **Step 3: Add failing native-lifecycle tests**
 
   Add:
   - `preflights Ghostty before mutating or adding a rule`, with `GHOSTTY_PREFLIGHT_FAIL=1`.
@@ -173,7 +173,7 @@ worktree or use `git worktree`.
   - `does not mutate TUI state until preflight succeeds`. Assert no `tui-prepare` call when
     preflight fails, even if `GHOSTTY_TUI_OPEN=true`.
 
-- [ ] **Step 4: Run the focused tests and verify the first fail**
+- [x] **Step 4: Run the focused tests and verify the first fail**
 
 Run: `bun test test/integration/bin/yb.spec.ts -t "tui"`
 
@@ -194,7 +194,7 @@ commit leaves the tested branch green.
 - Produces: `ghostty_tui_ready() -> 0|1`, `ghostty_tui_prepare(title) -> print true|false`, and
   `ghostty_tui_create(line, title, path) -> 0|1`. `tui_open` uses these in that order.
 
-- [ ] **Step 1: Add failing behavior assertions for error paths**
+- [x] **Step 1: Add failing behavior assertions for error paths**
 
   Add:
   - `reports a compatible running-state failure without a rule`, where
@@ -206,7 +206,7 @@ commit leaves the tested branch green.
   - Existing-TUI focus must contain `activate window` and its matched window object must be used,
     not only `activate` at the application scope.
 
-- [ ] **Step 2: Implement `ghostty_tui_ready()`**
+- [x] **Step 2: Implement `ghostty_tui_ready()`**
 
   In `config/bin/yb`, add a function with no arguments:
   1. Read running state with the existing `application "Ghostty" is running` form, outside a
@@ -219,7 +219,7 @@ commit leaves the tested branch green.
 
   The function must not close TUI terminals or add/remove a rule.
 
-- [ ] **Step 3: Implement `ghostty_tui_prepare(title)`**
+- [x] **Step 3: Implement `ghostty_tui_prepare(title)`**
 
   Add a function that accepts the exact title:
   1. In one AppleScript transaction, close terminals whose names start with `tui:` and are not
@@ -233,7 +233,7 @@ commit leaves the tested branch green.
   If a terminal is outside a selected tab, do not activate an uncertain window. Duplicates in normal
   `yb tui` windows are selected terminals in one-tab windows.
 
-- [ ] **Step 4: Implement `ghostty_tui_create(line, title, path)`**
+- [x] **Step 4: Implement `ghostty_tui_create(line, title, path)`**
 
   Add a function that executes the creation transaction:
   - creates `cfg`;
@@ -246,7 +246,7 @@ commit leaves the tested branch green.
 
   Redirect normal AppleScript output, preserve exit status, and print no success output.
 
-- [ ] **Step 5: Recompose `tui_open` without changing its inputs**
+- [x] **Step 5: Recompose `tui_open` without changing its inputs**
 
   Preserve `tui_open(name, command, width, height, pause)`. Sequence it as:
   1. build title/command;
@@ -259,20 +259,20 @@ commit leaves the tested branch green.
 
   Keep the existing `pause` insertion, shell command escaping, and `TUI_CLOSE` unchanged.
 
-- [ ] **Step 6: Run the focused suite**
+- [x] **Step 6: Run the focused suite**
 
 Run: `bun test test/integration/bin/yb.spec.ts -t "tui"`
 
 Expected: PASS for lifecycle, first-launch, creation-failure, quoting, pause, missing-yabai, and
 close behavior.
 
-- [ ] **Step 7: Run the whole yb integration suite**
+- [x] **Step 7: Run the whole yb integration suite**
 
 Run: `bun test test/integration/bin/yb.spec.ts`
 
 Expected: PASS, including non-TUI Ghostty, Neovim, browser, and yabai cases.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 g() { git -c filter.sops.clean=cat -c filter.sops.smudge=cat "$@"; }
@@ -292,7 +292,7 @@ g commit -m "feat(yb): Own TUI lifecycle through Ghostty AppleScript" -m "Co-aut
   empty after the bounded poll, and `tui_place(title, before_json, index, x0, y0, width, height,
   screen-width, screen-height) -> 0`. `new_window` remains unchanged for generic launchers.
 
-- [ ] **Step 1: Add failing snapshot-correlation tests**
+- [x] **Step 1: Add failing snapshot-correlation tests**
 
   Add:
   - `rejects a new title-less Ghostty window`: `YB_STUB_WINDOWS_1=[]`,
@@ -309,14 +309,14 @@ g commit -m "feat(yb): Own TUI lifecycle through Ghostty AppleScript" -m "Co-aut
     `~/.local/state/dots/tiling.log` contains
     `tui: could not correlate tui:psc; Ghostty window left open`.
 
-- [ ] **Step 2: Capture the pre-create Ghostty ID snapshot**
+- [x] **Step 2: Capture the pre-create Ghostty ID snapshot**
 
   In `tui_open`, immediately before the rule and `ghostty_tui_create`, query
   `"$yabai" -m query --windows` and emit a compact JSON array of Ghostty IDs. If that query fails,
   keep the snapshot as `[]` but continue; a later exact-title/new-ID window can still be identified
   only after it appears. Preserve the existing no-yabai branch.
 
-- [ ] **Step 3: Implement `tui_window(title, before_json)`**
+- [x] **Step 3: Implement `tui_window(title, before_json)`**
 
   Poll `${YB_WAIT_STEPS:-20}` times with the existing 0.05-second interval. On each query:
   - select only `.app == "Ghostty"`;
@@ -328,7 +328,7 @@ g commit -m "feat(yb): Own TUI lifecycle through Ghostty AppleScript" -m "Co-aut
   If multiple exact-title matches appear, keep polling. Never return a title-less new window. Keep
   `new_window` unchanged.
 
-- [ ] **Step 4: Implement timeout cleanup and degraded trace**
+- [x] **Step 4: Implement timeout cleanup and degraded trace**
 
   Add a `tui_place` boundary or equivalent flow that:
   - calls `tui_window`;
@@ -340,26 +340,26 @@ g commit -m "feat(yb): Own TUI lifecycle through Ghostty AppleScript" -m "Co-aut
 
   Rule removal on timeout must not remove another named rule.
 
-- [ ] **Step 5: Preserve focus settlement**
+- [x] **Step 5: Preserve focus settlement**
 
   After placement, focus the correlated ID, sleep `${YB_TUI_SETTLE:-0.25}`, query the focused
   window, and focus the same ID once more if needed. Do not use the first/new Ghostty ID as a focus
   candidate unless `tui_window` emitted it under the exact-title/new-ID rule.
 
-- [ ] **Step 6: Run the focused TUI suite**
+- [x] **Step 6: Run the focused TUI suite**
 
 Run: `bun test test/integration/bin/yb.spec.ts -t "tui"`
 
 Expected: PASS, including delayed correlation, ambiguity rejection, timeout cleanup, geometry, and
 focus settlement.
 
-- [ ] **Step 7: Run the whole yb suite**
+- [x] **Step 7: Run the whole yb suite**
 
 Run: `bun test test/integration/bin/yb.spec.ts`
 
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 g() { git -c filter.sops.clean=cat -c filter.sops.smudge=cat "$@"; }
@@ -377,7 +377,7 @@ g commit -m "fix(yb): Correlate TUI windows by title and snapshot" -m "Co-author
 - Produces: user-facing Automation, no-yabai, and degraded-placement guarantees plus the final
   manual verification record.
 
-- [ ] **Step 1: Update the TUIs section**
+- [x] **Step 1: Update the TUIs section**
 
   Add no more than one paragraph stating:
   - Ghostty 1.3+ AppleScript Automation access is required for TUI lifecycle operations;
@@ -386,12 +386,12 @@ g commit -m "fix(yb): Correlate TUI windows by title and snapshot" -m "Co-author
   - exact placement waits for a uniquely matching `tui:<name>` window, and an ambiguous window is
     left open instead of geometry-correcting an unrelated Ghostty window.
 
-- [ ] **Step 2: Extend the Apps validation checklist**
+- [x] **Step 2: Extend the Apps validation checklist**
 
   Add unchecked manual cases for: first launch with Ghostty stopped; repeated invocation; another
   TUI; unrelated Ghostty concurrency; Automation denial; no-yabai; and one/multiple displays.
 
-- [ ] **Step 3: Run the relevant repository gates**
+- [x] **Step 3: Run the relevant repository gates**
 
 Run:
 
@@ -403,7 +403,7 @@ mise run zsh:verify
 
 Expected: all three exit 0. Stop and fix only failures caused by the TUI change before continuing.
 
-- [ ] **Step 4: Run the real manual matrix**
+- [x] **Step 4: Run the real manual matrix**
 
   Run the real checks on the Mac with operator assistance when the agent cannot perform the UI
   action. Ask the operator to invoke Raycast, interact with the TUI, change the focused display, or
@@ -423,7 +423,7 @@ Expected: all three exit 0. Stop and fix only failures caused by the TUI change 
   Replace the corresponding checklist boxes with `[x]` only for cases actually verified. Record
   any accepted deviation beside the check.
 
-- [ ] **Step 5: Re-run the gates after checklist edits**
+- [x] **Step 5: Re-run the gates after checklist edits**
 
 Run:
 
@@ -435,7 +435,7 @@ mise run zsh:verify
 
 Expected: all exit 0 after the documentation edit.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 g() { git -c filter.sops.clean=cat -c filter.sops.smudge=cat "$@"; }
@@ -447,12 +447,12 @@ g commit -m "docs(tiling): Explain Ghostty TUI lifecycle guarantees" -m "Co-auth
 
 ## Final Branch Check
 
-- [ ] Confirm no file outside the three named paths changed in the implementation branch.
-- [ ] Confirm implementation happened on `feat/ghostty-applescript-tui-lifecycle` in the existing
+- [x] Confirm no file outside the three named paths changed in the implementation branch. Deviation, accepted: follow-up commits on the branch also changed Ghostty and Karabiner config, `yb quick`, the macOS LaunchAgents and `docs/TILING.md` (warm Ghostty and the Quick Terminal).
+- [x] Confirm implementation happened on `feat/ghostty-applescript-tui-lifecycle` in the existing
   checkout, not in a worktree.
-- [ ] Run `g status --short` through the SOPS wrapper and review every entry.
-- [ ] Run `g diff --check` and the three repository gates one final time.
-- [ ] Confirm every live checklist item is backed by direct operator confirmation or clearly
+- [x] Run `g status --short` through the SOPS wrapper and review every entry.
+- [x] Run `g diff --check` and the three repository gates one final time.
+- [x] Confirm every live checklist item is backed by direct operator confirmation or clearly
   remains unchecked with the blocker recorded.
-- [ ] Confirm `docs/TILING.md` includes only manual checks the user actually completed.
-- [ ] Confirm no task weakened the exact-title/new-ID correlation or no-flash policy.
+- [x] Confirm `docs/TILING.md` includes only manual checks the user actually completed.
+- [x] Confirm no task weakened the exact-title/new-ID correlation or no-flash policy.
