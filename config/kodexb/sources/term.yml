@@ -50,8 +50,8 @@ bookmarks:
   https://github.com/jolleyDesign/tudo:
     desc: Fast, local, keyboard driven todo list & notebook TUI
     tags: [tui, todo]
-  https://rayanbo.github.io/todo:
-    desc: A single binary that reads and writes your project`s TODO.md — add tasks, track status, assign actors, attach comments, then open a web dashboard when you need visuals. No database. No cloud. Just a file.
+  https://github.com/roalcantara/lida:
+    desc: Dual-format project task engine — reads and writes a project's TODO.yaml or TODO.md, with tasks, actors, comments and meta. No database, just the file.
     tags: [term, ai, todo]
   https://zentty.org:
     desc: Native macOS terminal for agent-driven development, built on Ghostty; Run Claude Code, Codex, and your shells. Each thread of work gets its own worklane - your agents and dev servers stay together.
