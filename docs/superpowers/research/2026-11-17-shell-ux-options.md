@@ -45,7 +45,7 @@ on 2026-11-17.
 3. **Try in a spike.**
    - [Lig](https://github.com/KevenGoncalves/lig), an IDE-style popup that works on macOS, Linux and Windows, with
      Catppuccin, about 740 specs and a `--help` fallback.
-   - [atuin](https://github.com/atuinsh/atuin) for Ctrl-R.
+   - ~~[atuin](https://github.com/atuinsh/atuin) for Ctrl-R.~~ Skipped after a spike on 2026-11-17 (see the table).
    - fish 4 as a second Ghostty profile, for comparison.
 
 Rationale:
@@ -68,7 +68,7 @@ Rationale:
 | [gomi](https://github.com/babarot/gomi) | rm -rf | Adopt | ✓ / ✓ | 578 | 2026-11-17 | Alias only in interactive shells |
 | [chafa](https://github.com/hpjansson/chafa) / `kitten icat` | Preview | Try | ✓ / ✓ | 5.4k | 2026-11-15 | icat is pixel-exact in Ghostty but flaky in tmux |
 | [Lig](https://github.com/KevenGoncalves/lig) | Popup | Adopted ([design](../specs/2026-11-17-lig-popup-design.md)) | ✓ / ✓ | 288 | 2026-11-16 | PTY proxy; fzf-tab stays as its fallback |
-| [atuin](https://github.com/atuinsh/atuin) | History | Try | ✓ / ✓ | 32.5k | 2026-11-17 | Replaces fzf Ctrl-R; sync optional |
+| [atuin](https://github.com/atuinsh/atuin) | History | Skip (spiked) | ✓ / ✓ | 32.5k | 2026-11-17 | Works under Lig and p10k, but no gain over fzf's Ctrl-R for one machine and a short history; costs a second secrets filter, a cached init, a process per shell start and a theme `dots theme` cannot drive |
 | [television](https://github.com/alexpasmantier/television) | Picker | Try | ✓ / ✓ | 6.4k | 2026-11-15 | Ctrl-T channels; not a Tab engine |
 | [fish 4](https://github.com/fish-shell/fish-shell) | Shell | Try alongside | ✓ / ✓ | 34k | 2026-11-16 | Polished out of the box; not POSIX |
 | [inshellisense](https://github.com/microsoft/inshellisense) | Popup | Watch | ✓ / ✓ | 10.8k | 2026-11-10 | Node runtime; plainer look |

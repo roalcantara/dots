@@ -1,92 +1,99 @@
 tasks:
 - id: zOaU
-  status: Todo
+  status: Done
   description: 'Shell UX: switchable theme (Catppuccin Mocha + Latte) across Ghostty, fzf, bat, zsh-patina, vivid LS_COLORS, eza, delta; Nerd Font'
-  due: null
-  actors: []
-  comments: []
-  blocked_reason: null
+  created: 2026-11-17T00:53:26.855898
   tags:
   - adopt
   - shell-ux
   - theme
+  comments:
+  - TjEs
   priority: High
-  created: 2026-11-17T00:53:26.855898
 - id: SEPc
-  status: Todo
+  status: Done
   description: 'Shell UX: fzf-tab --style full framed menus, drop file-list all, eza/bat previews matching la'
-  due: null
-  actors: []
-  comments: []
-  blocked_reason: null
+  created: 2026-11-17T00:53:26.859897
   tags:
   - adopt
   - fzf-tab
   - shell-ux
+  comments:
+  - fpJ3
   priority: High
-  created: 2026-11-17T00:53:26.859897
 - id: oQ32
-  status: Todo
+  status: Done
   description: 'Shell UX: rm -rf / force-push warning colour over zsh-patina'
-  due: null
-  actors: []
-  comments: []
-  blocked_reason: null
-  tags:
-  - adopt
-  - safety
-  - shell-ux
-  priority: Medium
   created: 2026-11-17T00:53:26.863820
-- id: 8J0f
-  status: Todo
-  description: 'Shell UX: gomi as rm in interactive shells (trash + restore)'
-  due: null
-  actors: []
-  comments: []
-  blocked_reason: null
   tags:
   - adopt
   - safety
   - shell-ux
+  comments:
+  - MVQY
   priority: Medium
+- id: 8J0f
+  status: Done
+  description: 'Shell UX: gomi as rm in interactive shells (trash + restore)'
   created: 2026-11-17T00:53:26.868239
+  tags:
+  - adopt
+  - safety
+  - shell-ux
+  comments:
+  - bwUn
+  priority: Medium
 - id: wecN
   status: Done
   description: 'Shell UX spike: Lig IDE-style autocomplete popup'
-  due: null
-  actors: []
-  comments: []
-  blocked_reason: null
-  tags:
-  - shell-ux
-  - try
-  priority: Low
   created: 2026-11-17T00:53:26.872320
+  tags:
+  - shell-ux
+  - try
+  priority: Low
 - id: Tyn0
-  status: Todo
+  status: Done
   description: 'Shell UX spike: atuin for Ctrl-R history'
-  due: null
-  actors: []
-  comments: []
-  blocked_reason: null
-  tags:
-  - shell-ux
-  - try
-  priority: Low
   created: 2026-11-17T00:53:26.875686
-- id: r74E
-  status: Todo
-  description: 'Shell UX spike: fish 4 in a second Ghostty profile'
-  due: null
-  actors: []
-  comments: []
-  blocked_reason: null
   tags:
   - shell-ux
   - try
   priority: Low
+- id: r74E
+  status: Done
+  description: 'Shell UX spike: fish 4 in a second Ghostty profile'
   created: 2026-11-17T00:53:26.879036
+  tags:
+  - shell-ux
+  - try
+  priority: Low
+- id: Zid2
+  status: Done
+  description: 'Shell UX research: LLM on the zsh command line (plain English to an editable command, Warp-style)'
+  created: 2026-11-17T15:43:58.587523
+  tags:
+  - shell-ux
+  - research
+  priority: Low
+- id: eFkQ
+  status: Todo
+  description: 'Shell UX spike: zsh-ai on the command line, omp vs own provider chain (docs/superpowers/research/2026-11-17-shell-llm-options.md)'
+  priority: Medium
+  tags:
+  - shell-ux
+  - try
 actors: []
-comments: []
+comments:
+- id: TjEs
+  text: 'Shipped switchable themes (Catppuccin Mocha and Macchiato, Dracula, Tokyo Night) in feat(shell): Add switchable themes, Lig and risky-command cues; Latte was not added'
+  task_id: zOaU
+- id: fpJ3
+  text: Framed in b3099fc, then the list made bare on purpose in bea1976 (only the preview pane keeps its frame)
+  task_id: SEPc
+- id: MVQY
+  text: Shipped as risky-command highlighting (docs/THEME.md, Risky commands)
+  task_id: oQ32
+- id: bwUn
+  text: 'Shipped: rm is gomi in interactive shells (config/zsh/opt/aliases/safety.zsh)'
+  task_id: 8J0f
 project: dots
