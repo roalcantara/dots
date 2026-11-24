@@ -67,6 +67,13 @@ tasks:
   - shell-ux
   - research
   priority: Low
+- id: eFkQ
+  status: Todo
+  description: 'Shell UX spike: zsh-ai on the command line, omp vs own provider chain (docs/superpowers/research/2026-11-17-shell-llm-options.md)'
+  priority: Medium
+  tags:
+  - shell-ux
+  - try
 actors: []
 comments: []
 project: dots
