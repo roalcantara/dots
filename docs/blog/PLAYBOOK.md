@@ -52,9 +52,11 @@ public article**; LinkedIn and communities point to dev.to.
 
 ## Cadence and themes
 
-- **One topic every two weeks, on Tuesdays** (author's time zone, working-week morning): the dev.to article and the
-  LinkedIn post the same day; the community post Thursday–Saturday; a lighter LinkedIn-only post the Tuesday after.
-  December holidays are skipped. The dates are the tasks' due dates.
+- **One post every Tuesday** (author's time zone, working-week morning; weekly since 2026-12-01, decided ahead of
+  Recalibration 2): a topic's dev.to article and LinkedIn post the same day, its community post Thursday–Saturday.
+  A lighter LinkedIn-only post (in-between) takes a Tuesday only when no topic is ready for it. December holidays
+  are skipped. The dates are the tasks' due dates.
+- **The 7-day retro comes first:** it lands on the next post's Tuesday, so its "change one thing" reaches that post.
 - **Four themes**, alternated so neighbouring posts differ (a task's `theme-a` … `theme-d` tag): **A** a machine you
   can rebuild; **B** a repo that checks itself; **C** working with AI agents; **D** desktop and terminal.
 - Topics that apply to almost anyone come first; dots-specific tools come last or not at all. dots is the example,
@@ -70,9 +72,10 @@ public article**; LinkedIn and communities point to dev.to.
   ([STYLE.md](STYLE.md), [`templates/linkedin.md`](templates/linkedin.md)).
 - **Community post:** the story and the RECIPE written for one community, disclosed as the author's
   ([`templates/community.md`](templates/community.md)).
-- **Cover and images:** the series look ([STYLE.md](STYLE.md), "Visual identity"); two images per post, the cover
+- **Cover and images:** the series look ([STYLE.md](STYLE.md), "Visual identity"); at least two images per post, the cover
   (`cover.json`) and the wink card (`wink.json`: the post's one pop-culture reference, framing a real command and its
-  output), which also serves, now and then, as the LinkedIn image.
+  output), which also serves, now and then, as the LinkedIn image; plus a diagram when it shows a mechanism the
+  text can't (STYLE.md, "Diagrams"), never as decoration.
 
 ## Language
 
@@ -194,7 +197,7 @@ Recorded on the series task (`mise run blog:record series series recipe_reuse=�
 
 ## Tuning each element
 
-With one post a fortnight, nothing here is statistically sound: **change one thing at a time, and write it down**.
+With one topic a week, nothing here is statistically sound: **change one thing at a time, and write it down**.
 Each post's task records its variables (`vars:`), the hypothesis for the one that changed (`note:`), and the numbers
 (`stats:`).
 
@@ -224,7 +227,7 @@ Each post's task records its variables (`vars:`), the hypothesis for the one tha
   - A community that beats LinkedIn on comments with substance twice gets the topic's first post next time.
 - **Recalibration 1 (after topic 4):** reset the targets from real numbers, review the language choice and the
   publishing day and time, reorder topics 5–8, decide whether the in-between posts are worth their time.
-- **Recalibration 2 (after topic 8):** order the backlog; keep the cadence, step up to weekly, slow down, or end
+- **Recalibration 2 (after topic 8):** order the backlog; keep the weekly cadence, slow down, or end
   the series. Write the decision in the log.
 
 ## Metadata in TODO.yaml

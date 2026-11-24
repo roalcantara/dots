@@ -143,6 +143,7 @@ tasks:
   - 81gh
   - pm2q
   - q4ae
+  - nHqc
   position: docs/blog/posts/2026-12-01-commit-conventions-release-notes
   tags:
   - theme-b
@@ -197,7 +198,7 @@ tasks:
 - id: VS93
   status: Todo
   description: 'Topic 3: Back up a list, not your home folder (LinkedIn in EN)'
-  due: 2027-01-05T09:00:00
+  due: 2027-01-05 09:00
   actors:
   - 7lt7
   - JTps
@@ -213,7 +214,7 @@ tasks:
 - id: CCOT
   status: Todo
   description: 'Topic 3 community: r/selfhosted'
-  due: 2027-01-07T12:00:00
+  due: 2027-01-07 09:00
   actors:
   - 7lt7
   priority: Medium
@@ -224,7 +225,7 @@ tasks:
 - id: vzYw
   status: Todo
   description: 'Topic 3 in-between: the 606,863 files number'
-  due: 2027-01-12T09:00:00
+  due: 2027-01-15 09:00
   actors:
   - 7lt7
   - JTps
@@ -236,7 +237,7 @@ tasks:
 - id: fHDI
   status: Todo
   description: 'Topic 4: One linter config for pre-commit and CI with hk (LinkedIn in PT-BR)'
-  due: 2027-01-19T09:00:00
+  due: 2027-01-12 09:00
   actors:
   - 7lt7
   - JTps
@@ -252,7 +253,7 @@ tasks:
 - id: ngug
   status: Todo
   description: 'Topic 4 community: r/commandline'
-  due: 2027-01-21T12:00:00
+  due: 2027-01-14 09:00
   actors:
   - 7lt7
   priority: Medium
@@ -263,7 +264,7 @@ tasks:
 - id: uikg
   status: Todo
   description: 'Topic 4 in-between: one config, eight linters'
-  due: 2027-01-26T09:00:00
+  due: 2027-01-15 09:00
   actors:
   - 7lt7
   - JTps
@@ -275,7 +276,7 @@ tasks:
 - id: 1CN1
   status: Todo
   description: 'Recalibration 1: targets, language test, day/time, topics 5-8, in-between posts'
-  due: 2027-01-30T12:00:00
+  due: 2027-01-15 09:00
   actors:
   - 7lt7
   - JTps
@@ -286,7 +287,7 @@ tasks:
 - id: E1rF
   status: Todo
   description: 'Topic 5: It took 54 fixes to make my bootstrap boring'
-  due: 2027-02-02T09:00:00
+  due: 2027-01-19 09:00
   actors:
   - 7lt7
   - JTps
@@ -302,7 +303,7 @@ tasks:
 - id: uVH9
   status: Todo
   description: 'Topic 5 community: r/dotfiles'
-  due: 2027-02-04T12:00:00
+  due: 2027-01-21 09:00
   actors:
   - 7lt7
   priority: Medium
@@ -313,7 +314,7 @@ tasks:
 - id: LQ8F
   status: Todo
   description: 'Topic 5 in-between: (picked at recalibration 1)'
-  due: 2027-02-09T09:00:00
+  due: 2027-01-15 09:00
   actors:
   - 7lt7
   - JTps
@@ -325,7 +326,7 @@ tasks:
 - id: h4z7
   status: Todo
   description: 'Topic 6: Spec, plan, agents on a personal repo'
-  due: 2027-02-16T09:00:00
+  due: 2027-01-26 09:00
   actors:
   - 7lt7
   - JTps
@@ -342,7 +343,7 @@ tasks:
 - id: Rc5u
   status: Todo
   description: 'Topic 6 community: r/ClaudeAI'
-  due: 2027-02-18T12:00:00
+  due: 2027-01-28 09:00
   actors:
   - 7lt7
   priority: Medium
@@ -353,7 +354,7 @@ tasks:
 - id: QfGl
   status: Todo
   description: 'Topic 6 in-between: 336 agent skills in a lock file'
-  due: 2027-02-23T09:00:00
+  due: 2027-01-15 09:00
   actors:
   - 7lt7
   - JTps
@@ -365,7 +366,7 @@ tasks:
 - id: csdp
   status: Todo
   description: 'Topic 7: mise profiles, one repo, four kinds of machine'
-  due: 2027-03-02T09:00:00
+  due: 2027-02-02 09:00
   actors:
   - 7lt7
   - JTps
@@ -381,7 +382,7 @@ tasks:
 - id: btNP
   status: Todo
   description: 'Topic 7 community: r/commandline'
-  due: 2027-03-04T12:00:00
+  due: 2027-02-04 09:00
   actors:
   - 7lt7
   priority: Medium
@@ -392,7 +393,7 @@ tasks:
 - id: lEde
   status: Todo
   description: 'Topic 7 in-between: the miserc.local.toml gotcha'
-  due: 2027-03-09T09:00:00
+  due: 2027-01-15 09:00
   actors:
   - 7lt7
   - JTps
@@ -404,7 +405,7 @@ tasks:
 - id: NISc
   status: Todo
   description: 'Topic 8: Test your Docker images like code (CST)'
-  due: 2027-03-16T09:00:00
+  due: 2027-02-09 09:00
   actors:
   - 7lt7
   - JTps
@@ -420,7 +421,7 @@ tasks:
 - id: RoY2
   status: Todo
   description: 'Topic 8 community: r/docker'
-  due: 2027-03-18T12:00:00
+  due: 2027-02-11 09:00
   actors:
   - 7lt7
   priority: Medium
@@ -431,7 +432,7 @@ tasks:
 - id: mhmi
   status: Todo
   description: 'Recalibration 2: order the backlog; keep, change or stop the cadence'
-  due: 2027-03-23T12:00:00
+  due: 2027-02-12 09:00
   actors:
   - 7lt7
   - JTps
@@ -489,6 +490,8 @@ tasks:
   - AtP7
   - KNIR
   - v5Uz
+  - fFdn
+  - K7hc
   priority: Low
   tags:
   - series
@@ -893,4 +896,13 @@ comments:
 - id: Xnsc
   text: 'hook: The tool I tracked my tasks with vanished; five days and 71 commits later I had my own (lida v0.1.1)'
   task_id: T5M8
+- id: nHqc
+  text: 'sources: release runs 40951363500 41787790135 41811286816 41890148263 42096076580 ("no relevant changes"), squash commits 7cff7fc 2280220 84a8fc1 09e0c96 2eadf17 498b0c8 (68 feat/fix inside, 1 in CHANGELOG.md), 3149394 (locale fix), 07cb058 (#96, hook dropped), run 45371260199 (semantic-release 26.0.1, Node 26.13.1), GitHub squash docs https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/configuring-commit-squashing-for-pull-requests'
+  task_id: yg3s
+- id: fFdn
+  text: 'decision: 2026-11-24 weekly cadence from Dec 1, ahead of Recalibration 2: a post every Tuesday (Dec 1 topic 2, Dec 8 and 15 the planned in-betweens, holidays off, then one topic a week from Jan 5); in-between posts only in free weeks, so those of topics 3+ wait for Recalibration 1; at least two images per post, a diagram when it shows a mechanism'
+  task_id: Yaw4
+- id: K7hc
+  text: 'note: 2026-11-24 the posts so far went out 1-4 days apart, so weekly changes no clean baseline; do each 7-day retro before the next post, as it lands on the same Tuesday'
+  task_id: Yaw4
 project: posts
