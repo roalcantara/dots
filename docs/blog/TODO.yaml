@@ -39,6 +39,8 @@ tasks:
   - eiOj
   - qnYU
   - eUJE
+  - nUXV
+  - qvYw
   position: docs/blog/posts/2026-11-13-zsh-word-split
   tags:
   - post
@@ -108,6 +110,8 @@ tasks:
   - gHzj
   - m0m2
   - WA04
+  - 9usJ
+  - NT5A
   position: docs/blog/posts/2026-11-17-secrets-sops-age
   tags:
   - post
@@ -855,4 +859,16 @@ comments:
 - id: v5Uz
   text: 'stats: 2026-11-24 series recipe_reuse=0 inbound=0 (manual)'
   task_id: Yaw4
+- id: nUXV
+  text: 'log.best-comment: 2026-11-24 linkedin Sheen Huth: "agent-generated shell code needs to be tested against the user''s actual environment, not assumed to be bash … I''d be interested in whether pinning the shell…" (a question, unanswered)'
+  task_id: 6ThC
+- id: qvYw
+  text: 'log.keep: 2026-11-24 the LinkedIn format: a quoted concrete pain as the hook, then "here is how I fixed it" and the link card'
+  task_id: 6ThC
+- id: 9usJ
+  text: 'log.change: 2026-11-24 back to the zsh-word-split format: open with the concrete pain, not the wink ("revelio"); reach was 45% of baseline'
+  task_id: EFly
+- id: NT5A
+  text: 'note: 2026-11-24 dev.to referrer_linkedin=0 while LinkedIn counts 2 link visits (lnkd.in hides the referrer): trust LinkedIn link visits over dev.to referrers'
+  task_id: EFly
 project: posts
