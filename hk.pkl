@@ -37,7 +37,7 @@ local stagingLinters = new Mapping<String, Step> {
   }
   ["yamllint"] {
     glob    = List("**/*.yml", "**/*.yaml")
-    // Written by the todo CLI (the blog wrapper and the root list) in its own layout, and a test fixture that copies that layout.
+    // Written by the lida CLI (the blog wrapper and the root list) in its own layout, and a test fixture that copies that layout.
     exclude = List("TODO.yaml", "docs/blog/TODO.yaml", "test/integration/blog/fixtures/TODO.yaml")
     check   = "yamllint {{files}}"
   }
