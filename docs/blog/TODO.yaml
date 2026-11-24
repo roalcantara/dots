@@ -38,6 +38,7 @@ tasks:
   - RFbd
   - eiOj
   - qnYU
+  - eUJE
   position: docs/blog/posts/2026-11-13-zsh-word-split
   tags:
   - post
@@ -479,6 +480,7 @@ tasks:
   - 3ItE
   - AtP7
   - KNIR
+  - v5Uz
   priority: Low
   tags:
   - series
@@ -847,4 +849,10 @@ comments:
 - id: WA04
   text: 'stats: 2026-11-24 linkedin impressions=159 reactions=3 comments=0 reposts=1 saves=0 sends=0 profile_views=1 followers=0 substantive_comments=0 (manual)'
   task_id: EFly
+- id: eUJE
+  text: 'stats: 2026-11-24 linkedin substantive_comments=1 (manual)'
+  task_id: 6ThC
+- id: v5Uz
+  text: 'stats: 2026-11-24 series recipe_reuse=0 inbound=0 (manual)'
+  task_id: Yaw4
 project: posts
