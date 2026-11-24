@@ -1570,6 +1570,27 @@
               },
               {
                 "type": "basic",
+                "description": "Ghostty Quick Terminal",
+                "from": {
+                  "key_code": "t",
+                  "modifiers": {
+                    "mandatory": [
+                      "fn",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "PATH=/opt/homebrew/bin:/usr/bin:/bin YB_KEY='fn ⇧ T' \"$HOME/.local/bin/yb\" quick"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
                 "description": "Raycast Notes (instead of Quick Note)",
                 "from": {
                   "key_code": "q",

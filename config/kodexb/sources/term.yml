@@ -50,8 +50,8 @@ bookmarks:
   https://github.com/jolleyDesign/tudo:
     desc: Fast, local, keyboard driven todo list & notebook TUI
     tags: [tui, todo]
-  https://rayanbo.github.io/todo:
-    desc: A single binary that reads and writes your project`s TODO.md — add tasks, track status, assign actors, attach comments, then open a web dashboard when you need visuals. No database. No cloud. Just a file.
+  https://github.com/roalcantara/lida:
+    desc: Dual-format project task engine — reads and writes a project's TODO.yaml or TODO.md, with tasks, actors, comments and meta. No database, just the file.
     tags: [term, ai, todo]
   https://zentty.org:
     desc: Native macOS terminal for agent-driven development, built on Ghostty; Run Claude Code, Codex, and your shells. Each thread of work gets its own worklane - your agents and dev servers stay together.
@@ -98,3 +98,34 @@ bookmarks:
     notes:
       - md: |
           Think of TASKS.md as a README for agents: a dedicated, predictable place to provide the context and instructions to help AI coding agents work on your project.
+  https://ghostty.org:
+    desc: Fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration.
+    tags: [term, ghostty]
+    links:
+      - https://github.com/ghostty-org/ghostty
+      - https://ghostty.org/docs/config/reference
+      - https://ghostty.org/docs/config/reference#keybind
+      - https://ghostty.org/docs/features#macos
+      - https://ghostty.org/docs/features/applescript#overview
+      - https://ghostty.org/docs/features/neovim
+commands:
+  ghostty +list-keybinds:
+    desc: Lists all available keybindings
+    tags: [term, ghostty]
+    links: [https://ghostty.org/docs/config/reference#keybind]
+  ghostty +list-actions:
+    desc: Lists all available actions
+    tags: [term, ghostty]
+    links: [https://ghostty.org/docs/config/reference#action]
+  ghostty +list-themes:
+    desc: Lists all available themes
+    tags: [term, ghostty]
+    links: [https://ghostty.org/docs/features/theme]
+  ghostty +show-config --default --docs:
+    desc: All available config options and their default values
+    tags: [term, ghostty]
+    links: [https://ghostty.org/docs/config]
+  ghostty +list-fonts:
+    desc: Lists all available fonts
+    tags: [term, ghostty]
+    links: [https://ghostty.org/docs/config/reference#font-family]

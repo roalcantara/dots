@@ -51,12 +51,11 @@ describe.skipIf(!brew)("Brewfile profiles", () => {
     expect(dev).toContain(lig);
   });
   it("dev alone implies desktop", () => expect(list("dev")).toContain("gopass"));
-  it("todo CLI (todo-cli from RayanBO/todo) for desktop,dev only, after rust", () => {
-    expect(container).not.toContain("todo-cli");
-    expect(desktop).not.toContain("todo-cli");
-    expect(dev).toContain("todo-cli");
-    for (const l of [container, desktop, dev]) expect(l).not.toContain("todo"); // crates.io `todo` is another crate
+  it("lida CLI (dual-format project task engine) for desktop,dev only, after rust", () => {
+    expect(container).not.toContain("lida");
+    expect(desktop).not.toContain("lida");
+    expect(dev).toContain("lida");
     const text = readFileSync(BREWFILE, "utf8"); // install order is file order: cargo needs rust first
-    expect(text.indexOf('cargo "todo-cli"')).toBeGreaterThan(text.indexOf('brew "rust"'));
+    expect(text.indexOf('cargo "lida"')).toBeGreaterThan(text.indexOf('brew "rust"'));
   });
 });

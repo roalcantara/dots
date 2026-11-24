@@ -97,6 +97,7 @@ cmd browser help="Open a new tab in the default browser's front window, or a new
     flag --window help="Open a new browser window on the focused screen"
 }
 cmd term help="Open a new Ghostty window (launches Ghostty when it is not running)"
+cmd quick help="Toggle the Ghostty Quick Terminal overlay"
 cmd nvim help="Open Neovim in a new Ghostty window"
 cmd system help="Open the kb System command (lock, sleep, restart)"
 cmd hotkeys help="Open the kb Hotkeys command"

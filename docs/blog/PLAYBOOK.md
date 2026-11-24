@@ -233,7 +233,7 @@ Every fact about a post lives in [`TODO.yaml`](TODO.yaml), on the post's task: t
 `position` is the post's folder (`docs/blog/posts/<YYYY-MM-DD>-<slug>`), its status and due date are the post's.
 Facts are comments on that task, one `key: value` each, appended (never edited) with
 `mise run blog:todo -- add --comment "<key>: <value>" --task-id <id>` or by the tasks. A task tagged `series` holds
-account-wide numbers. The todo CLI drops any field it doesn't know, which is why nothing else is stored there.
+account-wide numbers. The lida CLI owns the file, which is why everything is stored as its comments.
 The post's files (`post.md`, `linkedin.md`, `community.md`, `cover.json`, `review.md`, `images/`) are found by
 convention in its folder. A post published before the tooling carries `legacy: true` in its front matter: it skips
 the content checks and the publish gate, never the safety ones; no new post uses it. `mise run blog:report` prints everything and flags any comment outside the schema.

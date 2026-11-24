@@ -108,6 +108,14 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
     expect(agent.keep_alive).not.toBe(true);
   });
 
+  it("initializes Ghostty warm without an initial window at login", () => {
+    const agent = macos.launchd.agents["ghostty"]!;
+    expect(agent.program).toBe("/usr/bin/open");
+    expect(agent.args).toEqual(["-g", "-a", "Ghostty", "--args", "--initial-window=false"]);
+    expect(agent.run_at_load).toBe(true);
+    expect(agent.keep_alive).not.toBe(true);
+  });
+
   it("starts noTunes and the menu-bar helpers at login without removing other login items", () => {
     expect(macos.login_items.apps).toEqual(["/Applications/noTunes.app", "/Applications/Raycast.app",
       "/Applications/Vorssaint.app", "/Applications/Bitwarden.app", "/Applications/Google Drive.app",

@@ -39,8 +39,8 @@ describe.skipIf(!existsSync(join(HOME, ".config/zsh/.zshrc")))("fzf-tab effectiv
   it("no zstyles fzf-tab never reads", () => {
     expect(styles(`zstyle -L ':fzf-tab:complete:*' menu; zstyle -L ':fzf-tab:*' list-colors`).trim()).toBe("");
   });
-  it("previews: todo task details and mise tool info", () => {
-    expect(styles(`zstyle -L ':fzf-tab:complete:todo*:*' fzf-preview`)).toContain("todo list --tasks");
+  it("previews: lida task details and mise tool info", () => {
+    expect(styles(`zstyle -L ':fzf-tab:complete:lida*:*' fzf-preview`)).toContain("lida list --tasks");
     expect(styles(`zstyle -L ':fzf-tab:complete:mise:argument-rest' fzf-preview`)).toContain("mise tool");
   });
   it("any other command previews files, else coloured --help via cmdhelp; specific previews still win", () => {

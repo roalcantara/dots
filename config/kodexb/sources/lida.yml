@@ -1,0 +1,59 @@
+bookmarks:
+  https://github.com/roalcantara/lida:
+    title: lida
+    desc: Dual-format project task engine — reads and writes a project's TODO.yaml or TODO.md (tasks, actors, comments, meta)
+    tags: [todo, cli]
+
+commands:
+  lida init [--yaml|--md]:
+    desc: Create a TODO file in the current directory
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida add <text> [-p high] [-t tag,tag] [-d YYYY-MM-DD]:
+    desc: Add a task with priority, tags and due date
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida add --comment <text> --task-id <id>:
+    desc: Add a comment to an existing task
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida list [--tasks] [-s status] [-t tag] [-p priority] [--json]:
+    desc: List tasks, filtered by status, tag or priority
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida show <id> [--json]:
+    desc: Show one task in full
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida start <id> / lida done <id>:
+    desc: Mark a task in progress or done
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida status <id> --set todo|in-progress|done|blocked [--reason <why>]:
+    desc: Set a task's status (a reason only for blocked)
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida update <id> [--tags a,b] [--due ...] [--position <path>]:
+    desc: Change a task's attributes
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida meta <args>:
+    desc: Get, set or remove task metadata
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida tags:
+    desc: List the tags in use with task counts
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida cwi [md|yaml]:
+    desc: Show or switch the active format (stored in .lida/config)
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida delete <id>:
+    desc: Delete a task
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida completion zsh:
+    desc: Print the zsh completion (dots keeps it as _lida via mise run zsh:completions:lida)
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]

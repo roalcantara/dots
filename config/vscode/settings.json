@@ -1291,8 +1291,6 @@
       "stash": true
     }
   },
-  "gitlens.ai.model": "vscode",
-  "gitlens.ai.vscode.model": "copilot:gpt-4.1",
   "extensions.trustedPublishers": [
     "aaron-bond",
     "agilelog-org",
@@ -1591,7 +1589,13 @@
     "git -C /Users/roalcantara/Work/bun/kb": true,
     "git rev-parse": true,
     "git stash": true,
-    "printf": true
+    "printf": true,
+    "/^git -c filter\\.sops\\.clean=cat -c filter\\.sops\\.smudge=cat \"\\$@\"$/": true,
+    "/^g status --short$/": true,
+    "/^code --profile Dots --uninstall-extension 0 --help$/": true,
+    "/^code --help$/": true,
+    "/^osascript -e 'tell application \"Ghostty\" to get version'$/": true,
+    "/^sdef /Applications/Ghostty\\.app$/": true
   },
   "code-runner.runInTerminal": true,
   "code-runner.executorMap": {

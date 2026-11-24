@@ -74,6 +74,8 @@ while its window is open focuses that window (it is titled `tui:<name>`); openin
 so one is shown at a time. The work is `yb tui`; without
 yabai the window still opens, just not floated or moved.
 
+Ghostty 1.3+ AppleScript Automation access is required for TUI lifecycle operations; an AppleScript denial prints an error before mutating any TUI or adding rules. Without yabai the TUI still opens, focuses, and closes natively through Ghostty, but is not placed. When yabai is present, exact placement waits for a uniquely matching `tui:<name>` window correlated against the pre-launch snapshot; an ambiguous or unconfirmed window is left open cleanly instead of geometry-correcting or focusing an unrelated Ghostty window.
+
 To add one:
 
 1. Add a table to `config/tuis.toml`: `command` (run through your login shell), and optionally `title`,
@@ -215,6 +217,20 @@ OS), so expect them to fail there unless `yb use` runs a build that supports it 
 - [ ] fn + ⇧f Finder, ⇧c Claude, ⇧v VS Code, ⇧g Gemini.
 - [ ] ⌘ + Space → "Copy a secret" opens psc floating and centred on the focused screen; running it
       again focuses that window; picking a secret (or Esc) closes it.
+- [x] TUI first launch with Ghostty stopped: `psc` opens after one explicit launch and never tiles.
+- [x] TUI repeated invocation: second invocation focuses the existing window with no duplicate.
+- [x] TUI duplicate exact names: only one terminal remains after invocation.
+- [x] TUI another tool: invoking another TUI closes `psc` and leaves only the new terminal open.
+- [x] TUI single display: 875×600 and custom sizes are centred and floating.
+- [x] TUI multiple displays: invocation lands on the focused display.
+- [x] TUI concurrency: an unrelated Ghostty window opened concurrently is never moved, resized, or focused as the TUI.
+- [x] TUI tool exit: closes only the matching terminal, including split/tab safety.
+- [x] TUI Automation denial: fails visibly before closing any TUI or adding rules.
+- [x] TUI without yabai: terminal still opens, focuses, and closes through Ghostty.
+- [x] fn + ⇧t drops the Ghostty Quick Terminal from the top of the focused screen, also while another app is in
+      front; pressing it again hides it.
+- [x] After login, Ghostty is running with no window (`dev.mise.ghostty` LaunchAgent), and closing its last window
+      leaves it running, so the next TUI opens without a cold start.
 
 ### System and keyboard
 
@@ -314,6 +330,7 @@ CHECK: `✓` works today; `S` needs space switching; `A` needs the scripting add
 |   ✓   |  Apps   | fn + ⇧ + v          | Visual Studio Code                                                   |
 |   ✓   |  Apps   | fn + ⇧ + g          | Gemini                                                               |
 |   ✓   |  Apps   | fn + ⇧ + n          | Neovim                                                               |
+|   ✓   |  Apps   | fn + ⇧ + t          | Ghostty Quick Terminal                                               |
 |   ✓   |  Apps   | fn + q              | Raycast Notes (instead of Quick Note)                                |
 |   ?   |  Apps   | ⌘ + Space, a TUI    | Open that TUI floating and centred (config/tuis.toml)                |
 |   ✓   |  Apps   | fn + e              | Raycast emoji picker (instead of macOS emoji picker)                 |
