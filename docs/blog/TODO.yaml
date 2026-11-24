@@ -146,6 +146,8 @@ tasks:
   - nHqc
   - loD8
   - NVlT
+  - rw5f
+  - xx9h
   position: docs/blog/posts/2026-12-01-commit-conventions-release-notes
   tags:
   - theme-b
@@ -911,6 +913,12 @@ comments:
   text: 'gate: 2026-11-24 PASS stepps=9/12'
   task_id: yg3s
 - id: NVlT
+  text: 'vars: hook=confession cover=terminal-diff images=3-cover+wink+diagram linkedin=link lang=pt-br day=<author> tags=git,devops,github,productivity'
+  task_id: yg3s
+- id: rw5f
+  text: 'gate: 2026-11-24 PASS stepps=9/12'
+  task_id: yg3s
+- id: xx9h
   text: 'vars: hook=confession cover=terminal-diff images=3-cover+wink+diagram linkedin=link lang=pt-br day=<author> tags=git,devops,github,productivity'
   task_id: yg3s
 project: posts
