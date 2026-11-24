@@ -1,3 +1,20 @@
+# [1.50.0](https://github.com/roalcantara/dots/compare/v1.49.0...v1.50.0) (2026-11-24)
+
+### Bug Fixes
+
+* **yb:** Complete the quick subcommand ([9141522](https://github.com/roalcantara/dots/commit/91415224830db9268b5406505162d689e2896210))
+* **yb:** Correlate TUI windows by title and snapshot ([0f8d6ab](https://github.com/roalcantara/dots/commit/0f8d6ab6dc6184e5acfa4b3846d208c9640600ee))
+* **yb:** Launch Ghostty without initial window on cold start ([8fe1fe6](https://github.com/roalcantara/dots/commit/8fe1fe6531aacfc7c571b395df1292a09fa992c1))
+* **yb:** Set tab name override for Ghostty window title correlation ([f2b7757](https://github.com/roalcantara/dots/commit/f2b77576070f1cebd8a81ca82f8880461e4138d1))
+
+### Features
+
+* **ghostty:** Keep warm in background via LaunchAgent and config ([9b11df9](https://github.com/roalcantara/dots/commit/9b11df9ef495e20e7662fad9d47a0aec1ebf297e))
+* **karabiner:** Toggle Ghostty Quick Terminal via fn ⇧ t ([1c6ac23](https://github.com/roalcantara/dots/commit/1c6ac236947238ae905be147d6276904dae45953))
+* **term:** Add Ghostty terminal emulator to bookmarks and commands ([46cd559](https://github.com/roalcantara/dots/commit/46cd5592e03f0ebd2148d2c2481fcca72f0e89d9))
+* **yb:** Own TUI lifecycle through Ghostty AppleScript ([9994c3d](https://github.com/roalcantara/dots/commit/9994c3dca373fb5f0282b626ffeff566a3d71aa8))
+* **zsh:** Complete lida with its own generated script ([81937c5](https://github.com/roalcantara/dots/commit/81937c5652e862c7b2a91c9fc236ca3744affcc9))
+
 # [1.49.0](https://github.com/roalcantara/dots/compare/v1.48.0...v1.49.0) (2026-11-17)
 
 ### Bug Fixes
