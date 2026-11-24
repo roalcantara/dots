@@ -44,6 +44,22 @@ jobs:
       - name: Install semantic-release
         run: npm ci --ignore-scripts --prefix .github/release
 
+      - name: Repair tags without a GitHub Release
+        # semantic-release pushes the tag before it creates the release, so a run that fails in between leaves a
+        # tag with no release, which later runs skip. Immutable releases forbid deleting that tag; creating the
+        # missing release is the fix, and it still triggers publish.yml (docs/adr/0001-releases.md).
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          released=$(gh release list --limit 1000 --json tagName --jq '.[].tagName' | sort)
+          git tag --list 'v*' | sort | comm -23 - <(printf '%s\n' "$released") | while read -r tag; do
+            echo "::warning::$tag has a tag but no GitHub Release; creating it"
+            gh release create "$tag" --verify-tag --title "$tag" --generate-notes \
+              --notes "Repaired by the release workflow: this tag had no release (docs/adr/0001-releases.md)."
+          done
+
       - name: Create Release
         env:
           # A personal token, not GITHUB_TOKEN: a release created with GITHUB_TOKEN starts no workflow, and publish.yml runs on release: published.

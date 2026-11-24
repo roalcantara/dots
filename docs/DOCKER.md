@@ -127,7 +127,7 @@ Runs upon publishing a new GitHub release:
 Automates SemVer versioning and GitHub Releases:
 
 1. Triggers on push to `main` branch or manual `repository_dispatch`; a release in progress is never cancelled (a newer run waits).
-2. Installs the locked tooling from `.github/release/` with `npm ci`.
+2. Installs the locked tooling from `.github/release/` with `npm ci`, then creates a GitHub Release for any tag that lacks one (a run that failed between the tag and the release).
 3. Runs `semantic-release` using Conventional Commits and the `conventionalcommits` preset.
 4. Publishes the release notes as a GitHub Release and pushes the tag; commits nothing back to `main`, so the Releases page is the changelog.
 

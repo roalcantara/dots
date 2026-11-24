@@ -54,11 +54,18 @@ The alternatives lost for these reasons:
   nothing is lost; there is no file to browse offline.
 - No `chore(release)` commits.
 - Upgrading semantic-release is a lockfile change under `.github/release/`, reviewed like any other dependency.
-- The tag is still pushed before the release is created. If `@semantic-release/github` fails after the tag push, the
-  next run starts from that tag and never creates the missing release (nor triggers `publish.yml`). Find such tags
-  with `comm -23 <(git tag -l 'v*' | sort) <(gh release list -L 1000 --json tagName -q '.[].tagName' | sort)` and
-  create each by hand with the notes the failed run logged: `gh release create vX.Y.Z --verify-tag --notes-file <notes>`
-  (semantic-release's tags are lightweight, so `--notes-from-tag` would give empty notes).
+- The tag is still pushed before the release is created, and semantic-release can't make the two atomic
+  ([semantic-release/github#1082](https://github.com/semantic-release/github/issues/1082)). A run that fails in
+  between leaves a tag with no release, which later runs skip. Immutable releases are on, so the usual recovery
+  (delete the tag, run again) is impossible
+  ([semantic-release#4147](https://github.com/semantic-release/semantic-release/issues/4147)). Instead, each run
+  first creates any missing release with `gh release create <tag> --verify-tag --generate-notes` and a note that it
+  was repaired; that release still triggers `publish.yml`. Its notes are GitHub's (merged pull requests), not the
+  commit-type sections.
+- `failComment` is off: a failed release shows as a red run, not as an issue. Success comments and the released
+  label on pull requests and issues stay. On a very large release (hundreds of commits) the success step can time
+  out ([semantic-release/github#1017](https://github.com/semantic-release/github/issues/1017)); the release is
+  already published by then, so only the run turns red.
 - Previewing a release is a local dry run, with Node 24.10 or newer, in a throwaway clone where the branch is `main`:
 
   ```bash
