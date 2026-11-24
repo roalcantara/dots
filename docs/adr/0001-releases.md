@@ -58,10 +58,13 @@ The alternatives lost for these reasons:
   ([semantic-release/github#1082](https://github.com/semantic-release/github/issues/1082)). A run that fails in
   between leaves a tag with no release, which later runs skip. Immutable releases are on, so the usual recovery
   (delete the tag, run again) is impossible
-  ([semantic-release#4147](https://github.com/semantic-release/semantic-release/issues/4147)). Instead, each run
-  first creates any missing release with `gh release create <tag> --verify-tag --generate-notes` and a note that it
-  was repaired; that release still triggers `publish.yml`. Its notes are GitHub's (merged pull requests), not the
-  commit-type sections.
+  ([semantic-release#4147](https://github.com/semantic-release/semantic-release/issues/4147)). So each run first
+  checks that every `v*` tag has a release and fails, naming the tag, when one doesn't; the fix is by hand:
+  `gh release create vX.Y.Z --verify-tag --title vX.Y.Z --notes-file <notes>`, with the notes the failed run logged
+  (semantic-release's tags are lightweight, so `--notes-from-tag` would give empty notes). Creating the release
+  triggers `publish.yml`, which also moves the `latest` image tags, so a release repaired after a newer one exists
+  needs a look at those tags. An automatic repair was tried and dropped: no other project does it, and it could
+  start two image publishes at once.
 - `failComment` is off: a failed release shows as a red run, not as an issue. Success comments and the released
   label on pull requests and issues stay. On a very large release (hundreds of commits) the success step can time
   out ([semantic-release/github#1017](https://github.com/semantic-release/github/issues/1017)); the release is
