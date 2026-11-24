@@ -152,7 +152,7 @@ brew "vivid"  # LS_COLORS generator: `mise run theme:build`
 brew "tombi"  # TOML formatter, linter, and language server
 brew "typescript-language-server" if OS.mac?  # LSP for TypeScript
 brew "rust"  # Rust toolchain
-cargo "todo-cli", source: "https://github.com/RayanBO/todo?tag=v0.2.9"  # todo: project TODO.md/TODO.yaml CLI (not on crates.io; built from git, needs rust above)
+cargo "lida", source: "https://github.com/roalcantara/lida?tag=v0.1.0"  # lida: dual-format project TODO.md/TODO.yaml CLI (built from git, needs rust above)
 brew "opencode" # AI coding agent, built for the terminal
 cask "opencode-desktop" if OS.mac? # AI coding agent desktop app
 cask "android-studio" if OS.mac?  # Tools for building Android applications
