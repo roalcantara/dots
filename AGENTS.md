@@ -12,7 +12,7 @@ and builds reproducible development Docker images under `distros/`.
 | --- | --- |
 | `config/` | Application configurations linked into `~/.config`, Homebrew `Brewfile`, shell helpers (`config/bin`), and mise bootstrap fragments (`config/mise/conf.d/`) |
 | `distros/` | Dockerfiles and Container Structure Test manifests for Debian and Ubuntu images |
-| `docs/` | Canonical documentation, agent specs/plans (`docs/superpowers/`), and the blog (`docs/blog/`: posts, playbook, roadmap) |
+| `docs/` | Canonical documentation and architecture decisions (`docs/adr/`), agent specs/plans (`docs/superpowers/`), and the blog (`docs/blog/`: posts, playbook, roadmap) |
 | `.mise/tasks/` | Bun file tasks run by mise (`.mise/tasks/blog/`: `blog:status`, `blog:new`, `blog:check`, `blog:publish`, …) |
 | `.agents/` | Project agent commands (`.agents/commands/blog/`: `/blog:next`, `/blog:pick`, `/blog:draft`, …); `.claude/commands` is a symlink to them |
 | `script/` | Automation scripts (agent skills, restic backups, bootstrap logging, SOPS filter hooks) |
@@ -59,12 +59,14 @@ Keep every gate green before declaring work complete:
 - `brainstorming` — explore tradeoffs, architectural decisions, and alternatives before designing features.
 - `verification-before-completion` — execute smoke tests and assert concrete results before completing tasks.
 - `receiving-code-review` — systematically review and address critique and feedback.
+- `documentation-and-adrs` — record a decision as an ADR (format in `docs/adr/README.md`).
 
 ## Docs
 
 - [`README.md`](README.md) — overview, installation, day-to-day commands, and playbook references.
 - [`docs/TESTING.md`](docs/TESTING.md) — test architecture, BDD/Gherkin patterns, and Definition of Done.
 - [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — commit conventions, code style standards, and mise task conventions.
+- [`docs/adr/`](docs/adr/README.md) — architecture decisions (ADRs): why things are the way they are.
 - [`docs/DOCKER.md`](docs/DOCKER.md) — container images, CST testing, and GitHub Actions CI pipelines.
 - [`docs/REINSTALL.md`](docs/REINSTALL.md) — backup runbook and clean-machine reinstall procedure.
 - [`docs/MACOS.md`](docs/MACOS.md) — macOS preferences (`config/mise/conf.d/macos.toml`), drift checks, and undo.
