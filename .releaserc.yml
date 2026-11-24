@@ -1,15 +1,10 @@
 ---
 branches:
   - main
+preset: conventionalcommits
 plugins:
   - '@semantic-release/commit-analyzer'
   - '@semantic-release/release-notes-generator'
-  - '@semantic-release/changelog'
-  - - '@semantic-release/git'
-    - assets:
-        - CHANGELOG.md
-      message: |-
-        chore(release): ${nextRelease.version} [skip ci]
-
-        ${nextRelease.notes}
-  - '@semantic-release/github'
+  # failComment off: a failed run shows as a red job, not as an issue; success comments and labels stay.
+  - - '@semantic-release/github'
+    - failComment: false

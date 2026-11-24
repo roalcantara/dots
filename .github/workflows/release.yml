@@ -10,7 +10,7 @@ on:
     types: [semantic-release]
 
 concurrency:
-  cancel-in-progress: true
+  cancel-in-progress: false
   group: 'release-${{ github.ref }}'
 
 defaults:
@@ -25,27 +25,44 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       issues: write # to be able to comment on released issues
-      contents: write # to be able to publish a GitHub release
-      id-token: write # to enable use of OIDC for npm provenance
+      contents: write # to be able to publish a GitHub release and push the tag
       pull-requests: write # to be able to comment on released pull requests
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 'lts/*'
+          node-version: '26'
+          cache: npm
+          cache-dependency-path: .github/release/package-lock.json
 
       - name: Install semantic-release
-        run: npm install -g semantic-release @semantic-release/changelog @semantic-release/git conventional-changelog-conventionalcommits
+        run: npm ci --ignore-scripts --prefix .github/release
+
+      - name: Check every tag has a GitHub Release
+        # semantic-release pushes the tag before it creates the release, so a run that fails in between leaves a
+        # tag with no release, which later runs skip. Immutable releases forbid deleting that tag: fail loudly and
+        # create the release by hand (docs/adr/0001-releases.md).
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          released=$(gh release list --limit 1000 --json tagName --jq '.[].tagName' | sort)
+          missing=$(git tag --list 'v*' | sort | comm -23 - <(printf '%s\n' "$released"))
+          [ -z "$missing" ] && exit 0
+          for tag in $missing; do
+            echo "::error::$tag has a tag but no GitHub Release. Create it: gh release create $tag --verify-tag --title $tag --notes-file <notes>"
+          done
+          exit 1
 
       - name: Create Release
         env:
-          # Automatically populated GITHUB_TOKEN cannot be used if branch protection is enabled for the target branch
-          # https://semantic-release.gitbook.io/semantic-release/recipes/ci-configurations/github-actions#pushing-package.json-changes-to-your-repository
+          # A personal token, not GITHUB_TOKEN: a release created with GITHUB_TOKEN starts no workflow, and publish.yml runs on release: published.
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx semantic-release
+        run: .github/release/node_modules/.bin/semantic-release

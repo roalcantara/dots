@@ -124,11 +124,14 @@ Runs upon publishing a new GitHub release:
 
 ### 3. Automated Release (`.github/workflows/release.yml`)
 
-Automates SemVer versioning and changelogs:
+Automates SemVer versioning and GitHub Releases:
 
-1. Triggers on push to `main` branch or manual `repository_dispatch`.
-2. Runs `semantic-release` using Conventional Commits.
-3. Automatically increments versions, generates release notes from commit history, and creates GitHub tags and releases.
+1. Triggers on push to `main` branch or manual `repository_dispatch`; a release in progress is never cancelled (a newer run waits).
+2. Installs the locked tooling from `.github/release/` with `npm ci`, then fails if any tag lacks a GitHub Release (a run that failed between the tag and the release; ADR 0001 has the fix).
+3. Runs `semantic-release` using Conventional Commits and the `conventionalcommits` preset.
+4. Publishes the release notes as a GitHub Release and pushes the tag; commits nothing back to `main`, so the Releases page is the changelog.
+
+See [`docs/adr/0001-releases.md`](adr/0001-releases.md) for why.
 
 ## Testing `install` in a container
 
