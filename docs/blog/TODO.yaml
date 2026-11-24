@@ -142,6 +142,7 @@ tasks:
   - pdyq
   - 81gh
   - pm2q
+  - q4ae
   created: 2026-11-13T13:29:54.172565
   tags:
   - theme-b
@@ -330,6 +331,7 @@ tasks:
   - hNnk
   - JGgs
   - XES0
+  - g0Zv
   created: 2026-11-13T13:29:55.008875
   tags:
   - theme-c
@@ -578,6 +580,15 @@ tasks:
   priority: Low
   tags:
   - topic-backlog
+- id: T5M8
+  status: Todo
+  description: 'In-between: lida, rebuilt in five days with agents'
+  priority: Low
+  tags:
+  - in-between
+  - topic-6
+  comments:
+  - Xnsc
 actors:
 - id: 7lt7
   pseudo: roalcantara
@@ -871,4 +882,13 @@ comments:
 - id: NT5A
   text: 'note: 2026-11-24 dev.to referrer_linkedin=0 while LinkedIn counts 2 link visits (lnkd.in hides the referrer): trust LinkedIn link visits over dev.to referrers'
   task_id: EFly
+- id: q4ae
+  text: 'pick: 2026-11-24 keep news hook: semantic-release v26 stable (2026-11-16), and the dots release job ran 26.0.1 unpinned on 2026-11-24; lida (5 days, 71 commits, v0.1.1) considered and moved to topic 6 https://github.com/semantic-release/semantic-release/releases'
+  task_id: yg3s
+- id: g0Zv
+  text: 'note: 2026-11-24 candidate story: lida (~/Work/lida) replacing the vanished todo-cli, 2026-11-20..24, 71 commits (38 co-authored by Claude), v0.1.1; RECIPE is the process (spec, plan, agents, gates, release), lida the example. Needs: the author''s Gemini 4 Neon evidence, a source for todo-cli vanishing, a Why not (taskwarrior, todo.txt)'
+  task_id: h4z7
+- id: Xnsc
+  text: 'hook: The tool I tracked my tasks with vanished; five days and 71 commits later I had my own (lida v0.1.1)'
+  task_id: T5M8
 project: posts
