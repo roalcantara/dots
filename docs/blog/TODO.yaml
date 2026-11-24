@@ -143,11 +143,13 @@ tasks:
   - 81gh
   - pm2q
   - q4ae
-  created: 2026-11-13T13:29:54.172565
+  position: docs/blog/posts/2026-12-01-commit-conventions-release-notes
   tags:
   - theme-b
   - topic-2
+  - post
   priority: High
+  created: 2026-11-13T13:29:54.172565
 - id: 1GMr
   status: Todo
   description: 'Topic 2 community: r/git'
