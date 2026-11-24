@@ -1,3 +1,10 @@
+# [1.51.0](https://github.com/roalcantara/dots/compare/v1.50.0...v1.51.0) (2026-11-24)
+
+### Features
+
+* **agents:** Add new skills for TUI design and game feel ([24421b0](https://github.com/roalcantara/dots/commit/24421b0235d17a69a158aa407a21b169c74bbd62))
+* **design:** Add comprehensive product design workflow ([c9173f9](https://github.com/roalcantara/dots/commit/c9173f9d2ec1154d8d6b7eab0e429360ed7fb94b))
+
 # [1.50.0](https://github.com/roalcantara/dots/compare/v1.49.0...v1.50.0) (2026-11-24)
 
 ### Bug Fixes
