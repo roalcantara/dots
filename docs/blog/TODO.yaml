@@ -106,6 +106,7 @@ tasks:
   - fP41
   - gHzj
   - m0m2
+  - WA04
   position: docs/blog/posts/2026-11-17-secrets-sops-age
   tags:
   - post
@@ -843,4 +844,7 @@ comments:
 - id: qnYU
   text: 'stats: 2026-11-24 linkedin impressions=336 reactions=5 comments=2 reposts=1 saves=0 sends=0 profile_views=1 followers=0 (manual)'
   task_id: 6ThC
+- id: WA04
+  text: 'stats: 2026-11-24 linkedin impressions=159 reactions=3 comments=0 reposts=1 saves=0 sends=0 profile_views=1 followers=0 substantive_comments=0 (manual)'
+  task_id: EFly
 project: posts
