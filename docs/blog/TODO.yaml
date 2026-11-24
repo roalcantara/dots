@@ -37,6 +37,7 @@ tasks:
   - 08YL
   - RFbd
   - eiOj
+  - qnYU
   position: docs/blog/posts/2026-11-13-zsh-word-split
   tags:
   - post
@@ -839,4 +840,7 @@ comments:
 - id: S3at
   text: 'stats: 2026-11-24 linkedin impressions=378 reactions=1 comments=0 reposts=0 saves=0 sends=0 profile_views=1 followers=0 substantive_comments=0 (manual)'
   task_id: 6eS8
+- id: qnYU
+  text: 'stats: 2026-11-24 linkedin impressions=336 reactions=5 comments=2 reposts=1 saves=0 sends=0 profile_views=1 followers=0 (manual)'
+  task_id: 6ThC
 project: posts
