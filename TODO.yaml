@@ -1,39 +1,47 @@
 tasks:
 - id: zOaU
-  status: Todo
+  status: Done
   description: 'Shell UX: switchable theme (Catppuccin Mocha + Latte) across Ghostty, fzf, bat, zsh-patina, vivid LS_COLORS, eza, delta; Nerd Font'
   created: 2026-11-17T00:53:26.855898
   tags:
   - adopt
   - shell-ux
   - theme
+  comments:
+  - TjEs
   priority: High
 - id: SEPc
-  status: Todo
+  status: Done
   description: 'Shell UX: fzf-tab --style full framed menus, drop file-list all, eza/bat previews matching la'
   created: 2026-11-17T00:53:26.859897
   tags:
   - adopt
   - fzf-tab
   - shell-ux
+  comments:
+  - fpJ3
   priority: High
 - id: oQ32
-  status: Todo
+  status: Done
   description: 'Shell UX: rm -rf / force-push warning colour over zsh-patina'
   created: 2026-11-17T00:53:26.863820
   tags:
   - adopt
   - safety
   - shell-ux
+  comments:
+  - MVQY
   priority: Medium
 - id: 8J0f
-  status: Todo
+  status: Done
   description: 'Shell UX: gomi as rm in interactive shells (trash + restore)'
   created: 2026-11-17T00:53:26.868239
   tags:
   - adopt
   - safety
   - shell-ux
+  comments:
+  - bwUn
   priority: Medium
 - id: wecN
   status: Done
@@ -75,5 +83,17 @@ tasks:
   - shell-ux
   - try
 actors: []
-comments: []
+comments:
+- id: TjEs
+  text: 'Shipped switchable themes (Catppuccin Mocha and Macchiato, Dracula, Tokyo Night) in feat(shell): Add switchable themes, Lig and risky-command cues; Latte was not added'
+  task_id: zOaU
+- id: fpJ3
+  text: Framed in b3099fc, then the list made bare on purpose in bea1976 (only the preview pane keeps its frame)
+  task_id: SEPc
+- id: MVQY
+  text: Shipped as risky-command highlighting (docs/THEME.md, Risky commands)
+  task_id: oQ32
+- id: bwUn
+  text: 'Shipped: rm is gomi in interactive shells (config/zsh/opt/aliases/safety.zsh)'
+  task_id: 8J0f
 project: dots
