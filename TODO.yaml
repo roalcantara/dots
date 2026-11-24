@@ -76,7 +76,7 @@ tasks:
   priority: Low
   created: 2026-11-17T00:53:26.875686
 - id: r74E
-  status: Todo
+  status: Done
   description: 'Shell UX spike: fish 4 in a second Ghostty profile'
   due: null
   actors: []
@@ -88,7 +88,7 @@ tasks:
   priority: Low
   created: 2026-11-17T00:53:26.879036
 - id: Zid2
-  status: Todo
+  status: Done
   description: 'Shell UX research: LLM on the zsh command line (plain English to an editable command, Warp-style)'
   due: null
   actors: []
