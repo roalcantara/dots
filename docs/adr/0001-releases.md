@@ -21,7 +21,7 @@ That order failed, and each failure left a permanent mark:
 Three more issues compounded it:
 
 - The release job ran `npm install -g semantic-release …`, taking the latest of everything next to a write token
-  (`GH_TOKEN`); semantic-release 26 arrived unnoticed on 2026-11-24.
+  (`GH_TOKEN`); semantic-release 26 went stable on 2026-11-16 and the next release (2026-11-17) ran it unnoticed.
 - `cancel-in-progress: true` let a second push to `main` cancel a release halfway.
 - Squash merging was on, so 67 of 68 `feat`/`fix` commits from October to November 2026 never reached the changelog:
   semantic-release reads commits, and a squash keeps only the pull request title.
@@ -35,7 +35,8 @@ GitHub Releases are the changelog; nothing is committed back to `main`.
   `@semantic-release/git` are gone, and `CHANGELOG.md` with them.
 - `.github/release/` pins the tooling (`semantic-release` 26.0.1, `conventional-changelog-conventionalcommits` 10.4.1)
   behind a lockfile, installed with `npm ci`.
-- `release.yml` queues runs instead of cancelling them, pins `actions/checkout` and `actions/setup-node` by SHA, runs
+- `release.yml` never cancels a release in progress (a newer run waits; GitHub keeps one waiting run per group, and
+  it releases every commit since the last tag), pins `actions/checkout` and `actions/setup-node` by SHA, runs
   Node 26, and keeps the personal `GH_TOKEN`: a release created with `GITHUB_TOKEN` starts no workflow.
 - Squash merging is off; merge commits and rebase stay, so every commit reaches the release notes.
 
@@ -52,8 +53,20 @@ The alternatives lost for these reasons:
   nothing is lost; there is no file to browse offline.
 - No `chore(release)` commits.
 - Upgrading semantic-release is a lockfile change under `.github/release/`, reviewed like any other dependency.
-- Previewing a release is a local dry run: clone the branch as `main`, run
-  `npm ci --prefix .github/release`, then
-  `GITHUB_TOKEN=$(gh auth token) .github/release/node_modules/.bin/semantic-release --dry-run --no-ci --repository-url https://github.com/roalcantara/dots.git`.
+- The tag is still pushed before the release is created. If `@semantic-release/github` fails after the tag push, the
+  next run starts from that tag and never creates the missing release (nor triggers `publish.yml`). Find such tags
+  with `comm -23 <(git tag -l 'v*' | sort) <(gh release list -L 1000 --json tagName -q '.[].tagName' | sort)` and
+  create each by hand with the notes the failed run logged: `gh release create vX.Y.Z --verify-tag --notes-file <notes>`
+  (semantic-release's tags are lightweight, so `--notes-from-tag` would give empty notes).
+- Previewing a release is a local dry run, with Node 26.13 or newer, in a throwaway clone where the branch is `main`:
+
+  ```bash
+  tmp=$(mktemp -d) && git clone -q . "$tmp/dots" && cd "$tmp/dots"
+  git checkout -q -B main origin/<branch>
+  npm ci --ignore-scripts --prefix .github/release
+  GITHUB_TOKEN=$(gh auth token) .github/release/node_modules/.bin/semantic-release \
+    --dry-run --no-ci --repository-url https://github.com/roalcantara/dots.git
+  ```
+
 - `publish.yml` keeps the personal token: it runs on `release: published`, which a release created with `GITHUB_TOKEN`
   would not trigger.
