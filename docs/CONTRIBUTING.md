@@ -26,6 +26,12 @@ g() { git -c filter.sops.clean=cat -c filter.sops.smudge=cat "$@"; }
 - **Never commit unencrypted secrets:** `config/.env`, `config/ssh/keys/*.key`, and `config/age/keys.txt` must remain encrypted or excluded.
 - **Do not push unasked:** only push branches and open pull requests when explicitly directed.
 
+### Merging pull requests
+
+- **Merge with a merge commit, or rebase:** squash merging is disabled on the repository.
+- **Why:** `semantic-release` reads every commit's type and scope, but a squash merge keeps only the title and drops the commits inside: 67 of 68 `feat`/`fix` commits from October to November 2026 never reached a release.
+- **Context:** [`docs/adr/0001-releases.md`](adr/0001-releases.md) records the decision and its consequences.
+
 ## 2. Commit message conventions
 
 Commit messages follow the Conventional Commits specification. No hook enforces it: keep to the format below by hand.
