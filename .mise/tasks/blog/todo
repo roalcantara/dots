@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-#MISE description="The series roadmap in docs/blog/TODO.yaml (todo CLI): list, add, status, dashboard…"
-# todo comes from config/homebrew/Brewfile (dev profile).
+#MISE description="The series roadmap in docs/blog/TODO.yaml (lida CLI): list, add, status, dashboard…"
+# lida comes from config/homebrew/Brewfile (dev profile).
 set -euo pipefail
 cd "${MISE_PROJECT_ROOT:-$(git rev-parse --show-toplevel)}/docs/blog"
-exec todo "$@"
+exec lida "$@"

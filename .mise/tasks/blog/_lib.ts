@@ -390,8 +390,8 @@ export function parseRecordArgs(argv: string[], date: string): StatRow[] {
 
 // ---- metadata in TODO.yaml ---------------------------------------------------------------------------------
 // Each post has one task tagged `post` whose `position` is its folder; facts about it are comments on that task,
-// one `key: value` each (schema: docs/blog/PLAYBOOK.md, "Metadata in TODO.yaml"). The todo CLI keeps comments and
-// drops unknown fields, so nothing else is stored in the file.
+// one `key: value` each (schema: docs/blog/PLAYBOOK.md, "Metadata in TODO.yaml"). The lida CLI owns the file, so facts
+// live in comments it writes rather than in extra fields.
 
 export const KEYS = [
   "devto.id", "devto.url", "linkedin.url", "community.url", "stats", "gate", "vars", "log.keep", "log.change",
@@ -769,7 +769,7 @@ export const today = (): string => new Date().toLocaleDateString("sv-SE");
 export const TODO = join(ROOT, "docs/blog/TODO.yaml");
 export const readTodo = (): Todo => Bun.YAML.parse(readFileSync(TODO, "utf8")) as Todo;
 
-// TODO.yaml is written only through the todo CLI (its owner), never edited directly.
+// TODO.yaml is written only through the lida CLI (its owner), never edited directly.
 export function todo(...args: string[]): string {
   const p = Bun.spawnSync(["mise", "run", "-q", "blog:todo", "--", ...args], { cwd: ROOT, stdout: "pipe", stderr: "pipe" });
   if (p.exitCode !== 0) throw new Error(`todo ${args[0]} failed: ${p.stderr.toString().trim()}`);

@@ -38,7 +38,7 @@ echo "## handoff"; f="$(git rev-parse --git-common-dir)/wip/$(echo "$branch" | t
 echo "## tasks"
 if command -v bd >/dev/null && [ -d .beads ]; then bd ready 2>/dev/null | head -5
 elif y=$(git ls-files 'TODO.yaml' '*/TODO.yaml' 2>/dev/null | head -1); [ -n "$y" ]; then
-  # todo CLI (RayanBO/todo) YAML: open tasks, in progress first, then by due date.
+  # lida CLI (roalcantara/lida) YAML: open tasks, in progress first, then by due date.
   echo "($y)"
   awk -v q="'" '
     function out() { if (s == "Todo" || s == "InProgress") printf "%s%s\t%s%s (%s)\n", (s == "InProgress" ? 0 : 1), u, (s == "InProgress" ? "[~] " : "- "), d, u }
