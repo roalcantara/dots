@@ -64,6 +64,7 @@ The alternatives lost for these reasons:
   ```bash
   tmp=$(mktemp -d) && git clone -q . "$tmp/dots" && cd "$tmp/dots"
   git checkout -q -B main origin/<branch>
+  export MISE_TRUSTED_CONFIG_PATHS="$PWD"   # mise refuses an untrusted clone
   npm ci --ignore-scripts --prefix .github/release
   GITHUB_TOKEN=$(gh auth token) .github/release/node_modules/.bin/semantic-release \
     --dry-run --no-ci --repository-url https://github.com/roalcantara/dots.git
