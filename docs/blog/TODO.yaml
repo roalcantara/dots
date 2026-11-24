@@ -456,6 +456,7 @@ tasks:
   - wqnb
   - 7L5h
   - P5Y8
+  - S3at
   position: docs/blog/posts/2026-11-12-omarchy-on-macos
   tags:
   - post
@@ -835,4 +836,7 @@ comments:
 - id: KNIR
   text: 'stats: 2026-11-24 github repo_views=162 repo_uniques=10 (api)'
   task_id: Yaw4
+- id: S3at
+  text: 'stats: 2026-11-24 linkedin impressions=378 reactions=1 comments=0 reposts=0 saves=0 sends=0 profile_views=1 followers=0 substantive_comments=0 (manual)'
+  task_id: 6eS8
 project: posts
