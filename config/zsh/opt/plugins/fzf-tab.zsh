@@ -157,9 +157,9 @@ zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl
 zstyle ':fzf-tab:complete:brew-(install|uninstall|search|info):*-argument-rest' fzf-preview '
   if [[ $word == -* ]]; then cmdhelp $word "${words[@]}"; else brew info $word; fi'
 
-# Preview for todo: a task ID shows the task; anything else, the help (cmdhelp)
-zstyle ':fzf-tab:complete:todo*:*' fzf-preview '
-  out=$(todo list --tasks 2>/dev/null | awk -v w=" $word — " '\''index($0, w) { p=1 } p { if (p > 1 && /^ *\[/) exit; print; p++ }'\'')
+# Preview for lida: a task ID shows the task; anything else, the help (cmdhelp)
+zstyle ':fzf-tab:complete:lida*:*' fzf-preview '
+  out=$(lida list --tasks 2>/dev/null | awk -v w=" $word — " '\''index($0, w) { p=1 } p { if (p > 1 && /^ *\[/) exit; print; p++ }'\'')
   if [[ -n "$out" ]]; then
     printf "%s\n" "$out"
   else

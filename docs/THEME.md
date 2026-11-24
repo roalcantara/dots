@@ -81,7 +81,7 @@ Without the file (a bare container, say), the shell uses the link a previous she
 ## Tab menus
 
 Completions pop up under the cursor as you type, from [Lig](https://github.com/KevenGoncalves/lig): Fig's specs for
-about 800 commands, and zsh's own completion for the rest (`completers = ["shell"]`, so `todo` comes from `_todo` and
+about 800 commands, and zsh's own completion for the rest (`completers = ["shell"]`, so `lida` comes from `_lida` and
 the `config/bin` scripts from their usage completions). `Tab` and the arrows move through the popup, `Enter` accepts,
 `Esc` closes it.
 

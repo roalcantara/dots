@@ -332,9 +332,10 @@ run = ["./script/zsh-verify.sh syntax", "./script/zsh-verify.sh parity"]
 description = "Benchmark zsh startup across terminal contexts"
 run = "./script/zsh-verify.sh bench"
 
-[tasks."zsh:completions:todo"]
-description = "Regenerate config/zsh/opt/completions/_todo from the todo CLI"
-run = "./script/todo-completion.sh config/zsh/opt/completions/_todo"
+# lida completes task IDs and tags itself (the script calls back `lida __complete_word__`); rerun after bumping lida.
+[tasks."zsh:completions:lida"]
+description = "Regenerate config/zsh/opt/completions/_lida from `lida completion zsh`"
+run = "lida completion zsh > config/zsh/opt/completions/_lida"
 
 # Tab completion for every config/bin script with a #USAGE spec (dots theme <Tab> offers the theme names). The spec is
 # embedded in each file, so completing never runs the script; rerun after editing a #USAGE block.
