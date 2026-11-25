@@ -150,6 +150,8 @@ tasks:
   - xx9h
   - 4J1U
   - oUgs
+  - 5ATS
+  - pUfY
   position: docs/blog/posts/2026-12-01-commit-conventions-release-notes
   tags:
   - theme-b
@@ -927,6 +929,12 @@ comments:
   text: 'gate: 2026-11-25 PASS stepps=9/12'
   task_id: yg3s
 - id: oUgs
+  text: 'vars: hook=confession cover=terminal-diff images=3-cover+wink+diagram linkedin=link lang=pt-br day=<author> tags=git,devops,github,productivity'
+  task_id: yg3s
+- id: 5ATS
+  text: 'gate: 2026-11-25 PASS stepps=9/12'
+  task_id: yg3s
+- id: pUfY
   text: 'vars: hook=confession cover=terminal-diff images=3-cover+wink+diagram linkedin=link lang=pt-br day=<author> tags=git,devops,github,productivity'
   task_id: yg3s
 project: posts
