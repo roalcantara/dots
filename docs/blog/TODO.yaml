@@ -1,6 +1,6 @@
 tasks:
 - id: 55MD
-  status: InProgress
+  status: Done
   description: 'Setup: posts tooling, docs, roadmap and gate'
   due: 2026-11-13T18:00:00
   actors:
@@ -48,7 +48,7 @@ tasks:
   priority: High
   created: 2026-11-13T13:29:53.839233
 - id: BnIE
-  status: Todo
+  status: Done
   description: 'Preflight: measure at 48 h'
   due: 2026-11-15T20:00:00
   actors:
@@ -59,7 +59,7 @@ tasks:
   tags:
   - preflight
 - id: 9ggB
-  status: Todo
+  status: Done
   description: 'Preflight: measure at 7 days and retro'
   due: 2026-11-20T20:00:00
   actors:
@@ -132,9 +132,9 @@ tasks:
   - in-between
   - topic-1
 - id: yg3s
-  status: Todo
+  status: InProgress
   description: 'Topic 2: Commit conventions that write your release notes (LinkedIn in PT-BR)'
-  due: 2026-12-01T09:00:00
+  due: 2026-11-25 09:00
   actors:
   - 7lt7
   - JTps
@@ -152,6 +152,8 @@ tasks:
   - oUgs
   - 5ATS
   - pUfY
+  - NNDC
+  - nBsQ
   position: docs/blog/posts/2026-12-01-commit-conventions-release-notes
   tags:
   - theme-b
@@ -936,5 +938,11 @@ comments:
   task_id: yg3s
 - id: pUfY
   text: 'vars: hook=confession cover=terminal-diff images=3-cover+wink+diagram linkedin=link lang=pt-br day=<author> tags=git,devops,github,productivity'
+  task_id: yg3s
+- id: NNDC
+  text: 'vars: hook=confession cover=terminal-diff images=3-cover+wink+diagram linkedin=link lang=pt-br day=wed tags=git,devops,github,productivity'
+  task_id: yg3s
+- id: nBsQ
+  text: 'note: 2026-11-25 published on a Wednesday (8 days after topic 1) to keep one post a week; two variables changed at once (hook: concrete pain instead of a wink; day: Wednesday), so compare with care'
   task_id: yg3s
 project: posts
