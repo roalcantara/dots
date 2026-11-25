@@ -11,7 +11,7 @@ If you write [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.
 the whole contract: `feat:` bumps the minor version, `fix:` the patch, and each subject becomes a changelog line.
 Squash-merge a pull request with two or more commits, and GitHub writes **one** commit
 [titled after the pull request](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/configuring-commit-squashing-for-pull-requests).
-That title is all semantic-release reads..
+That title is all semantic-release reads: the commits listed in its body don't count.
 
 ```console
 $ git log -1 --format=%s 84a8fc1
@@ -98,7 +98,8 @@ concurrency:
     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 ```
 
-A personal token, not the default one: a Release created with `GITHUB_TOKEN` starts no other workflow, and mine
+A personal token, not the default one: a Release created with `GITHUB_TOKEN`
+[starts no other workflow](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow#triggering-a-workflow-from-a-workflow), and mine
 builds Docker images on `release: published`.
 
 **4. Merge so the commits survive.** Since

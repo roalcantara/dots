@@ -11,7 +11,7 @@
     "name": "Ghostty",
     "focused": true,
     "lines": [
-      "{c:# 7 commits, one squash:}",
+      "{c:# 3 feats, one squash:}",
       "{del:-feat(backup): Add the…}",
       "{add:+Enhance backup… (#93)}",
       "{c:→ no new version}"
