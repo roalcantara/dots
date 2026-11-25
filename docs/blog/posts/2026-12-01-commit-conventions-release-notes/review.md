@@ -1,4 +1,4 @@
-# Review: 2026-12-01-commit-conventions-release-notes · 2026-11-24
+# Review: 2026-12-01-commit-conventions-release-notes · 2026-11-25
 
 **Verdict:** PASS
 
@@ -8,64 +8,65 @@
 
 ## Cold read
 
-- **The one point:** If I squash-merge and release with semantic-release, the PR title is the only commit it reads;
-  a title without a type means no release and no changelog lines, and the job still goes green.
-- **Would I save it, and why:** Yes. I squash-merge every day, and the one-liner that lists what the analyzer will
-  skip since the last tag is something I'd paste into my own repo before the next release.
-- **Where I got lost:** Step 1 says "With no preset configured", then step 3 installs
-  `conventional-changelog-conventionalcommits`: I stopped to wonder whether I need a preset or not.
+- **The one point:** if you squash-merge and release with semantic-release, the pull request title becomes the only
+  commit it analyses, so a plain title silently drops every `feat:`/`fix:` inside it, and the release job still
+  goes green.
+- **Would I save it, and why:** yes: the `git log … | grep -vE` pre-release check and the "the PR title is the
+  commit" rule are things I'd paste into my own repo tomorrow, and the "green job that did nothing" is the kind of
+  trap I'd want a link to when it bites a teammate.
+- **Where I got lost:** "That title is all semantic-release reads.." in the opening: it ends on two dots right
+  before a code block, and for a beat I wondered whether the body (where GitHub lists the squashed commits, as the
+  wink card shows) is read too. The next sentence ("None of them made a release") settles it.
 
 ## Scores
 
 | Check | Score | Note |
 | --- | --- | --- |
-| Cold read | 2 | One point found at once; would save it for the pre-release check |
-| Layout | 2 | Opening (who it hits, the demo snippet, one line on it) → How I ran into it → The fix → Why not a commit-msg hook? → What I (think I) learned → dots links, `---`, Corrections, DISCLAIMER, AI line, in order. 972 words |
-| The hook | 2 | Real moment, first person ("My commits were fine. My pull request titles weren't"), with the cost (67 of 68); the wink (Obliviate) lives only in the card |
-| Lived or proven | 1 | Squash titled after the PR → GitHub docs; the feat/fix contract → semantic-release link; 133 commits, 68 feat/fix, 5 of 6 runs, run 41811286816 → `sources:` (nHqc), re-checked (133/68 recounted from the six squash bodies; the run log prints "There are no relevant changes"); 87 releases → 87 tags since v1.0.0 (2025-07-30); #96 (Nov 4), #102, #111 linked; v26/Node → releases link and run 45371260199. Weak: `perf` → patch and `BREAKING CHANGE:` → major have only the general semantic-release link, not commit-analyzer's default rules. Each fact once: yes (the wink card shows the body's feat lines, the opening the subject and the run) |
-| Information gain | 2 | A green semantic-release run can silently drop every `feat` inside a squash merge, and no commit-msg hook can catch it because GitHub writes that commit; measured on a real repo at 67 of 68 features and fixes |
-| RECIPE self-test | 2 | Format, `.releaserc.yml` and the workflow excerpt match the repo files; the merge choice is explicit; the check command ran on `origin/main` with no output (exit 1), and `--no-merges` makes it work with both merge styles. Only nit: the unexplained `conventional-changelog-conventionalcommits` install (Consider 2) |
-| STEPPS | 9/12 | Social currency 2 · Triggers 2 · Emotion 1 · Public 1 · Practical value 2 · Stories 1. Bars met (raw ≥ 6, Practical value 2, Social currency 2) |
-| Voice | 2 | hype words: "unlock" (blog:check warning) only inside a quoted squash subject (`Implement age-key unlock…`), the evidence, not the author's voice · mistake stated: yes ("I let a tool title the pull requests"; the unpinned install as a limit) |
-| LinkedIn hook | 2 | Opening 191 characters, lived and standalone; 233 without the URL; `{devto.url}` in the post; the title states the insight. PT-BR as the task title requires; 3 English hashtags |
-| Images | 2 | Cover: one point, series look, passes the LinkedIn crop (`raw/00-cover-linkedin.png`), window echoes the card's before/after. Wink card: real command and real output (verified: three `feat(backup)` lines in 84a8fc1's body, `grep -c` → 0), teaches without the text, no pop-culture line in the prose. Diagram `02-squash.png`: shows the mechanism the text can't (where the hook runs vs where the commit is written), readable at 400 px (`raw/02-squash-phone.png`), alt text describes it. Small captions sit near the 8 px floor at 400 px |
-| Goals 1–5 | 8/10 | 1 2 · 2 2 · 3 2 · 4 1 · 5 1 |
-| Language | 2 | English article; the PT-BR LinkedIn copy keeps commands, tool names and loanwords in English, "você"-free but first person, with the EN source kept below |
-| Safety | ok | `roalcantara/dots` is PUBLIC (`gh repo view`). No secret, email, client or private repo. `secrets.GH_TOKEN` / `GITHUB_TOKEN` appear in the workflow excerpt: the generic names semantic-release's own docs use, already public in the linked workflow, not a gopass path or key file; judged not a token-name leak |
-| `blog:check` | ok | No blocks; 1 warning (hype word "unlock", inside a quoted commit subject) |
+| Cold read | 2 | One point named at once; would save for the check command and the PR-title rule |
+| Layout | 2 | Opening on who this hits (with links) + demo snippet → How I ran into it → The fix (4 numbered steps + check) → Why not a commit-msg hook? → What I (think I) learned → dots links, `---`, Corrections, DISCLAIMER, AI disclosure, in order. Every command and setting has a fenced snippet; no code line over 70 characters; 1,084 words |
+| The hook | 2 | Real moment, first person: a tool titled the PRs, six squashed in a week, noticed afterwards; backed by real numbers. The wink (Obliviate) stays in the card; no pop-culture line in the prose |
+| Lived or proven | 2 | Squash commit titled after the PR → GitHub docs link. feat/fix bumps → Conventional Commits + semantic-release links. Preset mapping → `.releaserc.yml` linked. v26 stable Nov 16 → releases link. "A Release created with `GITHUB_TOKEN` starts no other workflow" → stated in the linked workflow and ADR 0001 (repo), no external source (see Consider). Numbers (6 titles, 133/68/67, 88 releases, two `1.38.1` sections) are lived, from the repo; the six titles and `84a8fc1` reproduce exactly. Each fact once |
+| Information gain | 2 | Most Conventional Commits/semantic-release posts stop at "lint your commit messages"; this one shows, with real numbers, that a commit-msg hook can't help because the broken commit is written by GitHub's merge button, and gives a one-line pre-release check that works for both merge styles |
+| RECIPE self-test | 2 | Format, `.releaserc.yml`, the job (fetch-depth, pinned lockfile, personal token and why), the merge choice and the check command: redoable from `## The fix…` alone. The `<sha>` placeholders are fine; the linked workflow has the real pins |
+| STEPPS | 9/12 | Social currency 2 · Triggers 2 · Emotion 1 · Public 1 · Practical value 2 · Stories 1 — bars met (raw ≥ 6, Practical value 2, Social currency 2) |
+| Voice | 2 | hype words: none in the prose (`blog:check`'s "unlock" is inside real `git log` output: "Implement age-key unlock…", fine) · mistake stated: yes (tool-written titles, unpinned semantic-release, duplicated changelog, the tag-before-Release limit) |
+| LinkedIn hook | 2 | 191 characters for the opening, 231 without the URL; lived, stands alone, specific (67 features and fixes); dev.to URL in the post; title states the insight |
+| Images | 2 | phone test: pass (wink and diagram text large; cover window lines ~24 characters) · one point each (cover: the squash swaps feat for a plain title; wink: three feats in, zero in CHANGELOG.md; diagram: hook runs locally, not at Squash and merge) · series look: Catppuccin, OmniWM window, cyan focus. Wink output is real (7 bullet lines in `84a8fc1`'s body, three `feat`, `grep -c` = 0), alt text present on both inline images |
+| Goals 1–5 | 9/10 | 1 2 · 2 2 · 3 2 · 4 1 · 5 2 |
+| Language | 2 | Article in English. LinkedIn in PT-BR per the task title, with an English source block; code/tool names kept in English; loanwords (commit, squash merge, changelog, fixes) natural; 3 English hashtags |
+| Safety | ok | `roalcantara/dots` is PUBLIC (`gh repo view`). No secret, email, client or private repo. `secrets.GH_TOKEN` in the workflow excerpt is semantic-release's documented generic variable name, already public in the linked workflow, not a gopass path or key file |
+| `blog:check` | ok | 0 blocks; 1 warning: hype word "unlock" (real command output; see Voice) |
 
 ## Consider
 
-1. **Goal 2/4 — the in-between LinkedIn post points to the wrong article.** `linkedin.md`'s in-between (the `[A-Z]`
-   collation bug on macOS `/bin/sh`) ends with "`[[:upper:]]` resolveu: {devto.url}", but this article never tells
-   that story; it only shows `fix(hk): Detect lowercase subjects in any locale` as a format example. Link the fix
-   commit (3149394) or the hk file instead, or add a short paragraph on it to the post.
-2. **Goal 2 — explain or drop the preset install.** Step 1 says "With no preset configured", yet step 3 installs
-   `conventional-changelog-conventionalcommits`, which `.releaserc.yml` never uses. Add "(installed, unused: the
-   default angular rules apply)" or remove it from the excerpt and note the difference from the repo file.
-3. **Goal 5 (Stories) — give the noticing moment one sentence.** "I only noticed afterwards" is the only scene;
-   say what made you look (a missing version, a release log, the changelog) and when, so the story is a moment,
-   not only numbers.
-4. **Goal 3 — prove the default release rules.** Link
-   [commit-analyzer's default release rules](https://github.com/semantic-release/commit-analyzer#releaserules) on
-   "`feat` → minor, `fix` and `perf` → patch, `BREAKING CHANGE:` → major", or add it to the task's `sources:`.
-5. **Goal 5 (visuals) — tighten the wink card and diagram.** In `wink.json`, `# third line trimmed` reads as if a
-   line was removed; it is the third line's text that is cut: "# line 3 shortened". In `02-squash.png`, the bottom
-   fifth is empty: crop it, or enlarge "a new commit, titled after the PR:" and the `dots #2` footer, which sit
-   near the 8 px floor at 400 px wide.
-6. **Goal 2 (tone/accuracy) — anchor the "presto".** "And **presto!** 87 releases since July 2025, and every line
-   of the changelog is a commit subject I (or an agent) wrote" follows the fix, so it reads as the fix's result;
-   the 87 releases span the broken week too. Try "Since #111, every new changelog line is a commit subject I (or an
-   agent) wrote; 87 releases since July 2025."
-7. **Goal 5 (tone) — the two-dot beat at a paragraph's end.** "That title is all semantic-release reads.." right
-   before a code block reads as a typo on a cold read; the tic works best leading into a clause ("reads.. and
-   nothing else"). Same for "não.. e" in the PT-BR LinkedIn post, which already does that and reads fine.
+<!-- At most 7, most valuable first; each names the goal it serves; visual and tone suggestions explicit. -->
+
+1. **The in-between LinkedIn post points to an article that doesn't contain its story** (goals 2, 4). It tells the
+   `[A-Z]` collation bug and ends "`[[:upper:]]` fixed it: {devto.url}", but `post.md` never mentions the locale
+   bug. A reader who clicks finds nothing about it. Either add two lines on it to `## Why not a commit-msg hook?`
+   (the dropped hook is where it lived), or point the in-between post at the `hk` commit or a later gotchas post.
+2. **Link the `GITHUB_TOKEN` rule to GitHub's docs** (goal 2): "a Release created with `GITHUB_TOKEN` starts no
+   other workflow" is proven only by the repo's own comment and ADR. One link to GitHub's "Triggering a workflow
+   from a workflow" page (or a `sources:` entry) makes it external proof, like the squash-title link in the opening.
+3. **Tone: fix the "reads.." at the end of the opening's paragraph** (goal 2). The two-dot beat is the author's,
+   but there it sits at a sentence's end before a code block and reads as a typo; it also invites the cold-read
+   question of whether the body is read. "That title is all semantic-release reads: the commits listed in its body
+   don't count." settles both.
+4. **Visuals: the cover's window says "# 7 commits, one squash:" but shows one `feat` line** (goal 5). True (7
+   bullets in `84a8fc1`), but the post and wink card both say "three feat"; "# 3 feats, one squash:" ties the cover
+   to the text at a glance in the link card.
+5. **Emotion and Stories are the weak STEPPS drivers** (goal 5): the cost is stated as numbers, not as a moment.
+   If there was one (a user asking what changed in a version, an empty Release you opened), one first-person
+   sentence in `## How I ran into it` would lift both. Only if it happened.
+6. **Name the hook that was dropped** (goal 3): "(I had one anyway…)" says it broke commits where cog wasn't
+   installed; one clause on what replaced it (if anything checks subjects now, for example the hk step in
+   `sources:`) tells a reader whether you still lint locally.
+7. **Say what the check's output means** (goal 2): after "No output, no surprise", one line such as "each line
+   printed is a commit the analyzer will skip" helps a reader who lands on `## The fix…` from a link.
 
 ## Variables (the `vars:` comment)
 
-hook type: confession · cover style: terminal-diff · images: 3 (cover + wink card + diagram) · LinkedIn format:
-link · language: pt-br · day/time: <author> · tags: git, devops, github, productivity
+hook type: confession · cover style: terminal-diff · images: 3 (cover + wink + diagram) · LinkedIn format: link ·
+language: pt-br · day/time: <author> · tags: git, devops, github, productivity
 
-`vars: hook=confession cover=terminal-diff images=3-cover+wink+diagram linkedin=link lang=pt-br day=<author> tags=git,devops,github,productivity`
-
-<!-- reviewed: beba8a55af17e618 -->
+<!-- reviewed: 7dd318fb2eb6b86d -->
