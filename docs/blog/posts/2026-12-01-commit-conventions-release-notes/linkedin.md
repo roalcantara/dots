@@ -1,12 +1,11 @@
 ## Post
 
 Meus commits seguiam o formato. Os títulos dos meus PRs, não.. e com squash merge, o título é o único commit que o
-semantic-release lê. 67 features e fixes nunca chegaram ao meu changelog. :(
+semantic-release lê. Resultado: changelog sem 67 features e fixes e ainda entradas duplicadas! Assim não dá! 😵‍💫
 
-Veja como resolvi:
-{devto.url}
+Hora de arrumar a casa: {devto.url}
 
-\#git \#DevOps \#GitHub
+\#git \#devops \#github \#faxinando
 
 ## In-between post
 
@@ -22,14 +21,14 @@ Minha regra de commit aceitava "send the payload" com letra minúscula. No `/bin
 
 Translate only from this; never edit the PT copy on its own.
 
-Post:
+Post (as posted on 2026-11-25; the author reworded the PT copy and this English follows it):
 
 ```text
 My commits followed the format. My PR titles didn't.. and with squash merges, the title is the only commit
-semantic-release reads. 67 features and fixes never made my changelog. :(
+semantic-release reads. Result: a changelog missing 67 features and fixes, and duplicated entries on top! Not
+like this! 😵‍💫
 
-Here is how I fixed it:
-{devto.url}
+Time to clean house: {devto.url}
 ```
 
 In-between:

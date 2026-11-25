@@ -163,6 +163,7 @@ tasks:
   - wyHn
   - zVTA
   - 14br
+  - 2iBU
   position: docs/blog/posts/2026-12-01-commit-conventions-release-notes
   tags:
   - theme-b
@@ -997,4 +998,7 @@ comments:
 - id: w4Ic
   text: 'stats: 2026-11-25 github repo_views=162 repo_uniques=10 (api)'
   task_id: Yaw4
+- id: 2iBU
+  text: 'note: 2026-11-25 LinkedIn copy reworded by the author before posting: mentions the duplicated changelog entries, pointer ''Hora de arrumar a casa:'' with the link inline, 4 hashtags (#git #devops #github #faxinando, one PT tag); emoji instead of '':('''
+  task_id: yg3s
 project: posts
