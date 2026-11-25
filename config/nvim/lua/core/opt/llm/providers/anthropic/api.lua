@@ -1,5 +1,5 @@
 -- curl https://api.anthropic.com/v1/messages
--- -H "x-api-key: $(gopass show -n --password token/opencode.anthropic.com)"
+-- -H "x-api-key: $(gopass show -n --password tokens/anthropic.com)"
 -- -H "anthropic-version: 2023-06-01"
 -- -H "content-type: application/json"
 -- -d '{ "model": "claude-sonnet-4-20250514", "max_tokens": 1024, "messages": [ {"role": "user", "content": "Hello, world"} ] }'
@@ -19,7 +19,7 @@ local M = {
 --- Get the Anthropic API key
 --- @return string|nil The API key or nil if not found
 function M.get_api_key()
-  return vim.env.ANTHROPIC_API_KEY or exec_cmd({ 'gopass', 'show', '-n', '--password', 'token/opencode.anthropic.com' })
+  return vim.env.ANTHROPIC_API_KEY or exec_cmd({ 'gopass', 'show', '-n', '--password', 'tokens/anthropic.com' })
 end
 
 local function get_request_opts()
