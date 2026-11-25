@@ -33,9 +33,11 @@ GitHub Releases are the changelog; nothing is committed back to `main`.
 - `.releaserc.yml` keeps `@semantic-release/commit-analyzer`, `@semantic-release/release-notes-generator` and
   `@semantic-release/github`, with the `conventionalcommits` preset. `@semantic-release/changelog` and
   `@semantic-release/git` are gone, and `CHANGELOG.md` with them.
-- `.github/release/` pins the tooling (`semantic-release` 25.0.9, `conventional-changelog-conventionalcommits` 10.4.1)
+- `.github/release/` pins the tooling (`semantic-release` 25.0.9, `conventional-changelog-conventionalcommits` 9.3.1)
   behind a lockfile, installed with `npm ci`. Not 26 yet: semantic-release 26.0.1 depends on beta plugins
-  (`commit-analyzer` 14.0.0-beta.5, `release-notes-generator` 15.0.0-beta.4); 25.0.9 has only stable ones.
+  (`commit-analyzer` 14.0.0-beta.5, `release-notes-generator` 15.0.0-beta.4); 25.0.9 has only stable ones. The preset
+  stays on 9.x: 10.x needs `conventional-changelog-writer` 9, and semantic-release 25's notes generator ships writer 8
+  (the 1.52.0 run failed on exactly that, before tagging).
 - `release.yml` never cancels a release in progress (a newer run waits; GitHub keeps one waiting run per group, and
   it releases every commit since the last tag), pins `actions/checkout` and `actions/setup-node` by SHA, runs
   Node 26, and keeps the personal `GH_TOKEN`: a release created with `GITHUB_TOKEN` starts no workflow.
@@ -69,13 +71,15 @@ The alternatives lost for these reasons:
   label on pull requests and issues stay. On a very large release (hundreds of commits) the success step can time
   out ([semantic-release/github#1017](https://github.com/semantic-release/github/issues/1017)); the release is
   already published by then, so only the run turns red.
-- Previewing a release is a local dry run, with Node 24.10 or newer, in a throwaway clone where the branch is `main`:
+- Previewing a release is a local dry run (with a probe `feat` commit, so the notes are rendered too; a run with no
+  release never reaches that step), with Node 24.10 or newer, in a throwaway clone where the branch is `main`:
 
   ```bash
   tmp=$(mktemp -d) && git clone -q . "$tmp/dots" && cd "$tmp/dots"
   git checkout -q -B main origin/<branch>
   export MISE_TRUSTED_CONFIG_PATHS="$PWD"   # mise refuses an untrusted clone
   npm ci --ignore-scripts --prefix .github/release
+  git -c user.name=probe -c user.email=probe@local commit -q --allow-empty -m 'feat: Probe'  # so a release is due
   GITHUB_TOKEN=$(gh auth token) .github/release/node_modules/.bin/semantic-release \
     --dry-run --no-ci --repository-url https://github.com/roalcantara/dots.git
   ```
