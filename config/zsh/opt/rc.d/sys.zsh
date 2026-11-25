@@ -1,13 +1,17 @@
 #!/usr/bin/env zsh
 # Host and session concerns: secrets, runtime dir, profiling, benchmarking, cleanup.
 # Loaded by .zshrc; defines functions only — nothing runs at load time.
-#DECLARES sys::secrets  sys::runtime_dir  sys::profiling  sys::bench  sys::purge
+#DECLARES sys::secrets  sys::fix_xdg_runtime_dir  sys::bench
 
 #ABOUT Load the API keys from gopass through fnox (~/.config/fnox), quietly: the hook reports nothing.
+#ORDER Runs the hook once now: `fnox activate` only registers it for the next prompt, and shells that never draw
+#      one (`zsh -ilc env` from an editor, `zsh -ic nvim` from a launcher) would get no keys. Never prompts: a locked
+#      store leaves the keys unset rather than blocking every new shell.
 sys::secrets() {
   _has_command fnox || return 0
-  export FNOX_SHELL_OUTPUT=${FNOX_SHELL_OUTPUT:-none}
+  export FNOX_SHELL_OUTPUT=${FNOX_SHELL_OUTPUT:-none} FNOX_NON_INTERACTIVE=${FNOX_NON_INTERACTIVE:-1}
   eval "$(fnox activate zsh)"
+  (( $+functions[_fnox_hook] )) && _fnox_hook
 }
 
 #ABOUT Ensure XDG_RUNTIME_DIR exists and is private (0700).

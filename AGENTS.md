@@ -14,7 +14,7 @@ and builds reproducible development Docker images under `distros/`.
 | `distros/` | Dockerfiles and Container Structure Test manifests for Debian and Ubuntu images |
 | `docs/` | Canonical documentation and architecture decisions (`docs/adr/`), agent specs/plans (`docs/superpowers/`), and the blog (`docs/blog/`: posts, playbook, roadmap) |
 | `.mise/tasks/` | Bun file tasks run by mise (`.mise/tasks/blog/`: `blog:status`, `blog:new`, `blog:check`, `blog:publish`, …) |
-| `.agents/` | Project agent commands (`.agents/commands/blog/`: `/blog:next`, `/blog:pick`, `/blog:draft`, …); `.claude/commands` is a symlink to them |
+| `.agents/` | Project agent commands (`.agents/commands/blog/`: `/blog:next`, `/blog:pick`, `/blog:draft`, …) and vendored skills (`.agents/skills/`, locked in `skills-lock.json`); `.claude/commands` and `.claude/skills` are symlinks to them |
 | `script/` | Automation scripts (agent skills, restic backups, bootstrap logging, SOPS filter hooks) |
 | `test/` | Verification suite: BDD features (`test/features/`) and Bun integration specs (`test/integration/`) |
 | `.github/` | CI/CD GitHub Actions workflows (`preview.yml`, `publish.yml`, `release.yml`, `blog.yml`) |
