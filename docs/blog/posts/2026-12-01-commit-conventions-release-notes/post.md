@@ -1,6 +1,6 @@
 ---
 title: "Squash merges: semantic-release reads the PR title, not your commits"
-published: false
+published: true
 description: If you squash-merge and release with semantic-release, your PR title is the only commit it reads. Mine hid 67 of 68 features and fixes from the changelog, and every job stayed green.
 tags: git, devops, github, productivity
 cover_image: ./images/00-cover.png
