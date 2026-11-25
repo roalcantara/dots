@@ -23,7 +23,7 @@ g() { git -c filter.sops.clean=cat -c filter.sops.smudge=cat "$@"; }
 ### Staging rules
 
 - **Stage named files only:** never use `git add -A` or `git add .`.
-- **Never commit unencrypted secrets:** `config/.env`, `config/ssh/keys/*.key`, and `config/age/keys.txt` must remain encrypted or excluded.
+- **Never commit unencrypted secrets:** `config/ssh/keys/*.key` and `config/age/keys.txt` must remain encrypted or excluded.
 - **Do not push unasked:** only push branches and open pull requests when explicitly directed.
 
 ### Merging pull requests

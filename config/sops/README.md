@@ -121,8 +121,8 @@ git config --get diff.sops.textconv     # shows decrypted content in diffs (scri
 git config --get-regexp "\.sops\."      # check if sops filters are configured
 cat .git/config                         # cat the git config file
 
-head -5 config/.env                     # Must show actual API keys; NOT ENC[...].CONTENT!
-git show :config/.env | head -5         # Must show decrypted content; ENC[...] CONTENT!
+head -5 config/ssh/keys/config           # Must show the plain content; NOT ENC[...].CONTENT!
+git show :config/ssh/keys/config | head -5 # Must show decrypted content; ENC[...] CONTENT!
 ```
 
 ### DECRYPT THE FILE THAT'S CURRENTLY ENCRYPTED IN YOUR WORKING DIRECTORY
@@ -132,14 +132,14 @@ you can decrypt it using the following command:
 
 ```sh
 # 💡 DECRYPT THE FILE THAT'S CURRENTLY ENCRYPTED IN YOUR WORKING DIRECTORY
-cat config/.env                         # check that the file is encrypted - IT SHOWS ENC[...].CONTENT!
+cat config/ssh/keys/config              # check that the file is encrypted - IT SHOWS ENC[...].CONTENT!
 cat .git/config                         # check the git config file - SHOULD HAVE THE FILTERS SET!
-sops decrypt --in-place --input-type dotenv --output-type dotenv config/.env # decrypt the file
+sops decrypt --in-place --input-type binary --output-type binary config/ssh/keys/config # decrypt the file
 git status                              # check git status - SHOULD BE CLEAN!
-echo "# Test comment" >> config/.env    # make a small change
-cat config/.env                         # check that the file is decrypted - IT SHOWS THE CONTENT! YAY!
+echo "# Test comment" >> config/ssh/keys/config # make a small change
+cat config/ssh/keys/config              # check that the file is decrypted - IT SHOWS THE CONTENT! YAY!
 git status                              # check git status - SHOULD SHOW MODIFIED!
-git diff config/.env                    # shows the decrypted diff (diff.sops.textconv, set by mise run setup:git:filters)
+git diff config/ssh/keys/config         # shows the decrypted diff (diff.sops.textconv, set by mise run setup:git:filters)
 ```
 
 ### SCRIPT WHICH ENCRYPT/DECRYPT THE FILE (EXAMPLE)

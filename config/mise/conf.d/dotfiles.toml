@@ -6,7 +6,6 @@
 # every file recursively. Not linked: mise (install), hk (setup:hooks), non-config files,
 # delta (its only file, .env, is git-ignored), and folders that are real on the Mac (app settings and keys
 # restored from backup).
-"~/.config/.env" = { source = "~/.local/share/dots/config/.env", relative = true }
 "~/.config/.markdownlint.yml" = { source = "~/.local/share/dots/config/.markdownlint.yml", relative = true }
 "~/.config/.profile" = { source = "~/.local/share/dots/config/.profile", relative = true }
 "~/.config/age" = { source = "~/.local/share/dots/config/age", relative = true }
