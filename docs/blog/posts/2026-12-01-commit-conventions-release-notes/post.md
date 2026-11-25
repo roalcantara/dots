@@ -49,7 +49,7 @@ Those six squash commits held 133 commits, 68 of them `feat` or `fix`. **67 of t
 
 **1. One format for every subject.** My rules live in
 [CONTRIBUTING.md](https://github.com/roalcantara/dots/blob/main/docs/CONTRIBUTING.md); the type is what
-semantic-release reads, the rest keeps the changelog readable:
+semantic-release reads, the rest keeps the release notes readable:
 
 ```text
 <type>[optional scope]: <Description>
@@ -58,49 +58,48 @@ feat(backup): Add the backup manifest and its schema
 fix(hk): Detect lowercase subjects in any locale
 ```
 
-With no preset configured, semantic-release uses its default rules: `feat` → minor, `fix` and `perf` → patch,
-`BREAKING CHANGE:` in the footer → major. `docs`, `chore`, `test` and the rest release nothing.
+With the `conventionalcommits` preset: `feat` → minor, `fix` and `perf` → patch, `feat!:` or `BREAKING CHANGE:` in
+the footer → major. `docs`, `chore`, `test` and the rest release nothing.
 
-**2. The release config.** Four plugins: read the commits, write the notes, prepend them to `CHANGELOG.md`, commit
-that file back, and publish a GitHub release:
+**2. The release config.** Three plugins: read the commits, write the notes, publish them as a GitHub Release.
+Nothing is committed back, so the Releases page is the changelog:
 
 ```yaml
 # .releaserc.yml
 branches:
   - main
+preset: conventionalcommits
 plugins:
   - '@semantic-release/commit-analyzer'
   - '@semantic-release/release-notes-generator'
-  - '@semantic-release/changelog'
-  - - '@semantic-release/git'
-    - assets:
-        - CHANGELOG.md
-      message: |-
-        chore(release): ${nextRelease.version} [skip ci]
-
-        ${nextRelease.notes}
-  - '@semantic-release/github'
+  - - '@semantic-release/github'
+    - failComment: false
 ```
 
-**3. The job, on every push to `main`.** It needs the whole history (`fetch-depth: 0`) to find the last tag:
+**3. The job, on every push to `main`.** It needs the whole history (`fetch-depth: 0`) to find the last tag, and it
+installs a pinned semantic-release from a lockfile (`.github/release/package.json` pins `semantic-release` 25.0.9):
 
 ```yaml
 # .github/workflows/release.yml (excerpt)
-- uses: actions/checkout@v4
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+# …
+- uses: actions/checkout@<sha> # v7.0.1
   with:
     fetch-depth: 0
     persist-credentials: false
-- uses: actions/setup-node@v4
+- uses: actions/setup-node@<sha> # v7.1.0
   with:
-    node-version: 'lts/*'
-- run: >-
-    npm install -g semantic-release
-    @semantic-release/changelog @semantic-release/git
-    conventional-changelog-conventionalcommits
-- run: npx semantic-release
+    node-version: '26'
+- run: npm ci --ignore-scripts --prefix .github/release
+- run: .github/release/node_modules/.bin/semantic-release
   env:
     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 ```
+
+A personal token, not the default one: a Release created with `GITHUB_TOKEN` starts no other workflow, and mine
+builds Docker images on `release: published`.
 
 **4. Merge so the commits survive.** Since
 [#111](https://github.com/roalcantara/dots/pull/111) I merge with a merge commit, so semantic-release reads every
@@ -117,8 +116,8 @@ $ git log --no-merges --format=%s \
 ```
 
 It works with either merge style: `--no-merges` skips the `Merge pull request…` line and lists the branch's
-commits, or the squash titles. No output, no surprise. And **presto!** 87 releases since July 2025, and every line of the changelog is a commit
-subject I (or an agent) wrote.
+commits, or the squash titles. No output, no surprise. And **presto!** 88 releases since July 2025, and every line of
+the notes is a commit subject I (or an agent) wrote.
 
 ## Why not a commit-msg hook?
 
@@ -139,14 +138,19 @@ the merge button types.
 - **With squash merges, the PR title is the commit.** Review it like one.
 - **My mistake: I let a tool title the pull requests** and never read the release log. Those 67 entries stay
   missing; I didn't rewrite history to add them.
-- **A limit I haven't fixed:** the job installs semantic-release unpinned. v26 went stable on Nov 16
-  ([its release](https://github.com/semantic-release/semantic-release/releases)), raising the minimum Node to
-  26.13. My Nov 24 release ran 26.0.1 on Node 26.13.1 without a line changed here; it worked only because `lts/*`
-had moved too.
+- **Another mistake: the job installed semantic-release unpinned.** v26 went stable on Nov 16
+  ([its release](https://github.com/semantic-release/semantic-release/releases)) and my next release ran it
+  without a line changed here. It worked, but it was luck; it's pinned now, behind a lockfile.
+- **A committed changelog can duplicate itself.** The old setup committed `CHANGELOG.md` before pushing the tag;
+  when a tag push failed, the next run wrote the same version again (two `1.38.1` sections, twelve `1.17.0`). The
+  GitHub Release is the changelog now ([ADR 0001](https://github.com/roalcantara/dots/blob/main/docs/adr/0001-releases.md)).
+- **A limit:** the tag is still pushed before the Release is created. If a run fails in between, the next run fails
+  on purpose and names the tag, and I create that Release by hand.
 
 The setup lives in my dotfiles: [.releaserc.yml](https://github.com/roalcantara/dots/blob/main/.releaserc.yml),
-[the release workflow](https://github.com/roalcantara/dots/blob/main/.github/workflows/release.yml) and
-[CHANGELOG.md](https://github.com/roalcantara/dots/blob/main/CHANGELOG.md).
+[the release workflow](https://github.com/roalcantara/dots/blob/main/.github/workflows/release.yml),
+[ADR 0001](https://github.com/roalcantara/dots/blob/main/docs/adr/0001-releases.md) and
+[the releases](https://github.com/roalcantara/dots/releases).
 
 ---
 
