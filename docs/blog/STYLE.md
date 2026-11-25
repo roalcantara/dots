@@ -121,7 +121,7 @@ finishes them in its own words ("## The fix: two settings", "## Why not change z
 | Wink card | 1080 wide, height from `wink.json` (default 800, at most 1080): the reference as the title (key words on pink), a one-line subtitle tying it to the topic, one focused window with a **real command and its real output** (`{b:}` keys, `{g:}` strings, `{o:}` values, `{r:}` ciphertext, `{c:}` comments, whole-line `{del:}` / `{add:}`), the wink word as the window's label, the post's title and `dots #<n>` in the footer. Trims and notes are grey comments; a card that can't be real output carries a small italic `caption`. Dummy values only. In every post at the top of `## How I ran into it`, as `images/01-wink.png`; `blog:cover` renders it with `raw/01-wink-phone.png` ([template](tools/wink.html)) |
 | Screenshots | a clean capture, cropped to the point, sensitive regions blurred, framed by `tools/frame.py --app <name> [--focus]` in the same window style on the same base |
 | Carousel (LinkedIn, optional) | 1080 × 1350, 4–6 slides, one point per slide, same palette and windows |
-| Diagrams | Mermaid when a picture shows a mechanism; never decoration |
+| Diagrams | Only when a picture shows a mechanism the text can't; never decoration. On dev.to as a PNG in the series look (`images/02-<name>.png`, 1000 wide: two lanes or boxes and arrows, text ≥ 20 px so it passes the phone test); Mermaid only in the repo's own docs |
 
 Every image passes the **phone test** (scaled to 400 px wide, the text it's there to show is still readable,
 roughly 8 px or taller, which is 20 px on the 1000 px cover) and makes **one point**. The cover also passes the

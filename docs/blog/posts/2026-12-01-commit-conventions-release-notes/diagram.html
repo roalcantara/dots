@@ -1,0 +1,51 @@
+<!doctype html>
+<!-- Source of images/02-squash.png: Chrome --headless=new --force-device-scale-factor=2 --window-size=1000,590
+     --screenshot=images/02-squash.png file://…/diagram.html; phone test: sips -Z 400 into raw/02-squash-phone.png -->
+
+<meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:1000px;height:590px;background:#1e1e2e;color:#cdd6f4;font-family:-apple-system,"SF Pro Display",system-ui,sans-serif;position:relative;overflow:hidden;padding:44px 56px}
+.c1{position:absolute;width:420px;height:420px;border-radius:50%;background:#cba6f7;opacity:.16;top:-210px;right:-140px}
+.c2{position:absolute;width:380px;height:380px;border-radius:50%;background:#94e2d5;opacity:.14;bottom:-230px;left:-120px}
+.lane{position:relative;display:flex;align-items:center;gap:22px}
+.lbl{font-size:20px;font-weight:700;letter-spacing:.12em;color:#a6adc8;margin-bottom:14px;position:relative}
+.box{background:#111116;border:2px solid #3d3d43;border-radius:12px;padding:18px 22px}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,monospace}
+.g{color:#a6e3a1}.r{color:#f38ba8}.y{color:#f9e2af}.m{color:#a6adc8}
+.big{font-size:24px}
+.pill{border:2px solid #a6e3a1;border-radius:40px;padding:12px 24px;font-size:24px;font-weight:700;background:#2a2a2f;white-space:nowrap}
+.arrow{font-size:30px;color:#6c7086}
+.sep{border-top:2px dashed #45475a;margin:30px 0 26px;position:relative}
+.focus{border-color:#62e6f0;box-shadow:0 0 18px rgba(98,230,240,.35)}
+.foot{position:absolute;right:56px;bottom:26px;font-size:18px;color:#6c7086}
+</style>
+<div class="c1"></div><div class="c2"></div>
+
+<div class="lbl">ON MY MACHINE</div>
+<div class="lane">
+  <div class="box mono big g">3 × feat(backup): …</div>
+  <div class="arrow">→</div>
+  <div class="pill">commit-msg hook <span class="g">✓</span></div>
+</div>
+
+<div class="sep"></div>
+
+<div class="lbl">ON GITHUB, AT “SQUASH AND MERGE”</div>
+<div class="lane">
+  <div class="box focus">
+    <div class="m" style="font-size:20px;margin-bottom:6px">a new commit, titled after the PR:</div>
+    <div class="mono big r">Enhance backup functionality… (#93)</div>
+  </div>
+  <div class="r" style="font-size:24px;font-weight:700">no hook<br>runs here</div>
+</div>
+
+<div class="lane" style="margin-top:22px">
+  <div class="arrow" style="margin-left:24px">↓</div>
+  <div class="box" style="background:#2a2a2f;border-color:#2a2a2f">
+    <div style="font-size:24px;font-weight:700;margin-bottom:6px">semantic-release reads only that title</div>
+    <div class="mono y" style="font-size:22px">“no relevant changes” → no release</div>
+  </div>
+</div>
+
+<div class="foot">dots #2</div>

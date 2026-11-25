@@ -1,0 +1,20 @@
+{
+  "title": [
+    "Squash merges",
+    "hid my"
+  ],
+  "highlight": "changelog",
+  "subtitle": "{y:semantic-release} reads the PR title {wink}",
+  "wink": "🪄",
+  "window": {
+    "kind": "terminal",
+    "name": "Ghostty",
+    "focused": true,
+    "lines": [
+      "{c:# 3 feats, one squash:}",
+      "{del:-feat(backup): Add the…}",
+      "{add:+Enhance backup… (#93)}",
+      "{c:→ no new version}"
+    ]
+  }
+}

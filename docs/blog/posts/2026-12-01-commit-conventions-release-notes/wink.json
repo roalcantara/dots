@@ -1,0 +1,22 @@
+{
+  "title": [
+    "“Obliviate!”",
+    "The changelog"
+  ],
+  "highlight": "forgot them all.",
+  "subtitle": "Squash a PR under a plain title, and the feat: commits inside never reach the changelog.",
+  "label": "obliviate",
+  "height": 720,
+  "window": {
+    "name": "Ghostty",
+    "lines": [
+      "{p} git log -1 --format=%b 84a8fc1 | grep '^\\* feat'",
+      "{del:* feat(backup): Add the backup manifest and its schema}",
+      "{del:* feat(backup): Add the backup script and its unit specs}",
+      "{del:* feat(backup): Add mise tasks, Brewfile entry, …}",
+      "{c:# third line trimmed}",
+      "{p} grep -c 'backup manifest' CHANGELOG.md",
+      "{o:0}"
+    ]
+  }
+}
