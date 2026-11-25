@@ -5,4 +5,4 @@
 type = "gopass"
 
 [secrets]
-DEVTO_TOKEN = { provider = "gopass", value = "tokens/dev.to", line = 1, description = "dev.to API key (blog:push, blog:stats)" }
+DEVTO_TOKEN = { provider = "gopass", value = "tokens/dev.to", line = 1, env = false, description = "dev.to API key (blog:push, blog:stats); not exported to the shell" }

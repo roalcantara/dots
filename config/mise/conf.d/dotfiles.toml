@@ -21,6 +21,7 @@
 "~/.config/dprint" = { source = "~/.local/share/dots/config/dprint", relative = true }
 "~/.config/duti" = { source = "~/.local/share/dots/config/duti", relative = true }
 "~/.config/fabric" = { source = "~/.local/share/dots/config/fabric", relative = true }
+"~/.config/fnox" = { source = "~/.local/share/dots/config/fnox", relative = true }
 "~/.config/gh" = { source = "~/.local/share/dots/config/gh", relative = true }
 "~/.config/ghostty" = { source = "~/.local/share/dots/config/ghostty", relative = true }
 "~/.config/git" = { source = "~/.local/share/dots/config/git", relative = true }
