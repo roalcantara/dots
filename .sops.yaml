@@ -4,6 +4,10 @@
 # Tokens that are not files live in gopass and reach the shell through fnox (config/fnox/config.toml).
 ---
 creation_rules:
+  # Guard: no .env is tracked, but one committed by mistake is encrypted rather than stored in plain text.
+  - path_regex: '.*\.env$'
+    age: age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4
+    encrypted_regex: '^.*(SECRET|KEY|TOKEN|PASSWORD|PASS).*$'
   - path_regex: '.*ssh/keys/.*\.(key|pem)$'
     age: age17q0hc40w3zukdw47zagn5f0rj72ggcu5ygxxpekpua6x3trp6q0syn9lt4
   - path_regex: '.*ssh/keys/config$'
