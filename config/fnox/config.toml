@@ -1,0 +1,11 @@
+# Global fnox config, linked as ~/.config/fnox, so every shell reaches it.
+# Values never live here: each secret names a gopass entry and fnox reads it.
+# zsh loads them with `fnox activate zsh` (config/zsh/opt/rc.d/sys.zsh, sys::secrets).
+
+[providers.gopass]
+type = "gopass"
+
+[secrets]
+OPENAI_API_KEY = { provider = "gopass", value = "tokens/openai.com", line = 1, if_missing = "ignore", description = "Neovim LLM providers and CLIs" }
+ANTHROPIC_API_KEY = { provider = "gopass", value = "tokens/anthropic.com", line = 1, if_missing = "ignore", description = "Neovim LLM providers and CLIs" }
+DEEPSEEK_API_KEY = { provider = "gopass", value = "tokens/DEEPSEEK_API_KEY", line = 1, if_missing = "ignore", description = "external tools" }

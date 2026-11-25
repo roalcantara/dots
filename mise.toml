@@ -90,8 +90,9 @@ fi
 
 DOCKER_CMD+=(--file="distros/${usage_distro?}/Dockerfile")
 
-# local and publish build the committed tree: the working tree holds decrypted SOPS files (config/.env,
-# config/ssh/keys/*.key). The smudge filter is disabled so git archive exports them encrypted.
+# local and publish build the committed tree: the working tree holds decrypted SOPS files
+# (config/ssh/keys/*.key, config/wakatime/.wakatime.cfg). The smudge filter is disabled so git archive exports
+# them encrypted.
 if [ "${usage_publish:-false}" = "true" ] || [ "${usage_local:-false}" = "true" ]; then
   target=local
   [ "${usage_publish:-false}" = "true" ] && target=publish

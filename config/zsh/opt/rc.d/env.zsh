@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 # Shell environment: helpers, options, search paths, package manager, editor.
 # Loaded by .zshrc; defines functions only — nothing runs at load time.
-#DECLARES env::core  env::options  env::paths  env::homebrew  env::editor  _has_command
+#DECLARES env::core  env::options  env::paths  env::homebrew  env::editor  env::gum  _has_command
 
 # Predicate used by several modules. Defined at file scope so it is available
 # as soon as this module loads, before any zrc:: function runs.
@@ -185,8 +185,28 @@ env::editor() {
   export LAUNCH_EDITOR=${LAUNCH_EDITOR:-$EDITOR}
 }
 
+#ABOUT Export gum's log styling (GUM_LOG_*): the level, time, prefix, message, key, value and separator colours.
+#ORDER After env::editor.
+env::gum() {
+  export GUM_LOG_LEVEL_FOREGROUND="#1E1E2E"     # base (text on filled bg)
+  export GUM_LOG_LEVEL_BACKGROUND="#CBA6F7"     # mauve fill
+  export GUM_LOG_TIME_FOREGROUND="#585B70"      # surface2 (subtle, time is secondary)
+  export GUM_LOG_TIME_BACKGROUND=""             # transparent
+  export GUM_LOG_PREFIX_FOREGROUND="#1E1E2E"    # base (text on filled bg)
+  export GUM_LOG_PREFIX_BACKGROUND="#89B4FA"    # blue fill
+  export GUM_LOG_MESSAGE_FOREGROUND="#CDD6F4"   # text
+  export GUM_LOG_MESSAGE_BACKGROUND=""          # transparent
+  export GUM_LOG_KEY_FOREGROUND="#94E2D5"       # teal
+  export GUM_LOG_KEY_BACKGROUND=""              # transparent
+  export GUM_LOG_VALUE_FOREGROUND="#FAB387"     # peach
+  export GUM_LOG_VALUE_BACKGROUND=""            # transparent
+  export GUM_LOG_SEPARATOR_FOREGROUND="#45475A" # surface1
+  export GUM_LOG_SEPARATOR_BACKGROUND=""        # transparent
+}
+
 env::core                    # shell identity
 env::options                 # shell options
 env::paths                   # path, fpath, cdpath, manpath
 env::homebrew                # brew shellenv and prefixes
 env::editor                  # EDITOR, VISUAL, GIT_EDITOR, vim aliases
+env::gum                     # GUM_LOG_* styling

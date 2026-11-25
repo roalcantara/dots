@@ -137,8 +137,9 @@ mise bootstrap -E <profile>  # re-apply after editing the config
 ### Secrets
 
 `~/.config/ssh` and `~/.config/gnupg` are tracked, encrypted, in the private `dots-history` repo. Other secrets
-live in this repo, SOPS-encrypted on commit (`.sops.yaml`, `.gitattributes`): `config/.env`, `config/ssh/keys`,
-`config/gopass/age`, `config/wakatime/.wakatime.cfg`; commit them like any file. After changing ssh or gnupg:
+live in this repo, SOPS-encrypted on commit (`.sops.yaml`, `.gitattributes`): `config/ssh/keys`,
+`config/gopass/age`, `config/wakatime/.wakatime.cfg`; commit them like any file. The rest come from gopass
+through fnox (`config/fnox/config.toml`). After changing ssh or gnupg:
 
 ```sh
 mise dot save   # record a checkpoint
@@ -218,7 +219,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
   With `CI` or `DOTS_STRICT` set, any failure stops the bootstrap.
 - **`skills add` and `skills update` write the committed lock** through its link: review the diff.
 - **A skill deleted upstream cannot be restored:** the lock records no commit; keep a backup.
-- **Encrypted files (`config/.env`) look like gibberish in git:** run `mise run setup:git:filters`.
+- **Encrypted files (`config/ssh/keys`) look like gibberish in git:** run `mise run setup:git:filters`.
 - **A bootstrap failed:** read `~/.local/state/dots/logs/latest.log`.
 
 ## Repository layout

@@ -1,5 +1,5 @@
 # SOPS encrypt on commit; diff.sops decrypts for git diff/log (see mise.toml sops:setup).
-# Do not add config/.env -diff here: diff.sops decrypts it for git diff/log.
+# Guard: no .env is tracked; one committed by mistake goes through SOPS (.sops.yaml) instead of in plain text.
 *.env filter=sops diff=sops
 config/ssh/keys/*.key filter=sops diff=sops
 config/ssh/keys/*.pem filter=sops diff=sops

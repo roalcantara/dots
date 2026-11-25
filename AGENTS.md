@@ -14,7 +14,7 @@ and builds reproducible development Docker images under `distros/`.
 | `distros/` | Dockerfiles and Container Structure Test manifests for Debian and Ubuntu images |
 | `docs/` | Canonical documentation and architecture decisions (`docs/adr/`), agent specs/plans (`docs/superpowers/`), and the blog (`docs/blog/`: posts, playbook, roadmap) |
 | `.mise/tasks/` | Bun file tasks run by mise (`.mise/tasks/blog/`: `blog:status`, `blog:new`, `blog:check`, `blog:publish`, …) |
-| `.agents/` | Project agent commands (`.agents/commands/blog/`: `/blog:next`, `/blog:pick`, `/blog:draft`, …); `.claude/commands` is a symlink to them |
+| `.agents/` | Project agent commands (`.agents/commands/blog/`: `/blog:next`, `/blog:pick`, `/blog:draft`, …) and vendored skills (`.agents/skills/`, locked in `skills-lock.json`); `.claude/commands` and `.claude/skills` are symlinks to them |
 | `script/` | Automation scripts (agent skills, restic backups, bootstrap logging, SOPS filter hooks) |
 | `test/` | Verification suite: BDD features (`test/features/`) and Bun integration specs (`test/integration/`) |
 | `.github/` | CI/CD GitHub Actions workflows (`preview.yml`, `publish.yml`, `release.yml`, `blog.yml`) |
@@ -43,7 +43,7 @@ Keep every gate green before declaring work complete:
 - **SOPS Git Filter Wrapper:** Always invoke git with the SOPS filter wrapper:
   `g() { git -c filter.sops.clean=cat -c filter.sops.smudge=cat "$@"; }`
 - **Never `git add -A` or `git add .`:** Stage named paths only.
-- **Never print or commit secrets:** Files such as `config/.env`, `config/ssh/keys/*.key`, `config/ssh/keys/*.pem`, and `config/age/keys.txt` must never be displayed or committed unencrypted.
+- **Never print or commit secrets:** Files such as `config/ssh/keys/*.key`, `config/ssh/keys/*.pem`, and `config/age/keys.txt` must never be displayed or committed unencrypted.
 - **No unrequested push or PR:** Do not push to remote or open a pull request unless explicitly instructed by the user.
 - **Conventional Commits:** Write commit messages following Conventional Commits with a capitalized description; see [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
 - **`.agents` over `.claude`:** Put agent files (commands, skills, agent-agnostic config) in `.agents/` for this project and `~/.agents/` for the user (here `config/agents/`), not in `.claude/` or `~/.claude/`. Add a `.claude/` entry only when Claude Code cannot read the `.agents/` path, and then as a symlink to it (for example `.claude/commands` → `../.agents/commands`, `~/.claude/commands` → `config/agents/commands`). Files only Claude Code reads (`settings.json`) stay in `.claude/`.
