@@ -1,11 +1,12 @@
 # Global fnox config, linked as ~/.config/fnox, so every shell reaches it.
 # Values never live here: each secret names a gopass entry and fnox reads it.
 # zsh loads them with `fnox activate zsh` (config/zsh/opt/rc.d/sys.zsh, sys::secrets).
+# Not ANTHROPIC_API_KEY: Claude Code would bill that key instead of the subscription; Neovim reads
+# tokens/anthropic.com from gopass itself (config/nvim/lua/core/opt/llm/providers/anthropic/api.lua).
 
 [providers.gopass]
 type = "gopass"
 
 [secrets]
 OPENAI_API_KEY = { provider = "gopass", value = "tokens/openai.com", line = 1, if_missing = "ignore", description = "Neovim LLM providers and CLIs" }
-ANTHROPIC_API_KEY = { provider = "gopass", value = "tokens/anthropic.com", line = 1, if_missing = "ignore", description = "Neovim LLM providers and CLIs" }
 DEEPSEEK_API_KEY = { provider = "gopass", value = "tokens/DEEPSEEK_API_KEY", line = 1, if_missing = "ignore", description = "external tools" }
