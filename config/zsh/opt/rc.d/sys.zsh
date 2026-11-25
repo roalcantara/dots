@@ -1,16 +1,13 @@
 #!/usr/bin/env zsh
 # Host and session concerns: secrets, runtime dir, profiling, benchmarking, cleanup.
 # Loaded by .zshrc; defines functions only — nothing runs at load time.
-#DECLARES sys::dotenv  sys::runtime_dir  sys::profiling  sys::bench  sys::purge
+#DECLARES sys::secrets  sys::runtime_dir  sys::profiling  sys::bench  sys::purge
 
-#ABOUT Source ~/.config/.env when it is present and not age-encrypted.
-sys::dotenv() {
-  # Only source if the file is not age-encrypted (does not contain 'BEGIN AGE ENCRYPTED FILE')
-  if _has_command sops age && [[ -r $HOME/.config/.env ]] && ! grep -q 'BEGIN AGE ENCRYPTED FILE' "$HOME/.config/.env"; then
-    set -a
-    source "$HOME/.config/.env"
-    set +a
-  fi
+#ABOUT Load the API keys from gopass through fnox (~/.config/fnox), quietly: the hook reports nothing.
+sys::secrets() {
+  _has_command fnox || return 0
+  export FNOX_SHELL_OUTPUT=${FNOX_SHELL_OUTPUT:-none}
+  eval "$(fnox activate zsh)"
 }
 
 #ABOUT Ensure XDG_RUNTIME_DIR exists and is private (0700).
@@ -94,7 +91,7 @@ sys::bench() {
   fi
 }
 
-sys::dotenv                  # secrets from ~/.config/.env
+sys::secrets                 # API keys from gopass through fnox
 sys::fix_xdg_runtime_dir     # private XDG_RUNTIME_DIR
 
 # A failed background skills restore (bootstrap task) is reported once, then forgotten. Only a shell whose

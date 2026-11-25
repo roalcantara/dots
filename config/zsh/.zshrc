@@ -24,10 +24,10 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # --- before the framework ---------------------------------------------------
-source $zrc/env.zsh          # shell identity, options, path, fpath, cdpath, manpath, brew, EDITOR, VISUAL, GIT_EDITOR, vim aliases
+source $zrc/env.zsh          # shell identity, options, path, fpath, cdpath, manpath, brew, EDITOR, VISUAL, GIT_EDITOR, vim aliases, GUM_LOG_* styling
 source $zrc/theme.zsh        # the active shell theme (dots theme): LS_COLORS, BAT_THEME, FZF_THEME_OPTS, …
 source $zrc/term.zsh         # terminal detection and shell integration
-source $zrc/sys.zsh          # handles ~/.config/.env, private XDG_RUNTIME_DIR
+source $zrc/sys.zsh          # API keys from gopass through fnox, private XDG_RUNTIME_DIR
 source $zrc/zim.zsh          # powerlevel10k configuration, zprof teardown, drop the one-shot setup functions, Android SDK Tools.
 
 unset zrc
