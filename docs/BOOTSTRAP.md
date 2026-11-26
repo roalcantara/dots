@@ -98,6 +98,7 @@ ask for input. `desktop` means the desktop profile only; `macOS` is checked at t
 | `bootstrap:macos:swiftbar` | post-defaults | macOS | Points SwiftBar at `~/.config/swiftbar/plugins` | — | no |
 | `bootstrap:hook:final` | `bootstrap` task | all | Runs the remaining steps in order | — | — |
 | `bootstrap:git:filters` | final (first) | all | `mise run setup:git:filters` | — | no |
+| `bootstrap:git:home-config` | final | all | warns when a real `~/.gitconfig` overrides the dots git config | — | no |
 | `bootstrap:zsh:warm-caches` | final | all | `zsh -ic 'exit'` to build the shell caches | — | no |
 | `bootstrap:git:hooks` | final | desktop | `mise run setup:hooks` | — | no |
 | `bootstrap:dev:python-tools` | final | dev | `uv tool install` graphifyy and code-review-graph with Python 3.13 | — (`uv tool list`) | no |
@@ -175,6 +176,11 @@ mise bootstrap --adopt            # restore the encrypted dots-history repo
   those failures fatal, and mise stops the run there.
 - **`sources`/`outputs` resolve from the task directory** and must name real files; system state that is not a file
   uses `skip_if`.
+- **A real `~/.gitconfig` outranks the dots git config.** git reads it after `~/.config/git/config`, and tools write
+  it unasked: `gh auth setup-git` once pinned a since-removed mise `gh` there, so every HTTPS push asked for a password.
+  `install` gives its bootstrap run the gh helper through `GIT_CONFIG_*` variables instead, and `bootstrap:git:home-config`
+  and `mise doctor project` (`home-gitconfig`) report a stray file. Merge what you need into `config/git/config`, then
+  move it aside.
 
 ## Troubleshooting
 

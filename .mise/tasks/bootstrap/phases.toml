@@ -33,6 +33,7 @@ run = [
 description = "Git filters and hooks, then the remaining tools (run by the global bootstrap task)"
 run = [
   { task = "bootstrap:git:filters" },
+  { task = "bootstrap:git:home-config" },
   { task = "bootstrap:zsh:warm-caches" },
   { task = "bootstrap:git:hooks" },
   { task = "bootstrap:dev:python-tools" },

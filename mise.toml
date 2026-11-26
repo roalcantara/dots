@@ -458,6 +458,12 @@ run = "mise run mise:diagnostics"
 hint = "see docs/BOOTSTRAP.md#gotchas (deprecated keys)"
 timeout = "30s"
 
+# dots owns git's config in ~/.config/git/config; a real ~/.gitconfig is read after it and silently wins.
+[doctor.checks.home-gitconfig]
+description = "No ~/.gitconfig overrides the dots git config"
+run = 'test ! -e "$HOME/.gitconfig"'
+hint = "merge what you need into config/git/config, then move ~/.gitconfig aside (docs/BOOTSTRAP.md#gotchas)"
+
 [settings]
 # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
 # https://mise.jdx.dev/configuration/settings.html#activate_aggressive

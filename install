@@ -109,9 +109,23 @@ case "$HISTORY" in
   https://github.com/*)
     mise exec gh@latest -- gh auth status >/dev/null 2>&1 ||
       mise exec gh@latest -- gh auth login --hostname github.com --git-protocol https --web
-    mise exec gh@latest -- gh auth setup-git --hostname github.com
     ;;
 esac
+
+# gh-git-helper: begin
+# git reaches GitHub over HTTPS through the gh login. The dots git config (~/.config/git/config) says so, but it is
+# linked only by the bootstrap below, so that run gets the helper through the environment. Never let gh configure git
+# itself: it writes this temporary gh's absolute path into ~/.gitconfig, which outranks the dots config and breaks once
+# that mise install is gone. The empty helper clears system helpers (osxkeychain) for github.com, as the dots config does.
+gh_git_env=()
+case "$HISTORY" in
+  https://github.com/*)
+    gh_git_env=(GIT_CONFIG_COUNT=2
+      GIT_CONFIG_KEY_0=credential.https://github.com.helper GIT_CONFIG_VALUE_0=
+      GIT_CONFIG_KEY_1=credential.https://github.com.helper "GIT_CONFIG_VALUE_1=!mise exec gh@latest -- gh auth git-credential")
+    ;;
+esac
+# gh-git-helper: end
 
 BOOTSTRAP_ARGS=("-E" "$PROFILE" "--yes")
 # Containers only: replace the base image's .bashrc/.profile. On a host, --force-dotfiles would replace a real
@@ -124,7 +138,7 @@ esac
 tty_in=/dev/null
 if (: </dev/tty) 2>/dev/null; then tty_in=/dev/tty; fi
 
-mise bootstrap --adopt "$HISTORY" "${BOOTSTRAP_ARGS[@]}" <"$tty_in"
+env "${gh_git_env[@]}" mise bootstrap --adopt "$HISTORY" "${BOOTSTRAP_ARGS[@]}" <"$tty_in"
 if [ ! -L "$HOME/.config/mise" ]; then
   test -f "$HOME/.config/mise/config.local.toml" && cat "$HOME/.config/mise/config.local.toml" >> "$DOTS/config/mise/config.local.toml"
   rm -rf "$HOME/.config/mise" # with age.txt: from here on the key is read from ~/.config/age/keys.txt
