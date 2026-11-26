@@ -97,10 +97,7 @@ maybe("bootstrap task structure", () => {
     for (const [phase, defs] of Object.entries(found)) {
       expect(defs, `${phase} is defined once`).toHaveLength(1);
       expect(defs[0].file, `${phase} lives in bootstrap.toml`).toBe("bootstrap.toml");
-      const lines = defs[0].run.trim().split("\n");
-      expect(lines.length, `${phase} hand-over is short`).toBeLessThanOrEqual(4);
-      expect(lines.at(-1), `${phase} hands over`).toContain(`bootstrap:hook:${phase}`);
-      expect(lines.at(-1)).toContain("mise run");
+      expect(defs[0].run, `${phase} hands over`).toBe(`{{ vars.dots_handover }} bootstrap:hook:${phase}`);
     }
   });
 
@@ -108,10 +105,19 @@ maybe("bootstrap task structure", () => {
     const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
       tasks: { bootstrap: { run: string } };
     };
-    const lines = conf.tasks.bootstrap.run.trim().split("\n");
-    expect(lines.length).toBeLessThanOrEqual(4);
-    expect(lines.at(-1)).toContain("bootstrap:hook:final");
-    expect(conf.tasks.bootstrap.run).toContain("dots_profile");
+    expect(conf.tasks.bootstrap.run).toBe("{{ vars.dots_handover }} bootstrap:hook:final");
+  });
+
+  // One shared hand-over: it resolves the profile and runs the phase task named after it.
+  it("the shared hand-over resolves the profile and runs the named phase task in the dots repo", () => {
+    const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
+      vars: { dots_handover: string };
+    };
+    // mise expands $VARS in [vars] at load time: every shell $ must be written $$, or it is expanded too early.
+    expect(conf.vars.dots_handover).not.toMatch(/(^|[^$])\$(?!\$)/);
+    const handover = conf.vars.dots_handover.replaceAll("$$", "$");
+    expect(handover).toContain('DOTS_PROFILE="$(dots_profile)"');
+    expect(handover).toContain('exec mise run -C "$DOTS_DIR" "$0"');
   });
 
   it('no "# <name>: begin" marker remains in config/mise/conf.d', () => {

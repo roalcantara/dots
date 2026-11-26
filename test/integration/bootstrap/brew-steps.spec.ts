@@ -84,9 +84,13 @@ describe("brew:bundle", () => {
 
 describe("post-packages hand-over", () => {
   const config = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
+    vars: { dots_handover: string };
     bootstrap: { hooks: { "post-packages": { run: string } } };
   };
-  const hook = config.bootstrap.hooks["post-packages"].run;
+  // As mise does: expand the var ($$ is a literal $), render it into the hook, then run it with the default inline
+  // shell (sh -o errexit -c).
+  const handover = config.vars.dots_handover.replaceAll("$$", "$");
+  const hook = config.bootstrap.hooks["post-packages"].run.replace("{{ vars.dots_handover }}", handover);
 
   it("runs with no brew and no Bun on PATH, passing the profile on", () => {
     const dots = join(t, ".local", "share", "dots");
@@ -97,7 +101,7 @@ describe("post-packages hand-over", () => {
       `#!/bin/sh\nprintf '%s\\n' "$*" > "$MISE_LOG"\nprintf '%s\\n' "\${DOTS_PROFILE:-}" > "$MISE_LOG.env"\n`,
     );
     chmodSync(join(t, "bin", "mise"), 0o755);
-    const p = Bun.spawnSync(["bash", "-c", hook], {
+    const p = Bun.spawnSync(["sh", "-o", "errexit", "-c", hook], {
       env: { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, MISE_LOG: join(t, "mise.log") },
       stdin: "ignore",
       stdout: "pipe",

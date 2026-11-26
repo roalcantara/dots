@@ -41,9 +41,9 @@ and [`.mise/tasks/bootstrap/phases.toml`](../.mise/tasks/bootstrap/phases.toml).
 - **Declarative first.** Directories, system files, packages, links and macOS preferences are declared in TOML under
   `config/mise/`; `mise bootstrap` diffs and applies them. Shell only does what the schema cannot: cloning, building,
   talking to Keychain, loading a scripting addition.
-- **Thin hooks.** A `bootstrap.hooks.<phase>` hook can only run shell. Each one is a hand-over,
-  `mise run -C "$HOME/.local/share/dots" bootstrap:hook:<phase>`, so the real work is visible in `mise tasks ls` and
-  can be run alone. There is exactly one hook per phase: mise runs every conf.d file's hook, so two files declaring
+- **Thin hooks.** A `bootstrap.hooks.<phase>` hook can only run shell. Each one is the shared hand-over,
+  `run = "{{ vars.dots_handover }} bootstrap:hook:<phase>"`, which resolves the profile and runs that phase task in the
+  dots repo, so the real work is visible in `mise tasks ls` and can be run alone. There is exactly one hook per phase: mise runs every conf.d file's hook, so two files declaring
   `post-defaults` would run two hooks.
 - **File tasks, not TOML strings.** Every step is an executable bash file with a `#MISE description` header. That
   gives linting (shellcheck, shfmt), a per-step spec, `mise run bootstrap:<area>:<step>`, and the task features
@@ -176,6 +176,10 @@ mise bootstrap --adopt            # restore the encrypted dots-history repo
   those failures fatal, and mise stops the run there.
 - **`sources`/`outputs` resolve from the task directory** and must name real files; system state that is not a file
   uses `skip_if`.
+- **Write a shell `$` as `$$` in `[vars]`.** mise expands `$VARS` in vars when it loads the config, so the shared
+  hand-over (`dots_handover`) escapes every `$`; otherwise `$DOTS_DIR` is expanded too early and every `mise` command
+  warns that it is not defined. Hooks run under `sh`; the hand-over switches to bash with `exec`, which keeps the process,
+  so the profile is still read from `mise bootstrap -E`.
 - **A real `~/.gitconfig` outranks the dots git config.** git reads it after `~/.config/git/config`, and tools write
   it unasked: `gh auth setup-git` once pinned a since-removed mise `gh` there, so every HTTPS push asked for a password.
   `install` gives its bootstrap run the gh helper through `GIT_CONFIG_*` variables instead, and `bootstrap:git:home-config`

@@ -1,5 +1,12 @@
 # Machine setup applied by `mise bootstrap`.
 
+# The hand-over every bootstrap hook and the bootstrap task share; the phase task name follows it. Hooks run under
+# `sh`, so it switches to bash with `exec`, which keeps the process: `dots_profile` still reads `mise bootstrap -E …`
+# from the parent. Hooks render Tera before they run, so `{{ vars.dots_handover }}` expands there (docs/BOOTSTRAP.md).
+# mise also expands $VARS in [vars] when it loads the config, so every shell $ is written $$.
+[vars]
+dots_handover = '''exec bash -c '. "$$HOME/.local/share/dots/.mise/tasks/bootstrap/_lib.sh" && DOTS_PROFILE="$$(dots_profile)" exec mise run -C "$$DOTS_DIR" "$$0"' '''
+
 # Folders the shell config and tools expect, plus the XDG user folders the images' structure tests check.
 [bootstrap.directories."~/.local/bin"]
 [bootstrap.directories."~/.local/state/zim"]
@@ -85,46 +92,29 @@ mode = "0644"
 # Homebrew and every user package, then yabai's scripting addition. The phase task runs the steps in order.
 [bootstrap.hooks.post-packages]
 description = "Install Homebrew and every user package, then yabai's scripting addition"
-run = '''
-#!/usr/bin/env bash
-. "$HOME/.local/share/dots/.mise/tasks/bootstrap/_lib.sh"
-DOTS_PROFILE="$(dots_profile)" exec mise run -C "$DOTS_DIR" bootstrap:hook:post-packages
-'''
+run = "{{ vars.dots_handover }} bootstrap:hook:post-packages"
 
 # A link never replaces a real file, and VS Code (or Settings Sync) and Karabiner-Elements write real ones on first
 # launch, so the phase task moves them aside. It also runs before mise dot apply.
 [bootstrap.hooks.pre-dotfiles]
 description = "Move app-written copies (VS Code settings, keybindings, snippets; ~/.config/karabiner) aside for the dots links"
-run = '''
-#!/usr/bin/env bash
-exec mise run -C "$HOME/.local/share/dots" bootstrap:hook:pre-dotfiles
-'''
+run = "{{ vars.dots_handover }} bootstrap:hook:pre-dotfiles"
 
 # Settings Sync would merge the cloud copy back into the linked files, so the phase task turns it off for settings,
 # keybindings and snippets, then builds bat's theme cache and Lig's zsh integration.
 [bootstrap.hooks.post-dotfiles]
 description = "Turn off VS Code Settings Sync for settings, keybindings and snippets; set up bat's themes and Lig"
-run = '''
-#!/usr/bin/env bash
-exec mise run -C "$HOME/.local/share/dots" bootstrap:hook:post-dotfiles
-'''
+run = "{{ vars.dots_handover }} bootstrap:hook:post-dotfiles"
 
 # mise cannot restart apps or write a preference whose value is an absolute path. The phase task points screenshots
 # at ~/Pictures/Screenshots, sets the default apps in ~/.config/duti and the Spotlight hotkey without a logout,
 # restarts Dock, Finder and the menu bar, then points SwiftBar at its plugins.
 [bootstrap.hooks.post-defaults]
 description = "Apply the macOS settings that need $HOME and point SwiftBar at its plugins"
-run = '''
-#!/usr/bin/env bash
-exec mise run -C "$HOME/.local/share/dots" bootstrap:hook:post-defaults
-'''
+run = "{{ vars.dots_handover }} bootstrap:hook:post-defaults"
 
 # Runs last on every `mise bootstrap`: the phase task installs git's filters and hooks first, then the remaining
 # tools. It resolves the profile (`mise bootstrap -E`) before handing over, so every step sees it.
 [tasks.bootstrap]
 description = "Repo git filters and hooks, Neovim providers and plugins"
-run = '''
-#!/usr/bin/env bash
-. "$HOME/.local/share/dots/.mise/tasks/bootstrap/_lib.sh"
-DOTS_PROFILE="$(dots_profile)" exec mise run -C "$DOTS_DIR" bootstrap:hook:final
-'''
+run = "{{ vars.dots_handover }} bootstrap:hook:final"
