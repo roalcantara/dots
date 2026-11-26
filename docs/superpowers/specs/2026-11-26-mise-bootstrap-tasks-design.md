@@ -1,6 +1,6 @@
-# mise bootstrap: current keys, file tasks, one doc, one skill
+# mise bootstrap: current keys, file tasks, one doc
 
-Status: draft · Branch: `feat/mise-bootstrap-tasks` · Task: `awGX` (TODO.yaml)
+Status: approved (2026-11-26) · Branch: `feat/mise-bootstrap-tasks` · Task: `awGX` (TODO.yaml)
 
 ## Intent
 
@@ -22,7 +22,6 @@ The owner wants:
   [skipping](https://mise.jdx.dev/tasks/running-tasks.html#skip-tasks-that-are-up-to-date)), `skip_if`.
 - **Run any step at will, from inside the repo:** `mise run bootstrap:gopass:keyring`, like `setup:git:filters`.
 - **One doc:** `docs/BOOTSTRAP.md` is the single source of truth on `mise bootstrap`; other docs link to it.
-- **One shareable skill** about investigating and improving a `mise bootstrap` setup.
 
 ## Goals
 
@@ -34,7 +33,6 @@ The owner wants:
 4. `mise bootstrap` behaves as today on macOS (desktop, dev) and in the container images: same order, same
    warn-and-continue semantics, same hard failure for the core brew group, same prompts.
 5. `docs/BOOTSTRAP.md` holds overview, rationale, the step reference, recipes, gotchas and troubleshooting.
-6. A `mise-bootstrap` skill, generic (not dots-specific), installable with the skills CLI.
 
 ## Non-goals
 
@@ -43,6 +41,7 @@ The owner wants:
 - Moving `[bootstrap.*]` declarative keys into tasks, or `[dotfiles]` templates (`vscode-*`, `claude-skills`) out of
   `dotfiles.toml`.
 - Windows.
+- A shareable `mise bootstrap` skill: deferred to future work (owner, 2026-11-26).
 
 ## Anti-goals (a failure even if it works)
 
@@ -180,16 +179,6 @@ the package-failure troubleshooting entry; MACOS.md's apply/status/plan command 
 undo notes stay in MACOS.md); REINSTALL.md's "bootstrap asks for two things" and `--only` finishing recipe;
 TILING.md's "Done by mise bootstrap"; DOCKER.md and AGENTS.md (docs list) link to it.
 
-### Part 4: the skill
-
-`.agents/skills/mise-bootstrap/` (`SKILL.md` plus `references/`), generic to any repo using `mise bootstrap`:
-how a run is ordered; investigating (`status`, `plan`, `--dry-run`, `--only`/`--skip`, `--verbose`, the LSP
-diagnostics recipe); structuring (declarative first, thin hooks, file tasks with `skip_if`/`sources`/`outputs`,
-phase tasks with run steps, warn-vs-fail); gotchas (hooks run every time, pinned mise vs schema keys, profile not
-visible to child processes, tasks before tools/dotfiles exist, real files block links, trust and `MISE_SAFE`,
-`--continue-on-error` vs soft steps). Written with the `writing-skills` skill, checked with `skill-judge`, examples
-drawn from this repo but not dependent on it. Shareable with `npx skills add roalcantara/dots --skill mise-bootstrap`
-once pushed.
 
 ## Verification
 

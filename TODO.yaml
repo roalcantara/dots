@@ -84,13 +84,12 @@ tasks:
   - try
 - id: awGX
   status: Todo
-  description: 'Bootstrap: fix mise deprecated-key warnings, split bootstrap hooks into .mise/tasks/bootstrap file tasks, docs/BOOTSTRAP.md as the single source, and a shareable mise-bootstrap skill'
+  description: 'Bootstrap: fix mise deprecated-key warnings, mise version drift check, split bootstrap hooks into .mise/tasks/bootstrap file tasks, docs/BOOTSTRAP.md as the single source'
   priority: High
   tags:
   - bootstrap
   - mise
   - docs
-  - skill
   comments:
   - Az1M
 actors: []
