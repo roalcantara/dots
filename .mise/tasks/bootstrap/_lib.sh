@@ -4,21 +4,13 @@
 
 DOTS_DIR="${DOTS_DIR:-$HOME/.local/share/dots}"
 
-# The comma list of profiles this run applies to. The first non-empty source wins: DOTS_PROFILE, MISE_ENV, the
-# parent's -E/--env (mise bootstrap -E desktop,dev), miserc.local.toml's env, then desktop.
+# The comma list of profiles this run applies to. The first non-empty source wins: DOTS_PROFILE (the bootstrap
+# hand-over sets it from mise's `mise_env`, so `mise bootstrap -E desktop,dev` arrives here), MISE_ENV (a step run by
+# hand with `mise -E dev run …`), miserc.local.toml's env, then desktop.
 dots_profile()
                {
-  local profile="${DOTS_PROFILE:-}" args=""
+  local profile="${DOTS_PROFILE:-}"
   [ -n "$profile" ] || profile="${MISE_ENV:-}"
-  if [ -z "$profile" ]; then
-    if [ -r "/proc/$PPID/cmdline" ]; then
-      profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | sed -n 's/^--env=//p')"
-      [ -n "$profile" ] || profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | grep -A1 -E '^(-E|--env)$' | tail -1 || true)"
-    elif command -v ps > /dev/null; then
-      args="$(ps -o args= -p "$PPID" 2> /dev/null || true)"
-      profile="$(printf '%s\n' "$args" | grep -oE -- '(-E|--env)[ =][a-zA-Z0-9_,-]+' | head -1 | awk '{print $NF}' | tr -d '=' || true)"
-    fi
-  fi
   if [ -z "$profile" ] && [ -f "$DOTS_DIR/config/mise/miserc.local.toml" ]; then
     profile="$(sed -n 's/^env *= *\[\(.*\)\].*/\1/p' "$DOTS_DIR/config/mise/miserc.local.toml" | tr -d '" ')"
   fi

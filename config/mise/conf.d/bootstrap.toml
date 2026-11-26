@@ -1,11 +1,11 @@
 # Machine setup applied by `mise bootstrap`.
 
-# The hand-over every bootstrap hook and the bootstrap task share; the phase task name follows it. Hooks run under
-# `sh`, so it switches to bash with `exec`, which keeps the process: `dots_profile` still reads `mise bootstrap -E …`
-# from the parent. Hooks render Tera before they run, so `{{ vars.dots_handover }}` expands there (docs/BOOTSTRAP.md).
-# mise also expands $VARS in [vars] when it loads the config, so every shell $ is written $$.
+# The hand-over every bootstrap hook and the bootstrap task share; the phase task name follows it. Hooks receive neither
+# [env] nor MISE_ENV, but they render Tera before they run, and `mise_env` holds the environments this run selected
+# (`-E`, MISE_ENV or miserc.local.toml), so the profile reaches the phase task as DOTS_PROFILE (docs/BOOTSTRAP.md).
 [vars]
-dots_handover = '''exec bash -c '. "$$HOME/.local/share/dots/.mise/tasks/bootstrap/_lib.sh" && DOTS_PROFILE="$$(dots_profile)" exec mise run -C "$$DOTS_DIR" "$$0"' '''
+dots_profile = '{% if mise_env is defined %}{{ mise_env | join(sep=",") }}{% else %}desktop{% endif %}'
+dots_handover = 'DOTS_PROFILE={{ vars.dots_profile | quote }} exec mise run -C {{ (env.HOME ~ "/.local/share/dots") | quote }}'
 
 # Folders the shell config and tools expect, plus the XDG user folders the images' structure tests check.
 [bootstrap.directories."~/.local/bin"]

@@ -41,25 +41,6 @@ describe("dots_profile", () => {
     expect(profile({ MISE_ENV: "container" })).toBe("container");
   });
 
-  it("reads -E from the parent command line", () => {
-    // The parent is exec'd with mise bootstrap's argv. Its child sources the lib and prints the profile; the
-    // trailing `; true` stops bash from exec-optimising the child away, which would hide the parent.
-    const parent = join(t, "parent.sh");
-    writeFileSync(
-      parent,
-      '#!/usr/bin/env bash\nexec -a "mise bootstrap -E desktop,dev --yes" bash -c \'bash -c ". \\"$1\\"; dots_profile" _ "$1"; true\' _ "$1"\n',
-    );
-    const p = Bun.spawnSync(["bash", parent, LIB], {
-      cwd: t,
-      env: { PATH: process.env.PATH ?? "/usr/bin:/bin", HOME: t, DOTS_DIR: t },
-      stdin: "ignore",
-      stdout: "pipe",
-      stderr: "pipe",
-    });
-    expect(p.exitCode).toBe(0);
-    expect(p.stdout.toString().trim()).toBe("desktop,dev");
-  });
-
   it("reads miserc.local.toml", () => {
     writeFileSync(join(t, "config", "mise", "miserc.local.toml"), 'env = ["desktop", "dev"]\n');
     expect(profile()).toBe("desktop,dev");

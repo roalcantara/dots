@@ -1,13 +1,12 @@
 #!/usr/bin/env bun
-// The post-packages steps on their own: up-to-date checks, the profile passed to brew, and the hand-over that
-// must work on a fresh machine with no brew and no Bun yet.
+// The post-packages steps on their own: up-to-date checks and the profile passed to brew. The hand-over that runs
+// them, with no brew and no Bun yet, is in handover.spec.ts.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { chmodSync, copyFileSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { runStep, skipIf } from "./step";
 
-const REPO = join(import.meta.dir, "../../..");
 const INSTALL = "brew/install.sh";
 const BUNDLE = "brew/bundle.sh";
 const CONFIG = "brew/config-link.sh";
@@ -79,36 +78,5 @@ describe("brew:bundle", () => {
     const r = runStep(BUNDLE, base({ DOTS_PROFILE: "desktop,dev" }));
     expect(r.code).toBe(0);
     expect(readFileSync(join(t, "calls"), "utf8").trim().split("\n")).toEqual(["container", "desktop,dev"]);
-  });
-});
-
-describe("post-packages hand-over", () => {
-  const config = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
-    vars: { dots_handover: string };
-    bootstrap: { hooks: { "post-packages": { run: string } } };
-  };
-  // As mise does: expand the var ($$ is a literal $), render it into the hook, then run it with the default inline
-  // shell (sh -o errexit -c).
-  const handover = config.vars.dots_handover.replaceAll("$$", "$");
-  const hook = config.bootstrap.hooks["post-packages"].run.replace("{{ vars.dots_handover }}", handover);
-
-  it("runs with no brew and no Bun on PATH, passing the profile on", () => {
-    const dots = join(t, ".local", "share", "dots");
-    mkdirSync(join(dots, ".mise", "tasks", "bootstrap"), { recursive: true });
-    copyFileSync(join(REPO, ".mise", "tasks", "bootstrap", "_lib.sh"), join(dots, ".mise", "tasks", "bootstrap", "_lib.sh"));
-    writeFileSync(
-      join(t, "bin", "mise"),
-      `#!/bin/sh\nprintf '%s\\n' "$*" > "$MISE_LOG"\nprintf '%s\\n' "\${DOTS_PROFILE:-}" > "$MISE_LOG.env"\n`,
-    );
-    chmodSync(join(t, "bin", "mise"), 0o755);
-    const p = Bun.spawnSync(["sh", "-o", "errexit", "-c", hook], {
-      env: { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, MISE_LOG: join(t, "mise.log") },
-      stdin: "ignore",
-      stdout: "pipe",
-      stderr: "pipe",
-    });
-    expect(p.exitCode).toBe(0);
-    expect(readFileSync(join(t, "mise.log"), "utf8").trim()).toBe(`run -C ${dots} bootstrap:hook:post-packages`);
-    expect(readFileSync(join(t, "mise.log.env"), "utf8").trim()).toBe("desktop");
   });
 });

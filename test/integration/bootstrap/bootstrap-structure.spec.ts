@@ -108,16 +108,15 @@ maybe("bootstrap task structure", () => {
     expect(conf.tasks.bootstrap.run).toBe("{{ vars.dots_handover }} bootstrap:hook:final");
   });
 
-  // One shared hand-over: it resolves the profile and runs the phase task named after it.
-  it("the shared hand-over resolves the profile and runs the named phase task in the dots repo", () => {
+  // One shared hand-over (handover.spec.ts runs it through mise). It takes the profile from mise_env and holds no
+  // shell $: mise expands $VARS in [vars] at load time, before the hook runs.
+  it("the shared hand-over takes the profile from mise_env and holds no shell $", () => {
     const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
-      vars: { dots_handover: string };
+      vars: { dots_profile: string; dots_handover: string };
     };
-    // mise expands $VARS in [vars] at load time: every shell $ must be written $$, or it is expanded too early.
-    expect(conf.vars.dots_handover).not.toMatch(/(^|[^$])\$(?!\$)/);
-    const handover = conf.vars.dots_handover.replaceAll("$$", "$");
-    expect(handover).toContain('DOTS_PROFILE="$(dots_profile)"');
-    expect(handover).toContain('exec mise run -C "$DOTS_DIR" "$0"');
+    expect(conf.vars.dots_profile).toContain("mise_env");
+    expect(conf.vars.dots_handover).toContain("DOTS_PROFILE={{ vars.dots_profile | quote }}");
+    expect(conf.vars.dots_handover).not.toContain("$");
   });
 
   it('no "# <name>: begin" marker remains in config/mise/conf.d', () => {

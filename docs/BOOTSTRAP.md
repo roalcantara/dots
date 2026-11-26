@@ -162,9 +162,10 @@ mise bootstrap --adopt            # restore the encrypted dots-history repo
   pins in `install` and both Dockerfiles are checked by `mise run mise:version --check`.
 - **Only the LSP reports deprecated or unknown keys.** `mise doctor` and `bootstrap --dry-run` are silent about
   them; `mise run mise:diagnostics` (also in `hk check`) is the command that does.
-- **The profile is read from the parent process.** `mise bootstrap -E desktop,dev` puts the profile in `MISE_ENV`; a
-  hook resolves it with `dots_profile` and passes `DOTS_PROFILE` down, because inside `mise run` the parent is no
-  longer `mise bootstrap`. Running a phase task by hand falls back to `miserc.local.toml`, then `desktop`.
+- **Hooks see neither `[env]` nor `MISE_ENV`.** Tasks get both; bootstrap hooks get neither, and `-E` does not reach
+  them as `MISE_ENV`. They do render templates first, and `{{ mise_env }}` holds the environments the run selected
+  (`-E`, `MISE_ENV` or `miserc.local.toml`), so the shared hand-over passes it on as `DOTS_PROFILE`. A step run by
+  hand reads `DOTS_PROFILE`, then `MISE_ENV` (`mise -E dev run …`), then `miserc.local.toml`, then `desktop`.
 - **Early phases run before the dotfiles and most tools.** `post-packages` runs before `~/.local/bin` is linked and
   before Bun exists, so its steps are plain bash with no task `tools`.
 - **Hooks only run shell.** They cannot call a task type or declare `skip_if`; the hand-over is the only hook body.
@@ -176,10 +177,8 @@ mise bootstrap --adopt            # restore the encrypted dots-history repo
   those failures fatal, and mise stops the run there.
 - **`sources`/`outputs` resolve from the task directory** and must name real files; system state that is not a file
   uses `skip_if`.
-- **Write a shell `$` as `$$` in `[vars]`.** mise expands `$VARS` in vars when it loads the config, so the shared
-  hand-over (`dots_handover`) escapes every `$`; otherwise `$DOTS_DIR` is expanded too early and every `mise` command
-  warns that it is not defined. Hooks run under `sh`; the hand-over switches to bash with `exec`, which keeps the process,
-  so the profile is still read from `mise bootstrap -E`.
+- **Write a shell `$` as `$$` in `[vars]`.** mise expands `$VARS` in vars when it loads the config, before a hook
+  runs. The shared hand-over avoids shell variables altogether (`{{ env.HOME }}`, `{{ mise_env }}`, `quote`).
 - **A real `~/.gitconfig` outranks the dots git config.** git reads it after `~/.config/git/config`, and tools write
   it unasked: `gh auth setup-git` once pinned a since-removed mise `gh` there, so every HTTPS push asked for a password.
   `install` gives its bootstrap run the gh helper through `GIT_CONFIG_*` variables instead, and `bootstrap:git:home-config`
