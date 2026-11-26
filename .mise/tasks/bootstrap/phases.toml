@@ -1,5 +1,5 @@
-# One task per bootstrap phase. Each conf.d hook and the global bootstrap task hand over to one of these; the
-# steps are added in Tasks 5-8, so an empty run is a no-op until then.
+# One task per bootstrap phase. Each conf.d hook and the global bootstrap task hand over to one of these; its run
+# list is that phase's ordered steps (file tasks).
 
 ["bootstrap:hook:post-packages"]
 description = "Homebrew, the Brewfile and yabai's scripting addition"
@@ -31,4 +31,20 @@ run = [
 
 ["bootstrap:hook:final"]
 description = "Git filters and hooks, then the remaining tools (run by the global bootstrap task)"
-run = []
+run = [
+  { task = "bootstrap:git:filters" },
+  { task = "bootstrap:zsh:warm-caches" },
+  { task = "bootstrap:git:hooks" },
+  { task = "bootstrap:dev:python-tools" },
+  { task = "bootstrap:gopass:store" },
+  { task = "bootstrap:gopass:keyring" },
+  { task = "bootstrap:gopass:pass-link" },
+  { task = "bootstrap:ssh:keychain" },
+  { task = "bootstrap:tiling:checks" },
+  { task = "bootstrap:borders:build" },
+  { task = "bootstrap:omlx:models" },
+  { task = "bootstrap:skills:restore" },
+  { task = "bootstrap:nvim:providers" },
+  { task = "bootstrap:nvim:plugins" },
+  { task = "bootstrap:brew:remind" },
+]

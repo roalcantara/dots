@@ -1,16 +1,14 @@
 #!/usr/bin/env bun
-// The pass-link step in the bootstrap task (config/mise/conf.d/bootstrap.toml): links ~/.local/bin/pass to
-// Homebrew's gopass (else any gopass on PATH), and never replaces a real pass.
+// The pass-link step: links ~/.local/bin/pass to Homebrew's gopass (else any gopass on PATH), and never replaces a
+// real pass.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { runStep } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
-type BootstrapConfig = { tasks: { bootstrap: { run: string } } };
-const parsed = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as BootstrapConfig;
-const task = parsed.tasks.bootstrap.run;
-const SNIPPET = task.match(/# pass-link: begin\n[\s\S]*?# pass-link: end\n/)?.[0] ?? "";
+const STEP = "gopass/pass-link.sh";
 
 let t: string;
 const exe = (path: string) => {
@@ -21,26 +19,34 @@ beforeEach(() => {
   t = mkdtempSync(join(tmpdir(), "pass-link-"));
   mkdirSync(join(t, "brew", "bin"), { recursive: true });
   mkdirSync(join(t, "other"));
+  mkdirSync(join(t, "bin"));
   exe(join(t, "brew", "bin", "gopass"));
+  // bootstrap_init's brew shellenv would otherwise put the Mac's real /opt/homebrew/bin first.
+  exe(join(t, "bin", "brew"));
 });
 afterEach(() => rmSync(t, { recursive: true, force: true }));
 
 const link = () => join(t, ".local", "bin", "pass");
 function snippet(env: Record<string, string>) {
-  const p = Bun.spawnSync(["bash", "-c", `warn() { echo "warn $1" >&2; }\n${SNIPPET}echo done`], {
-    env: { PATH: "/usr/bin:/bin", HOME: t, ...env },
-    stdout: "pipe", stderr: "pipe",
+  return runStep(STEP, {
+    ...env,
+    PATH: `${env.PATH ?? "/usr/bin:/bin"}:${join(t, "bin")}`,
+    HOME: t,
+    DOTS_PROFILE: "desktop",
   });
-  return { code: p.exitCode, out: p.stdout.toString(), err: p.stderr.toString() };
 }
 
 // Only meaningful where neither pass nor gopass is a system package.
 const clean = !["/usr/bin/pass", "/bin/pass", "/usr/bin/gopass", "/bin/gopass"].some(existsSync);
 
 describe.skipIf(!clean)("bootstrap pass-link", () => {
-  it("is in the bootstrap task, after the gopass store clone", () => {
-    expect(SNIPPET).toContain('"$HOME/.local/bin/pass"');
-    expect(task.indexOf("# pass-link: begin")).toBeGreaterThan(task.indexOf("pass-store.git"));
+  it("is in the final phase, after the gopass store clone", () => {
+    expect(readFileSync(join(REPO, ".mise/tasks/bootstrap", STEP), "utf8")).toContain("$HOME/.local/bin/pass");
+    const phases = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/phases.toml"), "utf8")) as {
+      "bootstrap:hook:final": { run: { task: string }[] };
+    };
+    const order = phases["bootstrap:hook:final"].run.map((s) => s.task);
+    expect(order.indexOf("bootstrap:gopass:pass-link")).toBeGreaterThan(order.indexOf("bootstrap:gopass:store"));
   });
 
   it("links pass to gopass in $HOMEBREW_PREFIX", () => {
@@ -70,8 +76,7 @@ describe.skipIf(!clean)("bootstrap pass-link", () => {
   });
 
   it("does nothing without gopass", () => {
-    const r = snippet({});
-    expect(r.out).toContain("done");
+    expect(snippet({}).code).toBe(0);
     expect(() => lstatSync(link())).toThrow();
   });
 });

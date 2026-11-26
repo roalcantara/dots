@@ -1,20 +1,21 @@
 #!/usr/bin/env bun
+// The skills-restore and dev-python steps: the dev profile gates them, the restore runs in the background, and both
+// only warn on failure.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { runStep } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
-
-type BootstrapConfig = { tasks: { bootstrap: { run: string } } };
-const parsed = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as BootstrapConfig;
-const task = parsed.tasks.bootstrap.run;
-const SNIPPET = task.match(/# skills: begin\n[\s\S]*?# skills: end\n/)?.[0] ?? "";
 
 let t: string;
 beforeEach(() => {
   t = mkdtempSync(join(tmpdir(), "skills-snippet-"));
   mkdirSync(join(t, "bin"));
+  // bootstrap_init's brew shellenv would otherwise put the Mac's real /opt/homebrew/bin first.
+  writeFileSync(join(t, "bin", "brew"), "#!/bin/sh\nexit 0\n");
+  chmodSync(join(t, "bin", "brew"), 0o755);
   // A stub mise that records its arguments and takes 2 s, like a slow restore.
   writeFileSync(join(t, "bin", "mise"), `#!/bin/sh\necho "$@" >> "${join(t, "calls")}"\nsleep 2\n`);
   chmodSync(join(t, "bin", "mise"), 0o755);
@@ -23,18 +24,23 @@ afterEach(() => rmSync(t, { recursive: true, force: true }));
 
 function snippet(env: Record<string, string> = {}) {
   const started = Date.now();
-  const p = Bun.spawnSync(["bash", "-c", `dots=/repo\ndev=\${DEV:-true}\nwarn() { echo "warn $1" >&2; }\n${SNIPPET}`], {
-    env: { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, XDG_STATE_HOME: join(t, "state"), ...env },
-    stdout: "pipe", stderr: "pipe",
+  const r = runStep("skills/restore.sh", {
+    PATH: `${join(t, "bin")}:/usr/bin:/bin`,
+    HOME: t,
+    XDG_STATE_HOME: join(t, "state"),
+    DOTS_PROFILE: "desktop,dev",
+    ...env,
   });
-  return { code: p.exitCode, out: p.stdout.toString(), ms: Date.now() - started };
+  return { code: r.code, out: r.out, ms: Date.now() - started };
 }
 
-describe("bootstrap skills snippet", () => {
-  it("is in the bootstrap task", () => expect(SNIPPET).toContain("--background"));
+describe("bootstrap skills step", () => {
+  it("is in the final phase, in the background", () => {
+    expect(readFileSync(join(REPO, ".mise/tasks/bootstrap/skills/restore.sh"), "utf8")).toContain("--background");
+  });
 
   it("does nothing without the dev profile", () => {
-    const r = snippet({ DEV: "false" });
+    const r = snippet({ DOTS_PROFILE: "desktop" });
     expect(r.code).toBe(0);
     expect(r.out).not.toContain("restoring agent skills");
     expect(existsSync(join(t, "calls"))).toBe(false);
@@ -56,20 +62,23 @@ describe("bootstrap skills snippet", () => {
 });
 
 // The Python 3.13 tools (graphifyy, code-review-graph): dev only.
-const PYTHON = task.match(/# dev-python: begin\n[\s\S]*?# dev-python: end\n/)?.[0] ?? "";
+describe("bootstrap dev-python step", () => {
+  it("is in the final phase, for the dev profile", () => {
+    expect(readFileSync(join(REPO, ".mise/tasks/bootstrap/dev/python-tools.sh"), "utf8")).toContain("graphifyy");
+  });
 
-describe("bootstrap dev-python snippet", () => {
-  function python(dev: string) {
+  function python(profile: string) {
     writeFileSync(join(t, "bin", "uv"), `#!/bin/sh\necho "uv $*" >> "${join(t, "uv.log")}"\nexit 0\n`);
     chmodSync(join(t, "bin", "uv"), 0o755);
-    Bun.spawnSync(["bash", "-c", `dev=${dev}\nwarn() { :; }\n${PYTHON}`], { env: { PATH: `${join(t, "bin")}:/usr/bin:/bin` } });
+    runStep("dev/python-tools.sh", { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, DOTS_PROFILE: profile });
     return existsSync(join(t, "uv.log")) ? readFileSync(join(t, "uv.log"), "utf8") : "";
   }
-  it("is in the bootstrap task", () => expect(PYTHON).toContain("graphifyy"));
+
   it("installs both tools with dev", () => {
-    const log = python("true");
+    const log = python("desktop,dev");
     expect(log).toContain("uv tool install --python 3.13 graphifyy");
     expect(log).toContain("uv tool install --python 3.13 code-review-graph");
   });
-  it("does nothing without dev", () => expect(python("false")).toBe(""));
+
+  it("does nothing without dev", () => expect(python("desktop")).toBe(""));
 });

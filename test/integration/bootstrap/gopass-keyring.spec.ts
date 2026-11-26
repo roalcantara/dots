@@ -1,16 +1,14 @@
 #!/usr/bin/env bun
-// The gopass-keyring check in the bootstrap task (config/mise/conf.d/bootstrap.toml): warns when the gopass
-// identity keyring still uses a passphrase, or when its unlock file is missing; never fails the bootstrap.
+// The gopass-keyring step: warns when the gopass identity keyring still uses a passphrase, or when its unlock file
+// is missing; never fails the bootstrap.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { runStep, skipIf } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
-type BootstrapConfig = { tasks: { bootstrap: { run: string } } };
-const parsed = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as BootstrapConfig;
-const task = parsed.tasks.bootstrap.run;
-const SNIPPET = task.match(/# gopass-keyring: begin\n[\s\S]*?# gopass-keyring: end\n/)?.[0] ?? "";
+const STEP = "gopass/keyring.sh";
 
 const SCRYPT = "age-encryption.org/v1\n-> scrypt eJReM2BS 18\nabc\n";
 const X25519 = "age-encryption.org/v1\n-> X25519 biNcMGIhZRmsV0kIarefRzAg\nabc\n";
@@ -23,28 +21,30 @@ beforeEach(() => {
   // Stub gopass: `gopass config age.keyring-identities` prints $STUB_KID.
   writeFileSync(join(t, "bin", "gopass"), '#!/bin/sh\n[ "$1 $2" = "config age.keyring-identities" ] && printf "%s\\n" "$STUB_KID"\nexit 0\n');
   chmodSync(join(t, "bin", "gopass"), 0o755);
+  // bootstrap_init's brew shellenv would otherwise put the Mac's real /opt/homebrew/bin first.
+  writeFileSync(join(t, "bin", "brew"), "#!/bin/sh\nexit 0\n");
+  chmodSync(join(t, "bin", "brew"), 0o755);
 });
 afterEach(() => rmSync(t, { recursive: true, force: true }));
 
 function snippet(identities: string | null, env: Record<string, string> = {}) {
   if (identities !== null) writeFileSync(join(t, ".config", "gopass", "age", "identities"), identities);
-  const p = Bun.spawnSync(["bash", "-c", `${SNIPPET}echo done`], {
-    env: { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, ...env },
-    stdout: "pipe", stderr: "pipe",
-  });
-  return { code: p.exitCode, out: p.stdout.toString(), err: p.stderr.toString() };
+  return runStep(STEP, { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, DOTS_PROFILE: "desktop", ...env });
 }
 
 describe("bootstrap gopass-keyring check", () => {
-  it("is in the bootstrap task, after the store clone", () => {
-    expect(SNIPPET).toContain("age.keyring-identities");
-    expect(task.indexOf("# gopass-keyring: begin")).toBeGreaterThan(task.indexOf("pass-store.git"));
+  it("is in the final phase, after the store clone", () => {
+    expect(readFileSync(join(REPO, ".mise/tasks/bootstrap", STEP), "utf8")).toContain("age.keyring-identities");
+    const phases = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/phases.toml"), "utf8")) as {
+      "bootstrap:hook:final": { run: { task: string }[] };
+    };
+    const order = phases["bootstrap:hook:final"].run.map((s) => s.task);
+    expect(order.indexOf("bootstrap:gopass:keyring")).toBeGreaterThan(order.indexOf("bootstrap:gopass:store"));
   });
 
   it("warns when the keyring still uses a passphrase, and continues", () => {
     const r = snippet(SCRYPT);
     expect(r.code).toBe(0);
-    expect(r.out).toContain("done");
     expect(r.err).toContain("gopass keyring still uses a passphrase");
     expect(r.err).toContain("docs/REINSTALL.md#one-secret-the-age-key");
   });
@@ -78,6 +78,15 @@ describe("bootstrap gopass-keyring check", () => {
     const r = snippet(X25519, { STUB_KID: "~/.config/age/keys.txt,~/gone.txt" });
     expect(r.err).toContain(`gopass keyring identity file missing: ${join(t, "gone.txt")}`);
     expect(r.err).not.toContain("keys.txt");
+  });
+});
+
+describe("gopass/store.sh", () => {
+  it("skip_if is true once the store is cloned, false before", () => {
+    const env = { HOME: t };
+    expect(skipIf("gopass/store.sh", env)).toBe(false);
+    mkdirSync(join(t, ".local/share/gopass/password-store/.git"), { recursive: true });
+    expect(skipIf("gopass/store.sh", env)).toBe(true);
   });
 });
 

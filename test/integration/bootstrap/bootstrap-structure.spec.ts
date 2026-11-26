@@ -81,8 +81,43 @@ maybe("bootstrap task structure", () => {
     }
   });
 
-  // Turned on in Task 8, once every hook hands over and the TOML blocks are gone.
-  it.todo("each bootstrap hook phase is defined once, in bootstrap.toml, as the hand-over");
-  it.todo("the global bootstrap task is the hand-over to bootstrap:hook:final");
-  it.todo('no "# <name>: begin" marker remains in config/mise/conf.d');
+  // The hooks live only in bootstrap.toml, one per phase, and each is a short hand-over.
+  it("each bootstrap hook phase is defined once, in bootstrap.toml, as the hand-over", () => {
+    const dir = join(REPO, "config/mise/conf.d");
+    const found: Record<string, { file: string; run: string }[]> = {};
+    for (const file of [...new Bun.Glob("*.toml").scanSync({ cwd: dir })] as string[]) {
+      const conf = Bun.TOML.parse(readFileSync(join(dir, file), "utf8")) as {
+        bootstrap?: { hooks?: Record<string, { run?: string }> };
+      };
+      for (const [phase, hook] of Object.entries(conf.bootstrap?.hooks ?? {})) {
+        (found[phase] ??= []).push({ file, run: hook.run ?? "" });
+      }
+    }
+    expect(Object.keys(found).sort()).toEqual(PHASES.slice(0, 4).map((phase) => phase.replace("bootstrap:hook:", "")).sort());
+    for (const [phase, defs] of Object.entries(found)) {
+      expect(defs, `${phase} is defined once`).toHaveLength(1);
+      expect(defs[0].file, `${phase} lives in bootstrap.toml`).toBe("bootstrap.toml");
+      const lines = defs[0].run.trim().split("\n");
+      expect(lines.length, `${phase} hand-over is short`).toBeLessThanOrEqual(4);
+      expect(lines.at(-1), `${phase} hands over`).toContain(`bootstrap:hook:${phase}`);
+      expect(lines.at(-1)).toContain("mise run");
+    }
+  });
+
+  it("the global bootstrap task is the hand-over to bootstrap:hook:final", () => {
+    const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
+      tasks: { bootstrap: { run: string } };
+    };
+    const lines = conf.tasks.bootstrap.run.trim().split("\n");
+    expect(lines.length).toBeLessThanOrEqual(4);
+    expect(lines.at(-1)).toContain("bootstrap:hook:final");
+    expect(conf.tasks.bootstrap.run).toContain("dots_profile");
+  });
+
+  it('no "# <name>: begin" marker remains in config/mise/conf.d', () => {
+    const dir = join(REPO, "config/mise/conf.d");
+    for (const file of [...new Bun.Glob("*.toml").scanSync({ cwd: dir })] as string[]) {
+      expect(readFileSync(join(dir, file), "utf8"), file).not.toMatch(/^# [a-z-]+: begin$/m);
+    }
+  });
 });
