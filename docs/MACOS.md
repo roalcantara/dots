@@ -38,17 +38,11 @@ on every bootstrap, so expect a brief flicker even when nothing changed. It neve
 
 ## Preview, apply, check
 
-```sh
-mise bootstrap macos defaults apply --dry-run   # what would be written
-mise bootstrap macos defaults apply             # write them (asks first; --yes skips the prompt)
-mise bootstrap macos defaults status --missing  # exit 1 if any declared preference is unset or differs
-mise doctor                                     # the same drift, summarized
-```
+`mise bootstrap` applies the preferences after Homebrew and before the login shell. The apply/status commands, the
+`post-defaults` step that finishes the job, and why a manual apply skips it: [BOOTSTRAP.md](BOOTSTRAP.md#recipes).
 
-`mise bootstrap` runs the apply step for you, after Homebrew and before the login shell. Applying by hand skips the
-hook; restart the apps yourself: `killall Dock Finder SystemUIServer`.
-
-The screenshot folder is set by the hook, not declared, so these checks do not cover it; every bootstrap rewrites it.
+The screenshot folder is set by `bootstrap:macos:activate`, not declared, so the checks do not cover it; every
+bootstrap rewrites it.
 
 A setting changed in System Settings shows as `differs`; the next bootstrap puts it back. To keep the new value, change
 it in `macos.toml` too.

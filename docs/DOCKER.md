@@ -15,7 +15,7 @@ Dots builds reproducible multi-stage Docker development images based on Debian a
 | `mise.toml` | Task wrappers: `build`, `test`, `start` |
 | `.github/workflows/` | CI/CD pipelines: `preview.yml`, `publish.yml`, `release.yml` |
 
-The build context is always the repository root (`.`). Dockerfiles do not run `install`: each stage installs `mise` and executes `mise bootstrap -E container` directly.
+The build context is always the repository root (`.`). Dockerfiles do not run `install`: each stage installs `mise` and executes `mise bootstrap -E container` directly. The pipeline they run is documented in [BOOTSTRAP.md](BOOTSTRAP.md).
 
 ## Distro layout
 

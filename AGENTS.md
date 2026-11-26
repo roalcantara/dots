@@ -67,6 +67,7 @@ Keep every gate green before declaring work complete:
 - [`docs/TESTING.md`](docs/TESTING.md) — test architecture, BDD/Gherkin patterns, and Definition of Done.
 - [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — commit conventions, code style standards, and mise task conventions.
 - [`docs/adr/`](docs/adr/README.md) — architecture decisions (ADRs): why things are the way they are.
+- [`docs/BOOTSTRAP.md`](docs/BOOTSTRAP.md) — what `mise bootstrap` runs, its phase and file tasks, recipes and gotchas.
 - [`docs/DOCKER.md`](docs/DOCKER.md) — container images, CST testing, and GitHub Actions CI pipelines.
 - [`docs/REINSTALL.md`](docs/REINSTALL.md) — backup runbook and clean-machine reinstall procedure.
 - [`docs/MACOS.md`](docs/MACOS.md) — macOS preferences (`config/mise/conf.d/macos.toml`), drift checks, and undo.

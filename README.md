@@ -21,9 +21,9 @@ curl -fsSL https://raw.githubusercontent.com/roalcantara/dots/main/install | bas
 2. clones this repo into `~/.local/share/dots`;
 3. asks for the age key (hidden input; keep it in your password manager);
 4. signs `gh` in to GitHub (a browser device flow);
-5. runs `mise bootstrap --adopt`, which restores the encrypted secrets from the private `dots-history` repo;
-6. links `~/.config/mise` to `config/mise/` and records the profile in `config/mise/miserc.local.toml`;
-7. runs `mise bootstrap -E <profile>`: packages, links, directories, login shell and the `bootstrap` task.
+5. restores the encrypted secrets from the private `dots-history` repo (`mise bootstrap --adopt`);
+6. links `~/.config/mise` to `config/mise/` and records the profile;
+7. runs `mise bootstrap -E <profile>`; what it applies is in [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md).
 
 It creates no user and sets no timezone. A second run changes nothing.
 
@@ -67,7 +67,7 @@ mise run setup desktop   # back to desktop (uninstalls nothing; the dev tools ju
 | [`config/mise/config.toml`](config/mise/config.toml)                     | Settings, the encrypted history (`[dotfiles]` track entries), and the `backup` task                                                                               |
 | [`config/homebrew/Brewfile`](config/homebrew/Brewfile)                   | Every user package: formulae, casks, taps, `uv` tools, Flatpak apps. `HOMEBREW_DOTS_PROFILE=container` gets only the first group                                 |
 | [`config/mise/conf.d/system.toml`](config/mise/conf.d/system.toml)       | apt packages Homebrew needs on Linux                                                                                                                               |
-| [`config/mise/conf.d/bootstrap.toml`](config/mise/conf.d/bootstrap.toml) | Directories, system files, the login shell, and the `bootstrap` task (git filters, hooks, gopass store, oMLX models, agent skills, Neovim)                         |
+| [`config/mise/conf.d/bootstrap.toml`](config/mise/conf.d/bootstrap.toml) | Directories, system files, the login shell, and the four bootstrap hooks; the steps are in `.mise/tasks/bootstrap/` (see [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md))        |
 | [`config/mise/conf.d/dotfiles.toml`](config/mise/conf.d/dotfiles.toml)   | Links from `~/.config/*` into this repo                                                                                                                            |
 | [`config/agents/`](config/agents)                                        | The agent skills lock, `review.csv`, and agent commands                                                                                                            |
 | [`script/bootstrap-log.sh`](script/bootstrap-log.sh)                     | Logging wrapper sourced by `install` and `mise bootstrap` tasks; writes to `~/.local/state/dots/logs/`                                                             |
@@ -80,8 +80,6 @@ mise run setup desktop   # back to desktop (uninstalls nothing; the dev tools ju
 
 ```sh
 mise bootstrap status            # every part: packages, files, dotfiles, tools, login shell
-mise bootstrap status --missing  # same, but exits 1 when anything differs from the config
-mise bootstrap plan              # what applying would change
 brew bundle check --verbose        # packages: what the Brewfile wants but is missing
 mise outdated                    # mise tools with a newer version
 mise dot status                  # secrets history: tracked files, unsaved changes, last push
@@ -131,7 +129,7 @@ flatpak "dev.zed.Zed" if OS.linux?   # a Linux app (Flathub)
 brew update && brew upgrade  # upgrade every package
 brew bundle cleanup          # list installed packages the Brewfile does not declare (--force removes them)
 mise upgrade                 # upgrade mise itself and repo task tools
-mise bootstrap -E <profile>  # re-apply after editing the config
+mise bootstrap -E <profile>  # re-apply after editing the config (see docs/BOOTSTRAP.md)
 ```
 
 ### Secrets
@@ -212,11 +210,8 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 - **A new shell lacks the profile's tools:** they load through `config/mise/miserc.local.toml`, which `install`
   writes; re-run `install` or create it with `env = ["<profile>"]`.
 - **`brew bundle cleanup` only lists** what it would remove; add `--force` to remove it.
-- **A package failed during `mise bootstrap`:** the core group (the shell set) stops the bootstrap; any other
-  Brewfile entry only warns, and the bootstrap finishes. The names are in
-  `~/.local/state/dots/brew-bundle.failed`, the output in `brew-bundle.log` beside it; fix the entry (an
-  architecture gate such as `if OS.linux? && Hardware::CPU.intel?`, or remove it), then `brew bundle install`.
-  With `CI` or `DOTS_STRICT` set, any failure stops the bootstrap.
+- **A package failed during `mise bootstrap`:** the names are in `~/.local/state/dots/brew-bundle.failed`; see
+  [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md#troubleshooting).
 - **`skills add` and `skills update` write the committed lock** through its link: review the diff.
 - **A skill deleted upstream cannot be restored:** the lock records no commit; keep a backup.
 - **Encrypted files (`config/ssh/keys`) look like gibberish in git:** run `mise run setup:git:filters`.
@@ -244,6 +239,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 - [`AGENTS.md`](AGENTS.md) — Agent entry point: repository layout, workflow, quality gates, hard rules, and companion skills.
 - [`docs/TESTING.md`](docs/TESTING.md) — Verification gates, Bun integration spec architecture, BDD and Gherkin rules, and Definition of Done.
 - [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — Commit conventions, code style standards, and mise task conventions.
+- [`docs/BOOTSTRAP.md`](docs/BOOTSTRAP.md) — What `mise bootstrap` runs: phases, file tasks, recipes, gotchas and troubleshooting.
 - [`docs/DOCKER.md`](docs/DOCKER.md) — Container images, CST testing, and GitHub Actions CI pipelines.
 - [`docs/REINSTALL.md`](docs/REINSTALL.md) — Backup runbook and clean-machine reinstall procedure.
 - [`docs/MACOS.md`](docs/MACOS.md) — macOS preferences applied by the bootstrap, drift checks, undo, and the manual checklist.
