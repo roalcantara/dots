@@ -30,8 +30,13 @@ zim::mise_cache() {
   # The script bakes in the PATH of the shell that wrote it, so a PATH change in
   # env::paths (env.zsh) must rewrite it too, not only a newer mise.
   if [[ ! -e $act || $act -ot $mise || $act -ot ${ZDOTDIR:-$HOME/.config/zsh}/opt/rc.d/env.zsh ]]; then
+    # Every later shell loads the PATH baked in here, so a shell started with a thin PATH (an editor terminal, an
+    # agent, cron) must not drop the system dirs: append the existing ones it lacks (gopass edit needs /sbin/newfs_hfs).
+    # mise bakes in an activated parent's __MISE_ORIG_PATH instead of PATH, so drop mise's inherited state too.
+    local -a sys=(/usr/local/bin /usr/bin /bin /usr/sbin /sbin)
+    local -aU baked=($path $^sys(N/))
     # No zcompile: a stale .zwc is ignored once the script is newer than it.
-    $mise activate zsh >|$act.$$ 2>/dev/null && command mv -f $act.$$ $act
+    (unset -m '__MISE_*'; PATH=${(j.:.)baked} $mise activate zsh) >|$act.$$ 2>/dev/null && command mv -f $act.$$ $act
     command rm -f $act.$$
   fi
   if [[ ! -e $comp || $comp -ot $mise ]]; then
