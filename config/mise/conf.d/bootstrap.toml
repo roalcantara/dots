@@ -234,6 +234,18 @@ if command -v gopass >/dev/null && [ -s "$ids" ]; then
 fi
 # gopass-keyring: end
 
+# pass-link: begin
+# gopass is a drop-in for pass: tools that call `pass` (fnox's password-store provider, editor plugins) get gopass.
+# Homebrew's gopass, from the prefix `brew shellenv` exported above (bin/gopass follows upgrades); else any gopass
+# on PATH. Never replaces a real pass: only creates or refreshes the link in ~/.local/bin.
+gp="${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/bin/gopass}"
+[ -n "$gp" ] && [ -x "$gp" ] || gp="$(command -v gopass || true)"
+link="$HOME/.local/bin/pass"
+if [ -n "$gp" ] && { [ -L "$link" ] || ! command -v pass >/dev/null; }; then
+  mkdir -p "${link%/*}" && ln -sfn "$gp" "$link" || warn "pass link"
+fi
+# pass-link: end
+
 # ssh-keychain: begin
 # macOS: git signs commits with the GitHub key (config/git/config) through the agent only; ssh-keygen -Y sign never
 # reads Keychain. Load it from Keychain, or store its passphrase there once, asked on the terminal. Apple's ssh-add
