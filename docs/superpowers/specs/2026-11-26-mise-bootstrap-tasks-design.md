@@ -99,7 +99,7 @@ Rename, keeping values, in `bootstrap.toml` and `macos.toml`:
 
 `[bootstrap.macos.launchd.agents.*]` is not deprecated and stays. Proof of no behaviour change:
 `mise bootstrap plan` and `mise bootstrap macos defaults status` are identical before and after (saved outputs,
-diffed). Bump the `MISE_VERSION` pins (below). Add `.mise/tasks/mise/diagnostics.sh` (`mise run mise:diagnostics`):
+diffed). Bump the `MISE_VERSION` pins (below). Add `.mise/tasks/mise/diagnostics.ts` (a Bun file task, like `.mise/tasks/blog/`; it is a dev check, not a bootstrap step) (`mise run mise:diagnostics`):
 the LSP client over `mise.toml`, `config/mise/**/*.toml`, `config/bin/mise.toml`; exits 1 on any
 `deprecated-key`/`unknown-key`; wired into `hk check` (skip when `mise` is missing). Lands as its own commit.
 
@@ -124,15 +124,16 @@ Layout (task name = path; the builder may adjust names, not the split):
 ```text
 .mise/tasks/bootstrap/
   _lib.sh                     # not executable, so not a task: PATH, brew shellenv, warn(), strict(), logging
-  hook/post-packages.sh       # phase tasks: what each [bootstrap.hooks.*] / the global task runs
-  hook/pre-dotfiles.sh
-  hook/post-defaults.sh
-  hook/final.sh               # what the global `bootstrap` task runs today
+  phases.toml                 # TOML task file (task_config.includes): bootstrap:hook:post-packages, :pre-dotfiles,
+                              #   :post-dotfiles, :post-defaults, :final; each an ordered run-steps list
   brew/install.sh             # brew-sudo + installer        skip_if: brew found
   brew/config-link.sh         # brew-config                  skip_if: ~/.config/homebrew exists
   brew/bundle.sh              # core group (fatal), then the profile (warns; writes brew-bundle.failed)
   yabai/scripting-addition.sh # yb sa                        macOS
   dotfiles/move-aside.sh      # VS Code/Karabiner real files aside
+  vscode/settings-sync.sh     # post-dotfiles: Settings Sync off for settings, keybindings, snippets
+  bat/cache.sh                # post-dotfiles: bat cache --build
+  lig/zsh.sh                  # post-dotfiles: mise run zsh:lig when lig is installed
   macos/activate.sh           # screenshots dir, duti, activateSettings, restart Dock/Finder/SystemUIServer
   macos/swiftbar.sh
   git/filters.sh              # or call the existing setup:git:filters
@@ -154,11 +155,20 @@ Layout (task name = path; the builder may adjust names, not the split):
   may run as a parallel `{ tasks = [...] }` group only where today's order does not matter and no step prompts.
 - Each step: `#MISE description=…`, `skip_if` or `sources`/`outputs` where a cheap check exists, platform/profile
   guards at the top (`exit 0` when not applicable), `#USAGE` flags only where a step takes input.
+- Phase tasks live in `.mise/tasks/bootstrap/phases.toml`, loaded with
+  `[task_config] includes = [".mise/tasks", ".mise/tasks/bootstrap/phases.toml"]` in the repo `mise.toml` (verified on
+  2026.11.14: a TOML task file names tasks at top level, `["bootstrap:hook:final"]`; ordered run steps, `skip_if`,
+  `_lib.sh` sourced from a step, and `mise run -C` from another directory all work; `.mise/tasks/blog` still loads).
+- **Exactly one hook per phase.** mise runs every conf.d file's hook for a phase (verified: `--dry-run` lists the
+  `post-packages` hooks of both `bootstrap.toml` and `yabai.toml`). All hand-overs live in `bootstrap.toml`; the
+  hooks in `yabai.toml`, `macos.toml` and `dotfiles.toml` are removed and their work becomes steps of the phase task,
+  in today's order (files load alphabetically: `bootstrap`, `dotfiles`, `macos`, `yabai`).
+- Steps that prompt (`brew/install.sh`, `ssh/keychain.sh`) set `#MISE raw=true` so they keep the terminal.
 - Hooks in `config/mise/conf.d/*.toml` keep their `description` and become
   `run = 'mise run -C "$HOME/.local/share/dots" bootstrap:hook:<phase>'`. The global `[tasks.bootstrap]` becomes the
   same hand-over to `bootstrap:hook:final`. The `post-packages` hook resolves the profile before handing over.
 - Soft failure: `warn` and exit 0; hard (`brew/bundle.sh` core group, or any step under `DOTS_STRICT`/`CI`): exit 1.
-  The `remind` trap for `brew-bundle.failed` moves to `hook/final.sh`.
+  The `remind` warning for `brew-bundle.failed` becomes the last run step of `bootstrap:hook:final`.
 - `_lib.sh` sources `script/bootstrap-log.sh` so every step still logs to `~/.local/state/dots/logs`.
 - Existing `DOTS_*` test seams stay. Specs run the step scripts directly (bash, temp `HOME`, stubs on `PATH`)
   instead of regex-extracting TOML; one spec checks every executable under `.mise/tasks/bootstrap/` has a
