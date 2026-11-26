@@ -42,7 +42,7 @@ login_shell = '{% if os() == "macos" %}/opt/homebrew/bin/zsh{% else %}zsh{% endi
 
 # macOS: gopass checks this GPG Suite preference now and then and warns "Domain 'org.gpgtools.common' not found"
 # while it is unset. "NO" (a string, as gopass reads it) also keeps pinentry-mac from saving passphrases in Keychain.
-[bootstrap.macos.defaults]
+[bootstrap.settings.macos.defaults]
 "org.gpgtools.common" = { UseKeychain = "NO" }
 
 # Linux: apt runs unattended, so dpkg must never ask about a changed config file (it fails without a terminal,

@@ -13,20 +13,24 @@ type Config = {
     directories: Record<string, unknown>;
     files: Record<string, Record<string, unknown>>;
     hooks: { "post-defaults": { run: string } };
+    settings: {
+      macos: {
+        keyboard: Record<string, unknown>;
+        trackpad: Record<string, unknown>;
+        dock: Record<string, unknown>;
+        finder: Record<string, unknown>;
+        login_items: { apps: string[]; exclusive?: boolean };
+        defaults: Record<string, Record<string, unknown>>;
+        defaults_entries: Entry[];
+      };
+    };
     macos: {
-      keyboard: Record<string, unknown>;
-      trackpad: Record<string, unknown>;
-      dock: Record<string, unknown>;
-      finder: Record<string, unknown>;
-      login_items: { apps: string[]; exclusive?: boolean };
-      defaults: Record<string, Record<string, unknown>>;
-      defaults_entries: Entry[];
       launchd: { agents: Record<string, Record<string, unknown>> };
     };
   };
 };
 const config = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/macos.toml"), "utf8")) as Config;
-const macos = config.bootstrap.macos;
+const macos = config.bootstrap.settings.macos;
 const entry = (domain: string, key: string) =>
   macos.defaults_entries.find((e) => e.domain === domain && (e.key === key || e.path?.at(-1) === key));
 
@@ -101,7 +105,7 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
   });
 
   it("loads the SSH keys from Keychain at every login (Apple's ssh-add)", () => {
-    const agent = macos.launchd.agents["ssh-add"]!;
+    const agent = config.bootstrap.macos.launchd.agents["ssh-add"]!;
     expect(agent.program).toBe("/usr/bin/ssh-add");
     expect(agent.args).toEqual(["--apple-load-keychain"]);
     expect(agent.run_at_load).toBe(true);
@@ -109,7 +113,7 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
   });
 
   it("initializes Ghostty warm without an initial window at login", () => {
-    const agent = macos.launchd.agents["ghostty"]!;
+    const agent = config.bootstrap.macos.launchd.agents["ghostty"]!;
     expect(agent.program).toBe("/usr/bin/open");
     expect(agent.args).toEqual(["-g", "-a", "Ghostty", "--args", "--initial-window=false"]);
     expect(agent.run_at_load).toBe(true);

@@ -23,7 +23,7 @@ describe("tiling packages and links", () => {
   });
 
   it("sets the fn (Globe) key to do nothing", () => {
-    expect(macos.bootstrap.macos.defaults["com.apple.HIToolbox"].AppleFnUsageType).toBe(0);
+    expect(macos.bootstrap.settings.macos.defaults["com.apple.HIToolbox"].AppleFnUsageType).toBe(0);
   });
 
   it("links ~/.config/karabiner and ~/.config/borders as whole folders", () => {

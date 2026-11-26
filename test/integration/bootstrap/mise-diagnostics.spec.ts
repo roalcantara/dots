@@ -39,10 +39,9 @@ maybe("mise:diagnostics", () => {
     expect(r.out).toBe("");
   });
 
-  // Task 3 renames this to `default file set is clean` and asserts exit 0.
-  it("default file set includes config/mise/conf.d/*.toml", () => {
+  it("default file set is clean", () => {
     const r = run();
-    expect(r.code).toBe(1);
-    expect(r.out).toContain("config/mise/conf.d/macos.toml");
+    expect(r.code).toBe(0);
+    expect(r.out).toBe("");
   });
 });
