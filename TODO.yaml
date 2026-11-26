@@ -82,6 +82,17 @@ tasks:
   tags:
   - shell-ux
   - try
+- id: awGX
+  status: Todo
+  description: 'Bootstrap: fix mise deprecated-key warnings, split bootstrap hooks into .mise/tasks/bootstrap file tasks, docs/BOOTSTRAP.md as the single source, and a shareable mise-bootstrap skill'
+  priority: High
+  tags:
+  - bootstrap
+  - mise
+  - docs
+  - skill
+  comments:
+  - Az1M
 actors: []
 comments:
 - id: TjEs
@@ -96,4 +107,7 @@ comments:
 - id: bwUn
   text: 'Shipped: rm is gomi in interactive shells (config/zsh/opt/aliases/safety.zsh)'
   task_id: 8J0f
+- id: Az1M
+  text: 'Branch feat/mise-bootstrap-tasks. Spec: docs/superpowers/specs/2026-11-26-mise-bootstrap-tasks-design.md. Mark done after implementation, before opening the PR.'
+  task_id: awGX
 project: dots
