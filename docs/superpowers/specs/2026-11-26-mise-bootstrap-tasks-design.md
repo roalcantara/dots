@@ -100,9 +100,23 @@ Rename, keeping values, in `bootstrap.toml` and `macos.toml`:
 
 `[bootstrap.macos.launchd.agents.*]` is not deprecated and stays. Proof of no behaviour change:
 `mise bootstrap plan` and `mise bootstrap macos defaults status` are identical before and after (saved outputs,
-diffed). Bump the three `MISE_VERSION` pins. Add `.mise/tasks/mise/diagnostics.sh` (`mise run mise:diagnostics`):
+diffed). Bump the `MISE_VERSION` pins (below). Add `.mise/tasks/mise/diagnostics.sh` (`mise run mise:diagnostics`):
 the LSP client over `mise.toml`, `config/mise/**/*.toml`, `config/bin/mise.toml`; exits 1 on any
 `deprecated-key`/`unknown-key`; wired into `hk check` (skip when `mise` is missing). Lands as its own commit.
+
+**mise version drift (owner request).** mise is pinned in `install` (`MISE_VERSION=`) and twice in each Dockerfile
+(`distros/{debian,ubuntu}/Dockerfile`, `MISE_VERSION=v…`); CI installs no mise of its own. The macOS machine's
+`mise --version` is the reference ("macOS wins").
+
+- `.mise/tasks/mise/version.sh` (`mise run mise:version`): lists every pin with its file and line next to the local
+  version; `--check` exits 1 on any difference; `--sync` rewrites every pin to the local version (keeping each
+  file's `v` prefix convention). It refuses `--sync` off macOS. Pins are found by pattern (`MISE_VERSION=…`), not by a
+  hard-coded line list, so a new pin site is covered.
+- `[doctor.checks.mise-version]` in the repo `mise.toml` (`os = "macos"`): `run = "mise run mise:version --check"`,
+  `hint = "mise run mise:version --sync"`; shows up in `mise doctor project`. A second check,
+  `[doctor.checks.mise-diagnostics]`, runs `mise:diagnostics` so one command reports both.
+- `min_version = "2026.11.8"` in `config/mise/config.toml`, so an older mise fails with a clear message instead of
+  misreading `bootstrap.settings`.
 
 ### Part 2: file tasks
 
@@ -179,7 +193,8 @@ once pushed.
 
 ## Verification
 
-- `mise run mise:diagnostics` reports nothing.
+- `mise run mise:diagnostics` reports nothing; `mise doctor project` passes on macOS; a spec drives
+  `mise:version --check/--sync` against temp copies of the pin files.
 - `mise bootstrap plan` / `macos defaults status` identical before and after part 1.
 - `mise run test:specs`, `hk check --all`, `mise run zsh:verify` (syntax).
 - `mise bootstrap` on this Mac twice: the second run skips every step with an up-to-date check and prints no warnings
@@ -189,7 +204,8 @@ once pushed.
 
 ## Calls made by the author (owner to check)
 
-- mise pin → 2026.11.14 in `install` and both Dockerfiles.
+- mise pin → this Mac's version (2026.11.14) in `install` and both Dockerfiles, applied with `mise:version --sync`.
+- `min_version` set to the first release with `bootstrap.settings` (2026.11.8), not to the pin.
 - The diagnostics check is a mise task wired into `hk`.
 - Task naming `bootstrap:<area>:<step>`, phase tasks under `bootstrap:hook:*`.
 - `_lib.sh` lives beside the tasks, non-executable.
