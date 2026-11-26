@@ -1,0 +1,22 @@
+# One task per bootstrap phase. Each conf.d hook and the global bootstrap task hand over to one of these; the
+# steps are added in Tasks 5-8, so an empty run is a no-op until then.
+
+["bootstrap:hook:post-packages"]
+description = "Homebrew, the Brewfile and yabai's scripting addition"
+run = []
+
+["bootstrap:hook:pre-dotfiles"]
+description = "Move app-written files aside before the dotfiles links"
+run = []
+
+["bootstrap:hook:post-dotfiles"]
+description = "VS Code Settings Sync, bat's cache and Lig's zsh integration"
+run = []
+
+["bootstrap:hook:post-defaults"]
+description = "Activate macOS settings and point SwiftBar at its plugins"
+run = []
+
+["bootstrap:hook:final"]
+description = "Git filters and hooks, then the remaining tools (run by the global bootstrap task)"
+run = []

@@ -1,6 +1,10 @@
 # https://mise.jdx.dev
 # Dev tools, env, and task runner
 
+# File tasks live in .mise/tasks (mise's default) and the bootstrap phase tasks in one TOML file next to them.
+[task_config]
+includes = [".mise/tasks", ".mise/tasks/bootstrap/phases.toml"]
+
 # https://mise.jdx.dev/tasks
 [tasks]
 # mise run build
