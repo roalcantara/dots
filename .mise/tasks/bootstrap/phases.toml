@@ -12,11 +12,15 @@ run = [
 
 ["bootstrap:hook:pre-dotfiles"]
 description = "Move app-written files aside before the dotfiles links"
-run = []
+run = [{ task = "bootstrap:dotfiles:move-aside" }]
 
 ["bootstrap:hook:post-dotfiles"]
 description = "VS Code Settings Sync, bat's cache and Lig's zsh integration"
-run = []
+run = [
+  { task = "bootstrap:vscode:settings-sync" },
+  { task = "bootstrap:bat:cache" },
+  { task = "bootstrap:lig:zsh" },
+]
 
 ["bootstrap:hook:post-defaults"]
 description = "Activate macOS settings and point SwiftBar at its plugins"

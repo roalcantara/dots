@@ -91,6 +91,24 @@ run = '''
 DOTS_PROFILE="$(dots_profile)" exec mise run -C "$DOTS_DIR" bootstrap:hook:post-packages
 '''
 
+# A link never replaces a real file, and VS Code (or Settings Sync) and Karabiner-Elements write real ones on first
+# launch, so the phase task moves them aside. It also runs before mise dot apply.
+[bootstrap.hooks.pre-dotfiles]
+description = "Move app-written copies (VS Code settings, keybindings, snippets; ~/.config/karabiner) aside for the dots links"
+run = '''
+#!/usr/bin/env bash
+exec mise run -C "$HOME/.local/share/dots" bootstrap:hook:pre-dotfiles
+'''
+
+# Settings Sync would merge the cloud copy back into the linked files, so the phase task turns it off for settings,
+# keybindings and snippets, then builds bat's theme cache and Lig's zsh integration.
+[bootstrap.hooks.post-dotfiles]
+description = "Turn off VS Code Settings Sync for settings, keybindings and snippets; set up bat's themes and Lig"
+run = '''
+#!/usr/bin/env bash
+exec mise run -C "$HOME/.local/share/dots" bootstrap:hook:post-dotfiles
+'''
+
 # Runs last on every `mise bootstrap`, so every step checks before acting and only warns on failure.
 [tasks.bootstrap]
 description = "Repo git filters and hooks, Neovim providers and plugins"

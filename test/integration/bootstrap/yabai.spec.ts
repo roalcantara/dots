@@ -33,31 +33,26 @@ describe("tiling packages and links", () => {
     }
   });
 
-  describe("pre-dotfiles hook", () => {
-    const HOOK: string = dotfiles.bootstrap.hooks["pre-dotfiles"].run;
+  describe("pre-dotfiles step", () => {
     let t: string;
     beforeEach(() => {
       t = mkdtempSync(join(tmpdir(), "yabai-links-"));
     });
     afterEach(() => rmSync(t, { recursive: true, force: true }));
 
-    const run = () => {
-      const bin = join(t, "bin");
-      mkdirSync(bin, { recursive: true });
-      writeFileSync(join(bin, "uname"), "#!/bin/sh\necho Darwin\n");
-      chmodSync(join(bin, "uname"), 0o755);
-      return Bun.spawnSync(["sh", "-o", "errexit", "-c", HOOK], {
-        env: { PATH: `${bin}:/usr/bin:/bin`, HOME: t, DOTS_VSCODE_USER: join(t, "Code", "User") },
-        stdout: "pipe",
-        stderr: "pipe",
+    const run = () =>
+      runStep("dotfiles/move-aside.sh", {
+        PATH: "/usr/bin:/bin",
+        HOME: t,
+        DOTS_UNAME: "Darwin",
+        DOTS_VSCODE_USER: join(t, "Code", "User"),
       });
-    };
     const config = () => join(t, ".config");
 
     it("moves a real ~/.config/karabiner aside, keeping its content", () => {
       mkdirSync(join(config(), "karabiner"), { recursive: true });
       writeFileSync(join(config(), "karabiner", "karabiner.json"), "{}\n");
-      expect(run().exitCode).toBe(0);
+      expect(run().code).toBe(0);
       expect(existsSync(join(config(), "karabiner"))).toBe(false);
       const [moved] = readdirSync(config()).filter((f) => f.startsWith("karabiner.pre-dots-"));
       expect(moved).toMatch(/^karabiner\.pre-dots-\d{14}$/);
@@ -67,7 +62,7 @@ describe("tiling packages and links", () => {
     it("leaves the dots link alone", () => {
       mkdirSync(config(), { recursive: true });
       symlinkSync(join(REPO, "config/karabiner"), join(config(), "karabiner"));
-      expect(run().exitCode).toBe(0);
+      expect(run().code).toBe(0);
       expect(lstatSync(join(config(), "karabiner")).isSymbolicLink()).toBe(true);
     });
   });
