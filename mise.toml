@@ -447,6 +447,13 @@ run = "mise run mise:version --check"
 hint = "mise run mise:version --sync"
 os = "macos"
 
+# Only `mise lsp` reports deprecated-key, so a check runs the small client in .mise/tasks/mise/diagnostics.ts.
+[doctor.checks.mise-diagnostics]
+description = "No deprecated or unknown keys in the mise config"
+run = "mise run mise:diagnostics"
+hint = "see docs/BOOTSTRAP.md#gotchas (deprecated keys)"
+timeout = "30s"
+
 [settings]
 # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.
 # https://mise.jdx.dev/configuration/settings.html#activate_aggressive
