@@ -1,6 +1,9 @@
 # MISE GLOBAL CONFIG FILE
 # https://mise.jdx.dev/configuration.html#global-config-config-mise-config-toml
 
+# First release with bootstrap.settings (where the macOS preferences live); an older mise misreads them.
+min_version = "2026.11.8"
+
 [settings]
 
 # https://mise.jdx.dev/configuration/settings.html
