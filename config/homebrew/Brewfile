@@ -151,8 +151,6 @@ brew "shellspec" if OS.mac?  # BDD framework for shells
 brew "vivid"  # LS_COLORS generator: `mise run theme:build`
 brew "tombi"  # TOML formatter, linter, and language server
 brew "typescript-language-server" if OS.mac?  # LSP for TypeScript
-brew "rust"  # Rust toolchain
-cargo "lida", source: "https://github.com/roalcantara/lida?tag=v0.1.1"  # lida: dual-format project TODO.md/TODO.yaml CLI (built from git, needs rust above)
 brew "opencode" # AI coding agent, built for the terminal
 cask "opencode-desktop" if OS.mac? # AI coding agent desktop app
 cask "android-studio" if OS.mac?  # Tools for building Android applications
@@ -165,6 +163,8 @@ cask "copilot-cli@prerelease"  # Copilot coding agent CLI
 cask "docker-desktop" if OS.mac?  # Container tooling
 cask "google-gemini" if OS.mac?  # Google Gemini app
 cask "zed"  # Multiplayer code editor
+brew "rust"  # Rust toolchain
+cargo "lida", source: "https://github.com/roalcantara/lida?tag=v0.1.1"  # lida: dual-format project TODO.md/TODO.yaml CLI (built from git, needs rust above)
 # DEVTOOLS: Python tools (graphifyy and code-review-graph need Python 3.13: the bootstrap task installs them)
 uv "pynvim"
 uv "debugpy"
@@ -173,3 +173,5 @@ uv "commit-check"
 npm "bun-dap-x"
 npm "react-devtools"
 npm "@vscode/js-debug-browsers"
+brew "go"  # Go toolchain, for the `go` entries below
+go "github.com/jackchuka/mdschema/cmd/mdschema"  # Markdown structure linter (hk `docs`/`ears-sdd`); before macOS' /usr/bin/mdschema on PATH

@@ -1776,5 +1776,6 @@
       "selector": "yaml",
       "colors": "css"
     }
-  ]
+  ],
+  "gitlens.graph.details.location": "auto"
 }

@@ -132,8 +132,9 @@ env::options() {
 #ORDER Before env::homebrew, which prepends to $path.
 env::paths() {
   # PATH; Where the shell searches for commands; set PATH so it includes user's private bin if it exists
+  # go installs (brew bundle `go` entries) go to $GOPATH/bin; before $path, so mdschema beats macOS' /usr/bin/mdschema.
   # cargo installs (brew bundle `cargo` entries) go to $CARGO_HOME/bin; last, so its rustup proxies never shadow `cargo`.
-  declare -gaU path=(${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin} ${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm/bin} ${PNPM_HOME:-$XDG_DATA_HOME/pnpm} /usr/local/{bin,sbin} $HOME/.turso $path ${CARGO_HOME:-$XDG_DATA_HOME/cargo}/bin)
+  declare -gaU path=(${XDG_LOCAL_BIN_DIR:-$HOME/.local/bin} ${NPM_CONFIG_PREFIX:-$XDG_DATA_HOME/npm/bin} ${PNPM_HOME:-$XDG_DATA_HOME/pnpm} /usr/local/{bin,sbin} $HOME/.turso ${GOPATH:-$XDG_DATA_HOME/go}/bin ${CARGO_HOME:-$XDG_DATA_HOME/cargo}/bin) $path
   # FPATH; Where the shell searches to find shell functions
   declare -gaU fpath=($ZIM_HOME/functions $fpath)
   # CDPATH; Directories that the shell searches to find the current directory when the user changes directories using the cd command
