@@ -1,10 +1,11 @@
 #!/usr/bin/env bun
 // The macOS preferences in config/mise/conf.d/macos.toml: pins the values Raycast and yabai rely on (and their TOML
-// types: mise rewrites a preference whose type differs), and checks the post-defaults hook never fails a bootstrap.
+// types: mise rewrites a preference whose type differs), and checks the post-defaults steps never fail a bootstrap.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { runStep } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
 type Entry = { domain: string; key?: string; path?: string[]; host?: string; value: unknown };
@@ -12,7 +13,6 @@ type Config = {
   bootstrap: {
     directories: Record<string, unknown>;
     files: Record<string, Record<string, unknown>>;
-    hooks: { "post-defaults": { run: string } };
     settings: {
       macos: {
         keyboard: Record<string, unknown>;
@@ -154,7 +154,7 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
   });
 });
 
-describe("post-defaults hook", () => {
+describe("post-defaults step", () => {
   let t: string;
   beforeEach(() => {
     t = mkdtempSync(join(tmpdir(), "macos-hook-"));
@@ -167,16 +167,18 @@ describe("post-defaults hook", () => {
       writeFileSync(join(t, "bin", name), `#!/bin/sh\n${body}\n`);
       chmodSync(join(t, "bin", name), 0o755);
     };
-    stub("uname", `echo ${os}`);
+    // bootstrap_init's brew shellenv would otherwise put the Mac's real /opt/homebrew/bin (and duti) first.
+    stub("brew", "exit 0");
     stub("killall", `echo "$@" >> "${t}/killall.calls"; exit ${killallExit}`);
     stub("defaults", `echo "$@" >> "${t}/defaults.calls"; exit 1`);
     stub("duti", `echo "$@" >> "${t}/duti.calls"; exit 1`);
     stub("activate", `echo "$@" >> "${t}/activate.calls"; exit 1`);
-    const p = Bun.spawnSync(["bash", "-c", config.bootstrap.hooks["post-defaults"].run], {
-      env: { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, DOTS_ACTIVATE_SETTINGS: activate ?? join(t, "bin", "activate") },
-      stdout: "pipe", stderr: "pipe",
-    });
-    return p.exitCode;
+    return runStep("macos/activate.sh", {
+      PATH: `${join(t, "bin")}:/usr/bin:/bin`,
+      HOME: t,
+      DOTS_UNAME: os,
+      DOTS_ACTIVATE_SETTINGS: activate ?? join(t, "bin", "activate"),
+    }).code;
   }
 
   it("does nothing off macOS", () => {

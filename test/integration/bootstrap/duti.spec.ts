@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// config/duti/defaults.duti: the default apps the post-defaults hook sets with duti. duti exits 0 even on a bad
+// config/duti/defaults.duti: the default apps the post-defaults step sets with duti. duti exits 0 even on a bad
 // line, so the format is checked here: whole-line comments only, real UTIs (dynamic dyn.* ones fail with error -50).
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";

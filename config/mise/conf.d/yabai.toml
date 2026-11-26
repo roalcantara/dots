@@ -17,14 +17,3 @@ program = "~/.local/share/janky-borders/bin/borders"
 run_at_load = true
 keep_alive = true
 environment = { PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
-
-# SwiftBar draws the space strip (config/swiftbar/plugins/spaces.sh runs `yb bar`). Point it at the plugin
-# folder before its first launch, so it never asks; mise writes defaults verbatim and this path needs $HOME.
-[bootstrap.hooks.post-defaults]
-description = "Point SwiftBar at ~/.config/swiftbar/plugins"
-run = '''
-#!/usr/bin/env bash
-[ "$(uname)" = Darwin ] || exit 0
-defaults write com.ameba.SwiftBar PluginDirectory -string "$HOME/.config/swiftbar/plugins" || true
-defaults write com.ameba.SwiftBar SUHasLaunchedBefore -bool true || true
-'''

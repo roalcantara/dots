@@ -24,7 +24,10 @@ run = [
 
 ["bootstrap:hook:post-defaults"]
 description = "Activate macOS settings and point SwiftBar at its plugins"
-run = []
+run = [
+  { task = "bootstrap:macos:activate" },
+  { task = "bootstrap:macos:swiftbar" },
+]
 
 ["bootstrap:hook:final"]
 description = "Git filters and hooks, then the remaining tools (run by the global bootstrap task)"

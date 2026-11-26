@@ -109,6 +109,16 @@ run = '''
 exec mise run -C "$HOME/.local/share/dots" bootstrap:hook:post-dotfiles
 '''
 
+# mise cannot restart apps or write a preference whose value is an absolute path. The phase task points screenshots
+# at ~/Pictures/Screenshots, sets the default apps in ~/.config/duti and the Spotlight hotkey without a logout,
+# restarts Dock, Finder and the menu bar, then points SwiftBar at its plugins.
+[bootstrap.hooks.post-defaults]
+description = "Apply the macOS settings that need $HOME and point SwiftBar at its plugins"
+run = '''
+#!/usr/bin/env bash
+exec mise run -C "$HOME/.local/share/dots" bootstrap:hook:post-defaults
+'''
+
 # Runs last on every `mise bootstrap`, so every step checks before acting and only warns on failure.
 [tasks.bootstrap]
 description = "Repo git filters and hooks, Neovim providers and plugins"

@@ -201,7 +201,6 @@ describe("scripting addition step", () => {
 describe("SwiftBar space strip", () => {
   const brewfile = read("config/homebrew/Brewfile");
   const dotfiles = toml("config/mise/conf.d/dotfiles.toml");
-  const hook: string = toml("config/mise/conf.d/yabai.toml").bootstrap.hooks["post-defaults"].run;
   const plugin = join(REPO, "config/swiftbar/plugins/spaces.sh");
 
   it("installs SwiftBar and links ~/.config/swiftbar", () => {
@@ -221,16 +220,17 @@ describe("SwiftBar space strip", () => {
 
   function runHook(os: string) {
     const t = mkdtempSync(join(tmpdir(), "swiftbar-hook-"));
-    try {
-      for (const [name, body] of [["uname", `echo ${os}`], ["defaults", `echo "$@" >> "${t}/defaults.calls"`]]) {
-        writeFileSync(join(t, name!), `#!/bin/sh\n${body}\n`);
-        chmodSync(join(t, name!), 0o755);
-      }
-      const r = Bun.spawnSync(["bash", "-c", hook], { env: { PATH: `${t}:/usr/bin:/bin`, HOME: t }, stdout: "pipe", stderr: "pipe" });
-      return { code: r.exitCode, calls: existsSync(join(t, "defaults.calls")) ? readFileSync(join(t, "defaults.calls"), "utf8") : "", home: t };
-    } finally {
-      // read before cleanup
+    // bootstrap_init's brew shellenv would otherwise put the Mac's real /opt/homebrew/bin first.
+    for (const [name, body] of [["brew", "exit 0"], ["defaults", `echo "$@" >> "${t}/defaults.calls"`]]) {
+      writeFileSync(join(t, name!), `#!/bin/sh\n${body}\n`);
+      chmodSync(join(t, name!), 0o755);
     }
+    const r = runStep("macos/swiftbar.sh", { PATH: `${t}:/usr/bin:/bin`, HOME: t, DOTS_UNAME: os });
+    return {
+      code: r.code,
+      calls: existsSync(join(t, "defaults.calls")) ? readFileSync(join(t, "defaults.calls"), "utf8") : "",
+      home: t,
+    };
   }
 
   it("points SwiftBar at the plugin folder so its first launch needs no prompt", () => {
