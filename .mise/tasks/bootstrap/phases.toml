@@ -3,7 +3,12 @@
 
 ["bootstrap:hook:post-packages"]
 description = "Homebrew, the Brewfile and yabai's scripting addition"
-run = []
+run = [
+  { task = "bootstrap:brew:install" },
+  { task = "bootstrap:brew:config-link" },
+  { task = "bootstrap:brew:bundle" },
+  { task = "bootstrap:yabai:scripting-addition" },
+]
 
 ["bootstrap:hook:pre-dotfiles"]
 description = "Move app-written files aside before the dotfiles links"

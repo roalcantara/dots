@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { runStep } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
 const read = (p: string) => readFileSync(join(REPO, p), "utf8");
@@ -168,25 +169,37 @@ describe("yabai and borders services", () => {
   });
 });
 
-describe("scripting addition hook", () => {
-  const hook: string = toml("config/mise/conf.d/yabai.toml").bootstrap.hooks["post-packages"].run;
-
-  it("runs the repo's yb sa after Homebrew, on macOS only, and never fails the bootstrap", () => {
-    expect(hook).toContain('[ "$(uname)" = Darwin ] || exit 0');
-    expect(hook).toContain('"$HOME/.local/share/dots/config/bin/yb" sa || true');
-  });
-
-  it("does nothing off macOS", () => {
-    const t = mkdtempSync(join(tmpdir(), "yabai-sa-hook-"));
+describe("scripting addition step", () => {
+  function run(os: string, ybExits = 0) {
+    const t = mkdtempSync(join(tmpdir(), "yabai-sa-step-"));
     try {
-      writeFileSync(join(t, "uname"), "#!/bin/sh\necho Linux\n");
-      chmodSync(join(t, "uname"), 0o755);
-      const r = Bun.spawnSync(["sh", "-o", "errexit", "-c", hook], { env: { PATH: `${t}:/usr/bin:/bin`, HOME: t }, stdout: "pipe", stderr: "pipe" });
-      expect(r.exitCode).toBe(0);
-      expect(r.stdout.toString() + r.stderr.toString()).toBe("");
+      mkdirSync(join(t, "config", "bin"), { recursive: true });
+      writeFileSync(join(t, "config", "bin", "yb"), `#!/bin/sh\necho "$@" >> "${t}/yb.calls"\nexit ${ybExits}\n`);
+      chmodSync(join(t, "config", "bin", "yb"), 0o755);
+      const r = runStep("yabai/scripting-addition.sh", {
+        PATH: `${t}:/usr/bin:/bin`,
+        HOME: t,
+        DOTS_DIR: t,
+        DOTS_UNAME: os,
+      });
+      const calls = existsSync(join(t, "yb.calls")) ? readFileSync(join(t, "yb.calls"), "utf8") : "";
+      return { ...r, calls };
     } finally {
       rmSync(t, { recursive: true, force: true });
     }
+  }
+
+  it("runs the repo's yb sa on macOS, and never fails the bootstrap", () => {
+    const r = run("Darwin", 1);
+    expect(r.code).toBe(0);
+    expect(r.calls.trim()).toBe("sa");
+  });
+
+  it("does nothing off macOS", () => {
+    const r = run("Linux");
+    expect(r.code).toBe(0);
+    expect(r.out + r.err).toBe("");
+    expect(r.calls).toBe("");
   });
 });
 
