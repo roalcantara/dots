@@ -60,9 +60,10 @@ Decisions live in [`docs/adr/`](adr/README.md); this page records the mechanics.
 
 ## Profiles
 
-The profile is a comma list. `mise run setup <profile>` records it in `config/mise/miserc.local.toml` and runs the
-bootstrap with it; `mise bootstrap -E <profile>` overrides it for one run. The steps that care use `has_profile`,
-which matches a whole name (`dev` does not match `devops`).
+The profile is a comma list. `mise run setup <profile>` runs `mise bootstrap -E <profile> --save-env`, which records it
+in `config/mise/miserc.local.toml` (even when the run fails); `mise bootstrap -E <profile>` alone overrides it for one
+run. `install` writes that file itself: its bootstrap runs with a temporary `~/.config/mise`, where `--save-env` would
+save it. The steps that care use `has_profile`, which matches a whole name (`dev` does not match `devops`).
 
 | Profile | What runs |
 | --- | --- |
