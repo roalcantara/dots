@@ -3,39 +3,45 @@
 [tasks.dots]
 description = "Set up this machine, back it up, choose its profile"
 usage = '''
-cmd "setup" help="Install and configure parts of this machine; no flags means all, in order" {
-  flag "--brew"      help="Homebrew, its config link, and every Brewfile package for the profile"
-  flag "--yabai"     help="yabai's scripting addition (sudoers rule, boot argument)"
-  flag "--app-files" help="Move app-written copies (VS Code, Karabiner) aside before linking"
-  flag "--vscode"    help="Turn off VS Code Settings Sync for linked settings, keybindings and snippets"
-  flag "--bat"       help="Rebuild bat's theme cache"
-  flag "--lig"       help="Cache Lig's zsh integration"
-  flag "--macos"     help="Apply macOS settings that need $HOME and restart Dock, Finder and menu bar"
-  flag "--swiftbar"  help="Point SwiftBar at its plugins folder"
-  flag "--git"       help="Git SOPS filters, ~/.gitconfig check, and hk git hooks"
-  flag "--shell"     help="Warm Zsh plugin and completion caches"
-  flag "--dev"       help="Install Python 3.13 dev tools (dev profile)"
-  flag "--secrets"   help="gopass store, keyring check, pass link, and SSH Keychain"
-  flag "--tiling"    help="Tiling checks (SIP, Accessibility, kb-raycast) and JankyBorders build"
-  flag "--ai"        help="Download oMLX models"
-  flag "--skills"    help="Restore global agent skills (dev profile)"
-  flag "--nvim"      help="Neovim providers and plugins"
+cmd "setup" help="Install and configure parts of this machine; no parts means all, in order" {
+  arg "[part]..." var=#true help="Parts to run, always in the fixed order; Tab lists each part with its help"
+  // Tab shows `complete` values with their help; `choices` would show bare names. Names are validated in `run`.
+  // One line per part, in run order, with the same help as its hidden dots:setup:<part> task (parts.toml).
+  complete "part" descriptions=#true run=#"""
+    printf '%s\n' \
+      'brew:Homebrew, its config link, and every Brewfile package for the profile' \
+      'yabai:yabai'"'"'s scripting addition (sudoers rule, boot argument)' \
+      'app-files:Move app-written copies (VS Code, Karabiner) aside before linking' \
+      'vscode:Turn off VS Code Settings Sync for linked settings, keybindings and snippets' \
+      'bat:Rebuild bat'"'"'s theme cache' \
+      'lig:Cache Lig'"'"'s zsh integration' \
+      'macos:Apply macOS settings that need the home path and restart Dock, Finder and menu bar' \
+      'swiftbar:Point SwiftBar at its plugins folder' \
+      'git:Git SOPS filters, ~/.gitconfig check, and hk git hooks' \
+      'shell:Warm Zsh plugin and completion caches' \
+      'dev:Install Python 3.13 dev tools (dev profile)' \
+      'secrets:gopass store, keyring check, pass link, and SSH Keychain' \
+      'tiling:Tiling checks (SIP, Accessibility, kb-raycast) and JankyBorders build' \
+      'ai:Download oMLX models' \
+      'skills:Restore global agent skills (dev profile)' \
+      'nvim:Neovim providers and plugins'
+    """#
   flag "--profile <profile>" var=#true env="DOTS_PROFILE" help="Bootstrap profile(s) to apply (desktop, dev, container; defaults to mise_env, else desktop)"
   flag "--dry-run"   help="Show the parts and steps that would run without executing them"
   flag "--no-remind" hide=#true help="Skip dots:setup:remind at the end (used by bootstrap hooks)"
 }
 cmd "backup" help="Back up and restore this machine with restic" {
-  arg "<action>" help="Backup action" {
-    long_help """
-    - init: Create this machine's restic repository on the backup drive
-    - backup: Back up the allowlist in config/restic/backup.toml, then restic check
-    - snapshots: List this machine's snapshots
-    - restore: Restore folders from a snapshot into the home folder
-    - forget: Apply the retention policy and prune
-    - audit: Read-only report of what a reinstall would lose, written to the backup drive
-    """
-    choices "init" "backup" "snapshots" "restore" "forget" "audit"
-  }
+  arg "<action>" help="Backup action; Tab lists each action with its help"
+  // As for setup's parts: `complete` shows each action's help on Tab, `choices` would not. Validated in `run`.
+  complete "action" descriptions=#true run=#"""
+    printf '%s\n' \
+      'init:Create this machine'"'"'s restic repository on the backup drive' \
+      'backup:Back up the allowlist in config/restic/backup.toml, then restic check' \
+      'snapshots:List this machine'"'"'s snapshots' \
+      'restore:Restore folders from a snapshot into the home folder' \
+      'forget:Apply the retention policy and prune' \
+      'audit:Read-only report of what a reinstall would lose, written to the backup drive'
+    """#
   flag "--include <path>" var=#true help="Folder to restore, relative to the old home (restore; repeatable)"
   flag "--snapshot <id>"            help="Snapshot ID to restore from, default latest (restore)"
   flag "--from-home <path>"         help="Old home folder path in the snapshot (restore)"
@@ -44,9 +50,10 @@ cmd "backup" help="Back up and restore this machine with restic" {
   flag "--stdout"                   help="Print the reinstall audit to stdout instead of the backup drive (audit)"
 }
 cmd "profile" help="Choose this machine's profile and apply it" {
-  arg "<profile>" help="desktop (install default) or dev (desktop + dev tools)" {
-    choices "desktop" "dev"
-  }
+  arg "<profile>" help="desktop (install default) or dev (desktop + dev tools)"
+  complete "profile" descriptions=#true run=#"""
+    printf '%s\n' 'desktop:The install default' 'dev:desktop plus the dev tools'
+    """#
 }
 '''
 run = '''
@@ -56,12 +63,22 @@ set -euo pipefail
 case "${usage_cmd:-}" in
   setup)
     all_parts=(brew yabai app-files vscode bat lig macos swiftbar git shell dev secrets tiling ai skills nvim)
+    # usage passes the repeatable [part] as shell-quoted words, so eval only unquotes them.
+    eval "wanted=(${usage_part:-})"
+    for part in ${wanted[@]+"${wanted[@]}"}; do
+      case " ${all_parts[*]} " in
+        *" $part "*) ;;
+        *)
+          printf 'dots setup: unknown part: %s (expected %s)\n' "$part" "${all_parts[*]}" >&2
+          exit 2
+          ;;
+      esac
+    done
     selected=()
     for part in "${all_parts[@]}"; do
-      var="usage_${part//-/_}"
-      if [ "${!var:-false}" = "true" ]; then
-        selected+=("$part")
-      fi
+      case " ${wanted[*]:-} " in
+        *" $part "*) selected+=("$part") ;;
+      esac
     done
     if [ -z "${selected[*]:-}" ]; then
       selected=("${all_parts[@]}")
@@ -102,7 +119,14 @@ case "${usage_cmd:-}" in
     fi
     ;;
   backup)
-    args=("${usage_action:?}")
+    case "${usage_action:?}" in
+      init | backup | snapshots | restore | forget | audit) ;;
+      *)
+        printf 'dots backup: unknown action: %s (expected init backup snapshots restore forget audit)\n' "$usage_action" >&2
+        exit 2
+        ;;
+    esac
+    args=("$usage_action")
     if [ -n "${usage_include:-}" ]; then
       eval "includes=($usage_include)"
       for inc in "${includes[@]}"; do

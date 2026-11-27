@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // The bootstrap task layout: every step is a hidden bash file extending bootstrap_step, parts.toml defines
-// one hidden dots:setup:<part> task per part flag plus remind covering every step once, and bootstrap.toml's
-// hooks and global bootstrap task call `{{ vars.dots_setup }}` with their phase's part flags.
+// one hidden dots:setup:<part> task per part plus remind covering every step once, and bootstrap.toml's
+// hooks and global bootstrap task call `{{ vars.dots_setup }}` with their phase's parts (arguments, in order).
 import { describe, expect, it } from "bun:test";
 import { readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -9,7 +9,7 @@ import { join, relative } from "node:path";
 const REPO = join(import.meta.dir, "../../..");
 const STEPS = join(REPO, ".mise/tasks/bootstrap");
 
-const PART_FLAGS = [
+const PARTS = [
   "brew",
   "yabai",
   "app-files",
@@ -29,13 +29,13 @@ const PART_FLAGS = [
 ];
 
 const HOOK_PARTS: Record<string, string> = {
-  "post-packages": "--brew --yabai",
-  "pre-dotfiles": "--app-files",
-  "post-dotfiles": "--vscode --bat --lig",
-  "post-defaults": "--macos --swiftbar",
+  "post-packages": "brew yabai",
+  "pre-dotfiles": "app-files",
+  "post-dotfiles": "vscode bat lig",
+  "post-defaults": "macos swiftbar",
 };
 
-const FINAL_PARTS = "--git --shell --dev --secrets --tiling --ai --skills --nvim";
+const FINAL_PARTS = "git shell dev secrets tiling ai skills nvim";
 
 function executable(rel: string): boolean {
   return (statSync(join(STEPS, rel)).mode & 0o111) !== 0;
@@ -98,12 +98,12 @@ maybe("bootstrap task structure", () => {
     }
   });
 
-  it("parts.toml defines exactly one task per part flag plus remind, all hidden, and every step belongs to exactly one part", () => {
+  it("parts.toml defines exactly one task per part plus remind, all hidden, and every step belongs to exactly one part", () => {
     const parts = Bun.TOML.parse(readFileSync(join(STEPS, "parts.toml"), "utf8")) as Record<
       string,
       { hide?: boolean; description?: string; run?: { task?: string }[] }
     >;
-    const expectedParts = [...PART_FLAGS, "remind"].map((p) => `dots:setup:${p}`).sort();
+    const expectedParts = [...PARTS, "remind"].map((p) => `dots:setup:${p}`).sort();
     expect(Object.keys(parts).sort()).toEqual(expectedParts);
 
     const listed = new Set(miseTasks().map((task) => task.name));
@@ -123,7 +123,23 @@ maybe("bootstrap task structure", () => {
     expect(seenSteps.sort()).toEqual(allStepNames);
   });
 
-  it("each hook is {{ vars.dots_setup }} --no-remind plus exactly its phase's part flags", () => {
+  it("dots setup's Tab list and its run order name every part once, in order, with its parts.toml help", () => {
+    const parts = Bun.TOML.parse(readFileSync(join(STEPS, "parts.toml"), "utf8")) as Record<string, { description: string }>;
+    const dots = (Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/tasks.toml"), "utf8")) as {
+      tasks: { dots: { usage: string; run: string } };
+    }).tasks.dots;
+    const setup = dots.usage.split('cmd "backup"')[0] ?? "";
+    // Each `complete` line is 'name:help', with a quote written as '"'"'.
+    const listed = [...setup.matchAll(/^\s*'([a-z-]+):(.*)'(?: \\)?$/gm)].map((m) => [m[1], m[2].replaceAll(`'"'"'`, "'")]);
+    expect(listed.map(([name]) => name)).toEqual(PARTS);
+    for (const [name, help] of listed) {
+      const want = parts[`dots:setup:${name}`].description;
+      expect(help, `${name} help`).toBe(want);
+    }
+    expect(dots.run).toContain(`all_parts=(${PARTS.join(" ")})`);
+  });
+
+  it("each hook is {{ vars.dots_setup }} --no-remind plus exactly its phase's parts", () => {
     const dir = join(REPO, "config/mise/conf.d");
     const found: Record<string, { file: string; run: string }[]> = {};
     for (const file of [...new Bun.Glob("*.toml").scanSync({ cwd: dir })] as string[]) {

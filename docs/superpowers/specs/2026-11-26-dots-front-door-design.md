@@ -19,7 +19,7 @@ The owner wants:
 
 - **One front door:** `mise run dots …`, whose `--help` lists only what dots can do, with subcommands
   `setup`, `backup` and `profile`.
-- **Names that say what:** `dots setup --brew --yabai`; a hook states what it sets up.
+- **Names that say what:** `dots setup brew yabai`; a hook states what it sets up.
 - **Flags over environment variables:** documented (`help`), validated (`choices`), completed in the shell.
 - **One place for values:** hard-coded bootstrap values (above all the dots location) live in one file.
 - **One job per `conf.d` file.**
@@ -28,10 +28,11 @@ The owner wants:
 
 ## Goals
 
-1. `mise run dots --help` lists `setup`, `backup`, `profile`; `mise run dots setup --help` lists one boolean flag per
-   part, each with a one-line help, plus `--profile`.
-2. `dots setup` with no part flags runs every part in the fixed order below; with flags, only those parts, still in
-   that order.
+1. `mise run dots --help` lists `setup`, `backup`, `profile`. The parts (`dots setup [part]...`), backup actions and
+   profiles are positional arguments with a `complete` list: Tab shows each with its one-line help from the first
+   keystroke. (Revised 2026-11-27: the first build used one boolean flag per part and `choices`; the owner's Lig
+   popup offers flags only after `--` and shows `choices` without help. The script validates names, exit 2.)
+2. `dots setup` with no parts runs every part in the fixed order below; with parts, only those, still in that order.
 3. Each part runs hidden step tasks, so per-step `skip_if`, `sources`, `raw`, `--force` and `--dry-run` keep working.
    `mise tasks ls` shows `dots` and no bootstrap step; `mise tasks ls --hidden` shows them all.
 4. Hooks and the global `bootstrap` task call `dots setup` with the parts of their phase.
@@ -164,8 +165,8 @@ cmd "profile" help="Choose this machine's profile and apply it" { arg "<profile>
 
   This order matches today's except one move: `zsh:warm-caches` now runs after `git:hooks` instead of between
   `git:home-config` and `git:hooks`. Neither reads the other's output (author's call). The order spec uses this table.
-- Hooks: `run = "{{ vars.mise }} dots setup --brew --yabai"` (post-packages), `--app-files` (pre-dotfiles),
-  `--vscode --bat --lig` (post-dotfiles), `--macos --swiftbar` (post-defaults); `[tasks.bootstrap]` runs the final
+- Hooks: `run = "{{ vars.mise }} dots setup brew yabai"` (post-packages), `app-files` (pre-dotfiles),
+  `vscode bat lig` (post-dotfiles), `macos swiftbar` (post-defaults); `[tasks.bootstrap]` runs the final
   parts. `vars.mise` renders the profile flags from `mise_env`, passing only names in `desktop`, `dev`, `container`.
 
 ### Hidden tasks and the profile flag (repo)
@@ -193,11 +194,11 @@ cmd "profile" help="Choose this machine's profile and apply it" { arg "<profile>
 
 ## Verification
 
-- `mise run dots --help`, `dots setup --help`, `dots backup --help` show the commands and per-flag help; a bad
-  `--profile` or unknown flag fails before anything runs.
+- `mise run dots --help`, `dots setup --help`, `dots backup --help` show the commands and flags, Tab shows each
+  part, action and profile with its help; a bad `--profile`, part or action fails before anything runs.
 - `mise tasks ls` lists `dots` and no bootstrap step.
 - `mise dot status` and `mise bootstrap plan` identical before and after (saved baselines, diffed).
-- A spec: every part flag has a hidden `dots:setup:<part>` task and vice versa; every step belongs to one part.
+- A spec: every part has a hidden `dots:setup:<part>` task and vice versa; every step belongs to one part.
 - A spec: the run order equals the baseline order (captured from `mise run --dry-run bootstrap:hook:*` before).
 - The hand-over spec runs the real `mise bootstrap` on a temp config for `-E container`, `-E desktop,dev`, miserc and
   no environment, asserting the `dots setup` call and its profile flags.

@@ -36,7 +36,7 @@ hide = true
 run = [{ task = "bootstrap:lig:zsh" }]
 
 ["dots:setup:macos"]
-description = "Apply macOS settings that need $HOME and restart Dock, Finder and menu bar"
+description = "Apply macOS settings that need the home path and restart Dock, Finder and menu bar"
 hide = true
 run = [{ task = "bootstrap:macos:activate" }]
 

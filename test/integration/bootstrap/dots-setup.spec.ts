@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-// The `dots` front door (`config/mise/conf.d/tasks.toml`): `dots setup` runs selected parts in fixed order
-// (or all parts when none are given), followed by `dots:setup:remind`, rejects unknown flags or profiles
+// The `dots` front door (`config/mise/conf.d/tasks.toml`): `dots setup` runs the parts given as arguments in fixed
+// order (or all parts when none are given), followed by `dots:setup:remind`, rejects unknown parts or profiles
 // before any part runs, and forwards the parsed profile as DOTS_PROFILE.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
@@ -75,27 +75,32 @@ function runDots(args: string[], extraEnv: Record<string, string> = {}) {
 }
 
 describe.skipIf(!MISE)("mise run dots setup", () => {
-  it("no flags runs every part in order, then remind", () => {
+  it("no parts runs every part in order, then remind", () => {
     const r = runDots(["setup"]);
     expect(r.code, r.err).toBe(0);
     expect(r.ran.map((l) => l.split(":")[0])).toEqual([...ALL_PARTS, "remind"]);
   });
 
-  it("--git --brew runs brew then git then remind (fixed order, not flag order)", () => {
-    const r = runDots(["setup", "--git", "--brew"]);
+  it("git brew runs brew then git then remind (fixed order, not argument order)", () => {
+    const r = runDots(["setup", "git", "brew"]);
     expect(r.code, r.err).toBe(0);
     expect(r.ran.map((l) => l.split(":")[0])).toEqual(["brew", "git", "remind"]);
   });
 
-  it("--brw fails before any part runs", () => {
-    const r = runDots(["setup", "--brw"]);
-    expect(r.code).not.toBe(0);
+  it("brw (a typo) and --brew (the old flag) exit before any part runs", () => {
+    const r = runDots(["setup", "brw", "git"]);
+    expect(r.code).toBe(2);
+    expect(r.err).toContain("unknown part: brw");
+    expect(r.ran).toEqual([]);
+    const old = runDots(["setup", "--brew"]);
+    expect(old.code).not.toBe(0);
+    expect(old.ran).toEqual([]);
     expect(r.ran).toEqual([]);
   });
 
   it("--profile devv and --profile devops exit 2 before any part runs", () => {
     for (const bad of ["devv", "devops"]) {
-      const r = runDots(["setup", "--profile", bad, "--brew"]);
+      const r = runDots(["setup", "--profile", bad, "brew"]);
       expect(r.code).toBe(2);
       expect(r.err).toContain(`unknown profile: ${bad}`);
       expect(r.ran).toEqual([]);
@@ -103,55 +108,65 @@ describe.skipIf(!MISE)("mise run dots setup", () => {
   });
 
   it("DOTS_PROFILE=desktop,dev is accepted by dots setup", () => {
-    const r = runDots(["setup", "--bat"], { DOTS_PROFILE: "desktop,dev" });
+    const r = runDots(["setup", "bat"], { DOTS_PROFILE: "desktop,dev" });
     expect(r.code, r.err).toBe(0);
     expect(r.ran).toEqual(["bat:desktop,dev", "remind:desktop,dev"]);
   });
 
   it("when neither --profile nor DOTS_PROFILE is given, uses mise_env from miserc.local.toml (filtered) or defaults to desktop", () => {
     // No miserc -> defaults to desktop
-    const def = runDots(["setup", "--dev"]);
+    const def = runDots(["setup", "dev"]);
     expect(def.code, def.err).toBe(0);
     expect(def.ran).toEqual(["dev:desktop", "remind:desktop"]);
 
     // miserc with desktop + dev -> DOTS_PROFILE=desktop,dev
     rmSync(join(t, "ran"), { force: true });
     writeFileSync(join(t, "cfg", "miserc.local.toml"), 'env = ["desktop", "dev"]\n');
-    const dev = runDots(["setup", "--dev"]);
+    const dev = runDots(["setup", "dev"]);
     expect(dev.code, dev.err).toBe(0);
     expect(dev.ran).toEqual(["dev:desktop,dev", "remind:desktop,dev"]);
 
     // miserc with non-profile env -> filters to known profiles only
     rmSync(join(t, "ran"), { force: true });
     writeFileSync(join(t, "cfg", "miserc.local.toml"), 'env = ["desktop", "macos"]\n');
-    const filtered = runDots(["setup", "--dev"]);
+    const filtered = runDots(["setup", "dev"]);
     expect(filtered.code, filtered.err).toBe(0);
     expect(filtered.ran).toEqual(["dev:desktop", "remind:desktop"]);
   });
 
   it("--profile dev reaches the parts as DOTS_PROFILE=dev, and multiple --profile join with commas", () => {
-    const single = runDots(["setup", "--brew", "--profile", "dev"]);
+    const single = runDots(["setup", "brew", "--profile", "dev"]);
     expect(single.code, single.err).toBe(0);
     expect(single.ran).toEqual(["brew:dev", "remind:dev"]);
 
     rmSync(join(t, "ran"), { force: true });
-    const multi = runDots(["setup", "--brew", "--profile", "desktop", "--profile", "dev"]);
+    const multi = runDots(["setup", "brew", "--profile", "desktop", "--profile", "dev"]);
     expect(multi.code, multi.err).toBe(0);
     expect(multi.ran).toEqual(["brew:desktop,dev", "remind:desktop,dev"]);
   });
 
   it("--no-remind skips dots:setup:remind (used by bootstrap hooks)", () => {
-    const r = runDots(["setup", "--no-remind", "--brew"]);
+    const r = runDots(["setup", "--no-remind", "brew"]);
     expect(r.code, r.err).toBe(0);
     expect(r.ran).toEqual(["brew:desktop"]);
   });
 
-  it("mise run dots setup --help lists every part flag with its help, and --profile", () => {
+  it("Tab after `mise run dots setup ` lists every part with its help, in order", () => {
+    const p = Bun.spawnSync([MISE as string, "__complete_word__", "--shell", "zsh", "--line", "mise run dots setup "], {
+      cwd: join(t, "cwd"),
+      env: { HOME: t, PATH: process.env.PATH ?? "/usr/bin:/bin", MISE_CONFIG_DIR: join(t, "cfg"), MISE_TRUSTED_CONFIG_PATHS: t },
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+    const rows = p.stdout.toString().trim().split("\n").map((l) => l.split("\t"));
+    expect(rows.map((r) => r[0])).toEqual(ALL_PARTS);
+    for (const [name, help] of rows) expect(help, `${name} help`).toBeTruthy();
+  });
+
+  it("mise run dots setup --help shows the [part] argument and --profile", () => {
     const r = runDots(["setup", "--help"]);
     expect(r.code, r.err).toBe(0);
-    for (const part of ALL_PARTS) {
-      expect(r.out, `--${part} in help`).toContain(`--${part}`);
-    }
+    expect(r.out).toContain("[part]");
     expect(r.out).toContain("--profile");
   });
 });

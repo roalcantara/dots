@@ -74,29 +74,29 @@ function bootstrap(args: string[], only = "dotfiles") {
 }
 
 describe.skipIf(!MISE)("bootstrap hand-over", () => {
-  it("post-packages calls dots setup --no-remind --brew --yabai", () => {
-    expect(bootstrap([], "packages")).toBe("run dots setup --no-remind --brew --yabai");
+  it("post-packages calls dots setup --no-remind brew yabai", () => {
+    expect(bootstrap([], "packages")).toBe("run dots setup --no-remind brew yabai");
   });
 
   it("-E container gives --profile container", () => {
-    expect(bootstrap(["-E", "container"])).toBe("run dots setup --profile container --no-remind --app-files");
+    expect(bootstrap(["-E", "container"])).toBe("run dots setup --profile container --no-remind app-files");
   });
 
   it("-E desktop,dev gives both profiles", () => {
-    expect(bootstrap(["-E", "desktop,dev"])).toBe("run dots setup --profile desktop --profile dev --no-remind --app-files");
+    expect(bootstrap(["-E", "desktop,dev"])).toBe("run dots setup --profile desktop --profile dev --no-remind app-files");
   });
 
   it("-E desktop,macos gives only desktop (ignores non-profile envs)", () => {
-    expect(bootstrap(["-E", "desktop,macos"])).toBe("run dots setup --profile desktop --no-remind --app-files");
+    expect(bootstrap(["-E", "desktop,macos"])).toBe("run dots setup --profile desktop --no-remind app-files");
   });
 
   it("miserc env reaches the hook", () => {
     writeFileSync(join(t, "cfg", "miserc.local.toml"), 'env = ["desktop", "dev"]\n');
-    expect(bootstrap([])).toBe("run dots setup --profile desktop --profile dev --no-remind --app-files");
+    expect(bootstrap([])).toBe("run dots setup --profile desktop --profile dev --no-remind app-files");
   });
 
   it("no environment gives no --profile (flag default applies)", () => {
-    expect(bootstrap([])).toBe("run dots setup --no-remind --app-files");
+    expect(bootstrap([])).toBe("run dots setup --no-remind app-files");
   });
 
   it("every hook skips remind while [tasks.bootstrap] runs remind once at the end", () => {

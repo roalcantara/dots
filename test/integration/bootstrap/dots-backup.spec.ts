@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // `mise run dots backup <action>` dispatches to `bun {{ vars.dots }}/script/backup.ts <action>` with
-// validated action choices and documented flags (no `--` needed).
+// an action validated in the script (Tab lists each with its help) and documented flags (no `--` needed).
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -104,16 +104,26 @@ describe.skipIf(!MISE)("mise run dots backup", () => {
 
   it("an unknown action fails before bun runs", () => {
     const r = runBackup(["bogus"]);
-    expect(r.code).not.toBe(0);
+    expect(r.code).toBe(2);
+    expect(r.err).toContain("unknown action: bogus");
     expect(r.argv).toEqual([]);
   });
 
-  it("--help lists every action and flag", () => {
+  it("Tab after `mise run dots backup ` lists every action with its help", () => {
+    const p = Bun.spawnSync([MISE as string, "__complete_word__", "--shell", "zsh", "--line", "mise run dots backup "], {
+      cwd: join(t, "cwd"),
+      env: { HOME: t, PATH: `${join(t, "bin")}:${process.env.PATH ?? "/usr/bin:/bin"}`, MISE_CONFIG_DIR: join(t, "cfg"), MISE_TRUSTED_CONFIG_PATHS: t },
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+    const rows = p.stdout.toString().trim().split("\n").map((l) => l.split("\t"));
+    expect(rows.map((r) => r[0])).toEqual(["init", "backup", "snapshots", "restore", "forget", "audit"]);
+    for (const [name, help] of rows) expect(help, `${name} help`).toBeTruthy();
+  });
+
+  it("--help lists every flag", () => {
     const r = runBackup(["--help"]);
     expect(r.code, r.err).toBe(0);
-    for (const action of ["init", "backup", "snapshots", "restore", "forget", "audit"]) {
-      expect(r.out, `action ${action}`).toContain(action);
-    }
     for (const flag of ["--include", "--snapshot", "--from-home", "--target", "--dry-run", "--stdout"]) {
       expect(r.out, `flag ${flag}`).toContain(flag);
     }

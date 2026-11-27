@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // docs/BOOTSTRAP.md is the single source on `mise bootstrap` and the `mise run dots` front door:
-// it documents every bootstrap task, subcommand, part flag, and conf.d file, carries the seven sections,
+// it documents every bootstrap task, subcommand, part, and conf.d file, carries the seven sections,
 // and no doc outside docs/blog/posts and docs/superpowers keeps the retired command names.
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
@@ -24,17 +24,12 @@ function bootstrapTasks(): string[] {
     .filter((name) => name === "bootstrap" || name.startsWith("bootstrap:"));
 }
 
-function setupPartFlags(): string[] {
+function setupParts(): string[] {
   const tasksToml = Bun.TOML.parse(read("config/mise/conf.d/tasks.toml")) as {
     tasks: { dots: { usage: string } };
   };
   const setupBlock = tasksToml.tasks.dots.usage.split('cmd "backup"')[0] ?? "";
-  const flags: string[] = [];
-  for (const m of setupBlock.matchAll(/flag\s+"(--[a-z-]+)"/g)) {
-    const f = m[1];
-    if (f && f !== "--dry-run" && f !== "--no-remind") flags.push(f);
-  }
-  return flags;
+  return [...setupBlock.matchAll(/^\s*'([a-z-]+):/gm)].map((m) => m[1]);
 }
 
 maybe("bootstrap docs", () => {
@@ -45,16 +40,16 @@ maybe("bootstrap docs", () => {
     for (const name of tasks) expect(doc, `${name} is documented`).toContain(`\`${name}\``);
   });
 
-  it("BOOTSTRAP.md documents mise run dots and each subcommand and part flag", () => {
+  it("BOOTSTRAP.md documents mise run dots and each subcommand and part", () => {
     const doc = read("docs/BOOTSTRAP.md");
     expect(doc).toContain("mise run dots");
     for (const sub of ["setup", "backup", "profile"]) {
       expect(doc, `subcommand ${sub}`).toContain(`dots ${sub}`);
     }
-    const flags = setupPartFlags();
-    expect(flags.length).toBe(16);
-    for (const flag of flags) {
-      expect(doc, `part flag ${flag}`).toContain(`\`${flag}\``);
+    const parts = setupParts();
+    expect(parts.length).toBe(16);
+    for (const part of parts) {
+      expect(doc, `part ${part}`).toContain(`\`${part}\``);
     }
   });
 

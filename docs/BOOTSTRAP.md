@@ -29,18 +29,18 @@ flowchart TD
   install[install] --> bootstrap[mise bootstrap]
   bootstrap --> pre["system files<br/>(pre-packages)"]
   pre --> pkgs[system packages]
-  pkgs --> pp["post-packages hook<br/>dots setup --brew --yabai"]
+  pkgs --> pp["post-packages hook<br/>dots setup brew yabai"]
   pp --> files[system files]
-  files --> preD["pre-dotfiles hook<br/>dots setup --app-files"]
+  files --> preD["pre-dotfiles hook<br/>dots setup app-files"]
   preD --> dots[dotfiles]
-  dots --> postD["post-dotfiles hook<br/>dots setup --vscode --bat --lig"]
+  dots --> postD["post-dotfiles hook<br/>dots setup vscode bat lig"]
   postD --> defs[system defaults]
   defs --> login[login items]
-  login --> postDef["post-defaults hook<br/>dots setup --macos --swiftbar"]
+  login --> postDef["post-defaults hook<br/>dots setup macos swiftbar"]
   postDef --> launchd[launchd agents]
   launchd --> shell[login shell]
   shell --> tools[tools]
-  tools --> final["bootstrap task<br/>dots setup --git --shell --dev --secrets --tiling --ai --skills --nvim"]
+  tools --> final["bootstrap task<br/>dots setup git shell dev secrets tiling ai skills nvim"]
 ```
 
 The front door lives in [`config/mise/conf.d/tasks.toml`](../config/mise/conf.d/tasks.toml); hooks and `[tasks.bootstrap]`
@@ -51,13 +51,15 @@ step file tasks live under [`.mise/tasks/bootstrap/`](../.mise/tasks/bootstrap).
 ## Rationale
 
 - **One front door.** `mise run dots --help` lists only what dots can do: `dots setup`, `dots backup`, and
-  `dots profile`. Every part task (`dots:setup:<part>`) and step task (`bootstrap:<area>:<step>`) is hidden (`hide = true`),
+  `dots profile`. Their parts, actions and profiles are positional arguments with a `complete` list, so Tab shows
+  each with its help from the first keystroke (`choices` would show bare names, and flags only after `--`); the
+  task's script validates them and exits 2 on an unknown name. Every part task (`dots:setup:<part>`) and step task (`bootstrap:<area>:<step>`) is hidden (`hide = true`),
   so `mise tasks ls` stays clean while `mise tasks ls --hidden` lists every step.
 - **Declarative first.** Directories, system files, packages, links and macOS preferences are declared in TOML under
   `config/mise/`; `mise bootstrap` diffs and applies them. Shell only does what the schema cannot: cloning, building,
   talking to Keychain, loading a scripting addition.
 - **Thin hooks that name what they set up.** Each `bootstrap.hooks.<phase>` hook is
-  `run = "{{ vars.dots_setup }} --no-remind --<parts>"`, which forwards the selected profiles from `mise_env` as
+  `run = "{{ vars.dots_setup }} --no-remind <part>..."`, which forwards the selected profiles from `mise_env` as
   `--profile <name>` flags and runs `mise run dots setup` (skipping the Brewfile reminder until `[tasks.bootstrap]`
   runs last). There is exactly one hook per phase, all in `config/mise/conf.d/bootstrap.toml`.
 - **File tasks, not TOML strings.** Every step is an executable bash file with `#MISE hide=true`,
@@ -98,38 +100,39 @@ mise run dots profile desktop   # back to desktop (uninstalls nothing)
 
 ## Steps
 
-`mise run dots setup` runs selected parts in this fixed order (or all 16 parts when no part flag is given), followed by
+`mise run dots setup [part]...` runs the parts given (or all 16 when none is given) in this fixed order, whatever
+order you type them in; `mise run dots setup` then Tab lists each part with its help. It ends with
 `dots:setup:remind` (`bootstrap:brew:remind`) once per manual run (and once at the end of `mise bootstrap`, via
-`[tasks.bootstrap]`; the four earlier hooks pass `--no-remind`). The table tells you each part flag, what each step
+`[tasks.bootstrap]`; the four earlier hooks pass `--no-remind`). The table tells you each part, what each step
 does, when it skips, and whether it can ask for input.
 
-| Part flag | Task | Phase | Platform / profile | What it does | Up-to-date check | May prompt |
+| Part | Task | Phase | Platform / profile | What it does | Up-to-date check | May prompt |
 | --- | --- | --- | --- | --- | --- | --- |
-| `--brew` | `bootstrap:brew:install` | post-packages | all, when brew is missing | Installs Homebrew | `skip_if`: any brew on PATH or in a prefix | yes (sudo) |
-| `--brew` | `bootstrap:brew:config-link` | post-packages | all | Links `~/.config/homebrew` into the repo for brew's trust store | `skip_if`: the path exists | no |
-| `--brew` | `bootstrap:brew:bundle` | post-packages | all | Installs the Brewfile: the core group is fatal, the rest warns and records `brew-bundle.failed` | — (brew is idempotent) | no |
-| `--yabai` | `bootstrap:yabai:scripting-addition` | post-packages | macOS | `yb sa`: sudoers rule and boot argument | — | no |
-| `--app-files` | `bootstrap:dotfiles:move-aside` | pre-dotfiles | macOS | Moves real VS Code settings/keybindings/snippets and `~/.config/karabiner` aside, dated | — | no |
-| `--vscode` | `bootstrap:vscode:settings-sync` | post-dotfiles | macOS | Turns Settings Sync off for settings, keybindings and snippets | — | no |
-| `--bat` | `bootstrap:bat:cache` | post-dotfiles | all with bat | Builds bat's theme cache | — | no |
-| `--lig` | `bootstrap:lig:zsh` | post-dotfiles | all with Lig | `mise run zsh:lig` | — | no |
-| `--macos` | `bootstrap:macos:activate` | post-defaults | macOS | Screenshots folder, `duti`, the Spotlight hotkey, restart Dock/Finder/SystemUIServer | — (runs every time, never fails) | no |
-| `--swiftbar` | `bootstrap:macos:swiftbar` | post-defaults | macOS | Points SwiftBar at `~/.config/swiftbar/plugins` | — | no |
-| `--git` | `bootstrap:git:filters` | `bootstrap` task | all | `mise run setup:git:filters` | — | no |
-| `--git` | `bootstrap:git:home-config` | `bootstrap` task | all | Warns when a real `~/.gitconfig` overrides the dots git config | — | no |
-| `--git` | `bootstrap:git:hooks` | `bootstrap` task | desktop | `mise run setup:hooks` | — | no |
-| `--shell` | `bootstrap:zsh:warm-caches` | `bootstrap` task | all | `zsh -ic 'exit'` to build the shell caches | — | no |
-| `--dev` | `bootstrap:dev:python-tools` | `bootstrap` task | dev | `uv tool install` graphifyy and code-review-graph with Python 3.13 | — (`uv tool list`) | no |
-| `--secrets` | `bootstrap:gopass:store` | `bootstrap` task | desktop | Clones `pass-store` once the age identity is there | `skip_if`: `password-store/.git` exists | no |
-| `--secrets` | `bootstrap:gopass:keyring` | `bootstrap` task | desktop | Warns when the keyring still uses a passphrase or an identity file is missing | — | no |
-| `--secrets` | `bootstrap:gopass:pass-link` | `bootstrap` task | desktop | Links `~/.local/bin/pass` to gopass, never replacing a real `pass` | — (idempotent) | no |
-| `--secrets` | `bootstrap:ssh:keychain` | `bootstrap` task | desktop, macOS | Loads the GitHub signing key from Keychain, or stores it there | — | yes (SSH passphrase, once) |
-| `--tiling` | `bootstrap:tiling:checks` | `bootstrap` task | desktop, macOS | Clones the kb Raycast extension and prints SIP/yabai hints | — | no |
-| `--tiling` | `bootstrap:borders:build` | `bootstrap` task | desktop, macOS | Builds JankyBorders at the pinned commit and restarts its service | `skip_if`: `.rev` matches the pin | no |
-| `--ai` | `bootstrap:omlx:models` | `bootstrap` task | desktop, macOS with oMLX | Downloads only the missing models | per-model `config.json` | no |
-| `--skills` | `bootstrap:skills:restore` | `bootstrap` task | dev | Restores the agent skills in the background | — | no |
-| `--nvim` | `bootstrap:nvim:providers` | `bootstrap` task | desktop | Installs the npm and gem Neovim providers when missing | per-provider check | no |
-| `--nvim` | `bootstrap:nvim:plugins` | `bootstrap` task | desktop | `nvim --headless "+Lazy! restore"` | `sources`: `config/nvim/lazy-lock.json` | no |
+| `brew` | `bootstrap:brew:install` | post-packages | all, when brew is missing | Installs Homebrew | `skip_if`: any brew on PATH or in a prefix | yes (sudo) |
+| `brew` | `bootstrap:brew:config-link` | post-packages | all | Links `~/.config/homebrew` into the repo for brew's trust store | `skip_if`: the path exists | no |
+| `brew` | `bootstrap:brew:bundle` | post-packages | all | Installs the Brewfile: the core group is fatal, the rest warns and records `brew-bundle.failed` | — (brew is idempotent) | no |
+| `yabai` | `bootstrap:yabai:scripting-addition` | post-packages | macOS | `yb sa`: sudoers rule and boot argument | — | no |
+| `app-files` | `bootstrap:dotfiles:move-aside` | pre-dotfiles | macOS | Moves real VS Code settings/keybindings/snippets and `~/.config/karabiner` aside, dated | — | no |
+| `vscode` | `bootstrap:vscode:settings-sync` | post-dotfiles | macOS | Turns Settings Sync off for settings, keybindings and snippets | — | no |
+| `bat` | `bootstrap:bat:cache` | post-dotfiles | all with bat | Builds bat's theme cache | — | no |
+| `lig` | `bootstrap:lig:zsh` | post-dotfiles | all with Lig | `mise run zsh:lig` | — | no |
+| `macos` | `bootstrap:macos:activate` | post-defaults | macOS | Screenshots folder, `duti`, the Spotlight hotkey, restart Dock/Finder/SystemUIServer | — (runs every time, never fails) | no |
+| `swiftbar` | `bootstrap:macos:swiftbar` | post-defaults | macOS | Points SwiftBar at `~/.config/swiftbar/plugins` | — | no |
+| `git` | `bootstrap:git:filters` | `bootstrap` task | all | `mise run setup:git:filters` | — | no |
+| `git` | `bootstrap:git:home-config` | `bootstrap` task | all | Warns when a real `~/.gitconfig` overrides the dots git config | — | no |
+| `git` | `bootstrap:git:hooks` | `bootstrap` task | desktop | `mise run setup:hooks` | — | no |
+| `shell` | `bootstrap:zsh:warm-caches` | `bootstrap` task | all | `zsh -ic 'exit'` to build the shell caches | — | no |
+| `dev` | `bootstrap:dev:python-tools` | `bootstrap` task | dev | `uv tool install` graphifyy and code-review-graph with Python 3.13 | — (`uv tool list`) | no |
+| `secrets` | `bootstrap:gopass:store` | `bootstrap` task | desktop | Clones `pass-store` once the age identity is there | `skip_if`: `password-store/.git` exists | no |
+| `secrets` | `bootstrap:gopass:keyring` | `bootstrap` task | desktop | Warns when the keyring still uses a passphrase or an identity file is missing | — | no |
+| `secrets` | `bootstrap:gopass:pass-link` | `bootstrap` task | desktop | Links `~/.local/bin/pass` to gopass, never replacing a real `pass` | — (idempotent) | no |
+| `secrets` | `bootstrap:ssh:keychain` | `bootstrap` task | desktop, macOS | Loads the GitHub signing key from Keychain, or stores it there | — | yes (SSH passphrase, once) |
+| `tiling` | `bootstrap:tiling:checks` | `bootstrap` task | desktop, macOS | Clones the kb Raycast extension and prints SIP/yabai hints | — | no |
+| `tiling` | `bootstrap:borders:build` | `bootstrap` task | desktop, macOS | Builds JankyBorders at the pinned commit and restarts its service | `skip_if`: `.rev` matches the pin | no |
+| `ai` | `bootstrap:omlx:models` | `bootstrap` task | desktop, macOS with oMLX | Downloads only the missing models | per-model `config.json` | no |
+| `skills` | `bootstrap:skills:restore` | `bootstrap` task | dev | Restores the agent skills in the background | — | no |
+| `nvim` | `bootstrap:nvim:providers` | `bootstrap` task | desktop | Installs the npm and gem Neovim providers when missing | per-provider check | no |
+| `nvim` | `bootstrap:nvim:plugins` | `bootstrap` task | desktop | `nvim --headless "+Lazy! restore"` | `sources`: `config/nvim/lazy-lock.json` | no |
 | _(always last)_ | `bootstrap:brew:remind` | `bootstrap` task | all | Repeats the `brew-bundle.failed` warning | — | no |
 
 Tiling is covered by `bootstrap:yabai:scripting-addition`, `bootstrap:borders:build`, and the LaunchAgents in
@@ -145,8 +148,8 @@ mise run dots setup --help
 mise run dots backup --help
 
 # Run one or more setup parts (always in fixed order, followed by brew:remind)
-mise run dots setup --brew --yabai
-mise run dots setup --git --shell --profile desktop --profile dev
+mise run dots setup brew yabai
+mise run dots setup git shell --profile desktop --profile dev
 mise run dots setup --dry-run
 
 # Run a single hidden step by hand (inherits --profile default desktop, or DOTS_PROFILE)
@@ -242,7 +245,7 @@ flag to `config/mise/conf.d/tasks.toml`). Add a spec under `test/integration/boo
 - **SIP is fully on.** yabai's scripting addition needs it partly off: in Recovery,
   `csrutil enable --without fs --without debug --without nvram`, reboot, run `mise bootstrap` again, reboot. See
   [`docs/TILING.md`](TILING.md).
-- **Stale shell or theme caches.** `mise run dots setup --shell --lig --bat` rebuilds them (or run individual hidden
+- **Stale shell or theme caches.** `mise run dots setup shell lig bat` rebuilds them (or run individual hidden
   steps `bootstrap:zsh:warm-caches`, `bootstrap:bat:cache`, and `mise run zsh:lig`).
 - **Find the log.** Every step appends to `~/.local/state/dots/logs/latest.log` (the ten newest runs are kept).
   `mise run dots setup --dry-run` shows the parts and steps in order without running anything.
