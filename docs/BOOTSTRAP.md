@@ -57,8 +57,9 @@ step file tasks live under [`.mise/tasks/bootstrap/`](../.mise/tasks/bootstrap).
   `config/mise/`; `mise bootstrap` diffs and applies them. Shell only does what the schema cannot: cloning, building,
   talking to Keychain, loading a scripting addition.
 - **Thin hooks that name what they set up.** Each `bootstrap.hooks.<phase>` hook is
-  `run = "{{ vars.dots_setup }} --<parts>"`, which forwards the selected profiles from `mise_env` as `--profile <name>`
-  flags and runs `mise run dots setup`. There is exactly one hook per phase, all in `config/mise/conf.d/bootstrap.toml`.
+  `run = "{{ vars.dots_setup }} --no-remind --<parts>"`, which forwards the selected profiles from `mise_env` as
+  `--profile <name>` flags and runs `mise run dots setup` (skipping the Brewfile reminder until `[tasks.bootstrap]`
+  runs last). There is exactly one hook per phase, all in `config/mise/conf.d/bootstrap.toml`.
 - **File tasks, not TOML strings.** Every step is an executable bash file with `#MISE hide=true`,
   `#MISE extends="bootstrap_step"` (shared `--profile` flag backed by `DOTS_PROFILE`), and `#MISE description`. That
   gives linting (shellcheck, shfmt), a per-step spec, direct `mise run bootstrap:<area>:<step>`, and the task features
@@ -75,11 +76,14 @@ Decisions live in [`docs/adr/`](adr/README.md); this page records the mechanics.
 
 ## Profiles
 
-The profile is a validated `--profile` flag (`desktop`, `dev`, `container`; default `desktop`). `mise run dots profile <profile>`
-runs `mise bootstrap -E <list> --save-env --yes`, which records it in `config/mise/miserc.local.toml` (even when the run
-fails); `mise bootstrap -E <profile>` alone overrides it for one run. `install` writes that file itself: its bootstrap
-runs with a temporary `~/.config/mise`, where `--save-env` would save it. Steps check `has_profile`, which validates
-`usage_profile` and matches whole names (`dev` does not match `devops`).
+The profile is a validated `--profile` flag (`desktop`, `dev`, `container`). `dots setup` accepts repeatable
+`--profile` flags or a comma list (including `DOTS_PROFILE=desktop,dev`), exits 2 on unknown names, and when neither
+`--profile` nor `DOTS_PROFILE` is given uses this run's filtered `mise_env` (`miserc.local.toml` / `-E`), else
+`desktop`. `mise run dots profile <profile>` runs `mise bootstrap -E <list> --save-env --yes`, which records it in
+`config/mise/miserc.local.toml` (even when the run fails); `mise bootstrap -E <profile>` alone overrides it for one
+run. `install` writes that file itself: its bootstrap runs with a temporary `~/.config/mise`, where `--save-env` would
+save it. Steps check `has_profile`, which validates `usage_profile` and matches whole names (`dev` does not match
+`devops`).
 
 | Profile | What runs |
 | --- | --- |
@@ -95,8 +99,9 @@ mise run dots profile desktop   # back to desktop (uninstalls nothing)
 ## Steps
 
 `mise run dots setup` runs selected parts in this fixed order (or all 16 parts when no part flag is given), followed by
-`dots:setup:remind` (`bootstrap:brew:remind`). The table tells you each part flag, what each step does, when it skips,
-and whether it can ask for input.
+`dots:setup:remind` (`bootstrap:brew:remind`) once per manual run (and once at the end of `mise bootstrap`, via
+`[tasks.bootstrap]`; the four earlier hooks pass `--no-remind`). The table tells you each part flag, what each step
+does, when it skips, and whether it can ask for input.
 
 | Part flag | Task | Phase | Platform / profile | What it does | Up-to-date check | May prompt |
 | --- | --- | --- | --- | --- | --- | --- |

@@ -178,7 +178,10 @@ cmd "profile" help="Choose this machine's profile and apply it" { arg "<profile>
 - Every step file task is `hide = true` and takes `--profile` from one shared definition (a `.usage.kdl` flagset or a
   task template; the builder picks one and uses it everywhere). `has_profile` reads `usage_profile`; `_lib.sh` stops
   reading `DOTS_PROFILE`, `MISE_ENV` and `miserc.local.toml` itself (the flag's `env="DOTS_PROFILE"` covers manual
-  runs).
+  runs). On `dots setup`, `--profile` also accepts comma-separated `DOTS_PROFILE` (validating every name and exiting 2
+  on unknown names), falls back to this run's filtered `mise_env` (else `desktop`) when neither `--profile` nor
+  `DOTS_PROFILE` is given, and supports `--no-remind` (passed by hooks so `brew:remind` runs once per `mise bootstrap`
+  and once per manual `dots setup`).
 
 ### File merges
 
