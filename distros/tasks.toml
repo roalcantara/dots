@@ -140,7 +140,6 @@ eval "${DOCKER_CMD[*]}"
 '''
 
 # mise run test
-# mise run test --tag local
 # mise run test --image dots:debian-qc
 
 ["test"]

@@ -66,8 +66,10 @@ jobs:
           fetch-depth: 0
       - name: Check whether bootstrap is needed
         id: filter
+        # Diff first: piped, a git error or a SIGPIPE (the filter exits on the first match) would read as "skip".
         run: |
-          if git diff --name-only "origin/$GITHUB_BASE_REF...HEAD" | .github/needs-bootstrap.sh; then
+          changed="$(git diff --name-only "origin/$GITHUB_BASE_REF...HEAD")"
+          if .github/needs-bootstrap.sh <<< "$changed"; then
             echo "bootstrap=true" >> "$GITHUB_OUTPUT"
           else
             echo "bootstrap=false" >> "$GITHUB_OUTPUT"

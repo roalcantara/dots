@@ -183,7 +183,7 @@ esac
 '''
 
 # `mise doctor project` runs these from any folder. The first two call repo file tasks (.mise/tasks/mise/).
-# This Mac's mise is the reference for every committed MISE_VERSION pin (install and both Dockerfiles).
+# This Mac's mise is the reference for every committed MISE_VERSION pin (install and distros/bootstrap.sh).
 [doctor.checks.mise-version]
 description = "Every MISE_VERSION pin matches this Mac's mise"
 run = "mise run -C {{ vars.dots }} mise:version --check"

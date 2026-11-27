@@ -14,6 +14,9 @@ let binDir: string;
 let logFile: string;
 let curlLog: string;
 
+// What `mise bootstrap -E container --save-env` leaves behind; STUB_NO_SAVE leaves it out.
+const SAVE_ENV = `[ "\${1:-}" = bootstrap ] && [ -z "\${STUB_NO_SAVE:-}" ] && printf 'env = ["container"]\\n' > "$HOME/.config/mise/miserc.local.toml"`;
+
 function writeStub(dir: string, name: string, body: string) {
   const path = join(dir, name);
   writeFileSync(path, `#!/usr/bin/env bash\n${body}\n`);
@@ -41,6 +44,7 @@ mkdir -p "$HOME/.local/bin"
 cat <<'MISE' > "$HOME/.local/bin/mise"
 #!/usr/bin/env bash
 printf 'DOTS_STRICT=%s ARGS=%s\\n' "\${DOTS_STRICT:-}" "$*" >> "${logFile}"
+${SAVE_ENV}
 exit \${STUB_MISE_EXIT:-0}
 MISE
 chmod +x "$HOME/.local/bin/mise"
@@ -89,6 +93,7 @@ describe("distros/bootstrap.sh", () => {
   exit 0
 fi
 printf 'DOTS_STRICT=%s ARGS=%s\\n' "\${DOTS_STRICT:-}" "$*" >> "${logFile}"
+${SAVE_ENV}
 exit \${STUB_MISE_EXIT:-0}`,
     );
     const r = run();
@@ -99,6 +104,12 @@ exit \${STUB_MISE_EXIT:-0}`,
   it("a failing bootstrap fails the script", () => {
     const r = run({ STUB_MISE_EXIT: "3" });
     expect(r.code).toBe(3);
+  });
+
+  it("fails when bootstrap did not save the container profile, so doctor cannot pass vacuously", () => {
+    const r = run({ STUB_NO_SAVE: "1" });
+    expect(r.code).toBe(1);
+    expect(r.err).toContain("did not save the container profile");
   });
 
   it("the Dockerfile's local and remote stages call distros/bootstrap.sh and carry no MISE_VERSION", () => {
