@@ -140,6 +140,12 @@ describe.skipIf(!MISE)("mise run dots setup", () => {
     expect(multi.ran).toEqual(["brew:desktop,dev", "remind:desktop,dev"]);
   });
 
+  it("--no-remind skips dots:setup:remind (used by bootstrap hooks)", () => {
+    const r = runDots(["setup", "--no-remind", "--brew"]);
+    expect(r.code, r.err).toBe(0);
+    expect(r.ran).toEqual(["brew:desktop"]);
+  });
+
   it("mise run dots setup --help lists every part flag with its help, and --profile", () => {
     const r = runDots(["setup", "--help"]);
     expect(r.code, r.err).toBe(0);

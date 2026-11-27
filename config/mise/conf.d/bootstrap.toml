@@ -94,26 +94,26 @@ mode = "0644"
 # Homebrew and every user package, then yabai's scripting addition.
 [bootstrap.hooks.post-packages]
 description = "Install Homebrew and every user package, then yabai's scripting addition"
-run = "{{ vars.dots_setup }} --brew --yabai"
+run = "{{ vars.dots_setup }} --no-remind --brew --yabai"
 
 # A link never replaces a real file, and VS Code (or Settings Sync) and Karabiner-Elements write real ones on first
 # launch, so `--app-files` moves them aside. It also runs before mise dot apply.
 [bootstrap.hooks.pre-dotfiles]
 description = "Move app-written copies (VS Code settings, keybindings, snippets; ~/.config/karabiner) aside for the dots links"
-run = "{{ vars.dots_setup }} --app-files"
+run = "{{ vars.dots_setup }} --no-remind --app-files"
 
 # Settings Sync would merge the cloud copy back into the linked files, so `--vscode` turns it off for settings,
 # keybindings and snippets, then `--bat` builds bat's theme cache and `--lig` caches Lig's zsh integration.
 [bootstrap.hooks.post-dotfiles]
 description = "Turn off VS Code Settings Sync for settings, keybindings and snippets; set up bat's themes and Lig"
-run = "{{ vars.dots_setup }} --vscode --bat --lig"
+run = "{{ vars.dots_setup }} --no-remind --vscode --bat --lig"
 
 # mise cannot restart apps or write a preference whose value is an absolute path. `--macos` points screenshots
 # at ~/Pictures/Screenshots, sets the default apps in ~/.config/duti and the Spotlight hotkey without a logout,
 # restarts Dock, Finder and the menu bar, then `--swiftbar` points SwiftBar at its plugins.
 [bootstrap.hooks.post-defaults]
 description = "Apply the macOS settings that need $HOME and point SwiftBar at its plugins"
-run = "{{ vars.dots_setup }} --macos --swiftbar"
+run = "{{ vars.dots_setup }} --no-remind --macos --swiftbar"
 
 # Runs last on every `mise bootstrap`: installs git's filters and hooks first, then the remaining tools.
 [tasks.bootstrap]

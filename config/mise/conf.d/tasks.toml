@@ -22,6 +22,7 @@ cmd "setup" help="Install and configure parts of this machine; no flags means al
   flag "--nvim"      help="Neovim providers and plugins"
   flag "--profile <profile>" var=#true env="DOTS_PROFILE" help="Bootstrap profile(s) to apply (desktop, dev, container; defaults to mise_env, else desktop)"
   flag "--dry-run"   help="Show the parts and steps that would run without executing them"
+  flag "--no-remind" hide=#true help="Skip dots:setup:remind at the end (used by bootstrap hooks)"
 }
 cmd "backup" help="Back up and restore this machine with restic" {
   arg "<action>" help="Backup action" {
@@ -96,7 +97,9 @@ case "${usage_cmd:-}" in
     for part in "${selected[@]}"; do
       mise run -C "{{ vars.dots }}" ${run_flags[@]+"${run_flags[@]}"} "dots:setup:$part"
     done
-    mise run -C "{{ vars.dots }}" ${run_flags[@]+"${run_flags[@]}"} dots:setup:remind
+    if [ "${usage_no_remind:-false}" != "true" ]; then
+      mise run -C "{{ vars.dots }}" ${run_flags[@]+"${run_flags[@]}"} dots:setup:remind
+    fi
     ;;
   backup)
     args=("${usage_action:?}")

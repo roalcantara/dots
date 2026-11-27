@@ -32,7 +32,7 @@ function setupPartFlags(): string[] {
   const flags: string[] = [];
   for (const m of setupBlock.matchAll(/flag\s+"(--[a-z-]+)"/g)) {
     const f = m[1];
-    if (f && f !== "--dry-run") flags.push(f);
+    if (f && f !== "--dry-run" && f !== "--no-remind") flags.push(f);
   }
   return flags;
 }

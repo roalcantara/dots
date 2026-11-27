@@ -123,7 +123,7 @@ maybe("bootstrap task structure", () => {
     expect(seenSteps.sort()).toEqual(allStepNames);
   });
 
-  it("each hook is {{ vars.dots_setup }} plus exactly its phase's part flags", () => {
+  it("each hook is {{ vars.dots_setup }} --no-remind plus exactly its phase's part flags", () => {
     const dir = join(REPO, "config/mise/conf.d");
     const found: Record<string, { file: string; run: string }[]> = {};
     for (const file of [...new Bun.Glob("*.toml").scanSync({ cwd: dir })] as string[]) {
@@ -138,7 +138,7 @@ maybe("bootstrap task structure", () => {
     for (const [phase, defs] of Object.entries(found)) {
       expect(defs, `${phase} is defined once`).toHaveLength(1);
       expect(defs[0].file, `${phase} lives in bootstrap.toml`).toBe("bootstrap.toml");
-      expect(defs[0].run, `${phase} hands over`).toBe(`{{ vars.dots_setup }} ${HOOK_PARTS[phase]}`);
+      expect(defs[0].run, `${phase} hands over`).toBe(`{{ vars.dots_setup }} --no-remind ${HOOK_PARTS[phase]}`);
     }
   });
 
