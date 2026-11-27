@@ -1,5 +1,3 @@
-# https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
-# https://docs.docker.com/build/ci/github-actions/test-before-push
 ---
 name: Preview
 
@@ -19,10 +17,6 @@ defaults:
 env:
   CI: true
   FORCE_COLOR: true
-  DOCKER_BUILDKIT: 1
-  BUILDKIT_INLINE_CACHE: 1
-  REGISTRY_IMAGE: ${{ github.repository }}
-  PLATFORMS: ${{ vars.PLATFORMS || 'linux/amd64' }}
 
 jobs:
   brewfile:
@@ -47,116 +41,57 @@ jobs:
             HOMEBREW_DOTS_PROFILE=$p brew bundle list --all --file config/homebrew/Brewfile
             echo "::endgroup::"
           done
+
   lint:
-    runs-on: ${{ matrix.runner }}
+    runs-on: ubuntu-24.04
     if: github.event.pull_request.draft == false
-    strategy:
-      matrix:
-        distro: [debian, ubuntu]
-        include:
-          - distro: debian
-            runner: ubuntu-24.04
-          - distro: ubuntu
-            runner: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v2.1.0
         with:
-          dockerfile: distros/${{ matrix.distro }}/Dockerfile
+          dockerfile: distros/debian/Dockerfile
           config: ./.hadolint.yaml
-  validate:
-    runs-on: ${{ matrix.runner }}
-    timeout-minutes: 30
-    needs: [lint, brewfile]
-    strategy:
-      matrix:
-        distro: [debian, ubuntu]
-        include:
-          - distro: debian
-            runner: ubuntu-latest
-          - distro: ubuntu
-            runner: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-      checks: write
+
+  changes:
+    runs-on: ubuntu-24.04
+    if: github.event.pull_request.draft == false
     outputs:
-      DISTRO: ${{ matrix.distro }}
-      SHORT_SHA: ${{ steps.setup.outputs.SHORT_SHA }}
-      IMAGE_NAME: ${{ steps.setup.outputs.IMAGE_NAME }}
-      REGISTRY_URL_TAGS: ${{ steps.setup.outputs.REGISTRY_URL_TAGS }}
-      REGISTRY_URL: ${{ steps.setup.outputs.REGISTRY_URL }}
-      IMAGE_INFO: ${{ steps.setup.outputs.IMAGE_INFO }}
+      bootstrap: ${{ steps.filter.outputs.bootstrap }}
     steps:
-      - name: Free disk space
-        if: env.ACT != 'true'
-        run: |
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/boost "$AGENT_TOOLSDIRECTORY"
-          df -h /
-      - name: Setup outputs
-        id: setup
-        run: |
-          short_sha=$(echo "$GITHUB_SHA" | cut -c1-7)
-          registry_url_tags="https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags"
-          {
-            echo "DISTRO=${{ matrix.distro }}"
-            echo "SHORT_SHA=$short_sha"
-            echo "IMAGE_NAME=${{ env.REGISTRY_IMAGE }}:${{ matrix.distro }}-pr-${{ github.event.pull_request.number }}-${short_sha}"
-            echo "REGISTRY_URL_TAGS=${registry_url_tags}"
-            echo "REGISTRY_URL=${registry_url_tags}?name=pr-${{ github.event.pull_request.number }}-${short_sha}"
-          } >> "$GITHUB_OUTPUT"
-        env:
-          GITHUB_SHA: ${{ github.sha }}
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Login to Docker Hub
-        if: env.ACT != 'true'
-        uses: docker/login-action@v3
         with:
-          username: roalcantara
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      # Make the QEMU setup conditional on whether you're building arm64 (or any non-amd64 platform)
-      - name: Set up QEMU
-        if: contains(env.PLATFORMS, 'arm64')
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build and export to Docker
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          target: remote
-          build-args: |
-            BRANCH=${{ github.head_ref || github.ref_name }}
-          file: distros/${{ matrix.distro }}/Dockerfile
-          platforms: ${{ env.PLATFORMS }}
-          load: true
-          push: false
-          tags: ${{ steps.setup.outputs.IMAGE_NAME }}-amd64
-          github-token: ${{ secrets.GH_TOKEN }}
-          secrets: github_token=${{ secrets.GH_TOKEN }}
-          cache-from: ${{ env.ACT != 'true' && format('type=gha,scope=build-{0}-amd64
-            type=registry,ref=docker.io/{1}-cache:{0}', matrix.distro, env.REGISTRY_IMAGE) || '' }}
-          cache-to: ${{ env.ACT != 'true' && format('type=gha,scope=build-{0}-amd64,mode=max
-            type=registry,ref=docker.io/{1}-cache:{0},mode=max', matrix.distro, env.REGISTRY_IMAGE) || '' }}
-      - name: Check the image size
-        env:
-          IMAGE: ${{ steps.setup.outputs.IMAGE_NAME }}-amd64
-          BUDGET_BYTES: ${{ vars.IMAGE_BUDGET_BYTES || '2800000000' }}
+          fetch-depth: 0
+      - name: Check whether bootstrap is needed
+        id: filter
         run: |
-          size=$(docker image inspect "$IMAGE" --format '{{.Size}}')
-          echo "image size: $((size / 1000000)) MB (budget $((BUDGET_BYTES / 1000000)) MB)" | tee -a "$GITHUB_STEP_SUMMARY"
-          [ "$size" -le "$BUDGET_BYTES" ] || { echo "::error::image is over budget"; exit 1; }
-      - name: Run Container Structure Test (${{ matrix.distro }}/amd64)
-        uses: docker://gcr.io/gcp-runtimes/container-structure-test:latest
-        with:
-          args: test -v debug --force --output junit --test-report cst_junit_report.xml --config distros/${{ matrix.distro }}/container-structure-test.yml --image ${{ steps.setup.outputs.IMAGE_NAME }}-amd64
-      - name: Upload Test Report
-        if: always()
-        uses: mikepenz/action-junit-report@v5
-        with:
-          report_paths: cst_junit_report.xml
-          check_name: Container Structure Tests (${{ matrix.distro }}/amd64)
+          if git diff --name-only "origin/$GITHUB_BASE_REF...HEAD" | .github/needs-bootstrap.sh; then
+            echo "bootstrap=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "bootstrap=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  bootstrap:
+    runs-on: ubuntu-24.04
+    needs: [changes, lint, brewfile]
+    if: needs.changes.outputs.bootstrap == 'true'
+    container: mcr.microsoft.com/devcontainers/base:debian
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Copy checkout for vscode
+        run: |
+          mkdir -p /home/vscode/.local/share
+          cp -a "$GITHUB_WORKSPACE" /home/vscode/.local/share/dots
+          chown -R vscode:vscode /home/vscode/.local/share/dots
+      - name: Run strict container bootstrap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          sudo -u vscode -H env GITHUB_TOKEN="$GITHUB_TOKEN" bash /home/vscode/.local/share/dots/distros/bootstrap.sh
+      - name: Run mise doctor project
+        run: |
+          sudo -u vscode -H /usr/bin/zsh -lic 'mise doctor project'
