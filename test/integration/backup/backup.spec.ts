@@ -206,6 +206,14 @@ describe("errors", () => {
   it("exits 2 on an unknown command", () => {
     expect(cli(["nope"], { HOME: tmpdir() }).code).toBe(2);
   });
+  it("exits 2 on a flag the action does not take, before touching restic (forget --dry-run must not prune)", () => {
+    const env = { HOME: tmpdir(), DOTS_BACKUP_ROOT: "/nonexistent/root", DOTS_BACKUP_HOST: "t" };
+    for (const argv of [["forget", "--dry-run"], ["backup", "--dry-run"], ["init", "--stdout"], ["snapshots", "--include", "Work"], ["audit", "--dry-run"]]) {
+      const r = cli(argv, env);
+      expect(r.code, argv.join(" ")).toBe(2);
+      expect(r.err, argv.join(" ")).toContain("does not take");
+    }
+  });
 });
 
 describe.skipIf(!hasRestic)("end to end with restic", () => {

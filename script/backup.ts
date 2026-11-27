@@ -408,6 +408,10 @@ const USAGE = "usage: bun script/backup.ts audit [--stdout] | init | backup | sn
 if (import.meta.main) {
   const [command, ...args] = process.argv.slice(2);
   if (!command || command === "-h" || command === "--help") die(USAGE, command ? 0 : 2);
+  // Only restore (all its flags) and audit (--stdout) take flags; refuse the rest so `forget --dry-run` cannot prune.
+  const allowed = command === "restore" ? null : command === "audit" ? ["--stdout"] : [];
+  const extra = allowed ? args.filter((a) => !allowed.includes(a)) : [];
+  if (extra.length) die(`${command} does not take ${extra.join(" ")}\n${USAGE}`, 2);
   const m = loadManifest();
   const ctx = context(m);
   switch (command) {
