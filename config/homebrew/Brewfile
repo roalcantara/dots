@@ -139,7 +139,6 @@ brew "taplo"  # TOML linter and formatter
 brew "markdownlint-cli"  # Markdown linter
 brew "markdownlint-cli2"  # Markdown linter
 brew "lua-language-server"  # Language server for Lua
-brew "container-structure-test"  # Container structure testing tool
 brew "mermaid-cli"  # CLI for Mermaid
 brew "pkl"  # Pkl language CLI
 brew "pkl-lsp" if OS.mac?  # Pkl language server

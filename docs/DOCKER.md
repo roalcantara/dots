@@ -4,43 +4,40 @@ Operational manual for Dots container images under `distros/` and GitHub Actions
 
 ## Overview
 
-Dots builds reproducible multi-stage Docker development images based on Debian and Ubuntu:
+Dots builds a reproducible multi-stage Docker development image based on Debian:
 
 | File | Role |
 | --- | --- |
-| `distros/<distro>/Dockerfile` | Multi-stage image definitions (`base`, `local`, `remote`, `publish`) |
-| `distros/<distro>/container-structure-test.yml` | Container Structure Test (CST) assertions |
-| `distros/<distro>/.dockerignore` | Build-context exclusions per distribution |
-| `.hadolint.yaml` | Lint rules for Dockerfiles |
+| `distros/bootstrap.sh` | Shared strict container bootstrap script called by both the Dockerfile and PR CI |
+| `distros/debian/Dockerfile` | Multi-stage image definition (`base`, `local`, `remote`, `publish`) |
+| `distros/debian/.dockerignore` | Build-context exclusions |
+| `.hadolint.yaml` | Lint rules for the Dockerfile |
 | `distros/tasks.toml` | Task wrappers: `build`, `test`, `start` |
 | `.github/workflows/` | CI/CD pipelines: `preview.yml`, `publish.yml`, `release.yml` |
 
-The build context is always the repository root (`.`). Dockerfiles do not run `install`: each stage installs `mise` and executes `mise bootstrap -E container` directly. The pipeline they run is documented in [BOOTSTRAP.md](BOOTSTRAP.md).
+The build context is always the repository root (`.`). The Dockerfile does not run `install`: each stage calls `distros/bootstrap.sh`, which installs the pinned `mise` and executes `DOTS_STRICT=1 mise bootstrap -E container --save-env --force-dotfiles --skip user --yes`. The pipeline it runs is documented in [BOOTSTRAP.md](BOOTSTRAP.md).
 
 ## Distro layout
 
 ```text
 distros/
-├── debian/
-│   ├── Dockerfile
-│   ├── container-structure-test.yml
-│   └── .dockerignore
-└── ubuntu/
+├── bootstrap.sh
+├── tasks.toml
+└── debian/
     ├── Dockerfile
-    ├── container-structure-test.yml
     └── .dockerignore
 ```
 
 ### Multi-stage targets
 
-Both Debian and Ubuntu Dockerfiles share four distinct build targets:
+The Debian Dockerfile defines four build targets:
 
 | Target | Purpose | Install source | Typical tag |
 | --- | --- | --- | --- |
-| `base` | Microsoft base image (`mcr.microsoft.com/devcontainers/base:<distro>`) | Upstream registry | — |
-| `local` | Dev iteration with committed changes (excludes uncommitted edits) | `git archive HEAD` + `mise bootstrap` | `dots:<distro>-local` |
-| `remote` | CI, PR preview, branch testing | `git clone` of branch + `mise bootstrap` | `dots:<distro>` |
-| `publish` | Docker Hub release build | `git archive HEAD` + `mise bootstrap` | `dots:<distro>-<version>` |
+| `base` | Microsoft base image (`mcr.microsoft.com/devcontainers/base:debian`) | Upstream registry | — |
+| `local` | Dev iteration with committed changes (excludes uncommitted edits) | `git archive HEAD` + `distros/bootstrap.sh` | `dots:debian-local` |
+| `remote` | Branch testing | `git clone` of branch + `distros/bootstrap.sh` | `dots:debian` |
+| `publish` | Docker Hub release build | `git archive HEAD` + `distros/bootstrap.sh` | `dots:debian-<version>` |
 
 Local and publish builds run `git archive HEAD` with the SOPS smudge filter disabled (`-c filter.sops.smudge=cat`), ensuring encrypted secrets remain encrypted inside the build context. Stages execute as the non-root `vscode` user.
 
@@ -57,31 +54,31 @@ Builds a Docker image using BuildKit:
 mise run build
 
 # Local dev iteration with committed tree
-mise run build --local --distro ubuntu --tag local
+mise run build --local --distro debian --tag local
 
 # Specific platform or branch
-mise run build --distro ubuntu --platform amd64 --branch main
+mise run build --distro debian --platform amd64 --branch main
 ```
 
 Key flags:
 
-- `--distro`: `debian` (default) or `ubuntu`.
+- `--distro`: `debian` (default).
 - `--platform`: `arm64` (default), `amd64`, etc.
 - `--local`: build target `local` from git archive.
 - `--publish`: build target `publish`.
-- `--tag`: suffix appended to image name (`dots:<distro>-<tag>`).
+- `--tag`: suffix appended to image name (`dots:debian-<tag>`).
 - `--nocache`: pass `--no-cache` to docker build.
 
 ### `mise run test`
 
-Runs Google Container Structure Tests against a built image:
+Runs `mise doctor project` in a login Zsh shell inside a built image:
 
 ```sh
 # Default: tests dots:debian-arm64
 mise run test
 
-# Test specific image with explicit config
-mise run test --image dots:ubuntu-local --config distros/ubuntu/container-structure-test.yml
+# Test a specific image
+mise run test --image dots:debian-local
 ```
 
 ### `mise run start`
@@ -98,7 +95,6 @@ Hadolint rules are configured in `.hadolint.yaml`. Run locally via:
 
 ```sh
 hadolint --config .hadolint.yaml distros/debian/Dockerfile
-hadolint --config .hadolint.yaml distros/ubuntu/Dockerfile
 ```
 
 ## Continuous Integration (CI)
@@ -107,11 +103,12 @@ Dots maintains three GitHub Actions workflows in `.github/workflows/`:
 
 ### 1. PR Preview (`.github/workflows/preview.yml`)
 
-Runs automatically on pull requests targeting `main`:
+Runs automatically on non-draft pull requests targeting `main`:
 
-1. **`brewfile` job:** Verifies that `config/homebrew/Brewfile` parses without errors under both `container` and `desktop` profiles (`HOMEBREW_DOTS_PROFILE=<p> brew bundle list`).
-2. **`lint` job:** Runs Hadolint against `distros/debian/Dockerfile` and `distros/ubuntu/Dockerfile`.
-3. **`validate` job:** Builds `remote` target Docker images on `linux/amd64` using GitHub Actions layer cache, runs Container Structure Tests with JUnit reporting, and asserts image size against the repository `IMAGE_BUDGET_BYTES` limit (2 GB).
+1. **`brewfile` job:** Verifies that `config/homebrew/Brewfile` parses without errors under `container`, `desktop`, and `desktop,dev` profiles (`HOMEBREW_DOTS_PROFILE=<p> brew bundle list`).
+2. **`lint` job:** Runs Hadolint against `distros/debian/Dockerfile`.
+3. **`changes` job:** Pipes changed paths into `.github/needs-bootstrap.sh`; skips bootstrap when every changed file is under `docs/**` or `*.md`.
+4. **`bootstrap` job:** When `changes` requires it, runs `distros/bootstrap.sh` strictly inside `mcr.microsoft.com/devcontainers/base:debian` as `vscode`, followed by `mise doctor project` in a login Zsh shell — no Docker image build on PRs.
 
 ### 2. Publish (`.github/workflows/publish.yml`)
 
@@ -119,8 +116,8 @@ Runs upon publishing a new GitHub release:
 
 1. Triggers on `release` published events.
 2. Authenticates to Docker Hub via `DOCKERHUB_TOKEN`.
-3. Builds the `publish` target for Debian and Ubuntu across configured platforms (`linux/amd64`, `linux/arm64`).
-4. Tags and pushes release images: `<repo>:<distro>-<version>`.
+3. Builds the `linux/amd64` `publish` target, runs `mise doctor project` inside it, and checks its size against `IMAGE_BUDGET_BYTES` (default 2.8 GB).
+4. Builds and pushes the multi-platform Debian image (`linux/amd64`, `linux/arm64`) with tags `debian-latest`, `debian-<version>`, `debian-<major>.<minor>`, `debian-<major>`, and `debian-<sha>`.
 
 ### 3. Automated Release (`.github/workflows/release.yml`)
 

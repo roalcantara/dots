@@ -1,10 +1,9 @@
 # Repo tasks for this topic, included by the root mise.toml (`config/*/tasks.toml`, `*/tasks.toml`); they run from
 # the repo root. Task names are top-level tables here (docs/CONTRIBUTING.md, "Mise task conventions").
-# Docker images: build, run and structure-test the dots images (distros/<distro>/Dockerfile).
+# Docker images: build, run and doctor-check the dots Debian image (distros/debian/Dockerfile).
 
 # mise run build
 # mise run build --nocache
-# mise run build --nocache --distro ubuntu
 # mise run build --nocache --local
 # mise run build --nocache --local --user vscode --tag latest
 
@@ -16,7 +15,7 @@ usage = '''
   flag "--publish" help="Publish image to Docker Hub"
   flag "--distro <distro>" {
     help "Distribution"
-    choices "debian" "ubuntu"
+    choices "debian"
     default "debian"
   }
   flag "--platform <platform>" {
@@ -114,7 +113,7 @@ description = "Start a container"
 usage = '''
   flag "--distro <distro>" {
     help "Distribution"
-    choices "debian" "ubuntu"
+    choices "debian"
     default "debian"
   }
   flag "--tag <tag>" help="Image tag suffix (dots:<distro>-<tag>)"
@@ -133,12 +132,7 @@ DOCKER_CMD=(
 if [ -n "${usage_tag:-}" ]; then
   DOCKER_CMD+=(dots:"${usage_distro?}"-"$usage_tag")
 else
-  case "${usage_distro?}" in
-    debian)   DISTRO_NAME="base:debian" ;;
-    ubuntu)   DISTRO_NAME="base:ubuntu" ;;
-    *)        DISTRO_NAME="base:debian" ;;
-  esac
-  DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/"$DISTRO_NAME")
+  DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/base:debian)
 fi
 
 echo "  ==> ${DOCKER_CMD[*]}"
@@ -146,15 +140,15 @@ eval "${DOCKER_CMD[*]}"
 '''
 
 # mise run test
-# mise run test --distro ubuntu --tag latest
-# mise run test --image dots:debian-amd64-latest --config distros/debian/container-structure-test.yml
+# mise run test --tag local
+# mise run test --image dots:debian-qc
 
 ["test"]
-description = "Run the Container Structure Tests for the Docker image"
+description = "Run mise doctor project inside a built Docker image"
 usage = '''
   flag "--distro <distro>" {
     help "Distribution"
-    choices "debian" "ubuntu"
+    choices "debian"
     default "debian"
   }
   flag "--platform <platform>" {
@@ -164,14 +158,10 @@ usage = '''
   }
   flag "--tag <tag>" help="Image tag segment when composing image name"
   flag "--image <image>" help="Full image reference (overrides distro/platform/tag)"
-  flag "--config <config>" help="CST config path"
 '''
 run = '''
 #!/usr/bin/env bash
-
-CST_CMD=(
-  container-structure-test test
-)
+set -euo pipefail
 
 if [ -z "${usage_image:-}" ]; then
   USAGE_IMAGE="dots:${usage_distro?}"
@@ -184,14 +174,7 @@ if [ -z "${usage_image:-}" ]; then
 else
   USAGE_IMAGE="${usage_image?}"
 fi
-CST_CMD+=(--image "$USAGE_IMAGE")
 
-if [ -n "${usage_config:-}" ]; then
-  CST_CMD+=(--config "$usage_config")
-else
-  CST_CMD+=(--config "distros/${usage_distro?}/container-structure-test.yml")
-fi
-
-echo "  ==> ${CST_CMD[*]}"
-eval "${CST_CMD[*]}"
+echo "  ==> docker run --rm --entrypoint /usr/bin/zsh $USAGE_IMAGE -lic 'mise doctor project'"
+docker run --rm --entrypoint /usr/bin/zsh "$USAGE_IMAGE" -lic 'mise doctor project'
 '''

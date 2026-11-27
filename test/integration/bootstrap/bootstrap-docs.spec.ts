@@ -88,4 +88,28 @@ maybe("bootstrap docs", () => {
       expect(doc, `## ${heading}`).toContain(`## ${heading}`);
     }
   });
+
+  it("no file outside docs/blog/posts and docs/superpowers mentions removed container test tool or ubuntu distro", () => {
+    const pattern = ["container-structure-" + "test", "distros/" + "ubuntu", "\\bC" + "ST\\b"].join("|");
+    const p = Bun.spawnSync(
+      [
+        "git",
+        "-c",
+        "filter.sops.clean=cat",
+        "-c",
+        "filter.sops.smudge=cat",
+        "grep",
+        "-n",
+        "-E",
+        pattern,
+        "--",
+        ":!docs/blog/posts",
+        ":!docs/superpowers",
+        ":!config/kodexb/sources/docker.yml",
+        ":!config/kodexb/sources/flox.yml",
+      ],
+      { cwd: REPO, stdout: "pipe", stderr: "pipe" },
+    );
+    expect(p.stdout.toString().trim()).toBe("");
+  });
 });

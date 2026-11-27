@@ -97,15 +97,13 @@ cheats:
 
           bashrc returns early in a non-interactive shell: use `bash --rcfile … -i`.
 
-          ## 3. The images and their structure tests (minutes)
+          ## 3. The Debian image and doctor checks (minutes)
 
           Images build from the committed tree (`git archive HEAD`): commit first.
 
           ```sh
           mise run build --local --distro debian --tag local
-          mise run test --image dots:debian-local --config distros/debian/container-structure-test.yml
-          mise run build --local --distro ubuntu --tag local
-          mise run test --image dots:ubuntu-local --config distros/ubuntu/container-structure-test.yml
+          mise run test --image dots:debian-local
           ```
 
           A formula that fails or builds from source on Linux arm64: add `env = "desktop"` to its entry in
@@ -536,9 +534,7 @@ commands:
     notes:
       - sh: | #shell
           mise run build --local --distro debian --tag local
-          mise run test --image dots:debian-local --config distros/debian/container-structure-test.yml
-          mise run build --local --distro ubuntu --tag local
-          mise run test --image dots:ubuntu-local --config distros/ubuntu/container-structure-test.yml
+          mise run test --image dots:debian-local
   bash assets/specs/mise-bootstrap/e2e/run.sh:
     desc: End-to-end install test in Docker with a throwaway age key and history
     tags: [dots, docker, secrets]

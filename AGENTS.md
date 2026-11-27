@@ -11,7 +11,7 @@ and builds reproducible development Docker images under `distros/`.
 | Folder | Contents |
 | --- | --- |
 | `config/` | Application configurations linked into `~/.config`, Homebrew `Brewfile`, shell helpers (`config/bin`), and mise bootstrap fragments (`config/mise/conf.d/`) |
-| `distros/` | Dockerfiles and Container Structure Test manifests for Debian and Ubuntu images |
+| `distros/` | Debian Dockerfile and shared container bootstrap script (`distros/bootstrap.sh`) |
 | `docs/` | Canonical documentation and architecture decisions (`docs/adr/`), agent specs/plans (`docs/superpowers/`), and the blog (`docs/blog/`: posts, playbook, roadmap) |
 | `*/tasks.toml` | Repo mise tasks, each next to what it manages (`config/zsh/tasks.toml`, `distros/tasks.toml`, …), included by the root `mise.toml` ([`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) §4) |
 | `.mise/tasks/` | Bun file tasks run by mise (`.mise/tasks/blog/`: `blog:status`, `blog:new`, `blog:check`, `blog:publish`, …) |
@@ -36,8 +36,9 @@ Keep every gate green before declaring work complete:
 
 - `mise run test:specs` — runs BDD scenarios and all Bun integration test domains (`bin`, `backup`, `bootstrap`, `agents`, `hooks`, `blog`).
 - `hk check --all` — runs repository linters (shellcheck, shfmt, taplo, tombi, hadolint, markdownlint, yamllint, zsh-syntax).
+- `mise doctor project` — runs project doctor checks (pins, mise diagnostics, git config, and container checks when in a container).
 - `mise run zsh:verify` — runs syntax checks and benchmark verification for Zsh configuration changes.
-- `mise run build --local --distro <d>` and `mise run test --image dots:<d>-<tag> --config distros/<d>/container-structure-test.yml` — required for Dockerfile, CST, or bootstrap changes.
+- `mise run build --local --distro debian --tag <tag>` and `mise run test --image dots:debian-<tag>` — required for Dockerfile or bootstrap changes.
 
 ## Hard rules
 
@@ -55,7 +56,7 @@ Keep every gate green before declaring work complete:
 - `mise-tasks` — orchestrate tasks, task dependencies, or usage specifications (repo tasks live in `<folder>/tasks.toml`; see `docs/CONTRIBUTING.md` §4).
 - `mise-expert` — manage mise tool versions, plugins, or environment variables.
 - `bash-scripting` — write or debug bash scripts with defensive error handling and ShellCheck compliance.
-- `docker-expert` — optimize multi-stage Docker builds, container configs, and CST assertions.
+- `docker-expert` — optimize multi-stage Docker builds and container configs.
 - `writing-plans` — sequence multi-step technical plans with checkpoints and verification steps.
 - `brainstorming` — explore tradeoffs, architectural decisions, and alternatives before designing features.
 - `verification-before-completion` — execute smoke tests and assert concrete results before completing tasks.
@@ -69,7 +70,7 @@ Keep every gate green before declaring work complete:
 - [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — commit conventions, code style standards, and mise task conventions.
 - [`docs/adr/`](docs/adr/README.md) — architecture decisions (ADRs): why things are the way they are.
 - [`docs/BOOTSTRAP.md`](docs/BOOTSTRAP.md) — what `mise bootstrap` runs, its phase and file tasks, recipes and gotchas.
-- [`docs/DOCKER.md`](docs/DOCKER.md) — container images, CST testing, and GitHub Actions CI pipelines.
+- [`docs/DOCKER.md`](docs/DOCKER.md) — Debian container image, `mise doctor project` checks, and GitHub Actions CI pipelines.
 - [`docs/REINSTALL.md`](docs/REINSTALL.md) — backup runbook and clean-machine reinstall procedure.
 - [`docs/MACOS.md`](docs/MACOS.md) — macOS preferences (`config/mise/conf.d/macos.toml`), drift checks, and undo.
 - [`docs/TILING.md`](docs/TILING.md) — yabai tiling, the fn layer (`config/karabiner`, `config/bin/yb`), and their setup.

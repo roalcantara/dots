@@ -196,7 +196,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | Playbook                                               | Where                                                                                             |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
 | Test `install` in a container                          | [Docker guide](docs/DOCKER.md#testing-install-in-a-container)                                      |
-| Build, run and structure-test the Docker images        | [Docker guide](docs/DOCKER.md)                                                                    |
+| Build, run and doctor-check the Debian Docker image    | [Docker guide](docs/DOCKER.md)                                                                    |
 | Run the tests (BDD and integration specs)              | [Testing guide](docs/TESTING.md#verification-gates)                                               |
 | Verify and benchmark zsh startup                       | [Testing guide](docs/TESTING.md#zsh-startup)                                                      |
 | Prepare a reinstall (backups, new-Mac runbook)         | [Reinstall guide](docs/REINSTALL.md)                                                              |
@@ -226,7 +226,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | -------------------------------------------- | -------------------------------------------------------------------- |
 | [`install`](install)                         | The one-liner's bootstrap script                                     |
 | [`config/`](config)                          | Everything linked into `~/.config`, plus the mise config             |
-| [`distros/`](distros)                        | Debian and Ubuntu Dockerfiles and structure tests                    |
+| [`distros/`](distros)                        | Debian Dockerfile and shared container bootstrap script              |
 | [`docs/`](docs)                              | Canonical documentation, agent specs/plans, and the blog (`docs/blog`) |
 | [`.mise/tasks/`](.mise/tasks)                  | Bun file tasks run by mise (the blog's `blog:*` tasks)               |
 | [`.agents/`](.agents)                        | Project agent commands (`/blog:*`); `.claude/commands` links to them |
@@ -243,7 +243,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 - [`docs/TESTING.md`](docs/TESTING.md) — Verification gates, Bun integration spec architecture, BDD and Gherkin rules, and Definition of Done.
 - [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — Commit conventions, code style standards, and mise task conventions.
 - [`docs/BOOTSTRAP.md`](docs/BOOTSTRAP.md) — What `mise bootstrap` runs: phases, file tasks, recipes, gotchas and troubleshooting.
-- [`docs/DOCKER.md`](docs/DOCKER.md) — Container images, CST testing, and GitHub Actions CI pipelines.
+- [`docs/DOCKER.md`](docs/DOCKER.md) — Debian container image, `mise doctor project` checks, and GitHub Actions CI pipelines.
 - [`docs/REINSTALL.md`](docs/REINSTALL.md) — Backup runbook and clean-machine reinstall procedure.
 - [`docs/MACOS.md`](docs/MACOS.md) — macOS preferences applied by the bootstrap, drift checks, undo, and the manual checklist.
 - [`docs/TILING.md`](docs/TILING.md) — yabai tiling, the ten spaces, the fn keys (Karabiner), setup and troubleshooting.
