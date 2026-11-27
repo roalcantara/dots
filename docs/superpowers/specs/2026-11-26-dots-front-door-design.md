@@ -1,6 +1,6 @@
 # dots front door: one command, one place for values, one job per conf.d file
 
-Status: draft · Branch: `feat/mise-bootstrap-tasks` · Follows:
+Status: approved (2026-11-26) · Branch: `feat/mise-bootstrap-tasks` · Follows:
 [`2026-11-26-mise-bootstrap-tasks-design.md`](2026-11-26-mise-bootstrap-tasks-design.md)
 
 ## Intent
