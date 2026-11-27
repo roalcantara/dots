@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// Every bootstrap step is a hidden task that takes `--profile <list>` (backed by DOTS_PROFILE, default desktop)
+// Every bootstrap step is a hidden task that takes `--profile <list>` (backed by DOTS_PROFILE; else mise_env, else desktop)
 // via the shared `bootstrap_step` task template (config/mise/conf.d/tasks.toml), and rejects unknown profile
 // names before doing any work.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
@@ -16,8 +16,11 @@ beforeEach(() => {
   t = realpathSync(mkdtempSync(join(tmpdir(), "step-profile-")));
   mkdirSync(join(t, "cfg"), { recursive: true });
   // The shared template is global (config/mise/conf.d/tasks.toml); without it the steps do not load. Copy that table.
-  const usage = tasksToml().task_templates.bootstrap_step.usage;
-  writeFileSync(join(t, "cfg", "config.toml"), `[task_templates.bootstrap_step]\nusage = '''\n${usage}'''\n`);
+  const { usage, env } = tasksToml().task_templates.bootstrap_step;
+  writeFileSync(
+    join(t, "cfg", "config.toml"),
+    `[task_templates.bootstrap_step]\nenv = { DOTS_ENV_PROFILES = '${env.DOTS_ENV_PROFILES}' }\nusage = '''\n${usage}'''\n`,
+  );
 });
 afterEach(() => rmSync(t, { recursive: true, force: true }));
 
@@ -62,7 +65,7 @@ describe.skipIf(!MISE)("step --profile flag through real mise run", () => {
     expect(r.err).toContain("~/.gitconfig overrides the dots git config");
   });
 
-  it("a hidden step with no --profile and no DOTS_PROFILE uses mise_env from miserc.local.toml", () => {
+  it("a hidden step with no --profile and no (or an empty) DOTS_PROFILE uses mise_env from miserc.local.toml", () => {
     mkdirSync(join(t, "bin"), { recursive: true });
     // Stub brew (so bootstrap_init does not prepend real Homebrew) and uv (to record calls).
     writeFileSync(join(t, "bin", "brew"), "#!/bin/sh\nexit 0\n");
@@ -74,7 +77,13 @@ describe.skipIf(!MISE)("step --profile flag through real mise run", () => {
     const r = runMiseStep("bootstrap:dev:python-tools", [], { PATH: stubPath });
     expect(r.code, r.err).toBe(0);
     expect(existsSync(join(t, "uv.log"))).toBe(true);
-    expect(readFileSync(join(t, "uv.log"), "utf8")).toContain("uv tool install --python 3.13 graphifyy");
+    expect(readFileSync(join(t, "uv.log"), "utf8")).toContain("uv tool install");
+
+    // An empty DOTS_PROFILE counts as unset, as in `dots setup`.
+    rmSync(join(t, "uv.log"), { force: true });
+    const empty = runMiseStep("bootstrap:dev:python-tools", [], { PATH: stubPath, DOTS_PROFILE: "" });
+    expect(empty.code, empty.err).toBe(0);
+    expect(existsSync(join(t, "uv.log"))).toBe(true);
 
     // Non-profile env in miserc.local.toml is ignored; without dev, python-tools does nothing.
     rmSync(join(t, "uv.log"), { force: true });

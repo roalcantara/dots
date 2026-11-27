@@ -9,7 +9,7 @@ export type Part = { name: string; help: string; steps: string[] };
 
 export function tasksToml(): {
   vars: { dots_setup_parts: string };
-  task_templates: Record<string, { usage: string }>;
+  task_templates: Record<string, { usage: string; env: Record<string, string> }>;
   tasks: Record<string, { run: string; usage?: string; description?: string }>;
   doctor: { checks: Record<string, { run: string; hint?: string }> };
 } {

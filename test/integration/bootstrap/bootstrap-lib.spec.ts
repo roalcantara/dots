@@ -51,6 +51,14 @@ describe("has_profile", () => {
     expect(has("dev", { DOTS_PROFILE: "container", MISE_ENV: "dev" })).toBe("no");
   });
 
+  it("falls back to DOTS_ENV_PROFILES (the template's filtered mise_env) when usage_profile is unset or empty", () => {
+    const has = (name: string, env: Record<string, string>) =>
+      run(`. "$1"; has_profile ${name} && echo yes || echo no`, env).out;
+    expect(has("dev", { DOTS_ENV_PROFILES: "desktop,dev" })).toBe("yes");
+    expect(has("dev", { usage_profile: "", DOTS_ENV_PROFILES: "dev" })).toBe("yes");
+    expect(has("dev", { usage_profile: "desktop", DOTS_ENV_PROFILES: "dev" })).toBe("no");
+  });
+
   it("exits 2 on a profile name outside desktop, dev, container", () => {
     const r = run('. "$1"; has_profile dev', { usage_profile: "desktop,devv" });
     expect(r.code).toBe(2);

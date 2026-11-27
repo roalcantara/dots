@@ -4,13 +4,20 @@
 
 DOTS_DIR="${DOTS_DIR:-$HOME/.local/share/dots}"
 
-# Validate usage_profile (from each step's --profile flag, backed by DOTS_PROFILE, default desktop).
+# The step's profile list: --profile (backed by DOTS_PROFILE), else DOTS_ENV_PROFILES (this run's mise_env filtered to
+# profile names, set by the bootstrap_step template), else desktop.
+step_profiles()
+                {
+  printf '%s' "${usage_profile:-${DOTS_ENV_PROFILES:-desktop}}"
+}
+
+# Validate the step's profiles.
 # Exits 2 on any name outside desktop, dev, container.
 validate_profile()
                    {
   local item items
   # read, not an unquoted $list, so a * in the profile is not expanded to file names.
-  IFS=', ' read -r -a items <<< "${usage_profile:-desktop}"
+  IFS=', ' read -r -a items <<< "$(step_profiles)"
   for item in ${items[@]+"${items[@]}"}; do
     [ -n "$item" ] || continue
     case "$item" in
@@ -23,12 +30,12 @@ validate_profile()
   done
 }
 
-# True when usage_profile contains exactly this name (split on commas or spaces): dev does not match devops.
+# True when the step's profiles contain exactly this name (split on commas or spaces): dev does not match devops.
 has_profile()
               {
   validate_profile
   local target="$1" item items
-  IFS=', ' read -r -a items <<< "${usage_profile:-desktop}"
+  IFS=', ' read -r -a items <<< "$(step_profiles)"
   for item in ${items[@]+"${items[@]}"}; do
     [ "$item" = "$target" ] && return 0
   done
