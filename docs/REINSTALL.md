@@ -252,7 +252,7 @@ taplo check config/restic/backup.toml
 
 ## 6. Tasks
 
-Global mise tasks are defined in `config/mise/conf.d/backup.toml`. Additional arguments must follow `--`.
+The global `dots` task in `config/mise/conf.d/tasks.toml` runs these (`mise run dots backup <action> [flags]`); Tab lists the actions with their help, and flags need no `--`.
 
 ### `mise run dots backup audit`
 
