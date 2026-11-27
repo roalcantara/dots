@@ -93,10 +93,40 @@ describe.skipIf(!MISE)("mise run dots setup", () => {
     expect(r.ran).toEqual([]);
   });
 
-  it("--profile devv fails before any part runs", () => {
-    const r = runDots(["setup", "--profile", "devv", "--brew"]);
-    expect(r.code).not.toBe(0);
-    expect(r.ran).toEqual([]);
+  it("--profile devv and --profile devops exit 2 before any part runs", () => {
+    for (const bad of ["devv", "devops"]) {
+      const r = runDots(["setup", "--profile", bad, "--brew"]);
+      expect(r.code).toBe(2);
+      expect(r.err).toContain(`unknown profile: ${bad}`);
+      expect(r.ran).toEqual([]);
+    }
+  });
+
+  it("DOTS_PROFILE=desktop,dev is accepted by dots setup", () => {
+    const r = runDots(["setup", "--bat"], { DOTS_PROFILE: "desktop,dev" });
+    expect(r.code, r.err).toBe(0);
+    expect(r.ran).toEqual(["bat:desktop,dev", "remind:desktop,dev"]);
+  });
+
+  it("when neither --profile nor DOTS_PROFILE is given, uses mise_env from miserc.local.toml (filtered) or defaults to desktop", () => {
+    // No miserc -> defaults to desktop
+    const def = runDots(["setup", "--dev"]);
+    expect(def.code, def.err).toBe(0);
+    expect(def.ran).toEqual(["dev:desktop", "remind:desktop"]);
+
+    // miserc with desktop + dev -> DOTS_PROFILE=desktop,dev
+    rmSync(join(t, "ran"), { force: true });
+    writeFileSync(join(t, "cfg", "miserc.local.toml"), 'env = ["desktop", "dev"]\n');
+    const dev = runDots(["setup", "--dev"]);
+    expect(dev.code, dev.err).toBe(0);
+    expect(dev.ran).toEqual(["dev:desktop,dev", "remind:desktop,dev"]);
+
+    // miserc with non-profile env -> filters to known profiles only
+    rmSync(join(t, "ran"), { force: true });
+    writeFileSync(join(t, "cfg", "miserc.local.toml"), 'env = ["desktop", "macos"]\n');
+    const filtered = runDots(["setup", "--dev"]);
+    expect(filtered.code, filtered.err).toBe(0);
+    expect(filtered.ran).toEqual(["dev:desktop", "remind:desktop"]);
   });
 
   it("--profile dev reaches the parts as DOTS_PROFILE=dev, and multiple --profile join with commas", () => {

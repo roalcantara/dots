@@ -20,9 +20,7 @@ cmd "setup" help="Install and configure parts of this machine; no flags means al
   flag "--ai"        help="Download oMLX models"
   flag "--skills"    help="Restore global agent skills (dev profile)"
   flag "--nvim"      help="Neovim providers and plugins"
-  flag "--profile <profile>" var=#true env="DOTS_PROFILE" default="desktop" help="Bootstrap profile(s) to apply" {
-    choices "desktop" "dev" "container"
-  }
+  flag "--profile <profile>" var=#true env="DOTS_PROFILE" help="Bootstrap profile(s) to apply (desktop, dev, container; defaults to mise_env, else desktop)"
   flag "--dry-run"   help="Show the parts and steps that would run without executing them"
 }
 cmd "backup" help="Back up and restore this machine with restic" {
@@ -67,8 +65,30 @@ case "${usage_cmd:-}" in
     if [ -z "${selected[*]:-}" ]; then
       selected=("${all_parts[@]}")
     fi
+    raw_profile="${usage_profile:-}"
+    if [ -z "$raw_profile" ]; then
+      raw_profile="{% if mise_env is defined %}{% for e in mise_env %}{% if e == 'desktop' or e == 'dev' or e == 'container' %}{{ e }} {% endif %}{% endfor %}{% endif %}"
+    fi
+    profiles=()
+    IFS=', ' read -r -a raw_items <<< "${raw_profile:-desktop}"
+    for item in "${raw_items[@]}"; do
+      [ -n "$item" ] || continue
+      case "$item" in
+        desktop | dev | container) profiles+=("$item") ;;
+        *)
+          printf 'dots setup: unknown profile: %s (expected desktop, dev, or container)\n' "$item" >&2
+          exit 2
+          ;;
+      esac
+    done
+    if [ -z "${profiles[*]:-}" ]; then
+      profiles=(desktop)
+    fi
     export DOTS_PROFILE
-    DOTS_PROFILE="$(printf '%s' "${usage_profile:-desktop}" | tr ' ' ',')"
+    DOTS_PROFILE="$(
+      IFS=,
+      printf '%s' "${profiles[*]}"
+    )"
     run_flags=()
     if [ "${usage_dry_run:-false}" = "true" ]; then
       run_flags+=(--dry-run)
