@@ -1,10 +1,11 @@
 #!/usr/bin/env bun
-// The bootstrap task layout: every step is a hidden bash file extending bootstrap_step, parts.toml defines
-// one hidden dots:setup:<part> task per part plus remind covering every step once, and bootstrap.toml's
-// hooks and global bootstrap task call `{{ vars.dots_setup }}` with their phase's parts (arguments, in order).
+// The bootstrap task layout: every step is a hidden bash file extending bootstrap_step, tasks.toml's
+// vars.dots_setup_parts names each part and its steps, covering every step once, and bootstrap.toml's hooks and
+// tasks.toml's bootstrap task call `{{ vars.dots_setup }}` with their phase's parts (arguments, in order).
 import { describe, expect, it } from "bun:test";
 import { readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { parts, tasksToml } from "./parts";
 
 const REPO = join(import.meta.dir, "../../..");
 const STEPS = join(REPO, ".mise/tasks/bootstrap");
@@ -98,45 +99,26 @@ maybe("bootstrap task structure", () => {
     }
   });
 
-  it("parts.toml defines exactly one task per part plus remind, all hidden, and every step belongs to exactly one part", () => {
-    const parts = Bun.TOML.parse(readFileSync(join(STEPS, "parts.toml"), "utf8")) as Record<
-      string,
-      { hide?: boolean; description?: string; run?: { task?: string }[] }
-    >;
-    const expectedParts = [...PARTS, "remind"].map((p) => `dots:setup:${p}`).sort();
-    expect(Object.keys(parts).sort()).toEqual(expectedParts);
-
+  it("vars.dots_setup_parts names each part once, in order, with a help, and every step belongs to exactly one part", () => {
     const listed = new Set(miseTasks().map((task) => task.name));
+    expect(parts().map((p) => p.name)).toEqual(PARTS);
     const seenSteps: string[] = [];
-    for (const [name, part] of Object.entries(parts)) {
-      expect(part.hide, `${name} hide`).toBe(true);
-      expect(part.description, `${name} description`).toBeTruthy();
-      expect(listed.has(name), `${name} is registered`).toBe(true);
-      for (const step of part.run ?? []) {
-        if (step.task) {
-          expect(listed.has(step.task), `${name} step ${step.task} exists`).toBe(true);
-          seenSteps.push(step.task);
-        }
+    for (const part of parts()) {
+      expect(part.help, `${part.name} help`).toBeTruthy();
+      for (const step of part.steps) {
+        expect(listed.has(step), `${part.name} step ${step} exists`).toBe(true);
+        seenSteps.push(step);
       }
     }
-    const allStepNames = steps().map(stepTaskName).sort();
-    expect(seenSteps.sort()).toEqual(allStepNames);
+    // Every step file runs in exactly one part, except the Brewfile reminder, which dots setup runs last.
+    expect([...seenSteps, "bootstrap:brew:remind"].sort()).toEqual(steps().map(stepTaskName).sort());
   });
 
-  it("dots setup's Tab list and its run order name every part once, in order, with its parts.toml help", () => {
-    const parts = Bun.TOML.parse(readFileSync(join(STEPS, "parts.toml"), "utf8")) as Record<string, { description: string }>;
-    const dots = (Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/tasks.toml"), "utf8")) as {
-      tasks: { dots: { usage: string; run: string } };
-    }).tasks.dots;
-    const setup = dots.usage.split('cmd "backup"')[0] ?? "";
-    // Each `complete` line is 'name:help', with a quote written as '"'"'.
-    const listed = [...setup.matchAll(/^\s*'([a-z-]+):(.*)'(?: \\)?$/gm)].map((m) => [m[1], m[2].replaceAll(`'"'"'`, "'")]);
-    expect(listed.map(([name]) => name)).toEqual(PARTS);
-    for (const [name, help] of listed) {
-      const want = parts[`dots:setup:${name}`].description;
-      expect(help, `${name} help`).toBe(want);
-    }
-    expect(dots.run).toContain(`all_parts=(${PARTS.join(" ")})`);
+  it("dots setup renders its Tab list and its run order from vars.dots_setup_parts", () => {
+    const dots = tasksToml().tasks.dots;
+    expect(dots.usage).toContain("vars.dots_setup_parts");
+    expect(dots.run).toContain("vars.dots_setup_parts");
+    expect(dots.usage).not.toMatch(/^\s*'brew:/m);
   });
 
   it("each hook is {{ vars.dots_setup }} --no-remind plus exactly its phase's parts", () => {
@@ -159,10 +141,7 @@ maybe("bootstrap task structure", () => {
   });
 
   it("[tasks.bootstrap] carries the final parts", () => {
-    const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
-      tasks: { bootstrap: { run: string } };
-    };
-    expect(conf.tasks.bootstrap.run).toBe(`{{ vars.dots_setup }} ${FINAL_PARTS}`);
+    expect(tasksToml().tasks.bootstrap.run).toBe(`{{ vars.dots_setup }} ${FINAL_PARTS}`);
   });
 
   it("dots_setup takes profiles from mise_env and holds no shell $", () => {

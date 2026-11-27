@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { stepsOf } from "./parts";
 import { runStep, skipIf } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
@@ -56,10 +57,7 @@ describe("borders/build.sh up-to-date check", () => {
 describe("bootstrap janky-borders step", () => {
   it("runs in the tiling part after the tiling checks", () => {
     expect(readFileSync(join(REPO, ".mise/tasks/bootstrap", STEP), "utf8")).toContain(REV);
-    const parts = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/parts.toml"), "utf8")) as {
-      "dots:setup:tiling": { run: { task: string }[] };
-    };
-    const order = parts["dots:setup:tiling"].run.map((s) => s.task);
+    const order = stepsOf("tiling");
     expect(order.indexOf("bootstrap:borders:build")).toBeGreaterThan(order.indexOf("bootstrap:tiling:checks"));
   });
 

@@ -2,11 +2,12 @@
 // dots owns git's config in ~/.config/git/config. A real ~/.gitconfig is read after it and wins: `gh auth setup-git`
 // once wrote a since-removed mise gh's absolute path there, so every https push asked for a password. install gives
 // the bootstrap run a gh credential helper through the environment only, and bootstrap and `mise doctor project`
-// report a stray ~/.gitconfig.
+// report a stray ~/.gitconfig (the doctor check is in config/mise/conf.d/tasks.toml).
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { stepsOf, tasksToml } from "./parts";
 import { runStep } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
@@ -61,15 +62,14 @@ describe("bootstrap:git:home-config", () => {
   });
 
   it("runs in the git part, right after the git filters", () => {
-    const parts = readFileSync(join(REPO, ".mise/tasks/bootstrap/parts.toml"), "utf8");
-    expect(parts).toContain('{ task = "bootstrap:git:filters" },\n  { task = "bootstrap:git:home-config" },');
+    const order = stepsOf("git");
+    expect(order.indexOf("bootstrap:git:home-config")).toBe(order.indexOf("bootstrap:git:filters") + 1);
   });
 });
 
 describe("mise doctor project", () => {
   it("has a check that fails while ~/.gitconfig exists", () => {
-    const cfg = Bun.TOML.parse(readFileSync(join(REPO, "mise.toml"), "utf8")) as { doctor: { checks: Record<string, { run: string }> } };
-    const run = cfg.doctor.checks["home-gitconfig"]?.run ?? "false-not-defined";
+    const run = tasksToml().doctor.checks["home-gitconfig"]?.run ?? "false-not-defined";
     const sh = (home: string) => Bun.spawnSync(["bash", "-c", run], { env: { HOME: home, PATH: "/usr/bin:/bin" } }).exitCode;
     expect(sh(t)).toBe(0);
     writeFileSync(join(t, ".gitconfig"), "");

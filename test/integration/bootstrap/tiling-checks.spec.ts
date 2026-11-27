@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { stepsOf } from "./parts";
 import { runStep } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
@@ -45,10 +46,7 @@ describe("bootstrap tiling-checks step", () => {
     const step = readFileSync(join(REPO, ".mise/tasks/bootstrap", STEP), "utf8");
     expect(step).toContain("docs/TILING.md");
     expect(step).toContain("has_profile desktop || exit 0");
-    const parts = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/parts.toml"), "utf8")) as {
-      "dots:setup:tiling": { run: { task: string }[] };
-    };
-    const order = parts["dots:setup:tiling"].run.map((s) => s.task);
+    const order = stepsOf("tiling");
     expect(order).toContain("bootstrap:tiling:checks");
   });
 

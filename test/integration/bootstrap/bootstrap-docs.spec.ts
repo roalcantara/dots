@@ -5,6 +5,9 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { parts as setupParts } from "./parts";
+
+const setupPartNames = () => setupParts().map((p) => p.name);
 
 const REPO = join(import.meta.dir, "../../..");
 const read = (rel: string) => readFileSync(join(REPO, rel), "utf8");
@@ -24,13 +27,6 @@ function bootstrapTasks(): string[] {
     .filter((name) => name === "bootstrap" || name.startsWith("bootstrap:"));
 }
 
-function setupParts(): string[] {
-  const tasksToml = Bun.TOML.parse(read("config/mise/conf.d/tasks.toml")) as {
-    tasks: { dots: { usage: string } };
-  };
-  const setupBlock = tasksToml.tasks.dots.usage.split('cmd "backup"')[0] ?? "";
-  return [...setupBlock.matchAll(/^\s*'([a-z-]+):/gm)].map((m) => m[1]);
-}
 
 maybe("bootstrap docs", () => {
   it("documents every bootstrap task", () => {
@@ -46,7 +42,7 @@ maybe("bootstrap docs", () => {
     for (const sub of ["setup", "backup", "profile"]) {
       expect(doc, `subcommand ${sub}`).toContain(`dots ${sub}`);
     }
-    const parts = setupParts();
+    const parts = setupPartNames();
     expect(parts.length).toBe(16);
     for (const part of parts) {
       expect(doc, `part ${part}`).toContain(`\`${part}\``);
@@ -64,7 +60,8 @@ maybe("bootstrap docs", () => {
   });
 
   it("no doc outside docs/blog/posts and docs/superpowers mentions retired commands", () => {
-    const retired = /bootstrap:hook:|mise run setup(?!:)|\breinstall:audit\b|\bbackup:(?:init|restore|snapshots|forget)\b/;
+    const retired =
+      /bootstrap:hook:|mise run setup(?!:)|\breinstall:audit\b|\bbackup:(?:init|restore|snapshots|forget)\b|conf\.d\/(?:backup|setup|yabai)\.toml|\b(?:phases|parts)\.toml\b|dots:setup:/;
     const docs = [
       "README.md",
       "AGENTS.md",

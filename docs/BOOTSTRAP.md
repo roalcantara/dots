@@ -15,11 +15,11 @@ mise reads `~/.config/mise` (linked to `config/mise/` in this repo). Each `confi
 | File | Job |
 | --- | --- |
 | `vars.yaml` | Hard-coded bootstrap values (`dots_dir`), loaded into `{{ vars.* }}` without exporting |
-| `bootstrap.toml` | Machine setup: directories, system files, login shell, hooks, the `bootstrap` task, and `vars.yaml` loading |
+| `bootstrap.toml` | Machine setup: directories, system files, login shell, the phase hooks, and `vars.yaml` loading |
 | `dotfiles.toml` | Symlinks (`[dotfile_groups.config]` for `~/.config/<name>`, plus plain `[dotfiles]` entries outside it) |
 | `macos.toml` | macOS preferences, Touch ID sudo, login items, and LaunchAgents (including yabai and borders) |
 | `system.toml` | Linux apt packages needed before Homebrew |
-| `tasks.toml` | The `mise run dots` front door (`setup`, `backup`, `profile`) and nothing else |
+| `tasks.toml` | Every bootstrap task, declared once: the `mise run dots` front door (`setup`, `backup`, `profile`), the parts table `dots setup` runs (`vars.dots_setup_parts`), the final `bootstrap` task, the `bootstrap_step` template, and the `mise doctor` checks |
 
 Declarative parts (directories, files, packages, dotfiles, settings) come from those TOML files; each hook and the
 global `bootstrap` task call `mise run dots setup` with the parts of their phase:
@@ -43,19 +43,23 @@ flowchart TD
   tools --> final["bootstrap task<br/>dots setup git shell dev secrets tiling ai skills nvim"]
 ```
 
-The front door lives in [`config/mise/conf.d/tasks.toml`](../config/mise/conf.d/tasks.toml); hooks and `[tasks.bootstrap]`
-live in [`config/mise/conf.d/bootstrap.toml`](../config/mise/conf.d/bootstrap.toml). The hidden part tasks
-(`dots:setup:<part>`) live in [`.mise/tasks/bootstrap/parts.toml`](../.mise/tasks/bootstrap/parts.toml), and the hidden
-step file tasks live under [`.mise/tasks/bootstrap/`](../.mise/tasks/bootstrap).
+The front door, the parts table, `[tasks.bootstrap]`, the step template and the doctor checks live in
+[`config/mise/conf.d/tasks.toml`](../config/mise/conf.d/tasks.toml); the hooks live in
+[`config/mise/conf.d/bootstrap.toml`](../config/mise/conf.d/bootstrap.toml), and the hidden step file tasks under
+[`.mise/tasks/bootstrap/`](../.mise/tasks/bootstrap).
 
 ## Rationale
 
 - **One front door.** `mise run dots --help` lists only what dots can do: `dots setup`, `dots backup`, and
   `dots profile`. Their parts, actions and profiles are positional arguments with a `complete` list, so Tab shows
   each with its help from the first keystroke (`choices` would show bare names, and flags only after `--`); the
-  task's script (for backup actions, `backup.ts`) rejects an unknown name with exit 2. Every part task
-  (`dots:setup:<part>`) and step task (`bootstrap:<area>:<step>`) is hidden (`hide = true`), so `mise tasks ls`
-  stays clean while `mise tasks ls --hidden` lists every step.
+  task's script (for backup actions, `backup.ts`) rejects an unknown name with exit 2. Every step task
+  (`bootstrap:<area>:<step>`) is hidden (`hide = true`), so `mise tasks ls` stays clean while
+  `mise tasks ls --hidden` lists every step.
+- **One parts table.** `vars.dots_setup_parts` in `tasks.toml` lists each part once (`name|help|steps`, in run order).
+  `dots setup` renders its Tab list, its name check and its run order from it, so a part is added, renamed or
+  reordered in one line. mise vars hold only strings (`[vars]` rejects a list of tables, and a vars YAML file must
+  hold plain strings), hence the `|`-separated lines; a help text must not contain `|`.
 - **Declarative first.** Directories, system files, packages, links and macOS preferences are declared in TOML under
   `config/mise/`; `mise bootstrap` diffs and applies them. Shell only does what the schema cannot: cloning, building,
   talking to Keychain, loading a scripting addition.
@@ -103,7 +107,7 @@ mise run dots profile desktop   # back to desktop (uninstalls nothing)
 
 `mise run dots setup [part]...` runs the parts given (or all 16 when none is given) in this fixed order, whatever
 order you type them in; `mise run dots setup` then Tab lists each part with its help. It ends with
-`dots:setup:remind` (`bootstrap:brew:remind`) once per manual run (and once at the end of `mise bootstrap`, via
+`bootstrap:brew:remind` once per manual run (and once at the end of `mise bootstrap`, via
 `[tasks.bootstrap]`; the four earlier hooks pass `--no-remind`). The table tells you each part, what each step
 does, when it skips, and whether it can ask for input.
 
@@ -195,8 +199,8 @@ mise bootstrap --adopt            # restore the encrypted dots-history repo
 **Add a step.** Create `.mise/tasks/bootstrap/<area>/<step>.sh` with `#!/usr/bin/env bash`, `#MISE hide=true`,
 `#MISE extends="bootstrap_step"`, `#MISE description="…"`, `. "${BASH_SOURCE%/*}/../_lib.sh"`, `set -euo pipefail`,
 the profile/platform guard (`has_profile desktop || exit 0`, `is_macos || exit 0`), and `bootstrap_init`. Add it to
-its part's `run` list in [`.mise/tasks/bootstrap/parts.toml`](../.mise/tasks/bootstrap/parts.toml) (or add a new part
-flag to `config/mise/conf.d/tasks.toml`). Add a spec under `test/integration/bootstrap/` that calls
+its part's steps in `vars.dots_setup_parts` in [`config/mise/conf.d/tasks.toml`](../config/mise/conf.d/tasks.toml) (or add
+a line there for a new part). Add a spec under `test/integration/bootstrap/` that calls
 `runStep("<area>/<step>.sh", env)`; run `mise tasks ls --hidden | grep bootstrap:` to confirm it is registered.
 
 ## Gotchas
@@ -224,6 +228,12 @@ flag to `config/mise/conf.d/tasks.toml`). Add a spec under `test/integration/boo
   those failures fatal, and mise stops the run there.
 - **`sources`/`outputs` resolve from the task directory** and must name real files; system state that is not a file
   uses `skip_if`.
+- **The steps need the global config.** Their `bootstrap_step` template lives in `config/mise/conf.d/tasks.toml`, so
+  without `~/.config/mise` linked (a bare clone, or a spec with its own `MISE_CONFIG_DIR`) mise refuses to load them
+  ("extends template 'bootstrap_step' which was not found"). Every other repo task still loads; a spec that runs a step
+  through mise copies the template into its own config (`step-profile.spec.ts`).
+- **Write a help text in `vars.dots_setup_parts` without `|`.** The `|` separates a part's name, help and steps; an
+  apostrophe is fine (the Tab list escapes it for `printf`).
 - **Write a shell `$` as `$$` in `[vars]`.** mise expands `$VARS` in vars when it loads the config, before a hook
   runs. `dots_profiles` and `dots_setup` avoid shell variables altogether.
 - **A real `~/.gitconfig` outranks the dots git config.** git reads it after `~/.config/git/config`, and tools write

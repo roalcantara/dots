@@ -7,13 +7,13 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { tasksToml } from "./parts";
 
 const REPO = join(import.meta.dir, "../../..");
 const MISE = Bun.which("mise");
 const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
   vars: Record<string, unknown>;
   bootstrap: { hooks: Record<string, { run: string }> };
-  tasks: { bootstrap: { run: string } };
 };
 
 function serializeVars(vars: Record<string, unknown>): string {
@@ -103,6 +103,6 @@ describe.skipIf(!MISE)("bootstrap hand-over", () => {
     for (const [phase, hook] of Object.entries(conf.bootstrap.hooks)) {
       expect(hook.run, `${phase} passes --no-remind`).toContain("--no-remind");
     }
-    expect(conf.tasks.bootstrap.run).not.toContain("--no-remind");
+    expect(tasksToml().tasks.bootstrap.run).not.toContain("--no-remind");
   });
 });

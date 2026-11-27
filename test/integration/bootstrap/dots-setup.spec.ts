@@ -1,34 +1,19 @@
 #!/usr/bin/env bun
 // The `dots` front door (`config/mise/conf.d/tasks.toml`): `dots setup` runs the parts given as arguments in fixed
-// order (or all parts when none are given), followed by `dots:setup:remind`, rejects unknown parts or profiles
+// order (or all parts when none are given), followed by the Brewfile reminder, rejects unknown parts or profiles
 // before any part runs, and forwards the parsed profile as DOTS_PROFILE.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { parts } from "./parts";
 
 const REPO = join(import.meta.dir, "../../..");
 const MISE = Bun.which("mise");
 const TASKS_TOML = join(REPO, "config/mise/conf.d/tasks.toml");
 
-const ALL_PARTS = [
-  "brew",
-  "yabai",
-  "app-files",
-  "vscode",
-  "bat",
-  "lig",
-  "macos",
-  "swiftbar",
-  "git",
-  "shell",
-  "dev",
-  "secrets",
-  "tiling",
-  "ai",
-  "skills",
-  "nvim",
-];
+// The order itself is pinned by part-order.spec.ts and bootstrap-structure.spec.ts.
+const ALL_PARTS = parts().map((p) => p.name);
 
 let t: string;
 beforeEach(() => {
@@ -45,11 +30,12 @@ beforeEach(() => {
   );
   writeFileSync(join(t, "cfg", "conf.d", "tasks.toml"), readFileSync(TASKS_TOML, "utf8"));
 
-  // Stub repo with hidden dots:setup:<part> tasks that log "<part>:<DOTS_PROFILE>" to $t/ran.
-  const stubTasks = [...ALL_PARTS, "remind"]
+  // Stub repo: each step named in vars.dots_setup_parts (and the Brewfile reminder) logs "<part>:<DOTS_PROFILE>"
+  // to $t/ran and its own name to $t/steps.
+  const stubTasks = [...parts().flatMap((p) => p.steps.map((step) => [p.name, step])), ["remind", "bootstrap:brew:remind"]]
     .map(
-      (p) =>
-        `[tasks."dots:setup:${p}"]\nhide = true\nrun = 'printf "%s:%s\\n" "${p}" "\${DOTS_PROFILE:-<unset>}" >> "${join(t, "ran")}"'\n`,
+      ([p, step]) =>
+        `[tasks."${step}"]\nhide = true\nrun = 'printf "%s:%s\\n" "${p}" "\${DOTS_PROFILE:-<unset>}" >> "${join(t, "ran")}"; echo ${step} >> "${join(t, "steps")}"'\n`,
     )
     .join("\n");
   writeFileSync(join(t, "dots", "mise.toml"), stubTasks);
@@ -70,7 +56,10 @@ function runDots(args: string[], extraEnv: Record<string, string> = {}) {
     stdout: "pipe",
     stderr: "pipe",
   });
-  const ran = existsSync(join(t, "ran")) ? readFileSync(join(t, "ran"), "utf8").trim().split("\n") : [];
+  // One line per part: a part's steps all log the same "<part>:<profile>", so consecutive repeats collapse.
+  const ran = (existsSync(join(t, "ran")) ? readFileSync(join(t, "ran"), "utf8").trim().split("\n") : []).filter(
+    (line, i, all) => line !== all[i - 1],
+  );
   return { code: p.exitCode ?? 1, out: p.stdout.toString(), err: p.stderr.toString(), ran };
 }
 
@@ -79,6 +68,13 @@ describe.skipIf(!MISE)("mise run dots setup", () => {
     const r = runDots(["setup"]);
     expect(r.code, r.err).toBe(0);
     expect(r.ran.map((l) => l.split(":")[0])).toEqual([...ALL_PARTS, "remind"]);
+  });
+
+  it("runs a part's steps in table order", () => {
+    const r = runDots(["setup", "secrets"]);
+    expect(r.code, r.err).toBe(0);
+    const steps = readFileSync(join(t, "steps"), "utf8").trim().split("\n");
+    expect(steps).toEqual([...parts().find((p) => p.name === "secrets")!.steps, "bootstrap:brew:remind"]);
   });
 
   it("git brew runs brew then git then remind (fixed order, not argument order)", () => {
@@ -145,7 +141,7 @@ describe.skipIf(!MISE)("mise run dots setup", () => {
     expect(multi.ran).toEqual(["brew:desktop,dev", "remind:desktop,dev"]);
   });
 
-  it("--no-remind skips dots:setup:remind (used by bootstrap hooks)", () => {
+  it("--no-remind skips the Brewfile reminder (used by bootstrap hooks)", () => {
     const r = runDots(["setup", "--no-remind", "brew"]);
     expect(r.code, r.err).toBe(0);
     expect(r.ran).toEqual(["brew:desktop"]);

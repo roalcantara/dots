@@ -174,6 +174,10 @@ cmd "profile" help="Choose this machine's profile and apply it" { arg "<profile>
 
 - `.mise/tasks/bootstrap/phases.toml` becomes the part tasks `dots:setup:<part>` (ordered run steps), all
   `hide = true`; the `bootstrap:hook:*` tasks go.
+- Revised 2026-11-27 (owner's call, to declare every bootstrap task once in `config/mise/conf.d/tasks.toml`): the part
+  tasks and `parts.toml` are gone. One `vars.dots_setup_parts` table (`name|help|steps` per line) drives the Tab list,
+  the name check and the run order, and `dots setup` runs each step directly. The `bootstrap_step` template, the
+  doctor checks and `[tasks.bootstrap]` moved to `tasks.toml` too; the step file tasks stay in the repo.
 - `--profile` is repeatable (`--profile desktop --profile dev`) so `choices` can validate each name. The builder first
   tests that `env="DOTS_PROFILE"` with `var=#true` accepts `DOTS_PROFILE=desktop,dev`; if it does not, the flag becomes
   one `--profile <list>` value (comma list) and `has_profile` rejects names outside `desktop`, `dev`, `container`.

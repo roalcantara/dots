@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { stepsOf } from "./parts";
 import { runStep } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
@@ -42,10 +43,7 @@ const clean = !["/usr/bin/pass", "/bin/pass", "/usr/bin/gopass", "/bin/gopass"].
 describe.skipIf(!clean)("bootstrap pass-link", () => {
   it("is in the secrets part, after the gopass store clone", () => {
     expect(readFileSync(join(REPO, ".mise/tasks/bootstrap", STEP), "utf8")).toContain("$HOME/.local/bin/pass");
-    const parts = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/parts.toml"), "utf8")) as {
-      "dots:setup:secrets": { run: { task: string }[] };
-    };
-    const order = parts["dots:setup:secrets"].run.map((s) => s.task);
+    const order = stepsOf("secrets");
     expect(order.indexOf("bootstrap:gopass:pass-link")).toBeGreaterThan(order.indexOf("bootstrap:gopass:store"));
   });
 

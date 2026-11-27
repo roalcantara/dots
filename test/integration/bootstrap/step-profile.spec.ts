@@ -1,10 +1,12 @@
 #!/usr/bin/env bun
 // Every bootstrap step is a hidden task that takes `--profile <list>` (backed by DOTS_PROFILE, default desktop)
-// via the shared `bootstrap_step` task template, and rejects unknown profile names before doing any work.
+// via the shared `bootstrap_step` task template (config/mise/conf.d/tasks.toml), and rejects unknown profile
+// names before doing any work.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { tasksToml } from "./parts";
 
 const REPO = join(import.meta.dir, "../../..");
 const MISE = Bun.which("mise");
@@ -13,6 +15,9 @@ let t: string;
 beforeEach(() => {
   t = realpathSync(mkdtempSync(join(tmpdir(), "step-profile-")));
   mkdirSync(join(t, "cfg"), { recursive: true });
+  // The shared template is global (config/mise/conf.d/tasks.toml); without it the steps do not load. Copy that table.
+  const usage = tasksToml().task_templates.bootstrap_step.usage;
+  writeFileSync(join(t, "cfg", "config.toml"), `[task_templates.bootstrap_step]\nusage = '''\n${usage}'''\n`);
 });
 afterEach(() => rmSync(t, { recursive: true, force: true }));
 

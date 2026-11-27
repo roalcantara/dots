@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { stepsOf } from "./parts";
 import { runStep, skipIf } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
@@ -35,10 +36,7 @@ function snippet(identities: string | null, env: Record<string, string> = {}) {
 describe("bootstrap gopass-keyring check", () => {
   it("is in the secrets part, after the store clone", () => {
     expect(readFileSync(join(REPO, ".mise/tasks/bootstrap", STEP), "utf8")).toContain("age.keyring-identities");
-    const parts = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/parts.toml"), "utf8")) as {
-      "dots:setup:secrets": { run: { task: string }[] };
-    };
-    const order = parts["dots:setup:secrets"].run.map((s) => s.task);
+    const order = stepsOf("secrets");
     expect(order.indexOf("bootstrap:gopass:keyring")).toBeGreaterThan(order.indexOf("bootstrap:gopass:store"));
   });
 

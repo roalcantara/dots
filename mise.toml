@@ -1,18 +1,6 @@
 # https://mise.jdx.dev
 # Dev tools, env, and task runner
 
-# File tasks live in .mise/tasks (mise's default) and the hidden dots:setup part tasks in one TOML file next to them.
-[task_config]
-includes = [".mise/tasks", ".mise/tasks/bootstrap/parts.toml"]
-
-# Shared --profile flag for every hidden bootstrap step file task (#MISE extends="bootstrap_step").
-# mise's var=#true + choices rejects comma-separated env values (DOTS_PROFILE=desktop,dev), so steps
-# take a comma-separated list validated by _lib.sh (validate_profile / has_profile).
-[task_templates.bootstrap_step]
-usage = '''
-flag "--profile <list>" env="DOTS_PROFILE" default="desktop" help="Comma-separated profiles (desktop, dev, container)"
-'''
-
 # https://mise.jdx.dev/tasks
 [tasks]
 # mise run build
@@ -451,26 +439,6 @@ run = "bun script/agent-skills.ts audit"
 description = "Install every skill in config/agents/skill-lock.json that is missing from ~/.agents/skills"
 tools = { bun = "1.3.14", node = "22" }
 run = "bun script/agent-skills.ts restore"
-
-# This Mac's mise is the reference for every committed MISE_VERSION pin (install and both Dockerfiles).
-[doctor.checks.mise-version]
-description = "Every MISE_VERSION pin matches this Mac's mise"
-run = "mise run mise:version --check"
-hint = "mise run mise:version --sync"
-os = "macos"
-
-# Only `mise lsp` reports deprecated-key, so a check runs the small client in .mise/tasks/mise/diagnostics.ts.
-[doctor.checks.mise-diagnostics]
-description = "No deprecated or unknown keys in the mise config"
-run = "mise run mise:diagnostics"
-hint = "see docs/BOOTSTRAP.md#gotchas (deprecated keys)"
-timeout = "30s"
-
-# dots owns git's config in ~/.config/git/config; a real ~/.gitconfig is read after it and silently wins.
-[doctor.checks.home-gitconfig]
-description = "No ~/.gitconfig overrides the dots git config"
-run = 'test ! -e "$HOME/.gitconfig"'
-hint = "merge what you need into config/git/config, then move ~/.gitconfig aside (docs/BOOTSTRAP.md#gotchas)"
 
 [settings]
 # Pushes tools' bin-paths to the front of PATH instead of allowing modifications of PATH after activation to take precedence.

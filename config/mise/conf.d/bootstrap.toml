@@ -115,7 +115,4 @@ run = "{{ vars.dots_setup }} --no-remind vscode bat lig"
 description = "Apply the macOS settings that need $HOME and point SwiftBar at its plugins"
 run = "{{ vars.dots_setup }} --no-remind macos swiftbar"
 
-# Runs last on every `mise bootstrap`: installs git's filters and hooks first, then the remaining tools.
-[tasks.bootstrap]
-description = "Repo git filters and hooks, Neovim providers and plugins"
-run = "{{ vars.dots_setup }} git shell dev secrets tiling ai skills nvim"
+# The final `bootstrap` task, which runs after these hooks, is in tasks.toml.

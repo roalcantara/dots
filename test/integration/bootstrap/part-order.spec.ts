@@ -1,12 +1,8 @@
 #!/usr/bin/env bun
-// Concatenating the dots:setup:<part> tasks in flag order (followed by dots:setup:remind) produces the
+// Concatenating the parts' steps (vars.dots_setup_parts) in table order, then the Brewfile reminder, gives the
 // exact bootstrap step order from the baseline (with bootstrap:zsh:warm-caches moved after bootstrap:git:hooks).
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
-
-const REPO = join(import.meta.dir, "../../..");
-const PARTS_TOML = join(REPO, ".mise/tasks/bootstrap/parts.toml");
+import { parts } from "./parts";
 
 const PART_ORDER = [
   "brew",
@@ -25,7 +21,6 @@ const PART_ORDER = [
   "ai",
   "skills",
   "nvim",
-  "remind",
 ];
 
 // The baseline order captured from bootstrap:hook:{post-packages,pre-dotfiles,post-dotfiles,post-defaults,final},
@@ -59,20 +54,9 @@ const EXPECTED_STEPS = [
   "bootstrap:brew:remind",
 ];
 
-describe("dots:setup part order", () => {
-  it("concatenating the parts in flag order gives the baseline order", () => {
-    const parts = Bun.TOML.parse(readFileSync(PARTS_TOML, "utf8")) as Record<
-      string,
-      { hide?: boolean; description?: string; run?: { task: string }[] }
-    >;
-    const actual: string[] = [];
-    for (const part of PART_ORDER) {
-      const task = parts[`dots:setup:${part}`];
-      expect(task, `dots:setup:${part} exists`).toBeDefined();
-      for (const step of task.run ?? []) {
-        actual.push(step.task);
-      }
-    }
-    expect(actual).toEqual(EXPECTED_STEPS);
+describe("dots setup part order", () => {
+  it("concatenating the parts' steps in table order, then the reminder, gives the baseline order", () => {
+    expect(parts().map((p) => p.name)).toEqual(PART_ORDER);
+    expect([...parts().flatMap((p) => p.steps), "bootstrap:brew:remind"]).toEqual(EXPECTED_STEPS);
   });
 });
