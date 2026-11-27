@@ -54,12 +54,12 @@ describe("borders/build.sh up-to-date check", () => {
 });
 
 describe("bootstrap janky-borders step", () => {
-  it("runs in the final phase after the tiling checks", () => {
+  it("runs in the tiling part after the tiling checks", () => {
     expect(readFileSync(join(REPO, ".mise/tasks/bootstrap", STEP), "utf8")).toContain(REV);
-    const phases = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/phases.toml"), "utf8")) as {
-      "bootstrap:hook:final": { run: { task: string }[] };
+    const parts = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/parts.toml"), "utf8")) as {
+      "dots:setup:tiling": { run: { task: string }[] };
     };
-    const order = phases["bootstrap:hook:final"].run.map((s) => s.task);
+    const order = parts["dots:setup:tiling"].run.map((s) => s.task);
     expect(order.indexOf("bootstrap:borders:build")).toBeGreaterThan(order.indexOf("bootstrap:tiling:checks"));
   });
 

@@ -60,9 +60,9 @@ describe("bootstrap:git:home-config", () => {
     expect(r.err).toBe("");
   });
 
-  it("runs in the final phase, right after the git filters", () => {
-    const phases = readFileSync(join(REPO, ".mise/tasks/bootstrap/phases.toml"), "utf8");
-    expect(phases).toContain('{ task = "bootstrap:git:filters" },\n  { task = "bootstrap:git:home-config" },');
+  it("runs in the git part, right after the git filters", () => {
+    const parts = readFileSync(join(REPO, ".mise/tasks/bootstrap/parts.toml"), "utf8");
+    expect(parts).toContain('{ task = "bootstrap:git:filters" },\n  { task = "bootstrap:git:home-config" },');
   });
 });
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
-// The bootstrap hooks and the bootstrap task share one hand-over, `{{ vars.dots_handover }} bootstrap:hook:<phase>`
-// (config/mise/conf.d/bootstrap.toml). Hooks get neither [env] nor MISE_ENV, so the hand-over takes the profile from
-// mise's `mise_env` template variable. This runs the real `mise bootstrap` on a temp config holding the real [vars] and
-// one hook; a stub `mise` on PATH records what the hand-over would run.
+// The bootstrap hooks and the global bootstrap task share `{{ vars.dots_setup }}` (config/mise/conf.d/bootstrap.toml),
+// which passes `--profile <name>` for each `mise_env` entry in desktop/dev/container and ignores non-profile
+// environments (such as a future `macos` env). This runs the real `mise bootstrap` on a temp config holding the real
+// [vars] and hooks; a stub `mise` on PATH records what the hook invokes.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -34,45 +34,67 @@ beforeEach(() => {
   t = realpathSync(mkdtempSync(join(tmpdir(), "handover-")));
   for (const d of ["bin", "cfg/conf.d", "cwd"]) mkdirSync(join(t, d), { recursive: true });
   writeFileSync(join(t, "cfg", "conf.d", "vars.yaml"), readFileSync(join(REPO, "config/mise/conf.d/vars.yaml"), "utf8"));
-  // Only the vars and one hook: the rest of bootstrap.toml would install packages.
   const vars = serializeVars(conf.vars);
-  writeFileSync(join(t, "cfg", "config.toml"), `[vars]\n${vars}\n\n[bootstrap.hooks.pre-dotfiles]\nrun = ${JSON.stringify(conf.bootstrap.hooks["pre-dotfiles"].run)}\n`);
-  writeFileSync(join(t, "bin", "mise"), `#!/bin/sh\nprintf '%s\\n' "$*" "\${DOTS_PROFILE:-<unset>}" > "${join(t, "calls")}"\n`);
+  writeFileSync(
+    join(t, "cfg", "config.toml"),
+    [
+      "[vars]",
+      vars,
+      "",
+      "[bootstrap.hooks.post-packages]",
+      `run = ${JSON.stringify(conf.bootstrap.hooks["post-packages"].run)}`,
+      "",
+      "[bootstrap.hooks.pre-dotfiles]",
+      `run = ${JSON.stringify(conf.bootstrap.hooks["pre-dotfiles"].run)}`,
+      "",
+    ].join("\n"),
+  );
+  writeFileSync(join(t, "bin", "mise"), `#!/bin/sh\nprintf '%s\\n' "$*" > "${join(t, "calls")}"\n`);
   chmodSync(join(t, "bin", "mise"), 0o755);
 });
 afterEach(() => rmSync(t, { recursive: true, force: true }));
 
-// The real mise runs the hook; inside it, `mise` resolves to the stub. PATH has no brew and no Bun (Review Focus 1).
-function bootstrap(args: string[]) {
-  const p = Bun.spawnSync([MISE as string, "bootstrap", ...args, "--only", "dotfiles", "--yes"], {
+function bootstrap(args: string[], only = "dotfiles") {
+  const p = Bun.spawnSync([MISE as string, "bootstrap", ...args, "--only", only, "--yes"], {
     cwd: join(t, "cwd"),
     env: {
-      HOME: t, PATH: `${join(t, "bin")}:/usr/bin:/bin`, MISE_CONFIG_DIR: join(t, "cfg"),
-      MISE_GLOBAL_CONFIG_FILE: join(t, "cfg", "config.toml"), MISE_TRUSTED_CONFIG_PATHS: t,
+      HOME: t,
+      PATH: `${join(t, "bin")}:/usr/bin:/bin`,
+      MISE_CONFIG_DIR: join(t, "cfg"),
+      MISE_GLOBAL_CONFIG_FILE: join(t, "cfg", "config.toml"),
+      MISE_TRUSTED_CONFIG_PATHS: t,
     },
-    stdin: "ignore", stdout: "pipe", stderr: "pipe",
+    stdin: "ignore",
+    stdout: "pipe",
+    stderr: "pipe",
   });
   expect(p.exitCode, p.stderr.toString()).toBe(0);
-  const [argv, profile] = readFileSync(join(t, "calls"), "utf8").split("\n");
-  return { argv, profile };
+  return readFileSync(join(t, "calls"), "utf8").trim();
 }
 
 describe.skipIf(!MISE)("bootstrap hand-over", () => {
-  it("runs the phase task in the dots repo", () => {
-    expect(bootstrap([]).argv).toBe(`run -C ${join(t, ".local/share/dots")} bootstrap:hook:pre-dotfiles`);
+  it("post-packages calls dots setup --brew --yabai", () => {
+    expect(bootstrap([], "packages")).toBe("run dots setup --brew --yabai");
   });
 
-  it("passes -E as DOTS_PROFILE", () => {
-    expect(bootstrap(["-E", "container"]).profile).toBe("container");
-    expect(bootstrap(["-E", "desktop,dev"]).profile).toBe("desktop,dev");
+  it("-E container gives --profile container", () => {
+    expect(bootstrap(["-E", "container"])).toBe("run dots setup --profile container --app-files");
   });
 
-  it("passes the environments saved in miserc.local.toml", () => {
+  it("-E desktop,dev gives both profiles", () => {
+    expect(bootstrap(["-E", "desktop,dev"])).toBe("run dots setup --profile desktop --profile dev --app-files");
+  });
+
+  it("-E desktop,macos gives only desktop (ignores non-profile envs)", () => {
+    expect(bootstrap(["-E", "desktop,macos"])).toBe("run dots setup --profile desktop --app-files");
+  });
+
+  it("miserc env reaches the hook", () => {
     writeFileSync(join(t, "cfg", "miserc.local.toml"), 'env = ["desktop", "dev"]\n');
-    expect(bootstrap([]).profile).toBe("desktop,dev");
+    expect(bootstrap([])).toBe("run dots setup --profile desktop --profile dev --app-files");
   });
 
-  it("defaults to desktop when no environment is selected", () => {
-    expect(bootstrap([]).profile).toBe("desktop");
+  it("no environment gives no --profile (flag default applies)", () => {
+    expect(bootstrap([])).toBe("run dots setup --app-files");
   });
 });

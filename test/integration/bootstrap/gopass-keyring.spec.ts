@@ -33,12 +33,12 @@ function snippet(identities: string | null, env: Record<string, string> = {}) {
 }
 
 describe("bootstrap gopass-keyring check", () => {
-  it("is in the final phase, after the store clone", () => {
+  it("is in the secrets part, after the store clone", () => {
     expect(readFileSync(join(REPO, ".mise/tasks/bootstrap", STEP), "utf8")).toContain("age.keyring-identities");
-    const phases = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/phases.toml"), "utf8")) as {
-      "bootstrap:hook:final": { run: { task: string }[] };
+    const parts = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/parts.toml"), "utf8")) as {
+      "dots:setup:secrets": { run: { task: string }[] };
     };
-    const order = phases["bootstrap:hook:final"].run.map((s) => s.task);
+    const order = parts["dots:setup:secrets"].run.map((s) => s.task);
     expect(order.indexOf("bootstrap:gopass:keyring")).toBeGreaterThan(order.indexOf("bootstrap:gopass:store"));
   });
 

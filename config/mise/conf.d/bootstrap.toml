@@ -1,13 +1,13 @@
 # Machine setup applied by `mise bootstrap`.
 
-# The hand-over every bootstrap hook and the bootstrap task share; the phase task name follows it. Hooks receive neither
-# [env] nor MISE_ENV, but they render Tera before they run, and `mise_env` holds the environments this run selected
-# (`-E`, MISE_ENV or miserc.local.toml), so the profile reaches the phase task as DOTS_PROFILE (docs/BOOTSTRAP.md).
+# Shared bootstrap vars. Hooks receive neither [env] nor MISE_ENV, but they render Tera before they run, and
+# `mise_env` holds the environments this run selected (`-E`, MISE_ENV or miserc.local.toml). `dots_profiles`
+# forwards only known profile names (desktop, dev, container) as `--profile` flags to `dots setup` (docs/BOOTSTRAP.md).
 [vars]
 _.file = "{{ mise_config_dir }}/conf.d/vars.yaml"
 dots = "{{ env.HOME }}/{{ vars.dots_dir }}"
-dots_profile = '{% if mise_env is defined %}{{ mise_env | join(sep=",") }}{% else %}desktop{% endif %}'
-dots_handover = 'DOTS_PROFILE={{ vars.dots_profile | quote }} exec mise run -C {{ vars.dots | quote }}'
+dots_profiles = '{% if mise_env is defined %}{% for e in mise_env %}{% if e == "desktop" or e == "dev" or e == "container" %} --profile {{ e }}{% endif %}{% endfor %}{% endif %}'
+dots_setup = 'exec mise run dots setup{{ vars.dots_profiles }}'
 
 # Folders the shell config and tools expect, plus the XDG user folders the images' structure tests check.
 [bootstrap.directories."~/.local/bin"]
@@ -91,32 +91,31 @@ owner = "root"
 group = "root"
 mode = "0644"
 
-# Homebrew and every user package, then yabai's scripting addition. The phase task runs the steps in order.
+# Homebrew and every user package, then yabai's scripting addition.
 [bootstrap.hooks.post-packages]
 description = "Install Homebrew and every user package, then yabai's scripting addition"
-run = "{{ vars.dots_handover }} bootstrap:hook:post-packages"
+run = "{{ vars.dots_setup }} --brew --yabai"
 
 # A link never replaces a real file, and VS Code (or Settings Sync) and Karabiner-Elements write real ones on first
-# launch, so the phase task moves them aside. It also runs before mise dot apply.
+# launch, so `--app-files` moves them aside. It also runs before mise dot apply.
 [bootstrap.hooks.pre-dotfiles]
 description = "Move app-written copies (VS Code settings, keybindings, snippets; ~/.config/karabiner) aside for the dots links"
-run = "{{ vars.dots_handover }} bootstrap:hook:pre-dotfiles"
+run = "{{ vars.dots_setup }} --app-files"
 
-# Settings Sync would merge the cloud copy back into the linked files, so the phase task turns it off for settings,
-# keybindings and snippets, then builds bat's theme cache and Lig's zsh integration.
+# Settings Sync would merge the cloud copy back into the linked files, so `--vscode` turns it off for settings,
+# keybindings and snippets, then `--bat` builds bat's theme cache and `--lig` caches Lig's zsh integration.
 [bootstrap.hooks.post-dotfiles]
 description = "Turn off VS Code Settings Sync for settings, keybindings and snippets; set up bat's themes and Lig"
-run = "{{ vars.dots_handover }} bootstrap:hook:post-dotfiles"
+run = "{{ vars.dots_setup }} --vscode --bat --lig"
 
-# mise cannot restart apps or write a preference whose value is an absolute path. The phase task points screenshots
+# mise cannot restart apps or write a preference whose value is an absolute path. `--macos` points screenshots
 # at ~/Pictures/Screenshots, sets the default apps in ~/.config/duti and the Spotlight hotkey without a logout,
-# restarts Dock, Finder and the menu bar, then points SwiftBar at its plugins.
+# restarts Dock, Finder and the menu bar, then `--swiftbar` points SwiftBar at its plugins.
 [bootstrap.hooks.post-defaults]
 description = "Apply the macOS settings that need $HOME and point SwiftBar at its plugins"
-run = "{{ vars.dots_handover }} bootstrap:hook:post-defaults"
+run = "{{ vars.dots_setup }} --macos --swiftbar"
 
-# Runs last on every `mise bootstrap`: the phase task installs git's filters and hooks first, then the remaining
-# tools. It resolves the profile (`mise bootstrap -E`) before handing over, so every step sees it.
+# Runs last on every `mise bootstrap`: installs git's filters and hooks first, then the remaining tools.
 [tasks.bootstrap]
 description = "Repo git filters and hooks, Neovim providers and plugins"
-run = "{{ vars.dots_handover }} bootstrap:hook:final"
+run = "{{ vars.dots_setup }} --git --shell --dev --secrets --tiling --ai --skills --nvim"

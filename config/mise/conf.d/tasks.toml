@@ -1,0 +1,67 @@
+# The dots front door: one global task (`mise run dots …`) for setup, backup, and profile management.
+
+[tasks.dots]
+description = "Set up this machine, back it up, choose its profile"
+usage = '''
+cmd "setup" help="Install and configure parts of this machine; no flags means all, in order" {
+  flag "--brew"      help="Homebrew, its config link, and every Brewfile package for the profile"
+  flag "--yabai"     help="yabai's scripting addition (sudoers rule, boot argument)"
+  flag "--app-files" help="Move app-written copies (VS Code, Karabiner) aside before linking"
+  flag "--vscode"    help="Turn off VS Code Settings Sync for linked settings, keybindings and snippets"
+  flag "--bat"       help="Rebuild bat's theme cache"
+  flag "--lig"       help="Cache Lig's zsh integration"
+  flag "--macos"     help="Apply macOS settings that need $HOME and restart Dock, Finder and menu bar"
+  flag "--swiftbar"  help="Point SwiftBar at its plugins folder"
+  flag "--git"       help="Git SOPS filters, ~/.gitconfig check, and hk git hooks"
+  flag "--shell"     help="Warm Zsh plugin and completion caches"
+  flag "--dev"       help="Install Python 3.13 dev tools (dev profile)"
+  flag "--secrets"   help="gopass store, keyring check, pass link, and SSH Keychain"
+  flag "--tiling"    help="Tiling checks (SIP, Accessibility, kb-raycast) and JankyBorders build"
+  flag "--ai"        help="Download oMLX models"
+  flag "--skills"    help="Restore global agent skills (dev profile)"
+  flag "--nvim"      help="Neovim providers and plugins"
+  flag "--profile <profile>" var=#true env="DOTS_PROFILE" default="desktop" help="Bootstrap profile(s) to apply" {
+    choices "desktop" "dev" "container"
+  }
+  flag "--dry-run"   help="Show the parts and steps that would run without executing them"
+}
+cmd "backup" help="Back up and restore this machine with restic"
+cmd "profile" help="Choose this machine's profile and apply it"
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "${usage_cmd:-}" in
+  setup)
+    all_parts=(brew yabai app-files vscode bat lig macos swiftbar git shell dev secrets tiling ai skills nvim)
+    selected=()
+    for part in "${all_parts[@]}"; do
+      var="usage_${part//-/_}"
+      if [ "${!var:-false}" = "true" ]; then
+        selected+=("$part")
+      fi
+    done
+    if [ -z "${selected[*]:-}" ]; then
+      selected=("${all_parts[@]}")
+    fi
+    export DOTS_PROFILE
+    DOTS_PROFILE="$(printf '%s' "${usage_profile:-desktop}" | tr ' ' ',')"
+    run_flags=()
+    if [ "${usage_dry_run:-false}" = "true" ]; then
+      run_flags+=(--dry-run)
+    fi
+    for part in "${selected[@]}"; do
+      mise run -C "{{ vars.dots }}" ${run_flags[@]+"${run_flags[@]}"} "dots:setup:$part"
+    done
+    mise run -C "{{ vars.dots }}" ${run_flags[@]+"${run_flags[@]}"} dots:setup:remind
+    ;;
+  backup | profile)
+    echo "dots: $usage_cmd is not yet implemented" >&2
+    exit 2
+    ;;
+  *)
+    exec mise run dots --help
+    ;;
+esac
+'''

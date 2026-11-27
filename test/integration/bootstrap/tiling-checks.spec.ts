@@ -41,15 +41,15 @@ function snippet(env: Record<string, string> = {}) {
 }
 
 describe("bootstrap tiling-checks step", () => {
-  it("runs in the final phase after the SSH key step, on desktops only", () => {
+  it("runs in the tiling part, on desktops only", () => {
     const step = readFileSync(join(REPO, ".mise/tasks/bootstrap", STEP), "utf8");
     expect(step).toContain("docs/TILING.md");
     expect(step).toContain("has_profile desktop || exit 0");
-    const phases = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/phases.toml"), "utf8")) as {
-      "bootstrap:hook:final": { run: { task: string }[] };
+    const parts = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/parts.toml"), "utf8")) as {
+      "dots:setup:tiling": { run: { task: string }[] };
     };
-    const order = phases["bootstrap:hook:final"].run.map((s) => s.task);
-    expect(order.indexOf("bootstrap:tiling:checks")).toBeGreaterThan(order.indexOf("bootstrap:ssh:keychain"));
+    const order = parts["dots:setup:tiling"].run.map((s) => s.task);
+    expect(order).toContain("bootstrap:tiling:checks");
   });
 
   it("does nothing off macOS", () => {

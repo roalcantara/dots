@@ -40,12 +40,12 @@ function snippet(env: Record<string, string>) {
 const clean = !["/usr/bin/pass", "/bin/pass", "/usr/bin/gopass", "/bin/gopass"].some(existsSync);
 
 describe.skipIf(!clean)("bootstrap pass-link", () => {
-  it("is in the final phase, after the gopass store clone", () => {
+  it("is in the secrets part, after the gopass store clone", () => {
     expect(readFileSync(join(REPO, ".mise/tasks/bootstrap", STEP), "utf8")).toContain("$HOME/.local/bin/pass");
-    const phases = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/phases.toml"), "utf8")) as {
-      "bootstrap:hook:final": { run: { task: string }[] };
+    const parts = Bun.TOML.parse(readFileSync(join(REPO, ".mise/tasks/bootstrap/parts.toml"), "utf8")) as {
+      "dots:setup:secrets": { run: { task: string }[] };
     };
-    const order = phases["bootstrap:hook:final"].run.map((s) => s.task);
+    const order = parts["dots:setup:secrets"].run.map((s) => s.task);
     expect(order.indexOf("bootstrap:gopass:pass-link")).toBeGreaterThan(order.indexOf("bootstrap:gopass:store"));
   });
 

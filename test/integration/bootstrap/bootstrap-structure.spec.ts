@@ -1,19 +1,41 @@
 #!/usr/bin/env bun
-// The bootstrap task layout: every step is a described bash file that sources the shared library, and the phase
-// file names the five hand-over tasks the hooks will use.
+// The bootstrap task layout: every step is a hidden bash file extending bootstrap_step, parts.toml defines
+// one hidden dots:setup:<part> task per part flag plus remind covering every step once, and bootstrap.toml's
+// hooks and global bootstrap task call `{{ vars.dots_setup }}` with their phase's part flags.
 import { describe, expect, it } from "bun:test";
 import { readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const REPO = join(import.meta.dir, "../../..");
 const STEPS = join(REPO, ".mise/tasks/bootstrap");
-const PHASES = [
-  "bootstrap:hook:post-packages",
-  "bootstrap:hook:pre-dotfiles",
-  "bootstrap:hook:post-dotfiles",
-  "bootstrap:hook:post-defaults",
-  "bootstrap:hook:final",
+
+const PART_FLAGS = [
+  "brew",
+  "yabai",
+  "app-files",
+  "vscode",
+  "bat",
+  "lig",
+  "macos",
+  "swiftbar",
+  "git",
+  "shell",
+  "dev",
+  "secrets",
+  "tiling",
+  "ai",
+  "skills",
+  "nvim",
 ];
+
+const HOOK_PARTS: Record<string, string> = {
+  "post-packages": "--brew --yabai",
+  "pre-dotfiles": "--app-files",
+  "post-dotfiles": "--vscode --bat --lig",
+  "post-defaults": "--macos --swiftbar",
+};
+
+const FINAL_PARTS = "--git --shell --dev --secrets --tiling --ai --skills --nvim";
 
 function executable(rel: string): boolean {
   return (statSync(join(STEPS, rel)).mode & 0o111) !== 0;
@@ -22,6 +44,10 @@ function executable(rel: string): boolean {
 function steps(): string[] {
   const glob = new Bun.Glob("**/*");
   return [...glob.scanSync({ cwd: STEPS, onlyFiles: true })].filter(executable).sort();
+}
+
+function stepTaskName(rel: string): string {
+  return `bootstrap:${rel.replace(/\.sh$/, "").replaceAll("/", ":")}`;
 }
 
 function header(rel: string): Record<string, string> {
@@ -72,25 +98,32 @@ maybe("bootstrap task structure", () => {
     }
   });
 
-  it("phases.toml defines exactly the five bootstrap:hook:* tasks, and each run step names an existing task", () => {
-    const phases = Bun.TOML.parse(readFileSync(join(STEPS, "phases.toml"), "utf8")) as Record<
+  it("parts.toml defines exactly one task per part flag plus remind, all hidden, and every step belongs to exactly one part", () => {
+    const parts = Bun.TOML.parse(readFileSync(join(STEPS, "parts.toml"), "utf8")) as Record<
       string,
-      { run?: unknown }
+      { hide?: boolean; description?: string; run?: { task?: string }[] }
     >;
-    expect(Object.keys(phases).sort()).toEqual([...PHASES].sort());
+    const expectedParts = [...PART_FLAGS, "remind"].map((p) => `dots:setup:${p}`).sort();
+    expect(Object.keys(parts).sort()).toEqual(expectedParts);
+
     const listed = new Set(miseTasks().map((task) => task.name));
-    for (const name of PHASES) expect(listed.has(name), `${name} is listed`).toBe(true);
-    for (const [name, phase] of Object.entries(phases)) {
-      const run = Array.isArray(phase.run) ? phase.run : [];
-      for (const step of run) {
-        const ref = typeof step === "string" ? step : (step as { task?: string }).task;
-        if (ref) expect(listed.has(ref), `${name} step ${ref} exists`).toBe(true);
+    const seenSteps: string[] = [];
+    for (const [name, part] of Object.entries(parts)) {
+      expect(part.hide, `${name} hide`).toBe(true);
+      expect(part.description, `${name} description`).toBeTruthy();
+      expect(listed.has(name), `${name} is registered`).toBe(true);
+      for (const step of part.run ?? []) {
+        if (step.task) {
+          expect(listed.has(step.task), `${name} step ${step.task} exists`).toBe(true);
+          seenSteps.push(step.task);
+        }
       }
     }
+    const allStepNames = steps().map(stepTaskName).sort();
+    expect(seenSteps.sort()).toEqual(allStepNames);
   });
 
-  // The hooks live only in bootstrap.toml, one per phase, and each is a short hand-over.
-  it("each bootstrap hook phase is defined once, in bootstrap.toml, as the hand-over", () => {
+  it("each hook is {{ vars.dots_setup }} plus exactly its phase's part flags", () => {
     const dir = join(REPO, "config/mise/conf.d");
     const found: Record<string, { file: string; run: string }[]> = {};
     for (const file of [...new Bun.Glob("*.toml").scanSync({ cwd: dir })] as string[]) {
@@ -101,30 +134,28 @@ maybe("bootstrap task structure", () => {
         (found[phase] ??= []).push({ file, run: hook.run ?? "" });
       }
     }
-    expect(Object.keys(found).sort()).toEqual(PHASES.slice(0, 4).map((phase) => phase.replace("bootstrap:hook:", "")).sort());
+    expect(Object.keys(found).sort()).toEqual(Object.keys(HOOK_PARTS).sort());
     for (const [phase, defs] of Object.entries(found)) {
       expect(defs, `${phase} is defined once`).toHaveLength(1);
       expect(defs[0].file, `${phase} lives in bootstrap.toml`).toBe("bootstrap.toml");
-      expect(defs[0].run, `${phase} hands over`).toBe(`{{ vars.dots_handover }} bootstrap:hook:${phase}`);
+      expect(defs[0].run, `${phase} hands over`).toBe(`{{ vars.dots_setup }} ${HOOK_PARTS[phase]}`);
     }
   });
 
-  it("the global bootstrap task is the hand-over to bootstrap:hook:final", () => {
+  it("[tasks.bootstrap] carries the final parts", () => {
     const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
       tasks: { bootstrap: { run: string } };
     };
-    expect(conf.tasks.bootstrap.run).toBe("{{ vars.dots_handover }} bootstrap:hook:final");
+    expect(conf.tasks.bootstrap.run).toBe(`{{ vars.dots_setup }} ${FINAL_PARTS}`);
   });
 
-  // One shared hand-over (handover.spec.ts runs it through mise). It takes the profile from mise_env and holds no
-  // shell $: mise expands $VARS in [vars] at load time, before the hook runs.
-  it("the shared hand-over takes the profile from mise_env and holds no shell $", () => {
+  it("dots_setup takes profiles from mise_env and holds no shell $", () => {
     const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
-      vars: { dots_profile: string; dots_handover: string };
+      vars: { dots_profiles: string; dots_setup: string };
     };
-    expect(conf.vars.dots_profile).toContain("mise_env");
-    expect(conf.vars.dots_handover).toContain("DOTS_PROFILE={{ vars.dots_profile | quote }}");
-    expect(conf.vars.dots_handover).not.toContain("$");
+    expect(conf.vars.dots_profiles).toContain("mise_env");
+    expect(conf.vars.dots_setup).toContain("mise run dots setup");
+    expect(conf.vars.dots_setup).not.toContain("$");
   });
 
   it('no "# <name>: begin" marker remains in config/mise/conf.d', () => {

@@ -1,0 +1,106 @@
+# Hidden part tasks dispatched by `mise run dots setup` (config/mise/conf.d/tasks.toml).
+# Each part runs its hidden step file tasks in order. `dots:setup:remind` always runs last.
+
+["dots:setup:brew"]
+description = "Homebrew, its config link, and every Brewfile package for the profile"
+hide = true
+run = [
+  { task = "bootstrap:brew:install" },
+  { task = "bootstrap:brew:config-link" },
+  { task = "bootstrap:brew:bundle" },
+]
+
+["dots:setup:yabai"]
+description = "yabai's scripting addition (sudoers rule, boot argument)"
+hide = true
+run = [{ task = "bootstrap:yabai:scripting-addition" }]
+
+["dots:setup:app-files"]
+description = "Move app-written copies (VS Code, Karabiner) aside before linking"
+hide = true
+run = [{ task = "bootstrap:dotfiles:move-aside" }]
+
+["dots:setup:vscode"]
+description = "Turn off VS Code Settings Sync for linked settings, keybindings and snippets"
+hide = true
+run = [{ task = "bootstrap:vscode:settings-sync" }]
+
+["dots:setup:bat"]
+description = "Rebuild bat's theme cache"
+hide = true
+run = [{ task = "bootstrap:bat:cache" }]
+
+["dots:setup:lig"]
+description = "Cache Lig's zsh integration"
+hide = true
+run = [{ task = "bootstrap:lig:zsh" }]
+
+["dots:setup:macos"]
+description = "Apply macOS settings that need $HOME and restart Dock, Finder and menu bar"
+hide = true
+run = [{ task = "bootstrap:macos:activate" }]
+
+["dots:setup:swiftbar"]
+description = "Point SwiftBar at its plugins folder"
+hide = true
+run = [{ task = "bootstrap:macos:swiftbar" }]
+
+["dots:setup:git"]
+description = "Git SOPS filters, ~/.gitconfig check, and hk git hooks"
+hide = true
+run = [
+  { task = "bootstrap:git:filters" },
+  { task = "bootstrap:git:home-config" },
+  { task = "bootstrap:git:hooks" },
+]
+
+["dots:setup:shell"]
+description = "Warm Zsh plugin and completion caches"
+hide = true
+run = [{ task = "bootstrap:zsh:warm-caches" }]
+
+["dots:setup:dev"]
+description = "Install Python 3.13 dev tools (dev profile)"
+hide = true
+run = [{ task = "bootstrap:dev:python-tools" }]
+
+["dots:setup:secrets"]
+description = "gopass store, keyring check, pass link, and SSH Keychain"
+hide = true
+run = [
+  { task = "bootstrap:gopass:store" },
+  { task = "bootstrap:gopass:keyring" },
+  { task = "bootstrap:gopass:pass-link" },
+  { task = "bootstrap:ssh:keychain" },
+]
+
+["dots:setup:tiling"]
+description = "Tiling checks (SIP, Accessibility, kb-raycast) and JankyBorders build"
+hide = true
+run = [
+  { task = "bootstrap:tiling:checks" },
+  { task = "bootstrap:borders:build" },
+]
+
+["dots:setup:ai"]
+description = "Download oMLX models"
+hide = true
+run = [{ task = "bootstrap:omlx:models" }]
+
+["dots:setup:skills"]
+description = "Restore global agent skills (dev profile)"
+hide = true
+run = [{ task = "bootstrap:skills:restore" }]
+
+["dots:setup:nvim"]
+description = "Neovim providers and plugins"
+hide = true
+run = [
+  { task = "bootstrap:nvim:providers" },
+  { task = "bootstrap:nvim:plugins" },
+]
+
+["dots:setup:remind"]
+description = "Repeat any recorded Brewfile failures"
+hide = true
+run = [{ task = "bootstrap:brew:remind" }]
