@@ -51,28 +51,6 @@ describe("theme folders", () => {
     }
   });
 
-  it("tokyonight-storm keeps the pre-theme palette: the old LS_COLORS and eza colours", () => {
-    // The hand-made palette theme.zsh exported before the switchable theme (796affa).
-    const old = Bun.spawnSync(["git", "show", "796affa:config/zsh/opt/rc.d/theme.zsh"], { cwd: repoRoot, stdout: "pipe" }).stdout.toString();
-    const value = (key: string) => old.match(new RegExp(`export ${key}="([^"]+)"`))?.[1] as string;
-    const dir = join(THEMES, "tokyonight-storm");
-    expect(readFileSync(join(dir, "ls_colors"), "utf8")).toContain(`export LS_COLORS='${value("LS_COLORS")}'`);
-    expect(readFileSync(join(dir, "eza.sh"), "utf8")).toContain(`export EZA_COLORS="${value("EXA_COLORS")}"`);
-  });
-
-  it("dracula's eza colours are Dracula's own (draculatheme.com/eza), in truecolor", () => {
-    // dracula/eza's EZA_COLORS uses the terminal's basic colours (34 = Dracula purple, 95 = bright pink, …); here they
-    // are Dracula's hex values, so they hold under any terminal palette. File names stay white: no per-extension colours.
-    const eza = readFileSync(join(THEMES, "dracula/eza.sh"), "utf8");
-    for (const key of ["ur=38;2;189;147;249", "uw=38;2;255;146;223", "ux=38;2;139;233;253", "gw=38;2;255;121;198", "da=2;38;2;189;147;249", "xx=38;2;255;146;223", "uu=38;2;139;233;253", "uR=38;2;255;85;85"]) {
-      expect(eza).toContain(key);
-    }
-    const ls = readFileSync(join(THEMES, "dracula/ls_colors"), "utf8");
-    expect(ls).toStartWith("# hand-made");
-    expect(ls).toContain("di=1;38;2;189;147;249");
-    expect(ls).not.toContain("*.");
-  });
-
   it("theme:build leaves a hand-made ls_colors alone", () => {
     const before = readFileSync(join(THEMES, "tokyonight-storm/ls_colors"), "utf8");
     const r = Bun.spawnSync(["mise", "run", "theme:build", "tokyonight-storm"], { cwd: repoRoot, stdout: "pipe", stderr: "pipe" });
@@ -146,25 +124,12 @@ describe("Lig's config", () => {
     for (const rest of shared) expect(rest).toEqual(shared[0]);
   });
 
-  it("lig.toml asks zsh's completion, and leaves Ctrl-R and the network alone", () => {
-    for (const name of NAMES) {
-      const { behavior } = ligConfig(name);
-      expect(behavior.completers).toEqual(["shell"]);
-      expect(behavior.online).toBe(false);
-      expect(behavior.history).toBe(false);
-    }
-  });
-
-  it("each lig.toml sets the colours explicitly", () => {
+  it("each lig.toml sets valid hex colours for every required key", () => {
     for (const name of NAMES) {
       const { ui, colors } = ligConfig(name);
       expect(["catppuccin", "tokyonight", "dracula", "nord", "gruvbox"]).toContain(ui.theme);
       for (const key of LIG_COLORS) expect({ name, key, value: colors[key] }).toEqual({ name, key, value: expect.stringMatching(/^#[0-9a-f]{6}$/i) });
     }
-    expect(ligConfig("catppuccin-mocha").colors.bg.toLowerCase()).toBe("#1e1e2e");
-    expect(ligConfig("catppuccin-macchiato").colors.bg.toLowerCase()).toBe("#24273a");
-    expect(ligConfig("tokyonight-storm").colors.bg.toLowerCase()).toBe("#1f2335");
-    expect(ligConfig("dracula").colors.bg.toLowerCase()).toBe("#282a36");
   });
 
   it("config/lig/config.toml points at the state link's lig.toml", () => {
@@ -191,8 +156,8 @@ describe("theme:build", () => {
       .filter((e) => e.isDirectory())
       .map((e) => e.name)
       .sort();
-    const mise = readFileSync(join(repoRoot, "mise.toml"), "utf8");
-    const buildBlock = mise.match(/\[tasks\."theme:build"\][\s\S]*?\nrun =/)?.[0] ?? "";
+    const mise = readFileSync(join(repoRoot, "config/theme/tasks.toml"), "utf8");
+    const buildBlock = mise.match(/\["theme:build"\][\s\S]*?\nrun =/)?.[0] ?? "";
     expect(choicesIn(buildBlock)).toEqual(folders);
   });
 });

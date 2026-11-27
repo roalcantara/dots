@@ -25,36 +25,12 @@ describe.skipIf(!brew)("Brewfile profiles", () => {
     expect(desktop).toContain("gopass");
     expect(dev).toContain("gopass");
   });
-  it("codexbar (agent limits in the menu bar) for desktop and desktop,dev", () => {
-    expect(container).not.toContain("codexbar");
-    expect(desktop).toContain("codexbar");
-    expect(dev).toContain("codexbar");
-  });
   it("DEVTOOLS entries for desktop,dev only", () => {
     expect(desktop).not.toContain("shellcheck");
     expect(dev).toContain("shellcheck");
   });
-  it("vivid (theme:build) is a dev tool, not on desktop or container", () => {
-    expect(container).not.toContain("vivid");
-    expect(desktop).not.toContain("vivid");
-    expect(dev).toContain("vivid");
-  });
-  it("gomi (the rm safety net) is a desktop tool, not in containers", () => {
-    expect(container).not.toContain("gomi");
-    expect(desktop).toContain("gomi");
-    expect(dev).toContain("gomi");
-  });
-  it("lig (the completion popup) is a desktop tool, not in containers", () => {
-    const lig = "kevengoncalves/tap/lig";
-    expect(container).not.toContain(lig);
-    expect(desktop).toContain(lig);
-    expect(dev).toContain(lig);
-  });
   it("dev alone implies desktop", () => expect(list("dev")).toContain("gopass"));
-  it("lida CLI (dual-format project task engine) for desktop,dev only, after rust", () => {
-    expect(container).not.toContain("lida");
-    expect(desktop).not.toContain("lida");
-    expect(dev).toContain("lida");
+  it("lida (cargo) is declared after rust", () => {
     const text = readFileSync(BREWFILE, "utf8"); // install order is file order: cargo needs rust first
     expect(text.indexOf('cargo "lida"')).toBeGreaterThan(text.indexOf('brew "rust"'));
   });

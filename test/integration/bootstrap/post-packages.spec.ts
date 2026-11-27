@@ -1,17 +1,16 @@
 #!/usr/bin/env bun
-// The post-packages hook in config/mise/conf.d/bootstrap.toml, run against a stub `brew`:
-// the core group is fatal, the rest of the Brewfile only warns (unless CI or DOTS_STRICT).
+// The post-packages phase: brew/bundle.sh is the Brewfile (core group fatal, the rest only warns), brew/install.sh
+// asks for sudo, brew/config-link.sh keeps brew's trust store in the repo.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { runStep, STEPS } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
-const config = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
-  bootstrap: { hooks: { "post-packages": { run: string } } };
-  tasks: { bootstrap: { run: string } };
-};
-const HOOK = config.bootstrap.hooks["post-packages"].run;
+const BUNDLE = "brew/bundle.sh";
+const INSTALL = "brew/install.sh";
+const CONFIG = "brew/config-link.sh";
 
 // Fails `brew bundle install` for the profiles listed in STUB_FAIL, printing brew's real failure lines.
 const STUB = `#!/bin/sh
@@ -38,34 +37,41 @@ beforeEach(() => {
   mkdirSync(join(t, "bin"));
   writeFileSync(join(t, "bin", "brew"), STUB);
   chmodSync(join(t, "bin", "brew"), 0o755);
-  writeFileSync(join(t, "hook.sh"), HOOK);
 });
 afterEach(() => rmSync(t, { recursive: true, force: true }));
 
 const state = () => join(t, "state", "dots");
 const calls = () => readFileSync(join(t, "calls"), "utf8").trim().split("\n");
 
-function hook(env: Record<string, string>) {
-  const p = Bun.spawnSync(["bash", join(t, "hook.sh")], {
-    env: {
-      PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, XDG_STATE_HOME: join(t, "state"),
-      HOMEBREW_BUNDLE_FILE: join(t, "Brewfile"), STUB_LOG: join(t, "calls"), ...env,
-    },
-    stdout: "pipe", stderr: "pipe",
-  });
-  return { code: p.exitCode, out: p.stdout.toString(), err: p.stderr.toString() };
+function env(extra: Record<string, string> = {}) {
+  return {
+    PATH: `${join(t, "bin")}:/usr/bin:/bin`,
+    HOME: t,
+    XDG_STATE_HOME: join(t, "state"),
+    HOMEBREW_BUNDLE_FILE: join(t, "Brewfile"),
+    STUB_LOG: join(t, "calls"),
+    ...extra,
+  };
 }
 
-describe("post-packages hook", () => {
+const bundle = (extra: Record<string, string> = {}) => runStep(BUNDLE, env(extra));
+
+// The phase order the hook runs: config-link before bundle, so brew sees the linked trust store.
+function phase(extra: Record<string, string> = {}) {
+  const link = runStep(CONFIG, env(extra));
+  return { link, bundle: bundle(extra) };
+}
+
+describe("brew/bundle.sh", () => {
   it("desktop: installs the core group, then the full Brewfile", () => {
-    const r = hook({ MISE_ENV: "desktop" });
+    const r = bundle({ usage_profile: "desktop" });
     expect(r.code).toBe(0);
     expect(calls()).toEqual([`container ${join(t, "Brewfile")}`, `desktop ${join(t, "Brewfile")}`]);
     expect(existsSync(join(state(), "brew-bundle.failed"))).toBe(false);
   });
 
   it("desktop: a failed entry warns, names it and records it, but exits 0", () => {
-    const r = hook({ MISE_ENV: "desktop", STUB_FAIL: "desktop" });
+    const r = bundle({ usage_profile: "desktop", STUB_FAIL: "desktop" });
     expect(r.code).toBe(0);
     expect(r.err).toContain("WARNING: brew bundle could not install: can1357/tap com.discordapp.Discord");
     expect(r.err).toContain("retry: brew bundle install");
@@ -74,113 +80,99 @@ describe("post-packages hook", () => {
   });
 
   it("desktop: a later clean run clears the recorded failure", () => {
-    hook({ MISE_ENV: "desktop", STUB_FAIL: "desktop" });
-    expect(hook({ MISE_ENV: "desktop" }).code).toBe(0);
+    bundle({ usage_profile: "desktop", STUB_FAIL: "desktop" });
+    expect(bundle({ usage_profile: "desktop" }).code).toBe(0);
     expect(existsSync(join(state(), "brew-bundle.failed"))).toBe(false);
   });
 
   it("CI or DOTS_STRICT makes a failed entry fatal", () => {
     for (const strict of [{ CI: "true" }, { DOTS_STRICT: "1" }] as Record<string, string>[]) {
-      const r = hook({ MISE_ENV: "desktop", STUB_FAIL: "desktop", ...strict });
+      const r = bundle({ usage_profile: "desktop", STUB_FAIL: "desktop", ...strict });
       expect(r.code).toBe(1);
       expect(r.err).toContain("brew bundle failed: can1357/tap com.discordapp.Discord");
     }
   });
 
   it("a failure in the core group stops the bootstrap before the full Brewfile", () => {
-    const r = hook({ MISE_ENV: "desktop", STUB_FAIL: "container" });
+    const r = bundle({ usage_profile: "desktop", STUB_FAIL: "container" });
     expect(r.code).not.toBe(0);
     expect(calls()).toEqual([`container ${join(t, "Brewfile")}`]);
   });
 
   it("desktop,dev: passes the whole list to the full Brewfile run", () => {
-    const r = hook({ MISE_ENV: "desktop,dev" });
+    const r = bundle({ usage_profile: "desktop,dev" });
     expect(r.code).toBe(0);
     expect(calls()).toEqual([`container ${join(t, "Brewfile")}`, `desktop,dev ${join(t, "Brewfile")}`]);
   });
 
-  it("reads a two-env miserc.local.toml when MISE_ENV is unset", () => {
-    mkdirSync(join(t, ".local", "share", "dots", "config", "mise"), { recursive: true });
-    writeFileSync(join(t, ".local", "share", "dots", "config", "mise", "miserc.local.toml"), 'env = ["desktop", "dev"]\n');
-    const r = hook({});
+  it("defaults to desktop when usage_profile is unset", () => {
+    const r = bundle({});
     expect(r.code).toBe(0);
-    expect(calls()[1]).toBe(`desktop,dev ${join(t, "Brewfile")}`);
+    expect(calls()[1]).toBe(`desktop ${join(t, "Brewfile")}`);
   });
 
   it("container: installs only the core group", () => {
-    const r = hook({ MISE_ENV: "container" });
+    const r = bundle({ usage_profile: "container" });
     expect(r.code).toBe(0);
     expect(calls()).toEqual([`container ${join(t, "Brewfile")}`]);
   });
 });
 
-describe("bootstrap task reminder", () => {
-  // The lines from `failed_file=` to `trap remind EXIT`, run with a trivial body.
-  const snippet = config.tasks.bootstrap.run.match(/failed_file=[\s\S]*?trap remind EXIT\n/)?.[0] ?? "";
-
-  it("is present", () => expect(snippet).toContain("trap remind EXIT"));
-
-  it("repeats the recorded failure at exit, keeping the exit code", () => {
+describe("brew/remind.sh", () => {
+  it("repeats the recorded failure and always exits 0", () => {
     mkdirSync(state(), { recursive: true });
     writeFileSync(join(state(), "brew-bundle.failed"), "com.discordapp.Discord\n");
-    const p = Bun.spawnSync(["bash", "-c", `${snippet}exit 3`], {
-      env: { PATH: "/usr/bin:/bin", HOME: t, XDG_STATE_HOME: join(t, "state") }, stderr: "pipe",
-    });
-    expect(p.exitCode).toBe(3);
-    expect(p.stderr.toString()).toContain("bootstrap: brew bundle could not install: com.discordapp.Discord");
+    const r = runStep("brew/remind.sh", env({ usage_profile: "desktop" }));
+    expect(r.code).toBe(0);
+    expect(r.err).toContain("bootstrap: brew bundle could not install: com.discordapp.Discord");
+    expect(r.err).toContain(`retry: brew bundle install (log: ${join(state(), "brew-bundle.log")})`);
   });
 
   it("stays quiet when nothing failed", () => {
-    const p = Bun.spawnSync(["bash", "-c", `${snippet}exit 0`], {
-      env: { PATH: "/usr/bin:/bin", HOME: t, XDG_STATE_HOME: join(t, "state") }, stderr: "pipe",
-    });
-    expect(p.exitCode).toBe(0);
-    expect(p.stderr.toString()).toBe("");
+    const r = runStep("brew/remind.sh", env({ usage_profile: "desktop" }));
+    expect(r.code).toBe(0);
+    expect(r.err).toBe("");
   });
 });
 
 describe("Homebrew install needs sudo", () => {
-  // The lines between `# brew-sudo: begin` and `# brew-sudo: end`, run with stub id/sudo and no terminal.
-  const snippet = HOOK.match(/# brew-sudo: begin\n[\s\S]*?# brew-sudo: end\n/)?.[0] ?? "";
-  const runSnippet = (sudoOk: boolean, detach = false) => {
+  const step = readFileSync(join(STEPS, INSTALL), "utf8");
+  const runInstall = (sudoOk: boolean) => {
     writeFileSync(join(t, "bin", "id"), "#!/bin/sh\necho 501\n");
     writeFileSync(join(t, "bin", "sudo"), `#!/bin/sh\necho "sudo $*" >> "${join(t, "sudo.log")}"\nexit ${sudoOk ? 0 : 1}\n`);
-    for (const n of ["id", "sudo"]) chmodSync(join(t, "bin", n), 0o755);
-    // setsid detaches from the terminal, so /dev/tty is unavailable (the no-terminal case).
-    const p = Bun.spawnSync([...(detach ? ["setsid"] : []), "bash", "-c", `${snippet}echo AFTER`], {
-      env: { PATH: `${join(t, "bin")}:/usr/bin:/bin` }, stdin: "ignore", stdout: "pipe", stderr: "pipe",
-    });
-    return { code: p.exitCode, out: p.stdout.toString(), err: p.stderr.toString() };
+    // The installer body itself: a no-op, so the test never reaches the network.
+    writeFileSync(join(t, "bin", "curl"), "#!/bin/sh\necho 'exit 0'\n");
+    for (const n of ["id", "sudo", "curl"]) chmodSync(join(t, "bin", n), 0o755);
+    return runStep(INSTALL, env(), { stdin: "ignore" });
   };
 
-  it("is in the hook, before the installer", () => {
-    expect(snippet).toContain("sudo -n true");
-    expect(HOOK.indexOf("# brew-sudo: end")).toBeLessThan(HOOK.indexOf("NONINTERACTIVE=1 /bin/bash"));
+  it("asks for sudo before running the installer", () => {
+    expect(step).toContain("sudo -n true");
+    expect(step.indexOf("sudo -n true")).toBeLessThan(step.indexOf("NONINTERACTIVE=1 /bin/bash"));
   });
 
   it("goes on when a sudo ticket already exists (Linux, after apt)", () => {
-    const r = runSnippet(true);
+    const r = runInstall(true);
     expect(r.code).toBe(0);
-    expect(r.out).toContain("AFTER");
+    expect(readFileSync(join(t, "sudo.log"), "utf8")).toContain("sudo -n true");
   });
 
-  it.skipIf(!Bun.which("setsid"))("without a ticket or a terminal, stops with what to run", () => {
-    const r = runSnippet(false, true);
+  it("without a ticket or a terminal, stops with what to run", () => {
+    const r = runInstall(false);
     expect(r.code).toBe(1);
-    expect(r.out).not.toContain("AFTER");
     expect(r.err).toContain("run 'sudo -v', then mise bootstrap");
   });
 });
 
 // Shells set XDG_CONFIG_HOME, so brew reads its trust store from ~/.config/homebrew (the link into
-// config/homebrew); the hook must use that store too, and make the link before brew creates a real folder there.
+// config/homebrew); the phase must use that store too, and make the link before brew creates a real folder there.
 describe("brew's user config folder", () => {
   const link = () => join(t, ".config", "homebrew");
   const xdg = () => readFileSync(join(t, "calls.xdg"), "utf8").trim();
   beforeEach(() => mkdirSync(join(t, ".local", "share", "dots", "config", "homebrew"), { recursive: true }));
 
   it("links ~/.config/homebrew into the repo and runs brew bundle with XDG_CONFIG_HOME=~/.config", () => {
-    expect(hook({ MISE_ENV: "desktop" }).code).toBe(0);
+    expect(phase({ MISE_ENV: "desktop" }).bundle.code).toBe(0);
     expect(readlinkSync(link())).toBe("../.local/share/dots/config/homebrew");
     expect(xdg()).toBe(join(t, ".config"));
   });
@@ -188,13 +180,13 @@ describe("brew's user config folder", () => {
   it("keeps an existing ~/.config/homebrew and the caller's XDG_CONFIG_HOME", () => {
     mkdirSync(join(t, ".config"), { recursive: true });
     symlinkSync("/elsewhere", link());
-    expect(hook({ MISE_ENV: "desktop", XDG_CONFIG_HOME: join(t, ".config") }).code).toBe(0);
+    expect(phase({ MISE_ENV: "desktop", XDG_CONFIG_HOME: join(t, ".config") }).bundle.code).toBe(0);
     expect(readlinkSync(link())).toBe("/elsewhere");
     expect(xdg()).toBe(join(t, ".config"));
   });
 
   it("makes no link when XDG_CONFIG_HOME is somewhere else", () => {
-    expect(hook({ MISE_ENV: "desktop", XDG_CONFIG_HOME: join(t, "xdg") }).code).toBe(0);
+    expect(phase({ MISE_ENV: "desktop", XDG_CONFIG_HOME: join(t, "xdg") }).bundle.code).toBe(0);
     expect(existsSync(link())).toBe(false);
     expect(xdg()).toBe(join(t, "xdg"));
   });

@@ -106,9 +106,10 @@ describe("tuis:build", () => {
   });
 
   it("is a mise task with a documented --check flag", () => {
-    const task = Bun.TOML.parse(readFileSync(join(ROOT, "mise.toml"), "utf8")) as {
-      tasks: Record<string, { usage?: string; run?: string }>;
-    };
-    expect(task.tasks["tuis:build"]?.usage).toContain('flag "--check"');
+    const tasks = Bun.TOML.parse(readFileSync(join(ROOT, "config/raycast/tasks.toml"), "utf8")) as Record<
+      string,
+      { usage?: string; run?: string }
+    >;
+    expect(tasks["tuis:build"]?.usage).toContain('flag "--check"');
   });
 });

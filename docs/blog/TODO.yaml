@@ -41,6 +41,8 @@ tasks:
   - eUJE
   - nUXV
   - qvYw
+  - o74A
+  - DBHN
   position: docs/blog/posts/2026-11-13-zsh-word-split
   tags:
   - post
@@ -112,6 +114,8 @@ tasks:
   - WA04
   - 9usJ
   - NT5A
+  - vCPi
+  - 8usM
   position: docs/blog/posts/2026-11-17-secrets-sops-age
   tags:
   - post
@@ -132,7 +136,7 @@ tasks:
   - in-between
   - topic-1
 - id: yg3s
-  status: InProgress
+  status: Done
   description: 'Topic 2: Commit conventions that write your release notes (LinkedIn in PT-BR)'
   due: 2026-11-25 09:00
   actors:
@@ -154,6 +158,12 @@ tasks:
   - pUfY
   - NNDC
   - nBsQ
+  - Xc7W
+  - VIQ1
+  - wyHn
+  - zVTA
+  - 14br
+  - 2iBU
   position: docs/blog/posts/2026-12-01-commit-conventions-release-notes
   tags:
   - theme-b
@@ -479,6 +489,8 @@ tasks:
   - 7L5h
   - P5Y8
   - S3at
+  - T3JO
+  - E8pD
   position: docs/blog/posts/2026-11-12-omarchy-on-macos
   tags:
   - post
@@ -502,6 +514,8 @@ tasks:
   - v5Uz
   - fFdn
   - K7hc
+  - NjZh
+  - w4Ic
   priority: Low
   tags:
   - series
@@ -944,5 +958,47 @@ comments:
   task_id: yg3s
 - id: nBsQ
   text: 'note: 2026-11-25 published on a Wednesday (8 days after topic 1) to keep one post a week; two variables changed at once (hook: concrete pain instead of a wink; day: Wednesday), so compare with care'
+  task_id: yg3s
+- id: o74A
+  text: 'stats: 2026-11-25 devto views=40 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  task_id: 6ThC
+- id: vCPi
+  text: 'stats: 2026-11-25 devto views=62 reactions=0 comments=0 referrer_linkedin=0 referrer_reddit=0 (api)'
+  task_id: EFly
+- id: Xc7W
+  text: 'devto.id: 5109831'
+  task_id: yg3s
+- id: VIQ1
+  text: 'devto.url: https://dev.to/roalcantara/squash-merges-semantic-release-reads-the-pr-title-not-your-commits-2g1i'
+  task_id: yg3s
+- id: wyHn
+  text: 'stats: 2026-11-25 devto views=2 reactions=0 comments=0 referrer_linkedin=0 referrer_reddit=0 (api)'
+  task_id: yg3s
+- id: T3JO
+  text: 'stats: 2026-11-25 devto views=40 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  task_id: 6eS8
+- id: NjZh
+  text: 'stats: 2026-11-25 github repo_views=162 repo_uniques=10 (api)'
+  task_id: Yaw4
+- id: zVTA
+  text: 'linkedin.url: https://lnkd.in/p/d4xM3Tve'
+  task_id: yg3s
+- id: DBHN
+  text: 'stats: 2026-11-25 devto views=40 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  task_id: 6ThC
+- id: 8usM
+  text: 'stats: 2026-11-25 devto views=62 reactions=0 comments=0 referrer_linkedin=0 referrer_reddit=0 (api)'
+  task_id: EFly
+- id: 14br
+  text: 'stats: 2026-11-25 devto views=13 reactions=0 comments=1 referrer_linkedin=0 referrer_reddit=0 (api)'
+  task_id: yg3s
+- id: E8pD
+  text: 'stats: 2026-11-25 devto views=40 reactions=0 comments=0 referrer_linkedin=10 referrer_reddit=0 (api)'
+  task_id: 6eS8
+- id: w4Ic
+  text: 'stats: 2026-11-25 github repo_views=162 repo_uniques=10 (api)'
+  task_id: Yaw4
+- id: 2iBU
+  text: 'note: 2026-11-25 LinkedIn copy reworded by the author before posting: mentions the duplicated changelog entries, pointer ''Hora de arrumar a casa:'' with the link inline, 4 hashtags (#git #devops #github #faxinando, one PT tag); emoji instead of '':('''
   task_id: yg3s
 project: posts

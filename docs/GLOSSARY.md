@@ -15,7 +15,7 @@ This glossary defines terms used across Dots configuration, documentation, and t
 | **`xc-*` tool** | A command-line script in `config/bin` with the `xc-` prefix. |
 | **`xc` launcher** | Interactive menu and dispatcher discovering and executing `xc-*` tools. |
 | **`gen`** | Shell completion generator (`config/bin/gen`) powered by Usage CLI specifications. |
-| **Mise task** | Automation workflow declared in `mise.toml` or `test/mise.toml`, run via `mise run <task>`. |
+| **Mise task** | Automation workflow declared in a topic's `tasks.toml` (next to what it manages), a subproject's `mise.toml` or `.mise/tasks/`, run via `mise run <task>` (`docs/CONTRIBUTING.md` §4). |
 | **Quality gate** | Concrete verification command (e.g. `mise run test:specs`, `hk check --all`) that must be green before merging. |
 | **Backup root** | Storage directory holding backups, `/Volumes/backups` by default; overridden by `DOTS_BACKUP_ROOT`. |
 | **Backup manifest** | `config/restic/backup.toml`: defines repository path, the allowlist of source paths, retention policy, and exclusions with reasons. |
@@ -28,7 +28,7 @@ This glossary defines terms used across Dots configuration, documentation, and t
 | **Safety net** | gomi aliased to `rm` in interactive shells: files move to a restorable trash, and `\rm` or `command rm` still delete. |
 | **Snapshot** | Point-in-time backup archive inside a restic repository, tagged with the machine host name and `home:<home>` (the folder `restore` maps from). |
 | **Export** | Dated folder under `machines/<host>/exports/` holding machine audit reports and manual exports. |
-| **Reinstall audit** | `mise run reinstall:audit`: read-only evaluation of uncommitted git state, non-cask apps, and machine risk (`MANIFEST.md`). |
+| **Reinstall audit** | `mise run dots backup audit`: read-only evaluation of uncommitted git state, non-cask apps, and machine risk (`MANIFEST.md`). |
 | **Keyring recipient** | Public age key that gopass's identity keyring is encrypted to (`age.keyring-recipients`): the bootstrap age key. |
 | **Keyring identity** | Plaintext age key file that unlocks gopass's identity keyring (`age.keyring-identities`): `~/.config/age/keys.txt`. |
 | **Recovery key** | The bootstrap age key itself, kept as a Bitwarden secure note: it decrypts the history and the repo's SOPS files, gopass's keyring included. |

@@ -1,0 +1,7 @@
+# Repo tasks for this topic, included by the root mise.toml (`config/*/tasks.toml`, `*/tasks.toml`); they run from
+# the repo root. Task names are top-level tables here (docs/CONTRIBUTING.md, "Mise task conventions").
+# The repo's verification suite (test/mise.toml is the suite's own project, run with -C test).
+
+["test:specs"]
+description = "Run every BDD scenario and integration spec under test/"
+run = "mise run -C test test all"

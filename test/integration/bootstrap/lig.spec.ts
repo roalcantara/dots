@@ -5,11 +5,10 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { runStep } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
 const THEMES = join(REPO, "config/theme/themes");
-const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/dotfiles.toml"), "utf8")) as any;
-const HOOK: string = conf.bootstrap.hooks["post-dotfiles"].run;
 
 let t: string;
 let bin: string;
@@ -57,6 +56,35 @@ describe("mise run zsh:lig", () => {
     expect(r.exitCode).not.toBe(0);
     expect(r.stderr.toString()).toContain("brew install kevengoncalves/tap/lig");
     expect(existsSync(join(t, "cache/pre.zsh"))).toBe(false);
+  });
+});
+
+describe("lig/zsh.sh", () => {
+  const step = (extra: Record<string, string> = {}) =>
+    runStep("lig/zsh.sh", {
+      PATH: `${bin}:/usr/bin:/bin`,
+      HOME: t,
+      DOTS_DIR: t,
+      DOTS_UNAME: "Darwin",
+      ...extra,
+    });
+
+  it("asks mise to cache the integration when lig is installed", () => {
+    fake("brew");
+    fakeLig();
+    fake("mise");
+    const r = step();
+    expect(r.code).toBe(0);
+    expect(log("mise").trim()).toBe(`-C ${t} run zsh:lig`);
+  });
+
+  it("does nothing without lig", () => {
+    fake("brew");
+    fake("mise");
+    const r = step();
+    expect(r.code).toBe(0);
+    expect(log("mise")).toBe("");
+    expect(r.out + r.err).toBe("");
   });
 });
 

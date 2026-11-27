@@ -20,7 +20,7 @@ The design and its trade-offs are in the
 | JankyBorders         | Outlines the focused window (qeesung's fork, built from source) | [`config/borders/bordersrc`](../config/borders/bordersrc)                         |
 | SwiftBar             | The space strip in the menu bar (`yb bar`)                      | [`config/swiftbar/plugins/spaces.sh`](../config/swiftbar/plugins/spaces.sh)       |
 | kb Raycast extension | Hotkeys and System commands                                     | `~/Work/kb` ([roalcantara/kb-raycast](https://github.com/roalcantara/kb-raycast)) |
-| mise bootstrap       | Installs, links and starts all of it                            | [`config/mise/conf.d/yabai.toml`](../config/mise/conf.d/yabai.toml)               |
+| mise bootstrap       | Installs, links and starts all of it                            | [`config/mise/conf.d/macos.toml`](../config/mise/conf.d/macos.toml)               |
 
 ## Spaces and screens
 
@@ -91,16 +91,9 @@ To add one:
 
 ### Done by `mise bootstrap`
 
-- Installs yabai, Karabiner-Elements and SwiftBar; links `~/.config/yabai`, `~/.config/karabiner`,
-  `~/.config/borders` and `~/.config/swiftbar`, moving a real `~/.config/karabiner` aside first.
-- Starts SwiftBar at login, pointed at `~/.config/swiftbar/plugins`.
-- Sets "Press 🌐 key to" to Do Nothing (`AppleFnUsageType = 0`; takes effect after a logout).
-- Builds JankyBorders from [qeesung's fork](https://github.com/qeesung/JankyBorders) at a pinned commit into
-  `~/.local/share/janky-borders` (upstream leaves outlines behind in Mission Control on macOS 27).
-- Runs yabai and borders as LaunchAgents (`dev.mise.yabai`, `dev.mise.borders`) that restart if they exit.
-- `yb sa` writes `/etc/sudoers.d/yabai` (pinned to yabai's hash, rewritten after `brew upgrade yabai`) and adds
-  the `-arm64e_preview_abi` boot argument once SIP is partly off.
-- Clones `roalcantara/kb-raycast` to `~/Work/kb`, and warns when SIP or yabai's Accessibility still need you.
+Packages, links, the fn key, SwiftBar, JankyBorders and the yabai scripting addition are bootstrap steps; the list
+and their up-to-date checks are in [BOOTSTRAP.md](BOOTSTRAP.md#steps). The manual steps below are what bootstrap
+cannot do itself.
 
 ### Once per machine, by hand
 

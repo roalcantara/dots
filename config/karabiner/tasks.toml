@@ -1,0 +1,10 @@
+# Repo tasks for this topic, included by the root mise.toml (`config/*/tasks.toml`, `*/tasks.toml`); they run from
+# the repo root. Task names are top-level tables here (docs/CONTRIBUTING.md, "Mise task conventions").
+
+# The Karabiner fn layer: regenerate config/karabiner/karabiner.json and hotkeys.json from src/bindings.ts.
+["karabiner:build"]
+description = "Generate the Karabiner fn layer (config/karabiner) from src/bindings.ts"
+run = [
+  "bun install --frozen-lockfile --cwd config/karabiner",
+  "bun config/karabiner/src/build.ts",
+]

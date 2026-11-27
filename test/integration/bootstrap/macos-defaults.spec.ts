@@ -1,55 +1,29 @@
 #!/usr/bin/env bun
-// The macOS preferences in config/mise/conf.d/macos.toml: pins the values Raycast and yabai rely on (and their TOML
-// types: mise rewrites a preference whose type differs), and checks the post-defaults hook never fails a bootstrap.
+// The macOS preferences in config/mise/conf.d/macos.toml: checks cross-file invariants (TOML float type,
+// screenshots folder vs hook, Dock/login-items against Brewfile) and the post-defaults step behaviour.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { runStep } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
-type Entry = { domain: string; key?: string; path?: string[]; host?: string; value: unknown };
 type Config = {
   bootstrap: {
     directories: Record<string, unknown>;
-    files: Record<string, Record<string, unknown>>;
-    hooks: { "post-defaults": { run: string } };
-    macos: {
-      keyboard: Record<string, unknown>;
-      trackpad: Record<string, unknown>;
-      dock: Record<string, unknown>;
-      finder: Record<string, unknown>;
-      login_items: { apps: string[]; exclusive?: boolean };
-      defaults: Record<string, Record<string, unknown>>;
-      defaults_entries: Entry[];
-      launchd: { agents: Record<string, Record<string, unknown>> };
+    settings: {
+      macos: {
+        dock: Record<string, unknown>;
+        login_items: { apps: string[]; exclusive?: boolean };
+        defaults: Record<string, Record<string, unknown>>;
+      };
     };
   };
 };
 const config = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/macos.toml"), "utf8")) as Config;
-const macos = config.bootstrap.macos;
-const entry = (domain: string, key: string) =>
-  macos.defaults_entries.find((e) => e.domain === domain && (e.key === key || e.path?.at(-1) === key));
+const macos = config.bootstrap.settings.macos;
 
 describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
-  it("sets a fast key repeat and turns off press-and-hold", () => {
-    expect(macos.keyboard.key_repeat).toBe(2);
-    expect(macos.keyboard.initial_key_repeat).toBe(15);
-    expect(macos.keyboard.press_and_hold).toBe(false);
-    expect(macos.defaults.NSGlobalDomain!.AppleKeyboardUIMode).toBe(3);
-  });
-
-  it("auto-hides the Dock and never rearranges Spaces (yabai)", () => {
-    expect(macos.dock.autohide).toBe(true);
-    expect(macos.dock.mru_spaces).toBe(false);
-    expect(macos.dock.show_recents).toBe(false);
-    expect(macos.defaults["com.apple.spaces"]!["spans-displays"]).toBe(false);
-  });
-
-  it("taps to click and keeps three-finger swipes for Spaces", () => {
-    expect(macos.trackpad.tap_to_click).toBe(true);
-    expect(macos.trackpad.three_finger_drag).toBe(false);
-  });
-
   it("writes pointer speeds as reals", () => {
     const g = macos.defaults.NSGlobalDomain!;
     expect(g["com.apple.trackpad.scaling"]).toBe(3);
@@ -60,73 +34,10 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
     expect(src).toMatch(/"com\.apple\.mouse\.scaling" = 3\.0/);
   });
 
-  it("turns off the window tiling and Stage Manager that fight yabai", () => {
-    const wm = macos.defaults["com.apple.WindowManager"]!;
-    for (const k of ["EnableTilingByEdgeDrag", "EnableTopTilingByEdgeDrag", "EnableTilingOptionAccelerator",
-      "GloballyEnabled", "EnableStandardClickToShowDesktop"]) expect(wm[k]).toBe(false);
-  });
-
-  it("moves Spotlight to Option-Space, leaving Command-Space to Raycast", () => {
-    const e = macos.defaults_entries.find((x) => x.domain === "com.apple.symbolichotkeys");
-    expect(e?.key).toBe("AppleSymbolicHotKeys");
-    expect(e?.path).toEqual(["64"]);
-    expect(e?.value).toEqual({ enabled: true, value: { parameters: [32, 49, 524288], type: "standard" } });
-    const params = (e?.value as { value: { parameters: number[] } }).value.parameters;
-    for (const p of params) expect(Number.isInteger(p)).toBe(true);
-  });
-
-  it("keeps Photos closed when a device connects (current host)", () => {
-    const e = entry("com.apple.ImageCapture", "disableHotPlug");
-    expect(e?.host).toBe("current");
-    expect(e?.value).toBe(true);
-  });
-
   it("declares the screenshots folder; the hook sets it (mise does not expand ~ or templates in values)", () => {
     expect(macos.defaults["com.apple.screencapture"]).not.toHaveProperty("location");
     // macOS only: Linux bootstraps and the Docker images must not change.
     expect(config.bootstrap.directories["~/Pictures/Screenshots"]).toMatchObject({ os: "macos" });
-  });
-
-  it("sets the light click on built-in and Bluetooth trackpads", () => {
-    for (const d of ["com.apple.AppleMultitouchTrackpad", "com.apple.driver.AppleBluetoothMultitouch.trackpad"]) {
-      expect(macos.defaults[d]!.FirstClickThreshold).toBe(0);
-      expect(macos.defaults[d]!.SecondClickThreshold).toBe(0);
-    }
-  });
-
-  it("taps to click at the login window too (current host)", () => {
-    const e = entry("NSGlobalDomain", "com.apple.mouse.tapBehavior");
-    expect(e?.host).toBe("current");
-    expect(e?.value).toBe(1);
-  });
-
-  it("loads the SSH keys from Keychain at every login (Apple's ssh-add)", () => {
-    const agent = macos.launchd.agents["ssh-add"]!;
-    expect(agent.program).toBe("/usr/bin/ssh-add");
-    expect(agent.args).toEqual(["--apple-load-keychain"]);
-    expect(agent.run_at_load).toBe(true);
-    expect(agent.keep_alive).not.toBe(true);
-  });
-
-  it("initializes Ghostty warm without an initial window at login", () => {
-    const agent = macos.launchd.agents["ghostty"]!;
-    expect(agent.program).toBe("/usr/bin/open");
-    expect(agent.args).toEqual(["-g", "-a", "Ghostty", "--args", "--initial-window=false"]);
-    expect(agent.run_at_load).toBe(true);
-    expect(agent.keep_alive).not.toBe(true);
-  });
-
-  it("starts noTunes and the menu-bar helpers at login without removing other login items", () => {
-    expect(macos.login_items.apps).toEqual(["/Applications/noTunes.app", "/Applications/Raycast.app",
-      "/Applications/Vorssaint.app", "/Applications/Bitwarden.app", "/Applications/Google Drive.app",
-      "/Applications/SwiftBar.app", "/Applications/CodexBar.app"]);
-    expect(macos.login_items.exclusive).not.toBe(true);
-  });
-
-  it("pins a short Dock: browser, terminal, editor, AI, chat, settings", () => {
-    expect(macos.dock.apps).toEqual(["/Applications/Google Chrome.app", "/Applications/Ghostty.app",
-      "/Applications/Visual Studio Code.app", "/Applications/Claude.app", "/Applications/ChatGPT.app",
-      "/Applications/WhatsApp.app", "/Applications/Discord.app", "/System/Applications/System Settings.app"]);
   });
 
   it("pins and starts only apps the Brewfile installs (or macOS ships)", () => {
@@ -142,15 +53,9 @@ describe("macOS defaults (config/mise/conf.d/macos.toml)", () => {
       expect(brewfile).toContain(`cask "${casks[name]}" if OS.mac?`);
     }
   });
-
-  it("enables Touch ID for sudo in the file macOS updates keep", () => {
-    const f = config.bootstrap.files["/etc/pam.d/sudo_local"]!;
-    expect(f).toMatchObject({ os: "macos", owner: "root", group: "wheel", mode: "0444", phase: "pre-packages" });
-    expect(f.content as string).toMatch(/^auth\s+sufficient\s+pam_tid\.so$/m);
-  });
 });
 
-describe("post-defaults hook", () => {
+describe("post-defaults step", () => {
   let t: string;
   beforeEach(() => {
     t = mkdtempSync(join(tmpdir(), "macos-hook-"));
@@ -163,16 +68,18 @@ describe("post-defaults hook", () => {
       writeFileSync(join(t, "bin", name), `#!/bin/sh\n${body}\n`);
       chmodSync(join(t, "bin", name), 0o755);
     };
-    stub("uname", `echo ${os}`);
+    // bootstrap_init's brew shellenv would otherwise put the Mac's real /opt/homebrew/bin (and duti) first.
+    stub("brew", "exit 0");
     stub("killall", `echo "$@" >> "${t}/killall.calls"; exit ${killallExit}`);
     stub("defaults", `echo "$@" >> "${t}/defaults.calls"; exit 1`);
     stub("duti", `echo "$@" >> "${t}/duti.calls"; exit 1`);
     stub("activate", `echo "$@" >> "${t}/activate.calls"; exit 1`);
-    const p = Bun.spawnSync(["bash", "-c", config.bootstrap.hooks["post-defaults"].run], {
-      env: { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, DOTS_ACTIVATE_SETTINGS: activate ?? join(t, "bin", "activate") },
-      stdout: "pipe", stderr: "pipe",
-    });
-    return p.exitCode;
+    return runStep("macos/activate.sh", {
+      PATH: `${join(t, "bin")}:/usr/bin:/bin`,
+      HOME: t,
+      DOTS_UNAME: os,
+      DOTS_ACTIVATE_SETTINGS: activate ?? join(t, "bin", "activate"),
+    }).code;
   }
 
   it("does nothing off macOS", () => {

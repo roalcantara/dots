@@ -1,0 +1,2 @@
+# Hard-coded values bootstrap needs, in one place. Read into {{ vars.* }} (not exported) by bootstrap.toml.
+dots_dir: .local/share/dots # the checkout, relative to $HOME

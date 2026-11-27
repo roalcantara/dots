@@ -1,5 +1,14 @@
 # Machine setup applied by `mise bootstrap`.
 
+# Shared bootstrap vars. Hooks receive neither [env] nor MISE_ENV, but they render Tera before they run, and
+# `mise_env` holds the environments this run selected (`-E`, MISE_ENV or miserc.local.toml). `dots_profiles`
+# forwards only known profile names (desktop, dev, container) as `--profile` flags to `dots setup` (docs/BOOTSTRAP.md).
+[vars]
+_.file = "{{ mise_config_dir }}/conf.d/vars.yaml"
+dots = '{% if vars.dots_dir is defined %}{{ env.HOME }}/{{ vars.dots_dir }}{% endif %}'
+dots_profiles = '{% if mise_env is defined %}{% for e in mise_env %}{% if e == "desktop" or e == "dev" or e == "container" %} --profile {{ e }}{% endif %}{% endfor %}{% endif %}'
+dots_setup = 'exec mise run dots setup{{ vars.dots_profiles }}'
+
 # Folders the shell config and tools expect, plus the XDG user folders the images' structure tests check.
 [bootstrap.directories."~/.local/bin"]
 [bootstrap.directories."~/.local/state/zim"]
@@ -42,7 +51,7 @@ login_shell = '{% if os() == "macos" %}/opt/homebrew/bin/zsh{% else %}zsh{% endi
 
 # macOS: gopass checks this GPG Suite preference now and then and warns "Domain 'org.gpgtools.common' not found"
 # while it is unset. "NO" (a string, as gopass reads it) also keeps pinentry-mac from saving passphrases in Keychain.
-[bootstrap.macos.defaults]
+[bootstrap.settings.macos.defaults]
 "org.gpgtools.common" = { UseKeychain = "NO" }
 
 # Linux: apt runs unattended, so dpkg must never ask about a changed config file (it fails without a terminal,
@@ -82,260 +91,28 @@ owner = "root"
 group = "root"
 mode = "0644"
 
-# Homebrew and every user package. Runs after the apt
-# prerequisites, in two stages: the core group (what the shell and git need) stops the bootstrap on failure;
-# the rest of the Brewfile only warns, so one broken entry cannot skip the links, the login shell and the
-# bootstrap task. CI or DOTS_STRICT makes the second stage fatal too.
+# Homebrew and every user package, then yabai's scripting addition.
 [bootstrap.hooks.post-packages]
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-f="$HOME/.local/share/dots/script/bootstrap-log.sh"; [ -r "$f" ] && . "$f"
-brew=""
-for b in "$(command -v brew || true)" /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
-  [ -n "$b" ] && [ -x "$b" ] && { brew="$b"; break; }
-done
-if [ -z "$brew" ]; then
-  # brew-sudo: begin
-  # The installer runs sudo without prompting under NONINTERACTIVE=1, so it needs a sudo ticket already. Linux has
-  # one from the apt packages; macOS has no earlier sudo step, so ask here, on the terminal.
-  if [ "$(id -u)" -ne 0 ] && ! sudo -n true 2>/dev/null; then
-    if (: </dev/tty) 2>/dev/null; then
-      echo "Homebrew needs administrator access to create its prefix; enter your password:" >&2
-      sudo -v </dev/tty || { echo "bootstrap: sudo failed; Homebrew was not installed" >&2; exit 1; }
-    else
-      echo "bootstrap: Homebrew needs sudo and there is no terminal to ask on: run 'sudo -v', then mise bootstrap" >&2
-      exit 1
-    fi
-  fi
-  # brew-sudo: end
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && brew="$b"; done
-fi
-eval "$("$brew" shellenv)"
-export HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_ANALYTICS=1 HOMEBREW_NO_ENV_HINTS=1
-# brew-config: begin
-# brew keeps its tap trust store in $XDG_CONFIG_HOME/homebrew/trust.json (~/.homebrew without it). Shells set
-# XDG_CONFIG_HOME, so use the same store here, through the ~/.config/homebrew link into config/homebrew. Packages run
-# before dotfiles: make that link now (the one mise dotfiles makes), or brew creates a real folder dotfiles won't replace.
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-if [ "$XDG_CONFIG_HOME" = "$HOME/.config" ] && [ ! -e "$HOME/.config/homebrew" ] && [ ! -L "$HOME/.config/homebrew" ] \
-  && [ -d "$HOME/.local/share/dots/config/homebrew" ]; then
-  mkdir -p "$HOME/.config"
-  ln -s ../.local/share/dots/config/homebrew "$HOME/.config/homebrew"
-fi
-# brew-config: end
-profile="${MISE_ENV:-}"
-if [ -z "$profile" ]; then
-  if [ -r "/proc/$PPID/cmdline" ]; then
-    profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | sed -n 's/^--env=//p')"
-    [ -n "$profile" ] || profile="$(tr '\0' '\n' < "/proc/$PPID/cmdline" | grep -A1 -E '^(-E|--env)$' | tail -1 || true)"
-  elif command -v ps >/dev/null; then
-    args="$(ps -o args= -p "$PPID" 2>/dev/null || true)"
-    profile="$(printf '%s\n' "$args" | grep -oE -- '(-E|--env)[ =][a-zA-Z0-9_,-]+' | head -1 | awk '{print $NF}' | tr -d '=' || true)"
-  fi
-  [ -n "$profile" ] || [ ! -f "$HOME/.local/share/dots/config/mise/miserc.local.toml" ] || \
-    profile="$(sed -n 's/^env *= *\[\(.*\)\].*/\1/p' "$HOME/.local/share/dots/config/mise/miserc.local.toml" | tr -d '" ')"
-fi
-export HOMEBREW_BUNDLE_FILE="${HOMEBREW_BUNDLE_FILE:-$HOME/.local/share/dots/config/homebrew/Brewfile}"
-bundle() { HOMEBREW_DOTS_PROFILE="$1" brew bundle install --no-upgrade; }
+description = "Install Homebrew and every user package, then yabai's scripting addition"
+run = "{{ vars.dots_setup }} --no-remind brew yabai"
 
-# 1. Core group: the shell and git need it, so a failure stops the bootstrap.
-bundle container
-case ",${profile:-desktop}," in
-  *,container,*)
-    brew cleanup --prune=all 2>/dev/null || true
-    rm -rf "$HOME/.cache/Homebrew" 2>/dev/null || true
-    exit 0
-    ;;
-esac
+# A link never replaces a real file, and VS Code (or Settings Sync) and Karabiner-Elements write real ones on first
+# launch, so `app-files` moves them aside. It also runs before mise dot apply.
+[bootstrap.hooks.pre-dotfiles]
+description = "Move app-written copies (VS Code settings, keybindings, snippets; ~/.config/karabiner) aside for the dots links"
+run = "{{ vars.dots_setup }} --no-remind app-files"
 
-# 2. Everything else: warn and carry on. The bootstrap task repeats the warning at its end.
-state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
-mkdir -p "$state"
-rm -f "$state/brew-bundle.failed"
-if ! bundle "${profile:-desktop}" 2>&1 | tee "$state/brew-bundle.log"; then
-  failed="$(sed -nE 's/^(Installing|Tapping) (.+) has failed!$/\2/p' "$state/brew-bundle.log" | sort -u | paste -sd ' ' -)"
-  printf '%s\n' "${failed:-unknown (see the log)}" > "$state/brew-bundle.failed"
-  if [ -n "${DOTS_STRICT:-}${CI:-}" ]; then
-    echo "brew bundle failed: ${failed:-see $state/brew-bundle.log}" >&2
-    exit 1
-  fi
-  printf '\nWARNING: brew bundle could not install: %s\n  log: %s\n  retry: brew bundle install\n\n' \
-    "${failed:-unknown}" "$state/brew-bundle.log" >&2
-fi
-'''
+# Settings Sync would merge the cloud copy back into the linked files, so `vscode` turns it off for settings,
+# keybindings and snippets, then `bat` builds bat's theme cache and `lig` caches Lig's zsh integration.
+[bootstrap.hooks.post-dotfiles]
+description = "Turn off VS Code Settings Sync for settings, keybindings and snippets; set up bat's themes and Lig"
+run = "{{ vars.dots_setup }} --no-remind vscode bat lig"
 
-# Runs last on every `mise bootstrap`, so every step checks before acting and only warns on failure.
-[tasks.bootstrap]
-description = "Repo git filters and hooks, Neovim providers and plugins"
-run = '''
-#!/usr/bin/env bash
-export PATH="$HOME/.local/bin:$PATH"
-# brew: packages (hk, sd, the linters) land in the Homebrew prefix, which only an interactive shell puts on PATH.
-for b in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do [ -x "$b" ] && eval "$("$b" shellenv)"; done
-desktop=true
-case ",${MISE_ENV:-desktop}," in *,desktop,*) ;; *) desktop=false ;; esac
-# dev (`mise run setup dev`: desktop,dev) adds the heavy steps below; dev implies desktop, as in the Brewfile.
-dev=false
-case ",${MISE_ENV:-desktop}," in *,dev,*) dev=true desktop=true ;; esac
-dots="$HOME/.local/share/dots"
-[ -r "$dots/script/bootstrap-log.sh" ] && . "$dots/script/bootstrap-log.sh"
-nvim_cfg="$HOME/.config/nvim"
-warn() { printf 'bootstrap: %s failed, continuing\n' "$1" >&2; }
-# Repeat the post-packages hook's warning last, where it is seen (it scrolls away during the bootstrap).
-failed_file="${XDG_STATE_HOME:-$HOME/.local/state}/dots/brew-bundle.failed"
-remind() {
-  [ -s "$failed_file" ] || return 0
-  printf '\nbootstrap: brew bundle could not install: %s\n  retry: brew bundle install (log: %s)\n' \
-    "$(cat "$failed_file")" "${failed_file%.failed}.log" >&2
-}
-trap remind EXIT
+# mise cannot restart apps or write a preference whose value is an absolute path. `macos` points screenshots
+# at ~/Pictures/Screenshots, sets the default apps in ~/.config/duti and the Spotlight hotkey without a logout,
+# restarts Dock, Finder and the menu bar, then `swiftbar` points SwiftBar at its plugins.
+[bootstrap.hooks.post-defaults]
+description = "Apply the macOS settings that need $HOME and point SwiftBar at its plugins"
+run = "{{ vars.dots_setup }} --no-remind macos swiftbar"
 
-mise run -C "$dots" setup:git:filters || warn "setup:git:filters"
-# Pre-initialize user shell caches (zimfw modules, completions) so login shells start with clean stderr.
-zsh -ic 'exit' >/dev/null 2>&1 || true
-# Containers: git filters only (cheap); everything below is desktop-only.
-$desktop || exit 0
-mise run -C "$dots" setup:hooks || warn "setup:hooks"
-
-# dev-python: begin
-# Python tools that need 3.13 (no wheels for the newest Python); the Brewfile's uv entries cannot pin it. dev only.
-if $dev; then
-  for tool in graphifyy code-review-graph; do
-    uv tool list 2>/dev/null | grep -q "^$tool " || uv tool install --python 3.13 "$tool" || warn "uv $tool"
-  done
-fi
-# dev-python: end
-
-# gopass store: cloned once ~/.config/gopass (linked to config/gopass, SOPS-decrypted) holds the age identity. HTTPS through the gh login
-# (install runs `gh auth login`): the SSH config names GitHub `Host github`, so git@github.com has no key.
-store="$HOME/.local/share/gopass/password-store"
-if command -v gopass >/dev/null && [ ! -d "$store/.git" ] && [ -d "$HOME/.config/gopass/age" ]; then
-  git -c credential.helper= -c 'credential.https://github.com.helper=!gh auth git-credential' \
-    clone https://github.com/roalcantara/pass-store.git "$store" || warn "gopass store clone"
-fi
-
-# gopass-keyring: begin
-# gopass's identity keyring should be locked to the age key (docs/REINSTALL.md, "One secret: the age key"),
-# so gopass never asks for a PIN. Only warns: the switch is interactive and done once by the owner.
-ids="$HOME/.config/gopass/age/identities"
-if command -v gopass >/dev/null && [ -s "$ids" ]; then
-  if head -n 3 "$ids" | grep -q -- '-> scrypt'; then
-    echo "bootstrap: gopass keyring still uses a passphrase; switch it to the age key: see docs/REINSTALL.md#one-secret-the-age-key" >&2
-  else
-    # age.keyring-identities may list several files, comma-separated; each may start with ~.
-    IFS=, read -ra kids <<<"$(gopass config age.keyring-identities 2>/dev/null || true)"
-    for kid in "${kids[@]}"; do
-      kid="${kid#"${kid%%[![:space:]]*}"}"; kid="${kid%"${kid##*[![:space:]]}"}"; kid="${kid/#\~/$HOME}"
-      [ -z "$kid" ] || [ -s "$kid" ] || echo "bootstrap: gopass keyring identity file missing: $kid" >&2
-    done
-  fi
-fi
-# gopass-keyring: end
-
-# ssh-keychain: begin
-# macOS: git signs commits with the GitHub key (config/git/config) through the agent only; ssh-keygen -Y sign never
-# reads Keychain. Load it from Keychain, or store its passphrase there once, asked on the terminal. Apple's ssh-add
-# (Homebrew's has no --apple-* flags). At each login the dev.mise.ssh-add LaunchAgent (macos.toml) loads it again.
-key="$HOME/.ssh/id_ed25519_github"
-sshbin="${DOTS_SSH_BIN:-/usr/bin}"
-if [ "$(uname)" = Darwin ] && [ -r "$key" ] && [ -r "$key.pub" ]; then
-  fp="$("$sshbin/ssh-keygen" -lf "$key.pub" 2>/dev/null | awk '{print $2}')"
-  has_key() { [ -n "$fp" ] && "$sshbin/ssh-add" -l 2>/dev/null | grep -qF "$fp"; }
-  if ! has_key; then
-    "$sshbin/ssh-add" --apple-load-keychain >/dev/null 2>&1 || true
-    if has_key; then
-      :
-    elif (: </dev/tty) 2>/dev/null; then
-      echo "bootstrap: enter the passphrase for $key once; Keychain keeps it" >&2
-      "$sshbin/ssh-add" --apple-use-keychain "$key" </dev/tty || warn "ssh-add $key"
-    else
-      echo "bootstrap: $key is not in Keychain; run: ssh-add --apple-use-keychain $key" >&2
-    fi
-  fi
-fi
-# ssh-keychain: end
-
-# tiling-checks: begin
-# Tiling (docs/TILING.md): clone the kb Raycast extension (its yabai strip and Hotkeys command), and say
-# what bootstrap cannot do itself. [bootstrap.repos] has no os key, so the clone lives here.
-if [ "$(uname)" = Darwin ]; then
-  kb="$HOME/Work/kb"
-  if [ ! -d "$kb" ]; then
-    git clone git@github.com:roalcantara/kb-raycast.git "$kb" || warn "clone kb-raycast"
-  fi
-  tiling_hint=false
-  case "$("${DOTS_CSRUTIL:-csrutil}" status 2>/dev/null)" in
-    *"status: enabled"*)
-      echo "bootstrap: SIP is fully on; yabai's scripting addition needs it partly off. In Recovery: csrutil enable --without fs --without debug --without nvram" >&2
-      tiling_hint=true
-      ;;
-  esac
-  if ! "${DOTS_YABAI:-/opt/homebrew/bin/yabai}" -m query --spaces >/dev/null 2>&1; then
-    echo "bootstrap: yabai is not answering; grant it Accessibility (System Settings > Privacy & Security)" >&2
-    tiling_hint=true
-  fi
-  $tiling_hint && echo "bootstrap: tiling setup steps: docs/TILING.md" >&2
-fi
-# tiling-checks: end
-
-# janky-borders: begin
-# JankyBorders from qeesung's fork, built at a pinned commit: upstream leaves outlines behind in Mission Control
-# on macOS 27 (FelixKratz/JankyBorders#209). Moving the pin rebuilds it; a failed build keeps the old one.
-if [ "$(uname)" = Darwin ]; then
-  jb="$HOME/.local/share/janky-borders"
-  jb_rev=f56533701a3ce0fae1801f2c11586a62098fe727
-  if [ ! -d "$jb/.git" ]; then
-    git clone -q https://github.com/qeesung/JankyBorders.git "$jb" || warn "clone JankyBorders"
-  fi
-  if [ -d "$jb/.git" ] && [ "$(cat "$jb/bin/.rev" 2>/dev/null)" != "$jb_rev" ]; then
-    if git -C "$jb" fetch -q origin && git -C "$jb" checkout -q "$jb_rev" && make -C "$jb" -s >/dev/null; then
-      echo "$jb_rev" >"$jb/bin/.rev"
-      launchctl kickstart -k "gui/$(id -u)/dev.mise.borders" >/dev/null 2>&1 || true
-    else
-      warn "build JankyBorders"
-    fi
-  fi
-fi
-# janky-borders: end
-
-# oMLX models (macOS, once the app is installed by hand): download only the missing ones.
-if [ -d /Applications/oMLX.app ] && command -v hf >/dev/null; then
-  for model in mlx-community/parakeet-tdt-0.6b-v3 Jundot/gemma-4-E2B-it-oQ4e-mtp \
-    mlx-community/Qwen3-4B-Instruct-2507-4bit; do
-    dir="$HOME/.omlx/models/$model"
-    [ -f "$dir/config.json" ] || hf download "$model" --local-dir "$dir" || warn "oMLX model $model"
-  done
-fi
-
-
-# skills: begin
-# Agent skills from config/agents/skill-lock.json, in the background: hundreds of skills must not hold up the
-# bootstrap. A notification and ~/.local/state/dots/skills-restore.result report the outcome. dev only.
-if $dev; then
-  skills_state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
-  mkdir -p "$skills_state"
-  if [ -n "${DOTS_SKILLS_FOREGROUND:-}" ]; then
-    mise run -C "$dots" skills:restore || warn "skills:restore"
-  else
-    nohup mise run -C "$dots" skills:restore -- --background >"$skills_state/skills-restore.log" 2>&1 </dev/null &
-    echo "bootstrap: restoring agent skills in the background (log: $skills_state/skills-restore.log)"
-  fi
-fi
-# skills: end
-[ -d "$nvim_cfg" ] || exit 0
-if command -v npm >/dev/null && ! npm ls -g neovim >/dev/null 2>&1; then
-  npm install -g neovim || warn "npm neovim"
-fi
-if command -v gem >/dev/null && ! gem list -i neovim >/dev/null 2>&1; then
-  gem install neovim || warn "gem neovim"
-fi
-# restore (not sync) installs the lockfile's versions, so a rerun changes nothing; bounded so a network stall
-# cannot hang an unattended run.
-if command -v nvim >/dev/null; then
-  limit=""
-  if command -v timeout >/dev/null; then limit="timeout 600"; elif command -v gtimeout >/dev/null; then limit="gtimeout 600"; fi
-  $limit nvim --headless "+Lazy! restore" +qa </dev/null || warn "nvim Lazy restore"
-fi
-'''
+# The final `bootstrap` task, which runs after these hooks, is in tasks.toml.

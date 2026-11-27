@@ -1,4 +1,45 @@
 bookmarks:
+  https://skills.sh/vercel-labs/skills/find-skills:
+    desc: Discover and install specialized agent skills from the open ecosystem when users need extended capabilities.
+    tags: [skills, discovery]
+    notes:
+      - sh: skills add -yg https://github.com/vercel-labs/skills --skill find-skills
+  https://skills.sh/addyosmani/agent-skills/interview-me:
+    desc: The cheapest moment to find this gap is before any plan, spec, or code exists.
+    tags: [skills, discovery]
+    notes:
+      - sh: skills add -yg https://github.com/addyosmani/agent-skills --skill interview-me
+  https://skills.sh/oldwinter/skills/personal-productivity:
+    desc: Designing a weekly timebox plan for a high-meeting-load job (meeting windows, focus blocks, admin buffers)
+    tags: [skills, productivity]
+    notes:
+      - sh: skills add -yg https://github.com/oldwinter/skills --skill personal-productivity
+  https://skills.sh/refoundai/lenny-skills/personal-productivity:
+    desc: Help the user manage their time and tasks more effectively using techniques from 2 product leaders.
+    tags: [skills, productivity]
+    notes:
+      - sh: skills add -yg https://github.com/refoundai/lenny-skills --skill personal-productivity
+  https://skills.sh/github/awesome-copilot/daily-prep:
+    desc: Generate a structured prep file for the next working day with meeting details, prep bullets, linked tasks, and productivity recommendations.
+    tags: [skills, productivity]
+    notes:
+      - sh: skills add -yg https://github.com/github/awesome-copilot --skill daily-prep
+  https://skills.sh/ailabs-393/ai-labs-claude-skills/personal-assistant:
+    desc: Comprehensive personal assistant with persistent memory of user preferences, schedules, tasks, and context.
+    tags: [skills, assistant]
+    notes:
+      - sh: skills add -yg https://github.com/ailabs-393/ai-labs-claude-skills --skill personal-assistant
+  https://skills.sh/shubhamsaboo/awesome-llm-apps/project-planner:
+    desc: You are an expert project planner who breaks down complex projects into achievable, well-structured tasks.
+    tags: [skills, planning]
+    notes:
+      - sh: skills add -yg https://github.com/shubhamsaboo/awesome-llm-apps --skill project-planner
+  https://skills.sh/ruvnet/ruflo/agent-planner:
+    desc: Strategic planning specialist responsible for breaking down complex tasks into manageable components and creating actionable execution plans.
+    tags: [skills, planning]
+    notes:
+      - sh: skills add -yg https://github.com/ruvnet/ruflo --skill agent-planner
+
   https://youtu.be/X4FVEEegCbk:
     desc: Skills vs MCP vs RAG vs Memory - What AI Agents Need to Know
     tags: [ai, skills, mcp, rag, memory]

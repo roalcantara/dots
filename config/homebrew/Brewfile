@@ -2,7 +2,7 @@
 # config/mise/conf.d/bootstrap.toml; `brew bundle …` reads it through HOMEBREW_BUNDLE_FILE.
 # HOMEBREW_DOTS_PROFILE is the mise profile list (brew passes only HOMEBREW_* variables to a Brewfile):
 # container gets the first group; desktop (the default, what `install` sets up) everything down to DEVTOOLS;
-# dev (`mise run setup dev`: desktop,dev) everything.
+# dev (`mise run dots profile dev`: desktop,dev) everything.
 profiles = ENV.fetch("HOMEBREW_DOTS_PROFILE", "desktop").split(",").map(&:strip)
 dev = profiles.include?("dev")
 desktop = dev || profiles.include?("desktop")
@@ -122,7 +122,7 @@ flatpak "com.rtosta.zapzap"  # WhatsApp client
 flatpak "com.bitwarden.desktop"  # Password manager
 flatpak "com.discordapp.Discord" if Hardware::CPU.intel?  # Flathub builds it for x86_64 only
 
-# DEVTOOLS (dev profile only: `mise run setup dev`)
+# DEVTOOLS (dev profile only: `mise run dots profile dev`)
 return unless dev
 brew "act"  # Run your GitHub Actions locally
 brew "ast-grep"  # Code searching, linting, rewriting
@@ -139,7 +139,6 @@ brew "taplo"  # TOML linter and formatter
 brew "markdownlint-cli"  # Markdown linter
 brew "markdownlint-cli2"  # Markdown linter
 brew "lua-language-server"  # Language server for Lua
-brew "container-structure-test"  # Container structure testing tool
 brew "mermaid-cli"  # CLI for Mermaid
 brew "pkl"  # Pkl language CLI
 brew "pkl-lsp" if OS.mac?  # Pkl language server
@@ -151,8 +150,6 @@ brew "shellspec" if OS.mac?  # BDD framework for shells
 brew "vivid"  # LS_COLORS generator: `mise run theme:build`
 brew "tombi"  # TOML formatter, linter, and language server
 brew "typescript-language-server" if OS.mac?  # LSP for TypeScript
-brew "rust"  # Rust toolchain
-cargo "lida", source: "https://github.com/roalcantara/lida?tag=v0.1.1"  # lida: dual-format project TODO.md/TODO.yaml CLI (built from git, needs rust above)
 brew "opencode" # AI coding agent, built for the terminal
 cask "opencode-desktop" if OS.mac? # AI coding agent desktop app
 cask "android-studio" if OS.mac?  # Tools for building Android applications
@@ -165,6 +162,8 @@ cask "copilot-cli@prerelease"  # Copilot coding agent CLI
 cask "docker-desktop" if OS.mac?  # Container tooling
 cask "google-gemini" if OS.mac?  # Google Gemini app
 cask "zed"  # Multiplayer code editor
+brew "rust"  # Rust toolchain
+cargo "lida", source: "https://github.com/roalcantara/lida?tag=v0.1.1"  # lida: dual-format project TODO.md/TODO.yaml CLI (built from git, needs rust above)
 # DEVTOOLS: Python tools (graphifyy and code-review-graph need Python 3.13: the bootstrap task installs them)
 uv "pynvim"
 uv "debugpy"
@@ -173,3 +172,5 @@ uv "commit-check"
 npm "bun-dap-x"
 npm "react-devtools"
 npm "@vscode/js-debug-browsers"
+brew "go"  # Go toolchain, for the `go` entries below
+go "github.com/jackchuka/mdschema/cmd/mdschema"  # Markdown structure linter (hk `docs`/`ears-sdd`); before macOS' /usr/bin/mdschema on PATH

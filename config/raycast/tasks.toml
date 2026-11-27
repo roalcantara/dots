@@ -1,0 +1,8 @@
+# Repo tasks for this topic, included by the root mise.toml (`config/*/tasks.toml`, `*/tasks.toml`); they run from
+# the repo root. Task names are top-level tables here (docs/CONTRIBUTING.md, "Mise task conventions").
+
+# The TUI launcher: one Raycast Script Command per entry of config/tuis.toml (config/raycast/scripts/tuis).
+["tuis:build"]
+description = "Generate the Raycast commands for the TUIs in config/tuis.toml"
+usage = 'flag "--check" help="Exit 1 when a committed script differs from config/tuis.toml, without writing"'
+run = 'bun script/tuis-build.ts ${usage_check:+--check}'

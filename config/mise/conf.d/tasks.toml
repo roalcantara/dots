@@ -1,0 +1,221 @@
+# Every task `mise bootstrap` uses, declared once: the dots front door (`mise run dots …`), the parts `dots setup`
+# runs, the final `bootstrap` task, the shared step template, and the doctor checks. The steps themselves are bash
+# file tasks in the repo (.mise/tasks/bootstrap/<area>/<step>.sh), run with `mise run -C {{ vars.dots }}`.
+
+[vars]
+# The parts of `dots setup`, one per line, in run order: name | help shown on Tab | its steps, in order.
+# Drives the Tab list, the name check and the run order below. mise vars hold only strings (no tables), and a help
+# text must not contain `|`.
+dots_setup_parts = """
+brew|Homebrew, its config link, and every Brewfile package for the profile|bootstrap:brew:install bootstrap:brew:config-link bootstrap:brew:bundle
+yabai|yabai's scripting addition (sudoers rule, boot argument)|bootstrap:yabai:scripting-addition
+app-files|Move app-written copies (VS Code, Karabiner) aside before linking|bootstrap:dotfiles:move-aside
+vscode|Turn off VS Code Settings Sync for linked settings, keybindings and snippets|bootstrap:vscode:settings-sync
+bat|Rebuild bat's theme cache|bootstrap:bat:cache
+lig|Cache Lig's zsh integration|bootstrap:lig:zsh
+macos|Apply macOS settings that need the home path and restart Dock, Finder and menu bar|bootstrap:macos:activate
+swiftbar|Point SwiftBar at its plugins folder|bootstrap:macos:swiftbar
+git|Git SOPS filters, ~/.gitconfig check, and hk git hooks|bootstrap:git:filters bootstrap:git:home-config bootstrap:git:hooks
+shell|Warm Zsh plugin and completion caches|bootstrap:zsh:warm-caches
+dev|Install Python 3.13 dev tools (dev profile)|bootstrap:dev:python-tools
+secrets|gopass store, keyring check, pass link, and SSH Keychain|bootstrap:gopass:store bootstrap:gopass:keyring bootstrap:gopass:pass-link bootstrap:ssh:keychain
+tiling|Tiling checks (SIP, Accessibility, kb-raycast) and JankyBorders build|bootstrap:tiling:checks bootstrap:borders:build
+ai|Download oMLX models|bootstrap:omlx:models
+skills|Restore global agent skills (dev profile)|bootstrap:skills:restore
+nvim|Neovim providers and plugins|bootstrap:nvim:providers bootstrap:nvim:plugins
+"""
+
+# Shared --profile flag for every bootstrap step file task (#MISE extends="bootstrap_step"). A comma list (validated
+# by _lib.sh's validate_profile / has_profile), since var=#true + choices rejects DOTS_PROFILE=desktop,dev.
+# With no --profile (or an empty DOTS_PROFILE), _lib.sh falls back to DOTS_ENV_PROFILES, this run's mise_env filtered
+# to profile names (a trailing comma is skipped), then to desktop, as `dots setup` does. No default= here: usage would never apply it to an empty
+# DOTS_PROFILE.
+[task_templates.bootstrap_step]
+env = { DOTS_ENV_PROFILES = '{% set_global p = "" %}{% if mise_env is defined %}{% for e in mise_env %}{% if e == "desktop" or e == "dev" or e == "container" %}{% set_global p = p ~ e ~ "," %}{% endif %}{% endfor %}{% endif %}{{ p }}' }
+usage = '''
+flag "--profile <list>" env="DOTS_PROFILE" help="Comma-separated profiles (desktop, dev, container; defaults to mise_env, else desktop)"
+'''
+
+# Runs last on every `mise bootstrap` (after the phase hooks in bootstrap.toml): git's filters and hooks first, then
+# the remaining tools, then the Brewfile reminder.
+[tasks.bootstrap]
+description = "Run the final dots setup parts (git through nvim), then the Brewfile reminder"
+run = "{{ vars.dots_setup }} git shell dev secrets tiling ai skills nvim"
+
+[tasks.dots]
+description = "Set up this machine, back it up, choose its profile"
+usage = '''
+cmd "setup" help="Install and configure parts of this machine; no parts means all, in order" {
+  arg "[part]..." var=#true help="Parts to run, always in the fixed order; Tab lists each part with its help"
+  // Tab shows `complete` values with their help; `choices` would show bare names. Names are validated in `run`.
+  // Rendered from vars.dots_setup_parts; a quote in a help text is written '"'"' for printf.
+  complete "part" descriptions=#true run=#"""
+    printf '%s\n'{% for line in vars.dots_setup_parts | trim | split(pat="
+") %}{% set f = line | split(pat="|") %} '{{ f[0] }}:{{ f[1] | replace(from="'", to=`'"'"'`) }}'{% endfor %}
+    """#
+  flag "--profile <profile>" var=#true env="DOTS_PROFILE" help="Bootstrap profile(s) to apply (desktop, dev, container; defaults to mise_env, else desktop)"
+  flag "--dry-run"   help="Show the parts and steps that would run without executing them"
+  flag "--no-remind" hide=#true help="Skip the Brewfile reminder at the end (used by bootstrap hooks)"
+}
+cmd "backup" help="Back up and restore this machine with restic" {
+  arg "<action>" help="Backup action; Tab lists each action with its help"
+  // As for setup's parts: `complete` shows each action's help on Tab, `choices` would not. backup.ts rejects an unknown one.
+  complete "action" descriptions=#true run=#"""
+    printf '%s\n' \
+      'init:Create this machine'"'"'s restic repository on the backup drive' \
+      'backup:Back up the allowlist in config/restic/backup.toml, then restic check' \
+      'snapshots:List this machine'"'"'s snapshots' \
+      'restore:Restore folders from a snapshot into the home folder' \
+      'forget:Apply the retention policy and prune' \
+      'audit:Read-only report of what a reinstall would lose, written to the backup drive'
+    """#
+  flag "--include <path>" var=#true help="Folder to restore, relative to the old home (restore; repeatable)"
+  flag "--snapshot <id>"            help="Snapshot ID to restore from, default latest (restore)"
+  flag "--from-home <path>"         help="Old home folder path in the snapshot (restore)"
+  flag "--target <path>"            help="Destination folder for restored files (restore)"
+  flag "--dry-run"                  help="Preview restore without writing files (restore)"
+  flag "--stdout"                   help="Print the reinstall audit to stdout instead of the backup drive (audit)"
+}
+cmd "profile" help="Choose this machine's profile and apply it" {
+  arg "<profile>" help="desktop (install default) or dev (desktop + dev tools)"
+  complete "profile" descriptions=#true run=#"""
+    printf '%s\n' 'desktop:The install default' 'dev:desktop plus the dev tools'
+    """#
+}
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "${usage_cmd:-}" in
+  setup)
+    # Rendered from vars.dots_setup_parts: all_parts[i] runs the steps in part_steps[i].
+    all_parts=({% for line in vars.dots_setup_parts | trim | split(pat="
+") %}{% set f = line | split(pat="|") %} {{ f[0] }}{% endfor %})
+    part_steps=({% for line in vars.dots_setup_parts | trim | split(pat="
+") %}{% set f = line | split(pat="|") %} "{{ f[2] }}"{% endfor %})
+    # usage passes the repeatable [part] as shell-quoted words, so eval only unquotes them.
+    eval "wanted=(${usage_part:-})"
+    for part in ${wanted[@]+"${wanted[@]}"}; do
+      case " ${all_parts[*]} " in
+        *" $part "*) ;;
+        *)
+          printf 'dots setup: unknown part: %s (expected %s)\n' "$part" "${all_parts[*]}" >&2
+          exit 2
+          ;;
+      esac
+    done
+    # The repeatable --profile arrives shell-quoted (an empty DOTS_PROFILE as ''). No profile name holds a quote, so
+    # drop quotes rather than eval a value that may come from the environment.
+    raw_profile="${usage_profile:-}"
+    raw_profile="${raw_profile//\'/}"
+    if [ -z "$raw_profile" ]; then
+      raw_profile="{% if mise_env is defined %}{% for e in mise_env %}{% if e == 'desktop' or e == 'dev' or e == 'container' %}{{ e }} {% endif %}{% endfor %}{% endif %}"
+    fi
+    profiles=()
+    IFS=', ' read -r -a raw_items <<< "${raw_profile:-desktop}"
+    for item in "${raw_items[@]}"; do
+      [ -n "$item" ] || continue
+      case "$item" in
+        desktop | dev | container) profiles+=("$item") ;;
+        *)
+          printf 'dots setup: unknown profile: %s (expected desktop, dev, or container)\n' "$item" >&2
+          exit 2
+          ;;
+      esac
+    done
+    if [ -z "${profiles[*]:-}" ]; then
+      profiles=(desktop)
+    fi
+    export DOTS_PROFILE
+    DOTS_PROFILE="$(
+      IFS=,
+      printf '%s' "${profiles[*]}"
+    )"
+    run_flags=()
+    if [ "${usage_dry_run:-false}" = "true" ]; then
+      run_flags+=(--dry-run)
+    fi
+    # Each chosen part (all when none is given), in table order; each step in its own run, so a failing step stops here.
+    for i in "${!all_parts[@]}"; do
+      case " ${wanted[*]:-${all_parts[*]}} " in
+        *" ${all_parts[$i]} "*) ;;
+        *) continue ;;
+      esac
+      for step in ${part_steps[$i]}; do
+        mise run -C "{{ vars.dots }}" ${run_flags[@]+"${run_flags[@]}"} "$step"
+      done
+    done
+    if [ "${usage_no_remind:-false}" != "true" ]; then
+      mise run -C "{{ vars.dots }}" ${run_flags[@]+"${run_flags[@]}"} bootstrap:brew:remind
+    fi
+    ;;
+  backup)
+    args=("${usage_action:?}") # backup.ts rejects an unknown action with its usage line (exit 2)
+    if [ -n "${usage_include:-}" ]; then
+      eval "includes=($usage_include)"
+      for inc in "${includes[@]}"; do
+        args+=(--include "$inc")
+      done
+    fi
+    [ -n "${usage_snapshot:-}" ] && args+=(--snapshot "$usage_snapshot")
+    [ -n "${usage_from_home:-}" ] && args+=(--from-home "$usage_from_home")
+    [ -n "${usage_target:-}" ] && args+=(--target "$usage_target")
+    [ "${usage_dry_run:-false}" = "true" ] && args+=(--dry-run)
+    [ "${usage_stdout:-false}" = "true" ] && args+=(--stdout)
+    if command -v bun > /dev/null 2>&1; then
+      exec bun "{{ vars.dots }}/script/backup.ts" "${args[@]}"
+    fi
+    exec mise x bun@1.3.14 -- bun "{{ vars.dots }}/script/backup.ts" "${args[@]}"
+    ;;
+  profile)
+    case "${usage_profile:?}" in
+      desktop) list=desktop ;;
+      dev) list=desktop,dev ;;
+      *) echo "dots profile: unknown profile: $usage_profile (desktop or dev)" >&2; exit 2 ;;
+    esac
+    exec mise bootstrap -E "$list" --save-env --yes
+    ;;
+  *)
+    exec mise run dots --help
+    ;;
+esac
+'''
+
+# `mise doctor project` runs these from any folder. The first two call repo file tasks (.mise/tasks/mise/).
+# This Mac's mise is the reference for every committed MISE_VERSION pin (install and distros/bootstrap.sh).
+[doctor.checks.mise-version]
+description = "Every MISE_VERSION pin matches this Mac's mise"
+run = "mise run -C {{ vars.dots }} mise:version --check"
+hint = "mise run -C {{ vars.dots }} mise:version --sync"
+os = "macos"
+
+# Only `mise lsp` reports deprecated-key, so a check runs the small client in the repo's .mise/tasks/mise/diagnostics.ts.
+# Requires Bun (desktop-only in Brewfile), so macOS only.
+[doctor.checks.mise-diagnostics]
+description = "No deprecated or unknown keys in the mise config"
+run = "mise run -C {{ vars.dots }} mise:diagnostics"
+hint = "see docs/BOOTSTRAP.md#gotchas (deprecated keys)"
+os = "macos"
+timeout = "30s"
+
+# dots owns git's config in ~/.config/git/config; a real ~/.gitconfig is read after it and silently wins.
+[doctor.checks.home-gitconfig]
+description = "No ~/.gitconfig overrides the dots git config"
+run = 'test ! -e "$HOME/.gitconfig"'
+hint = "merge what you need into config/git/config, then move ~/.gitconfig aside (docs/BOOTSTRAP.md#gotchas)"
+
+[doctor.checks.container-tools]
+description = "Container Brewfile group resolves on PATH in a login zsh"
+run = "mise run -C {{ vars.dots }} doctor:container-tools"
+hint = "run `mise run dots setup --profile container brew` and check ~/.config/zsh/.zprofile"
+
+[doctor.checks.profile-parts]
+description = "Desktop- and dev-only bootstrap artifacts are absent in a container"
+run = "mise run -C {{ vars.dots }} doctor:profile-parts"
+hint = "remove the unexpected artifact or check the step's profile gate"
+
+[doctor.checks.sops-encrypted]
+description = "SOPS-filtered files in the checkout remain encrypted"
+run = "mise run -C {{ vars.dots }} doctor:sops-encrypted"
+hint = "re-export the checkout with filter.sops.smudge=cat so secrets are never decrypted in a container"

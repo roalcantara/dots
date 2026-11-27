@@ -1,0 +1,56 @@
+# Repo tasks for this topic, included by the root mise.toml (`config/*/tasks.toml`, `*/tasks.toml`); they run from
+# the repo root. Task names are top-level tables here (docs/CONTRIBUTING.md, "Mise task conventions").
+# SOPS: the git filters that encrypt and decrypt this repo's secret files.
+
+["setup:git:filters"]
+description = "Setup Git filters for automatic encryption/decryption of .env files using SOPS"
+depends = ["setup:age"]
+run = '''
+#!/usr/bin/env bash
+set -e
+# sops-diff: begin
+# git diff and git log -p show SOPS files decrypted through a textconv. Set on every run, so clones configured
+# before 2026-11-16 drop diff.sops.command, which hung git diff (git calls a diff command with seven arguments and
+# nothing on stdin). Never cache it: cachetextconv would store the decrypted text in git.
+git config --local diff.sops.textconv "script/textconv.sops.sh"
+git config --local diff.sops.cachetextconv false
+git config --local --unset diff.sops.command || true
+# sops-diff: end
+# Only configure filters if not already done
+if [ -f "$HOME/.config/age/keys.txt" ] && ! git config filter.sops.clean > /dev/null; then
+  echo "  ==> Configuring Git filters for SOPS"
+  git config --local filter.sops.smudge "script/smudge.sops.sh %f"
+  git config --local filter.sops.required true
+  git config --local filter.sops.clean "script/clean.sops.sh %f"
+  # sops-resmudge: begin
+  # install clones before the age key exists, so filter=sops files were checked out encrypted: check them out
+  # again through the filter now, and make the decrypted secrets private.
+  # A file that does not decrypt is put back as it was, and the filter is unset so the next run retries.
+  failed=""
+  while IFS= read -r -d '' f; do
+    mv "$f" "$f.pre-smudge"
+    # Only the smudge (decrypt) is needed to restore a file. git may also run the clean filter on the
+    # still-encrypted copy, which fails ("already encrypted", exit 203); cat makes that a no-op here.
+    if err="$(git -c filter.sops.clean=cat checkout -- "$f" 2>&1)"; then
+      rm -f "$f.pre-smudge"
+      chmod go-rwx "$f"
+      # Private folders keep later checkouts private too (git writes files with the umask).
+      case "$(dirname "$f")" in config | .) ;; *) chmod go-rwx "$(dirname "$f")" ;; esac
+    else
+      mv "$f.pre-smudge" "$f"
+      failed="$failed $f"
+      # The filter's own reason (e.g. "ERROR: sops command not found"), never file contents.
+      printf 'setup:git:filters: %s: %s\n' "$f" "$(printf '%s\n' "$err" | grep -m1 -E 'ERROR|[Ff]ailed|error' || printf '%s' "$err" | tail -n1)" >&2
+    fi
+  done < <(git ls-files -z ':(attr:filter=sops)')
+  if [ -n "$failed" ]; then
+    # Unset the whole filter (not only clean): with required=true and no clean filter, git refuses to pull.
+    # Without it, git treats the files as plain until the next run, which retries.
+    for k in clean smudge required; do git config --local --unset "filter.sops.$k" || true; done
+    echo "setup:git:filters: could not decrypt:$failed (check sops, age and ~/.config/sops/age/keys.txt)" >&2
+    exit 1
+  fi
+  # sops-resmudge: end
+  echo "✓ Git filters configured"
+fi
+'''

@@ -1,0 +1,13 @@
+# Repo tasks for this topic, included by the root mise.toml (`config/*/tasks.toml`, `*/tasks.toml`); they run from
+# the repo root. Task names are top-level tables here (docs/CONTRIBUTING.md, "Mise task conventions").
+
+# Agent skills from config/agents/skill-lock.json.
+["skills:audit"]
+description = "Classify installed agent skills against the lock and write config/agents/review.csv (-- --apply re-adds confirmed ones)"
+tools = { bun = "1.3.14", node = "22" }
+run = "bun script/agent-skills.ts audit"
+
+["skills:restore"]
+description = "Install every skill in config/agents/skill-lock.json that is missing from ~/.agents/skills"
+tools = { bun = "1.3.14", node = "22" }
+run = "bun script/agent-skills.ts restore"

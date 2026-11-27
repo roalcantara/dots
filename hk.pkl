@@ -68,6 +68,11 @@ local stagingLinters = new Mapping<String, Step> {
     glob  = List("config/restic/backup.toml")
     check = "taplo check {{files}}"
   }
+  // Only `mise lsp` reports deprecated-key; this keeps the editor's Problems panel at zero.
+  ["mise-diagnostics"] {
+    glob  = List("mise.toml", "config/mise/**/*.toml", "config/bin/mise.toml")
+    check = "command -v mise >/dev/null || exit 0; mise run mise:diagnostics"
+  }
 }
 
 hooks {
