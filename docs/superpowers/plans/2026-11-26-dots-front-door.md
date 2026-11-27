@@ -62,8 +62,9 @@ the spec disagree, the spec wins: stop and report.
    `git` (fixed order, not flag order). Test in Task 5.
 4. **Moving the checkout:** with `dots_dir` changed in `vars.yaml` and `dotfiles.root` changed to match, the hand-over
    and `dots` reach the new path, and the agreement spec fails when only one of them changes. Test in Task 1.
-5. **A step run by hand** (`mise run bootstrap:gopass:store`, hidden) still gets the profile from `DOTS_PROFILE` or
-   its default, and rejects an invalid one. Test in Task 3.
+5. **A step run by hand** (`mise run bootstrap:gopass:store`, hidden) still gets the profile from `--profile`,
+   `DOTS_PROFILE`, this run's filtered `mise_env` (e.g. `miserc.local.toml`), or `desktop`, and rejects an invalid one.
+   Test in Task 3.
 
 ## Baseline (before Task 1)
 

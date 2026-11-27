@@ -27,9 +27,10 @@ nvim|Neovim providers and plugins|bootstrap:nvim:providers bootstrap:nvim:plugin
 
 # Shared --profile flag for every bootstrap step file task (#MISE extends="bootstrap_step"). A comma list (validated
 # by _lib.sh's validate_profile / has_profile), since var=#true + choices rejects DOTS_PROFILE=desktop,dev.
+# When neither --profile nor DOTS_PROFILE is given, default= renders this run's filtered mise_env profiles, else desktop.
 [task_templates.bootstrap_step]
 usage = '''
-flag "--profile <list>" env="DOTS_PROFILE" default="desktop" help="Comma-separated profiles (desktop, dev, container)"
+flag "--profile <list>" env="DOTS_PROFILE" default="{% set_global p = [] %}{% if mise_env is defined %}{% for e in mise_env %}{% if e == 'desktop' or e == 'dev' or e == 'container' %}{% set_global p = p | concat(with=e) %}{% endif %}{% endfor %}{% endif %}{% if p | length > 0 %}{{ p | join(sep=',') }}{% else %}desktop{% endif %}" help="Comma-separated profiles (desktop, dev, container; defaults to mise_env, else desktop)"
 '''
 
 # Runs last on every `mise bootstrap` (after the phase hooks in bootstrap.toml): git's filters and hooks first, then

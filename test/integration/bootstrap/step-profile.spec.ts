@@ -3,7 +3,7 @@
 // via the shared `bootstrap_step` task template (config/mise/conf.d/tasks.toml), and rejects unknown profile
 // names before doing any work.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { tasksToml } from "./parts";
@@ -60,6 +60,28 @@ describe.skipIf(!MISE)("step --profile flag through real mise run", () => {
     const r = runMiseStep("bootstrap:git:home-config");
     expect(r.code, r.err).toBe(0);
     expect(r.err).toContain("~/.gitconfig overrides the dots git config");
+  });
+
+  it("a hidden step with no --profile and no DOTS_PROFILE uses mise_env from miserc.local.toml", () => {
+    mkdirSync(join(t, "bin"), { recursive: true });
+    // Stub brew (so bootstrap_init does not prepend real Homebrew) and uv (to record calls).
+    writeFileSync(join(t, "bin", "brew"), "#!/bin/sh\nexit 0\n");
+    writeFileSync(join(t, "bin", "uv"), `#!/bin/sh\necho "uv $*" >> "${join(t, "uv.log")}"\nexit 0\n`);
+    for (const b of ["brew", "uv"]) chmodSync(join(t, "bin", b), 0o755);
+    const stubPath = `${join(t, "bin")}:/usr/bin:/bin`;
+
+    writeFileSync(join(t, "cfg", "miserc.local.toml"), 'env = ["desktop", "dev"]\n');
+    const r = runMiseStep("bootstrap:dev:python-tools", [], { PATH: stubPath });
+    expect(r.code, r.err).toBe(0);
+    expect(existsSync(join(t, "uv.log"))).toBe(true);
+    expect(readFileSync(join(t, "uv.log"), "utf8")).toContain("uv tool install --python 3.13 graphifyy");
+
+    // Non-profile env in miserc.local.toml is ignored; without dev, python-tools does nothing.
+    rmSync(join(t, "uv.log"), { force: true });
+    writeFileSync(join(t, "cfg", "miserc.local.toml"), 'env = ["desktop", "macos"]\n');
+    const noDev = runMiseStep("bootstrap:dev:python-tools", [], { PATH: stubPath });
+    expect(noDev.code, noDev.err).toBe(0);
+    expect(existsSync(join(t, "uv.log"))).toBe(false);
   });
 
   it("an invalid --profile fails before the step runs", () => {
