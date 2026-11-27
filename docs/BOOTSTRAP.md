@@ -1,7 +1,8 @@
 # Bootstrap
 
-`install` prepares mise and clones this repo; `mise bootstrap` applies everything else. This page is the single
-source for what that run does, how the pieces fit, and how to run or debug a single step.
+`install` prepares mise and clones this repo; `mise bootstrap` applies everything else. Day-to-day setup, backup, and
+profile changes go through one global front door: `mise run dots`. This page is the single source for what that run
+does, how the pieces fit, and how to run or debug a single step.
 
 ## Overview
 
@@ -9,45 +10,59 @@ source for what that run does, how the pieces fit, and how to run or debug a sin
 encrypted secrets, links `~/.config/mise`, records the profile in `config/mise/miserc.local.toml`, and hands over to
 `mise bootstrap -E <profile>`.
 
-mise reads `~/.config/mise` (linked to `config/mise/` in this repo) and runs its phases in this order. Declarative
-parts (directories, files, packages, dotfiles, settings) come from the TOML files; the hooks hand over to one phase
-task each, and that task runs its steps in order.
+mise reads `~/.config/mise` (linked to `config/mise/` in this repo). Each `config/mise/conf.d/` file has one job:
+
+| File | Job |
+| --- | --- |
+| `vars.yaml` | Hard-coded bootstrap values (`dots_dir`), loaded into `{{ vars.* }}` without exporting |
+| `bootstrap.toml` | Machine setup: directories, system files, login shell, hooks, the `bootstrap` task, and `vars.yaml` loading |
+| `dotfiles.toml` | Symlinks (`[dotfile_groups.config]` for `~/.config/<name>`, plus plain `[dotfiles]` entries outside it) |
+| `macos.toml` | macOS preferences, Touch ID sudo, login items, and LaunchAgents (including yabai and borders) |
+| `system.toml` | Linux apt packages needed before Homebrew |
+| `tasks.toml` | The `mise run dots` front door (`setup`, `backup`, `profile`) and nothing else |
+
+Declarative parts (directories, files, packages, dotfiles, settings) come from those TOML files; each hook and the
+global `bootstrap` task call `mise run dots setup` with the parts of their phase:
 
 ```mermaid
 flowchart TD
   install[install] --> bootstrap[mise bootstrap]
   bootstrap --> pre["system files<br/>(pre-packages)"]
   pre --> pkgs[system packages]
-  pkgs --> pp["post-packages hook<br/>bootstrap:hook:post-packages<br/>Homebrew, Brewfile, yabai"]
+  pkgs --> pp["post-packages hook<br/>dots setup --brew --yabai"]
   pp --> files[system files]
-  files --> preD["pre-dotfiles hook<br/>bootstrap:hook:pre-dotfiles<br/>move app-written files aside"]
+  files --> preD["pre-dotfiles hook<br/>dots setup --app-files"]
   preD --> dots[dotfiles]
-  dots --> postD["post-dotfiles hook<br/>bootstrap:hook:post-dotfiles<br/>Settings Sync, bat, Lig"]
+  dots --> postD["post-dotfiles hook<br/>dots setup --vscode --bat --lig"]
   postD --> defs[system defaults]
   defs --> login[login items]
-  login --> postDef["post-defaults hook<br/>bootstrap:hook:post-defaults<br/>screenshots, duti, hotkeys, SwiftBar"]
+  login --> postDef["post-defaults hook<br/>dots setup --macos --swiftbar"]
   postDef --> launchd[launchd agents]
   launchd --> shell[login shell]
   shell --> tools[tools]
-  tools --> final["bootstrap task<br/>bootstrap:hook:final<br/>git, gopass, SSH, tiling, Neovim"]
+  tools --> final["bootstrap task<br/>dots setup --git --shell --dev --secrets --tiling --ai --skills --nvim"]
 ```
 
-The hook tasks and the global task live in [`config/mise/conf.d/bootstrap.toml`](../config/mise/conf.d/bootstrap.toml)
-and [`.mise/tasks/bootstrap/phases.toml`](../.mise/tasks/bootstrap/phases.toml). The steps live under
-[`.mise/tasks/bootstrap/`](../.mise/tasks/bootstrap).
+The front door lives in [`config/mise/conf.d/tasks.toml`](../config/mise/conf.d/tasks.toml); hooks and `[tasks.bootstrap]`
+live in [`config/mise/conf.d/bootstrap.toml`](../config/mise/conf.d/bootstrap.toml). The hidden part tasks
+(`dots:setup:<part>`) live in [`.mise/tasks/bootstrap/parts.toml`](../.mise/tasks/bootstrap/parts.toml), and the hidden
+step file tasks live under [`.mise/tasks/bootstrap/`](../.mise/tasks/bootstrap).
 
 ## Rationale
 
+- **One front door.** `mise run dots --help` lists only what dots can do: `dots setup`, `dots backup`, and
+  `dots profile`. Every part task (`dots:setup:<part>`) and step task (`bootstrap:<area>:<step>`) is hidden (`hide = true`),
+  so `mise tasks ls` stays clean while `mise tasks ls --hidden` lists every step.
 - **Declarative first.** Directories, system files, packages, links and macOS preferences are declared in TOML under
   `config/mise/`; `mise bootstrap` diffs and applies them. Shell only does what the schema cannot: cloning, building,
   talking to Keychain, loading a scripting addition.
-- **Thin hooks.** A `bootstrap.hooks.<phase>` hook can only run shell. Each one is the shared hand-over,
-  `run = "{{ vars.dots_handover }} bootstrap:hook:<phase>"`, which resolves the profile and runs that phase task in the
-  dots repo, so the real work is visible in `mise tasks ls` and can be run alone. There is exactly one hook per phase: mise runs every conf.d file's hook, so two files declaring
-  `post-defaults` would run two hooks.
-- **File tasks, not TOML strings.** Every step is an executable bash file with a `#MISE description` header. That
-  gives linting (shellcheck, shfmt), a per-step spec, `mise run bootstrap:<area>:<step>`, and the task features
-  (`skip_if`, `sources`, `raw`). The shared preamble (paths, profile, guards, `warn`, logging) is
+- **Thin hooks that name what they set up.** Each `bootstrap.hooks.<phase>` hook is
+  `run = "{{ vars.dots_setup }} --<parts>"`, which forwards the selected profiles from `mise_env` as `--profile <name>`
+  flags and runs `mise run dots setup`. There is exactly one hook per phase, all in `config/mise/conf.d/bootstrap.toml`.
+- **File tasks, not TOML strings.** Every step is an executable bash file with `#MISE hide=true`,
+  `#MISE extends="bootstrap_step"` (shared `--profile` flag backed by `DOTS_PROFILE`), and `#MISE description`. That
+  gives linting (shellcheck, shfmt), a per-step spec, direct `mise run bootstrap:<area>:<step>`, and the task features
+  (`skip_if`, `sources`, `raw`). The shared preamble (paths, profile validation, guards, `warn`, logging) is
   [`.mise/tasks/bootstrap/_lib.sh`](../.mise/tasks/bootstrap/_lib.sh).
 - **`skip_if` over `outputs`.** Most bootstrap state is not a file mise can stat: a Keychain item, a running yabai,
   brew's installed set. A cheap idempotent check is the honest up-to-date test; `sources`/`outputs` are used only
@@ -60,10 +75,11 @@ Decisions live in [`docs/adr/`](adr/README.md); this page records the mechanics.
 
 ## Profiles
 
-The profile is a comma list. `mise run setup <profile>` runs `mise bootstrap -E <profile> --save-env`, which records it
-in `config/mise/miserc.local.toml` (even when the run fails); `mise bootstrap -E <profile>` alone overrides it for one
-run. `install` writes that file itself: its bootstrap runs with a temporary `~/.config/mise`, where `--save-env` would
-save it. The steps that care use `has_profile`, which matches a whole name (`dev` does not match `devops`).
+The profile is a validated `--profile` flag (`desktop`, `dev`, `container`; default `desktop`). `mise run dots profile <profile>`
+runs `mise bootstrap -E <list> --save-env --yes`, which records it in `config/mise/miserc.local.toml` (even when the run
+fails); `mise bootstrap -E <profile>` alone overrides it for one run. `install` writes that file itself: its bootstrap
+runs with a temporary `~/.config/mise`, where `--save-env` would save it. Steps check `has_profile`, which validates
+`usage_profile` and matches whole names (`dev` does not match `devops`).
 
 | Profile | What runs |
 | --- | --- |
@@ -72,65 +88,81 @@ save it. The steps that care use `has_profile`, which matches a whole name (`dev
 | `desktop,dev` | The above, plus the Python 3.13 tools and the agent-skills restore. |
 
 ```sh
-mise run setup dev       # desktop + dev
-mise run setup desktop   # back to desktop (uninstalls nothing)
+mise run dots profile dev       # desktop + dev
+mise run dots profile desktop   # back to desktop (uninstalls nothing)
 ```
 
 ## Steps
 
-Each phase task runs its steps in this order. The table tells you what a step does, when it skips, and whether it can
-ask for input. `desktop` means the desktop profile only; `macOS` is checked at the step.
+`mise run dots setup` runs selected parts in this fixed order (or all 16 parts when no part flag is given), followed by
+`dots:setup:remind` (`bootstrap:brew:remind`). The table tells you each part flag, what each step does, when it skips,
+and whether it can ask for input.
 
-| Task | Phase | Platform / profile | What it does | Up-to-date check | May prompt |
-| --- | --- | --- | --- | --- | --- |
-| `bootstrap:hook:post-packages` | post-packages | all | Runs the four Homebrew and yabai steps | — | — |
-| `bootstrap:brew:install` | post-packages | all, when brew is missing | Installs Homebrew | `skip_if`: any brew on PATH or in a prefix | yes (sudo) |
-| `bootstrap:brew:config-link` | post-packages | all | Links `~/.config/homebrew` into the repo for brew's trust store | `skip_if`: the path exists | no |
-| `bootstrap:brew:bundle` | post-packages | all | Installs the Brewfile: the core group is fatal, the rest warns and records `brew-bundle.failed` | — (brew is idempotent) | no |
-| `bootstrap:yabai:scripting-addition` | post-packages | macOS | `yb sa`: sudoers rule and boot argument | — | no |
-| `bootstrap:hook:pre-dotfiles` | pre-dotfiles | all | Runs the move-aside step | — | — |
-| `bootstrap:dotfiles:move-aside` | pre-dotfiles | macOS | Moves real VS Code settings/keybindings/snippets and `~/.config/karabiner` aside, dated | — | no |
-| `bootstrap:hook:post-dotfiles` | post-dotfiles | all | Runs the three post-dotfiles steps | — | — |
-| `bootstrap:vscode:settings-sync` | post-dotfiles | macOS | Turns Settings Sync off for settings, keybindings and snippets | — | no |
-| `bootstrap:bat:cache` | post-dotfiles | all with bat | Builds bat's theme cache | — | no |
-| `bootstrap:lig:zsh` | post-dotfiles | all with Lig | `mise run zsh:lig` | — | no |
-| `bootstrap:hook:post-defaults` | post-defaults | all | Runs the two macOS steps | — | — |
-| `bootstrap:macos:activate` | post-defaults | macOS | Screenshots folder, `duti`, the Spotlight hotkey, restart Dock/Finder/SystemUIServer | — (runs every time, never fails) | no |
-| `bootstrap:macos:swiftbar` | post-defaults | macOS | Points SwiftBar at `~/.config/swiftbar/plugins` | — | no |
-| `bootstrap:hook:final` | `bootstrap` task | all | Runs the remaining steps in order | — | — |
-| `bootstrap:git:filters` | final (first) | all | `mise run setup:git:filters` | — | no |
-| `bootstrap:git:home-config` | final | all | warns when a real `~/.gitconfig` overrides the dots git config | — | no |
-| `bootstrap:zsh:warm-caches` | final | all | `zsh -ic 'exit'` to build the shell caches | — | no |
-| `bootstrap:git:hooks` | final | desktop | `mise run setup:hooks` | — | no |
-| `bootstrap:dev:python-tools` | final | dev | `uv tool install` graphifyy and code-review-graph with Python 3.13 | — (`uv tool list`) | no |
-| `bootstrap:gopass:store` | final | desktop | Clones `pass-store` once the age identity is there | `skip_if`: `password-store/.git` exists | no |
-| `bootstrap:gopass:keyring` | final | desktop | Warns when the keyring still uses a passphrase or an identity file is missing | — | no |
-| `bootstrap:gopass:pass-link` | final | desktop | Links `~/.local/bin/pass` to gopass, never replacing a real `pass` | — (idempotent) | no |
-| `bootstrap:ssh:keychain` | final | desktop, macOS | Loads the GitHub signing key from Keychain, or stores it there | — | yes (SSH passphrase, once) |
-| `bootstrap:tiling:checks` | final | desktop, macOS | Clones the kb Raycast extension and prints SIP/yabai hints | — | no |
-| `bootstrap:borders:build` | final | desktop, macOS | Builds JankyBorders at the pinned commit and restarts its service | `skip_if`: `.rev` matches the pin | no |
-| `bootstrap:omlx:models` | final | desktop, macOS with oMLX | Downloads only the missing models | per-model `config.json` | no |
-| `bootstrap:skills:restore` | final | dev | Restores the agent skills in the background | — | no |
-| `bootstrap:nvim:providers` | final | desktop | Installs the npm and gem Neovim providers when missing | per-provider check | no |
-| `bootstrap:nvim:plugins` | final | desktop | `nvim --headless "+Lazy! restore"` | `sources`: `config/nvim/lazy-lock.json` | no |
-| `bootstrap:brew:remind` | final (last) | all | Repeats the `brew-bundle.failed` warning | — | no |
+| Part flag | Task | Phase | Platform / profile | What it does | Up-to-date check | May prompt |
+| --- | --- | --- | --- | --- | --- | --- |
+| `--brew` | `bootstrap:brew:install` | post-packages | all, when brew is missing | Installs Homebrew | `skip_if`: any brew on PATH or in a prefix | yes (sudo) |
+| `--brew` | `bootstrap:brew:config-link` | post-packages | all | Links `~/.config/homebrew` into the repo for brew's trust store | `skip_if`: the path exists | no |
+| `--brew` | `bootstrap:brew:bundle` | post-packages | all | Installs the Brewfile: the core group is fatal, the rest warns and records `brew-bundle.failed` | — (brew is idempotent) | no |
+| `--yabai` | `bootstrap:yabai:scripting-addition` | post-packages | macOS | `yb sa`: sudoers rule and boot argument | — | no |
+| `--app-files` | `bootstrap:dotfiles:move-aside` | pre-dotfiles | macOS | Moves real VS Code settings/keybindings/snippets and `~/.config/karabiner` aside, dated | — | no |
+| `--vscode` | `bootstrap:vscode:settings-sync` | post-dotfiles | macOS | Turns Settings Sync off for settings, keybindings and snippets | — | no |
+| `--bat` | `bootstrap:bat:cache` | post-dotfiles | all with bat | Builds bat's theme cache | — | no |
+| `--lig` | `bootstrap:lig:zsh` | post-dotfiles | all with Lig | `mise run zsh:lig` | — | no |
+| `--macos` | `bootstrap:macos:activate` | post-defaults | macOS | Screenshots folder, `duti`, the Spotlight hotkey, restart Dock/Finder/SystemUIServer | — (runs every time, never fails) | no |
+| `--swiftbar` | `bootstrap:macos:swiftbar` | post-defaults | macOS | Points SwiftBar at `~/.config/swiftbar/plugins` | — | no |
+| `--git` | `bootstrap:git:filters` | `bootstrap` task | all | `mise run setup:git:filters` | — | no |
+| `--git` | `bootstrap:git:home-config` | `bootstrap` task | all | Warns when a real `~/.gitconfig` overrides the dots git config | — | no |
+| `--git` | `bootstrap:git:hooks` | `bootstrap` task | desktop | `mise run setup:hooks` | — | no |
+| `--shell` | `bootstrap:zsh:warm-caches` | `bootstrap` task | all | `zsh -ic 'exit'` to build the shell caches | — | no |
+| `--dev` | `bootstrap:dev:python-tools` | `bootstrap` task | dev | `uv tool install` graphifyy and code-review-graph with Python 3.13 | — (`uv tool list`) | no |
+| `--secrets` | `bootstrap:gopass:store` | `bootstrap` task | desktop | Clones `pass-store` once the age identity is there | `skip_if`: `password-store/.git` exists | no |
+| `--secrets` | `bootstrap:gopass:keyring` | `bootstrap` task | desktop | Warns when the keyring still uses a passphrase or an identity file is missing | — | no |
+| `--secrets` | `bootstrap:gopass:pass-link` | `bootstrap` task | desktop | Links `~/.local/bin/pass` to gopass, never replacing a real `pass` | — (idempotent) | no |
+| `--secrets` | `bootstrap:ssh:keychain` | `bootstrap` task | desktop, macOS | Loads the GitHub signing key from Keychain, or stores it there | — | yes (SSH passphrase, once) |
+| `--tiling` | `bootstrap:tiling:checks` | `bootstrap` task | desktop, macOS | Clones the kb Raycast extension and prints SIP/yabai hints | — | no |
+| `--tiling` | `bootstrap:borders:build` | `bootstrap` task | desktop, macOS | Builds JankyBorders at the pinned commit and restarts its service | `skip_if`: `.rev` matches the pin | no |
+| `--ai` | `bootstrap:omlx:models` | `bootstrap` task | desktop, macOS with oMLX | Downloads only the missing models | per-model `config.json` | no |
+| `--skills` | `bootstrap:skills:restore` | `bootstrap` task | dev | Restores the agent skills in the background | — | no |
+| `--nvim` | `bootstrap:nvim:providers` | `bootstrap` task | desktop | Installs the npm and gem Neovim providers when missing | per-provider check | no |
+| `--nvim` | `bootstrap:nvim:plugins` | `bootstrap` task | desktop | `nvim --headless "+Lazy! restore"` | `sources`: `config/nvim/lazy-lock.json` | no |
+| _(always last)_ | `bootstrap:brew:remind` | `bootstrap` task | all | Repeats the `brew-bundle.failed` warning | — | no |
 
-Tiling is covered by `bootstrap:yabai:scripting-addition`, `bootstrap:borders:build` and the `yabai.toml` declarations
-(packages, links, the fn key, the SwiftBar login item); [`docs/TILING.md`](TILING.md) has the manual steps that follow.
+Tiling is covered by `bootstrap:yabai:scripting-addition`, `bootstrap:borders:build`, and the LaunchAgents in
+`config/mise/conf.d/macos.toml` (packages, links, the fn key, the SwiftBar login item); [`docs/TILING.md`](TILING.md)
+has the manual steps that follow.
 
 ## Recipes
 
 ```sh
+# Front door help
+mise run dots --help
+mise run dots setup --help
+mise run dots backup --help
+
+# Run one or more setup parts (always in fixed order, followed by brew:remind)
+mise run dots setup --brew --yabai
+mise run dots setup --git --shell --profile desktop --profile dev
+mise run dots setup --dry-run
+
+# Run a single hidden step by hand (inherits --profile default desktop, or DOTS_PROFILE)
+mise run bootstrap:brew:bundle --profile desktop,dev
+mise run --force bootstrap:bat:cache
+mise tasks ls --hidden | grep bootstrap:
+
+# Switch profile (desktop vs desktop + dev tools)
+mise run dots profile dev
+mise run dots profile desktop
+
+# Backups and reinstall audit (details in docs/REINSTALL.md)
+mise run dots backup backup
+mise run dots backup restore --include Work --dry-run
+mise run dots backup audit --stdout
+
 # Preview without changing anything
 mise bootstrap status             # what differs from the config
 mise bootstrap status --missing   # exit 1 when anything differs
 mise bootstrap plan               # what applying would change
 mise bootstrap --dry-run          # the full run, including every hook
-
-# Run one step, or re-run it
-mise run bootstrap:brew:bundle
-mise run --force bootstrap:bat:cache
-mise run --dry-run bootstrap:hook:final   # the final phase in order
 
 # Finish part of a bootstrap from a terminal (interactive steps skipped earlier)
 mise bootstrap --only files,macos-defaults,macos-launchd-agents,task
@@ -151,35 +183,40 @@ mise bootstrap macos defaults status --missing
 mise bootstrap --adopt            # restore the encrypted dots-history repo
 ```
 
-**Add a step.** Create `.mise/tasks/bootstrap/<area>/<step>.sh` with `#!/usr/bin/env bash`, a
-`#MISE description="…"` header, `. "${BASH_SOURCE%/*}/../_lib.sh"`, `set -euo pipefail`, the profile/platform guard
-(`has_profile desktop || exit 0`, `is_macos || exit 0`), and `bootstrap_init`. Add it to the phase's `run` list in
-`phases.toml`, in the position it must run. Add a spec under `test/integration/bootstrap/` that calls
-`runStep("<area>/<step>.sh", env)`; run `mise tasks ls | grep bootstrap:` to confirm it is listed.
+**Add a step.** Create `.mise/tasks/bootstrap/<area>/<step>.sh` with `#!/usr/bin/env bash`, `#MISE hide=true`,
+`#MISE extends="bootstrap_step"`, `#MISE description="…"`, `. "${BASH_SOURCE%/*}/../_lib.sh"`, `set -euo pipefail`,
+the profile/platform guard (`has_profile desktop || exit 0`, `is_macos || exit 0`), and `bootstrap_init`. Add it to
+its part's `run` list in [`.mise/tasks/bootstrap/parts.toml`](../.mise/tasks/bootstrap/parts.toml) (or add a new part
+flag to `config/mise/conf.d/tasks.toml`). Add a spec under `test/integration/bootstrap/` that calls
+`runStep("<area>/<step>.sh", env)`; run `mise tasks ls --hidden | grep bootstrap:` to confirm it is registered.
 
 ## Gotchas
 
 - **The new config keys need mise ≥ 2026.11.8.** `bootstrap.settings.macos.*` does not exist in older schemas; the
   pins in `install` and both Dockerfiles are checked by `mise run mise:version --check`.
+- **Settings cannot read `vars`, so `dotfiles.root` mirrors `vars.yaml`.** The checkout location lives in
+  `config/mise/conf.d/vars.yaml` (`dots_dir`) for hooks and tasks, and in `config/mise/config.toml`
+  (`dotfiles.root = "{{ xdg_data_home }}/dots"`) for `[dotfile_groups.config]`. `test/integration/bootstrap/vars.spec.ts`
+  fails if the two disagree.
 - **Only the LSP reports deprecated or unknown keys.** `mise doctor` and `bootstrap --dry-run` are silent about
   them; `mise run mise:diagnostics` (also in `hk check`) is the command that does.
 - **Hooks see neither `[env]` nor `MISE_ENV`.** Tasks get both; bootstrap hooks get neither, and `-E` does not reach
   them as `MISE_ENV`. They do render templates first, and `{{ mise_env }}` holds the environments the run selected
-  (`-E`, `MISE_ENV` or `miserc.local.toml`), so the shared hand-over passes it on as `DOTS_PROFILE`. A step run by
-  hand reads `DOTS_PROFILE`, then `MISE_ENV` (`mise -E dev run …`), then `miserc.local.toml`, then `desktop`.
+  (`-E`, `MISE_ENV` or `miserc.local.toml`), so `vars.dots_profiles` filters `mise_env` to known profile names
+  (`desktop`, `dev`, `container`) and passes them as `--profile` flags to `dots setup`. A step run by hand takes
+  `--profile <list>` (backed by `DOTS_PROFILE`, default `desktop`).
 - **Early phases run before the dotfiles and most tools.** `post-packages` runs before `~/.local/bin` is linked and
   before Bun exists, so its steps are plain bash with no task `tools`.
-- **Hooks only run shell.** They cannot call a task type or declare `skip_if`; the hand-over is the only hook body.
 - **Hooks and the `bootstrap` task run on every bootstrap.** mise does not diff them; only the declarative parts are
   diffed, and each step does its own up-to-date check.
-- **One hook per phase.** mise runs every conf.d file's hook for a phase, so all hand-overs live in
-  `config/mise/conf.d/bootstrap.toml`. Adding a hook to `yabai.toml` or `macos.toml` would run the phase twice.
+- **One hook per phase.** mise runs every conf.d file's hook for a phase, so all hooks live in
+  `config/mise/conf.d/bootstrap.toml`. Adding a hook to `macos.toml` would run the phase twice.
 - **A failing step stops the phase.** Steps that may fail harmlessly call `warn` (exit 0); `DOTS_STRICT`/`CI` makes
   those failures fatal, and mise stops the run there.
 - **`sources`/`outputs` resolve from the task directory** and must name real files; system state that is not a file
   uses `skip_if`.
 - **Write a shell `$` as `$$` in `[vars]`.** mise expands `$VARS` in vars when it loads the config, before a hook
-  runs. The shared hand-over avoids shell variables altogether (`{{ env.HOME }}`, `{{ mise_env }}`, `quote`).
+  runs. `dots_profiles` and `dots_setup` avoid shell variables altogether.
 - **A real `~/.gitconfig` outranks the dots git config.** git reads it after `~/.config/git/config`, and tools write
   it unasked: `gh auth setup-git` once pinned a since-removed mise `gh` there, so every HTTPS push asked for a password.
   `install` gives its bootstrap run the gh helper through `GIT_CONFIG_*` variables instead, and `bootstrap:git:home-config`
@@ -200,7 +237,7 @@ mise bootstrap --adopt            # restore the encrypted dots-history repo
 - **SIP is fully on.** yabai's scripting addition needs it partly off: in Recovery,
   `csrutil enable --without fs --without debug --without nvram`, reboot, run `mise bootstrap` again, reboot. See
   [`docs/TILING.md`](TILING.md).
-- **Stale shell or theme caches.** `mise run bootstrap:zsh:warm-caches` and `mise run zsh:lig` rebuild them;
-  `mise run bootstrap:bat:cache` rebuilds bat's theme cache.
+- **Stale shell or theme caches.** `mise run dots setup --shell --lig --bat` rebuilds them (or run individual hidden
+  steps `bootstrap:zsh:warm-caches`, `bootstrap:bat:cache`, and `mise run zsh:lig`).
 - **Find the log.** Every step appends to `~/.local/state/dots/logs/latest.log` (the ten newest runs are kept).
-  `mise run bootstrap:hook:final --dry-run` shows the order without running anything.
+  `mise run dots setup --dry-run` shows the parts and steps in order without running anything.

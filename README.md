@@ -44,8 +44,8 @@ It creates no user and sets no timezone. A second run changes nothing.
 tools when you need them, from any folder in your home:
 
 ```sh
-mise run setup dev       # desktop + dev: the Brewfile's DEVTOOLS section, agent skills, Python 3.13 tools
-mise run setup desktop   # back to desktop (uninstalls nothing; the dev tools just stop being updated)
+mise run dots profile dev       # desktop + dev: the Brewfile's DEVTOOLS section, agent skills, Python 3.13 tools
+mise run dots profile desktop   # back to desktop (uninstalls nothing; the dev tools just stop being updated)
 ```
 
 | Profile            | Brewfile                                   | Bootstrap task adds                               |
@@ -54,7 +54,7 @@ mise run setup desktop   # back to desktop (uninstalls nothing; the dev tools ju
 | `desktop`          | minimal + everything above `# DEVTOOLS`    | hooks, gopass store, Neovim providers and plugins |
 | `desktop,dev`      | + the `# DEVTOOLS` section                 | + agent skills restore, + Python 3.13 tools       |
 
-`setup` records the choice in `config/mise/miserc.local.toml`. Later, to apply config changes: `mise bootstrap`
+`dots profile` records the choice in `config/mise/miserc.local.toml`. Later, to apply config changes: `mise bootstrap`
 (it uses the recorded profile).
 
 ## How it works
@@ -64,11 +64,14 @@ mise run setup desktop   # back to desktop (uninstalls nothing; the dev tools ju
 
 | File                                                                     | Holds                                                                                                                                                              |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`config/mise/config.toml`](config/mise/config.toml)                     | Settings, the encrypted history (`[dotfiles]` track entries), and the `backup` task                                                                               |
+| [`config/mise/config.toml`](config/mise/config.toml)                     | Settings (`dotfiles.root`) and the encrypted history (`[dotfiles]` track entries)                                                                                  |
 | [`config/homebrew/Brewfile`](config/homebrew/Brewfile)                   | Every user package: formulae, casks, taps, `uv` tools, Flatpak apps. `HOMEBREW_DOTS_PROFILE=container` gets only the first group                                 |
+| [`config/mise/conf.d/vars.yaml`](config/mise/conf.d/vars.yaml)           | Shared bootstrap values (`dots_dir`), loaded into `{{ vars.* }}` without exporting                                                                                 |
 | [`config/mise/conf.d/system.toml`](config/mise/conf.d/system.toml)       | apt packages Homebrew needs on Linux                                                                                                                               |
 | [`config/mise/conf.d/bootstrap.toml`](config/mise/conf.d/bootstrap.toml) | Directories, system files, the login shell, and the four bootstrap hooks; the steps are in `.mise/tasks/bootstrap/` (see [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md))        |
-| [`config/mise/conf.d/dotfiles.toml`](config/mise/conf.d/dotfiles.toml)   | Links from `~/.config/*` into this repo                                                                                                                            |
+| [`config/mise/conf.d/dotfiles.toml`](config/mise/conf.d/dotfiles.toml)   | Links from `~/.config/*` into this repo (`[dotfile_groups.config]` plus plain entries outside it)                                                                  |
+| [`config/mise/conf.d/macos.toml`](config/mise/conf.d/macos.toml)         | macOS preferences, Touch ID sudo, login items, and LaunchAgents (including yabai and borders)                                                                      |
+| [`config/mise/conf.d/tasks.toml`](config/mise/conf.d/tasks.toml)         | The `mise run dots` front door (`setup`, `backup`, `profile`)                                                                                                      |
 | [`config/agents/`](config/agents)                                        | The agent skills lock, `review.csv`, and agent commands                                                                                                            |
 | [`script/bootstrap-log.sh`](script/bootstrap-log.sh)                     | Logging wrapper sourced by `install` and `mise bootstrap` tasks; writes to `~/.local/state/dots/logs/`                                                             |
 | [`test/`](test)                                                          | Verification suite: BDD features (`test/features/`) and Bun integration specs (`test/integration/`)                                                                |
@@ -149,9 +152,9 @@ On another machine: `mise dot sync && mise dot pull`.
 ### Back up
 
 ```sh
-mise run backup                                   # the allowlist in config/restic/backup.toml → restic, then check
-mise run backup:restore -- --include Work --dry-run
-mise run reinstall:audit                          # before a wipe: what would be lost
+mise run dots backup backup                           # the allowlist in config/restic/backup.toml → restic, then check
+mise run dots backup restore --include Work --dry-run
+mise run dots backup audit                            # before a wipe: what would be lost
 ```
 
 The policy is [`config/restic/backup.toml`](config/restic/backup.toml); the full playbook is

@@ -20,7 +20,7 @@ The design and its trade-offs are in the
 | JankyBorders         | Outlines the focused window (qeesung's fork, built from source) | [`config/borders/bordersrc`](../config/borders/bordersrc)                         |
 | SwiftBar             | The space strip in the menu bar (`yb bar`)                      | [`config/swiftbar/plugins/spaces.sh`](../config/swiftbar/plugins/spaces.sh)       |
 | kb Raycast extension | Hotkeys and System commands                                     | `~/Work/kb` ([roalcantara/kb-raycast](https://github.com/roalcantara/kb-raycast)) |
-| mise bootstrap       | Installs, links and starts all of it                            | [`config/mise/conf.d/yabai.toml`](../config/mise/conf.d/yabai.toml)               |
+| mise bootstrap       | Installs, links and starts all of it                            | [`config/mise/conf.d/macos.toml`](../config/mise/conf.d/macos.toml)               |
 
 ## Spaces and screens
 

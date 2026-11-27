@@ -2,7 +2,7 @@
 # config/mise/conf.d/bootstrap.toml; `brew bundle …` reads it through HOMEBREW_BUNDLE_FILE.
 # HOMEBREW_DOTS_PROFILE is the mise profile list (brew passes only HOMEBREW_* variables to a Brewfile):
 # container gets the first group; desktop (the default, what `install` sets up) everything down to DEVTOOLS;
-# dev (`mise run setup dev`: desktop,dev) everything.
+# dev (`mise run dots profile dev`: desktop,dev) everything.
 profiles = ENV.fetch("HOMEBREW_DOTS_PROFILE", "desktop").split(",").map(&:strip)
 dev = profiles.include?("dev")
 desktop = dev || profiles.include?("desktop")
@@ -122,7 +122,7 @@ flatpak "com.rtosta.zapzap"  # WhatsApp client
 flatpak "com.bitwarden.desktop"  # Password manager
 flatpak "com.discordapp.Discord" if Hardware::CPU.intel?  # Flathub builds it for x86_64 only
 
-# DEVTOOLS (dev profile only: `mise run setup dev`)
+# DEVTOOLS (dev profile only: `mise run dots profile dev`)
 return unless dev
 brew "act"  # Run your GitHub Actions locally
 brew "ast-grep"  # Code searching, linting, rewriting

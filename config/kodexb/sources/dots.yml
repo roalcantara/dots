@@ -283,7 +283,7 @@ cheats:
 
           ## 1. Back up what dots does not hold
 
-          `mise run backup` (in the global config) zips `~/Work`, `~/.config` and `~/.omp`:
+          `mise run dots backup backup` (in the global config) backs up `~/Work`, `~/.config` and `~/.omp`:
 
           - `~/Work` without `.git` packs, `node_modules`, `target`, build and cache folders, and already
             compressed media stored as-is (`zip -n .mp4:.png:…`).

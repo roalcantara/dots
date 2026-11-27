@@ -1,5 +1,5 @@
 #:schema ./backup.schema.json
-# Backup policy for script/backup.ts (mise run backup, backup:restore, …).
+# Backup policy for script/backup.ts (mise run dots backup backup, restore, …).
 # Every key, default and reason: docs/REINSTALL.md, "The manifest".
 
 [repository]

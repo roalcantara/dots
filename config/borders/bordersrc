@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # JankyBorders: the outline around windows (docs/TILING.md).
 # https://github.com/qeesung/JankyBorders (a fork: upstream leaves outlines behind in Mission Control on macOS
-# 27), built by the bootstrap task. The LaunchAgent in config/mise/conf.d/yabai.toml runs it; it reads this file.
+# 27), built by the bootstrap task. The LaunchAgent in config/mise/conf.d/macos.toml runs it; it reads this file.
 # Omarchy's focused colours: cyan to green (rgba(33ccffee) rgba(00ff99ee) 45deg), 5 wide. Unfocused windows get
 # no outline: JankyBorders draws one width for all, and 5 was too heavy on them. Colours are 0xAARRGGBB. yb border turns the
 # focused outline amber while the window is zoomed.
