@@ -136,8 +136,9 @@ cmd "profile" help="Choose this machine's profile and apply it" { arg "<profile>
 '''
 ```
 
-- `setup` runs, for each selected part in the fixed order, `mise run -C {{ vars.dots }} dots:setup:<part>` with the
-  profile flags. `backup` runs `script/backup.ts <action>` with the parsed flags (no `--`). `profile` runs
+- `setup` runs, for each selected part in the fixed order, `mise run -C {{ vars.dots }} dots:setup:<part>`, with the
+  parsed profile exported as `DOTS_PROFILE`; each step's `--profile` flag reads it through `env="DOTS_PROFILE"`, so the
+  steps still get a validated flag without every part task forwarding arguments. `backup` runs `script/backup.ts <action>` with the parsed flags (no `--`). `profile` runs
   `mise bootstrap -E <list> --save-env --yes` (desktop → `desktop`, dev → `desktop,dev`).
 - Parts and order (each part = today's steps of that area, unchanged inside):
 

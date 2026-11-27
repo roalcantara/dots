@@ -92,6 +92,16 @@ tasks:
   - docs
   comments:
   - Az1M
+- id: siXn
+  status: Todo
+  description: 'Bootstrap: dots front door (mise run dots setup|backup|profile), vars.yaml, dotfile group, conf.d one job per file'
+  priority: High
+  tags:
+  - bootstrap
+  - mise
+  - docs
+  comments:
+  - WvAm
 actors: []
 comments:
 - id: TjEs
@@ -109,4 +119,7 @@ comments:
 - id: Az1M
   text: 'Branch feat/mise-bootstrap-tasks. Spec: docs/superpowers/specs/2026-11-26-mise-bootstrap-tasks-design.md. Mark done after implementation, before opening the PR.'
   task_id: awGX
+- id: WvAm
+  text: 'Branch feat/mise-bootstrap-tasks. Spec: docs/superpowers/specs/2026-11-26-dots-front-door-design.md. Plan: docs/superpowers/plans/2026-11-26-dots-front-door.md. Mark done (with awGX) after the owner checkpoint, before the PR.'
+  task_id: siXn
 project: dots
