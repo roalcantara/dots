@@ -86,7 +86,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Copy checkout for vscode
         run: |
-          mkdir -p /home/vscode/.local/share
+          # As root: create each folder owned by vscode, or mise cannot make ~/.local/bin later.
+          install -d -o vscode -g vscode /home/vscode/.local /home/vscode/.local/share
           cp -a "$GITHUB_WORKSPACE" /home/vscode/.local/share/dots
           chown -R vscode:vscode /home/vscode/.local/share/dots
       - name: Run strict container bootstrap
