@@ -191,8 +191,8 @@ describe("theme:build", () => {
       .filter((e) => e.isDirectory())
       .map((e) => e.name)
       .sort();
-    const mise = readFileSync(join(repoRoot, "mise.toml"), "utf8");
-    const buildBlock = mise.match(/\[tasks\."theme:build"\][\s\S]*?\nrun =/)?.[0] ?? "";
+    const mise = readFileSync(join(repoRoot, "config/theme/tasks.toml"), "utf8");
+    const buildBlock = mise.match(/\["theme:build"\][\s\S]*?\nrun =/)?.[0] ?? "";
     expect(choicesIn(buildBlock)).toEqual(folders);
   });
 });

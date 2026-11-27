@@ -1,0 +1,197 @@
+# Repo tasks for this topic, included by the root mise.toml (`config/*/tasks.toml`, `*/tasks.toml`); they run from
+# the repo root. Task names are top-level tables here (docs/CONTRIBUTING.md, "Mise task conventions").
+# Docker images: build, run and structure-test the dots images (distros/<distro>/Dockerfile).
+
+# mise run build
+# mise run build --nocache
+# mise run build --nocache --distro ubuntu
+# mise run build --nocache --local
+# mise run build --nocache --local --user vscode --tag latest
+
+["build"]
+description = "Build a Docker image for dotfiles"
+usage = '''
+  flag "--nocache" help="Disable build cache"
+  flag "--local" help="Build local target (COPY) instead of remote"
+  flag "--publish" help="Publish image to Docker Hub"
+  flag "--distro <distro>" {
+    help "Distribution"
+    choices "debian" "ubuntu"
+    default "debian"
+  }
+  flag "--platform <platform>" {
+    help "Target platform"
+    choices "amd64" "arm64" "amd64v2" "riscv64" "ppc64le" "s390x" "386"
+    default "arm64"
+  }
+  flag "--secret <path>" help="GitHub token secret file" default="./.secrets/github_token.secret"
+  flag "--tag <tag>" help="Image tag suffix"
+  flag "--branch <branch>" help="Git branch for remote install"
+  flag "--repo <repo>" help="GitHub repo (owner/name)"
+  flag "--user <user>" help="Build arg USERNAME"
+  flag "--build-arg <arg>" {
+    help "Extra docker --build-arg (repeat flag)"
+    var #true
+  }
+'''
+run = '''
+#!/usr/bin/env bash
+set -o pipefail
+
+case "${usage_platform?}" in
+  amd64)    PLATFORM_VALUE="linux/amd64" ;;
+  arm64)    PLATFORM_VALUE="linux/arm64" ;;
+  amd64v2)  PLATFORM_VALUE="linux/amd64/v2" ;;
+  riscv64)  PLATFORM_VALUE="linux/riscv64" ;;
+  ppc64le)  PLATFORM_VALUE="linux/ppc64le" ;;
+  s390x)    PLATFORM_VALUE="linux/s390x" ;;
+  386)      PLATFORM_VALUE="linux/386" ;;
+  *)        PLATFORM_VALUE="linux/arm64" ;;
+esac
+
+DOCKER_CMD=(
+  DOCKER_BUILDKIT=1 docker build
+  --build-arg=BUILDKIT_INLINE_CACHE=1
+)
+
+if [ -n "${usage_user:-}" ]; then
+  DOCKER_CMD+=(--build-arg=USERNAME="$usage_user")
+fi
+
+if [ -n "${usage_branch:-}" ]; then
+  DOCKER_CMD+=(--build-arg=BRANCH="$usage_branch")
+fi
+
+if [ -n "${usage_repo:-}" ]; then
+  DOCKER_CMD+=(--build-arg=GITHUB_REPO="$usage_repo")
+fi
+
+if [ -n "${usage_build_arg:-}" ]; then
+  eval "EXTRA_BUILD_ARGS=($usage_build_arg)"
+  for arg in "${EXTRA_BUILD_ARGS[@]}"; do
+    DOCKER_CMD+=(--build-arg="$arg")
+  done
+fi
+
+if [[ -z ${GITHUB_TOKEN:-} && -f ${usage_secret?} ]]; then
+  DOCKER_CMD+=(--secret="id=github_token,src=$usage_secret")
+fi
+
+DOCKER_CMD+=(--platform="$PLATFORM_VALUE")
+
+TAG_VALUE="dots:${usage_distro?}"
+[ -n "${usage_tag:-}" ] && TAG_VALUE="$TAG_VALUE-$usage_tag"
+DOCKER_CMD+=(--tag="$TAG_VALUE")
+
+if [ "${usage_nocache:-false}" = "true" ]; then
+  DOCKER_CMD+=(--no-cache)
+fi
+
+DOCKER_CMD+=(--file="distros/${usage_distro?}/Dockerfile")
+
+# local and publish build the committed tree: the working tree holds decrypted SOPS files
+# (config/ssh/keys/*.key, config/wakatime/.wakatime.cfg). The smudge filter is disabled so git archive exports
+# them encrypted.
+if [ "${usage_publish:-false}" = "true" ] || [ "${usage_local:-false}" = "true" ]; then
+  target=local
+  [ "${usage_publish:-false}" = "true" ] && target=publish
+  DOCKER_CMD+=(--target="$target" -)
+  echo "  ==> git archive HEAD | ${DOCKER_CMD[*]}"
+  git -c filter.sops.smudge=cat -c filter.sops.required=false archive --format=tar HEAD | eval "${DOCKER_CMD[*]}"
+else
+  DOCKER_CMD+=(--target=remote .)
+  echo "  ==> ${DOCKER_CMD[*]}"
+  eval "${DOCKER_CMD[*]}"
+fi
+'''
+
+# mise run start
+# mise run start --tag local
+# mise run start --tag local --user vscode --workdir /workspaces/dots
+
+["start"]
+description = "Start a container"
+usage = '''
+  flag "--distro <distro>" {
+    help "Distribution"
+    choices "debian" "ubuntu"
+    default "debian"
+  }
+  flag "--tag <tag>" help="Image tag suffix (dots:<distro>-<tag>)"
+  flag "--user <user>" help="Container user" default="vscode"
+  flag "--workdir <path>" help="Container working directory" default="/workspaces/dots"
+'''
+run = '''
+#!/usr/bin/env bash
+
+DOCKER_CMD=(
+  docker run -it --rm
+  --user="${usage_user?}"
+  --workdir="${usage_workdir?}"
+)
+
+if [ -n "${usage_tag:-}" ]; then
+  DOCKER_CMD+=(dots:"${usage_distro?}"-"$usage_tag")
+else
+  case "${usage_distro?}" in
+    debian)   DISTRO_NAME="base:debian" ;;
+    ubuntu)   DISTRO_NAME="base:ubuntu" ;;
+    *)        DISTRO_NAME="base:debian" ;;
+  esac
+  DOCKER_CMD+=(--entrypoint='zsh' mcr.microsoft.com/devcontainers/"$DISTRO_NAME")
+fi
+
+echo "  ==> ${DOCKER_CMD[*]}"
+eval "${DOCKER_CMD[*]}"
+'''
+
+# mise run test
+# mise run test --distro ubuntu --tag latest
+# mise run test --image dots:debian-amd64-latest --config distros/debian/container-structure-test.yml
+
+["test"]
+description = "Run the Container Structure Tests for the Docker image"
+usage = '''
+  flag "--distro <distro>" {
+    help "Distribution"
+    choices "debian" "ubuntu"
+    default "debian"
+  }
+  flag "--platform <platform>" {
+    help "Image platform segment when composing image name"
+    choices "amd64" "arm64" "amd64v2" "riscv64" "ppc64le" "s390x" "386"
+    default "arm64"
+  }
+  flag "--tag <tag>" help="Image tag segment when composing image name"
+  flag "--image <image>" help="Full image reference (overrides distro/platform/tag)"
+  flag "--config <config>" help="CST config path"
+'''
+run = '''
+#!/usr/bin/env bash
+
+CST_CMD=(
+  container-structure-test test
+)
+
+if [ -z "${usage_image:-}" ]; then
+  USAGE_IMAGE="dots:${usage_distro?}"
+  if [ -n "${usage_platform:-}" ]; then
+    USAGE_IMAGE="$USAGE_IMAGE-$usage_platform"
+  fi
+  if [ -n "${usage_tag:-}" ]; then
+    USAGE_IMAGE="$USAGE_IMAGE-$usage_tag"
+  fi
+else
+  USAGE_IMAGE="${usage_image?}"
+fi
+CST_CMD+=(--image "$USAGE_IMAGE")
+
+if [ -n "${usage_config:-}" ]; then
+  CST_CMD+=(--config "$usage_config")
+else
+  CST_CMD+=(--config "distros/${usage_distro?}/container-structure-test.yml")
+fi
+
+echo "  ==> ${CST_CMD[*]}"
+eval "${CST_CMD[*]}"
+'''

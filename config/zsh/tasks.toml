@@ -1,0 +1,65 @@
+# Repo tasks for this topic, included by the root mise.toml (`config/*/tasks.toml`, `*/tasks.toml`); they run from
+# the repo root. Task names are top-level tables here (docs/CONTRIBUTING.md, "Mise task conventions").
+# zsh: verification, benchmarks, generated completions and cached integrations for config/zsh.
+
+["zsh:baseline"]
+description = "Capture the pre-change zsh parity baseline"
+run = "./script/zsh-verify.sh baseline"
+
+["zsh:verify"]
+description = "Check zsh syntax and parity against the captured baseline"
+run = ["./script/zsh-verify.sh syntax", "./script/zsh-verify.sh parity"]
+
+["zsh:bench"]
+description = "Benchmark zsh startup across terminal contexts"
+run = "./script/zsh-verify.sh bench"
+
+# lida completes task IDs and tags itself (the script calls back `lida __complete_word__`); rerun after bumping lida.
+["zsh:completions:lida"]
+description = "Regenerate config/zsh/opt/completions/_lida from `lida completion zsh`"
+run = "lida completion zsh > config/zsh/opt/completions/_lida"
+
+# Tab completion for every config/bin script with a #USAGE spec (dots theme <Tab> offers the theme names). The spec is
+# embedded in each file, so completing never runs the script; rerun after editing a #USAGE block.
+["zsh:completions:usage"]
+description = "Regenerate config/zsh/opt/completions/_<script> for each config/bin script with a #USAGE spec"
+usage = '''
+  arg "[script]" help="One script to regenerate (default: all of them)"
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+root="$(git rev-parse --show-toplevel)"
+if [ -n "${usage_script:-}" ]; then
+  scripts=("$root/config/bin/$usage_script")
+else
+  mapfile -t scripts < <(grep -l -s "^#USAGE" "$root"/config/bin/* | grep -v "/README.md$")
+fi
+for script in "${scripts[@]}"; do
+  name="$(basename "$script")"
+  grep -q '^#USAGE' "$script" || { echo "zsh:completions:usage: $name has no #USAGE spec" >&2; exit 1; }
+  usage generate completion zsh "$name" -f "$script" > "$root/config/zsh/opt/completions/_$name"
+  echo "zsh:completions:usage: wrote config/zsh/opt/completions/_$name"
+done
+'''
+
+# Lig's zsh integration, cached so the shell sources it instead of running `lig init` at every start
+# (config/zsh/opt/rc.d/lig.zsh). Its output changes only with Lig's version: rerun after `brew upgrade lig`.
+["zsh:lig"]
+description = "Cache Lig's zsh integration (rerun after upgrading Lig)"
+usage = ''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+command -v lig >/dev/null || { echo "zsh:lig: lig not found (brew install kevengoncalves/tap/lig)" >&2; exit 1; }
+cache="${DOTS_LIG_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/dots/lig}"
+mkdir -p "$cache"
+for block in pre post; do
+  lig init zsh "$block" > "$cache/$block.zsh.tmp"
+  mv "$cache/$block.zsh.tmp" "$cache/$block.zsh"
+done
+# The binary this cache came from, resolved as the shell resolves it (${commands[lig]:A}): a different one
+# (brew upgrade) makes lig.zsh skip the stale blocks. File dates cannot tell: bottles keep their build dates.
+zsh -fc 'print -r -- ${commands[lig]:A}' > "$cache/bin"
+echo "zsh:lig: wrote $cache/pre.zsh and post.zsh"
+'''

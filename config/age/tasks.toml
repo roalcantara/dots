@@ -1,0 +1,39 @@
+# Repo tasks for this topic, included by the root mise.toml (`config/*/tasks.toml`, `*/tasks.toml`); they run from
+# the repo root. Task names are top-level tables here (docs/CONTRIBUTING.md, "Mise task conventions").
+# The age key that decrypts this repo's SOPS files.
+
+["setup:age"]
+description = "Setup AGE keys from Bitwarden"
+run = '''
+#!/usr/bin/env bash
+set -e
+# Check if AGE keys already exist
+if [ ! -f "$HOME/.config/age/keys.txt" ]; then
+  IS_DARWIN=$(uname -s | grep -q "Darwin" && echo "true" || echo "false")
+  if [ "$IS_DARWIN" = "true" ] && command -v bw > /dev/null; then
+    echo "  ==> Retrieving Bitwarden secrets from Keychain.."
+    export BW_CLIENTID=$(security find-generic-password -w -a bitwarden_client_id 2>/dev/null)
+    export BW_CLIENTSECRET=$(security find-generic-password -w -a bitwarden_client_secret 2>/dev/null)
+    export BW_PASSWORD=$(security find-generic-password -w -a bitwarden_master_password 2>/dev/null)
+    if [ -z "$BW_CLIENTID" ] || [ -z "$BW_CLIENTSECRET" ] || [ -z "$BW_PASSWORD" ]; then
+      echo "Bitwarden credentials not found in Keychain."
+      echo "First time setup: store them with:"
+      echo "  security add-generic-password -a bitwarden_client_id -s Bitwarden -w <YOUR_CLIENT_ID> -U"
+      echo "  security add-generic-password -a bitwarden_client_secret -s Bitwarden -w <YOUR_CLIENT_SECRET> -U"
+      echo "  security add-generic-password -a bitwarden_master_password -s Bitwarden -w <YOUR_MASTER_PASSWORD> -U"
+      exit 1
+    fi
+    echo "  ==> Logging into Bitwarden"
+    bw login --apikey
+
+    echo "  ==> Unlocking Bitwarden vault and retrieving session ID"
+    export BW_SESSION=$(bw unlock --passwordenv BW_PASSWORD --raw)
+
+    echo "  ==> Retrieving AGE keys from Bitwarden"
+    bw get notes gopass/age > "$HOME/.config/age/keys.txt"
+    chmod 600 "$HOME/.config/age/keys.txt"
+    echo "  ==> AGE keys retrieved from Bitwarden and saved to $HOME/.config/age/keys.txt"
+    bw lock
+  fi
+fi
+'''

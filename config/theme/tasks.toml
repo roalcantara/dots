@@ -1,0 +1,34 @@
+# Repo tasks for this topic, included by the root mise.toml (`config/*/tasks.toml`, `*/tasks.toml`); they run from
+# the repo root. Task names are top-level tables here (docs/CONTRIBUTING.md, "Mise task conventions").
+
+# The shell theme's LS_COLORS. vivid writes the committed colours; shells only source the file.
+["theme:build"]
+description = "Regenerate a theme's ls_colors with vivid"
+usage = '''
+  arg "[name]" help="Theme to rebuild (default: every theme)" {
+    choices "catppuccin-mocha" "catppuccin-macchiato" "tokyonight-storm-custom" "dracula" "tokyonight-storm"
+  }
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+command -v vivid >/dev/null || { echo "theme:build: vivid not found (brew install vivid)" >&2; exit 1; }
+root="$(git rev-parse --show-toplevel)"
+themes="$root/config/theme/themes"
+if [ -n "${usage_name:-}" ]; then
+  names=("$usage_name")
+else
+  names=()
+  for dir in "$themes"/*/; do names+=("$(basename "$dir")"); done
+fi
+for name in "${names[@]}"; do
+  file="$themes/$name/ls_colors"
+  # A hand-made palette (tokyonight-storm keeps the pre-theme one) is not vivid's to rewrite.
+  if head -n 1 "$file" 2>/dev/null | grep -q '^# hand-made'; then
+    echo "theme:build: skipped config/theme/themes/$name/ls_colors (hand-made)"
+    continue
+  fi
+  printf "export LS_COLORS='%s'\n" "$(vivid generate "$name")" > "$file"
+  echo "theme:build: wrote config/theme/themes/$name/ls_colors"
+done
+'''
