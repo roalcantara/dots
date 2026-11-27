@@ -31,7 +31,8 @@ The owner wants:
 1. `mise run dots --help` lists `setup`, `backup`, `profile`. The parts (`dots setup [part]...`), backup actions and
    profiles are positional arguments with a `complete` list: Tab shows each with its one-line help from the first
    keystroke. (Revised 2026-11-27: the first build used one boolean flag per part and `choices`; the owner's Lig
-   popup offers flags only after `--` and shows `choices` without help. The script validates names, exit 2.)
+   popup offers flags only after `--` and shows `choices` without help. The script, or backup.ts for actions,
+   rejects unknown names with exit 2.)
 2. `dots setup` with no parts runs every part in the fixed order below; with parts, only those, still in that order.
 3. Each part runs hidden step tasks, so per-step `skip_if`, `sources`, `raw`, `--force` and `--dry-run` keep working.
    `mise tasks ls` shows `dots` and no bootstrap step; `mise tasks ls --hidden` shows them all.

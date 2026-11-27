@@ -32,7 +32,7 @@ cmd "setup" help="Install and configure parts of this machine; no parts means al
 }
 cmd "backup" help="Back up and restore this machine with restic" {
   arg "<action>" help="Backup action; Tab lists each action with its help"
-  // As for setup's parts: `complete` shows each action's help on Tab, `choices` would not. Validated in `run`.
+  // As for setup's parts: `complete` shows each action's help on Tab, `choices` would not. backup.ts rejects an unknown one.
   complete "action" descriptions=#true run=#"""
     printf '%s\n' \
       'init:Create this machine'"'"'s restic repository on the backup drive' \
@@ -119,14 +119,7 @@ case "${usage_cmd:-}" in
     fi
     ;;
   backup)
-    case "${usage_action:?}" in
-      init | backup | snapshots | restore | forget | audit) ;;
-      *)
-        printf 'dots backup: unknown action: %s (expected init backup snapshots restore forget audit)\n' "$usage_action" >&2
-        exit 2
-        ;;
-    esac
-    args=("$usage_action")
+    args=("${usage_action:?}") # backup.ts rejects an unknown action with its usage line (exit 2)
     if [ -n "${usage_include:-}" ]; then
       eval "includes=($usage_include)"
       for inc in "${includes[@]}"; do

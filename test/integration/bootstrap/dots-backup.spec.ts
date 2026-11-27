@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // `mise run dots backup <action>` dispatches to `bun {{ vars.dots }}/script/backup.ts <action>` with
-// an action validated in the script (Tab lists each with its help) and documented flags (no `--` needed).
+// an action backup.ts validates (Tab lists each with its help) and documented flags (no `--` needed).
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -102,11 +102,10 @@ describe.skipIf(!MISE)("mise run dots backup", () => {
     expect(r.argv).toEqual([join(t, "dots", "script", "backup.ts"), "audit", "--stdout"]);
   });
 
-  it("an unknown action fails before bun runs", () => {
+  it("passes an unknown action through for backup.ts to reject (backup.spec.ts: exits 2 on an unknown command)", () => {
     const r = runBackup(["bogus"]);
-    expect(r.code).toBe(2);
-    expect(r.err).toContain("unknown action: bogus");
-    expect(r.argv).toEqual([]);
+    expect(r.argv[0]).toEqual(join(t, "dots", "script", "backup.ts"));
+    expect(r.argv.slice(1)).toEqual(["bogus"]);
   });
 
   it("Tab after `mise run dots backup ` lists every action with its help", () => {

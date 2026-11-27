@@ -53,8 +53,9 @@ step file tasks live under [`.mise/tasks/bootstrap/`](../.mise/tasks/bootstrap).
 - **One front door.** `mise run dots --help` lists only what dots can do: `dots setup`, `dots backup`, and
   `dots profile`. Their parts, actions and profiles are positional arguments with a `complete` list, so Tab shows
   each with its help from the first keystroke (`choices` would show bare names, and flags only after `--`); the
-  task's script validates them and exits 2 on an unknown name. Every part task (`dots:setup:<part>`) and step task (`bootstrap:<area>:<step>`) is hidden (`hide = true`),
-  so `mise tasks ls` stays clean while `mise tasks ls --hidden` lists every step.
+  task's script (for backup actions, `backup.ts`) rejects an unknown name with exit 2. Every part task
+  (`dots:setup:<part>`) and step task (`bootstrap:<area>:<step>`) is hidden (`hide = true`), so `mise tasks ls`
+  stays clean while `mise tasks ls --hidden` lists every step.
 - **Declarative first.** Directories, system files, packages, links and macOS preferences are declared in TOML under
   `config/mise/`; `mise bootstrap` diffs and applies them. Shell only does what the schema cannot: cloning, building,
   talking to Keychain, loading a scripting addition.
