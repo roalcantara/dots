@@ -35,7 +35,7 @@ flag "--profile <list>" env="DOTS_PROFILE" default="desktop" help="Comma-separat
 # Runs last on every `mise bootstrap` (after the phase hooks in bootstrap.toml): git's filters and hooks first, then
 # the remaining tools, then the Brewfile reminder.
 [tasks.bootstrap]
-description = "Repo git filters and hooks, Neovim providers and plugins"
+description = "Run the final dots setup parts (git through nvim), then the Brewfile reminder"
 run = "{{ vars.dots_setup }} git shell dev secrets tiling ai skills nvim"
 
 [tasks.dots]
@@ -101,7 +101,10 @@ case "${usage_cmd:-}" in
           ;;
       esac
     done
+    # The repeatable --profile arrives shell-quoted (an empty DOTS_PROFILE as ''). No profile name holds a quote, so
+    # drop quotes rather than eval a value that may come from the environment.
     raw_profile="${usage_profile:-}"
+    raw_profile="${raw_profile//\'/}"
     if [ -z "$raw_profile" ]; then
       raw_profile="{% if mise_env is defined %}{% for e in mise_env %}{% if e == 'desktop' or e == 'dev' or e == 'container' %}{{ e }} {% endif %}{% endfor %}{% endif %}"
     fi

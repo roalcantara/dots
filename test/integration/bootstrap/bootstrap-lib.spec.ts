@@ -56,6 +56,12 @@ describe("has_profile", () => {
     expect(r.code).toBe(2);
     expect(r.err).toContain("unknown profile: devv");
   });
+
+  it("names a * profile as given, not as the file names it would glob to", () => {
+    const r = run('. "$1"; has_profile dev', { usage_profile: "*" });
+    expect(r.code).toBe(2);
+    expect(r.err).toContain("unknown profile: *");
+  });
 });
 
 describe("warn", () => {

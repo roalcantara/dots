@@ -8,9 +8,10 @@ DOTS_DIR="${DOTS_DIR:-$HOME/.local/share/dots}"
 # Exits 2 on any name outside desktop, dev, container.
 validate_profile()
                    {
-  local list="${usage_profile:-desktop}" item
-  local IFS=', '
-  for item in $list; do
+  local item items
+  # read, not an unquoted $list, so a * in the profile is not expanded to file names.
+  IFS=', ' read -r -a items <<< "${usage_profile:-desktop}"
+  for item in ${items[@]+"${items[@]}"}; do
     [ -n "$item" ] || continue
     case "$item" in
       desktop | dev | container) ;;
@@ -26,9 +27,9 @@ validate_profile()
 has_profile()
               {
   validate_profile
-  local target="$1" list="${usage_profile:-desktop}" item
-  local IFS=', '
-  for item in $list; do
+  local target="$1" item items
+  IFS=', ' read -r -a items <<< "${usage_profile:-desktop}"
+  for item in ${items[@]+"${items[@]}"}; do
     [ "$item" = "$target" ] && return 0
   done
   return 1

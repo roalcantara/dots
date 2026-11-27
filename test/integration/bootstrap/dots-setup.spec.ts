@@ -109,6 +109,12 @@ describe.skipIf(!MISE)("mise run dots setup", () => {
     expect(r.ran).toEqual(["bat:desktop,dev", "remind:desktop,dev"]);
   });
 
+  it("an empty DOTS_PROFILE falls back like an unset one, as the steps do", () => {
+    const r = runDots(["setup", "bat"], { DOTS_PROFILE: "" });
+    expect(r.code, r.err).toBe(0);
+    expect(r.ran).toEqual(["bat:desktop", "remind:desktop"]);
+  });
+
   it("when neither --profile nor DOTS_PROFILE is given, uses mise_env from miserc.local.toml (filtered) or defaults to desktop", () => {
     // No miserc -> defaults to desktop
     const def = runDots(["setup", "dev"]);
