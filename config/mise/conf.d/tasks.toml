@@ -191,10 +191,12 @@ hint = "mise run -C {{ vars.dots }} mise:version --sync"
 os = "macos"
 
 # Only `mise lsp` reports deprecated-key, so a check runs the small client in the repo's .mise/tasks/mise/diagnostics.ts.
+# Requires Bun (desktop-only in Brewfile), so macOS only.
 [doctor.checks.mise-diagnostics]
 description = "No deprecated or unknown keys in the mise config"
 run = "mise run -C {{ vars.dots }} mise:diagnostics"
 hint = "see docs/BOOTSTRAP.md#gotchas (deprecated keys)"
+os = "macos"
 timeout = "30s"
 
 # dots owns git's config in ~/.config/git/config; a real ~/.gitconfig is read after it and silently wins.
@@ -202,3 +204,18 @@ timeout = "30s"
 description = "No ~/.gitconfig overrides the dots git config"
 run = 'test ! -e "$HOME/.gitconfig"'
 hint = "merge what you need into config/git/config, then move ~/.gitconfig aside (docs/BOOTSTRAP.md#gotchas)"
+
+[doctor.checks.container-tools]
+description = "Container Brewfile group resolves on PATH in a login zsh"
+run = "mise run -C {{ vars.dots }} doctor:container-tools"
+hint = "run `mise run dots setup --profile container brew` and check ~/.config/zsh/.zprofile"
+
+[doctor.checks.profile-parts]
+description = "Desktop- and dev-only bootstrap artifacts are absent in a container"
+run = "mise run -C {{ vars.dots }} doctor:profile-parts"
+hint = "remove the unexpected artifact or check the step's profile gate"
+
+[doctor.checks.sops-encrypted]
+description = "SOPS-filtered files in the checkout remain encrypted"
+run = "mise run -C {{ vars.dots }} doctor:sops-encrypted"
+hint = "re-export the checkout with filter.sops.smudge=cat so secrets are never decrypted in a container"

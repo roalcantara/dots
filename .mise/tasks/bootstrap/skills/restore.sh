@@ -2,6 +2,7 @@
 #MISE hide=true
 #MISE extends="bootstrap_step"
 #MISE description="Restore the agent skills from the lockfile in the background (dev only)"
+#DOTS artifact=.agents/skills
 # Agent skills from config/agents/skill-lock.json, in the background: hundreds of skills must not hold up the
 # bootstrap. A notification and ~/.local/state/dots/skills-restore.result report the outcome. dev only.
 . "${BASH_SOURCE%/*}/../_lib.sh"

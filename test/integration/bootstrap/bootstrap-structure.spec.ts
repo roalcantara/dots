@@ -159,4 +159,13 @@ maybe("bootstrap task structure", () => {
       expect(readFileSync(join(dir, file), "utf8"), file).not.toMatch(/^# [a-z-]+: begin$/m);
     }
   });
+
+  it("every step gated to desktop or dev declares exactly one #DOTS artifact line", () => {
+    for (const rel of steps()) {
+      const text = readFileSync(join(STEPS, rel), "utf8");
+      if (!/^has_profile (desktop|dev) \|\| exit 0$/m.test(text)) continue;
+      const lines = text.split("\n").filter((l) => /^#DOTS artifact=\S+$/.test(l));
+      expect(lines, `${rel} #DOTS artifact=`).toHaveLength(1);
+    }
+  });
 });

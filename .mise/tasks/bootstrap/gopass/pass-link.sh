@@ -2,6 +2,7 @@
 #MISE hide=true
 #MISE extends="bootstrap_step"
 #MISE description="Link ~/.local/bin/pass to gopass, never replacing a real pass"
+#DOTS artifact=.local/bin/pass
 # gopass is a drop-in for pass: tools that call `pass` (fnox's password-store provider, editor plugins) get gopass.
 # Homebrew's gopass, from the prefix `brew shellenv` exported in bootstrap_init (bin/gopass follows upgrades); else
 # any gopass on PATH. Never replaces a real pass: only creates or refreshes the link in ~/.local/bin.

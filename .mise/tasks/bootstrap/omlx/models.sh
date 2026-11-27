@@ -2,6 +2,7 @@
 #MISE hide=true
 #MISE extends="bootstrap_step"
 #MISE description="Download the oMLX models that are missing (macOS, once the app is installed by hand)"
+#DOTS artifact=.omlx/models
 # oMLX models (macOS, once the app is installed by hand): download only the missing ones.
 . "${BASH_SOURCE%/*}/../_lib.sh"
 set -euo pipefail

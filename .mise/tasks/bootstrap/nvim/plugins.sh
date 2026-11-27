@@ -3,6 +3,7 @@
 #MISE extends="bootstrap_step"
 #MISE description="Restore the Neovim plugins from lazy-lock.json"
 #MISE sources=["config/nvim/lazy-lock.json"]
+#DOTS artifact=.local/share/nvim/lazy
 # Restore (not sync) installs the lockfile's versions, so a rerun changes nothing; bounded so a network stall cannot
 # hang an unattended run.
 . "${BASH_SOURCE%/*}/../_lib.sh"

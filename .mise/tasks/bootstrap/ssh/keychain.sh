@@ -3,6 +3,7 @@
 #MISE extends="bootstrap_step"
 #MISE description="Put the GitHub signing key in the agent, storing its passphrase in Keychain once"
 #MISE raw=true
+#DOTS artifact=-
 # macOS: git signs commits with the GitHub key (config/git/config) through the agent only; ssh-keygen -Y sign never
 # reads Keychain. Load it from Keychain, or store its passphrase there once, asked on the terminal. Apple's ssh-add
 # (Homebrew's has no --apple-* flags). At each login the dev.mise.ssh-add LaunchAgent (macos.toml) loads it again.

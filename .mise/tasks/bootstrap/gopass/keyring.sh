@@ -2,6 +2,7 @@
 #MISE hide=true
 #MISE extends="bootstrap_step"
 #MISE description="Warn when the gopass keyring still uses a passphrase or an identity file is missing"
+#DOTS artifact=-
 # gopass's identity keyring should be locked to the age key (docs/REINSTALL.md, "One secret: the age key"), so gopass
 # never asks for a PIN. Only warns: the switch is interactive and done once by the owner.
 . "${BASH_SOURCE%/*}/../_lib.sh"
