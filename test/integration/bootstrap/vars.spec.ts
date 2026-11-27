@@ -3,7 +3,7 @@
 // without exporting them to the environment. Because mise settings cannot read `vars`, config/mise/config.toml
 // mirrors the location in `dotfiles.root = "{{ xdg_data_home }}/dots"`; this spec verifies they agree.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -128,5 +128,53 @@ describe.skipIf(!MISE)("conf.d/vars.yaml and dots location", () => {
     expect(resolveDotfilesRoot(altCfg, t)).not.toBe(join(t, dotsDir));
   });
 
-  it.todo("no literal .local/share/dots remains in config/mise/conf.d/*.toml or config/mise/config.toml");
+  it("no literal .local/share/dots remains in config/mise/conf.d/*.toml or config/mise/config.toml outside allowed entries", () => {
+    const ALLOWED_PLAIN_DOTFILE_TARGETS = new Set([
+      "~/.config/kb",
+      "~/.zshenv",
+      "~/.bashrc",
+      "~/.profile",
+      "~/.claude/settings.json",
+      "~/.claude/agents",
+      "~/.local/bin",
+      "~/.local/state/skills/.skill-lock.json",
+      "~/.agents/.skill-lock.json",
+      "~/.agents/commands",
+      "~/.claude/commands",
+      "vscode-settings",
+      "vscode-keybindings",
+    ]);
+
+    // Check config/mise/config.toml: only trusted_config_paths (which mise does not template-expand) may carry it.
+    const globalCfg = Bun.TOML.parse(readFileSync(GLOBAL_CONFIG_PATH, "utf8")) as {
+      settings?: Record<string, unknown>;
+    };
+    const settingsCopy = { ...(globalCfg.settings ?? {}) };
+    delete settingsCopy.trusted_config_paths;
+    expect(JSON.stringify(settingsCopy)).not.toContain(".local/share/dots");
+
+    // Check every conf.d/*.toml file (backup.toml is deleted in Task 6).
+    const confDir = join(REPO, "config/mise/conf.d");
+    for (const file of readdirSync(confDir).filter((f) => f.endsWith(".toml") && f !== "backup.toml")) {
+      const fullPath = join(confDir, file);
+      if (file === "dotfiles.toml") {
+        const parsed = Bun.TOML.parse(readFileSync(fullPath, "utf8")) as {
+          dotfiles?: Record<string, { source?: string }>;
+          dotfile_groups?: Record<string, unknown>;
+        };
+        expect(JSON.stringify(parsed.dotfile_groups ?? {})).not.toContain(".local/share/dots");
+        const found = Object.entries(parsed.dotfiles ?? {})
+          .filter(([, entry]) => typeof entry.source === "string" && entry.source.includes(".local/share/dots"))
+          .map(([target]) => target)
+          .sort();
+        expect(found).toEqual([...ALLOWED_PLAIN_DOTFILE_TARGETS].sort());
+      } else {
+        const nonCommentLines = readFileSync(fullPath, "utf8")
+          .split("\n")
+          .filter((l) => !l.trimStart().startsWith("#"))
+          .join("\n");
+        expect(nonCommentLines, `${file} still contains literal .local/share/dots`).not.toContain(".local/share/dots");
+      }
+    }
+  });
 });
