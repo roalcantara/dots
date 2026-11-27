@@ -11,16 +11,31 @@ import { join } from "node:path";
 const REPO = join(import.meta.dir, "../../..");
 const MISE = Bun.which("mise");
 const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/bootstrap.toml"), "utf8")) as {
-  vars: Record<string, string>;
+  vars: Record<string, unknown>;
   bootstrap: { hooks: Record<string, { run: string }> };
 };
+
+function serializeVars(vars: Record<string, unknown>): string {
+  const lines: string[] = [];
+  for (const [k, v] of Object.entries(vars)) {
+    if (v && typeof v === "object" && !Array.isArray(v)) {
+      for (const [sk, sv] of Object.entries(v as Record<string, unknown>)) {
+        lines.push(`${k}.${sk} = ${JSON.stringify(sv)}`);
+      }
+    } else {
+      lines.push(`${k} = ${JSON.stringify(v)}`);
+    }
+  }
+  return lines.join("\n");
+}
 
 let t: string;
 beforeEach(() => {
   t = realpathSync(mkdtempSync(join(tmpdir(), "handover-")));
-  for (const d of ["bin", "cfg", "cwd"]) mkdirSync(join(t, d));
+  for (const d of ["bin", "cfg/conf.d", "cwd"]) mkdirSync(join(t, d), { recursive: true });
+  writeFileSync(join(t, "cfg", "conf.d", "vars.yaml"), readFileSync(join(REPO, "config/mise/conf.d/vars.yaml"), "utf8"));
   // Only the vars and one hook: the rest of bootstrap.toml would install packages.
-  const vars = Object.entries(conf.vars).map(([k, v]) => `${k} = ${JSON.stringify(v)}`).join("\n");
+  const vars = serializeVars(conf.vars);
   writeFileSync(join(t, "cfg", "config.toml"), `[vars]\n${vars}\n\n[bootstrap.hooks.pre-dotfiles]\nrun = ${JSON.stringify(conf.bootstrap.hooks["pre-dotfiles"].run)}\n`);
   writeFileSync(join(t, "bin", "mise"), `#!/bin/sh\nprintf '%s\\n' "$*" "\${DOTS_PROFILE:-<unset>}" > "${join(t, "calls")}"\n`);
   chmodSync(join(t, "bin", "mise"), 0o755);

@@ -4,8 +4,10 @@
 # [env] nor MISE_ENV, but they render Tera before they run, and `mise_env` holds the environments this run selected
 # (`-E`, MISE_ENV or miserc.local.toml), so the profile reaches the phase task as DOTS_PROFILE (docs/BOOTSTRAP.md).
 [vars]
+_.file = "{{ mise_config_dir }}/conf.d/vars.yaml"
+dots = "{{ env.HOME }}/{{ vars.dots_dir }}"
 dots_profile = '{% if mise_env is defined %}{{ mise_env | join(sep=",") }}{% else %}desktop{% endif %}'
-dots_handover = 'DOTS_PROFILE={{ vars.dots_profile | quote }} exec mise run -C {{ (env.HOME ~ "/.local/share/dots") | quote }}'
+dots_handover = 'DOTS_PROFILE={{ vars.dots_profile | quote }} exec mise run -C {{ vars.dots | quote }}'
 
 # Folders the shell config and tools expect, plus the XDG user folders the images' structure tests check.
 [bootstrap.directories."~/.local/bin"]
