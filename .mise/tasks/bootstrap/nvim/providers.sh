@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Install the Neovim providers (npm and gem)"
 # Neovim's providers, when the config is linked and the runtime is there.
 . "${BASH_SOURCE%/*}/../_lib.sh"

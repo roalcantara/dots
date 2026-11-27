@@ -29,7 +29,7 @@ describe("tiling packages and links", () => {
 
   it("links ~/.config/karabiner and ~/.config/borders as whole folders", () => {
     for (const name of ["karabiner", "borders"]) {
-      expect(dotfiles.dotfiles[`~/.config/${name}`]).toEqual({ source: `~/.local/share/dots/config/${name}`, relative: true });
+      expect(dotfiles.dotfile_groups.config.entries[`~/.config/${name}`]).toEqual({ mode: "symlink" });
     }
   });
 
@@ -207,7 +207,7 @@ describe("SwiftBar space strip", () => {
     expect(brewfile).toMatch(/^cask "swiftbar" if OS\.mac\?/m);
     // yb bar draws the strip as a PNG with resvg, so it keeps its colours on the unfocused screen too
     expect(brewfile).toMatch(/^brew "resvg" if OS\.mac\?/m);
-    expect(dotfiles.dotfiles["~/.config/swiftbar"]).toEqual({ source: "~/.local/share/dots/config/swiftbar", relative: true });
+    expect(dotfiles.dotfile_groups.config.entries["~/.config/swiftbar"]).toEqual({ mode: "symlink" });
   });
 
   it("the plugin is executable and prints yb bar with Homebrew on PATH", () => {

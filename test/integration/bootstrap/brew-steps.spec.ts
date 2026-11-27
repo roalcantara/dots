@@ -74,8 +74,8 @@ describe("brew:install", () => {
 });
 
 describe("brew:bundle", () => {
-  it("uses DOTS_PROFILE, never the parent process", () => {
-    const r = runStep(BUNDLE, base({ DOTS_PROFILE: "desktop,dev" }));
+  it("uses usage_profile, never the parent process", () => {
+    const r = runStep(BUNDLE, base({ usage_profile: "desktop,dev" }));
     expect(r.code).toBe(0);
     expect(readFileSync(join(t, "calls"), "utf8").trim().split("\n")).toEqual(["container", "desktop,dev"]);
   });

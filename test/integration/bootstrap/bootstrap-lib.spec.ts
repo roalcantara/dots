@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
-// .mise/tasks/bootstrap/_lib.sh: the profile, platform guards, soft failures and logging every step shares.
+// .mise/tasks/bootstrap/_lib.sh: profile validation/matching on usage_profile, platform guards, soft failures and logging.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -15,8 +15,7 @@ beforeEach(() => {
 });
 afterEach(() => rmSync(t, { recursive: true, force: true }));
 
-// A bare environment: no DOTS_PROFILE or MISE_ENV leaks in from the caller (mise sets MISE_ENV when it runs
-// the specs), and HOME/DOTS_DIR point at the temp dir.
+// A bare environment: no DOTS_PROFILE or MISE_ENV leaks in from the caller.
 function run(script: string, env: Record<string, string> = {}) {
   const p = Bun.spawnSync(["bash", "-c", script, "bash", LIB], {
     cwd: t,
@@ -33,31 +32,29 @@ function run(script: string, env: Record<string, string> = {}) {
   return { code: p.exitCode ?? 1, out: p.stdout.toString().trim(), err: p.stderr.toString() };
 }
 
-const profile = (env: Record<string, string> = {}) => run(`. "$1"; dots_profile`, { ...env }).out;
-
-describe("dots_profile", () => {
-  it("prefers DOTS_PROFILE, then MISE_ENV", () => {
-    expect(profile({ DOTS_PROFILE: "dev", MISE_ENV: "desktop" })).toBe("dev");
-    expect(profile({ MISE_ENV: "container" })).toBe("container");
-  });
-
-  it("reads miserc.local.toml", () => {
-    writeFileSync(join(t, "config", "mise", "miserc.local.toml"), 'env = ["desktop", "dev"]\n');
-    expect(profile()).toBe("desktop,dev");
-  });
-
-  it("defaults to desktop", () => {
-    expect(profile()).toBe("desktop");
-  });
-});
-
 describe("has_profile", () => {
-  it("matches whole names only", () => {
-    const has = (name: string) =>
-      run(`. "$1"; has_profile ${name} && echo yes || echo no`, { DOTS_PROFILE: "desktop,dev" }).out;
-    expect(has("dev")).toBe("yes");
-    expect(has("desktop")).toBe("yes");
-    expect(has("devops")).toBe("no");
+  it("matches whole names split on commas or spaces", () => {
+    const has = (name: string, val: string) =>
+      run(`. "$1"; has_profile ${name} && echo yes || echo no`, { usage_profile: val }).out;
+    expect(has("dev", "desktop,dev")).toBe("yes");
+    expect(has("desktop", "desktop,dev")).toBe("yes");
+    expect(has("dev", "desktop dev")).toBe("yes");
+    expect(has("devops", "desktop,dev")).toBe("no");
+    expect(has("container", "desktop,dev")).toBe("no");
+  });
+
+  it("ignores DOTS_PROFILE and MISE_ENV, defaulting to desktop when usage_profile is unset", () => {
+    const has = (name: string, env: Record<string, string>) =>
+      run(`. "$1"; has_profile ${name} && echo yes || echo no`, env).out;
+    expect(has("desktop", { DOTS_PROFILE: "container", MISE_ENV: "dev" })).toBe("yes");
+    expect(has("container", { DOTS_PROFILE: "container", MISE_ENV: "dev" })).toBe("no");
+    expect(has("dev", { DOTS_PROFILE: "container", MISE_ENV: "dev" })).toBe("no");
+  });
+
+  it("exits 2 on a profile name outside desktop, dev, container", () => {
+    const r = run('. "$1"; has_profile dev', { usage_profile: "desktop,devv" });
+    expect(r.code).toBe(2);
+    expect(r.err).toContain("unknown profile: devv");
   });
 });
 

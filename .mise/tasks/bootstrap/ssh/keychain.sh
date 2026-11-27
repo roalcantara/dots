@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Put the GitHub signing key in the agent, storing its passphrase in Keychain once"
 #MISE raw=true
 # macOS: git signs commits with the GitHub key (config/git/config) through the agent only; ssh-keygen -Y sign never

@@ -30,8 +30,8 @@ describe("default apps (config/duti/defaults.duti)", () => {
   });
 
   it("is linked into ~/.config and installed on macOS", () => {
-    expect(readFileSync(join(REPO, "config/mise/conf.d/dotfiles.toml"), "utf8"))
-      .toContain('"~/.config/duti" = { source = "~/.local/share/dots/config/duti", relative = true }');
+    const dotfiles = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/dotfiles.toml"), "utf8")) as any;
+    expect(dotfiles.dotfile_groups.config.entries["~/.config/duti"]).toEqual({ mode: "symlink" });
     expect(readFileSync(join(REPO, "config/homebrew/Brewfile"), "utf8")).toContain('brew "duti" if OS.mac?');
   });
 });

@@ -29,7 +29,7 @@ afterEach(() => rmSync(t, { recursive: true, force: true }));
 
 function snippet(identities: string | null, env: Record<string, string> = {}) {
   if (identities !== null) writeFileSync(join(t, ".config", "gopass", "age", "identities"), identities);
-  return runStep(STEP, { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, DOTS_PROFILE: "desktop", ...env });
+  return runStep(STEP, { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, usage_profile: "desktop", ...env });
 }
 
 describe("bootstrap gopass-keyring check", () => {

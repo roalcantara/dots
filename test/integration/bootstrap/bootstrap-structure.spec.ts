@@ -34,7 +34,7 @@ function header(rel: string): Record<string, string> {
 }
 
 function miseTasks(): { name: string }[] {
-  const p = Bun.spawnSync(["mise", "tasks", "ls", "--json"], {
+  const p = Bun.spawnSync(["mise", "tasks", "ls", "--hidden", "--json"], {
     cwd: REPO,
     env: { ...process.env, MISE_TRUSTED_CONFIG_PATHS: REPO },
     stdin: "ignore",
@@ -61,6 +61,14 @@ maybe("bootstrap task structure", () => {
       expect(readFileSync(join(STEPS, rel), "utf8"), `${relative(STEPS, join(STEPS, rel))} sources _lib.sh`).toContain(
         '. "${BASH_SOURCE%/*}/../_lib.sh"',
       );
+    }
+  });
+
+  it("every step is hidden and uses the shared --profile definition", () => {
+    for (const rel of steps()) {
+      const h = header(rel);
+      expect(h.hide, `${relative(STEPS, join(STEPS, rel))} hide`).toBe("true");
+      expect(h.extends, `${relative(STEPS, join(STEPS, rel))} extends`).toBe('"bootstrap_step"');
     }
   });
 

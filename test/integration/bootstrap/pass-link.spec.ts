@@ -32,7 +32,7 @@ function snippet(env: Record<string, string>) {
     ...env,
     PATH: `${env.PATH ?? "/usr/bin:/bin"}:${join(t, "bin")}`,
     HOME: t,
-    DOTS_PROFILE: "desktop",
+    usage_profile: "desktop",
   });
 }
 

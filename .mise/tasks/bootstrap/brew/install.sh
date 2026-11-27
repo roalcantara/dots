@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Install Homebrew when it is missing (asks for sudo on the terminal)"
 #MISE raw=true
 #MISE skip_if='command -v brew >/dev/null || test -x /opt/homebrew/bin/brew || test -x /home/linuxbrew/.linuxbrew/bin/brew'

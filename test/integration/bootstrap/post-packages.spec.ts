@@ -64,14 +64,14 @@ function phase(extra: Record<string, string> = {}) {
 
 describe("brew/bundle.sh", () => {
   it("desktop: installs the core group, then the full Brewfile", () => {
-    const r = bundle({ MISE_ENV: "desktop" });
+    const r = bundle({ usage_profile: "desktop" });
     expect(r.code).toBe(0);
     expect(calls()).toEqual([`container ${join(t, "Brewfile")}`, `desktop ${join(t, "Brewfile")}`]);
     expect(existsSync(join(state(), "brew-bundle.failed"))).toBe(false);
   });
 
   it("desktop: a failed entry warns, names it and records it, but exits 0", () => {
-    const r = bundle({ MISE_ENV: "desktop", STUB_FAIL: "desktop" });
+    const r = bundle({ usage_profile: "desktop", STUB_FAIL: "desktop" });
     expect(r.code).toBe(0);
     expect(r.err).toContain("WARNING: brew bundle could not install: can1357/tap com.discordapp.Discord");
     expect(r.err).toContain("retry: brew bundle install");
@@ -80,41 +80,39 @@ describe("brew/bundle.sh", () => {
   });
 
   it("desktop: a later clean run clears the recorded failure", () => {
-    bundle({ MISE_ENV: "desktop", STUB_FAIL: "desktop" });
-    expect(bundle({ MISE_ENV: "desktop" }).code).toBe(0);
+    bundle({ usage_profile: "desktop", STUB_FAIL: "desktop" });
+    expect(bundle({ usage_profile: "desktop" }).code).toBe(0);
     expect(existsSync(join(state(), "brew-bundle.failed"))).toBe(false);
   });
 
   it("CI or DOTS_STRICT makes a failed entry fatal", () => {
     for (const strict of [{ CI: "true" }, { DOTS_STRICT: "1" }] as Record<string, string>[]) {
-      const r = bundle({ MISE_ENV: "desktop", STUB_FAIL: "desktop", ...strict });
+      const r = bundle({ usage_profile: "desktop", STUB_FAIL: "desktop", ...strict });
       expect(r.code).toBe(1);
       expect(r.err).toContain("brew bundle failed: can1357/tap com.discordapp.Discord");
     }
   });
 
   it("a failure in the core group stops the bootstrap before the full Brewfile", () => {
-    const r = bundle({ MISE_ENV: "desktop", STUB_FAIL: "container" });
+    const r = bundle({ usage_profile: "desktop", STUB_FAIL: "container" });
     expect(r.code).not.toBe(0);
     expect(calls()).toEqual([`container ${join(t, "Brewfile")}`]);
   });
 
   it("desktop,dev: passes the whole list to the full Brewfile run", () => {
-    const r = bundle({ MISE_ENV: "desktop,dev" });
+    const r = bundle({ usage_profile: "desktop,dev" });
     expect(r.code).toBe(0);
     expect(calls()).toEqual([`container ${join(t, "Brewfile")}`, `desktop,dev ${join(t, "Brewfile")}`]);
   });
 
-  it("reads a two-env miserc.local.toml when MISE_ENV is unset", () => {
-    mkdirSync(join(t, ".local", "share", "dots", "config", "mise"), { recursive: true });
-    writeFileSync(join(t, ".local", "share", "dots", "config", "mise", "miserc.local.toml"), 'env = ["desktop", "dev"]\n');
+  it("defaults to desktop when usage_profile is unset", () => {
     const r = bundle({});
     expect(r.code).toBe(0);
-    expect(calls()[1]).toBe(`desktop,dev ${join(t, "Brewfile")}`);
+    expect(calls()[1]).toBe(`desktop ${join(t, "Brewfile")}`);
   });
 
   it("container: installs only the core group", () => {
-    const r = bundle({ MISE_ENV: "container" });
+    const r = bundle({ usage_profile: "container" });
     expect(r.code).toBe(0);
     expect(calls()).toEqual([`container ${join(t, "Brewfile")}`]);
   });
@@ -124,14 +122,14 @@ describe("brew/remind.sh", () => {
   it("repeats the recorded failure and always exits 0", () => {
     mkdirSync(state(), { recursive: true });
     writeFileSync(join(state(), "brew-bundle.failed"), "com.discordapp.Discord\n");
-    const r = runStep("brew/remind.sh", env({ DOTS_PROFILE: "desktop" }));
+    const r = runStep("brew/remind.sh", env({ usage_profile: "desktop" }));
     expect(r.code).toBe(0);
     expect(r.err).toContain("bootstrap: brew bundle could not install: com.discordapp.Discord");
     expect(r.err).toContain(`retry: brew bundle install (log: ${join(state(), "brew-bundle.log")})`);
   });
 
   it("stays quiet when nothing failed", () => {
-    const r = runStep("brew/remind.sh", env({ DOTS_PROFILE: "desktop" }));
+    const r = runStep("brew/remind.sh", env({ usage_profile: "desktop" }));
     expect(r.code).toBe(0);
     expect(r.err).toBe("");
   });

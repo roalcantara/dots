@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Move app-written VS Code and Karabiner files aside before the dots links"
 # A link never replaces a real file, and VS Code (or Settings Sync) and Karabiner-Elements write real ones on first
 # launch. Move them aside, never delete, so the links apply. Also runs before mise dot apply.

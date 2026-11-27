@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Build JankyBorders from qeesung's fork at the pinned commit"
 #MISE env={JB_REV="f56533701a3ce0fae1801f2c11586a62098fe727"}
 #MISE skip_if='test "$(cat "$HOME/.local/share/janky-borders/bin/.rev" 2>/dev/null)" = "$JB_REV"'

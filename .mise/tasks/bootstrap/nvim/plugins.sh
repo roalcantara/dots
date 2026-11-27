@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Restore the Neovim plugins from lazy-lock.json"
 #MISE sources=["config/nvim/lazy-lock.json"]
 # Restore (not sync) installs the lockfile's versions, so a rerun changes nothing; bounded so a network stall cannot

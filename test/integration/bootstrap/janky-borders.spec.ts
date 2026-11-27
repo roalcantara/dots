@@ -32,7 +32,7 @@ function snippet(env: Record<string, string> = {}) {
   const r = runStep(STEP, {
     PATH: `${join(t, "bin")}:/usr/bin:/bin`,
     HOME: t,
-    DOTS_PROFILE: "desktop",
+    usage_profile: "desktop",
     DOTS_UNAME: env.STUB_OS ?? "Darwin",
     ...env,
   });

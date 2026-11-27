@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Cache Lig's zsh integration on desktops where Lig is installed"
 # Lig's cached zsh integration (config/zsh/opt/rc.d/lig.zsh), on desktops where Lig is installed.
 . "${BASH_SOURCE%/*}/../_lib.sh"

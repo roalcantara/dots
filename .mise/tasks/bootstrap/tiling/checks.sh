@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Clone the kb Raycast extension and say what bootstrap cannot do for tiling"
 # Tiling (docs/TILING.md): clone the kb Raycast extension (its yabai strip and Hotkeys command), and say what
 # bootstrap cannot do itself. [bootstrap.repos] has no os key, so the clone lives here.

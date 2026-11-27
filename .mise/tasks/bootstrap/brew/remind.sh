@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Repeat the brew bundle warning at the end of the bootstrap"
 # Repeat the post-packages step's warning last, where it is seen (it scrolls away during the bootstrap). Always
 # exits 0: a failed optional package must not fail the bootstrap here.

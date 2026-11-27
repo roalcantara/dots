@@ -28,7 +28,7 @@ function snippet(env: Record<string, string> = {}) {
     PATH: `${join(t, "bin")}:/usr/bin:/bin`,
     HOME: t,
     XDG_STATE_HOME: join(t, "state"),
-    DOTS_PROFILE: "desktop,dev",
+    usage_profile: "desktop,dev",
     ...env,
   });
   return { code: r.code, out: r.out, ms: Date.now() - started };
@@ -40,7 +40,7 @@ describe("bootstrap skills step", () => {
   });
 
   it("does nothing without the dev profile", () => {
-    const r = snippet({ DOTS_PROFILE: "desktop" });
+    const r = snippet({ usage_profile: "desktop" });
     expect(r.code).toBe(0);
     expect(r.out).not.toContain("restoring agent skills");
     expect(existsSync(join(t, "calls"))).toBe(false);
@@ -70,7 +70,7 @@ describe("bootstrap dev-python step", () => {
   function python(profile: string) {
     writeFileSync(join(t, "bin", "uv"), `#!/bin/sh\necho "uv $*" >> "${join(t, "uv.log")}"\nexit 0\n`);
     chmodSync(join(t, "bin", "uv"), 0o755);
-    runStep("dev/python-tools.sh", { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, DOTS_PROFILE: profile });
+    runStep("dev/python-tools.sh", { PATH: `${join(t, "bin")}:/usr/bin:/bin`, HOME: t, usage_profile: profile });
     return existsSync(join(t, "uv.log")) ? readFileSync(join(t, "uv.log"), "utf8") : "";
   }
 

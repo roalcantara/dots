@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Link ~/.local/bin/pass to gopass, never replacing a real pass"
 # gopass is a drop-in for pass: tools that call `pass` (fnox's password-store provider, editor plugins) get gopass.
 # Homebrew's gopass, from the prefix `brew shellenv` exported in bootstrap_init (bin/gopass follows upgrades); else

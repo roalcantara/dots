@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Turn off VS Code Settings Sync for settings, keybindings and snippets"
 # Settings Sync would merge the cloud copy back into the linked files (the repo is their source), so turn it off for
 # settings, keybindings and snippets and leave it on for extensions, state and the rest. VS Code keeps these choices

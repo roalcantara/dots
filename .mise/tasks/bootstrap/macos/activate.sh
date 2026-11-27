@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Set the screenshots folder, default apps and hotkeys, then restart the menu bar apps"
 # mise writes preference values verbatim, and these paths need $HOME: the screenshots folder, the duti file
 # (LaunchServices applies it a few seconds later), the Spotlight hotkey without a logout, then restart Dock, Finder

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Set up yabai's scripting addition (sudoers rule, boot argument)"
 # After Homebrew: the sudoers rule for `yabai --load-sa` and the arm64e boot argument. `yb sa` only warns.
 # ~/.local/bin is linked later (dotfiles), so call the repo copy.

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Clone the gopass password store once the age identity is there"
 #MISE skip_if='test -d "$HOME/.local/share/gopass/password-store/.git"'
 # Cloned once ~/.config/gopass (linked to config/gopass, SOPS-decrypted) holds the age identity. HTTPS through the

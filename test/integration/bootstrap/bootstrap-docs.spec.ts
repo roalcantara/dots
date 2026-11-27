@@ -10,7 +10,7 @@ const read = (rel: string) => readFileSync(join(REPO, rel), "utf8");
 const maybe = Bun.which("mise") ? describe : describe.skip;
 
 function bootstrapTasks(): string[] {
-  const p = Bun.spawnSync(["mise", "tasks", "ls", "--json"], {
+  const p = Bun.spawnSync(["mise", "tasks", "ls", "--hidden", "--json"], {
     cwd: REPO,
     env: { ...process.env, MISE_TRUSTED_CONFIG_PATHS: REPO },
     stdin: "ignore",

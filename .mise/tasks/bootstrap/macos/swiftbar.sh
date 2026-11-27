@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Point SwiftBar at ~/.config/swiftbar/plugins"
 # SwiftBar draws the space strip (config/swiftbar/plugins/spaces.sh runs `yb bar`). Point it at the plugin folder
 # before its first launch, so it never asks; mise writes defaults verbatim and this path needs $HOME.

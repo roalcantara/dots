@@ -32,7 +32,7 @@ describe("agent shell", () => {
       source: "~/.local/share/dots/config/claude/agents",
       relative: true,
     });
-    expect(links["~/.config/claude"].source).toBe("~/.local/share/dots/config/claude");
+    expect(boot.dotfile_groups.config.entries["~/.config/claude"]).toEqual({ mode: "symlink" });
   });
 
   // Claude Code reads user commands and skills only from ~/.claude; the skills CLI and the owner's

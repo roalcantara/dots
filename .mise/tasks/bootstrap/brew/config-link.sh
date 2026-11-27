@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Link ~/.config/homebrew into the repo so brew keeps its trust store there"
 #MISE skip_if='test -e "$HOME/.config/homebrew" || test -L "$HOME/.config/homebrew"'
 # brew keeps its tap trust store in $XDG_CONFIG_HOME/homebrew/trust.json (~/.homebrew without it). Shells set

@@ -5,6 +5,14 @@
 [task_config]
 includes = [".mise/tasks", ".mise/tasks/bootstrap/phases.toml"]
 
+# Shared --profile flag for every hidden bootstrap step file task (#MISE extends="bootstrap_step").
+# mise's var=#true + choices rejects comma-separated env values (DOTS_PROFILE=desktop,dev), so steps
+# take a comma-separated list validated by _lib.sh (validate_profile / has_profile).
+[task_templates.bootstrap_step]
+usage = '''
+flag "--profile <list>" env="DOTS_PROFILE" default="desktop" help="Comma-separated profiles (desktop, dev, container)"
+'''
+
 # https://mise.jdx.dev/tasks
 [tasks]
 # mise run build

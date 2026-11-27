@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#MISE hide=true
+#MISE extends="bootstrap_step"
 #MISE description="Install the Python 3.13 tools that have no wheels for the newest Python (dev only)"
 # Python tools that need 3.13 (no wheels for the newest Python); the Brewfile's uv entries cannot pin it. dev only.
 . "${BASH_SOURCE%/*}/../_lib.sh"

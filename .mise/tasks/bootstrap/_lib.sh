@@ -4,26 +4,34 @@
 
 DOTS_DIR="${DOTS_DIR:-$HOME/.local/share/dots}"
 
-# The comma list of profiles this run applies to. The first non-empty source wins: DOTS_PROFILE (the bootstrap
-# hand-over sets it from mise's `mise_env`, so `mise bootstrap -E desktop,dev` arrives here), MISE_ENV (a step run by
-# hand with `mise -E dev run …`), miserc.local.toml's env, then desktop.
-dots_profile()
-               {
-  local profile="${DOTS_PROFILE:-}"
-  [ -n "$profile" ] || profile="${MISE_ENV:-}"
-  if [ -z "$profile" ] && [ -f "$DOTS_DIR/config/mise/miserc.local.toml" ]; then
-    profile="$(sed -n 's/^env *= *\[\(.*\)\].*/\1/p' "$DOTS_DIR/config/mise/miserc.local.toml" | tr -d '" ')"
-  fi
-  printf '%s\n' "${profile:-desktop}"
+# Validate usage_profile (from each step's --profile flag, backed by DOTS_PROFILE, default desktop).
+# Exits 2 on any name outside desktop, dev, container.
+validate_profile()
+                   {
+  local list="${usage_profile:-desktop}" item
+  local IFS=', '
+  for item in $list; do
+    [ -n "$item" ] || continue
+    case "$item" in
+      desktop | dev | container) ;;
+      *)
+        printf 'bootstrap: unknown profile: %s (expected desktop, dev, or container)\n' "$item" >&2
+        exit 2
+        ;;
+    esac
+  done
 }
 
-# True when the profile list contains exactly this name: dev does not match devops.
+# True when usage_profile contains exactly this name (split on commas or spaces): dev does not match devops.
 has_profile()
               {
-  case ",$(dots_profile)," in
-    *",$1,"*) return 0 ;;
-    *) return 1 ;;
-  esac
+  validate_profile
+  local target="$1" list="${usage_profile:-desktop}" item
+  local IFS=', '
+  for item in $list; do
+    [ "$item" = "$target" ] && return 0
+  done
+  return 1
 }
 
 is_macos()
@@ -45,6 +53,7 @@ warn()
 # Homebrew's prefix is where the packages land, and the log captures every step.
 bootstrap_init()
                  {
+  validate_profile
   export PATH="$HOME/.local/bin:$PATH"
   local b brew=""
   for b in "$(command -v brew || true)" /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
@@ -59,5 +68,4 @@ bootstrap_init()
   if [ -r "$DOTS_DIR/script/bootstrap-log.sh" ]; then
     . "$DOTS_DIR/script/bootstrap-log.sh"
   fi
-  export DOTS_PROFILE="$(dots_profile)"
 }
