@@ -179,7 +179,7 @@ theme's `eza/theme.yml`. A rerun replaces hand edits inside the block. To give a
 ## Add a theme
 
 1. Copy a folder under `config/theme/themes/` and edit its files.
-2. Add the folder name to the `choices` of `theme:build` (`mise.toml`); a spec keeps the list in step with the
+2. Add the folder name to the `choices` of `theme:build` (`config/theme/tasks.toml`); a spec keeps the list in step with the
    folders. Give it an `eza.sh` (eza's and ls's colours, so other themes can borrow them) like the others.
 3. Run `mise run theme:build <name>`, then commit the folder and the `choices` entry. Set `name` (or `eza`) in
    `config/dots/config.toml` to try it.

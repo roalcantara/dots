@@ -95,13 +95,27 @@ Commit messages follow the Conventional Commits specification. No hook enforces 
 
 ## 4. Mise task conventions
 
-Automation in dots is declared as tasks in `mise.toml` (root) or `test/mise.toml`:
+A task lives next to what it manages, so you know where to look without searching:
 
-- **Naming:** use concise, lowercase task names. Group related tasks with colons (e.g. `setup:git:filters`, `test:specs`).
-- **Inline tasks:** define tasks using the inline table syntax with `description` and `usage` parameters:
+- **Repo tasks:** in `tasks.toml` inside the folder of what the task manages, one topic per file (zsh tasks in
+  `config/zsh/tasks.toml`, the Docker image tasks in `distros/tasks.toml`). The root `mise.toml` includes them with
+  `[task_config] includes = [".mise/tasks", "*/tasks.toml", "config/*/tasks.toml"]` and declares no task itself, so a
+  new topic needs only its `tasks.toml`. They run from the repo root, whatever the current folder.
+- **Top-level names in `tasks.toml`:** an included file names its tasks as top-level tables (`["zsh:verify"]`, not
+  `[tasks."zsh:verify"]`). It is not called `mise.toml`, because mise would also load any `mise.toml` on its own from
+  that folder (and through the `~/.config` links), where that form is invalid.
+- **Subprojects:** a `mise.toml` in a subfolder is a separate project with its own tools, run with
+  `mise run -C <folder> <task>`: `test/mise.toml` (the suite: `bdd`, `integration`, `test`; `mise run test:specs` runs
+  it all), `config/nvim/mise.toml`, `config/bin/mise.toml`.
+- **File tasks:** executable scripts in `.mise/tasks/<topic>/` (mise's default folder, linted like other scripts), named
+  by their path (`.mise/tasks/blog/new.ts` is `blog:new`).
+- **Bootstrap tasks:** global, in `config/mise/conf.d/tasks.toml` ([`docs/BOOTSTRAP.md`](BOOTSTRAP.md)).
+- **Naming:** use concise, lowercase task names. Group related tasks with colons (e.g. `zsh:verify`, `test:specs`).
+- **Describe every task:** a `description` (shown by `mise tasks ls` and on Tab after `mise run`) and a `usage` spec
+  for its arguments:
 
   ```toml
-  [tasks."example:task"]
+  ["example:task"]
   description = "Run example process"
   usage = '''
   arg "<target>" help="Target identifier"
@@ -113,7 +127,3 @@ Automation in dots is declared as tasks in `mise.toml` (root) or `test/mise.toml
   echo "Target: $usage_target"
   '''
   ```
-
-- **Root vs test split:**
-  - `mise.toml` (repo root): dev environment bootstrap, Docker image builds, CST testing, and secret setups.
-  - `test/mise.toml`: test suite runner (`bdd`, `integration`, `test`). Invoke from repo root with `mise run -C test <task>` or via root alias `mise run test:specs`.

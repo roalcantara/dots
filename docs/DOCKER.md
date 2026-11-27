@@ -12,7 +12,7 @@ Dots builds reproducible multi-stage Docker development images based on Debian a
 | `distros/<distro>/container-structure-test.yml` | Container Structure Test (CST) assertions |
 | `distros/<distro>/.dockerignore` | Build-context exclusions per distribution |
 | `.hadolint.yaml` | Lint rules for Dockerfiles |
-| `mise.toml` | Task wrappers: `build`, `test`, `start` |
+| `distros/tasks.toml` | Task wrappers: `build`, `test`, `start` |
 | `.github/workflows/` | CI/CD pipelines: `preview.yml`, `publish.yml`, `release.yml` |
 
 The build context is always the repository root (`.`). Dockerfiles do not run `install`: each stage installs `mise` and executes `mise bootstrap -E container` directly. The pipeline they run is documented in [BOOTSTRAP.md](BOOTSTRAP.md).
@@ -46,7 +46,7 @@ Local and publish builds run `git archive HEAD` with the SOPS smudge filter disa
 
 ## CLI commands
 
-The root [`mise.toml`](../mise.toml) defines task wrappers for container lifecycle operations:
+[`distros/tasks.toml`](../distros/tasks.toml) defines task wrappers for container lifecycle operations:
 
 ### `mise run build`
 

@@ -75,7 +75,7 @@ mise run dots profile desktop   # back to desktop (uninstalls nothing; the dev t
 | [`config/agents/`](config/agents)                                        | The agent skills lock, `review.csv`, and agent commands                                                                                                            |
 | [`script/bootstrap-log.sh`](script/bootstrap-log.sh)                     | Logging wrapper sourced by `install` and `mise bootstrap` tasks; writes to `~/.local/state/dots/logs/`                                                             |
 | [`test/`](test)                                                          | Verification suite: BDD features (`test/features/`) and Bun integration specs (`test/integration/`)                                                                |
-| [`mise.toml`](mise.toml)                                                 | Repo tasks: `build`, `test`, `test:specs`, `start`, `setup:*`, `zsh:*`, `skills:*`                                                                                 |
+| [`mise.toml`](mise.toml)                                                 | Includes the repo tasks, each in `tasks.toml` next to what it manages (`config/zsh`, `distros`, …; CONTRIBUTING §4)                                                 |
 
 ## Day to day
 
@@ -232,7 +232,7 @@ mise run skills:audit     # list skills whose source is not confirmed in config/
 | [`.agents/`](.agents)                        | Project agent commands (`/blog:*`); `.claude/commands` links to them |
 | [`script/`](script)                          | Repo scripts: SOPS filters, zsh checks, backup, logging, skills      |
 | [`test/`](test)                              | BDD living documentation and Bun integration specs                   |
-| [`mise.toml`](mise.toml), [`hk.pkl`](hk.pkl) | Repo tasks and git hooks                                             |
+| [`mise.toml`](mise.toml), [`hk.pkl`](hk.pkl) | Repo settings (tasks: `<folder>/tasks.toml`) and git hooks          |
 | [`fnox.toml`](fnox.toml)                     | Secret references for repo tasks (values stay in gopass)             |
 | [`TODO.yaml`](TODO.yaml)                     | The repo's next tasks (`lida` CLI)                                   |
 

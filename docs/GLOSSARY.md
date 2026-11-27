@@ -15,7 +15,7 @@ This glossary defines terms used across Dots configuration, documentation, and t
 | **`xc-*` tool** | A command-line script in `config/bin` with the `xc-` prefix. |
 | **`xc` launcher** | Interactive menu and dispatcher discovering and executing `xc-*` tools. |
 | **`gen`** | Shell completion generator (`config/bin/gen`) powered by Usage CLI specifications. |
-| **Mise task** | Automation workflow declared in `mise.toml` or `test/mise.toml`, run via `mise run <task>`. |
+| **Mise task** | Automation workflow declared in a topic's `tasks.toml` (next to what it manages), a subproject's `mise.toml` or `.mise/tasks/`, run via `mise run <task>` (`docs/CONTRIBUTING.md` §4). |
 | **Quality gate** | Concrete verification command (e.g. `mise run test:specs`, `hk check --all`) that must be green before merging. |
 | **Backup root** | Storage directory holding backups, `/Volumes/backups` by default; overridden by `DOTS_BACKUP_ROOT`. |
 | **Backup manifest** | `config/restic/backup.toml`: defines repository path, the allowlist of source paths, retention policy, and exclusions with reasons. |

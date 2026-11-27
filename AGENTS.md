@@ -13,6 +13,7 @@ and builds reproducible development Docker images under `distros/`.
 | `config/` | Application configurations linked into `~/.config`, Homebrew `Brewfile`, shell helpers (`config/bin`), and mise bootstrap fragments (`config/mise/conf.d/`) |
 | `distros/` | Dockerfiles and Container Structure Test manifests for Debian and Ubuntu images |
 | `docs/` | Canonical documentation and architecture decisions (`docs/adr/`), agent specs/plans (`docs/superpowers/`), and the blog (`docs/blog/`: posts, playbook, roadmap) |
+| `*/tasks.toml` | Repo mise tasks, each next to what it manages (`config/zsh/tasks.toml`, `distros/tasks.toml`, …), included by the root `mise.toml` ([`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) §4) |
 | `.mise/tasks/` | Bun file tasks run by mise (`.mise/tasks/blog/`: `blog:status`, `blog:new`, `blog:check`, `blog:publish`, …) |
 | `.agents/` | Project agent commands (`.agents/commands/blog/`: `/blog:next`, `/blog:pick`, `/blog:draft`, …) and vendored skills (`.agents/skills/`, locked in `skills-lock.json`); `.claude/commands` and `.claude/skills` are symlinks to them |
 | `script/` | Automation scripts (agent skills, restic backups, bootstrap logging, SOPS filter hooks) |
@@ -51,7 +52,7 @@ Keep every gate green before declaring work complete:
 ## Useful skills
 
 - `systematic-debugging` — investigate failing tests, gate failures, regressions, or unexpected runtime errors.
-- `mise-tasks` — orchestrate tasks, task dependencies, or usage specifications in `mise.toml`.
+- `mise-tasks` — orchestrate tasks, task dependencies, or usage specifications (repo tasks live in `<folder>/tasks.toml`; see `docs/CONTRIBUTING.md` §4).
 - `mise-expert` — manage mise tool versions, plugins, or environment variables.
 - `bash-scripting` — write or debug bash scripts with defensive error handling and ShellCheck compliance.
 - `docker-expert` — optimize multi-stage Docker builds, container configs, and CST assertions.
