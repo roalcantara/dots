@@ -163,7 +163,7 @@ cask "docker-desktop" if OS.mac?  # Container tooling
 cask "google-gemini" if OS.mac?  # Google Gemini app
 cask "zed"  # Multiplayer code editor
 brew "rust"  # Rust toolchain
-cargo "lida", source: "https://github.com/roalcantara/lida?tag=v0.1.1"  # lida: dual-format project TODO.md/TODO.yaml CLI (built from git, needs rust above)
+cargo "lida", source: "https://github.com/roalcantara/lida?tag=v0.2.0"  # lida: dual-format project TODO.md/TODO.yaml CLI (built from git, needs rust above)
 # DEVTOOLS: Python tools (graphifyy and code-review-graph need Python 3.13: the bootstrap task installs them)
 uv "pynvim"
 uv "debugpy"
