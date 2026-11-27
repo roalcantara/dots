@@ -22,6 +22,8 @@ fi
 mkdir -p "$HOME/.config"
 ln -sfn ../.local/share/dots/config/mise "$HOME/.config/mise"
 
+# From HOME: in the caller's folder (PR CI: the root-owned checkout) mise would load and lock its mise.toml.
+cd "$HOME"
 DOTS_STRICT=1 "$MISE_BIN" bootstrap -E container --save-env --force-dotfiles --skip user --yes
 
 # The container doctor checks learn their profile from the saved env; without it they all "do not apply" and pass.

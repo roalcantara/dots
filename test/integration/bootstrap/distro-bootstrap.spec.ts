@@ -16,6 +16,7 @@ let curlLog: string;
 
 // What `mise bootstrap -E container --save-env` leaves behind; STUB_NO_SAVE leaves it out.
 const SAVE_ENV = `printf 'WHICH=%s\\n' "$(command -v mise)" >> "\${STUB_LOG}"
+printf 'PWD=%s\\n' "$PWD" >> "\${STUB_LOG}"
 [ "\${1:-}" = bootstrap ] && [ -z "\${STUB_NO_SAVE:-}" ] && printf 'env = ["container"]\\n' > "$HOME/.config/mise/miserc.local.toml"`;
 
 function writeStub(dir: string, name: string, body: string) {
@@ -55,9 +56,9 @@ EOF`,
 
 afterEach(() => rmSync(t, { recursive: true, force: true }));
 
-function run(env: Record<string, string> = {}) {
+function run(env: Record<string, string> = {}, cwd = t) {
   const p = Bun.spawnSync(["bash", SCRIPT], {
-    cwd: t,
+    cwd,
     env: {
       PATH: `${binDir}:${process.env.PATH ?? "/usr/bin:/bin"}`,
       HOME: t,
@@ -112,6 +113,12 @@ exit \${STUB_MISE_EXIT:-0}`,
     const r = run({ PATH: `${binDir}:/usr/bin:/bin` });
     expect(r.code, r.err).toBe(0);
     expect(readFileSync(logFile, "utf8")).toContain(`WHICH=${join(t, ".local/bin/mise")}`);
+  });
+
+  it("runs mise bootstrap from HOME, not from the caller's folder (its mise.toml would be loaded and locked)", () => {
+    const r = run({}, join(t, ".local/share/dots"));
+    expect(r.code, r.err).toBe(0);
+    expect(readFileSync(logFile, "utf8")).toContain(`PWD=${t}\n`);
   });
 
   it("fails when bootstrap did not save the container profile, so doctor cannot pass vacuously", () => {

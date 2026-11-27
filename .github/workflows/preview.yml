@@ -97,4 +97,4 @@ jobs:
           sudo -u vscode -H env GITHUB_TOKEN="$GITHUB_TOKEN" bash /home/vscode/.local/share/dots/distros/bootstrap.sh
       - name: Run mise doctor project
         run: |
-          sudo -u vscode -H /usr/bin/zsh -lic 'mise doctor project'
+          sudo -u vscode -H /usr/bin/zsh -lic 'cd ~ && mise doctor project'
