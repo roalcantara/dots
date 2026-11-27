@@ -31,12 +31,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends tzdata && rm -r
 FROM base AS local
 USER $USERNAME
 COPY --chown=$USERNAME:$USERNAME . /home/$USERNAME/.local/share/dots
-# hadolint ignore=DL4006
 RUN --mount=type=secret,id=github_token,uid=1000 \
     export GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)"; \
-    curl -fsSL https://mise.run | MISE_VERSION=v2026.11.14 sh && \
-    mkdir -p ~/.config && ln -sfn ../.local/share/dots/config/mise ~/.config/mise && \
-    ~/.local/bin/mise bootstrap -E container --force-dotfiles --skip user --yes
+    bash "/home/$USERNAME/.local/share/dots/distros/bootstrap.sh"
 WORKDIR /home/$USERNAME
 SHELL ["/usr/bin/zsh", "-c"]
 ENTRYPOINT ["/usr/bin/zsh", "-il"]
@@ -44,13 +41,10 @@ ENTRYPOINT ["/usr/bin/zsh", "-il"]
 # GitHub branch: mise run build (the default)
 FROM base AS remote
 USER $USERNAME
-# hadolint ignore=DL4006
 RUN --mount=type=secret,id=github_token,uid=1000 \
     export GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)"; \
     git clone --branch "$BRANCH" "https://github.com/${GITHUB_REPO}.git" "/home/$USERNAME/.local/share/dots" && \
-    curl -fsSL https://mise.run | MISE_VERSION=v2026.11.14 sh && \
-    mkdir -p ~/.config && ln -sfn ../.local/share/dots/config/mise ~/.config/mise && \
-    ~/.local/bin/mise bootstrap -E container --force-dotfiles --skip user --yes
+    bash "/home/$USERNAME/.local/share/dots/distros/bootstrap.sh"
 WORKDIR /home/$USERNAME
 SHELL ["/usr/bin/zsh", "-c"]
 ENTRYPOINT ["/usr/bin/zsh", "-il"]

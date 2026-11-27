@@ -15,9 +15,9 @@ const LOCAL = "2026.11.14";
 
 let t: string;
 const install = () => join(t, "install");
-const dockerfile = () => join(t, "distros", "debian", "Dockerfile");
+const bootstrapScript = () => join(t, "distros", "bootstrap.sh");
 const pinLine = (v: string) => `${PIN}="${v}"`;
-const dockerLine = (v: string) => `RUN curl -fsSL https://mise.run | ${PIN}=v${v} sh\n`;
+const bootstrapLine = (v: string) => `${PIN}="v${v}"\n`;
 
 function git(...args: string[]) {
   const p = Bun.spawnSync(["git", ...args], { cwd: t, stdout: "pipe", stderr: "pipe" });
@@ -26,9 +26,9 @@ function git(...args: string[]) {
 
 beforeEach(() => {
   t = mkdtempSync(join(tmpdir(), "mise-version-"));
-  mkdirSync(join(t, "distros", "debian"), { recursive: true });
+  mkdirSync(join(t, "distros"), { recursive: true });
   writeFileSync(install(), `#!/usr/bin/env bash\n${pinLine(OLD)}\n`);
-  writeFileSync(dockerfile(), dockerLine(OLD));
+  writeFileSync(bootstrapScript(), bootstrapLine(OLD));
   git("init", "-q");
   git("add", "-A");
 });
@@ -55,14 +55,14 @@ describe("mise:version", () => {
     const r = run();
     expect(r.code).toBe(0);
     expect(r.out.trim().split("\n").sort()).toEqual([
-      `distros/debian/Dockerfile:1\tv${OLD}\t${LOCAL}`,
+      `distros/bootstrap.sh:1\tv${OLD}\t${LOCAL}`,
       `install:2\t${OLD}\t${LOCAL}`,
     ]);
   });
 
   it("--check exits 0 when all pins match", () => {
     writeFileSync(install(), `#!/usr/bin/env bash\n${pinLine(LOCAL)}\n`);
-    writeFileSync(dockerfile(), dockerLine(LOCAL));
+    writeFileSync(bootstrapScript(), bootstrapLine(LOCAL));
     git("add", "-A");
     const r = run(["--check"]);
     expect(r.code).toBe(0);
@@ -76,26 +76,26 @@ describe("mise:version", () => {
     expect(r.err).toContain(LOCAL);
   });
 
-  it("--sync rewrites install (no v) and the Dockerfile (v prefix) to the local version", () => {
+  it("--sync rewrites install (no v) and distros/bootstrap.sh (v prefix) to the local version", () => {
     const r = run(["--sync"]);
     expect(r.code).toBe(0);
     expect(readFileSync(install(), "utf8")).toBe(`#!/usr/bin/env bash\n${pinLine(LOCAL)}\n`);
-    expect(readFileSync(dockerfile(), "utf8")).toBe(dockerLine(LOCAL));
+    expect(readFileSync(bootstrapScript(), "utf8")).toBe(bootstrapLine(LOCAL));
   });
 
   it("--sync is idempotent", () => {
     expect(run(["--sync"]).code).toBe(0);
-    const once = [readFileSync(install(), "utf8"), readFileSync(dockerfile(), "utf8")];
+    const once = [readFileSync(install(), "utf8"), readFileSync(bootstrapScript(), "utf8")];
     expect(run(["--sync"]).code).toBe(0);
-    expect([readFileSync(install(), "utf8"), readFileSync(dockerfile(), "utf8")]).toEqual(once);
+    expect([readFileSync(install(), "utf8"), readFileSync(bootstrapScript(), "utf8")]).toEqual(once);
   });
 
   it("--sync refuses off macOS and changes nothing", () => {
-    const before = [readFileSync(install(), "utf8"), readFileSync(dockerfile(), "utf8")];
+    const before = [readFileSync(install(), "utf8"), readFileSync(bootstrapScript(), "utf8")];
     const r = run(["--sync"], { DOTS_UNAME: "Linux" });
     expect(r.code).toBe(1);
     expect(r.err).toContain("run --sync on macOS");
-    expect([readFileSync(install(), "utf8"), readFileSync(dockerfile(), "utf8")]).toEqual(before);
+    expect([readFileSync(install(), "utf8"), readFileSync(bootstrapScript(), "utf8")]).toEqual(before);
   });
 
   it("finds a pin added in a new file", () => {
