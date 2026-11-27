@@ -15,7 +15,8 @@ let logFile: string;
 let curlLog: string;
 
 // What `mise bootstrap -E container --save-env` leaves behind; STUB_NO_SAVE leaves it out.
-const SAVE_ENV = `[ "\${1:-}" = bootstrap ] && [ -z "\${STUB_NO_SAVE:-}" ] && printf 'env = ["container"]\\n' > "$HOME/.config/mise/miserc.local.toml"`;
+const SAVE_ENV = `printf 'WHICH=%s\\n' "$(command -v mise)" >> "\${STUB_LOG}"
+[ "\${1:-}" = bootstrap ] && [ -z "\${STUB_NO_SAVE:-}" ] && printf 'env = ["container"]\\n' > "$HOME/.config/mise/miserc.local.toml"`;
 
 function writeStub(dir: string, name: string, body: string) {
   const path = join(dir, name);
@@ -60,6 +61,7 @@ function run(env: Record<string, string> = {}) {
     env: {
       PATH: `${binDir}:${process.env.PATH ?? "/usr/bin:/bin"}`,
       HOME: t,
+      STUB_LOG: logFile,
       ...env,
     },
     stdout: "pipe",
@@ -104,6 +106,12 @@ exit \${STUB_MISE_EXIT:-0}`,
   it("a failing bootstrap fails the script", () => {
     const r = run({ STUB_MISE_EXIT: "3" });
     expect(r.code).toBe(3);
+  });
+
+  it("puts the installed mise on PATH, as the Dockerfile's ENV does, for hooks that call it by name", () => {
+    const r = run({ PATH: `${binDir}:/usr/bin:/bin` });
+    expect(r.code, r.err).toBe(0);
+    expect(readFileSync(logFile, "utf8")).toContain(`WHICH=${join(t, ".local/bin/mise")}`);
   });
 
   it("fails when bootstrap did not save the container profile, so doctor cannot pass vacuously", () => {

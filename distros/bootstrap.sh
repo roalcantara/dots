@@ -6,6 +6,8 @@ set -euo pipefail
 MISE_VERSION="v2026.11.14"
 MISE_BIN="$HOME/.local/bin/mise"
 want="${MISE_VERSION#v}"
+# The Dockerfile's ENV PATH, here too: bootstrap hooks call mise and brew by name, and sudo (PR CI) resets PATH.
+export PATH="$HOME/.local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
 
 have=""
 if [ -x "$MISE_BIN" ]; then
