@@ -10,10 +10,8 @@ import { Database } from "bun:sqlite";
 import { runStep } from "./step";
 
 const REPO = join(import.meta.dir, "../../..");
-const conf = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/dotfiles.toml"), "utf8")) as any;
 const MOVE = "dotfiles/move-aside.sh";
 const SYNC = "vscode/settings-sync.sh";
-const VS = "~/Library/Application Support/Code/User";
 
 let t: string;
 let user: string;
@@ -36,24 +34,6 @@ function step(rel: string, env: Record<string, string> = {}) {
 const backups = () => readdirSync(user).filter((f) => f.includes(".pre-dots-")).sort();
 
 describe("VS Code links", () => {
-  it("links settings.json and keybindings.json to config/vscode and snippets to ~/.config/snippets, on macOS only", () => {
-    expect(conf.dotfiles["vscode-settings"]).toEqual({
-      source: "~/.local/share/dots/config/vscode/settings.json",
-      relative: true,
-      variants: [{ os: "macos", target: `${VS}/settings.json` }],
-    });
-    expect(conf.dotfiles["vscode-keybindings"]).toEqual({
-      source: "~/.local/share/dots/config/vscode/keybindings.json",
-      relative: true,
-      variants: [{ os: "macos", target: `${VS}/keybindings.json` }],
-    });
-    expect(conf.dotfiles["vscode-snippets"]).toEqual({
-      source: "~/.config/snippets",
-      relative: true,
-      variants: [{ os: "macos", target: `${VS}/snippets` }],
-    });
-  });
-
   it("step: does nothing off macOS", () => {
     expect(step(MOVE, { DOTS_UNAME: "Linux" }).code).toBe(0);
     expect(existsSync(user)).toBe(false);

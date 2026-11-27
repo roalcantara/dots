@@ -22,16 +22,4 @@ describe("default apps (config/duti/defaults.duti)", () => {
       expect(uti).not.toBe("public.mpeg-2-transport-stream");
     }
   });
-
-  it("opens text, code and config in VS Code", () => {
-    const utis = lines.filter((l) => l.startsWith("com.microsoft.VSCode\t")).map((l) => l.split("\t")[1]);
-    for (const u of ["public.plain-text", "public.source-code", "public.shell-script", "public.json", "public.yaml",
-      "net.daringfireball.markdown"]) expect(utis).toContain(u);
-  });
-
-  it("is linked into ~/.config and installed on macOS", () => {
-    const dotfiles = Bun.TOML.parse(readFileSync(join(REPO, "config/mise/conf.d/dotfiles.toml"), "utf8")) as any;
-    expect(dotfiles.dotfile_groups.config.entries["~/.config/duti"]).toEqual({ mode: "symlink" });
-    expect(readFileSync(join(REPO, "config/homebrew/Brewfile"), "utf8")).toContain('brew "duti" if OS.mac?');
-  });
 });

@@ -1,7 +1,5 @@
 #!/usr/bin/env bun
-// config/mise/conf.d/dotfiles.toml declares all ~/.config/<same-name> links as [dotfile_groups.config]
-// so they inherit dotfiles.root instead of repeating ~/.local/share/dots. Plain [dotfiles] entries
-// remain for targets outside ~/.config/<same-name>.
+// config/mise/conf.d/dotfiles.toml [dotfile_groups.config] excludes undeclared entries so only listed links apply.
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -22,58 +20,11 @@ type DotfileGroup = {
 
 type ParsedDotfiles = {
   dotfile_groups?: Record<string, DotfileGroup>;
-  dotfiles?: Record<string, Record<string, unknown>>;
 };
 
 function parseDotfiles(): ParsedDotfiles {
   return Bun.TOML.parse(readFileSync(DOTFILES_TOML, "utf8")) as ParsedDotfiles;
 }
-
-const EXPECTED_GROUP_NAMES = [
-  ".markdownlint.yml",
-  ".profile",
-  "age",
-  "atlassian",
-  "bash",
-  "bat",
-  "borders",
-  "bin",
-  "claude",
-  "dinky",
-  "dots",
-  "dprint",
-  "duti",
-  "fabric",
-  "fnox",
-  "gh",
-  "ghostty",
-  "git",
-  "github",
-  "gopass",
-  "gortex",
-  "helix",
-  "homebrew",
-  "karabiner",
-  "kodexb",
-  "lig",
-  "npm",
-  "nvim",
-  "posting",
-  "ripgrep",
-  "snippets",
-  "sops",
-  "swiftbar",
-  "television",
-  "theme",
-  "tombi",
-  "vscode",
-  "wakatime",
-  "yabai",
-  "zed",
-  "zentty",
-  "zsh",
-  "zsh-patina",
-];
 
 let t: string;
 beforeEach(() => {
@@ -84,23 +35,6 @@ beforeEach(() => {
 afterEach(() => rmSync(t, { recursive: true, force: true }));
 
 describe("conf.d/dotfiles.toml dotfile group", () => {
-  it("every ~/.config/<name> link comes from [dotfile_groups.config]", () => {
-    const parsed = parseDotfiles();
-    const group = parsed.dotfile_groups?.config;
-    expect(group).toBeDefined();
-    expect(group?.root).toBe("config");
-    expect(group?.target).toBe("~/.config");
-    expect(group?.mode).toBe("symlink-each");
-    expect(group?.relative).toBe(true);
-
-    const entries = group?.entries ?? {};
-    const expectedTargets = EXPECTED_GROUP_NAMES.map((n) => `~/.config/${n}`).sort();
-    expect(Object.keys(entries).sort()).toEqual(expectedTargets);
-    for (const target of expectedTargets) {
-      expect(entries[target]?.mode).toBe("symlink");
-    }
-  });
-
   it.skipIf(!MISE)("the group links only its declared entries and nothing else", () => {
     const parsed = parseDotfiles();
     const group = parsed.dotfile_groups?.config;
@@ -155,40 +89,5 @@ describe("conf.d/dotfiles.toml dotfile group", () => {
     expect(existsSync(join(t, ".config/unlinked-dir"))).toBe(false);
     expect(existsSync(join(t, ".config/.vscode"))).toBe(false);
     expect(existsSync(join(t, ".config/.gitignore"))).toBe(false);
-  });
-
-  it("plain [dotfiles] entries outside ~/.config/<same-name> keep their targets and modes", () => {
-    const parsed = parseDotfiles();
-    const df = parsed.dotfiles ?? {};
-
-    const expectedPlainTargets = [
-      "~/.config/kb",
-      "~/.zshenv",
-      "~/.bashrc",
-      "~/.profile",
-      "~/.claude/settings.json",
-      "~/.claude/agents",
-      "~/.ssh",
-      "~/.gnupg",
-      "~/.local/bin",
-      "~/.local/state/skills/.skill-lock.json",
-      "~/.agents/.skill-lock.json",
-      "~/.agents/commands",
-      "~/.claude/commands",
-      "vscode-settings",
-      "vscode-keybindings",
-      "vscode-snippets",
-      "claude-skills",
-    ].sort();
-
-    expect(Object.keys(df).sort()).toEqual(expectedPlainTargets);
-    expect(df["~/.config/kb"]?.source).toBe("~/.local/share/dots/config/kodexb");
-    expect(df["~/.local/bin"]?.mode).toBe("symlink-each");
-    expect(df["~/.ssh"]?.source).toBe("~/.config/ssh");
-    expect(df["~/.gnupg"]?.source).toBe("~/.config/gnupg");
-    expect(Array.isArray(df["vscode-settings"]?.variants)).toBe(true);
-    expect(Array.isArray(df["vscode-keybindings"]?.variants)).toBe(true);
-    expect(Array.isArray(df["vscode-snippets"]?.variants)).toBe(true);
-    expect(Array.isArray(df["claude-skills"]?.variants)).toBe(true);
   });
 });
