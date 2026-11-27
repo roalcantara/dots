@@ -83,7 +83,7 @@ tasks:
   - shell-ux
   - try
 - id: awGX
-  status: Todo
+  status: Done
   description: 'Bootstrap: fix mise deprecated-key warnings, mise version drift check, split bootstrap hooks into .mise/tasks/bootstrap file tasks, docs/BOOTSTRAP.md as the single source'
   priority: High
   tags:
@@ -93,7 +93,7 @@ tasks:
   comments:
   - Az1M
 - id: siXn
-  status: Todo
+  status: Done
   description: 'Bootstrap: dots front door (mise run dots setup|backup|profile), vars.yaml, dotfile group, conf.d one job per file'
   priority: High
   tags:
