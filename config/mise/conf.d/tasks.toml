@@ -25,8 +25,30 @@ cmd "setup" help="Install and configure parts of this machine; no flags means al
   }
   flag "--dry-run"   help="Show the parts and steps that would run without executing them"
 }
-cmd "backup" help="Back up and restore this machine with restic"
-cmd "profile" help="Choose this machine's profile and apply it"
+cmd "backup" help="Back up and restore this machine with restic" {
+  arg "<action>" help="Backup action" {
+    long_help """
+    - init: Create this machine's restic repository on the backup drive
+    - backup: Back up the allowlist in config/restic/backup.toml, then restic check
+    - snapshots: List this machine's snapshots
+    - restore: Restore folders from a snapshot into the home folder
+    - forget: Apply the retention policy and prune
+    - audit: Read-only report of what a reinstall would lose, written to the backup drive
+    """
+    choices "init" "backup" "snapshots" "restore" "forget" "audit"
+  }
+  flag "--include <path>" var=#true help="Folder to restore, relative to the old home (restore; repeatable)"
+  flag "--snapshot <id>"            help="Snapshot ID to restore from, default latest (restore)"
+  flag "--from-home <path>"         help="Old home folder path in the snapshot (restore)"
+  flag "--target <path>"            help="Destination folder for restored files (restore)"
+  flag "--dry-run"                  help="Preview restore without writing files (restore)"
+  flag "--stdout"                   help="Print the reinstall audit to stdout instead of the backup drive (audit)"
+}
+cmd "profile" help="Choose this machine's profile and apply it" {
+  arg "<profile>" help="desktop (install default) or dev (desktop + dev tools)" {
+    choices "desktop" "dev"
+  }
+}
 '''
 run = '''
 #!/usr/bin/env bash
@@ -56,9 +78,31 @@ case "${usage_cmd:-}" in
     done
     mise run -C "{{ vars.dots }}" ${run_flags[@]+"${run_flags[@]}"} dots:setup:remind
     ;;
-  backup | profile)
-    echo "dots: $usage_cmd is not yet implemented" >&2
-    exit 2
+  backup)
+    args=("${usage_action:?}")
+    if [ -n "${usage_include:-}" ]; then
+      eval "includes=($usage_include)"
+      for inc in "${includes[@]}"; do
+        args+=(--include "$inc")
+      done
+    fi
+    [ -n "${usage_snapshot:-}" ] && args+=(--snapshot "$usage_snapshot")
+    [ -n "${usage_from_home:-}" ] && args+=(--from-home "$usage_from_home")
+    [ -n "${usage_target:-}" ] && args+=(--target "$usage_target")
+    [ "${usage_dry_run:-false}" = "true" ] && args+=(--dry-run)
+    [ "${usage_stdout:-false}" = "true" ] && args+=(--stdout)
+    if command -v bun > /dev/null 2>&1; then
+      exec bun "{{ vars.dots }}/script/backup.ts" "${args[@]}"
+    fi
+    exec mise x bun@1.3.14 -- bun "{{ vars.dots }}/script/backup.ts" "${args[@]}"
+    ;;
+  profile)
+    case "${usage_profile:?}" in
+      desktop) list=desktop ;;
+      dev) list=desktop,dev ;;
+      *) echo "dots profile: unknown profile: $usage_profile (desktop or dev)" >&2; exit 2 ;;
+    esac
+    exec mise bootstrap -E "$list" --save-env --yes
     ;;
   *)
     exec mise run dots --help

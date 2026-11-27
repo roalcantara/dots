@@ -5,7 +5,7 @@
 # forwards only known profile names (desktop, dev, container) as `--profile` flags to `dots setup` (docs/BOOTSTRAP.md).
 [vars]
 _.file = "{{ mise_config_dir }}/conf.d/vars.yaml"
-dots = "{{ env.HOME }}/{{ vars.dots_dir }}"
+dots = '{% if vars.dots_dir is defined %}{{ env.HOME }}/{{ vars.dots_dir }}{% endif %}'
 dots_profiles = '{% if mise_env is defined %}{% for e in mise_env %}{% if e == "desktop" or e == "dev" or e == "container" %} --profile {{ e }}{% endif %}{% endfor %}{% endif %}'
 dots_setup = 'exec mise run dots setup{{ vars.dots_profiles }}'
 

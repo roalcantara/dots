@@ -153,9 +153,9 @@ describe.skipIf(!MISE)("conf.d/vars.yaml and dots location", () => {
     delete settingsCopy.trusted_config_paths;
     expect(JSON.stringify(settingsCopy)).not.toContain(".local/share/dots");
 
-    // Check every conf.d/*.toml file (backup.toml is deleted in Task 6).
+    // Check every conf.d/*.toml file.
     const confDir = join(REPO, "config/mise/conf.d");
-    for (const file of readdirSync(confDir).filter((f) => f.endsWith(".toml") && f !== "backup.toml")) {
+    for (const file of readdirSync(confDir).filter((f) => f.endsWith(".toml"))) {
       const fullPath = join(confDir, file);
       if (file === "dotfiles.toml") {
         const parsed = Bun.TOML.parse(readFileSync(fullPath, "utf8")) as {

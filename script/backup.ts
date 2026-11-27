@@ -138,7 +138,7 @@ const CHECKLIST = [
   "2FA recovery codes and app licence keys are in the password manager",
   "Every repository above is pushed, or its risk is accepted (the restic snapshot holds it)",
   "Browser sync is on, or bookmarks and profiles are exported",
-  "`mise run backup` finished, `restic check` passed, and a test restore worked",
+  "`mise run dots backup backup` finished, `restic check` passed, and a test restore worked",
 ];
 
 export function renderManifest(f: Facts): string {
@@ -146,7 +146,7 @@ export function renderManifest(f: Facts): string {
   const lines = [
     `# Reinstall audit: ${f.host}, ${f.date}`, "",
     `macOS ${f.macos}, user \`${f.user}\`. Restore on the new machine with:`, "",
-    "```sh", `DOTS_BACKUP_HOST=${f.host} mise run backup:restore -- --from-home /Users/${f.user} --include Work --dry-run`, "```", "",
+    "```sh", `DOTS_BACKUP_HOST=${f.host} mise run dots backup restore --from-home /Users/${f.user} --include Work --dry-run`, "```", "",
     "## Risks", "",
     ...risky.map(([n, r]) => `- ${n}: ${r.join(", ")}`),
     ...f.nonGit.map((d) => `- ~/Work/${d.name}: not a git repository (${d.size}); only the snapshot holds it`),
@@ -215,7 +215,7 @@ function restic(args: string[], repo: string, env: Record<string, string>): numb
 }
 
 function requireRepo(repo: string): void {
-  if (!existsSync(join(repo, "config"))) die(`no repository at ${repo}: run mise run backup:init (or set DOTS_BACKUP_HOST to the old host)`);
+  if (!existsSync(join(repo, "config"))) die(`no repository at ${repo}: run mise run dots backup init (or set DOTS_BACKUP_HOST to the old host)`);
 }
 
 const DRIVE_README = `# Backups
@@ -227,7 +227,7 @@ const DRIVE_README = `# Backups
 | media | files that are not machine backups |
 | archive | retired machines, moved whole from machines/ |
 
-Restore (after the dots install): DOTS_BACKUP_HOST=<host> mise run backup:restore -- --include Work --dry-run
+Restore (after the dots install): DOTS_BACKUP_HOST=<host> mise run dots backup restore --include Work --dry-run
 Without dots: restic --repo machines/<host>/restic restore latest:/Users/<user> --target ~ --include /Work
 Guide: https://github.com/roalcantara/dots/blob/main/docs/REINSTALL.md
 `;
