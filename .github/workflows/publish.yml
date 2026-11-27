@@ -23,15 +23,7 @@ env:
 jobs:
   publish:
     timeout-minutes: 30
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      matrix:
-        distro: [debian, ubuntu]
-        include:
-          - distro: debian
-            runner: ubuntu-24.04
-          - distro: ubuntu
-            runner: ubuntu-24.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -47,8 +39,9 @@ jobs:
         run: |
           version=${GITHUB_REF#refs/tags/}
           version=${version#v}
-          echo "VERSION=${version}" >> $GITHUB_OUTPUT
-          echo "REGISTRY_URL=https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags?name=${{ matrix.distro }}-${version}" >> $GITHUB_OUTPUT
+          echo "VERSION=${version}" >> "$GITHUB_OUTPUT"
+          echo "REGISTRY_URL=https://hub.docker.com/r/${{ env.REGISTRY_IMAGE }}/tags?name=debian-${version}" >> "$GITHUB_OUTPUT"
+          echo "CHECK_IMAGE=${{ env.REGISTRY_IMAGE }}:debian-check-amd64" >> "$GITHUB_OUTPUT"
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
@@ -63,19 +56,49 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY_IMAGE }}
+          flavor: |
+            latest=false
           tags: |
-            type=raw,value=${{ matrix.distro }}-latest
-            type=semver,pattern=${{ matrix.distro }}-{{version}}
-            type=semver,pattern=${{ matrix.distro }}-{{major}}.{{minor}}
-            type=semver,pattern=${{ matrix.distro }}-{{major}}
-            type=sha,prefix=${{ matrix.distro }}-
-      - name: Multi-platform Build and Push for ${{ matrix.distro }}
+            type=raw,value=debian-latest
+            type=semver,pattern=debian-{{version}}
+            type=semver,pattern=debian-{{major}}.{{minor}}
+            type=semver,pattern=debian-{{major}}
+            type=sha,prefix=debian-
+      - name: Build linux/amd64 image for checks
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          target: publish
+          file: distros/debian/Dockerfile
+          load: true
+          push: false
+          tags: ${{ steps.setup.outputs.CHECK_IMAGE }}
+          cache-from: |
+            type=gha,scope=build-debian-amd64
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:debian
+          cache-to: |
+            type=gha,scope=build-debian-amd64,mode=max
+          github-token: ${{ secrets.GH_TOKEN }}
+          secrets: github_token=${{ secrets.GH_TOKEN }}
+      - name: Run mise doctor project
+        run: |
+          docker run --rm --entrypoint /usr/bin/zsh "${{ steps.setup.outputs.CHECK_IMAGE }}" -lic 'mise doctor project'
+      - name: Check the image size
+        env:
+          IMAGE: ${{ steps.setup.outputs.CHECK_IMAGE }}
+          BUDGET_BYTES: ${{ vars.IMAGE_BUDGET_BYTES || '2800000000' }}
+        run: |
+          size=$(docker image inspect "$IMAGE" --format '{{.Size}}')
+          echo "image size: $((size / 1000000)) MB (budget $((BUDGET_BYTES / 1000000)) MB)" | tee -a "$GITHUB_STEP_SUMMARY"
+          [ "$size" -le "$BUDGET_BYTES" ] || { echo "::error::image is over budget"; exit 1; }
+      - name: Multi-platform Build and Push for debian
         uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64
           target: publish
-          file: distros/${{ matrix.distro }}/Dockerfile
+          file: distros/debian/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
@@ -84,12 +107,12 @@ jobs:
           # TODO: Enable provenance when we have a way to sign the images
           provenance: false
           cache-from: |
-            type=gha,scope=build-${{ matrix.distro }}-amd64
-            type=gha,scope=build-${{ matrix.distro }}-arm64
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }}
+            type=gha,scope=build-debian-amd64
+            type=gha,scope=build-debian-arm64
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:debian
           cache-to: |
-            type=gha,scope=build-${{ matrix.distro }}-amd64,mode=max
-            type=gha,scope=build-${{ matrix.distro }}-arm64,mode=max
-            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:${{ matrix.distro }},mode=max
+            type=gha,scope=build-debian-amd64,mode=max
+            type=gha,scope=build-debian-arm64,mode=max
+            type=registry,ref=docker.io/${{ env.REGISTRY_IMAGE }}-cache:debian,mode=max
           github-token: ${{ secrets.GH_TOKEN }}
           secrets: github_token=${{ secrets.GH_TOKEN }}
