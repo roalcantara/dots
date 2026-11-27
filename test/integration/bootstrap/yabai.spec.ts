@@ -154,7 +154,7 @@ describe("yabai and borders services", () => {
   });
 
   it("runs yabai and borders as LaunchAgents that restart on exit", () => {
-    const agents = toml("config/mise/conf.d/yabai.toml").bootstrap.macos.launchd.agents;
+    const agents = toml("config/mise/conf.d/macos.toml").bootstrap.macos.launchd.agents;
     for (const [name, program] of [["yabai", "~/.local/bin/yb"], ["borders", "~/.local/share/janky-borders/bin/borders"]]) {
       expect(agents[name!]).toMatchObject({ program, keep_alive: true, run_at_load: true });
       expect(agents[name!].environment.PATH).toStartWith("/opt/homebrew/bin:");
