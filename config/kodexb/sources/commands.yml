@@ -2125,6 +2125,9 @@ commands:
   zip -r <FILE> <DIR>:
     desc: Compress files into dir
     tags: [zip]
+  zip -r -m 20261028.zip . -x "20261028.zip":
+    desc: 'Compress all files in this folder into a single 20261028.zip and remove them'
+    tags: [zip, cli]
 
   unzip <FILE>:
     desc: Unpack file w/ unzip
@@ -2524,10 +2527,10 @@ commands:
   find . -name <.DS_Store> -print0 | xargs -0 git rm -f --ignore-unmatch:
     desc: Remove files from a Git repository
     tags: [git]
-  'git add . && git commit -am ''chore(bootstrap): A new hope...''':
+  "git add . && git commit -am 'chore(bootstrap): A new hope...'":
     desc: Add initial commit
     tags: [git]
-  'echo ''# tmp'' >> README.md && git init && git commit -m ''chore(bootstrap): a new hope..''':
+  "echo '# tmp' >> README.md && git init && git commit -m 'chore(bootstrap): a new hope..'":
     desc: Initilize a git repo w/ README & 1st commit
     tags: [git]
   yarn add <NAME> -DW:
@@ -2557,3 +2560,7 @@ commands:
   npm install express cors body-parser && npm install --save-dev @types/node @types/body-parser @types/cookie-parser @types/cors @types/express:
     desc: Add Express dependencies
     tags: [express]
+
+  ps -axo pid=,comm=,pmem=,rss=,vsz=,command= | sort -k4 -nr | head -n 100:
+    desc: Top 100 processes by memory usage
+    tags: [macos, cli]

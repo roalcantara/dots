@@ -1,0 +1,224 @@
+bookmarks:
+  https://skills.sh:
+    desc: Official skills repository
+    tags: [ai, skills]
+
+commands:
+  skills list:
+    desc: List installed project skills
+    tags: [ai, skills]
+  skills ls --agent 'universal' --json:
+    desc: List all available skills for the 'universal' agent in JSON format
+    tags: [ai, skills]
+  skills ls -g:
+    desc: List global skills
+    tags: [ai, skills]
+  skills ls -a claude-code:
+    desc: Filter by agent
+    tags: [ai, skills]
+  skills ls --json:
+    desc: JSON output of skills
+    tags: [ai, skills]
+  skills find:
+    desc: Interactive search
+    tags: [ai, skills]
+  skills find [query]:
+    desc: Search for skills by keyword
+    tags: [ai, skills]
+  skills find react --owner vercel:
+    desc: Search within an owner
+    tags: [ai, skills]
+  skills add <package>:
+    desc: Add a new skill to the project
+    tags: [ai, skills]
+  skills add -yg https://github.com/vercel-labs/skills --skill find-skills:
+    desc: Install the find-skills skill globally
+    tags: [ai, skills]
+  skills add vercel-labs/agent-skills:
+    desc: Add the vercel-labs/agent-skills skill
+    tags: [ai, skills]
+  skills add vercel-labs/agent-skills -g:
+    desc: Add the vercel-labs/agent-skills skill globally
+    tags: [ai, skills]
+  skills add vercel-labs/agent-skills --agent claude-code cursor:
+    desc: Add the vercel-labs/agent-skills skill with the claude-code cursor agent
+    tags: [ai, skills]
+  skills add vercel-labs/agent-skills --skill pr-review commit:
+    desc: Add the vercel-labs/agent-skills skill with the pr-review commit skill
+    tags: [ai, skills]
+  skills add vercel-labs/agent-skills --json -y:
+    desc: Add the vercel-labs/agent-skills skill with JSON output
+    tags: [ai, skills]
+  skills use <package>@<skill>:
+    desc: Use a skill without installing it
+    tags: [ai, skills]
+  skills use vercel-labs/agent-skills@vercel-optimize | claude:
+    desc: Use the vercel-optimize skill from the vercel-labs/agent-skills skill with the claude agent
+    tags: [ai, skills]
+  skills use vercel-labs/agent-skills --skill vercel-optimize --agent claude-code:
+    desc: Use the vercel-optimize skill from the vercel-labs/agent-skills skill with the claude-code agent
+    tags: [ai, skills]
+  skills update:
+    desc: Update installed skills
+    tags: [ai, skills]
+  skills update my-skill:
+    desc: Update a single skill
+    tags: [ai, skills]
+  skills update -g:
+    desc: Update global skills only
+    tags: [ai, skills]
+  skills remove:
+    desc: Interactive prompt to remove installed skills
+    tags: [ai, skills]
+  skills remove web-design:
+    desc: Remove by name
+    tags: [ai, skills]
+  skills rm --global frontend-design:
+    desc: Remove a global skill by name
+    tags: [ai, skills]
+  skills experimental_install:
+    desc: Restore from skills-lock.json
+    tags: [ai, skills]
+  skills experimental_sync:
+    desc: Sync from node_modules (experimental)
+    tags: [ai, skills]
+  skills experimental_sync -y:
+    desc: Sync without prompts
+    tags: [ai, skills]
+  skills init my-skill:
+    desc: Initialize a new skill project
+    tags: [ai, skills]
+
+  /find-skills:
+    desc: Discover and install specialized agent skills from the open ecosystem when users need extended capabilities.
+    tags: [ai, skills, discovery]
+    links:
+      - https://skills.sh/vercel-labs/skills/find-skills
+    notes:
+      - sh: skills add -yg https://github.com/vercel-labs/skills --skill find-skills
+  /interview-me:
+    desc: The cheapest moment to find this gap is before any plan, spec, or code exists.
+    tags: [ai, skills, discovery]
+    links:
+      - https://skills.sh/addyosmani/agent-skills/interview-me
+    notes:
+      - sh: skills add -yg https://github.com/addyosmani/agent-skills --skill interview-me
+  /personal-productivity (by oldwinter):
+    desc: Designing a weekly timebox plan for a high-meeting-load job (meeting windows, focus blocks, admin buffers)
+    tags: [ai, skills, productivity]
+    links:
+      - https://skills.sh/oldwinter/skills/personal-productivity
+    notes:
+      - sh: skills add -yg https://github.com/oldwinter/skills --skill personal-productivity
+  /personal-productivity:
+    desc: Help the user manage their time and tasks more effectively using techniques from 2 product leaders.
+    tags: [ai, skills, productivity]
+    links:
+      - https://skills.sh/refoundai/lenny-skills/personal-productivity
+    notes:
+      - sh: skills add -yg https://github.com/refoundai/lenny-skills --skill personal-productivity
+  /daily-prep:
+    desc: Generate a structured prep file for the next working day with meeting details, prep bullets, linked tasks, and productivity recommendations.
+    tags: [ai, skills, productivity]
+    links:
+      - https://skills.sh/github/awesome-copilot/daily-prep
+    notes:
+      - sh: skills add -yg https://github.com/github/awesome-copilot --skill daily-prep
+  /personal-assistant:
+    desc: Comprehensive personal assistant with persistent memory of user preferences, schedules, tasks, and context.
+    tags: [ai, skills, productivity]
+    links:
+      - https://skills.sh/ailabs-393/ai-labs-claude-skills/personal-assistant
+    notes:
+      - sh: skills add -yg https://github.com/ailabs-393/ai-labs-claude-skills --skill personal-assistant
+  /project-planner:
+    desc: Project planner who breaks down complex projects into achievable, well-structured tasks.
+    tags: [ai, skills, productivity]
+    links:
+      - https://skills.sh/shubhamsaboo/awesome-llm-apps/project-planner
+    notes:
+      - sh: skills add -yg https://github.com/shubhamsaboo/awesome-llm-apps --skill project-planner
+  /agent-planner:
+    desc: Strategic planning specialist responsible for breaking down complex tasks into manageable components and creating actionable execution plans.
+    tags: [ai, skills, productivity]
+    links:
+      - https://skills.sh/ruvnet/ruflo/agent-planner
+    notes:
+      - sh: skills add -yg https://github.com/ruvnet/ruflo --skill agent-planner
+  /copilot-instructions-blueprint-generator:
+    desc: Generate GitHub Copilot instruction files by analyzing actual codebase patterns and technology versions
+    tags: [ai, skills, copilot]
+    links:
+      - https://skills.sh/github/awesome-copilot/copilot-instructions-blueprint-generator
+    notes:
+      - sh: skills add -yg https://github.com/github/awesome-copilot --skill copilot-instructions-blueprint-generator
+  /suggest-awesome-github-copilot-instructions:
+    desc: Analyze current repository context and suggest relevant copilot-instruction files from the GitHub awesome-copilot repository that are not already available in this repository.
+    tags: [ai, skills, copilot]
+    links:
+      - https://skills.sh/github/awesome-copilot/suggest-awesome-github-copilot-instructions
+    notes:
+      - sh: skills add -yg https://github.com/github/awesome-copilot --skill suggest-awesome-github-copilot-instructions
+  /generate-custom-instructions-from-codebase:
+    desc: Generates GitHub Copilot migration instructions by analyzing code differences between project versions
+    tags: [ai, skills, copilot]
+    links:
+      - https://skills.sh/github/awesome-copilot/generate-custom-instructions-from-codebase
+    notes:
+      - sh: skills add -yg https://github.com/github/awesome-copilot --skill generate-custom-instructions-from-codebase
+  /readme-blueprint-generator:
+    desc: Generate README blueprint files by analyzing the structure and content of the codebase
+    tags: [ai, skills, copilot]
+    links:
+      - https://skills.sh/github/awesome-copilot/readme-blueprint-generator
+    notes:
+      - sh: skills add -yg https://github.com/github/awesome-copilot --skill readme-blueprint-generator
+  /tldr-prompt:
+    desc: Create concise tldr summaries for GitHub Copilot files, MCP servers, and documentation
+    tags: [ai, skills, copilot]
+    links:
+      - https://skills.sh/github/awesome-copilot/tldr-prompt
+    notes:
+      - sh: skills add -yg https://github.com/github/awesome-copilot --skill tldr-prompt
+  /memory-merger:
+    desc: Consolidates mature learnings from domain memory files into instruction files with quality-assured merging
+    tags: [ai, skills, copilot]
+    links:
+      - https://skills.sh/github/awesome-copilot/memory-merger
+    notes:
+      - sh: skills add -yg https://github.com/github/awesome-copilot --skill memory-merger
+  /create-readme:
+    desc: Generate README files for GitHub repositories based on the codebase structure and content
+    tags: [ai, skills, copilot]
+    links:
+      - https://skills.sh/github/awesome-copilot/create-readme
+    notes:
+      - sh: skills add -yg https://github.com/github/awesome-copilot --skill create-readme
+  /readme-creator:
+    desc: Generate README files for GitHub repositories based on the codebase structure and content
+    tags: [ai, skills, readme]
+    links:
+      - https://skills.sh/mblode/agent-skills/readme-creator
+    notes:
+      - sh: skills add -yg https://github.com/mblode/agent-skills --skill readme-creator
+  /documentation:
+    desc: Write clear, maintainable technical documentation for different audiences and purposes
+    tags: [ai, skills, docs]
+    links:
+      - https://skills.sh/anthropics/knowledge-work-plugins/documentation
+    notes:
+      - sh: skills add -yg https://github.com/anthropics/knowledge-work-plugins --skill documentation
+  /crafting-effective-readmes:
+    desc: Provides guidance and templates for creating effective README files for GitHub repositories
+    tags: [ai, skills, readme]
+    links:
+      - https://skills.sh/softaworks/agent-toolkit/crafting-effective-readmes
+    notes:
+      - sh: skills add -yg https://github.com/softaworks/agent-toolkit --skill crafting-effective-readmes
+  /doc-coauthoring:
+    desc: Collaboratively author and edit documentation with AI assistance
+    tags: [ai, skills, docs]
+    links:
+      - https://skills.sh/anthropics/skills/doc-coauthoring
+    notes:
+      - sh: skills add -yg https://github.com/anthropics/skills --skill doc-coauthoring

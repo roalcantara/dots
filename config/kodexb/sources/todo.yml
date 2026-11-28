@@ -1,6 +1,13 @@
 bookmarks:
+  https://github.com/todotxt/todo.txt-cli:
+    desc: A simple and extensible shell script for managing your todo.txt file.
+    tags: [todo, cli]
+    links:
+      - todotxt.org
+  https://github.com/nklayman/terminal-tasks:
+    desc: A simple terminal task list powered by Ora
+    tags: [todo, cli]
   https://github.com/roalcantara/lida:
-    title: lida
     desc: Dual-format project task engine — reads and writes a project's TODO.yaml or TODO.md (tasks, actors, comments, meta)
     tags: [todo, cli]
 
@@ -9,7 +16,11 @@ commands:
     desc: Create a TODO file in the current directory
     tags: [todo, cli]
     links: [https://github.com/roalcantara/lida]
-  lida add <text> [-p high] [-t tag,tag] [-d YYYY-MM-DD]:
+  lida -f /path/to/TODO.yaml:
+    desc: Global option | Path to target
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida add <text> [-p high] [-t tag,tag] [-d YYYY-MM-DD] [-a <annotation>]:
     desc: Add a task with priority, tags and due date
     tags: [todo, cli]
     links: [https://github.com/roalcantara/lida]
@@ -17,16 +28,44 @@ commands:
     desc: Add a comment to an existing task
     tags: [todo, cli]
     links: [https://github.com/roalcantara/lida]
+  lida add -a <annotation>:
+    desc: Create task with annotation
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
   lida list [--tasks] [-s status] [-t tag] [-p priority] [--json]:
     desc: List tasks, filtered by status, tag or priority
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida nx [term] [@project] [+tag] [+TODAY] [+OVERDUE] [+TOMORROW] [+WEEK] [--long] [--raw]:
+    desc: List open urgent tasks by term, project, tag, and due date
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida nx +TODAY +OVERDUE:
+    desc: List tasks that are due today or overdue
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida nx +TOMORROW:
+    desc: List tasks that are due tomorrow
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida nx +WEEK:
+    desc: List tasks that are due this week
     tags: [todo, cli]
     links: [https://github.com/roalcantara/lida]
   lida show <id> [--json]:
     desc: Show one task in full
     tags: [todo, cli]
     links: [https://github.com/roalcantara/lida]
-  lida start <id> / lida done <id>:
-    desc: Mark a task in progress or done
+  lida start <id> [-a <annotation>]:
+    desc: Mark a task in progress
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida stop <id> [-a <annotation>]:
+    desc: Mark a task in progress
+    tags: [todo, cli]
+    links: [https://github.com/roalcantara/lida]
+  lida done <id> [-a <annotation>]:
+    desc: Mark a task as done
     tags: [todo, cli]
     links: [https://github.com/roalcantara/lida]
   lida status <id> --set todo|in-progress|done|blocked [--reason <why>]:

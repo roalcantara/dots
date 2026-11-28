@@ -1,73 +1,7 @@
 bookmarks:
-  https://skills.sh/vercel-labs/skills/find-skills:
-    desc: Discover and install specialized agent skills from the open ecosystem when users need extended capabilities.
-    tags: [skills, discovery]
-    notes:
-      - sh: skills add -yg https://github.com/vercel-labs/skills --skill find-skills
-  https://skills.sh/addyosmani/agent-skills/interview-me:
-    desc: The cheapest moment to find this gap is before any plan, spec, or code exists.
-    tags: [skills, discovery]
-    notes:
-      - sh: skills add -yg https://github.com/addyosmani/agent-skills --skill interview-me
-  https://skills.sh/oldwinter/skills/personal-productivity:
-    desc: Designing a weekly timebox plan for a high-meeting-load job (meeting windows, focus blocks, admin buffers)
-    tags: [skills, productivity]
-    notes:
-      - sh: skills add -yg https://github.com/oldwinter/skills --skill personal-productivity
-  https://skills.sh/refoundai/lenny-skills/personal-productivity:
-    desc: Help the user manage their time and tasks more effectively using techniques from 2 product leaders.
-    tags: [skills, productivity]
-    notes:
-      - sh: skills add -yg https://github.com/refoundai/lenny-skills --skill personal-productivity
-  https://skills.sh/github/awesome-copilot/daily-prep:
-    desc: Generate a structured prep file for the next working day with meeting details, prep bullets, linked tasks, and productivity recommendations.
-    tags: [skills, productivity]
-    notes:
-      - sh: skills add -yg https://github.com/github/awesome-copilot --skill daily-prep
-  https://skills.sh/ailabs-393/ai-labs-claude-skills/personal-assistant:
-    desc: Comprehensive personal assistant with persistent memory of user preferences, schedules, tasks, and context.
-    tags: [skills, assistant]
-    notes:
-      - sh: skills add -yg https://github.com/ailabs-393/ai-labs-claude-skills --skill personal-assistant
-  https://skills.sh/shubhamsaboo/awesome-llm-apps/project-planner:
-    desc: You are an expert project planner who breaks down complex projects into achievable, well-structured tasks.
-    tags: [skills, planning]
-    notes:
-      - sh: skills add -yg https://github.com/shubhamsaboo/awesome-llm-apps --skill project-planner
-  https://skills.sh/ruvnet/ruflo/agent-planner:
-    desc: Strategic planning specialist responsible for breaking down complex tasks into manageable components and creating actionable execution plans.
-    tags: [skills, planning]
-    notes:
-      - sh: skills add -yg https://github.com/ruvnet/ruflo --skill agent-planner
-
-  https://youtu.be/X4FVEEegCbk:
-    desc: Skills vs MCP vs RAG vs Memory - What AI Agents Need to Know
-    tags: [ai, skills, mcp, rag, memory]
-    notes:
-      - md: | #markdown
-          # Skills vs MCP vs RAG vs Memory - What AI Agents Need to Know
-
-          - If it's knowledge that somebody has written down: that's RAG.
-          - if it's knowledge that the agents picked up from experience, that's memory.
-          - if it's a procedure to follow something repeatable, that's an agent skill.
-          - if an agent needs to go and actually look something up in the world without
-            using proprietary code, that can be MCP.
-  https://youtu.be/goU9VIXA8II:
-    desc: MCP vs Skills - Which Is Right for Your AI Agent and LLMs?
-    tags: [ai, skills, mcp, rag, memory]
-    notes:
-      - md: | #markdown
-          # MCP vs Skills: Which Is Right for Your AI Agent and LLMs?
-
-          - If it's knowledge that somebody has written down: that's RAG.
-          - if it's knowledge that the agents picked up from experience, that's memory.
-          - if it's a procedure to follow something repeatable, that's an agent skill.
-          - if an agent needs to go and actually look something up in the world without
-            using proprietary code, that can be MCP.
   https://xirp.spotify.com:
     desc: Xirp connects to your services, ownership, docs, and architectural decisions — so every AI coding session starts with real context, not guesswork.
     tags: [ai, coding, harness]
-
   https://app.artflow.ai:
     desc: Artflow | AI-powered photo editing
     tags: [ai, coding]
@@ -95,7 +29,7 @@ bookmarks:
 
           > Breathtaking Portrait Of @roalcantara, Arms, Serious, Viking, Ritual, Ancient Tre Professional
   https://openai.com:
-    tags: [coding]
+    tags: [ai, coding]
     desc: OpenAI
     links:
       - Docs: https://platform.openai.com/docs/overview?lang=curl
@@ -112,19 +46,19 @@ bookmarks:
       - API Keys: https://platform.openai.com/settings/organization/api-keys
   https://platform.openai.com/docs/guides/prompt-engineering:
     desc: Prompt Engineering Guide | OpenAI
-    tags: [doc]
+    tags: [ai, doc]
   https://platform.openai.com/docs/actions:
     desc: Actions | OpenAI
-    tags: [doc]
+    tags: [ai, doc]
   https://platform.openai.com/docs/plugins/introduction:
     desc: Learn how to build a plugin that allows ChatGPT to intelligently call your API | OpenAI
-    tags: [prompt, doc]
+    tags: [ai, prompt, doc]
   https://platform.openai.com/docs/guides/function-calling:
     desc: Learn how to connect large language models to external tools | OpenAI
-    tags: [prompt, doc]
+    tags: [ai, prompt, doc]
   https://platform.openai.com/docs/assistants/overview:
     desc: Learn how to build an assistant that can perform tasks on your behalf | OpenAI
-    tags: [prompt, doc]
+    tags: [ai, prompt, doc]
   https://gandalf.lakera.ai:
     desc: Test your prompting skills to make Gandalf reveal secret information | Gandalf | Lakera
     tags: [ai]
@@ -156,10 +90,10 @@ bookmarks:
           mkdir -p ~/.config/codex/ && vi ~/.config/codex/config.yaml
   https://github.com/Nutlope/aicommits:
     desc: AI Commits | A CLI that writes your git commit messages for you with AI
-    tags: [git]
+    tags: [ai, git]
   https://github.com/coder/aicommit:
     desc: AI Commit | A tool that writes your git commit messages for you with AI
-    tags: [git]
+    tags: [ai, git]
     notes:
       - md: |
           ## About
@@ -169,9 +103,9 @@ bookmarks:
           If there is no repo style guide, aicommit will look for a user style guide in ~/COMMITS.md.
   https://github.com/di-sukharev/opencommit:
     desc: OpenCommit | A tool that writes your git commit messages for you with AI
-    tags: [git]
+    tags: [ai, git]
   https://youtu.be/7l-PIcJsDGU:
-    tags: [coding]
+    tags: [ai, coding]
     desc: Aider, Cursor, Windsurf | Build Apps with a SINGLE prompt, NO coding!
     links:
       - GitHub Gist with All Prompts: https://gist.github.com/codingthefuturewithai/72e163a4346129fe426cadc84bf36d57
@@ -198,13 +132,13 @@ bookmarks:
 
           By the end, you`ll gain a clear understanding of each tool`s strengths and how AI coding assistants are transforming software development workflows.
   https://ai-sdk.dev:
-    tags: [coding]
+    tags: [ai, coding]
     desc: The AI Toolkit for TypeScript | From the creators of Next.js, the AI SDK is a free open-source library that gives you the tools you need to build AI-powered products
   https://lmarena.ai:
     desc: Input your Prompt. Compare Answers. Vote for the Best. Discover and Repeat.
     tags: [ai]
   https://models.dev:
-    tags: [coding]
+    tags: [ai, coding]
     desc: A comprehensive open-source database of AI model specifications, pricing, and features
     links:
       - API: https://models.dev/api.json
@@ -226,7 +160,7 @@ bookmarks:
           curl https://models.dev/api.json
           ```
   https://opencode.ai:
-    tags: [coding]
+    tags: [ai, coding]
     desc: AI-powered coding agent built for the terminal
     links:
       - Docs: https://opencode.ai/docs
@@ -311,7 +245,7 @@ bookmarks:
           # Install fabric
           brew install fabric-ai
   https://augmentcode.com:
-    tags: [coding]
+    tags: [ai, coding]
     desc: The most powerful AI software development platform backed by the industry-leading context engine
     links:
       - https://docs.augmentcode.com/introduction
@@ -319,13 +253,13 @@ bookmarks:
       - https://docs.augmentcode.com/cli
   https://github.com/github/spec-kit:
     desc: Toolkit to help you get started with Spec-Driven Development
-    tags: [ai]
+    tags: [ai, sdd]
     links:
       - https://github.com/github/spec-kit?tab=readme-ov-file#-get-started
       - https://github.com/github/spec-kit/blob/main/spec-driven.md
       - https://youtu.be/em3vIT9aUsg
   https://claude.com:
-    tags: [coding]
+    tags: [ai, coding]
     desc: Claude | The AI-powered coding assistant
     links:
       - Quickstart: https://docs.claude.com/en/docs/get-started
@@ -341,12 +275,12 @@ bookmarks:
             -d '{"model": "claude-3-haiku-20240307", "max_tokens": 10, "messages": [{"role": "user", "content": "Hi"}]}'
   https://console.anthropic.com:
     desc: Anthropic Console | Account Management and API Keys
-    tags: [ai]
+    tags: [ai, claude]
     links:
       - Anthropic API Fundamentals: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
   https://docs.claude.com/en/docs/claude-code/quickstart:
     desc: Claude Code Quickstart
-    tags: [ai]
+    tags: [ai, claude]
     links:
       - Quickstart: https://docs.claude.com/en/docs/claude-code/quickstart
     notes:
@@ -595,7 +529,7 @@ bookmarks:
           * **Community**: Join our [Discord](https://anthropic.com/discord) for tips and support
   https://docs.claude.com/en/docs/claude-code/vs-code:
     desc: Claude Code VS Code Extension
-    tags: [ai]
+    tags: [ai, claude]
     links: [https://docs.claude.com/en/docs/claude-code/vs-code]
     notes:
       - md: |
@@ -838,20 +772,20 @@ bookmarks:
           >  * Be specific about what you're looking for
           >  * Use domain language from the project
   https://lensgo.ai:
-    tags: [coding]
+    tags: [ai, coding]
     desc: Free AI-powered tool for creating images and videos. Best for personalized videos. Make your first AI video, or film
   https://artguru.ai:
-    tags: [coding]
+    tags: [ai, coding]
     desc: ArtGuru | AI Art Generator | Explore the magic of AI art generation - create masterpieces in seconds!
   https://leonardo.ai:
     desc: Leonardo | Create production-quality visual assets for your projects with unprecedented quality, speed, and style-consistency.
-    tags: [ai]
+    tags: [ai, coding]
   https://beta.character.ai:
-    tags: [coding]
+    tags: [ai, coding]
     desc: Character | AI-powered video editing
   # GOOGLE AI STUDIO
   https://ai.google.dev:
-    tags: [coding]
+    tags: [ai, coding]
     desc: Build with the Gemini API | Google AI Studio
     links:
       - Get API key | Google AI Studio: https://makersuite.google.com/app/apikey
@@ -864,20 +798,20 @@ bookmarks:
           -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$(gopass show --password token/ai.google.dev)"
   https://ai.google.dev/tutorials/node_quickstart:
     desc: Node Quickstart | Build with the Gemini API | Google AI Studio
-    tags: [doc]
+    tags: [ai, doc]
   https://ai.google.dev/tutorials/python_quickstart:
     desc: Python Quickstart | Build with the Gemini API | Google AI Studio
-    tags: [doc]
+    tags: [ai, doc]
   https://ai.google.dev/tutorials/web_quickstart:
     desc: Web Quickstart | Build with the Gemini API | Google AI Studio
-    tags: [doc]
+    tags: [ai, doc]
   # GOOGLE DEEPMIND GEMINI
   https://deepmind.google/technologies/gemini:
     desc: Gemini | DeepMind
-    tags: [ai]
+    tags: [ai, gemini]
   https://deepmind.google/technologies/gemini/#capabilities:
     desc: Gemini | Capabilities
-    tags: [ai]
+    tags: [ai, gemini]
   https://kiro.dev:
     desc: Kiro | The AI-first development environment
     tags: [ai, coding]
@@ -1084,17 +1018,14 @@ bookmarks:
 
           ```python
           ```
-
   https://youtube.com/playlist?list=PLbIBj8vQhvm09IqqLYIwLF5dGrcbJzFZc&si=-eJ1PvlCTXLwWcXE:
     desc: LangChain e LangGraph com Python - O Guia Definitivo
     tags: [ai, coding]
     links: [https://github.com/luizomf/react_agent_langgraph_course]
-
   https://developers.openai.com/cookbook/examples/partners/agentic_governance_guide/agentic_governance_cookbook:
     desc: Agentic Governance Cookbook by OpenAI
     tags: [ai, openai, agents]
     links: [https://developers.openai.com/cookbook/examples/partners/agentic_governance_guide/agentic_governance_cookbook]
-
   https://adk.dev/get-started/typescript:
     desc: This guide shows you how to get up and running with Agent Development Kit for TypeScript
     tags: [ai, adk, agent]
@@ -1251,7 +1182,6 @@ bookmarks:
     desc: GitHub Copilot Instructions vs Prompts vs Custom Agents vs Skills vs X vs WHY?
     tags: [ai, github, copilot]
     links: [https://youtu.be/U3Y6oPWcWo0, https://docs.github.com/en/copilot/concepts/agents/copilot-cli/comparing-cli-features]
-
   https://youtu.be/xWGC4Pc3w5E:
     desc: UX Tricks Duolingo Uses That You Can Steal For Your App
     tags: [ai, vibe, tutorial]
@@ -1276,7 +1206,6 @@ bookmarks:
           *   **Figma:** Used by the creator to demonstrate and map out the UI/UX changes.
           *   **TikTok:** Referenced as a masterclass in low-friction, addicting UX (specifically regarding the "swipe" interface).
           *   **Psychological Concepts:** The video cites the **IKEA Effect** (value in creation) and **Loss Aversion** (the pain of losing is greater than the joy of gaining) as fundamental drivers.
-
   https://youtu.be/76_h94U4ztQ:
     desc: Watch me Design a Mobile App From Scratch in 32 Minutes (Claude /design & Fable 5)
     tags: [ai, vibe, tutorial]
@@ -1301,7 +1230,6 @@ bookmarks:
           *   **Higsfield MCP:** Integrated into *Claude Code* to generate high-quality, professional illustrations for the app screens without leaving the development environment.
           *   **Design System Documentation:** The author emphasizes converting final screen designs into a formal design system (using *Product OS* skills). This involves creating a `design.md` file (for LLM prompt context) and a `design.html` file (for a visual reference guide of colors, typography, components, and spacing).
           *   **Iterative Refinement:** Using different visual directions (e.g., flat vector vs. isometric line art) before choosing a final path and generating specific image prompts for external tools (like *ChatGPT Image*) if needed.
-
   https://youtu.be/29Vto7o2I2Q:
     desc: Watch Me Vibe Code an Animated App with Claude Fable 5.1 + Seedance 2.5
     tags: [ai, vibe, tutorial]
@@ -1327,7 +1255,6 @@ bookmarks:
           *   **Video-Based Prompting:** Instead of manual annotation, record a *Loom* video of yourself interacting with the app to explain feature requirements and requested design adjustments to the AI (18:36).
           *   **Iterative Refinement:** Use precise, descriptive prompts to address visual glitches (e.g., character sizing) or to refine environmental loops (e.g., stopping a cloud animation while keeping the water moving) (19:48).
           *   **Design-to-Code:** Use the `/design` command directly within the IDE/chat interface to generate app mockups and preview them in local browser environments (7:34).
-
   https://youtu.be/Rk6t9Uq1y9M:
     desc: Watch Me Vibe Code an Animated App with Claude Opus 5.5 (It's Super Smooth)
     tags: [ai, vibe, tutorial]
@@ -1350,11 +1277,54 @@ bookmarks:
           *   **AI-Video Integration:** Offloading complex motion graphics to specialized video AI tools like *Higgsfield* while managing the integration through *Claude*.
           *   **Vector Scaling:** Utilizing *SVG* files for characters and assets ensures high quality at any screen size without performance loss.
           *   **Iterative Polishing:** Instead of manual coding every change, the author screen-records the app, narrates needed adjustments, and feeds the video back to *Claude* to implement fixes.
-
   https://youtu.be/aa-Fu5Qw91M:
     desc: Making An Actually Fun Game (NO Coding experience)
     tags: [ai, vibe, tutorial]
     notes:
+      - md: |
+          # Making An Actually Fun Game (NO Coding experience)
+
+          The video provides a comprehensive, hands-on guide to developing a game titled *Library Survivors* in a single weekend, leveraging AI tools to assist with coding and asset creation even without prior coding experience.
+
+          ### **Development Workflow & Tools**
+          *   **Planning:** The concept was brainstormed and fleshed out using *ChatGPT* (specifically the *o3-pro* model) to define mechanics, level design, and the difficulty curve, outputting results in a *Markdown* file.
+          *   **Coding Environment:** The author used *Windsurf* as the primary IDE, installing *Claude Code* to act as an AI-powered coding collaborator. *Claude Code* was instructed to build the game using *JavaScript* based on the design brief.
+          *   **Development Iteration:** The process involved iterative refinement, where the author used *Claude Code*'s planning mode and manual feedback loops to diagnose bugs (using browser console logs) and tweak game mechanics like stamina and collision systems.
+          *   **Version Control:** *GitHub* was used as a safety net, allowing the author to commit the project state to a private repository to ensure they could roll back to a functional version during the development process.
+
+          ### **Assets & Multimedia Generation**
+          *   **Graphics:** The author aimed for a cozy 16-bit retro aesthetic. *Leonardo* (using the *Phoenix* and *Lucid Realism* models) generated the background and character sprites. Tiling options were enabled for the floor texture to avoid seams. *Photoshop* was used manually for post-processing to ensure consistent color palettes across character sprites.
+          *   **Animation:** *Luma AI* (specifically *VO3*) was utilized to create animated background elements from static AI-generated images.
+          *   **Audio:** *Suno AI* was used to generate instrumental Lo-fi music for both the menu and gameplay loops, while *ElevenLabs* provided custom sound effects for in-game actions like menu selection and book-shelving.
+
+          ### **Reference & Methodology**
+          *   **Game Design Influence:** The game is a "reverse" *Vampire Survivors* style concept where the player assumes the role of a librarian cleaning up after NPCs rather than combatting them.
+          *   **AI Methodology:** The author highlights the efficacy of using AI to generate project roadmaps, maintain state management, and troubleshoot code in real-time, effectively demonstrating how non-technical users can build functional web-based games by serving as a "product manager" for AI agents.
+  # AI Agent Knowledge and Capabilities
+  https://youtu.be/X4FVEEegCbk:
+    desc: Skills vs MCP vs RAG vs Memory - What AI Agents Need to Know
+    tags: [ai, skills, mcp, rag, memory]
+    notes:
+      - md: | #markdown
+          # Skills vs MCP vs RAG vs Memory - What AI Agents Need to Know
+
+          - If it's knowledge that somebody has written down: that's RAG.
+          - if it's knowledge that the agents picked up from experience, that's memory.
+          - if it's a procedure to follow something repeatable, that's an agent skill.
+          - if an agent needs to go and actually look something up in the world without
+            using proprietary code, that can be MCP.
+  https://youtu.be/goU9VIXA8II:
+    desc: MCP vs Skills - Which Is Right for Your AI Agent and LLMs?
+    tags: [ai, skills, mcp, rag, memory]
+    notes:
+      - md: | #markdown
+          # MCP vs Skills: Which Is Right for Your AI Agent and LLMs?
+
+          - If it's knowledge that somebody has written down: that's RAG.
+          - if it's knowledge that the agents picked up from experience, that's memory.
+          - if it's a procedure to follow something repeatable, that's an agent skill.
+          - if an agent needs to go and actually look something up in the world without
+            using proprietary code, that can be MCP.
       - md: |
           # Making An Actually Fun Game (NO Coding experience)
 
@@ -1412,66 +1382,17 @@ commands:
       - https://platform.openai.com/settings/organization/general
   'curl https://api.anthropic.com/v1/messages -H "Content-Type: application/json" -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" -d ''{ "model": "claude-3-haiku-20240307", "max_tokens": 10, "messages": [{"role": "user", "content": "Hi"}] }''':
     desc: Claude API Quickstart
-    tags: [ai]
+    tags: [ai, claude]
     links:
       - Quickstart: https://docs.claude.com/en/docs/get-started
       - Anthropic API Fundamentals: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
   brew install codex:
     desc: Lightweight coding agent that runs in your terminal | OpenAI
-    tags: [codex]
+    tags: [ai, codex]
     links:
       - https://chatgpt.com/codex/onboarding
       - https://github.com/openai/codex
       - https://youtu.be/glOM015IAEI
-
-  skills add -yg https://github.com/github/awesome-copilot --skill copilot-instructions-blueprint-generator:
-    desc: Generate GitHub Copilot instruction files by analyzing actual codebase patterns and technology versions
-    tags: [ai, skills, copilot]
-    links: [https://skills.sh/github/awesome-copilot/copilot-instructions-blueprint-generator]
-  skills add -yg https://github.com/github/awesome-copilot --skill suggest-awesome-github-copilot-instructions:
-    desc: Analyze current repository context and suggest relevant copilot-instruction files from the GitHub awesome-copilot repository that are not already available in this repository.
-    tags: [ai, skills, copilot]
-    links: [https://skills.sh/github/awesome-copilot/suggest-awesome-github-copilot-instructions]
-  skills add -yg https://github.com/github/awesome-copilot --skill generate-custom-instructions-from-codebase:
-    desc: Generates GitHub Copilot migration instructions by analyzing code differences between project versions
-    tags: [ai, skills, copilot]
-    links: [https://skills.sh/github/awesome-copilot/generate-custom-instructions-from-codebase]
-  skills add -yg https://github.com/github/awesome-copilot --skill readme-blueprint-generator:
-    desc: Generate README blueprint files by analyzing the structure and content of the codebase
-    tags: [ai, skills, copilot]
-    links: [https://skills.sh/github/awesome-copilot/readme-blueprint-generator]
-  skills add -yg https://github.com/github/awesome-copilot --skill tldr-prompt:
-    desc: Create concise tldr summaries for GitHub Copilot files, MCP servers, and documentation
-    tags: [ai, skills, copilot]
-    links: [https://skills.sh/github/awesome-copilot/tldr-prompt]
-  skills add -yg https://github.com/github/awesome-copilot --skill memory-merger:
-    desc: Consolidates mature learnings from domain memory files into instruction files with quality-assured merging
-    tags: [ai, skills, copilot]
-    links: [https://skills.sh/github/awesome-copilot/memory-merger]
-  skills add -yg https://github.com/github/awesome-copilot --skill create-readme:
-    desc: Generate README files for GitHub repositories based on the codebase structure and content
-    tags: [ai, skills, copilot]
-    links: [https://skills.sh/github/awesome-copilot/create-readme]
-  skills add -yg https://github.com/mblode/agent-skills --skill readme-creator:
-    desc: Generate README files for GitHub repositories based on the codebase structure and content
-    tags: [ai, skills, readme]
-    links: [https://skills.sh/mblode/agent-skills/readme-creator]
-  skills add -yg https://github.com/anthropics/knowledge-work-plugins --skill documentation:
-    desc: Write clear, maintainable technical documentation for different audiences and purposes
-    tags: [ai, skills, doc]
-    links: [https://skills.sh/anthropics/knowledge-work-plugins/documentation]
-  skills add -yg https://github.com/softaworks/agent-toolkit --skill crafting-effective-readmes:
-    desc: Provides guidance and templates for creating effective README files for GitHub repositories
-    tags: [ai, skills, readme]
-    links: [https://skills.sh/softaworks/agent-toolkit/crafting-effective-readmes]
-  skills add -yg https://github.com/anthropics/skills --skill doc-coauthoring:
-    desc: Collaboratively author and edit documentation with AI assistance
-    tags: [ai, skills, doc]
-    links: [https://skills.sh/anthropics/skills/doc-coauthoring]
-  skills ls --agent 'universal' --json:
-    desc: List all available skills for the 'universal' agent in JSON format
-    tags: [ai, skills, universal]
-
   omp --model "google-antigravity/gemini-3.8-flash -p "List files in this folder":
     desc: 'List all .ts files in src/'
     tags: [ai, agents]
@@ -1511,10 +1432,3 @@ commands:
   omp --model github-copilot/mai-code-1.1-flash "This macos has just been rebooted and Active Monitor reports almost 10GB of memory in use. Can you list all mon-essential process that could be turned off so free memory usage?" --skills 'maintaining-macos-health,mac-optimize':
     desc: 'Identify non-essential macOS processes to free memory'
     tags: [ai, agents]
-
-  zip -r -m 20261028.zip . -x "20261028.zip":
-    desc: 'Compress all files in this folder into a single 20261028.zip and remove them'
-    tags: [zip, cli]
-  ps -axo pid=,comm=,pmem=,rss=,vsz=,command= | sort -k4 -nr | head -n 100:
-    desc: Top 100 processes by memory usage
-    tags: [macos, cli]
